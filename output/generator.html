@@ -8845,6 +8845,13 @@ extends GNode
 
 
 
+    // iterateList(parse, from)
+    // {
+
+    // }
+
+
+
     resetLoop(parse, nodeId)
     {
         this.valid     = false;
@@ -9402,6 +9409,15 @@ extends GOperator
         
         node.initLoop(parse, nodeId);
     }
+
+
+
+    // iterateList(parse, from)
+    // {
+    //     const node = parse.parsedNodes.find(n => n.nodeId == from.nodeId);
+        
+    //     node.iterateList(parse, nodeId);
+    // }
 
 
 
@@ -15839,6 +15855,10 @@ extends GOperator1
                     this.input.iterateLoop(parse);
 
 
+                    // if (this.loop.type != NUMBER_VALUE)
+                    //     this.loop.iterateList(parse, this);
+
+                    
                     if (parse.repeats.length == 1)
                         parse.currentProgress++;
 
@@ -16916,6 +16936,18 @@ extends GOperator
     {
         this.inputs.forEach(i => i.iterateLoop(parse));
     }
+
+
+
+    // iterateList(parse, from)
+    // {
+    //     for (const input of this.inputs)
+    //     {
+    //         if (   input.type == LIST
+    //             || input.type == COMBINE)
+    //             input.iterateList(parse, from);
+    //     }
+    // }
 
 
 
@@ -18680,6 +18712,8 @@ extends GOperator1
             && this.cachedValue)
             return this;
 
+        if (this.nodeId == 'list')
+            console.log('this.cachedValue =', this.cachedValue);
 
         if (this.cachedValue)
            this.value = this.cachedValue.copy();
@@ -18767,39 +18801,20 @@ extends GOperator1
     invalidateInputs(parse, from, force)
     {
         super.invalidateInputs(parse, from, force);
+        
+        this.reset();
+
+        if (this.nodeId == 'list')
+            console.log('invalidate inputs');
     }
 
 
 
-    initLoop(parse, nodeId)
-    {
-        super.initLoop(parse, nodeId);
-    }
-
-
-
-    invalidateLoop(parse, nodeId)
-    {
-        super.invalidateLoop(parse, nodeId);
-    }
-
-
-
-    iterateLoop(parse)
-    {
-        super.iterateLoop(parse);
-
-        // console.log('iterating loop');
-        // this.cachedValue = null;
-        // this.valid = false;
-    }
-
-
-
-    resetLoop(parse, nodeId)
-    {
-        super.resetLoop(parse, nodeId);
-    }    
+    // iterateList(parse, from)
+    // {
+    //     this.reset();
+    //     this.valid = false;
+    // }
 }
 
 
@@ -26383,7 +26398,8 @@ extends GOperator1
         const thousands = this.thousands ? (await this.thousands.eval(parse)).toValue() : null;
 
 
-        if (input)
+        if (   input
+            && input.isValid())
         {
             if (isListType(input.type))
             {

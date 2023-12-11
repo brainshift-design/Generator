@@ -186,6 +186,18 @@ extends GOperator
 
 
 
+    // iterateList(parse, from)
+    // {
+    //     for (const input of this.inputs)
+    //     {
+    //         if (   input.type == LIST
+    //             || input.type == COMBINE)
+    //             input.iterateList(parse, from);
+    //     }
+    // }
+
+
+
     resetLoop(parse, nodeId)
     {
         this.inputs.forEach(i => i.resetLoop(parse, nodeId));

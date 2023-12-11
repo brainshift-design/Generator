@@ -139,6 +139,15 @@ extends GOperator
 
 
 
+    // iterateList(parse, from)
+    // {
+    //     const node = parse.parsedNodes.find(n => n.nodeId == from.nodeId);
+        
+    //     node.iterateList(parse, nodeId);
+    // }
+
+
+
     invalidateLoop(parse, nodeId)
     {
         const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);

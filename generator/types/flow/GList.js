@@ -47,6 +47,8 @@ extends GOperator1
             && this.cachedValue)
             return this;
 
+        if (this.nodeId == 'list')
+            console.log('this.cachedValue =', this.cachedValue);
 
         if (this.cachedValue)
            this.value = this.cachedValue.copy();
@@ -134,37 +136,18 @@ extends GOperator1
     invalidateInputs(parse, from, force)
     {
         super.invalidateInputs(parse, from, force);
+        
+        this.reset();
+
+        if (this.nodeId == 'list')
+            console.log('invalidate inputs');
     }
 
 
 
-    initLoop(parse, nodeId)
-    {
-        super.initLoop(parse, nodeId);
-    }
-
-
-
-    invalidateLoop(parse, nodeId)
-    {
-        super.invalidateLoop(parse, nodeId);
-    }
-
-
-
-    iterateLoop(parse)
-    {
-        super.iterateLoop(parse);
-
-        // console.log('iterating loop');
-        // this.cachedValue = null;
-        // this.valid = false;
-    }
-
-
-
-    resetLoop(parse, nodeId)
-    {
-        super.resetLoop(parse, nodeId);
-    }    
+    // iterateList(parse, from)
+    // {
+    //     this.reset();
+    //     this.valid = false;
+    // }
 }

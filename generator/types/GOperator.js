@@ -203,6 +203,13 @@ extends GNode
 
 
 
+    // iterateList(parse, from)
+    // {
+
+    // }
+
+
+
     resetLoop(parse, nodeId)
     {
         this.valid     = false;

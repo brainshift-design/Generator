@@ -52,7 +52,8 @@ extends GOperator1
         const thousands = this.thousands ? (await this.thousands.eval(parse)).toValue() : null;
 
 
-        if (input)
+        if (   input
+            && input.isValid())
         {
             if (isListType(input.type))
             {
