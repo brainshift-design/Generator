@@ -144,7 +144,10 @@ extends ResizableBase
 
     isOrPrecededByUncached()
     {
-        return false;
+        // if (this.nodeId == 'list')
+        //     console.log('this.outputs[0].isLooped() =', this.outputs[0].isLooped());
+
+        return this.outputs[0].isLooped();
     }
 
 

@@ -613,23 +613,16 @@ class Wire
                conn.output 
             && (      conn.output.param
                    && conn.output.param.isNodeValue
-                   && (   conn.output.param.node.isOrPrecededByUncached()
-                       /*|| conn.output.param.node.isOrPrecededByMultiplier()*/)
+                   && conn.output.param.node.isOrPrecededByUncached()
                 ||     conn.output.param
                    && !conn.output.param.isNodeValue
                    &&  conn.output.param.input
                    &&  conn.output.param.input.isUncached()
                 ||   !conn.output.param
-                   && (   conn.output.node.isOrPrecededByUncached()
-                       /*|| conn.output.node.isOrPrecededByMultiplier()*/));
-            // && (   !conn.input
-            //     || !conn.input.isLoop());
-            // && conn.input  
-            // && (      conn.input.param 
-            //        && conn.input.node.hasMultipliedOutputs()
-            //     ||   !conn.input.param
-            //        && conn.input.node.isOrFollowedByMultiplier());
-
+                   && conn.output.node.isOrPrecededByUncached()
+                ||    conn.output.node.type == LIST
+                   && conn.output.node.isOrPrecededByUncached());
+                
                 
         this.curve .style.stroke = wireStyle;
         this.curve2.style.stroke = rgb2style(rgbDocumentBody);

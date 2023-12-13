@@ -888,6 +888,15 @@ class Operator
 
 
 
+    isOrFollowedByRepeat()
+    {
+        return this.type == REPEAT
+             ? true
+             : this.outputs.find(o => o.isFollowedByRepeat());
+    }
+
+
+
     hasUncachedInputs()
     {
         for (const input of this.inputs)

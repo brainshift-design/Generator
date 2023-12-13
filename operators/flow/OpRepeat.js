@@ -36,11 +36,11 @@ extends OperatorBase
     
     
 
-    isOrPrecededByUncached()
-    {
-        return !this.paramLoop.input.connected
-            || !this.paramLoop.input.connectedOutput.node.isOrPrecededByUncached();
-    }
+    // isOrPrecededByUncached()
+    // {
+    //     return !this.paramLoop.input.connected
+    //         || !this.paramLoop.input.connectedOutput.node.isOrPrecededByUncached();
+    // }
 
 
 

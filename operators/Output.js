@@ -319,6 +319,40 @@ extends EventTarget
 
 
 
+    isFollowedByRepeat()
+    {
+        for (const input of this.connectedInputs)
+        {
+            if (input.node.isOrFollowedByRepeat())
+                return true;
+        }
+
+        return false;
+    }
+
+
+
+    isLooped()
+    {
+        for (const input of this.connectedInputs)
+        {
+            if (   input.node.type == REPEAT
+                && input.param.id == 'loop')
+                return true;
+
+            // for (const out of input.node.headerOutputs)
+            //     if (out.isLooped())
+            //         return true;
+            
+            if (input.node.type == COMBINE)
+                return input.node.outputs[0].isLooped();
+        }
+
+        return false;
+    }
+
+
+
     isOrder()
     {
         return this.connectedInputs.find(i =>
