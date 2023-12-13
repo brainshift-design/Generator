@@ -51,7 +51,7 @@ extends GOperator
             }
         }
         else
-            this.setUpdateValues(parse, [['', NullValue]], true);
+            this.setUpdateValues(parse, [['', new NullValue()]], true);
                 
         
         this.validate();

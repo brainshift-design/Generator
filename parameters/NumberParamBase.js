@@ -9,7 +9,7 @@ extends Parameter
     { 
         return new NumberValue(
             this.controls[0].value, 
-            this.controls[0].displayDec); 
+            this.controls[0].displayDec);
     }
 
     oldValue = null;
@@ -177,6 +177,7 @@ extends Parameter
 
     //     super.updateControls();
     // }
+
 
 
     updateValueText()

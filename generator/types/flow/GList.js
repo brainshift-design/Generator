@@ -47,19 +47,16 @@ extends GOperator1
             && this.cachedValue)
             return this;
 
-        if (this.nodeId == 'list')
-            console.log('this.cachedValue =', this.cachedValue);
+
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null; 
+
 
         if (this.cachedValue)
            this.value = this.cachedValue.copy();
 
         else
         {
-            this.value = 
-                this.input 
-                ? (await this.input.eval(parse)).toValue() 
-                : NullValue;
-
+            this.value = input ?? new NullValue();
             this.cachedValue = this.value.copy();
         }
 
@@ -137,10 +134,7 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
         
-        this.reset();
-
-        if (this.nodeId == 'list')
-            console.log('invalidate inputs');
+        //this.reset();
     }
 
 

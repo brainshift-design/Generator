@@ -71,7 +71,7 @@ extends GOperator1
                     {
                         const item = input.items[Math.round(indices.items[i].value)];
                         
-                        this.value.items.push(item ? item.copy() : NullValue);
+                        this.value.items.push(item ? item.copy() : new NullValue());
                         
                         if (   item
                             && item.objects

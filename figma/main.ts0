@@ -1,6 +1,7 @@
 console.clear();
 
 
+figma.payments.setPaymentStatusInDevelopment({type: 'UNPAID'});
 //figma.on('selectionchange', figOnSelectionChange);
 
 figma.on('documentchange',  figOnDocumentChange);

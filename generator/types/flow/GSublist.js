@@ -81,7 +81,7 @@ extends GOperator1
                             {
                                 const item = input.items[i];
                                 
-                                this.value.items.push(item ? item.copy() : NullValue);
+                                this.value.items.push(item ? item.copy() : new NullValue());
                                 
                                 if (   item
                                     && this.value.objects

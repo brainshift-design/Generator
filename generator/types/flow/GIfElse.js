@@ -68,9 +68,9 @@ extends GOperator
 
           if (   input0 
               && input1) this.value = cond.value != 0 ? input0 : input1;
-        else if (input0) this.value = cond.value != 0 ? input0 : NullValue.copy();
-        else if (input1) this.value = cond.value == 0 ? input1 : NullValue.copy();
-        else             this.value = NullValue.copy();
+        else if (input0) this.value = cond.value != 0 ? input0 : new NullValue();
+        else if (input1) this.value = cond.value == 0 ? input1 : new NullValue();
+        else             this.value = new NullValue();
 
 
         this.updateValueObjects();

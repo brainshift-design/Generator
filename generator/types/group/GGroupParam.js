@@ -58,7 +58,7 @@ extends GOperator
             this.value = nanFromType(this.dataType);
         
         else
-            this.value = NullValue.copy();
+            this.value = new NullValue();
 
 
         this.setUpdateValues(parse,

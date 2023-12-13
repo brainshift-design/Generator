@@ -59,7 +59,7 @@ extends GOperator1
                 this.value.nodeId = this.nodeId;
         }
         else
-            this.value = null;//NullValue.copy();
+            this.value = null;//new NullValue();
 
 
 

@@ -71,7 +71,7 @@ extends GOperator
             return this.value;
         }
         else
-            return this.value = NullValue.copy();
+            return this.value = new NullValue();
         
         
         // this.param = 
@@ -87,7 +87,7 @@ extends GOperator
         //     this.value = this.param;
         // }
         // else
-        //     this.value = NullValue.copy();
+        //     this.value = new NullValue();
 
 
         // this.validate();

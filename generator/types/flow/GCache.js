@@ -52,7 +52,7 @@ extends GOperator1
             this.value = 
                 this.input 
                 ? (await this.input.eval(parse)).toValue() 
-                : NullValue;
+                : new NullValue();
 
             if (this.options.enabled)
                 this.cachedValue = this.value.copy();

@@ -51,7 +51,7 @@ extends GOperator1
                 this.value.nodeId = this.nodeId;
         }
         else
-            this.value = NullValue.copy();
+            this.value = new NullValue();
 
         
         await this.evalObjects(parse, { showCenter: showCenter });

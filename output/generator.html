@@ -873,7 +873,10 @@ function consoleAssert(...args)
     // if (  !settings 
     //     || settings.enableAsserts)
     if (enableAsserts)
+    {
         console.assert(...args);
+        //console.trace();
+    }
 }
 
 
@@ -8382,7 +8385,6 @@ class GValue
 
         this.type = type;
 
-
         this.valueId = '';
     }
 
@@ -8505,6 +8507,8 @@ function parseValueFromType(type, value)
 {
     switch (type)
     {
+        case            ANY_VALUE: return parseNullValue         (value)[0];
+
         case           LIST_VALUE: 
         case    NUMBER_LIST_VALUE: 
         case      TEXT_LIST_VALUE: 
@@ -8767,12 +8771,13 @@ extends GNode
 
     outputType()
     {
+        
         return this.value
             ? new TextValue(
                 isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
-            : TextValue.NaN;
+            : new TextValue(ANY_VALUE);
     }
 
 
@@ -9344,7 +9349,7 @@ extends GOperator
             return this.value;
         }
         else
-            return this.value = NullValue.copy();
+            return this.value = new NullValue();
         
         
         // this.param = 
@@ -9360,7 +9365,7 @@ extends GOperator
         //     this.value = this.param;
         // }
         // else
-        //     this.value = NullValue.copy();
+        //     this.value = new NullValue();
 
 
         // this.validate();
@@ -9502,6 +9507,122 @@ extends GOperator
     //     // node.resetLoop(parse, nodeId);
     // }
 }
+
+
+class NullValue
+extends GValue
+{
+    value;
+
+
+
+    constructor()
+    {
+        super(ANY_VALUE);
+
+        this.value = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new NullValue();
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(_null)
+    {
+        return _null
+            && this.type  == _null.type
+            && this.value == _null.value;
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    hasInitValue()
+    {
+        return true;
+    }
+
+
+
+    isValid()
+    {
+        return false;
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toJson() 
+    { 
+        return this.toString(); 
+    }
+
+
+
+    toString()
+    {
+        return '';
+    }
+
+
+
+    toPreviewString()
+    {
+        return 'NULL';
+    }
+
+
+
+    toDisplayString()
+    {
+        return 'NULL';
+    }
+
+
+
+    toJsCode(gen)
+    {
+        return this.toPreviewString();
+    }
+
+
+
+    getNaN()
+    {
+        return this;
+    }
+}
+
+
+
+function parseNullValue(str)
+{
+    const _null = new NullValue();
+
+    return [_null, 1];
+}
+
 
 
 class ListValue
@@ -10009,10 +10130,6 @@ extends GValue
         Number.NaN, 
         Number.NaN));
 }
-
-
-
-const NullValue = Object.freeze(NumberValue.NaN);
 
 
 
@@ -15581,7 +15698,7 @@ extends GOperator1
         this.value = 
             this.input 
             ? (await this.input.eval(parse)).toValue() 
-            : NullValue;
+            : new NullValue();
 
 
         this.setUpdateValues(parse, 
@@ -16016,7 +16133,7 @@ extends GOperator1
         this.value = 
             this.input 
             ? (await this.input.eval(parse)).toValue() 
-            : NullValue;
+            : new NullValue();
 
 
         this.updateValueObjects();
@@ -16088,7 +16205,7 @@ extends GOperator
         this.value = 
             this.varValue
             ? (await this.varValue.eval(parse)).toValue()
-            : NullValue;
+            : new NullValue();
 
 
         this.setUpdateValues(parse,
@@ -16219,7 +16336,7 @@ extends GOperator
         //     this.updateValues.sort((a, b) => a.sortId - b.sortId);
         // }
         // else
-            this.setUpdateValues(parse, [['', NullValue]], true);
+            this.setUpdateValues(parse, [['', new NullValue()]], true);
 
 
         // if (this.value.objects)
@@ -16340,7 +16457,7 @@ extends GOperator1
             this.value = 
                 this.input 
                 ? (await this.input.eval(parse)).toValue() 
-                : NullValue;
+                : new NullValue();
 
             if (this.options.enabled)
                 this.cachedValue = this.value.copy();
@@ -16453,7 +16570,7 @@ extends GOperator1
             this.value = 
                 this.input 
                 ? (await this.input.eval(parse)).toValue()
-                : NullValue;
+                : new NullValue();
 
             this.frozen = true;
 
@@ -16558,13 +16675,13 @@ extends GOperator1
 
             const input = (await this.input.eval(parse)).toValue();
 
-            this.value = input ? input : NullValue;
+            this.value = input ? input : new NullValue();
 
             if (this.loop.type != NUMBER_VALUE)
                 this.loop.iterateLoop(parse);
         }
         else
-            this.value = NullValue.copy();
+            this.value = new NullValue();
             
 
         this.setUpdateValues(parse,
@@ -16680,7 +16797,7 @@ extends GOperator1
         this.value = 
             this.input 
             ? (await this.input.eval(parse)).toValue() 
-            : NullValue;
+            : new NullValue();
 
         
         const name = (await this.name.eval(parse)).toValue();
@@ -17138,7 +17255,7 @@ extends GOperator1
                     {
                         const item = input.items[Math.round(indices.items[i].value)];
                         
-                        this.value.items.push(item ? item.copy() : NullValue);
+                        this.value.items.push(item ? item.copy() : new NullValue());
                         
                         if (   item
                             && item.objects
@@ -17301,7 +17418,7 @@ extends GOperator2
         }
         else
         {
-            this.value = NullValue.copy();
+            this.value = new NullValue();
         }
 
 
@@ -17425,7 +17542,7 @@ extends GOperator1
         }
         else
         {
-            this.value = NullValue.copy();
+            this.value = new NullValue();
         }
 
 
@@ -17512,7 +17629,7 @@ function getExtractParamValue(input, name)
         value =
             customIndex > -1
             ? input.customParams[customIndex][1]//.copy()
-            : NullValue.copy();
+            : new NullValue();
     }
 
 
@@ -17610,7 +17727,7 @@ extends GOperator1
                             {
                                 const item = input.items[i];
                                 
-                                this.value.items.push(item ? item.copy() : NullValue);
+                                this.value.items.push(item ? item.copy() : new NullValue());
                                 
                                 if (   item
                                     && this.value.objects
@@ -18596,16 +18713,16 @@ extends GOperator
                     if (column.value < columns)
                         this.value = _row.items[column.value].copy();
                     else
-                        this.value = NullValue.copy();
+                        this.value = new NullValue();
                 }
                 else
-                    this.value = NullValue.copy();
+                    this.value = new NullValue();
             }
             else
-                this.value = NullValue.copy();
+                this.value = new NullValue();
         }
         else
-            this.value = NullValue.copy();
+            this.value = new NullValue();
 
 
         this.setUpdateValues(parse,
@@ -18712,19 +18829,16 @@ extends GOperator1
             && this.cachedValue)
             return this;
 
-        if (this.nodeId == 'list')
-            console.log('this.cachedValue =', this.cachedValue);
+
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null; 
+
 
         if (this.cachedValue)
            this.value = this.cachedValue.copy();
 
         else
         {
-            this.value = 
-                this.input 
-                ? (await this.input.eval(parse)).toValue() 
-                : NullValue;
-
+            this.value = input ?? new NullValue();
             this.cachedValue = this.value.copy();
         }
 
@@ -18802,10 +18916,7 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
         
-        this.reset();
-
-        if (this.nodeId == 'list')
-            console.log('invalidate inputs');
+        //this.reset();
     }
 
 
@@ -18877,66 +18988,57 @@ extends GOperator1
         let length = 0;
 
 
-        if (this.input)
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+            
+        if (   index
+            && input
+            && input.items
+            && input.items.length > 0)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            length = input.items.length;
+
+
+            index = 
+                    index.isValid()
+                && index.value > -input.items.length
+                && index.value <  input.items.length
+                ? new NumberValue(Math.round(index.value))
+                : new NumberValue(0);
             
 
-            if (   index
-                && input
-                && input.items
-                && input.items.length > 0)
+            if (   index.isValid()
+                && index.value > -input.items.length
+                && index.value <  input.items.length)
             {
-                length = input.items.length;
+                this.value = input.items.at(index.value);
 
-
-                index = 
-                       index.isValid()
-                    && index.value > -input.items.length
-                    && index.value <  input.items.length
-                    ? new NumberValue(Math.round(index.value))
-                    : new NumberValue(0);
-
-
-                if (   index.isValid()
-                    && index.value > -input.items.length
-                    && index.value <  input.items.length)
+                if (this.value.objects)
                 {
-                    this.value = input.items.at(index.value);
-
-                    if (this.value.objects)
+                    for (let i = 0; i < this.value.objects.length; i++)
                     {
-                        for (let i = 0; i < this.value.objects.length; i++)
-                        {
-                            const obj = this.value.objects[i];
+                        const obj = this.value.objects[i];
 
-                            obj.nodeId = this.nodeId;
-                            obj.listId = -1;
+                        obj.nodeId = this.nodeId;
+                        obj.listId = -1;
 
-                            obj.objectId = this.nodeId;
-                            
-                            if (obj.objectId != NULL) 
-                                obj.objectId += '/';
+                        obj.objectId = this.nodeId;
+                        
+                        if (obj.objectId != NULL) 
+                            obj.objectId += '/';
 
-                            obj.objectId += index.value.toString();
-                        }
+                        obj.objectId += index.value.toString();
                     }
-                }
-                else
-                {
-                    this.value = NullValue.copy();
-                    index      = NumberValue.NaN;
                 }
             }
             else
             {
-                this.value = NullValue.copy();
+                this.value = new NullValue();
                 index      = NumberValue.NaN;
             }
         }
         else
         {
-            this.value = NullValue.copy();
+            this.value = new NullValue();
             index      = NumberValue.NaN;
         }
 
@@ -19304,9 +19406,9 @@ extends GOperator
 
           if (   input0 
               && input1) this.value = cond.value != 0 ? input0 : input1;
-        else if (input0) this.value = cond.value != 0 ? input0 : NullValue.copy();
-        else if (input1) this.value = cond.value == 0 ? input1 : NullValue.copy();
-        else             this.value = NullValue.copy();
+        else if (input0) this.value = cond.value != 0 ? input0 : new NullValue();
+        else if (input1) this.value = cond.value == 0 ? input1 : new NullValue();
+        else             this.value = new NullValue();
 
 
         this.updateValueObjects();
@@ -27679,7 +27781,7 @@ async function evalCompareInputs(input0, input1, op, parse)
         && val1 && val1.isValid())
         return new NumberValue(op(val0.value, val1.value) ? 1 : 0);
     else                  
-        return NullValue;//new NumberValue(0);
+        return new NullValue();
 }
 
 
@@ -29188,7 +29290,7 @@ async function getValidColorValue(parse, node, input, quality)
     }    
 
 
-    return NullValue.copy();
+    return new NullValue();
 }
 
 
@@ -36580,7 +36682,7 @@ extends GOperator1//Shape
         }
         else
         {
-            this.value = NullValue.copy();
+            this.value = new NullValue();
         }
 
        
@@ -37013,7 +37115,7 @@ extends GShapeBase
         }
 
 
-        this.setUpdateValues(parse, [['', NullValue]]);
+        this.setUpdateValues(parse, [['', new NullValue()]]);
 
 
         this.validate();
@@ -37144,7 +37246,7 @@ extends GOperator1
         }
         else
         {
-            this.value = NullValue.copy();
+            this.value = new NullValue();
         }
 
 
@@ -37526,7 +37628,7 @@ extends GAffine
         }
         else
         {
-            this.value = NullValue.copy();
+            this.value = new NullValue();
         }
 
        
@@ -37692,7 +37794,7 @@ extends GAffine
         }
         else
         {
-            this.value = NullValue.copy();
+            this.value = new NullValue();
         }
 
        
@@ -37872,7 +37974,7 @@ extends GAffine
         }
         else
         {
-            this.value = NullValue.copy();
+            this.value = new NullValue();
         }
 
         
@@ -38043,7 +38145,7 @@ extends GOperator1
         }
         else
         {
-            this.value = NullValue.copy();
+            this.value = new NullValue();
         }
 
         
@@ -38229,7 +38331,7 @@ extends GOperator1
                 this.value.nodeId = this.nodeId;
         }
         else
-            this.value = NullValue.copy();
+            this.value = new NullValue();
 
         
         await this.evalObjects(parse, { showCenter: showCenter });
@@ -39208,7 +39310,7 @@ extends GOperator1
                 this.value.nodeId = this.nodeId;
         }
         else
-            this.value = null;//NullValue.copy();
+            this.value = null;//new NullValue();
 
 
 
@@ -39442,7 +39544,7 @@ extends GOperator
             }
         }
         else
-            this.setUpdateValues(parse, [['', NullValue]], true);
+            this.setUpdateValues(parse, [['', new NullValue()]], true);
                 
         
         this.validate();
@@ -39552,7 +39654,7 @@ extends GOperator
             this.value = nanFromType(this.dataType);
         
         else
-            this.value = NullValue.copy();
+            this.value = new NullValue();
 
 
         this.setUpdateValues(parse,
@@ -39638,10 +39740,10 @@ extends GOperator
             return this;
 
 
-        this.value = NullValue.copy();
+        this.value = new NullValue();
 
 
-        this.setUpdateValues(parse, [['', NullValue]]);
+        this.setUpdateValues(parse, [['', new NullValue()]]);
         
         
         this.validate();
@@ -39688,10 +39790,10 @@ extends GOperator
             return this;
 
 
-        this.value = NullValue.copy();
+        this.value = new NullValue();
 
 
-        this.setUpdateValues(parse, [['', NullValue]]);
+        this.setUpdateValues(parse, [['', new NullValue()]]);
         
         
         this.validate();
@@ -39738,10 +39840,10 @@ extends GOperator
             return this;
 
 
-        this.value = NullValue.copy();
+        this.value = new NullValue();
 
 
-        this.setUpdateValues(parse, [['', NullValue]]);
+        this.setUpdateValues(parse, [['', new NullValue()]]);
         
         
         this.validate();

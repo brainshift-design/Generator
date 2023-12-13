@@ -468,8 +468,10 @@ function pushUniqueExcept(array, item, except) {
 function consoleAssert(...args) {
     // if (  !settings 
     //     || settings.enableAsserts)
-    if (enableAsserts)
+    if (enableAsserts) {
         console.assert(...args);
+        //console.trace();
+    }
 }
 function consoleError(...args) {
     // if (  !settings
@@ -1383,6 +1385,7 @@ function logSavedConn(conn, darkMode) {
     }
 }
 console.clear();
+figma.payments.setPaymentStatusInDevelopment({ type: 'UNPAID' });
 //figma.on('selectionchange', figOnSelectionChange);
 figma.on('documentchange', figOnDocumentChange);
 figma.on('selectionchange', figOnSelectionChange);
@@ -2074,16 +2077,19 @@ function figLogAllLocalData(darkMode) {
     figma.clientStorage.keysAsync().then(keys => keys.forEach(k => figma.clientStorage.getAsync(k).then(val => console.log(k + ': ' + val))));
 }
 function figGetValue(key, spec) {
+    let result = null;
     switch (key) {
         case 'getVariableData':
-            {
-                figPostMessageToUi({
-                    cmd: 'returnFigGetValue',
-                    value: getVariableValues(spec)
-                });
-                break;
-            }
+            result = getVariableValues(spec);
+            break;
+        case 'getPaidStatus':
+            result = figma.payments.status.type;
+            break;
     }
+    figPostMessageToUi({
+        cmd: 'returnFigGetValue',
+        value: result
+    });
 }
 function figGetVariableUpdates(varIds) {
     figPostMessageToUi({

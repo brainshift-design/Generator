@@ -125,12 +125,13 @@ extends GNode
 
     outputType()
     {
+        
         return this.value
             ? new TextValue(
                 isListType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
-            : TextValue.NaN;
+            : new TextValue(ANY_VALUE);
     }
 
 

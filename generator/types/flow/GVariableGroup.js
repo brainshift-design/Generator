@@ -71,7 +71,7 @@ extends GOperator
         //     this.updateValues.sort((a, b) => a.sortId - b.sortId);
         // }
         // else
-            this.setUpdateValues(parse, [['', NullValue]], true);
+            this.setUpdateValues(parse, [['', new NullValue()]], true);
 
 
         // if (this.value.objects)

@@ -89,7 +89,7 @@ extends GOperator2
         }
         else
         {
-            this.value = NullValue.copy();
+            this.value = new NullValue();
         }
 
 

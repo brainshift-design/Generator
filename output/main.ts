@@ -892,7 +892,10 @@ function consoleAssert(...args)
     // if (  !settings 
     //     || settings.enableAsserts)
     if (enableAsserts)
+    {
         console.assert(...args);
+        //console.trace();
+    }
 }
 
 
@@ -2153,6 +2156,7 @@ function logSavedConn(conn, darkMode)
 console.clear();
 
 
+figma.payments.setPaymentStatusInDevelopment({type: 'UNPAID'});
 //figma.on('selectionchange', figOnSelectionChange);
 
 figma.on('documentchange',  figOnDocumentChange);
@@ -3115,19 +3119,26 @@ function figLogAllLocalData(darkMode)
 
 function figGetValue(key, spec)
 {
+    let result = null;
+
+
     switch (key)
     {
         case 'getVariableData':  
-        {
-            figPostMessageToUi(
-            {
-                cmd:  'returnFigGetValue',
-                value: getVariableValues(spec)
-            });
-            
+            result = getVariableValues(spec);
             break;
-        }
+
+        case 'getPaidStatus':
+            result = figma.payments.status.type;
+            break;
     }
+
+
+    figPostMessageToUi(
+    {
+        cmd:  'returnFigGetValue',
+        value: result
+    });
 }
 
 

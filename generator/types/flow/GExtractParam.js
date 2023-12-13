@@ -65,7 +65,7 @@ extends GOperator1
         }
         else
         {
-            this.value = NullValue.copy();
+            this.value = new NullValue();
         }
 
 
@@ -152,7 +152,7 @@ function getExtractParamValue(input, name)
         value =
             customIndex > -1
             ? input.customParams[customIndex][1]//.copy()
-            : NullValue.copy();
+            : new NullValue();
     }
 
 

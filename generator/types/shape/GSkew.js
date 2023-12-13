@@ -58,7 +58,7 @@ extends GAffine
         }
         else
         {
-            this.value = NullValue.copy();
+            this.value = new NullValue();
         }
 
         

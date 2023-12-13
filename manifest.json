@@ -9,12 +9,13 @@
   "permissions":   
   [ 
     "currentuser", 
-    "activeusers" 
+    "activeusers",
+    "payments"
   ],
   
   "networkAccess": 
   {
     "allowedDomains": ["*"],
-    "reasoning":      "Generator lets the user fetch data from web APIs."
+    "reasoning":      "Generator lets users fetch data from web APIs."
   }
 }

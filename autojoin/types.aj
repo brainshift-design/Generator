@@ -35,6 +35,7 @@
 ../generator/types/GParam.js
 
 
+../generator/types/values/NullValue.js
 ../generator/types/values/ListValue.js
 ../generator/types/values/NumberValue.js
 ../generator/types/values/TextValue.js

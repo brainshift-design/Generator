@@ -57,66 +57,57 @@ extends GOperator1
         let length = 0;
 
 
-        if (this.input)
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+            
+        if (   index
+            && input
+            && input.items
+            && input.items.length > 0)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            length = input.items.length;
+
+
+            index = 
+                    index.isValid()
+                && index.value > -input.items.length
+                && index.value <  input.items.length
+                ? new NumberValue(Math.round(index.value))
+                : new NumberValue(0);
             
 
-            if (   index
-                && input
-                && input.items
-                && input.items.length > 0)
+            if (   index.isValid()
+                && index.value > -input.items.length
+                && index.value <  input.items.length)
             {
-                length = input.items.length;
+                this.value = input.items.at(index.value);
 
-
-                index = 
-                       index.isValid()
-                    && index.value > -input.items.length
-                    && index.value <  input.items.length
-                    ? new NumberValue(Math.round(index.value))
-                    : new NumberValue(0);
-
-
-                if (   index.isValid()
-                    && index.value > -input.items.length
-                    && index.value <  input.items.length)
+                if (this.value.objects)
                 {
-                    this.value = input.items.at(index.value);
-
-                    if (this.value.objects)
+                    for (let i = 0; i < this.value.objects.length; i++)
                     {
-                        for (let i = 0; i < this.value.objects.length; i++)
-                        {
-                            const obj = this.value.objects[i];
+                        const obj = this.value.objects[i];
 
-                            obj.nodeId = this.nodeId;
-                            obj.listId = -1;
+                        obj.nodeId = this.nodeId;
+                        obj.listId = -1;
 
-                            obj.objectId = this.nodeId;
-                            
-                            if (obj.objectId != NULL) 
-                                obj.objectId += '/';
+                        obj.objectId = this.nodeId;
+                        
+                        if (obj.objectId != NULL) 
+                            obj.objectId += '/';
 
-                            obj.objectId += index.value.toString();
-                        }
+                        obj.objectId += index.value.toString();
                     }
-                }
-                else
-                {
-                    this.value = NullValue.copy();
-                    index      = NumberValue.NaN;
                 }
             }
             else
             {
-                this.value = NullValue.copy();
+                this.value = new NullValue();
                 index      = NumberValue.NaN;
             }
         }
         else
         {
-            this.value = NullValue.copy();
+            this.value = new NullValue();
             index      = NumberValue.NaN;
         }
 

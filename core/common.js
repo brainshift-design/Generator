@@ -867,7 +867,10 @@ function consoleAssert(...args)
     // if (  !settings 
     //     || settings.enableAsserts)
     if (enableAsserts)
+    {
         console.assert(...args);
+        //console.trace();
+    }
 }
 
 

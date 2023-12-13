@@ -25,10 +25,10 @@ extends GOperator
             return this;
 
 
-        this.value = NullValue.copy();
+        this.value = new NullValue();
 
 
-        this.setUpdateValues(parse, [['', NullValue]]);
+        this.setUpdateValues(parse, [['', new NullValue()]]);
         
         
         this.validate();

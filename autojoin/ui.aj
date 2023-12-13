@@ -56,6 +56,7 @@
     
     [../autojoin/types.aj]
 
+    ../ui/payment.js
     ../ui/settings.js
     ../ui/dialogs/crashDialog.js
 
@@ -63,7 +64,7 @@
     [../autojoin/operators.aj]
 
     ../actions/*.js
-    ../ui/*!(settings).js
+    ../ui/*!(payment,settings).js
     ../ui/presets/*.js
     ../ui/dialogs/*!(crashDialog).js
 

@@ -14,7 +14,6 @@ var allUpdateNodes     = [];
 
 
 //var currentSessionId = '';
-var subscriptionActive = false;
 
 
 var sessionId          = ''; // for metrics
@@ -157,32 +156,36 @@ function initGenerator(activate)
 
 
 
-function subscribed()
-{
-    return subscriptionActive;
-}
-
-
-
 function validateInit(eulaAgreed)
 {
     try
     {
-        checkActiveSubscription(currentUser.id).then(result =>
+        // checkActiveSubscription(currentUser.id).then(result =>
+        // {
+        //     if (result == 2)
+        //         subscriptionActive = true;
+
+        //     uiSetLocalData(
+        //         'pro', 
+        //          subscriptionActive);
+
+        //     finalizeInit(eulaAgreed, result == 1);
+        // })
+        uiGetValueFromFigma('getPaidStatus').then(response =>
         {
-            if (result == 2)
-                subscriptionActive = true;
+            subscriptionActive = response.value == 'PAID';
 
             uiSetLocalData(
                 'pro', 
                  subscriptionActive);
 
-            finalizeInit(eulaAgreed, result == 1);
+            console.log('subscriptionActive =', subscriptionActive);
+            finalizeInit(eulaAgreed, subscriptionActive);
         })
         .catch(error =>
         {
             uiError('Error while checking for subscription.');
-            finalizeInit(eulaAgreed);
+            finalizeInit(eulaAgreed, false);
         });
     }
     catch (e)
@@ -190,6 +193,21 @@ function validateInit(eulaAgreed)
         console.error('Error connecting to license server...');
         console.error(e);
     }
+    
+    
+    // const result = getSubscriptionIsActive();
+
+    // subscriptionActive = result == 2;
+
+    // finalizeInit(
+    //     eulaAgreed, 
+    //     result > 0
+    //     ? result == 1
+    //     : false);
+        
+    // uiSetLocalData(
+    //     'pro', 
+    //     subscriptionActive);
 }
 
 

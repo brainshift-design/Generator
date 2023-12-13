@@ -57,7 +57,7 @@ extends GOperator1//Shape
         }
         else
         {
-            this.value = NullValue.copy();
+            this.value = new NullValue();
         }
 
        

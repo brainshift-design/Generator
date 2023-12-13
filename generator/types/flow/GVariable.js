@@ -41,7 +41,7 @@ extends GOperator
         this.value = 
             this.varValue
             ? (await this.varValue.eval(parse)).toValue()
-            : NullValue;
+            : new NullValue();
 
 
         this.setUpdateValues(parse,

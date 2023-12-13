@@ -72,13 +72,13 @@ extends GOperator1
 
             const input = (await this.input.eval(parse)).toValue();
 
-            this.value = input ? input : NullValue;
+            this.value = input ? input : new NullValue();
 
             if (this.loop.type != NUMBER_VALUE)
                 this.loop.iterateLoop(parse);
         }
         else
-            this.value = NullValue.copy();
+            this.value = new NullValue();
             
 
         this.setUpdateValues(parse,

@@ -143,10 +143,6 @@ extends GValue
 
 
 
-const NullValue = Object.freeze(NumberValue.NaN);
-
-
-
 function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)

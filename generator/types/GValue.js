@@ -16,7 +16,6 @@ class GValue
 
         this.type = type;
 
-
         this.valueId = '';
     }
 
@@ -139,6 +138,8 @@ function parseValueFromType(type, value)
 {
     switch (type)
     {
+        case            ANY_VALUE: return parseNullValue         (value)[0];
+
         case           LIST_VALUE: 
         case    NUMBER_LIST_VALUE: 
         case      TEXT_LIST_VALUE: 
