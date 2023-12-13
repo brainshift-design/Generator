@@ -53,7 +53,8 @@ extends GOperator
         consoleAssert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
-        //if (this.node.type != LIST)
+        if (    this.node.type != LIST
+            || !this.node.cachedValue)
             await this.node.eval(parse);
 
 
