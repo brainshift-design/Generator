@@ -147,8 +147,8 @@ function initGenerator(activate)
         debugMode: settings.debugMode });
 
 
-    if (activate)
-        showSubscriptionDialog(activate);
+    // if (activate)
+    //     showSubscriptionDialog(activate);
 
 
     setTimeout(() => 

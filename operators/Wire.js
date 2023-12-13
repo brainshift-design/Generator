@@ -656,8 +656,10 @@ class Wire
     
     
         const listType = 
-               conn.output
-            && arraysIntersect(conn.output.types, LIST_TYPES);//supportsTypes(LIST_TYPES);
+                  conn.output
+               && arraysIntersect(conn.output.types, LIST_TYPES)
+            ||    conn.input
+               && arraysIntersect(conn.input.types, LIST_TYPES);
 
         // if (this.connection.input.node.nodeId == 'text')
         // {
