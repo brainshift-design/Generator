@@ -8849,10 +8849,10 @@ extends GNode
 
 
 
-    // iterateList(parse, from)
-    // {
+    iterateList(parse, from)
+    {
 
-    // }
+    }
 
 
 
@@ -9330,7 +9330,7 @@ extends GOperator
         consoleAssert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
-        if (this.node.type != LIST)
+        //if (this.node.type != LIST)
             await this.node.eval(parse);
 
 
@@ -9416,12 +9416,12 @@ extends GOperator
 
 
 
-    // iterateList(parse, from)
-    // {
-    //     const node = parse.parsedNodes.find(n => n.nodeId == from.nodeId);
+    iterateList(parse, from)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == from.nodeId);
         
-    //     node.iterateList(parse, nodeId);
-    // }
+        node.iterateList(parse, from);
+    }
 
 
 
@@ -15971,8 +15971,8 @@ extends GOperator1
                     this.input.iterateLoop(parse);
 
 
-                    // if (this.loop.type != NUMBER_VALUE)
-                    //     this.loop.iterateList(parse, this);
+                    if (this.loop.type != NUMBER_VALUE)
+                        this.loop.iterateList(parse, this);
 
                     
                     if (parse.repeats.length == 1)
@@ -17055,15 +17055,15 @@ extends GOperator
 
 
 
-    // iterateList(parse, from)
-    // {
-    //     for (const input of this.inputs)
-    //     {
-    //         if (   input.type == LIST
-    //             || input.type == COMBINE)
-    //             input.iterateList(parse, from);
-    //     }
-    // }
+    iterateList(parse, from)
+    {
+        for (const input of this.inputs)
+        {
+            if (   input.type == LIST
+                || input.type == COMBINE)
+                input.iterateList(parse, from);
+        }
+    }
 
 
 
@@ -18915,16 +18915,28 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
         
-        //this.reset();
+        //this.cachedValue = null;
+        // this.reset();
     }
 
 
 
-    // iterateList(parse, from)
-    // {
-    //     this.reset();
-    //     this.valid = false;
-    // }
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        //this.cachedValue = null;
+        // console.log('iterating list');
+        // this.reset();
+    }
+
+
+
+    iterateList(parse, from)
+    {
+        //this.valid       = false;
+        this.cachedValue = null;
+    }
 }
 
 

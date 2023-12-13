@@ -306,7 +306,8 @@ Operator.prototype.updateHeaderLabelText = function()
     
     let suffix;
 
-    const sep = settings.showNodeId ? ' ' : '  ';
+    const sep      = settings.showNodeId ? ' ' : '  ';
+    const ellipsis = settings.showNodeId ? '...' : ' . . .';
 
     //     if (this.type == COMBINE     ) suffix = sep + '[ ' + this.length        + ' ]';
     //else 
@@ -317,8 +318,13 @@ Operator.prototype.updateHeaderLabelText = function()
     //else if (this.type == SORT      ) suffix = sep + '[ ' + this.length   + ' ]';
     else if (this.type == FILTER      ) suffix = sep + '[ ' + this.length   + ' ]';
     else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.length        + ' ]';
-    else if (this.type == LIST        ) suffix = sep + '[ ' + this.params.length + ' ]';
-    else                                suffix = this.cached || this.type == START ? '' : (settings.showNodeId ? '...' : ' . . .');
+    else if (this.type == LIST        ) suffix = ellipsis + sep + '[ ' + this.params.length + ' ]';
+    else
+        suffix = 
+               this.cached 
+            || this.type == START 
+            ? '' 
+            : ellipsis;
 
 
     suffix += this.suffix;

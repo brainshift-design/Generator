@@ -53,7 +53,7 @@ extends GOperator
         consoleAssert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
-        if (this.node.type != LIST)
+        //if (this.node.type != LIST)
             await this.node.eval(parse);
 
 
@@ -139,12 +139,12 @@ extends GOperator
 
 
 
-    // iterateList(parse, from)
-    // {
-    //     const node = parse.parsedNodes.find(n => n.nodeId == from.nodeId);
+    iterateList(parse, from)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == from.nodeId);
         
-    //     node.iterateList(parse, nodeId);
-    // }
+        node.iterateList(parse, from);
+    }
 
 
 

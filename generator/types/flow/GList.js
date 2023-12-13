@@ -134,14 +134,26 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
         
-        //this.reset();
+        //this.cachedValue = null;
+        // this.reset();
     }
 
 
 
-    // iterateList(parse, from)
-    // {
-    //     this.reset();
-    //     this.valid = false;
-    // }
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        //this.cachedValue = null;
+        // console.log('iterating list');
+        // this.reset();
+    }
+
+
+
+    iterateList(parse, from)
+    {
+        //this.valid       = false;
+        this.cachedValue = null;
+    }
 }

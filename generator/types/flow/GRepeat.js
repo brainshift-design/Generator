@@ -165,8 +165,8 @@ extends GOperator1
                     this.input.iterateLoop(parse);
 
 
-                    // if (this.loop.type != NUMBER_VALUE)
-                    //     this.loop.iterateList(parse, this);
+                    if (this.loop.type != NUMBER_VALUE)
+                        this.loop.iterateList(parse, this);
 
                     
                     if (parse.repeats.length == 1)
