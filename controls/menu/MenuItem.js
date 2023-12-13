@@ -447,7 +447,7 @@ class MenuItem
         this.divPro     .style.display         = this.sub ? 'none' : 'inline-block';
 
         this.divPro     .style.backgroundColor = this.mouseOver ? 'var(--figma-color-bg-brand)' : '#1e1e1e'; 
-        this.divPro     .style.color           = this.mouseOver ? '#0008' : '#09f8'; 
+        this.divPro     .style.color           = this.mouseOver ? '#0008' : (darkMode ? '#09fa' : '#09ff'); 
         this.divPro     .style.boxShadow       = this.mouseOver ? '0 0 0 1px #0008 inset' : '0 0 0 1px #09f8 inset'; 
 
         this.updateLegend();

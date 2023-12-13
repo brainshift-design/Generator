@@ -217,7 +217,7 @@
     font-size:      26px;
     font-weight:    700;
     color:          var(--figma-color-bg-brand);
-    opacity:        50%;
+    /* opacity:        50%; */
     position:       absolute;
     left:           50%;
     top:            50%;
@@ -233,6 +233,16 @@
     padding-bottom: 4px;
     border-radius:  8px;
     box-shadoW:     0 0 0 1px var(--figma-color-bg-brand) inset;
+}
+
+.figma-light .proLabel
+{
+    background-color: #fff8;
+}
+
+.figma-dark .proLabel
+{
+    background-color: #2228;
 }
 
 
