@@ -2698,10 +2698,6 @@ figma.ui.onmessage = function(msg)
     
         case 'figTriggerUndo': figma.triggerUndo(); break;
         case 'figCommitUndo':  figma.commitUndo();  break;
-
-        // case 'figValidateLicense':
-        //     figValidateLicense(msg.license);
-        //     break;
     }
 
 
@@ -3117,7 +3113,7 @@ function figLogAllLocalData(darkMode)
 
 
 
-function figGetValue(key, spec)
+async function figGetValue(key, spec)
 {
     let result = null;
 
@@ -3131,8 +3127,15 @@ function figGetValue(key, spec)
         case 'getPaidStatus':
             result = figma.payments.status.type;
             break;
-    }
 
+        case 'figSubscribe':
+        {
+            await figma.payments.initiateCheckoutAsync({interstitial: 'PAID_FEATURE'});
+            result = figma.payments.status.type;
+            break;
+        }
+    }
+    
 
     figPostMessageToUi(
     {

@@ -1837,9 +1837,6 @@ figma.ui.onmessage = function (msg) {
         case 'figCommitUndo':
             figma.commitUndo();
             break;
-        // case 'figValidateLicense':
-        //     figValidateLicense(msg.license);
-        //     break;
     }
     figPostMessageToUi({
         cmd: 'uiEndFigMessage',
@@ -2077,18 +2074,26 @@ function figLogAllLocalData(darkMode) {
     figma.clientStorage.keysAsync().then(keys => keys.forEach(k => figma.clientStorage.getAsync(k).then(val => console.log(k + ': ' + val))));
 }
 function figGetValue(key, spec) {
-    let result = null;
-    switch (key) {
-        case 'getVariableData':
-            result = getVariableValues(spec);
-            break;
-        case 'getPaidStatus':
-            result = figma.payments.status.type;
-            break;
-    }
-    figPostMessageToUi({
-        cmd: 'returnFigGetValue',
-        value: result
+    return __awaiter(this, void 0, void 0, function* () {
+        let result = null;
+        switch (key) {
+            case 'getVariableData':
+                result = getVariableValues(spec);
+                break;
+            case 'getPaidStatus':
+                result = figma.payments.status.type;
+                break;
+            case 'figSubscribe':
+                {
+                    yield figma.payments.initiateCheckoutAsync({ interstitial: 'PAID_FEATURE' });
+                    result = figma.payments.status.type;
+                    break;
+                }
+        }
+        figPostMessageToUi({
+            cmd: 'returnFigGetValue',
+            value: result
+        });
     });
 }
 function figGetVariableUpdates(varIds) {

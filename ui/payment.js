@@ -67,6 +67,5 @@ var subscriptionActive = false;
 
 function subscribed()
 {
-    console.log('subscriptionActive =', subscriptionActive);
     return subscriptionActive;
 }

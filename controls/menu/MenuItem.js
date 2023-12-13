@@ -392,7 +392,8 @@ class MenuItem
             && this.sub)
             this.callback(e);
         else
-            showSubscriptionDialog(false);
+            uiFigmaManageSubscription();
+            //showSubscriptionDialog(false);
 
 
         addMetricsEvent(METRICS_MENU_ITEM, this.name);

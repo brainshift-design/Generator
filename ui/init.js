@@ -186,7 +186,6 @@ function validateInit(eulaAgreed)
                 'pro', 
                  subscriptionActive);
 
-            console.log('subscriptionActive =', subscriptionActive);
             finalizeInit(eulaAgreed, subscriptionActive);
         })
         .catch(error =>

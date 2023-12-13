@@ -420,14 +420,15 @@ function initGeneratorMenus()
     menuItemDebugMode  = new MenuItem('Restart in debug mode', null, {callback: () => uiRestartGenerator(true)})]);
                      
 
-    menuMainHelp = new Menu('Help and subscription', false);
+    //menuMainHelp = new Menu('Help and subscription', false);
+    menuMainHelp = new Menu('Help', false);
     menuMainHelp.addItems([
                                   new MenuItem('Keyboard shortcuts',   null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
                                   new MenuItem('Tutorials & examples', null, {callback: () => showPresets()}),
                                   new MenuItem('Video tutorials',        null, {callback: () => window.open('https://www.youtube.com/playlist?list=PLXbRBjG6htkQE-1_gJ4XtgW5KP7mPzYcV', '_blank')}),
                                   // new MenuItem('Help page',         null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
                                   new MenuItem('',                     null, {separator: true}),
-                                  new MenuItem('Subscription',         null, {callback:  () => showSubscriptionDialog(false)}),
+                                  //new MenuItem('Subscription',         null, {callback:  () => showSubscriptionDialog(false)}),
                                   new MenuItem('About',                null, {callback:  () => showAboutDialog()})]);
 
 
@@ -440,7 +441,8 @@ function initGeneratorMenus()
                              new MenuItem('Preferences',           null, {childMenu: menuMainPreferences}),
         menuDebug          = new MenuItem('Debug',                 null, {childMenu: menuMainDebug}),
                              new MenuItem('',                      null, {separator: true}),
-        menuItemHelp       = new MenuItem('Help and subscription', null, {childMenu: menuMainHelp }),
+        //menuItemHelp       = new MenuItem('Help and subscription', null, {childMenu: menuMainHelp }),
+        menuItemHelp       = new MenuItem('Help',                  null, {childMenu: menuMainHelp }),
         menuItemRestartSep = new MenuItem('',                      null, {separator: true}),
         menuItemRestart    = new MenuItem('Restart to update. . .',  null, {icon: iconUpdate, callback: () => uiRestartGenerator()})]);
 
