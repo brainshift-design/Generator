@@ -151,7 +151,14 @@ function initGenerator(activate)
         showSubscriptionDialog(activate);
 
 
-    setTimeout(() => updateObjectCountDisplay(), 100);
+    setTimeout(() => 
+    {
+        updateObjectCountDisplay();
+
+        if (!settings.debugMode)
+            enableFeatures(subscribed());
+    }, 
+    100);
 }
 
 
@@ -214,9 +221,6 @@ function validateInit(eulaAgreed)
 
 function finalizeInit(eulaAgreed, activate)
 {
-    if (!settings.debugMode)
-        enableFeatures(subscribed());
-
     if (!eulaAgreed)
         showEulaDialog();
     else
