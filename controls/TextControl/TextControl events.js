@@ -38,7 +38,7 @@ TextControl.prototype.initEvents = function()
 
     this.div.addEventListener('pointermove', e =>
     {
-        e.stopPropagation();
+        //e.stopPropagation();
 
 
         if (panMode)
