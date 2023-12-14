@@ -3220,6 +3220,16 @@ function getPanelHeaderUnder(x, y)
 }
 
 
+
+function measureHtmlText(text, font, fontSize)
+{
+    divTextMeasure.style.font = fontSize + 'px \'' + font + '\'';
+    divTextMeasure.innerHTML = text;
+        
+    return boundingRect(divTextMeasure);
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities

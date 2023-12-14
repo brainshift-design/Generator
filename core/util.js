@@ -617,3 +617,13 @@ function getPanelHeaderUnder(x, y)
          ? unders[0]
          : null;
 }
+
+
+
+function measureHtmlText(text, font, fontSize)
+{
+    divTextMeasure.style.font = fontSize + 'px \'' + font + '\'';
+    divTextMeasure.innerHTML = text;
+        
+    return boundingRect(divTextMeasure);
+}

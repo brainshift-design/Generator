@@ -144,9 +144,18 @@ extends ResizableBase
         this.label       .style.lineHeight = fontHeight + 'px';
         this.label       .style.height     = fontHeight + 'px';
         
-        this.labelWrapper.style.top        = graph.currentPage.zoom > 0.4 ? 0 : -fontHeight;// * 1.2/graph.currentPage.zoom;
-        this.labelWrapper.style.overflow   = graph.currentPage.zoom > 0.4 ? 'hidden' : 'visible';
-        this.inner       .style.overflow   = graph.currentPage.zoom > 0.4 ? 'hidden' : 'visible';
+        utilContext.font = fontHeight + 'px Inter';
+        utilContext.measureText(this.labelText.value);
+
+        const mes = measureHtmlText(this.labelText.innerHTML, 'Inter', fontHeight);
+
+        const inHeader = 
+               graph.currentPage.zoom > 0.4
+            && mes.width + 40 * graph.currentPage.zoom < this.measureData.divOffset.width;
+
+        this.labelWrapper.style.top        = inHeader ? 0 : (-fontHeight - 10 + 1/graph.currentPage.zoom);
+        this.labelWrapper.style.overflow   = inHeader ? 'hidden' : 'visible';
+        this.inner       .style.overflow   = inHeader ? 'hidden' : 'visible';
 
         this.labelText   .style.lineHeight = fontHeight + 'px'; 
         this.labelText   .style.height     = fontHeight + 'px'; 
