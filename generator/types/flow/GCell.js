@@ -1,5 +1,5 @@
 class GCell
-extends GOperator
+extends GOperator1
 {
     column;
     row;
