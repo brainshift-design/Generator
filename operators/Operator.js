@@ -875,8 +875,7 @@ class Operator
     isOrPrecededByUncached()
     {
         return !this.cached
-             ? true
-             : this.hasUncachedInputs();
+             || this.hasUncachedInputs();
     }
 
 
@@ -910,8 +909,10 @@ class Operator
     hasUncachedInputs()
     {
         for (const input of this.inputs)
+        {
             if (input.isUncached())
                 return true;
+        }
 
         return false;
     }
@@ -957,8 +958,9 @@ class Operator
 
     isUnknown()
     {
-        return    this.hasUncachedInputs()
-               && this.hasMultipliedOutputs()
+        return this.isOrPrecededByUncached()
+               //   this.hasUncachedInputs()
+               //&& this.hasMultipliedOutputs()
             || this.hasOrderOutputs();
     }
 

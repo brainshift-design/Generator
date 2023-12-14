@@ -47,6 +47,8 @@ extends OperatorBase
 
     isOrPrecededByUncached()
     {
+        if (this.paramCondition.input.isUncached()) return true;
+        
         if (this.inputs[0].connected && this.paramCondition.value.value == 1) return this.inputs[0].connectedOutput.node.isOrPrecededByUncached();
         if (this.inputs[1].connected && this.paramCondition.value.value == 0) return this.inputs[1].connectedOutput.node.isOrPrecededByUncached();
 
