@@ -1,5 +1,6 @@
 var searchIndex      = -1;
 var searchMouseMoved = false;
+var searchShown      = false;
 
 
 
@@ -20,6 +21,8 @@ function showSearchBox()
     searchText.focus();
     searchText.select();
 
+    searchShown = true;
+
     initSearchBox('');
 }
 
@@ -32,6 +35,8 @@ function hideSearchBox()
 
     if (graphView._soloNode)
         graphView.unsoloNode();
+
+    searchShown = false;
 
     // if (   search.oldPan
     //     && search.oldZoom)
@@ -51,16 +56,25 @@ function initSearchBox(query)
 {
     search.found = [];
     search.nodes = false;
+    search.query = query;
 
 
     if (query != '')
     {
         if (query.charAt(0) == '/')
         {
+            searchResults.style.maxHeight = 135;
+
             query = query.substring(1);
             search.nodes = true;
 
-            for (const node of graph.currentPage.nodes)
+
+            const nodes = graph.currentPage.nodes
+                .filter(n => 
+                       n.type != PANEL
+                    && n.type != COMMENT);
+            
+            for (const node of nodes)
             {
                 if (node.name.toLowerCase().includes(query.toLowerCase()))
                 {
@@ -76,6 +90,8 @@ function initSearchBox(query)
         }
         else
         {
+            searchResults.style.maxHeight = 304;
+
             search.nodes = false;
 
             for (const menu of menuBarMenus)
@@ -183,28 +199,6 @@ function initSearchBox(query)
     }
      
 
-    searchResults.style.paddingBottom = 
-           search.found.length > 0 
-        && search.found.length < 10
-        ? '8px'
-        : 0;
-
-    if (   query.length == 0
-        || search.found.length > 0)
-    {
-        search.style.height = Math.min(
-            searchText.offsetHeight + searchResults.offsetHeight,
-            graphView.div.offsetHeight - search.offsetTop - 100);
-
-        noSearchResults.style.display = 'none';
-    }
-    else
-    {
-        search.style.height = searchText.offsetHeight + 40;
-        noSearchResults.style.display = 'inline';
-    }
-
-
     updateSearchBox();
 }
 
@@ -276,6 +270,40 @@ function selectSearchItem(item, shift, ctrl, alt)
 
 function updateSearchBox()
 {
+    let query = search.query;
+
+
+    if (   query != ''
+        && query.charAt(0) == '/')
+        query = query.substring(1);
+
+    
+    searchResults.style.paddingBottom = 
+           search.found.length > 0 
+        && search.found.length < 10
+        ? '8px'
+        : 0;
+
+    if (   query.length == 0
+        || search.found.length > 0)
+    {
+        let height = Math.min(
+            searchText.offsetHeight + searchResults.offsetHeight,
+            graphView.div.offsetHeight - search.offsetTop - 100);
+
+        height = Math.max(search.found.length > 0 ? 79 : 44, height);
+
+        search.style.height = height;
+
+        noSearchResults.style.display = 'none';
+    }
+    else
+    {
+        search.style.height = searchText.offsetHeight + 40;
+        noSearchResults.style.display = 'inline';
+    }
+
+
     for (let i = 0; i < searchItems.children.length; i++)
     {
         const item = searchItems.children[i];
@@ -300,7 +328,7 @@ function updateSearchBox()
         && searchIndex > -1)
     {
         graphView.soloNode(search.found[searchIndex]);
-        graphView.zoomToNodes([search.found[searchIndex]], false, search.offsetTop + search.offsetHeight)
+        graphView.zoomToNodes([search.found[searchIndex]], false, search.offsetTop / 1.5);
     }
 }
 

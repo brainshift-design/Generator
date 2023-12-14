@@ -75,6 +75,10 @@ function uiResizeWindow(width, height)
         width:  width,
         height: height
     });
+
+
+    if (searchShown)
+        updateSearchBox();
 }
 
 
