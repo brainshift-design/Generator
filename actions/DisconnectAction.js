@@ -88,7 +88,7 @@ extends Action
         uiDisconnect(this.input);
 
 
-        this.output.updateSavedConnectionOrder(this.outputOrder, -1);
+        //this.output.updateSavedConnectionOrder(this.outputOrder, -1);
     }
 
 

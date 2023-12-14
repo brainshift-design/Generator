@@ -191,8 +191,16 @@ extends ResizableBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
+        if (this.nodeId == 'list')
+        {
+            console.log('paramIds =', paramIds);
+            console.log('values =', values);
+        }
+
+
         const oldParams = [...this.params];
 
+        
         const action = actionFromId(actionId);
 
         if (action)
@@ -207,13 +215,12 @@ extends ResizableBase
             ||    paramIds.length == 1 
                && paramIds[0] != '')
         {
-            for (let i = 0; i < values.length; i++) 
+            for (let i = 0; i < values.length; i++)
             {
                 const value   = values[i];
                 const valueId = paramIds[i];
-    
-                if (   valueId == 'value'
-                    || valueId == '-type-')
+
+                if (   valueId == '-type-')
                     continue;
 
                     
@@ -229,8 +236,14 @@ extends ResizableBase
                     param = null;
                 }
 
-                if (!param)
-                    this.createAndAddParamByType(value.type, valueId, true, false, true, true);
+                if (   !param
+                    || !this.params.find(p => p.id == param.id))
+                {
+                    if (!param)
+                        this.createAndInsertParamByType(i, value.type, valueId, true, false, true, true);
+                    else if (!this.params.find(p => p.id == param.id))
+                        this.insertParam(i, param, true);
+                }
             }
         }
 
@@ -241,7 +254,7 @@ extends ResizableBase
         const type = values[paramIds.findIndex(id => id == '-type-')];
 
         if (type)
-            this.outputs[0].types = [type.value];
+            this.headerOutputs[0].types = [type.value];
 
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
@@ -263,7 +276,7 @@ extends ResizableBase
     updateParams()
     {
         for (const param of this.params)
-            param.enableControlText(false, this.isUnknown());
+            param.enableControlText(false, this.isUnknown() && this.headerOutputs[0].isLooped());
 
         this.updateParamControls();
     }

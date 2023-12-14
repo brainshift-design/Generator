@@ -79,7 +79,7 @@ extends GOperator1
 
                 valueId = getNewNumberId(
                     valueId,
-                    id => this.value.items.find(i => 
+                    id => this.value.items.find(i =>
                            i != item 
                         && i.valueId == id));
 

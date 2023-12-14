@@ -156,7 +156,7 @@ extends Action
     
     restorePrevConnection()
     {
-        this.output.updateSavedConnectionOrder(this.prevInputOutputOrder, +1);
+        //this.output.updateSavedConnectionOrder(this.prevInputOutputOrder, +1);
     
         const prevConn = uiVariableConnect(
             this.outputNode,    this.outputId, 

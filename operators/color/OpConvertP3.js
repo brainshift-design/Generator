@@ -80,7 +80,7 @@ extends OpColorBase
             : dataColor_NaN;
 
         if (type) 
-            this.outputs[0].types = [type.value];
+            this.headerOutputs[0].types = [type.value];
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }

@@ -90,7 +90,7 @@ extends OperatorBase
         this.rows    = values[paramIds.findIndex(id => id == 'rows'   )];
 
         if (type)
-            this.outputs[0].types = [type.value];
+            this.headerOutputs[0].types = [type.value];
     }
 
 

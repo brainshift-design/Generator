@@ -64,7 +64,7 @@ extends OperatorBase
         const type = values[paramIds.findIndex(id => id == 'type')];
         consoleAssert(isListType(type.value));
 
-        this.outputs[0].types = [type.value];
+        this.headerOutputs[0].types = [type.value];
     }
 
 

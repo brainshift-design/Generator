@@ -194,6 +194,7 @@ function displayValue(type, value)
 
     switch (type)
     {
+        case            ANY_VALUE: return parseNullValue         (value)[0].toDisplayString();
         case           LIST_VALUE: return parseListValue         (value)[0].toDisplayString();
 
         case         NUMBER_VALUE: return parseNumberValue       (value)[0].toDisplayString();

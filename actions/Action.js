@@ -159,7 +159,7 @@ class Action
             consoleAssert(isValid(output), 'output should be found at this point');
 
 
-            output.updateSavedConnectionOrder(_conn.outputOrder, +1);
+            //output.updateSavedConnectionOrder(_conn.outputOrder, +1);
 
 
             const oldConn = uiVariableConnectFromOutput(

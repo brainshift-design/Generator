@@ -221,6 +221,12 @@ extends GNode
 
     setUpdateValues(parse, values, add = false)
     {
+        if (this.nodeId == 'color3')
+        {
+            console.log('parse.repeats.length =', parse.repeats.length);
+        }
+
+
         if (    parse.repeats.length == 0
             ||  this.unknown && parse.repeats[0].total == 0
             || !this.unknown

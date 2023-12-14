@@ -198,7 +198,7 @@ class ActionManager
             this.undoing = false;
 
 
-         if (act.affectsConnections)
+        if (act.affectsConnections)
             act.restoreOldConnections();
 
 

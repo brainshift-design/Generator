@@ -399,9 +399,10 @@ class Wire
 
         const back = x0 - x3 > defNodeWidth * 1.5;
 
+        const isList = this.connectionIsList();
 
-        this.updateArrow(p0, p1, p2, p3, this.arrow1,  fb, 9, 0, feedback, back);
-        this.updateArrow(p0, p1, p2, p3, this.arrow2, -35, 9, 1, feedback, back);
+        this.updateArrow(p0, p1, p2, p3, this.arrow1,  fb, isList ? 16 : 9, 0, feedback, back);
+        this.updateArrow(p0, p1, p2, p3, this.arrow2, -35, isList ? 16 : 9, 1, feedback, back);
     }
     
     
@@ -648,12 +649,7 @@ class Wire
         if (conn. input) conn. input.wireBall.style.background = wireStyle;
     
     
-        const listType = 
-                  conn.output
-               && arraysIntersect(conn.output.types, LIST_TYPES)
-            ||   !conn.output
-               && conn.input
-               && arraysIntersect(conn.input.types, LIST_TYPES);
+        const isList = this.connectionIsList();
 
         // if (this.connection.input.node.nodeId == 'text')
         // {
@@ -674,13 +670,13 @@ class Wire
         // else if (graph.currentPage.zoom < 1  ) width += 1 * (1 - graph.currentPage.zoom);
     
     
-        this.curve .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
+        this.curve .setAttribute('stroke-width', width * (isList ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
         this.curve2.setAttribute('stroke-width', width * 1.4);
 
-        this.xp1   .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
+        this.xp1   .setAttribute('stroke-width', width * (isList ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
         this.xp2   .setAttribute('stroke-width', width * 1.4);
     
-        this.curve2.setAttribute('display', listType ? 'inline' : 'none');
+        this.curve2.setAttribute('display', isList ? 'inline' : 'none');
     
     
         this. inBall.style.r = 3 * graph.currentPage.zoom;
@@ -689,6 +685,19 @@ class Wire
     
     
     
+    connectionIsList()
+    {
+        const conn = this.connection;
+
+        return    conn.output
+               && arraysIntersect(conn.output.types, LIST_TYPES)
+            ||   !conn.output
+               && conn.input
+               && arraysIntersect(conn.input.types, LIST_TYPES);
+    }
+
+
+
     show(show, update = true)
     {
         // const isReordering =   

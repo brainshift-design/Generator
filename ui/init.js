@@ -167,26 +167,37 @@ function validateInit(eulaAgreed)
 {
     try
     {
-        // checkActiveSubscription(currentUser.id).then(result =>
-        // {
-        //     if (result == 2)
-        //         subscriptionActive = true;
-
-        //     uiSetLocalData(
-        //         'pro', 
-        //          subscriptionActive);
-
-        //     finalizeInit(eulaAgreed, result == 1);
-        // })
         uiGetValueFromFigma('getPaidStatus').then(response =>
         {
             subscriptionActive = response.value == 'PAID';
 
-            uiSetLocalData(
-                'pro', 
-                 subscriptionActive);
+            if (!subscriptionActive)
+            {
+                checkActiveSubscription(currentUser.id).then(result =>
+                {
+                    if (result == 2)
+                        subscriptionActive = true;
+        
+                    uiSetLocalData(
+                        'pro', 
+                            subscriptionActive);
+        
+                    finalizeInit(eulaAgreed, result == 1);
+                })
+                .catch(error =>
+                {
+                    uiError('Error while checking for subscription.');
+                    finalizeInit(eulaAgreed, false);
+                });
+            }
+            else
+            {
+                uiSetLocalData(
+                    'pro', 
+                    subscriptionActive);
 
-            finalizeInit(eulaAgreed, subscriptionActive);
+                finalizeInit(eulaAgreed, subscriptionActive);
+            }
         })
         .catch(error =>
         {

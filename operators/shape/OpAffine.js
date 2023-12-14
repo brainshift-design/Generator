@@ -50,7 +50,7 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         const type = values[paramIds.findIndex(id => id == 'type')];
-        if (type) this.outputs[0].types = [type.value];
+        if (type) this.headerOutputs[0].types = [type.value];
     }
 }
 

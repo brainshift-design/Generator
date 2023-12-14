@@ -81,7 +81,7 @@ extends ResizableBase
     {
         const input = this.inputs[0];
         
-        this.paramValue.enableControlText(!input.connected);
+        this.paramValue.enableControlText(!input.connected, this.isUnknown());
 
         this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         this.paramValue.controls[0].showBar   = !this.isUnknown();

@@ -2,23 +2,23 @@ var subscriptionActive = false;
 
 
 
-// function checkActiveSubscription(userId)
-// {
-//     return postToServer(
-//         {
-//             action: 'checkActiveSubscription',
-//             userId:  userId
-//         })
-//         .then(response =>
-//         {
-//             return response.result;
-//         })
-//         .catch(e =>
-//         {
-//             console.error(e);
-//             throw e;
-//         });
-// }
+function checkActiveSubscription(userId)
+{
+    return postToServer(
+    {
+        action: 'checkActiveSubscription',
+        userId:  userId
+    })
+    .then(response =>
+    {
+        return response.result;
+    })
+    .catch(e =>
+    {
+        console.error(e);
+        throw e;
+    });
+}
 
 
 

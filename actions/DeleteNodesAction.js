@@ -100,7 +100,7 @@ function deleteNodesAction_getUpdateNodes(act, updateNodes)
             uiDeleteSavedConn(input.connection);
             pushUnique(updateNodes, deleteNodesAction_disconnect(act, input, act.nodeIds));
 
-            output.updateSavedConnectionOrder(outputOrder, -1);
+            //output.updateSavedConnectionOrder(outputOrder, -1);
         }
 
 

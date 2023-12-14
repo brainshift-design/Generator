@@ -183,7 +183,7 @@ function connectAction_updateOldOutput(act, updateNodes)
         return;
 
         
-    act.oldOutput.updateSavedConnectionOrder(act.oldOutputOrder, -1);
+    //act.oldOutput.updateSavedConnectionOrder(act.oldOutputOrder, -1);
 
     pushUnique(updateNodes, act.oldOutputNode);
 
