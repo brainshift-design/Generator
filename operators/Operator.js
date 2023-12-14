@@ -964,6 +964,13 @@ class Operator
 
 
 
+    // hasUnknownParams()
+    // {
+    //     return this.params.find(p => p.isUnknown()) != null;
+    // }
+
+
+
     paramCanBeUnknown(param)
     {
         return false;
@@ -1065,6 +1072,7 @@ class Operator
                 | ((this.enabled     ? 1 : 0) << 2)
                 | ((this.cached      ? 1 : 0) << 3)
                 | ((this.isUnknown() ? 1 : 0) << 4)
+                //| ((this.isUnknown() || this.hasUnknownParams() ? 1 : 0) << 4)
                 | nodeOptions;
 
             request.push(options);

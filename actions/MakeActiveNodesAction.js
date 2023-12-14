@@ -29,19 +29,13 @@ extends Action
             graph.currentPage.nodes
                 .filter(n => n.active)
                 .map(n => n.nodeId);
-            
-        // this.newActiveNodeIds.forEach(id =>
-        //     pushUnique(
-        //         this.oldActiveNodeIds, 
-        //         getActiveNodesFromNodeId(id).map(n => n.id))); 
 
-        //uiDeleteObjectsAndStyles(this.oldActiveNodeIds, false);
-
+                
         const newActiveNodes = this.newActiveNodeIds.map(id => nodeFromId(id));
 
         uiMakeNodesActive(newActiveNodes, this.shiftKey);
         pushUnique(updateNodes, newActiveNodes);
-
+        
         uiSaveNodes(filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
     }
 

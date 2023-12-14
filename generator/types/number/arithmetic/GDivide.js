@@ -27,7 +27,10 @@ extends GArithmetic
         this.value = await evalDivideInputs(this.inputs, parse);
     
         
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+        ]);
 
 
         this.validate();

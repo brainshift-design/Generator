@@ -85,7 +85,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['preview', this.value                 ],
+            //['preview', this.value                 ],
             ['type',    this.outputType()          ],
             ['columns', new NumberValue(columns, 0)],
             ['rows',    new NumberValue(rows   , 0)]

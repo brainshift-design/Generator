@@ -83,7 +83,7 @@ extends GShapeBase
 
         this.setUpdateValues(parse,
         [
-            ['value',     this.value          ],
+            //['value',     this.value          ],
             ['operation', this.value.operation],
             ['children',  this.value.children ]
         ]);

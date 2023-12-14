@@ -106,8 +106,8 @@ extends GShape
                 ['round',    _round    ],
                 ['from',     _from     ],
                 ['to',       _to       ],
-                ['inner',    _inner    ],
-                ['value',    this.value]
+                ['inner',    _inner    ]//,
+                //['value',    this.value]
             ]);
         }
         else
@@ -142,8 +142,8 @@ extends GShape
                 ['round',    round     ],
                 ['from',     from      ],
                 ['to',       to        ],
-                ['inner',    inner     ],
-                ['value',    this.value]
+                ['inner',    inner     ]//,
+                //['value',    this.value]
             ]);
         }
 

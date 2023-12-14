@@ -52,7 +52,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
+            //['value', this.value],
             ['x',     x         ],
             ['y',     y         ]
         ]);

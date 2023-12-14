@@ -112,14 +112,23 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview',    new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
-            ['type',       this.outputListType()                                                          ],
-            ['length',     new NumberValue(this.value.items.length)                                       ], // used to set start and end maxima
-            ['fullLength', new NumberValue(input ? input.items.length : 0)                                ], // used to set start and end maxima
-            ['start',      start                                                                          ],
-            ['end',        end                                                                            ]
+            ['type',       this.outputListType()                          ],
+            ['length',     new NumberValue(this.value.items.length)       ], // used to set start and end maxima
+            ['fullLength', new NumberValue(input ? input.items.length : 0)], // used to set start and end maxima
+            ['start',      start                                          ],
+            ['end',        end                                            ]
         ]);
         
+
+        if (parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
+
 
         this.validate();
 

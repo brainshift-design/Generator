@@ -28,7 +28,9 @@ function genRequest(request, save)
         showAllColorSpaces:  ((set >> 0) & 1) != 0,
         logRequests:         ((set >> 1) & 1) != 0,
         showTransformPoints: ((set >> 2) & 1) != 0,
-        loadingNodes:        ((set >> 3) & 1) != 0
+        loadingNodes:        ((set >> 3) & 1) != 0,
+        showTextTooltips:    ((set >> 4) & 1) != 0,
+        showListTooltips:    ((set >> 5) & 1) != 0
     };
 
 
@@ -189,7 +191,7 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
         return;
     
 
-        removeFromArrayWhere(parse.updateValues, v =>
+    removeFromArrayWhere(parse.updateValues, v =>
            v.nodeId     == nodeId
         && v.paramId    == paramId
         && v.value.type == value.type);

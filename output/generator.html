@@ -8805,7 +8805,7 @@ extends GNode
     {
         super.invalidateInputs(parse, from, force);
 
-        //if (this.unknown)
+        if (this.unknown)
             this.valid = false;
 
         this.iterated = false;
@@ -8867,12 +8867,6 @@ extends GNode
 
     setUpdateValues(parse, values, add = false)
     {
-        if (this.nodeId == 'color3')
-        {
-            console.log('parse.repeats.length =', parse.repeats.length);
-        }
-
-
         if (    parse.repeats.length == 0
             ||  this.unknown && parse.repeats[0].total == 0
             || !this.unknown
@@ -8896,7 +8890,7 @@ extends GNode
         for (const value of this.updateValues)
             genPushUpdateValue(parse, this.nodeId, value[0], value[1]);
 
-        if (this.isValid())
+        //if (this.isValid())
             this.updateValues = [];
     }
 
@@ -16997,10 +16991,19 @@ extends GOperator
         
         this.setUpdateValues(parse,
         [
-            ['preview', preview],
-            ['length',  length ],
-            ['type',    type   ]
+            ['length', length],
+            ['type',   type  ]
         ]);
+
+
+        if (parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
 
 
         this.validate();
@@ -17284,12 +17287,21 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview',    new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
-            ['type',       this.outputListType()                                                          ],
-            ['length',     new NumberValue(this.value.items.length)                                       ], // used to set start and end maxima
-            ['indices',    indices                                                                        ]
+            ['type',    this.outputListType()                   ],
+            ['length',  new NumberValue(this.value.items.length)], // used to set start and end maxima
+            ['indices', indices                                 ]
         ]);
         
+
+        if (parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
+
 
         this.validate();
 
@@ -17558,13 +17570,28 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            // ['preview', isListType(this.value) 
-            //             ? new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11))) 
-            //             : this.value  ],
             ['type',    this.outputType()],
             ['name',    name             ]
         ]);
         
+
+        if (type.value == TEXT_VALUE && parse.settings.showTextTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', this.value]
+            ],
+            true);
+        }
+        else if (isListType(type.value)   && parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
+
 
         this.validate();
 
@@ -17765,14 +17792,23 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview',    new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
-            ['type',       this.outputListType()                                                          ],
-            ['length',     new NumberValue(this.value.items.length)                                       ], // used to set start and end maxima
-            ['fullLength', new NumberValue(input ? input.items.length : 0)                                ], // used to set start and end maxima
-            ['start',      start                                                                          ],
-            ['end',        end                                                                            ]
+            ['type',       this.outputListType()                          ],
+            ['length',     new NumberValue(this.value.items.length)       ], // used to set start and end maxima
+            ['fullLength', new NumberValue(input ? input.items.length : 0)], // used to set start and end maxima
+            ['start',      start                                          ],
+            ['end',        end                                            ]
         ]);
         
+
+        if (parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
+
 
         this.validate();
 
@@ -17928,11 +17964,20 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
-            ['type',    this.outputListType()                                                          ],
-            ['length',  new NumberValue(this.value.items.length)                                       ]
+            ['type',   this.outputListType()                   ],
+            ['length', new NumberValue(this.value.items.length)]
         ]);
         
+
+        if (parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
+
 
         this.validate();
 
@@ -18065,11 +18110,20 @@ extends GOperator1
 
         this.setUpdateValues(parse, 
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)))],
-            ['type',    this.outputListType()                                                          ],
-            ['length',  new NumberValue(this.value.items.length)                                       ]
+            ['type',   this.outputListType()                   ],
+            ['length', new NumberValue(this.value.items.length)]
         ]); 
                
+
+        if (parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
+
 
         this.validate();
 
@@ -18218,11 +18272,20 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', preview              ],
             ['type',    this.outputListType()],
             ['reverse', reverse              ]
         ]);
         
+
+        if (parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
+
 
         this.validate();
 
@@ -18431,11 +18494,20 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', preview                                 ],
             ['type',    this.outputListType()                   ],
             ['length',  new NumberValue(this.value.items.length)]
         ]);
         
+
+        if (parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
+
 
         this.validate();
 
@@ -18581,12 +18653,21 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['type',    this.outputListType()                                                          ],
             ['length',  new NumberValue(this.value.items.length)                                       ],
             ['columns', new NumberValue(maxColumns, 0)                                                 ],
             ['index',   index                                                                          ]
         ]);
+    
+
+        if (parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
         
 
         this.validate();
@@ -18734,7 +18815,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['preview', this.value                 ],
+            //['preview', this.value                 ],
             ['type',    this.outputType()          ],
             ['columns', new NumberValue(columns, 0)],
             ['rows',    new NumberValue(rows   , 0)]
@@ -19062,13 +19143,32 @@ extends GOperator1
         }
 
 
+        const type = this.outputType();
+
         this.setUpdateValues(parse,
         [
-            ['preview', this.value             ],
-            ['type',    this.outputType()      ],
+            ['type',    type                   ],
             ['length',  new NumberValue(length)],
             ['index',   index                  ]
         ]);
+
+
+        if (type.value == TEXT_VALUE && parse.settings.showTextTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', this.value]
+            ],
+            true);
+        }
+        else if (isListType(type.value)   && parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
 
 
         this.validate();
@@ -19613,7 +19713,6 @@ extends GOperator1
         if (this.input)
         {
             this.value = (await this.input.eval(parse)).toValue();
-            //console.log('this.value.value =', this.value.value);
         }
         else if (this.value)
             await this.value.eval(parse);
@@ -19685,7 +19784,8 @@ extends GOperator1
 
         this.setUpdateValues(parse, 
         [
-            ['value', this.value]
+            //['value', this.value]
+            ['', new NullValue()]
         ]);
 
 
@@ -19828,7 +19928,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',    this.value],
+            //['value',    this.value],
             ['type',     type      ],
             ['decimals', dec       ]
         ]);
@@ -19966,7 +20066,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',     this.value       ],
+            //['value',     this.value       ],
             ['type',      this.outputType()],
             ['operand',   operand          ],
             ['operation', op               ]
@@ -20094,8 +20194,8 @@ extends GArithmetic
         
         this.setUpdateValues(parse,
         [
-            ['operation', op        ],
-            ['value',     this.value]
+            ['operation', op        ]//,
+            //['value',     this.value]
         ]);
 
 
@@ -20460,7 +20560,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',  this.value],
+            //['value',  this.value],
             ['min',    min       ],
             ['max',    max       ],
             ['power',  power     ],
@@ -20606,8 +20706,8 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type',   this.outputType()],
-            ['value', _value            ]
+            ['type',   this.outputType()]//,
+            //['value', _value            ]
         ]);
 
 
@@ -22953,7 +23053,7 @@ extends GArithmetic
 
         this.setUpdateValues(parse,
         [
-            ['value',     this.value],
+            //['value',     this.value],
             ['operation', op        ]
         ]);
 
@@ -23094,7 +23194,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',     this.value       ],
+            //['value',     this.value       ],
             ['type',      this.outputType()],
             ['operation', op               ],
             ['operand',   operand          ],
@@ -23241,7 +23341,11 @@ extends GArithmetic
 
         this.value = await evalAddInputs(this.inputs, parse);
         
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
         this.validate();
 
@@ -23328,7 +23432,11 @@ extends GArithmetic
         this.value = await evalSubtractInputs(this.inputs, parse);
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();
@@ -23466,7 +23574,11 @@ extends GArithmetic
         this.value = await evalMultiplyInputs(this.inputs, parse);
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();
@@ -23557,7 +23669,10 @@ extends GArithmetic
         this.value = await evalDivideInputs(this.inputs, parse);
     
         
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+        ]);
 
 
         this.validate();
@@ -23720,7 +23835,11 @@ extends GArithmetic
         this.value = await evalModuloInputs(this.inputs, parse);
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();
@@ -24048,7 +24167,7 @@ extends GArithmetic
         
         this.setUpdateValues(parse,
         [
-            ['value',     this.value],
+            //['value',     this.value],
             ['operation', op        ]
         ]);
 
@@ -24124,7 +24243,11 @@ extends GArithmetic
         this.value = await evalNandInputs(this.inputs, parse);
         
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();
@@ -24235,7 +24358,11 @@ extends GArithmetic
         this.value = await evalAndInputs(this.inputs, parse);
         
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
         
         this.validate();
@@ -24349,7 +24476,11 @@ extends GArithmetic
         this.value = await evalOrInputs(this.inputs, parse);
         
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();
@@ -24460,7 +24591,11 @@ extends GArithmetic
         this.value = await evalXorInputs(this.inputs, parse);
         
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();
@@ -24610,7 +24745,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',     this.value],
+            //['value',     this.value],
             ['operation', op        ],
             ['operand',   operand   ]
         ]);
@@ -24709,7 +24844,11 @@ extends GOperator2
             parse);
             
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();
@@ -24753,7 +24892,11 @@ extends GOperator2
             parse);
         
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();
@@ -24796,7 +24939,11 @@ extends GOperator2
             parse);
             
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();
@@ -24839,7 +24986,11 @@ extends GOperator2
             parse);
             
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();
@@ -24883,7 +25034,11 @@ extends GOperator2
             parse);
         
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();
@@ -24929,7 +25084,11 @@ extends GOperator2
             parse);
             
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();
@@ -25006,7 +25165,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',    this.value],
+            //['value',    this.value],
             ['function', func      ]
         ]);
 
@@ -25085,7 +25244,11 @@ extends GOperator1
         this.value = await evalSine(this.input, parse);
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();
@@ -25149,7 +25312,11 @@ extends GOperator1
         this.value = await evalCosine(this.input, parse);
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();
@@ -25206,7 +25373,11 @@ extends GOperator1
         this.value = await evalTangent(this.input, parse);
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();
@@ -25285,7 +25456,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
+            //['value', this.value],
             ['x',     x         ],
             ['y',     y         ]
         ]);
@@ -25661,7 +25832,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value       ],
+            //['value', this.value       ],
             ['type',  this.outputType()],
             ['start', start            ],
             ['end',   end              ]
@@ -25813,7 +25984,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',  this.value             ],
+            //['value',  this.value             ],
             ['length', new NumberValue(length)], // used to set start and end maxima
             ['start',  start                  ],
             ['end',    end                    ]
@@ -25965,7 +26136,7 @@ extends GOperator2
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
+            //['value', this.value],
             ['first', this.first],
             ['last',  this.last ],
             ['all',   this.all  ]
@@ -26067,7 +26238,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value        ],
+            //['value', this.value        ],
             ['type',   this.outputType()],
             ['case',  _case             ]
         ]);
@@ -26240,7 +26411,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',     this.value       ],
+            //['value',     this.value       ],
             ['type',      this.outputType()],
             ['base',      base             ],
             ['decimals',  decimals         ],
@@ -26709,7 +26880,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value       ],
+            //['value', this.value       ],
             ['type',  this.outputType()]
         ]);
 
@@ -26792,7 +26963,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value       ],
+            //['value', this.value       ],
             ['type',  this.outputType()]
         ]);
 
@@ -26868,7 +27039,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value       ],
+            //['value', this.value       ],
             ['type',  this.outputType()]
         ]);
 
@@ -26981,7 +27152,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
+            //['value', this.value],
             ['name',  name      ],
             ['index', index     ]
         ]);
@@ -27122,7 +27293,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',  this.value       ],
+            //['value',  this.value       ],
             ['type',   this.outputType()],
             ['what',  _what             ],
             ['with',  _with             ],
@@ -27292,7 +27463,7 @@ extends GOperator
         
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
+            //['value', this.value],
             ['with',  _with     ]
         ]);
 
@@ -27484,7 +27655,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',      this.value       ],
+            //['value',      this.value       ],
             ['type',       this.outputType()],
             ['startPad',   startPad         ],
             ['startCount', startCount       ],
@@ -27633,7 +27804,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',     this.value],
+            //['value',     this.value],
             ['separator', separator ]
         ]);
         
@@ -27905,13 +28076,22 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['preview',         new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['rowSeparator',    rowSeparator             ],
             ['columnSeparator', columnSeparator          ],
             ['rows',            new NumberValue(nRows   )],
             ['columns',         new NumberValue(nColumns)]
         ]);
         
+
+        if (parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
+
 
         this.validate();
 
@@ -28009,11 +28189,20 @@ extends GOperator1
         // console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['length',  new NumberValue(this.value.items.length)]
             //['value',   this.value]
         ]);
         
+
+        if (parse.settings.showTextTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', this.value]
+            ],
+            true);
+        }
+
 
         this.validate();
 
@@ -28144,12 +28333,21 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['preview', this.value],
-            ['value',   this.value],
+            //['value',   this.value],
             ['request', request   ]
         ]);
         
         
+        if (parse.settings.showTextTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', this.value]
+            ],
+            true);
+        }
+
+
         this.validate();
 
         return this;
@@ -28249,11 +28447,21 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['preview', this.value]//,
+            ['', new NullValue()]
             //['path',    path      ]
         ]);
         
         
+        if (parse.settings.showTextTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', this.value]
+            ],
+            true);
+        }
+
+
         this.validate();
 
         return this;
@@ -33229,7 +33437,10 @@ extends GShape
         }
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         await this.evalShapeBase(parse);
@@ -33419,8 +33630,8 @@ extends GShape
                 ['round',    _round    ],
                 ['from',     _from     ],
                 ['to',       _to       ],
-                ['inner',    _inner    ],
-                ['value',    this.value]
+                ['inner',    _inner    ]//,
+                //['value',    this.value]
             ]);
         }
         else
@@ -33455,8 +33666,8 @@ extends GShape
                 ['round',    round     ],
                 ['from',     from      ],
                 ['to',       to        ],
-                ['inner',    inner     ],
-                ['value',    this.value]
+                ['inner',    inner     ]//,
+                //['value',    this.value]
             ]);
         }
 
@@ -33922,8 +34133,8 @@ extends GShape
                 ['x',        __x       ],
                 ['y',        __y       ],
                 ['width',    __w       ],
-                ['height',   __h       ],
-                ['value',    this.value]
+                ['height',   __h       ]//,
+                // ['value',    this.value]
             ]);
         }
         else
@@ -33952,8 +34163,8 @@ extends GShape
                 ['x',        _x        ],
                 ['y',        _y        ],
                 ['width',    _w        ],
-                ['height',   _h        ],
-                ['value',    this.value]
+                ['height',   _h        ]//,
+                //['value',    this.value]
             ]);
         }
 
@@ -34192,8 +34403,8 @@ extends GShape
                 ['x',        __x       ],
                 ['y',        __y       ],
                 ['width',    __w       ],
-                ['height',   __h       ],
-                ['value',    this.value]
+                ['height',   __h       ]//,
+                //['value',    this.value]
             ]);
         }
         else
@@ -34223,8 +34434,8 @@ extends GShape
                 ['x',        _x        ],
                 ['y',        _y        ],
                 ['width',    _w        ],
-                ['height',   _h        ],
-                ['value',    this.value]
+                ['height',   _h        ]//,
+                //['value',    this.value]
             ]);
         }
 
@@ -34794,7 +35005,8 @@ extends GOperator1
 
         this.setUpdateValues(parse, 
         [
-            ['value', this.value]
+            ['', new NullValue()]
+            //['value', this.value]
         ]);
 
 
@@ -34964,7 +35176,7 @@ extends GOperator1
 
         this.setUpdateValues(parse, 
         [
-            ['value',  this.value],
+            //['value',  this.value],
             ['smooth', smooth    ]
         ]);
 
@@ -35427,7 +35639,10 @@ extends GOperator1
         await this.evalObjects(parse);
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         this.validate();
@@ -35611,7 +35826,10 @@ extends GOperator2
         await this.evalObjects(parse);
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         this.validate();
@@ -36067,7 +36285,10 @@ extends GShape
             regions);
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
+        ]);
 
 
         await this.evalShapeBase(parse);
@@ -36711,7 +36932,7 @@ extends GOperator1//Shape
         this.setUpdateValues(parse, 
         [
             ['type',    this.outputType()],
-            ['value',   this.value       ],
+            //['value',   this.value       ],
             ['props',   props            ],
             ['replace', replace          ]
         ]);
@@ -36925,7 +37146,7 @@ extends GShapeBase
 
         this.setUpdateValues(parse,
         [
-            ['value',     this.value          ],
+            //['value',     this.value          ],
             ['operation', this.value.operation],
             ['children',  this.value.children ]
         ]);
@@ -38745,7 +38966,8 @@ extends GOperator3
 
         this.setUpdateValues(parse, 
         [
-            ['value', this.value]
+            ['', new NullValue()]
+            //['value', this.value]
         ]);
         
 
@@ -38869,7 +39091,7 @@ extends GOperator4
 
         this.setUpdateValues(parse, 
         [
-            ['value',   this.value],
+            //['value',   this.value],
             ['segment', segment   ]
         ]);
         
@@ -40065,7 +40287,9 @@ function genRequest(request, save)
         showAllColorSpaces:  ((set >> 0) & 1) != 0,
         logRequests:         ((set >> 1) & 1) != 0,
         showTransformPoints: ((set >> 2) & 1) != 0,
-        loadingNodes:        ((set >> 3) & 1) != 0
+        loadingNodes:        ((set >> 3) & 1) != 0,
+        showTextTooltips:    ((set >> 4) & 1) != 0,
+        showListTooltips:    ((set >> 5) & 1) != 0
     };
 
 
@@ -40226,7 +40450,7 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
         return;
     
 
-        removeFromArrayWhere(parse.updateValues, v =>
+    removeFromArrayWhere(parse.updateValues, v =>
            v.nodeId     == nodeId
         && v.paramId    == paramId
         && v.value.type == value.type);

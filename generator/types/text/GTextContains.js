@@ -96,7 +96,7 @@ extends GOperator2
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
+            //['value', this.value],
             ['first', this.first],
             ['last',  this.last ],
             ['all',   this.all  ]

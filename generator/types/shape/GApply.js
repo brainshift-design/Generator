@@ -67,7 +67,7 @@ extends GOperator1//Shape
         this.setUpdateValues(parse, 
         [
             ['type',    this.outputType()],
-            ['value',   this.value       ],
+            //['value',   this.value       ],
             ['props',   props            ],
             ['replace', replace          ]
         ]);

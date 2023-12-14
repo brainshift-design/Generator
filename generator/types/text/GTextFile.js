@@ -54,11 +54,21 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['preview', this.value]//,
+            ['', new NullValue()]
             //['path',    path      ]
         ]);
         
         
+        if (parse.settings.showTextTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', this.value]
+            ],
+            true);
+        }
+
+
         this.validate();
 
         return this;

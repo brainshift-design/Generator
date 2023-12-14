@@ -112,13 +112,32 @@ extends GOperator1
         }
 
 
+        const type = this.outputType();
+
         this.setUpdateValues(parse,
         [
-            ['preview', this.value             ],
-            ['type',    this.outputType()      ],
+            ['type',    type                   ],
             ['length',  new NumberValue(length)],
             ['index',   index                  ]
         ]);
+
+
+        if (type.value == TEXT_VALUE && parse.settings.showTextTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', this.value]
+            ],
+            true);
+        }
+        else if (isListType(type.value)   && parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
 
 
         this.validate();

@@ -120,10 +120,19 @@ extends GOperator
         
         this.setUpdateValues(parse,
         [
-            ['preview', preview],
-            ['length',  length ],
-            ['type',    type   ]
+            ['length', length],
+            ['type',   type  ]
         ]);
+
+
+        if (parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
 
 
         this.validate();

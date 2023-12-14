@@ -61,7 +61,7 @@ extends GArithmetic
 
         this.setUpdateValues(parse,
         [
-            ['value',     this.value],
+            //['value',     this.value],
             ['operation', op        ]
         ]);
 

@@ -80,7 +80,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',  this.value             ],
+            //['value',  this.value             ],
             ['length', new NumberValue(length)], // used to set start and end maxima
             ['start',  start                  ],
             ['end',    end                    ]

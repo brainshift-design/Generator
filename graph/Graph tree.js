@@ -222,7 +222,15 @@ function getTerminalsAfterNode(node)
     }
 
 
-    return !isEmpty(after) ? after : [node];
+    return !isEmpty(after) 
+          ? after 
+          : [node];
+            //   node.active
+            // || graphView.loadingNodes
+            // || graphView.pastingNodes
+            // || graphView.restoringNodes
+            // ? [node]
+            // : [];
 }
 
 

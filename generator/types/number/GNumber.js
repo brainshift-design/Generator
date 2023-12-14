@@ -30,7 +30,6 @@ extends GOperator1
         if (this.input)
         {
             this.value = (await this.input.eval(parse)).toValue();
-            //console.log('this.value.value =', this.value.value);
         }
         else if (this.value)
             await this.value.eval(parse);

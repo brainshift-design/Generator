@@ -77,12 +77,21 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['preview', this.value],
-            ['value',   this.value],
+            //['value',   this.value],
             ['request', request   ]
         ]);
         
         
+        if (parse.settings.showTextTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', this.value]
+            ],
+            true);
+        }
+
+
         this.validate();
 
         return this;

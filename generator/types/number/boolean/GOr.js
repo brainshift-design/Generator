@@ -30,7 +30,11 @@ extends GArithmetic
         this.value = await evalOrInputs(this.inputs, parse);
         
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();

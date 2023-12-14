@@ -63,17 +63,19 @@ extends OpShape
         const width  = values[paramIds.findIndex(id => id == 'width'   )];
         const height = values[paramIds.findIndex(id => id == 'height'  )];
         const round  = values[paramIds.findIndex(id => id == 'round'   )];
-        const value  = values[paramIds.findIndex(id => id == 'value'   )];
+        const from   = values[paramIds.findIndex(id => id == 'from'    )];
+        const to     = values[paramIds.findIndex(id => id == 'to'      )];
+        const inner  = values[paramIds.findIndex(id => id == 'inner'   )];
 
-        this.paramPosition.setValue(pos,         false, true, false);
-        this.paramX       .setValue(x,           false, true, false);
-        this.paramY       .setValue(y,           false, true, false);
-        this.paramWidth   .setValue(width,       false, true, false);
-        this.paramHeight  .setValue(height,      false, true, false);
-        this.paramRound   .setValue(round,       false, true, false);
-        this.paramFrom    .setValue(value.from,  false, true, false);
-        this.paramTo      .setValue(value.to,    false, true, false);
-        this.paramInner   .setValue(value.inner, false, true, false);
+        this.paramPosition.setValue(pos,    false, true, false);
+        this.paramX       .setValue(x,      false, true, false);
+        this.paramY       .setValue(y,      false, true, false);
+        this.paramWidth   .setValue(width,  false, true, false);
+        this.paramHeight  .setValue(height, false, true, false);
+        this.paramRound   .setValue(round,  false, true, false);
+        this.paramFrom    .setValue(from,   false, true, false);
+        this.paramTo      .setValue(to,     false, true, false);
+        this.paramInner   .setValue(inner,  false, true, false);
     }
 
 

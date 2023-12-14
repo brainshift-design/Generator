@@ -191,13 +191,6 @@ extends ResizableBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        if (this.nodeId == 'list')
-        {
-            console.log('paramIds =', paramIds);
-            console.log('values =', values);
-        }
-
-
         const oldParams = [...this.params];
 
         

@@ -159,7 +159,7 @@ extends GNode
     {
         super.invalidateInputs(parse, from, force);
 
-        //if (this.unknown)
+        if (this.unknown)
             this.valid = false;
 
         this.iterated = false;
@@ -221,12 +221,6 @@ extends GNode
 
     setUpdateValues(parse, values, add = false)
     {
-        if (this.nodeId == 'color3')
-        {
-            console.log('parse.repeats.length =', parse.repeats.length);
-        }
-
-
         if (    parse.repeats.length == 0
             ||  this.unknown && parse.repeats[0].total == 0
             || !this.unknown
@@ -250,7 +244,7 @@ extends GNode
         for (const value of this.updateValues)
             genPushUpdateValue(parse, this.nodeId, value[0], value[1]);
 
-        if (this.isValid())
+        //if (this.isValid())
             this.updateValues = [];
     }
 

@@ -47,11 +47,20 @@ extends GOperator1
         // console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
-            ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))],
             ['length',  new NumberValue(this.value.items.length)]
             //['value',   this.value]
         ]);
         
+
+        if (parse.settings.showTextTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', this.value]
+            ],
+            true);
+        }
+
 
         this.validate();
 

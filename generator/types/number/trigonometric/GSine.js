@@ -30,7 +30,11 @@ extends GOperator1
         this.value = await evalSine(this.input, parse);
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
 
 
         this.validate();

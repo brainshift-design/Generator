@@ -88,8 +88,8 @@ extends GShape
                 ['x',        __x       ],
                 ['y',        __y       ],
                 ['width',    __w       ],
-                ['height',   __h       ],
-                ['value',    this.value]
+                ['height',   __h       ]//,
+                // ['value',    this.value]
             ]);
         }
         else
@@ -118,8 +118,8 @@ extends GShape
                 ['x',        _x        ],
                 ['y',        _y        ],
                 ['width',    _w        ],
-                ['height',   _h        ],
-                ['value',    this.value]
+                ['height',   _h        ]//,
+                //['value',    this.value]
             ]);
         }
 
