@@ -71,7 +71,8 @@ function initSearchBox(query)
 
             const nodes = graph.currentPage.nodes
                 .filter(n => 
-                       n.type != PANEL
+                      (   n.type != PANEL
+                       || n.name != '') 
                     && n.type != COMMENT);
             
             for (const node of nodes)
