@@ -111,7 +111,7 @@ extends Action
 
         if (!isEmpty(inputs))
         {
-            const newConn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
+            const newConn = createNodeAction_connect(this, selNode.headerOutputs[0], node, inputs[0].id);
             graphView.autoPlaceNewNode(newConn.output, newConn.input);
 
 
@@ -141,11 +141,11 @@ extends Action
             {
                 selNodes.sort((n1, n2) => n1.div.offsetTop - n2.div.offsetTop);
                 
-                const outputs  = [];
+                const outputs = [];
                 
                 for (const selNode of selNodes)
                 {
-                    const conn = createNodeAction_connect(this, selNode.outputs[0], node, node.headerInputs.at(-1).id);
+                    const conn = createNodeAction_connect(this, selNode.headerOutputs[0], node, node.headerInputs.at(-1).id);
                     outputs.push(conn.output);
                 }
 
@@ -166,7 +166,7 @@ extends Action
                 
                 if (!isEmpty(inputs))
                 {
-                    const conn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
+                    const conn = createNodeAction_connect(this, selNode.headerOutputs[0], node, inputs[0].id);
                     graphView.autoPlaceNewNode(conn.output, conn.input);
                 }
                 else
@@ -191,7 +191,7 @@ function createInsertNodeAction_savePrevConnections(act)
 
     for (const selNode of selNodes)
     {
-        const output = selNode.outputs[0];
+        const output = selNode.headerOutputs[0];
 
         for (const input of output.connectedInputs)
             act.prevConnections.push(input.connection.toDataObject());

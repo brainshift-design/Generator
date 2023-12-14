@@ -51,15 +51,15 @@ extends GOperator1
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
 
-        this.counts  = new ListValue();
-        this.indices = new ListValue();
-
-
         if (this.cachedValue)
             this.value = this.cachedValue.copy();
 
         else
         {
+            this.counts  = new ListValue();
+            this.indices = new ListValue();
+
+            
             if (input)
             {
                 if (this.options.enabled)
@@ -105,8 +105,10 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type',   this.outputListType()                   ],
-            ['length', new NumberValue(this.value.items.length)]
+            ['type',    this.outputListType()                   ],
+            ['length',  new NumberValue(this.value.items.length)],
+            ['counts',  this.counts                             ],
+            ['indices', this.indices                            ]
         ]);
         
 
