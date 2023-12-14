@@ -19,7 +19,8 @@ class Menu
     showChecks;
     showIcons;
 
-    showOnLeft = false;
+    showOnLeft   = false;
+    activeOnLeft = false;
 
     combineChecksAndIcons = false; // conflicts are resolved in favor of icons
 
@@ -56,7 +57,7 @@ class Menu
         this.div.appendChild(this.divItems);
 
         this.div.addEventListener('pointerenter', () => this.overMenu = true );
-        this.div.addEventListener('pointerleave', () => this.overMenu = false);
+        this.div.addEventListener('pointerleave', () => { this.overMenu = false; this.activeOnLeft = false; });
     }
 
 
@@ -264,6 +265,9 @@ class Menu
 
     update(x, y, subMenu)
     {
+        this.activeOnLeft = false;
+
+
         const margin = 8;
 
         const  dy  = subMenu ? 0 : 4;
@@ -283,7 +287,10 @@ class Menu
         if (this.parentItem)
         {
             if (left + this.div.offsetWidth + margin >= graphView.div.offsetWidth)
+            {
                 left = this.parentItem.parentMenu.div.offsetLeft - this.div.offsetWidth;
+                this.activeOnLeft = true;
+            }
         }
         else
         {

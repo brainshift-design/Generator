@@ -127,6 +127,14 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
 
             this.updateTextBehind();
         }
+
+        // else if (e.code == 'KeyZ'
+        //       && getCtrlKey(e)
+        //       && !e.shiftKey)
+        // {
+        //     if (document.activeElement != this.textbox)
+        //         e.preventDefault();
+        // }
     });
 
 

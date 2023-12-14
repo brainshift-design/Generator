@@ -1,36 +1,36 @@
 class MenuItem
 {
-    parentMenu    = null;
-    index         = -1;
-
-    enabled       = true;
-
-    checked       = false;
-    icon          = ''; // svg
-    name          = '';
-    searchName    = '';
-    shortcut      = '';
-    sub           = true;
-
-    callback      = null;
-    checkCallback = null;
-
-    childMenu     = null;
-
-    separator     = false;
-    createType    = '';
-
-    selectOnDrag  = false;
-
-    isSetting     = false;
-    disambiguate  = false;
-
-    enteredDiv    = false;
-    enteredExpand = false;
-
-    arrowWidth    = 48;
-
-    showSubscribe = false;
+    parentMenu         = null;
+    index              = -1;
+     
+    enabled            = true;
+     
+    checked            = false;
+    icon               = ''; // svg
+    name               = '';
+    searchName         = '';
+    shortcut           = '';
+    sub                = true;
+     
+    callback           = null;
+    checkCallback      = null;
+     
+    childMenu          = null;
+     
+    separator          = false;
+    createType         = '';
+     
+    selectOnDrag       = false;
+     
+    isSetting          = false;
+    disambiguate       = false;
+     
+    enteredDiv         = false;
+    enteredExpand      = false;
+     
+    arrowWidth         = 48;
+     
+    showSubscribe      = false;
 
 
     div;
@@ -256,7 +256,8 @@ class MenuItem
                         const rect = boundingRect(this.div);
 
                         if (    e.clientX - rect.x < rect.width - this.arrowWidth
-                            && !this.enteredDiv)
+                            && !this.enteredDiv
+                            && !this.childMenu.activeOnLeft)
                         {
                             this.divHighlight.style.left  = 0;
                             this.divHighlight.style.width = 'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
@@ -274,8 +275,8 @@ class MenuItem
 
                             this.showChildMenu();
 
-                            this.enteredDiv    = false;
                             this.enteredExpand = true;
+                            this.enteredDiv    = false;
                         }
                     }
                     else if (!this.enteredDiv)
