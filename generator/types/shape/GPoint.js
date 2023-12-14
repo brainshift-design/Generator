@@ -73,7 +73,8 @@ extends GOperator1
 
         this.setUpdateValues(parse, 
         [
-            ['', new NullValue()]
+            ['x', x],
+            ['y', y]
             //['value', this.value]
         ]);
 

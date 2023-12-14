@@ -20,6 +20,10 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
 
+    if (requestId < curRequestId)
+        return;
+
+
     if (settings.logRawValues)  
         console.log('raw values = ', values);
 

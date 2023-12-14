@@ -42,20 +42,22 @@ extends OpShape
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const pos    = values[paramIds.findIndex(id => id == 'position')];
-        const x      = values[paramIds.findIndex(id => id == 'x'       )];
-        const y      = values[paramIds.findIndex(id => id == 'y'       )];
-        const width  = values[paramIds.findIndex(id => id == 'width'   )];
-        const height = values[paramIds.findIndex(id => id == 'height'  )];
-        const value  = values[paramIds.findIndex(id => id == 'value'   )];
+        const pos     = values[paramIds.findIndex(id => id == 'position')];
+        const x       = values[paramIds.findIndex(id => id == 'x'       )];
+        const y       = values[paramIds.findIndex(id => id == 'y'       )];
+        const width   = values[paramIds.findIndex(id => id == 'width'   )];
+        const height  = values[paramIds.findIndex(id => id == 'height'  )];
+        const round   = values[paramIds.findIndex(id => id == 'round'   )];
+        const corners = values[paramIds.findIndex(id => id == 'corners' )];
+        // const value  = values[paramIds.findIndex(id => id == 'value'   )];
 
-        this.paramPosition.setValue(pos,           false, true, false);
-        this.paramX       .setValue(x,             false, true, false);
-        this.paramY       .setValue(y,             false, true, false);
-        this.paramWidth   .setValue(width,         false, true, false);
-        this.paramHeight  .setValue(height,        false, true, false);
-        this.paramRound   .setValue(value.round,   false, true, false);
-        this.paramCorners .setValue(value.corners, false, true, false);
+        this.paramPosition.setValue(pos,     false, true, false);
+        this.paramX       .setValue(x,       false, true, false);
+        this.paramY       .setValue(y,       false, true, false);
+        this.paramWidth   .setValue(width,   false, true, false);
+        this.paramHeight  .setValue(height,  false, true, false);
+        this.paramRound   .setValue(round,   false, true, false);
+        this.paramCorners .setValue(corners, false, true, false);
     }
 
 

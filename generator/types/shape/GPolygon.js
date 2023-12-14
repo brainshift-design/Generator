@@ -118,7 +118,10 @@ extends GShape
                 ['x',        _x        ],
                 ['y',        _y        ],
                 ['width',    _w        ],
-                ['height',   _h        ]//,
+                ['height',   _h        ],
+                ['round',    round     ],
+                ['corners',  corners   ]
+                //,
                 //['value',    this.value]
             ]);
         }

@@ -78,8 +78,8 @@ extends OperatorBase
     {
         this.paramValue.enableControlText(false, this.isUnknown());
         
-        this.paramRowSeparator   .enableControlText(true );
-        this.paramColumnSeparator.enableControlText(true );
+        this.paramRowSeparator   .enableControlText(true);
+        this.paramColumnSeparator.enableControlText(true);
 
         this.updateParamControls();
     }

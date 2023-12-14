@@ -122,11 +122,15 @@ extends GShape
 
             this.setUpdateValues(parse, 
             [
-                ['position', pos       ],
-                ['x',        _x        ],
-                ['y',        _y        ],
-                ['width',    _w        ],
-                ['height',   _h        ]//,
+                ['position', pos   ],
+                ['x',        _x    ],
+                ['y',        _y    ],
+                ['width',    _w    ],
+                ['height',   _h    ],
+                ['round',    round ],
+                ['points',   points],
+                ['convex',   convex]
+                //,
                 //['value',    this.value]
             ]);
         }

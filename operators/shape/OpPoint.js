@@ -131,9 +131,10 @@ extends OpShapeBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const x = values[paramIds.findIndex(id => id == 'x')];
+        const y = values[paramIds.findIndex(id => id == 'y')];
 
-        this.paramX.setValue(value.x, false, true, false);
-        this.paramY.setValue(value.y, false, true, false);
+        this.paramX.setValue(x, false, true, false);
+        this.paramY.setValue(y, false, true, false);
     }
 }

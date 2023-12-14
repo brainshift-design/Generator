@@ -51,16 +51,18 @@ extends OpShape
         const y      = values[paramIds.findIndex(id => id == 'y'       )];
         const width  = values[paramIds.findIndex(id => id == 'width'   )];
         const height = values[paramIds.findIndex(id => id == 'height'  )];
-        const value  = values[paramIds.findIndex(id => id == 'value'   )];
+        const round  = values[paramIds.findIndex(id => id == 'round'   )];
+        const points = values[paramIds.findIndex(id => id == 'points'  )];
+        const convex = values[paramIds.findIndex(id => id == 'convex'  )];
 
-        this.paramPosition.setValue(pos,          false, true, false);
-        this.paramX       .setValue(x,            false, true, false);
-        this.paramY       .setValue(y,            false, true, false);
-        this.paramWidth   .setValue(width,        false, true, false);
-        this.paramHeight  .setValue(height,       false, true, false);
-        this.paramRound   .setValue(value.round,  false, true, false);
-        this.paramPoints  .setValue(value.points, false, true, false);
-        this.paramConvex  .setValue(value.convex, false, true, false);
+        this.paramPosition.setValue(pos,    false, true, false);
+        this.paramX       .setValue(x,      false, true, false);
+        this.paramY       .setValue(y,      false, true, false);
+        this.paramWidth   .setValue(width,  false, true, false);
+        this.paramHeight  .setValue(height, false, true, false);
+        this.paramRound   .setValue(round,  false, true, false);
+        this.paramPoints  .setValue(points, false, true, false);
+        this.paramConvex  .setValue(convex, false, true, false);
     }
 
 

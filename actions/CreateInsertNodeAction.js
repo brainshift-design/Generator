@@ -191,6 +191,9 @@ function createInsertNodeAction_savePrevConnections(act)
 
     for (const selNode of selNodes)
     {
+        if (isEmpty(selNode.headerOutputs))
+            continue;
+
         const output = selNode.headerOutputs[0];
 
         for (const input of output.connectedInputs)

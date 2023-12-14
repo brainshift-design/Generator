@@ -72,10 +72,12 @@ extends GOperator1
         this.updateValueObjects();
 
 
+        const type = this.outputType();
+        
         this.setUpdateValues(parse,
         [
-            ['type',    this.outputType()],
-            ['name',    name             ]
+            ['type', type],
+            ['name', name]
         ]);
         
 
