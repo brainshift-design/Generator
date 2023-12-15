@@ -74,8 +74,8 @@ Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFacto
     const defOffset    = this.getDefaultOffset();
 
 
-    if (   rect.width > rw
-        && this.type != PANEL)
+    if (   rect.width > rw)
+        //&& this.type != PANEL)
     {
         this.label.style.left = 
             11 
