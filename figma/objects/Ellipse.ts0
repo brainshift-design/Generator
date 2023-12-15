@@ -52,12 +52,6 @@ function figUpdateEllipse(figEllipse, genEllipse, isValid = false)
         updatePointObject(figEllipse);
     else
         setObjectProps(figEllipse, genEllipse);
-    
-    
-    // setObjectProps(figEllipse, genEllipse);
-
-
-    actualObjectCount++;
 }
 
 

@@ -38,7 +38,4 @@ function figUpdateVectorNetwork(figNetwork, genNetwork, isValid = false)
 
     setObjectTransform(figNetwork, genNetwork, false);
     setObjectProps    (figNetwork, genNetwork);
-
-
-    actualObjectCount++;
 }

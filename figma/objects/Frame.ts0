@@ -42,8 +42,6 @@ function figUpdateFrame(figFrame, genFrame)
 {
     figUpdateFrameData(figFrame, genFrame);
 
-    actualObjectCount++;
-
     figUpdateObjects(
         figFrame, 
         genFrame[FO_FRAME_CHILDREN], 

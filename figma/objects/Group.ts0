@@ -37,9 +37,6 @@ function figUpdateShapeGroup(figGroup, genGroup)
     }
 
 
-    actualObjectCount++;
-
-
     figUpdateObjects(
         figGroup, 
         genGroup[FO_GROUP_CHILDREN],

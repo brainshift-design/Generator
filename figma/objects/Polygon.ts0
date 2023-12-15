@@ -38,7 +38,4 @@ function figUpdatePolygon(figPoly, genPoly, isValid = false)
 
     setObjectTransform(figPoly, genPoly);
     setObjectProps    (figPoly, genPoly);
-
-
-    actualObjectCount++;
 }

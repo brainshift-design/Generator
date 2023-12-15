@@ -40,7 +40,4 @@ function figUpdateStar(figStar, genStar, isValid = false)
 
     setObjectTransform(figStar, genStar);
     setObjectProps    (figStar, genStar);
-
-
-    actualObjectCount++;
 }

@@ -15,7 +15,6 @@ extends OpShape
         super(FRAME, 'frame', 'frame', iconFrame);
 
         this.canDisable     = true;
-        this.variableInputs = true;
         this.iconOffsetY    = -1;
 
 

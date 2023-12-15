@@ -57,7 +57,4 @@ function figUpdateBoolean(figBool, genBool, isValid = false)
         figBool, 
         genBool.children, 
         genBool.children.length);
-
-
-    actualObjectCount++;
 }

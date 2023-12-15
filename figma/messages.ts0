@@ -102,6 +102,8 @@ figma.ui.onmessage = function(msg)
             nominalObjectCount = 0;
             actualObjectCount  = 0;
             
+            msg.objects.forEach(o => o.counted = false);
+            
             figUpdateObjects(
                 null, 
                 msg.objects, 

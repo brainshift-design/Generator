@@ -48,7 +48,4 @@ function figUpdateRect(figRect, genRect, isValid = false)
 
     setObjectTransform(figRect, genRect);
     setObjectProps    (figRect, genRect);
-
-
-    actualObjectCount++;
 }

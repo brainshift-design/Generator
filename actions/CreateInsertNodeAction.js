@@ -94,6 +94,8 @@ extends Action
 
     do_insert(node)
     {
+        //console.log('insert');
+
         const selNode   = nodeFromId(this.prevSelectedIds[0]);
         const selOutput = selNode.headerOutputs[0];
 
@@ -133,8 +135,12 @@ extends Action
 
     do_noInsert(node)
     {
+        //console.log('no insert');
+
         if (node.variableInputs)
         {
+            //console.log('variable inputs');
+
             const selNodes = this.prevSelectedIds.map(id => nodeFromId(id)).filter(n => n.headerOutputs.length > 0);
 
             if (selNodes.length > 0)
@@ -156,6 +162,8 @@ extends Action
         }
         else
         {
+            //console.log('regular inputs');
+
             const selNode = nodeFromId(this.prevSelectedIds[0]);
 
             if (   selNode

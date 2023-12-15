@@ -2658,8 +2658,6 @@ function figUpdateObjects(figParent, genObjects, batchSize, totalObjects = -1, n
                 figma.viewport.zoom = Math.min(figma.viewport.bounds.width * figma.viewport.zoom / bounds.width - 0.05, figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
             }
         }
-        console.log('nominalObjectCount =', nominalObjectCount);
-        console.log('actualObjectCount =', actualObjectCount);
         yield figGetValueFromUiSync('returnObjectUpdate', {
             nominalObjectCount: nominalObjectCount,
             actualObjectCount: actualObjectCount

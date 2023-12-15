@@ -3965,9 +3965,6 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
     }
 
 
-    console.log('nominalObjectCount =', nominalObjectCount);
-    console.log('actualObjectCount =', actualObjectCount);
-
     await figGetValueFromUiSync(
         'returnObjectUpdate', 
         { 

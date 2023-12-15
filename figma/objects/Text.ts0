@@ -93,9 +93,6 @@ function figUpdateText_(figText, genText, fontName)
     setObjectProps    (figText, genText);
 
 
-    actualObjectCount++;
-
-
     // const xp0 = genText[FO_XP0];
     // const xp1 = genText[FO_XP1];
     // const xp2 = genText[FO_XP2];

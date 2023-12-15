@@ -30,7 +30,4 @@ function figUpdateLine(figLine, genLine, isValid = false)
 
     setObjectTransform(figLine, genLine, true, 0);
     setObjectProps    (figLine, genLine);
-
-
-    actualObjectCount++;
 }

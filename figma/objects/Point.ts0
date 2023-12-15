@@ -29,10 +29,7 @@ function figCreatePoint(genPoint)
 
     
     if (figPoints.includes(figPoint))
-    {
         updatePointObject_(figPoint, genPoint);
-        actualObjectCount++;
-    }
     else
         figUpdatePoint(figPoint, genPoint);
 
@@ -46,8 +43,6 @@ function figUpdatePoint(figPoint, genPoint)
 {
     setPointTransform(figPoint, genPoint);
     updatePointStyles(figPoint);
-
-    actualObjectCount++;
 }
 
 
