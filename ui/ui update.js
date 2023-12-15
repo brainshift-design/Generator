@@ -4,8 +4,6 @@ var totalObjectProgress = 1;
 
 var objectProgressTimer = null;
 
-//var undoActions         = [];
-
 
 
 function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, objectBatchSize, totalObjects, values, objects, styles, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
@@ -153,12 +151,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         
     if (isLastChunk)
     {
-        // for (const act of undoActions)
-        //     act.restoreOldConnections();
-
-        // undoActions = [];
-
-
         if (graphView.loadingNodes)
         {
             if (save)

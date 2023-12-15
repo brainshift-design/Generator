@@ -23,7 +23,7 @@
     pointer-events: none;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
     z-index:        10;
-    transition:     opacity 0.2s linear 0s;
+    transition:     opacity 0.3s linear 0s;
     /* box-shadow:     0 0 0 1px yellow inset; */
 }
 

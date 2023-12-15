@@ -94,8 +94,8 @@ function deleteNodesAction_getUpdateNodes(act, updateNodes)
         for (let i = nodeInputs.length-1; i >= 0; i--)
         {
             const input       = nodeInputs[i];
-            const output      = input.connectedOutput;
-            const outputOrder = input.connection.outputOrder;
+            //const output      = input.connectedOutput;
+            //const outputOrder = input.connection.outputOrder;
             
             uiDeleteSavedConn(input.connection);
             pushUnique(updateNodes, deleteNodesAction_disconnect(act, input, act.nodeIds));
@@ -180,7 +180,7 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
     // }
 
 
-    pushUnique(updateNodes, terminalsRight);
+    pushUnique(updateNodes, terminalsRight.filter(n => !ignoreNodeIds.includes(n.id)));
 
     
     return updateNodes;

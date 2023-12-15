@@ -155,7 +155,7 @@ function genRequest(request, save)
 
 
         await genUpdateValuesAndObjects(
-            requestId,
+            parse.requestId,
             settings.loadingNodes,
             actionId,
             objectBatchSize,
@@ -231,7 +231,6 @@ function genPushUpdateColorStyle(parse, style)
 
 function clearLastUpdate()
 {
-    lastRequestId     = -1;
     lastUpdateNodeId  =  NULL;
     lastUpdateParamId =  NULL;
 
@@ -248,7 +247,6 @@ async function genUpdateValuesAndObjects(requestId, loadingNodes, actionId, obje
         && isEmpty(updateObjects)
         && isEmpty(updateStyles ))
     {
-        requestId     = lastRequestId;
         updateNodeId  = lastUpdateNodeId;
         updateParamId = lastUpdateParamId;
         
@@ -260,7 +258,6 @@ async function genUpdateValuesAndObjects(requestId, loadingNodes, actionId, obje
     }
     else if (genFigMessagePosted)
     {
-        lastRequestId     = requestId;
         lastUpdateNodeId  = updateNodeId;
         lastUpdateParamId = updateParamId;
 
@@ -397,7 +394,10 @@ async function genUpdateValuesAndObjects(requestId, loadingNodes, actionId, obje
 
 
     if (   lastChunkNotEmpty
-        || loadingNodes)
+        || loadingNodes
+        ||    isEmpty(updateValues) 
+           && isEmpty(updateObjects)
+           && isEmpty(updateStyles))
     {
         genQueueChunk(
             requestId,
