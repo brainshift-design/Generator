@@ -36,7 +36,7 @@ extends OpShape
 
         this.paramChildren.input.types.push(SHAPE_LIST_VALUE, ...SHAPE_VALUES);
         this.paramChildren.listTypes    = SHAPE_VALUES;
-        this.paramChildren.itemName     = ['object'];
+        this.paramChildren.itemName     = [];//'object'];
         this.paramChildren.showZero     = false;
         this.paramChildren.getItemCount = () => 0;
 
@@ -71,9 +71,9 @@ extends OpShape
         this.paramRound .setValue(value.round,  false, true, false);
 
 
-        const nChildren = values[paramIds.findIndex(id => id == 'nChildren')];
+        // const nChildren = values[paramIds.findIndex(id => id == 'nChildren')];
 
-        this.paramChildren.getItemCount = () => nChildren.value;
+        // this.paramChildren.getItemCount = () => nChildren.value;
         this.paramChildren.output.types = [finalListTypeFromItems(value.children.items)];
     }
 }
