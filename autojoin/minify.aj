@@ -259,8 +259,6 @@ updateScroll
 updateScrollX
 updateScrollY
 createScrollbarMethods
-scrollbarX
-scrollbarY
 checkDragOut
 updatePanAndZoom
 startPan
@@ -1494,7 +1492,6 @@ showElement
 hideElement
 getSelectedText
 clearSelectedText
-scrollbarVisible
 clientPos
 elementHasSelectedText
 selectDivText
@@ -2733,6 +2730,7 @@ _genIgnoreNodeIds
 _genIgnoreObjects
 nominalObjectCount
 actualObjectCount
+updateObjectCount
 figCreateVectorPath
 figCreateVectorNetwork
 figCreateBoolean

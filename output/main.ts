@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 321;
+const generatorVersion = 322;
 
 
 const MAX_INT32        = 2147483647;
@@ -2673,6 +2673,8 @@ figma.ui.onmessage = function(msg)
             nominalObjectCount = 0;
             actualObjectCount  = 0;
             
+            msg.objects.forEach(o => o.counted = false);
+            
             figUpdateObjects(
                 null, 
                 msg.objects, 
@@ -3704,7 +3706,13 @@ function figCreateObject(genObj, addObject = null)
             addObject(figObj);
         }
     }
-        
+
+    
+    if (!genObj.counted)
+    {
+        actualObjectCount++;
+        genObj.counted = true;
+    }
 
     return figObj;
 }
@@ -3751,6 +3759,13 @@ function figUpdateObject(figObj, genObj)
         if (genObj[FO_DECO])
             updateDecoObject(figObj);
     }
+
+
+    if (!genObj.counted)
+    {
+        actualObjectCount++;
+        genObj.counted = true;
+    }
 }
 
 
@@ -3768,7 +3783,9 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
 
     _genIgnoreNodeIds.push(...nodeIds);
 
-    nominalObjectCount = totalObjects;
+
+    if (totalObjects > -1)
+        nominalObjectCount = totalObjects;
 
 
     for (const genObj of genObjects)
@@ -3814,7 +3831,7 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
         let figObj = objects.find(o => 
                o.removed
             ||    o.getPluginData('userId'   ) == figma.currentUser.id
-               //&& o.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
+             //&& o.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
                && o.getPluginData('objectId' ) == genObj[FO_OBJECT_ID]);
 
 
@@ -3947,6 +3964,9 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
         }
     }
 
+
+    console.log('nominalObjectCount =', nominalObjectCount);
+    console.log('actualObjectCount =', actualObjectCount);
 
     await figGetValueFromUiSync(
         'returnObjectUpdate', 
@@ -5073,9 +5093,6 @@ function figUpdateBoolean(figBool, genBool, isValid = false)
         figBool, 
         genBool.children, 
         genBool.children.length);
-
-
-    actualObjectCount++;
 }
 
 
@@ -5133,12 +5150,6 @@ function figUpdateEllipse(figEllipse, genEllipse, isValid = false)
         updatePointObject(figEllipse);
     else
         setObjectProps(figEllipse, genEllipse);
-    
-    
-    // setObjectProps(figEllipse, genEllipse);
-
-
-    actualObjectCount++;
 }
 
 
@@ -5202,8 +5213,6 @@ function figUpdateFrame(figFrame, genFrame)
 {
     figUpdateFrameData(figFrame, genFrame);
 
-    actualObjectCount++;
-
     figUpdateObjects(
         figFrame, 
         genFrame[FO_FRAME_CHILDREN], 
@@ -5260,9 +5269,6 @@ function figUpdateShapeGroup(figGroup, genGroup)
     }
 
 
-    actualObjectCount++;
-
-
     figUpdateObjects(
         figGroup, 
         genGroup[FO_GROUP_CHILDREN],
@@ -5303,9 +5309,6 @@ function figUpdateLine(figLine, genLine, isValid = false)
 
     setObjectTransform(figLine, genLine, true, 0);
     setObjectProps    (figLine, genLine);
-
-
-    actualObjectCount++;
 }
 
 
@@ -5341,10 +5344,7 @@ function figCreatePoint(genPoint)
 
     
     if (figPoints.includes(figPoint))
-    {
         updatePointObject_(figPoint, genPoint);
-        actualObjectCount++;
-    }
     else
         figUpdatePoint(figPoint, genPoint);
 
@@ -5358,8 +5358,6 @@ function figUpdatePoint(figPoint, genPoint)
 {
     setPointTransform(figPoint, genPoint);
     updatePointStyles(figPoint);
-
-    actualObjectCount++;
 }
 
 
@@ -5472,9 +5470,6 @@ function figUpdatePolygon(figPoly, genPoly, isValid = false)
 
     setObjectTransform(figPoly, genPoly);
     setObjectProps    (figPoly, genPoly);
-
-
-    actualObjectCount++;
 }
 
 
@@ -5529,9 +5524,6 @@ function figUpdateRect(figRect, genRect, isValid = false)
 
     setObjectTransform(figRect, genRect);
     setObjectProps    (figRect, genRect);
-
-
-    actualObjectCount++;
 }
 
 
@@ -5578,9 +5570,6 @@ function figUpdateStar(figStar, genStar, isValid = false)
 
     setObjectTransform(figStar, genStar);
     setObjectProps    (figStar, genStar);
-
-
-    actualObjectCount++;
 }
 
 
@@ -5680,9 +5669,6 @@ function figUpdateText_(figText, genText, fontName)
     setObjectProps    (figText, genText);
 
 
-    actualObjectCount++;
-
-
     // const xp0 = genText[FO_XP0];
     // const xp1 = genText[FO_XP1];
     // const xp2 = genText[FO_XP2];
@@ -5742,9 +5728,6 @@ function figUpdateVectorNetwork(figNetwork, genNetwork, isValid = false)
 
     setObjectTransform(figNetwork, genNetwork, false);
     setObjectProps    (figNetwork, genNetwork);
-
-
-    actualObjectCount++;
 }
 
 
@@ -5786,8 +5769,5 @@ function figUpdateVectorPath(figPath, genPath, isValid = false)
 
     setObjectTransform(figPath, genPath, false);
     setObjectProps    (figPath, genPath);
-
-
-    actualObjectCount++;
 }
 

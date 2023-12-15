@@ -32,9 +32,15 @@ extends FigmaShape
 
     getCount()
     {
-        return this.children.length > 0
-             ? super.getCount() + this.children.length
-             : 0;
+        let nObjects =
+            this.children.length > 0
+            ? super.getCount()
+            : 0;
+
+        for (const obj of this.children)
+            nObjects += obj.getCount();
+
+        return nObjects;
     }
 
 

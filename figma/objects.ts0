@@ -76,7 +76,13 @@ function figCreateObject(genObj, addObject = null)
             addObject(figObj);
         }
     }
-        
+
+    
+    if (!genObj.counted)
+    {
+        actualObjectCount++;
+        genObj.counted = true;
+    }
 
     return figObj;
 }
@@ -123,6 +129,13 @@ function figUpdateObject(figObj, genObj)
         if (genObj[FO_DECO])
             updateDecoObject(figObj);
     }
+
+
+    if (!genObj.counted)
+    {
+        actualObjectCount++;
+        genObj.counted = true;
+    }
 }
 
 
@@ -140,7 +153,9 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
 
     _genIgnoreNodeIds.push(...nodeIds);
 
-    nominalObjectCount = totalObjects;
+
+    if (totalObjects > -1)
+        nominalObjectCount = totalObjects;
 
 
     for (const genObj of genObjects)
@@ -186,7 +201,7 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
         let figObj = objects.find(o => 
                o.removed
             ||    o.getPluginData('userId'   ) == figma.currentUser.id
-               //&& o.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
+             //&& o.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
                && o.getPluginData('objectId' ) == genObj[FO_OBJECT_ID]);
 
 
@@ -319,6 +334,9 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
         }
     }
 
+
+    console.log('nominalObjectCount =', nominalObjectCount);
+    console.log('actualObjectCount =', actualObjectCount);
 
     await figGetValueFromUiSync(
         'returnObjectUpdate', 

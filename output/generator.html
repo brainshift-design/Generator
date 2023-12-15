@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 321;
+const generatorVersion = 322;
 
 
 const MAX_INT32        = 2147483647;
@@ -8018,9 +8018,15 @@ extends FigmaShape
 
     getCount()
     {
-        return this.children.length > 0
-             ? super.getCount() + this.children.length
-             : 0;
+        let nObjects =
+            this.children.length > 0
+            ? super.getCount()
+            : 0;
+
+        for (const obj of this.children)
+            nObjects += obj.getCount();
+
+        return nObjects;
     }
 
 
@@ -8116,7 +8122,12 @@ extends FigmaShape
 
     getCount()
     {
-        return super.getCount() + this.children.length;
+        let nObjects = super.getCount();
+
+        for (const obj of this.children)
+            nObjects += obj.getCount();
+
+        return nObjects;
     }
 
 
@@ -22403,7 +22414,7 @@ extends GOperator1
                 this.value = input;
         }
         else
-            this.value = NumberValue.NaN.copy()
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse, 
