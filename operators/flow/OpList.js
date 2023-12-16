@@ -63,23 +63,15 @@ extends ResizableBase
         {
             if (this.scrollbar.down)
             {
-                const totalHeight = this.measureData.divOffset.height - defHeaderHeight;
-
-                const scrollHeight = 
-                          (totalHeight - 10)
-                        *  totalHeight / this.measureData.paramOffset.height;
-        
-                const max = 
-                      this.measureData.innerOffset.height
-                    - scrollHeight
-                    - defHeaderHeight;
+                const maxScroll = 
+                       this.measureData.paramOffset.height
+                    - (this.measureData.divOffset.height - defParamHeight - 10);
 
                 this.scroll = -Math.min(Math.max(
                     0, 
                     this.scrollbar.spy + (e.clientY - this.scrollbar.sy)),
-                    max);
+                    maxScroll);
 
-                    
                 this.updateScrollbar();
 
 
@@ -111,19 +103,6 @@ extends ResizableBase
 
 
 
-    // setSize(w, h, updateTransform = true)
-    // {
-    //     super.setSize(
-    //         w, 
-    //         Math.min(h, defHeaderHeight + this.params.length * defParamHeight), 
-    //         updateTransform);
-
-    //     this.updateScrollbar();
-    //     this.updateNode();
-    // }
-
-
-
     setRect(x, y, w, h, updateTransform = true)
     {
         super.setRect(
@@ -135,7 +114,13 @@ extends ResizableBase
                 Math.max(h, defHeaderHeight)),
             updateTransform);
 
+        const maxScroll = 
+               this.measureData.paramOffset.height
+            - (this.measureData.divOffset.height - defParamHeight - 10);
 
+        if (this.scroll < -maxScroll)
+                this.scroll = -maxScroll;
+            
         this.updateScrollbar();
         this.updateNode();
     }
@@ -144,9 +129,6 @@ extends ResizableBase
 
     isOrPrecededByUncached()
     {
-        // if (this.nodeId == 'list')
-        //     console.log('this.outputs[0].isLooped() =', this.outputs[0].isLooped());
-
         return this.outputs[0].isLooped();
     }
 
@@ -311,10 +293,15 @@ extends ResizableBase
             this.scrollbar.style.display = 'block';
             
             this.scrollbar.style.left = this.measureData.divOffset.width - 20;
-            this.scrollbar.style.top  = defHeaderHeight + 5 - this.scroll;
+
+            this.scrollbar.style.top = 
+                  defHeaderHeight + 5 
+                -    this.scroll
+                  /  this.measureData.paramOffset.height
+                  * (this.measureData.divOffset.height - defParamHeight - 10);
 
             this.scrollbar.style.height = Math.max(0,
-                  (totalHeight - 10)
+                  totalHeight
                 *  totalHeight / this.measureData.paramOffset.height
                 - 10);
 

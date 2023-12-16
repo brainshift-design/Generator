@@ -119,6 +119,8 @@ class ActionManager
 
     clear()
     {
+        //console.log('actionManager.clear()');
+        
         this.actions       = [];
         this.redoActions   = [];
         this.updateActions = [];

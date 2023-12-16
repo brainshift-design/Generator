@@ -2713,6 +2713,12 @@ figCreateText
 figUpdateText
 figUpdateText_
 genText
+genPath
+figPath
+genStar
+figStar
+genNetwork
+figNetwork
 figObjectArrays
 figObjArray
 figStyleArrays
@@ -3710,6 +3716,11 @@ savedColor
 stackOverflowProtect
 toInteger
 createDefaultTransformPoints
+transformPoint
+createSpaceTransform
+showTextTooltips
+showListTooltips
+getSpreadBias
 uniqueId
 addChildObject
 copyFigmaObject

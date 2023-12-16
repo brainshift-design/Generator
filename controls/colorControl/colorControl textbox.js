@@ -135,8 +135,8 @@ ColorControl.prototype.initTextbox = function()
                 && this.textbox.selectionStart > 0)
                 this.textbox.selectionStart--;
 
-            const iStart =  Math.floor(this.textbox.selectionStart / 2);
-            let   iEnd   =  Math.ceil (this.textbox.selectionEnd   / 2);
+            const iStart = Math.floor(this.textbox.selectionStart / 2);
+            let   iEnd   = Math.ceil (this.textbox.selectionEnd   / 2);
 
             if (iStart == iEnd) iEnd++;
 
@@ -178,7 +178,7 @@ ColorControl.prototype.initTextbox = function()
             else
             {
                 if (  !isEmpty(actionManager.actions)
-                    && actionManager.actions.at(-1).type == SET_PARAM_VALUE_ACTION
+                    && actionManager.actions.at(-1).type  == SET_PARAM_VALUE_ACTION
                     && actionManager.actions.at(-1).param == this.param)
                     actionManager.undo();
                 else

@@ -138,8 +138,20 @@ document.addEventListener('keydown', e =>
           && !document.button0
           && isEmpty(currentMenus))
     {
-             if (e.shiftKey && !actionManager.redoing) actionManager.redo();
-        else if (              !actionManager.undoing) actionManager.undo();
+        if (e.shiftKey && !actionManager.redoing) 
+        { 
+            // console.log('redo');
+            // e.preventDefault();
+            // e.stopImmediatePropagation(); 
+            actionManager.redo(); 
+        }
+        else if (!actionManager.undoing) 
+        { 
+            // console.log('undo');
+            // e.preventDefault();
+            // e.stopImmediatePropagation(); 
+            actionManager.undo(); 
+        }
 
         setLastKeyDown = false;
     }

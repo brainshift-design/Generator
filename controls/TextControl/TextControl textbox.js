@@ -128,6 +128,12 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
             this.updateTextBehind();
         }
 
+        else if (e.code == 'KeyZ'
+            && getCtrlKey(e))
+        {
+            // e.stopImmediatePropagation();
+        }
+
         // else if (e.code == 'KeyZ'
         //       && getCtrlKey(e)
         //       && !e.shiftKey)
@@ -251,11 +257,11 @@ TextControl.prototype.showTextarea = function()
         && !this.clicked;
 
         
-    this.focus.style.visibility = 'hidden';
-    this.focus.style.opacity    = 0;
+    this.focus  .style.visibility = 'hidden';
+    this.focus  .style.opacity    = 0;
 
-    this.textbox   .style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
-    this.textbox   .style.outline   = 'none';
+    this.textbox.style.boxShadow  = '0 0 0 1px var(--figma-color-bg-brand)';
+    this.textbox.style.outline    = 'none';
 
 
     this.updateTextarea();
