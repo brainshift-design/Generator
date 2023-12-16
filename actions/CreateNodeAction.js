@@ -35,14 +35,17 @@ extends Action
 
     do(updateNodes)
     {
+        console.log('0');
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
 
+        console.log('1');
         graphView.creatingNodes = true;
 
         this.node = createNode(this.nodeType, this.creatingButton, this.createdId, this.options);
         
 
+        console.log('2');
         const autoConnect = 
                 this.autoConnect
             && !isEmpty(this.prevSelectedIds)
@@ -51,6 +54,7 @@ extends Action
             && this.options.autoConnect;
 
             
+        console.log('3');
         graph.addNode(
             this.node, 
             !autoConnect, 
@@ -63,24 +67,30 @@ extends Action
 
         if (autoConnect)
         {
+            console.log('4');
             this.oldInputActiveNodeId = idFromNode(getActiveFromNodeId(this.prevSelectedIds[0]));
 
+            console.log('5');
             const selNode = nodeFromId(this.prevSelectedIds[0]);
             const inputs  = this.node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
             
+            console.log('6');
             if (!isEmpty(inputs))
             {
+                console.log('7');
                 const conn = createNodeAction_connect(this, selNode.outputs[0], this.node, inputs[0].id);
                 graphView.autoPlaceNewNode(conn.output, conn.input);
             }
         }
 
 
+        console.log('8');
         graphView.lastSelectedNodes = graphView.selectedNodes;
         graphView.selectedNodes     = [this.node];
 
         uiMakeNodeActive(this.node);
         pushUnique(updateNodes, this.node);
+        console.log('9');
     }
 
 

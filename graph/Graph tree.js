@@ -266,6 +266,8 @@ function getActiveInBranchFromNode(node, alreadyChecked = [])
         && !alreadyChecked.includes(node)) 
         return node;
 
+    pushUnique(alreadyChecked, node);
+
 
     const nodeInputs = [...node.inputs.filter(i => i.connected)];
 
@@ -275,7 +277,7 @@ function getActiveInBranchFromNode(node, alreadyChecked = [])
     {
         const leftActive = getActiveInBranchFromNode(
             nodeInputs[0].connectedOutput.node, 
-            [...alreadyChecked, node]);
+            alreadyChecked);
 
         if (leftActive) return leftActive;
     }
@@ -290,7 +292,7 @@ function getActiveInBranchFromNode(node, alreadyChecked = [])
     {
         const rightActive = getActiveInBranchFromNode(
             nodeOutputs[0].connectedInputs[0].node, 
-            [...alreadyChecked, node]);
+            alreadyChecked);
 
         if (rightActive) return rightActive;
     }
@@ -307,8 +309,10 @@ function getActiveFromNode(node, alreadyChecked = [])
         && !alreadyChecked.includes(node)) 
         return node;
 
+    pushUnique(alreadyChecked, node);
 
-    const leftActive = getActiveBeforeNode(node, [...alreadyChecked]);
+
+    const leftActive = getActiveBeforeNode(node, alreadyChecked);
     if (leftActive) return leftActive;
 
 
@@ -320,7 +324,7 @@ function getActiveFromNode(node, alreadyChecked = [])
             {
                 const rightActive = getActiveFromNode(
                     input.node, 
-                    [...alreadyChecked, node]);
+                    alreadyChecked);
 
                 if (rightActive) return rightActive;
             }
@@ -342,6 +346,8 @@ function getActiveBeforeNode(node, alreadyChecked = [])
         && !alreadyChecked.includes(node)) 
         return node;
 
+    pushUnique(alreadyChecked, node);
+
 
     for (const input of node.inputs)//headerInputs)
     {
@@ -351,7 +357,7 @@ function getActiveBeforeNode(node, alreadyChecked = [])
         {
             const leftActive = getActiveFromNode(
                 input.connectedOutput.node, 
-                [...alreadyChecked, node]);
+                alreadyChecked);
 
             if (leftActive) return leftActive;
         }
@@ -371,6 +377,8 @@ function getActiveOnlyBeforeNode(node, alreadyChecked = [])
         && !alreadyChecked.includes(node)) 
         return node;
 
+    pushUnique(alreadyChecked, node);
+
 
     for (const input of node.inputs)//headerInputs)
     {
@@ -380,7 +388,7 @@ function getActiveOnlyBeforeNode(node, alreadyChecked = [])
         {
             const leftActive = getActiveOnlyBeforeNode(
                 input.connectedOutput.node, 
-                [...alreadyChecked, node]);
+                alreadyChecked);
 
             if (leftActive) return leftActive;
         }
@@ -398,11 +406,14 @@ function getActiveAfterNode(node, includeParams = false, alreadyChecked = [])
         && !alreadyChecked.includes(node)) 
         return node;
 
+    pushUnique(alreadyChecked, node);
+
 
     const outputs = 
         includeParams 
         ? node.outputs 
         : node.headerOutputs;
+
 
     for (const output of outputs)
     {
@@ -418,7 +429,7 @@ function getActiveAfterNode(node, includeParams = false, alreadyChecked = [])
                 const rightActive = getActiveAfterNode(
                     input.node, 
                     includeParams,
-                    [...alreadyChecked, node]);
+                    alreadyChecked);
 
                 if (rightActive) return rightActive;
             }
@@ -439,13 +450,15 @@ function getActiveNodesFromNode(node, alreadyChecked = [])
     if (node.active)
         activeNodes.push(node);
 
+    pushUnique(alredyChecked, node);
+
 
     for (const input of node.inputs)//headerInputs)
     {
         if (    input.connected
             //&& !input.connectedOutput.param
             && !alreadyChecked.includes(input.connectedOutput.node))
-            pushUnique(activeNodes, getActiveNodesFromNode(input.connectedOutput.node, [...alreadyChecked, node]));
+            pushUnique(activeNodes, getActiveNodesFromNode(input.connectedOutput.node, alreadyChecked));
     }
 
 
@@ -454,7 +467,7 @@ function getActiveNodesFromNode(node, alreadyChecked = [])
         for (const input of output.connectedInputs)//.filter(i => !i.param))
         {
             if (!alreadyChecked.includes(input.node))
-                pushUnique(activeNodes, getActiveNodesFromNode(input.node, [...alreadyChecked, node]));
+                pushUnique(activeNodes, getActiveNodesFromNode(input.node, alreadyChecked));
         }
     }
 

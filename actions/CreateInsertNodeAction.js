@@ -94,7 +94,7 @@ extends Action
 
     do_insert(node)
     {
-        //console.log('insert');
+        // console.log('insert');
 
         const selNode   = nodeFromId(this.prevSelectedIds[0]);
         const selOutput = selNode.headerOutputs[0];
@@ -135,7 +135,7 @@ extends Action
 
     do_noInsert(node)
     {
-        //console.log('no insert');
+        // console.log('no insert');
 
         if (node.variableInputs)
         {
@@ -192,8 +192,15 @@ function createInsertNodeAction_savePrevConnections(act)
 {
     if (act.prevSelectedIds.length == 0)
         return;
+
         
-    act.oldInputActiveNodeIds = act.prevSelectedIds.map(id => idFromNode(getActiveFromNodeId(id)));
+    act.oldInputActiveNodeIds = act.prevSelectedIds.map(id => 
+    {
+        const _active = getActiveFromNodeId(id);
+        const _id = idFromNode(_active);
+        return _id;
+    });
+
 
     const selNodes = act.prevSelectedIds.map(id => nodeFromId(id));
 

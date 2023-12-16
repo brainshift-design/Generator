@@ -22,7 +22,9 @@ function setNodeId(nodeId, newId)
 
 function getActiveFromNodeId(nodeId, alreadyChecked = [])
 {
-    return getActiveFromNode(nodeFromId(nodeId), alreadyChecked);
+    const node = nodeFromId(nodeId);
+    const active = getActiveFromNode(node, alreadyChecked);
+    return active;
 }
 
 
