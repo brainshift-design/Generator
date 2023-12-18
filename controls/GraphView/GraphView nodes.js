@@ -243,7 +243,6 @@ GraphView.prototype.copySelectedNodesAsJavascript = function()
     }
 
     
-    //console.log(js);
     writeTextToClipboard(js);
 };
 
@@ -253,13 +252,11 @@ GraphView.prototype.pasteCopiedNodes = function(pasteConnected, clientX = Number
 {
     readTextFromClipboard().then(text =>
     {
-        if (text == '')
-            return;
+        if (text == '') return;
 
         const x = (clientX - graph.currentPage.pan.x) / graph.currentPage.zoom;
         const y = (clientY - graph.currentPage.pan.y) / graph.currentPage.zoom;
 
-        
         actionManager.do(new PasteNodesAction(text, pasteConnected, false, false, x, y));
     });
 };

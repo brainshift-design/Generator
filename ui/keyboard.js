@@ -91,7 +91,34 @@ document.addEventListener('keydown', e =>
           && !e.altKey)
     {  
         e.preventDefault();
-        graphView.pasteCopiedNodes(e.shiftKey);
+
+        readTextFromClipboard().then(text =>
+        {
+            if (text == '') return;
+
+            try
+            {
+                // const data   = JSON.parse(copiedNodesJson);
+                // let   bounds = new Rect();
+
+                // for (const _node of data.nodes)
+                // {
+                //     const node = nodeFromId(_node.id);
+
+                //     bounds = expandRect(bounds, new Rect(
+                //         node.x,
+                //         node.y,
+                //         node.width,
+                //         node.height));
+                // }
+                
+                graphView.pasteCopiedNodes(
+                    e.shiftKey, 
+                    (graphView.div.offsetWidth ) / 2, 
+                    (graphView.div.offsetHeight) / 2 + getTopHeight());
+            }
+            catch (e) {}
+        });
     }    
 
     // duplicate

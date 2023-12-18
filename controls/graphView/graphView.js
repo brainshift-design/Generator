@@ -9,8 +9,8 @@ class GraphView
 
 
     wires              = [];
-    
- 
+
+
     creatingNodes      = false;
     loadingNodes       = false;
     pastingNodes       = false;
@@ -28,7 +28,7 @@ class GraphView
     overNode           = null;
     overInput          = null;
     overOutput         = null;
-        
+
     headerInput        = null; // same as overInput, but when snapping from a header
     headerOutput       = null; // same as overOutput, but when snapping from a header
         
@@ -41,7 +41,7 @@ class GraphView
 
     soloMode           = false;
     _soloNode          = null;
-    
+
     selecting          = false;
     selectionRect      = Rect.NaN;
 

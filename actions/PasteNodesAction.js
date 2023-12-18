@@ -63,7 +63,15 @@ extends Action
         this.prevSelectedNodeIds = graphView.selectedNodes.map(n => n.id);
 
 
-        const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, true, this.pasteConnected, this.x, this.y, updateNodes, this.zoomToFitNodes, this.zoomToFitObjects);
+        const [nodes, _conns] = uiPasteNodes(
+            this.copiedNodesJson, 
+            true,
+            this.pasteConnected, 
+            this.x, 
+            this.y, 
+            updateNodes, 
+            this.zoomToFitNodes, 
+            this.zoomToFitObjects);
 
         
         pushUnique(this.newConnectionData, _conns);
