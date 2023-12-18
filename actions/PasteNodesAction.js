@@ -75,6 +75,8 @@ extends Action
             if (terminal.active) uiMakeNodeActive(terminal);
 
 
+        const createTime = Date.now();
+
         for (const conn of _conns)
         {
             if (   this.pasteConnected
@@ -93,6 +95,7 @@ extends Action
                         formatConnJson(
                             '', 
                             HTAB,
+                            createTime,
                             conn.outputNodeId,
                             conn.outputId,
                             conn.outputOrder,

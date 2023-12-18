@@ -1,5 +1,8 @@
 class Connection
 {
+    createTime;
+    updateTime;
+
     static nextId = 0;
 
     id;
@@ -24,6 +27,8 @@ class Connection
 
     constructor(output, input)
     {
+        this.createTime  = Date.now();
+
         this.id          = Connection.nextId++;
 
         this.output      = output;
@@ -44,6 +49,7 @@ class Connection
         const json = formatConnJson(
             pos, 
             tab,
+            this.createTime,
             (this.stripIdForCopy ? this.output.node.nodeId : this.output.node.id),
             this.output.node.getOutputId(this.output), //(this.output.param ? this.output.param.id : this.output.index),
             this.outputOrder,
@@ -62,6 +68,7 @@ class Connection
     {
         return {
             id:           this.id,
+            created:      this.createTime,
             outputNodeId: this.output.node.id,
             outputId:     this.output.node.getOutputId(this.output),
             outputOrder:  this.outputOrder,
@@ -74,8 +81,10 @@ class Connection
 
 
 
-function parseConnectionJsonAndConnect(_conn, pasteConnected)
+function parseConnectionJsonAndConnect(_conn, pasteConnected, _createTime = -1)
 {
+    const createTime  = _conn.created ? parseInt(_conn.created) : _createTime;
+
     const outputNode  = nodeFromId(pageIdFromPath(_conn.outputNodeId) == NULL ? makeNodePath(nodeFromId(_conn.outputNodeId)) : _conn.outputNodeId);
     const outputId    = _conn.outputId;
     const outputOrder = parseInt(_conn.outputOrder);
@@ -89,17 +98,6 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
         || !inputNode  
         || !inputNode.inputFromId(inputId))
     {
-        // console.log('-1-');
-        // console.log('outputNode =', outputNode);
-        // console.log('outputId =', outputId);
-        // console.log('outputNode.outputFromId(outputId) =', outputNode.outputFromId(outputId));
-        // console.log('');
-        // console.log('-2-');
-        // console.log('inputNode =', inputNode);
-        // console.log('inputId =', inputId);
-        // console.log('inputNode.inputFromId(inputId) =', inputNode.inputFromId(inputId)  );
-        // console.log('');
-        
         uiError(
            'Cannot connect ' + connToString(_conn),
             {
@@ -114,7 +112,8 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
         const conn = uiVariableConnect(
             outputNode, outputId, //isDigit(outputId[0]) ? parseInt(outputId) : outputNode.params.find(p => p.id == outputId).output.id,
              inputNode,  inputId, //isDigit( inputId[0]) ? parseInt( inputId) :  inputNode.params.find(p => p.id ==  inputId). input.id,
-            pasteConnected ? -1 : outputOrder);
+            pasteConnected ? -1 : outputOrder,
+            createTime);
 
         _conn.outputOrder = conn.outputOrder;
 
@@ -139,11 +138,12 @@ function connDataObject(output, input)
 
 
 
-function formatConnJson(pos, tab, outputNodeId, outputId, outputOrder, inputNodeId, inputId, list)
+function formatConnJson(pos, tab, createTime, outputNodeId, outputId, outputOrder, inputNodeId, inputId, list)
 {
     return pos
          + '{'
-         +       NL + pos + tab + '"outputNodeId": "' + outputNodeId + '"'
+         +       NL + pos + tab + '"created": "'      + createTime   + '"'
+         + ',' + NL + pos + tab + '"outputNodeId": "' + outputNodeId + '"'
          + ',' + NL + pos + tab + '"outputId": "'     + outputId     + '"'
          + ',' + NL + pos + tab + '"outputOrder": "'  + outputOrder  + '"'
          + ',' + NL + pos + tab + '"inputNodeId": "'  + inputNodeId  + '"'

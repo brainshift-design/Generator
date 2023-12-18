@@ -164,6 +164,10 @@ class ActionManager
         }
 
 
+        const updateTime = Date.now();
+        updateNodes.forEach(n => n.updateTime = updateTime);
+
+
         if (act.affectsConnections)
             act.updateOldConnections();
 
@@ -198,6 +202,10 @@ class ActionManager
 
         if (isEmpty(updateNodes))
             this.undoing = false;
+
+
+        const updateTime = Date.now();
+        updateNodes.forEach(n => n.updateTime = updateTime);
 
 
         if (act.affectsConnections)

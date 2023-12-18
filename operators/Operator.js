@@ -14,6 +14,10 @@ class Operator
     get type() { return this.#type; }
     
 
+    createTime;
+    updateTime;
+
+
     id;
 
     get pageId() 
@@ -194,6 +198,9 @@ class Operator
 
     constructor(type, id, name, icon, defWidth = defNodeWidth, progressBar = false)
     {
+        this.createTime        = Date.now();
+        this.updateTime        = this.createTime;
+
         this.#type             = type;
 
         this.id                = id;
@@ -1210,6 +1217,8 @@ class Operator
 
         let json =
               pos + tab + '"type": "'      + this.type                                     + '",\n'
+            + pos + tab + '"created": "'   + this.createTime                               + '",\n'
+            + pos + tab + '"updated": "'   + this.updateTime                               + '",\n'
             + pos + tab + '"id": "'        + (this.stripIdForCopy ? this.nodeId : this.id) + '",\n'
             + pos + tab + '"name": "'      + encodeURIComponent(this.name)                 + '",\n'
             + pos + tab + '"renamed": "'   + boolToString(this.renamed)                    + '",\n'
@@ -1268,6 +1277,9 @@ class Operator
 
     loadFromParsedJson(_node, pasting)
     {
+        this.createTime = _node.created ? parseInt(_node.created) : Date.now(); 
+        this.updateTime = _node.updated ? parseInt(_node.updated) : this.createTime;
+
         this.id   = _node.id;
         this.name = decodeURIComponent(_node.name);
     

@@ -148,18 +148,18 @@ function uiCommitFigmaUndo()
 
 
 
-function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder = -1)
+function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder = -1, createTime = -1)
 {
     //console.log('uiVariableConnect()');
 
     // console.log('outputId =', outputId);
     const output = outputNode.outputFromId(outputId);
-    return uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder);
+    return uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder, createTime);
 }
 
 
 
-function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -1)
+function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -1, createTime = -1)
 {
     //console.log('uiVariableConnectFromOutput()');
 
@@ -177,7 +177,8 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
             output,
             inputNode.headerInputs.at(-1),
             inputId,
-            outputOrder);
+            outputOrder,
+            createTime);
 
         if (outputOrder > -1)
             conn.outputOrder = outputOrder;
@@ -190,14 +191,14 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
         return conn;
     }
     else
-        return uiConnect(output, input, '', outputOrder);
+        return uiConnect(output, input, '', outputOrder, createTime);
 }
 
 
 
-function uiConnect(output, input, inputId = '', outputOrder = -1)
+function uiConnect(output, input, inputId = '', outputOrder = -1, createTime = -1)
 {
-    return output.node.graph.connect(output, input, inputId, outputOrder);
+    return output.node.graph.connect(output, input, inputId, outputOrder, createTime);
 }
 
 
@@ -561,6 +562,7 @@ function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
 
     
     const connections = [];
+    const createTime  = Date.now();
     
     for (let i = 0; i < data.connections.length; i++)
     {
@@ -570,7 +572,7 @@ function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
                && data.nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId)
             || pasteConnected)
         {
-            parseConnectionJsonAndConnect(_conn, pasteConnected);
+            parseConnectionJsonAndConnect(_conn, pasteConnected, createTime);
             connections.push(_conn);
         }
 

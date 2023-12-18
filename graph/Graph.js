@@ -104,7 +104,7 @@ class Graph
 
 
 
-    connect(output, input, inputId = '', outputOrder = -1)
+    connect(output, input, inputId = '', outputOrder = -1, createTime = -1)
     {
         //console.log('graph.connect()');
 
@@ -147,6 +147,10 @@ class Graph
 
 
         const conn = new Connection(output, input);
+
+        if (createTime > -1)
+            conn.createTime = createTime;
+
 
         conn.outputOrder = 
             outputOrder > -1

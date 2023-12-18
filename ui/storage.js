@@ -587,6 +587,8 @@ function resolveConnections(nodes, _connections, first, last)
     return new Promise(resolve => 
         //requestAnimationFrame(() => 
         {
+            const createTime = Date.now();
+
             for (let i = first; i < last; i++)
             {
                 const _conn = _connections[i];
@@ -622,7 +624,7 @@ function resolveConnections(nodes, _connections, first, last)
                 }
 
 
-                parseConnectionJsonAndConnect(_conn, false);
+                parseConnectionJsonAndConnect(_conn, false, createTime);
             }
 
             resolve();
