@@ -45,8 +45,20 @@ extends FigmaShape
 
 
 
+    createDefaultSpace(cx = 0, cy = 0)
+    {
+        super.createDefaultSpace(cx, cy);
+
+        for (const obj of this.children)
+            obj.createDefaultSpace(cx, cy);
+    }
+
+
+
     resetSpace(bounds, singlePoint = false, cx = 0.5, cy = 0.5, units = 0)
     {
+        super.resetSpace(bounds, singlePoint, cx, cy, units);
+
         for (const obj of this.children)
             obj.resetSpace(bounds, singlePoint, cx, cy, units);
     }

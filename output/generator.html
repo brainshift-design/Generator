@@ -6092,12 +6092,20 @@ function addColorProp(obj, prop)
 {
     const rgb = scaleRgb(prop.toRgb());
 
-    obj.fills.push([
-        'SOLID', 
-        rgb[0], 
-        rgb[1], 
-        rgb[2], 
-        255   ]);
+    if (obj.type == SHAPE_GROUP)
+    {
+        for (const _obj of obj.children)
+            addProp(_obj, prop);
+    }
+    else
+    {
+        obj.fills.push([
+            'SOLID', 
+            rgb[0], 
+            rgb[1], 
+            rgb[2], 
+            255   ]);
+    }
 }
 
 
@@ -6106,13 +6114,21 @@ function addFillProp(obj, prop, target = obj.fills)
 {
     const rgb = scaleRgb(prop.color.toRgb());
 
-    target.push([
-        'SOLID', 
-        rgb[0], 
-        rgb[1], 
-        rgb[2], 
-        prop.opacity.toValue().toNumber(),
-        BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2]]);
+    if (obj.type == SHAPE_GROUP)
+    {
+        for (const _obj of obj.children)
+            addProp(_obj, prop);
+    }
+    else
+    {
+        target.push([
+            'SOLID', 
+            rgb[0], 
+            rgb[1], 
+            rgb[2], 
+            prop.opacity.toValue().toNumber(),
+            BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2]]);
+    }
 }
 
 
@@ -6294,45 +6310,61 @@ function addStrokeProp(obj, prop)
     }
 
 
-    obj.strokeWeight = prop.weight.toValue().toNumber();
-
-    switch (prop.fit.toValue().value)
+    if (obj.type == SHAPE_GROUP)
     {
-        case 0: obj.strokeAlign = 'INSIDE';  break;
-        case 1: obj.strokeAlign = 'CENTER';  break;
-        case 2: obj.strokeAlign = 'OUTSIDE'; break;
+        for (const _obj of obj.children)
+            addProp(_obj, prop);
     }
-
-    switch (prop.join.toValue().value)
+    else
     {
-        case 0: obj.strokeJoin = 'MITER'; break;
-        case 1: obj.strokeJoin = 'BEVEL'; break;
-        case 2: obj.strokeJoin = 'ROUND'; break;
-    }
+        obj.strokeWeight = prop.weight.toValue().toNumber();
 
-    switch (prop.cap.toValue().value)
-    {
-        case 0: obj.strokeCap = 'NONE';   break;
-        case 1: obj.strokeCap = 'SQUARE'; break;
-        case 2: obj.strokeCap = 'ROUND';  break;
-    }
+        switch (prop.fit.toValue().value)
+        {
+            case 0: obj.strokeAlign = 'INSIDE';  break;
+            case 1: obj.strokeAlign = 'CENTER';  break;
+            case 2: obj.strokeAlign = 'OUTSIDE'; break;
+        }
 
-    obj.strokeDashes     = prop.dashes.toValue().value.trim();
-    
-    obj.strokeMiterLimit = prop.miter .toValue().value;
+        switch (prop.join.toValue().value)
+        {
+            case 0: obj.strokeJoin = 'MITER'; break;
+            case 1: obj.strokeJoin = 'BEVEL'; break;
+            case 2: obj.strokeJoin = 'ROUND'; break;
+        }
+
+        switch (prop.cap.toValue().value)
+        {
+            case 0: obj.strokeCap = 'NONE';   break;
+            case 1: obj.strokeCap = 'SQUARE'; break;
+            case 2: obj.strokeCap = 'ROUND';  break;
+        }
+
+        obj.strokeDashes     = prop.dashes.toValue().value.trim();
+        
+        obj.strokeMiterLimit = prop.miter .toValue().value;
+    }
 }
 
 
 
 function addRoundCornersProp(obj, prop)
 {
-    obj.effects.push([
-        'ROUND_CORNERS', 
-        prop.tl.toNumber(),
-        prop.tr.toNumber(),
-        prop.bl.toNumber(),
-        prop.br.toNumber(),
-        prop.visible ]);
+    if (obj.type == SHAPE_GROUP)
+    {
+        for (const _obj of obj.children)
+            addProp(_obj, prop);
+    }
+    else
+    {
+        obj.effects.push([
+            'ROUND_CORNERS', 
+            prop.tl.toNumber(),
+            prop.tr.toNumber(),
+            prop.bl.toNumber(),
+            prop.br.toNumber(),
+            prop.visible ]);
+    }
 }
 
 
@@ -8033,8 +8065,20 @@ extends FigmaShape
 
 
 
+    createDefaultSpace(cx = 0, cy = 0)
+    {
+        super.createDefaultSpace(cx, cy);
+
+        for (const obj of this.children)
+            obj.createDefaultSpace(cx, cy);
+    }
+
+
+
     resetSpace(bounds, singlePoint = false, cx = 0.5, cy = 0.5, units = 0)
     {
+        super.resetSpace(bounds, singlePoint, cx, cy, units);
+
         for (const obj of this.children)
             obj.resetSpace(bounds, singlePoint, cx, cy, units);
     }
@@ -38550,7 +38594,7 @@ extends GOperator1
             this.value = new NullValue();
 
         
-        await this.evalObjects(parse, { showCenter: showCenter });
+        await this.evalObjects(parse, {showCenter: showCenter});
 
 
         this.setUpdateValues(parse,

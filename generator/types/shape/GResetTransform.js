@@ -54,7 +54,7 @@ extends GOperator1
             this.value = new NullValue();
 
         
-        await this.evalObjects(parse, { showCenter: showCenter });
+        await this.evalObjects(parse, {showCenter: showCenter});
 
 
         this.setUpdateValues(parse,
