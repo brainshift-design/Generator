@@ -287,11 +287,10 @@ function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, i
         + rightArrowChar(typeof list == 'string' ? parseBool(list) : list)
         + sp;
     const join = jsp + '.' + jsp;
-    return '( '
-        + outputNodeId + join + outputId
+    return /*'( ' +*/ outputNodeId + join + outputId
         + arrow
-        + inputNodeId + join + inputId
-        + ' )';
+        + inputNodeId + join + inputId;
+    //+ ' )';
 }
 function getPageKey(pageId) {
     return pageNameForStorage(pageId);

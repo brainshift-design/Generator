@@ -2,6 +2,10 @@ var _debugModePages = [];
 var _debugModeNodes = [];
 var _debugModeConns = [];
 
+var nodeSortOrder    = 'updated';
+var connSortOrderOut = 'created';
+var connSortOrderIn  = 'inputId';
+
 
 
 function initDebugMode()
@@ -87,6 +91,9 @@ function loadNodesAndConnsData(_pages, _nodes, _conns)
     for (const _conn of _debugModeConns) debugModeConns.appendChild(createConnDataDiv(_conn));
 
 
+    sortNodeDivs('updated');
+    sortConnDivs('created');
+
     updateDebugModeInfo();
 
     
@@ -97,9 +104,40 @@ function loadNodesAndConnsData(_pages, _nodes, _conns)
 
 function updateDebugModeInfo()
 {
+    let nodeSortParam;
+    let connSortParam;
+
+
+    switch (nodeSortOrder)
+    {
+        case 'type':     nodeSortParam = 'type';              break;
+        case 'id':       nodeSortParam = 'ID';                break;
+        case 'name':     nodeSortParam = 'name';              break;
+        case 'created':  nodeSortParam = 'creation time';     break;
+        case 'updated':  nodeSortParam = 'last update time';  break;
+    }
+
+
+    switch (connSortOrderOut)
+    {
+        case 'outputId':        connSortParam = 'output ID';         break;
+        case 'outputNodeId':    connSortParam = 'output node ID';    break;
+        case 'outputNodeName':  connSortParam = 'output node Name';  break;
+        case 'created':         connSortParam = 'creation time';     break;
+    }
+
+    switch (connSortOrderIn)
+    {
+        case 'inputId':         connSortParam += ', input ID';         break;
+        case 'inputNodeId':     connSortParam += ', input node ID';    break;
+        case 'inputNodeName':   connSortParam += ', input node name';  break;
+    }
+
+    const _sortIcon = '<svg width="11" height="9" viewBox="0 0 11 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" width="3" height="1" fill="white"/><rect x="2" y="4" width="7" height="1" fill="white"/><rect y="8" width="11" height="1" fill="white"/></svg>';
+
     debugModePagesTitle.innerHTML = debugModePages.children.length + '&thinsp;&nbsp;' + countString(debugModePages.children.length, 'page'      );
-    debugModeNodesTitle.innerHTML = debugModeNodes.children.length + '&thinsp;&nbsp;' + countString(debugModeNodes.children.length, 'node'      );
-    debugModeConnsTitle.innerHTML = debugModeConns.children.length + '&thinsp;&nbsp;' + countString(debugModeConns.children.length, 'connection');
+    debugModeNodesTitle.innerHTML = debugModeNodes.children.length + '&thinsp;&nbsp;' + countString(debugModeNodes.children.length, 'node'      ) + '&nbsp;&emsp;<span style="position: relative; top: 1px;">' + _sortIcon + '</span> sorted by ' + nodeSortParam;
+    debugModeConnsTitle.innerHTML = debugModeConns.children.length + '&thinsp;&nbsp;' + countString(debugModeConns.children.length, 'connection') + '&nbsp;&emsp;<span style="position: relative; top: 1px;">' + _sortIcon + '</span> sorted by ' + connSortParam;
 }
 
 
@@ -309,8 +347,12 @@ function expandNodeData(div)
         div.innerHTML =
         //   '<div>' + div._key + '</div><div>'
         // + (div.node.loading ? '&nbsp;🛑<br/>' : '')
-              '<div class="nodeDataHeader">' + (div.node.loading ? '🛑&nbsp;' : '') + div.node._key + '</div>'
-            + '<div class="nodeDataBody">' + formatSavedDataJson(div._node) + '</div>';
+              '<div class="nodeDataHeader">' 
+            //+ (div.node.loading ? '🛑&nbsp;' : '')
+            + div.node._key 
+            + '</div>'
+            + 
+            '<div class="nodeDataBody">' + formatSavedDataJson(div._node) + '</div>';
 
         div.style.paddingLeft   = '0px';
         div.style.paddingRight  = '0px';
@@ -321,8 +363,9 @@ function expandNodeData(div)
     else
     {
         div.innerHTML = 
-             (div.node.loading ? '🛑&nbsp;&nbsp' : '')
-            + div.node.id;
+            // (div.node.loading ? '🛑&nbsp;&nbsp' : '')
+            //+ 
+            div.node.id;
 
         div.style.paddingLeft   = '6px';
         div.style.paddingRight  = '6px';
@@ -340,7 +383,7 @@ function expandConnData(div)
     {
         div.innerHTML =
                 '<div class="connDataHeader">' 
-                  + (div.conn.loading ? '🛑&nbsp;' : '') 
+                  //+ (div.conn.loading ? '🛑&nbsp;' : '') 
                   + div.conn._key.replaceAll('undefined', '<span class="dataUndefined">undefined</span>') 
               + '</div>'
               + '<div class="connDataBody">' + formatSavedDataJson(div._conn) + '</div>';
@@ -354,8 +397,9 @@ function expandConnData(div)
     else
     {
         div.innerHTML = 
-             (div.conn.loading ? '🛑&nbsp;&nbsp' : '')
-            + connToString(div.conn);
+            // (div.conn.loading ? '🛑&nbsp;&nbsp' : '')
+            //+ 
+            connToString(div.conn);
 
         div.style.paddingLeft   = '6px';
         div.style.paddingRight  = '6px';
@@ -689,4 +733,95 @@ function debugModeDeleteConnection(conn)
     updateDebugModeInfo();
 
     uiNotify('Deleted connection  ' + connToString(conn));
+}
+
+
+
+function sortNodeDivs(sortOrder)
+{
+    nodeSortOrder = sortOrder;
+    
+    const divs = Array.from(debugModeNodes.children);
+
+    console.log('div nodes =', [...divs.map(div => div.node)]);
+    divs.sort((a, b) =>
+    {
+        let aValue, bValue;
+
+        switch (nodeSortOrder)
+        {
+            case 'type':     aValue = a.node.type;     bValue = b.node.type;     break;
+            case 'id':       aValue = a.node.id;       bValue = b.node.id;       break;
+            case 'name':     aValue = a.node.name;     bValue = b.node.name;     break;
+            case 'created':  aValue = a.node.created;  bValue = b.node.created;  break;
+            case 'updated':  aValue = a.node.updated;  bValue = b.node.updated;  break;
+        }
+
+        aValue = aValue.toLowerCase();
+        bValue = bValue.toLowerCase();
+
+        return aValue.localeCompare(bValue);
+    });
+
+    divs.forEach(div => debugModeNodes.removeChild(div));
+    divs.forEach(div => debugModeNodes.appendChild(div));
+
+    updateDebugModeInfo();
+}
+
+
+
+function sortConnDivs(sortOrder)
+{
+    switch (sortOrder)
+    {
+        case 'outputId':        connSortOrderOut = connSortOrderOut != sortOrder ? sortOrder : '';  if (connSortOrderIn  == 'created') connSortOrderIn  = '';  break;
+        case 'outputNodeId':    connSortOrderOut = connSortOrderOut != sortOrder ? sortOrder : '';  if (connSortOrderIn  == 'created') connSortOrderIn  = '';  break;
+        case 'outputNodeName':  connSortOrderOut = connSortOrderOut != sortOrder ? sortOrder : '';  if (connSortOrderIn  == 'created') connSortOrderIn  = '';  break;
+        case 'inputId':         connSortOrderIn  = connSortOrderIn  != sortOrder ? sortOrder : '';  if (connSortOrderOut == 'created') connSortOrderOut = '';  break;
+        case 'inputNodeId':     connSortOrderIn  = connSortOrderIn  != sortOrder ? sortOrder : '';  if (connSortOrderOut == 'created') connSortOrderOut = '';  break;
+        case 'inputNodeName':   connSortOrderIn  = connSortOrderIn  != sortOrder ? sortOrder : '';  if (connSortOrderOut == 'created') connSortOrderOut = '';  break;
+        case 'created':         connSortOrderOut = sortOrder;  connSortOrderIn = sortOrder;                                                                    break;
+    }
+
+
+    const divs = Array.from(debugModeConns.children);
+
+    divs.sort((a, b) =>
+    {
+        let aOut, bOut;
+        let aIn,  bIn;
+
+        switch (connSortOrderOut)
+        {
+            case 'outputId':        aOut = a.conn.outputId;        bOut = b.conn.outputId;        break;
+            case 'outputNodeId':    aOut = a.conn.outputNodeId;    bOut = b.conn.outputNodeId;    break;
+            case 'outputNodeName':  aOut = a.conn.outputNodeName;  bOut = b.conn.outputNodeName;  break;
+            case 'created':         aOut = a.conn.created;         bOut = b.conn.created;         break;
+        }
+
+        switch (connSortOrderIn)
+        {
+            case 'inputId':         aIn = a.conn.inputId;         bIn = b.conn.inputId;         break;
+            case 'inputNodeId':     aIn = a.conn.inputNodeId;     bIn = b.conn.inputNodeId;     break;
+            case 'inputNodeName':   aIn = a.conn.inputNodeName;   bIn = b.conn.inputNodeName;   break;
+            case 'created':         aIn = a.conn.created;         bIn = b.conn.created;         break;
+        }
+
+        aOut = aOut ? aOut.toLowerCase() : '';
+        bOut = bOut ? bOut.toLowerCase() : '';
+
+        aIn  = aIn  ? aIn .toLowerCase() : '';
+        bIn  = bIn  ? bIn .toLowerCase() : '';
+
+        return aOut != bOut
+             ? aOut.localeCompare(bOut)
+             : aIn .localeCompare(bIn );
+    });
+
+    
+    divs.forEach(div => debugModeConns.removeChild(div));
+    divs.forEach(div => debugModeConns.appendChild(div));
+
+    updateDebugModeInfo();
 }

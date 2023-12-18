@@ -161,3 +161,13 @@
     box-shadow:    0 0 0 2px inset var(--figma-color-bg-brand);
     background:    var(--figma-color-bg-pressed);
 }
+
+
+.debugModeText
+{
+    color:     var(--figma-color-text);
+    font-size: 11px;
+    position:  absolute;
+    top:       24px;
+    right:     20px;
+}

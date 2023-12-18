@@ -100,9 +100,31 @@ var menuCopy;
 var menuPageData;
 var menuPageDataPages;
 var menuNodeData;
+var menuNodeDataSort;
 var menuNodeDataNodes;
 var menuConnData;
+var menuConnDataSort;
 var menuConnDataConns;
+
+
+var menuItemSortNodesType;
+var menuItemSortNodesId;
+var menuItemSortNodesName;
+                               
+var menuItemSortNodesCreated;       
+var menuItemSortNodesUpdated;       
+
+
+var menuItemSortConnsInputId;
+var menuItemSortConnsInputNodeId;
+var menuItemSortConnsInputNodeName;
+
+var menuItemSortConnsOutputId; 
+var menuItemSortConnsOutputNodeId;
+var menuItemSortConnsOutputNodeName;
+
+var menuItemSortConnsCreated;
+
 
 var menuItemShowTooltipLongText;
 var menuItemShowTooltipLists;
@@ -1183,8 +1205,19 @@ function initDebugModeMenus()
         new MenuItem('Delete node',             null, { callback: () => { hideAllMenus(); debugModeDeleteNode(menuNodeData._div.node); }})]);
 
 
+    menuNodeDataSort = new Menu('Sort nodes menu', false);
+    menuNodeDataSort.addItems([
+        menuItemSortNodesType    = new MenuItem('Type',             null, { checkCallback: () => nodeSortOrder == 'type',    callback: () => { hideAllMenus(); sortNodeDivs('type'); }}),
+        menuItemSortNodesId      = new MenuItem('ID',               null, { checkCallback: () => nodeSortOrder == 'id',      callback: () => { hideAllMenus(); sortNodeDivs('id');   }}),
+        menuItemSortNodesName    = new MenuItem('Name',             null, { checkCallback: () => nodeSortOrder == 'name',    callback: () => { hideAllMenus(); sortNodeDivs('name'); }}),
+                                   new MenuItem('',                 null, { separator: true }),
+        menuItemSortNodesCreated = new MenuItem('Creation time',    null, { checkCallback: () => nodeSortOrder == 'created', callback: () => { hideAllMenus(); sortNodeDivs('created'); }}),
+        menuItemSortNodesUpdated = new MenuItem('Last update time', null, { checkCallback: () => nodeSortOrder == 'updated', callback: () => { hideAllMenus(); sortNodeDivs('updated'); }})]);
+
     menuNodeDataNodes = new Menu('Nodes menu', false, false);
     menuNodeDataNodes.addItems([
+        new MenuItem('Sort nodes by...', null, { childMenu: menuNodeDataSort }),
+        new MenuItem('',                 null, { separator: true }),
         new MenuItem('Expand all',       null, { callback: () => { hideAllMenus(); expandAllNodeData();   }}),
         new MenuItem('Collapse all',     null, { callback: () => { hideAllMenus(); collapseAllNodeData(); }}),
         new MenuItem('',                 null, { separator: true }),
@@ -1196,8 +1229,22 @@ function initDebugModeMenus()
         new MenuItem('Delete connection', null, { callback: () => { hideAllMenus(); debugModeDeleteConnection(menuConnData._div.conn); }})]);
 
 
+    menuConnDataSort = new Menu('Sort connections menu', false);
+    menuConnDataSort.addItems([
+        menuItemSortConnsOutputNodeId   = new MenuItem('Output node ID',   null, { checkCallback: () => connSortOrderOut == 'outputNodeId',   callback: () => { hideAllMenus(); sortConnDivs('outputNodeId'  ); }}),
+        menuItemSortConnsOutputNodeName = new MenuItem('Output node name', null, { checkCallback: () => connSortOrderOut == 'outputNodeName', callback: () => { hideAllMenus(); sortConnDivs('outputNodeName'); }}),
+        menuItemSortConnsOutputId       = new MenuItem('Output ID',        null, { checkCallback: () => connSortOrderOut == 'outputId',       callback: () => { hideAllMenus(); sortConnDivs('outputId'      ); }}),
+                                          new MenuItem('',                 null, { separator: true }),
+        menuItemSortConnsInputNodeId    = new MenuItem('Input node ID',    null, { checkCallback: () => connSortOrderIn == 'inputNodeId',    callback: () => { hideAllMenus(); sortConnDivs('inputNodeId'  ); }}),
+        menuItemSortConnsInputNodeName  = new MenuItem('Input node name',  null, { checkCallback: () => connSortOrderIn == 'inputNodeName',  callback: () => { hideAllMenus(); sortConnDivs('inputNodeName'); }}),
+        menuItemSortConnsInputId        = new MenuItem('Input ID',         null, { checkCallback: () => connSortOrderIn == 'inputId',        callback: () => { hideAllMenus(); sortConnDivs('inputId'      ); }}),
+                                          new MenuItem('',                 null, { separator: true }),
+        menuItemSortConnsCreated        = new MenuItem('Creation time',    null, { checkCallback: () => connSortOrderOut == 'created',        callback: () => { hideAllMenus(); sortConnDivs('created'); }})]);
+
     menuConnDataConns = new Menu('Connections menu', false, false);
     menuConnDataConns.addItems([
+        new MenuItem('Sort connections by...',   null, { childMenu: menuConnDataSort }),
+        new MenuItem('',                         null, { separator: true }),
         new MenuItem('Expand all',               null, { callback: () => { hideAllMenus(); expandAllConnData();   }}),
         new MenuItem('Collapse all',             null, { callback: () => { hideAllMenus(); collapseAllConnData(); }}),
         new MenuItem('',                         null, { separator: true }),

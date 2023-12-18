@@ -436,10 +436,17 @@ class MenuItem
 
         this.divCheck.style.display = 
                 this.parentMenu 
-            && (    this.parentMenu.showChecks 
+            && (    this.parentMenu.showChecks
                 || !this.parentMenu.condense)
             ? 'inline-block' 
             : 'none';
+
+
+        if (   this.parentMenu
+            && this.parentMenu.showChecks
+            && this.checkCallback)
+            this.checked = this.checkCallback();
+
 
         this.divCheck   .style.visibility      = this.checked ? 'visible'      : 'hidden';
         this.div        .style.opacity         = this.enabled ? '100%'         : '40%';
