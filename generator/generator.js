@@ -258,6 +258,7 @@ async function genUpdateValuesAndObjects(requestId, loadingNodes, actionId, obje
     }
     else if (genFigMessagePosted)
     {
+        lastRequestId     = requestId;
         lastUpdateNodeId  = updateNodeId;
         lastUpdateParamId = updateParamId;
 
