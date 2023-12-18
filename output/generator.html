@@ -8033,6 +8033,21 @@ extends FigmaShape
 
 
 
+    resetSpace(bounds, singlePoint = false, cx = 0.5, cy = 0.5, units = 0)
+    {
+        for (const obj of this.children)
+            obj.resetSpace(bounds, singlePoint, cx, cy, units);
+    }
+
+
+
+    getBounds()
+    {
+        return getObjBounds(this.children);
+    }
+
+
+
     applyTransform(xform, affectSpace)
     {
         for (const obj of this.children)
@@ -16986,22 +17001,18 @@ extends GOperator
         }
 
 
-        if (this.options.enabled)
+        // reset object space
+
+        const bounds = getObjBounds(this.value.objects);
+
+        const singlePoint =
+                this.value.objects.length  == 1 
+            && this.value.objects[0].type == POINT;
+
+        for (const obj of this.value.objects)
         {
-            // reset object space
-
-            const bounds = getObjBounds(this.value.objects);
-
-            const singlePoint =
-                   this.value.objects.length  == 1 
-                && this.value.objects[0].type == POINT;
-
-
-            for (const obj of this.value.objects)
-            {
-                obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
-                obj.resetSpace(bounds, singlePoint);
-            }
+            obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
+            obj.resetSpace(bounds, singlePoint);
         }
         
 
@@ -36503,11 +36514,21 @@ extends GShapeBase
             }
 
 
-            let bounds = Rect.NaN;
+            // reset object space
+    
+            const bounds = getObjBounds(group.children);
+
+            const singlePoint =
+                   group.children.length  == 1 
+                && group.children[0].type == POINT;
 
             for (const obj of group.children)
-                bounds = expandRect(bounds, obj.getBounds());
-    
+            {
+                obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
+                obj.resetSpace(bounds, singlePoint);
+            }
+
+
             group.x      = bounds.x;
             group.y      = bounds.y;
             group.width  = bounds.width;

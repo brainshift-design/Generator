@@ -45,6 +45,21 @@ extends FigmaShape
 
 
 
+    resetSpace(bounds, singlePoint = false, cx = 0.5, cy = 0.5, units = 0)
+    {
+        for (const obj of this.children)
+            obj.resetSpace(bounds, singlePoint, cx, cy, units);
+    }
+
+
+
+    getBounds()
+    {
+        return getObjBounds(this.children);
+    }
+
+
+
     applyTransform(xform, affectSpace)
     {
         for (const obj of this.children)

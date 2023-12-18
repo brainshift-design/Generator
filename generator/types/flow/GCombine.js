@@ -94,22 +94,18 @@ extends GOperator
         }
 
 
-        if (this.options.enabled)
+        // reset object space
+
+        const bounds = getObjBounds(this.value.objects);
+
+        const singlePoint =
+                this.value.objects.length  == 1 
+            && this.value.objects[0].type == POINT;
+
+        for (const obj of this.value.objects)
         {
-            // reset object space
-
-            const bounds = getObjBounds(this.value.objects);
-
-            const singlePoint =
-                   this.value.objects.length  == 1 
-                && this.value.objects[0].type == POINT;
-
-
-            for (const obj of this.value.objects)
-            {
-                obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
-                obj.resetSpace(bounds, singlePoint);
-            }
+            obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
+            obj.resetSpace(bounds, singlePoint);
         }
         
 

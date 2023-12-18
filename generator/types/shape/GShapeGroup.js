@@ -124,11 +124,21 @@ extends GShapeBase
             }
 
 
-            let bounds = Rect.NaN;
+            // reset object space
+    
+            const bounds = getObjBounds(group.children);
+
+            const singlePoint =
+                   group.children.length  == 1 
+                && group.children[0].type == POINT;
 
             for (const obj of group.children)
-                bounds = expandRect(bounds, obj.getBounds());
-    
+            {
+                obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
+                obj.resetSpace(bounds, singlePoint);
+            }
+
+
             group.x      = bounds.x;
             group.y      = bounds.y;
             group.width  = bounds.width;

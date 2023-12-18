@@ -9,7 +9,7 @@ extends ResizableBase
     {
         super(COMBINE, 'combine', 'combine', iconCombine);
 
-        this.canDisable        = true;
+        //this.canDisable        = true;
         this.variableInputs    = true;
         this.showHeaderTooltip = true;
 
