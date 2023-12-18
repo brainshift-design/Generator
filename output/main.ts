@@ -5271,6 +5271,8 @@ function figUpdateShapeGroup(figGroup, genGroup)
         figGroup, 
         genGroup[FO_GROUP_CHILDREN],
         genGroup[FO_GROUP_CHILDREN].length);
+
+    setObjectEffects(figGroup, genGroup);
 }
 
 

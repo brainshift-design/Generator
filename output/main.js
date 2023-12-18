@@ -3474,6 +3474,7 @@ function figUpdateShapeGroup(figGroup, genGroup) {
         return;
     }
     figUpdateObjects(figGroup, genGroup[FO_GROUP_CHILDREN], genGroup[FO_GROUP_CHILDREN].length);
+    setObjectEffects(figGroup, genGroup);
 }
 function genLineIsValid(genLine) {
     return genLine[FO_X] != null && !isNaN(genLine[FO_X])
