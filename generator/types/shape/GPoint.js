@@ -44,20 +44,24 @@ extends GOperator1
             return this;
 
         
-        let   input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        const x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
-        const y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
+        let input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        let x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
+        let y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
 
 
         if (input)
         {
+            const _input = input;
+
             if (input.type == VECTOR_VERTEX_VALUE)
                 input = new PointValue(input.nodeId, input.x, input.y);
 
-            this.value = new PointValue(
-                this.nodeId,
-                x && this.x.type != NUMBER_VALUE ? x : input.x,
-                y && this.y.type != NUMBER_VALUE ? y : input.y);
+            this.value        = input.toValue();
+            this.value.nodeId = this.nodeId;
+            this.value.copyCustomParams(_input);
+
+            if (x)  this.value.x = x;  else  x = this.value.x;
+            if (y)  this.value.y = y;  else  y = this.value.y;
         }
         else
         {
@@ -75,15 +79,11 @@ extends GOperator1
         [
             ['x', x],
             ['y', y]
-            //['value', this.value]
         ]);
 
 
-        if (this.input)
-        { 
-            this.x = this.value.x.copy();
-            this.y = this.value.y.copy();
-        }
+        if (!this.x) this.x = this.value.x.copy();
+        if (!this.y) this.y = this.value.y.copy();
 
 
         this.validate();

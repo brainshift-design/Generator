@@ -1103,17 +1103,27 @@ function uiImportFromLocalFile()
 
 
 
-function uiSaveSelectionToLocalFile()
+function uiSaveToLocalFile()
 {
     if (!subscribed())
         return;
 
-    const nodes = 
-        !isEmpty(graphView.selectedNodes)
-        ? graphView.selectedNodes
-        : graph.currentPage.nodes;
-        
-    const json = uiCopyNodes(nodes.map(n => n.id));
+    const nodes = graph.currentPage.nodes;
+    const json  = uiCopyNodes(nodes.map(n => n.id));
+
+    saveToLocalFile(json, 'selection.gen', 'text/plain');
+}
+
+
+
+function uiSaveSelectionToLocalFile()
+{
+    if (  !subscribed()
+        || isEmpty(graphView.selectedNodes))
+        return;
+
+    const nodes = graphView.selectedNodes;
+    const json  = uiCopyNodes(nodes.map(n => n.id));
 
     saveToLocalFile(json, 'selection.gen', 'text/plain');
 }

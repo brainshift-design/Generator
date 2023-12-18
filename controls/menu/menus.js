@@ -136,6 +136,7 @@ var menuItemEnableAsserts;
 
 var menuFileSep1;
 var menuItemSaveToFile;
+var menuItemSaveSelected;
 
 var menuDebug;
 var menuItemDebugLog;
@@ -286,10 +287,11 @@ function initGeneratorMenus()
 
     menuMainFile = new Menu('File', false);
     menuMainFile.addItems([
-                             new MenuItem('Open file . . .',          null, {callback: () => { hideAllMenus(); checkDeleteNodesWarning(); }}),
-                             new MenuItem('Import from file . . .',   null, {callback: () => { hideAllMenus(); uiImportFromLocalFile(); }}),
-        menuFileSep1       = new MenuItem('',                         null, {separator: true}),    
-        menuItemSaveToFile = new MenuItem('Save to file . . .',       null, {shortcut: osCtrlShift() + 'S', callback: () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
+                               new MenuItem('Open file . . .',          null, {callback: () => { hideAllMenus(); checkDeleteNodesWarning(); }}),
+                               new MenuItem('Import from file . . .',   null, {callback: () => { hideAllMenus(); uiImportFromLocalFile(); }}),
+        menuFileSep1         = new MenuItem('',                         null, {separator: true}),    
+        menuItemSaveToFile   = new MenuItem('Save to file . . .',       null, {shortcut: osCtrl() + 'S', callback: () => { hideAllMenus(); uiSaveToLocalFile(); }}),
+        menuItemSaveSelected = new MenuItem('Save selected . . .',      null, {shortcut: osCtrlShift() + 'S', callback: () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
 
 
     menuMainPreferences = new Menu('Preferences', false);
@@ -1128,9 +1130,6 @@ function initGeneratorMenus()
         menuTransform,
         menuPanel
     ];
-
-
-    updateSaveSelectedMenu();
 }
 
 
@@ -1297,14 +1296,4 @@ function getCreateOptions(e, options = {})
         fromSearch:  e.fromSearch === true,
         ...options
     };
-}
-
-
-
-function updateSaveSelectedMenu()
-{
-    menuItemSaveToFile.setName( 
-        graphView._selectedNodes.length > 0
-        ? 'Save selected to file . . .'
-        : 'Save to file . . .');
 }

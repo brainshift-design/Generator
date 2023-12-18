@@ -31,8 +31,7 @@ extends OpShape
         this.addParam(this.paramCorners  = new NumberParam('corners',  'corners',  true,  true, true,   3,    3));
         
 
-        this.paramPosition.divider       = 0.4;
-        this.paramPosition.alwaysRequest = true;
+        this.paramPosition.divider = 0.4;
 
 
         this.addBaseParams();
@@ -49,7 +48,7 @@ extends OpShape
         const height  = values[paramIds.findIndex(id => id == 'height'  )];
         const round   = values[paramIds.findIndex(id => id == 'round'   )];
         const corners = values[paramIds.findIndex(id => id == 'corners' )];
-        // const value  = values[paramIds.findIndex(id => id == 'value'   )];
+        // const vlue  = values[paramIds.findIndex(id => id == 'value'   )];
 
         this.paramPosition.setValue(pos,     false, true, false);
         this.paramX       .setValue(x,       false, true, false);

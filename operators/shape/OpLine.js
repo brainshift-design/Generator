@@ -28,10 +28,12 @@ extends OpShape
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const x     = values[paramIds.findIndex(id => id == 'x'    )];
+        const y     = values[paramIds.findIndex(id => id == 'y'    )];
+        const width = values[paramIds.findIndex(id => id == 'width')];
 
-        this.paramX    .setValue(value.x,     false, true, false);
-        this.paramY    .setValue(value.y,     false, true, false);
-        this.paramWidth.setValue(value.width, false, true, false);
+        this.paramX    .setValue(x,     false, true, false);
+        this.paramY    .setValue(y,     false, true, false);
+        this.paramWidth.setValue(width, false, true, false);
     }
 }

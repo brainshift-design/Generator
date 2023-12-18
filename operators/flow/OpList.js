@@ -119,7 +119,7 @@ extends ResizableBase
             - (this.measureData.divOffset.height - defParamHeight - 10);
 
         if (this.scroll < -maxScroll)
-                this.scroll = -maxScroll;
+            this.scroll = -maxScroll;
             
         this.updateScrollbar();
         this.updateNode();
@@ -235,7 +235,17 @@ extends ResizableBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        this.setHeight(defHeaderHeight + this.params.length * defParamHeight, false);
+        // console.log('this.params.length =', this.params.length);
+        // console.log('oldParams.length =', oldParams.length);
+        // console.log('this.scroll =', this.scroll);
+        // console.log('');
+        if (   this.params.length < oldParams.length
+            && this.scroll < 0)
+            this.scroll = Math.min(0, this.scroll + (oldParams.length - this.params.length) * defParamHeight);
+
+
+        if (this.measureData.divOffset.height - defHeaderHeight == oldParams.length * defParamHeight)
+            this.setHeight(defHeaderHeight + this.params.length * defParamHeight, false);
 
 
         for (const param of this.params)
@@ -307,5 +317,19 @@ extends ResizableBase
 
             this.paramHolder.style.top = this.scroll;
         }
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        super.loadParams(_node, pasting);
+
+        // if (   _node.width
+        //     && _node.height)
+        // {
+        //     this.width  = parseFloat(_node.width );
+        //     this.height = parseFloat(_node.height);
+        // }
     }
 }

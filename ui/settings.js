@@ -324,6 +324,7 @@ function enableFeatures(sub, beta = false)
     enableMenuItem(menuItemTimer,        true, sub);
     enableMenuItem(menuItemAnimate,      true, sub);
     enableMenuItem(menuItemSaveToFile,   true, sub);
+    enableMenuItem(menuItemSaveSelected, true, sub);
     enableMenuItem(menuItemFetch,        true, sub);
     enableMenuItem(menuItemTextFile,     true, sub);
     enableMenuItem(menuItemIndexToName,  true, sub);

@@ -39,22 +39,24 @@ extends GShape
         if (this.isCached())
             return this;
 
-        
-        const [x, y, width, height] = await this.evalBaseParams(parse);
 
-        const round = this.round ? (await this.round.eval(parse)).toValue() : null;
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        let   round = this.round ? (await this.round.eval(parse)).toValue() : null;
+
+        let [x, y, width, height] = await this.evalBaseParams(parse);
 
 
-        if (this.input)
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value        = input.toValue();
             this.value.nodeId = this.nodeId;
+            this.value.copyCustomParams(input);
             
-            if (x     ) this.value.x      = x;
-            if (y     ) this.value.y      = y;
-            if (width ) this.value.width  = width;
-            if (height) this.value.height = height;
-            if (round ) this.value.round  = round;
+            if (x     )  this.value.x      = x;       else  x      = this.value.x;      
+            if (y     )  this.value.y      = y;       else  y      = this.value.y;      
+            if (width )  this.value.width  = width;   else  width  = this.value.width;  
+            if (height)  this.value.height = height;  else  height = this.value.height; 
+            if (round )  this.value.round  = round;   else  round  = this.value.round;  
         }
         else
         {
@@ -70,7 +72,11 @@ extends GShape
        
         this.setUpdateValues(parse, 
         [
-            ['value', this.value]
+            ['x',      x     ],
+            ['y',      y     ],
+            ['width',  width ],
+            ['height', height],
+            ['round',  round ]
         ]);
 
 

@@ -72,43 +72,40 @@ extends GShape
         if (this.isCached())
             return this;
 
-            
-        const text          = this.text          ? (await this.text         .eval(parse)).toValue() : null;
-        const x             = this.x             ? (await this.x            .eval(parse)).toValue() : null;
-        const y             = this.y             ? (await this.y            .eval(parse)).toValue() : null;
-        const width         = this.width         ? (await this.width        .eval(parse)).toValue() : null;
-        const height        = this.height        ? (await this.height       .eval(parse)).toValue() : null;
-        const font          = this.font          ? (await this.font         .eval(parse)).toValue() : null;
-        const style         = this.style         ? (await this.style        .eval(parse)).toValue() : null;
-        const size          = this.size          ? (await this.size         .eval(parse)).toValue() : null;
-        const alignH        = this.alignH        ? (await this.alignH       .eval(parse)).toValue() : null;
-        const alignV        = this.alignV        ? (await this.alignV       .eval(parse)).toValue() : null;
-        const lineHeight    = this.lineHeight    ? (await this.lineHeight   .eval(parse)).toValue() : null;
-        const letterSpacing = this.letterSpacing ? (await this.letterSpacing.eval(parse)).toValue() : null;
+
+        const input         = this.input         ? (await this.input        .eval(parse)).toValue() : null;
+        let   text          = this.text          ? (await this.text         .eval(parse)).toValue() : null;
+        let   x             = this.x             ? (await this.x            .eval(parse)).toValue() : null;
+        let   y             = this.y             ? (await this.y            .eval(parse)).toValue() : null;
+        let   width         = this.width         ? (await this.width        .eval(parse)).toValue() : null;
+        let   height        = this.height        ? (await this.height       .eval(parse)).toValue() : null;
+        let   font          = this.font          ? (await this.font         .eval(parse)).toValue() : null;
+        let   style         = this.style         ? (await this.style        .eval(parse)).toValue() : null;
+        let   size          = this.size          ? (await this.size         .eval(parse)).toValue() : null;
+        let   alignH        = this.alignH        ? (await this.alignH       .eval(parse)).toValue() : null;
+        let   alignV        = this.alignV        ? (await this.alignV       .eval(parse)).toValue() : null;
+        let   lineHeight    = this.lineHeight    ? (await this.lineHeight   .eval(parse)).toValue() : null;
+        let   letterSpacing = this.letterSpacing ? (await this.letterSpacing.eval(parse)).toValue() : null;
 
 
-        let input = null;
-
-        if (this.input)
+        if (input)
         {
-            input = (await this.input.eval(parse)).toValue();
-
-            this.value = new TextShapeValue(
-                this.nodeId,
-                text          ?? input.text,
-                x             ?? input.x,
-                y             ?? input.y,
-                width         ?? input.width,
-                height        ?? input.height,
-                font          ?? input.font,
-                style         ?? input.style,
-                size          ?? input.size,
-                alignH        ?? input.alignH,
-                alignV        ?? input.alignV,
-                lineHeight    ?? input.lineHeight,
-                letterSpacing ?? input.letterSpacing);
-
+            this.value        = input.toValue();
+            this.value.nodeId = this.nodeId;
             this.value.copyCustomParams(input);
+            
+            if (text         )  this.value.text          = text;           else  text          = this.value.text;
+            if (x            )  this.value.x             = x;              else  x             = this.value.x;
+            if (y            )  this.value.y             = y;              else  y             = this.value.y;
+            if (width        )  this.value.width         = width;          else  width         = this.value.width;
+            if (height       )  this.value.height        = height;         else  height        = this.value.height;
+            if (font         )  this.value.font          = font;           else  font          = this.value.font;
+            if (style        )  this.value.style         = style;          else  style         = this.value.style;
+            if (size         )  this.value.size          = size;           else  size          = this.value.size;
+            if (alignH       )  this.value.alignH        = alignH;         else  alignH        = this.value.alignH;
+            if (alignV       )  this.value.alignV        = alignV;         else  alignV        = this.value.alignV;
+            if (lineHeight   )  this.value.lineHeight    = lineHeight;     else  lineHeight    = this.value.lineHeight;
+            if (letterSpacing)  this.value.letterSpacing = letterSpacing;  else  letterSpacing = this.value.letterSpacing; 
         }
         else
         {
@@ -131,7 +128,18 @@ extends GShape
        
         this.setUpdateValues(parse, 
         [
-            ['value', this.value]
+            ['text',          text         ],
+            ['x',             x            ],
+            ['y',             y            ],
+            ['width',         width        ],
+            ['height',        height       ],
+            ['font',          font         ],
+            ['style',         style        ],
+            ['size',          size         ],
+            ['alignH',        alignH       ],
+            ['alignV',        alignV       ],
+            ['lineHeight',    lineHeight   ],
+            ['letterSpacing', letterSpacing]
         ]);
 
 

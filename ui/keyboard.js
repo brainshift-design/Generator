@@ -44,11 +44,14 @@ document.addEventListener('keydown', e =>
     // save to file
     else if (   e.code == 'KeyS'
         &&  getCtrlKey(e)
-        &&  e.shiftKey
         && !e.altKey)
     {
         e.preventDefault();
-        uiSaveSelectionToLocalFile();
+
+        if (e.shiftKey)
+            uiSaveSelectionToLocalFile();
+        else
+            uiSaveToLocalFile();
     }
 
     // focus mode

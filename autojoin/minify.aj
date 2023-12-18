@@ -1499,7 +1499,6 @@ loadFromLocalFile
 getLocalFile
 saveToLocalFile
 figDeleteObjectsFromNodeIds
-nodeIds
 figDeleteAllObjects
 forceDelete
 figDeleteObjectsExcept
@@ -2642,6 +2641,7 @@ uiLogAllSavedConns
 uiTriggerUndo
 uiUpdateViewportRect
 uiImportFromLocalFile
+uiSaveToLocalFile
 uiSaveSelectionToLocalFile
 getConnsFromNodes
 uiUpdateGroupBounds
@@ -4265,3 +4265,7 @@ blendHue
 blendSaturation
 blendColor
 blendLuminosity
+
+pageIds
+loadedFonts
+controls

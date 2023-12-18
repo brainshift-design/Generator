@@ -25,22 +25,20 @@ extends GShape
             return this;
 
 
-        const [x, y, width, ] = await this.evalBaseParams(parse, false);
+        let input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
+        let [x, y, width, ] = await this.evalBaseParams(parse, false);
             
-        let input = null;
 
-        if (this.input)
+        if (input)
         {
-            input = (await this.input.eval(parse)).toValue();
-
-            this.value = new LineValue(
-                this.nodeId,
-                x     ?? input.x,
-                y     ?? input.y,
-                width ?? input.width);
-
+            this.value        = input.toValue();
+            this.value.nodeId = this.nodeId;
             this.value.copyCustomParams(input);
+
+            if (x    )  this.value.x     = x;      else  x     = this.value.x;      
+            if (y    )  this.value.y     = y;      else  y     = this.value.y;      
+            if (width)  this.value.width = width;  else  width = this.value.width;  
         }
         else
         {
@@ -54,7 +52,9 @@ extends GShape
 
         this.setUpdateValues(parse, 
         [
-            ['value', this.value]
+            ['x',      x     ],
+            ['y',      y     ],
+            ['width',  width ]
         ]);
 
 

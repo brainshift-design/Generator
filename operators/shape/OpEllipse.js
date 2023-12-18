@@ -36,8 +36,7 @@ extends OpShape
         this.addParam(this.paramTo       = new NumberParam('to',       'to',       true,  true, true, 360));
         
 
-        this.paramPosition.divider       = 0.4;
-        this.paramPosition.alwaysRequest = true;
+        this.paramPosition.divider = 0.4;
 
         this.paramFrom .controls[0].setSuffix('°', true);
         this.paramTo   .controls[0].setSuffix('°', true);
@@ -85,9 +84,6 @@ extends OpShape
         super.updateParams();
 
 
-        this.paramPosition.enableControlText(true, this.paramPosition.isUnknown());
-
-        
         const center = this.paramPosition.value.value == 1;
        
         this.paramWidth .setName(center ? 'radius W' : 'width' );

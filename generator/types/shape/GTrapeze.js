@@ -42,29 +42,26 @@ extends GShape
         if (this.isCached())
             return this;
 
+
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        let   round = this.round ? (await this.round.eval(parse)).toValue() : null;
+        let   bias  = this.bias  ? (await this.bias .eval(parse)).toValue() : null;
         
-        const [x, y, width, height] = await this.evalBaseParams(parse);
-
-        const round = this.round ? (await this.round.eval(parse)).toValue() : null;
-        const bias  = this.bias  ? (await this.bias .eval(parse)).toValue() : null;
+        let [x, y, width, height] = await this.evalBaseParams(parse);
 
 
-        let input = null;
-
-        if (this.input)
+        if (input)
         {
-            input = (await this.input.eval(parse)).toValue();
-
-            this.value = new TrapezeValue(
-                this.nodeId,
-                x      ?? input.x,
-                y      ?? input.y,
-                width  ?? input.width,
-                height ?? input.height,
-                round  ?? input.round,
-                bias   ?? input.bias);
-
+            this.value        = input.toValue();
+            this.value.nodeId = this.nodeId;
             this.value.copyCustomParams(input);
+
+            if (x     )  this.value.x      = x;       else  x      = this.value.x;      
+            if (y     )  this.value.y      = y;       else  y      = this.value.y;      
+            if (width )  this.value.width  = width;   else  width  = this.value.width;  
+            if (height)  this.value.height = height;  else  height = this.value.height; 
+            if (round )  this.value.round  = round;   else  round  = this.value.round;  
+            if (bias  )  this.value.bias   = bias;    else  bias   = this.value.bias;  
         }
         else
         {
@@ -81,7 +78,12 @@ extends GShape
        
         this.setUpdateValues(parse, 
         [
-            ['value', this.value]
+            ['x',      x     ],
+            ['y',      y     ],
+            ['width',  width ],
+            ['height', height],
+            ['round',  round ],
+            ['bias',   bias  ]
         ]);
 
 

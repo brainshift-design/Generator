@@ -50,90 +50,56 @@ extends GShape
             return this;
 
             
-        const [x, y, width, height] = await this.evalBaseParams(parse);
+        let [x, y, width, height] = await this.evalBaseParams(parse);
 
-        const pos    = this.position ? (await this.position.eval(parse)).toValue() : null;
-        const round  = this.round    ? (await this.round   .eval(parse)).toValue() : null;
-        const points = this.points   ? (await this.points  .eval(parse)).toValue() : null;
-        const convex = this.convex   ? (await this.convex  .eval(parse)).toValue() : null;
+        let input  = this.input    ? (await this.input   .eval(parse)).toValue() : null;
+        let pos    = this.position ? (await this.position.eval(parse)).toValue() : null;
+        let round  = this.round    ? (await this.round   .eval(parse)).toValue() : null;
+        let points = this.points   ? (await this.points  .eval(parse)).toValue() : null;
+        let convex = this.convex   ? (await this.convex  .eval(parse)).toValue() : null;
 
 
-        let input = null;
-
-        if (this.input)
+        if (input)
         {
-            input = (await this.input.eval(parse)).toValue();
-
-            const  _pos    = pos    ?? input.x;
-            const  _x      = x      ?? input.x;
-            const  _y      = y      ?? input.y;
-            const  _w      = width  ?? input.width;
-            const  _h      = height ?? input.height;
-            const  _round  = height ?? input.round;
-            const  _points = height ?? input.points;
-            const  _convex = height ?? input.convex;
-
-            const __x = _pos.value == 0 ? _x : new NumberValue(_x.value + _w.value/2, Math.max(_x.decimals, _w.decimals));
-            const __y = _pos.value == 0 ? _y : new NumberValue(_y.value + _h.value/2, Math.max(_y.decimals, _h.decimals));
-            const __w = _pos.value == 0 ? _w : new NumberValue(_w.value/2, Math.max(_x.decimals, _w.decimals));
-            const __h = _pos.value == 0 ? _h : new NumberValue(_h.value/2, Math.max(_y.decimals, _h.decimals));            
-            
-            this.value = new StarValue(
-                this.nodeId,
-                _pos,
-                _x, _y, _w, _h,
-                _round,
-                _points,
-                _convex);
-
+            this.value        = input.toValue();
+            this.value.nodeId = this.nodeId;
             this.value.copyCustomParams(input);
 
-
-            this.setUpdateValues(parse, 
-            [
-                ['position', _pos      ],
-                ['x',        __x       ],
-                ['y',        __y       ],
-                ['width',    __w       ],
-                ['height',   __h       ]//,
-                //['value',    this.value]
-            ]);
+            if (pos   )  this.value.position = pos;     else  pos    = this.value.position;
+            if (x     )  this.value.x        = x;       else  x      = this.value.x;      
+            if (y     )  this.value.y        = y;       else  y      = this.value.y;      
+            if (width )  this.value.width    = width;   else  width  = this.value.width;  
+            if (height)  this.value.height   = height;  else  height = this.value.height; 
+            if (round )  this.value.round    = round;   else  round  = this.value.round;  
+            if (points)  this.value.points   = points;  else  points = this.value.points;  
+            if (convex)  this.value.convex   = convex;  else  convex = this.value.convex; 
         }
         else
         {
-            const _x = x;
-            const _y = y;
-            const _w = width;
-            const _h = height;
-
-            const __x = pos.value == 0 ? _x : new NumberValue(_x.value - _w.value, Math.max(_x.decimals, _w.decimals));
-            const __y = pos.value == 0 ? _y : new NumberValue(_y.value - _h.value, Math.max(_y.decimals, _h.decimals));
-            const __w = pos.value == 0 ? _w : new NumberValue(_w.value*2, Math.max(_x.decimals, _w.decimals));
-            const __h = pos.value == 0 ? _h : new NumberValue(_h.value*2, Math.max(_y.decimals, _h.decimals));            
-
             this.value = new StarValue(
                 this.nodeId,
                 pos,
-                __x, __y, __w, __h,
+                x, 
+                y, 
+                width, 
+                height,
                 round,
                 points,
                 convex);
-
-
-            this.setUpdateValues(parse, 
-            [
-                ['position', pos   ],
-                ['x',        _x    ],
-                ['y',        _y    ],
-                ['width',    _w    ],
-                ['height',   _h    ],
-                ['round',    round ],
-                ['points',   points],
-                ['convex',   convex]
-                //,
-                //['value',    this.value]
-            ]);
         }
+
+
+        this.setUpdateValues(parse, 
+        [
+            ['position', pos   ],
+            ['x',        x     ],
+            ['y',        y     ],
+            ['width',    width ],
+            ['height',   height],
+            ['round',    round ],
+            ['points',   points],
+            ['convex',   convex]
+        ]);
 
 
         await this.evalShapeBase(parse);
@@ -178,10 +144,21 @@ extends GShape
             && this.value.points.isValid()
             && this.value.convex.isValid())
         {
-            let   x = this.value.x     .value;
-            let   y = this.value.y     .value;
-            let   w = this.value.width .value;
-            let   h = this.value.height.value;
+            const vpos = this.value.position;
+            const vx   = this.value.x;
+            const vy   = this.value.y;
+            const vw   = this.value.width;
+            const vh   = this.value.height;
+
+            const _x = vpos.value <= 0 ? vx : new NumberValue(vx.value - vw.value, Math.max(vx.decimals, vw.decimals));
+            const _y = vpos.value <= 0 ? vy : new NumberValue(vy.value - vh.value, Math.max(vy.decimals, vh.decimals));
+            const _w = vpos.value <= 0 ? vw : new NumberValue(vw.value*2, Math.max(vx.decimals, vw.decimals));
+            const _h = vpos.value <= 0 ? vh : new NumberValue(vh.value*2, Math.max(vy.decimals, vh.decimals));            
+
+            let   x = _x.value;
+            let   y = _y.value;
+            let   w = _w.value;
+            let   h = _h.value;
             const r = Math.max(0, this.value.round.value);
             const p = Math.max(3, Math.floor(this.value.points.value));
             const c = this.value.convex.value;

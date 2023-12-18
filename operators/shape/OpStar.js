@@ -33,8 +33,7 @@ extends OpShape
         this.addParam(this.paramConvex   = new NumberParam('convex',   'convex',   true,  true, true, 38.2, 0, 100));
         
 
-        this.paramPosition.divider       = 0.4;
-        this.paramPosition.alwaysRequest = true;
+        this.paramPosition.divider = 0.4;
 
         this.paramConvex.controls[0].setSuffix('%', true);
 

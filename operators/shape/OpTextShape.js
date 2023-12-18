@@ -61,20 +61,31 @@ extends OpShape
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const text          = values[paramIds.findIndex(id => id == 'text'         )];
+        const x             = values[paramIds.findIndex(id => id == 'x'            )];
+        const y             = values[paramIds.findIndex(id => id == 'y'            )];
+        const width         = values[paramIds.findIndex(id => id == 'width'        )];
+        const height        = values[paramIds.findIndex(id => id == 'height'       )];
+        const font          = values[paramIds.findIndex(id => id == 'font'         )];
+        const size          = values[paramIds.findIndex(id => id == 'size'         )];
+        const style         = values[paramIds.findIndex(id => id == 'style'        )];
+        const alignH        = values[paramIds.findIndex(id => id == 'alignH'       )];
+        const alignV        = values[paramIds.findIndex(id => id == 'alignV'       )];
+        const lineHeight    = values[paramIds.findIndex(id => id == 'lineHeight'   )];
+        const letterSpacing = values[paramIds.findIndex(id => id == 'letterSpacing')];
 
-        this.paramText         .setValue(value.text,          false, true, false);
-        this.paramX            .setValue(value.x,             false, true, false);
-        this.paramY            .setValue(value.y,             false, true, false);
-        this.paramWidth        .setValue(value.width,         false, true, false);
-        this.paramHeight       .setValue(value.height,        false, true, false);
-        this.paramFont         .setValue(value.font,          false, true, false);
-        this.paramSize         .setValue(value.size,          false, true, false);
-        this.paramStyle        .setValue(value.style,         false, true, false);
-        this.paramAlignH       .setValue(value.alignH,        false, true, false);
-        this.paramAlignV       .setValue(value.alignV,        false, true, false);
-        this.paramLineHeight   .setValue(value.lineHeight,    false, true, false);
-        this.paramLetterSpacing.setValue(value.letterSpacing, false, true, false);
+        this.paramText         .setValue(text,          false, true, false);
+        this.paramX            .setValue(x,             false, true, false);
+        this.paramY            .setValue(y,             false, true, false);
+        this.paramWidth        .setValue(width,         false, true, false);
+        this.paramHeight       .setValue(height,        false, true, false);
+        this.paramFont         .setValue(font,          false, true, false);
+        this.paramSize         .setValue(size,          false, true, false);
+        this.paramStyle        .setValue(style,         false, true, false);
+        this.paramAlignH       .setValue(alignH,        false, true, false);
+        this.paramAlignV       .setValue(alignV,        false, true, false);
+        this.paramLineHeight   .setValue(lineHeight,    false, true, false);
+        this.paramLetterSpacing.setValue(letterSpacing, false, true, false);
     }
 
 
