@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 324;
+const generatorVersion = 325;
 
 
 const MAX_INT32        = 2147483647;
@@ -8873,7 +8873,7 @@ extends GNode
 
 
 
-    iterateList(parse, from)
+    iterateCache(parse, from)
     {
 
     }
@@ -9441,11 +9441,11 @@ extends GOperator
 
 
 
-    iterateList(parse, from)
+    iterateCache(parse, from)
     {
         const node = parse.parsedNodes.find(n => n.nodeId == from.nodeId);
         
-        node.iterateList(parse, from);
+        node.iterateCache(parse, from);
     }
 
 
@@ -15997,7 +15997,7 @@ extends GOperator1
 
 
                     if (this.loop.type != NUMBER_VALUE)
-                        this.loop.iterateList(parse, this);
+                        this.loop.iterateCache(parse, this);
 
                     
                     if (parse.repeats.length == 1)
@@ -16520,18 +16520,16 @@ extends GOperator1
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
         if (   repeat
-            && repeat.nodeId == from.nodeId)
+            && repeat.repeatId == from.nodeId)
             this.cachedValue = null;
     }
 
 
 
-    // iterateLoop(parse)
-    // {
-    //     super.iterateLoop(parse);
-
-    //     this.cachedValue = null;
-    // }
+    iterateCache(parse, from)
+    {
+        //this.cachedValue = null;
+    }
 }
 
 
@@ -17089,13 +17087,13 @@ extends GOperator
 
 
 
-    iterateList(parse, from)
+    iterateCache(parse, from)
     {
         for (const input of this.inputs)
         {
             if (   input.type == LIST
                 || input.type == COMBINE)
-                input.iterateList(parse, from);
+                input.iterateCache(parse, from);
         }
     }
 
@@ -19027,30 +19025,8 @@ extends GOperator1
 
 
 
-    invalidateInputs(parse, from, force)
+    iterateCache(parse, from)
     {
-        super.invalidateInputs(parse, from, force);
-        
-        //this.cachedValue = null;
-        // this.reset();
-    }
-
-
-
-    iterateLoop(parse)
-    {
-        super.iterateLoop(parse);
-
-        //this.cachedValue = null;
-        // console.log('iterating list');
-        // this.reset();
-    }
-
-
-
-    iterateList(parse, from)
-    {
-        //this.valid       = false;
         this.cachedValue = null;
     }
 }
@@ -36518,9 +36494,12 @@ extends GShapeBase
             for (let i = 0; i < options.inputs.length; i++)
             {
                 const input = options.inputs[i];
-                
-                for (let j = 0; j < input.objects.length; j++)
-                    this.addChildObject(group.children, input.objects[j], i);
+
+                if (input.objects)
+                {
+                    for (let j = 0; j < input.objects.length; j++)
+                        this.addChildObject(group.children, input.objects[j], i);
+                }
             }
 
 

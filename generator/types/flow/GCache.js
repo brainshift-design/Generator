@@ -91,16 +91,14 @@ extends GOperator1
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
         if (   repeat
-            && repeat.nodeId == from.nodeId)
+            && repeat.repeatId == from.nodeId)
             this.cachedValue = null;
     }
 
 
 
-    // iterateLoop(parse)
-    // {
-    //     super.iterateLoop(parse);
-
-    //     this.cachedValue = null;
-    // }
+    iterateCache(parse, from)
+    {
+        //this.cachedValue = null;
+    }
 }

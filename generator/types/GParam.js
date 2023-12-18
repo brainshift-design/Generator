@@ -140,11 +140,11 @@ extends GOperator
 
 
 
-    iterateList(parse, from)
+    iterateCache(parse, from)
     {
         const node = parse.parsedNodes.find(n => n.nodeId == from.nodeId);
         
-        node.iterateList(parse, from);
+        node.iterateCache(parse, from);
     }
 
 

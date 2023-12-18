@@ -195,13 +195,13 @@ extends GOperator
 
 
 
-    iterateList(parse, from)
+    iterateCache(parse, from)
     {
         for (const input of this.inputs)
         {
             if (   input.type == LIST
                 || input.type == COMBINE)
-                input.iterateList(parse, from);
+                input.iterateCache(parse, from);
         }
     }
 

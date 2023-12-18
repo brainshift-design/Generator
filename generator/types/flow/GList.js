@@ -130,30 +130,8 @@ extends GOperator1
 
 
 
-    invalidateInputs(parse, from, force)
+    iterateCache(parse, from)
     {
-        super.invalidateInputs(parse, from, force);
-        
-        //this.cachedValue = null;
-        // this.reset();
-    }
-
-
-
-    iterateLoop(parse)
-    {
-        super.iterateLoop(parse);
-
-        //this.cachedValue = null;
-        // console.log('iterating list');
-        // this.reset();
-    }
-
-
-
-    iterateList(parse, from)
-    {
-        //this.valid       = false;
         this.cachedValue = null;
     }
 }

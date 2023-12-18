@@ -115,9 +115,12 @@ extends GShapeBase
             for (let i = 0; i < options.inputs.length; i++)
             {
                 const input = options.inputs[i];
-                
-                for (let j = 0; j < input.objects.length; j++)
-                    this.addChildObject(group.children, input.objects[j], i);
+
+                if (input.objects)
+                {
+                    for (let j = 0; j < input.objects.length; j++)
+                        this.addChildObject(group.children, input.objects[j], i);
+                }
             }
 
 
