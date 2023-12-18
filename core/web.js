@@ -341,7 +341,7 @@ function getLocalFile(callback)
 
 
 
-function saveToLocalFile(content, filename, contentType)
+async function saveToLocalFile(content, filename, contentType)
 {
     const a    = document.createElement('a');
     const file = new Blob([content], {type: contentType});
@@ -351,5 +351,7 @@ function saveToLocalFile(content, filename, contentType)
 
     a.click();
 
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
     URL.revokeObjectURL(a.href);
 }

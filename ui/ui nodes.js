@@ -1103,7 +1103,7 @@ function uiImportFromLocalFile()
 
 
 
-function uiSaveToLocalFile()
+async function uiSaveToLocalFile(defaultName = 'graph.gen')
 {
     if (!subscribed())
         return;
@@ -1111,12 +1111,12 @@ function uiSaveToLocalFile()
     const nodes = graph.currentPage.nodes;
     const json  = uiCopyNodes(nodes.map(n => n.id));
 
-    saveToLocalFile(json, 'selection.gen', 'text/plain');
+    await saveToLocalFile(json, defaultName, 'text/plain');
 }
 
 
 
-function uiSaveSelectionToLocalFile()
+async function uiSaveSelectionToLocalFile()
 {
     if (  !subscribed()
         || isEmpty(graphView.selectedNodes))
@@ -1125,7 +1125,7 @@ function uiSaveSelectionToLocalFile()
     const nodes = graphView.selectedNodes;
     const json  = uiCopyNodes(nodes.map(n => n.id));
 
-    saveToLocalFile(json, 'selection.gen', 'text/plain');
+    await saveToLocalFile(json, 'selection.gen', 'text/plain');
 }
 
 

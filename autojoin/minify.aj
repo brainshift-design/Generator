@@ -3878,6 +3878,7 @@ crashDialogContent
 crashDialogBody
 crashTitle
 crashDetails
+btnCrashClearRestart
 btnCrashRestart
 multiplayerDialogContainer
 multiplayerDialogContent

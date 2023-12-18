@@ -151,6 +151,9 @@ function initGenerator(activate)
     //     showSubscriptionDialog(activate);
 
 
+    //initCrashDialog(); // for testing
+    //showCrashDialog(); // crash dialog
+
     setTimeout(() => 
     {
         updateObjectCountDisplay();

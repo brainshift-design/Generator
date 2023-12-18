@@ -33,6 +33,13 @@ function initCrashDialog(event, error, showDebugButton = true)
     {
         crashBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 
+        
+        btnCrashSaveRestart.addEventListener('click', async () => { await uiSaveToLocalFile('crashed.gen'); clearGraph(); uiRestartGenerator(false); });
+        btnCrashSaveRestart.style.display = showDebugButton ? 'block' : 'none';
+
+        btnCrashClearRestart.addEventListener('click', () => { clearGraph(); uiRestartGenerator(false); });
+        btnCrashClearRestart.style.display = showDebugButton ? 'block' : 'none';
+
         btnCrashRestart.addEventListener('click', () => uiGetLocalData('debugWarningCrash'));
         btnCrashRestart.style.display = showDebugButton ? 'block' : 'none';
 
