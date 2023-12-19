@@ -13,7 +13,7 @@ extends OperatorBase
         super(RESET_XFORM, 'reset', 'reset space', iconResetXform);
 
         this.canDisable  = true;
-        this.iconOffsetY = -1;
+        this.iconOffsetY = -2;
 
 
         this.addInput (new Input([...SHAPE_VALUES, LIST_VALUE]));

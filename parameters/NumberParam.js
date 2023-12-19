@@ -75,7 +75,7 @@ extends NumberParamBase
                 const tooltip = this.getTooltip();
                 if (tooltip) hideTooltip(tooltip);
             });
-            
+
             return this.getTooltip();
         });
     }

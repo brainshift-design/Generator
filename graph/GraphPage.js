@@ -74,7 +74,7 @@ class GraphPage
         if (  (   pan  != this._pan
                || zoom != this._zoom)
             && zoom >= 0.02
-            && zoom <= 50)
+            && zoom <= 8)
         {
             graphView.oldZoom = this.zoom;
     

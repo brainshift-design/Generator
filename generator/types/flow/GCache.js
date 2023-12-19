@@ -97,8 +97,8 @@ extends GOperator1
 
 
 
-    iterateCache(parse, from)
-    {
+    // iterateCache(parse, from)
+    // {
         //this.cachedValue = null;
-    }
+    //}
 }

@@ -1028,9 +1028,10 @@ function genParseRepeat(parse)
     if (nInputs == 1)
         repeat.input = genParse(parse);
 
-    repeat. count = genParse(parse);
-    repeat._while = genParse(parse);
-    repeat. loop  = genParse(parse);  // don't set target here
+    repeat. count   = genParse(parse);
+    repeat._while   = genParse(parse);
+    //repeat. iterate = genParse(parse);  // don't set target here
+    repeat. loop    = genParse(parse);  // don't set target here
 
 
     parse.nTab--;

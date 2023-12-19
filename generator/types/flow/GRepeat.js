@@ -1,9 +1,10 @@
 class GRepeat
 extends GOperator1
 {
-    count = null;
-   _while = null;
-    loop  = null;
+    count   = null;
+   _while   = null;
+    //iterate = null;
+    loop    = null;
 
     iterationObjects = [];
 
@@ -20,9 +21,10 @@ extends GOperator1
     {
         super.reset();
 
-        this. count = null;
-        this._while = null;
-        this. loop  = null;
+        this. count   = null;
+        this._while   = null;
+        //this. iterate = null;
+        this. loop    = null;
 
         this.iterationObjects = [];
     }
@@ -35,10 +37,11 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this. value) copy. value = this. value.copy();
-        if (this. count) copy. count = this. count.copy();
-        if (this._while) copy._while = this._while.copy();
-        if (this. loop ) copy. loop  = this. loop .copy();
+        if (this. value  ) copy. value   = this. value  .copy();
+        if (this. count  ) copy. count   = this. count  .copy();
+        if (this._while  ) copy._while   = this._while  .copy();
+        //if (this. iterate) copy. iterate = this. iterate.copy();
+        if (this. loop   ) copy. loop    = this. loop   .copy();
 
         return copy;
     }
@@ -51,9 +54,10 @@ extends GOperator1
             return this;
             
 
-        let   count = (await this.count.eval(parse)).toValue();
-        let  _while = new NumberValue(1);
-        const loop  = (await this.loop.eval(parse)).toValue();
+        let   count   = (await this.count  .eval(parse)).toValue();
+        let  _while   = new NumberValue(1);
+        //const iterate = (await this.iterate.eval(parse)).toValue();
+        const loop    = (await this.loop   .eval(parse)).toValue();
 
 
         count = 
@@ -62,7 +66,8 @@ extends GOperator1
             : new NumberValue(0);
 
 
-        if (this.loop.type != NUMBER_VALUE) assertVolatile(this.loop, this);
+        //if (this.iterate.type != NUMBER_VALUE) assertVolatile(this.iterate, this);
+        if (this.loop   .type != NUMBER_VALUE) assertVolatile(this.loop,    this);
 
 
         this.value = new ListValue();
@@ -165,6 +170,12 @@ extends GOperator1
                     this.input.iterateLoop(parse);
 
 
+                    // if (this.iterate.type != NUMBER_VALUE)
+                    // {
+                    //     this.iterate.invalidateInputs(parse, this, false);
+                    //     this.iterate.iterateLoop(parse);
+                    // }
+
                     if (this.loop.type != NUMBER_VALUE)
                         this.loop.iterateCache(parse, this);
 
@@ -247,9 +258,10 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this. count) this. count.pushValueUpdates(parse);
-        if (this._while) this._while.pushValueUpdates(parse);
-        if (this. loop ) this. loop .pushValueUpdates(parse);
+        if (this. count  ) this. count  .pushValueUpdates(parse);
+        if (this._while  ) this._while  .pushValueUpdates(parse);
+        //if (this. iterate) this. iterate.pushValueUpdates(parse);
+        if (this. loop   ) this. loop   .pushValueUpdates(parse);
     }
 
 
@@ -258,9 +270,10 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this. count) this. count.invalidateInputs(parse, from, force);
-        if (this._while) this._while.invalidateInputs(parse, from, force);
-        if (this. loop ) this. loop .invalidateInputs(parse, from, force);
+        if (this. count  ) this. count  .invalidateInputs(parse, from, force);
+        if (this._while  ) this._while  .invalidateInputs(parse, from, force);
+        //if (this. iterate) this. iterate.invalidateInputs(parse, from, force);
+        if (this. loop   ) this. loop   .invalidateInputs(parse, from, force);
     }
 
 
@@ -269,9 +282,10 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this. count) this. count.iterateLoop(parse);
-        if (this._while) this._while.iterateLoop(parse);
-        if (this. loop ) this. loop .iterateLoop(parse);
+        if (this. count  ) this. count  .iterateLoop(parse);
+        if (this._while  ) this._while  .iterateLoop(parse);
+        //if (this. iterate) this. iterate.iterateLoop(parse);
+        if (this. loop   ) this. loop   .iterateLoop(parse);
     }
 }
 

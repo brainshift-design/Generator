@@ -27,6 +27,16 @@ extends OperatorBase
 
         this.inputs[0].addEventListener('connect',    () => OpStart_onConnectInput   (this));
         this.inputs[0].addEventListener('disconnect', () => OpStart_onDisconnectInput(this));
+
+
+        this.paramFrom.getTooltip = () => 
+        {
+            if (currentTooltip) 
+                hideTooltip(currentTooltip);
+    
+            ttParam.innerHTML = 'Repeat loop';
+            return ttParam;
+        }
     }
 
 

@@ -69,14 +69,14 @@ extends OpColorBase
         this.paramContrast.controls[0].showExtRanges = false;
 
 
-        this.paramStandard.getTooltip = () => null;
-
         this.paramContrast.getTooltip = () => 
             settings.showTooltipColorContrast ? 
             (this.paramStandard.value.value == 1 ? ttWcag3 : ttWcag2) 
             : null;
 
+        this.paramStandard.getTooltip = () => null;
 
+        
         this.header.connectionPadding = 12.5;
     }
 
