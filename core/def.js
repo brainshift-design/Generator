@@ -4,6 +4,7 @@ const NAN_DISPLAY            = '?';
 const UNKNOWN_CHAR           = '?';
 const UNKNOWN_DISPLAY        = UNKNOWN_CHAR;//'🤷‍♂️';
 
+const NAME_SEPARATOR         = ' ';
 const OBJECT_SEPARATOR       = ' > ';
 const   PROP_SEPARATOR       = ' / ';
 const  INPUT_SEPARATOR       = ':';

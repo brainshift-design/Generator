@@ -143,6 +143,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == FREEZE                 ) result = genParseFreeze            (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
     else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
+    else if (parse.next == OBJECT_NAME            ) result = genParseObjectName        (parse);
 
     else if (parse.next == COMBINE                ) result = genParseJoin              (parse);
     else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);

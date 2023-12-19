@@ -23,7 +23,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GNull(this.nodeId, this.options);
+        const copy = new GValueName(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -49,8 +49,12 @@ extends GOperator1
         
         const name = (await this.name.eval(parse)).toValue();
 
-        if (this.value.isValid())
+
+        if (   this.options.enabled
+            && this.value.isValid())
+        {
             this.value.valueId = name.value;
+        }
 
 
         this.updateValueObjects();
@@ -110,5 +114,14 @@ extends GOperator1
         super.iterateLoop(parse);
 
         if (this.name) this.name.iterateLoop(parse);
+    }
+
+
+
+    resetLoop(parse, nodeId)
+    {
+        super.resetLoop(parse, nodeId);
+
+        if (this.name) this.name.resetLoop(parse, nodeId);
     }
 }

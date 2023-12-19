@@ -9,7 +9,9 @@ extends OperatorBase
     {
         super(VALUE_NAME, 'valueName', 'value name', '');
 
-        //this.cached = false;
+
+        this.subscription = true;
+        this.canDisable   = true;
 
 
         this.addInput (new Input(ALL_VALUES));
@@ -18,8 +20,8 @@ extends OperatorBase
         this.addParam(this.paramName = new TextParam('name', 'name', false, true, true));
 
 
-        this.inputs[0].addEventListener('connect',    () => OpValueName_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpValueName_onDisconnectInput(this));
+        //this.inputs[0].addEventListener('connect',    () => OpValueName_onConnectInput(this));
+        //this.inputs[0].addEventListener('disconnect', () => OpValueName_onDisconnectInput(this));
     }
 
 
@@ -93,14 +95,14 @@ extends OperatorBase
 
 
 
-function OpValueName_onConnectInput(node)
-{
-    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
-}
+// function OpValueName_onConnectInput(node)
+// {
+//     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+// }
 
 
 
-function OpValueName_onDisconnectInput(node)
-{
-    node.outputs[0].types = [ANY_VALUE];
-}
+// function OpValueName_onDisconnectInput(node)
+// {
+//     node.outputs[0].types = [ANY_VALUE];
+// }

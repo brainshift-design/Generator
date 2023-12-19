@@ -1033,6 +1033,7 @@ const CACHE                   = 'CACHE';
 const FREEZE                  = 'FRZ';
 const TIMER                   = 'TIMER';
 const VALUE_NAME              = 'VNAME';
+const OBJECT_NAME             = 'ONAME';
 
 const COMBINE                 = 'CMB';
 const CONDENSE                = 'CDENSE';
@@ -1111,7 +1112,8 @@ const FLOW_TYPES =
     CACHE,
     FREEZE,
     TIMER,
-    VALUE_NAME
+    VALUE_NAME,
+    OBJECT_NAME
 ];
 
 

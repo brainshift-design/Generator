@@ -99,7 +99,7 @@ extends GOperator
         const bounds = getObjBounds(this.value.objects);
 
         const singlePoint =
-                this.value.objects.length  == 1 
+               this.value.objects.length  == 1 
             && this.value.objects[0].type == POINT;
 
         for (const obj of this.value.objects)

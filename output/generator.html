@@ -4072,6 +4072,7 @@ const NAN_DISPLAY            = '?';
 const UNKNOWN_CHAR           = '?';
 const UNKNOWN_DISPLAY        = UNKNOWN_CHAR;//'🤷‍♂️';
 
+const NAME_SEPARATOR         = ' ';
 const OBJECT_SEPARATOR       = ' > ';
 const   PROP_SEPARATOR       = ' / ';
 const  INPUT_SEPARATOR       = ':';
@@ -4640,6 +4641,8 @@ function updateMenuItemShowColorLegendInMenus()
 
 function enableFeatures(sub, beta = false)
 {
+    enableMenuItem(menuItemValueName,    true, sub);
+    enableMenuItem(menuItemObjectName,   true, sub);
     enableMenuItem(menuItemTimer,        true, sub);
     enableMenuItem(menuItemAnimate,      true, sub);
     enableMenuItem(menuItemSaveToFile,   true, sub);
@@ -4763,6 +4766,7 @@ const CACHE                   = 'CACHE';
 const FREEZE                  = 'FRZ';
 const TIMER                   = 'TIMER';
 const VALUE_NAME              = 'VNAME';
+const OBJECT_NAME             = 'ONAME';
 
 const COMBINE                 = 'CMB';
 const CONDENSE                = 'CDENSE';
@@ -4841,7 +4845,8 @@ const FLOW_TYPES =
     CACHE,
     FREEZE,
     TIMER,
-    VALUE_NAME
+    VALUE_NAME,
+    OBJECT_NAME
 ];
 
 
@@ -16858,7 +16863,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GNull(this.nodeId, this.options);
+        const copy = new GValueName(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -16884,8 +16889,12 @@ extends GOperator1
         
         const name = (await this.name.eval(parse)).toValue();
 
-        if (this.value.isValid())
+
+        if (   this.options.enabled
+            && this.value.isValid())
+        {
             this.value.valueId = name.value;
+        }
 
 
         this.updateValueObjects();
@@ -16945,6 +16954,150 @@ extends GOperator1
         super.iterateLoop(parse);
 
         if (this.name) this.name.iterateLoop(parse);
+    }
+
+
+
+    resetLoop(parse, nodeId)
+    {
+        super.resetLoop(parse, nodeId);
+
+        if (this.name) this.name.resetLoop(parse, nodeId);
+    }
+}
+
+
+
+class GObjectName
+extends GOperator1
+{
+    name = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(OBJECT_NAME, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.name = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GObjectName(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.value) copy.value = this.value.copy();
+        if (this.name ) copy.name  = this.name .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        // if (this.isCached())
+        //     return this;
+
+
+        this.value = 
+            this.input 
+            ? (await this.input.eval(parse)).toValue() 
+            : new NullValue();
+
+        
+        const name = (await this.name.eval(parse)).toValue();
+
+        
+        if (   this.options.enabled
+            && this.value.isValid()
+            && this.value.objects)
+        {
+            for (const obj of this.value.objects)
+            {
+                obj.nodeId     = this.nodeId;
+                obj.objectName = name.value;
+            }
+        }
+
+
+        this.updateValueObjects();
+
+
+        this.setUpdateValues(parse,
+        [
+            ['type', this.outputType()],
+            ['name', name             ]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.name && this.name.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.name) this.name.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.name) this.name.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.name) this.name.iterateLoop(parse);
+    }
+
+
+
+    resetLoop(parse, nodeId)
+    {
+        super.resetLoop(parse, nodeId);
+
+        if (this.name) this.name.resetLoop(parse, nodeId);
     }
 }
 
@@ -17051,7 +17204,7 @@ extends GOperator
         const bounds = getObjBounds(this.value.objects);
 
         const singlePoint =
-                this.value.objects.length  == 1 
+               this.value.objects.length  == 1 
             && this.value.objects[0].type == POINT;
 
         for (const obj of this.value.objects)
@@ -36554,7 +36707,7 @@ extends GShapeBase
                 if (input.objects)
                 {
                     for (let j = 0; j < input.objects.length; j++)
-                        this.addChildObject(group.children, input.objects[j], i);
+                        this.addChildObject(group.children, input.objects[j], i, j);
                 }
             }
 
@@ -36600,13 +36753,13 @@ extends GShapeBase
 
 
 
-    addChildObject(objects, _obj, inputIndex)
+    addChildObject(objects, _obj, inputIndex, objIndex)
     {
         const obj = copyFigmaObject(_obj);
 
-        obj.nodeId   = this.nodeId;
-        obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId + OBJECT_SEPARATOR + inputIndex;
-        obj.listId   = -1;
+        obj.nodeId    = this.nodeId;
+        obj.objectId += OBJECT_SEPARATOR + inputIndex + OBJECT_SEPARATOR + objIndex;//OBJECT_SEPARATOR + this.nodeId + OBJECT_SEPARATOR + inputIndex;
+        obj.listId    = -1;
 
         objects.push(obj);
     }
@@ -42547,6 +42700,52 @@ function genParseValueName(parse)
 
 
 
+function genParseObjectName(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const name = new GObjectName(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(name, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, name);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        name.input = genParse(parse);
+
+    name.name = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, name);
+    return name;
+}
+
+
+
 function genParseComment(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -48094,6 +48293,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == FREEZE                 ) result = genParseFreeze            (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
     else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
+    else if (parse.next == OBJECT_NAME            ) result = genParseObjectName        (parse);
 
     else if (parse.next == COMBINE                ) result = genParseJoin              (parse);
     else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
