@@ -34,7 +34,7 @@ extends OperatorBase
             if (currentTooltip) 
                 hideTooltip(currentTooltip);
     
-            ttParam.innerHTML = 'Repeat loop';
+            ttParam.innerHTML = 'Feedback loop';
             return ttParam;
         }
     }

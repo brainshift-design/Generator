@@ -105,24 +105,29 @@ extends ResizableBase
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        super.setRect(
-            x, 
-            y, 
-            Math.max(defNodeWidth, w), 
-            Math.min(
-                Math.max(defHeaderHeight, defHeaderHeight + this.params.length * defParamHeight),
-                Math.max(h, defHeaderHeight)),
-            updateTransform);
+        w = Math.max(defNodeWidth,    w);
+        h = Math.max(defHeaderHeight, h);
+
+        h = 
+            h == defHeaderHeight
+            ? Math.max(defHeaderHeight, defHeaderHeight + this.params.length * defParamHeight)
+            : Math.min(h, Math.max(defHeaderHeight, defHeaderHeight + this.params.length * defParamHeight));
+
+        super.setRect(x, y, w, h, updateTransform);
 
         const maxScroll = 
                this.measureData.paramOffset.height
             - (this.measureData.divOffset.height - defParamHeight - 10);
 
         if (this.scroll < -maxScroll)
-            this.scroll = -maxScroll;
+            this.scroll = Math.min(-maxScroll, 0);
             
-        this.updateScrollbar();
         this.updateNode();
+
+        if (this.measureData.paramOffset.height == 0)
+            setTimeout(() => this.updateScrollbar());
+        else
+            this.updateScrollbar();
     }
 
 
@@ -235,10 +240,6 @@ extends ResizableBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        // console.log('this.params.length =', this.params.length);
-        // console.log('oldParams.length =', oldParams.length);
-        // console.log('this.scroll =', this.scroll);
-        // console.log('');
         if (   this.params.length < oldParams.length
             && this.scroll < 0)
             this.scroll = Math.min(0, this.scroll + (oldParams.length - this.params.length) * defParamHeight);
@@ -321,15 +322,22 @@ extends ResizableBase
 
 
 
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = HTAB;
+
+        return super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"scroll": "' + this.scroll + '"';
+    }
+
+
+
     loadParams(_node, pasting)
     {
         super.loadParams(_node, pasting);
 
-        // if (   _node.width
-        //     && _node.height)
-        // {
-        //     this.width  = parseFloat(_node.width );
-        //     this.height = parseFloat(_node.height);
-        // }
+        if (_node.scroll)
+            this.scroll = parseInt(_node.scroll);
     }
 }

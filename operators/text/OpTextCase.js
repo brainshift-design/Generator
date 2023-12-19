@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(TEXT_CASE, 'case', 'case', '');
+        super(TEXT_CASE, 'case', 'case', iconTextCase);
 
         this.canDisable = true;
         

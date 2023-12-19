@@ -32,7 +32,7 @@ extends OperatorBase
         this.addParam(this.paramYear      = new NumberParam('year',      'year',     true,  true,  true));
 
 
-        this.setAllParamDividers(0.56);
+        this.setAllParamDividers(0.55);
     }
 
 

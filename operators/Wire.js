@@ -195,7 +195,21 @@ class Wire
         }
         else
             pIn = point(x, y - yOffset);
-    
+
+            
+        if (   this.connection.output
+            && this.connection.output.node
+            && this.connection.output.param)
+        {
+            const outNode = this.connection.output.node;
+
+            const outTop    = outNode.measureData.divBounds.y + outNode.measureData.headerOffset.height * graph.currentPage.zoom - yOffset;
+            const outBottom = outNode.measureData.divBounds.y + outNode.measureData.divBounds.height - yOffset;
+
+            if (pOut.y < outTop   ) pOut.y = outTop;
+            if (pOut.y > outBottom) pOut.y = outBottom;
+        }        
+
 
         this.updateSvg(pOut.x, pOut.y, pIn.x, pIn.y);        
     }

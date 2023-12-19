@@ -83,7 +83,7 @@ extends GOperator4
 
         this.setUpdateValues(parse, 
         [
-            //['value',   this.value],
+            ['value',   this.value],
             ['segment', segment   ]
         ]);
         

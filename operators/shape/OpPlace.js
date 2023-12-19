@@ -27,8 +27,8 @@ extends OperatorBase
         this.addParam(this.paramTransform  = new NumberParam('transform',  'transform',   true,  true, true, 1, 0, 1));
         this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true,  true, true, 0, 0, 1));
 
-        this.paramTransform .divider = 0.68;
-        this.paramShowCenter.divider = 0.68;
+        this.paramTransform .divider = 0.67;
+        this.paramShowCenter.divider = 0.67;
 
         this.menuTransform  = createBoolMenu(this.paramTransform );
         this.menuShowCenter = createBoolMenu(this.paramShowCenter);
