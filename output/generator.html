@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 325;
+const generatorVersion = 326;
 
 
 const MAX_INT32        = 2147483647;
@@ -16060,15 +16060,16 @@ extends GOperator1
 
                     
                     if (parse.repeats.length == 1)
+                    {
                         parse.currentProgress++;
 
-
-                    if (await checkStop(parse.requestId))
-                    {
-                        genEndNodeProgress(this.nodeId);
-                        return this;
+                        if (await checkStop(parse.requestId))
+                        {
+                            genEndNodeProgress(this.nodeId);
+                            return this;
+                        }
                     }
-
+                    
 
                     if (showProgress)
                         genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);

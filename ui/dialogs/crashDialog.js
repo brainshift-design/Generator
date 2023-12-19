@@ -64,10 +64,10 @@ function showCrashDialog()
     crashed = true;
 
 
-    if (loadRestartTimer > -1) 
+    if (loadRestartTimer) 
     {
         clearTimeout(loadRestartTimer);
-        loadRestartTimer = -1;
+        loadRestartTimer = null;
     }
 
 

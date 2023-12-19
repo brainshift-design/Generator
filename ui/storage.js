@@ -510,7 +510,7 @@ function finishLoading(_nodes)
         graphView.restoringNodes = false;
 
         clearTimeout(loadRestartTimer);
-        loadRestartTimer = -1;
+        loadRestartTimer = null;
 
         //console.log('stopped in finish loading');
         loadingOverlay.style.display = 'none';

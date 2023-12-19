@@ -11,10 +11,10 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     deactivateAllNodes = false;
 
 
-    if (loadRestartTimer > -1)
+    if (loadRestartTimer)
     {
         clearTimeout(loadRestartTimer);
-        loadRestartTimer = -1;
+        loadRestartTimer = null;
     }
 
 
@@ -271,6 +271,8 @@ function uiUpdateGlobalProgress(progress)
     commonProgressBar.style.top     = (graphView.loadingNodes ? 0 : 40) + 'px';
     commonProgressBar.style.width   = (progress * 100) + '%';
     commonProgressBar.style.display = 'block';
+
+    restartLoadingTimer();
 }
 
 
@@ -278,6 +280,12 @@ function uiUpdateGlobalProgress(progress)
 function uiEndGlobalProgress()
 {
     commonProgressBar.style.display = 'none';
+
+    if (loadRestartTimer) 
+    {
+        clearTimeout(loadRestartTimer);
+        loadRestartTimer = null;
+    }
 }
 
 

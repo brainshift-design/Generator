@@ -170,15 +170,16 @@ extends GOperator1
 
                     
                     if (parse.repeats.length == 1)
+                    {
                         parse.currentProgress++;
 
-
-                    if (await checkStop(parse.requestId))
-                    {
-                        genEndNodeProgress(this.nodeId);
-                        return this;
+                        if (await checkStop(parse.requestId))
+                        {
+                            genEndNodeProgress(this.nodeId);
+                            return this;
+                        }
                     }
-
+                    
 
                     if (showProgress)
                         genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);

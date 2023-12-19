@@ -1,4 +1,4 @@
-var loadRestartTimer = -1;
+var loadRestartTimer = null;
 
 
 
@@ -21,13 +21,13 @@ function initLoadingOverlay()
 
 function restartLoadingTimer()
 {
-    if (loadRestartTimer > -1) 
+    if (loadRestartTimer) 
         clearTimeout(loadRestartTimer);
 
     loadRestartTimer = setTimeout(() => 
     {
         btnLoadingRestart.style.display = 'inline-block';
-        loadRestartTimer = -1;
+        loadRestartTimer = null;
     }, 
     5000);
 }

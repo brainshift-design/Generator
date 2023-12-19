@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 325;
+const generatorVersion = 326;
 
 
 const MAX_INT32        = 2147483647;

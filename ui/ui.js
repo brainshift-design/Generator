@@ -54,7 +54,7 @@ function uiNotify(text, options = {})
 {
     if (options.delay        == undefined) options.delay        = 4000;
     if (options.error        == undefined) options.error        = false;
-    if (options.prefix       == undefined) options.prefix       = GENERATOR_LOGO + '   '
+    if (options.prefix       == undefined) options.prefix       = ''; //GENERATOR_LOGO + '   '; // in release version the icon is shown, the logo is superfluous
     if (options.buttonText   == undefined) options.buttonText   = '';
     if (options.buttonAction == undefined) options.buttonAction = NULL;
 
