@@ -170,7 +170,7 @@ extends GShapeBase
         const obj = copyFigmaObject(_obj);
 
         obj.nodeId    = this.nodeId;
-        obj.objectId += OBJECT_SEPARATOR + inputIndex + OBJECT_SEPARATOR + objIndex;//OBJECT_SEPARATOR + this.nodeId + OBJECT_SEPARATOR + inputIndex;
+        obj.objectId += OBJECT_SEPARATOR + inputIndex;// + OBJECT_SEPARATOR + objIndex;//OBJECT_SEPARATOR + this.nodeId + OBJECT_SEPARATOR + inputIndex;
         obj.listId    = -1;
 
         objects.push(obj);

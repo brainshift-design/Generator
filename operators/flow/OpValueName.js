@@ -7,11 +7,12 @@ extends OperatorBase
 
     constructor()
     {
-        super(VALUE_NAME, 'valueName', 'value name', '');
+        super(VALUE_NAME, 'valueName', 'value name', iconValueName);
 
 
         this.subscription = true;
         this.canDisable   = true;
+        this.iconOffsetY  = -1;
 
 
         this.addInput (new Input(ALL_VALUES));

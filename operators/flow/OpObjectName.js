@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(OBJECT_NAME, 'objectName', 'object name', '');
+        super(OBJECT_NAME, 'objectName', 'object name', iconObjectName);
 
 
         this.subscription = true;
