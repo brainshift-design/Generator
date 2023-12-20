@@ -122,7 +122,7 @@ extends ResizableBase
         if (this.scroll < -maxScroll)
             this.scroll = Math.min(-maxScroll, 0);
             
-        this.updateNode();
+        this.updateBorder();
 
         if (this.measureData.paramOffset.height == 0)
             setTimeout(() => this.updateScrollbar());

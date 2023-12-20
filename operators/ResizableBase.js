@@ -248,28 +248,10 @@ extends OperatorBase
     };
 
 
-    // setSize(w, h, updateTransform = true)
-    // {
-    //     let headerHeight = getStyleValue(this.header, 'offset-height');
-    //     if (typeof headerHeight == 'string') headerHeight = defHeaderHeight;
-
-    //     const paramHeight = 0;
-
-    //     const _w = Math.max(60, w);
-    //     const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
-
-    //     super.setSize(_w, _h, updateTransform);
-
-    //     this.updateSizers();
-
-    //     this.inner.style.height = _h;
-    // }
-
-
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        const headerHeight = this.header.offsetHeight;//getStyleValue(this.header, 'height');
+        const headerHeight = this.measureData.headerOffset.height;//this.header.offsetHeight;//getStyleValue(this.header, 'height');
 
         const paramHeight = 0;
 

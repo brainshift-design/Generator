@@ -17,7 +17,7 @@ Operator.prototype.updateWireTransform = function()
     for (const input of this.inputs)
         if (   input.connected
             && input.connection)
-            wires.push(input.connection.wire);        
+            wires.push(input.connection.wire);
 
     for (const output of this.outputs)
         for (const connInput of output.connectedInputs)
