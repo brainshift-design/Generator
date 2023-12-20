@@ -589,7 +589,7 @@ NumberControl.prototype.initEvents = function()
 
                 if (this.param) this.param.changing = true;
                 if (this.confirmTimer) clearTimeout(this.confirmTimer);
-                this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 350);
+                this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 300);
             }
         }
     });
