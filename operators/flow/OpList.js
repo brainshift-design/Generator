@@ -104,7 +104,7 @@ extends ResizableBase
         this.scrollbar.addEventListener('pointermove', e =>
         {
             if (this.scrollbar.down)
-                this.updateScroll(this.scrollbar.spy + (e.clientY - this.scrollbar.sy));
+                this.updateScroll(this.scrollbar.spy + (e.clientY - this.scrollbar.sy) * this.measureData.paramOffset.height / (this.measureData.divOffset.height - defHeaderHeight));
         });
 
 
@@ -143,6 +143,43 @@ extends ResizableBase
             }
 
             graphView.updateWires(wires);
+    }
+
+
+
+    updateScrollbar()
+    {
+        const totalHeight = this.measureData.divOffset.height - defHeaderHeight;
+
+        
+        if (   isEmpty(this.params)
+            || this.measureData.paramOffset.height <= totalHeight)
+        {
+            this.scrollbar.style.display = 'none';
+        }
+        else
+        {
+            this.scrollbar.style.left = this.measureData.divOffset.width - 20;
+
+            this.scrollbar.style.top = 
+                  defHeaderHeight + 5 
+                -    this.scroll
+                  /  this.measureData.paramOffset.height
+                  * (this.measureData.divOffset.height - defParamHeight - 10);
+
+            let scrollbarHeight = Math.max(
+                10,
+                sqr(totalHeight) / this.measureData.paramOffset.height - 10);
+
+            this.scrollbar.style.height = scrollbarHeight;
+
+            this.scrollbar.style.display = 
+                this.measureData.divOffset.height - defHeaderHeight - scrollbarHeight >= 10
+                ? 'block'
+                : 'none';
+
+            this.paramHolder.style.top = this.scroll;
+        }
     }
 
 
@@ -330,39 +367,6 @@ extends ResizableBase
         colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
 
         return colors;
-    }
-
-
-
-    updateScrollbar()
-    {
-        const totalHeight = this.measureData.divOffset.height - defHeaderHeight;
-
-        
-        if (   isEmpty(this.params)
-            || this.measureData.paramOffset.height <= totalHeight)
-        {
-            this.scrollbar.style.display = 'none';
-        }
-        else
-        {
-            this.scrollbar.style.display = 'block';
-            
-            this.scrollbar.style.left = this.measureData.divOffset.width - 20;
-
-            this.scrollbar.style.top = 
-                  defHeaderHeight + 5 
-                -    this.scroll
-                  /  this.measureData.paramOffset.height
-                  * (this.measureData.divOffset.height - defParamHeight - 10);
-
-            this.scrollbar.style.height = Math.max(0,
-                  totalHeight
-                *  totalHeight / this.measureData.paramOffset.height
-                - 10);
-
-            this.paramHolder.style.top = this.scroll;
-        }
     }
 
 
