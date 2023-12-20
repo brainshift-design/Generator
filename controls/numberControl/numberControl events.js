@@ -547,6 +547,10 @@ NumberControl.prototype.initEvents = function()
             return;
 
 
+        //const dWheelX = e.deltaX /  20 * (this.dragReverse ? -1 : 1);
+        const dWheelY = e.deltaY / 100 * (this.dragReverse ? -1 : 1);
+
+
         const touchpad = isTouchpad(e);
 
         if (touchpad)
@@ -556,15 +560,13 @@ NumberControl.prototype.initEvents = function()
         }
 
 
-        //const dWheelX = e.deltaX /  20 * (this.dragReverse ? -1 : 1);
-        const dWheelY = e.deltaY / 100 * (this.dragReverse ? -1 : 1);
-
-
         if (   !getCtrlKey(e)
             && !this.buttonDown1
             && dWheelY != 0)
         {
-            e.stopPropagation();
+            if (  !this.readOnly
+                && this.param.node.type != LIST)
+                e.stopPropagation();
 
             if (!this.readOnly)
             {
@@ -589,7 +591,7 @@ NumberControl.prototype.initEvents = function()
 
                 if (this.param) this.param.changing = true;
                 if (this.confirmTimer) clearTimeout(this.confirmTimer);
-                this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 300);
+                this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 260);
             }
         }
     });

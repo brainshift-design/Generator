@@ -29,6 +29,24 @@ extends ResizableBase
 
 
         this.createScrollbar();
+
+
+        this.div.addEventListener('wheel', e =>
+        {
+            if (   getCtrlKey(e)
+                || panMode
+                || graphView.wheelTimer)
+                return;
+
+            e.stopPropagation();
+
+            let dWheelY = e.deltaY;
+
+            if (!isTouchpad(e))
+                dWheelY /= 10;
+
+            this.updateScroll(-this.scroll + dWheelY);
+        });
     }
 
 
@@ -40,7 +58,7 @@ extends ResizableBase
             if (e.button == 0)
             {
                 e.stopPropagation();
-                
+
                 this.resizedY = false;
                 this.setRectB(this.sizerB, 0, 0);
             }
@@ -86,29 +104,7 @@ extends ResizableBase
         this.scrollbar.addEventListener('pointermove', e =>
         {
             if (this.scrollbar.down)
-            {
-                const maxScroll = 
-                       this.measureData.paramOffset.height
-                    - (this.measureData.divOffset.height - defParamHeight - 10);
-
-                this.scroll = -Math.min(Math.max(
-                    0, 
-                    this.scrollbar.spy + (e.clientY - this.scrollbar.sy)),
-                    maxScroll);
-
-                this.updateScrollbar();
-
-
-                const wires = [];
-
-                for (const output of this.outputs.filter(o => o.param))
-                {
-                    for (const input of output.connectedInputs)
-                        wires.push(input.connection.wire);
-                }
-
-                graphView.updateWires(wires);
-            }
+                this.updateScroll(this.scrollbar.spy + (e.clientY - this.scrollbar.sy));
         });
 
 
@@ -123,6 +119,30 @@ extends ResizableBase
                 this.scrollbar.releasePointerCapture(e.pointerId);
             }
         });
+    }
+
+
+
+    updateScroll(dy)
+    {
+            const maxScroll = 
+                   this.measureData.paramOffset.height
+                - (this.measureData.divOffset.height - defParamHeight - 10);
+
+            this.scroll = -Math.min(Math.max(0, dy), maxScroll);
+
+            this.updateScrollbar();
+
+
+            const wires = [];
+
+            for (const output of this.outputs.filter(o => o.param))
+            {
+                for (const input of output.connectedInputs)
+                    wires.push(input.connection.wire);
+            }
+
+            graphView.updateWires(wires);
     }
 
 
