@@ -197,6 +197,8 @@ class Wire
             pIn = point(x, y - yOffset);
 
             
+        // make sure wires don't stick out of list
+        
         if (   this.connection.output
             && this.connection.output.node
             && this.connection.output.param)

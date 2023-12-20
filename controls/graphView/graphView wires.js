@@ -89,10 +89,14 @@ GraphView.prototype.updateWires = function(_wires)
             if (_pOut.y >= outBottom) _pOut.y = outBottom;
         }
 
-        wire.outBall.style.opacity = pOut[i].y > outTop && pOut[i].y < outBottom ? 1 : 0; 
-
-
         wire.updateCurve(_pOut.x, _pOut.y, pIn[i].x, pIn[i].y);
+        
+        wire.outBall.style.opacity = 
+               pOut[i].y > outTop 
+            && pOut[i].y < outBottom 
+            ? 1 
+            : 0; 
+
 
         if (wire.outBall) wire.updateOutBall(pOut[i].x, pOut[i].y);
         if (wire. inBall) wire.updateInBall (pIn [i].x, pIn [i].y);

@@ -186,6 +186,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         {
             graph.pageNodes.forEach(n => n.updateNode());
             graphView.updateNodeTransforms(graph.pageNodes);
+            graphView.updateNodeWireTransforms(graph.pageNodes);
         }
 
 

@@ -7,10 +7,13 @@ GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
     documentBodyClient = clientRect(document.body);
 
 
-    this.updateNodeTransforms(nodes, false);
+    this.updateNodeTransforms(nodes);//, false);
     this.updateNodeTransforms(nodes); // this has to be done twice //because getAllNodeBounds() forces a reflow
 
     nodes.forEach(n => n.updateMeasureData());
+
+    this.updateNodeWireTransforms(nodes);
+
 
     if (updateNodes)
     {
@@ -41,7 +44,7 @@ GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
 
 
 
-GraphView.prototype.updateNodeTransforms = function(nodes, _updateWires = true)
+GraphView.prototype.updateNodeTransforms = function(nodes)//, _updateWires = true)
 {
     const nodeLeft = nodes.map(n => n.div.offsetLeft);
     const nodeTop  = nodes.map(n => n.div.offsetTop);
@@ -50,8 +53,8 @@ GraphView.prototype.updateNodeTransforms = function(nodes, _updateWires = true)
     for (let i = 0; i < nodes.length; i++)
         nodes[i].setTransform(nodeLeft[i], nodeTop[i], nodeRect[i]);
 
-    if (_updateWires)
-        this.updateNodeWireTransforms(nodes);
+    // if (_updateWires)
+    //     this.updateNodeWireTransforms(nodes);
 };
 
 
@@ -157,7 +160,10 @@ GraphView.prototype.setNodePositions = function(nodes, dx, dy, updateTransform =
     }
 
     if (updateTransform)
+    {
         this.updateNodeTransforms(nodes);
+        this.updateNodeWireTransforms(nodes);
+    }
 };
 
 

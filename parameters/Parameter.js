@@ -165,8 +165,8 @@ extends EventTarget
     isUnknown()
     {
         return this.input
-            && this.input.isUncached()
-            && this.node.hasMultipliedOutputs();
+            && this.input.isUncached();
+            //&& this.node.hasMultipliedOutputs();
     }
 
 

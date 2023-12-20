@@ -77,8 +77,11 @@ Graph.prototype.updatePages = function()
     }
 
 
-    graphView.updateNodeTransforms(graph.nodes.filter(n => n.pageId == graph.currentPage.id));
+    const nodes = graph.nodes.filter(n => n.pageId == graph.currentPage.id);
+
+    graphView.updateNodeTransforms(nodes);
     graphView.updateNodes();
+    graphView.updateNodeWireTransforms(nodes);
 
 
     pageName.innerHTML = 

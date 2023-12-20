@@ -385,7 +385,11 @@ extends EventTarget
     {
         if (   this.connectedOutput
             && this.connectedOutput.node)
-            return this.connectedOutput.node.isOrPrecededByUncached();
+        {
+            return this.connectedOutput.param
+                 ? this.connectedOutput.param.isUnknown()
+                 : this.connectedOutput.node .isOrPrecededByUncached();
+        }
         // if (    this.connectedOutput
         //     && !this.connectedOutput.node.cached)
         //     return true;
