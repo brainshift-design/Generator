@@ -20,7 +20,31 @@ extends ResizableBase
         this.alwaysSaveParams = true;
 
 
+        this.adjustSizerEvents(this.sizerL);
+        this.adjustSizerEvents(this.sizerR);
+        this.adjustSizerEvents(this.sizerB);
+
+        this.adjustSizerEvents(this.sizerBL);
+        this.adjustSizerEvents(this.sizerBR);
+
+
         this.createScrollbar();
+    }
+
+
+
+    adjustSizerEvents(sizer)
+    {
+        sizer.addEventListener('dblclick', e =>
+        {
+            if (e.button == 0)
+            {
+                e.stopPropagation();
+                
+                this.resizedY = false;
+                this.setRectB(this.sizerB, 0, 0);
+            }
+        });
     }
 
 
@@ -109,7 +133,8 @@ extends ResizableBase
         h = Math.max(defHeaderHeight, h);
 
         h = 
-            h == defHeaderHeight
+                h == defHeaderHeight
+            && !this.resizedY
             ? Math.max(defHeaderHeight, defHeaderHeight + this.params.length * defParamHeight)
             : Math.min(h, Math.max(defHeaderHeight, defHeaderHeight + this.params.length * defParamHeight));
 

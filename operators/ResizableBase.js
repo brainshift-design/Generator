@@ -20,6 +20,9 @@ extends OperatorBase
     sizerBL;
     sizerBR;
 
+    resizedX;
+    resizedY;
+
 
 
     constructor(type, id, name, icon, defWidth = defNodeWidth, progressBar = false)
@@ -29,6 +32,9 @@ extends OperatorBase
         this.width            = defWidth;
         this.height           = defHeaderHeight;
         this.alwaysLoadParams = true;
+
+        this.resizedX         = false;
+        this.resizedY         = false;
 
         this.initSizers();
     }
@@ -68,12 +74,13 @@ extends OperatorBase
         //this.initSizerEvents(this.sizerTR, this.setRectTR);
         this.initSizerEvents(this.sizerBL, this.setRectBL);
         this.initSizerEvents(this.sizerBR, this.setRectBR);
-   }
+    }
 
 
 
     initSizerEvents(sizer, setRect)
     {
+        sizer.node     = this;
         sizer.resizing = false;
 
 
@@ -129,7 +136,7 @@ extends OperatorBase
         
             setRect(sizer, dx, dy);
                 
-
+            
             e.preventDefault();
             e.stopImmediatePropagation();
 
@@ -168,6 +175,8 @@ extends OperatorBase
             sizer.startRect.y, 
             sizer.startRect.w - dx, 
             sizer.startRect.h);
+
+        sizer.node.resizedX = true;
     };
 
 
@@ -179,6 +188,8 @@ extends OperatorBase
             sizer.startRect.y, 
             sizer.startRect.w + dx, 
             sizer.startRect.h);
+
+        sizer.node.resizedX = true;
     };
 
 
@@ -190,6 +201,8 @@ extends OperatorBase
             sizer.startRect.y + dy, 
             sizer.startRect.w, 
             sizer.startRect.h - dy);
+
+        sizer.node.resizedY = true;
     };
 
 
@@ -201,6 +214,9 @@ extends OperatorBase
             sizer.startRect.y, 
             sizer.startRect.w, 
             sizer.startRect.h + dy);
+
+        sizer.node.resizedX = true;
+        sizer.node.resizedY = true;
     };
 
 
@@ -212,6 +228,9 @@ extends OperatorBase
             sizer.startRect.y + dy, 
             sizer.startRect.w - dx, 
             sizer.startRect.h - dy);
+
+        sizer.node.resizedX = true;
+        sizer.node.resizedY = true;
     };
 
 
@@ -223,6 +242,9 @@ extends OperatorBase
             sizer.startRect.y + dy, 
             sizer.startRect.w + dx, 
             sizer.startRect.h - dy);
+
+        sizer.node.resizedX = true;
+        sizer.node.resizedY = true;
     };
 
 
@@ -234,6 +256,9 @@ extends OperatorBase
             sizer.startRect.y, 
             sizer.startRect.w - dx, 
             sizer.startRect.h + dy);
+
+        sizer.node.resizedX = true;
+        sizer.node.resizedY = true;
     };
 
 
@@ -245,6 +270,9 @@ extends OperatorBase
             sizer.startRect.y, 
             sizer.startRect.w + dx, 
             sizer.startRect.h + dy);
+
+        sizer.node.resizedX = true;
+        sizer.node.resizedY = true;
     };
 
 
