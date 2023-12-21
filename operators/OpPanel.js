@@ -124,65 +124,66 @@ extends ResizableBase
 
         this.div.style.background = background;
 
-        this.header.style.height     = defHeaderHeight / Math.min(1, graph.currentPage.zoom * 2.5);
+        //this.header.style.height     = defHeaderHeight / Math.min(1, graph.currentPage.zoom * 2.5);
         this.header.style.background = darkMode ? '#ffffff04' : '#00000004';
     }
 
 
 
-    updateHeaderLabel()
-    {
-        super.updateHeaderLabel();
+    // updateHeaderLabel()
+    // {
+    //     super.updateHeaderLabel();
 
-        let fontHeight = 11 / Math.min(graph.currentPage.zoom, 1);
-        // const fontHeight = 11 / Math.min(0.5, graph.currentPage.zoom);
-            // inHeader
-            // ? 11
-            // : 11 / Math.min(0.5, graph.currentPage.zoom);
+    //     let fontHeight = 11 / Math.min(graph.currentPage.zoom, 1);
+    //     // const fontHeight = 11 / Math.min(0.5, graph.currentPage.zoom);
+    //         // inHeader
+    //         // ? 11
+    //         // : 11 / Math.min(0.5, graph.currentPage.zoom);
 
-        const mes = measureHtmlText(this.labelText.innerHTML, 'Inter', fontHeight);
+    //     const mes = measureHtmlText(this.labelText.innerHTML, 'Inter', fontHeight);
 
-        fontHeight *= Math.min(this.measureData.divOffset.height / mes.height, 1);
-        // const inHeader = true;
-            //    graph.currentPage.zoom > 0.4
-            // && mes.width + 40 * graph.currentPage.zoom < this.measureData.divOffset.width;
+    //     fontHeight *= Math.min(this.measureData.divOffset.height / mes.height, 1);
+    //     // const inHeader = true;
+    //         //    graph.currentPage.zoom > 0.4
+    //         // && mes.width + 40 * graph.currentPage.zoom < this.measureData.divOffset.width;
 
 
-        // this.labelText   .style.fontSize   = fontHeight; 
-        // this.textbox     .style.fontSize   = fontHeight;
+    //     // this.labelText   .style.fontSize   = fontHeight; 
+    //     // this.textbox     .style.fontSize   = fontHeight;
         
-        // this.label       .style.lineHeight = fontHeight + 'px';
-        // this.label       .style.height     = fontHeight + 'px';
+    //     // this.label       .style.lineHeight = fontHeight + 'px';
+    //     // this.label       .style.height     = fontHeight + 'px';
         
-        // utilContext.font = fontHeight + 'px Inter';
-        // utilContext.measureText(this.labelText.value);
+    //     // utilContext.font = fontHeight + 'px Inter';
+    //     // utilContext.measureText(this.labelText.value);
 
-        // this.labelWrapper.style.top        = graph.currentPage.zoom > 0.25 ? 0 : -fontHeight * 1.2;
-        // this.labelWrapper.style.overflow   = graph.currentPage.zoom > 0.25 ? 'hidden' : 'visible';
-        // this.inner       .style.overflow   = graph.currentPage.zoom > 0.25 ? 'hidden' : 'visible';
-        // // this.labelWrapper.style.top        = inHeader ? 0 : (-fontHeight - 10 + 1/graph.currentPage.zoom);
-        // this.labelWrapper.style.overflow   = inHeader ? 'hidden' : 'visible';
-        // this.inner       .style.overflow   = inHeader ? 'hidden' : 'visible';
+    //     // this.labelWrapper.style.top        = graph.currentPage.zoom > 0.25 ? 0 : -fontHeight * 1.2;
+    //     // this.labelWrapper.style.overflow   = graph.currentPage.zoom > 0.25 ? 'hidden' : 'visible';
+    //     // this.inner       .style.overflow   = graph.currentPage.zoom > 0.25 ? 'hidden' : 'visible';
+    //     // // this.labelWrapper.style.top        = inHeader ? 0 : (-fontHeight - 10 + 1/graph.currentPage.zoom);
+    //     // this.labelWrapper.style.overflow   = inHeader ? 'hidden' : 'visible';
+    //     // this.inner       .style.overflow   = inHeader ? 'hidden' : 'visible';
 
-        this.label.style.opacity = Math.min(this.measureData.divOffset.height / mes.height * 2, 1);
+    //     this.label.style.opacity = Math.min(this.measureData.divOffset.height / mes.height * 2, 1);
 
-        this.textbox     .style.fontSize   = fontHeight + 'px';
+    //     this.textbox     .style.fontSize   = fontHeight + 'px';
+    //     this.textbox     .style.fontSize   = fontHeight + 'px';
 
-        // console.log('mes.width =', mes.width);
-        // console.log('this.measureData.divOffset.width =', this.measureData.divOffset.width);
+    //     // console.log('mes.width =', mes.width);
+    //     // console.log('this.measureData.divOffset.width =', this.measureData.divOffset.width);
 
-        // const wider       = mes.width * graph.currentPage.zoom + 40 < this.measureData.divOffset.width;
+    //     // const wider       = mes.width * graph.currentPage.zoom + 40 < this.measureData.divOffset.width;
 
-        // this.labelWrapper.style.textAlign  = wider ? 'left' : 'center'; 
+    //     // this.labelWrapper.style.textAlign  = wider ? 'left' : 'center'; 
         
-        this.label       .style.fontSize   = fontHeight + 'px';
-        this.label       .style.lineHeight = fontHeight + 'px';
-        this.label       .style.height     = fontHeight + 'px';
+    //     this.label       .style.fontSize   = fontHeight + 'px';
+    //     this.label       .style.lineHeight = fontHeight + 'px';
+    //     this.label       .style.height     = fontHeight + 'px';
 
-        this.labelText   .style.fontSize   = fontHeight + 'px'; 
-        this.labelText   .style.lineHeight = fontHeight + 'px'; 
-        this.labelText   .style.height     = fontHeight + 'px'; 
-    }
+    //     this.labelText   .style.fontSize   = fontHeight + 'px'; 
+    //     this.labelText   .style.lineHeight = fontHeight + 'px'; 
+    //     this.labelText   .style.height     = fontHeight + 'px'; 
+    // }
 
 
 
