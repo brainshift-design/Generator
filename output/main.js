@@ -1396,7 +1396,7 @@ figma.clientStorage.getAsync('pro').then(data => {
     figma.showUI(__html__, {
         visible: false,
         themeColors: true,
-        title: 'Generator' + (data === true ? ' Pro' : '')
+        title: 'Generator' //+ (data === true ? ' Pro' : '')
     });
 });
 var curZoom = figma.viewport.zoom;

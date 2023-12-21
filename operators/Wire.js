@@ -204,9 +204,8 @@ class Wire
             && this.connection.output.param)
         {
             const outNode = this.connection.output.node;
-
-            const outTop    = outNode.measureData.divBounds.y + outNode.measureData.headerOffset.height * graph.currentPage.zoom - yOffset;
-            const outBottom = outNode.measureData.divBounds.y + outNode.measureData.divBounds.height - yOffset;
+            const outTop    = Math.round(outNode.measureData.divBounds.y + outNode.measureData.headerOffset.height * graph.currentPage.zoom - yOffset + 1);
+            const outBottom = Math.round(outNode.measureData.divBounds.y + outNode.measureData.divBounds.height                             - yOffset - 1);
 
             if (pOut.y < outTop   ) pOut.y = outTop;
             if (pOut.y > outBottom) pOut.y = outBottom;

@@ -2177,7 +2177,7 @@ figma.clientStorage.getAsync('pro').then(data =>
         {
             visible:     false,
             themeColors: true,
-            title:       'Generator' + (data === true ? ' Pro' : '')
+            title:       'Generator' //+ (data === true ? ' Pro' : '')
         });
 });
 

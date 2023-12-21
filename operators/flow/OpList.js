@@ -125,24 +125,24 @@ extends ResizableBase
 
     updateScroll(dy)
     {
-            const maxScroll = 
-                   this.measureData.paramOffset.height
-                - (this.measureData.divOffset.height - defParamHeight - 10);
+        const maxScroll = 
+                this.measureData.paramOffset.height
+            - (this.measureData.divOffset.height - defParamHeight - 10);
 
-            this.scroll = -Math.min(Math.max(0, dy), maxScroll);
+        this.scroll = -Math.min(Math.max(0, dy), maxScroll);
 
-            this.updateScrollbar();
+        this.updateScrollbar();
 
 
-            const wires = [];
+        const wires = [];
 
-            for (const output of this.outputs.filter(o => o.param))
-            {
-                for (const input of output.connectedInputs)
-                    wires.push(input.connection.wire);
-            }
+        for (const output of this.outputs.filter(o => o.param))
+        {
+            for (const input of output.connectedInputs)
+                wires.push(input.connection.wire);
+        }
 
-            graphView.updateWires(wires);
+        graphView.updateWires(wires);
     }
 
 

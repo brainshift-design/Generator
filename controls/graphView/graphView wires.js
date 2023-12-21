@@ -76,20 +76,21 @@ GraphView.prototype.updateWires = function(_wires)
         // the yOffset is to start wire coords just below the control bar,
         // not at the top of the window
 
-
         const outNode   = wire.connection.output.node;
-        const outTop    = outNode.measureData.divBounds.y + outNode.measureData.headerOffset.height * graph.currentPage.zoom - yOffset;
-        const outBottom = outNode.measureData.divBounds.y + outNode.measureData.divBounds.height - yOffset;
+
+        let   outTop    = outNode.measureData.divBounds.y + outNode.measureData.headerOffset.height * graph.currentPage.zoom - yOffset + 2 * graph.currentPage.zoom;
+        let   outBottom = outNode.measureData.divBounds.y + outNode.measureData.divBounds.height                             - yOffset - 2 * graph.currentPage.zoom;
 
         const _pOut = pOut[i];
         
         if (wire.connection.output.param)
         {
-            if (_pOut.y <= outTop   ) _pOut.y = outTop;
-            if (_pOut.y >= outBottom) _pOut.y = outBottom;
+            if (_pOut.y < outTop   ) _pOut.y = outTop;
+            if (_pOut.y > outBottom) _pOut.y = outBottom;
         }
 
         wire.updateCurve(_pOut.x, _pOut.y, pIn[i].x, pIn[i].y);
+        
         
         wire.outBall.style.opacity = 
                pOut[i].y > outTop 
