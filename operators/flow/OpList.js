@@ -4,6 +4,9 @@ extends ResizableBase
     scrollbar;
     scroll = 0;
 
+    oldScroll       = null;
+    listScrollTimer = null;
+
 
 
     constructor()
@@ -45,7 +48,26 @@ extends ResizableBase
             if (!isTouchpad(e))
                 dWheelY /= 10;
 
+
+            if (!this.oldScroll)
+                this.oldScroll = this.scroll;
+
             this.updateScroll(-this.scroll + dWheelY);
+
+            if (this.listScrollTimer)
+                clearTimeout(this.listScrollTimer);
+
+            this.listScrollTimer = setTimeout(() =>
+            {
+                actionManager.do(new ScrollListNodeAction(
+                    this.id, 
+                    this.oldScroll,
+                    this.scroll));
+
+                this.listScrollTimer = null;
+                this.oldScroll       = null;
+            },
+            300);
         });
     }
 
@@ -104,7 +126,15 @@ extends ResizableBase
         this.scrollbar.addEventListener('pointermove', e =>
         {
             if (this.scrollbar.down)
-                this.updateScroll(this.scrollbar.spy + (e.clientY - this.scrollbar.sy) * this.measureData.paramOffset.height / (this.measureData.divOffset.height - defHeaderHeight));
+            {
+                const dy = 
+                      this.scrollbar.spy 
+                    +   (e.clientY - this.scrollbar.sy) 
+                      * this.measureData.paramOffset.height 
+                      / (this.measureData.divOffset.height - defHeaderHeight);
+
+                this.updateScroll(dy);
+            }
         });
 
 
@@ -117,6 +147,11 @@ extends ResizableBase
 
                 this.scrollbar.down = false;
                 this.scrollbar.releasePointerCapture(e.pointerId);
+
+                actionManager.do(new ScrollListNodeAction(
+                     this.id, 
+                    -this.scrollbar.spy,
+                     this.scroll));
             }
         });
     }
@@ -126,8 +161,8 @@ extends ResizableBase
     updateScroll(dy)
     {
         const maxScroll = 
-                this.measureData.paramOffset.height
-            - (this.measureData.divOffset.height - defParamHeight - 10);
+              this.params.length * defParamHeight 
+            - (this.measureData.divOffset.height - defHeaderHeight);
 
         this.scroll = -Math.min(Math.max(0, dy), maxScroll);
 
@@ -161,22 +196,20 @@ extends ResizableBase
         {
             this.scrollbar.style.left = this.measureData.divOffset.width - 20;
 
-            this.scrollbar.style.top = 
-                  defHeaderHeight + 5 
-                -    this.scroll
-                  /  this.measureData.paramOffset.height
-                  * (this.measureData.divOffset.height - defParamHeight - 10);
+            let scrollbarHeight = sqr(totalHeight) / this.measureData.paramOffset.height - 10;
 
-            let scrollbarHeight = Math.max(
-                10,
-                sqr(totalHeight) / this.measureData.paramOffset.height - 10);
+            const scrollbarTop =
+                  defHeaderHeight + 5
+                -   this.scroll
+                  / this.measureData.paramOffset.height
+                  * (totalHeight - 5 + Math.min(0, scrollbarHeight - 10));
 
+            scrollbarHeight = Math.max(10, scrollbarHeight);
+
+            this.scrollbar.style.top    = scrollbarTop;
             this.scrollbar.style.height = scrollbarHeight;
 
-            this.scrollbar.style.display = 
-                this.measureData.divOffset.height - defHeaderHeight - scrollbarHeight >= 10
-                ? 'block'
-                : 'none';
+            this.scrollbar.style.display = 'block';
 
             this.paramHolder.style.top = this.scroll;
         }
@@ -198,8 +231,8 @@ extends ResizableBase
         super.setRect(x, y, w, h, updateTransform);
 
         const maxScroll = 
-               this.measureData.paramOffset.height
-            - (this.measureData.divOffset.height - defParamHeight - 10);
+              this.params.length * defParamHeight 
+            - (this.measureData.divOffset.height - defHeaderHeight);
 
         if (this.scroll < -maxScroll)
             this.scroll = Math.min(-maxScroll, 0);

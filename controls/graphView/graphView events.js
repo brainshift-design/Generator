@@ -420,7 +420,7 @@ GraphView.prototype.updateWheelTimer = function()
 
         graph.updateSavedPages();
     }, 
-    400);
+    340);
 };
 
 
