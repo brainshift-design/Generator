@@ -430,6 +430,7 @@ function createDecoPoly(node, center, points, closed, dashes, color, suffix, isC
 
 
     path.createDefaultTransform(center.x, center.y);
+    path.updatePathData();
 
 
     return path;
