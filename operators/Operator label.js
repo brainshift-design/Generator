@@ -51,6 +51,8 @@ Operator.prototype.createLabel = function()
 
 Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFactor)
 {
+    console.log('\'' + this.nodeId + '\'.updateHeaderLabelOffsetX()');
+
     this.labelOffsetFactor = Math.min(Math.max(0, f), 1);
 
 

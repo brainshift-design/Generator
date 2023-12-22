@@ -34,9 +34,10 @@ Operator.prototype.createNode = function()
         if (   graphView.soloMode
             && graphView._soloNode != this
             && this.type != PANEL) 
+        {
             graphView.soloNode(this);
-        
-        this.updateNode();
+            //this.updateNode();
+        }
     });
 
     
@@ -49,7 +50,7 @@ Operator.prototype.createNode = function()
         // if (graphView._soloNode == this)
         //     graphView.unsoloNode();
 
-        this.updateNode();
+        // this.updateNode();
     });
 
     

@@ -706,8 +706,8 @@ class Operator
     {
         this._name = newName;
 
-        this.updateMeasureData();
-        this.updateHeaderLabelOffsetX();
+        //this.updateMeasureData();
+        //this.updateHeaderLabelOffsetX();
 
         return true;
     }

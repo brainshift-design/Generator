@@ -116,7 +116,7 @@ class Graph
         {
             const output = input.connectedOutput;
             this.disconnect(input);
-            output.updateControl();
+            //output.updateControl();
         }
 
 

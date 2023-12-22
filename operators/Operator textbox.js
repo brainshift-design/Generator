@@ -19,6 +19,13 @@ Operator.prototype.initLabelTextbox = function()
             document.execCommand('copy');
         }
 
+        // clear console
+        else if (e.code == 'KeyC'
+            && e.altKey)
+        {
+            console.clear();
+        }    
+
         else if (e.code == 'KeyV'
               && getCtrlKey(e))
         {
@@ -140,7 +147,8 @@ Operator.prototype.initLabelTextbox = function()
                 && enteredValue != savedValue)
             {
                 const newName = this.textbox.value;
-                setTimeout(() => this.setName(newName));
+                this.labelText.innerHTML = newName;
+                //setTimeout(() => this.setName(newName));
                 actionManager.do(new RenameNodeAction(this.id, newName));
             }
         }
@@ -160,7 +168,7 @@ Operator.prototype.initLabelTextbox = function()
 
         setTimeout(() => 
         {
-            this.updateHeaderLabel();
+            //this.updateHeaderLabel();
             
             if (this.inFocus)
                 this.div.focus({preventScroll: true});

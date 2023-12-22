@@ -85,6 +85,13 @@ document.addEventListener('keydown', e =>
         }
     }    
 
+    // clear console
+    else if (e.code == 'KeyC'
+          && e.altKey)
+    {
+        console.clear();
+    }    
+
     // paste
     else if (e.code == 'KeyV'
           && getCtrlKey(e)

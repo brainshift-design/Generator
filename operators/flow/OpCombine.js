@@ -27,7 +27,8 @@ extends ResizableBase
 
         newInput.addEventListener('connect', e => 
         { 
-            onVariableListConnectInput(e.detail.input); e.detail.input.isNew = false; 
+            onVariableListConnectInput(e.detail.input); 
+            e.detail.input.isNew = false; 
             this.updateHeader();
         });
 

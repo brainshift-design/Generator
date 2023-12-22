@@ -30,7 +30,9 @@ extends Action
         this.node.setName(this.newName, {updateNodes: updateNodes});
         this.node.renamed = true;
 
-        this.node.updateNode();
+        // this.node.updateNode();
+        //this.node.updateHeader();
+        //this.node.updateHeaderLabel();
 
         uiSaveNodes([this.nodeId]);
 
@@ -43,8 +45,11 @@ extends Action
     undo(updateNodes)
     {
         this.node.setName(this.oldName, {updateNodes: updateNodes});
-        this.node.updateNode();
 
+        // this.node.updateNode();
+        this.node.updateHeader();
+        //this.node.updateHeaderLabel();
+    
         uiSaveNodes([this.nodeId]);
     }
 
@@ -53,8 +58,11 @@ extends Action
     redo(updateNodes)
     {
         this.node.setName(this.newName, {updateNodes: updateNodes});
-        this.node.updateNode();
-        
+
+        // this.node.updateNode();
+        this.node.updateHeader();
+        //this.node.updateHeaderLabel();
+            
         uiSaveNodes([this.nodeId]);
     }
 }

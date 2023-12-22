@@ -141,8 +141,11 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
 
-    graphView.updateNodes(nodes);
-    graphView.updateScrollWithBounds();
+    if (!graphView.loadingNodes)
+    {
+        graphView.updateNodes(nodes, false);
+        graphView.updateScrollWithBounds();
+    }
 
 
     if (graphView.loadingNodes)

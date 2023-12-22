@@ -31,6 +31,9 @@ Operator.prototype.updateWireTransform = function()
 
 Operator.prototype.updateNode = function() 
 {
+    console.log('\'' + this.nodeId + '\'.updateNode()');
+    console.trace();
+
     this.updateHeader();
     this.updateHeaderLabel();
     this.updateBorder();
@@ -67,6 +70,8 @@ Operator.prototype.updateNode = function()
 
 Operator.prototype.updateBorder = function()
 {
+    console.log('\'' + this.nodeId + '\'.updateBorder()');
+
     const scale = 
         graph.currentPage.zoom >= 1
         ? 3
@@ -113,6 +118,9 @@ Operator.prototype.updateBorder = function()
 
 Operator.prototype.updateHeader = function()
 {
+    console.log('\'' + this.nodeId + '\'.updateHeader()');
+    //console.trace();
+
     const height = this.updateHeaderInputsAndOutputs();
 
     this.header.style.height = height;
@@ -188,7 +196,9 @@ Operator.prototype.updateDisabled = function()
 
 Operator.prototype.updateSubscribe = function()
 {
-    if (!this.measureData)
+    if (   !this.measureData
+        || !this.measureData.headerOffset
+        || !this.measureData.divOffset)
         return;
 
     this.proCover.style.top    = this.measureData.headerOffset.height;
@@ -215,19 +225,22 @@ Operator.prototype.updateSubscribeStatus = function(sub)
 
 Operator.prototype.updateMeasureData = function()
 {
+    console.log('\'' + this.nodeId + '\'.updateMeasureData()');
+    //console.trace();
+
     this.measureData = 
     {
-        divBounds:          boundingRect(this.div           ),
-        divOffset:          offsetRect  (this.div           ),
-        innerOffset:        offsetRect  (this.inner         ),
-        paramOffset:        offsetRect  (this.paramHolder   ),
-        headerOffset:       offsetRect  (this.header        ),
-        labelWrapperBounds: boundingRect(this.labelWrapper  ),
-        labelWrapperOffset: offsetRect  (this.labelWrapper  ),
-        labelBounds:        boundingRect(this.label         ),
-        labelOffset:        offsetRect  (this.label         ),
-        disabledOffset:     offsetRect  (this.divDisabled   ),
-        subscribeOffset:    offsetRect  (this.proLabel)
+        divBounds:          boundingRect(this.div         ),
+        divOffset:          offsetRect  (this.div         ),
+        innerOffset:        offsetRect  (this.inner       ),
+        paramOffset:        offsetRect  (this.paramHolder ),
+        headerOffset:       offsetRect  (this.header      ),
+        labelWrapperBounds: boundingRect(this.labelWrapper),
+        labelWrapperOffset: offsetRect  (this.labelWrapper),
+        labelBounds:        boundingRect(this.label       ),
+        labelOffset:        offsetRect  (this.label       ),
+        disabledOffset:     offsetRect  (this.divDisabled ),
+        subscribeOffset:    offsetRect  (this.proLabel    )
     };
 
     this.params
@@ -245,6 +258,9 @@ Operator.prototype.updateMeasureData = function()
 
 Operator.prototype.updateHeaderLabel = function()
 {
+    console.log('\'' + this.nodeId + '\'.updateHeaderLabel()');
+    //console.trace();
+
     this.updateHeaderLabelText();
 
     
@@ -299,6 +315,8 @@ Operator.prototype.updateIcon = function()
 
 Operator.prototype.updateHeaderLabelText = function()
 {
+    console.log('\'' + this.nodeId + '\'.updateHeaderLabelText()');
+
     const prefix = '';
         // this.type == REPEAT 
         // ? '...' 
@@ -384,6 +402,8 @@ Operator.prototype.updateReorderArrows = function()
 
 Operator.prototype.updateHeaderInputsAndOutputs = function()
 {
+    console.log('\'' + this.nodeId + '\'.updateHeaderInputsAndOutputs()');
+
     let height = defHeaderHeight;
 
 
