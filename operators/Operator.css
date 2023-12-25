@@ -131,7 +131,7 @@
     z-index:        1000;
     white-space:    nowrap;
     font-weight:    600;
-    /* box-shadow:     0 0 0 1px magenta inset; */
+    /* box-shadow:     0 0 0 1px yellow inset; */
 }
 
 
@@ -196,6 +196,12 @@
 .nodeLabelTextbox::selection
 {
     background-color: white;
+}
+
+
+.nodeLabelTextbox:focus
+{
+    box-shadow: none;
 }
 
 

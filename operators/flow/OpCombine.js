@@ -29,13 +29,13 @@ extends ResizableBase
         { 
             onVariableListConnectInput(e.detail.input); 
             e.detail.input.isNew = false; 
-            this.updateHeader();
+            //this.updateHeader();
         });
 
         newInput.addEventListener('disconnect', e => 
         { 
             onVariableListDisconnectInput(e.detail.input); 
-            this.updateHeader();
+            //this.updateHeader();
         });
 
         this.addInput(newInput);

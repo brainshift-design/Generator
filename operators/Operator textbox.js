@@ -129,7 +129,7 @@ Operator.prototype.initLabelTextbox = function()
 
             this.label.style.display = 'block';
 
-        this.header.removeChild(this.textbox);
+        this.labelWrapper.removeChild(this.textbox);
         this.clicked = false;
     });
     
@@ -184,14 +184,14 @@ Operator.prototype.showLabelTextbox = function()
             hasFocus(this.div)
         && !this.clicked;
 
-    this.textbox.style.width           = this.header.offsetWidth  - 4;
+    this.textbox.style.width           = this.header.offsetWidth  - 20;
     this.textbox.style.height          = this.header.offsetHeight - 4;
     this.textbox.style.position        = 'absolute';
     this.textbox.style.left            = '50%';
     this.textbox.style.top             = '50%';
     this.textbox.style.transform       = this.type == COMMENT ? 'translateX(-50%) translateY(-2px)' : 'translateX(-50%) translateY(-50%)';
     this.textbox.style.textAlign       = 'center';
-    this.textbox.style.margin          = '0 1px 0 0px';
+    this.textbox.style.margin          = '0 10px 0 0px';
     this.textbox.style.borderRadius    = '2px 2px 0 0';
 
     this.textbox.style.backgroundColor = this.header.style.backgroundColor;
@@ -200,7 +200,7 @@ Operator.prototype.showLabelTextbox = function()
     this.textbox.value                 = this.name;
     this.textbox.savedValue            = this.textbox.value;
     
-    this.header.appendChild(this.textbox);
+    this.labelWrapper.appendChild(this.textbox);
 
     this.label.style.display           = 'none';
     

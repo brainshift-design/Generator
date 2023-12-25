@@ -32,7 +32,7 @@ Operator.prototype.updateWireTransform = function()
 Operator.prototype.updateNode = function() 
 {
     console.log('\'' + this.nodeId + '\'.updateNode()');
-    console.trace();
+    //console.trace();
 
     this.updateHeader();
     this.updateHeaderLabel();
@@ -256,46 +256,6 @@ Operator.prototype.updateMeasureData = function()
 
 
 
-Operator.prototype.updateHeaderLabel = function()
-{
-    console.log('\'' + this.nodeId + '\'.updateHeaderLabel()');
-    //console.trace();
-
-    this.updateHeaderLabelText();
-
-    
-    this.label.style.top = 
-          (  Math.floor(this.measureData.labelWrapperOffset.height/2 - this.measureData.labelOffset.height/2)
-           + Math.min(Math.max(1, 1/graph.currentPage.zoom), 2)
-           - (settings.showNodeId ? 1 : 0))
-        + 'px';
-
-
-    this.updateHeaderLabelOffsetX();
-
-
-    const colors = this.getHeaderColors();
-
-    
-    let fontSize = 11;
-
-    // compensate for bold active header names look THINNER when zoomed out
-         if (graph.currentPage.zoom < 0.5 ) fontSize = 17;
-    else if (graph.currentPage.zoom < 0.75) fontSize = 15;
-    else if (graph.currentPage.zoom < 1   ) fontSize = 13;
-    else if (graph.currentPage.zoom < 1.5 ) fontSize = 12;
-
-    this.label.style.color      = rgba2style(colors.text);
-    this.label.style.fontSize   = this.active ? fontSize : 11;
-    this.label.style.height     = this.active ? fontSize * 15 / 11 : 15;
-    this.label.style.fontWeight = graph.currentPage.zoom < 1.2 ? '600' : 'normal';
-
-
-    this.updateIcon();
-};
-
-
-
 Operator.prototype.updateIcon = function()
 {
     const colors = this.getHeaderColors();
@@ -309,68 +269,6 @@ Operator.prototype.updateIcon = function()
             || this.alwaysShowIcon)
         ? 'inline' 
         : 'none';
-};
-
-
-
-Operator.prototype.updateHeaderLabelText = function()
-{
-    console.log('\'' + this.nodeId + '\'.updateHeaderLabelText()');
-
-    const prefix = '';
-        // this.type == REPEAT 
-        // ? '...' 
-        // : '';
-    
-    let suffix;
-
-    const sep      = settings.showNodeId ? ' ' : '  ';
-    const ellipsis = settings.showNodeId ? '...' : ' . . .';
-
-    //     if (this.type == COMBINE     ) suffix = sep + '[ ' + this.length        + ' ]';
-    //else 
-    if (this.type == EXTRACT     ) suffix = sep + '[ ' + this.length        + ' ]';
-    else if (this.type == SUBLIST     ) suffix = sep + '[ ' + this.length        + ' ]';
-    else if (this.type == COLUMN      ) suffix = sep + '[ ' + this.columnLength  + ' ]';
-    else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.length   + ' ]';
-    //else if (this.type == SORT      ) suffix = sep + '[ ' + this.length   + ' ]';
-    else if (this.type == FILTER      ) suffix = sep + '[ ' + this.length   + ' ]';
-    else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.length        + ' ]';
-    else if (this.type == LIST        ) suffix = ellipsis + sep + '[ ' + this.params.length + ' ]';
-    else
-        suffix = 
-               this.cached 
-            || this.type == START 
-            ? '' 
-            : ellipsis;
-
-
-    suffix += this.suffix;
-
-
-    let html = 
-        settings.showNodeId 
-        ? this.id + suffix 
-        : prefix + this.getLabelText() + suffix;
-
-    html += 
-           this.active 
-        && this.showActiveArrow 
-        ? (settings.showNodeId ? ' ' : '  ') + '‣' 
-        : '';
-    
-
-    html = html.replaceAll('</', '%%@@%%!!)77');
-    html = html.replaceAll('/', ' / ');
-    html = html.replaceAll('%%@@%%!!)77', '</');
-
-    this.labelText.innerHTML = html;
-
-
-    this.labelText.style.fontFamily = 
-        settings.showNodeId 
-        ? 'Roboto Mono' 
-        : 'Inter';
 };
 
 

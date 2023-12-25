@@ -30,10 +30,22 @@ extends ResizableBase
         const newInput = new Input([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
+
+        newInput.addEventListener('connect', e => 
+        {
+            onVariableConnectInput(e.detail.input); 
+            e.detail.input.isNew = false; 
+        });
+        
+        
+        newInput.addEventListener('disconnect', e => 
+        {
+            onVariableDisconnectInput(e.detail.input);
+        });
+
 
         this.addInput(newInput);
+
 
         return newInput;
     }
