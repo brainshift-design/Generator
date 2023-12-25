@@ -400,11 +400,11 @@ extends OpColorBase
         this.paramSpace.controls[0].textStyleDark   = rgba2style(colors.text);
 
 
-        this.paramSpace. input.colorLight           =
-        this.paramSpace. input.colorDark            = colors.input;
+        // this.paramSpace. input.colorLight           =
+        // this.paramSpace. input.colorDark            = colors.input;
 
-        this.paramSpace.output.colorLight           =
-        this.paramSpace.output.colorDark            = colors.output;
+        // this.paramSpace.output.colorLight           =
+        // this.paramSpace.output.colorDark            = colors.output;
 
 
         super.updateNode();
@@ -721,12 +721,12 @@ function updateColorHeader(node, colors)
     node.label.style.color = rgba2style(colors.text);
 
      
-    node. inputs[0].colorLight =
-    node. inputs[0].colorDark  = colors.input;
+    // node. inputs[0].colorLight =
+    // node. inputs[0].colorDark  = colors.input;
     node. inputs[0].wireColor  = rgb_a(colors.wire);
 
-    node.outputs[0].colorLight =
-    node.outputs[0].colorDark  = colors.output; 
+    // node.outputs[0].colorLight =
+    // node.outputs[0].colorDark  = colors.output; 
     node.outputs[0].wireColor  = rgb_a(colors.wire);
 
 

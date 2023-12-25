@@ -56,7 +56,7 @@ extends OpColorBase
         this.addInput(new Input(COLOR_TYPES));
         this.addInput(new Input(COLOR_TYPES));
 
-        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
+        //this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
         //this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
@@ -285,6 +285,10 @@ extends OpColorBase
 
         if (   this.inputs[0].connected 
             && this.inputs[1].connected) 
+        {
+            this.label.style.color = rgb2style(this.labelColor);
+        }
+        else if (this.inputs[0].connected) 
         {
             this.label.style.color = rgb2style(this.labelColor);
         }

@@ -31,7 +31,7 @@ Operator.prototype.updateWireTransform = function()
 
 Operator.prototype.updateNode = function() 
 {
-    console.log('\'' + this.nodeId + '\'.updateNode()');
+    //console.log('\'' + this.nodeId + '\'.updateNode()');
     //console.trace();
 
     this.updateHeader();
@@ -70,7 +70,8 @@ Operator.prototype.updateNode = function()
 
 Operator.prototype.updateBorder = function()
 {
-    console.log('\'' + this.nodeId + '\'.updateBorder()');
+    //console.log('\'' + this.nodeId + '\'.updateBorder()');
+    //console.trace();
 
     const scale = 
         graph.currentPage.zoom >= 1
@@ -118,7 +119,7 @@ Operator.prototype.updateBorder = function()
 
 Operator.prototype.updateHeader = function()
 {
-    console.log('\'' + this.nodeId + '\'.updateHeader()');
+    //console.log('\'' + this.nodeId + '\'.updateHeader()');
     //console.trace();
 
     const height = this.updateHeaderInputsAndOutputs();
@@ -225,7 +226,7 @@ Operator.prototype.updateSubscribeStatus = function(sub)
 
 Operator.prototype.updateMeasureData = function()
 {
-    console.log('\'' + this.nodeId + '\'.updateMeasureData()');
+    //console.log('\'' + this.nodeId + '\'.updateMeasureData()');
     //console.trace();
 
     this.measureData = 
@@ -300,7 +301,7 @@ Operator.prototype.updateReorderArrows = function()
 
 Operator.prototype.updateHeaderInputsAndOutputs = function()
 {
-    console.log('\'' + this.nodeId + '\'.updateHeaderInputsAndOutputs()');
+    //console.log('\'' + this.nodeId + '\'.updateHeaderInputsAndOutputs()');
 
     let height = defHeaderHeight;
 
@@ -335,15 +336,25 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
     for (let i = 0; i < outputs.length; i++) outputY[i] += connectionSize/2 + this.header.connectionPadding;
 
 
+    const colors = this.getHeaderColors();
+
     for (let i = 0; i < inputs.length; i++)
     {
         inputs[i].div.style.top = inputY[i];
+        
+        inputs[i].colorLight =
+        inputs[i].colorDark  = colors.input;
+
         inputs[i].updateControl();
     }
 
     for (let i = 0; i < outputs.length; i++) 
     {
         outputs[i].div.style.top = outputY[i];
+
+        outputs[i].colorLight =
+        outputs[i].colorDark  = colors.output;
+
         outputs[i].updateControl();
     }
 

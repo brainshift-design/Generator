@@ -51,7 +51,7 @@ Operator.prototype.createLabel = function()
 
 Operator.prototype.updateHeaderLabel = function()
 {
-    console.log('\'' + this.nodeId + '\'.updateHeaderLabel()');
+    //console.log('\'' + this.nodeId + '\'.updateHeaderLabel()');
     //console.trace();
 
     // if (   !this.measureData.labelOffset
@@ -115,7 +115,7 @@ Operator.prototype.updateHeaderLabel = function()
 
 Operator.prototype.updateHeaderLabelText = function()
 {
-    console.log('\'' + this.nodeId + '\'.updateHeaderLabelText()');
+    //console.log('\'' + this.nodeId + '\'.updateHeaderLabelText()');
 
     const prefix = '';
         // this.type == REPEAT 
@@ -177,7 +177,7 @@ Operator.prototype.updateHeaderLabelText = function()
 
 Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFactor)
 {
-    console.log('\'' + this.nodeId + '\'.updateHeaderLabelOffsetX()');
+    //console.log('\'' + this.nodeId + '\'.updateHeaderLabelOffsetX()');
     // console.trace();
 
 
