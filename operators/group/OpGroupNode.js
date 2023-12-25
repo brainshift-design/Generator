@@ -112,13 +112,13 @@ extends OperatorBase
 
         if (!isEmpty(this.headerInputs))
         {
-            colors.input  = 
+            //colors.input  = 
             colors.output =
             colors.wire   = rgbFromType(this.headerInputs[0].types[0], true);
         }
         else if (!isEmpty(this.headerOutputs))
         {
-            colors.input  = 
+            //colors.input  = 
             colors.output =
             colors.wire   = rgbFromType(this.headerOutputs[0].types[0], true);
         }

@@ -192,8 +192,8 @@ extends OpColorBase
             // : 'transparent';
 
 
-        this.inputs[0] .colorLight = 
-        this.inputs[0] .colorDark  = colors.input;
+        // this.inputs[0] .colorLight = 
+        // this.inputs[0] .colorDark  = colors.input;
         this.inputs[0] .wireColor  = colors.wire;
 
         this.outputs[0].colorLight =

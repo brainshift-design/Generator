@@ -122,7 +122,7 @@ extends OperatorBase
             && !this.inputs[0].connected;
 
         // colors.input  = gray ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-        // colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
         colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
 
         return colors;

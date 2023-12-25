@@ -149,7 +149,7 @@ GraphView.prototype.updateShowWires = function(updateNodes = true)
 
 GraphView.prototype.setNodePositions = function(nodes, dx, dy, updateTransform = true)
 {
-    console.log('GraphView.setNodePositions()');
+    //console.log('GraphView.setNodePositions()');
 
     for (const node of nodes)
     {

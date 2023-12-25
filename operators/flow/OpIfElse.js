@@ -201,7 +201,7 @@ extends OperatorBase
             && !this.inputs[0].connected
             && !this.inputs[1].connected;
 
-        colors.input  = rgb_a(colors.text, 0.4);
+        //colors.input  = rgb_a(colors.text, 0.4);
         colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
         colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
       

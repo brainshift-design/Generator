@@ -78,36 +78,43 @@ extends OpColorBase
 
         
         this.header.connectionPadding = 12.5;
+
+
+        // this.inputs[0].addEventListener('connect',    () => OpColorContrast_onConnectInput(this));
+        // this.inputs[1].addEventListener('connect',    () => OpColorContrast_onConnectInput(this));
+
+        // this.inputs[0].addEventListener('disconnect', () => OpColorContrast_onDisconnectInput(this));
+        // this.inputs[1].addEventListener('disconnect', () => OpColorContrast_onDisconnectInput(this));
     }
 
 
 
-    output_genRequest(gen)
+    genRequest(gen)
     {
-        // 'this' is the output
+        // 'this' is the node
 
 
         // console.trace();
-        if (gen.passedNodes.includes(this.node))
+        if (gen.passedNodes.includes(this))
         {
             return [
-                this.node.type, 
-                this.node.id, 
-                this.node.name];
+                this.type, 
+                this.id, 
+                this.name];
         }
 
 
         gen.scope.push({
-            nodeId:  this.node.id, 
+            nodeId:  this.id, 
             paramId: NULL });
 
 
-        const [request, ignore] = this.node.genRequestStart(gen);
+        const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;
 
         
-        const input0 = this.node.inputs[0];
-        const input1 = this.node.inputs[1];
+        const input0 = this.inputs[0];
+        const input1 = this.inputs[1];
 
         
         if (   input0.connected
@@ -121,11 +128,11 @@ extends OpColorBase
         else                       request.push(0);
 
 
-        request.push(...this.node.paramStandard.genRequest(gen));
+        request.push(...this.paramStandard.genRequest(gen));
 
 
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
+        pushUnique(gen.passedNodes, this);
 
 
         return request;
@@ -250,8 +257,14 @@ extends OpColorBase
     {
         const colors = super.getHeaderColors();
 
-        colors.text = this._rgbText;
-        colors.wire = this._rgbText;
+        // if (!this.inputs[0].connected)
+        // {
+        if (!rgbIsNaN(this._rgbText))
+        {
+            colors.text = this._rgbText;
+            colors.wire = this._rgbText;
+        }
+        // }
 
         return colors;
     }
@@ -368,3 +381,17 @@ extends OpColorBase
         }
     }
 }
+
+
+
+// function OpColorContrast_onConnectInput(node)
+// {
+//     node.updateHeader();
+// }
+
+
+
+// function OpColorContrast_onDisconnectInput(node)
+// {
+//     node.updateHeader();
+// }
