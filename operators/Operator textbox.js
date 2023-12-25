@@ -166,6 +166,10 @@ Operator.prototype.initLabelTextbox = function()
         
         this.label.style.display = 'block';
 
+
+        this.updateMeasureData();
+
+        
         setTimeout(() => 
         {
             //this.updateHeaderLabel();
@@ -195,7 +199,7 @@ Operator.prototype.showLabelTextbox = function()
     this.textbox.style.borderRadius    = '2px 2px 0 0';
     this.textbox.style.boxShadow       = 'none';
 
-    this.textbox.style.backgroundColor = this.header.style.backgroundColor;
+    this.textbox.style.backgroundColor = 'transparent';
     this.textbox.style.color           = this.label.style.color;
 
     this.textbox.value                 = this.name;
