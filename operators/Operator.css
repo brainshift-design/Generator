@@ -199,12 +199,6 @@
 }
 
 
-.nodeLabelTextbox:focus
-{
-    box-shadow: none;
-}
-
-
 .proCover
 {
     background: transparent;

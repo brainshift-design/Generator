@@ -193,6 +193,7 @@ Operator.prototype.showLabelTextbox = function()
     this.textbox.style.textAlign       = 'center';
     this.textbox.style.margin          = '0 10px 0 0px';
     this.textbox.style.borderRadius    = '2px 2px 0 0';
+    this.textbox.style.boxShadow       = 'none';
 
     this.textbox.style.backgroundColor = this.header.style.backgroundColor;
     this.textbox.style.color           = this.label.style.color;
