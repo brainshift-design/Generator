@@ -7,6 +7,17 @@ var utilContext;
     
 
 
+const console_trace = console.trace;
+    
+console.trace = msg =>
+{
+    console.groupCollapsed(msg || 'trace');
+    console_trace.apply(this);
+    console.groupEnd();
+};
+
+
+
 function initUtilContext()
 {
     utilCanvas  = document.createElement('canvas');

@@ -34,6 +34,7 @@ Operator.prototype.updateNode = function()
     //console.log('\'' + this.nodeId + '\'.updateNode()');
     //console.trace();
 
+
     this.updateHeader();
     this.updateHeaderLabel();
     this.updateBorder();
@@ -224,10 +225,31 @@ Operator.prototype.updateSubscribeStatus = function(sub)
 
 
 
+Operator.prototype.initMeasureData = function()
+{
+    this.measureData = 
+    {
+        divBounds:          new Rect(0, 0, 0, 0),
+        divOffset:          new Rect(0, 0, 0, 0),
+        innerOffset:        new Rect(0, 0, 0, 0),
+        paramOffset:        new Rect(0, 0, 0, 0),
+        headerOffset:       new Rect(0, 0, 0, 0),
+        labelWrapperBounds: new Rect(0, 0, 0, 0),
+        labelWrapperOffset: new Rect(0, 0, 0, 0),
+        labelBounds:        new Rect(0, 0, 0, 0),
+        labelOffset:        new Rect(0, 0, 0, 0),
+        disabledOffset:     new Rect(0, 0, 0, 0),
+        subscribeOffset:    new Rect(0, 0, 0, 0)
+    };
+};
+
+
+
 Operator.prototype.updateMeasureData = function()
 {
+    // console.log('');
     //console.log('\'' + this.nodeId + '\'.updateMeasureData()');
-    //console.trace();
+    // console.trace();
 
     this.measureData = 
     {
@@ -243,6 +265,7 @@ Operator.prototype.updateMeasureData = function()
         disabledOffset:     offsetRect  (this.divDisabled ),
         subscribeOffset:    offsetRect  (this.proLabel    )
     };
+
 
     this.params
         .forEach(p =>

@@ -76,9 +76,6 @@ Operator.prototype.createNode = function()
 
     this.div.appendChild(this.proCover);
     this.div.appendChild(this.proLabel);
-
-
-    this.updateMeasureData();
 };     
 
 
@@ -192,7 +189,7 @@ Operator.prototype.createHeader = function()
         }
 
         
-        //updateGraphNodes();
+        updateGraphNodes();
     });
 
 

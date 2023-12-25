@@ -147,7 +147,7 @@ class Operator
     valid;
 
     
-    measureData = { divBounds: new Rect(0, 0, 0, 0) };
+    measureData;
 
 
 
@@ -219,6 +219,9 @@ class Operator
 
         this.valid             = false;
 
+
+        this.initMeasureData();
+        
 
         this.createNode();
 

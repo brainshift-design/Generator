@@ -79,7 +79,9 @@ extends Action
         graphView.lastSelectedNodes = graphView.selectedNodes;
         graphView.selectedNodes     = [this.node];
 
+        
         uiMakeNodeActive(this.node);
+        
         pushUnique(updateNodes, this.node);
     }
 

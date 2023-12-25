@@ -51,8 +51,8 @@ Operator.prototype.createLabel = function()
 
 Operator.prototype.updateHeaderLabel = function()
 {
-    //console.log('\'' + this.nodeId + '\'.updateHeaderLabel()');
-    //console.trace();
+    // console.log('\'' + this.nodeId + '\'.updateHeaderLabel()');
+    // console.trace();
 
     // if (   !this.measureData.labelOffset
     //     || !this.measureData.labelWrapperOffset)

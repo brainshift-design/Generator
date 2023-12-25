@@ -292,7 +292,7 @@ extends OperatorBase
         this.height = _h;
         
 
-        this.updateHeaderLabel();
+        this.updateHeader();
         this.updateSizers();
     
         this.inner.style.height = _h;
