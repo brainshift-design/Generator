@@ -136,6 +136,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             || graphView.restoringNodes)
             node.div.style.display = 'block';
 
+        node.updateHeader();
         node.updateMeasureData();
         node.updateNode();
     }

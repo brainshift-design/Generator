@@ -364,12 +364,13 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        this.setRect(
-            this.x, 
-            this.y, 
-            this.width, 
-            this.height,
-            false);
+        this.updateHeader();
+        // this.setRect(
+        //     this.x, 
+        //     this.y, 
+        //     this.width, 
+        //     this.height,
+        //     false);
     }
 
 

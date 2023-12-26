@@ -29,14 +29,15 @@ Operator.prototype.updateWireTransform = function()
 
 
 
-Operator.prototype.updateNode = function() 
+Operator.prototype.updateNode = function(_updateHeader = true) 
 {
-    //console.log('\'' + this.nodeId + '\'.updateNode()');
-    //console.trace();
+    // console.log('\'' + this.nodeId + '\'.updateNode()');
+    // console.trace();
 
 
-    this.updateHeader();
-    this.updateHeaderLabel();
+    if (_updateHeader)
+        this.updateHeader();
+
     this.updateBorder();
     this.updateParams();
     this.updateDisabled();
@@ -120,8 +121,8 @@ Operator.prototype.updateBorder = function()
 
 Operator.prototype.updateHeader = function()
 {
-    //console.log('\'' + this.nodeId + '\'.updateHeader()');
-    //console.trace();
+    // console.log('\'' + this.nodeId + '\'.updateHeader()');
+    // console.trace();
 
     const height = this.updateHeaderInputsAndOutputs();
 
@@ -248,7 +249,7 @@ Operator.prototype.initMeasureData = function()
 Operator.prototype.updateMeasureData = function()
 {
     // console.log('');
-    //console.log('\'' + this.nodeId + '\'.updateMeasureData()');
+    // console.log('\'' + this.nodeId + '\'.updateMeasureData()');
     // console.trace();
 
     this.measureData = 
@@ -324,7 +325,9 @@ Operator.prototype.updateReorderArrows = function()
 
 Operator.prototype.updateHeaderInputsAndOutputs = function()
 {
-    //console.log('\'' + this.nodeId + '\'.updateHeaderInputsAndOutputs()');
+    // console.log('');
+    // console.log('\'' + this.nodeId + '\'.updateHeaderInputsAndOutputs()');
+    // console.trace();
 
     let height = defHeaderHeight;
 
@@ -334,8 +337,7 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
 
     let [ inputY,  inputHeight] = getHeaderConnY(inputs);
     let [outputY, outputHeight] = getHeaderConnY(outputs);
-
-
+    
      inputHeight += this.header.connectionPadding * 2;
     outputHeight += this.header.connectionPadding * 2;
 

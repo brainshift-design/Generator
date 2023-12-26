@@ -1390,6 +1390,8 @@ function areConnected(node1, node2)
 function onVariableConnectInput(input)
 {
     input.node.addNewInput();
+
+    //input.node.updateMeasureData();
     //input.node.updateNode();
 }
 
@@ -1400,6 +1402,7 @@ function onVariableDisconnectInput(input)
     removeFromArray(input.node.inputs, input);
 
     input.node.inputControls.removeChild(input.div);
+    //input.node.updateMeasureData();
     //input.node.updateNode();
 }
 
