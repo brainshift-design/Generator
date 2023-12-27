@@ -119,8 +119,8 @@ extends Operator
             stripeBack: rgb_a(rgbStripeBack),
             border:     rgbaBorder,
             text:       rgb_a(rgbText, 0.9),
-            input:      rgb_a(rgbText, 0.2),
-            output:     rgb_a(rgbText, 0.2),
+            input:      rgb_a(rgbText, 0.4),
+            output:     rgb_a(rgbText, 0.4),
             wire:       rgbaWire };
     }
 

@@ -94,7 +94,7 @@ extends Action
 
     do_insert(node)
     {
-        console.log('insert');
+        //console.log('insert');
 
         const selNode   = nodeFromId(this.prevSelectedIds[0]);
         const selOutput = selNode.headerOutputs[0];

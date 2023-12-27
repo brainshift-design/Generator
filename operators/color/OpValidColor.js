@@ -124,7 +124,7 @@ extends OpColorBase
     getHeaderColors()
     {
         const colors = super.getHeaderColors();
-        const type   = this.outputs[0].types[0];
+        //const type   = this.outputs[0].types[0];
 
         if (this.isUnknown())
         {
@@ -132,8 +132,8 @@ extends OpColorBase
             colors.wire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
         }
                 
-        colors.output = rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-        colors.wire   = rgbFromType(type, true);
+        // colors.output = rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        // colors.wire   = rgbFromType(type, true);
 
         return colors;
     }
