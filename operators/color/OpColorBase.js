@@ -23,8 +23,8 @@ extends Operator
         this.inner.appendChild(this._warningOverlay);
 
 
-        this.header.addEventListener('pointerenter', () => { this.header.over = true;  this.updateHeader(); });
-        this.header.addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
+        this.header.addEventListener('pointerenter', () => { this.header.over = true;  });
+        this.header.addEventListener('pointerleave', () => { this.header.over = false; });
     }
 
 
