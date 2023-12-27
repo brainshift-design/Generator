@@ -17,7 +17,7 @@ const VALUE_NAME              = 'VNAME';
 const OBJECT_NAME             = 'ONAME';
 
 const COMBINE                 = 'CMB';
-const CONDENSE                = 'CDENSE';
+const LIST_AS_ITEM            = 'LSASIT';
 const EXTRACT                 = 'EXTR';
 const SET_PARAM               = 'SETP';
 const EXTRACT_PARAM           = 'EXTRP';
@@ -30,7 +30,8 @@ const CELL                    = 'CELL';
 const LIST                    = 'LIST';
 const LIST_COUNT              = 'COUNT';
 const CONTAINS                = 'LCONT';
-const SELECT                  = 'SEL';
+const SELECT                  = 'SELECT';
+const SELECT_FROM_LIST        = 'LSTSEL';
 const IF_ELSE                 = 'IF';
 const FILTER                  = 'LSTFLT';
 const DEFINE                  = 'DEFINE';  
@@ -72,7 +73,7 @@ const FLOW_TYPES =
     VARIABLE,
     VARIABLE_GROUP,
     ...LIST_TYPES,
-    CONDENSE,
+    LIST_AS_ITEM,
     EXTRACT,
     SET_PARAM,
     EXTRACT_PARAM,
@@ -84,6 +85,7 @@ const FLOW_TYPES =
     CELL,
     LIST,
     SELECT,
+    SELECT_FROM_LIST,
     IF_ELSE,
     FILTER,
     START,

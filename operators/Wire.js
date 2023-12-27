@@ -708,7 +708,7 @@ class Wire
                && arraysIntersect(conn.output.types, LIST_TYPES)
             ||   !conn.output
                && conn.input
-               && arraysIntersect(conn.input.types, LIST_TYPES);
+               && LIST_TYPES.includes(conn.input.types[0]);//arraysIntersect(conn.input.types, LIST_TYPES);
     }
 
 

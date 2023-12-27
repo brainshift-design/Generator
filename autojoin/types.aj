@@ -83,7 +83,7 @@
 ../generator/types/flow/GObjectName.js
 
 ../generator/types/flow/GCombine.js
-../generator/types/flow/GCondense.js
+../generator/types/flow/GListAsItem.js
 ../generator/types/flow/GExtract.js
 ../generator/types/flow/GSetParam.js
 ../generator/types/flow/GExtractParam.js
@@ -96,6 +96,7 @@
 ../generator/types/flow/GCell.js
 ../generator/types/flow/GList.js
 ../generator/types/flow/GSelect.js
+../generator/types/flow/GSelectFromList.js
 ../generator/types/flow/GListCount.js
 ../generator/types/flow/GContains.js
 ../generator/types/flow/GIfElse.js

@@ -342,7 +342,7 @@ iconTimer
 iconValueName
 iconData
 iconCombine
-iconCondense
+iconListAsItem
 iconExtract
 iconSetParam
 iconExtractParam
@@ -603,6 +603,7 @@ menuGroup
 menuPanel
 menuNumberBase
 menuMath
+menuSelect
 menuMinMax
 menuBoolean
 menuCondition
@@ -670,7 +671,7 @@ menuItemDebugLog
 menuItemHelp
 menuItemRestartSep
 menuItemRestart
-menuItemJoin
+menuItemCombine
 menuFlowSep1
 menuItemList
 menuItemSelect
@@ -1069,7 +1070,7 @@ FREEZE
 TIMER
 VALUE_NAME
 COMBINE
-CONDENSE
+LIST_AS_ITEM
 EXTRACT
 SET_PARAM
 EXTRACT_PARAM
@@ -1611,7 +1612,7 @@ genParseVariable
 genParseVariableGroup
 genParseListValue
 genParseJoin
-genParseCondense
+genParseListAsItem
 genParseExtract
 genParseSetParam
 genParseExtractParam
@@ -1829,7 +1830,7 @@ GCache
 GCell
 GColumn
 GCombine
-GCondense
+GListAsItem
 GContains
 GExtract
 GExtractParam
@@ -2123,7 +2124,7 @@ OpValidColor
 OpCache
 OpCell
 OpCombine
-OpCondense
+OpListAsItem
 OpContains
 OpCreateVariable
 OpExtract

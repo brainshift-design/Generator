@@ -143,12 +143,12 @@ function genParseListValue(parse)
 
 
 
-function genParseJoin(parse)
+function genParseCombine(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const list = new GCombine(nodeId, options);
+    const cmb = new GCombine(nodeId, options);
 
     
     let nInputs = 0;
@@ -158,12 +158,12 @@ function genParseJoin(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(list, parse, ignore, nInputs);
+        logReq(cmb, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, list);
+        genParseNodeEnd(parse, cmb);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -172,24 +172,24 @@ function genParseJoin(parse)
 
     
     for (let i = 0; i < nInputs; i++)
-        list.inputs.push(genParse(parse));
+        cmb.inputs.push(genParse(parse));
 
 
     parse.nTab--;
 
         
-    genParseNodeEnd(parse, list);
-    return list;
+    genParseNodeEnd(parse, cmb);
+    return cmb;
 }
 
 
 
-function genParseCondense(parse)
+function genParseListAsItem(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const condense = new GCondense(nodeId, options);
+    const listAsItem = new GListAsItem(nodeId, options);
    
 
     let nInputs = -1;
@@ -202,12 +202,12 @@ function genParseCondense(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(condense, parse, ignore, nInputs);
+        logReq(listAsItem, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, condense);
+        genParseNodeEnd(parse, listAsItem);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -216,14 +216,14 @@ function genParseCondense(parse)
 
 
     if (nInputs == 1)
-        condense.input = genParse(parse);
+        listAsItem.input = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, condense);
-    return condense;
+    genParseNodeEnd(parse, listAsItem);
+    return listAsItem;
 }
 
 
@@ -748,6 +748,49 @@ function genParseSelect(parse)
 
 
     const sel = new GSelect(nodeId, options);
+
+    
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReq(sel, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, sel);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    
+    for (let i = 0; i < nInputs; i++)
+        sel.inputs.push(genParse(parse));
+
+    sel.index = genParse(parse);
+
+
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, sel);
+    return sel;
+}
+
+
+
+function genParseSelectFromList(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const sel = new GSelectFromList(nodeId, options);
     
 
     let nInputs = -1;

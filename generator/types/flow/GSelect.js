@@ -1,10 +1,12 @@
 class GSelect
-extends GOperator1
+extends GOperator
 {
+    inputs = [];
+
     index = null;
 
 
-
+    
     constructor(nodeId, options)
     {
         super(SELECT, nodeId, options);
@@ -16,18 +18,21 @@ extends GOperator1
     {
         super.reset();
 
+        this.inputs = [];
+        
         this.index = null;
     }
 
 
-
+   
     copy()
     {
         const copy = new GSelect(this.nodeId, this.options);
-        
-        copy.copyBase(this);
 
-        if (this.input) copy.input = this.input.copy();
+        copy.copyBase(this);
+        
+        copy.inputs = this.inputs.map(i => i.copy());
+
         if (this.index) copy.index = this.index.copy();
         if (this.value) copy.value = this.value.copy();
 
@@ -38,9 +43,11 @@ extends GOperator1
 
     isCached()
     {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+
+        return super.isCached();
     }
 
 
@@ -50,36 +57,35 @@ extends GOperator1
         if (this.isCached())
             return this;
 
-
-        let index = this.index ? (await this.index.eval(parse)).toValue() : null;
-
-
+        let index  = this.index ? (await this.index.eval(parse)).toValue() : null;
         let length = 0;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-            
+        const inputs = [];
+
+        for (let i = 0; i < this.inputs.length; i++)
+            inputs.push((await this.inputs[i].eval(parse)).toValue());
+
+
         if (   index
-            && input
-            && input.items
-            && input.items.length > 0)
+            && inputs.length > 0)
         {
-            length = input.items.length;
+            length = inputs.length;
 
 
             index = 
-                    index.isValid()
-                && index.value > -input.items.length
-                && index.value <  input.items.length
+                   index.isValid()
+                && index.value > -inputs.length
+                && index.value <  inputs.length
                 ? new NumberValue(Math.round(index.value))
                 : new NumberValue(0);
             
 
             if (   index.isValid()
-                && index.value > -input.items.length
-                && index.value <  input.items.length)
+                && index.value > -inputs.length
+                && index.value <  inputs.length)
             {
-                this.value = input.items.at(index.value);
+                this.value = inputs.at(index.value);
 
                 if (this.value.objects)
                 {
@@ -111,7 +117,7 @@ extends GOperator1
             index      = NumberValue.NaN;
         }
 
-
+        
         const type = this.outputType();
 
         this.setUpdateValues(parse,
@@ -153,8 +159,8 @@ extends GOperator1
 
     isValid()
     {
-        return super.isValid()
-            && this.index && this.index.isValid();
+        return !this.inputs.find(i => !i.isValid())
+            &&  this.index && this.index.isValid();
     }
 
 
@@ -162,6 +168,8 @@ extends GOperator1
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
 
         if (this.index) this.index.pushValueUpdates(parse);
     }
@@ -172,6 +180,8 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
+        this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
+
         if (this.index) this.index.invalidateInputs(parse, from, force);
     }
 
@@ -180,6 +190,8 @@ extends GOperator1
     iterateLoop(parse)
     {
         super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
 
         if (this.index) this.index.iterateLoop(parse);
     }

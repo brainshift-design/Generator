@@ -1,5 +1,5 @@
 class   OpSelect
-extends OperatorBase
+extends ResizableBase
 {
     paramIndex;
 
@@ -12,11 +12,10 @@ extends OperatorBase
     {
         super(SELECT, 'select', 'select', iconSelect);
 
-        this.alwaysSaveParams  = true;
-        this.showHeaderTooltip = true;
+        this.variableInputs   = true;
+        this.alwaysLoadParams = true;
 
-
-        this.addInput(new Input(LIST_VALUES, getNodeInputValuesForUndo));
+        this.addNewInput();
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, true, 0));
@@ -25,7 +24,51 @@ extends OperatorBase
         this.paramIndex.controls[0].allowEditDecimals = false;
 
 
+        this.value  = new NullValue();
         this.length = new NumberValue(0);
+    }
+    
+    
+    
+    addNewInput()
+    {
+        const newInput = new Input([ANY_VALUE]);
+        newInput.isNew = true;
+
+
+        newInput.addEventListener('connect', e => 
+        {
+            onVariableConnectInput(e.detail.input); 
+            e.detail.input.isNew = false; 
+        });
+        
+        
+        newInput.addEventListener('disconnect', e => 
+        {
+            onVariableDisconnectInput(e.detail.input);
+        });
+
+
+        this.addInput(newInput);
+
+
+        return newInput;
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        const height = this.headerHeight + defParamHeight;
+        
+        ResizableBase.prototype.setRect.call(this, 
+            x, 
+            y, 
+            w, 
+            height, 
+            updateTransform);
+
+        this.updateValueParam();
     }
 
 
@@ -52,17 +95,18 @@ extends OperatorBase
         if (ignore) return request;
 
 
-        const input = this.inputs[0];
+        const connectedInputs = this.inputs.filter(i => i.connected && !i.param);
 
 
-        request.push(input.connected ? 1 : 0);
-
-        if (input.connected) 
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        
+        for (const input of connectedInputs)
             request.push(...pushInputOrParam(input, gen));
 
+            
         request.push(...this.paramIndex.genRequest(gen));
 
-            
+        
         gen.scope.pop();
         pushUnique(gen.passedNodes, this);
 
@@ -74,7 +118,6 @@ extends OperatorBase
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
         
         this.value  = values[paramIds.findIndex(id => id == 'value' )];
         this.length = values[paramIds.findIndex(id => id == 'length')];
@@ -88,8 +131,6 @@ extends OperatorBase
 
     updateParams()
     {
-        // super.updateParams();
-        
         this.paramIndex.enableControlText(true, this.paramIndex.isUnknown());
 
 

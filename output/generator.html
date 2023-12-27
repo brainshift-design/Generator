@@ -4780,7 +4780,7 @@ const VALUE_NAME              = 'VNAME';
 const OBJECT_NAME             = 'ONAME';
 
 const COMBINE                 = 'CMB';
-const CONDENSE                = 'CDENSE';
+const LIST_AS_ITEM            = 'LSASIT';
 const EXTRACT                 = 'EXTR';
 const SET_PARAM               = 'SETP';
 const EXTRACT_PARAM           = 'EXTRP';
@@ -4793,7 +4793,8 @@ const CELL                    = 'CELL';
 const LIST                    = 'LIST';
 const LIST_COUNT              = 'COUNT';
 const CONTAINS                = 'LCONT';
-const SELECT                  = 'SEL';
+const SELECT                  = 'SELECT';
+const SELECT_FROM_LIST        = 'LSTSEL';
 const IF_ELSE                 = 'IF';
 const FILTER                  = 'LSTFLT';
 const DEFINE                  = 'DEFINE';  
@@ -4835,7 +4836,7 @@ const FLOW_TYPES =
     VARIABLE,
     VARIABLE_GROUP,
     ...LIST_TYPES,
-    CONDENSE,
+    LIST_AS_ITEM,
     EXTRACT,
     SET_PARAM,
     EXTRACT_PARAM,
@@ -4847,6 +4848,7 @@ const FLOW_TYPES =
     CELL,
     LIST,
     SELECT,
+    SELECT_FROM_LIST,
     IF_ELSE,
     FILTER,
     START,
@@ -17342,7 +17344,7 @@ extends GOperator
 }
 
 
-class GCondense
+class GListAsItem
 extends GOperator1
 {
     cachedValue = null;
@@ -17351,7 +17353,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(CONDENSE, nodeId, options);
+        super(LIST_AS_ITEM, nodeId, options);
     }
 
 
@@ -17367,7 +17369,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GCondense(this.nodeId, this.options);
+        const copy = new GListAsItem(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -19270,6 +19272,206 @@ extends GOperator1
 
 
 class GSelect
+extends GOperator
+{
+    inputs = [];
+
+    index = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(SELECT, nodeId, options);
+    }
+
+
+
+    reset()
+    {
+        super.reset();
+
+        this.inputs = [];
+        
+        this.index = null;
+    }
+
+
+   
+    copy()
+    {
+        const copy = new GSelect(this.nodeId, this.options);
+
+        copy.copyBase(this);
+        
+        copy.inputs = this.inputs.map(i => i.copy());
+
+        if (this.index) copy.index = this.index.copy();
+        if (this.value) copy.value = this.value.copy();
+
+        return copy;
+    }
+
+
+
+    isCached()
+    {
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+
+        return super.isCached();
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        let index  = this.index ? (await this.index.eval(parse)).toValue() : null;
+        let length = 0;
+
+
+        const inputs = [];
+
+        for (let i = 0; i < this.inputs.length; i++)
+            inputs.push((await this.inputs[i].eval(parse)).toValue());
+
+
+        if (   index
+            && inputs.length > 0)
+        {
+            length = inputs.length;
+
+
+            index = 
+                   index.isValid()
+                && index.value > -inputs.length
+                && index.value <  inputs.length
+                ? new NumberValue(Math.round(index.value))
+                : new NumberValue(0);
+            
+
+            if (   index.isValid()
+                && index.value > -inputs.length
+                && index.value <  inputs.length)
+            {
+                this.value = inputs.at(index.value);
+
+                if (this.value.objects)
+                {
+                    for (let i = 0; i < this.value.objects.length; i++)
+                    {
+                        const obj = this.value.objects[i];
+
+                        obj.nodeId = this.nodeId;
+                        obj.listId = -1;
+
+                        obj.objectId = this.nodeId;
+                        
+                        if (obj.objectId != NULL) 
+                            obj.objectId += '/';
+
+                        obj.objectId += index.value.toString();
+                    }
+                }
+            }
+            else
+            {
+                this.value = new NullValue();
+                index      = NumberValue.NaN;
+            }
+        }
+        else
+        {
+            this.value = new NullValue();
+            index      = NumberValue.NaN;
+        }
+
+        
+        const type = this.outputType();
+
+        this.setUpdateValues(parse,
+        [
+            ['value',      type == COLOR_VALUE 
+                        || type == FILL_VALUE 
+                        ? this.value 
+                        : new NullValue()],
+            ['type',    type                   ],
+            ['length',  new NumberValue(length)],
+            ['index',   index                  ]
+        ]);
+
+
+        if (type.value == TEXT_VALUE && parse.settings.showTextTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', this.value]
+            ],
+            true);
+        }
+        else if (isListType(type.value) && parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return !this.inputs.find(i => !i.isValid())
+            &&  this.index && this.index.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+
+        if (this.index) this.index.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
+
+        if (this.index) this.index.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
+
+        if (this.index) this.index.iterateLoop(parse);
+    }
+}
+
+
+class GSelectFromList
 extends GOperator1
 {
     index = null;
@@ -19278,7 +19480,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(SELECT, nodeId, options);
+        super(SELECT_FROM_LIST, nodeId, options);
     }
 
 
@@ -19294,7 +19496,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GSelect(this.nodeId, this.options);
+        const copy = new GSelectFromList(this.nodeId, this.options);
         
         copy.copyBase(this);
 
@@ -19322,9 +19524,7 @@ extends GOperator1
             return this;
 
 
-        let index = this.index ? (await this.index.eval(parse)).toValue() : null;
-
-
+        let index  = this.index ? (await this.index.eval(parse)).toValue() : null;
         let length = 0;
 
 
@@ -27732,6 +27932,8 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         this.inputs.forEach(i => i.pushValueUpdates(parse));
+
+        if (this.with) this.with.pushValueUpdates(parse);
     }
 
 
@@ -27741,6 +27943,8 @@ extends GOperator
         super.invalidateInputs(parse, from, force);
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
+
+        if (this.with) this.with.invalidateInputs(parse, from, force);
     }
 
 
@@ -27750,6 +27954,8 @@ extends GOperator
         super.iterateLoop(parse);
 
         this.inputs.forEach(i => i.iterateLoop(parse));
+
+        if (this.with) this.with.iterateLoop(parse);
     }
 }
 
@@ -41650,12 +41856,12 @@ function genParseListValue(parse)
 
 
 
-function genParseJoin(parse)
+function genParseCombine(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const list = new GCombine(nodeId, options);
+    const cmb = new GCombine(nodeId, options);
 
     
     let nInputs = 0;
@@ -41665,12 +41871,12 @@ function genParseJoin(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(list, parse, ignore, nInputs);
+        logReq(cmb, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, list);
+        genParseNodeEnd(parse, cmb);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -41679,24 +41885,24 @@ function genParseJoin(parse)
 
     
     for (let i = 0; i < nInputs; i++)
-        list.inputs.push(genParse(parse));
+        cmb.inputs.push(genParse(parse));
 
 
     parse.nTab--;
 
         
-    genParseNodeEnd(parse, list);
-    return list;
+    genParseNodeEnd(parse, cmb);
+    return cmb;
 }
 
 
 
-function genParseCondense(parse)
+function genParseListAsItem(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const condense = new GCondense(nodeId, options);
+    const listAsItem = new GListAsItem(nodeId, options);
    
 
     let nInputs = -1;
@@ -41709,12 +41915,12 @@ function genParseCondense(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(condense, parse, ignore, nInputs);
+        logReq(listAsItem, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, condense);
+        genParseNodeEnd(parse, listAsItem);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -41723,14 +41929,14 @@ function genParseCondense(parse)
 
 
     if (nInputs == 1)
-        condense.input = genParse(parse);
+        listAsItem.input = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, condense);
-    return condense;
+    genParseNodeEnd(parse, listAsItem);
+    return listAsItem;
 }
 
 
@@ -42255,6 +42461,49 @@ function genParseSelect(parse)
 
 
     const sel = new GSelect(nodeId, options);
+
+    
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReq(sel, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, sel);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    
+    for (let i = 0; i < nInputs; i++)
+        sel.inputs.push(genParse(parse));
+
+    sel.index = genParse(parse);
+
+
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, sel);
+    return sel;
+}
+
+
+
+function genParseSelectFromList(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const sel = new GSelectFromList(nodeId, options);
     
 
     let nInputs = -1;
@@ -48328,8 +48577,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
     else if (parse.next == OBJECT_NAME            ) result = genParseObjectName        (parse);
 
-    else if (parse.next == COMBINE                ) result = genParseJoin              (parse);
-    else if (parse.next == CONDENSE               ) result = genParseCondense          (parse);
+    else if (parse.next == COMBINE                ) result = genParseCombine           (parse);
+    else if (parse.next == LIST_AS_ITEM           ) result = genParseListAsItem        (parse);
     else if (parse.next == EXTRACT                ) result = genParseExtract           (parse);
     else if (parse.next == SET_PARAM              ) result = genParseSetParam          (parse);
     else if (parse.next == EXTRACT_PARAM          ) result = genParseExtractParam      (parse);
@@ -48342,6 +48591,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == CELL                   ) result = genParseCell              (parse);
     else if (parse.next == LIST                   ) result = genParseList              (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect            (parse);
+    else if (parse.next == SELECT_FROM_LIST       ) result = genParseSelectFromList    (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
     else if (parse.next == CONTAINS               ) result = genParseListContains      (parse);
      

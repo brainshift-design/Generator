@@ -514,8 +514,8 @@ function loadNodes(data, pasting)
 function loadNode(_node, pasting)
 {
     // replace legacy
-    //if (_node.type == 'DISTR') _node.type = DEFINE;
-    //if (_node.type == 'ITEMS') _node.type = LIST;
+    if (_node.type == 'CDENSE') _node.type = LIST_AS_ITEM;
+    if (_node.type == 'SEL'   ) _node.type = SELECT_FROM_LIST;
 
 
     const node = createNode(_node.type);

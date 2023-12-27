@@ -16,10 +16,11 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case OBJECT_NAME:             node = new OpObjectName();        break;
 
         case COMBINE:                 node = new OpCombine();           break;
-        case CONDENSE:                node = new OpCondense();          break;
+        case LIST_AS_ITEM:            node = new OpListAsItem();        break;
         case LIST:                    node = new OpList();              break;
         case LIST_COUNT:              node = new OpListCount();         break;
         case SELECT:                  node = new OpSelect();            break;
+        case SELECT_FROM_LIST:        node = new OpSelectFromList();    break;
         case CONTAINS:                node = new OpContains();          break;
         case IF_ELSE:                 node = new OpIfElse();            break;
         case EXTRACT:                 node = new OpExtract();           break;

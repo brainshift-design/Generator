@@ -56,7 +56,7 @@
 ../operators/flow/OpObjectName.js
 
 ../operators/flow/OpCombine.js
-../operators/flow/OpCondense.js
+../operators/flow/OpListAsItem.js
 ../operators/flow/OpExtract.js
 ../operators/flow/OpSetParam.js
 ../operators/flow/OpExtractParam.js
@@ -69,6 +69,7 @@
 ../operators/flow/OpCell.js
 ../operators/flow/OpList.js
 ../operators/flow/OpSelect.js
+../operators/flow/OpSelectFromList.js
 ../operators/flow/OpListCount.js
 ../operators/flow/OpContains.js
 ../operators/flow/OpIfElse.js
