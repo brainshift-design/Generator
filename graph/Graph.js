@@ -108,16 +108,16 @@ class Graph
     {
         //console.log('graph.connect()');
 
+        console.log('output =', output);
+        console.log('input =', input);
+        console.log('inputId =', inputId);
+
         if (input.connectedOutput == output)
             return input.connection;//null;
             
 
         if (input.connectedOutput)
-        {
-            const output = input.connectedOutput;
             this.disconnect(input);
-            //output.updateControl();
-        }
 
 
         if (    input.node.variableInputs
@@ -126,23 +126,20 @@ class Graph
         {
             input = input.node.headerInputs.at(-1);
             
-            // const inputIndex = input.index;
-                // inputId != ''
-                // ? 
-                //    inputId != ''
-                // && isDigit(inputId[0])
-                // ? parseInt(inputId)
-                // : input.index;
+            const inputIndex =
+                inputId[0] == 'h'
+                ? parseInt(inputId.substring(1))
+                : input.index;
 
             // move new input back to correct index
             moveInArray(
                 input.node.inputs, 
                 input.node.headerInputs.length-1, 
-                input.index);//nputIndex);
+                inputIndex);
 
             input.node.inputControls.insertBefore(
                 lastOf(input.node.inputControls.childNodes), 
-                input.node.inputControls.childNodes[input.index]);
+                input.node.inputControls.childNodes[inputIndex]);
         }
 
 
