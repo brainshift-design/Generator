@@ -29,7 +29,6 @@ extends Action
             graph.currentPage.nodes
                 .filter(n => n.active)
                 .map(n => n.nodeId);
-
                 
         const newActiveNodes = this.newActiveNodeIds.map(id => nodeFromId(id));
 
@@ -48,7 +47,7 @@ extends Action
                 uiMakeNodePassive(nodeFromId(id));
 
         for (const id of this.oldActiveNodeIds)
-            uiMakeNodeActive(nodeFromId(id));
+            uiMakeNodeActive(nodeFromId(id), false);
 
         pushUnique(updateNodes, this.oldActiveNodeIds.map(id => nodeFromId(id)));
 
