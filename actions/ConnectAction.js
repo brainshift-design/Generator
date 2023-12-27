@@ -193,15 +193,15 @@ function connectAction_updateOldOutput(act, updateNodes)
     pushUnique(updateNodes, act.oldOutputNode);
 
     
-    if (!getActiveFromNode(act.oldOutputNode))
-    {
-        uiMakeNodeActive(act.oldOutputNode, !act.shiftKey);
+    // if (!getActiveFromNode(act.oldOutputNode))
+    // {
+    //     uiMakeNodeActive(act.oldOutputNode, !act.shiftKey);
 
-        act.newActiveNodeIds.push(act.oldOutputNodeId);
+    //     act.newActiveNodeIds.push(act.oldOutputNodeId);
 
-        if (act.oldOutputActiveNodeId != NULL)
-            pushUnique(updateNodes, nodeFromId(act.oldOutputActiveNodeId));
-    }
+    //     if (act.oldOutputActiveNodeId != NULL)
+    //         pushUnique(updateNodes, nodeFromId(act.oldOutputActiveNodeId));
+    // }
 }
 
 

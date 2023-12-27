@@ -108,12 +108,9 @@ class Graph
     {
         //console.log('graph.connect()');
 
-        console.log('output =', output);
-        console.log('input =', input);
-        console.log('inputId =', inputId);
 
         if (input.connectedOutput == output)
-            return input.connection;//null;
+            return input.connection;
             
 
         if (input.connectedOutput)
