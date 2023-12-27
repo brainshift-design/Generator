@@ -94,7 +94,7 @@ extends Action
 
     do_insert(node)
     {
-        // console.log('insert');
+        console.log('insert');
 
         const selNode   = nodeFromId(this.prevSelectedIds[0]);
         const selOutput = selNode.headerOutputs[0];
@@ -124,8 +124,8 @@ extends Action
                 const _input     = _inputNode.inputFromId(_conn.inputId);
 
                 if (   _output
-                    && _input.canConnectFrom(_output)
-                    && LIST_TYPES.includes(selOutput.types[0]) == LIST_TYPES.includes(_input.types[0]))
+                    && _input.canConnectFrom(_output))
+                    //&& LIST_TYPES.includes(selOutput.types[0]) == LIST_TYPES.includes(_input.types[0]))
                     createNodeAction_connect(this, _output, _inputNode, _conn.inputId, _conn.outputOrder);
             }
         }
@@ -135,7 +135,7 @@ extends Action
 
     do_noInsert(node)
     {
-        // console.log('no insert');
+        //console.log('no insert');
 
         if (node.variableInputs)
         {
