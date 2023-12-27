@@ -123,34 +123,41 @@ extends OperatorBase
         updateParamConditionText(this.paramCondition, this.paramCondition.isUnknown(), true, 1);
 
 
-        if (this.outputs[0].supportsTypes([COLOR_VALUE]))
-        {
-            if (   this.inputs[0].connected
-                && this.paramCondition.value.value > 0)
-                this.outputs[0].wireColor = this.inputs[0].wireColor;
-            else if (this.inputs[1].connected
-                  && this.paramCondition.value.value == 0)
-                this.outputs[0].wireColor = this.inputs[1].wireColor;
-            else
-                this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
-        }
+        // if (   this.outputs[0].supportsTypes([COLOR_VALUE])
+        //     || this.outputs[0].supportsTypes([FILL_VALUE]))
+        // {
+        //     if (   this.inputs[0].connected
+        //         && this.paramCondition.value.value > 0)
+        //         this.outputs[0].colorLight =
+        //         this.outputs[0].colorDark =
+        //         this.outputs[0].wireColor = this.inputs[0].connectedOutput.wireColor;
+        //     else if (this.inputs[1].connected
+        //           && this.paramCondition.value.value == 0)
+        //         this.outputs[0].colorLight =
+        //         this.outputs[0].colorDark =
+        //         this.outputs[0].wireColor = this.inputs[1].connectedOutput.wireColor;
+        //     else
+        //         this.outputs[0].colorLight =
+        //         this.outputs[0].colorDark =
+        //         this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
+        // }
 
-        else if (this.outputs[0].supportsTypes([FILL_VALUE]))
-        {
-            const colors = this.getHeaderColors();
+        // // else if (this.outputs[0].supportsTypes([FILL_VALUE]))
+        // // {
+        // //     const colors = this.getHeaderColors();
 
-            if (   this.inputs[0].connected
-                && this.paramCondition.value.value > 0)
-                this.outputs[0].wireColor = colors.outputWire;
-            else if (this.inputs[1].connected
-                  && this.paramCondition.value.value == 0)
-                this.outputs[0].wireColor = colors.outputWire;
-            else
-                this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
-        }
+        // //     if (   this.inputs[0].connected
+        // //         && this.paramCondition.value.value > 0)
+        // //         this.outputs[0].wireColor = colors.outputWire;
+        // //     else if (this.inputs[1].connected
+        // //           && this.paramCondition.value.value == 0)
+        // //         this.outputs[0].wireColor = colors.outputWire;
+        // //     else
+        // //         this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
+        // // }
         
-        else
-            this.outputs[0].wireColor = rgbFromType(this.outputs[0].types[0], true);
+        // else
+        //     this.outputs[0].wireColor = rgbFromType(this.outputs[0].types[0], true);
 
 
         this.updateParamControls();
@@ -194,17 +201,32 @@ extends OperatorBase
         const type   = this.outputs[0].types[0];
 
 
-        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+        colors.text = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
-        const gray =
-                this.active
-            && !this.inputs[0].connected
-            && !this.inputs[1].connected;
 
-        //colors.input  = rgb_a(colors.text, 0.4);
-        colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-        colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
-      
+        if (   this.outputs[0].supportsTypes([COLOR_VALUE])
+            || this.outputs[0].supportsTypes([FILL_VALUE]))
+        {
+            if (   this.inputs[0].connected
+                && this.paramCondition.value.value > 0)
+                colors.output =
+                colors.wire   = this.inputs[0].connectedOutput.wireColor;
+            else if (this.inputs[1].connected
+                  && this.paramCondition.value.value == 0)
+                colors.output =
+                colors.wire   = this.inputs[1].connectedOutput.wireColor;
+        }
+        else
+        {
+            const gray =
+                    this.active
+                && !this.inputs[0].connected
+                && !this.inputs[1].connected;
+
+            //colors.input  = rgb_a(colors.text, 0.4);
+            colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+            colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
+        }      
         
         return colors;
     }

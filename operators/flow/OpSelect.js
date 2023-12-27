@@ -3,6 +3,7 @@ extends OperatorBase
 {
     paramIndex;
 
+    value;
     length;
 
 
@@ -75,6 +76,7 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         
+        this.value  = values[paramIds.findIndex(id => id == 'value' )];
         this.length = values[paramIds.findIndex(id => id == 'length')];
         const type  = values[paramIds.findIndex(id => id == 'type'  )];
 
@@ -110,14 +112,30 @@ extends OperatorBase
 
         colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
-        const gray =
-                this.active
-            && !this.inputs[0].connected;
+      
+        if (   this.outputs[0].supportsTypes([COLOR_VALUE])
+            && this.value.isValid())
+        {
+            colors.output =
+            colors.wire   = this.value.toRgb();
+        }
+        else if (this.outputs[0].supportsTypes([FILL_VALUE])
+              && this.value.isValid())
+        {
+            colors.output =
+            colors.wire   = this.value.color.toRgb();
+        }
+        else
+        {
+            const gray =
+                    this.active
+                && !this.inputs[0].connected;
 
-        //colors.input  = gray ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-        colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-        colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
-
+            //colors.input  = gray ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+            colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+            colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
+        }
+        
         return colors;
     }
 }

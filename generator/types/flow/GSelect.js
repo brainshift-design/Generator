@@ -116,6 +116,10 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
+            ['value',      type == COLOR_VALUE 
+                        || type == FILL_VALUE 
+                        ? this.value 
+                        : new NullValue()],
             ['type',    type                   ],
             ['length',  new NumberValue(length)],
             ['index',   index                  ]
@@ -130,7 +134,7 @@ extends GOperator1
             ],
             true);
         }
-        else if (isListType(type.value)   && parse.settings.showListTooltips)
+        else if (isListType(type.value) && parse.settings.showListTooltips)
         {
             this.setUpdateValues(parse,
             [

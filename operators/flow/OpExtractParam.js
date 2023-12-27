@@ -3,7 +3,7 @@ extends ResizableBase
 {
     paramName;
 
-    length;
+    value;
 
     _connected = false;
 
@@ -83,7 +83,8 @@ extends ResizableBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const type = values[paramIds.findIndex(id => id == 'type')];
+        this.value = values[paramIds.findIndex(id => id == 'value')];
+        const type = values[paramIds.findIndex(id => id == 'type' )];
 
         if (type)
             this.headerOutputs[0].types = [type.value];
@@ -103,13 +104,28 @@ extends ResizableBase
             ? [1, 1, 1, 1] 
             : [0, 0, 0, 1]; 
 
-        const gray =
-               this.active
-            && this.outputs[0].types[0] == LIST_VALUE;
+        if (   this.outputs[0].supportsTypes([COLOR_VALUE])
+            && this.value.isValid())
+        {
+            colors.output =
+            colors.wire = this.value.toRgb();
+        }
+        else if (this.outputs[0].supportsTypes([FILL_VALUE])
+              && this.value.isValid())
+        {
+            colors.output =
+            colors.wire = this.value.color.toRgb();
+        }
+        else
+        {
+            const gray =
+                this.active
+                && this.outputs[0].types[0] == LIST_VALUE;
 
-        //colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, !this.active), 0.5), 0.8);
-        colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, !this.active), 0.5), 0.7);
-        colors.wire   = rgbFromType(type, true);
+            //colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, !this.active), 0.5), 0.8);
+            colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, !this.active), 0.5), 0.7);
+            colors.wire   = rgbFromType(type, true);
+        }
 
         return colors;
     }
