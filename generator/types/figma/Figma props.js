@@ -89,8 +89,20 @@ function addGradientProp(obj, prop, target = obj.fills)
     let   sk  =        prop.skew  .toNumber() / 100;
 
 
+    const bounds = obj.getBounds();
+
+    if (prop.position.toNumber() == 2)
+    {
+        x -= bounds.x / nozero(bounds.width );
+        y -= bounds.y / nozero(bounds.height);
+        s *= 100 / nozero(bounds.width);
+    }
+
+
     if (!isLinear)
     {
+        s *= 2;
+
         x -= s/2 * Math.cos(a);
         y -= s/2 * Math.sin(a);
 
@@ -104,6 +116,24 @@ function addGradientProp(obj, prop, target = obj.fills)
     const p2 = addv(
         addv(p0, vector(a + Tau/4, s * asp)),
         mulvs(unitv(subv(p1, p0)), distance(p0, p1) * sk));
+
+
+    if (prop.position.toNumber() > 0)
+    {
+        const aspect = bounds.width / nozero(bounds.height);
+        
+        p1.y = p0.y + (p1.y - p0.y) * aspect;
+        p2.y = p0.y + (p2.y - p0.y) * aspect;
+
+        if (!isLinear)
+        {
+            const dy = p1.y - p0.y;
+
+            p0.y += dy / 2;
+            p1.y += dy / 2;
+            p2.y += dy / 2;
+        }
+    }
 
 
     const identityHandles = 

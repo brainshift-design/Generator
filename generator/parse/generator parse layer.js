@@ -139,6 +139,7 @@ function genParseGradient(parse)
 
 
     grad.gradType = genParse(parse); 
+    grad.position = genParse(parse); 
     grad.x        = genParse(parse); 
     grad.y        = genParse(parse); 
     grad.size     = genParse(parse); 

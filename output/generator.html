@@ -6182,8 +6182,20 @@ function addGradientProp(obj, prop, target = obj.fills)
     let   sk  =        prop.skew  .toNumber() / 100;
 
 
+    const bounds = obj.getBounds();
+
+    if (prop.position.toNumber() == 2)
+    {
+        x -= bounds.x / nozero(bounds.width );
+        y -= bounds.y / nozero(bounds.height);
+        s *= 100 / nozero(bounds.width);
+    }
+
+
     if (!isLinear)
     {
+        s *= 2;
+
         x -= s/2 * Math.cos(a);
         y -= s/2 * Math.sin(a);
 
@@ -6197,6 +6209,24 @@ function addGradientProp(obj, prop, target = obj.fills)
     const p2 = addv(
         addv(p0, vector(a + Tau/4, s * asp)),
         mulvs(unitv(subv(p1, p0)), distance(p0, p1) * sk));
+
+
+    if (prop.position.toNumber() > 0)
+    {
+        const aspect = bounds.width / nozero(bounds.height);
+        
+        p1.y = p0.y + (p1.y - p0.y) * aspect;
+        p2.y = p0.y + (p2.y - p0.y) * aspect;
+
+        if (!isLinear)
+        {
+            const dy = p1.y - p0.y;
+
+            p0.y += dy / 2;
+            p1.y += dy / 2;
+            p2.y += dy / 2;
+        }
+    }
 
 
     const identityHandles = 
@@ -11014,6 +11044,7 @@ extends GValue
 {
     stops;
     gradType;
+    position;
     x;
     y;
     size;
@@ -11026,6 +11057,7 @@ extends GValue
 
     constructor(stops    = new ListValue(),
                 gradType = new NumberValue(0),
+                position = new NumberValue(0),
                 x        = new NumberValue(0),
                 y        = new NumberValue(0),
                 size     = new NumberValue(0),
@@ -11038,6 +11070,7 @@ extends GValue
 
         this.stops    = stops   .copy();
         this.gradType = gradType.copy();
+        this.position = position.copy();
         this.x        = x       .copy();
         this.y        = y       .copy();
         this.size     = size    .copy();
@@ -11056,6 +11089,7 @@ extends GValue
         const copy = new GradientValue(
             this.stops,
             this.gradType,
+            this.position,
             this.x,
             this.y,
             this.size,
@@ -11075,6 +11109,7 @@ extends GValue
     {
         return this.stops   .isValid()
             && this.gradType.isValid()
+            && this.position.isValid()
             && this.x       .isValid()
             && this.y       .isValid()
             && this.size    .isValid()
@@ -11091,6 +11126,7 @@ extends GValue
         return grad
             && this.stops   .equals(grad.stops   )
             && this.gradType.equals(grad.gradType)
+            && this.position.equals(grad.position)
             && this.x       .equals(grad.x       )
             && this.y       .equals(grad.y       )
             && this.size    .equals(grad.size    )
@@ -11120,6 +11156,7 @@ extends GValue
     {
         return      this.stops   .toString()
             + ' ' + this.gradType.toString()
+            + ' ' + this.position.toString()
             + ' ' + this.x       .toString()
             + ' ' + this.y       .toString()
             + ' ' + this.size    .toString()
@@ -11144,6 +11181,7 @@ extends GValue
     {
         return      this.stops   .toPreviewString()
             + ' ' + this.gradType.toPreviewString()
+            + ' ' + this.position.toPreviewString()
             + ' ' + this.x       .toPreviewString()
             + ' ' + this.y       .toPreviewString()
             + ' ' + this.size    .toPreviewString()
@@ -11159,6 +11197,7 @@ extends GValue
     {
         return      this.stops   .toDisplayString()
             + ' ' + this.gradType.toDisplayString()
+            + ' ' + this.position.toDisplayString()
             + ' ' + this.x       .toDisplayString()
             + ' ' + this.y       .toDisplayString()
             + ' ' + this.size    .toDisplayString()
@@ -11186,16 +11225,8 @@ extends GValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
+        NumberValue.NaN,
         NumberValue.NaN));
-
-
-
-    // static default = Object.freeze(new StrokeValue(
-    //     FillValue.create(0, 0, 0, 100),
-    //     new NumberValue(1),
-    //     new NumberValue(0),
-    //     new NumberValue(0),
-    //     new NumberValue(28.96)));
 }
 
 
@@ -11218,6 +11249,7 @@ function parseGradientValue(str, i = -1)
 
     const stops    = parseListValue  (str, i); i += stops   [1];
     const gradType = parseNumberValue(str[i]); i += gradType[1];
+    const position = parseNumberValue(str[i]); i += position[1];
     const x        = parseNumberValue(str[i]); i += x       [1];
     const y        = parseNumberValue(str[i]); i += y       [1];
     const size     = parseNumberValue(str[i]); i += size    [1];
@@ -11228,7 +11260,17 @@ function parseGradientValue(str, i = -1)
 
 
     return [
-        new GradientValue(stops[0], gradType[0], x[0], y[0], size[0], angle[0], aspect[0], skew[0], blend[0]),
+        new GradientValue(
+            stops   [0], 
+            gradType[0], 
+            position[0],
+            x       [0], 
+            y       [0], 
+            size    [0], 
+            angle   [0], 
+            aspect  [0], 
+            skew    [0], 
+            blend   [0]),
         i - iStart ];
 }
 
@@ -31886,6 +31928,7 @@ extends GOperator
     inputs = [];
 
     gradType = null;
+    position = null;
     x        = null;
     y        = null;
     size     = null;
@@ -31910,6 +31953,7 @@ extends GOperator
         this.inputs = [];
     
         this.gradType = null;
+        this.position = null;
         this.x        = null;
         this.y        = null;
         this.size     = null;
@@ -31929,14 +31973,15 @@ extends GOperator
 
         copy.inputs = this.inputs.map(i => i.copy());
 
-        if (this.gradType) copy.gradType = this.x     .copy();
-        if (this.x       ) copy.x        = this.x     .copy();
-        if (this.y       ) copy.y        = this.y     .copy();
-        if (this.size    ) copy.size     = this.size  .copy();
-        if (this.angle   ) copy.angle    = this.angle .copy();
-        if (this.aspect  ) copy.aspect   = this.aspect.copy();
-        if (this.skew    ) copy.skew     = this.skew  .copy();
-        if (this.blend   ) copy.blend    = this.blend .copy();
+        if (this.gradType) copy.gradType = this.x       .copy();
+        if (this.position) copy.position = this.position.copy();
+        if (this.x       ) copy.x        = this.x       .copy();
+        if (this.y       ) copy.y        = this.y       .copy();
+        if (this.size    ) copy.size     = this.size    .copy();
+        if (this.angle   ) copy.angle    = this.angle   .copy();
+        if (this.aspect  ) copy.aspect   = this.aspect  .copy();
+        if (this.skew    ) copy.skew     = this.skew    .copy();
+        if (this.blend   ) copy.blend    = this.blend   .copy();
 
         return copy;
     }
@@ -31949,6 +31994,7 @@ extends GOperator
             return this;
 
         const gradType = this.gradType ? (await this.gradType.eval(parse)).toValue() : null;
+        const position = this.position ? (await this.position.eval(parse)).toValue() : null;
         const x        = this.x        ? (await this.x       .eval(parse)).toValue() : null;
         const y        = this.y        ? (await this.y       .eval(parse)).toValue() : null;
         const size     = this.size     ? (await this.size    .eval(parse)).toValue() : null;
@@ -31982,6 +32028,7 @@ extends GOperator
         this.value = new GradientValue(
             stops,
             gradType,
+            position,
             x, 
             y, 
             size, 
@@ -31998,6 +32045,7 @@ extends GOperator
         
 
         if (!this.gradType) this.gradType = this.value.gradType.copy();
+        if (!this.position) this.position = this.value.position.copy();
         if (!this.x       ) this.x        = this.value.x       .copy();
         if (!this.y       ) this.y        = this.value.y       .copy();
         if (!this.size    ) this.size     = this.value.size    .copy();
@@ -32025,6 +32073,7 @@ extends GOperator
         return new GradientValue(
             stops,
             this.gradType ? this.gradType.toValue() : this.input.gradType.toValue(),
+            this.position ? this.position.toValue() : this.input.position.toValue(),
             this.x        ? this.x       .toValue() : this.input.x       .toValue(),
             this.y        ? this.y       .toValue() : this.input.y       .toValue(),
             this.size     ? this.size    .toValue() : this.input.size    .toValue(),
@@ -32040,6 +32089,7 @@ extends GOperator
     {
         return !this.inputs.find(i => !i.isValid())
             && this.gradType && this.gradType.isValid()
+            && this.position && this.position.isValid()
             && this.x        && this.x       .isValid()
             && this.y        && this.y       .isValid()
             && this.size     && this.size    .isValid()
@@ -32058,6 +32108,7 @@ extends GOperator
         this.inputs.forEach(i => i.pushValueUpdates(parse));
 
         if (this.gradType) this.gradType.pushValueUpdates(parse);
+        if (this.position) this.position.pushValueUpdates(parse);
         if (this.x       ) this.x       .pushValueUpdates(parse);
         if (this.y       ) this.y       .pushValueUpdates(parse);
         if (this.size    ) this.size    .pushValueUpdates(parse);
@@ -32076,6 +32127,7 @@ extends GOperator
         this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
         
         if (this.gradType) this.gradType.invalidateInputs(parse, from, force);
+        if (this.position) this.position.invalidateInputs(parse, from, force);
         if (this.x       ) this.x       .invalidateInputs(parse, from, force);
         if (this.y       ) this.y       .invalidateInputs(parse, from, force);
         if (this.size    ) this.size    .invalidateInputs(parse, from, force);
@@ -32094,6 +32146,7 @@ extends GOperator
         this.inputs.forEach(i => i.iterateLoop(parse));
 
         if (this.gradType) this.gradType.iterateLoop(parse);
+        if (this.position) this.position.iterateLoop(parse);
         if (this.x       ) this.x       .iterateLoop(parse);
         if (this.y       ) this.y       .iterateLoop(parse);
         if (this.size    ) this.size    .iterateLoop(parse);
@@ -43345,6 +43398,7 @@ function genParseGradient(parse)
 
 
     grad.gradType = genParse(parse); 
+    grad.position = genParse(parse); 
     grad.x        = genParse(parse); 
     grad.y        = genParse(parse); 
     grad.size     = genParse(parse); 

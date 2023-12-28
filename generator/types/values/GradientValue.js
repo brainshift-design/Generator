@@ -3,6 +3,7 @@ extends GValue
 {
     stops;
     gradType;
+    position;
     x;
     y;
     size;
@@ -15,6 +16,7 @@ extends GValue
 
     constructor(stops    = new ListValue(),
                 gradType = new NumberValue(0),
+                position = new NumberValue(0),
                 x        = new NumberValue(0),
                 y        = new NumberValue(0),
                 size     = new NumberValue(0),
@@ -27,6 +29,7 @@ extends GValue
 
         this.stops    = stops   .copy();
         this.gradType = gradType.copy();
+        this.position = position.copy();
         this.x        = x       .copy();
         this.y        = y       .copy();
         this.size     = size    .copy();
@@ -45,6 +48,7 @@ extends GValue
         const copy = new GradientValue(
             this.stops,
             this.gradType,
+            this.position,
             this.x,
             this.y,
             this.size,
@@ -64,6 +68,7 @@ extends GValue
     {
         return this.stops   .isValid()
             && this.gradType.isValid()
+            && this.position.isValid()
             && this.x       .isValid()
             && this.y       .isValid()
             && this.size    .isValid()
@@ -80,6 +85,7 @@ extends GValue
         return grad
             && this.stops   .equals(grad.stops   )
             && this.gradType.equals(grad.gradType)
+            && this.position.equals(grad.position)
             && this.x       .equals(grad.x       )
             && this.y       .equals(grad.y       )
             && this.size    .equals(grad.size    )
@@ -109,6 +115,7 @@ extends GValue
     {
         return      this.stops   .toString()
             + ' ' + this.gradType.toString()
+            + ' ' + this.position.toString()
             + ' ' + this.x       .toString()
             + ' ' + this.y       .toString()
             + ' ' + this.size    .toString()
@@ -133,6 +140,7 @@ extends GValue
     {
         return      this.stops   .toPreviewString()
             + ' ' + this.gradType.toPreviewString()
+            + ' ' + this.position.toPreviewString()
             + ' ' + this.x       .toPreviewString()
             + ' ' + this.y       .toPreviewString()
             + ' ' + this.size    .toPreviewString()
@@ -148,6 +156,7 @@ extends GValue
     {
         return      this.stops   .toDisplayString()
             + ' ' + this.gradType.toDisplayString()
+            + ' ' + this.position.toDisplayString()
             + ' ' + this.x       .toDisplayString()
             + ' ' + this.y       .toDisplayString()
             + ' ' + this.size    .toDisplayString()
@@ -175,16 +184,8 @@ extends GValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
+        NumberValue.NaN,
         NumberValue.NaN));
-
-
-
-    // static default = Object.freeze(new StrokeValue(
-    //     FillValue.create(0, 0, 0, 100),
-    //     new NumberValue(1),
-    //     new NumberValue(0),
-    //     new NumberValue(0),
-    //     new NumberValue(28.96)));
 }
 
 
@@ -207,6 +208,7 @@ function parseGradientValue(str, i = -1)
 
     const stops    = parseListValue  (str, i); i += stops   [1];
     const gradType = parseNumberValue(str[i]); i += gradType[1];
+    const position = parseNumberValue(str[i]); i += position[1];
     const x        = parseNumberValue(str[i]); i += x       [1];
     const y        = parseNumberValue(str[i]); i += y       [1];
     const size     = parseNumberValue(str[i]); i += size    [1];
@@ -217,6 +219,16 @@ function parseGradientValue(str, i = -1)
 
 
     return [
-        new GradientValue(stops[0], gradType[0], x[0], y[0], size[0], angle[0], aspect[0], skew[0], blend[0]),
+        new GradientValue(
+            stops   [0], 
+            gradType[0], 
+            position[0],
+            x       [0], 
+            y       [0], 
+            size    [0], 
+            angle   [0], 
+            aspect  [0], 
+            skew    [0], 
+            blend   [0]),
         i - iStart ];
 }

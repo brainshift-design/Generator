@@ -2,6 +2,7 @@ class   OpGradient
 extends OpColorBase
 {
     paramType;
+    paramPosition;
     paramX;
     paramY;
     paramSize;
@@ -40,14 +41,15 @@ extends OpColorBase
         this.addOutput(new Output([GRADIENT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
         
 
-        this.addParam(this.paramType   = new SelectParam('type',   '',       false, true, true,  ['linear', 'radial', 'angular', 'diamond'], 0));
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true,  true, true,   0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true,  true, true,  50));
-        this.addParam(this.paramSize   = new NumberParam('size',   'size',   true,  true, true, 100));
-        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true,  true, true,   0));
-        this.addParam(this.paramAspect = new NumberParam('aspect', 'aspect', true,  true, true, 100));
-        this.addParam(this.paramSkew   = new NumberParam('skew',   'skew',   true,  true, true,   0));
-        this.addParam(this.paramBlend  = new SelectParam('blend',  'blend',  false, true, true, BlendModes.map(bm => bm[1]), 0));
+        this.addParam(this.paramType     = new SelectParam('type',   '',           false, true, true, ['linear', 'radial', 'angular', 'diamond'], 0));
+        this.addParam(this.paramPosition = new SelectParam('position', 'position', false, true, true, ['object', 'relative', 'absolute'], 1));
+        this.addParam(this.paramX        = new NumberParam('x',      'x',          true,  true, true,   0));
+        this.addParam(this.paramY        = new NumberParam('y',      'y',          true,  true, true,  50));
+        this.addParam(this.paramSize     = new NumberParam('size',   'size',       true,  true, true, 100));
+        this.addParam(this.paramAngle    = new NumberParam('angle',  'angle',      true,  true, true,   0));
+        this.addParam(this.paramAspect   = new NumberParam('aspect', 'aspect',     true,  true, true, 100));
+        this.addParam(this.paramSkew     = new NumberParam('skew',   'skew',       true,  true, true,   0));
+        this.addParam(this.paramBlend    = new SelectParam('blend',  'blend',      false, true, true, BlendModes.map(bm => bm[1]), 0));
 
 
         this.paramX     .controls[0].suffix        = '%';
@@ -109,14 +111,15 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
         
-        request.push(...this.node.paramType  .genRequest(gen));
-        request.push(...this.node.paramX     .genRequest(gen));
-        request.push(...this.node.paramY     .genRequest(gen));
-        request.push(...this.node.paramSize  .genRequest(gen));
-        request.push(...this.node.paramAngle .genRequest(gen));
-        request.push(...this.node.paramAspect.genRequest(gen));
-        request.push(...this.node.paramSkew  .genRequest(gen));
-        request.push(...this.node.paramBlend .genRequest(gen));
+        request.push(...this.node.paramType    .genRequest(gen));
+        request.push(...this.node.paramPosition.genRequest(gen));
+        request.push(...this.node.paramX       .genRequest(gen));
+        request.push(...this.node.paramY       .genRequest(gen));
+        request.push(...this.node.paramSize    .genRequest(gen));
+        request.push(...this.node.paramAngle   .genRequest(gen));
+        request.push(...this.node.paramAspect  .genRequest(gen));
+        request.push(...this.node.paramSkew    .genRequest(gen));
+        request.push(...this.node.paramBlend   .genRequest(gen));
 
         
         gen.scope.pop();
@@ -131,13 +134,49 @@ extends OpColorBase
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramType  .setValue(value.gradType, false, true, false);
-        this.paramX     .setValue(value.x,        false, true, false);
-        this.paramY     .setValue(value.y,        false, true, false);
-        this.paramSize  .setValue(value.size,     false, true, false);
-        this.paramAngle .setValue(value.angle,    false, true, false);
-        this.paramAspect.setValue(value.aspect,   false, true, false);
-        this.paramSkew  .setValue(value.skew,     false, true, false);
-        this.paramBlend .setValue(value.blend,    false, true, false);
+        this.paramType    .setValue(value.gradType, false, true, false);
+        this.paramPosition.setValue(value.position, false, true, false);
+        this.paramX       .setValue(value.x,        false, true, false);
+        this.paramY       .setValue(value.y,        false, true, false);
+        this.paramSize    .setValue(value.size,     false, true, false);
+        this.paramAngle   .setValue(value.angle,    false, true, false);
+        this.paramAspect  .setValue(value.aspect,   false, true, false);
+        this.paramSkew    .setValue(value.skew,     false, true, false);
+        this.paramBlend   .setValue(value.blend,    false, true, false);
+    }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        this.paramX   .controls[0].resetRanges();
+        this.paramY   .controls[0].resetRanges();
+        this.paramSize.controls[0].resetRanges();
+        this.paramSkew.controls[0].resetRanges();
+
+
+        const pos = this.paramPosition.value.value;
+
+        this.paramX   .controls[0].suffix = pos < 2 ? '%' : '';
+        this.paramY   .controls[0].suffix = pos < 2 ? '%' : '';
+        this.paramSize.controls[0].suffix = pos < 2 ? '%' : '';
+        this.paramSkew.controls[0].suffix = pos < 2 ? '%' : '';
+
+        this.paramX   .controls[0].displayMin = pos < 2 ?   0 : Number.MIN_SAFE_INTEGER;
+        this.paramX   .controls[0].displayMax = pos < 2 ? 100 : Number.MAX_SAFE_INTEGER;
+
+        this.paramY   .controls[0].displayMin = pos < 2 ?   0 : Number.MIN_SAFE_INTEGER;
+        this.paramY   .controls[0].displayMax = pos < 2 ? 100 : Number.MAX_SAFE_INTEGER;
+
+        this.paramSize.controls[0].displayMin = pos < 2 ?   0 : Number.MIN_SAFE_INTEGER;
+        this.paramSize.controls[0].displayMax = pos < 2 ? 100 : Number.MAX_SAFE_INTEGER;
+
+        this.paramSkew.controls[0].displayMin = pos < 2 ?   0 : Number.MIN_SAFE_INTEGER;
+        this.paramSkew.controls[0].displayMax = pos < 2 ? 100 : Number.MAX_SAFE_INTEGER;
+
+
+        this.updateParamControls();
     }
 }
