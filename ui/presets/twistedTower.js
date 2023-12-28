@@ -384,9 +384,10 @@ const presetTwistedTower = '\
             ]\
         },\
         {\
-            "type": "EXTRP",\
-            "id": "extractParam",\
-            "name": "extract%20value",\
+            "type": "GETP",\
+            "type": "GETP",\
+            "id": "getParam",\
+            "name": "get%20param",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
@@ -863,7 +864,7 @@ const presetTwistedTower = '\
             "outputNodeId": "path3",\
             "outputId": "points",\
             "outputOrder": "0",\
-            "inputNodeId": "extractParam",\
+            "inputNodeId": "getParam",\
             "inputId": "h0",\
             "list": "true"\
         },\
@@ -884,7 +885,7 @@ const presetTwistedTower = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "extractParam",\
+            "outputNodeId": "getParam",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "minmax",\

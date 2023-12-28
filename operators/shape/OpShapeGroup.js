@@ -21,7 +21,7 @@ extends OpShapeBase
 
     addNewInput()
     {
-        const newInput = new Input([SHAPE_LIST_VALUE, ...SHAPE_VALUES]);
+        const newInput = new Input([...SHAPE_VALUES, SHAPE_LIST_VALUE]);
         newInput.isNew = true;
 
 

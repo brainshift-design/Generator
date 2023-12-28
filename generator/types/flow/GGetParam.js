@@ -1,4 +1,4 @@
-class GExtractParam
+class GGetParam
 extends GOperator1
 {
     name = null;
@@ -7,7 +7,7 @@ extends GOperator1
     
     constructor(nodeId, options)
     {
-        super(EXTRACT_PARAM, nodeId, options);
+        super(GET_PARAM, nodeId, options);
     }
 
 
@@ -23,7 +23,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GExtractParam(this.nodeId, this.options);
+        const copy = new GGetParam(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -55,10 +55,10 @@ extends GOperator1
                     this.value = new ListValue();
 
                     for (let i = 0; i < input.items.length; i++)
-                        this.value.items.push(getExtractParamValue(input.items[i], name));
+                        this.value.items.push(getGetParamValue(input.items[i], name));
                 }
                 else
-                    this.value = getExtractParamValue(input, name);
+                    this.value = getGetParamValue(input, name);
             }
             else
                 this.value = input;
@@ -143,7 +143,7 @@ extends GOperator1
 
 
 
-function getExtractParamValue(input, name)
+function getGetParamValue(input, name)
 {
     let nameValue = name.value.trim();
 

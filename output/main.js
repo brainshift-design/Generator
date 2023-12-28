@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 330;
+const generatorVersion = 331;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -565,7 +565,7 @@ const COMBINE = 'CMB';
 const LIST_AS_ITEM = 'LSASIT';
 const EXTRACT = 'EXTR';
 const SET_PARAM = 'SETP';
-const EXTRACT_PARAM = 'EXTRP';
+const GET_PARAM = 'GETP';
 const SUBLIST = 'SUBLST';
 const UNIQUE = 'UNIQ';
 const REVERSE_LIST = 'REVLST';
@@ -589,7 +589,7 @@ const LIST_TYPES = [
     COMBINE,
     EXTRACT,
     SET_PARAM,
-    EXTRACT_PARAM,
+    GET_PARAM,
     SUBLIST,
     LIST,
     LIST_COUNT,
@@ -610,7 +610,7 @@ const FLOW_TYPES = [
     LIST_AS_ITEM,
     EXTRACT,
     SET_PARAM,
-    EXTRACT_PARAM,
+    GET_PARAM,
     SUBLIST,
     UNIQUE,
     REVERSE_LIST,

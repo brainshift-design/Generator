@@ -1,4 +1,4 @@
-class   OpExtractParam
+class   OpGetParam
 extends ResizableBase
 {
     paramName;
@@ -11,17 +11,17 @@ extends ResizableBase
 
     constructor()
     {
-        super(EXTRACT_PARAM, 'getParam', 'get param', iconExtractParam);
+        super(GET_PARAM, 'getParam', 'get param', iconGetParam);
 
         this.canDisable        = true;
         
 
-        this.addInput (new Input (ALL_VALUES));
+        this.addInput (new Input ([ANY_VALUE]));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
         this.addParam(this.paramName = new TextParam('name', 'name', true, true, true));
 
-        this.inputs[0].addEventListener('disconnect', () => OpExtractParam_onDisconnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpGetParam_onDisconnectInput(this));
 
         this.paramName.divider = 0.35;
     }
@@ -158,7 +158,7 @@ extends ResizableBase
 
 
 
-function OpExtractParam_onDisconnectInput(node)
+function OpGetParam_onDisconnectInput(node)
 {
     node._connected = false;
 }

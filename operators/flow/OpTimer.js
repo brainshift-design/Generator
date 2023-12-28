@@ -19,7 +19,7 @@ extends OperatorBase
         this.iconOffsetY  = -2;
         
 
-        this.addInput (new Input(ALL_VALUES));
+        this.addInput (new Input([ANY_VALUE]));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 

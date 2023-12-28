@@ -95,7 +95,7 @@ extends OpShapeBase
 
     addNewInput()
     {
-        const newInput = new Input([LIST_VALUE, SHAPE_LIST_VALUE, ...SHAPE_VALUES]);
+        const newInput = new Input([...SHAPE_VALUES, SHAPE_LIST_VALUE]);
         newInput.isNew = true;
 
         newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });

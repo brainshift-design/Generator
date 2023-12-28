@@ -149,7 +149,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST_AS_ITEM           ) result = genParseListAsItem        (parse);
     else if (parse.next == EXTRACT                ) result = genParseExtract           (parse);
     else if (parse.next == SET_PARAM              ) result = genParseSetParam          (parse);
-    else if (parse.next == EXTRACT_PARAM          ) result = genParseExtractParam      (parse);
+    else if (parse.next == GET_PARAM              ) result = genParseGetParam          (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);
     else if (parse.next == REVERSE_LIST           ) result = genParseReverseList       (parse);

@@ -15,7 +15,7 @@ extends OperatorBase
         this.iconOffsetY  = -1;
 
 
-        this.addInput (new Input(ALL_VALUES));
+        this.addInput (new Input([ANY_VALUE]));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
         this.addParam(this.paramName = new TextParam('name', 'name', false, true, true));

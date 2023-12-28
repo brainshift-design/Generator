@@ -516,6 +516,7 @@ function loadNode(_node, pasting)
     // replace legacy
     if (_node.type == 'CDENSE') _node.type = LIST_AS_ITEM;
     if (_node.type == 'SEL'   ) _node.type = SELECT_FROM_LIST;
+    if (_node.type == 'EXTRP' ) _node.type = GET_PARAM;
 
 
     const node = createNode(_node.type);

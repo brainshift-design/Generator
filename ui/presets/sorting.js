@@ -3,9 +3,9 @@ const presetSorting = '\
         "nodes":\
         [\
             {\
-            "type": "EXTRP",\
-            "id": "extractValue",\
-            "name": "extract%20value",\
+            "type": "GETP",\
+            "id": "getParam",\
+            "name": "get%20param",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
@@ -350,7 +350,7 @@ const presetSorting = '\
             "outputNodeId": "point2",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "extractValue",\
+            "inputNodeId": "getParam",\
             "inputId": "h0",\
             "list": "false"\
             },\
@@ -435,7 +435,7 @@ const presetSorting = '\
             "list": "true"\
             },\
             {\
-            "outputNodeId": "extractValue",\
+            "outputNodeId": "getParam",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "sort2",\

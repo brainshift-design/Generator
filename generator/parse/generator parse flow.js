@@ -331,12 +331,12 @@ function genParseSetParam(parse)
 
 
 
-function genParseExtractParam(parse)
+function genParseGetParam(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const extr = new GExtractParam(nodeId, options);
+    const extr = new GGetParam(nodeId, options);
    
 
     let nInputs = -1;

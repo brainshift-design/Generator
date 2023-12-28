@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 330;
+const generatorVersion = 331;
 
 
 const MAX_INT32        = 2147483647;
@@ -4783,7 +4783,7 @@ const COMBINE                 = 'CMB';
 const LIST_AS_ITEM            = 'LSASIT';
 const EXTRACT                 = 'EXTR';
 const SET_PARAM               = 'SETP';
-const EXTRACT_PARAM           = 'EXTRP';
+const GET_PARAM               = 'GETP';
 const SUBLIST                 = 'SUBLST';
 const UNIQUE                  = 'UNIQ';
 const REVERSE_LIST            = 'REVLST';
@@ -4812,7 +4812,7 @@ const LIST_TYPES =
     COMBINE,
     EXTRACT,
     SET_PARAM,
-    EXTRACT_PARAM,
+    GET_PARAM,
     SUBLIST,
     LIST,
     LIST_COUNT,
@@ -4839,7 +4839,7 @@ const FLOW_TYPES =
     LIST_AS_ITEM,
     EXTRACT,
     SET_PARAM,
-    EXTRACT_PARAM,
+    GET_PARAM,
     SUBLIST,
     UNIQUE,
     REVERSE_LIST,
@@ -10054,7 +10054,7 @@ function finalListTypeFromItems(items)
 
 function finalTypeFromTypes(types)
 {
-    let _type = NULL;
+    let _type = ANY_VALUE;
 
     for (const type of types)
     {
@@ -10067,7 +10067,7 @@ function finalTypeFromTypes(types)
             _type = ANY_VALUE;
             break; 
         }
-    else if (   !SHAPE_VALUES.includes(_type) 
+        else if (   !SHAPE_VALUES.includes(_type) 
                  && _type != type)
         {
             _type = ANY_VALUE;
@@ -17614,7 +17614,7 @@ extends GOperator2
     
     constructor(nodeId, options)
     {
-        super(EXTRACT_PARAM, nodeId, options);
+        super(SET_PARAM, nodeId, options);
     }
 
 
@@ -17630,7 +17630,7 @@ extends GOperator2
 
     copy()
     {
-        const copy = new GExtractParam(this.nodeId, this.options);
+        const copy = new GSetParam(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -17753,7 +17753,7 @@ extends GOperator2
 
 
 
-class GExtractParam
+class GGetParam
 extends GOperator1
 {
     name = null;
@@ -17762,7 +17762,7 @@ extends GOperator1
     
     constructor(nodeId, options)
     {
-        super(EXTRACT_PARAM, nodeId, options);
+        super(GET_PARAM, nodeId, options);
     }
 
 
@@ -17778,7 +17778,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GExtractParam(this.nodeId, this.options);
+        const copy = new GGetParam(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -17810,10 +17810,10 @@ extends GOperator1
                     this.value = new ListValue();
 
                     for (let i = 0; i < input.items.length; i++)
-                        this.value.items.push(getExtractParamValue(input.items[i], name));
+                        this.value.items.push(getGetParamValue(input.items[i], name));
                 }
                 else
-                    this.value = getExtractParamValue(input, name);
+                    this.value = getGetParamValue(input, name);
             }
             else
                 this.value = input;
@@ -17898,7 +17898,7 @@ extends GOperator1
 
 
 
-function getExtractParamValue(input, name)
+function getGetParamValue(input, name)
 {
     let nameValue = name.value.trim();
 
@@ -42044,12 +42044,12 @@ function genParseSetParam(parse)
 
 
 
-function genParseExtractParam(parse)
+function genParseGetParam(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const extr = new GExtractParam(nodeId, options);
+    const extr = new GGetParam(nodeId, options);
    
 
     let nInputs = -1;
@@ -48581,7 +48581,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST_AS_ITEM           ) result = genParseListAsItem        (parse);
     else if (parse.next == EXTRACT                ) result = genParseExtract           (parse);
     else if (parse.next == SET_PARAM              ) result = genParseSetParam          (parse);
-    else if (parse.next == EXTRACT_PARAM          ) result = genParseExtractParam      (parse);
+    else if (parse.next == GET_PARAM              ) result = genParseGetParam          (parse);
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);
     else if (parse.next == REVERSE_LIST           ) result = genParseReverseList       (parse);

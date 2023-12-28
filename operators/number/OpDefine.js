@@ -22,7 +22,7 @@ extends OperatorBase
 
     addNewInput()
     {
-        const newInput = new Input(ALL_VALUES);
+        const newInput = new Input([ANY_VALUE]);
         newInput.isNew = true;
 
         newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
@@ -79,7 +79,6 @@ extends OperatorBase
     {
         const colors = super.getHeaderColors(options);
         const type   = this.outputs[0].types[0];
-
 
         colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 

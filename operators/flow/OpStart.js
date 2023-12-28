@@ -14,12 +14,12 @@ extends OperatorBase
         this.canDisable = true;
 
 
-        this.addInput (new Input(ALL_VALUES));
+        this.addInput (new Input([ANY_VALUE]));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramFeedback   = new NumberParam('feedback',  'feedback',  true,  true,  true, 0, 0, 1));
-        this.addParam(this.paramFrom      = new NumberParam('from',      '',          false, false, true));
+        this.addParam(this.paramFeedback = new NumberParam('feedback',  'feedback',  true,  true,  true, 0, 0, 1));
+        this.addParam(this.paramFrom     = new NumberParam('from',      '',          false, false, true));
 
         
         this.paramFeedback.divider = 0.64;

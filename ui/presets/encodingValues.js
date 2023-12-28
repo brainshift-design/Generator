@@ -44,7 +44,7 @@
             ]\
             },\
             {\
-            "type": "EXTRP",\
+            "type": "GETP",\
             "id": "getParam",\
             "name": "get%20param",\
             "renamed": "false",\

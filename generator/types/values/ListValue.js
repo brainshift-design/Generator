@@ -324,7 +324,7 @@ function finalListTypeFromItems(items)
 
 function finalTypeFromTypes(types)
 {
-    let _type = NULL;
+    let _type = ANY_VALUE;
 
     for (const type of types)
     {
@@ -337,7 +337,7 @@ function finalTypeFromTypes(types)
             _type = ANY_VALUE;
             break; 
         }
-    else if (   !SHAPE_VALUES.includes(_type) 
+        else if (   !SHAPE_VALUES.includes(_type) 
                  && _type != type)
         {
             _type = ANY_VALUE;

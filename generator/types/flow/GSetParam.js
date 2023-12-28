@@ -7,7 +7,7 @@ extends GOperator2
     
     constructor(nodeId, options)
     {
-        super(EXTRACT_PARAM, nodeId, options);
+        super(SET_PARAM, nodeId, options);
     }
 
 
@@ -23,7 +23,7 @@ extends GOperator2
 
     copy()
     {
-        const copy = new GExtractParam(this.nodeId, this.options);
+        const copy = new GSetParam(this.nodeId, this.options);
 
         copy.copyBase(this);
 

@@ -345,7 +345,7 @@ iconCombine
 iconListAsItem
 iconExtract
 iconSetParam
-iconExtractParam
+iconGetParam
 iconSublist
 iconUnique
 iconReverseList
@@ -1073,7 +1073,7 @@ COMBINE
 LIST_AS_ITEM
 EXTRACT
 SET_PARAM
-EXTRACT_PARAM
+GET_PARAM
 SUBLIST
 UNIQUE
 REVERSE_LIST
@@ -1611,11 +1611,11 @@ genParseNull
 genParseVariable
 genParseVariableGroup
 genParseListValue
-genParseJoin
+genParseCombine
 genParseListAsItem
 genParseExtract
 genParseSetParam
-genParseExtractParam
+genParseGetParam
 genParseSublist
 genParseUnique
 genParseReverseList
@@ -1833,7 +1833,6 @@ GCombine
 GListAsItem
 GContains
 GExtract
-GExtractParam
 GFilter
 GFreeze
 GIfElse
@@ -1843,7 +1842,9 @@ GNull
 GRepeat
 GReverseList
 GSelect
+GSelectFromList
 GSetParam
+GGetParam
 GSort
 GStart
 GSublist
@@ -2128,7 +2129,6 @@ OpListAsItem
 OpContains
 OpCreateVariable
 OpExtract
-OpExtractParam
 OpFilter
 OpForEach
 OpFreeze
@@ -2139,7 +2139,9 @@ OpNull
 OpRepeat
 OpReverseList
 OpSelect
+OpSelectFromList
 OpSetParam
+OpGetParam
 OpSort
 OpStart
 OpSublist

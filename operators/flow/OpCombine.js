@@ -22,7 +22,7 @@ extends ResizableBase
     
     addNewInput()
     {
-        const newInput = new Input(ALL_VALUES);
+        const newInput = new Input([ANY_VALUE]);
         newInput.isNew = true;
 
         newInput.addEventListener('connect', e => 
@@ -116,7 +116,7 @@ extends ResizableBase
                this.active
             && this.outputs[0].types[0] == LIST_VALUE;
 
-        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, !this.active), 0.5), 0.8);
+        //colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, !this.active), 0.5), 0.8);
         colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, !this.active), 0.5), 0.7);
         colors.wire   = rgbFromType(type, true);
 
