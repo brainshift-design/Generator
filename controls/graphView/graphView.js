@@ -390,8 +390,8 @@ class GraphView
             for (const output of node.outputs)
                 output.div.style.opacity = 
                        !input 
-                    || input.canConnectFrom(output)
-                    || !output.connected
+                    ||  input.canConnectFrom(output)
+                    || output.connected
                     ? 1 
                     : 0;
     }
