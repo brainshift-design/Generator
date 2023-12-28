@@ -1146,12 +1146,13 @@ class Operator
 
         
         return {
-            back:   rgbaBack, 
-            border: rgbaBorder,
-            text:   rgbaText,
-            input:  colInput,
-            output: colOutput,
-            wire:   colWire };
+            back:    rgbaBack, 
+            border:  rgbaBorder,
+            text:    rgbaText,
+            input:   colInput,
+            output:  colOutput,
+            inWire:  colWire,
+            outWire: colWire };
     }
 
 

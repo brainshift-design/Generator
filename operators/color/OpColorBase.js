@@ -56,7 +56,7 @@ extends Operator
             input.colorLight =
             input.colorDark  = colors.input;
 
-            input.wireColor  = colors.wire;
+            input.wireColor  = colors.inWire;
         }
 
 
@@ -65,7 +65,7 @@ extends Operator
             output.colorLight = 
             output.colorDark  = colors.output;
 
-            output.wireColor  = colors.wire;
+            output.wireColor  = colors.outWire;
         }
 
 
@@ -121,7 +121,8 @@ extends Operator
             text:       rgb_a(rgbText, 0.9),
             input:      rgb_a(rgbText, 0.4),
             output:     rgb_a(rgbText, 0.4),
-            wire:       rgbaWire };
+            inWire:     rgbaWire,
+            outWire:    rgbaWire };
     }
 
 

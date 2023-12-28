@@ -92,6 +92,7 @@ extends OpColorBase
         super.updateHeader();
 
         const colors = this.getHeaderColors();
+        
         updateColorHeader(this, colors);
     }
 
@@ -103,8 +104,9 @@ extends OpColorBase
 
         if (this.isUnknown())
         {
-            colors.text = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
-            colors.wire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
+            colors.text    = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+            colors.inWire  =
+            colors.outWire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
         }
                 
         return colors;

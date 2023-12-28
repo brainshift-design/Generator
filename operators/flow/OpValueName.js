@@ -88,16 +88,15 @@ extends OperatorBase
             || this.outputs[0].supportsTypes([FILL_VALUE]))
         {
             if (this.inputs[0].connected)
-                colors.output =
-                colors.wire = this.inputs[0].connectedOutput.wireColor;
+                colors.output  =
+                colors.outWire = this.inputs[0].connectedOutput.wireColor;
         }
         else
         {
             const gray = !this.inputs[0].connected;
 
-            //colors.input  = gray ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, !this.active), 0.5), 0.8);
-            colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, !this.active), 0.5), 0.7);
-            colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
+            colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, !this.active), 0.5), 0.7);
+            colors.outWire = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
         }
         
         return colors;

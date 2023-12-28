@@ -187,18 +187,13 @@ extends OpColorBase
 
 
         this.header.style.background = 'transparent';
-            // !rgbIsNaN(colors.stripeBack)
-            // ? rgba2style(colors.stripeBack) 
-            // : 'transparent';
 
 
-        // this.inputs[0] .colorLight = 
-        // this.inputs[0] .colorDark  = colors.input;
-        this.inputs[0] .wireColor  = colors.wire;
+        this.inputs[0] .wireColor  = colors.inWire;
 
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = colors.output;
-        this.outputs[0].wireColor  = colors.wire;
+        this.outputs[0].wireColor  = colors.outWire;
 
 
         this.updateWarningOverlay();
@@ -247,7 +242,8 @@ extends OpColorBase
         //     colors.back       = darkMode ? hex2rgb('444')  : hex2rgb('ccc');
         //     colors.stripeBack = darkMode ? hex2rgb('444')  : hex2rgb('ccc');
         //     colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
-        //     colors.wire       = darkMode ? hex2rgb('888')  : hex2rgb('aaa');
+        //     colors.inWire     =
+        //     colors.outWire    = darkMode ? hex2rgb('888')  : hex2rgb('aaa');
         // }
         // else
         // {
@@ -256,7 +252,8 @@ extends OpColorBase
             colors.back       = rgb_a(colors.back,       opacity);
             colors.stripeBack = rgb_a(colors.stripeBack, opacity);
             colors.text       = getTextColorFromBackColor(colors.stripeBack, opacity);
-            colors.wire       = 
+            colors.inWire     =
+            colors.outWire    = 
                 !rgbaIsNaN(colors.stripeBack)
                 ? colors.stripeBack
                 : rgbFromType(ANY_VALUE, false);

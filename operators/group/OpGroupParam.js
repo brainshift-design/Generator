@@ -268,25 +268,21 @@ extends OperatorBase
         {
             if (   this.inputs[0].supportsTypes([COLOR_VALUE])
                 || this.inputs[0].supportsTypes([ FILL_VALUE]))
-                //colors.input  =
-                colors.output =
-                colors.wire   = this.inputs[0].connectedOutput.wireColor;
+                colors.output  =
+                colors.outWire = this.inputs[0].connectedOutput.wireColor;
             else
-                //colors.input  =
-                colors.output =
-                colors.wire   = rgbFromType(this.inputs[0].types[0], true);
+                colors.output  =
+                colors.outWire = rgbFromType(this.inputs[0].types[0], true);
         }
         else if (this.outputs[0].connected)
         {
             if (   this.outputs[0].supportsTypes([COLOR_VALUE])
                 || this.outputs[0].supportsTypes([ FILL_VALUE]))
-                //colors.input  =
-                colors.output =
-                colors.wire   = this.outputs[0].connectedInputs[0].wireColor;
+                colors.output  =
+                colors.outWire = this.outputs[0].connectedInputs[0].wireColor;
             else
-                //colors.input  =
-                colors.output =
-                colors.wire   = rgbFromType(this.outputs[0].types[0], true);
+                colors.output  =
+                colors.outWire = rgbFromType(this.outputs[0].types[0], true);
         }
 
 

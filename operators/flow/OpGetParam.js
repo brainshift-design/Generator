@@ -107,14 +107,14 @@ extends ResizableBase
         if (   this.outputs[0].supportsTypes([COLOR_VALUE])
             && this.value.isValid())
         {
-            colors.output =
-            colors.wire = this.value.toRgb();
+            colors.output  =
+            colors.outWire = this.value.toRgb();
         }
         else if (this.outputs[0].supportsTypes([FILL_VALUE])
               && this.value.isValid())
         {
-            colors.output =
-            colors.wire = this.value.color.toRgb();
+            colors.output  =
+            colors.outWire = this.value.color.toRgb();
         }
         else
         {
@@ -122,9 +122,8 @@ extends ResizableBase
                 this.active
                 && this.outputs[0].types[0] == LIST_VALUE;
 
-            //colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, !this.active), 0.5), 0.8);
-            colors.output = gray        ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, !this.active), 0.5), 0.7);
-            colors.wire   = rgbFromType(type, true);
+            colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, !this.active), 0.5), 0.7);
+            colors.outWire = rgbFromType(type, true);
         }
 
         return colors;

@@ -252,14 +252,16 @@ extends OpColorBase
             colors.back       = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
             colors.stripeBack = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
             colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
-            colors.wire       = darkMode ? hex2rgb('888' ) : hex2rgb('aaa' );
+            colors.inWire     =
+            colors.outWire    = darkMode ? hex2rgb('888' ) : hex2rgb('aaa' );
         }
         else
         {
             colors.back       = !rgbIsNaN(colors.back      ) && !isNaN(opacity) ? rgb_a(colors.back,       opacity) : rgb_NaN;//rgbDocumentBody;
             colors.stripeBack = !rgbIsNaN(colors.stripeBack) && !isNaN(opacity) ? rgb_a(colors.stripeBack, opacity) : rgbDocumentBody;
             colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
-            colors.wire       = 
+            colors.inWire     =
+            colors.outWire    = 
                 !rgbaIsNaN(colors.stripeBack)
                 ? colors.stripeBack
                 : rgb_a(rgbFromType(ANY_VALUE, false));
@@ -371,11 +373,11 @@ function updateFillHeader(node, colors)
 
     node.inputs[0] .colorLight = 
     node.inputs[0] .colorDark  = colors.input;
-    node.inputs[0] .wireColor  = colors.wire;
+    node.inputs[0] .wireColor  = colors.inWire;
 
     node.outputs[0].colorLight =
     node.outputs[0].colorDark  = colors.output;
-    node.outputs[0].wireColor  = colors.wire;
+    node.outputs[0].wireColor  = colors.outWire;
 
 
     if (node.isUnknown())

@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(TEXT_TO_COLOR, 'textToColor', 'to color', iconTextToColor);
+        super(TEXT_TO_COLOR, 'textToColor', 'text to color', iconTextToColor);
 
 
         this.colorBack = createDiv('colorBack');
@@ -82,11 +82,8 @@ extends OperatorBase
 
         if (this.isUnknown())
         {
-            // colors.back       = rgbFromType(this.outputs[0].types[0], this.active);
-            // colors.stripeBack = rgbFromType(this.outputs[0].types[0], this.active);
-
-            colors.text = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
-            colors.wire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
+            colors.text    = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+            colors.outWire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
         }
         else
         {
@@ -95,7 +92,7 @@ extends OperatorBase
                 ? rgbNoColorDark
                 : rgbNoColorLight;
 
-            colors.wire = 
+            colors.outWire = 
                 !dataColorIsNaN(this._color)
                 ? dataColor2rgb(this._color)
                 : noColor;

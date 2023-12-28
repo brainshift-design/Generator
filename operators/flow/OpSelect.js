@@ -157,14 +157,14 @@ extends ResizableBase
         if (   this.outputs[0].supportsTypes([COLOR_VALUE])
             && this.value.isValid())
         {
-            colors.output =
-            colors.wire   = this.value.toRgb();
+            colors.output  =
+            colors.outWire = this.value.toRgb();
         }
         else if (this.outputs[0].supportsTypes([FILL_VALUE])
               && this.value.isValid())
         {
-            colors.output =
-            colors.wire   = this.value.color.toRgb();
+            colors.output  =
+            colors.outWire = this.value.color.toRgb();
         }
         else
         {
@@ -172,9 +172,8 @@ extends ResizableBase
                     this.active
                 && !this.inputs[0].connected;
 
-            //colors.input  = gray ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-            colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-            colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
+            colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+            colors.outWire = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
         }
         
         return colors;

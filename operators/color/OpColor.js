@@ -723,11 +723,11 @@ function updateColorHeader(node, colors)
      
     // node. inputs[0].colorLight =
     // node. inputs[0].colorDark  = colors.input;
-    node. inputs[0].wireColor  = rgb_a(colors.wire);
+    node. inputs[0].wireColor  = rgb_a(colors.inWire);
 
     // node.outputs[0].colorLight =
     // node.outputs[0].colorDark  = colors.output; 
-    node.outputs[0].wireColor  = rgb_a(colors.wire);
+    node.outputs[0].wireColor  = rgb_a(colors.outWire);
 
 
     if (node.isUnknown())

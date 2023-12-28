@@ -189,7 +189,7 @@ extends OperatorBase
     //               ? this.inputs[1].connectedOutput.wireColor
     //               : rgbFromType(IF_ELSE, true);
 
-    //         colors.wire = colors.output;
+    //         colors.outWire = colors.output;
     //     }
     // }
 
@@ -209,12 +209,12 @@ extends OperatorBase
         {
             if (   this.inputs[0].connected
                 && this.paramCondition.value.value > 0)
-                colors.output =
-                colors.wire   = this.inputs[0].connectedOutput.wireColor;
+                colors.output  =
+                colors.outWire = this.inputs[0].connectedOutput.wireColor;
             else if (this.inputs[1].connected
                   && this.paramCondition.value.value == 0)
                 colors.output =
-                colors.wire   = this.inputs[1].connectedOutput.wireColor;
+                colors.outWire = this.inputs[1].connectedOutput.wireColor;
         }
         else
         {
@@ -223,9 +223,8 @@ extends OperatorBase
                 && !this.inputs[0].connected
                 && !this.inputs[1].connected;
 
-            //colors.input  = rgb_a(colors.text, 0.4);
-            colors.output = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-            colors.wire   = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
+            colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+            colors.outWire = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
         }      
         
         return colors;

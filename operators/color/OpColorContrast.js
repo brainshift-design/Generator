@@ -261,8 +261,9 @@ extends OpColorBase
         // {
         if (!rgbIsNaN(this._rgbText))
         {
-            colors.text = this._rgbText;
-            colors.wire = this._rgbText;
+            colors.text    = this._rgbText;
+            colors.inwire  = 
+            colors.outWire = this._rgbText;
         }
         // }
 
@@ -280,8 +281,9 @@ extends OpColorBase
         
         if (this.isUnknown())
         {
-            colors.text = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
-            colors.wire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
+            colors.text    = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+            colors.inWire  =
+            colors.outWire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
         }
 
 

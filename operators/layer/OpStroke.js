@@ -220,11 +220,11 @@ extends OpColorBase
 
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = colors.input;
-        this.inputs[0] .wireColor  = colors.wire;
+        this.inputs[0] .wireColor  = colors.inWire;
 
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = colors.output;
-        this.outputs[0].wireColor  = colors.wire;
+        this.outputs[0].wireColor  = colors.outWire;
 
 
         this.updateWarningOverlay();
@@ -284,7 +284,8 @@ extends OpColorBase
             colors.input      = rgb_a(colors.text, 0.2);
             colors.output     = rgb_a(colors.text, 0.2);
 
-            colors.wire = 
+            colors.inWire  =
+            colors.outWire = 
                 !rgbaIsNaN(colors.stripeBack)
                 ? colors.stripeBack
                 : rgbFromType(ANY_VALUE, true);

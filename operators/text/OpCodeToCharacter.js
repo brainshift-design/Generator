@@ -3,7 +3,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(TEXT_CHAR, 'codeToChar', 'to char', iconCodeToCharacter);
+        super(TEXT_CHAR, 'codeToChar', 'code to char', iconCodeToCharacter);
 
 
         this.addInput (new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
@@ -55,11 +55,11 @@ extends OperatorBase
 
     getHeaderColors(options = {})
     {
-        const colors  = super.getHeaderColors(options);
-        const type    = this.outputs[0].types[0];
+        const colors   = super.getHeaderColors(options);
+        const type     = this.outputs[0].types[0];
 
-        colors.output = rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-        colors.wire   = rgbFromType(type, true);
+        colors.output  = rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.outWire = rgbFromType(type, true);
 
         return colors;
     }}
