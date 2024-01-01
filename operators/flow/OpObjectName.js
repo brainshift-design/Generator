@@ -14,7 +14,7 @@ extends OperatorBase
         this.canDisable   = true;
 
 
-        this.addInput (new Input(ALL_VALUES));
+        this.addInput (new Input(SHAPE_VALUES));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
         this.addParam(this.paramName = new TextParam('name', 'name', false, true, true));
