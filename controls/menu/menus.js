@@ -885,9 +885,9 @@ function initGeneratorMenus()
                                       new MenuItem('',                     null, {separator: true}),
         menuItemGraphDeactivateAll  = new MenuItem('Deactivate all nodes', null, {callback: () => uiDeactivateAllNodes()}),
                                       new MenuItem('',                     null, {separator: true}),
-                                      new MenuItem('Create node. . .',       null, {childMenu: wholeMenu}),
+                                      new MenuItem('Create node. . .',     null, {childMenu: wholeMenu}),
                                       new MenuItem('',                     null, {separator: true}),
-                                      new MenuItem('Quick actions. . .',     null, {shortcut: osCtrl() + '/',      callback: () => showSearchBox() })]);
+                                      new MenuItem('Quick actions. . .',   null, {shortcut: osCtrl() + '/',      callback: () => showSearchBox() })]);
 
     menuGraph.init = () => 
     {
@@ -1348,8 +1348,8 @@ function updateSoloMode(enabled)
 function getCreateOptions(e, options = {})
 {
     return {
-        insert:      e.ctrlKey,
-        autoConnect: e.ctrlKey && e.altKey,
+        insert:            e.ctrlKey,
+        autoConnect:       e.ctrlKey && e.altKey,
         fromSearch:  e.fromSearch === true,
         ...options
     };

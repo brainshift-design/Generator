@@ -75,6 +75,7 @@ class GraphView
     
     spaceDown          = false;
     
+    placeFromPointer   = false;
     
     
     oldZoom            = 1;
@@ -259,8 +260,8 @@ class GraphView
 
     placeNewNode(node, fromSearch = false)
     {
-        const ox = fromSearch && graphView.p ? graphView.p.x                 : this.div.offsetWidth /2;
-        const oy = fromSearch && graphView.p ? graphView.p.y - menuBarHeight : this.div.offsetHeight/2;
+        const ox = (this.placeFromPointer || fromSearch) && graphView.p ? graphView.p.x                 : this.div.offsetWidth /2;
+        const oy = (this.placeFromPointer || fromSearch) && graphView.p ? graphView.p.y - menuBarHeight : this.div.offsetHeight/2;
 
         if (node.type == PANEL)
         {
@@ -274,6 +275,9 @@ class GraphView
             node.div.style.left = (ox - graph.currentPage.pan.x) / graph.currentPage.zoom - defNodeWidth/2;
             node.div.style.top  = (oy - graph.currentPage.pan.y) / graph.currentPage.zoom - (fromSearch ? defHeaderHeight/2 : nodeHeight/2);
         }
+
+        
+        this.placeFromPointer = false;
     }
 
 

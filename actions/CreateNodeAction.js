@@ -41,7 +41,7 @@ extends Action
         graphView.creatingNodes = true;
 
         this.node = createNode(this.nodeType, this.creatingButton, this.createdId, this.options);
-        
+
 
         const autoConnect = 
                 this.autoConnect
@@ -83,6 +83,8 @@ extends Action
         uiMakeNodeActive(this.node);
         
         pushUnique(updateNodes, this.node);
+
+        setTimeout(() => this.node.updateHeaderLabelOffsetX(), 100);
     }
 
 

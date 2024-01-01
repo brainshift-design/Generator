@@ -241,9 +241,9 @@ function selectSearchItem(item, shift, ctrl, alt)
 
     const e = 
     {
-        shiftKey:   shift,
-        ctrlKey:    ctrl,
-        altKey:     alt,
+        shiftKey:         shift,
+        ctrlKey:          ctrl,
+        altKey:           alt,
         fromSearch: true
     };
 

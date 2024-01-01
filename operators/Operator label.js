@@ -75,6 +75,7 @@ Operator.prototype.updateHeaderLabel = function()
     const margin = 10;
     const wrect  = this.measureData.labelWrapperBounds;
     const wr     = wrect.width / graph.currentPage.zoom;
+    console.log('wrect =', wrect);
 
     const s0     = margin;
     const s1     = margin + 15;
@@ -87,6 +88,8 @@ Operator.prototype.updateHeaderLabel = function()
         + '#000f ' + s1 + 'px, '
         + '#000f ' + s2 + 'px, '
         + '#0000 ' + s3 + 'px)';
+
+    this.labelWrapper.style.width = '100%';
 
     this.labelWrapper.style.WebkitMaskImage = 
     this.labelWrapper.style.maskImage       = mask;
