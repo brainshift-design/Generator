@@ -42,7 +42,7 @@ extends OpColorBase
         
 
         this.addParam(this.paramType     = new SelectParam('type',   '',           false, true, true, ['linear', 'radial', 'angular', 'diamond'], 0));
-        this.addParam(this.paramPosition = new SelectParam('position', 'position', false, true, true, ['object', 'relative', 'absolute'], 1));
+        this.addParam(this.paramPosition = new SelectParam('position', 'position', false, true, true, ['proportional', 'relative W', 'relative H', 'absolute'], 1));
         this.addParam(this.paramX        = new NumberParam('x',      'x',          true,  true, true,   0));
         this.addParam(this.paramY        = new NumberParam('y',      'y',          true,  true, true,  50));
         this.addParam(this.paramSize     = new NumberParam('size',   'size',       true,  true, true, 100));
@@ -159,22 +159,16 @@ extends OpColorBase
 
         const pos = this.paramPosition.value.value;
 
-        this.paramX   .controls[0].suffix = pos < 2 ? '%' : '';
-        this.paramY   .controls[0].suffix = pos < 2 ? '%' : '';
-        this.paramSize.controls[0].suffix = pos < 2 ? '%' : '';
-        this.paramSkew.controls[0].suffix = pos < 2 ? '%' : '';
+        this.paramX   .controls[0].suffix = pos < 3 ? '%' : '';
+        this.paramY   .controls[0].suffix = pos < 3 ? '%' : '';
+        this.paramSize.controls[0].suffix = pos < 3 ? '%' : '';
+        this.paramSkew.controls[0].suffix = pos < 3 ? '%' : '';
 
-        this.paramX   .controls[0].displayMin = pos < 2 ?   0 : Number.MIN_SAFE_INTEGER;
-        this.paramX   .controls[0].displayMax = pos < 2 ? 100 : Number.MAX_SAFE_INTEGER;
+        this.paramX   .controls[0].displayMin = pos < 3 ?   0 : Number.MIN_SAFE_INTEGER;
+        this.paramX   .controls[0].displayMax = pos < 3 ? 100 : Number.MAX_SAFE_INTEGER;
 
-        this.paramY   .controls[0].displayMin = pos < 2 ?   0 : Number.MIN_SAFE_INTEGER;
-        this.paramY   .controls[0].displayMax = pos < 2 ? 100 : Number.MAX_SAFE_INTEGER;
-
-        this.paramSize.controls[0].displayMin = pos < 2 ?   0 : Number.MIN_SAFE_INTEGER;
-        this.paramSize.controls[0].displayMax = pos < 2 ? 100 : Number.MAX_SAFE_INTEGER;
-
-        this.paramSkew.controls[0].displayMin = pos < 2 ?   0 : Number.MIN_SAFE_INTEGER;
-        this.paramSkew.controls[0].displayMax = pos < 2 ? 100 : Number.MAX_SAFE_INTEGER;
+        this.paramY   .controls[0].displayMin = pos < 3 ?   0 : Number.MIN_SAFE_INTEGER;
+        this.paramY   .controls[0].displayMax = pos < 3 ? 100 : Number.MAX_SAFE_INTEGER;
 
 
         this.updateParamControls();

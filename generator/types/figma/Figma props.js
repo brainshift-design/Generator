@@ -31,7 +31,7 @@ function addColorProp(obj, prop)
             rgb[0], 
             rgb[1], 
             rgb[2], 
-            255   ]);
+            255 ]);
     }
 }
 
@@ -79,60 +79,80 @@ function addGradientProp(obj, prop, target = obj.fills)
     }
 
 
-    const isLinear   = prop.gradType.value == 0;
-
+    
     let   x   =        prop.x     .toNumber() / 100;
     let   y   =        prop.y     .toNumber() / 100;
     const a   =        prop.angle .toNumber()/360*Tau;
     let   s   = nozero(prop.size  .toNumber() / 100);
     let   asp = nozero(prop.aspect.toNumber() / 100);
     let   sk  =        prop.skew  .toNumber() / 100;
+    
+
+    const pos      = prop.position.value;
+    const isLinear = prop.gradType.value == 0;
+    
+    const bounds   = obj.getBounds();
 
 
-    const bounds = obj.getBounds();
-
-    if (prop.position.toNumber() == 2)
+    if (pos > 0)
     {
-        x -= bounds.x / nozero(bounds.width );
-        y -= bounds.y / nozero(bounds.height);
-        s *= 100 / nozero(bounds.width);
+        const aspect = bounds.width / nozero(bounds.height);
+
+        if (   pos == 1
+            || pos == 2) 
+        {
+            x = x / 100 * bounds.width; // * aspect;
+            y = y / 100 * bounds.height;// * aspect;
+        }
+        
+
+        x = x * 100 / nozero(bounds.width );
+        y = y * 100 / nozero(bounds.height);
+
+        if (pos == 3)
+        {
+            x = x - bounds.x / nozero(bounds.width );
+            y = y - bounds.y / nozero(bounds.height);
+            
+            s *= 100 / nozero(bounds.width);
+        }
+    }
+
+
+    let p0 = point(x, y);
+    let p1 = addv(p0, vector(a, s));
+    
+    let p2 = addv(
+        addv(p0, vector(a + Tau/4, s * asp)),
+        mulvs(unitv(subv(p1, p0)), distance(p0, p1) * sk));
+
+
+    if (pos > 0)
+    {
+        if (   pos == 1
+            || pos == 3)
+        {
+            const aspect = bounds.width / nozero(bounds.height);
+            
+            p1.y = p0.y + (p1.y - p0.y) * aspect;
+            p2.y = p0.y + (p2.y - p0.y) * aspect;
+        }
+        else if (pos == 2)
+        {
+            const aspect = bounds.height / nozero(bounds.width);
+            
+            p1.x = p0.x + (p1.x - p0.x) * aspect;
+            p2.x = p0.x + (p2.x - p0.x) * aspect;
+        }
     }
 
 
     if (!isLinear)
     {
-        s *= 2;
+        const dv = subv(p0, p1);
 
-        x -= s/2 * Math.cos(a);
-        y -= s/2 * Math.sin(a);
-
-        asp /= 2;
-    }
-
-    
-    const p0 = point(x, y);
-    const p1 = addv(p0, vector(a, s));
-    
-    const p2 = addv(
-        addv(p0, vector(a + Tau/4, s * asp)),
-        mulvs(unitv(subv(p1, p0)), distance(p0, p1) * sk));
-
-
-    if (prop.position.toNumber() > 0)
-    {
-        const aspect = bounds.width / nozero(bounds.height);
-        
-        p1.y = p0.y + (p1.y - p0.y) * aspect;
-        p2.y = p0.y + (p2.y - p0.y) * aspect;
-
-        if (!isLinear)
-        {
-            const dy = p1.y - p0.y;
-
-            p0.y += dy / 2;
-            p1.y += dy / 2;
-            p2.y += dy / 2;
-        }
+        p0 = addv(p0, dv);
+        p2 = addv(p2, dv);
     }
 
 
