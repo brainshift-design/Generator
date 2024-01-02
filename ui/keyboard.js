@@ -1,4 +1,5 @@
 var altPressedInMenu = false;
+var backquoteIsDown  = false;
 
 
 
@@ -61,7 +62,12 @@ document.addEventListener('keydown', e =>
          && !e.altKey)
     {
         e.preventDefault();
-        updateSoloMode(!graphView.soloMode);
+
+        if (!backquoteIsDown)
+        {
+            updateSoloMode(!graphView.soloMode);
+            backquoteIsDown = true;
+        }
     }
 
     // cut
@@ -526,5 +532,15 @@ document.addEventListener('keyup', e =>
             numberControlChanging.update();
         }
     }
+
+    // focus mode
+    else if (e.code == 'Backquote'
+         && !getCtrlKey(e)
+         && !e.shiftKey
+         && !e.altKey)
+    {
+        backquoteIsDown = false;
+    }
+
 },
 false);

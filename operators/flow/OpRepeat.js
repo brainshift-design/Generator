@@ -134,7 +134,14 @@ extends OperatorBase
         const colors = super.getHeaderColors(options);
         const type   = this.outputs[0].types[0];
 
-        colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        const gray = 
+                this.active;
+            //|| !this.inputs[0].connected;
+
+        //colors.input   = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        
+        //colors.inWire  = rgbFromType(type, true);
         colors.outWire = rgbFromType(type, true);
 
         return colors;

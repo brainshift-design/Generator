@@ -370,6 +370,8 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
         inputs[i].colorLight =
         inputs[i].colorDark  = colors.input;
 
+        //inputs[i].wireBall.style.background = rgba2style(colors.input);
+
         inputs[i].updateControl();
     }
 

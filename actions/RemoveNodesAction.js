@@ -93,7 +93,7 @@ extends Action
 
                 for (const connectedInput of output.connectedInputs)
                 {
-                    if (input.connectedOutput.canConnectTo(connectedInput))
+                    if (connectedInput.canConnectFrom(input.connectedOutput))
                         this.newConnectionData.push(connDataObject(input.connectedOutput, connectedInput));
                 }
             }

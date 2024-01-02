@@ -354,8 +354,8 @@ function finalListTypeFromTypes(types)
 {
     let _type = finalTypeFromTypes(types);
     
-         if (  _type == NUMBER_VALUE /*|| _type == NUMBER_LIST_VALUE*/)  return NUMBER_LIST_VALUE;
-    else if (  _type ==   TEXT_VALUE /*|| _type ==   TEXT_LIST_VALUE*/)  return   TEXT_LIST_VALUE;
-    else if (SHAPE_VALUES.includes(_type))                           return  SHAPE_LIST_VALUE;
-    else                                                             return        LIST_VALUE;
+         if (  _type == NUMBER_VALUE)      return NUMBER_LIST_VALUE;
+    else if (  _type ==   TEXT_VALUE)      return   TEXT_LIST_VALUE;
+    else if (SHAPE_VALUES.includes(_type)) return  SHAPE_LIST_VALUE;
+    else                                   return        LIST_VALUE;
 }

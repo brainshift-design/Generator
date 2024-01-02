@@ -137,9 +137,8 @@ extends EventTarget
 
                 
             this.mouseOver = true;
-            this.updateControl();
-
-
+           
+            
             const tc = graphView.tempConn;
 
             if (   tc
@@ -166,6 +165,9 @@ extends EventTarget
                    ||    tc.output
                       && this.canConnectFrom(tc.output))
                 graphView.overInput = this;
+
+
+            this.updateControl();
         });
 
         
@@ -326,8 +328,6 @@ extends EventTarget
 
         this.wireBall.style.left            = '1px';
         this.wireBall.style.top             = 'calc(50% - 3px)';
-
-        this.wireBall.style.backgroundColor = [255, 0, 255];
 
         this.wireBall.style.zIndex          = MAX_INT32;
 

@@ -109,7 +109,7 @@ extends EventTarget
 
             if (   graphView.tempConn
                 && graphView.tempConn.input
-                && this.supportsTypes(graphView.tempConn.input.types))//.includes(this.type))
+                && graphView.tempConn.input.canConnectFrom(this))//this.supportsTypes(graphView.tempConn.input.types))//.includes(this.type))
             {
                 const rect = boundingRect(this.div);
                 const loop = this.node.isOrFollows(graphView.tempConn.input.node);

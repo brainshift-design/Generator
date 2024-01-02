@@ -205,7 +205,7 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false, shiftK
         input.connecting = false;
 
         if (   output
-            && output.canConnectTo(input)) //input.canConnectFrom(output)) // TO OUTPUT
+            && input.canConnectFrom(output)) //input.canConnectFrom(output)) // TO OUTPUT
             actionManager.do(new ConnectAction(output, input, {backInit: backInit, shiftKey: shiftKey}));
 
         this.cancelConnection(pointerId);

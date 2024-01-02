@@ -389,7 +389,8 @@ class Operator
     {
         const outputs = this.headerOutputs.filter(o => 
                o.types.includes(ANY_VALUE)
-            || arraysIntersect(o.types, inputTypes));
+            || arraysIntersect(o.types, inputTypes)
+            || inputTypes.includes(ANY_VALUE));
 
         return  outputs.length == 1
             && !this.isOrFollows(graphView.tempConn.input.node)

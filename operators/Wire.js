@@ -127,8 +127,8 @@ class Wire
 
         if (output)
         {
-            if (!isEmpty(output.types)) types.push(...output.types);
-            else if (output)            types.push(output.node.type);
+                 if (!isEmpty(output.types)) types.push(...output.types);
+            else if (output)                 types.push(output.node.type);
         }
         else if (input)
         {
@@ -137,8 +137,8 @@ class Wire
                 types.push(...graphView.overOutput.types);
             else
             {
-                if (!isEmpty(input.types)) types.push(...input.types);
-                else if (input)            types.push(input.node.type);
+                     if (!isEmpty(input.types)) types.push(...input.types);
+                else if (input)                 types.push(input.node.type);
             }
         }
 
@@ -203,7 +203,7 @@ class Wire
             && this.connection.output.node
             && this.connection.output.param)
         {
-            const outNode = this.connection.output.node;
+            const outNode   = this.connection.output.node;
             const outTop    = Math.round(outNode.measureData.divBounds.y + outNode.measureData.headerOffset.height * graph.currentPage.zoom - yOffset + 1);
             const outBottom = Math.round(outNode.measureData.divBounds.y + outNode.measureData.divBounds.height                             - yOffset - 1);
 

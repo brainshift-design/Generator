@@ -975,7 +975,7 @@ function initGeneratorMenus()
 
         
         menuItemNodeRandomizeSeeds.setName('Randomize seed' + (selectedRandom.length == 1 ? '' : 's') + ' . . .');
-        menuItemNodeConnectSeeds  .setName('Connect seed' + (selectedRandom.length == 1 ? '' : 's'));
+        menuItemNodeConnectSeeds  .setName('Connect seed'   + (selectedRandom.length == 1 ? '' : 's'));
 
 
         //updateElementDisplay(menuItemNodeEditGroup    .div, hasGroups && single);

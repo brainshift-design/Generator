@@ -97,13 +97,12 @@ extends GOperator1
 
         this.updateValueObjects();
 
-
         this.setUpdateValues(parse,
         [
-            ['type',    this.outputListType()                                                          ],
-            ['length',  new NumberValue(this.value.items.length)                                       ],
-            ['columns', new NumberValue(maxColumns, 0)                                                 ],
-            ['index',   index                                                                          ]
+            ['type',    this.outputListType()                   ],
+            ['length',  new NumberValue(this.value.items.length)],
+            ['columns', new NumberValue(maxColumns, 0)          ],
+            ['index',   index                                   ]
         ]);
     
 
