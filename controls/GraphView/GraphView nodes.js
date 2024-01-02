@@ -357,3 +357,40 @@ GraphView.prototype.nudgeSelected = function(x, y)
         graphView.selectedNodes.map(n => n.nodeId), 
         positions));
 };
+
+
+
+GraphView.prototype.connectSelectedSeeds = function()
+{
+    // const positions = 
+    //     graphView.selectedNodes.map(n => 
+    //         point(
+    //             n.div.offsetLeft + x / graph.currentPage.zoom,
+    //             n.div.offsetTop  + y / graph.currentPage.zoom));
+
+    // actionManager.do(new MoveNodesAction(
+    //     graphView.selectedNodes.map(n => n.nodeId), 
+    //     positions));
+};
+
+
+
+GraphView.prototype.randomizeSelectedSeeds = function()
+{
+    const randoms = graphView.selectedNodes.filter(n => 
+           n.type == NUMBER_RANDOM
+        || n.type == NUMBER_NOISE
+        || n.type == NUMBER_PROBABILITY);
+
+    for (let i = 0; i < randoms.length; i++)
+    {
+        const node      = randoms[i];
+        const paramSeed = node.paramFromId('seed');
+
+        actionManager.do(new SetParamValueAction(
+            paramSeed, 
+            new NumberValue(Math.floor(Math.random() * 10000)),
+            true),
+            i > 0);
+    }
+};

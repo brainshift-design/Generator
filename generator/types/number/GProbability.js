@@ -67,8 +67,8 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['seed', seed  ],
-            ['min',  chance],
+            ['seed',   seed  ],
+            ['chance', chance],
         ]);
         
 

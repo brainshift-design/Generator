@@ -292,6 +292,9 @@ var menuItemNodeActivate;
 var menuItemNodeSaveAsTemplate;
 var menuItemNodeSep4;
 var menuItemNodeEnableDisable;
+var menuItemNodeSep5;
+var menuItemNodeConnectSeeds;
+var menuItemNodeRandomizeSeeds;
 
 
 var menuItemLicenseSep1;
@@ -939,6 +942,9 @@ function initGeneratorMenus()
                                     //  new MenuItem('',              null, {separator: true}),
         // menuItemNodeSaveAsTemplate = new MenuItem('Save as template', null, {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
         //                              new MenuItem('',                 null, {separator: true}),
+        menuItemNodeSep5           = new MenuItem('',                 null, {separator: true}),
+        menuItemNodeRandomizeSeeds = new MenuItem('Randomize seeds',  null, {icon: iconProbability, callback: e => { hideAllMenus(); graphView.randomizeSelectedSeeds(); }}),
+        menuItemNodeConnectSeeds   = new MenuItem('Connect seeds',    null, {callback: e => { hideAllMenus(); graphView.connectSelectedSeeds(); }}),
         menuItemNodeSep4           = new MenuItem('',                 null, {separator: true}),
         menuItemNodeRemove         = new MenuItem('Remove',           null, {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }}),
                                      new MenuItem('',                 null, {separator: true}),
@@ -948,28 +954,45 @@ function initGeneratorMenus()
 
     menuNode.init = () => 
     {
-        const single     = graphView.selectedNodes.length == 1;
-        const hasObjects = isEmpty(graphView.selectedNodes.filter(n => !SHAPE_TYPES.includes(n.type)));
-        const hasGroups  = isEmpty(graphView.selectedNodes.filter(n => n.type != GROUP_NODE));
+        const single     =  graphView.selectedNodes.length == 1;
+        const canDisable = !graphView.selectedNodes.find(n => !n.canDisable);
+
+        const selectedRandom =
+            graphView.selectedNodes.filter(n => 
+                   n.type == NUMBER_RANDOM
+                || n.type == NUMBER_NOISE
+                || n.type == NUMBER_PROBABILITY);
         
 
-        //const parallel = nodesAreParallel(graphView.selectedNodes);
+        const canRandomizeSeeds = selectedRandom.length > 0;
+        const canConnectSeeds   = 
+               selectedRandom.length > 0
+            && graphView.selectedNodes.filter(n => n.type == LIST).length == 1;
 
-        const canDisable = !graphView.selectedNodes.find(n => !n.canDisable);
+
+        // menuNode.showIcons = true;
+        // menuNode.items.forEach(i => i.showIcon = true);
+
+        
+        menuItemNodeRandomizeSeeds.setName('Randomize seed' + (selectedRandom.length == 1 ? '' : 's') + ' . . .');
+        menuItemNodeConnectSeeds  .setName('Connect seed' + (selectedRandom.length == 1 ? '' : 's'));
 
 
         //updateElementDisplay(menuItemNodeEditGroup    .div, hasGroups && single);
         //updateElementDisplay(menuItemNodeSepGroup     .div, hasGroups && single);
         //updateElementDisplay(menuItemNodeUngroup      .div, hasGroups);
         //updateElementDisplay(menuItemNodeSep2         .div, single);
-        updateElementDisplay(menuItemNodeRename       .div, single);
-        updateElementDisplay(menuItemNodeLayoutSep    .div, !single);
-        updateElementDisplay(menuItemNodeLayout       .div, !single);
-        //updateElementDisplay(menuItemNodeEdit       .div, single);
-        updateElementDisplay(menuItemNodeSep2         .div, single);
-        updateElementDisplay(menuItemNodeSelect       .div, single);
-        updateElementDisplay(menuItemNodeSep4         .div, canDisable);
-        updateElementDisplay(menuItemNodeEnableDisable.div, canDisable);
+        updateElementDisplay(menuItemNodeRename        .div, single);
+        updateElementDisplay(menuItemNodeLayoutSep     .div, !single);
+        updateElementDisplay(menuItemNodeLayout        .div, !single);
+        //updateElementDisplay(menuItemNodeEdit        .div, single);
+        updateElementDisplay(menuItemNodeSep5          .div, canRandomizeSeeds || canConnectSeeds);
+        updateElementDisplay(menuItemNodeRandomizeSeeds.div, canRandomizeSeeds);
+        updateElementDisplay(menuItemNodeConnectSeeds  .div, canConnectSeeds);
+        updateElementDisplay(menuItemNodeSep2          .div, single);
+        updateElementDisplay(menuItemNodeSelect        .div, single);
+        updateElementDisplay(menuItemNodeSep4          .div, canDisable);
+        updateElementDisplay(menuItemNodeEnableDisable .div, canDisable);
     };
 
 

@@ -144,7 +144,6 @@ class ActionManager
 
         const updateNodes = [];
 
-
         if (act.affectsConnections)
         {
             act.initSaveArrays();
@@ -152,8 +151,8 @@ class ActionManager
         }
 
 
-        if (!redo) 
-            act.do  (updateNodes);
+        if (!redo)
+            act.do(updateNodes);
 
         else
         {

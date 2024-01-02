@@ -4,6 +4,9 @@ extends Action
     nodeId;
     paramId;
 
+    setValue;
+
+
 
     get param() 
     { 
@@ -17,7 +20,7 @@ extends Action
 
 
 
-    constructor(param, value)
+    constructor(param, value, setValue = false)
     {
         super(
             SET_PARAM_VALUE_ACTION,
@@ -29,6 +32,7 @@ extends Action
         this.newValue   = value;
 
         this.selfUpdate = true;
+        this.setValue   = setValue;
     }
 
 
@@ -46,7 +50,14 @@ extends Action
 
         //console.log('SetParamValueAction.name =', this.name);
 
+        if (this.setValue)
+            this.param.setValue(this.newValue, false, true);
+
         pushUpdateFromParam(this, [this.param.node], this.param);
+
+
+        // if (!this.selfUpdate)
+        //     pushUnique(updateNodes, this.param.node);
     }
 
 
@@ -61,6 +72,9 @@ extends Action
 
         this.param.setValue(this.oldValue, false, true);
         pushUpdateFromParam(this, [this.param.node], this.param);
+
+        // if (!this.selfUpdate)
+        //     pushUnique(updateNodes, this.param.node);
     }
 
 
@@ -69,5 +83,8 @@ extends Action
     {
         this.param.setValue(this.newValue);
         pushUpdateFromParam(this, [this.param.node], this.param);
+
+        // if (!this.selfUpdate)
+        //     pushUnique(updateNodes, this.param.node);
     }
 }
