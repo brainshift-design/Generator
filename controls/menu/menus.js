@@ -1062,21 +1062,21 @@ function initGeneratorMenus()
     //menuBar.appendChild(createDiv('', 'groupName'));
 
 
-    btnPage = new MenuButton(
-        '-', 
-        menuPage, 
-        {
-            afterLabel:  true,
-            useMenuName: false,
-            noHighlight: true
-        });
+    // btnPage = new MenuButton(
+    //     '-', 
+    //     menuPage, 
+    //     {
+    //         afterLabel:  true,
+    //         useMenuName: false,
+    //         noHighlight: true
+    //     });
 
-    btnPage.divIcon.style.width   = 4;
+    // btnPage.divIcon.style.width   = 4;
     
-    btnPage.div.style.marginRight = 'auto';
+    // btnPage.div.style.marginRight = 'auto';
     
-    btnPage.div.style.position    = 'relative';
-    btnPage.div.style.left        = '-26px';
+    // btnPage.div.style.position    = 'relative';
+    // btnPage.div.style.left        = '-26px';
 
 
     createObjectCountInfo();

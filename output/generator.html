@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 331;
+const generatorVersion = 332;
 
 
 const MAX_INT32        = 2147483647;
@@ -6249,6 +6249,39 @@ function addGradientProp(obj, prop, target = obj.fills)
     }
 
 
+    // handles outside range
+
+    if (prop.stops.items.some(i => 
+               i.position.value < 0 
+            || i.position.value > 100))
+    {
+        let minPos = Number.MAX_SAFE_INTEGER;
+        let maxPos = Number.MIN_SAFE_INTEGER;
+
+        for (const stop of prop.stops.items)
+        {
+            minPos = Math.min(minPos, stop.position.value);
+            maxPos = Math.max(maxPos, stop.position.value);
+        }
+
+
+        const dpos  = Math.min(0, minPos) / 100;
+        const dsize = Math.max(100, maxPos - Math.min(minPos, 0)) / 100;
+
+        const dv    = subv(p0, p1);
+
+        p0 = addv(p0, mulvs(dv, Math.max(0, -dpos)));
+        p1 = addv(p1, mulvs(dv, Math.max(0, -dpos)));
+        p2 = addv(p2, mulvs(dv, Math.max(0, -dpos)));
+
+        p1 = subv(p0, mulvs(dv, dsize));
+        p2 = addv(p0, mulvs(subv(p2, p0), dsize));
+
+        for (const stop of prop.stops.items)
+            stop.position.value = stop.position.value * 100 / maxPos;
+    }
+
+
     const identityHandles = 
         [[0,   1,   0],
          [0.5, 0.5, 1],
@@ -6269,10 +6302,7 @@ function addGradientProp(obj, prop, target = obj.fills)
         xform[1] ];
         
 
-    const stops = validateColorStops(prop.stops.items);
-    
-    setColorStopPositions(stops);
-
+    const stops = prop.stops.items;
 
     for (let j = 0; j < stops.length; j++)
     {
@@ -6363,7 +6393,7 @@ function setColorStopPositions(stops)
                 const pv = stops[prevValid].position.toNumber();
                 const nv = stops[nextValid].position.toNumber();
 
-               stop.position = new NumberValue((pv + (nv - pv) * ((i - prevValid) / (nextValid - prevValid)))); 
+                stop.position = new NumberValue((pv + (nv - pv) * ((i - prevValid) / (nextValid - prevValid)))); 
             }
         }
     }
@@ -32024,7 +32054,7 @@ extends GOperator
         const blend    = this.blend    ? (await this.blend   .eval(parse)).toValue() : null;
 
 
-        const stops = new ListValue();
+        let stops = new ListValue();
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
@@ -32043,6 +32073,10 @@ extends GOperator
                     stops.items.push(input);
             }
         }
+
+
+        stops.items = validateColorStops(stops.items);
+        setColorStopPositions(stops.items);
 
 
         this.value = new GradientValue(
@@ -32084,23 +32118,7 @@ extends GOperator
     
     toValue()
     {
-        const stops = new ListValue();
-
-        for (let i = 0, o = 0; i < this.inputs.length; i++)
-            stops.items.push(this.inputs[i].toValue());
-
-
-        return new GradientValue(
-            stops,
-            this.gradType ? this.gradType.toValue() : this.input.gradType.toValue(),
-            this.position ? this.position.toValue() : this.input.position.toValue(),
-            this.x        ? this.x       .toValue() : this.input.x       .toValue(),
-            this.y        ? this.y       .toValue() : this.input.y       .toValue(),
-            this.size     ? this.size    .toValue() : this.input.size    .toValue(),
-            this.angle    ? this.angle   .toValue() : this.input.angle   .toValue(),
-            this.aspect   ? this.aspect  .toValue() : this.input.aspect  .toValue(),
-            this.skew     ? this.skew    .toValue() : this.input.skew    .toValue(),
-            this.blend    ? this.blend   .toValue() : this.input.blend   .toValue());
+        return this.value.copy();
     }                 
 
 
@@ -50424,6 +50442,16 @@ function rgbAdd(rgb1, rgb2)
 
 
 
+function rgbaAdd(rgba1, rgba2)
+{
+    return [ rgba1[0] + rgba2[0],
+             rgba1[1] + rgba2[1],
+             rgba1[2] + rgba2[2],
+             rgba1[3] + rgba2[3] ];
+}
+
+
+
 function rgbSub(rgb1, rgb2)
 {
     return [ rgb1[0] - rgb2[0],
@@ -50438,6 +50466,16 @@ function rgbMuls(rgb, s)
     return [ rgb[0] * s,
              rgb[1] * s,
              rgb[2] * s ];
+}
+
+
+
+function rgbaMuls(rgba, s)
+{
+    return [ rgba[0] * s,
+             rgba[1] * s,
+             rgba[2] * s,
+             rgba[3] * s ];
 }
 
 

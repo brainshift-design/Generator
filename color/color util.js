@@ -137,6 +137,16 @@ function rgbAdd(rgb1, rgb2)
 
 
 
+function rgbaAdd(rgba1, rgba2)
+{
+    return [ rgba1[0] + rgba2[0],
+             rgba1[1] + rgba2[1],
+             rgba1[2] + rgba2[2],
+             rgba1[3] + rgba2[3] ];
+}
+
+
+
 function rgbSub(rgb1, rgb2)
 {
     return [ rgb1[0] - rgb2[0],
@@ -151,6 +161,16 @@ function rgbMuls(rgb, s)
     return [ rgb[0] * s,
              rgb[1] * s,
              rgb[2] * s ];
+}
+
+
+
+function rgbaMuls(rgba, s)
+{
+    return [ rgba[0] * s,
+             rgba[1] * s,
+             rgba[2] * s,
+             rgba[3] * s ];
 }
 
 

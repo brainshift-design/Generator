@@ -75,6 +75,7 @@ class GraphView
     
     spaceDown          = false;
     
+    placePosition      = point(0, 0);
     placeFromPointer   = false;
     
     
@@ -260,8 +261,21 @@ class GraphView
 
     placeNewNode(node, fromSearch = false)
     {
-        const ox = (this.placeFromPointer || fromSearch) && graphView.p ? graphView.p.x                 : this.div.offsetWidth /2;
-        const oy = (this.placeFromPointer || fromSearch) && graphView.p ? graphView.p.y - menuBarHeight : this.div.offsetHeight/2;
+        let ox = this.div.offsetWidth /2;
+        let oy = this.div.offsetHeight/2;
+
+        
+        if (this.placeFromPointer)
+        {
+            ox = this.placePosition.x;
+            oy = this.placePosition.y;
+        }
+        else if (fromSearch && graphView.p)
+        {
+            ox = graphView.p.x;
+            oy = graphView.p.y - menuBarHeight;
+        }
+
 
         if (node.type == PANEL)
         {

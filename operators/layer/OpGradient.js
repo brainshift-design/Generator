@@ -16,6 +16,8 @@ extends OpColorBase
     checkers;
     colorBack;
 
+    value = new GradientValue();
+
 
 
     constructor()
@@ -132,17 +134,17 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        this.value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramType    .setValue(value.gradType, false, true, false);
-        this.paramPosition.setValue(value.position, false, true, false);
-        this.paramX       .setValue(value.x,        false, true, false);
-        this.paramY       .setValue(value.y,        false, true, false);
-        this.paramSize    .setValue(value.size,     false, true, false);
-        this.paramAngle   .setValue(value.angle,    false, true, false);
-        this.paramAspect  .setValue(value.aspect,   false, true, false);
-        this.paramSkew    .setValue(value.skew,     false, true, false);
-        this.paramBlend   .setValue(value.blend,    false, true, false);
+        this.paramType    .setValue(this.value.gradType, false, true, false);
+        this.paramPosition.setValue(this.value.position, false, true, false);
+        this.paramX       .setValue(this.value.x,        false, true, false);
+        this.paramY       .setValue(this.value.y,        false, true, false);
+        this.paramSize    .setValue(this.value.size,     false, true, false);
+        this.paramAngle   .setValue(this.value.angle,    false, true, false);
+        this.paramAspect  .setValue(this.value.aspect,   false, true, false);
+        this.paramSkew    .setValue(this.value.skew,     false, true, false);
+        this.paramBlend   .setValue(this.value.blend,    false, true, false);
     }
 
 
@@ -172,5 +174,122 @@ extends OpColorBase
 
 
         this.updateParamControls();
+    }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+
+        let gradient = '';
+
+
+        switch (this.value.gradType.value)
+        {
+            case 0: gradient += 'linear-gradient'; break;
+            case 1: gradient += 'radial-gradient'; break;
+            case 2: gradient += 'conic-gradient';  break;
+            case 3: gradient += 'radial-gradient'; break;
+        }
+
+
+        gradient += '(';
+
+
+        const aspect = this.measureData.headerOffset.width / nozero(this.measureData.headerOffset.height);
+
+        switch (this.value.gradType.value)
+        {
+            case 0: 
+                gradient += (this.value.angle.value + 90) + 'deg'; 
+                break;
+
+            case 1: 
+            case 3:
+                gradient += 'circle ' + (aspect >= 1 ? 'closest' : 'farthest') + '-side at center';
+                // switch (this.value.position.value)
+                // {
+                //     case 0: gradient += 'ellipse closest-side at center '; break;
+                //     case 1: gradient += 'circle ' + (aspect >= 1 ? 'farthest' : 'closest') + '-side at center';  break;
+                //     case 2: gradient += 'circle ' + (aspect >= 1 ? 'closest' : 'farthest') + '-side at center';   break;
+                //     case 3: gradient += 'circle closest-side at center';   break;
+                // }
+                break;
+
+            case 2: 
+                gradient += 'from ' + (this.value.angle.value + 90) + 'deg';
+                break;
+        }
+
+
+        const stops = [...this.value.stops.items];
+
+        let minPos = Number.MAX_SAFE_INTEGER;
+        let maxPos = Number.MIN_SAFE_INTEGER;
+
+        for (const stop of stops)
+        {
+            minPos = Math.min(minPos, stop.position.value);
+            maxPos = Math.max(maxPos, stop.position.value);
+        }
+
+        for (const stop of stops)
+            stop.position.value = (stop.position.value - minPos) / nozero(maxPos - minPos) * 100;
+
+
+        for (let i = 0; i < stops.length; i++)
+        {
+            const stop = stops[i];
+
+            gradient += 
+                  ', '
+                + rgba2style(stop.fill.toRgba())
+                + ' '
+                + (stop.position.value) + '%';
+        }
+
+
+        gradient += ')';
+
+
+        this.header.style.background         = gradient;
+        this.header.style.backgroundPosition = '50% 50%';
+
+        if (this.value.gradType.value > 0)
+            this.header.style.backgroundSize = '150% 150%';
+        else
+            this.header.style.backgroundSize = '100% 100%';
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+
+
+        const unknown = this.inputs.some(i => i.isUncached());
+
+
+        if (!unknown)
+        {
+            let rgbaBack = rgba_NaN;
+
+            for (const stop of this.value.stops.items)
+            {
+                rgbaBack = 
+                    rgbaIsNaN(rgbaBack)
+                    ? stop.fill.toRgba()
+                    : rgbaMuls(rgbaAdd(rgbaBack, stop.fill.toRgba()), 0.5);
+            }
+
+
+            colors.text = getTextColorFromBackColor(getStripeBackColor(rgbaBack));
+        }
+
+
+        return colors;
     }
 }

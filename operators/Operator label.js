@@ -75,7 +75,6 @@ Operator.prototype.updateHeaderLabel = function()
     const margin = 10;
     const wrect  = this.measureData.labelWrapperBounds;
     const wr     = wrect.width / graph.currentPage.zoom;
-    console.log('wrect =', wrect);
 
     const s0     = margin;
     const s1     = margin + 15;

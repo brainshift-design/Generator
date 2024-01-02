@@ -33,10 +33,13 @@ extends OpColorBase
 
 
         this.addParam(this.paramFill     = new FillParam  ('fill',     'fill',     false, true, true, FillValue.create(0, 0, 0, 100)));
-        this.addParam(this.paramPosition = new NumberParam('position', 'position', true,  true, true, 0, 0, 100));
+        this.addParam(this.paramPosition = new NumberParam('position', 'position', true,  true, true, 0));
 
 
         this.paramPosition.controls[0].suffix = '%';
+
+        this.paramPosition.controls[0].displayMin =   0;
+        this.paramPosition.controls[0].displayMax = 100;
 
         this.paramPosition.divider = 0.55;
     }

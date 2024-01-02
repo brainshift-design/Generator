@@ -124,7 +124,9 @@ GraphView.prototype.createEvents = function()
 
             if (isEmpty(currentMenus)) 
             {
+                this.placePosition    = point(e.clientX, e.clientY);
                 this.placeFromPointer = true;
+                
                 menuGraph.showAt(e.clientX, e.clientY, false, false);
             }
             else 

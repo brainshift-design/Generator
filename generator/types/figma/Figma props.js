@@ -156,6 +156,39 @@ function addGradientProp(obj, prop, target = obj.fills)
     }
 
 
+    // handles outside range
+
+    if (prop.stops.items.some(i => 
+               i.position.value < 0 
+            || i.position.value > 100))
+    {
+        let minPos = Number.MAX_SAFE_INTEGER;
+        let maxPos = Number.MIN_SAFE_INTEGER;
+
+        for (const stop of prop.stops.items)
+        {
+            minPos = Math.min(minPos, stop.position.value);
+            maxPos = Math.max(maxPos, stop.position.value);
+        }
+
+
+        const dpos  = Math.min(0, minPos) / 100;
+        const dsize = Math.max(100, maxPos - Math.min(minPos, 0)) / 100;
+
+        const dv    = subv(p0, p1);
+
+        p0 = addv(p0, mulvs(dv, Math.max(0, -dpos)));
+        p1 = addv(p1, mulvs(dv, Math.max(0, -dpos)));
+        p2 = addv(p2, mulvs(dv, Math.max(0, -dpos)));
+
+        p1 = subv(p0, mulvs(dv, dsize));
+        p2 = addv(p0, mulvs(subv(p2, p0), dsize));
+
+        for (const stop of prop.stops.items)
+            stop.position.value = stop.position.value * 100 / maxPos;
+    }
+
+
     const identityHandles = 
         [[0,   1,   0],
          [0.5, 0.5, 1],
@@ -176,10 +209,7 @@ function addGradientProp(obj, prop, target = obj.fills)
         xform[1] ];
         
 
-    const stops = validateColorStops(prop.stops.items);
-    
-    setColorStopPositions(stops);
-
+    const stops = prop.stops.items;
 
     for (let j = 0; j < stops.length; j++)
     {
@@ -270,7 +300,7 @@ function setColorStopPositions(stops)
                 const pv = stops[prevValid].position.toNumber();
                 const nv = stops[nextValid].position.toNumber();
 
-               stop.position = new NumberValue((pv + (nv - pv) * ((i - prevValid) / (nextValid - prevValid)))); 
+                stop.position = new NumberValue((pv + (nv - pv) * ((i - prevValid) / (nextValid - prevValid)))); 
             }
         }
     }

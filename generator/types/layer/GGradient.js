@@ -80,7 +80,7 @@ extends GOperator
         const blend    = this.blend    ? (await this.blend   .eval(parse)).toValue() : null;
 
 
-        const stops = new ListValue();
+        let stops = new ListValue();
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
@@ -99,6 +99,10 @@ extends GOperator
                     stops.items.push(input);
             }
         }
+
+
+        stops.items = validateColorStops(stops.items);
+        setColorStopPositions(stops.items);
 
 
         this.value = new GradientValue(
@@ -140,23 +144,7 @@ extends GOperator
     
     toValue()
     {
-        const stops = new ListValue();
-
-        for (let i = 0, o = 0; i < this.inputs.length; i++)
-            stops.items.push(this.inputs[i].toValue());
-
-
-        return new GradientValue(
-            stops,
-            this.gradType ? this.gradType.toValue() : this.input.gradType.toValue(),
-            this.position ? this.position.toValue() : this.input.position.toValue(),
-            this.x        ? this.x       .toValue() : this.input.x       .toValue(),
-            this.y        ? this.y       .toValue() : this.input.y       .toValue(),
-            this.size     ? this.size    .toValue() : this.input.size    .toValue(),
-            this.angle    ? this.angle   .toValue() : this.input.angle   .toValue(),
-            this.aspect   ? this.aspect  .toValue() : this.input.aspect  .toValue(),
-            this.skew     ? this.skew    .toValue() : this.input.skew    .toValue(),
-            this.blend    ? this.blend   .toValue() : this.input.blend   .toValue());
+        return this.value.copy();
     }                 
 
 
