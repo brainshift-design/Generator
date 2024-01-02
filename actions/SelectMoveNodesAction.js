@@ -82,6 +82,8 @@ extends Action
             node.updateNode();
         }
 
+        
+        graphView.updateNodeWireTransforms(movedNodes);
 
         uiSaveNodes(movedIds);
     }
@@ -102,7 +104,9 @@ extends Action
         for (const node of movedNodes)
             node.updateNode();
             
+
         graphView.selectByIds(this.prevSelectedIds);
+        graphView.updateNodeWireTransforms(movedNodes);
 
         uiSaveNodes(movedIds);
     }

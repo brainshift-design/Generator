@@ -44,6 +44,8 @@ extends Action
         }
 
 
+        graphView.updateNodeWireTransforms(graphView.selectedNodes);
+
         uiSaveNodes(this.nodeIds);
     }
 
@@ -64,6 +66,8 @@ extends Action
             node.updateNode();
         }
 
+
+        graphView.updateNodeWireTransforms(movedNodes);
 
         uiSaveNodes(this.nodeIds);
     }
