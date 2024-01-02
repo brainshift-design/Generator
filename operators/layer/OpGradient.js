@@ -1,5 +1,5 @@
 class   OpGradient
-extends OpColorBase
+extends OperatorBase
 {
     paramType;
     paramPosition;
@@ -186,81 +186,93 @@ extends OpColorBase
         let gradient = '';
 
 
-        switch (this.value.gradType.value)
-        {
-            case 0: gradient += 'linear-gradient'; break;
-            case 1: gradient += 'radial-gradient'; break;
-            case 2: gradient += 'conic-gradient';  break;
-            case 3: gradient += 'radial-gradient'; break;
-        }
-
-
-        gradient += '(';
-
-
-        const aspect = this.measureData.headerOffset.width / nozero(this.measureData.headerOffset.height);
-
-        switch (this.value.gradType.value)
-        {
-            case 0: 
-                gradient += (this.value.angle.value + 90) + 'deg'; 
-                break;
-
-            case 1: 
-            case 3:
-                gradient += 'circle ' + (aspect >= 1 ? 'closest' : 'farthest') + '-side at center';
-                // switch (this.value.position.value)
-                // {
-                //     case 0: gradient += 'ellipse closest-side at center '; break;
-                //     case 1: gradient += 'circle ' + (aspect >= 1 ? 'farthest' : 'closest') + '-side at center';  break;
-                //     case 2: gradient += 'circle ' + (aspect >= 1 ? 'closest' : 'farthest') + '-side at center';   break;
-                //     case 3: gradient += 'circle closest-side at center';   break;
-                // }
-                break;
-
-            case 2: 
-                gradient += 'from ' + (this.value.angle.value + 90) + 'deg';
-                break;
-        }
-
-
         const stops = [...this.value.stops.items];
 
-        let minPos = Number.MAX_SAFE_INTEGER;
-        let maxPos = Number.MIN_SAFE_INTEGER;
 
-        for (const stop of stops)
+        // single-stop gradient
+
+        if (stops.length == 1)
+            this.header.style.background = rgba2style(stops[0].fill.toRgba());
+
+
+        // multi-stop gradient
+
+        else if (stops.length > 1)
         {
-            minPos = Math.min(minPos, stop.position.value);
-            maxPos = Math.max(maxPos, stop.position.value);
+            switch (this.value.gradType.value)
+            {
+                case 0: gradient += 'linear-gradient'; break;
+                case 1: gradient += 'radial-gradient'; break;
+                case 2: gradient += 'conic-gradient';  break;
+                case 3: gradient += 'radial-gradient'; break;
+            }
+
+
+            gradient += '(';
+
+
+            const aspect = this.measureData.headerOffset.width / nozero(this.measureData.headerOffset.height);
+
+            switch (this.value.gradType.value)
+            {
+                case 0: 
+                    gradient += (this.value.angle.value + 90) + 'deg'; 
+                    break;
+
+                case 1: 
+                case 3:
+                    gradient += 'circle ' + (aspect >= 1 ? 'closest' : 'farthest') + '-side at center';
+                    // switch (this.value.position.value)
+                    // {
+                    //     case 0: gradient += 'ellipse closest-side at center '; break;
+                    //     case 1: gradient += 'circle ' + (aspect >= 1 ? 'farthest' : 'closest') + '-side at center';  break;
+                    //     case 2: gradient += 'circle ' + (aspect >= 1 ? 'closest' : 'farthest') + '-side at center';   break;
+                    //     case 3: gradient += 'circle closest-side at center';   break;
+                    // }
+                    break;
+
+                case 2: 
+                    gradient += 'from ' + (this.value.angle.value + 90) + 'deg';
+                    break;
+            }
+
+
+            let minPos = Number.MAX_SAFE_INTEGER;
+            let maxPos = Number.MIN_SAFE_INTEGER;
+
+            for (const stop of stops)
+            {
+                minPos = Math.min(minPos, stop.position.value);
+                maxPos = Math.max(maxPos, stop.position.value);
+            }
+
+            for (const stop of stops)
+                stop.position.value = (stop.position.value - minPos) / nozero(maxPos - minPos) * 100;
+
+
+            for (let i = 0; i < stops.length; i++)
+            {
+                const stop = stops[i];
+
+                gradient += 
+                    ', '
+                    + rgba2style(stop.fill.toRgba())
+                    + ' '
+                    + (stop.position.value) + '%';
+            }
+
+
+            gradient += ')';
+
+
+            this.header.style.background         = gradient;
+            this.header.style.backgroundPosition = '50% 50%';
+    
+            if (this.value.gradType.value > 0)
+                this.header.style.backgroundSize = '150% 150%';
+            else
+                this.header.style.backgroundSize = '100% 100%';
         }
-
-        for (const stop of stops)
-            stop.position.value = (stop.position.value - minPos) / nozero(maxPos - minPos) * 100;
-
-
-        for (let i = 0; i < stops.length; i++)
-        {
-            const stop = stops[i];
-
-            gradient += 
-                  ', '
-                + rgba2style(stop.fill.toRgba())
-                + ' '
-                + (stop.position.value) + '%';
-        }
-
-
-        gradient += ')';
-
-
-        this.header.style.background         = gradient;
-        this.header.style.backgroundPosition = '50% 50%';
-
-        if (this.value.gradType.value > 0)
-            this.header.style.backgroundSize = '150% 150%';
-        else
-            this.header.style.backgroundSize = '100% 100%';
     }
 
 
@@ -285,8 +297,26 @@ extends OpColorBase
                     : rgbaMuls(rgbaAdd(rgbaBack, stop.fill.toRgba()), 0.5);
             }
 
+            const gray = this.value.stops.items.length == 0;
 
-            colors.text = getTextColorFromBackColor(getStripeBackColor(rgbaBack));
+            colors.text = 
+                gray
+                ? (darkMode ? [1, 1, 1, 1] : [0, 0, 0, 1]) 
+                : getTextColorFromBackColor(getStripeBackColor(rgbaBack));
+
+            if (gray)
+            {
+                colors.input   = rgb_a(colors.text, 0.35);
+                colors.inWire  = rgbFromType(ANY_VALUE, true);
+                colors.output  = rgb_a(colors.text, 0.35);
+                colors.outWire = rgbFromType(ANY_VALUE, true);
+            }
+            else
+            {
+                colors.input   = rgb_a(colors.text, 0.35);
+                colors.inWire  = rgbFromType(ANY_VALUE, true);
+                colors.output  = rgb_a(colors.text, 0.35);
+            }
         }
 
 
