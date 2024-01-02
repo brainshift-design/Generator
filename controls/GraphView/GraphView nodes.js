@@ -341,12 +341,6 @@ GraphView.prototype.getTopNodeIndex = function()
 
 GraphView.prototype.nudgeSelected = function(x, y)
 {
-    // graphView.selectedNodes.forEach(n => 
-    //     n.setPosition(
-    //         n.div.offsetLeft + x / graph.currentPage.zoom,
-    //         n.div.offsetTop  + y / graph.currentPage.zoom,
-    //         true));
-    
     const positions = 
         graphView.selectedNodes.map(n => 
             point(
@@ -356,21 +350,6 @@ GraphView.prototype.nudgeSelected = function(x, y)
     actionManager.do(new MoveNodesAction(
         graphView.selectedNodes.map(n => n.nodeId), 
         positions));
-};
-
-
-
-GraphView.prototype.connectSelectedSeeds = function()
-{
-    // const positions = 
-    //     graphView.selectedNodes.map(n => 
-    //         point(
-    //             n.div.offsetLeft + x / graph.currentPage.zoom,
-    //             n.div.offsetTop  + y / graph.currentPage.zoom));
-
-    // actionManager.do(new MoveNodesAction(
-    //     graphView.selectedNodes.map(n => n.nodeId), 
-    //     positions));
 };
 
 
@@ -391,6 +370,32 @@ GraphView.prototype.randomizeSelectedSeeds = function()
             paramSeed, 
             new NumberValue(Math.floor(Math.random() * 10000)),
             true),
+            i > 0);
+    }
+};
+
+
+
+GraphView.prototype.connectSelectedSeeds = function()
+{
+    const list = graphView.selectedNodes.find(n => n.type == LIST);
+
+    const randoms = graphView.selectedNodes.filter(n => 
+           n.type == NUMBER_RANDOM
+        || n.type == NUMBER_NOISE
+        || n.type == NUMBER_PROBABILITY);
+
+
+    for (let i = 0, j = 0; i < list.params.length && j < randoms.length; i++, j++)
+    {
+        const param     = list.params[i];
+
+        const node      = randoms[j];
+        const paramSeed = node.paramFromId('seed');
+
+        actionManager.do(new ConnectAction(
+            param.output, 
+            paramSeed.input),
             i > 0);
     }
 };

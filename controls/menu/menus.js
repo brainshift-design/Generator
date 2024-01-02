@@ -991,7 +991,7 @@ function initGeneratorMenus()
         updateElementDisplay(menuItemNodeConnectSeeds  .div, canConnectSeeds);
         updateElementDisplay(menuItemNodeSep2          .div, single);
         updateElementDisplay(menuItemNodeSelect        .div, single);
-        updateElementDisplay(menuItemNodeSep4          .div, canDisable);
+        updateElementDisplay(menuItemNodeSep4          .div, canDisable || canRandomizeSeeds || canConnectSeeds);
         updateElementDisplay(menuItemNodeEnableDisable .div, canDisable);
     };
 
