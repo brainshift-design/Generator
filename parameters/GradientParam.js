@@ -28,7 +28,8 @@ extends Parameter
             this.name,
             ''));
 
-        this.controls[0].textbox.style.textAlign  = 'center';
+        this.controls[0].highlightText           = false;
+        this.controls[0].textbox.style.textAlign = 'center';
    
         this.divControls.appendChild(this.controls[0].div);
 
@@ -147,12 +148,71 @@ extends Parameter
         this.controls[0].readOnly = true;
         
         this.controls[0].textbox.style.fontStyle  = 'italic';
-        this.controls[0].textbox.style.fontWeight = '500';
+        this.controls[0].textbox.style.fontWeight = '300';
 
-        this.controls[0].textbox.value = this.value.stops.items.length + ' ' + countString(this.value.stops.items.length, 'stop');
+        this.controls[0].textbox.value = 'gradient';//this.value.stops.items.length + ' ' + countString(this.value.stops.items.length, 'stop');
 
 
         super.updateControls();
+
+
+        const stops = this.value.stops.items;
+
+        let gradient = 'linear-gradient(90deg';
+
+
+        let minPos = Number.MAX_SAFE_INTEGER;
+        let maxPos = Number.MIN_SAFE_INTEGER;
+
+        for (const stop of stops)
+        {
+            minPos = Math.min(minPos, stop.position.value);
+            maxPos = Math.max(maxPos, stop.position.value);
+        }
+
+        for (const stop of stops)
+            stop.position.value = (stop.position.value - minPos) / nozero(maxPos - minPos) * 100;
+
+
+        for (let i = 0; i < stops.length; i++)
+        {
+            const stop = stops[i];
+
+            gradient += 
+                ', '
+                + rgba2style(stop.fill.toRgba())
+                + ' '
+                + (stop.position.value) + '%';
+        }
+
+
+        gradient += ')';
+
+
+        this._div.style.background         = gradient;
+        this._div.style.backgroundPosition = '50% 50%';
+        this._div.style.backgroundSize     = '100% 100%';
+
+
+        let rgbaBack = rgba_NaN;
+
+        for (const stop of this.value.stops.items)
+        {
+            rgbaBack = 
+                rgbaIsNaN(rgbaBack)
+                ? stop.fill.toRgba()
+                : rgbaMuls(rgbaAdd(rgbaBack, stop.fill.toRgba()), 0.5);
+        }
+
+        const gray = this.value.stops.items.length == 0;
+
+        const colText = 
+            gray
+            ? (darkMode ? [1, 1, 1, 1] : [0, 0, 0, 1]) 
+            : getTextColorFromBackColor(getStripeBackColor(rgbaBack));
+
+        this.divName            .style.color = rgba2style(rgb_a(colText, 0.3));
+        this.controls[0].textbox.style.color = rgba2style(colText);
     }
 
 
