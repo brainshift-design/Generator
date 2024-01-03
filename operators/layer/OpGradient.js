@@ -183,11 +183,21 @@ extends OpColorBase
         super.updateHeader();
 
 
+        const colors = this.getHeaderColors();
+
         if (this.isUnknown())
         {
-            updateColorHeader(this, this.getHeaderColors());
+            updateFillHeader(this, colors);
             return;
         }
+
+        
+        if (    this.isUnknown()
+            || !this.value.stops.items.some(value => value.isValid()))
+            this.checkers.style.display = 'none';
+
+        else
+            updateHeaderCheckers(this, colors);
 
 
         let gradient = '';

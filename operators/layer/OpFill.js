@@ -350,25 +350,7 @@ function updateFillHeader(node, colors)
         node.checkers.style.display = 'none';
 
     else
-    {
-        node.checkers.style.height = node.header.offsetHeight;
-
-        node.checkers.style.background =
-            darkMode
-            ?     'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-                + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-            :     'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-                + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
-
-        node.checkers.style.display            = !rgbIsNaN(colors.stripeBack) ? 'inline-block' : 'none';
-        node.checkers.style.backgroundColor    =  darkMode ? '#444' : '#fff';
-
-        node.checkers.style.backgroundSize     = '22px 22px';
-        node.checkers.style.backgroundPosition = '0 0, 11px 11px';
-
-        node.checkers.style.left               = '-3px';
-        node.checkers.style.width              = 'calc(100% + 3px)';
-    }
+        updateHeaderCheckers(node, colors);
                         
 
     node.inputs[0] .colorLight = 
@@ -400,4 +382,27 @@ function updateFillHeader(node, colors)
         node.updateWarningOverlay();
         node.updateWarningOverlayStyle(colors.back, defHeaderHeight + defParamHeight);
     }
+}
+
+
+
+function updateHeaderCheckers(node, colors)
+{
+    node.checkers.style.height = node.header.offsetHeight;
+
+    node.checkers.style.background =
+        darkMode
+        ?     'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+            + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+        :     'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+            + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+
+    node.checkers.style.display            = !rgbIsNaN(colors.stripeBack) ? 'inline-block' : 'none';
+    node.checkers.style.backgroundColor    =  darkMode ? '#444' : '#fff';
+
+    node.checkers.style.backgroundSize     = '22px 22px';
+    node.checkers.style.backgroundPosition = '0 0, 11px 11px';
+
+    node.checkers.style.left               = '-3px';
+    node.checkers.style.width              = 'calc(100% + 3px)';
 }
