@@ -172,13 +172,13 @@ Operator.prototype.updateDisabled = function()
 
     const zoom = graph.currentPage.zoom;
 
-    const ax = 2;
-    const bx = 0.15;
-    const fx = 1 - Math.pow(1 - Math.min(zoom, 1), ax) / Math.pow(ax, bx);
+    const ax      = 2;
+    const bx      = 0.15;
+    const fx      = 1 - Math.pow(1 - Math.min(zoom, 1), ax) / Math.pow(ax, bx);
 
-    const ay = 2;
-    const by = 1;
-    const fy = 1 - Math.pow(1 - Math.min(zoom, 1), ay) / Math.pow(ay, by);
+    const ay      = 2;
+    const by      = 1;
+    const fy      = 1 - Math.pow(1 - Math.min(zoom, 1), ay) / Math.pow(ay, by);
 
     const width   = 8;
     const height  = Math.min(this.measureData.divOffset.width, this.measureData.divOffset.height) + 100;

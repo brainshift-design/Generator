@@ -84,21 +84,10 @@ extends GOperator1
 
 
 
-    invalidateInputs(parse, from, force)
+    iterateCache(parse, from)
     {
-        super.invalidateInputs(parse, from, force);
+        this.cachedValue = null;
 
-        const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
-
-        if (   repeat
-            && repeat.repeatId == from.nodeId)
-            this.cachedValue = null;
+        super.iterateCache(parse, from);
     }
-
-
-
-    // iterateCache(parse, from)
-    // {
-        //this.cachedValue = null;
-    //}
 }

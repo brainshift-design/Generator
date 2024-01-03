@@ -26,6 +26,8 @@ extends OpShapeBase
         this.paramDistance.controls[0].setDecimals(10, 0);
         this.paramAngle   .controls[0].setDecimals(10, 0);
 
+        this.params.forEach(p => p.isNodeValue = true);
+
         this.setAllParamDividers(0.5);
     }
 

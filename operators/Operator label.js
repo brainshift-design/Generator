@@ -139,6 +139,7 @@ Operator.prototype.updateHeaderLabelText = function()
     else if (this.type == FILTER      ) suffix = sep + '[ ' + this.length   + ' ]';
     else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.length        + ' ]';
     else if (this.type == LIST        ) suffix = ellipsis + sep + '[ ' + this.params.length + ' ]';
+    else if (this.type == CACHE       ) suffix = ellipsis;
     else
         suffix = 
                this.cached 

@@ -196,7 +196,8 @@ extends GOperator
         for (const input of this.inputs)
         {
             if (   input.type == LIST
-                || input.type == COMBINE)
+                || input.type == COMBINE
+                || input.type == CACHE)
                 input.iterateCache(parse, from);
         }
     }

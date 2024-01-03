@@ -22,4 +22,13 @@ extends OpShapeBase
         this.paramProps.listTypes = [...STYLE_VALUES];
         this.paramProps.input.types.push(...this.paramProps.listTypes, SHAPE_LIST_VALUE);
     }
+
+
+
+    updateParams()
+    {
+        this.params.forEach(p => p.isNodeValue = this.headerInputs[0].connected);
+
+        super.updateParams();
+    }
 }

@@ -541,5 +541,5 @@ function setAutoScrollTimer(dScroll, e)
 
     if (   dScroll.x != 0
         || dScroll.y != 0)
-        autoScrollTimer = setTimeout(() => setAutoScrollTimer(dScroll, e), 50);
+        autoScrollTimer = setTimeout(() => setAutoScrollTimer(dScroll, e), 20);
 }

@@ -198,7 +198,7 @@ extends GOperator1
 
 
                 if (this.loop.type != NUMBER_VALUE)
-                    this.loop.resetLoop(parse, this.nodeId, true);
+                    this.loop.resetLoop(parse, this.nodeId);
 
 
                 if (this.startTimer > -1)

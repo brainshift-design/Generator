@@ -22,6 +22,9 @@ extends OpShapeBase
         this.addParam(this.paramX = new NumberParam('x', 'X', true, true, true, 0));
         this.addParam(this.paramY = new NumberParam('y', 'Y', true, true, true, 0));
 
+        this.paramX.isNodeValue = this.headerInputs[0].connected;
+        this.paramY.isNodeValue = this.headerInputs[0].connected;
+
 
         this.setAllParamDividers(0.45);
     }
@@ -136,5 +139,17 @@ extends OpShapeBase
 
         this.paramX.setValue(x, false, true, false);
         this.paramY.setValue(y, false, true, false);
+    }
+
+
+
+    updateParams()
+    {
+        this.paramX.enableControlText(false, this.paramX.isUnknown() || this.isUnknown());
+        this.paramY.enableControlText(false, this.paramY.isUnknown() || this.isUnknown());
+
+        this.params.forEach(p => p.isNodeValue = this.headerInputs[0].connected);
+
+        this.updateParamControls();
     }
 }

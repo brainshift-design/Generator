@@ -81,15 +81,15 @@ extends OpShape
 
     updateParams()
     {
-        super.updateParams();
-
-
         const center = this.paramPosition.value.value == 1;
-       
+        
         this.paramWidth .setName(center ? 'radius W' : 'width' );
         this.paramHeight.setName(center ? 'radius H' : 'height');
         
+        // this.params.forEach(p => p.isNodeValue = this.headerInputs[0].connected);
+        
+        super.updateParams();
 
-        this.updateParamControls();
+        //this.updateParamControls();
     }
 }

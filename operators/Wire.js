@@ -520,31 +520,9 @@ class Wire
         if (darkMode) bright = 1-bright;
     
         
-        // const innerOpacity = Math.round(bright * (darkMode ? 88 : 66) * Math.min(graph.currentPage.zoom, 5)).toString(16).padStart(2, '0');
-        //'+(Math.min(Math.max(1, 1/graph.currentPage.zoom), 5))+'
-        
-        // this.curve.style.filter = 
-        //     this.needsFilter
-        //     ? darkMode
-        //         ? (isDark(color, 0.65)
-        //             ?    'drop-shadow(0px 0px 1px #ffffff' + innerOpacity + ')'
-        //             :   ' drop-shadow(0px 0px 1px #000000' + innerOpacity + ')')
-        //         : (!isDark(color)
-        //             ?    'drop-shadow(0px 0px 1px #000000' + innerOpacity + ')'
-        //             :   ' drop-shadow(0px 0px 1px #ffffff' + innerOpacity + ')')
-        //     : 'none';
-    
-         
-        //let showCurve = true;
-    
-
         if (   conn.output && color[3] < 1
             || conn. input && color[3] < 1)
         {
-            // const showCurve = 
-            //        conn.output && color[3] > 0
-            //     || conn. input && color[3] > 0;
-    
             this.xp1.style.display          = 'inline';
             this.xp1.style.stroke           = rgba2style(rgb_a(darkMode ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
             this.xp1.style.strokeDasharray  = 9 * Math.max(1, graph.currentPage.zoom);
@@ -584,10 +562,8 @@ class Wire
     
             dl /= Math.min(1 - (1 - graph.currentPage.zoom) / 1.75, 1);
     
-            if (hcl[2] > th - dl)// && hcl[2] >= th)
+            if (hcl[2] > th - dl)
                 color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th - dl]));
-            // if (hcl[2] > th && hcl[2] < th - dl)
-            //     color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th - dl]));
          }
     
     
@@ -602,29 +578,6 @@ class Wire
                 color[3]));
 
                 
-        // const isNotCached = 
-        //            conn.output
-        //        &&  conn.output.node
-        //        && !conn.output.node.isCached()
-        //     ||     conn.output
-        //        &&  conn.output.param
-        //        &&  conn.output.param._nodeId != undefined
-        //     &&  nodeFromId(conn.output.param._nodeId)
-        //        && !nodeFromId(conn.output.param._nodeId).isCached();
-        
-        // const unknown = 
-        //         isNotCached
-        //     &&  conn.output
-        //     && (  !conn.output.node.isOrPrecededByMultiplier()
-        //         ||   (   !conn.output.node.isMultiplier
-        //               || !conn.output.node.paramLoop.input.connected)
-        //            && conn.output.node.inputs.find(i => i.isConnectedUncached()))
-        //     &&  conn.input
-        //     &&  conn.input.node.isOrFollowedByMultiplier()
-        //     && (  !conn.input.param 
-        //         || conn.input.param.affectsHeader);
-
-
         const unknown = 
                conn.output 
             && (      conn.output.param
@@ -638,7 +591,7 @@ class Wire
                    && conn.output.node.isOrPrecededByUncached()
                 ||    conn.output.node.type == LIST
                    && conn.output.node.isOrPrecededByUncached())
-            && (  conn.input
+            && (   conn.input
                 && conn.input.node.isOrFollowedByMultiplier());
                 
                 
@@ -668,23 +621,13 @@ class Wire
     
         const isList = this.connectionIsList();
 
-        // if (this.connection.input.node.nodeId == 'text')
-        // {
-        //     console.log('listType =', listType);
-        //     console.log('conn.output.types =', conn.output.types);
-        // }
-    
-    
+
         let width = 
             graph.currentPage.zoom < 1
             ? graph.currentPage.zoom + (Math.pow(2, graph.currentPage.zoom - 1) - graph.currentPage.zoom) * 0.333
             : graph.currentPage.zoom;
     
         width *= 1.6;
-    
-    
-        //      if (graph.currentPage.zoom < 1/7) width += 1 * (1 - graph.currentPage.zoom) * (7 * graph.currentPage.zoom);
-        // else if (graph.currentPage.zoom < 1  ) width += 1 * (1 - graph.currentPage.zoom);
     
     
         this.curve .setAttribute('stroke-width', width * (isList ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));

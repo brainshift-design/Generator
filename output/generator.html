@@ -16201,7 +16201,7 @@ extends GOperator1
 
 
                 if (this.loop.type != NUMBER_VALUE)
-                    this.loop.resetLoop(parse, this.nodeId, true);
+                    this.loop.resetLoop(parse, this.nodeId);
 
 
                 if (this.startTimer > -1)
@@ -16700,23 +16700,12 @@ extends GOperator1
 
 
 
-    invalidateInputs(parse, from, force)
+    iterateCache(parse, from)
     {
-        super.invalidateInputs(parse, from, force);
+        this.cachedValue = null;
 
-        const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
-
-        if (   repeat
-            && repeat.repeatId == from.nodeId)
-            this.cachedValue = null;
+        super.iterateCache(parse, from);
     }
-
-
-
-    // iterateCache(parse, from)
-    // {
-        //this.cachedValue = null;
-    //}
 }
 
 
@@ -17423,7 +17412,8 @@ extends GOperator
         for (const input of this.inputs)
         {
             if (   input.type == LIST
-                || input.type == COMBINE)
+                || input.type == COMBINE
+                || input.type == CACHE)
                 input.iterateCache(parse, from);
         }
     }

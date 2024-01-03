@@ -91,9 +91,10 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
 
 
         if (shiftKey)
-            this.selectedNodes = this.lastSelectedNodes
-                .filter(n => !selected.includes(n))
-                .concat(selected.filter(n => !this.lastSelectedNodes.includes(n)));
+            this.selectedNodes = 
+                this.lastSelectedNodes
+                    .filter(n => !selected.includes(n))
+                    .concat(selected.filter(n => !this.lastSelectedNodes.includes(n)));
         else
             this.selectedNodes = selected;
         

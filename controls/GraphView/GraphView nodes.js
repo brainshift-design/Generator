@@ -354,9 +354,10 @@ GraphView.prototype.nudgeSelected = function(x, y)
 GraphView.prototype.randomizeSelectedSeeds = function()
 {
     const randoms = graphView.selectedNodes.filter(n => 
-           n.type == NUMBER_RANDOM
-        || n.type == NUMBER_NOISE
-        || n.type == NUMBER_PROBABILITY);
+           (   n.type == NUMBER_RANDOM
+            || n.type == NUMBER_NOISE
+            || n.type == NUMBER_PROBABILITY)
+        && !n.paramSeed.controls[0].readOnly);
         
     const paramSeeds = randoms.map(n => n.paramFromId('seed'));
 

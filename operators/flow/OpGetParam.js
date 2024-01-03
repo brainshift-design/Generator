@@ -105,12 +105,14 @@ extends ResizableBase
             : [0, 0, 0, 1]; 
 
         if (   this.outputs[0].supportsTypes([COLOR_VALUE])
+            && this.value
             && this.value.isValid())
         {
             colors.output  =
             colors.outWire = this.value.toRgb();
         }
         else if (this.outputs[0].supportsTypes([FILL_VALUE])
+              && this.value
               && this.value.isValid())
         {
             colors.output  =
