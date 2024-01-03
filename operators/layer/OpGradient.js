@@ -1,5 +1,5 @@
 class   OpGradient
-extends OperatorBase
+extends OpColorBase
 {
     paramType;
     paramPosition;
@@ -181,6 +181,13 @@ extends OperatorBase
     updateHeader()
     {
         super.updateHeader();
+
+
+        if (this.isUnknown())
+        {
+            updateColorHeader(this, this.getHeaderColors());
+            return;
+        }
 
 
         let gradient = '';
