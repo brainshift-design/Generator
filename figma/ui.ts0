@@ -228,7 +228,12 @@ function figResizeWindow(width, height)
         // }
 
 
-        figPostMessageToUi({cmd: 'uiReturnFigResizeWindow'});
+        figPostMessageToUi(
+        {
+            cmd:   'uiReturnFigResizeWindow',
+            width:  width,
+            height: height
+        });
     })();
 }
 

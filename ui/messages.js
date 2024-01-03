@@ -52,7 +52,7 @@ onmessage = e =>
                                                    
         case 'uiReturnFigGetVariableUpdates':     uiReturnFigGetVariableUpdates    (msg.values);        break;
 
-        case 'uiReturnFigResizeWindow':           uiReturnFigResizeWindow          ();                  break;
+        case 'uiReturnFigResizeWindow':           uiReturnFigResizeWindow          (msg);               break;
                            
         case 'uiReturnFigGetAllLocalVariables':   uiReturnFigGetAllLocalVariables  (msg);               break;
         case 'uiReturnFigLinkNodeToVariable':     uiReturnFigLinkNodeToVariable    (msg);               break;

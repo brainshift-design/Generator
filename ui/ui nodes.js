@@ -1248,7 +1248,7 @@ function layoutSelectedNodes()
 
     let   totalWidth = 0;
     const maxWidth   = [];
-    const gap        = 100;
+    const gap        = 70;
 
 
     for (let i = 0; i <= maxIndex; i++)

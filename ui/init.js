@@ -107,8 +107,13 @@ async function uiReturnFigStartGenerator(msg)
 
     graphView.updateMeasureData();
 
-    viewportRect = msg.viewportRect;
-    viewportZoom = msg.viewportZoom;
+    viewportRect  = msg.viewportRect;
+    viewportZoom  = msg.viewportZoom;
+
+    window.width  = msg.windowWidth;
+    window.height = msg.windowHeight;
+
+    documentBodyClient = clientRect(document.body);
 
 
     initThemeColors();

@@ -10,14 +10,14 @@ Operator.prototype.createNode = function()
 {
     this.div                    = createDiv('node');
     this.div.node               = this;
-       
+
     this.div.style.width        = this.defaultWidth + 'px';
-           
+
     this.div.over               = false;
     this.div.dragging           = false;
     this.div.shiftOnPointerDown = false;
     this.div.moved              = false;
-    
+
     this.enterTimer             = null;
 
 
@@ -30,31 +30,31 @@ Operator.prototype.createNode = function()
     {
         this.div.over      = true;
         graphView.overNode = this;
-        
+
         if (   graphView.soloMode
             && graphView._soloNode != this
-            && this.type != PANEL) 
+            && this.type != PANEL)
         {
             graphView.soloNode(this);
             //this.updateNode();
         }
     });
 
-    
+
 
     this.div.addEventListener('pointerleave', e =>
     {
         this.div.over      = false;
         graphView.overNode = null;
-        
+
         // if (graphView._soloNode == this)
         //     graphView.unsoloNode();
 
         // this.updateNode();
     });
 
-    
-    
+
+
     this.paramHolder = createDiv('nodeParamBack');
 
 
@@ -76,21 +76,21 @@ Operator.prototype.createNode = function()
 
     this.div.appendChild(this.proCover);
     this.div.appendChild(this.proLabel);
-};     
+};
 
 
 
 Operator.prototype.createHeader = function()
 {
     this.header = createDiv('nodeHeader');
-    
+
     this.header.connectionPadding = 8;
 
 
     this.createLabel();
     this.initLabelTextbox();
 
-    
+
     this. inputControls = createDiv('inputControls' );
     this.outputControls = createDiv('outputControls');
     this.reorderArrows  = createDiv('reorderArrows' );
@@ -99,7 +99,7 @@ Operator.prototype.createHeader = function()
     this.header.appendChild(this.outputControls);
     this.header.appendChild(this.reorderArrows );
 
-    
+
     this.inner.appendChild(this.header);
 
 
@@ -121,7 +121,7 @@ Operator.prototype.createHeader = function()
 
 
         graphView.lastSelectedNodes = [...graphView.selectedNodes];
-        
+
         graphView.putNodeOnTop(this);
 
 
@@ -142,7 +142,7 @@ Operator.prototype.createHeader = function()
         if (   e.button == 0
             || e.button == 2)
         {
-            this.div.shiftOnPointerDown = 
+            this.div.shiftOnPointerDown =
                     e.shiftKey
                 && !getCtrlKey(e)
                 && !e.altKey;
@@ -156,7 +156,7 @@ Operator.prototype.createHeader = function()
             e.stopPropagation();
 
             graphView.selectFromClick(this, getCtrlKey(e), e.shiftKey, e.altKey);
-                        
+
 
             try
             {
@@ -188,7 +188,7 @@ Operator.prototype.createHeader = function()
             menuNode.showAt(e.clientX, e.clientY, false);
         }
 
-        
+
         updateGraphNodes();
     });
 
@@ -221,7 +221,7 @@ Operator.prototype.createHeader = function()
 
             if (altPressedInMenu)
                 nodesAltCopied = true;
-                
+
             if (   !nodesAltCopied
                 &&  e.altKey
                 && !e.shiftKey)
@@ -232,10 +232,15 @@ Operator.prototype.createHeader = function()
                 graphView.selectedNodes,
                 (e.clientX - this.sx) / graph.currentPage.zoom,
                 (e.clientY - this.sy) / graph.currentPage.zoom);
-            
-            this.div.moved = true;
 
             graphView.updateScroll(x, w, h, bounds, yOffset);
+
+            
+            const dOffset = getScrollOffset(e.clientX, e.clientY);
+            setAutoScrollTimer(dOffset, e.clientX, e.clientY);
+
+
+            this.div.moved = true;
         }
         else if (   tempConn
                  && rightOfInputs
@@ -253,7 +258,7 @@ Operator.prototype.createHeader = function()
 
 
                     const index = Math.min(Math.max(0, Math.round(
-                          ((e.clientY - rect.y) / graph.currentPage.zoom - padding - (connectionSize + connectionGap)/2) 
+                          ((e.clientY - rect.y) / graph.currentPage.zoom - padding - (connectionSize + connectionGap)/2)
                         / (connectionSize + connectionGap))),
                         this.headerInputs.length-(this.headerInputs.length > 1 ? 2 : 1));
 
@@ -262,22 +267,22 @@ Operator.prototype.createHeader = function()
                         newReorderIndex = index;
 
                         moveInArray(
-                            this.inputs, 
+                            this.inputs,
                             this.inputs.indexOf(savedConn.input),
                             newReorderIndex);
 
                         this.updateNode();
-                         
+
                         prevReorderIndex = newReorderIndex;
                     }
 
-                    
+
                     graphView.overInput   = savedConn.input;
                     graphView.headerInput = savedConn.input;
 
                     graphView.overInput.updateControl();
 
-                    
+
                     const inputRect = boundingRect(savedConn.input.div);
 
                     tempConn.wire.inputPos = point(
@@ -291,12 +296,12 @@ Operator.prototype.createHeader = function()
 
                     graphView.overInput   = input;
                     graphView.headerInput = input;
-                        
+
                     input.mouseOver = true;
                     input.updateControl();
 
                     const inputRect = boundingRect(input.div);
-                    
+
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
                         inputRect.y + inputRect.h/2 - getTopHeight());
@@ -310,7 +315,7 @@ Operator.prototype.createHeader = function()
 
                 graphView.overOutput   = output;
                 graphView.headerOutput = output;
-                    
+
                 output.mouseOver = true;
                 output.updateControl();
 
@@ -321,7 +326,7 @@ Operator.prototype.createHeader = function()
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - getTopHeight());
 
-        
+
                 tempConn.input.updateControl();
             }
         }
@@ -341,8 +346,8 @@ Operator.prototype.createHeader = function()
             if (this.div.moved)
             {
                 actionManager.do(new SelectMoveNodesAction(
-                    graphView.lastSelectedNodes.map(n => n.id), 
-                    graphView.selectedNodes.map(n => n.id), 
+                    graphView.lastSelectedNodes.map(n => n.id),
+                    graphView.selectedNodes.map(n => n.id),
                     point(this.slx, this.sly),
                     point(this.div.offsetLeft, this.div.offsetTop),
                     this.div.shiftOnPointerDown));
@@ -350,7 +355,7 @@ Operator.prototype.createHeader = function()
             else if (!arraysAreEqual(graphView.selectedNodes, graphView.lastSelectedNodes))
             {
                 actionManager.do(new SelectNodesAction(
-                    graphView.selectedNodes    .map(n => n.id), 
+                    graphView.selectedNodes    .map(n => n.id),
                     graphView.lastSelectedNodes.map(n => n.id)));
             }
 
@@ -389,26 +394,26 @@ Operator.prototype.createHeader = function()
 
         this.div.shiftOnPointerDown = false;
     });
-    
-    
 
-    this.header.addEventListener('pointerleave', e => 
-    { 
+
+
+    this.header.addEventListener('pointerleave', e =>
+    {
         if (graphView.tempConn)
         {
             if (   graphView.tempConn.output
                 && graphView.tempConn.output.node != this)
             {
                 const input = graphView.headerInput;
-                
+
                 graphView.overInput = null;
-                
+
                 if (input) // will be null if data types don't match or there's no auto input for someo other reason
                 {
                     input.mouseOver = false;
                     input.updateControl();
                 }
-                
+
                 graphView.tempConn.wire.inputPos = point_NaN;
                 graphView.tempConn.output.updateControl();
             }
@@ -416,7 +421,7 @@ Operator.prototype.createHeader = function()
                   && graphView.tempConn.input.node !=  this)
             {
                 const output = graphView.headerOutput;
-                
+
                 graphView.overOutput = null;
 
                 if (output) // will be null if data types don't match or there's no auto output for someo other reason
@@ -452,14 +457,14 @@ Operator.prototype.createHeader = function()
             || !this.canRename)
             return;
 
-            
+
         if (getCtrlKey(e))
             this.showLabelTextbox();
 
         else
         {
             actionManager.do(new MakeActiveNodesAction([this.id], e.shiftKey));
-            
+
             if (this.deselectTimer > -1)
             {
                 clearTimeout(this.deselectTimer);
@@ -476,7 +481,7 @@ Operator.prototype.createHeader = function()
             e.stopPropagation();
 
         this.labelText.clickTimer = setTimeout(
-            () => this.labelText.clickTimer = -1, 
+            () => this.labelText.clickTimer = -1,
             300);
     });
 
@@ -570,10 +575,10 @@ function altCopyNodes(_this, e)
 
     actionManager.do(
         new PasteNodesAction(
-            uiCopyNodes(graphView.selectedNodes.map(n => n.id), false), 
-            getCtrlKey(e), 
-            true), 
-        false, 
+            uiCopyNodes(graphView.selectedNodes.map(n => n.id), false),
+            getCtrlKey(e),
+            true),
+        false,
         true);
 
     consoleAssert(

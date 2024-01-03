@@ -6,6 +6,10 @@
 // document.resizingR  = false;
 // document.resizingB  = false;
 
+
+window.width;
+window.height;
+
 document.startRect  = new Rect();
 
 
@@ -101,10 +105,12 @@ function updateObjectCountDisplay()
 
 
 
-function uiReturnFigResizeWindow()
+function uiReturnFigResizeWindow(width, height)
 {
     if (settings.debugMode)
         return;
+
+    documentBodyClient = clientRect(document.body);
 
     graphView.update();
     updateWhatsNewScrollbar(0);

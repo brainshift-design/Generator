@@ -4,9 +4,6 @@ GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
         nodes = graph.pageNodes;
         
     
-    documentBodyClient = clientRect(document.body);
-
-
     this.updateNodeTransforms(nodes);//, false);
     this.updateNodeTransforms(nodes); // this has to be done twice //because getAllNodeBounds() forces a reflow
 

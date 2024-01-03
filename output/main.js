@@ -1444,7 +1444,9 @@ function figStartGenerator() {
                 fonts: fonts,
                 eula: eula,
                 tutorials: tutorials,
-                isLocked: isLocked
+                isLocked: isLocked,
+                windowWidth: wndWidth,
+                windowHeight: wndHeight
             });
         });
     })();
@@ -2331,7 +2333,11 @@ function figResizeWindow(width, height) {
             //     figma.clientStorage.setAsync('windowX', x);
             //     figma.clientStorage.setAsync('windowY', y);
             // }
-            figPostMessageToUi({ cmd: 'uiReturnFigResizeWindow' });
+            figPostMessageToUi({
+                cmd: 'uiReturnFigResizeWindow',
+                width: width,
+                height: height
+            });
         });
     })();
 }

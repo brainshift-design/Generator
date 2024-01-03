@@ -1,3 +1,7 @@
+var autoScrollTimer  = null;
+var dragScrollOffset = point(0, 0);
+
+
 GraphView.prototype.createEvents = function()
 {
     this.div.addEventListener('pointerenter', e => 
@@ -226,6 +230,13 @@ GraphView.prototype.createEvents = function()
             this.btn1down = false;
             this.endPan(e.pointerId, true);
         }
+
+
+        if (autoScrollTimer)
+        {
+            clearTimeout(autoScrollTimer);
+            autoScrollTimer = null;
+        }
     });
 
 
@@ -437,6 +448,15 @@ function graphView_onpointermove(e)
     graphView.p = point(e.clientX, e.clientY);
 
 
+    if (   graphView.selecting
+        || graphView.zoomSelecting
+        || graphView.tempConn)
+    {
+        const dOffset = getScrollOffset(e.clientX, e.clientY);
+        setAutoScrollTimer(dOffset, e);
+    }
+
+
     if (   (   graphView.panning
             || panMode)
         && graphView.div.hasPointerCapture(e.pointerId))
@@ -458,4 +478,68 @@ function graphView_onpointermove(e)
 
     else if (graphView.tempConn)
         graphView.tempConn.wire.update(e.clientX, e.clientY);
+}
+
+
+
+function getScrollOffset(px, py)
+{
+    const scrollBorder = 40;
+    const scrollOffset = 10;
+
+    const dOffset = point(0, 0);
+
+    if (px > documentBodyClient.width  - scrollBorder) dOffset.x = -scrollOffset;
+    if (px <                             scrollBorder) dOffset.x =  scrollOffset;
+    if (py > documentBodyClient.height - scrollBorder) dOffset.y = -scrollOffset;
+    if (py < getTopHeight()            + scrollBorder) dOffset.y =  scrollOffset;
+
+    return dOffset;
+}
+
+
+
+function setAutoScrollTimer(dScroll, e)
+{
+    const px = graphView.p.x;
+    const py = graphView.p.y;
+ 
+
+    const dragging = graphView.selectedNodes.filter(n => n.div.dragging);
+
+    dragging.forEach(n => 
+    {
+        n.sx += dScroll.x;
+        n.sy += dScroll.y;
+    });
+
+
+
+    graph.currentPage.pan = point(
+        graph.currentPage.pan.x + dScroll.x, 
+        graph.currentPage.pan.y + dScroll.y);
+
+        
+    if (graphView.selecting)
+    {
+        graphView.selectionRect.x += dScroll.x;
+        graphView.selectionRect.y += dScroll.y;
+
+        setTimeout(() => graphView.updateSelectBox(e.shiftKey, getCtrlKey(e)));
+    }
+    else if (graphView.tempConn)
+        graphView.tempConn.wire.update(px, py);
+    
+    //if (dragging.length > 0)
+                
+       
+    if (autoScrollTimer)
+    {
+        clearTimeout(autoScrollTimer);
+        autoScrollTimer = null;
+    }
+
+    if (   dScroll.x != 0
+        || dScroll.y != 0)
+        autoScrollTimer = setTimeout(() => setAutoScrollTimer(dScroll, e), 50);
 }

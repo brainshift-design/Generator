@@ -2231,7 +2231,8 @@ function figStartGenerator()
         const isLocked  = figPageIsLocked();
 
         
-        figPostMessageToUi({
+        figPostMessageToUi(
+        {
             cmd:         'uiReturnFigStartGenerator',
             currentUser:  figma.currentUser,
             viewportRect: figma.viewport.bounds,
@@ -2239,7 +2240,10 @@ function figStartGenerator()
             fonts:        fonts,
             eula:         eula,
             tutorials:    tutorials,
-            isLocked:     isLocked });
+            isLocked:     isLocked,
+            windowWidth:  wndWidth,
+            windowHeight: wndHeight
+        });
     })();
 }
 
@@ -3508,7 +3512,12 @@ function figResizeWindow(width, height)
         // }
 
 
-        figPostMessageToUi({cmd: 'uiReturnFigResizeWindow'});
+        figPostMessageToUi(
+        {
+            cmd:   'uiReturnFigResizeWindow',
+            width:  width,
+            height: height
+        });
     })();
 }
 

@@ -298,7 +298,7 @@ class GraphView
 
     autoPlaceNewNode(output, input)
     {
-        const defaultPlacementGap = 100;
+        const defaultPlacementGap = 70;
 
         input.node.div.style.left = output.node.div.offsetLeft + output.node.div.offsetWidth + defaultPlacementGap;
         input.node.div.style.top  = output.node.div.offsetTop;
@@ -308,7 +308,7 @@ class GraphView
 
     autoPlaceNewVariableNode(outputs, node)
     {
-        const defaultPlacementGap = 100;
+        const defaultPlacementGap = 70;
 
         let left = Number.NaN;
         let top  = Number.NaN;
