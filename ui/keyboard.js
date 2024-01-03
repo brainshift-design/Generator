@@ -98,6 +98,24 @@ document.addEventListener('keydown', e =>
         console.clear();
     }    
 
+    // randomize seeds
+    else if (e.code == 'KeyR'
+          && e.shiftKey
+          && !e.altKey
+          && !getCtrlKey(e))
+    {
+        graphView.randomizeSelectedSeeds();
+    }    
+
+    // connect seeds
+    else if (e.code == 'KeyC'
+          && e.shiftKey
+          && !e.altKey
+          && !getCtrlKey(e))
+    {
+        graphView.connectSelectedSeeds();
+    }    
+
     // paste
     else if (e.code == 'KeyV'
           && getCtrlKey(e)

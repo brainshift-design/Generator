@@ -943,12 +943,12 @@ function initGeneratorMenus()
         // menuItemNodeSaveAsTemplate = new MenuItem('Save as template', null, {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
         //                              new MenuItem('',                 null, {separator: true}),
         menuItemNodeSep5           = new MenuItem('',                 null, {separator: true}),
-        menuItemNodeRandomizeSeeds = new MenuItem('Randomize seeds',  null, {icon: iconProbability, callback: e => { hideAllMenus(); graphView.randomizeSelectedSeeds(); }}),
-        menuItemNodeConnectSeeds   = new MenuItem('Connect seeds',    null, {callback: e => { hideAllMenus(); graphView.connectSelectedSeeds(); }}),
+        menuItemNodeRandomizeSeeds = new MenuItem('Randomize seeds',  null, {shortcut:  osShift() + 'R', icon: iconProbability, callback: e => { hideAllMenus(); graphView.randomizeSelectedSeeds(); }}),
+        menuItemNodeConnectSeeds   = new MenuItem('Connect seeds',    null, {shortcut:  osShift() + 'C', callback: e => { hideAllMenus(); graphView.connectSelectedSeeds(); }}),
         menuItemNodeSep4           = new MenuItem('',                 null, {separator: true}),
         menuItemNodeRemove         = new MenuItem('Remove',           null, {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }}),
                                      new MenuItem('',                 null, {separator: true}),
-                                     new MenuItem('Create node. . .',   null, {childMenu: wholeMenu})]);
+                                     new MenuItem('Create node. . .', null, {childMenu: wholeMenu})]);
 
 
 
@@ -974,7 +974,7 @@ function initGeneratorMenus()
         // menuNode.items.forEach(i => i.showIcon = true);
 
         
-        menuItemNodeRandomizeSeeds.setName('Randomize seed' + (selectedRandom.length == 1 ? '' : 's') + ' . . .');
+        menuItemNodeRandomizeSeeds.setName('Randomize seed' + (selectedRandom.length == 1 ? '' : 's'));
         menuItemNodeConnectSeeds  .setName('Connect seed'   + (selectedRandom.length == 1 ? '' : 's'));
 
 

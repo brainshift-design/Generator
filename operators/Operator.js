@@ -969,9 +969,9 @@ class Operator
 
     isUnknown()
     {
-        return this.isOrPrecededByUncached()
+        return    this.isOrPrecededByUncached()
                //   this.hasUncachedInputs()
-               //&& this.hasMultipliedOutputs()
+               && this.hasMultipliedOutputs()
             || this.hasOrderOutputs();
     }
 
