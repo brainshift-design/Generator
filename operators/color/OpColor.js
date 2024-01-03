@@ -53,6 +53,7 @@ extends OpColorBase
 
 
         this.paramSpace.alwaysSaveValue = true;
+
         this.param1    .alwaysSaveValue = true;
         this.param2    .alwaysSaveValue = true;
         this.param3    .alwaysSaveValue = true;
@@ -368,6 +369,11 @@ extends OpColorBase
             this._color    = dataColor_NaN;
             this.prevSpace = NAN_DISPLAY;
         }
+
+
+        this.param1.isNodeValue = this.headerInputs[0].connected;
+        this.param2.isNodeValue = this.headerInputs[0].connected;
+        this.param3.isNodeValue = this.headerInputs[0].connected;
     }
 
 
