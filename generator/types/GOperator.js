@@ -44,15 +44,15 @@ extends GNode
     {
         super.copyBase(base);
         
-        this.nodeId       = base.nodeId;
-        this.nodeName     = base.nodeName;
+        this.nodeId   = base.nodeId;
+        this.nodeName = base.nodeName;
 
         this.copyCustomParams(base);
 
-        this.options      = clone(base.options);
+        this.options  = clone(base.options);
 
-        this.valid        = base.valid;
-        this.topLevel     = base.topLevel;
+        this.valid    = base.valid;
+        this.topLevel = base.topLevel;
 
         if (base.value) 
             this.value = base.value.copy();

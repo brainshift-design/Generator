@@ -360,18 +360,15 @@ GraphView.prototype.randomizeSelectedSeeds = function()
            n.type == NUMBER_RANDOM
         || n.type == NUMBER_NOISE
         || n.type == NUMBER_PROBABILITY);
+        
+    const paramSeeds = randoms.map(n => n.paramFromId('seed'));
 
-    for (let i = 0; i < randoms.length; i++)
-    {
-        const node      = randoms[i];
-        const paramSeed = node.paramFromId('seed');
+    const values = Array.from(
+        {length: randoms.length},
+        (_, index) => new NumberValue(Math.floor(Math.random() * 10000)));
 
-        actionManager.do(new SetParamValueAction(
-            paramSeed, 
-            new NumberValue(Math.floor(Math.random() * 10000)),
-            true),
-            i > 0);
-    }
+    
+    actionManager.do(new SetMultipleValuesAction(paramSeeds, values, true));
 };
 
 

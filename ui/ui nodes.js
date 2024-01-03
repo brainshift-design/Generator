@@ -1248,7 +1248,7 @@ function layoutSelectedNodes()
 
     let   totalWidth = 0;
     const maxWidth   = [];
-    const gap        = 50;
+    const gap        = 100;
 
 
     for (let i = 0; i <= maxIndex; i++)
@@ -1267,6 +1267,7 @@ function layoutSelectedNodes()
 
 
     let x = bounds.x + bounds.width/2 - totalWidth/2;
+
 
     // let first = false;
     

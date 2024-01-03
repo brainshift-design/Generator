@@ -5,10 +5,10 @@
             <div class="keyboardPanelTab" onclick="setCurrentKeyboardTab(0);">Menu</div>
             <div class="keyboardPanelTab" onclick="setCurrentKeyboardTab(1);">View</div>
             <div class="keyboardPanelTab" onclick="setCurrentKeyboardTab(2);">Zoom</div>
-            <div class="keyboardPanelTab" onclick="setCurrentKeyboardTab(3);">Selection</div>
+            <div class="keyboardPanelTab" onclick="setCurrentKeyboardTab(3);">Nodes</div>
             <div class="keyboardPanelTab" onclick="setCurrentKeyboardTab(4);">Edit</div>
-            <div class="keyboardPanelTab" onclick="setCurrentKeyboardTab(5);">Nodes</div>
-            <div class="keyboardPanelTab" onclick="setCurrentKeyboardTab(6);">Controls</div>
+            <div class="keyboardPanelTab" onclick="setCurrentKeyboardTab(5);">Selection</div>
+            <div class="keyboardPanelTab" onclick="setCurrentKeyboardTab(6);">Connections</div>
         </div>
         <div id="keyboardPanelClose" onclick="hideKeyboardPanel();"></div>
     </div>
@@ -60,49 +60,14 @@
         </div>
 
 
-        <div class="keyboardPage" id="keyboardPageSelection">
-
-            <!-- <div class="keyboardGroup">
-                <div class="keyboardLabel">While selecting...</div>
-                <div class="keyboardShortcut"><div class="shortcutAction">Zoom to selection</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Ctrl</div></div></div></div>
-                <div class="keyboardShortcut"><div class="shortcutAction">Zoom out from selection</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Ctrl</div><div class="shortcutKey">Alt</div></div></div></div>
-            </div> -->
-
-            <div class="keyboardGroup">
-                <div class="keyboardShortcut"><div class="shortcutAction">Select all</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Ctrl</div><div class="shortcutKey shortcutChar">A</div></div></div></div>
-                <div class="keyboardShortcut"><div class="shortcutAction">Select inverse</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey ctrlShift">Ctrl</div><div class="shortcutKey ctrlShift">Shift</div><div class="shortcutKey shortcutChar">A</div></div></div></div>
-                <div class="keyboardShortcut"><div class="shortcutAction">Select none</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Esc</div></div></div></div>
-            </div>
-
-            <div class="keyboardGroup nextGroup">
-                <div class="keyboardShortcut"><div class="shortcutAction">Save selected to file...</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey ctrlShift">Ctrl</div><div class="shortcutKey ctrlShift">Shift</div><div class="shortcutKey shortcutChar">S</div></div></div></div>
-            </div>
-
-        </div>
-
-
-        <div class="keyboardPage" id="keyboardPageEdit">
+        <div class="keyboardPage" id="keyboardPageNodes">
+            
             <div class="keyboardGroup">
                 <div class="keyboardShortcut"><div class="shortcutAction">Create node</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Menu</div></div></div></div>
                 <div class="keyboardShortcut"><div class="shortcutAction">Create & connect to selected</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Ctrl</div><div class="shortcutKey">menu</div></div></div></div>
                 <div class="keyboardShortcut"><div class="shortcutAction">Insert node into branch</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Ctrl</div><div class="shortcutKey">menu</div></div></div></div>
                 <div class="keyboardShortcut"><div class="shortcutAction">Connect node in new branch</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey newBranch1">Ctrl</div><div class="shortcutKey newBranch2">Alt</div><div class="shortcutKey">menu</div></div></div></div>
                 <div class="keyboardShortcut"><div class="shortcutAction">Create random color</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Alt</div><div class="shortcutKey">Color menu</div></div></div></div>
-            </div>
-            <div class="keyboardGroup nextGroup">
-                <div class="keyboardShortcut"><div class="shortcutAction">Randomize node seeds</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Shift</div><div class="shortcutKey">R</div></div></div></div>
-                <div class="keyboardShortcut"><div class="shortcutAction">Connect list to random seeds</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Shift</div><div class="shortcutKey">C</div></div></div></div>
-            </div>
-        </div>
-        
-        
-        <div class="keyboardPage" id="keyboardPageNodes">
-
-            <div class="keyboardGroup">
-                <div class="keyboardLabel">While connecting from an output...</div>
-                <div class="keyboardShortcut"><div class="shortcutAction">Copy input value back to output</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Ctrl</div></div></div></div>
-                <div class="keyboardLabel">While adjusting (some) values...</div>
-                <div class="keyboardShortcut"><div class="shortcutAction">Allow values outside the visible limits</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Shift</div></div></div></div>
             </div>
 
             <div class="keyboardGroup nextGroup">
@@ -128,9 +93,45 @@
                 <!-- <div id="shortcutCopyAsJavascript" class="keyboardShortcut"><div class="shortcutAction">Copy as Javascript</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey ctrlShift">Ctrl</div><div class="shortcutKey ctrlShift">Shift</div><div class="shortcutKey shortcutChar">C</div></div></div></div> -->
                 <div class="keyboardShortcut"><div class="shortcutAction">Duplicate</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Ctrl</div><div class="shortcutKey shortcutChar">D</div></div></div></div>
                 <div class="keyboardShortcut"><div class="shortcutAction">Duplicate with input connections</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey ctrlShift">Ctrl</div><div class="shortcutKey ctrlShift">Shift</div><div class="shortcutKey shortcutChar">D</div></div></div></div>
+                <div class="keyboardShortcut"><div class="shortcutAction">Randomize node seeds</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Shift</div><div class="shortcutKey">R</div></div></div></div>
+                <div class="keyboardShortcut"><div class="shortcutAction">Connect list to random seeds</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Shift</div><div class="shortcutKey">C</div></div></div></div>
             </div>
         </div>
-    
+
+
+        <div class="keyboardPage" id="keyboardPageSelection">
+
+            <!-- <div class="keyboardGroup">
+                <div class="keyboardLabel">While selecting...</div>
+                <div class="keyboardShortcut"><div class="shortcutAction">Zoom to selection</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Ctrl</div></div></div></div>
+                <div class="keyboardShortcut"><div class="shortcutAction">Zoom out from selection</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Ctrl</div><div class="shortcutKey">Alt</div></div></div></div>
+            </div> -->
+
+            <div class="keyboardGroup">
+                <div class="keyboardShortcut"><div class="shortcutAction">Select all</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Ctrl</div><div class="shortcutKey shortcutChar">A</div></div></div></div>
+                <div class="keyboardShortcut"><div class="shortcutAction">Select inverse</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey ctrlShift">Ctrl</div><div class="shortcutKey ctrlShift">Shift</div><div class="shortcutKey shortcutChar">A</div></div></div></div>
+                <div class="keyboardShortcut"><div class="shortcutAction">Select none</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Esc</div></div></div></div>
+            </div>
+
+            <div class="keyboardGroup nextGroup">
+                <div class="keyboardShortcut"><div class="shortcutAction">Save to file...</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey ctrlShift">Ctrl</div><div class="shortcutKey shortcutChar">S</div></div></div></div>
+                <div class="keyboardShortcut"><div class="shortcutAction">Save selected to file...</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey ctrlShift">Ctrl</div><div class="shortcutKey ctrlShift">Shift</div><div class="shortcutKey shortcutChar">S</div></div></div></div>
+            </div>
+
+        </div>
+
+
+        <div class="keyboardPage" id="keyboardPageConnections">
+
+            <div class="keyboardGroup">
+                <div class="keyboardLabel">While connecting from an output...</div>
+                <div class="keyboardShortcut"><div class="shortcutAction">Copy input value back to output</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Ctrl</div></div></div></div>
+                <div class="keyboardLabel">While adjusting (some) values...</div>
+                <div class="keyboardShortcut"><div class="shortcutAction">Allow values outside the visible limits</div><div class="shortcutKeys"><div class="shortcutKeys"><div class="shortcutKey">Shift</div></div></div></div>
+            </div>
+
+        </div>
+        
     
     </div>
 

@@ -73,10 +73,16 @@ function genRequest(request, save)
 
     (async () =>
     {
+        let stop = false;
+
+        
         for (const node of paramNodes)
         { 
             if (await checkStop(parse.requestId))
+            {
+                stop = true;
                 break;
+            }
 
             await node.eval(parse);
         } 
@@ -85,13 +91,16 @@ function genRequest(request, save)
         for (const node of topLevelNodes)
         { 
             if (await checkStop(parse.requestId))
+            {
+                stop = true;
                 break;
+            }
 
             await node.eval(parse);
         }
 
 
-        if (    await checkStop(parse.requestId)
+        if (    stop
             && !settings.loadingNodes)
             return;
 

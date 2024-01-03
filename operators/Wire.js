@@ -637,7 +637,9 @@ class Wire
                 ||   !conn.output.param
                    && conn.output.node.isOrPrecededByUncached()
                 ||    conn.output.node.type == LIST
-                   && conn.output.node.isOrPrecededByUncached());
+                   && conn.output.node.isOrPrecededByUncached())
+            && (  conn.input
+                && conn.input.node.isOrFollowedByMultiplier());
                 
                 
         this.curve .style.stroke = wireStyle;

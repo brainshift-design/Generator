@@ -5510,6 +5510,7 @@ const SELECT_ACTION              = 'SELECT';
 const SELECT_MOVE_ACTION         = 'SELECT_MOVE';
 const MOVE_NODES_ACTION          = 'MOVE_NODES';
 const SET_PARAM_VALUE_ACTION     = 'SET_PARAM_VALUE';
+const SET_MULTIPLE_VALUES_ACTION = 'SET_MULTIPLE_VALUES';
 const SET_PARAM_SETTING_ACTION   = 'SET_PARAM_SETTING';
 const SET_NODE_RECT_ACTION       = 'SET_NODE_RECT';
 const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
@@ -8872,15 +8873,15 @@ extends GNode
     {
         super.copyBase(base);
         
-        this.nodeId       = base.nodeId;
-        this.nodeName     = base.nodeName;
+        this.nodeId   = base.nodeId;
+        this.nodeName = base.nodeName;
 
         this.copyCustomParams(base);
 
-        this.options      = clone(base.options);
+        this.options  = clone(base.options);
 
-        this.valid        = base.valid;
-        this.topLevel     = base.topLevel;
+        this.valid    = base.valid;
+        this.topLevel = base.topLevel;
 
         if (base.value) 
             this.value = base.value.copy();
@@ -40834,10 +40835,16 @@ function genRequest(request, save)
 
     (async () =>
     {
+        let stop = false;
+
+        
         for (const node of paramNodes)
         { 
             if (await checkStop(parse.requestId))
+            {
+                stop = true;
                 break;
+            }
 
             await node.eval(parse);
         } 
@@ -40846,13 +40853,16 @@ function genRequest(request, save)
         for (const node of topLevelNodes)
         { 
             if (await checkStop(parse.requestId))
+            {
+                stop = true;
                 break;
+            }
 
             await node.eval(parse);
         }
 
 
-        if (    await checkStop(parse.requestId)
+        if (    stop
             && !settings.loadingNodes)
             return;
 
