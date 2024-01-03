@@ -663,7 +663,7 @@ class Wire
     
     
         if (conn.output) conn.output.wireBall.style.background = wireStyle;
-        if (conn. input) conn. input.wireBall.style.background = wireStyle;
+        if (conn.input ) conn.input .wireBall.style.background = wireStyle;
     
     
         const isList = this.connectionIsList();

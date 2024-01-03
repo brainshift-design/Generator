@@ -177,12 +177,7 @@ extends Parameter
         for (let i = 0; i < stops.length; i++)
         {
             const stop = stops[i];
-
-            gradient += 
-                ', '
-                + rgba2style(stop.fill.toRgba())
-                + ' '
-                + (stop.position.value) + '%';
+            gradient += ', ' + rgba2style(stop.fill.toRgba()) + ' ' + (stop.position.value) + '%';
         }
 
 

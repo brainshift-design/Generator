@@ -291,7 +291,6 @@ Operator.prototype.createHeader = function()
 
                     graphView.overInput   = input;
                     graphView.headerInput = input;
-                    //console.log('headerInput = ', graphView.headerInput);
                         
                     input.mouseOver = true;
                     input.updateControl();
@@ -311,7 +310,6 @@ Operator.prototype.createHeader = function()
 
                 graphView.overOutput   = output;
                 graphView.headerOutput = output;
-                //console.log('headerOutput = ', graphView.headerOutput);
                     
                 output.mouseOver = true;
                 output.updateControl();
@@ -323,7 +321,7 @@ Operator.prototype.createHeader = function()
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - getTopHeight());
 
-
+        
                 tempConn.input.updateControl();
             }
         }
