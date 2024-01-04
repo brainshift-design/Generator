@@ -40,6 +40,20 @@ extends GOperator1
 
 
 
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'color':   return this.input ? this.value.color   : this.color;
+            case 'opacity': return this.input ? this.value.opacity : this.opacity;
+            case 'blend':   return this.input ? this.value.blend   : this.blend;
+        }
+
+        return null;
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -78,9 +92,9 @@ extends GOperator1
         ]);
         
 
-        if (!this.color  ) this.color   = this.value.color  .copy();
-        if (!this.opacity) this.opacity = this.value.opacity.copy();
-        if (!this.blend  ) this.blend   = this.value.blend  .copy();
+        // if (!this.color  ) this.color   = this.value.color  .copy();
+        // if (!this.opacity) this.opacity = this.value.opacity.copy();
+        // if (!this.blend  ) this.blend   = this.value.blend  .copy();
 
 
         this.validate();

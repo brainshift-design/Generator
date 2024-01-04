@@ -73,7 +73,7 @@ extends Action
             this.zoomToFitNodes, 
             this.zoomToFitObjects);
 
-        
+
         pushUnique(this.newConnectionData, _conns);
 
 

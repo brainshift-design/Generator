@@ -31684,6 +31684,20 @@ extends GOperator1
 
 
 
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'color':   return this.input ? this.value.color   : this.color;
+            case 'opacity': return this.input ? this.value.opacity : this.opacity;
+            case 'blend':   return this.input ? this.value.blend   : this.blend;
+        }
+
+        return null;
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -31722,9 +31736,9 @@ extends GOperator1
         ]);
         
 
-        if (!this.color  ) this.color   = this.value.color  .copy();
-        if (!this.opacity) this.opacity = this.value.opacity.copy();
-        if (!this.blend  ) this.blend   = this.value.blend  .copy();
+        // if (!this.color  ) this.color   = this.value.color  .copy();
+        // if (!this.opacity) this.opacity = this.value.opacity.copy();
+        // if (!this.blend  ) this.blend   = this.value.blend  .copy();
 
 
         this.validate();
@@ -31824,6 +31838,19 @@ extends GOperator1
         if (this.position) copy.position = this.position.copy();
 
         return copy;
+    }
+
+
+
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'fill':      return this.input ? this.value.fill     : this.fill;
+            case 'position':  return this.input ? this.value.position : this.position;
+        }
+
+        return null;
     }
 
 
@@ -32004,6 +32031,26 @@ extends GOperator
 
 
 
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'gradType':  return this.input ? this.value.gradType : this.gradType;
+            case 'position':  return this.input ? this.value.position : this.position;
+            case 'x':         return this.input ? this.value.x        : this.x;
+            case 'y':         return this.input ? this.value.y        : this.y;
+            case 'size':      return this.input ? this.value.size     : this.size;
+            case 'angle':     return this.input ? this.value.angle    : this.angle;
+            case 'aspect':    return this.input ? this.value.aspect   : this.aspect;
+            case 'skew':      return this.input ? this.value.skew     : this.skew;
+            case 'blend':     return this.input ? this.value.blend    : this.blend;
+        }
+
+        return null;
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -32064,15 +32111,15 @@ extends GOperator
         ]);
         
 
-        if (!this.gradType) this.gradType = this.value.gradType.copy();
-        if (!this.position) this.position = this.value.position.copy();
-        if (!this.x       ) this.x        = this.value.x       .copy();
-        if (!this.y       ) this.y        = this.value.y       .copy();
-        if (!this.size    ) this.size     = this.value.size    .copy();
-        if (!this.angle   ) this.angle    = this.value.angle   .copy();
-        if (!this.aspect  ) this.aspect   = this.value.aspect  .copy();
-        if (!this.skew    ) this.skew     = this.value.skew    .copy();
-        if (!this.blend   ) this.blend    = this.value.blend   .copy();
+        // if (!this.gradType) this.gradType = this.value.gradType.copy();
+        // if (!this.position) this.position = this.value.position.copy();
+        // if (!this.x       ) this.x        = this.value.x       .copy();
+        // if (!this.y       ) this.y        = this.value.y       .copy();
+        // if (!this.size    ) this.size     = this.value.size    .copy();
+        // if (!this.angle   ) this.angle    = this.value.angle   .copy();
+        // if (!this.aspect  ) this.aspect   = this.value.aspect  .copy();
+        // if (!this.skew    ) this.skew     = this.value.skew    .copy();
+        // if (!this.blend   ) this.blend    = this.value.blend   .copy();
 
 
         this.validate();
@@ -32219,6 +32266,24 @@ extends GOperator1
 
 
 
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'fills ':  return this.input ? this.value.fills  : this.fills;
+            case 'weight':  return this.input ? this.value.weight : this.weight;
+            case 'fit':     return this.input ? this.value.fit    : this.fit;
+            case 'join':    return this.input ? this.value.join   : this.join;
+            case 'miter':   return this.input ? this.value.miter  : this.miter;
+            case 'cap':     return this.input ? this.value.cap    : this.cap;
+            case 'dashes':  return this.input ? this.value.dashes : this.dashes;
+        }
+
+        return null;
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -32266,13 +32331,13 @@ extends GOperator1
         }
 
 
-        if (!this.fills ) this.fills  = this.value.fills .copy();
-        if (!this.weight) this.weight = this.value.weight.copy();
-        if (!this.fit   ) this.fit    = this.value.fit   .copy();
-        if (!this.join  ) this.join   = this.value.join  .copy();
-        if (!this.miter ) this.miter  = this.value.miter .copy();
-        if (!this.cap   ) this.cap    = this.value.cap   .copy();
-        if (!this.dashes) this.dashes = this.value.dashes.copy();
+        // if (!this.fills ) this.fills  = this.value.fills .copy();
+        // if (!this.weight) this.weight = this.value.weight.copy();
+        // if (!this.fit   ) this.fit    = this.value.fit   .copy();
+        // if (!this.join  ) this.join   = this.value.join  .copy();
+        // if (!this.miter ) this.miter  = this.value.miter .copy();
+        // if (!this.cap   ) this.cap    = this.value.cap   .copy();
+        // if (!this.dashes) this.dashes = this.value.dashes.copy();
 
 
         // if (this.nodeId == 'stroke')

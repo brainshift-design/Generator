@@ -444,8 +444,8 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes, zoo
         {
             for (let i = 0; i < data.nodes.length; i++)
             {
-                data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset.x;
-                data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset.y;
+                data.nodes[i].x = (parseFloat(data.nodes[i].x) + pasteOffset.x).toString();
+                data.nodes[i].y = (parseFloat(data.nodes[i].y) + pasteOffset.y).toString();
             }
         }
 
@@ -514,12 +514,13 @@ function loadNodes(data, pasting)
 function loadNode(_node, pasting)
 {
     // replace legacy
-    if (_node.type == 'CDENSE') _node.type = LIST_AS_ITEM;
-    if (_node.type == 'SEL'   ) _node.type = SELECT_FROM_LIST;
-    if (_node.type == 'EXTRP' ) _node.type = GET_PARAM;
+         if (_node.type == 'CDENSE') _node.type = LIST_AS_ITEM;
+    else if (_node.type == 'SEL'   ) _node.type = SELECT_FROM_LIST;
+    else if (_node.type == 'EXTRP' ) _node.type = GET_PARAM;
 
 
     const node = createNode(_node.type);
+
     node.div.style.display = 'none';
 
 

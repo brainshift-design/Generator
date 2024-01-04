@@ -37,6 +37,19 @@ extends GOperator1
 
 
 
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'fill':      return this.input ? this.value.fill     : this.fill;
+            case 'position':  return this.input ? this.value.position : this.position;
+        }
+
+        return null;
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())

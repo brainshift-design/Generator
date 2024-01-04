@@ -55,6 +55,24 @@ extends GOperator1
 
 
 
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'fills ':  return this.input ? this.value.fills  : this.fills;
+            case 'weight':  return this.input ? this.value.weight : this.weight;
+            case 'fit':     return this.input ? this.value.fit    : this.fit;
+            case 'join':    return this.input ? this.value.join   : this.join;
+            case 'miter':   return this.input ? this.value.miter  : this.miter;
+            case 'cap':     return this.input ? this.value.cap    : this.cap;
+            case 'dashes':  return this.input ? this.value.dashes : this.dashes;
+        }
+
+        return null;
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -102,13 +120,13 @@ extends GOperator1
         }
 
 
-        if (!this.fills ) this.fills  = this.value.fills .copy();
-        if (!this.weight) this.weight = this.value.weight.copy();
-        if (!this.fit   ) this.fit    = this.value.fit   .copy();
-        if (!this.join  ) this.join   = this.value.join  .copy();
-        if (!this.miter ) this.miter  = this.value.miter .copy();
-        if (!this.cap   ) this.cap    = this.value.cap   .copy();
-        if (!this.dashes) this.dashes = this.value.dashes.copy();
+        // if (!this.fills ) this.fills  = this.value.fills .copy();
+        // if (!this.weight) this.weight = this.value.weight.copy();
+        // if (!this.fit   ) this.fit    = this.value.fit   .copy();
+        // if (!this.join  ) this.join   = this.value.join  .copy();
+        // if (!this.miter ) this.miter  = this.value.miter .copy();
+        // if (!this.cap   ) this.cap    = this.value.cap   .copy();
+        // if (!this.dashes) this.dashes = this.value.dashes.copy();
 
 
         // if (this.nodeId == 'stroke')

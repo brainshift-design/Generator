@@ -64,6 +64,26 @@ extends GOperator
 
 
 
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'gradType':  return this.input ? this.value.gradType : this.gradType;
+            case 'position':  return this.input ? this.value.position : this.position;
+            case 'x':         return this.input ? this.value.x        : this.x;
+            case 'y':         return this.input ? this.value.y        : this.y;
+            case 'size':      return this.input ? this.value.size     : this.size;
+            case 'angle':     return this.input ? this.value.angle    : this.angle;
+            case 'aspect':    return this.input ? this.value.aspect   : this.aspect;
+            case 'skew':      return this.input ? this.value.skew     : this.skew;
+            case 'blend':     return this.input ? this.value.blend    : this.blend;
+        }
+
+        return null;
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -124,15 +144,15 @@ extends GOperator
         ]);
         
 
-        if (!this.gradType) this.gradType = this.value.gradType.copy();
-        if (!this.position) this.position = this.value.position.copy();
-        if (!this.x       ) this.x        = this.value.x       .copy();
-        if (!this.y       ) this.y        = this.value.y       .copy();
-        if (!this.size    ) this.size     = this.value.size    .copy();
-        if (!this.angle   ) this.angle    = this.value.angle   .copy();
-        if (!this.aspect  ) this.aspect   = this.value.aspect  .copy();
-        if (!this.skew    ) this.skew     = this.value.skew    .copy();
-        if (!this.blend   ) this.blend    = this.value.blend   .copy();
+        // if (!this.gradType) this.gradType = this.value.gradType.copy();
+        // if (!this.position) this.position = this.value.position.copy();
+        // if (!this.x       ) this.x        = this.value.x       .copy();
+        // if (!this.y       ) this.y        = this.value.y       .copy();
+        // if (!this.size    ) this.size     = this.value.size    .copy();
+        // if (!this.angle   ) this.angle    = this.value.angle   .copy();
+        // if (!this.aspect  ) this.aspect   = this.value.aspect  .copy();
+        // if (!this.skew    ) this.skew     = this.value.skew    .copy();
+        // if (!this.blend   ) this.blend    = this.value.blend   .copy();
 
 
         this.validate();

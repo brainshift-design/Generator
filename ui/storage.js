@@ -552,7 +552,11 @@ function resolveNodes(_nodes, first, last, nodes, pasting)
         requestAnimationFrame(() => 
         {
             for (let i = first; i < last; i++)
-                nodes.push(loadNode(_nodes[i], pasting));
+            {
+                const node = loadNode(_nodes[i], pasting);
+                //console.log('node =', node);
+                nodes.push(node);
+            }
 
             resolve(nodes);
         }));
