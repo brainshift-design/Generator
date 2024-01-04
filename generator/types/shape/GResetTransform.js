@@ -57,8 +57,11 @@ extends GOperator1
         await this.evalObjects(parse, {showCenter: showCenter});
 
 
+        const type = this.outputType();
+
         this.setUpdateValues(parse,
         [
+            ['type',       type      ],
             ['showCenter', showCenter]
         ]);
 

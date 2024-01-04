@@ -328,7 +328,7 @@ function finalTypeFromTypes(types)
 
     for (const type of types)
     {
-        if (_type == NULL)
+        if (_type == ANY_VALUE)
             _type = type;
 
         else if (    SHAPE_VALUES.includes(_type) 

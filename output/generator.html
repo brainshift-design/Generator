@@ -8954,7 +8954,6 @@ extends GNode
 
     outputType()
     {
-        
         return this.value
             ? new TextValue(
                 isListType(this.value.type)
@@ -10115,7 +10114,7 @@ function finalTypeFromTypes(types)
 
     for (const type of types)
     {
-        if (_type == NULL)
+        if (_type == ANY_VALUE)
             _type = type;
 
         else if (    SHAPE_VALUES.includes(_type) 
@@ -16203,10 +16202,12 @@ extends GOperator1
         }
 
 
+        const type = this.outputListType();
+        
         this.setUpdateValues(parse,
         [
-            ['type',  this.outputListType()],
-            ['count', count                ]
+            ['type',  type ],
+            ['count', count]
         ]);
 
 
@@ -39261,8 +39262,11 @@ extends GOperator1
         await this.evalObjects(parse, {showCenter: showCenter});
 
 
+        const type = this.outputType();
+
         this.setUpdateValues(parse,
         [
+            ['type',       type      ],
             ['showCenter', showCenter]
         ]);
 

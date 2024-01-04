@@ -183,6 +183,7 @@ class Wire
         {
             const ro = boundingRect(this.connection.output.div);
             pOut = point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset);
+            console.log('this.connection.output =', this.connection.output);
         }
         else
             pOut = point(x, y - yOffset);

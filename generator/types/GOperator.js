@@ -125,7 +125,6 @@ extends GNode
 
     outputType()
     {
-        
         return this.value
             ? new TextValue(
                 isListType(this.value.type)

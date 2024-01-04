@@ -224,10 +224,12 @@ extends GOperator1
         }
 
 
+        const type = this.outputListType();
+        
         this.setUpdateValues(parse,
         [
-            ['type',  this.outputListType()],
-            ['count', count                ]
+            ['type',  type ],
+            ['count', count]
         ]);
 
 
