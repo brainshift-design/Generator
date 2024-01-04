@@ -38,6 +38,19 @@ extends GOperator1
 
 
 
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'x': return this.input ? this.value.x : this.x;
+            case 'y': return this.input ? this.value.y : this.y;
+        }
+
+        return null;
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -56,7 +69,7 @@ extends GOperator1
             if (input.type == VECTOR_VERTEX_VALUE)
                 input = new PointValue(input.nodeId, input.x, input.y);
 
-            this.value        = input.toValue();
+            this.value        = input;
             this.value.nodeId = this.nodeId;
             this.value.copyCustomParams(_input);
 
@@ -82,8 +95,8 @@ extends GOperator1
         ]);
 
 
-        if (!this.x) this.x = this.value.x.copy();
-        if (!this.y) this.y = this.value.y.copy();
+        // if (!this.x) this.x = this.value.x.copy();
+        // if (!this.y) this.y = this.value.y.copy();
 
 
         this.validate();

@@ -32,29 +32,21 @@ extends GOperator3
             return this;
 
 
-        if (   this.input0
-            && this.input1
-            && this.input2)
+        const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
+        const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+        const input2 = this.input2 ? (await this.input2.eval(parse)).toValue() : null;
+
+
+        if (   input0 && input0.isValid()
+            && input1 && input1.isValid()
+            && input2 && input2.isValid())
         {
-            const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
-            const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
-            const input2 = this.input2 ? (await this.input2.eval(parse)).toValue() : null;
+            const pc = circleCenter(
+                input0.toPoint(),
+                input1.toPoint(),
+                input2.toPoint());
 
-            if (   input0
-                && input1
-                && input2)
-            {
-                const pc = circleCenter(
-                    input0.toPoint(),
-                    input1.toPoint(),
-                    input2.toPoint());
-
-                this.value = PointValue.fromPoint(this.nodeId, pc);
-            }
-            else
-            {
-                this.value = PointValue.NaN.copy();
-            }
+            this.value = PointValue.fromPoint(this.nodeId, pc);
         }
         else
         {

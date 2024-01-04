@@ -79,7 +79,7 @@ extends GShapeBase
                 ], 
                 true);
 
-
+                
                 if (!this.props) this.props = this.value.props.copy();
             }
         }

@@ -37,6 +37,19 @@ extends GOperator2
 
 
 
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'startTangent': return this.input ? this.value.startTangent : this.startTangent;
+            case 'endTangent':   return this.input ? this.value.endTangent   : this.endTangent;
+        }
+
+        return null;
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())

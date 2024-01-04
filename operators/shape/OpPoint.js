@@ -145,10 +145,12 @@ extends OpShapeBase
 
     updateParams()
     {
-        this.paramX.enableControlText(false, this.paramX.isUnknown() || this.isUnknown());
-        this.paramY.enableControlText(false, this.paramY.isUnknown() || this.isUnknown());
+        const isNodeValue = this.headerInputs[0].connected;
 
-        this.params.forEach(p => p.isNodeValue = this.headerInputs[0].connected);
+        this.paramX.enableControlText(!isNodeValue, this.paramX.isUnknown() || this.isUnknown());
+        this.paramY.enableControlText(!isNodeValue, this.paramY.isUnknown() || this.isUnknown());
+
+        this.params.forEach(p => p.isNodeValue = isNodeValue);
 
         this.updateParamControls();
     }

@@ -969,6 +969,13 @@ class Operator
 
     isUnknown()
     {
+        // if (this.nodeId == 'circleCenter')
+        // {
+        //     console.log('this.isOrPrecededByUncached() =', this.isOrPrecededByUncached());
+        //     console.log('this.hasMultipliedOutputs() =', this.hasMultipliedOutputs());
+        //     console.log('this.hasOrderOutputs() =', this.hasOrderOutputs());
+        // }
+
         return    this.isOrPrecededByUncached()
                //   this.hasUncachedInputs()
                && this.hasMultipliedOutputs()
@@ -1042,6 +1049,7 @@ class Operator
     {
         this.valid        = false;
         this.requestCache = [];
+
 
         for (const output of this.outputs)
         {

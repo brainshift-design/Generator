@@ -379,6 +379,8 @@ extends ResizableBase
         for (const param of this.params)
             param.enableControlText(false, this.isUnknown() && this.headerOutputs[0].isLooped());
 
+        this.params.forEach(p => p.isNodeValue = true);
+        
         this.updateParamControls();
     }
 

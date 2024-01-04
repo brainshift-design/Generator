@@ -60,9 +60,6 @@ extends GOperator
 
         this.param = this.node.paramFromId(this.paramId);
 
-        if (this.node.type == LIST)
-            this.param = this.node[this.paramId];//.copy();
-        
 
         if (isValid(this.param))
         {
@@ -73,27 +70,6 @@ extends GOperator
         }
         else
             return this.value = new NullValue();
-        
-        
-        // this.param = 
-        //     this.node.type == LIST
-        //     ? this.node[this.paramId]//.copy();
-        //     : this.node.paramFromId(this.paramId);
-
-        
-        // if (isValid(this.param))
-        // {
-        //     // const value = (await this.param.eval(parse)).toValue();
-        //     // this.value = value;
-        //     this.value = this.param;
-        // }
-        // else
-        //     this.value = new NullValue();
-
-
-        // this.validate();
-
-        // return this;
     }
 
 

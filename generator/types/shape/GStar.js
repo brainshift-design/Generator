@@ -44,6 +44,25 @@ extends GShape
 
 
 
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'position': return this.input ? this.value.position : this.position;
+            case 'x':        return this.input ? this.value.x        : this.x;
+            case 'y':        return this.input ? this.value.y        : this.y;
+            case 'width':    return this.input ? this.value.width    : this.width;
+            case 'height':   return this.input ? this.value.height   : this.height;
+            case 'round':    return this.input ? this.value.round    : this.round
+            case 'points':   return this.input ? this.value.points   : this.points;
+            case 'convex':   return this.input ? this.value.convex   : this.convex;
+        }
+
+        return null;
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())

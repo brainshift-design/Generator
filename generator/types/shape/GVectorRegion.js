@@ -42,6 +42,19 @@ extends GShape
 
 
 
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'loops':   return this.input ? this.value.loops   : this.loops;
+            case 'winding': return this.input ? this.value.winding : this.winding;
+        }
+
+        return null;
+    }
+
+
+
     isCached()
     {
         for (const input of this.inputs)

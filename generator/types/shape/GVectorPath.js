@@ -46,6 +46,22 @@ extends GShape
 
 
 
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'points':  return this.input ? this.value.points  : this.points;
+            case 'closed':  return this.input ? this.value.closed  : this.closed;
+            case 'degree':  return this.input ? this.value.degree  : this.degree;
+            case 'winding': return this.input ? this.value.winding : this.winding;
+            case 'round':   return this.input ? this.value.round   : this.round;
+        }
+
+        return null;
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())

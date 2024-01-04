@@ -41,6 +41,23 @@ extends GOperator1
 
 
 
+    paramFromId(paramId)
+    {
+        let param =
+               this.value
+            && this.value.items
+            && paramId != 'value'
+            ? this.value.items.find(i => i.valueId == paramId)
+            : null;
+
+        if (!param)
+            param = this[paramId];
+
+        return param;
+    }
+
+
+
     async eval(parse)
     {
         if (   this.isCached()
@@ -111,17 +128,6 @@ extends GOperator1
     }
     
     
-
-    paramFromId(paramId)
-    {
-        return this.value
-            && this.value.items
-            && paramId != 'value'
-            ? this.value.items.find(i => i.valueId == paramId) //this[paramId]
-            : null;
-    }
-
-
 
     toValue()
     {

@@ -67,6 +67,29 @@ extends GShape
 
 
 
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'text':          return this.input ? this.value.text          : this.text;
+            case 'x':             return this.input ? this.value.x             : this.x;
+            case 'y':             return this.input ? this.value.y             : this.y;
+            case 'width':         return this.input ? this.value.width         : this.width;
+            case 'height':        return this.input ? this.value.height        : this.height;
+            case 'font':          return this.input ? this.value.font          : this.font;
+            case 'style':         return this.input ? this.value.style         : this.style;
+            case 'size':          return this.input ? this.value.size          : this.size;
+            case 'alignH':        return this.input ? this.value.alignH        : this.alignH;
+            case 'alignV':        return this.input ? this.value.alignV        : this.alignV;
+            case 'lineHeight':    return this.input ? this.value.lineHeight    : this.lineHeight;
+            case 'letterSpacing': return this.input ? this.value.letterSpacing : this.letterSpacing;
+        }
+
+        return null;
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())

@@ -187,5 +187,5 @@ async function getValidColorValue(parse, node, input, quality)
     }    
 
 
-    return new NullValue();
+    return ColorValue.NaN.copy();
 }

@@ -54,11 +54,4 @@ extends GOperator1
                && this.value != NAN_CHAR 
             || this.input.isValid();
     }
-
-
-
-    isValid()
-    {
-        return ;
-    }
 }
