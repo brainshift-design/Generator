@@ -109,8 +109,8 @@ class FigmaObject
         }
         else // units == 2
         {
-            _cx = this.x + cx;
-            _cy = this.y + cy;            
+            _cx = /*this.x +*/ cx;
+            _cy = /*this.y +*/ cy;            
         }
 
 
