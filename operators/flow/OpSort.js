@@ -1,7 +1,7 @@
 class   OpSort
 extends OperatorBase
 {
-    paramOrder;
+    paramCondition;
     paramReverse;
 
 
@@ -21,15 +21,15 @@ extends OperatorBase
         this.addInput (new Input (LIST_VALUES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramOrder   = new NumberParam('order',   'order',   false, true, true, 0, 0));
-        this.addParam(this.paramReverse = new NumberParam('reverse', 'reverse', true,  true, true, 0, 0, 1));
+        this.addParam(this.paramCondition = new NumberParam('condition', 'condition', false, true, true, 0, 0));
+        this.addParam(this.paramReverse   = new NumberParam('reverse',   'reverse',   true,  true, true, 0, 0, 1));
 
-        this.paramOrder.controls[0].allowEditDecimals = false;
+        this.paramCondition.controls[0].allowEditDecimals = false;
         
-        this.paramOrder  .divider = 0.59;
+        this.paramCondition  .divider = 0.59;
         this.paramReverse.divider = 0.59;
 
-        this.paramOrder.valueText = 'order';
+        this.paramCondition.valueText = 'condition';
 
         this.menuBoolReverse = createBoolMenu(this.paramReverse);
     }
@@ -70,8 +70,8 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramOrder  .genRequest(gen));
-        request.push(...this.node.paramReverse.genRequest(gen));
+        request.push(...this.node.paramCondition.genRequest(gen));
+        request.push(...this.node.paramReverse  .genRequest(gen));
 
         
         gen.scope.pop();
@@ -94,14 +94,14 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramOrder  .enableControlText(false);
+        this.paramCondition  .enableControlText(false);
         this.paramReverse.enableControlText(true);
 
         updateParamConditionText(this.paramReverse, this.paramReverse.isUnknown(), false, 1);
 
         this.updateParamControls();
 
-        this.paramOrder.valueText = 'order';
+        this.paramCondition.valueText = 'condition';
     }
 
 
@@ -111,7 +111,7 @@ extends OperatorBase
         const colors = super.getHeaderColors(options);
         const type   = this.outputs[0].types[0];
 
-        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+        colors.text = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         const gray =
                this.active

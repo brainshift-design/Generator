@@ -1,7 +1,7 @@
 class GSort
 extends GOperator1
 {
-    order         = null;
+    condition     = null;
     reverse       = null;
 
     firstSortNode = null;
@@ -21,7 +21,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.order       = null;
+        this.condition   = null;
         this.reverse     = null;
         
         this.cachedValue = null;
@@ -35,8 +35,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.order  ) copy.order   = this.order  .copy();
-        if (this.reverse) copy.reverse = this.reverse.copy();
+        if (this.condition) copy.condition = this.condition.copy();
+        if (this.reverse  ) copy.reverse   = this.reverse  .copy();
 
         return copy;
     }
@@ -68,15 +68,15 @@ extends GOperator1
             if (   input
                 && reverse)
             {
-                const order = this.order ? (await this.order.eval(parse)).toValue() : null;
+                const cond = this.condition ? (await this.condition.eval(parse)).toValue() : null;
 
                     
                 if (this.options.enabled)
                 {
-                    if (   this.order
-                        && this.order.getOrderNode)
+                    if (   this.condition
+                        && this.condition.getOrderNode)
                     {
-                        const orderNode = this.order.getOrderNode(parse);
+                        const orderNode = this.condition.getOrderNode(parse);
 
 
                         if (orderNode)
@@ -90,7 +90,7 @@ extends GOperator1
                                 unsorted, 
                                 orderNode, 
                                 this,
-                                this.order, 
+                                this.condition, 
                                 reverseMultiplier);
                             
 
@@ -162,8 +162,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.order   && this.order  .isValid()
-            && this.reverse && this.reverse.isValid();
+            && this.condition && this.condition.isValid()
+            && this.reverse   && this.reverse  .isValid();
     }
 
 
@@ -172,8 +172,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.order  ) this.order  .pushValueUpdates(parse);
-        if (this.reverse) this.reverse.pushValueUpdates(parse);
+        if (this.condition) this.condition.pushValueUpdates(parse);
+        if (this.reverse  ) this.reverse  .pushValueUpdates(parse);
     }
 
 
@@ -182,8 +182,8 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.order  ) this.order  .invalidateInputs(parse, from, force);
-        if (this.reverse) this.reverse.invalidateInputs(parse, from, force);
+        if (this.condition) this.condition.invalidateInputs(parse, from, force);
+        if (this.reverse  ) this.reverse  .invalidateInputs(parse, from, force);
     }
 
 
@@ -192,20 +192,20 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.order  ) this.order  .iterateLoop(parse);
-        if (this.reverse) this.reverse.iterateLoop(parse);
+        if (this.condition) this.condition.iterateLoop(parse);
+        if (this.reverse  ) this.reverse  .iterateLoop(parse);
     }
 }
 
 
 
-async function asyncSort(parse, array, orderNode, node, order, reverseMultiplier)
+async function asyncSort(parse, array, orderNode, node, condition, reverseMultiplier)
 {
     const sorted = [];
 
     for (const item of array)
     {
-        const criterion = await getSortCriterion(parse, orderNode, node, order, item);
+        const criterion = await getSortCriterion(parse, orderNode, node, condition, item);
         sorted.push({item, criterion});
     }
 
@@ -224,13 +224,13 @@ async function asyncSort(parse, array, orderNode, node, order, reverseMultiplier
 
 
 
-async function getSortCriterion(parse, orderNode, node, order, item)
+async function getSortCriterion(parse, orderNode, node, condition, item)
 {
     orderNode.reset();
 
     orderNode.input = item.copy();
-    order.invalidateInputs(parse, node, true); 
+    condition.invalidateInputs(parse, node, true); 
 
-    //console.log('order =', order);
-    return (await order.eval(parse)).toValue().value;
+    //console.log('condition =', condition);
+    return (await condition.eval(parse)).toValue().value;
 }

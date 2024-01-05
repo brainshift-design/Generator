@@ -54,7 +54,7 @@ extends GOperator1
             case 'y':     return this.input ? this.value.y     : this.y;
             case 'join':  return this.input ? this.value.join  : this.join;
             case 'cap':   return this.input ? this.value.cap   : this.cap;
-            case 'round': return this.input ? this.value.round : this.round
+            case 'round': return this.input ? this.value.round : this.round;
         }
 
         return null;

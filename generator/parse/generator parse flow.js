@@ -546,8 +546,8 @@ function genParseSort(parse)
     if (nInputs == 1)
         sort.input = genParse(parse);
 
-    sort.order   = genParse(parse);
-    sort.reverse = genParse(parse);
+    sort.condition = genParse(parse);
+    sort.reverse   = genParse(parse);
 
     
     parse.nTab--;

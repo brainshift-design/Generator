@@ -53,7 +53,7 @@ extends GShape
             case 'y':        return this.input ? this.value.y        : this.y;
             case 'width':    return this.input ? this.value.width    : this.width;
             case 'height':   return this.input ? this.value.height   : this.height;
-            case 'round':    return this.input ? this.value.round    : this.round
+            case 'round':    return this.input ? this.value.round    : this.round;
             case 'points':   return this.input ? this.value.points   : this.points;
             case 'convex':   return this.input ? this.value.convex   : this.convex;
         }

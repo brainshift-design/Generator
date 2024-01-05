@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 333;
+const generatorVersion = 334;
 
 
 const MAX_INT32        = 2147483647;
@@ -18460,7 +18460,7 @@ extends GOperator1
 class GSort
 extends GOperator1
 {
-    order         = null;
+    condition     = null;
     reverse       = null;
 
     firstSortNode = null;
@@ -18480,7 +18480,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.order       = null;
+        this.condition   = null;
         this.reverse     = null;
         
         this.cachedValue = null;
@@ -18494,8 +18494,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.order  ) copy.order   = this.order  .copy();
-        if (this.reverse) copy.reverse = this.reverse.copy();
+        if (this.condition) copy.condition = this.condition.copy();
+        if (this.reverse  ) copy.reverse   = this.reverse  .copy();
 
         return copy;
     }
@@ -18527,15 +18527,15 @@ extends GOperator1
             if (   input
                 && reverse)
             {
-                const order = this.order ? (await this.order.eval(parse)).toValue() : null;
+                const cond = this.condition ? (await this.condition.eval(parse)).toValue() : null;
 
                     
                 if (this.options.enabled)
                 {
-                    if (   this.order
-                        && this.order.getOrderNode)
+                    if (   this.condition
+                        && this.condition.getOrderNode)
                     {
-                        const orderNode = this.order.getOrderNode(parse);
+                        const orderNode = this.condition.getOrderNode(parse);
 
 
                         if (orderNode)
@@ -18549,7 +18549,7 @@ extends GOperator1
                                 unsorted, 
                                 orderNode, 
                                 this,
-                                this.order, 
+                                this.condition, 
                                 reverseMultiplier);
                             
 
@@ -18621,8 +18621,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.order   && this.order  .isValid()
-            && this.reverse && this.reverse.isValid();
+            && this.condition && this.condition.isValid()
+            && this.reverse   && this.reverse  .isValid();
     }
 
 
@@ -18631,8 +18631,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.order  ) this.order  .pushValueUpdates(parse);
-        if (this.reverse) this.reverse.pushValueUpdates(parse);
+        if (this.condition) this.condition.pushValueUpdates(parse);
+        if (this.reverse  ) this.reverse  .pushValueUpdates(parse);
     }
 
 
@@ -18641,8 +18641,8 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.order  ) this.order  .invalidateInputs(parse, from, force);
-        if (this.reverse) this.reverse.invalidateInputs(parse, from, force);
+        if (this.condition) this.condition.invalidateInputs(parse, from, force);
+        if (this.reverse  ) this.reverse  .invalidateInputs(parse, from, force);
     }
 
 
@@ -18651,20 +18651,20 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.order  ) this.order  .iterateLoop(parse);
-        if (this.reverse) this.reverse.iterateLoop(parse);
+        if (this.condition) this.condition.iterateLoop(parse);
+        if (this.reverse  ) this.reverse  .iterateLoop(parse);
     }
 }
 
 
 
-async function asyncSort(parse, array, orderNode, node, order, reverseMultiplier)
+async function asyncSort(parse, array, orderNode, node, condition, reverseMultiplier)
 {
     const sorted = [];
 
     for (const item of array)
     {
-        const criterion = await getSortCriterion(parse, orderNode, node, order, item);
+        const criterion = await getSortCriterion(parse, orderNode, node, condition, item);
         sorted.push({item, criterion});
     }
 
@@ -18683,15 +18683,15 @@ async function asyncSort(parse, array, orderNode, node, order, reverseMultiplier
 
 
 
-async function getSortCriterion(parse, orderNode, node, order, item)
+async function getSortCriterion(parse, orderNode, node, condition, item)
 {
     orderNode.reset();
 
     orderNode.input = item.copy();
-    order.invalidateInputs(parse, node, true); 
+    condition.invalidateInputs(parse, node, true); 
 
-    //console.log('order =', order);
-    return (await order.eval(parse)).toValue().value;
+    //console.log('condition =', condition);
+    return (await condition.eval(parse)).toValue().value;
 }
 
 
@@ -32082,6 +32082,11 @@ extends GOperator
                     for (const item of input.items)
                         stops.items.push(item);
                 }
+                else if (input.type == GRADIENT_VALUE)
+                {
+                    for (const item of input.stops.items)
+                        stops.items.push(item);
+                }
                 else
                     stops.items.push(input);
             }
@@ -32103,6 +32108,8 @@ extends GOperator
             aspect,
             skew,
             blend);
+        if (this.nodeId == 'grad2')
+            console.log('this.value =', this.value);
 
             
         this.setUpdateValues(parse,
@@ -33800,7 +33807,7 @@ extends GShape
             case 'y':      return this.input ? this.value.y      : this.y;
             case 'width':  return this.input ? this.value.width  : this.width;
             case 'height': return this.input ? this.value.height : this.height;
-            case 'round':  return this.input ? this.value.round  : this.round
+            case 'round':  return this.input ? this.value.round  : this.round;
         }
 
         return null;
@@ -34471,7 +34478,7 @@ extends GShape
             case 'y':      return this.input ? this.value.y      : this.y;
             case 'width':  return this.input ? this.value.width  : this.width;
             case 'height': return this.input ? this.value.height : this.height;
-            case 'round':  return this.input ? this.value.round  : this.round
+            case 'round':  return this.input ? this.value.round  : this.round;
             case 'bias':   return this.input ? this.value.bias   : this.bias;
         }
 
@@ -34712,7 +34719,7 @@ extends GShape
             case 'y':        return this.input ? this.value.y        : this.y;
             case 'width':    return this.input ? this.value.width    : this.width;
             case 'height':   return this.input ? this.value.height   : this.height;
-            case 'round':    return this.input ? this.value.round    : this.round
+            case 'round':    return this.input ? this.value.round    : this.round;
             case 'corners':  return this.input ? this.value.corners  : this.corners;
         }
 
@@ -34978,7 +34985,7 @@ extends GShape
             case 'y':        return this.input ? this.value.y        : this.y;
             case 'width':    return this.input ? this.value.width    : this.width;
             case 'height':   return this.input ? this.value.height   : this.height;
-            case 'round':    return this.input ? this.value.round    : this.round
+            case 'round':    return this.input ? this.value.round    : this.round;
             case 'points':   return this.input ? this.value.points   : this.points;
             case 'convex':   return this.input ? this.value.convex   : this.convex;
         }
@@ -36282,7 +36289,7 @@ extends GOperator1
             case 'y':     return this.input ? this.value.y     : this.y;
             case 'join':  return this.input ? this.value.join  : this.join;
             case 'cap':   return this.input ? this.value.cap   : this.cap;
-            case 'round': return this.input ? this.value.round : this.round
+            case 'round': return this.input ? this.value.round : this.round;
         }
 
         return null;
@@ -42601,8 +42608,8 @@ function genParseSort(parse)
     if (nInputs == 1)
         sort.input = genParse(parse);
 
-    sort.order   = genParse(parse);
-    sort.reverse = genParse(parse);
+    sort.condition = genParse(parse);
+    sort.reverse   = genParse(parse);
 
     
     parse.nTab--;
