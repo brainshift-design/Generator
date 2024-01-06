@@ -73,13 +73,17 @@ extends GOperator1
                     
                 if (this.options.enabled)
                 {
-                    if (   this.condition
-                        && this.condition.getOrderNode)
+                    if (  !this.condition
+                        || this.condition.getOrderNode)
                     {
-                        const orderNode = this.condition.getOrderNode(parse);
+                        const orderNode = 
+                            this.condition
+                            ? this.condition.getOrderNode(parse)
+                            : null;
 
 
-                        if (orderNode)
+                        if (  !this.condition
+                            || orderNode)
                         {
                             const reverseMultiplier = reverse.value > 0 ? -1 : 1;
                             const unsorted          = [...input.items];
@@ -88,11 +92,13 @@ extends GOperator1
                             input.items = await asyncSort(
                                 parse, 
                                 unsorted, 
-                                orderNode, 
+                                this.condition 
+                                ? orderNode // specified sort
+                                : null,     // default sort
                                 this,
                                 this.condition, 
                                 reverseMultiplier);
-                            
+
 
                             input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
                             
@@ -226,6 +232,9 @@ async function asyncSort(parse, array, orderNode, node, condition, reverseMultip
 
 async function getSortCriterion(parse, orderNode, node, condition, item)
 {
+    if (!orderNode)
+        return item.value;
+    
     orderNode.reset();
 
     orderNode.input = item.copy();

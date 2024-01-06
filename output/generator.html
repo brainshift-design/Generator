@@ -18532,13 +18532,17 @@ extends GOperator1
                     
                 if (this.options.enabled)
                 {
-                    if (   this.condition
-                        && this.condition.getOrderNode)
+                    if (  !this.condition
+                        || this.condition.getOrderNode)
                     {
-                        const orderNode = this.condition.getOrderNode(parse);
+                        const orderNode = 
+                            this.condition
+                            ? this.condition.getOrderNode(parse)
+                            : null;
 
 
-                        if (orderNode)
+                        if (  !this.condition
+                            || orderNode)
                         {
                             const reverseMultiplier = reverse.value > 0 ? -1 : 1;
                             const unsorted          = [...input.items];
@@ -18547,11 +18551,13 @@ extends GOperator1
                             input.items = await asyncSort(
                                 parse, 
                                 unsorted, 
-                                orderNode, 
+                                this.condition 
+                                ? orderNode // specified sort
+                                : null,     // default sort
                                 this,
                                 this.condition, 
                                 reverseMultiplier);
-                            
+
 
                             input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
                             
@@ -18685,6 +18691,9 @@ async function asyncSort(parse, array, orderNode, node, condition, reverseMultip
 
 async function getSortCriterion(parse, orderNode, node, condition, item)
 {
+    if (!orderNode)
+        return item.value;
+    
     orderNode.reset();
 
     orderNode.input = item.copy();
@@ -32108,8 +32117,6 @@ extends GOperator
             aspect,
             skew,
             blend);
-        if (this.nodeId == 'grad2')
-            console.log('this.value =', this.value);
 
             
         this.setUpdateValues(parse,
@@ -42608,7 +42615,13 @@ function genParseSort(parse)
     if (nInputs == 1)
         sort.input = genParse(parse);
 
-    sort.condition = genParse(parse);
+
+    const nConditions = parseInt(parse.move());
+
+    if (nConditions == 1)
+        sort.condition = genParse(parse);
+
+        
     sort.reverse   = genParse(parse);
 
     

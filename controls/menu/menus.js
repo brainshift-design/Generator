@@ -606,16 +606,16 @@ function initGeneratorMenus()
 
     menuConvertText = new Menu('Convert text', true, false);
     menuConvertText.addItems([
-                              new MenuItem('Text ⟶ Number',       null, {icon: iconTextToNumber,    createType: TEXT_TO_NUMBER, callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_NUMBER, btnText.div, getCreateOptions(e)))}),
-                              new MenuItem('Text ⟶ Color',        null, {icon: iconTextToColor,     createType: TEXT_TO_COLOR,  callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_COLOR,  btnText.div, getCreateOptions(e)))}),
-                              new MenuItem('',                     null, {separator: true}),
-                              new MenuItem('Number ⟶ Text',       null, {icon: iconNumberToText,    createType: NUMBER_TO_TEXT, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT, btnText.div, getCreateOptions(e)))}),
-                              new MenuItem('Color ⟶ Text',        null, {icon: iconColorToText,     createType: COLOR_TO_TEXT,  callback: e => actionManager.do(getCreateNodeAction(COLOR_TO_TEXT,  btnText.div, getCreateOptions(e)))}),
-                              new MenuItem('',                     null, {separator: true}),
-                              new MenuItem('Unicode ⟶ Character', null, {icon: iconCodeToCharacter, createType: TEXT_CHAR,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))}),
-                              new MenuItem('Character ⟶ Unicode', null, {icon: iconCharacterToCode, createType: TEXT_UNICODE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_UNICODE,   btnText.div, getCreateOptions(e)))}),
-                              new MenuItem('',                     null, {separator: true}),
-        menuItemIndexToName = new MenuItem('Index ⟶ Name',        null, {icon: iconIndexToName,     createType: INDEX_TO_NAME,  callback: e => actionManager.do(getCreateNodeAction(INDEX_TO_NAME,      btnText.div, getCreateOptions(e)))})]);
+                              new MenuItem('Text ⟶ Number',      null, {icon: iconTextToNumber,    createType: TEXT_TO_NUMBER, callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_NUMBER, btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('Text ⟶ Color',       null, {icon: iconTextToColor,     createType: TEXT_TO_COLOR,  callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_COLOR,  btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('',                    null, {separator: true}),
+                              new MenuItem('Number ⟶ Text',      null, {icon: iconNumberToText,    createType: NUMBER_TO_TEXT, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT, btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('Color ⟶ Text',       null, {icon: iconColorToText,     createType: COLOR_TO_TEXT,  callback: e => actionManager.do(getCreateNodeAction(COLOR_TO_TEXT,  btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('',                    null, {separator: true}),
+                              new MenuItem('Number ⟶ Character', null, {icon: iconCodeToCharacter, createType: TEXT_CHAR,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('Character ⟶ Number', null, {icon: iconCharacterToCode, createType: TEXT_UNICODE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_UNICODE,   btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('',                    null, {separator: true}),
+        menuItemIndexToName = new MenuItem('Index ⟶ Name',       null, {icon: iconIndexToName,     createType: INDEX_TO_NAME,  callback: e => actionManager.do(getCreateNodeAction(INDEX_TO_NAME,      btnText.div, getCreateOptions(e)))})]);
     
 
     menuTextData = new Menu('Data', true, false);

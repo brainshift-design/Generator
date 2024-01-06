@@ -115,6 +115,11 @@ extends GOperator
                     for (const item of input.items)
                         stops.items.push(item);
                 }
+                else if (input.type == GRADIENT_VALUE)
+                {
+                    for (const item of input.stops.items)
+                        stops.items.push(item);
+                }
                 else
                     stops.items.push(input);
             }

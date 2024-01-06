@@ -546,7 +546,13 @@ function genParseSort(parse)
     if (nInputs == 1)
         sort.input = genParse(parse);
 
-    sort.condition = genParse(parse);
+
+    const nConditions = parseInt(parse.move());
+
+    if (nConditions == 1)
+        sort.condition = genParse(parse);
+
+        
     sort.reverse   = genParse(parse);
 
     

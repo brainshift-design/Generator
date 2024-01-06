@@ -70,8 +70,12 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramCondition.genRequest(gen));
-        request.push(...this.node.paramReverse  .genRequest(gen));
+        request.push(this.node.paramCondition.input.connected ? 1 : 0);
+
+        if (this.node.paramCondition.input.connected)
+            request.push(...this.node.paramCondition.genRequest(gen));
+
+        request.push(...this.node.paramReverse.genRequest(gen));
 
         
         gen.scope.pop();
