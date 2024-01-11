@@ -38,10 +38,10 @@ extends GOperator
 
 
 
-    getOrderNode()
+    getConditionNode()
     {
         return this.node
-             ? this.node.getOrderNode()
+             ? this.node.getConditionNode()
              : null;
     }
 
@@ -63,6 +63,7 @@ extends GOperator
 
         if (isValid(this.param))
         {
+            // await this.node.eval(parse);
             const value = (await this.param.eval(parse)).toValue();
             this.value = value;
             

@@ -956,10 +956,10 @@ class Operator
 
 
 
-    hasOrderOutputs()
+    hasSortConditions()
     {
         for (const output of this.outputs)
-            if (output.isOrder())
+            if (output.isSortCondition())
                 return true;
 
         return false;
@@ -973,13 +973,12 @@ class Operator
         // {
         //     console.log('this.isOrPrecededByUncached() =', this.isOrPrecededByUncached());
         //     console.log('this.hasMultipliedOutputs() =', this.hasMultipliedOutputs());
-        //     console.log('this.hasOrderOutputs() =', this.hasOrderOutputs());
+        //     console.log('this.hasSortConditions() =', this.hasSortConditions());
         // }
 
-        return    this.isOrPrecededByUncached()
+        return this.isOrPrecededByUncached()
                //   this.hasUncachedInputs()
-               && this.hasMultipliedOutputs()
-            || this.hasOrderOutputs();
+            && this.hasMultipliedOutputs();
     }
 
 

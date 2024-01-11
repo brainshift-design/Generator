@@ -385,14 +385,6 @@ const presetHotSpring = '\
             "list": "true"\
             },\
             {\
-            "outputNodeId": "getParam",\
-            "outputId": "h0",\
-            "outputOrder": "0",\
-            "inputNodeId": "sort",\
-            "inputId": "order",\
-            "list": "false"\
-            },\
-            {\
             "outputNodeId": "sort",\
             "outputId": "h0",\
             "outputOrder": "0",\

@@ -6,7 +6,7 @@ extends GOperator1
 
     firstSortNode = null;
 
-    cachedValue   = null;
+    // cachedValue   = null;
 
 
     
@@ -24,7 +24,7 @@ extends GOperator1
         this.condition   = null;
         this.reverse     = null;
         
-        this.cachedValue = null;
+        // this.cachedValue = null;
     }
 
 
@@ -45,8 +45,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (   this.isCached()
-            && this.cachedValue)
+        if (   this.isCached())
+            // && this.cachedValue)
             return this;
 
 
@@ -54,36 +54,36 @@ extends GOperator1
         const reverse = this.reverse ? (await this.reverse.eval(parse)).toValue() : null;
 
 
-        this.value = new ListValue();
+        this.value         = new ListValue();
         this.value.objects = [];
 
         let maxColumns = 0;
 
         
-        if (this.cachedValue)
-            this.value = this.cachedValue.copy();
+        // if (this.cachedValue)
+        //     this.value = this.cachedValue.copy();
 
-        else
-        {
+        // else
+        // {
             if (   input
                 && reverse)
             {
-                const cond = this.condition ? (await this.condition.eval(parse)).toValue() : null;
-
-                    
                 if (this.options.enabled)
                 {
                     if (  !this.condition
-                        || this.condition.getOrderNode)
+                        || this.condition.getConditionNode)
                     {
-                        const orderNode = 
+                        if (this.condition)
+                            await this.condition.eval(parse);
+
+                        const conditionNode = 
                             this.condition
-                            ? this.condition.getOrderNode(parse)
+                            ? this.condition.getConditionNode(parse)
                             : null;
 
 
                         if (  !this.condition
-                            || orderNode)
+                            || conditionNode)
                         {
                             const reverseMultiplier = reverse.value > 0 ? -1 : 1;
                             const unsorted          = [...input.items];
@@ -93,8 +93,8 @@ extends GOperator1
                                 parse, 
                                 unsorted, 
                                 this.condition 
-                                ? orderNode // specified sort
-                                : null,     // default sort
+                                ? conditionNode // specified sort
+                                : null,         // default sort
                                 this,
                                 this.condition, 
                                 reverseMultiplier);
@@ -131,8 +131,8 @@ extends GOperator1
                 this.value = new ListValue();
 
 
-            this.cachedValue = this.value.copy();
-        }
+            //this.cachedValue = this.value.copy();
+        //}
 
 
         this.updateValueObjects();
@@ -168,8 +168,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.condition && this.condition.isValid()
-            && this.reverse   && this.reverse  .isValid();
+            && (!this.condition || this.condition.isValid())
+            && this.reverse && this.reverse.isValid();
     }
 
 
@@ -205,41 +205,49 @@ extends GOperator1
 
 
 
-async function asyncSort(parse, array, orderNode, node, condition, reverseMultiplier)
+async function asyncSort(parse, array, conditionNode, node, condition, reverseMultiplier)
 {
+    const oldInput = conditionNode ? conditionNode.input : null;
+
     const sorted = [];
 
     for (const item of array)
     {
-        const criterion = await getSortCriterion(parse, orderNode, node, condition, item);
+        const criterion = await getSortCondition(parse, conditionNode, node, condition, item);
         sorted.push({item, criterion});
     }
 
 
     sorted.sort((a, b) =>
     {
-        if (a.criterion < b.criterion) return -1 * reverseMultiplier;
-        if (a.criterion > b.criterion) return  1 * reverseMultiplier;
+        if (a.criterion < b.criterion) return -1*reverseMultiplier;
+        if (a.criterion > b.criterion) return  1*reverseMultiplier;
 
         return 0;
     });
 
+
+    if (conditionNode)
+        conditionNode.input = oldInput;
 
     return sorted.map(_item => _item.item);
 }
 
 
 
-async function getSortCriterion(parse, orderNode, node, condition, item)
+async function getSortCondition(parse, conditionNode, node, condition, item)
 {
-    if (!orderNode)
+    if (!conditionNode)
         return item.value;
     
-    orderNode.reset();
+    conditionNode.reset();
 
-    orderNode.input = item.copy();
+    conditionNode.input = item.copy();
     condition.invalidateInputs(parse, node, true); 
 
-    //console.log('condition =', condition);
-    return (await condition.eval(parse)).toValue().value;
+    const cond = (await condition.eval(parse)).toValue();
+
+    return cond 
+         ? cond.value 
+         : null;
 }

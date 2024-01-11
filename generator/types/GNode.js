@@ -68,11 +68,11 @@ class GNode
 
 
 
-    getOrderNode()
+    getConditionNode()
     {
         if (   this.input
-            && this.input.getOrderNode)
-            return this.input.getOrderNode();
+            && this.input.getConditionNode)
+            return this.input.getConditionNode();
         
         return this;
     }
@@ -110,6 +110,13 @@ class GNode
     validate()
     {
         this.valid = true;
+    }
+
+
+
+    invalidate()
+    {
+        this.valid = false;
     }
 
 

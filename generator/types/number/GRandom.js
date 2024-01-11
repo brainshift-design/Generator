@@ -63,25 +63,31 @@ extends GOperator
         if (this.isCached())
             return this;
 
-            
-        const seed   = (await this.seed  .eval(parse)).toValue();
-        const min    = (await this.min   .eval(parse)).toValue();
-        const max    = (await this.max   .eval(parse)).toValue();
-        const bias   = (await this.bias  .eval(parse)).toValue();
-        const spread = (await this.spread.eval(parse)).toValue();
-        const unique = (await this.unique.eval(parse)).toValue();
+
+        const seed   = this.seed   ? (await this.seed  .eval(parse)).toValue() : null;
+        const min    = this.min    ? (await this.min   .eval(parse)).toValue() : null;
+        const max    = this.max    ? (await this.max   .eval(parse)).toValue() : null;
+        const bias   = this.bias   ? (await this.bias  .eval(parse)).toValue() : null;
+        const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
+        const unique = this.unique ? (await this.unique.eval(parse)).toValue() : null;
     
 
-        if (  !this.random
-            || this.random.seed != seed.value)
+        if (   this.options.enabled
+            && seed
+            && min
+            && max
+            && bias
+            && spread
+            && unique)
         {
-            this.random       = new Random(seed.value);
-            this.randomUnique = new Random(seed.value+1);
-        }
+            if (  !this.random
+                || this.random.seed != seed.value)
+            {
+                this.random       = new Random(seed.value);
+                this.randomUnique = new Random(seed.value+1);
+            }
 
 
-        if (this.options.enabled)
-        {
             let f = this.random.get(this.iteration + this.uniqueOffset);
             f = getSpreadBias(f, bias.value, spread.value);
             
@@ -113,7 +119,7 @@ extends GOperator
             }        
         }
         else
-            this.value = min;
+            this.value = NumberValue.NaN.copy();
 
 
         if (this.value.isValid())

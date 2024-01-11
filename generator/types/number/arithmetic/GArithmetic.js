@@ -14,20 +14,20 @@ extends GOperator
 
 
 
-    getOrderNode()
+    getConditionNode()
     {
-        const orderNodes = [];
+        const conditionNodes = [];
 
         for (const input of this.inputs)
         {
-            const orderNode = input.getOrderNode();
-            if (orderNode) orderNodes.push(orderNode);            
+            const conditionNode = input.getConditionNode();
+            if (conditionNode) conditionNodes.push(conditionNode);            
         }
 
-        console.assert(orderNodes.length < 2, 'Error: sort order requires not more than one order node');
+        console.assert(conditionNodes.length < 2, 'Error: sort order requires not more than one order node');
 
-        return orderNodes.length == 1
-             ? orderNodes[0]
+        return conditionNodes.length == 1
+             ? conditionNodes[0]
              : null;
     }
 

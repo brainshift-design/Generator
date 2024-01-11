@@ -8456,11 +8456,11 @@ class GNode
 
 
 
-    getOrderNode()
+    getConditionNode()
     {
         if (   this.input
-            && this.input.getOrderNode)
-            return this.input.getOrderNode();
+            && this.input.getConditionNode)
+            return this.input.getConditionNode();
         
         return this;
     }
@@ -8498,6 +8498,13 @@ class GNode
     validate()
     {
         this.valid = true;
+    }
+
+
+
+    invalidate()
+    {
+        this.valid = false;
     }
 
 
@@ -9498,10 +9505,10 @@ extends GOperator
 
 
 
-    getOrderNode()
+    getConditionNode()
     {
         return this.node
-             ? this.node.getOrderNode()
+             ? this.node.getConditionNode()
              : null;
     }
 
@@ -9523,6 +9530,7 @@ extends GOperator
 
         if (isValid(this.param))
         {
+            // await this.node.eval(parse);
             const value = (await this.param.eval(parse)).toValue();
             this.value = value;
             
@@ -18465,7 +18473,7 @@ extends GOperator1
 
     firstSortNode = null;
 
-    cachedValue   = null;
+    // cachedValue   = null;
 
 
     
@@ -18483,7 +18491,7 @@ extends GOperator1
         this.condition   = null;
         this.reverse     = null;
         
-        this.cachedValue = null;
+        // this.cachedValue = null;
     }
 
 
@@ -18504,8 +18512,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (   this.isCached()
-            && this.cachedValue)
+        if (   this.isCached())
+            // && this.cachedValue)
             return this;
 
 
@@ -18513,36 +18521,36 @@ extends GOperator1
         const reverse = this.reverse ? (await this.reverse.eval(parse)).toValue() : null;
 
 
-        this.value = new ListValue();
+        this.value         = new ListValue();
         this.value.objects = [];
 
         let maxColumns = 0;
 
         
-        if (this.cachedValue)
-            this.value = this.cachedValue.copy();
+        // if (this.cachedValue)
+        //     this.value = this.cachedValue.copy();
 
-        else
-        {
+        // else
+        // {
             if (   input
                 && reverse)
             {
-                const cond = this.condition ? (await this.condition.eval(parse)).toValue() : null;
-
-                    
                 if (this.options.enabled)
                 {
                     if (  !this.condition
-                        || this.condition.getOrderNode)
+                        || this.condition.getConditionNode)
                     {
-                        const orderNode = 
+                        if (this.condition)
+                            await this.condition.eval(parse);
+
+                        const conditionNode = 
                             this.condition
-                            ? this.condition.getOrderNode(parse)
+                            ? this.condition.getConditionNode(parse)
                             : null;
 
 
                         if (  !this.condition
-                            || orderNode)
+                            || conditionNode)
                         {
                             const reverseMultiplier = reverse.value > 0 ? -1 : 1;
                             const unsorted          = [...input.items];
@@ -18552,8 +18560,8 @@ extends GOperator1
                                 parse, 
                                 unsorted, 
                                 this.condition 
-                                ? orderNode // specified sort
-                                : null,     // default sort
+                                ? conditionNode // specified sort
+                                : null,         // default sort
                                 this,
                                 this.condition, 
                                 reverseMultiplier);
@@ -18590,8 +18598,8 @@ extends GOperator1
                 this.value = new ListValue();
 
 
-            this.cachedValue = this.value.copy();
-        }
+            //this.cachedValue = this.value.copy();
+        //}
 
 
         this.updateValueObjects();
@@ -18627,8 +18635,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.condition && this.condition.isValid()
-            && this.reverse   && this.reverse  .isValid();
+            && (!this.condition || this.condition.isValid())
+            && this.reverse && this.reverse.isValid();
     }
 
 
@@ -18664,43 +18672,51 @@ extends GOperator1
 
 
 
-async function asyncSort(parse, array, orderNode, node, condition, reverseMultiplier)
+async function asyncSort(parse, array, conditionNode, node, condition, reverseMultiplier)
 {
+    const oldInput = conditionNode ? conditionNode.input : null;
+
     const sorted = [];
 
     for (const item of array)
     {
-        const criterion = await getSortCriterion(parse, orderNode, node, condition, item);
+        const criterion = await getSortCondition(parse, conditionNode, node, condition, item);
         sorted.push({item, criterion});
     }
 
 
     sorted.sort((a, b) =>
     {
-        if (a.criterion < b.criterion) return -1 * reverseMultiplier;
-        if (a.criterion > b.criterion) return  1 * reverseMultiplier;
+        if (a.criterion < b.criterion) return -1*reverseMultiplier;
+        if (a.criterion > b.criterion) return  1*reverseMultiplier;
 
         return 0;
     });
 
+
+    if (conditionNode)
+        conditionNode.input = oldInput;
 
     return sorted.map(_item => _item.item);
 }
 
 
 
-async function getSortCriterion(parse, orderNode, node, condition, item)
+async function getSortCondition(parse, conditionNode, node, condition, item)
 {
-    if (!orderNode)
+    if (!conditionNode)
         return item.value;
     
-    orderNode.reset();
+    conditionNode.reset();
 
-    orderNode.input = item.copy();
+    conditionNode.input = item.copy();
     condition.invalidateInputs(parse, node, true); 
 
-    //console.log('condition =', condition);
-    return (await condition.eval(parse)).toValue().value;
+    const cond = (await condition.eval(parse)).toValue();
+
+    return cond 
+         ? cond.value 
+         : null;
 }
 
 
@@ -18768,12 +18784,12 @@ extends GOperator1
             // {
                 // if (   input 
                 //     && this.condition
-                //     && this.condition.getOrderNode)
+                //     && this.condition.getConditionNode)
                 // {
-                //     const orderNode = this.condition.getOrderNode(parse);
+                //     const conditionNode = this.condition.getConditionNode(parse);
 
 
-                //     if (orderNode)
+                //     if (conditionNode)
                 //     {
                 //         const reverseMultiplier = reverse.value > 0 ? -1 : 1;
                 //         const unsorted          = [...input.items];
@@ -18782,7 +18798,7 @@ extends GOperator1
                 //         input.items = await asyncSort(
                 //             parse, 
                 //             unsorted, 
-                //             orderNode, 
+                //             conditionNode, 
                 //             this,
                 //             this.condition, 
                 //             reverseMultiplier);
@@ -20133,20 +20149,20 @@ extends GOperator
 
 
 
-    getOrderNode()
+    getConditionNode()
     {
-        const orderNodes = [];
+        const conditionNodes = [];
 
         for (const input of this.inputs)
         {
-            const orderNode = input.getOrderNode();
-            if (orderNode) orderNodes.push(orderNode);            
+            const conditionNode = input.getConditionNode();
+            if (conditionNode) conditionNodes.push(conditionNode);            
         }
 
-        console.assert(orderNodes.length < 2, 'Error: sort order requires not more than one order node');
+        console.assert(conditionNodes.length < 2, 'Error: sort order requires not more than one order node');
 
-        return orderNodes.length == 1
-             ? orderNodes[0]
+        return conditionNodes.length == 1
+             ? conditionNodes[0]
              : null;
     }
 
@@ -22325,25 +22341,31 @@ extends GOperator
         if (this.isCached())
             return this;
 
-            
-        const seed   = (await this.seed  .eval(parse)).toValue();
-        const min    = (await this.min   .eval(parse)).toValue();
-        const max    = (await this.max   .eval(parse)).toValue();
-        const bias   = (await this.bias  .eval(parse)).toValue();
-        const spread = (await this.spread.eval(parse)).toValue();
-        const unique = (await this.unique.eval(parse)).toValue();
+
+        const seed   = this.seed   ? (await this.seed  .eval(parse)).toValue() : null;
+        const min    = this.min    ? (await this.min   .eval(parse)).toValue() : null;
+        const max    = this.max    ? (await this.max   .eval(parse)).toValue() : null;
+        const bias   = this.bias   ? (await this.bias  .eval(parse)).toValue() : null;
+        const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
+        const unique = this.unique ? (await this.unique.eval(parse)).toValue() : null;
     
 
-        if (  !this.random
-            || this.random.seed != seed.value)
+        if (   this.options.enabled
+            && seed
+            && min
+            && max
+            && bias
+            && spread
+            && unique)
         {
-            this.random       = new Random(seed.value);
-            this.randomUnique = new Random(seed.value+1);
-        }
+            if (  !this.random
+                || this.random.seed != seed.value)
+            {
+                this.random       = new Random(seed.value);
+                this.randomUnique = new Random(seed.value+1);
+            }
 
 
-        if (this.options.enabled)
-        {
             let f = this.random.get(this.iteration + this.uniqueOffset);
             f = getSpreadBias(f, bias.value, spread.value);
             
@@ -22375,7 +22397,7 @@ extends GOperator
             }        
         }
         else
-            this.value = min;
+            this.value = NumberValue.NaN.copy();
 
 
         if (this.value.isValid())
@@ -35736,17 +35758,21 @@ extends GOperator1
 
     toValue()
     {
-        const point = new PointValue(
-            this.nodeId,
-            this.x.toValue(),
-            this.y.toValue());
+        return this.value
+             ? this.value.copy()
+             : null;
 
-        point.objects = 
-            this.value.objects
-            ? this.value.objects.map(o => o.copy())
-            : [];
+        // const point = new PointValue(
+        //     this.nodeId,
+        //     this.x.toValue(),
+        //     this.y.toValue());
 
-        return point;
+        // point.objects = 
+        //     this.value.objects
+        //     ? this.value.objects.map(o => o.copy())
+        //     : [];
+
+        // return point;
     }
 
 
@@ -41080,8 +41106,8 @@ function genRequest(request, save)
         logRequest(parse);
 
 
-    const paramNodes = parse.paramNodeIds
-        .map(id => parse.parsedNodes.find(n => n.nodeId == id));
+    const paramNodes = parse.paramNodeIds.map(id =>
+        parse.parsedNodes.find(n => n.nodeId == id));
 
     const topLevelNodes = parse.parsedNodes
         .filter(n => 
@@ -41095,25 +41121,14 @@ function genRequest(request, save)
 
         
         for (const node of paramNodes)
-        { 
-            if (await checkStop(parse.requestId))
-            {
-                stop = true;
-                break;
-            }
-
+        {
+            if (await checkStop(parse.requestId)) { stop = true; break; }
             await node.eval(parse);
-        } 
-
+        }
 
         for (const node of topLevelNodes)
         { 
-            if (await checkStop(parse.requestId))
-            {
-                stop = true;
-                break;
-            }
-
+            if (await checkStop(parse.requestId)) { stop = true; break; }
             await node.eval(parse);
         }
 
@@ -41126,7 +41141,7 @@ function genRequest(request, save)
         genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
 
        
-        for (const node of topLevelNodes)
+        for (const node of topLevelNodes) 
             node.pushValueUpdates(parse);
         
         
@@ -41166,12 +41181,12 @@ function genRequest(request, save)
                             genPushUpdateObject(
                                 parse, 
                                 createDecoPoly(
-                                    node, 
-                                    obj.sp0, 
-                                    [xp0, xp2, xp3, xp1], 
+                                    node,
+                                    obj.sp0,
+                                    [xp0, xp2, xp3, xp1],
                                     true,
                                     '1, 2',
-                                    [12, 140, 233], 
+                                    [12, 140, 233],
                                     XFORM_SUFFIX,
                                     false));
                         }
@@ -49243,7 +49258,7 @@ function genParseParam(parse)
     
     const param   = new GParam(nodeId, paramId);
  
-    
+
     pushUnique(parse.paramNodeIds, nodeId);
 
 

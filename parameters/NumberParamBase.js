@@ -218,7 +218,7 @@ extends Parameter
     toJsCode(gen)
     {
         return this.input.connected
-             ? '(' + this.input.connectedOutput.toJsCode(gen) + ')'
-             : this.value.toJsCode(gen);
+            ? '(' + this.input.connectedOutput.toJsCode(gen) + ')'
+            :  this.value.toJsCode(gen);
     }
 }

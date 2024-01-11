@@ -16,13 +16,15 @@ extends EventTarget
 
 
     showName;
-    divider        = 0.5;
+    showValue;
+
+    divider         = 0.5;
 
     divName;
     divControls;
 
 
-    controls       = [];
+    controls        = [];
 
     // proxy          = null;
 
@@ -75,6 +77,7 @@ extends EventTarget
         this.#type            = type;
   
         this.showName         = showName;
+        this.showValue        = true;
 
         this._div             = createDiv('paramDiv');
         this.divName          = createDiv('paramName');
@@ -164,11 +167,14 @@ extends EventTarget
 
     isUnknown()
     {
-        return (      this.input
-                   && this.input.isUncached()
-                ||    this.isNodeValue
-                   && this.node.isUnknown())
-            && this.node.hasMultipliedOutputs();
+        return    (      this.input
+                      && this.input.isUncached()
+                   ||    this.isNodeValue
+                      && this.node.isUnknown())
+               && this.node.hasMultipliedOutputs()
+            // ||    this.output
+            //    && this.output.isSortCondition()
+            // ||    this.isNodeValue;
     }
 
 
@@ -217,9 +223,11 @@ extends EventTarget
         
         const left = this.input || this.output ? 12 : 0;
 
-        const dw = 
-              (left > 0 ? 12 : 0) 
-            + (left > 0 ? 12 : 0);
+        const dw = 2 * (left > 0 ? 12 : 0);
+            // + (left > 0 ? 12 : 0);
+
+
+        this.showValue = !this.node.hasSortConditions();
 
 
         if (this.showName)
@@ -227,19 +235,33 @@ extends EventTarget
             const nameSize = this.divider <= 1 ? ((   this.divider *100) + '%') : (this.divider + 'px');
             const  valSize = this.divider <= 1 ? (((1-this.divider)*100) + '%') : ('calc(100% - ' + this.divider + 'px)');
 
-            this.divName    .innerHTML        =  this.name;
+            this.divName.innerHTML =  this.name;
    
-            this.divName    .style.display    = 'inline-block';
-            this.divName    .style.right      =  valSize;
-            this.divName    .style.width      = 'calc(' + nameSize + ' - ' + (this.input ? 12 : 0) + 'px)';
-            
-            this.divControls.style.left       =  nameSize;
-            this.divControls.style.marginLeft = '3px';
-            this.divControls.style.width      = 'calc(calc(' + valSize + ' - ' + (this.output ? 12 : 0) + 'px) - 3px)';
+            this.divName    .style.display = 'inline-block';
+            this.divControls.style.display = this.showValue ? 'inline-block' : 'none';
+
+
+            if (this.showValue)
+            {
+                this.divControls.style.left       =  nameSize;
+                this.divControls.style.marginLeft = '3px';
+                this.divControls.style.width      = 'calc(calc(' + valSize + ' - ' + (this.output ? 12 : 0) + 'px) - 3px)';
+
+                this.divName.style.right          =  valSize;
+                this.divName.style.width          = 'calc(' + nameSize + ' - ' + (this.input ? 12 : 0) + 'px)';
+                this.divName.style.textAlign      = 'right';
+            }
+            else
+            {
+                this.divName.style.right          =  0;
+                this.divName.style.width          = '100%';
+                this.divName.style.textAlign      = 'center';
+            }
         }
         else
         {
             this.divName    .style.display    = 'none';
+            this.divControls.style.display    = 'inline-block';
             
             this.divControls.style.marginLeft =  0;
             this.divControls.style.left       =  left+'px';

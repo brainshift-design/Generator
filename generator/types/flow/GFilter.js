@@ -61,12 +61,12 @@ extends GOperator1
             // {
                 // if (   input 
                 //     && this.condition
-                //     && this.condition.getOrderNode)
+                //     && this.condition.getConditionNode)
                 // {
-                //     const orderNode = this.condition.getOrderNode(parse);
+                //     const conditionNode = this.condition.getConditionNode(parse);
 
 
-                //     if (orderNode)
+                //     if (conditionNode)
                 //     {
                 //         const reverseMultiplier = reverse.value > 0 ? -1 : 1;
                 //         const unsorted          = [...input.items];
@@ -75,7 +75,7 @@ extends GOperator1
                 //         input.items = await asyncSort(
                 //             parse, 
                 //             unsorted, 
-                //             orderNode, 
+                //             conditionNode, 
                 //             this,
                 //             this.condition, 
                 //             reverseMultiplier);

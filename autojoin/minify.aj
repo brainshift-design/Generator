@@ -2971,7 +2971,7 @@ isOrPrecededByMultiplier
 isOrFollowedByMultiplier
 hasUncachedInputs
 hasMultipliedInputs
-hasOrderOutputs
+hasSortConditions
 paramCanBeUnknown
 paramIsConsideredDefault
 restoreParamUndoValue
@@ -3757,7 +3757,7 @@ multiplayerDialog
 objectBatchDialog
 objectBatchTitle
 objectBatchInput
-getOrderNode
+getConditionNode
 iStart
 iEnd
 modeIndex

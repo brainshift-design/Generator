@@ -62,8 +62,8 @@ function genRequest(request, save)
         logRequest(parse);
 
 
-    const paramNodes = parse.paramNodeIds
-        .map(id => parse.parsedNodes.find(n => n.nodeId == id));
+    const paramNodes = parse.paramNodeIds.map(id =>
+        parse.parsedNodes.find(n => n.nodeId == id));
 
     const topLevelNodes = parse.parsedNodes
         .filter(n => 
@@ -77,25 +77,14 @@ function genRequest(request, save)
 
         
         for (const node of paramNodes)
-        { 
-            if (await checkStop(parse.requestId))
-            {
-                stop = true;
-                break;
-            }
-
+        {
+            if (await checkStop(parse.requestId)) { stop = true; break; }
             await node.eval(parse);
-        } 
-
+        }
 
         for (const node of topLevelNodes)
         { 
-            if (await checkStop(parse.requestId))
-            {
-                stop = true;
-                break;
-            }
-
+            if (await checkStop(parse.requestId)) { stop = true; break; }
             await node.eval(parse);
         }
 
@@ -108,7 +97,7 @@ function genRequest(request, save)
         genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
 
        
-        for (const node of topLevelNodes)
+        for (const node of topLevelNodes) 
             node.pushValueUpdates(parse);
         
         
@@ -148,12 +137,12 @@ function genRequest(request, save)
                             genPushUpdateObject(
                                 parse, 
                                 createDecoPoly(
-                                    node, 
-                                    obj.sp0, 
-                                    [xp0, xp2, xp3, xp1], 
+                                    node,
+                                    obj.sp0,
+                                    [xp0, xp2, xp3, xp1],
                                     true,
                                     '1, 2',
-                                    [12, 140, 233], 
+                                    [12, 140, 233],
                                     XFORM_SUFFIX,
                                     false));
                         }
