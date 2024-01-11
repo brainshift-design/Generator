@@ -84,7 +84,7 @@ extends GShape
 
         if (input)
         {
-            this.value        = input;
+            this.value        = input.copy();
             this.value.nodeId = this.nodeId;
             this.value.copyCustomParams(input);
 
@@ -213,31 +213,33 @@ extends GShape
    
     
         
-    toValue()
-    {
-        const ellipse = new EllipseValue(
-            this.nodeId,
-            this.position.toValue(),
-            this.x       .toValue(),
-            this.y       .toValue(),
-            this.width   .toValue(),
-            this.height  .toValue(),
-            this.round   .toValue(),
-            this.from    .toValue(),
-            this.to      .toValue(),
-            this.inner   .toValue());
+    // toValue()
+    // {
+    //     return this.value;
 
-        ellipse.copyCustomParams(this.value);
+    //     // const ellipse = new EllipseValue(
+    //     //     this.nodeId,
+    //     //     this.position.toValue(),
+    //     //     this.x       .toValue(),
+    //     //     this.y       .toValue(),
+    //     //     this.width   .toValue(),
+    //     //     this.height  .toValue(),
+    //     //     this.round   .toValue(),
+    //     //     this.from    .toValue(),
+    //     //     this.to      .toValue(),
+    //     //     this.inner   .toValue());
 
-        ellipse.props = this.props.toValue();
+    //     // ellipse.copyCustomParams(this.value);
 
-        ellipse.objects = 
-            this.value.objects
-            ? this.value.objects.map(o => o.copy())
-            : [];
+    //     // ellipse.props = this.props.toValue();
+
+    //     // ellipse.objects = 
+    //     //     this.value.objects
+    //     //     ? this.value.objects.map(o => o.copy())
+    //     //     : [];
         
-        return ellipse;
-    }
+    //     // return ellipse;
+    // }
     
 
     

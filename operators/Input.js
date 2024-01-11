@@ -306,31 +306,31 @@ extends EventTarget
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
             + 'translateY(-50%)';
         
-        this.div.style.width                = (isConnected ? 8 : 6) + 'px';
-        this.div.style.height               = (isConnected ? 8 : 6) + 'px';
-        this.div.style.borderRadius         = (isConnected ? 4 : 4) + 'px';
-        this.div.style.marginBottom         = (isConnected ? 4 : 6) + 'px';
-        this.div.style.boxShadow            = '0 0 0 1px ' + colorStyle;
-        this.div.style.pointerEvents        = 'auto';
+        this.div.style.width           = (isConnected ? 8 : 6) + 'px';
+        this.div.style.height          = (isConnected ? 8 : 6) + 'px';
+        this.div.style.borderRadius    = (isConnected ? 4 : 4) + 'px';
+        this.div.style.marginBottom    = (isConnected ? 4 : 6) + 'px';
+        this.div.style.boxShadow       = '0 0 0 1px ' + colorStyle;
+        this.div.style.pointerEvents   = 'auto';
        
-        this.hitbox.style.left              = isConnected ? -2 : -3;
-        this.hitbox.style.top               = isConnected ? -2 : -3;
+        this.hitbox.style.left         = isConnected ? -2 : -3;
+        this.hitbox.style.top          = isConnected ? -2 : -3;
 
 
         const zoom = graph.currentPage.zoom;
 
-        this.hitbox.style.left              = isConnected ? -2 : -3;
-        this.hitbox.style.width             = 12 + Math.max(0, (1 - 1*zoom) * 10);
+        this.hitbox.style.left         = isConnected ? -2 : -3;
+        this.hitbox.style.width        = 12 + Math.max(0, (1 - 1*zoom) * 10);
        
-        this.hitbox.style.top               = (isConnected ? -2 : -3) - Math.max(0, (1 - 1*zoom) * 10);
-        this.hitbox.style.height            = 12 + Math.max(0, (1 - 1*zoom) * 20);
+        this.hitbox.style.top          = (isConnected ? -2 : -3) - Math.max(0, (1 - 1*zoom) * 10);
+        this.hitbox.style.height       = 12 + Math.max(0, (1 - 1*zoom) * 20);
        
        
-        this.wireBall.style.left            = '1px';
-        this.wireBall.style.top             = 'calc(50% - 3px)';
+        this.wireBall.style.left       = '1px';
+        this.wireBall.style.top        = 'calc(50% - 3px)';
        
-        this.wireBall.style.zIndex          = MAX_INT32;
-        this.wireBall.style.background      = rgba2style(tc && graphView.overInput == this ? tc.wire.getColor() : this.connection ? this.connection.wire.getColor() : [1, 0, 1, 1]);
+        this.wireBall.style.zIndex     = MAX_INT32;
+        this.wireBall.style.background = rgba2style(tc && graphView.overInput == this ? tc.wire.getColor() : this.connection ? this.connection.wire.getColor() : [1, 0, 1, 1]);
 
         showElement(this.wireBall, isConnected); 
     }
@@ -381,7 +381,6 @@ extends EventTarget
     //         && !this.connectedOutput.node.isCached()
     //         && !this.connectedOutput.node.isOrPrecededByMultiplier();
     // }
-
 
 
 

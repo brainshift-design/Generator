@@ -205,26 +205,26 @@ extends GShape
 
 
 
-    toValue()
-    {
-        const star = new StarValue(
-            this.nodeId,
-            this.position.toValue(),
-            this.x       .toValue(),
-            this.y       .toValue(),
-            this.width   .toValue(),
-            this.height  .toValue(),
-            this.round   .toValue(),
-            this.points  .toValue(),
-            this.convex  .toValue());
+    // toValue()
+    // {
+    //     const star = new StarValue(
+    //         this.nodeId,
+    //         this.position.toValue(),
+    //         this.x       .toValue(),
+    //         this.y       .toValue(),
+    //         this.width   .toValue(),
+    //         this.height  .toValue(),
+    //         this.round   .toValue(),
+    //         this.points  .toValue(),
+    //         this.convex  .toValue());
 
-        star.copyCustomParams(this.value);
+    //     star.copyCustomParams(this.value);
 
-        star.props   = this.props.toValue();
-        star.objects = this.value.objects.map(o => o.copy());
+    //     star.props   = this.props.toValue();
+    //     star.objects = this.value.objects.map(o => o.copy());
  
-        return star;
-    }
+    //     return star;
+    // }
 
 
 

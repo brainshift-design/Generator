@@ -195,25 +195,25 @@ extends GShape
 
 
 
-    toValue()
-    {
-        const poly = new PolygonValue(
-            this.nodeId,
-            this.position.toValue(),
-            this.x       .toValue(),
-            this.y       .toValue(),
-            this.width   .toValue(),
-            this.height  .toValue(),
-            this.round   .toValue(),
-            this.corners .toValue());
+    // toValue()
+    // {
+    //     const poly = new PolygonValue(
+    //         this.nodeId,
+    //         this.position.toValue(),
+    //         this.x       .toValue(),
+    //         this.y       .toValue(),
+    //         this.width   .toValue(),
+    //         this.height  .toValue(),
+    //         this.round   .toValue(),
+    //         this.corners .toValue());
 
-        poly.copyCustomParams(this.value);
+    //     poly.copyCustomParams(this.value);
 
-        poly.props   = this.props.toValue();
-        poly.objects = this.value.objects.map(o => o.copy());
+    //     poly.props   = this.props.toValue();
+    //     poly.objects = this.value.objects.map(o => o.copy());
 
-        return poly;
-    }
+    //     return poly;
+    // }
 
 
 

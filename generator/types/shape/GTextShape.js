@@ -289,30 +289,30 @@ extends GShape
 
 
 
-    toValue()
-    {
-        const text = new TextShapeValue(
-            this.nodeId,
-            this.text         .toValue(),
-            this.x            .toValue(),
-            this.y            .toValue(),
-            this.width        .toValue(),
-            this.height       .toValue(),
-            this.font         .toValue(),
-            this.style        .toValue(),
-            this.size         .toValue(),
-            this.alignH       .toValue(),
-            this.alignV       .toValue(),
-            this.lineHeight   .toValue(),
-            this.letterSpacing.toValue());
+    // toValue()
+    // {
+    //     const text = new TextShapeValue(
+    //         this.nodeId,
+    //         this.text         .toValue(),
+    //         this.x            .toValue(),
+    //         this.y            .toValue(),
+    //         this.width        .toValue(),
+    //         this.height       .toValue(),
+    //         this.font         .toValue(),
+    //         this.style        .toValue(),
+    //         this.size         .toValue(),
+    //         this.alignH       .toValue(),
+    //         this.alignV       .toValue(),
+    //         this.lineHeight   .toValue(),
+    //         this.letterSpacing.toValue());
 
-        text.copyCustomParams(this.value);
+    //     text.copyCustomParams(this.value);
            
-        text.props   = this.props.toValue();
-        text.objects = this.value.objects.map(o => o.copy());
+    //     text.props   = this.props.toValue();
+    //     text.objects = this.value.objects.map(o => o.copy());
         
-        return text;
-    }
+    //     return text;
+    // }
 
 
 

@@ -27,10 +27,11 @@ extends OperatorBase
 
         this.paramCondition.controls[0].allowEditDecimals = false;
         
-        this.paramCondition  .divider = 0.59;
-        this.paramReverse.divider = 0.59;
+        this.paramCondition.divider = 0.59;
+        this.paramReverse  .divider = 0.59;
 
         this.paramCondition.valueText = 'condition';
+        this.paramCondition.input.types.unshift(ANY_VALUE);
 
         this.menuBoolReverse = createBoolMenu(this.paramReverse);
     }

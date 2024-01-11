@@ -511,6 +511,14 @@ const presetHotSpring = '\
             "inputNodeId": "repeat",\
             "inputId": "loop",\
             "list": "true"\
+            },\
+            {\
+            "outputNodeId": "getParam",\
+            "outputId": "h0",\
+            "outputOrder": "0",\
+            "inputNodeId": "sort",\
+            "inputId": "condition",\
+            "list": "false"\
             }\
         ]\
     }';

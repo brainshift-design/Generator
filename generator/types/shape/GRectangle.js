@@ -164,23 +164,23 @@ extends GShape
 
 
 
-    toValue()
-    {
-        const rect = new RectangleValue(
-            this.nodeId,
-            this.x     .toValue(),
-            this.y     .toValue(),
-            this.width .toValue(),
-            this.height.toValue(),
-            this.round .toValue());
+    // toValue()
+    // {
+    //     const rect = new RectangleValue(
+    //         this.nodeId,
+    //         this.x     .toValue(),
+    //         this.y     .toValue(),
+    //         this.width .toValue(),
+    //         this.height.toValue(),
+    //         this.round .toValue());
 
-        rect.copyCustomParams(this.value);
+    //     rect.copyCustomParams(this.value);
 
-        rect.props   = this.props.toValue();
-        rect.objects = this.value.objects.map(o => o.copy());
+    //     rect.props   = this.props.toValue();
+    //     rect.objects = this.value.objects.map(o => o.copy());
 
-        return rect;
-    }
+    //     return rect;
+    // }
 
 
 

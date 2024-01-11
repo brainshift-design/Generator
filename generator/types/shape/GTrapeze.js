@@ -175,24 +175,24 @@ extends GShape
 
 
 
-    toValue()
-    {
-        const trap = new TrapezeValue(
-            this.nodeId,
-            this.x     .toValue(),
-            this.y     .toValue(),
-            this.width .toValue(),
-            this.height.toValue(),
-            this.round .toValue(),
-            this.bias  .toValue());
+    // toValue()
+    // {
+    //     const trap = new TrapezeValue(
+    //         this.nodeId,
+    //         this.x     .toValue(),
+    //         this.y     .toValue(),
+    //         this.width .toValue(),
+    //         this.height.toValue(),
+    //         this.round .toValue(),
+    //         this.bias  .toValue());
 
-        trap.copyCustomParams(this.value);
+    //     trap.copyCustomParams(this.value);
 
-        trap.props   = this.props.toValue();
-        trap.objects = this.value.objects.map(o => o.copy());
+    //     trap.props   = this.props.toValue();
+    //     trap.objects = this.value.objects.map(o => o.copy());
 
-        return trap;
-    }
+    //     return trap;
+    // }
 
 
 

@@ -8987,9 +8987,9 @@ extends GNode
 
     toValue()
     {
-        return this.value
-             ? this.value.copy()
-             : null;
+        return this.value;
+            //  ? this.value.copy()
+            //  : null;
     }
 
 
@@ -18684,15 +18684,20 @@ async function asyncSort(parse, array, conditionNode, node, condition, reverseMu
 
     for (const item of array)
     {
-        const criterion = await getSortCondition(parse, conditionNode, node, condition, item);
-        sorted.push({item, criterion});
+        const cond = await getSortCondition(parse, conditionNode, node, condition, item);
+
+        if (  !cond
+            || cond.type != NUMBER_VALUE) 
+            return array;
+
+        sorted.push({item, condition: cond.value});
     }
 
 
     sorted.sort((a, b) =>
     {
-        if (a.criterion < b.criterion) return -1*reverseMultiplier;
-        if (a.criterion > b.criterion) return  1*reverseMultiplier;
+        if (a.condition < b.condition) return -1*reverseMultiplier;
+        if (a.condition > b.condition) return  1*reverseMultiplier;
 
         return 0;
     });
@@ -18718,9 +18723,7 @@ async function getSortCondition(parse, conditionNode, node, condition, item)
 
     const cond = (await condition.eval(parse)).toValue();
 
-    return cond 
-         ? cond.value 
-         : null;
+    return cond;
 }
 
 
@@ -33962,23 +33965,23 @@ extends GShape
 
 
 
-    toValue()
-    {
-        const rect = new RectangleValue(
-            this.nodeId,
-            this.x     .toValue(),
-            this.y     .toValue(),
-            this.width .toValue(),
-            this.height.toValue(),
-            this.round .toValue());
+    // toValue()
+    // {
+    //     const rect = new RectangleValue(
+    //         this.nodeId,
+    //         this.x     .toValue(),
+    //         this.y     .toValue(),
+    //         this.width .toValue(),
+    //         this.height.toValue(),
+    //         this.round .toValue());
 
-        rect.copyCustomParams(this.value);
+    //     rect.copyCustomParams(this.value);
 
-        rect.props   = this.props.toValue();
-        rect.objects = this.value.objects.map(o => o.copy());
+    //     rect.props   = this.props.toValue();
+    //     rect.objects = this.value.objects.map(o => o.copy());
 
-        return rect;
-    }
+    //     return rect;
+    // }
 
 
 
@@ -34152,21 +34155,21 @@ extends GShape
 
 
 
-    toValue()
-    {
-        const line = new LineValue(
-            this.nodeId,
-            this.x     .toValue(),
-            this.y     .toValue(),
-            this.width .toValue());
+    // toValue()
+    // {
+    //     const line = new LineValue(
+    //         this.nodeId,
+    //         this.x     .toValue(),
+    //         this.y     .toValue(),
+    //         this.width .toValue());
 
-        line.copyCustomParams(this.value);
+    //     line.copyCustomParams(this.value);
 
-        line.props   = this.props.toValue();
-        line.objects = this.value.objects.map(o => o.copy());
+    //     line.props   = this.props.toValue();
+    //     line.objects = this.value.objects.map(o => o.copy());
 
-        return line;
-    }
+    //     return line;
+    // }
 }
 
 
@@ -34256,7 +34259,7 @@ extends GShape
 
         if (input)
         {
-            this.value        = input;
+            this.value        = input.copy();
             this.value.nodeId = this.nodeId;
             this.value.copyCustomParams(input);
 
@@ -34385,31 +34388,33 @@ extends GShape
    
     
         
-    toValue()
-    {
-        const ellipse = new EllipseValue(
-            this.nodeId,
-            this.position.toValue(),
-            this.x       .toValue(),
-            this.y       .toValue(),
-            this.width   .toValue(),
-            this.height  .toValue(),
-            this.round   .toValue(),
-            this.from    .toValue(),
-            this.to      .toValue(),
-            this.inner   .toValue());
+    // toValue()
+    // {
+    //     return this.value;
 
-        ellipse.copyCustomParams(this.value);
+    //     // const ellipse = new EllipseValue(
+    //     //     this.nodeId,
+    //     //     this.position.toValue(),
+    //     //     this.x       .toValue(),
+    //     //     this.y       .toValue(),
+    //     //     this.width   .toValue(),
+    //     //     this.height  .toValue(),
+    //     //     this.round   .toValue(),
+    //     //     this.from    .toValue(),
+    //     //     this.to      .toValue(),
+    //     //     this.inner   .toValue());
 
-        ellipse.props = this.props.toValue();
+    //     // ellipse.copyCustomParams(this.value);
 
-        ellipse.objects = 
-            this.value.objects
-            ? this.value.objects.map(o => o.copy())
-            : [];
+    //     // ellipse.props = this.props.toValue();
+
+    //     // ellipse.objects = 
+    //     //     this.value.objects
+    //     //     ? this.value.objects.map(o => o.copy())
+    //     //     : [];
         
-        return ellipse;
-    }
+    //     // return ellipse;
+    // }
     
 
     
@@ -34641,24 +34646,24 @@ extends GShape
 
 
 
-    toValue()
-    {
-        const trap = new TrapezeValue(
-            this.nodeId,
-            this.x     .toValue(),
-            this.y     .toValue(),
-            this.width .toValue(),
-            this.height.toValue(),
-            this.round .toValue(),
-            this.bias  .toValue());
+    // toValue()
+    // {
+    //     const trap = new TrapezeValue(
+    //         this.nodeId,
+    //         this.x     .toValue(),
+    //         this.y     .toValue(),
+    //         this.width .toValue(),
+    //         this.height.toValue(),
+    //         this.round .toValue(),
+    //         this.bias  .toValue());
 
-        trap.copyCustomParams(this.value);
+    //     trap.copyCustomParams(this.value);
 
-        trap.props   = this.props.toValue();
-        trap.objects = this.value.objects.map(o => o.copy());
+    //     trap.props   = this.props.toValue();
+    //     trap.objects = this.value.objects.map(o => o.copy());
 
-        return trap;
-    }
+    //     return trap;
+    // }
 
 
 
@@ -34898,25 +34903,25 @@ extends GShape
 
 
 
-    toValue()
-    {
-        const poly = new PolygonValue(
-            this.nodeId,
-            this.position.toValue(),
-            this.x       .toValue(),
-            this.y       .toValue(),
-            this.width   .toValue(),
-            this.height  .toValue(),
-            this.round   .toValue(),
-            this.corners .toValue());
+    // toValue()
+    // {
+    //     const poly = new PolygonValue(
+    //         this.nodeId,
+    //         this.position.toValue(),
+    //         this.x       .toValue(),
+    //         this.y       .toValue(),
+    //         this.width   .toValue(),
+    //         this.height  .toValue(),
+    //         this.round   .toValue(),
+    //         this.corners .toValue());
 
-        poly.copyCustomParams(this.value);
+    //     poly.copyCustomParams(this.value);
 
-        poly.props   = this.props.toValue();
-        poly.objects = this.value.objects.map(o => o.copy());
+    //     poly.props   = this.props.toValue();
+    //     poly.objects = this.value.objects.map(o => o.copy());
 
-        return poly;
-    }
+    //     return poly;
+    // }
 
 
 
@@ -35170,26 +35175,26 @@ extends GShape
 
 
 
-    toValue()
-    {
-        const star = new StarValue(
-            this.nodeId,
-            this.position.toValue(),
-            this.x       .toValue(),
-            this.y       .toValue(),
-            this.width   .toValue(),
-            this.height  .toValue(),
-            this.round   .toValue(),
-            this.points  .toValue(),
-            this.convex  .toValue());
+    // toValue()
+    // {
+    //     const star = new StarValue(
+    //         this.nodeId,
+    //         this.position.toValue(),
+    //         this.x       .toValue(),
+    //         this.y       .toValue(),
+    //         this.width   .toValue(),
+    //         this.height  .toValue(),
+    //         this.round   .toValue(),
+    //         this.points  .toValue(),
+    //         this.convex  .toValue());
 
-        star.copyCustomParams(this.value);
+    //     star.copyCustomParams(this.value);
 
-        star.props   = this.props.toValue();
-        star.objects = this.value.objects.map(o => o.copy());
+    //     star.props   = this.props.toValue();
+    //     star.objects = this.value.objects.map(o => o.copy());
  
-        return star;
-    }
+    //     return star;
+    // }
 
 
 
@@ -35531,30 +35536,30 @@ extends GShape
 
 
 
-    toValue()
-    {
-        const text = new TextShapeValue(
-            this.nodeId,
-            this.text         .toValue(),
-            this.x            .toValue(),
-            this.y            .toValue(),
-            this.width        .toValue(),
-            this.height       .toValue(),
-            this.font         .toValue(),
-            this.style        .toValue(),
-            this.size         .toValue(),
-            this.alignH       .toValue(),
-            this.alignV       .toValue(),
-            this.lineHeight   .toValue(),
-            this.letterSpacing.toValue());
+    // toValue()
+    // {
+    //     const text = new TextShapeValue(
+    //         this.nodeId,
+    //         this.text         .toValue(),
+    //         this.x            .toValue(),
+    //         this.y            .toValue(),
+    //         this.width        .toValue(),
+    //         this.height       .toValue(),
+    //         this.font         .toValue(),
+    //         this.style        .toValue(),
+    //         this.size         .toValue(),
+    //         this.alignH       .toValue(),
+    //         this.alignV       .toValue(),
+    //         this.lineHeight   .toValue(),
+    //         this.letterSpacing.toValue());
 
-        text.copyCustomParams(this.value);
+    //     text.copyCustomParams(this.value);
            
-        text.props   = this.props.toValue();
-        text.objects = this.value.objects.map(o => o.copy());
+    //     text.props   = this.props.toValue();
+    //     text.objects = this.value.objects.map(o => o.copy());
         
-        return text;
-    }
+    //     return text;
+    // }
 
 
 

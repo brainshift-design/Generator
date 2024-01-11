@@ -133,19 +133,19 @@ extends GShape
 
 
 
-    toValue()
-    {
-        const line = new LineValue(
-            this.nodeId,
-            this.x     .toValue(),
-            this.y     .toValue(),
-            this.width .toValue());
+    // toValue()
+    // {
+    //     const line = new LineValue(
+    //         this.nodeId,
+    //         this.x     .toValue(),
+    //         this.y     .toValue(),
+    //         this.width .toValue());
 
-        line.copyCustomParams(this.value);
+    //     line.copyCustomParams(this.value);
 
-        line.props   = this.props.toValue();
-        line.objects = this.value.objects.map(o => o.copy());
+    //     line.props   = this.props.toValue();
+    //     line.objects = this.value.objects.map(o => o.copy());
 
-        return line;
-    }
+    //     return line;
+    // }
 }
