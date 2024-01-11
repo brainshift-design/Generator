@@ -288,15 +288,15 @@ extends EventTarget
 
 
 
-    canConnectTo(input)
-    {
-        // console.log('this.supportsTypes([ANY_VALUE] =', this.supportsTypes([ANY_VALUE]));
+    // canConnectTo(input)
+    // {
+    //     // console.log('this.supportsTypes([ANY_VALUE] =', this.supportsTypes([ANY_VALUE]));
 
-        if (this.supportsTypes([ANY_VALUE]))
-            return true;
+    //     if (this.supportsTypes([ANY_VALUE]))
+    //         return true;
 
-        return arraysIntersect(this.types, input.types);
-    }
+    //     return arraysIntersect(this.types, input.types);
+    // }
 
 
 

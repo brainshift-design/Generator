@@ -360,9 +360,13 @@ extends EventTarget
             && !output.node.isCached())
             return false;
 
-
-        //if (output.node.isOrFollows(this.node))
         if (output.node.follows(this.node))
+            return false;
+        
+        if (   this.param
+            && this.param.id == 'condition'
+            && this.node.type == SORT
+            && this.node.follows(output.node))
             return false;
 
 
