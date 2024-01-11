@@ -12,7 +12,8 @@ extends OperatorBase
         super(FILTER, 'filter', 'filter', iconFilter);
 
 
-        this.canDisable = true;
+        this.subscription      = true;
+        this.canDisable        = true;
         this.showHeaderTooltip = true;
         
 

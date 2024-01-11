@@ -324,6 +324,10 @@ function enableFeatures(sub, beta = false)
     enableMenuItem(menuItemValueName,    true, sub);
     enableMenuItem(menuItemObjectName,   true, sub);
     enableMenuItem(menuItemTimer,        true, sub);
+    enableMenuItem(menuItemUniqueList,   true, sub);
+    enableMenuItem(menuItemReverseList,  true, sub);
+    enableMenuItem(menuItemSort,         true, sub);
+    enableMenuItem(menuItemFilter,       true, sub);
     enableMenuItem(menuItemAnimate,      true, sub);
     enableMenuItem(menuItemSaveToFile,   true, sub);
     enableMenuItem(menuItemSaveSelected, true, sub);

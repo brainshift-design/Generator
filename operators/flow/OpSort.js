@@ -14,7 +14,8 @@ extends OperatorBase
         super(SORT, 'sort', 'sort', iconSort);
 
 
-        this.canDisable = true;
+        this.subscription      = true;
+        this.canDisable        = true;
         this.showHeaderTooltip = true;
         
 

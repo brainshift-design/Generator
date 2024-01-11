@@ -2161,7 +2161,7 @@ function logSavedConn(conn, darkMode)
 console.clear();
 
 
-figma.payments.setPaymentStatusInDevelopment({type: 'PAID'});
+figma.payments.setPaymentStatusInDevelopment({type: 'UNPAID'});
 
 
 //figma.on('selectionchange', figOnSelectionChange);
