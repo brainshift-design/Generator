@@ -88,8 +88,26 @@ extends EventTarget
         this.input            = null;
         this.output           = null;
 
-        this.div.appendChild(this.divName);
+        this.div.appendChild(this.divName    );
         this.div.appendChild(this.divControls);
+
+
+        // this.div.addEventListener('pointerdown', e =>
+        // {
+        //     if (e.button == 2)
+        //     {
+        //         e.preventDefault();
+        //         e.stopPropagation();
+
+        //         if (    this.controls.length > 0
+        //             &&  this.controls[0] instanceof NumberControl
+        //             && !isEmpty(this.controls[0].options))
+        //         {
+        //             initSelectParamMenu(this);
+        //             menuSelectParam.showAt(e.clientX, e.clientY, false);
+        //         }
+        //     }
+        // });
     }
 
 

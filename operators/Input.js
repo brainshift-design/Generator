@@ -363,10 +363,12 @@ extends EventTarget
         if (output.node.follows(this.node))
             return false;
         
-        if (   this.param
-            && this.param.id == 'condition'
-            && this.node.type == SORT
-            && this.node.follows(output.node))
+        if (    this.param
+            &&  this.param.id == 'condition'
+            &&  this.node.type == SORT
+            &&  this.node.follows(output.node)
+            && (   !this.connected
+                || !this.connectedOutput.isSortCondition()))
             return false;
 
 

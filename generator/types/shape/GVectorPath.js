@@ -221,23 +221,23 @@ extends GShape
 
 
 
-    toValue()
-    {
-        const path = new VectorPathValue(
-            this.nodeId,
-            this.points .toValue(),
-            this.closed .toValue(),
-            this.degree .toValue(),
-            this.winding.toValue(),
-            this.round  .toValue());
+    // toValue()
+    // {
+    //     const path = new VectorPathValue(
+    //         this.nodeId,
+    //         this.points .toValue(),
+    //         this.closed .toValue(),
+    //         this.degree .toValue(),
+    //         this.winding.toValue(),
+    //         this.round  .toValue());
 
-        path.copyCustomParams(this.value);
+    //     path.copyCustomParams(this.value);
 
-        path.props   = this.props.toValue();
-        path.objects = this.value.objects.map(o => o.copy());
+    //     path.props   = this.props.toValue();
+    //     path.objects = this.value.objects.map(o => o.copy());
 
-        return path;
-    }
+    //     return path;
+    // }
 
 
 

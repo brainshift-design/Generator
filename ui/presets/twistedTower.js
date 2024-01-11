@@ -841,7 +841,7 @@ const presetTwistedTower = '\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "sort2",\
-            "inputId": "order",\
+            "inputId": "condition",\
             "list": "false"\
         },\
         {\

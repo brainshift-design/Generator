@@ -128,7 +128,7 @@ extends Control
     
         this.acc                   = acc;
          
-        this.decimals                   =
+        this.decimals              =
         this.displayDec            = dec;
              
         this.valueScale            = 1;

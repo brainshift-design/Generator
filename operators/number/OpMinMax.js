@@ -9,7 +9,7 @@ extends OperatorBase
     {
         super(NUMBER_MINMAX, 'minmax', 'min/max', iconMinMax);
 
-        //this.iconOffsetY      = -1;
+        this.iconOffsetY      = 1;
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;

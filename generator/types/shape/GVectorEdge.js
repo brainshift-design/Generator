@@ -141,22 +141,22 @@ extends GOperator2
 
 
 
-    toValue()
-    {
-        const edge = new VectorEdgeValue(
-            this.nodeId,
-            this.input0 ? this.input0.toValue() : VectorVertexValue.NaN,
-            this.input1 ? this.input1.toValue() : VectorVertexValue.NaN,
-            this.startTangent.toValue(),
-            this.endTangent  .toValue());
+    // toValue()
+    // {
+    //     const edge = new VectorEdgeValue(
+    //         this.nodeId,
+    //         this.input0 ? this.input0.toValue() : VectorVertexValue.NaN,
+    //         this.input1 ? this.input1.toValue() : VectorVertexValue.NaN,
+    //         this.startTangent.toValue(),
+    //         this.endTangent  .toValue());
 
-        edge.copyCustomParams(this.value);
+    //     edge.copyCustomParams(this.value);
 
-        edge.uniqueId = this.value.uniqueId;
-        edge.objects  = this.value.objects.map(o => o.copy());
+    //     edge.uniqueId = this.value.uniqueId;
+    //     edge.objects  = this.value.objects.map(o => o.copy());
 
-        return edge;
-    }
+    //     return edge;
+    // }
 
 
 

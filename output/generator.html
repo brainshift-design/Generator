@@ -8987,9 +8987,9 @@ extends GNode
 
     toValue()
     {
-        return this.value;
-            //  ? this.value.copy()
-            //  : null;
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 
@@ -35765,24 +35765,24 @@ extends GOperator1
 
 
 
-    toValue()
-    {
-        return this.value
-             ? this.value.copy()
-             : null;
+    // toValue()
+    // {
+    //     return this.value
+    //          ? this.value.copy()
+    //          : null;
 
-        // const point = new PointValue(
-        //     this.nodeId,
-        //     this.x.toValue(),
-        //     this.y.toValue());
+    //     // const point = new PointValue(
+    //     //     this.nodeId,
+    //     //     this.x.toValue(),
+    //     //     this.y.toValue());
 
-        // point.objects = 
-        //     this.value.objects
-        //     ? this.value.objects.map(o => o.copy())
-        //     : [];
+    //     // point.objects = 
+    //     //     this.value.objects
+    //     //     ? this.value.objects.map(o => o.copy())
+    //     //     : [];
 
-        // return point;
-    }
+    //     // return point;
+    // }
 
 
 
@@ -36204,23 +36204,23 @@ extends GShape
 
 
 
-    toValue()
-    {
-        const path = new VectorPathValue(
-            this.nodeId,
-            this.points .toValue(),
-            this.closed .toValue(),
-            this.degree .toValue(),
-            this.winding.toValue(),
-            this.round  .toValue());
+    // toValue()
+    // {
+    //     const path = new VectorPathValue(
+    //         this.nodeId,
+    //         this.points .toValue(),
+    //         this.closed .toValue(),
+    //         this.degree .toValue(),
+    //         this.winding.toValue(),
+    //         this.round  .toValue());
 
-        path.copyCustomParams(this.value);
+    //     path.copyCustomParams(this.value);
 
-        path.props   = this.props.toValue();
-        path.objects = this.value.objects.map(o => o.copy());
+    //     path.props   = this.props.toValue();
+    //     path.objects = this.value.objects.map(o => o.copy());
 
-        return path;
-    }
+    //     return path;
+    // }
 
 
 
@@ -36643,22 +36643,22 @@ extends GOperator2
 
 
 
-    toValue()
-    {
-        const edge = new VectorEdgeValue(
-            this.nodeId,
-            this.input0 ? this.input0.toValue() : VectorVertexValue.NaN,
-            this.input1 ? this.input1.toValue() : VectorVertexValue.NaN,
-            this.startTangent.toValue(),
-            this.endTangent  .toValue());
+    // toValue()
+    // {
+    //     const edge = new VectorEdgeValue(
+    //         this.nodeId,
+    //         this.input0 ? this.input0.toValue() : VectorVertexValue.NaN,
+    //         this.input1 ? this.input1.toValue() : VectorVertexValue.NaN,
+    //         this.startTangent.toValue(),
+    //         this.endTangent  .toValue());
 
-        edge.copyCustomParams(this.value);
+    //     edge.copyCustomParams(this.value);
 
-        edge.uniqueId = this.value.uniqueId;
-        edge.objects  = this.value.objects.map(o => o.copy());
+    //     edge.uniqueId = this.value.uniqueId;
+    //     edge.objects  = this.value.objects.map(o => o.copy());
 
-        return edge;
-    }
+    //     return edge;
+    // }
 
 
 
@@ -36913,21 +36913,21 @@ extends GShape
 
 
 
-    toValue()
-    {
-        const region = new VectorRegionValue(
-            this.nodeId,
-            this.loops  .toValue(),
-            this.winding.toValue(),
-            this.props  .toValue());
+    // toValue()
+    // {
+    //     const region = new VectorRegionValue(
+    //         this.nodeId,
+    //         this.loops  .toValue(),
+    //         this.winding.toValue(),
+    //         this.props  .toValue());
 
-        region.copyCustomParams(this.value);
+    //     region.copyCustomParams(this.value);
 
-        region.uniqueId = this.value.uniqueId;
-        region.objects  = this.value.objects.map(o => o.copy());
+    //     region.uniqueId = this.value.uniqueId;
+    //     region.objects  = this.value.objects.map(o => o.copy());
 
-        return region;
-    }
+    //     return region;
+    // }
 
 
 
@@ -37143,19 +37143,19 @@ extends GShape
 
 
 
-    toValue()
-    {
-        const network = new VectorNetworkValue(
-            this.nodeId,
-            this.regions.toValue());
+    // toValue()
+    // {
+    //     const network = new VectorNetworkValue(
+    //         this.nodeId,
+    //         this.regions.toValue());
 
-        network.copyCustomParams(this.value);
+    //     network.copyCustomParams(this.value);
 
-        network.uniqueId = this.value.uniqueId;
-        network.objects  = this.value.objects.map(o => o.copy());
+    //     network.uniqueId = this.value.uniqueId;
+    //     network.objects  = this.value.objects.map(o => o.copy());
 
-        return network;
-    }
+    //     return network;
+    // }
 
 
 

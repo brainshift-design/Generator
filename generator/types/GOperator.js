@@ -147,9 +147,9 @@ extends GNode
 
     toValue()
     {
-        return this.value;
-            //  ? this.value.copy()
-            //  : null;
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 

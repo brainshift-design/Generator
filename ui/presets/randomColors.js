@@ -87,11 +87,11 @@ const presetRandomColors = '\
             {\
             "type": "CMNT",\
             "id": "comment",\
-            "name": "Type%20%22random%22",\
+            "name": "Type%20%22random%22%20or%20%22rnd%20%22",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3088",\
+            "x": "3030",\
             "y": "3950",\
             "z": "6"\
             },\

@@ -140,24 +140,24 @@ extends GOperator1
 
 
 
-    toValue()
-    {
-        return this.value
-             ? this.value.copy()
-             : null;
+    // toValue()
+    // {
+    //     return this.value
+    //          ? this.value.copy()
+    //          : null;
 
-        // const point = new PointValue(
-        //     this.nodeId,
-        //     this.x.toValue(),
-        //     this.y.toValue());
+    //     // const point = new PointValue(
+    //     //     this.nodeId,
+    //     //     this.x.toValue(),
+    //     //     this.y.toValue());
 
-        // point.objects = 
-        //     this.value.objects
-        //     ? this.value.objects.map(o => o.copy())
-        //     : [];
+    //     // point.objects = 
+    //     //     this.value.objects
+    //     //     ? this.value.objects.map(o => o.copy())
+    //     //     : [];
 
-        // return point;
-    }
+    //     // return point;
+    // }
 
 
 

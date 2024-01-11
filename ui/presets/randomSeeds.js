@@ -219,7 +219,7 @@ const presetRandomSeeds = '\
             "name": "random%20B",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "0",\
+            "highlight": "5",\
             "x": "5184",\
             "y": "6357",\
             "z": "14",\
@@ -441,7 +441,7 @@ const presetRandomSeeds = '\
             "name": "random%20R",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "0",\
+            "highlight": "5",\
             "x": "5184",\
             "y": "6004",\
             "z": "29",\
@@ -545,7 +545,7 @@ const presetRandomSeeds = '\
             "name": "random%20G",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "0",\
+            "highlight": "5",\
             "x": "5184",\
             "y": "6181",\
             "z": "36",\
