@@ -18714,16 +18714,14 @@ async function asyncSort(parse, array, conditionNode, node, condition, reverseMu
 async function getSortCondition(parse, conditionNode, node, condition, item)
 {
     if (!conditionNode)
-        return item.value;
+        return item;
     
     conditionNode.reset();
 
     conditionNode.input = item.copy();
     condition.invalidateInputs(parse, node, true); 
 
-    const cond = (await condition.eval(parse)).toValue();
-
-    return cond;
+    return await condition.eval(parse);
 }
 
 
