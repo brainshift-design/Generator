@@ -3,7 +3,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(TEXT_UNICODE, 'charToCode', 'to code', iconCharacterToCode);
+        super(TEXT_UNICODE, 'charToCode', 'char to code', iconCharacterToCode);
 
         this.iconOffsetY = 1;
 

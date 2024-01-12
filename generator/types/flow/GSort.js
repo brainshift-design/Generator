@@ -214,12 +214,15 @@ async function asyncSort(parse, array, conditionNode, node, condition, reverseMu
     for (const item of array)
     {
         const cond = await getSortCondition(parse, conditionNode, node, condition, item);
+        if (!cond) return array;
 
-        if (  !cond
-            || cond.type != NUMBER_VALUE) 
+        const condValue = cond.toValue();
+
+        if (   condValue.type != NUMBER_VALUE
+            && condValue.type != TEXT_VALUE) 
             return array;
 
-        sorted.push({item, condition: cond.value});
+        sorted.push({item, condition: condValue.value});
     }
 
 
@@ -242,6 +245,7 @@ async function asyncSort(parse, array, conditionNode, node, condition, reverseMu
 
 async function getSortCondition(parse, conditionNode, node, condition, item)
 {
+    console.log('conditionNode =', conditionNode);
     if (!conditionNode)
         return item;
     
