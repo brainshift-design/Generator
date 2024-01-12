@@ -245,7 +245,9 @@ extends EventTarget
             // + (left > 0 ? 12 : 0);
 
 
-        this.showValue = !this.node.hasSortConditions();
+        this.showValue = 
+               !this.node.hasSortConditions()
+            || !this.isNodeValue;
 
 
         if (this.showName)
@@ -259,7 +261,8 @@ extends EventTarget
             this.divControls.style.display = this.showValue ? 'inline-block' : 'none';
 
 
-            if (this.showValue)
+            if (    this.showValue
+                || !this.isNodeValue)
             {
                 this.divControls.style.left       =  nameSize;
                 this.divControls.style.marginLeft = '3px';

@@ -245,7 +245,6 @@ async function asyncSort(parse, array, conditionNode, node, condition, reverseMu
 
 async function getSortCondition(parse, conditionNode, node, condition, item)
 {
-    console.log('conditionNode =', conditionNode);
     if (!conditionNode)
         return item;
     

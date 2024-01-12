@@ -21,11 +21,16 @@ extends ResizableBase
 
     setRect(x, y, w, h, updateTransform = true)
     {
+        const valueHeight = 
+            !this.headerOutputs[0].isSortCondition() 
+            ? defParamHeight 
+            : 0;
+
         super.setRect(
             x,
             y,
             w,
-            defHeaderHeight + defParamHeight,
+            defHeaderHeight + valueHeight,
             updateTransform);
     }
 
@@ -77,6 +82,21 @@ extends ResizableBase
 
 
 
+    updateNode()
+    {
+        super.updateNode();
+
+
+        this.div   .style.borderRadius = 
+        this.inner .style.borderRadius = 
+        this.header.style.borderRadius = 
+            !this.headerOutputs[0].isSortCondition()
+            ? '4px 4px 0 0'
+            : '4px';
+    }
+
+
+
     updateParams()
     {
         const input = this.inputs[0];
@@ -86,8 +106,12 @@ extends ResizableBase
         this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         this.paramValue.controls[0].showBar   = !this.isUnknown();
 
-
         this.updateParamControls();
+
+        this.paramValue.div.style.display = 
+            !this.headerOutputs[0].isSortCondition() 
+            ? 'inline-block'
+            : 'none';
     }
 
 
