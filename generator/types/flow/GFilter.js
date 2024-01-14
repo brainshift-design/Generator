@@ -45,67 +45,67 @@ extends GOperator1
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
 
-        this.value = new ListValue();
+        this.value         = new ListValue();
         this.value.objects = [];
 
         let maxColumns = 0;
 
         
-        if (   input
-            && this.condition)
+        if (input)
         {
-            const condition = this.condition ? (await this.condition.eval(parse)).toValue() : null;
+            if (this.options.enabled)
+            {
+                if (  !this.condition
+                    || this.condition.getConditionNode)
+                {
+                    if (this.condition)
+                        await this.condition.eval(parse);
 
-                
-            // if (this.options.enabled)
-            // {
-                // if (   input 
-                //     && this.condition
-                //     && this.condition.getConditionNode)
-                // {
-                //     const conditionNode = this.condition.getConditionNode(parse);
-
-
-                //     if (conditionNode)
-                //     {
-                //         const reverseMultiplier = reverse.value > 0 ? -1 : 1;
-                //         const unsorted          = [...input.items];
+                    const conditionNode = 
+                        this.condition
+                        ? this.condition.getConditionNode(parse)
+                        : null;
 
 
-                //         input.items = await asyncSort(
-                //             parse, 
-                //             unsorted, 
-                //             conditionNode, 
-                //             this,
-                //             this.condition, 
-                //             reverseMultiplier);
+                    if (  !this.condition
+                        || conditionNode)
+                    {
+                        const unfiltered = [...input.items];
+
+
+                        input.items = await asyncFilter(
+                            parse, 
+                            unfiltered, 
+                            conditionNode,
+                            this,
+                            this.condition);
+
+
+                        input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
                         
 
-                //         input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
-                        
+                        for (let i = 0; i < input.items.length; i++)
+                        {
+                            const row       = input   .items[i];
+                            const itemIndex = unfiltered.indexOf(row);
 
-                //         for (let i = 0; i < input.items.length; i++)
-                //         {
-                //             const row       = input   .items[i];
-                //             const itemIndex = unsorted.indexOf(row);
+                            this.value.items.push(row.copy());
 
-                //             this.value.items.push(row.copy());
+                            if (   row.objects
+                                && this.value.objects)
+                            {
+                                const objects = input.objects.filter(o => o.itemIndex == itemIndex).map(o => o.copy());
+                                objects.forEach(o => o.itemIndex = i);
 
-                //             if (   row.objects
-                //                 && this.value.objects)
-                //             {
-                //                 const objects = input.objects.filter(o => o.itemIndex == itemIndex).map(o => o.copy());
-                //                 objects.forEach(o => o.itemIndex = i);
-
-                //                 this.value.objects.push(...objects);
-                //             }
-                //         }
-                //     }
-                // }
-                // else
-                //     this.value = input;
-            // }
-            // else
+                                this.value.objects.push(...objects);
+                            }
+                        }
+                    }
+                }
+                else
+                    this.value = input;
+            }
+            else
                 this.value = input;
         }
         else
@@ -113,9 +113,6 @@ extends GOperator1
 
 
         this.updateValueObjects();
-
-
-        const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)));
 
 
         this.setUpdateValues(parse,
@@ -174,4 +171,52 @@ extends GOperator1
 
         if (this.condition) this.condition.iterateLoop(parse);
     }
+}
+
+
+
+async function asyncFilter(parse, array, conditionNode, node, condition)
+{
+    const oldInput = conditionNode ? conditionNode.input : null;
+
+    const filtered = [];
+
+    for (const item of array)
+    {
+        const cond = await getFilterCondition(parse, conditionNode, node, condition, item);
+        // console.log('cond =', cond);
+        if (!cond) return array;
+
+        const condValue = cond.toValue();
+
+        if (   condValue.type == NUMBER_VALUE
+            && condValue.value > 0)
+            filtered.push(item);
+    }
+
+    if (conditionNode)
+        conditionNode.input = oldInput;
+
+    return filtered;
+}
+
+
+
+async function getFilterCondition(parse, conditionNode, node, condition, item)
+{
+    if (!conditionNode)
+        return item;
+    
+    conditionNode.reset();
+
+    // console.log('conditionNode =', conditionNode);
+    // console.log('item =', item);
+
+    if (conditionNode.toValue().type == item.type)
+    {
+        conditionNode.input = item.copy();
+        condition.invalidateInputs(parse, node, true); 
+    }
+
+    return await condition.eval(parse);
 }

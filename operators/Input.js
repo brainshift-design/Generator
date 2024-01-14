@@ -368,7 +368,7 @@ extends EventTarget
             &&  this.node.type == SORT
             &&  this.node.follows(output.node)
             && (   !this.connected
-                || !this.connectedOutput.isSortCondition()))
+                || !this.connectedOutput.isCondition()))
             return false;
 
 

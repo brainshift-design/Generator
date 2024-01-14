@@ -288,6 +288,14 @@ function makeSelectedNodesActive()
 
 
 
+function makeSelectedNodesNotCondition()
+{
+    if (graphView.selectedNodes.find(n => !n.notCondition))
+        actionManager.do(new MakeNotConditionNodesAction(graphView.selectedNodes.map(n => n.id)));
+}
+
+
+
 function uiMakeNodeActive(node, makePassive = true)
 {
     if (makePassive)

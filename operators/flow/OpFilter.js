@@ -83,7 +83,7 @@ extends OperatorBase
         
         this.updateParamControls();
         
-        this.paramCondition.valueText = 'order';
+        this.paramCondition.valueText = 'condition';
     }
 
 

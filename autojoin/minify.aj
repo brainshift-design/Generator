@@ -2598,6 +2598,7 @@ uiDisconnectAny
 uiUpdateSavedConnectionsToNodeId
 uiUpdateSavedConnectionsFromNodeId
 makeSelectedNodesActive
+makeSelectedNodesNotCondition
 uiMakeNodeActive
 uiMakeNodesActive
 uiMakeNodePassive
@@ -2971,7 +2972,7 @@ isOrPrecededByMultiplier
 isOrFollowedByMultiplier
 hasUncachedInputs
 hasMultipliedInputs
-hasSortConditions
+hasConditionsOutputs
 paramCanBeUnknown
 paramIsConsideredDefault
 restoreParamUndoValue

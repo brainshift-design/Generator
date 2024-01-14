@@ -94,6 +94,9 @@ class Operator
     allowEmptyName     = false;
     
 
+    notCondition       = false; // show node params in condition branch
+
+
     showHeaderTooltip  = false;
     preview            = null;
 
@@ -956,10 +959,10 @@ class Operator
 
 
 
-    hasSortConditions()
+    hasConditionOutputs()
     {
         for (const output of this.outputs)
-            if (output.isSortCondition())
+            if (output.isCondition())
                 return true;
 
         return false;
@@ -969,13 +972,6 @@ class Operator
 
     isUnknown()
     {
-        // if (this.nodeId == 'circleCenter')
-        // {
-        //     console.log('this.isOrPrecededByUncached() =', this.isOrPrecededByUncached());
-        //     console.log('this.hasMultipliedOutputs() =', this.hasMultipliedOutputs());
-        //     console.log('this.hasSortConditions() =', this.hasSortConditions());
-        // }
-
         return this.isOrPrecededByUncached()
                //   this.hasUncachedInputs()
             && this.hasMultipliedOutputs();
@@ -1228,17 +1224,18 @@ class Operator
         const tab = HTAB;
 
         let json =
-              pos + tab + '"type": "'      + this.type                                     + '",\n'
-            + pos + tab + '"created": "'   + this.createTime                               + '",\n'
-            + pos + tab + '"updated": "'   + this.updateTime                               + '",\n'
-            + pos + tab + '"id": "'        + (this.stripIdForCopy ? this.nodeId : this.id) + '",\n'
-            + pos + tab + '"name": "'      + encodeURIComponent(this.name)                 + '",\n'
-            + pos + tab + '"renamed": "'   + boolToString(this.renamed)                    + '",\n'
-            + pos + tab + '"enabled": "'   + boolToString(this.enabled)                    + '",\n'
-            + pos + tab + '"highlight": "' + this.highlight                                + '",\n'
-            + pos + tab + '"x": "'         + parseFloat(this.div.style.left)               + '",\n'
-            + pos + tab + '"y": "'         + parseFloat(this.div.style.top )               + '",\n'
-            + pos + tab + '"z": "'         + graph.nodes.indexOf(this)                     + '"';
+              pos + tab + '"type": "'         + this.type                                     + '",\n'
+            + pos + tab + '"created": "'      + this.createTime                               + '",\n'
+            + pos + tab + '"updated": "'      + this.updateTime                               + '",\n'
+            + pos + tab + '"id": "'           + (this.stripIdForCopy ? this.nodeId : this.id) + '",\n'
+            + pos + tab + '"name": "'         + encodeURIComponent(this.name)                 + '",\n'
+            + pos + tab + '"renamed": "'      + boolToString(this.renamed)                    + '",\n'
+            + pos + tab + '"enabled": "'      + boolToString(this.enabled)                    + '",\n'
+            + pos + tab + '"highlight": "'    + this.highlight                                + '",\n'
+            + pos + tab + '"notCondition": "' + boolToString(this.notCondition)               + '",\n'
+            + pos + tab + '"x": "'            + parseFloat(this.div.style.left)               + '",\n'
+            + pos + tab + '"y": "'            + parseFloat(this.div.style.top )               + '",\n'
+            + pos + tab + '"z": "'            + graph.nodes.indexOf(this)                     + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';
@@ -1295,11 +1292,12 @@ class Operator
         this.id   = _node.id;
         this.name = decodeURIComponent(_node.name);
     
-        if (_node.renamed  ) this.renamed   = parseBool(_node.renamed);
-        if (_node.enabled  ) this.enabled   = parseBool(_node.enabled);
-        if (_node.highlight) this.highlight = parseInt(_node.highlight);
+        if (_node.renamed     ) this.renamed      = parseBool(_node.renamed     );
+        if (_node.enabled     ) this.enabled      = parseBool(_node.enabled     );
+        if (_node.highlight   ) this.highlight    = parseInt (_node.highlight   );
+        if (_node.notCondition) this.notCondition = parseBool(_node.notCondition);
     
-        if (   _node.params
+        if (  _node.params
             || this.alwaysLoadParams)
             this.loadParams(_node, pasting);
     }

@@ -353,22 +353,18 @@ extends EventTarget
 
 
 
-    isSortCondition()
+    isCondition()
     {
         return this.connectedInputs.find(i =>
         {
             if (   i.param
                 && i.param.id == 'condition'
-                && i.node.type == SORT)
+                && (   i.node.type == SORT
+                    || i.node.type == FILTER))
                 return true;
 
-            // if (   i.param
-            //     && i.param.output
-            //     && i.param.output.isSortCondition())
-            //     return true;
-
             for (const output of i.node.outputs)
-                if (output.isSortCondition())
+                if (output.isCondition())
                     return true;
 
             return false;

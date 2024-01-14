@@ -185,14 +185,11 @@ extends EventTarget
 
     isUnknown()
     {
-        return    (      this.input
-                      && this.input.isUncached()
-                   ||    this.isNodeValue
-                      && this.node.isUnknown())
-               && this.node.hasMultipliedOutputs()
-            // ||    this.output
-            //    && this.output.isSortCondition()
-            // ||    this.isNodeValue;
+        return (      this.input
+                   && this.input.isUncached()
+                ||    this.isNodeValue
+                   && this.node.isUnknown())
+            && this.node.hasMultipliedOutputs();
     }
 
 
@@ -246,8 +243,9 @@ extends EventTarget
 
 
         this.showValue = 
-               !this.node.hasSortConditions()
-            || !this.isNodeValue;
+               !this.node.hasConditionOutputs()
+            || !this.isNodeValue
+            ||  this.notCondition;
 
 
         if (this.showName)
