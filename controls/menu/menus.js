@@ -941,7 +941,7 @@ function initGeneratorMenus()
         menuItemNodeRename          = new MenuItem('Rename',           null, {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
         menuItemNodeHighlight       = new MenuItem('Highlight',        null, {childMenu: menuNodeHighlight}),
         menuItemNodeSep3            = new MenuItem('',                 null, {separator: true}),
-        menuItemNodeActivate        = new MenuItem('Activate',         null, {callback: () => makeSelectedNodesActive()}),
+        menuItemNodeActivate        = new MenuItem('Activate',         null, {shortcut:  osShift()     + 'A',  callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable   = new MenuItem('Enable/Disable',   null, {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
         menuItemNodeSelect          = new MenuItem('Select',           null, {childMenu: menuNodeSelect}),
       //menuItemNodeEdit            = new MenuItem('Edit . . .',       null, {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
@@ -1004,6 +1004,8 @@ function initGeneratorMenus()
         updateElementDisplay(menuItemNodeEnableDisable  .div, canDisable);
         updateElementDisplay(menuItemNodeNotConditionSep.div, isCondition);
         updateElementDisplay(menuItemNodeNotCondition   .div, isCondition);
+
+        menuNode.showChecks = isCondition;
     };
 
 

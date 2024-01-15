@@ -18857,7 +18857,7 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.condition && this.condition.isValid();
+            && (!this.condition || this.condition.isValid());
     }
 
 
@@ -26242,7 +26242,7 @@ extends GOperator1
         else if (this.value)
             await this.value.eval(parse);
         else
-            this.value = new TextValue();//TextValue.NaN;
+            this.value = new TextValue();
 
 
         this.setUpdateValues(parse,
@@ -39228,8 +39228,11 @@ extends GOperator1
             });
 
 
+        const type = this.outputType();
+
         this.setUpdateValues(parse,
         [
+            ['type',       type      ],
             ['centerX',    centerX   ],
             ['centerY',    centerY   ],
             ['units',      units     ],

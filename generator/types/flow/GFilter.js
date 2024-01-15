@@ -142,7 +142,7 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.condition && this.condition.isValid();
+            && (!this.condition || this.condition.isValid());
     }
 
 

@@ -185,6 +185,14 @@ document.addEventListener('keydown', e =>
         graphView.selectAllNodes(e.shiftKey);
     }
 
+    // activate selected
+    else if (e.code == 'KeyA'
+          && e.shiftKey)
+    {
+        e.preventDefault();
+        makeSelectedNodesActive();
+    }
+
     // group selected
     else if (e.code == 'KeyG'
           && getCtrlKey(e))

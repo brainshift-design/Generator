@@ -32,7 +32,7 @@ extends GOperator1
         else if (this.value)
             await this.value.eval(parse);
         else
-            this.value = new TextValue();//TextValue.NaN;
+            this.value = new TextValue();
 
 
         this.setUpdateValues(parse,

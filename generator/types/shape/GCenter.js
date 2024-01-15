@@ -78,8 +78,11 @@ extends GOperator1
             });
 
 
+        const type = this.outputType();
+
         this.setUpdateValues(parse,
         [
+            ['type',       type      ],
             ['centerX',    centerX   ],
             ['centerY',    centerY   ],
             ['units',      units     ],

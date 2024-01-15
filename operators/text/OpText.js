@@ -30,7 +30,7 @@ extends ResizableBase
 
         const valueHeight = 
               !this.headerOutputs[0].isCondition()
-            || this.notCondition
+            || this.notCondition === true
             ? defParamHeight 
             : 0;
 

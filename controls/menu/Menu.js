@@ -82,8 +82,8 @@ class Menu
             if (i > 0) 
                 item.div.appendChild(document.createElement('br'));
 
-            if (!this.showIcons  && item.divIcon ) item.divIcon .style.display = 'none';
-            if (!this.showChecks && item.divCheck) item.divCheck.style.width   = this.showIcons ? 18 : 15;
+            // if (!this.showIcons  && item.divIcon ) item.divIcon .style.display = 'none';
+            // if (!this.showChecks && item.divCheck) item.divCheck.style.width   = this.showIcons ? 18 : 15;
 
             item.parentMenu = this;
             item.index      = i;
@@ -125,6 +125,9 @@ class Menu
         {
             const mesName     = utilContext.measureText(item.name);
             const mesShortcut = utilContext.measureText(item.shortcut);
+
+            if (!item.parentMenu.showIcons  && item.divIcon ) item.divIcon .style.display = 'none';
+            if (!item.parentMenu.showChecks && item.divCheck) item.divCheck.style.width   = this.showIcons ? 18 : 15;
 
             let checksAndIcons = 
                   (item.parentMenu.showChecks  ? 32 : 0)
