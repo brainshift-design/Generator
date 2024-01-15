@@ -20,17 +20,17 @@ extends OperatorBase
 
 
 
-    isOrPrecededByUncached()
-    {
-        return false;
-    }
+    // isOrPrecededByUncached()
+    // {
+    //     return false;
+    // }
 
 
 
-    isOrPrecededByMultiplier()
-    {
-        return false;
-    }
+    // isOrPrecededByMultiplier()
+    // {
+    //     return false;
+    // }
 
 
 

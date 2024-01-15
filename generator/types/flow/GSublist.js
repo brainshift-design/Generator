@@ -4,7 +4,7 @@ extends GOperator1
     start       = null;
     end         = null;
 
-    cachedValue = null;
+    // cachedValue = null;
 
 
     
@@ -22,7 +22,7 @@ extends GOperator1
         this.start       = null;
         this.end         = null;
 
-        this.cachedValue = null;
+        // this.cachedValue = null;
     }
 
 
@@ -43,8 +43,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (   this.isCached()
-            && this.cachedValue)
+        if (   this.isCached())
+            // && this.cachedValue)
             return this;
 
 
@@ -53,11 +53,11 @@ extends GOperator1
         const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
 
 
-        if (this.cachedValue)
-            this.value = this.cachedValue.copy();
+        // if (this.cachedValue)
+        //     this.value = this.cachedValue.copy();
 
-        else
-        {
+        // else
+        // {
             this.value = new ListValue();
             this.value.objects = [];
 
@@ -103,8 +103,8 @@ extends GOperator1
             }
 
 
-            this.cachedValue = this.value.copy();
-        }
+            // this.cachedValue = this.value.copy();
+        //}
 
 
         this.updateValueObjects();

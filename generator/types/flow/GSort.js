@@ -7,6 +7,9 @@ extends GOperator1
     firstSortNode = null;
 
 
+    //cachedValue   = null;
+
+
     
     constructor(nodeId, options)
     {

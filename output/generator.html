@@ -17529,7 +17529,7 @@ extends GOperator1
 {
     indices     = null;
 
-    cachedValue = null;
+    // cachedValue = null;
 
 
     
@@ -17546,7 +17546,7 @@ extends GOperator1
 
         this.indices = null;
     
-        this.cachedValue = null;
+        // this.cachedValue = null;
     }
 
 
@@ -17579,11 +17579,11 @@ extends GOperator1
         let length = 0;
         
 
-        if (this.cachedValue)
-            this.value = this.cachedValue.copy();
+        // if (this.cachedValue)
+        //     this.value = this.cachedValue.copy();
 
-        else
-        {
+        // else
+        // {
             if (   input
                 && indices
                 && input.items)
@@ -17610,8 +17610,8 @@ extends GOperator1
                 this.value = ListValue.NaN.copy();
 
 
-            this.cachedValue = this.value.copy();
-        }
+        //     this.cachedValue = this.value.copy();
+        // }
 
 
         this.updateValueObjects();
@@ -18019,7 +18019,7 @@ extends GOperator1
     start       = null;
     end         = null;
 
-    cachedValue = null;
+    // cachedValue = null;
 
 
     
@@ -18037,7 +18037,7 @@ extends GOperator1
         this.start       = null;
         this.end         = null;
 
-        this.cachedValue = null;
+        // this.cachedValue = null;
     }
 
 
@@ -18058,8 +18058,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (   this.isCached()
-            && this.cachedValue)
+        if (   this.isCached())
+            // && this.cachedValue)
             return this;
 
 
@@ -18068,11 +18068,11 @@ extends GOperator1
         const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
 
 
-        if (this.cachedValue)
-            this.value = this.cachedValue.copy();
+        // if (this.cachedValue)
+        //     this.value = this.cachedValue.copy();
 
-        else
-        {
+        // else
+        // {
             this.value = new ListValue();
             this.value.objects = [];
 
@@ -18118,8 +18118,8 @@ extends GOperator1
             }
 
 
-            this.cachedValue = this.value.copy();
-        }
+            // this.cachedValue = this.value.copy();
+        //}
 
 
         this.updateValueObjects();
@@ -18198,7 +18198,7 @@ extends GOperator1
     counts      = null;
     indices     = null;
 
-    cachedValue = null;
+    // cachedValue = null;
 
 
     
@@ -18216,7 +18216,7 @@ extends GOperator1
         this.counts      = null;
         this.indices     = null;
         
-        this.cachedValue = null;
+        // this.cachedValue = null;
     }
 
 
@@ -18237,19 +18237,19 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (   this.isCached()
-            && this.cachedValue)
+        if (   this.isCached())
+            //&& this.cachedValue)
             return this;
 
 
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
 
-        if (this.cachedValue)
-            this.value = this.cachedValue.copy();
+        // if (this.cachedValue)
+        //     this.value = this.cachedValue.copy();
 
-        else
-        {
+        // else
+        // {
             this.counts  = new ListValue();
             this.indices = new ListValue();
 
@@ -18290,8 +18290,8 @@ extends GOperator1
                 this.value = new ListValue();
 
 
-            this.cachedValue = this.value.copy();
-        }
+        //     this.cachedValue = this.value.copy();
+        // }
 
 
         this.updateValueObjects();
@@ -18366,7 +18366,7 @@ extends GOperator1
 class GReverseList
 extends GOperator1
 {
-    cachedValue = null;
+    // cachedValue = null;
 
 
 
@@ -18381,7 +18381,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.cachedValue = null;
+        // this.cachedValue = null;
     }
 
 
@@ -18399,8 +18399,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (   this.isCached()
-            && this.cachedValue)
+        if (   this.isCached())
+            //&& this.cachedValue)
             return this;
 
 
@@ -18410,11 +18410,11 @@ extends GOperator1
         this.counts = new ListValue();
 
 
-        if (this.cachedValue)
-            this.value = this.cachedValue.copy();
+        // if (this.cachedValue)
+        //     this.value = this.cachedValue.copy();
 
-        else
-        {
+        // else
+        // {
             if (input)
             {
                 if (this.options.enabled)
@@ -18438,8 +18438,8 @@ extends GOperator1
                 this.value = ListValue.NaN.copy();
 
 
-            this.cachedValue = this.value.copy();
-        }
+            // this.cachedValue = this.value.copy();
+        // }
     
 
         this.updateValueObjects();
@@ -18477,6 +18477,9 @@ extends GOperator1
     reverse       = null;
 
     firstSortNode = null;
+
+
+    //cachedValue   = null;
 
 
     
@@ -18942,7 +18945,7 @@ extends GOperator1
 {
     index       = null;
 
-    cachedValue = null;
+    // cachedValue = null;
 
 
     
@@ -18959,7 +18962,7 @@ extends GOperator1
 
         this.index       = null;
 
-        this.cachedValue = null;
+        // this.cachedValue = null;
     }
 
 
@@ -18979,8 +18982,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (   this.isCached()
-            && this.cachedValue)
+        if (   this.isCached())
+            // && this.cachedValue)
             return this;
 
 
@@ -18993,11 +18996,11 @@ extends GOperator1
         let maxColumns = 0;
 
 
-        if (this.cachedValue)
-            this.value = this.cachedValue.copy();
+        // if (this.cachedValue)
+        //     this.value = this.cachedValue.copy();
 
-        else
-        {
+        // else
+        // {
             if (   input
                 && index)
             {
@@ -19030,8 +19033,8 @@ extends GOperator1
             }
 
 
-            this.cachedValue = this.value.copy();
-        }
+        //     this.cachedValue = this.value.copy();
+        // }
 
 
         this.updateValueObjects();

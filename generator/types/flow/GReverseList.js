@@ -1,7 +1,7 @@
 class GReverseList
 extends GOperator1
 {
-    cachedValue = null;
+    // cachedValue = null;
 
 
 
@@ -16,7 +16,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.cachedValue = null;
+        // this.cachedValue = null;
     }
 
 
@@ -34,8 +34,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (   this.isCached()
-            && this.cachedValue)
+        if (   this.isCached())
+            //&& this.cachedValue)
             return this;
 
 
@@ -45,11 +45,11 @@ extends GOperator1
         this.counts = new ListValue();
 
 
-        if (this.cachedValue)
-            this.value = this.cachedValue.copy();
+        // if (this.cachedValue)
+        //     this.value = this.cachedValue.copy();
 
-        else
-        {
+        // else
+        // {
             if (input)
             {
                 if (this.options.enabled)
@@ -73,8 +73,8 @@ extends GOperator1
                 this.value = ListValue.NaN.copy();
 
 
-            this.cachedValue = this.value.copy();
-        }
+            // this.cachedValue = this.value.copy();
+        // }
     
 
         this.updateValueObjects();
