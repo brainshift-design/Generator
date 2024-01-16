@@ -892,7 +892,7 @@ function initGeneratorMenus()
         menuItemGraphPaste          = new MenuItem('Paste here',           null, {shortcut: osCtrl()      + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false, e.clientX, e.clientY - getTopHeight()); }}),
         menuItemGraphPasteConnected = new MenuItem('Paste connected',      null, {shortcut: osCtrlShift() + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true,  e.clientX, e.clientY - getTopHeight()); }}),
                                       new MenuItem('',                     null, {separator: true}),
-        menuItemGraphDeactivateAll  = new MenuItem('Deactivate all nodes', null, {callback: () => uiDeactivateAllNodes()}),
+        menuItemGraphDeactivateAll  = new MenuItem('Deactivate all nodes', null, {callback: () => actionManager.do(new MakeActiveNodesAction([], false))}),
                                       new MenuItem('',                     null, {separator: true}),
                                       new MenuItem('Create node. . .',     null, {childMenu: wholeMenu}),
                                       new MenuItem('',                     null, {separator: true}),

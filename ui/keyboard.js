@@ -305,7 +305,7 @@ document.addEventListener('keydown', e =>
             graphView.deselectAllNodes(e.shiftKey);
 
         else
-            uiDeactivateAllNodes();
+            actionManager.do(new MakeActiveNodesAction([], false));
     }
 
     //

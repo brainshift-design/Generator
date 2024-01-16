@@ -245,7 +245,7 @@ GraphView.prototype.createEvents = function()
     {
         if (    e.button == 0
             && !e.shiftKey)
-            uiDeactivateAllNodes();
+            actionManager.do(new MakeActiveNodesAction([], false));
     });
 
 
