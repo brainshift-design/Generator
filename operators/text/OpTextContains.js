@@ -82,12 +82,12 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramValue.enableControlText(false);
-        this.paramFirst.enableControlText(false);
-        this.paramLast .enableControlText(false);
-        this.paramAll  .enableControlText(false);
+        // this.paramValue.enableControlText(false);
+        this.paramFirst.enableControlText(false, this.isUnknown());
+        this.paramLast .enableControlText(false, this.isUnknown());
+        this.paramAll  .enableControlText(false, this.isUnknown());
 
-        updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true);
+        updateParamConditionText(this.paramValue, this.isUnknown() || this.hasConditionOutputs(), true);
 
         this.updateParamControls();
     }
