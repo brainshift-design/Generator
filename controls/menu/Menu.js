@@ -129,8 +129,17 @@ class Menu
             const mesName     = utilContext.measureText(item.name);
             const mesShortcut = utilContext.measureText(item.shortcut);
 
-            if (!item.parentMenu.showIcons  && item.divIcon ) item.divIcon .style.display = 'none';
-            if (!item.parentMenu.showChecks && item.divCheck) item.divCheck.style.width = this.showIcons ? 18 : 15;
+            if (    item.divIcon
+                && !item.parentMenu.showIcons) 
+                item.divIcon.style.display = 'none';
+            
+            if (item.divCheck) 
+            {
+                item.divCheck.style.width = 
+                    !item.parentMenu.showChecks
+                    ? (this.showIcons ? 18 : 15)
+                    : 34;
+            }
 
 
             let checksAndIcons = 
@@ -168,7 +177,6 @@ class Menu
         }
 
 
-        console.log('width =', width);
         this.divItems.style.width = Math.max(this.minWidth, width) + 'px';
 
         return true;
