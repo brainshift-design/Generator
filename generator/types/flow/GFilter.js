@@ -2,6 +2,7 @@ class GFilter
 extends GOperator1
 {
     condition = null;
+    indices   = null;
 
     //firstSortNode = null;
 
@@ -19,6 +20,7 @@ extends GOperator1
         super.reset();
 
         this.condition = null;
+        this.indices   = null;
     }
 
 
@@ -30,6 +32,7 @@ extends GOperator1
         copy.copyBase(this);
 
         if (this.condition) copy.condition = this.condition.copy();
+        if (this.indices  ) copy.indices   = this.indices  .copy();
 
         return copy;
     }
@@ -51,6 +54,9 @@ extends GOperator1
         let maxColumns = 0;
 
         
+        this.indices = new ListValue();
+
+
         if (input)
         {
             if (this.options.enabled)
@@ -73,7 +79,7 @@ extends GOperator1
                         const unfiltered = [...input.items];
 
 
-                        input.items = await asyncFilter(
+                        [input.items, this.indices.items] = await asyncFilter(
                             parse, 
                             unfiltered, 
                             conditionNode,
@@ -118,7 +124,8 @@ extends GOperator1
         this.setUpdateValues(parse,
         [
             ['type',    this.outputListType()                   ],
-            ['length',  new NumberValue(this.value.items.length)]
+            ['length',  new NumberValue(this.value.items.length)],
+            ['indices', this.indices                            ]
         ]);
         
 
@@ -180,9 +187,12 @@ async function asyncFilter(parse, array, conditionNode, node, condition)
     const oldInput = conditionNode ? conditionNode.input : null;
 
     const filtered = [];
+    const indices  = [];
 
-    for (const item of array)
+    for (let i = 0; i < array.length; i++)
     {
+        const item = array[i];
+
         const cond = await getFilterCondition(parse, conditionNode, node, condition, item);
         if (!cond) return array;
 
@@ -190,13 +200,16 @@ async function asyncFilter(parse, array, conditionNode, node, condition)
 
         if (   condValue.type == NUMBER_VALUE
             && condValue.value > 0)
+        {
             filtered.push(item);
+            indices .push(new NumberValue(i));
+        }
     }
 
     if (conditionNode)
         conditionNode.input = oldInput;
 
-    return filtered;
+    return [filtered, indices];
 }
 
 

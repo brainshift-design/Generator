@@ -85,7 +85,6 @@ extends OperatorBase
         this.paramCounts .setName('counts'  + sep + '[ ' + this.length + ' ]');
         this.paramIndices.setName('indices' + sep + '[ ' + this.length + ' ]');
 
-
         const type = values[paramIds.findIndex(id => id == 'type')];
 
         if (type)

@@ -19,8 +19,8 @@ extends GOperator1
     {
         super.reset();
 
-        this.counts      = null;
-        this.indices     = null;
+        this.counts  = null;
+        this.indices = null;
         
         // this.cachedValue = null;
     }

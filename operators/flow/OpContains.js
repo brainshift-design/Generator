@@ -16,8 +16,8 @@ extends OperatorBase
         this.iconOffsetY = 0;
         
 
-        this.addInput (new Input(LIST_VALUES));
-        this.addInput (new Input([ANY_VALUE]));
+        this.addInput(new Input(LIST_VALUES));
+        this.addInput(new Input([ANY_VALUE]));
 
         this.addParam(this.paramValue = new NumberParam('value', '',            false, false, true));
         this.addParam(this.paramFirst = new NumberParam('first', 'first index', true,  false, true));

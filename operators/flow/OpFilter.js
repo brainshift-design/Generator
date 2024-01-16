@@ -2,6 +2,7 @@ class   OpFilter
 extends OperatorBase
 {
     paramCondition;
+    paramIndices;
 
     length;
 
@@ -20,12 +21,15 @@ extends OperatorBase
         this.addInput (new Input (LIST_VALUES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramCondition = new NumberParam('condition', 'condition', false, true, true, 0, 0));
+        this.addParam(this.paramCondition = new NumberParam('condition', 'condition', false, true,  true, 0, 0));
+        this.addParam(this.paramIndices   = new ListParam  ('indices',   'indices',   false, false, true));
 
         this.paramCondition.controls[0].allowEditDecimals = false;
         
         this.paramCondition.divider   = 0.59;
         this.paramCondition.valueText = 'condition';
+
+        this.paramIndices.itemName    = [];
     }
 
 
@@ -65,14 +69,16 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        
         const type = values[paramIds.findIndex(id => id == 'type')];
         if (type) this.headerOutputs[0].types = [type.value];
 
-
-        const length = values[paramIds.findIndex(id => id == 'length' )];
+        const length = values[paramIds.findIndex(id => id == 'length')];
 
         this.length = length.value;
+    
+        const sep = settings.showNodeId ? ' ' : '  ';
+
+        this.paramIndices.setName('indices' + sep + '[ ' + this.length + ' ]');
     }
 
 
@@ -93,7 +99,10 @@ extends OperatorBase
         const colors = super.getHeaderColors(options);
         const type   = this.outputs[0].types[0];
 
-        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+        colors.text = 
+            isDark(colors.back) 
+            ? [1, 1, 1, 1] 
+            : [0, 0, 0, 1]; 
 
         const gray =
                this.active
