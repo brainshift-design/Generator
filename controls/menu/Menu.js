@@ -119,6 +119,9 @@ class Menu
         utilContext.font = '12px Inter';
 
         
+        // console.log('this.showIcons =',  this.showIcons);
+        // console.log('this.showChecks =', this.showChecks);
+
         let width = 0;
 
         for (const item of this.items)
@@ -127,7 +130,8 @@ class Menu
             const mesShortcut = utilContext.measureText(item.shortcut);
 
             if (!item.parentMenu.showIcons  && item.divIcon ) item.divIcon .style.display = 'none';
-            if (!item.parentMenu.showChecks && item.divCheck) item.divCheck.style.width   = this.showIcons ? 18 : 15;
+            if (!item.parentMenu.showChecks && item.divCheck) item.divCheck.style.width = this.showIcons ? 18 : 15;
+
 
             let checksAndIcons = 
                   (item.parentMenu.showChecks  ? 32 : 0)
@@ -138,11 +142,11 @@ class Menu
                 checksAndIcons = Math.min(checksAndIcons, 32);
 
             width = Math.max(
-                  width, 
+                  width,
                   checksAndIcons
-                + mesName.width 
-                + 30 
-                + mesShortcut.width 
+                + mesName.width
+                + 30
+                + mesShortcut.width
                 + (mesShortcut.width > 0 ? 20 : 0));
 
 
@@ -151,6 +155,7 @@ class Menu
                 item.divCheck.style.display = item.icon == NULL ? 'inline-block' : 'none';
                 item.divIcon .style.display = item.icon != NULL ? 'inline-block' : 'none';
             }
+
 
             item.update();
         }
@@ -163,6 +168,7 @@ class Menu
         }
 
 
+        console.log('width =', width);
         this.divItems.style.width = Math.max(this.minWidth, width) + 'px';
 
         return true;

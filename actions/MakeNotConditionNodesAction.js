@@ -4,17 +4,24 @@ extends Action
     shiftKey;
 
 
-    nodeIds = [];
+    nodeIds   = [];
+    oldStates = [];
+
+    newState;
 
 
 
-    constructor(nodeIds)
+    constructor(nodeIds, state)
     {
         super(
             MAKE_NOT_CONDITION_ACTION, 
             'MAKE NOT CONDITION ' + nodeIdArrayToString(nodeIds));
 
         this.nodeIds            = [...nodeIds];
+        this.oldStates          = nodeIds.map(id => nodeFromId(id).notCondition);
+
+        this.newState           = state;
+
         this.affectsConnections = false;
     }
 
@@ -24,7 +31,7 @@ extends Action
     {
         const nodes = this.nodeIds.map(id => nodeFromId(id));
 
-        nodes.forEach(n => n.notCondition = true);
+        nodes.forEach(n => n.notCondition = this.newState);
         pushUnique(updateNodes, nodes);
         
         uiSaveNodes(this.nodeIds);
@@ -36,7 +43,9 @@ extends Action
     {
         const nodes = this.nodeIds.map(id => nodeFromId(id));
 
-        nodes.forEach(n => n.notCondition = false);
+        for (let i = 0; i < this.nodeIds.length; i++)
+            nodes[i].notCondition = this.oldStates[i];
+
         pushUnique(updateNodes, nodes);
 
         uiSaveNodes(this.nodeIds);

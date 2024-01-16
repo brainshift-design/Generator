@@ -288,10 +288,11 @@ function makeSelectedNodesActive()
 
 
 
-function makeSelectedNodesNotCondition()
+function toggleSelectedNodesNotCondition()
 {
-    if (graphView.selectedNodes.find(n => !n.notCondition))
-        actionManager.do(new MakeNotConditionNodesAction(graphView.selectedNodes.map(n => n.id)));
+    actionManager.do(new MakeNotConditionNodesAction(
+         graphView.selectedNodes.map  (n => n.id), 
+        !graphView.selectedNodes.every(n => n.notCondition)));
 }
 
 

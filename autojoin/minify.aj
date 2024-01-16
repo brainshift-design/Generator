@@ -2598,7 +2598,7 @@ uiDisconnectAny
 uiUpdateSavedConnectionsToNodeId
 uiUpdateSavedConnectionsFromNodeId
 makeSelectedNodesActive
-makeSelectedNodesNotCondition
+toggleSelectedNodesNotCondition
 uiMakeNodeActive
 uiMakeNodesActive
 uiMakeNodePassive

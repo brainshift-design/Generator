@@ -876,15 +876,15 @@ function initGeneratorMenus()
         
     wholeMenu = new Menu('Create node. . .', true, false);
     wholeMenu.addItems([
-        new MenuItem('Flow',    null, {icon: iconFlow,     childMenu: menuFlow  }),
-        new MenuItem('Data',    null, {icon: iconCombine,     childMenu: menuData  }),
+        new MenuItem('Flow',      null, {icon: iconFlow,     childMenu: menuFlow  }),
+        new MenuItem('Data',      null, {icon: iconCombine,  childMenu: menuData  }),
         new MenuItem('Sets. . .', null, {icon: iconSequence, childMenu: menuSets  }),
-        new MenuItem('Number',  null, {icon: iconNumber,   childMenu: menuNumber}),
-        new MenuItem('Text',    null, {icon: iconText,     childMenu: menuString}),
-        new MenuItem('Color',   null, {icon: iconVarColor, childMenu: menuColor }),
-        new MenuItem('Layer',   null, {icon: iconEffects,  childMenu: menuLayer }),
-        new MenuItem('Shape',   null, {icon: iconShapes,   childMenu: menuShape }),
-        new MenuItem('Panel',   null, {icon: iconPanel,    createType: PANEL, callback: e => actionManager.do(getCreateNodeAction(PANEL, btnPanel.div, getCreateOptions(e)))})]);
+        new MenuItem('Number',    null, {icon: iconNumber,   childMenu: menuNumber}),
+        new MenuItem('Text',      null, {icon: iconText,     childMenu: menuString}),
+        new MenuItem('Color',     null, {icon: iconVarColor, childMenu: menuColor }),
+        new MenuItem('Layer',     null, {icon: iconEffects,  childMenu: menuLayer }),
+        new MenuItem('Shape',     null, {icon: iconShapes,   childMenu: menuShape }),
+        new MenuItem('Panel',     null, {icon: iconPanel,    createType: PANEL, callback: e => actionManager.do(getCreateNodeAction(PANEL, btnPanel.div, getCreateOptions(e)))})]);
 
                                       
     menuGraph = new Menu('Graph menu', false, false);
@@ -954,7 +954,7 @@ function initGeneratorMenus()
         menuItemNodeSep4            = new MenuItem('',                 null, {separator: true}),
         menuItemNodeRemove          = new MenuItem('Remove',           null, {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }}),
         menuItemNodeNotConditionSep = new MenuItem('',                 null, {separator: true}),
-        menuItemNodeNotCondition    = new MenuItem('Not condition',    null, {callback: () => makeSelectedNodesNotCondition()}),
+        menuItemNodeNotCondition    = new MenuItem('Not condition',    null, {checkCallback: () => graphView.selectedNodes.some(n => n.notCondition), callback: () => toggleSelectedNodesNotCondition()}),
                                       new MenuItem('',                 null, {separator: true}),
                                       new MenuItem('Create node. . .', null, {childMenu: wholeMenu})]);
 
@@ -987,6 +987,8 @@ function initGeneratorMenus()
         menuItemNodeConnectSeeds  .setName('Connect seed'   + (selectedRandom.length == 1 ? '' : 's'));
 
 
+        menuNode.showChecks = isCondition;
+
         //updateElementDisplay(menuItemNodeEditGroup    .div, hasGroups && single);
         //updateElementDisplay(menuItemNodeSepGroup     .div, hasGroups && single);
         //updateElementDisplay(menuItemNodeUngroup      .div, hasGroups);
@@ -1004,8 +1006,6 @@ function initGeneratorMenus()
         updateElementDisplay(menuItemNodeEnableDisable  .div, canDisable);
         updateElementDisplay(menuItemNodeNotConditionSep.div, isCondition);
         updateElementDisplay(menuItemNodeNotCondition   .div, isCondition);
-
-        menuNode.showChecks = isCondition;
     };
 
 
@@ -1057,7 +1057,7 @@ function initGeneratorMenus()
 
     if (false)
     {
-        btnPanel    = new MenuButton('', menuPanel,  {useMenuName: true, highlight: () => currentMenus.includes(menuPanel ), callback: () => updatePanMode(false)});
+        btnPanel = new MenuButton('', menuPanel, {useMenuName: true, highlight: () => currentMenus.includes(menuPanel ), callback: () => updatePanMode(false)});
     }
     else
     {
