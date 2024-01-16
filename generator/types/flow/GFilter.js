@@ -184,7 +184,6 @@ async function asyncFilter(parse, array, conditionNode, node, condition)
     for (const item of array)
     {
         const cond = await getFilterCondition(parse, conditionNode, node, condition, item);
-        // console.log('cond =', cond);
         if (!cond) return array;
 
         const condValue = cond.toValue();
@@ -208,9 +207,6 @@ async function getFilterCondition(parse, conditionNode, node, condition, item)
         return item;
     
     conditionNode.reset();
-
-    // console.log('conditionNode =', conditionNode);
-    // console.log('item =', item);
 
     if (conditionNode.toValue().type == item.type)
     {

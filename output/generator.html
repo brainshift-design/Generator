@@ -8463,8 +8463,9 @@ class GNode
 
     getConditionNode()
     {
-        if (   this.input
-            && this.input.getConditionNode)
+        if (    this.input
+            &&  this.input.getConditionNode
+            && !this.input.notCondition)
             return this.input.getConditionNode();
         
         return this;
@@ -9191,6 +9192,18 @@ extends GOperator
 
         if (this.input) this.input.iterateLoop(parse);
     }
+
+
+
+    getConditionNode()
+    {
+        if (    this.input
+            &&  this.input.getConditionNode
+            && !this.input.notCondition)
+            return this.input.getConditionNode();
+        
+        return this;
+    }
 }
 
 
@@ -9273,6 +9286,23 @@ extends GOperator
 
         if (this.input0) this.input0.iterateLoop(parse);
         if (this.input1) this.input1.iterateLoop(parse);
+    }
+
+
+
+    getConditionNode()
+    {
+        if (    this.input0
+            &&  this.input0.getConditionNode
+            && !this.input0.notCondition)
+            return this.input0.getConditionNode();
+        
+        else if (this.input1
+             &&  this.input1.getConditionNode
+             && !this.input1.notCondition)
+            return this.input1.getConditionNode();
+        
+        return this;
     }
 }
 
@@ -9365,6 +9395,28 @@ extends GOperator
         if (this.input0) this.input0.iterateLoop(parse);
         if (this.input1) this.input1.iterateLoop(parse);
         if (this.input2) this.input2.iterateLoop(parse);
+    }
+
+
+
+    getConditionNode()
+    {
+        if (    this.input0
+            &&  this.input0.getConditionNode
+            && !this.input0.notCondition)
+            return this.input0.getConditionNode();
+        
+        else if (this.input1
+             &&  this.input1.getConditionNode
+             && !this.input1.notCondition)
+            return this.input1.getConditionNode();
+        
+        else if (this.input2
+             &&  this.input2.getConditionNode
+             && !this.input2.notCondition)
+            return this.input2.getConditionNode();
+        
+        return this;
     }
 }
 
@@ -9466,6 +9518,33 @@ extends GOperator
         if (this.input1) this.input1.iterateLoop(parse);
         if (this.input2) this.input2.iterateLoop(parse);
         if (this.input3) this.input3.iterateLoop(parse);
+    }
+
+
+
+    getConditionNode()
+    {
+        if (    this.input0
+            &&  this.input0.getConditionNode
+            && !this.input0.notCondition)
+            return this.input0.getConditionNode();
+        
+        else if (this.input1
+             &&  this.input1.getConditionNode
+             && !this.input1.notCondition)
+            return this.input1.getConditionNode();
+        
+        else if (this.input2
+             &&  this.input2.getConditionNode
+             && !this.input2.notCondition)
+            return this.input2.getConditionNode();
+        
+        else if (this.input3
+             &&  this.input3.getConditionNode
+             && !this.input3.notCondition)
+            return this.input3.getConditionNode();
+        
+        return this;
     }
 }
 
@@ -18902,7 +18981,6 @@ async function asyncFilter(parse, array, conditionNode, node, condition)
     for (const item of array)
     {
         const cond = await getFilterCondition(parse, conditionNode, node, condition, item);
-        // console.log('cond =', cond);
         if (!cond) return array;
 
         const condValue = cond.toValue();
@@ -18926,9 +19004,6 @@ async function getFilterCondition(parse, conditionNode, node, condition, item)
         return item;
     
     conditionNode.reset();
-
-    // console.log('conditionNode =', conditionNode);
-    // console.log('item =', item);
 
     if (conditionNode.toValue().type == item.type)
     {
@@ -26520,16 +26595,18 @@ extends GOperator1
             return this;
 
 
-        const start = (await this.start.eval(parse)).toValue();
-        const end   = (await this.end  .eval(parse)).toValue();
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const start = this.start ? (await this.start.eval(parse)).toValue() : null;
+        const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
 
-        let   length = 0;
+
+        let length = 0;
 
 
-        if (this.input)
+        if (   input
+            && start
+            && end)
         {
-            const input = (await this.input.eval(parse)).toValue();
-            
             length = input.value.length;
             
             this.value = input.copy();
@@ -41241,6 +41318,7 @@ function genRequest(request, save)
         }
 
 
+        console.log('parse.updateValues =', parse.updateValues);
         await genUpdateValuesAndObjects(
             parse.requestId,
             settings.loadingNodes,
@@ -48884,21 +48962,21 @@ class Parse
     currentProgress = 0;
     totalProgress   = 0;
 
-    scope         = []; // current parse stack
-    parsedNodes   = []; // must be evaluated to create the value updates
-
-
-    repeats       = [];
-
-    stopGenerate  = false;
-
-
-    paramNodeIds  = [];
-
-    updateParams  = [];
-    updateValues  = [];
-    updateObjects = [];
-    updateStyles  = [];
+    scope           = []; // current parse stack
+    parsedNodes     = []; // must be evaluated to create the value updates
+  
+  
+    repeats         = [];
+  
+    stopGenerate    = false;
+  
+  
+    paramNodeIds    = [];
+  
+    updateParams    = [];
+    updateValues    = [];
+    updateObjects   = [];
+    updateStyles    = [];
 
     
 
@@ -49268,6 +49346,7 @@ function genParseNodeOptions(parse)
         enabled:      ((opt >>  2) & 1) != 0,
         cached:       ((opt >>  3) & 1) != 0,
         unknown:      ((opt >>  4) & 1) != 0,
+        notCondition: ((opt >>  5) & 1) != 0,
         hasInputs:    ((opt >> 20) & 1) != 0,
         existing:     ((opt >> 21) & 1) != 0
     };

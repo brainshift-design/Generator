@@ -13,7 +13,7 @@ extends OperatorBase
         super(CONTAINS, 'contains', 'contains', iconContains);
 
         this.canDisable  = true;
-        this.iconOffsetY = 1;
+        this.iconOffsetY = 0;
         
 
         this.addInput (new Input(LIST_VALUES));
@@ -87,7 +87,11 @@ extends OperatorBase
         this.paramLast .enableControlText(false, this.isUnknown());
         this.paramAll  .enableControlText(false, this.isUnknown());
 
-        updateParamConditionText(this.paramValue, this.isUnknown(), true);
+        updateParamConditionText(
+            this.paramValue, 
+               this.isUnknown() 
+            || this.hasConditionOutputs(), 
+            true);
 
         this.updateParamControls();
     }

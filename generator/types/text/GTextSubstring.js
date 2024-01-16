@@ -43,16 +43,18 @@ extends GOperator1
             return this;
 
 
-        const start = (await this.start.eval(parse)).toValue();
-        const end   = (await this.end  .eval(parse)).toValue();
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const start = this.start ? (await this.start.eval(parse)).toValue() : null;
+        const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
 
-        let   length = 0;
+
+        let length = 0;
 
 
-        if (this.input)
+        if (   input
+            && start
+            && end)
         {
-            const input = (await this.input.eval(parse)).toValue();
-            
             length = input.value.length;
             
             this.value = input.copy();

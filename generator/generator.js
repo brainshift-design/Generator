@@ -152,6 +152,7 @@ function genRequest(request, save)
         }
 
 
+        console.log('parse.updateValues =', parse.updateValues);
         await genUpdateValuesAndObjects(
             parse.requestId,
             settings.loadingNodes,

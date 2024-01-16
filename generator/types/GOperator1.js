@@ -63,4 +63,16 @@ extends GOperator
 
         if (this.input) this.input.iterateLoop(parse);
     }
+
+
+
+    getConditionNode()
+    {
+        if (    this.input
+            &&  this.input.getConditionNode
+            && !this.input.notCondition)
+            return this.input.getConditionNode();
+        
+        return this;
+    }
 }

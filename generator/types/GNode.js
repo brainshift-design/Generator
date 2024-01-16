@@ -70,8 +70,9 @@ class GNode
 
     getConditionNode()
     {
-        if (   this.input
-            && this.input.getConditionNode)
+        if (    this.input
+            &&  this.input.getConditionNode
+            && !this.input.notCondition)
             return this.input.getConditionNode();
         
         return this;

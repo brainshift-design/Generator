@@ -29,21 +29,21 @@ class Parse
     currentProgress = 0;
     totalProgress   = 0;
 
-    scope         = []; // current parse stack
-    parsedNodes   = []; // must be evaluated to create the value updates
-
-
-    repeats       = [];
-
-    stopGenerate  = false;
-
-
-    paramNodeIds  = [];
-
-    updateParams  = [];
-    updateValues  = [];
-    updateObjects = [];
-    updateStyles  = [];
+    scope           = []; // current parse stack
+    parsedNodes     = []; // must be evaluated to create the value updates
+  
+  
+    repeats         = [];
+  
+    stopGenerate    = false;
+  
+  
+    paramNodeIds    = [];
+  
+    updateParams    = [];
+    updateValues    = [];
+    updateObjects   = [];
+    updateStyles    = [];
 
     
 
@@ -413,6 +413,7 @@ function genParseNodeOptions(parse)
         enabled:      ((opt >>  2) & 1) != 0,
         cached:       ((opt >>  3) & 1) != 0,
         unknown:      ((opt >>  4) & 1) != 0,
+        notCondition: ((opt >>  5) & 1) != 0,
         hasInputs:    ((opt >> 20) & 1) != 0,
         existing:     ((opt >> 21) & 1) != 0
     };
