@@ -1265,7 +1265,7 @@ MOVE
 ROTATE
 SCALE
 SKEW
-CENTER
+SET_CENTER
 RESET_XFORM
 PLACE
 SHAPE_APPLY
@@ -1924,7 +1924,7 @@ GShapeSubtract
 GShapeUnion
 GAffine
 GApply
-GCenter
+GSetCenter
 GCircleCenter
 GEllipse
 GFrame
@@ -2225,7 +2225,7 @@ OpShapeSubtract
 OpShapeUnion
 OpAffine
 OpApply
-OpCenter
+OpSetCenter
 OpCircleCenter
 OpEllipse
 OpFrame

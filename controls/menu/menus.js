@@ -799,7 +799,7 @@ function initGeneratorMenus()
         new MenuItem('',            null, {separator: true}),
         new MenuItem('Place',       null, {icon: iconPlace,      createType: PLACE,             callback: e => actionManager.do(getCreateNodeAction(PLACE,             btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',            null, {separator: true}),
-        new MenuItem('Center',      null, {icon: iconCenter,     createType: CENTER,            callback: e => actionManager.do(getCreateNodeAction(CENTER,            btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Set center',  null, {icon: iconCenter,     createType: SET_CENTER,        callback: e => actionManager.do(getCreateNodeAction(SET_CENTER,        btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Reset space', null, {icon: iconResetXform, createType: RESET_XFORM,       callback: e => actionManager.do(getCreateNodeAction(RESET_XFORM,       btnShape.div, getCreateOptions(e)))})]);
 
 

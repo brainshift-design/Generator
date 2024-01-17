@@ -213,7 +213,7 @@
 ../operators/shape/OpRotate.js
 ../operators/shape/OpScale.js
 ../operators/shape/OpSkew.js
-../operators/shape/OpCenter.js
+../operators/shape/OpSetCenter.js
 ../operators/shape/OpResetTransform.js
 
 ../operators/shape/OpMeasurePoints.js

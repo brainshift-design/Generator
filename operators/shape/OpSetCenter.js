@@ -1,4 +1,4 @@
-class   OpCenter
+class   OpSetCenter
 extends OperatorBase
 {
     paramCenterX;
@@ -13,7 +13,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(CENTER, 'center', 'center', iconCenter);
+        super(SET_CENTER, 'setCenter', 'set center', iconCenter);
 
         this.canDisable  = true;
         // this.iconOffsetY = -2;

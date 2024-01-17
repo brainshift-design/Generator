@@ -1,4 +1,4 @@
-class GCenter
+class GSetCenter
 extends GOperator1
 {
     centerX    = null;
@@ -10,7 +10,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(CENTER, nodeId, options);
+        super(SET_CENTER, nodeId, options);
     }
 
 
@@ -29,7 +29,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GCenter(this.nodeId, this.options);
+        const copy = new GSetCenter(this.nodeId, this.options);
 
         copy.copyBase(this);
 

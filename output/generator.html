@@ -5226,7 +5226,7 @@ const ROTATE               = 'ROT';
 const SCALE                = 'SCALE';
 const SKEW                 = 'SKEW';
 
-const CENTER               = 'CENTR';
+const SET_CENTER           = 'SCENTR';
 const RESET_XFORM          = 'RSTX';
 
 const PLACE                = 'PLACE';
@@ -5324,7 +5324,7 @@ const SHAPE_TYPES =
 
     MOVE,
     ...AFFINE_TYPES,
-    CENTER,
+    SET_CENTER,
     RESET_XFORM,
 
     PLACE,
@@ -39330,7 +39330,7 @@ extends GAffine
 }
 
 
-class GCenter
+class GSetCenter
 extends GOperator1
 {
     centerX    = null;
@@ -39342,7 +39342,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(CENTER, nodeId, options);
+        super(SET_CENTER, nodeId, options);
     }
 
 
@@ -39361,7 +39361,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GCenter(this.nodeId, this.options);
+        const copy = new GSetCenter(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -47399,7 +47399,7 @@ function genParseCenter(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const center = new GCenter(nodeId, options);
+    const center = new GSetCenter(nodeId, options);
 
 
     let nInputs = -1;
@@ -49415,7 +49415,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SCALE                  ) result = genParseScale             (parse);
     else if (parse.next == SKEW                   ) result = genParseSkew              (parse);
 
-    else if (parse.next == CENTER                 ) result = genParseCenter            (parse);
+    else if (parse.next == SET_CENTER                 ) result = genParseCenter            (parse);
     else if (parse.next == RESET_XFORM            ) result = genParseResetTransform    (parse);
 
     else if (parse.next == MEASURE_POINTS         ) result = genParseMeasurePoints     (parse);

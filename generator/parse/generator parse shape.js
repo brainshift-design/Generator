@@ -1311,7 +1311,7 @@ function genParseCenter(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const center = new GCenter(nodeId, options);
+    const center = new GSetCenter(nodeId, options);
 
 
     let nInputs = -1;

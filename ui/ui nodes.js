@@ -538,6 +538,7 @@ function loadNode(_node, pasting)
          if (_node.type == 'CDENSE') _node.type = LIST_AS_ITEM;
     else if (_node.type == 'SEL'   ) _node.type = SELECT_FROM_LIST;
     else if (_node.type == 'EXTRP' ) _node.type = GET_PARAM;
+    else if (_node.type == 'CENTR' ) _node.type = SET_CENTER;
 
 
     const node = createNode(_node.type);

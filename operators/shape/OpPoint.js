@@ -147,8 +147,8 @@ extends OpShapeBase
     {
         const isNodeValue = this.headerInputs[0].connected;
 
-        this.paramX.enableControlText(!isNodeValue, this.paramX.isUnknown() || this.isUnknown());
-        this.paramY.enableControlText(!isNodeValue, this.paramY.isUnknown() || this.isUnknown());
+        this.paramX.enableControlText(!isNodeValue, this.paramX.isUnknown() || this.isUnknown() || this.hasConditionOutputs());
+        this.paramY.enableControlText(!isNodeValue, this.paramY.isUnknown() || this.isUnknown() || this.hasConditionOutputs());
 
         this.params.forEach(p => p.isNodeValue = isNodeValue);
 
