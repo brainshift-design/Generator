@@ -85,7 +85,10 @@ extends OperatorBase
         if (type) 
             this.headerOutputs[0].types = [type.value];
 
-        
+        if (this.hasConditionOutputs())
+            this.headerInputs[0].types = [ANY_VALUE];
+
+            
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 

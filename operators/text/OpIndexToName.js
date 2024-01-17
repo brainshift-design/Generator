@@ -68,7 +68,6 @@ extends OperatorBase
                 this.paramIndex.controls[0].setMin(0); 
                 this.paramIndex.controls[0].setMax(figUniqueFontNames.length-1); 
                 break;
-
         }
 
 

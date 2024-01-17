@@ -7,6 +7,9 @@ extends ResizableBase
     oldScroll       = null;
     listScrollTimer = null;
 
+    divider;
+    separator;
+
 
 
     constructor()
@@ -31,6 +34,9 @@ extends ResizableBase
         this.adjustSizerEvents(this.sizerBR);
 
 
+        this.divider = 0.25;
+
+        this.createSeparator();
         this.createScrollbar();
 
 
@@ -83,6 +89,82 @@ extends ResizableBase
 
                 this.resizedY = false;
                 this.setRectB(this.sizerB, 0, 0);
+            }
+        });
+    }
+
+
+
+    createSeparator()
+    {
+        this.separator = createDiv('itemsSeparator');
+
+        this.separator.down         = false;
+        this.separator.sy           = Number.NaN;
+        this.separator.spy          = Number.NaN;
+        this.separator.style.top    = defHeaderHeight + 'px';
+        this.separator.style.height = 'calc(100% - ' + defHeaderHeight + 'px)';
+
+        this.div.appendChild(this.separator);
+
+
+
+        this.separator.addEventListener('pointerdown', e =>
+        {
+            if (e.button == 0)
+            {
+                e.stopPropagation();
+
+                try
+                {
+                    this.separator.setPointerCapture(e.pointerId);
+
+                    this.separator.down = true;
+
+                    this.separator.sx  = e.clientX;
+                    this.separator.spx = this.divider;
+                }
+                catch {}
+            }
+        });
+
+
+
+        this.separator.addEventListener('pointermove', e =>
+        {
+            if (this.separator.down)
+            {
+                this.divider = 
+                      this.separator.spx 
+                    +   (e.clientX - this.separator.sx) 
+                      / this.measureData.divOffset.width;
+
+                this.divider = Math.min(Math.max(0.1, this.divider), 0.5);
+
+                for (const param of this.params)
+                    param.divider = this.divider;
+
+                this.separator.style.left = (this.divider * this.measureData.divOffset.width) + 'px';
+
+                this.updateParamControls();
+            }
+        });
+
+
+
+        this.separator.addEventListener('pointerup', e =>
+        {
+            if (e.button == 0)
+            {
+                e.stopPropagation();
+
+                this.separator.down = false;
+                this.separator.releasePointerCapture(e.pointerId);
+
+                actionManager.do(new SetListDividerAction(
+                    this.id, 
+                    this.separator.spx,
+                    this.scroll));
             }
         });
     }
@@ -154,6 +236,15 @@ extends ResizableBase
                      this.scroll));
             }
         });
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
+
+        this.separator.style.left = (this.divider * this.measureData.divOffset.width) + 'px';
     }
 
 
@@ -366,7 +457,7 @@ extends ResizableBase
 
 
         for (const param of this.params)
-            param.divider = Math.min(120 / this.measureData.divOffset.width, 0.25);
+            param.divider = this.divider;
 
 
         this.updateMeasureData();
@@ -381,7 +472,7 @@ extends ResizableBase
             param.enableControlText(false, this.isUnknown() && this.headerOutputs[0].isLooped());
 
         this.params.forEach(p => p.isNodeValue = true);
-        
+
         this.updateParamControls();
     }
 
@@ -412,6 +503,7 @@ extends ResizableBase
         const tab = HTAB;
 
         return super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"divider": "' + this.divider + '"';
              + ',\n' + pos + tab + '"scroll": "' + this.scroll + '"';
     }
 
@@ -421,7 +513,7 @@ extends ResizableBase
     {
         super.loadParams(_node, pasting);
 
-        if (_node.scroll)
-            this.scroll = parseInt(_node.scroll);
+        if (_node.divider) this.divider = parseFloat(_node.divider); else this.divider = 0.25;
+        if (_node.scroll ) this.scroll  = parseInt  (_node.scroll );
     }
 }

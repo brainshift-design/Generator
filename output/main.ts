@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 335;
+const generatorVersion = 336;
 
 
 const MAX_INT32        = 2147483647;
@@ -1781,6 +1781,7 @@ const GROUP_NODES_ACTION         = 'GROUP_NODES';
 const UNGROUP_NODES_ACTION       = 'UNGROUP_NODES';
 const HIGHLIGHT_NODES_ACTION     = 'HIGHLIGHT_NODES';
 const SCROLL_LIST_NODE_ACTION    = 'SCROLL_LIST_NODE';
+const SET_LIST_DIVIDER_ACTION    = 'SET_LIST_DIVIDER';
 
 
 const BLEND_NORMAL               = 'BNORM';
