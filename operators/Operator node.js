@@ -73,6 +73,7 @@ Operator.prototype.createNode = function()
 
     this.proLabel = createDiv('proLabel');
     this.proLabel.innerHTML = 'PRO';
+    this.proLabel.addEventListener('pointerdown',  e => { e.preventDefault(); e.stopPropagation(); uiFigmaManageSubscription();  });
 
     this.div.appendChild(this.proCover);
     this.div.appendChild(this.proLabel);

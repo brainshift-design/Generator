@@ -221,7 +221,6 @@
     position:       absolute;
     left:           50%;
     top:            50%;
-    pointer-events: none;
     z-index:        100000;
     transform:      translateX(-50%)
                     translateY(-50%)
@@ -244,6 +243,18 @@
 {
     background-color: #2228;
 }
+
+
+.figma-light .proLabel:hover
+{
+    background-color: #fffc;
+}
+
+.figma-dark .proLabel:hover
+{
+    background-color: #222c;
+}
+
 
 
 /* .proLabel
