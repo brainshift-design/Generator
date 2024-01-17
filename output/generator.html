@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 334;
+const generatorVersion = 335;
 
 
 const MAX_INT32        = 2147483647;
@@ -4765,46 +4765,47 @@ function loadLocalSettings()
 }
 
 
-const LIST_VALUE              = 'LIST#';
+const LIST_VALUE        = 'LIST#';
 
-const NUMBER_LIST_VALUE       = 'NLIST#';
-const   TEXT_LIST_VALUE       = 'TLIST#';
-const  SHAPE_LIST_VALUE       = 'SLIST#';
-
-
-const NULL_NODE               = 'NULL';
-const VARIABLE                = 'VAR';
-const VARIABLE_GROUP          = 'VARGRP';
-const START                   = 'START';
-const REPEAT                  = 'REPT';
-const CACHE                   = 'CACHE';
-const FREEZE                  = 'FRZ';
-const TIMER                   = 'TIMER';
-const VALUE_NAME              = 'VNAME';
-const OBJECT_NAME             = 'ONAME';
-
-const COMBINE                 = 'CMB';
-const LIST_AS_ITEM            = 'LSASIT';
-const EXTRACT                 = 'EXTR';
-const SET_PARAM               = 'SETP';
-const GET_PARAM               = 'GETP';
-const SUBLIST                 = 'SUBLST';
-const UNIQUE                  = 'UNIQ';
-const REVERSE_LIST            = 'REVLST';
-const SORT                    = 'SORT';
-const COLUMN                  = 'CLMN';
-const CELL                    = 'CELL';
-const LIST                    = 'LIST';
-const LIST_COUNT              = 'COUNT';
-const CONTAINS                = 'LCONT';
-const SELECT                  = 'SELECT';
-const SELECT_FROM_LIST        = 'LSTSEL';
-const IF_ELSE                 = 'IF';
-const FILTER                  = 'LSTFLT';
-const DEFINE                  = 'DEFINE';  
+const NUMBER_LIST_VALUE = 'NLIST#';
+const   TEXT_LIST_VALUE = 'TLIST#';
+const  SHAPE_LIST_VALUE = 'SLIST#';
 
 
-const ANY_VALUE               = 'ANY#';
+const NULL_NODE         = 'NULL';
+const VARIABLE          = 'VAR';
+const VARIABLE_GROUP    = 'VARGRP';
+const START             = 'START';
+const REPEAT            = 'REPT';
+const CACHE             = 'CACHE';
+const FREEZE            = 'FRZ';
+const TIMER             = 'TIMER';
+const VALUE_NAME        = 'VNAME';
+const LIST_VALUE_NAMES  = 'VNAMES';
+const OBJECT_NAME       = 'ONAME';
+
+const COMBINE           = 'CMB';
+const LIST_AS_ITEM      = 'LSASIT';
+const EXTRACT           = 'EXTR';
+const SET_PARAM         = 'SETP';
+const GET_PARAM         = 'GETP';
+const SUBLIST           = 'SUBLST';
+const UNIQUE            = 'UNIQ';
+const REVERSE_LIST      = 'REVLST';
+const SORT              = 'SORT';
+const COLUMN            = 'CLMN';
+const CELL              = 'CELL';
+const LIST              = 'LIST';
+const LIST_COUNT        = 'COUNT';
+const CONTAINS          = 'LCONT';
+const SELECT            = 'SELECT';
+const SELECT_FROM_LIST  = 'LSTSEL';
+const IF_ELSE           = 'IF';
+const FILTER            = 'LSTFLT';
+const DEFINE            = 'DEFINE';  
+
+
+const ANY_VALUE         = 'ANY#';
 
 
 const LIST_TYPES =
@@ -4863,6 +4864,7 @@ const FLOW_TYPES =
     FREEZE,
     TIMER,
     VALUE_NAME,
+    LIST_VALUE_NAMES,
     OBJECT_NAME
 ];
 
@@ -17063,8 +17065,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        // if (this.isCached())
-        //     return this;
+        if (this.isCached())
+            return this;
 
 
         this.value = 
@@ -17149,6 +17151,71 @@ extends GOperator1
         super.resetLoop(parse, nodeId);
 
         if (this.name) this.name.resetLoop(parse, nodeId);
+    }
+}
+
+
+
+class GListValueNames
+extends GOperator2
+{
+    constructor(nodeId, options)
+    {
+        super(LIST_VALUE_NAMES, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GListValueNames(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.value) copy.value = this.value.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
+        const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+
+        
+        if (   this.options.enabled
+            && input0
+            && input1)
+        {
+            for (let i = 0; i < input0.items.length && i < input1.items.length; i++)
+                input0.items[i].valueId = input1.items[i].value;
+
+            console.log('input0 =', input0);
+            this.value = input0;
+        }
+        else if (input0)
+            this.value = input0;
+
+
+
+        this.updateValueObjects();
+
+
+        this.setUpdateValues(parse,
+        [
+            ['type', this.outputListType()]
+        ]);
+
+
+        this.validate();
+
+        return this;
     }
 }
 
@@ -43512,6 +43579,62 @@ function genParseValueName(parse)
 
 
 
+function genParseListValueNames(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const names = new GListValueNames(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+
+    const valueIndex = 
+        nInputs == 1
+        ? parseInt(parse.move())
+        : -1;
+
+
+    if (parse.settings.logRequests) 
+        logReq(names, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, names);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    if (nInputs == 2)
+    {
+        names.input0 = genParse(parse);
+        names.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+             if (valueIndex == 0) names.input0 = genParse(parse); 
+        else if (valueIndex == 1) names.input1 = genParse(parse); 
+    }
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, names);
+    return names;
+}
+
+
+
 function genParseObjectName(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -49106,6 +49229,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == FREEZE                 ) result = genParseFreeze            (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
     else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
+    else if (parse.next == LIST_VALUE_NAMES       ) result = genParseListValueNames    (parse);
     else if (parse.next == OBJECT_NAME            ) result = genParseObjectName        (parse);
 
     else if (parse.next == COMBINE                ) result = genParseCombine           (parse);

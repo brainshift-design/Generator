@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 334;
+const generatorVersion = 335;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -560,6 +560,7 @@ const CACHE = 'CACHE';
 const FREEZE = 'FRZ';
 const TIMER = 'TIMER';
 const VALUE_NAME = 'VNAME';
+const LIST_VALUE_NAMES = 'VNAMES';
 const OBJECT_NAME = 'ONAME';
 const COMBINE = 'CMB';
 const LIST_AS_ITEM = 'LSASIT';
@@ -630,6 +631,7 @@ const FLOW_TYPES = [
     FREEZE,
     TIMER,
     VALUE_NAME,
+    LIST_VALUE_NAMES,
     OBJECT_NAME
 ];
 const NUMBER_VALUE = 'NUM#';

@@ -13,6 +13,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case FREEZE:                  node = new OpFreeze();            break;
         case TIMER:                   node = new OpTimer();             break;
         case VALUE_NAME:              node = new OpValueName();         break;
+        case LIST_VALUE_NAMES:        node = new OpListValueNames();    break;
         case OBJECT_NAME:             node = new OpObjectName();        break;
 
         case COMBINE:                 node = new OpCombine();           break;

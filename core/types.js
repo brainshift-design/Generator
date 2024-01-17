@@ -1,43 +1,44 @@
-const LIST_VALUE              = 'LIST#';
+const LIST_VALUE        = 'LIST#';
 
-const NUMBER_LIST_VALUE       = 'NLIST#';
-const   TEXT_LIST_VALUE       = 'TLIST#';
-const  SHAPE_LIST_VALUE       = 'SLIST#';
-
-
-const NULL_NODE               = 'NULL';
-const VARIABLE                = 'VAR';
-const VARIABLE_GROUP          = 'VARGRP';
-const START                   = 'START';
-const REPEAT                  = 'REPT';
-const CACHE                   = 'CACHE';
-const FREEZE                  = 'FRZ';
-const TIMER                   = 'TIMER';
-const VALUE_NAME              = 'VNAME';
-const OBJECT_NAME             = 'ONAME';
-
-const COMBINE                 = 'CMB';
-const LIST_AS_ITEM            = 'LSASIT';
-const EXTRACT                 = 'EXTR';
-const SET_PARAM               = 'SETP';
-const GET_PARAM               = 'GETP';
-const SUBLIST                 = 'SUBLST';
-const UNIQUE                  = 'UNIQ';
-const REVERSE_LIST            = 'REVLST';
-const SORT                    = 'SORT';
-const COLUMN                  = 'CLMN';
-const CELL                    = 'CELL';
-const LIST                    = 'LIST';
-const LIST_COUNT              = 'COUNT';
-const CONTAINS                = 'LCONT';
-const SELECT                  = 'SELECT';
-const SELECT_FROM_LIST        = 'LSTSEL';
-const IF_ELSE                 = 'IF';
-const FILTER                  = 'LSTFLT';
-const DEFINE                  = 'DEFINE';  
+const NUMBER_LIST_VALUE = 'NLIST#';
+const   TEXT_LIST_VALUE = 'TLIST#';
+const  SHAPE_LIST_VALUE = 'SLIST#';
 
 
-const ANY_VALUE               = 'ANY#';
+const NULL_NODE         = 'NULL';
+const VARIABLE          = 'VAR';
+const VARIABLE_GROUP    = 'VARGRP';
+const START             = 'START';
+const REPEAT            = 'REPT';
+const CACHE             = 'CACHE';
+const FREEZE            = 'FRZ';
+const TIMER             = 'TIMER';
+const VALUE_NAME        = 'VNAME';
+const LIST_VALUE_NAMES  = 'VNAMES';
+const OBJECT_NAME       = 'ONAME';
+
+const COMBINE           = 'CMB';
+const LIST_AS_ITEM      = 'LSASIT';
+const EXTRACT           = 'EXTR';
+const SET_PARAM         = 'SETP';
+const GET_PARAM         = 'GETP';
+const SUBLIST           = 'SUBLST';
+const UNIQUE            = 'UNIQ';
+const REVERSE_LIST      = 'REVLST';
+const SORT              = 'SORT';
+const COLUMN            = 'CLMN';
+const CELL              = 'CELL';
+const LIST              = 'LIST';
+const LIST_COUNT        = 'COUNT';
+const CONTAINS          = 'LCONT';
+const SELECT            = 'SELECT';
+const SELECT_FROM_LIST  = 'LSTSEL';
+const IF_ELSE           = 'IF';
+const FILTER            = 'LSTFLT';
+const DEFINE            = 'DEFINE';  
+
+
+const ANY_VALUE         = 'ANY#';
 
 
 const LIST_TYPES =
@@ -96,6 +97,7 @@ const FLOW_TYPES =
     FREEZE,
     TIMER,
     VALUE_NAME,
+    LIST_VALUE_NAMES,
     OBJECT_NAME
 ];
 

@@ -53,6 +53,7 @@
 ../operators/flow/OpFreeze.js
 ../operators/flow/OpTimer.js
 ../operators/flow/OpValueName.js
+../operators/flow/OpListValueNames.js
 ../operators/flow/OpObjectName.js
 
 ../operators/flow/OpCombine.js

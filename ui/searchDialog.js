@@ -259,12 +259,13 @@ function selectSearchItem(item, shift, ctrl, alt)
             search.found[searchIndex].selected = true;
             search.found[searchIndex].updateBorder();
         }
+
+
+        addMetricsEvent(METRICS_SEARCH, item.name);
     }
 
+    
     searchIndex = -1;
-
-
-    addMetricsEvent(METRICS_SEARCH, item.name);
 }
 
 

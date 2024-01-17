@@ -60,6 +60,7 @@ var menuPanel;
 
 var menuNumberBase;
 var menuMath;
+var menuValueName;
 var menuSelect;
 var menuMinMax;
 var menuBoolean;
@@ -460,36 +461,41 @@ function initGeneratorMenus()
     //menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp = new Menu('Help', false);
     menuMainHelp.addItems([
-                                  new MenuItem('Keyboard shortcuts',   null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
-                                  new MenuItem('Tutorials & examples', null, {callback: () => showPresets()}),
-                                  new MenuItem('Video tutorials',      null, {callback: () => window.open('https://www.youtube.com/channel/UC1tInoqlh6TYHlFJ3q-YEmA', '_blank')}),
-                                  // new MenuItem('Help page',         null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
-                                  new MenuItem('',                     null, {separator: true}),
-                                  //new MenuItem('Subscription',       null, {callback:  () => showSubscriptionDialog(false)}),
-                                  new MenuItem('About',                null, {callback:  () => showAboutDialog()})]);
+        new MenuItem('Keyboard shortcuts',   null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
+        new MenuItem('Tutorials & examples', null, {callback: () => showPresets()}),
+        new MenuItem('Video tutorials',      null, {callback: () => window.open('https://www.youtube.com/channel/UC1tInoqlh6TYHlFJ3q-YEmA', '_blank')}),
+        // new MenuItem('Help page',         null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+        new MenuItem('',                     null, {separator: true}),
+        //new MenuItem('Subscription',       null, {callback:  () => showSubscriptionDialog(false)}),
+        new MenuItem('About',                null, {callback:  () => showAboutDialog()})]);
 
 
     menuMain = new Menu('Main menu', true, false, true);
     menuMain.addItems([
-                             new MenuItem('Quick actions. . .',      null, {icon: iconSearchMenu, shortcut: osCtrl() + '/', callback: () => { hideAllMenus(); showSearchBox(); }}),
-                             new MenuItem('',                      null, {separator: true}),
-                             new MenuItem('File',                  null, {childMenu: menuMainFile}),
-                             new MenuItem('',                      null, {separator: true}),
-                             new MenuItem('Preferences',           null, {childMenu: menuMainPreferences}),
-        menuDebug          = new MenuItem('Debug',                 null, {childMenu: menuMainDebug}),
-                             new MenuItem('',                      null, {separator: true}),
-        //menuItemHelp       = new MenuItem('Help and subscription', null, {childMenu: menuMainHelp }),
-        menuItemHelp       = new MenuItem('Help',                  null, {childMenu: menuMainHelp }),
-        menuItemRestartSep = new MenuItem('',                      null, {separator: true}),
-        menuItemRestart    = new MenuItem('Restart to update. . .',  null, {icon: iconUpdate, callback: () => uiRestartGenerator()})]);
+                             new MenuItem('Quick actions. . .',     null, {icon: iconSearchMenu, shortcut: osCtrl() + '/', callback: () => { hideAllMenus(); showSearchBox(); }}),
+                             new MenuItem('',                       null, {separator: true}),
+                             new MenuItem('File',                   null, {childMenu: menuMainFile}),
+                             new MenuItem('',                       null, {separator: true}),
+                             new MenuItem('Preferences',            null, {childMenu: menuMainPreferences}),
+        menuDebug          = new MenuItem('Debug',                  null, {childMenu: menuMainDebug}),
+                             new MenuItem('',                       null, {separator: true}),
+      //menuItemHelp       = new MenuItem('Help and subscription', null, {childMenu: menuMainHelp }),
+        menuItemHelp       = new MenuItem('Help',                   null, {childMenu: menuMainHelp }),
+        menuItemRestartSep = new MenuItem('',                       null, {separator: true}),
+        menuItemRestart    = new MenuItem('Restart to update. . .', null, {icon: iconUpdate, callback: () => uiRestartGenerator()})]);
 
     updateElementDisplay(menuItemRestartSep.div, false);
     updateElementDisplay(menuItemRestart   .div, false);
 
 
+    menuValueName = new Menu('Value name', true, false);
+    menuValueName.addItems([
+        new MenuItem('Set list value names',  null, {icon: iconListValueNames, createType: LIST_VALUE_NAMES, callback: e => actionManager.do(getCreateNodeAction(LIST_VALUE_NAMES, btnFlow.div, getCreateOptions(e)))})]);
+        
+
     menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
-        menuItemStart      = new MenuItem('Start . . .',        null, {icon: iconStart,         createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemStart      = new MenuItem('Start . . .',       null, {icon: iconStart,         createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
         menuItemRepeat     = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,        createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null, {separator: true}),
         menuItemCache      = new MenuItem('Cache. . .',        null, {icon: iconCache,         createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
@@ -498,12 +504,12 @@ function initGeneratorMenus()
         menuItemNull       = new MenuItem('Null',              null, {icon: iconNull,          createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null, {separator: true}),
                              new MenuItem('Variable',          null, {icon: iconVariable,      createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
-                             //menuItemVarGroup = new MenuItem('Variable group',    null, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
+      //menuItemVarGroup   = new MenuItem('Variable group',    null, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null, {separator: true}),
                              new MenuItem('Set parameter',     null, {icon: iconSetParam,      createType: SET_PARAM,        callback: e => actionManager.do(getCreateNodeAction(SET_PARAM,       btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('Get parameter',     null, {icon: iconGetParam,      createType: GET_PARAM,        callback: e => actionManager.do(getCreateNodeAction(GET_PARAM,       btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null, {separator: true}),
-        menuItemValueName  = new MenuItem('Set value name',    null, {icon: iconValueName,     createType: VALUE_NAME,       callback: e => actionManager.do(getCreateNodeAction(VALUE_NAME,      btnFlow.div, getCreateOptions(e)))}),
+        menuItemValueName  = new MenuItem('Set value name',    null, {childMenu: menuValueName, icon: iconValueName,     createType: VALUE_NAME,       callback: e => actionManager.do(getCreateNodeAction(VALUE_NAME,      btnFlow.div, getCreateOptions(e)))}),
         menuItemObjectName = new MenuItem('Set object name',   null, {icon: iconObjectName,    createType: OBJECT_NAME,      callback: e => actionManager.do(getCreateNodeAction(OBJECT_NAME,     btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null, {separator: true}),
         menuItemTimer      = new MenuItem('Timer ',            null, {icon: iconTimer,         createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))})]);
@@ -540,13 +546,13 @@ function initGeneratorMenus()
 
     menuSets = new Menu('Sets...', true, false);
     menuSets.addItems([
-        menuItemSequence = new MenuItem('Sequence. . .',   null, {icon: iconSequence,    createType: NUMBER_SEQUENCE,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnSets.div, getCreateOptions(e)))}),
-        menuItemRange    = new MenuItem('Range. . .',      null, {icon: iconRange,       createType: NUMBER_RANGE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANGE,       btnSets.div, getCreateOptions(e)))}),
+        menuItemSequence = new MenuItem('Sequence. . .',    null, {icon: iconSequence,    createType: NUMBER_SEQUENCE,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnSets.div, getCreateOptions(e)))}),
+        menuItemRange    = new MenuItem('Range. . .',       null, {icon: iconRange,       createType: NUMBER_RANGE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANGE,       btnSets.div, getCreateOptions(e)))}),
         menuItemWave     = new MenuItem('Wave. . .',        null, {icon: iconWave,        createType: NUMBER_WAVE,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_WAVE,        btnSets.div, getCreateOptions(e)))}),
-        menuItemArray    = new MenuItem('Define. . .',     null, {icon: iconDefine,      createType: DEFINE,             callback: e => actionManager.do(getCreateNodeAction(DEFINE,             btnSets.div, getCreateOptions(e)))}),
+        menuItemArray    = new MenuItem('Define. . .',      null, {icon: iconDefine,      createType: DEFINE,             callback: e => actionManager.do(getCreateNodeAction(DEFINE,             btnSets.div, getCreateOptions(e)))}),
                            new MenuItem('',                 null, {separator: true}),
                            new MenuItem('Random . . .',     null, {icon: iconRandom,      createType: NUMBER_RANDOM,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnSets.div, getCreateOptions(e)))}),
-                           new MenuItem('Noise. . .',      null, {icon: iconNoise,       createType: NUMBER_NOISE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOISE,       btnSets.div, getCreateOptions(e)))}),
+                           new MenuItem('Noise. . .',       null, {icon: iconNoise,       createType: NUMBER_NOISE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOISE,       btnSets.div, getCreateOptions(e)))}),
                            new MenuItem('Probability. . .', null, {icon: iconProbability, createType: NUMBER_PROBABILITY, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PROBABILITY, btnSets.div, getCreateOptions(e)))}),
                            new MenuItem('',                 null, {separator: true}),
                            new MenuItem('Accumulate. . .',  null, {icon: iconAccumulate,  createType: NUMBER_ACCUMULATE,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_ACCUMULATE,  btnSets.div, getCreateOptions(e)))})]);
@@ -1180,6 +1186,7 @@ function initGeneratorMenus()
     [
         menuFlow,
         menuData,
+        menuValueName,
         menuSelect,
         menuSets,
         menuNumber,

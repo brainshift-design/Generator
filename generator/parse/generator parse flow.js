@@ -1275,6 +1275,62 @@ function genParseValueName(parse)
 
 
 
+function genParseListValueNames(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const names = new GListValueNames(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+
+    const valueIndex = 
+        nInputs == 1
+        ? parseInt(parse.move())
+        : -1;
+
+
+    if (parse.settings.logRequests) 
+        logReq(names, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, names);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    if (nInputs == 2)
+    {
+        names.input0 = genParse(parse);
+        names.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+             if (valueIndex == 0) names.input0 = genParse(parse); 
+        else if (valueIndex == 1) names.input1 = genParse(parse); 
+    }
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, names);
+    return names;
+}
+
+
+
 function genParseObjectName(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

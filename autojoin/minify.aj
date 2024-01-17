@@ -2760,6 +2760,14 @@ lastChunk
 curNodeId
 figObjects
 figPoints
+genEllipse
+figEllipse
+genFrame
+figFrame
+genGroup
+figGroup
+genLine
+figLine
 genLineIsValid
 genEllipseIsValid
 genVectorPathIsValid
