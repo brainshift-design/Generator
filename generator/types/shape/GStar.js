@@ -58,7 +58,7 @@ extends GShape
             case 'convex':   return this.input ? this.value.convex   : this.convex;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 

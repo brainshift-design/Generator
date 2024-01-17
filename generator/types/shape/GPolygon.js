@@ -53,7 +53,7 @@ extends GShape
             case 'corners':  return this.input ? this.value.corners  : this.corners;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 

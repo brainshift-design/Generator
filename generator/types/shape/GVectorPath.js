@@ -57,7 +57,7 @@ extends GShape
             case 'round':   return this.input ? this.value.round   : this.round;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 

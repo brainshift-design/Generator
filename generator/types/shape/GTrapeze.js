@@ -49,7 +49,7 @@ extends GShape
             case 'bias':   return this.input ? this.value.bias   : this.bias;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 

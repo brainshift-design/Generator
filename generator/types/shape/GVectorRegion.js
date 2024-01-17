@@ -50,7 +50,7 @@ extends GShape
             case 'winding': return this.input ? this.value.winding : this.winding;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 

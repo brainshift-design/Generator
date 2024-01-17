@@ -462,10 +462,10 @@ function initGeneratorMenus()
     menuMainHelp.addItems([
                                   new MenuItem('Keyboard shortcuts',   null, {shortcut: osCtrlShift() + '?', callback: () => showKeyboardPanel()}),
                                   new MenuItem('Tutorials & examples', null, {callback: () => showPresets()}),
-                                  new MenuItem('Video tutorials',        null, {callback: () => window.open('https://www.youtube.com/playlist?list=PLXbRBjG6htkQE-1_gJ4XtgW5KP7mPzYcV', '_blank')}),
+                                  new MenuItem('Video tutorials',      null, {callback: () => window.open('https://www.youtube.com/channel/UC1tInoqlh6TYHlFJ3q-YEmA', '_blank')}),
                                   // new MenuItem('Help page',         null, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
                                   new MenuItem('',                     null, {separator: true}),
-                                  //new MenuItem('Subscription',         null, {callback:  () => showSubscriptionDialog(false)}),
+                                  //new MenuItem('Subscription',       null, {callback:  () => showSubscriptionDialog(false)}),
                                   new MenuItem('About',                null, {callback:  () => showAboutDialog()})]);
 
 

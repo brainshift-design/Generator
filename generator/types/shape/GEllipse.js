@@ -61,7 +61,7 @@ extends GShape
             case 'inner':    return this.input ? this.value.inner    : this.inner
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 

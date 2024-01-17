@@ -49,7 +49,7 @@ extends GShape
             case 'children': return this.input ? this.value.children : this.children;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 

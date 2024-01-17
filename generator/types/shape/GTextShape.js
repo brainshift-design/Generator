@@ -85,7 +85,7 @@ extends GShape
             case 'letterSpacing': return this.input ? this.value.letterSpacing : this.letterSpacing;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 

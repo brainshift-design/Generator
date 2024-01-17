@@ -9612,6 +9612,12 @@ extends GOperator
         this.param = this.node.paramFromId(this.paramId);
 
 
+        if (this.node.nodeId == 'rect')
+        {
+            console.log('this.paramId =', this.paramId);
+            console.log('this.param =', this.param);
+        }
+
         if (isValid(this.param))
         {
             // await this.node.eval(parse);
@@ -33793,6 +33799,18 @@ extends GShapeBase
 
 
 
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'props':  return this.input ? this.value.props : this.props;
+        }
+
+        return null;
+    }
+
+
+
     baseIsValid()
     {
         return this.value
@@ -33969,7 +33987,7 @@ extends GShape
             case 'round':  return this.input ? this.value.round  : this.round;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 
@@ -34173,7 +34191,7 @@ extends GShape
             case 'width': return this.input ? this.value.width : this.width;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 
@@ -34359,7 +34377,7 @@ extends GShape
             case 'inner':    return this.input ? this.value.inner    : this.inner
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 
@@ -34643,7 +34661,7 @@ extends GShape
             case 'bias':   return this.input ? this.value.bias   : this.bias;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 
@@ -34884,7 +34902,7 @@ extends GShape
             case 'corners':  return this.input ? this.value.corners  : this.corners;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 
@@ -35151,7 +35169,7 @@ extends GShape
             case 'convex':   return this.input ? this.value.convex   : this.convex;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 
@@ -35455,7 +35473,7 @@ extends GShape
             case 'letterSpacing': return this.input ? this.value.letterSpacing : this.letterSpacing;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 
@@ -36163,7 +36181,7 @@ extends GShape
             case 'round':   return this.input ? this.value.round   : this.round;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 
@@ -36876,7 +36894,7 @@ extends GShape
             case 'winding': return this.input ? this.value.winding : this.winding;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 
@@ -37596,7 +37614,7 @@ extends GShape
             case 'children': return this.input ? this.value.children : this.children;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 

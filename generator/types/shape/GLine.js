@@ -28,7 +28,7 @@ extends GShape
             case 'width': return this.input ? this.value.width : this.width;
         }
 
-        return null;
+        return super.paramFromId(paramId);
     }
 
 

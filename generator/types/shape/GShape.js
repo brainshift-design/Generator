@@ -34,6 +34,18 @@ extends GShapeBase
 
 
 
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'props':  return this.input ? this.value.props : this.props;
+        }
+
+        return null;
+    }
+
+
+
     baseIsValid()
     {
         return this.value
