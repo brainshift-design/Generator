@@ -295,6 +295,7 @@ var menuItemNodeSelect;
 // var menuItemNodeBringToFront;
 // var menuItemNodeSendToBack;
 var menuItemNodeActivate;
+var menuItemNodeDeactivate;
 var menuItemNodeSaveAsTemplate;
 var menuItemNodeSep4;
 var menuItemNodeEnableDisable;
@@ -942,6 +943,7 @@ function initGeneratorMenus()
         menuItemNodeHighlight       = new MenuItem('Highlight',        null, {childMenu: menuNodeHighlight}),
         menuItemNodeSep3            = new MenuItem('',                 null, {separator: true}),
         menuItemNodeActivate        = new MenuItem('Activate',         null, {shortcut:  osShift()     + 'A',  callback: () => makeSelectedNodesActive()}),
+        menuItemNodeDeactivate      = new MenuItem('Deactivate',       null, {shortcut:  osShift()     + 'D',  callback: () => makeSelectedNodesInactive()}),
         menuItemNodeEnableDisable   = new MenuItem('Enable/Disable',   null, {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
         menuItemNodeSelect          = new MenuItem('Select',           null, {childMenu: menuNodeSelect}),
       //menuItemNodeEdit            = new MenuItem('Edit . . .',       null, {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
@@ -965,6 +967,9 @@ function initGeneratorMenus()
         const single      =  graphView.selectedNodes.length == 1;
         const canDisable  = !graphView.selectedNodes.find(n => !n.canDisable);
         const isCondition =  graphView.selectedNodes.some(n => n.hasConditionOutputs());
+        const someActive  =  graphView.selectedNodes.some (n => n.active);
+        const allActive   =  graphView.selectedNodes.every(n => n.active);
+
 
         const selectedRandom =
             graphView.selectedNodes.filter(n => 
@@ -1003,6 +1008,8 @@ function initGeneratorMenus()
         updateElementDisplay(menuItemNodeSep2           .div, single);
         updateElementDisplay(menuItemNodeSelect         .div, single);
         updateElementDisplay(menuItemNodeSep4           .div, canDisable || canRandomizeSeeds || canConnectSeeds);
+        updateElementDisplay(menuItemNodeActivate       .div, !allActive);
+        updateElementDisplay(menuItemNodeDeactivate     .div, someActive);
         updateElementDisplay(menuItemNodeEnableDisable  .div, canDisable);
         updateElementDisplay(menuItemNodeNotConditionSep.div, isCondition);
         updateElementDisplay(menuItemNodeNotCondition   .div, isCondition);

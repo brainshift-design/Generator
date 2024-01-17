@@ -282,8 +282,20 @@ function uiUpdateSavedConnectionsFromNodeId(nodeId, saveOld)
 
 function makeSelectedNodesActive()
 {
-    if (graphView.selectedNodes.find(n => !n.active))
+    if (graphView.selectedNodes.some(n => !n.active))
         actionManager.do(new MakeActiveNodesAction(graphView.selectedNodes.map(n => n.id), false));
+}
+
+
+
+function makeSelectedNodesInactive()
+{
+    if (graphView.selectedNodes.some(n => n.active))
+    {
+        actionManager.do(new MakeActiveNodesAction(
+            graph.currentPage.nodes.filter(n => n.active && !graphView.selectedNodes.includes(n)).map(n => n.nodeId),
+            false));
+    }
 }
 
 
