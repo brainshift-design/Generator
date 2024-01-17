@@ -27,6 +27,7 @@ const presetSelect = '\
         "x": "3728",\
         "y": "3521.43",\
         "z": "1",\
+        "active": "true",\
         "params":\
         [\
                 ["NUM#", "index", "0,0"]\
@@ -188,6 +189,7 @@ const presetSelect = '\
         "x": "2366",\
         "y": "3651",\
         "z": "11",\
+        "active": "true",\
         "width": "120",\
         "height": "32"\
         },\

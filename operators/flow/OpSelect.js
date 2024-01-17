@@ -67,8 +67,6 @@ extends ResizableBase
             w, 
             height, 
             updateTransform);
-
-        this.updateValueParam();
     }
 
 
