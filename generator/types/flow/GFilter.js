@@ -109,7 +109,7 @@ extends GOperator1
                     }
                 }
                 else
-                    this.value = input;
+                    this.value = (await this.input.eval(parse)).toValue();
             }
             else
                 this.value = input;

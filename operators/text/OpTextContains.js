@@ -22,7 +22,7 @@ extends OperatorBase
         this.addParam(this.paramValue = new NumberParam('value', '',            false, false, true));
         this.addParam(this.paramFirst = new NumberParam('first', 'first index', true,  false, true));
         this.addParam(this.paramLast  = new NumberParam('last',  'last index',  true,  false, true));
-        this.addParam(this.paramAll   = new   ListParam('all',   'all',        false, false, true));
+        this.addParam(this.paramAll   = new   ListParam('all',   'all',         false, false, true));
 
         this.paramValue.isNodeValue = true;
 

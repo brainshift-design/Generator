@@ -187,10 +187,18 @@ document.addEventListener('keydown', e =>
 
     // activate selected
     else if (e.code == 'KeyA'
-          && e.shiftKey)
+          && e.altKey)
     {
         e.preventDefault();
         makeSelectedNodesActive();
+    }
+
+    // deactivate selected
+    else if (e.code == 'KeyD'
+          && e.altKey)
+    {
+        e.preventDefault();
+        makeSelectedNodesInactive();
     }
 
     // group selected
