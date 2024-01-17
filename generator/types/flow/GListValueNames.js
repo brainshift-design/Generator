@@ -33,12 +33,13 @@ extends GOperator2
         
         if (   this.options.enabled
             && input0
-            && input1)
+            && input1
+            && input0.items
+            && input1.items)
         {
             for (let i = 0; i < input0.items.length && i < input1.items.length; i++)
                 input0.items[i].valueId = input1.items[i].value;
 
-            console.log('input0 =', input0);
             this.value = input0;
         }
         else if (input0)

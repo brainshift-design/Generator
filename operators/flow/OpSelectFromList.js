@@ -96,8 +96,8 @@ extends OperatorBase
         const min = Math.min(0, -this.length.value+1);
         const max = Math.max(0,  this.length.value-1);
 
-        this.paramIndex.controls[0].setMin(0, min);
-        this.paramIndex.controls[0].setMax(max, max);
+        this.paramIndex.controls[0].setMin(0,   Number.MIN_SAFE_INTEGER);
+        this.paramIndex.controls[0].setMax(max, Number.MAX_SAFE_INTEGER);
 
 
         this.updateParamControls();

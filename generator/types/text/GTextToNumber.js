@@ -144,43 +144,48 @@ function getTextToNumberValue(input, base, decimals, thousands)
     let num   = Number.NaN;
     let value = input.value;
 
-    value = value.replaceAll(thousands.value, '');
+    if (thousands)
+        value = value.replaceAll(thousands.value, '');
 
     
-    switch (base.value)
+    if (base)
     {
-        case 0: // dec
+        switch (base.value)
         {
-            if (value.lastIndexOf(decimals.value) < 0)
-                num = parseInt(value.replace(/\D/g, ''), 10);
-            else
+            case 0: // dec
             {
-                value = replaceLast(value, decimals.value, '.');
-                num   = parseFloat(value);
+                if (value.lastIndexOf(decimals.value) < 0)
+                    num = parseInt(value.replace(/\D/g, ''), 10);
+                else
+                {
+                    value = replaceLast(value, decimals.value, '.');
+                    num   = parseFloat(value);
+                }
+        
+                break;
             }
-     
-            break;
-        }
-        case 1: // hex
-        {
-            const decIndex = value.lastIndexOf(decimals.value);
-
-            if (decIndex < -1)
-                num = parseInt(value, 16);
-            else
+            case 1: // hex
             {
-                const whole = value.slice(0, decIndex);
-                const frac  = value.slice(decIndex + decimals.value.length);
+                const decIndex = value.lastIndexOf(decimals.value);
 
-                num = 
-                      parseInt(whole, 16)
-                    + frac.split('')
-                          .reduce((sum, digit, index) => sum + parseInt(digit, 16) / Math.pow(16, index + 1), 0);
+                if (decIndex < -1)
+                    num = parseInt(value, 16);
+                else
+                {
+                    const whole = value.slice(0, decIndex);
+                    const frac  = value.slice(decIndex + decimals.value.length);
+
+                    num = 
+                        parseInt(whole, 16)
+                        + frac.split('')
+                            .reduce((sum, digit, index) => sum + parseInt(digit, 16) / Math.pow(16, index + 1), 0);
+                }
+
+                break;
             }
-
-            break;
         }
     }
+
 
     return new NumberValue(num, decDigits(num));
 }

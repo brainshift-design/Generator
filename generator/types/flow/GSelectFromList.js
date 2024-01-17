@@ -56,7 +56,8 @@ extends GOperator1
 
 
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-            
+ 
+        
         if (   index
             && input
             && input.items
@@ -90,7 +91,7 @@ extends GOperator1
 
                         obj.objectId = this.nodeId;
                         
-                        if (obj.objectId != NULL) 
+                        if (obj.objectId != NULL)
                             obj.objectId += '/';
 
                         obj.objectId += index.value.toString();
@@ -103,11 +104,8 @@ extends GOperator1
                 index      = NumberValue.NaN;
             }
         }
-        else
-        {
-            this.value = new NullValue();
-            index      = NumberValue.NaN;
-        }
+        else if (input)
+            this.value = input;
 
 
         const type = this.outputType();

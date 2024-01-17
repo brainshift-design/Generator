@@ -306,16 +306,17 @@ extends ResizableBase
         this.removeParamsNotInList(paramIds);
 
 
-        if (   paramIds.length > 1
-            ||    paramIds.length == 1 
-               && paramIds[0] != '')
+        if (   (   paramIds.length > 1
+                ||    paramIds.length == 1 
+                   && paramIds[0] != '')
+            && !this.hasConditionOutputs())
         {
             for (let i = 0; i < values.length; i++)
             {
                 const value   = values[i];
                 const valueId = paramIds[i];
 
-                if (   valueId == '-type-')
+                if (valueId == '-type-')
                     continue;
 
                     
