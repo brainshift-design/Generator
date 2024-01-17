@@ -334,6 +334,9 @@ extends ResizableBase
             setTimeout(() => this.updateScrollbar());
         else
             this.updateScrollbar();
+
+
+        this.separator.style.left = (this.divider * w) + 'px';
     }
 
 
@@ -483,7 +486,7 @@ extends ResizableBase
         const colors = super.getHeaderColors(options);
         const type   = this.outputs[0].types[0];
 
-        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         const gray =
                 this.active
@@ -503,7 +506,7 @@ extends ResizableBase
         const tab = HTAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"divider": "' + this.divider + '"';
+             + ',\n' + pos + tab + '"divider": "' + this.divider + '"'
              + ',\n' + pos + tab + '"scroll": "' + this.scroll + '"';
     }
 

@@ -221,7 +221,8 @@ async function getFilterCondition(parse, conditionNode, node, condition, item)
     
     conditionNode.reset();
 
-    if (conditionNode.toValue().type == item.type)
+    if (   conditionNode.toValue().type == item.type
+        || conditionNode.toValue().type == ANY_VALUE)
     {
         conditionNode.input = item.copy();
         condition.invalidateInputs(parse, node, true); 

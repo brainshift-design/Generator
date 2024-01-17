@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 336;
+const generatorVersion = 337;
 
 
 const MAX_INT32        = 2147483647;
@@ -19093,7 +19093,8 @@ async function getFilterCondition(parse, conditionNode, node, condition, item)
     
     conditionNode.reset();
 
-    if (conditionNode.toValue().type == item.type)
+    if (   conditionNode.toValue().type == item.type
+        || conditionNode.toValue().type == ANY_VALUE)
     {
         conditionNode.input = item.copy();
         condition.invalidateInputs(parse, node, true); 
@@ -19822,6 +19823,7 @@ extends GOperator1
 
 
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        //console.log('this.input =', this.input);
  
         
         if (   index
@@ -19833,7 +19835,7 @@ extends GOperator1
 
 
             index = 
-                    index.isValid()
+                   index.isValid()
                 && index.value > -input.items.length
                 && index.value <  input.items.length
                 ? new NumberValue(Math.round(index.value))

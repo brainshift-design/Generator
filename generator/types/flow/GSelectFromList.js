@@ -56,6 +56,7 @@ extends GOperator1
 
 
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        //console.log('this.input =', this.input);
  
         
         if (   index
@@ -67,7 +68,7 @@ extends GOperator1
 
 
             index = 
-                    index.isValid()
+                   index.isValid()
                 && index.value > -input.items.length
                 && index.value <  input.items.length
                 ? new NumberValue(Math.round(index.value))
