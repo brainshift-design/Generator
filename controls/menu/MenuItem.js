@@ -1,3 +1,7 @@
+var dragCreatingNode = false;
+
+
+
 class MenuItem
 {
     parentMenu         = null;
@@ -206,6 +210,9 @@ class MenuItem
                     && this.callback
                     && distance(this.dragStart, clientPos(e)) > 5)
                 {
+                    dragCreatingNode = true;
+
+                    
                     const rect = boundingRect(this.div);
 
                     if (   this.callback

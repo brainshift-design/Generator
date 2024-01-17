@@ -448,9 +448,10 @@ function graphView_onpointermove(e)
     graphView.p = point(e.clientX, e.clientY);
 
 
-    if (   graphView.selecting
-        || graphView.zoomSelecting
-        || graphView.tempConn)
+    if (   (   graphView.selecting
+            || graphView.zoomSelecting
+            || graphView.tempConn)
+        && !dragCreatingNode)
     {
         const dOffset = getScrollOffset(e.clientX, e.clientY);
         setAutoScrollTimer(dOffset, e);

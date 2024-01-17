@@ -237,9 +237,11 @@ Operator.prototype.createHeader = function()
             graphView.updateScroll(x, w, h, bounds, yOffset);
 
             
-            const dOffset = getScrollOffset(e.clientX, e.clientY);
-            setAutoScrollTimer(dOffset, e.clientX, e.clientY);
-
+            if (!dragCreatingNode)
+            {
+                const dOffset = getScrollOffset(e.clientX, e.clientY);
+                setAutoScrollTimer(dOffset, e.clientX, e.clientY);
+            }
 
             this.div.moved = true;
         }
@@ -339,6 +341,9 @@ Operator.prototype.createHeader = function()
     {
         if (graphView.isPanning(e))
             return;
+
+
+        dragCreatingNode = false;
 
 
         if (   e.button == 0

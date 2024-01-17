@@ -866,10 +866,10 @@ function initGeneratorMenus()
     menuZoom = new Menu('Zoom/view options');
     menuZoom.combineChecksAndIcons = true;
     menuZoom.addItems([
-                            new MenuItem('Zoom in',      null, {shortcut: osCtrl () + '+', callback: () => graph.currentPage.zoom *= Math.pow(2, 1/2)}),
-                            new MenuItem('Zoom out',     null, {shortcut: osCtrl () + '-', callback: () => graph.currentPage.zoom /= Math.pow(2, 1/2)}),
-                            new MenuItem('Zoom to fit',  null, {shortcut: osShift() + '1', callback: () => graphView.zoomToFit()}),
-        menuItemZoomTo100 = new MenuItem('Zoom to 100%', null, {shortcut: osCtrl () + '0', callback: () => graph.currentPage.zoom = 1})]);//,
+                            new MenuItem('Zoom in',      null, {shortcut: osCtrl () + '+', callback: () => { graph.currentPage.zoom *= Math.pow(2, 1/2); graph.updateSavedPages(); }}),
+                            new MenuItem('Zoom out',     null, {shortcut: osCtrl () + '-', callback: () => { graph.currentPage.zoom /= Math.pow(2, 1/2); graph.updateSavedPages(); }}),
+                            new MenuItem('Zoom to fit',  null, {shortcut: osShift() + '1', callback: () => { graphView.zoomToFit(); graph.updateSavedPages(); }}),
+        menuItemZoomTo100 = new MenuItem('Zoom to 100%', null, {shortcut: osCtrl () + '0', callback: () => { graph.currentPage.zoom = 1; graph.updateSavedPages(); }})]);//,
                         //  new MenuItem('',             {separator: true}),
                         //  new MenuItem('Window',       {childMenu: menuWindow})]);
 
