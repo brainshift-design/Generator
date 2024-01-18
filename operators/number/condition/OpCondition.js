@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_CONDITION, 'cond', 'condition', '');
+        super(NUMBER_CONDITION, 'compare', 'compare', '');
         
         this.iconOffsetY = -1;
 

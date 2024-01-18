@@ -15,10 +15,10 @@ class ColorCorrection
 
 
 async function findCorrection(parse,
-                        nodeId,
-                        color,
-                        order, _c1, _c2, _c3,
-                        lockedOrder, locked1, locked2, locked3) 
+                              nodeId,
+                              color,
+                              order, _c1, _c2, _c3,
+                              lockedOrder, locked1, locked2, locked3) 
 {
     const refOklab = dataColor2array(dataColor2oklab(color));
 
@@ -63,10 +63,18 @@ async function findCorrection(parse,
                 start2 = lerp(min2, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
                 start3 = lerp(min3, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
                
-                
+            // console.log('min1 =', min1);
+            // console.log('max1 =', max1);
+            // console.log('closest1 =', closest1);
+            // console.log('locked1 =', locked1);
+            // console.log('start1 =', start1);
+            // console.log('_c1 =', _c1);
+            
             if (locked1) { closest1 = _c1.toNumber(); start1 = closest1; end1 = closest1+Epsilon; }
             if (locked2) { closest2 = _c2.toNumber(); start2 = closest2; end2 = closest2+Epsilon; }
             if (locked3) { closest3 = _c3.toNumber(); start3 = closest3; end3 = closest3+Epsilon; }
+            // console.log('closest1 =', closest1);
+            // console.log('');
             
 
           [ closestColor,
@@ -101,6 +109,10 @@ async function findCorrection(parse,
 
 
         parse.currentProgress++;
+
+
+        if (await checkStop(parse.requestId))
+            break;
     }
 
 
@@ -259,7 +271,7 @@ function correctColor(color, order, c1, c2, c3)
         rgb2dataColor(rgb),
         color[0]);
 
-        
+    
     return color;
 }
 
@@ -312,7 +324,7 @@ function correctChannel(color, iChan, margin)
         {
             _c -= d; 
             _valid = isColorOk(_c, iChan, savedColor);
-            margin -= d;
+            margin -= Math.sign(margin) * d;
         }
 
         color[iChan+1] = _c;
@@ -328,7 +340,7 @@ function correctChannel(color, iChan, margin)
         {
             c_ += d; 
             valid_ = isColorOk(c_, iChan, savedColor);
-            margin -= d;
+            margin -= Math.sign(margin) * d;
         }
 
         color[iChan+1] = c_;

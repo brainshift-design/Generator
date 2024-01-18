@@ -70,6 +70,7 @@ extends GOperator1
             return this;
 
 
+        const input = this.input  ? (await this. input.eval(parse)).toValue()             : null;
         const order = this._order ? (await this._order.eval(parse)).toValue().toInteger() : null;
         const c1    = this._c1    ? (await this._c1   .eval(parse)).toValue()             : null;
         const c2    = this._c2    ? (await this._c2   .eval(parse)).toValue()             : null;
@@ -80,11 +81,8 @@ extends GOperator1
             order.value = Math.min(Math.max(0, order.value), 5);
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-
             if (this.options.enabled)
             {
                 const rgb = input.toRgb();
@@ -96,6 +94,7 @@ extends GOperator1
                 const inputColor = input.toDataColor();
 
 
+                //console.log('this.c1 =', this.c1);
                 const
               [ closestOrder,
                 closest1,
