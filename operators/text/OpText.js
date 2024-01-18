@@ -38,7 +38,7 @@ extends ResizableBase
             x, 
             y, 
             w, 
-            Math.max(defHeaderHeight + valueHeight, h), 
+            defHeaderHeight + valueHeight, //Math.max(defHeaderHeight + valueHeight, h), 
             updateTransform);
     }
 

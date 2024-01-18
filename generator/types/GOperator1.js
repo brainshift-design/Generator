@@ -75,4 +75,11 @@ extends GOperator
         
         return this;
     }
+
+
+
+    setConditionInput(input)
+    {
+        this.input = input;
+    }
 }

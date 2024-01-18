@@ -82,9 +82,16 @@ extends OperatorBase
         this.paramResult   .enableControlText(false);
         this.paramOperation.enableControlText(true );
 
-        updateParamConditionText(this.paramResult, this.paramResult.isUnknown(), true);
+        updateParamConditionText(this.paramResult, this.isUnknown() || this.hasConditionOutputs(), true);
 
         
+        if (this.hasConditionOutputs())
+        {
+            this.headerInputs[0].types = [ANY_VALUE];
+            this.headerInputs[1].types = [ANY_VALUE];
+        }
+
+
         this.updateParamControls();
     }
 }

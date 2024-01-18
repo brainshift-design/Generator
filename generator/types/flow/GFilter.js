@@ -221,10 +221,13 @@ async function getFilterCondition(parse, conditionNode, node, condition, item)
     
     conditionNode.reset();
 
-    if (   conditionNode.toValue().type == item.type
-        || conditionNode.toValue().type == ANY_VALUE)
+    const value = conditionNode.toValue();
+    if (!value) return item;
+
+    if (   value.type == item.type
+        || value.type == ANY_VALUE)
     {
-        conditionNode.input = item.copy();
+        conditionNode.setConditionInput(item.copy());
         condition.invalidateInputs(parse, node, true); 
     }
 

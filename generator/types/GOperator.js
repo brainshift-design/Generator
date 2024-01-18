@@ -282,4 +282,11 @@ extends GNode
     //         }
     //     }
     // }
+
+
+
+    setConditionInput(input)
+    {
+
+    }
 }
