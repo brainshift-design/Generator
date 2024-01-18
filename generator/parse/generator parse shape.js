@@ -177,8 +177,8 @@ function genParseEllipse(parse)
         case 'width':    ellipse.width    = genParse(parse); break;
         case 'height':   ellipse.height   = genParse(parse); break;
         case 'round':    ellipse.round    = genParse(parse); break;
-        case 'from':     ellipse.from     = genParse(parse); break;
-        case 'to':       ellipse.to       = genParse(parse); break;
+        case 'start':    ellipse.start    = genParse(parse); break;
+        case 'sweep':    ellipse.sweep    = genParse(parse); break;
         case 'inner':    ellipse.inner    = genParse(parse); break;
         case 'props':    ellipse.props    = genParse(parse); break;
         }

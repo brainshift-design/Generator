@@ -3,8 +3,8 @@ extends GShape
 {
     position = null;
     round    = null;
-    from     = null;
-    to       = null;
+    start    = null;
+    sweep    = null;
     inner    = null;
 
 
@@ -22,8 +22,8 @@ extends GShape
 
         this.position = null;
         this.round    = null;
-        this.from     = null;
-        this.to       = null;
+        this.start    = null;
+        this.sweep    = null;
         this.inner    = null;
     }
 
@@ -37,8 +37,8 @@ extends GShape
 
         if (this.position) copy.position = this.position.copy();
         if (this.round   ) copy.round    = this.round   .copy();
-        if (this.from    ) copy.from     = this.from    .copy();
-        if (this.to      ) copy.to       = this.to      .copy();
+        if (this.start   ) copy.start    = this.start   .copy();
+        if (this.sweep   ) copy.sweep    = this.sweep   .copy();
         if (this.inner   ) copy.inner    = this.inner   .copy();
         
         return copy;
@@ -56,8 +56,8 @@ extends GShape
             case 'width':    return this.input ? this.value.width    : this.width;
             case 'height':   return this.input ? this.value.height   : this.height;
             case 'round':    return this.input ? this.value.round    : this.round;
-            case 'from':     return this.input ? this.value.from     : this.from;
-            case 'to':       return this.input ? this.value.to       : this.to;
+            case 'start':    return this.input ? this.value.start    : this.start;
+            case 'sweep':    return this.input ? this.value.sweep    : this.sweep;
             case 'inner':    return this.input ? this.value.inner    : this.inner
         }
 
@@ -77,8 +77,8 @@ extends GShape
         let input = this.input    ? (await this.input   .eval(parse)).toValue() : null;
         let pos   = this.position ? (await this.position.eval(parse)).toValue() : null;
         let round = this.round    ? (await this.round   .eval(parse)).toValue() : null;
-        let from  = this.from     ? (await this.from    .eval(parse)).toValue() : null;
-        let to    = this.to       ? (await this.to      .eval(parse)).toValue() : null;
+        let start = this.start    ? (await this.start   .eval(parse)).toValue() : null;
+        let sweep = this.sweep    ? (await this.sweep   .eval(parse)).toValue() : null;
         let inner = this.inner    ? (await this.inner   .eval(parse)).toValue() : null;
 
 
@@ -94,8 +94,8 @@ extends GShape
             if (width )  this.value.width    = width;   else  width  = this.value.width;  
             if (height)  this.value.height   = height;  else  height = this.value.height; 
             if (round )  this.value.round    = round;   else  round  = this.value.round;  
-            if (from  )  this.value.from     = from ;   else  from   = this.value.from;  
-            if (to    )  this.value.to       = to   ;   else  to     = this.value.to;  
+            if (start )  this.value.start    = start;   else  start  = this.value.start;
+            if (sweep )  this.value.sweep    = sweep;   else  sweep  = this.value.sweep;
             if (inner )  this.value.inner    = inner;   else  inner  = this.value.inner;  
         }
         else
@@ -108,8 +108,8 @@ extends GShape
                 width, 
                 height,
                 round,
-                from,
-                to,
+                start,
+                sweep,
                 inner);
         }
 
@@ -122,8 +122,8 @@ extends GShape
             ['width',    width ],
             ['height',   height],
             ['round',    round ],
-            ['from',     from  ],
-            ['to',       to    ],
+            ['start',    start ],
+            ['sweep',    sweep ],
             ['inner',    inner ]
         ]);
 
@@ -140,8 +140,8 @@ extends GShape
         // if (!this.width   ) this.width    = this.value.width   .copy();
         // if (!this.height  ) this.height   = this.value.height  .copy();
         // if (!this.round   ) this.round    = this.value.round   .copy();
-        // if (!this.from    ) this.from     = this.value.from    .copy();
-        // if (!this.to      ) this.to       = this.value.to      .copy();
+        // if (!this.start   ) this.start    = this.value.start   .copy();
+        // if (!this.sweep   ) this.sweep    = this.value.sweep   .copy();
         // if (!this.inner   ) this.inner    = this.value.inner   .copy();
 
 
@@ -178,14 +178,14 @@ extends GShape
             const _w = vpos.value <= 0 ? vw : new NumberValue(vw.value*2, Math.max(vx.decimals, vw.decimals));
             const _h = vpos.value <= 0 ? vh : new NumberValue(vh.value*2, Math.max(vy.decimals, vh.decimals));            
 
-            let   x = _x.value;
-            let   y = _y.value;
-            let   w = _w.value;
-            let   h = _h.value;
-            let   r = this.value.round .value;
-            const f = this.value.from  .value;
-            const t = this.value.to    .value;
-            const i = this.value.inner .value;
+            let   x  = _x.value;
+            let   y  = _y.value;
+            let   w  = _w.value;
+            let   h  = _h.value;
+            let   r  = this.value.round .value;
+            const st = this.value.start .value;
+            const sw = this.value.sweep .value;
+            const i  = this.value.inner .value;
 
 
             [x, y, w, h, , ] = validateObjectRect(x, y, w, h);
@@ -198,7 +198,7 @@ extends GShape
                     this.nodeId,
                     this.nodeId,
                     this.nodeName,
-                    x, y, w, h, r, f, t, i);
+                    x, y, w, h, r, st, sw, i);
 
                 ellipse.createDefaultTransform(x, y);
                 ellipse.createDefaultTransformPoints(x, y, w, h);
@@ -248,8 +248,8 @@ extends GShape
         return super.isValid()
             && this.position && this.position.isValid()
             && this.round    && this.round   .isValid()
-            && this.from     && this.from    .isValid()
-            && this.to       && this.to      .isValid()
+            && this.start    && this.start   .isValid()
+            && this.sweep    && this.sweep   .isValid()
             && this.inner    && this.inner   .isValid();
     }
 
@@ -261,8 +261,8 @@ extends GShape
  
         if (this.position) this.position.pushValueUpdates(parse);
         if (this.round   ) this.round   .pushValueUpdates(parse);
-        if (this.from    ) this.from    .pushValueUpdates(parse);
-        if (this.to      ) this.to      .pushValueUpdates(parse);
+        if (this.start   ) this.start   .pushValueUpdates(parse);
+        if (this.sweep   ) this.sweep   .pushValueUpdates(parse);
         if (this.inner   ) this.inner   .pushValueUpdates(parse);
     }
 
@@ -274,8 +274,8 @@ extends GShape
 
         if (this.position) this.position.invalidateInputs(parse, from, force);
         if (this.round   ) this.round   .invalidateInputs(parse, from, force);
-        if (this.from    ) this.from    .invalidateInputs(parse, from, force);
-        if (this.to      ) this.to      .invalidateInputs(parse, from, force);
+        if (this.start   ) this.start   .invalidateInputs(parse, from, force);
+        if (this.sweep   ) this.sweep   .invalidateInputs(parse, from, force);
         if (this.inner   ) this.inner   .invalidateInputs(parse, from, force);
     }
 
@@ -287,8 +287,8 @@ extends GShape
  
         if (this.position) this.position.iterateLoop(parse);
         if (this.round   ) this.round   .iterateLoop(parse);
-        if (this.from    ) this.from    .iterateLoop(parse);
-        if (this.to      ) this.to      .iterateLoop(parse);
+        if (this.start   ) this.start   .iterateLoop(parse);
+        if (this.sweep   ) this.sweep   .iterateLoop(parse);
         if (this.inner   ) this.inner   .iterateLoop(parse);
     }
 }

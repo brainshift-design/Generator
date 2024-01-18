@@ -54,7 +54,7 @@ extends GOperator1
         {
             if (this.options.enabled)
             {
-                if (when.value == 0)
+                if (when.value > 0)
                     this.value = this.current.copy();
 
                 if (input)
@@ -63,7 +63,7 @@ extends GOperator1
                     this.current.decimals = Math.max(this.current.decimals, input.decimals);
                 }
 
-                if (when.value > 0)
+                if (when.value == 0)
                     this.value = this.current.copy();
             }
             else

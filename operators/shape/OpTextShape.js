@@ -74,18 +74,18 @@ extends OpShape
         const lineHeight    = values[paramIds.findIndex(id => id == 'lineHeight'   )];
         const letterSpacing = values[paramIds.findIndex(id => id == 'letterSpacing')];
 
-        this.paramText         .setValue(text,          false, true, false);
-        this.paramX            .setValue(x,             false, true, false);
-        this.paramY            .setValue(y,             false, true, false);
-        this.paramWidth        .setValue(width,         false, true, false);
-        this.paramHeight       .setValue(height,        false, true, false);
-        this.paramFont         .setValue(font,          false, true, false);
-        this.paramSize         .setValue(size,          false, true, false);
-        this.paramStyle        .setValue(style,         false, true, false);
-        this.paramAlignH       .setValue(alignH,        false, true, false);
-        this.paramAlignV       .setValue(alignV,        false, true, false);
-        this.paramLineHeight   .setValue(lineHeight,    false, true, false);
-        this.paramLetterSpacing.setValue(letterSpacing, false, true, false);
+        if (text.type == TEXT_VALUE) this.paramText         .setValue(text,          false, true, false);
+                                     this.paramX            .setValue(x,             false, true, false);
+                                     this.paramY            .setValue(y,             false, true, false);
+                                     this.paramWidth        .setValue(width,         false, true, false);
+                                     this.paramHeight       .setValue(height,        false, true, false);
+                                     this.paramFont         .setValue(font,          false, true, false);
+                                     this.paramSize         .setValue(size,          false, true, false);
+                                     this.paramStyle        .setValue(style,         false, true, false);
+                                     this.paramAlignH       .setValue(alignH,        false, true, false);
+                                     this.paramAlignV       .setValue(alignV,        false, true, false);
+                                     this.paramLineHeight   .setValue(lineHeight,    false, true, false);
+                                     this.paramLetterSpacing.setValue(letterSpacing, false, true, false);
     }
 
 

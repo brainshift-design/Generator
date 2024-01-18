@@ -1887,8 +1887,8 @@ const FO_WIDTH          = 26;
 const FO_HEIGHT         = 27;                                    
 
 const FO_RECT_ROUND     = 28;   const FO_ELLIPSE_ROUND   = 28;   const FO_VECTOR_NETWORK_DATA = 28;   const FO_VECTOR_PATH_DATA    = 28;   const FO_POLY_ROUND   = 28;   const FO_STAR_ROUND  = 28;   const FO_FIG_WIDTH      = 28;   const FO_FRAME_ROUND    = 28;
-                                const FO_ELLIPSE_FROM    = 29;                                        const FO_VECTOR_PATH_WINDING = 29;   const FO_POLY_CORNERS = 29;   const FO_STAR_POINTS = 29;   const FO_FIG_HEIGHT     = 29;   const FO_FRAME_CHILDREN = 29;
-                                const FO_ELLIPSE_TO      = 30;                                        const FO_VECTOR_PATH_ROUND   = 30;                                 const FO_STAR_CONVEX = 30;   const FO_TEXT           = 30; 
+                                const FO_ELLIPSE_START    = 29;                                        const FO_VECTOR_PATH_WINDING = 29;   const FO_POLY_CORNERS = 29;   const FO_STAR_POINTS = 29;   const FO_FIG_HEIGHT     = 29;   const FO_FRAME_CHILDREN = 29;
+                                const FO_ELLIPSE_SWEEP      = 30;                                        const FO_VECTOR_PATH_ROUND   = 30;                                 const FO_STAR_CONVEX = 30;   const FO_TEXT           = 30; 
                                                                                                                                  
                                 const FO_ELLIPSE_INNER   = 31;                                                                                                                                        const FO_FONT           = 31;
                                                                                                                                                                                                       const FO_FONT_SIZE      = 32;
@@ -5122,8 +5122,8 @@ function genEllipseIsValid(genEllipse)
         && genEllipse[FO_WIDTH        ] != null && !isNaN(genEllipse[FO_WIDTH        ])
         && genEllipse[FO_HEIGHT       ] != null && !isNaN(genEllipse[FO_HEIGHT       ])
         && genEllipse[FO_ELLIPSE_ROUND] != null && !isNaN(genEllipse[FO_ELLIPSE_ROUND])
-        && genEllipse[FO_ELLIPSE_FROM ] != null && !isNaN(genEllipse[FO_ELLIPSE_FROM ])
-        && genEllipse[FO_ELLIPSE_TO   ] != null && !isNaN(genEllipse[FO_ELLIPSE_TO   ])
+        && genEllipse[FO_ELLIPSE_START] != null && !isNaN(genEllipse[FO_ELLIPSE_START])
+        && genEllipse[FO_ELLIPSE_SWEEP] != null && !isNaN(genEllipse[FO_ELLIPSE_SWEEP])
         && genEllipse[FO_ELLIPSE_INNER] != null && !isNaN(genEllipse[FO_ELLIPSE_INNER]);
 }
 
@@ -5177,10 +5177,13 @@ function figUpdateEllipseData(figEllipse, genEllipse)
 {
     figEllipse.cornerRadius = genEllipse[FO_ELLIPSE_ROUND];
 
+    const start = genEllipse[FO_ELLIPSE_START] /360*(Math.PI*2);
+    const sweep = genEllipse[FO_ELLIPSE_SWEEP] /100*(Math.PI*2);
+
     figEllipse.arcData =
     {
-        startingAngle: genEllipse[FO_ELLIPSE_FROM] /360*(Math.PI*2),
-        endingAngle:   genEllipse[FO_ELLIPSE_TO  ] /360*(Math.PI*2),
+        startingAngle: start,
+        endingAngle:   start + sweep,
         innerRadius:   Math.min(Math.max(0, genEllipse[FO_ELLIPSE_INNER]/100), 1)
     };
 

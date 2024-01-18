@@ -7,8 +7,8 @@ extends OpShape
     paramWidth;
     paramHeight;
     paramRound;
-    paramFrom;
-    paramTo;
+    paramStart;
+    paramSweep;
     paramInner;
 
 
@@ -32,21 +32,19 @@ extends OpShape
         this.addParam(this.paramHeight   = new NumberParam('height',   'height',   true,  true, true, 100));
         this.addParam(this.paramRound    = new NumberParam('round',    'round',    true,  true, true,   0, 0));
         this.addParam(this.paramInner    = new NumberParam('inner',    'inner',    true,  true, true,   0, 0, 100));
-        this.addParam(this.paramFrom     = new NumberParam('from',     'from',     true,  true, true,   0));
-        this.addParam(this.paramTo       = new NumberParam('to',       'to',       true,  true, true, 360));
+        this.addParam(this.paramStart    = new NumberParam('start',    'start',    true,  true, true,   0));
+        this.addParam(this.paramSweep    = new NumberParam('sweep',    'sweep',    true,  true, true, 100, 0, 100));
         
 
         this.paramPosition.divider = 0.4;
 
-        this.paramFrom .controls[0].setSuffix('°', true);
-        this.paramTo   .controls[0].setSuffix('°', true);
+        this.paramStart.controls[0].setSuffix('°', true);
+        this.paramSweep.controls[0].setSuffix('°', true);
         this.paramInner.controls[0].setSuffix('%', true);
+        this.paramSweep.controls[0].setSuffix('%', true);
 
-        this.paramFrom .controls[0].wrapValue     = true;
-        this.paramTo   .controls[0].wrapValue     = true;
-
-        this.paramFrom .controls[0].suffixOffsetY = -4;
-        this.paramTo   .controls[0].suffixOffsetY = -4;
+        this.paramStart.controls[0].wrapValue     = true;
+        this.paramStart.controls[0].suffixOffsetY = -4;
 
 
         this.addBaseParams();
@@ -62,8 +60,8 @@ extends OpShape
         const width  = values[paramIds.findIndex(id => id == 'width'   )];
         const height = values[paramIds.findIndex(id => id == 'height'  )];
         const round  = values[paramIds.findIndex(id => id == 'round'   )];
-        const from   = values[paramIds.findIndex(id => id == 'from'    )];
-        const to     = values[paramIds.findIndex(id => id == 'to'      )];
+        const start  = values[paramIds.findIndex(id => id == 'start'   )];
+        const sweep  = values[paramIds.findIndex(id => id == 'sweep'   )];
         const inner  = values[paramIds.findIndex(id => id == 'inner'   )];
 
         this.paramPosition.setValue(pos,    false, true, false);
@@ -72,8 +70,8 @@ extends OpShape
         this.paramWidth   .setValue(width,  false, true, false);
         this.paramHeight  .setValue(height, false, true, false);
         this.paramRound   .setValue(round,  false, true, false);
-        this.paramFrom    .setValue(from,   false, true, false);
-        this.paramTo      .setValue(to,     false, true, false);
+        this.paramStart   .setValue(start,  false, true, false);
+        this.paramSweep   .setValue(sweep,  false, true, false);
         this.paramInner   .setValue(inner,  false, true, false);
     }
 

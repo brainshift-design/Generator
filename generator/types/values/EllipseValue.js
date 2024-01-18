@@ -7,8 +7,8 @@ extends ShapeValue
     width;
     height;
     round;
-    from;
-    to;
+    start;
+    sweep;
     inner;
 
 
@@ -20,8 +20,8 @@ extends ShapeValue
                 width    = new NumberValue(0), 
                 height   = new NumberValue(0), 
                 round    = new NumberValue(0), 
-                from     = new NumberValue(0),
-                to       = new NumberValue(0),
+                start    = new NumberValue(0),
+                sweep    = new NumberValue(0),
                 inner    = new NumberValue(0))
     {
         super(ELLIPSE_VALUE, nodeId);
@@ -32,8 +32,8 @@ extends ShapeValue
         this.width    = width;
         this.height   = height;
         this.round    = round;
-        this.from     = from;
-        this.to       = to;
+        this.start    = start;
+        this.sweep    = sweep;
         this.inner    = inner;
     }
 
@@ -49,8 +49,8 @@ extends ShapeValue
             this.width   .copy(), 
             this.height  .copy(), 
             this.round   .copy(), 
-            this.from    .copy(),
-            this.to      .copy(),
+            this.start   .copy(),
+            this.sweep   .copy(),
             this.inner   .copy());
 
         copy.copyBase(this);
@@ -69,8 +69,8 @@ extends ShapeValue
             && this.width   .equals(ellipse.width   )
             && this.height  .equals(ellipse.height  )
             && this.round   .equals(ellipse.round   )
-            && this.from    .equals(ellipse.from    )
-            && this.to      .equals(ellipse.to      )
+            && this.start   .equals(ellipse.start   )
+            && this.sweep   .equals(ellipse.sweep   )
             && this.inner   .equals(ellipse.inner   );
     }
 
@@ -92,8 +92,8 @@ extends ShapeValue
             && this.width   .hasInitValue()
             && this.height  .hasInitValue()
             && this.round   .hasInitValue()
-            && this.from    .hasInitValue()
-            && this.to      .hasInitValue()
+            && this.start   .hasInitValue()
+            && this.sweep   .hasInitValue()
             && this.inner   .hasInitValue();
     }
 
@@ -108,8 +108,8 @@ extends ShapeValue
             && this.width   .isValid()
             && this.height  .isValid()
             && this.round   .isValid()
-            && this.from    .isValid()
-            && this.to      .isValid()
+            && this.start   .isValid()
+            && this.sweep   .isValid()
             && this.inner   .isValid();
     }
 
@@ -130,8 +130,8 @@ extends ShapeValue
             + ' ' + this.width   .toString()
             + ' ' + this.height  .toString()
             + ' ' + this.round   .toString()
-            + ' ' + this.from    .toString()
-            + ' ' + this.to      .toString()
+            + ' ' + this.start   .toString()
+            + ' ' + this.sweep   .toString()
             + ' ' + this.inner   .toString()
             + ' ' + super.toString();
     }
@@ -148,8 +148,8 @@ extends ShapeValue
             // + ' ' + this.height  .toPreviewString()
             // + ' ' + this.round   .toPreviewString()
             // + ' ' + this.inner   .toPreviewString() + '%'
-            // + ' ' + this.from    .toPreviewString() + '°'
-            // + ' ' + this.to      .toPreviewString() + '°';
+            // + ' ' + this.start   .toPreviewString() + '°'
+            // + ' ' + this.sweep   .toPreviewString() + '°';
     }
 
 
@@ -162,8 +162,8 @@ extends ShapeValue
             + ' ' + this.width   .toDisplayString()
             + ' ' + this.height  .toDisplayString()
             + ' ' + this.round   .toDisplayString()
-            + ' ' + this.from    .toDisplayString()
-            + ' ' + this.to      .toDisplayString()
+            + ' ' + this.start   .toDisplayString()
+            + ' ' + this.sweep   .toDisplayString()
             + ' ' + this.inner   .toDisplayString();
     }
 
@@ -206,8 +206,8 @@ function parseEllipseValue(str, i = -1)
     const width  = parseNumberValue(str[i]); i += width [1];
     const height = parseNumberValue(str[i]); i += height[1];
     const round  = parseNumberValue(str[i]); i += round [1];
-    const from   = parseNumberValue(str[i]); i += from  [1];
-    const to     = parseNumberValue(str[i]); i += to    [1];
+    const start  = parseNumberValue(str[i]); i += start [1];
+    const sweep  = parseNumberValue(str[i]); i += sweep [1];
     const inner  = parseNumberValue(str[i]); i += inner [1];
 
 
@@ -219,8 +219,8 @@ function parseEllipseValue(str, i = -1)
         width [0],
         height[0],
         round [0],
-        from  [0],
-        to    [0],
+        start [0],
+        sweep [0],
         inner [0]);
 
 
