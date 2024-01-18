@@ -68,13 +68,27 @@ extends GOperator1
 
                     if (index.value < maxColumns)
                     {
+                        const valueIds = [];
+
                         for (let i = 0; i < input.items.length; i++)
                         {
                             const row = input.items[i];
 
                             if (index.value < row.items.length)
                             {
-                                this.value.items.push(row.items[index.value].copy());
+                                const item = row.items[index.value].copy();
+
+                                item.valueId = getNewNumberId(
+                                    item.valueId, 
+                                    id => valueIds.includes(id),
+                                    item.valueId,
+                                    '',
+                                    1,
+                                    true);
+                               
+                                this.value.items.push(item);
+
+                                pushUnique(valueIds, item.valueId);
 
                                 if (   this.value.objects 
                                     && row.items[index.value].objects)
@@ -95,6 +109,7 @@ extends GOperator1
         // }
 
 
+        console.log('this.value =', this.value);
         this.updateValueObjects();
 
         this.setUpdateValues(parse,

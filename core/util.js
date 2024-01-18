@@ -268,8 +268,10 @@ function simpleIntHash(x)
 
 
 
-function getNewNumberId(curId, checkExists, id = curId, join = '')
+function getNewNumberId(curId, checkExists, id = curId, join = '', startNum = 2, addZero = false)
 {
+    if (addZero) id += '0';
+
     if (!checkExists(id))
         return id;
     
@@ -290,7 +292,7 @@ function getNewNumberId(curId, checkExists, id = curId, join = '')
 
     else if (numLength == 0)
     {
-        let num   = 2;
+        let num   = startNum;
         let newId = id + join + num;
 
         while (checkExists(newId))
