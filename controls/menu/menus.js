@@ -828,10 +828,15 @@ function initGeneratorMenus()
 
 
     menuTemplate = new Menu('Templates', true, false);
+    menuTemplate.addItems([
+        new MenuItem('Save to template',    null, {icon: iconTemplate}),
+        new MenuItem('Manage templates...', null, {icon: iconManageTemplates})
+    ]);
     menuTemplate.init = e => 
     {
-        uiQueueMessageToFigma({cmd: 'figGetAllLocalTemplateNames'});
-        e.cancel = true;
+        //new MenuItem('',            null, {separator: true}),
+        // uiQueueMessageToFigma({cmd: 'figGetAllLocalTemplateNames'});
+        // e.cancel = true;
     };
 
 
@@ -1052,7 +1057,7 @@ function initGeneratorMenus()
     btnNumber   = new MenuButton('', menuNumber,   {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
     btnText     = new MenuButton('', menuString,   {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
     //btnStyle  = new MenuButton('', menuStyle,    {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
-   // btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuTemplate ), callback: () => updatePanMode(false)});
+    btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuTemplate ), callback: () => updatePanMode(false)});
     //btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuGroup ), callback: () => updatePanMode(false)});
     
     // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
@@ -1169,17 +1174,18 @@ function initGeneratorMenus()
     // btnZoom.div.style.boxShadow           = '0 0 0 1px red inset';
 
 
-    btnFlow   .setIcon(iconFlow);
-    btnData   .setIcon(iconData);
-    btnSets   .setIcon(iconSequence);
-    btnMain   .setIcon(iconGenerator);
-    btnColor  .setIcon(iconVarColor);
+    btnFlow    .setIcon(iconFlow);
+    btnData    .setIcon(iconData);
+    btnSets    .setIcon(iconSequence);
+    btnMain    .setIcon(iconGenerator);
+    btnColor   .setIcon(iconVarColor);
     //btnLayer  .setIcon(iconEffects);
-    btnShape  .setIcon(iconShapes);
-    btnHand   .setIcon(iconHand);
+    btnShape   .setIcon(iconShapes);
+    btnHand    .setIcon(iconHand);
     //btnComment.setIcon(iconComment);
-    btnPanel  .setIcon(iconPanel);
-    btnSolo   .setIcon(iconSolo);
+    btnTemplate.setIcon(iconTemplate);
+    btnPanel   .setIcon(iconPanel);
+    btnSolo    .setIcon(iconSolo);
 
 
     menuBarMenus = 
