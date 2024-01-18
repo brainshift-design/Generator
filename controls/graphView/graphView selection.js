@@ -42,7 +42,7 @@ GraphView.prototype.updateSelection = function(x, y, shiftKey, ctrlKey)
     this.selectionRect.w = x - this.selectionRect.x;
     this.selectionRect.h = y - this.selectionRect.y;
 
-    setTimeout(() => this.updateSelectBox(shiftKey, ctrlKey));
+    this.updateSelectBox(shiftKey, ctrlKey);
 };
 
  
