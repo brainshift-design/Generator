@@ -195,8 +195,9 @@ async function asyncFilter(parse, array, conditionNode, node, condition)
 
         const cond = await getFilterCondition(parse, conditionNode, node, condition, item);
         if (!cond) return array;
-
+        
         const condValue = cond.toValue();
+        // console.log('condition =', condition)
 
         if (   condValue.type == NUMBER_VALUE
             && condValue.value > 0)
@@ -227,7 +228,7 @@ async function getFilterCondition(parse, conditionNode, node, condition, item)
     if (   value.type == item.type
         || value.type == ANY_VALUE)
     {
-        conditionNode.setConditionInput(item.copy());
+        conditionNode.input = item.copy();
         condition.invalidateInputs(parse, node, true); 
     }
 

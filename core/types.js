@@ -104,6 +104,7 @@ const FLOW_TYPES =
 
 const NUMBER_VALUE            = 'NUM#';  
 const NUMBER                  = 'NUM';   
+const NUMBER_PRECISION    = 'NPREC';   
 const NUMBER_SIGN             = 'NSIGN';   
 const NUMBER_ABSOLUTE         = 'ABS';   
 const NUMBER_ROUND            = 'ROUND';   
@@ -231,6 +232,7 @@ const NUMBER_TYPES =
     NUMBER_VALUE,
     NUMBER_LIST_VALUE,
     NUMBER,
+    NUMBER_PRECISION,
     NUMBER_SIGN,
     NUMBER_ABSOLUTE,
     NUMBER_ROUND,

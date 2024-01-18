@@ -596,9 +596,10 @@ function initGeneratorMenus()
     
     menuNumberBase = new Menu('Numbers', true, false);
     menuNumberBase.addItems([
-                           new MenuItem('Constant',      null, {icon: iconConstant,    createType: NUMBER_CONSTANT, callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONSTANT, btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Constant',      null, {icon: iconConstant,        createType: NUMBER_CONSTANT,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONSTANT,  btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('',              null, {separator: true}),
-                           new MenuItem('NaN ⟶ Number', null, {icon: iconNaNisNumber, createType: NUMBER_NAN,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_NAN,      btnNumber.div, getCreateOptions(e)))})]);
+                           new MenuItem('Precision',     null, {icon: iconNumberPrecision, createType: NUMBER_PRECISION, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PRECISION, btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('NaN ⟶ Number', null, {icon: iconNaNisNumber,     createType: NUMBER_NAN,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NAN,       btnNumber.div, getCreateOptions(e)))})]);
 
     menuFunctions = new Menu('Functions', true, false);
     menuFunctions.addItems([
@@ -651,7 +652,7 @@ function initGeneratorMenus()
                           new MenuItem('Compare',       null,                 {icon: iconCondition,   /*childMenu: menuCondition,*/ createType: NUMBER_CONDITION,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('Convert',       null,                 {icon: iconConvert,     childMenu: menuConvertNumber}),
                           new MenuItem('',              null,                 {separator: true}),
-                          new MenuItem('Curve',         null, {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,         btnNumber.div, getCreateOptions(e)))}), 
+                          new MenuItem('Curve',         null,                 {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,         btnNumber.div, getCreateOptions(e)))}), 
                           new MenuItem('Interpolate',   'Interpolate number', {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
         //                new MenuItem('',              null,                 {separator: true}),
         //menuItemSolve = new MenuItem('Solve',         null,                 {icon: iconSolve,       createType: NUMBER_SOLVE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,    btnNumber.div, getCreateOptions(e)))}),

@@ -106,6 +106,7 @@
 ../generator/types/number/arithmetic/GArithmetic.js
 
 ../generator/types/number/GNumber.js
+../generator/types/number/GSetPrecision.js
 ../generator/types/number/GSign.js
 ../generator/types/number/GAbsolute.js
 ../generator/types/number/GRound.js

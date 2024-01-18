@@ -38,7 +38,10 @@ extends ResizableBase
             x, 
             y, 
             w, 
-            defHeaderHeight + valueHeight, //Math.max(defHeaderHeight + valueHeight, h), 
+              !this.headerOutputs[0].isCondition()
+            || this.notCondition === true
+            ? Math.max(defHeaderHeight + valueHeight, h)
+            : defHeaderHeight, 
             updateTransform);
     }
 

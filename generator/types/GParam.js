@@ -61,12 +61,6 @@ extends GOperator
         this.param = this.node.paramFromId(this.paramId);
 
 
-        if (this.node.nodeId == 'rect')
-        {
-            console.log('this.paramId =', this.paramId);
-            console.log('this.param =', this.param);
-        }
-
         if (isValid(this.param))
         {
             // await this.node.eval(parse);

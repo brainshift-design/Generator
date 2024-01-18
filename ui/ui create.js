@@ -45,6 +45,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_ACCUMULATE:       node = new OpAccumulate();        break;
 
         case NUMBER:                  node = new OpNumber();            break;
+        case NUMBER_PRECISION:        node = new OpSetPrecision();      break;
         case NUMBER_SIGN:             node = new OpSign();              break;
         case NUMBER_ABSOLUTE:         node = new OpAbsolute();          break;
         case NUMBER_ROUND:            node = new OpRound();             break;

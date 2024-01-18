@@ -76,6 +76,7 @@
 ../operators/flow/OpIfElse.js
 
 ../operators/number/OpNumber.js
+../operators/number/OpSetPrecision.js
 ../operators/number/OpSign.js
 ../operators/number/OpAbsolute.js
 ../operators/number/OpRound.js

@@ -56,8 +56,7 @@ extends GOperator1
 
 
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        //console.log('this.input =', this.input);
- 
+        
         
         if (   index
             && input
@@ -69,14 +68,14 @@ extends GOperator1
 
             index = 
                    index.isValid()
-                && index.value >= 0 //> -input.items.length
+                && index.value >= 0
                 && index.value <  input.items.length
                 ? new NumberValue(Math.round(index.value))
                 : new NumberValue(0);
             
 
             if (   index.isValid()
-                && index.value >= 0 //> -input.items.length
+                && index.value >= 0
                 && index.value <  input.items.length)
             {
                 this.value = input.items.at(index.value);
@@ -105,8 +104,10 @@ extends GOperator1
                 index      = NumberValue.NaN;
             }
         }
-        else if (input)
-            this.value = input;
+        // else if (input)
+        //     this.value = input;
+        else 
+            this.value = new NullValue();
 
 
         const type = this.outputType();

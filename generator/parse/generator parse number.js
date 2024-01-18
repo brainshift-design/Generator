@@ -50,6 +50,52 @@ function genParseNumber(parse)
 
 
 
+function genParseSetPrecision(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const prec = new GSetPrecision(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(prec, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, prec);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        prec.input = genParse(parse);
+
+    prec.decimals = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, prec);
+    return prec;
+}
+
+
+
 function genParseConstant(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
