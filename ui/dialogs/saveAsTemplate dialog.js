@@ -118,26 +118,18 @@ saveAsTemplateInput.addEventListener('pointerup', () =>
 
 function saveSelectedAsTemplate(templateName)
 {
-    uiQueueMessageToFigma({
-        cmd:         'figSaveLocalTemplate',
-        templateName: templateName,
-        template:     saveAsTemplateDialog.copiedJson
-    });
+    const found = userTemplates.find(t => t.name == templateName);
 
-    // TODO
-    // increment name if exists
-    // or warn and don't close dialog if it doesn't
-
-
-
-    // str = str.replace(',', ' ');
     
-    // const nodeIds = str.split(' ').filter(i => i);
+    if (found)
+        found.graph = saveAsTemplateDialog.copiedJson;
+    else
+        userTemplates.push(
+        {
+            name:  templateName,
+            graph: saveAsTemplateDialog.copiedJson
+        });
 
-    // uiRemoveConnsToNodes(nodeIds);
-
-    // if (!isEmpty(nodeIds))
-    //hideSaveAsTemplateDialog();
 
     uiNotify('Saved template \'' + templateName + '\'');
 }

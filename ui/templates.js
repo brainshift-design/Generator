@@ -17,11 +17,11 @@ function initTemplateMenu(e)
 {
     menuTemplate.clearItems();
 
-    menuItemSaveTemplate    = new MenuItem('Save to template...', null, {icon: iconTemplate       });
+    menuItemSaveTemplate    = new MenuItem('Save as template...', null, {icon: iconTemplate,        callback: () => showSaveAsTemplateDialog()});
     menuItemManageTemplates = new MenuItem('Manage templates...', null, {icon: iconManageTemplates});
 
     const sub = subscribed();
-    enableMenuItem(menuItemSaveTemplate,    true, sub);
+    enableMenuItem(menuItemSaveTemplate,    graphView.selectedNodes.length > 0, sub);
     enableMenuItem(menuItemManageTemplates, true, sub);
 
     menuTemplate.addItems([
