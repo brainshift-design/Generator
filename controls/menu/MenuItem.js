@@ -36,6 +36,8 @@ class MenuItem
      
     showSubscribe      = false;
 
+    replaceExpand      = '';
+
 
     div;
     divHighlight;
@@ -448,6 +450,17 @@ class MenuItem
 
     update()
     {
+        const background = 
+            this.replaceExpand != '' 
+            ? this.replaceExpand
+            : '<svg width="6" height="9" viewBox="0 -1 6 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 4L0 0V8L6 4Z" fill="white"/></svg>';
+
+        this.divExpand.style.background = 'url(\'data:image/svg+xml;utf8,' + background + '\')';
+
+        this.divExpand.style.backgroundPosition = '50% 50%';
+        this.divExpand.style.backgroundRepeat   = 'no-repeat';
+
+
         this.divHighlight.style.background = 
                this.mouseOver
             ||    this.childMenu

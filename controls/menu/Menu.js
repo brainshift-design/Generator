@@ -24,21 +24,22 @@ class Menu
 
     combineChecksAndIcons = false; // conflicts are resolved in favor of icons
 
-    overMenu = false;
+    overMenu   = false;
 
-    items    = [];
-    lastItem = null;
-
-    reverse  = false;
+    items      = [];
+    lastItem   = null;
     
-    minWidth = 200;
+    reverse    = false;
+    
+    minWidth      = 200;
+    forceMinWidth = false;
 
-    init     = null; // ()
+    init       = null; // ()
 
-    visible  = false;
+    visible    = false;
 
 
-    onHide   = null; // removes itself after firing
+    onHide     = null; // removes itself after firing
 
 
 
@@ -150,13 +151,16 @@ class Menu
             if (this.combineChecksAndIcons)
                 checksAndIcons = Math.min(checksAndIcons, 32);
 
-            width = Math.max(
-                  width,
-                  checksAndIcons
-                + mesName.width
-                + 30
-                + mesShortcut.width
-                + (mesShortcut.width > 0 ? 20 : 0));
+            if (!this.forceMinWidth)
+            {
+                width = Math.max(
+                    width,
+                    checksAndIcons
+                    + mesName.width
+                    + 30
+                    + mesShortcut.width
+                    + (mesShortcut.width > 0 ? 20 : 0));
+            }
 
 
             if (this.combineChecksAndIcons)

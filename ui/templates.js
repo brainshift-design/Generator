@@ -18,24 +18,24 @@ function initTemplateMenu(e)
     menuTemplate.clearItems();
 
     menuItemSaveTemplate    = new MenuItem('Save as template...', null, {icon: iconTemplate,        callback: () => showSaveAsTemplateDialog()});
-    menuItemManageTemplates = new MenuItem('Manage templates...', null, {icon: iconManageTemplates});
+    //menuItemManageTemplates = new MenuItem('Manage templates...', null, {icon: iconManageTemplates});
 
     const sub = subscribed();
     enableMenuItem(menuItemSaveTemplate,    graphView.selectedNodes.length > 0, sub);
     enableMenuItem(menuItemManageTemplates, true, sub);
 
     menuTemplate.addItems([
-        menuItemSaveTemplate,
-        new MenuItem('', null, {separator: true}),
-        menuItemManageTemplates]);
+        menuItemSaveTemplate]);//,
+        //new MenuItem('', null, {separator: true}),
+        //menuItemManageTemplates]);
 
-    initTemplateMenuTemplates(presetTemplates, true );
-    initTemplateMenuTemplates(userTemplates,   false); // don't show user template names in metrics
+    initTemplateMenuTemplates(presetTemplates, true,  false);
+    initTemplateMenuTemplates(userTemplates,   false, true ); // don't show user template names in metrics
 }
 
 
 
-function initTemplateMenuTemplates(templates, showNames)
+function initTemplateMenuTemplates(templates, showNames, modifiers)
 {
     if (templates.length > 0)
         menuTemplate.addItems([new MenuItem('', null, {separator: true})]);
@@ -56,6 +56,7 @@ function initTemplateMenuTemplates(templates, showNames)
                 {
                     const newMenu  = new Menu(nameParts[j], false, false);
                     const menuItem = new MenuItem(nameParts[j], null, {childMenu: newMenu});
+
                     curMenu.addItems([menuItem]);
                     curMenu = newMenu;
                 }
@@ -64,9 +65,33 @@ function initTemplateMenuTemplates(templates, showNames)
             }
 
             if (j == nameParts.length-1)
-                curMenu.addItems([new MenuItem(nameParts[j], null, {callback: () => loadTemplate(template.graph, showNames ? template.name : '')})]);
+            {
+                const modMenu = new Menu('Modify template', false, false);
+                modMenu.minWidth      = 80;
+                modMenu.forceMinWidth = true;
+                modMenu.addItems([new AdjustMenuItem(i, {callback: adjustTemplateMenu})]);
+                
+                const item = new MenuItem(nameParts[j], null, 
+                {
+                    callback:  () => loadTemplate(template.graph, showNames ? template.name : ''),
+                    childMenu: modifiers ? modMenu : null
+                });
+
+                if (modifiers)
+                    item.replaceExpand = '<svg width="2" height="7" viewBox="0 0 2 7" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="2" height="1" fill="white"/><rect y="3" width="2" height="1" fill="white"/><rect y="6" width="2" height="1" fill="white"/></svg>';
+
+                curMenu.addItems([item]);
+            }
         }
     }
+}
+
+
+
+function adjustTemplateMenu(e, index, template)
+{
+    console.log('template =', template);
+    console.log('index =', index);
 }
 
 
