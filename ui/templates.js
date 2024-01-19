@@ -17,10 +17,17 @@ function initTemplateMenu(e)
 {
     menuTemplate.clearItems();
 
+    menuItemSaveTemplate    = new MenuItem('Save to template...', null, {icon: iconTemplate       });
+    menuItemManageTemplates = new MenuItem('Manage templates...', null, {icon: iconManageTemplates});
+
+    const sub = subscribed();
+    enableMenuItem(menuItemSaveTemplate,    true, sub);
+    enableMenuItem(menuItemManageTemplates, true, sub);
+
     menuTemplate.addItems([
-        new MenuItem('Save to template...', null, {icon: iconTemplate}),
-        new MenuItem('',                    null, {separator: true}),
-        new MenuItem('Manage templates...', null, {icon: iconManageTemplates})]);
+        menuItemSaveTemplate,
+        new MenuItem('', null, {separator: true}),
+        menuItemManageTemplates]);
 
     initTemplateMenuTemplates(presetTemplates);
     initTemplateMenuTemplates(userTemplates);
@@ -45,7 +52,7 @@ function initTemplateMenuTemplates(templates)
         {
             if (j < nameParts.length-1)
             {
-                if (!curMenu.items.find(i => i.name == nameParts[j]))
+                if (!curMenu.items.find(item => item.name == nameParts[j]))
                 {
                     const newMenu  = new Menu(nameParts[j], false, false);
                     const menuItem = new MenuItem(nameParts[j], null, {childMenu: newMenu});
@@ -53,7 +60,7 @@ function initTemplateMenuTemplates(templates)
                     curMenu = newMenu;
                 }
                 else if (nameParts.length > 1)
-                    curMenu = curMenu.items.find(i => i.name == nameParts[j]).childMenu;
+                    curMenu = curMenu.items.find(item => item.name == nameParts[j]).childMenu;
             }
 
             if (j == nameParts.length-1)

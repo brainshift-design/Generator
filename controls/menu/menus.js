@@ -308,6 +308,9 @@ var menuItemNodeRandomizeSeeds;
 var menuItemLicenseSep1;
 var menuItemLicenseRemove;
 
+var menuItemSaveTemplate;
+var menuItemManageTemplates;
+
 
 
 function initGeneratorMenus()
@@ -828,10 +831,8 @@ function initGeneratorMenus()
 
 
     menuTemplate = new Menu('Templates', true, false);
-    menuTemplate.init = initTemplateMenu;
-
-
-    menuItemManageTemplates = new MenuItem('Manage templates. . .', null, {icon: iconManageTemplates});
+    menuTemplate.minWidth = 230;
+    menuTemplate.init     = initTemplateMenu;
 
 
     menuGroup = new Menu('Groups', true, false);
