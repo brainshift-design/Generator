@@ -89,7 +89,6 @@ async function uiReturnFigStartGenerator(msg)
     currentUser     = msg.currentUser;
     tutorialsShown  = msg.tutorials;
 
-
     loadLocalSettings();
 
 
@@ -167,6 +166,26 @@ function initGenerator(activate)
             enableFeatures(subscribed());
     }, 
     100);
+
+
+    return postToServer(
+    {
+        action: 'getUserTemplates',
+        userId:  currentUser.id
+    })
+    .then(response =>
+    {
+        userTemplates = response.userTemplates.map(t => 
+        { 
+            t.graph = decodeURIComponent(t.graph); 
+            return t; 
+        });
+    })
+    .catch(e =>
+    {
+        console.error(e);
+        throw e;
+    });
 }
 
 

@@ -122,14 +122,34 @@ function saveSelectedAsTemplate(templateName)
 
     
     if (found)
+    {
         found.graph = saveAsTemplateDialog.copiedJson;
+    }
     else
+    {
         userTemplates.push(
         {
             name:  templateName,
             graph: saveAsTemplateDialog.copiedJson
         });
+    }
 
 
-    uiNotify('Saved template \'' + templateName + '\'');
+    postToServer(
+    {
+        action: 'saveTemplate',
+        userId:  currentUser.id,
+        name:    templateName,
+        graph:   encodeURIComponent(saveAsTemplateDialog.copiedJson)
+    })
+    .then(response =>
+    {
+        if (response.result)
+            uiNotify('Saved template \'' + templateName + '\'');
+    })
+    .catch(e =>
+    {
+        console.error(e);
+        throw e;
+    });
 }

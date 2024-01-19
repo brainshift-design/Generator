@@ -111,7 +111,7 @@ extends ResizableBase
 
     updateParams()
     {
-        this.paramValue.enableControlText(true, this.isUnknown());
+        this.paramValue.enableControlText(!this.headerInputs[0].connected, this.isUnknown());
 
         this.updateParamControls();
         this.updateValueParam();

@@ -2239,16 +2239,16 @@ function figStartGenerator()
         
         figPostMessageToUi(
         {
-            cmd:         'uiReturnFigStartGenerator',
-            currentUser:  figma.currentUser,
-            viewportRect: figma.viewport.bounds,
-            viewportZoom: figma.viewport.zoom,
-            fonts:        fonts,
-            eula:         eula,
-            tutorials:    tutorials,
-            isLocked:     isLocked,
-            windowWidth:  wndWidth,
-            windowHeight: wndHeight
+            cmd:          'uiReturnFigStartGenerator',
+            currentUser:   figma.currentUser,
+            viewportRect:  figma.viewport.bounds,
+            viewportZoom:  figma.viewport.zoom,
+            fonts:         fonts,
+            eula:          eula,
+            tutorials:     tutorials,
+            isLocked:      isLocked,
+            windowWidth:   wndWidth,
+            windowHeight:  wndHeight
         });
     })();
 }
