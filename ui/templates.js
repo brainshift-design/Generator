@@ -29,13 +29,13 @@ function initTemplateMenu(e)
         new MenuItem('', null, {separator: true}),
         menuItemManageTemplates]);
 
-    initTemplateMenuTemplates(presetTemplates);
-    initTemplateMenuTemplates(userTemplates);
+    initTemplateMenuTemplates(presetTemplates, true );
+    initTemplateMenuTemplates(userTemplates,   false); // don't show user template names in metrics
 }
 
 
 
-function initTemplateMenuTemplates(templates)
+function initTemplateMenuTemplates(templates, showNames)
 {
     if (templates.length > 0)
         menuTemplate.addItems([new MenuItem('', null, {separator: true})]);
@@ -64,7 +64,24 @@ function initTemplateMenuTemplates(templates)
             }
 
             if (j == nameParts.length-1)
-                curMenu.addItems([new MenuItem(nameParts[j], null, {})]);
+                curMenu.addItems([new MenuItem(nameParts[j], null, {callback: () => loadTemplate(template.graph, showNames ? template.name : '')})]);
         }
     }
+}
+
+
+
+function loadTemplate(templateGraph, templateName)
+{
+    hideAllMenus();
+
+    const ex = (graphView.div.offsetWidth ) / 2;
+    const ey = (graphView.div.offsetHeight) / 2 + getTopHeight();
+
+    const x  = (ex - graph.currentPage.pan.x) / graph.currentPage.zoom;
+    const y  = (ey - graph.currentPage.pan.y) / graph.currentPage.zoom;
+
+    actionManager.do(new PasteNodesAction(templateGraph, false, false, true, x, y));
+
+    addMetricsEvent(METRICS_LOAD_TEMPLATE, templateName);
 }

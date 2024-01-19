@@ -1292,9 +1292,13 @@ class Operator
         this.id   = _node.id;
         this.name = decodeURIComponent(_node.name);
     
-        if (_node.renamed     ) this.renamed      = parseBool(_node.renamed     );
-        if (_node.enabled     ) this.enabled      = parseBool(_node.enabled     );
-        if (_node.highlight   ) this.highlight    = parseInt (_node.highlight   );
+        // for pasting
+        if (_node.x           ) this.x            = parseFloat(_node.x);
+        if (_node.y           ) this.y            = parseFloat(_node.y);
+
+        if (_node.renamed     ) this.renamed      = parseBool(_node.renamed);
+        if (_node.enabled     ) this.enabled      = parseBool(_node.enabled);
+        if (_node.highlight   ) this.highlight    = parseInt (_node.highlight);
         if (_node.notCondition) this.notCondition = parseBool(_node.notCondition);
     
         if (  _node.params

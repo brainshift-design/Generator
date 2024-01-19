@@ -231,28 +231,42 @@ class MenuItem
                         hideAllMenus();
 
 
-                    const node = graph.pageNodes.at(-1);
-
-                    if (node)
+                    const selectedOffsets = graphView.selectedNodes.map(n => 
                     {
+                        const lastSelected = graphView.selectedNodes.at(-1);
+
+                        return { x: parseFloat(n.div.style.left) - parseFloat(lastSelected.div.style.left),
+                                 y: parseFloat(n.div.style.top ) - parseFloat(lastSelected.div.style.top )}; 
+                    });
+
+                    
+                    for (let i = 0; i < graphView.selectedNodes.length; i++)
+                    {
+                        const node = graphView.selectedNodes[i];
+
+
                         node.div.shiftOnPointerDown = false;
 
                         node.sx  = node.div.offsetLeft;
                         node.sy  = node.div.offsetTop ;
 
-                        node.slx = node.div.offsetLeft - (defNodeWidth    / 2) - (               + graph.currentPage.pan.x) / graph.currentPage.zoom;
-                        node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (getTopHeight() + graph.currentPage.pan.y) / graph.currentPage.zoom;
+                        node.slx = selectedOffsets[i].x + node.div.offsetLeft - (defNodeWidth    / 2) - (               + graph.currentPage.pan.x) / graph.currentPage.zoom;
+                        node.sly = selectedOffsets[i].y + node.div.offsetTop  - (defHeaderHeight / 2) - (getTopHeight() + graph.currentPage.pan.y) / graph.currentPage.zoom;
 
-                        try
+
+                        if (i == graphView.selectedNodes.length-1)
                         {
-                            if (this.div.hasPointerCapture(e.pointerId))
-                                this.div.releasePointerCapture(e.pointerId);
+                            try
+                            {
+                                if (this.div.hasPointerCapture(e.pointerId))
+                                    this.div.releasePointerCapture(e.pointerId);
 
-                            node.header.setPointerCapture(e.pointerId);
+                                node.header.setPointerCapture(e.pointerId);
 
-                            node.div.dragging = true;
+                                node.div.dragging = true;
+                            }
+                            catch {}
                         }
-                        catch {}
                     }
                 }
                 else

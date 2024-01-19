@@ -1123,7 +1123,7 @@ const FLOW_TYPES =
 
 const NUMBER_VALUE            = 'NUM#';  
 const NUMBER                  = 'NUM';   
-const NUMBER_PRECISION    = 'NPREC';   
+const NUMBER_PRECISION        = 'NPREC';   
 const NUMBER_SIGN             = 'NSIGN';   
 const NUMBER_ABSOLUTE         = 'ABS';   
 const NUMBER_ROUND            = 'ROUND';   
