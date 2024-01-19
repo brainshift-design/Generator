@@ -1,1 +1,2 @@
 ui/presets/*
+ui/templates/*

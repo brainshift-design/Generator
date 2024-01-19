@@ -64,6 +64,7 @@
     [../autojoin/operators.aj]
 
     ../actions/*.js
+    ../ui/templates/*.js
     ../ui/*!(payment,settings).js
     ../ui/presets/*.js
     ../ui/dialogs/*!(crashDialog).js

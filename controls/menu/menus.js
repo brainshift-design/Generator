@@ -828,16 +828,7 @@ function initGeneratorMenus()
 
 
     menuTemplate = new Menu('Templates', true, false);
-    menuTemplate.addItems([
-        new MenuItem('Save to template',    null, {icon: iconTemplate}),
-        new MenuItem('Manage templates...', null, {icon: iconManageTemplates})
-    ]);
-    menuTemplate.init = e => 
-    {
-        //new MenuItem('',            null, {separator: true}),
-        // uiQueueMessageToFigma({cmd: 'figGetAllLocalTemplateNames'});
-        // e.cancel = true;
-    };
+    menuTemplate.init = initTemplateMenu;
 
 
     menuItemManageTemplates = new MenuItem('Manage templates. . .', null, {icon: iconManageTemplates});
