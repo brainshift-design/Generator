@@ -102,10 +102,13 @@ function initSearchBox(query)
                 for (const item of menu.items)
                     initSearchItem(item, search, query);
             }
+
+            for (const item of menuTemplate.items)
+                initTemplateSearchItem(item, search, query);
         }
 
 
-        search.found.sort((_a, _b) => 
+        search.found.sort((_a, _b) =>
         {
             const a  = _a.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
             const b  = _b.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
@@ -218,6 +221,34 @@ function initSearchItem(item, search, query)
     {
         item.foundExact = 1;
         search.found.push(item);
+    }
+}
+
+
+
+function initTemplateSearchItem(item, search, query)
+{
+    if (     item.childMenu
+        && !(item.childMenu.items[0] instanceof AdjustMenuItem))
+    {
+        for (const _item of item.childMenu.items)
+            initTemplateSearchItem(_item, search, query);
+    }
+    else if (item.parentMenu != menuTemplate
+          || menuTemplate.items.indexOf(item) > 0)
+    {
+        if (   makeSearchable(item.name).includes(makeSearchable(query))
+            && item.callback)
+        {
+            item.foundExact = 0;
+            search.found.push(item);
+        }
+        else if (includesSimilar(makeSearchable(item.name), makeSearchable(query), 1)
+            && item.callback)
+        {
+            item.foundExact = 1;
+            search.found.push(item);
+        }
     }
 }
 

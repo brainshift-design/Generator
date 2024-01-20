@@ -41,7 +41,7 @@ function initTemplateMenu(e)
 {
     menuTemplate.clearItems();
 
-    menuItemSaveTemplate    = new MenuItem('Save as template...', null, {icon: iconTemplate,        callback: () => showSaveAsTemplateDialog()});    //menuItemManageTemplates = new MenuItem('Manage templates...', null, {icon: iconManageTemplates});
+    menuItemSaveTemplate = new MenuItem('Save as template...', null, {icon: iconManageTemplates,        callback: () => showSaveAsTemplateDialog()});    //menuItemManageTemplates = new MenuItem('Manage templates...', null, {icon: iconManageTemplates});
 
     const sub = subscribed();
     enableMenuItem(menuItemSaveTemplate,    graphView.selectedNodes.length > 0, sub);
@@ -79,7 +79,7 @@ function initTemplateMenuTemplates(templates, showNames, modifiers)
                 {
                     if (curMenu.items.at(-1).name != nameParts[j])
                     {
-                        const newMenu  = new Menu(nameParts[j], false, false);
+                        const newMenu  = new Menu(nameParts[j], true, false);
                         const menuItem = new MenuItem(nameParts[j], null, {childMenu: newMenu});
 
                         curMenu.addItems([menuItem]);
@@ -98,6 +98,7 @@ function initTemplateMenuTemplates(templates, showNames, modifiers)
                     
                     const item = new MenuItem(nameParts[j], null, 
                     {
+                        icon:      iconTemplate,
                         callback:  () => loadTemplate(template.graph, showNames ? template.name : ''),
                         childMenu: modifiers ? modMenu : null
                     });
@@ -118,6 +119,7 @@ function initTemplateMenuTemplates(templates, showNames, modifiers)
             
             const item = new MenuItem(template.name, null,
             {
+                icon:      iconTemplate,
                 callback:  () => loadTemplate(template.graph, showNames ? template.name : ''),
                 childMenu: modifiers ? modMenu : null
             });
