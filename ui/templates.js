@@ -47,40 +47,61 @@ function initTemplateMenuTemplates(templates, showNames, modifiers)
 
         let curMenu = menuTemplate;
         
-        for (let j = 0; j < nameParts.length; j++)
+        if (nameParts.length > 1)
         {
-            if (j < nameParts.length-1)
+            for (let j = 0; j < nameParts.length; j++)
             {
-                if (!curMenu.items.find(item => item.name == nameParts[j]))
+                if (j < nameParts.length-1)
                 {
-                    const newMenu  = new Menu(nameParts[j], false, false);
-                    const menuItem = new MenuItem(nameParts[j], null, {childMenu: newMenu});
+                    if (curMenu.items.at(-1).name != nameParts[j])
+                    {
+                        const newMenu  = new Menu(nameParts[j], false, false);
+                        const menuItem = new MenuItem(nameParts[j], null, {childMenu: newMenu});
 
-                    curMenu.addItems([menuItem]);
-                    curMenu = newMenu;
+                        curMenu.addItems([menuItem]);
+                        curMenu = newMenu;
+                    }
+                    else 
+                        curMenu = curMenu.items.at(-1).childMenu;
                 }
-                else if (nameParts.length > 1)
-                    curMenu = curMenu.items.find(item => item.name == nameParts[j]).childMenu;
-            }
 
-            if (j == nameParts.length-1)
-            {
-                const modMenu = new Menu('Modify template', false, false);
-                modMenu.minWidth      = 104;
-                modMenu.forceMinWidth = true;
-                modMenu.addItems([new AdjustMenuItem(i, {callback: adjustTemplateMenu})]);
-                
-                const item = new MenuItem(nameParts[j], null, 
+                if (j == nameParts.length-1)
                 {
-                    callback:  () => loadTemplate(template.graph, showNames ? template.name : ''),
-                    childMenu: modifiers ? modMenu : null
-                });
+                    const modMenu = new Menu('Modify template', false, false);
+                    modMenu.minWidth      = 104;
+                    modMenu.forceMinWidth = true;
+                    modMenu.addItems([new AdjustMenuItem(i, {callback: adjustTemplateMenu})]);
+                    
+                    const item = new MenuItem(nameParts[j], null, 
+                    {
+                        callback:  () => loadTemplate(template.graph, showNames ? template.name : ''),
+                        childMenu: modifiers ? modMenu : null
+                    });
 
-                if (modifiers)
-                    item.replaceExpand = '<svg width="2" height="5" viewBox="0 -1 2 5" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="2" height="1" fill="white"/><rect y="3" width="2" height="1" fill="white"/></svg>';
+                    if (modifiers)
+                        item.replaceExpand = '<svg width="2" height="5" viewBox="0 -1 2 5" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="2" height="1" fill="white"/><rect y="3" width="2" height="1" fill="white"/></svg>';
 
-                curMenu.addItems([item]);
+                    curMenu.addItems([item]);
+                }
             }
+        }
+        else
+        {
+            const modMenu = new Menu('Modify template', false, false);
+            modMenu.minWidth      = 104;
+            modMenu.forceMinWidth = true;
+            modMenu.addItems([new AdjustMenuItem(i, {callback: adjustTemplateMenu})]);
+            
+            const item = new MenuItem(template.name, null,
+            {
+                callback:  () => loadTemplate(template.graph, showNames ? template.name : ''),
+                childMenu: modifiers ? modMenu : null
+            });
+
+            if (modifiers)
+                item.replaceExpand = '<svg width="2" height="5" viewBox="0 -1 2 5" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="2" height="1" fill="white"/><rect y="3" width="2" height="1" fill="white"/></svg>';
+
+            curMenu.addItems([item]);
         }
     }
 }
@@ -89,98 +110,27 @@ function initTemplateMenuTemplates(templates, showNames, modifiers)
 
 function adjustTemplateMenu(e, thisMenu, action, template)
 {
+    const curMenu = thisMenu.parentItem.parentMenu;
+    
     if (action == 0) // up
     {
-        return postToServer(
-        {
-            action: 'moveTemplateUp',
-            userId: currentUser.id,
-            name:   template.name
-        })
-        .then(response =>
-        {
-            // const templateParts = [];
+        const index = userTemplates.indexOf(template);
+        moveInArray(userTemplates, index, Math.max(0, index - 1));
+        
+        updateTemplateMenu(menuTemplate);
+        curMenu.update(curMenu.div.offsetLeft + 6, curMenu.div.offsetTop - 4, true);
 
-            // for (let i = 0; i < userTemplates.length; i++)
-            //     templateParts.push(userTemplates[i].name.split('/'));
-
-
-            const nameParts = template.name.split('/');
-            
-            let curMenu = menuTemplate;
-            for (let i = 0; i < nameParts.length; i++)
-            {
-                const found = curMenu.items.find(item => item.name == nameParts[i]);
-
-                if (   i < nameParts.length-1
-                    && found)
-                    curMenu = found.childMenu;
-
-                if (   i == nameParts.length-1
-                    && found)
-                {
-                    const index = curMenu.items.indexOf(found);
-                    
-                    if (index > 0)
-                    {
-                        moveInArray(curMenu.items, index, Math.max(curMenu == menuTemplate ? 6 : 0, action-1));
-
-                        curMenu.divItems.insertBefore(
-                            found.div, 
-                            curMenu.divItems.children[index-1]);
-
-                        curMenu.update();
-                    }
-                }
-            }
-        })
-        .catch(e =>
-        {
-            console.error(e);
-            throw e;
-        });
+        updateTemplateOrderOnServer();
     }
     else if (action == 1) // down
     {
-    // return postToServer(
-    //     {
-    //         action: 'moveTemplateDown',
-    //         userId: currentUser.id,
-    //         name:   template.name
-    //     })
-    //     .then(response =>
-    //     {
-    //         const nameParts = template.name.split('/');
+        const index = userTemplates.indexOf(template);
+        moveInArray(userTemplates, index, Math.min(index + 1, userTemplates.length-1));
+        
+        updateTemplateMenu(menuTemplate);
+        curMenu.update(curMenu.div.offsetLeft + 6, curMenu.div.offsetTop - 4, true);
 
-    //         let curMenu = menuTemplate;
-    //         for (let i = 0; i < nameParts.length; i++)
-    //         {
-    //             const found = curMenu.items.find(item => item.name == nameParts[i]);
-
-    //             if (   i < nameParts.length-1
-    //                 && found)
-    //                 curMenu = found.childMenu;
-
-    //             if (   i == nameParts.length-1
-    //                 && found)
-    //             {
-    //                 const index = curMenu.items.indexOf(found);
-                    
-    //                 moveInArray(curMenu.items, index, Math.min(index+1, curMenu.items.length-1));
-
-    //                 curMenu.divItems.insertBefore(
-    //                     found.div, 
-    //                     curMenu.divItems.children[index+1]);
-
-    //                 curMenu.update();
-    //             }
-    //         }
-    //     })
-    //     .catch(e =>
-    //     {
-    //         console.error(e);
-    //         throw e;
-    //     });
+        updateTemplateOrderOnServer();
     }
     else if (action == 2) // rename
     {
@@ -193,6 +143,8 @@ function adjustTemplateMenu(e, thisMenu, action, template)
 
         saveAsTemplateDialog.copiedJson   = template.graph;
         saveAsTemplateDialog.nameToDelete = template.name;
+
+        saveAsTemplateTitleText.innerHTML = 'Rename template';
     }
     else if (action == 3) // delete
     {
@@ -218,7 +170,7 @@ function adjustTemplateMenu(e, thisMenu, action, template)
 
                 thisMenu.hide();
 
-                if (   userTemplates.length == 0
+                if (   userTemplates     .length == 0
                     && menuTemplate.items.length == 4)
                     menuTemplate.removeItemAt(3);
             })
@@ -246,4 +198,39 @@ function loadTemplate(templateGraph, templateName)
     actionManager.do(new PasteNodesAction(templateGraph, false, false, true, x, y));
 
     addMetricsEvent(METRICS_LOAD_TEMPLATE, templateName);
+}
+
+
+
+function updateTemplateMenu(menu)
+{
+    // const x = menu.x;
+    // const y = menu.y;
+    
+    // hideAllMenus();
+    menu.initMenu()
+    menu.update();//showAt(x, y);
+
+    // item.mouseOver = true;
+    // item.update();
+}
+
+
+
+function updateTemplateOrderOnServer()
+{
+    postToServer(
+    {
+        action: 'updateTemplateOrder',
+        userId:  currentUser.id,
+        names:   JSON.stringify(userTemplates.map(t => t.name))
+    })
+    .then(response =>
+    {   
+
+    })
+    .catch(error =>
+    {
+        consoleError(error);
+    });
 }

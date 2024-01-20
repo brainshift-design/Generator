@@ -482,11 +482,11 @@ class MenuItem
             this.checked = this.checkCallback();
 
 
-        this.divCheck   .style.visibility      = this.checked ? 'visible'      : 'hidden';
-        this.div        .style.opacity         = this.enabled ? '100%'         : '40%';
+        this.divCheck   .style.visibility      = this.checked ? 'visible' : 'hidden';
+        this.div        .style.opacity         = this.enabled ? '100%'    : '40%';
 
         this.divShortcut.style.display         = this.sub ? 'inline-block' : 'none';
-        this.divPro     .style.display         = this.sub ? 'none' : 'inline-block';
+        this.divPro     .style.display         = this.sub ? 'none'         : 'inline-block';
 
         this.divPro     .style.backgroundColor = this.mouseOver ? 'var(--figma-color-bg-brand)' : '#1e1e1e'; 
         this.divPro     .style.color           = this.mouseOver ? '#0008' : (darkMode ? '#09fa' : '#09ff'); 

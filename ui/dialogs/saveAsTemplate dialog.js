@@ -17,7 +17,7 @@ function showSaveAsTemplateDialog()
 
     saveAsTemplateBack  .style.display   = 'block';
     saveAsTemplateDialog.style.display   = 'block';
-    saveAsTemplateDialogVisible          = true;
+    saveAsTemplateDialogVisible          =  true;
   
     saveAsTemplateTitle.buttonDown0      = false;
        
@@ -42,7 +42,7 @@ function hideSaveAsTemplateDialog()
     saveAsTemplateDialog.style.display = 'none';
     saveAsTemplateBack  .style.display = 'none';
 
-    saveAsTemplateDialogVisible        = false;
+    saveAsTemplateDialogVisible = false;
 }
 
 
@@ -84,7 +84,8 @@ saveAsTemplateInput.addEventListener('keydown', e =>
 {
     e.stopPropagation();
 
-    if (e.code == 'Enter')
+    if (   e.code == 'Enter'
+        || e.code == 'NumpadEnter')
     {
         saveSelectedAsTemplate(saveAsTemplateInput.value); 
         hideSaveAsTemplateDialog();
@@ -128,11 +129,24 @@ function saveSelectedAsTemplate(templateName)
     }
     else
     {
-        userTemplates.push(
+        if (saveAsTemplateDialog.nameToDelete != '')
         {
-            name:  templateName,
-            graph: saveAsTemplateDialog.copiedJson
-        });
+            userTemplates.splice(
+                userTemplates.findIndex(t => t.name == saveAsTemplateDialog.nameToDelete),
+                0,
+                {
+                    name:  templateName,
+                    graph: saveAsTemplateDialog.copiedJson
+                });
+        }
+        else
+        {    
+            userTemplates.push(
+                {
+                    name:  templateName,
+                    graph: saveAsTemplateDialog.copiedJson
+                });
+        }
     }
 
 
@@ -146,7 +160,8 @@ function saveSelectedAsTemplate(templateName)
     })
     .then(response =>
     {
-        if (saveAsTemplateDialog.nameToDelete != '')
+        if (   saveAsTemplateDialog.nameToDelete != ''
+            && saveAsTemplateDialog.nameToDelete != templateName)
         {
             postToServer(
             {

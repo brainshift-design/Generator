@@ -57,7 +57,7 @@ class AdjustMenuItem
         this.divUp    .innerHTML = '<svg width="8" height="9" viewBox="0 0 8 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 -3.49691e-07L8 4L0 4L4 -3.49691e-07Z" fill="white"/></svg>';
         this.divDown  .innerHTML = '<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4L0 0H8L4 4Z" fill="white"/></svg>';
         this.divRename.innerHTML = '<svg width="8" height="15" viewBox="0 -5 8 15" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="8" height="1" fill="white"/><rect y="3" width="8" height="1" fill="white"/><rect y="6" width="5" height="1" fill="white"/></svg>';
-        this.divDelete.innerHTML = '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="1.125" width="1.59099" height="11.1369" transform="rotate(-45 0 1.125)" fill="white"/><rect x="1.125" y="9" width="1.59099" height="11.1369" transform="rotate(-135 1.125 9)" fill="white"/></svg>';
+        this.divDelete.innerHTML = '<svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="1" width="1.41421" height="9.89949" transform="rotate(-45 0 1)" fill="white"/><rect x="1" y="8" width="1.41421" height="9.89949" transform="rotate(-135 1 8)" fill="white"/></svg>';
 
         this.divHighlight.style.zIndex = -2;
 

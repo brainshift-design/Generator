@@ -170,7 +170,7 @@ function initGenerator(activate)
 
     return postToServer(
     {
-        action: 'getUserTemplates',
+        action: 'getAllUserTemplates',
         userId:  currentUser.id
     })
     .then(response =>
