@@ -70,7 +70,7 @@ function uiSetWindowRect(x, y, width, height)
 
 function uiResizeWindow(width, height)
 {
-    width = Math.max(600, width);
+    width = Math.max(602, width);
 
     updateObjectCountDisplay();
 
@@ -98,7 +98,13 @@ function updateObjectCountDisplay()
 
     objectCountWrapper.style.display = 
            settings.showObjectCount
-        && window.innerWidth >= 650 
+        && window.innerWidth >= 698 
+        ? 'inline-block' 
+        : 'none';
+
+    btnSolo.div.style.display = 
+           settings.showObjectCount
+        && window.innerWidth >= 646 
         ? 'inline-block' 
         : 'none';
 }
