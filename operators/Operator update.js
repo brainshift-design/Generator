@@ -31,7 +31,6 @@ Operator.prototype.updateWireTransform = function()
 
 Operator.prototype.updateNode = function(_updateHeader = true) 
 {
-    if (this.nodeId == 'num2') console.log('this.measureData =', {...this.measureData});
     // console.log('\'' + this.nodeId + '\'.updateNode()');
     // console.trace();
 
