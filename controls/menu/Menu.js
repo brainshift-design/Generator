@@ -105,6 +105,24 @@ class Menu
 
 
 
+    removeItem(item)
+    {
+        removeFromArray(this.items, item);
+        this.divItems.removeChild(item.div);
+    }
+
+
+
+    removeItemAt(index)
+    {
+        const item = this.items[index];
+
+        removeAt(this.items, index);
+        this.divItems.removeChild(item.div);
+    }
+
+
+
     initMenu(callInit = true)
     {
         const e = { cancel: false };

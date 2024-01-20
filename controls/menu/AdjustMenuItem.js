@@ -14,6 +14,7 @@ class AdjustMenuItem
 
     divUp;
     divDown;
+    divRename;
     divDelete;
 
     mouseOver = false;
@@ -46,15 +47,17 @@ class AdjustMenuItem
 
         this.divUp        = createDiv('menuItemAdjust');
         this.divDown      = createDiv('menuItemAdjust');
+        this.divRename    = createDiv('menuItemAdjust');
         this.divDelete    = createDiv('menuItemAdjust');
 
         this.div      .style.textAlign  = 'center';
         this.div      .style.top        = '-8px';
         this.div      .style.height     = '41px';
 
-        this.divUp    .innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 -4.37114e-07L10 6L0 6L5 -4.37114e-07Z" fill="white"/></svg>';
-        this.divDown  .innerHTML = '<svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 6L0 0H10L5 6Z" fill="white"/></svg>';
-        this.divDelete.innerHTML = '<svg width="13" height="15" viewBox="-1 -3 13 15" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="1.41418" width="2" height="14" transform="rotate(-45 0 1.41418)" fill="white"/><rect x="1.41418" y="11.3137" width="2" height="14" transform="rotate(-135 1.41418 11.3137)" fill="white"/></svg>';
+        this.divUp    .innerHTML = '<svg width="8" height="9" viewBox="0 0 8 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 -3.49691e-07L8 4L0 4L4 -3.49691e-07Z" fill="white"/></svg>';
+        this.divDown  .innerHTML = '<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4L0 0H8L4 4Z" fill="white"/></svg>';
+        this.divRename.innerHTML = '<svg width="8" height="15" viewBox="0 -5 8 15" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="8" height="1" fill="white"/><rect y="3" width="8" height="1" fill="white"/><rect y="6" width="5" height="1" fill="white"/></svg>';
+        this.divDelete.innerHTML = '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="1.125" width="1.59099" height="11.1369" transform="rotate(-45 0 1.125)" fill="white"/><rect x="1.125" y="9" width="1.59099" height="11.1369" transform="rotate(-135 1.125 9)" fill="white"/></svg>';
 
         this.divHighlight.style.zIndex = -2;
 
@@ -63,6 +66,7 @@ class AdjustMenuItem
 
         this.div.appendChild(this.divUp);
         this.div.appendChild(this.divDown);
+        this.div.appendChild(this.divRename);
         this.div.appendChild(this.divDelete);
 
 
@@ -101,9 +105,9 @@ class AdjustMenuItem
                 if (this.callback)
                 {
                     let index = Math.round((e.clientX - (rect.x-8)) / 24) - 1;
-                        index = Math.min(Math.max(0, index), 2);
+                        index = Math.min(Math.max(0, index), 3);
 
-                    this.callback(e, index, this.template);
+                    this.callback(e, this.parentMenu, index, this.template);
                 }
 
 
@@ -132,9 +136,9 @@ class AdjustMenuItem
                     if (this.callback)
                     {
                         let index = Math.round((e.clientX - (rect.x-8)) / 24) - 1;
-                            index = Math.min(Math.max(0, index), 2);
+                            index = Math.min(Math.max(0, index), 3);
 
-                        this.callback(e, index, this.template);
+                        this.callback(e, this.parentMenu, index, this.template);
                     }
 
                     
@@ -173,7 +177,7 @@ class AdjustMenuItem
                     const rect = boundingRect(this.div);
 
                     let index = Math.round((e.clientX - (rect.x-8)) / 24) - 1;
-                        index = Math.min(Math.max(0, index), 2);
+                        index = Math.min(Math.max(0, index), 3);
 
                     this.divHighlight.style.left   = (4 + index*24) + 'px';
                     this.divHighlight.style.width  = '24px';

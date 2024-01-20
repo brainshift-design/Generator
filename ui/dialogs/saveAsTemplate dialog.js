@@ -5,6 +5,7 @@ var saveAsTemplateDialogVisible = false;
 function showSaveAsTemplateDialog()
 {
     saveAsTemplateDialog.copiedJson      = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
+    saveAsTemplateDialog.nameToDelete    = '';
 
 
     saveAsTemplateBack.addEventListener('pointerdown', e => { e.preventDefault(); });
@@ -137,14 +138,37 @@ function saveSelectedAsTemplate(templateName)
 
     postToServer(
     {
-        action: 'saveTemplate',
-        userId:  currentUser.id,
-        name:    templateName,
-        graph:   encodeURIComponent(saveAsTemplateDialog.copiedJson)
+        action:   'saveTemplate',
+        userId:    currentUser.id,
+        name:      templateName,
+        graph:     encodeURIComponent(saveAsTemplateDialog.copiedJson),
+        sortOrder: userTemplates.length.toString()
     })
     .then(response =>
     {
-        if (response.result)
+        if (saveAsTemplateDialog.nameToDelete != '')
+        {
+            postToServer(
+            {
+                action: 'deleteTemplate',
+                userId:  currentUser.id,
+                name:    saveAsTemplateDialog.nameToDelete
+            })
+            .then(response =>
+            {
+                removeFromArrayWhere(userTemplates, t => t.name == saveAsTemplateDialog.nameToDelete);
+
+                uiNotify('Renamed template \'' + saveAsTemplateDialog.nameToDelete + '\' to \'' + templateName + '\'');
+
+                saveAsTemplateDialog.nameToDelete = '';
+            })
+            .catch(e =>
+            {
+                console.error(e);
+                throw e;
+            });
+        }    
+        else if (response.result)
             uiNotify('Saved template \'' + templateName + '\'');
     })
     .catch(e =>

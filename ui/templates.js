@@ -17,8 +17,7 @@ function initTemplateMenu(e)
 {
     menuTemplate.clearItems();
 
-    menuItemSaveTemplate    = new MenuItem('Save as template...', null, {icon: iconTemplate,        callback: () => showSaveAsTemplateDialog()});
-    //menuItemManageTemplates = new MenuItem('Manage templates...', null, {icon: iconManageTemplates});
+    menuItemSaveTemplate    = new MenuItem('Save as template...', null, {icon: iconTemplate,        callback: () => showSaveAsTemplateDialog()});    //menuItemManageTemplates = new MenuItem('Manage templates...', null, {icon: iconManageTemplates});
 
     const sub = subscribed();
     enableMenuItem(menuItemSaveTemplate,    graphView.selectedNodes.length > 0, sub);
@@ -67,7 +66,7 @@ function initTemplateMenuTemplates(templates, showNames, modifiers)
             if (j == nameParts.length-1)
             {
                 const modMenu = new Menu('Modify template', false, false);
-                modMenu.minWidth      = 80;
+                modMenu.minWidth      = 104;
                 modMenu.forceMinWidth = true;
                 modMenu.addItems([new AdjustMenuItem(i, {callback: adjustTemplateMenu})]);
                 
@@ -78,7 +77,7 @@ function initTemplateMenuTemplates(templates, showNames, modifiers)
                 });
 
                 if (modifiers)
-                    item.replaceExpand = '<svg width="2" height="7" viewBox="0 0 2 7" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="2" height="1" fill="white"/><rect y="3" width="2" height="1" fill="white"/><rect y="6" width="2" height="1" fill="white"/></svg>';
+                    item.replaceExpand = '<svg width="2" height="5" viewBox="0 -1 2 5" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="2" height="1" fill="white"/><rect y="3" width="2" height="1" fill="white"/></svg>';
 
                 curMenu.addItems([item]);
             }
@@ -88,10 +87,148 @@ function initTemplateMenuTemplates(templates, showNames, modifiers)
 
 
 
-function adjustTemplateMenu(e, index, template)
+function adjustTemplateMenu(e, thisMenu, action, template)
 {
-    console.log('template =', template);
-    console.log('index =', index);
+    if (action == 0) // up
+    {
+        return postToServer(
+        {
+            action: 'moveTemplateUp',
+            userId: currentUser.id,
+            name:   template.name
+        })
+        .then(response =>
+        {
+            // const templateParts = [];
+
+            // for (let i = 0; i < userTemplates.length; i++)
+            //     templateParts.push(userTemplates[i].name.split('/'));
+
+
+            const nameParts = template.name.split('/');
+            
+            let curMenu = menuTemplate;
+            for (let i = 0; i < nameParts.length; i++)
+            {
+                const found = curMenu.items.find(item => item.name == nameParts[i]);
+
+                if (   i < nameParts.length-1
+                    && found)
+                    curMenu = found.childMenu;
+
+                if (   i == nameParts.length-1
+                    && found)
+                {
+                    const index = curMenu.items.indexOf(found);
+                    
+                    if (index > 0)
+                    {
+                        moveInArray(curMenu.items, index, Math.max(curMenu == menuTemplate ? 6 : 0, action-1));
+
+                        curMenu.divItems.insertBefore(
+                            found.div, 
+                            curMenu.divItems.children[index-1]);
+
+                        curMenu.update();
+                    }
+                }
+            }
+        })
+        .catch(e =>
+        {
+            console.error(e);
+            throw e;
+        });
+    }
+    else if (action == 1) // down
+    {
+    // return postToServer(
+    //     {
+    //         action: 'moveTemplateDown',
+    //         userId: currentUser.id,
+    //         name:   template.name
+    //     })
+    //     .then(response =>
+    //     {
+    //         const nameParts = template.name.split('/');
+
+    //         let curMenu = menuTemplate;
+    //         for (let i = 0; i < nameParts.length; i++)
+    //         {
+    //             const found = curMenu.items.find(item => item.name == nameParts[i]);
+
+    //             if (   i < nameParts.length-1
+    //                 && found)
+    //                 curMenu = found.childMenu;
+
+    //             if (   i == nameParts.length-1
+    //                 && found)
+    //             {
+    //                 const index = curMenu.items.indexOf(found);
+                    
+    //                 moveInArray(curMenu.items, index, Math.min(index+1, curMenu.items.length-1));
+
+    //                 curMenu.divItems.insertBefore(
+    //                     found.div, 
+    //                     curMenu.divItems.children[index+1]);
+
+    //                 curMenu.update();
+    //             }
+    //         }
+    //     })
+    //     .catch(e =>
+    //     {
+    //         console.error(e);
+    //         throw e;
+    //     });
+    }
+    else if (action == 2) // rename
+    {
+        hideAllMenus();
+
+        showSaveAsTemplateDialog();
+
+        saveAsTemplateInput.value = template.name;
+        saveAsTemplateInput.select();
+
+        saveAsTemplateDialog.copiedJson   = template.graph;
+        saveAsTemplateDialog.nameToDelete = template.name;
+    }
+    else if (action == 3) // delete
+    {
+        if (userTemplates.find(t => t.name == template.name))
+        {
+            return postToServer(
+            {
+                action: 'deleteTemplate',
+                userId:  currentUser.id,
+                name:    template.name
+            })
+            .then(response =>
+            {
+                const temp     = userTemplates.find(t => t.name == template.name);
+                const menuItem = menuTemplate.items.find(item => item.name == template.name);
+
+                removeFromArray(userTemplates, temp);
+
+                const parent = menuItem.parentMenu;
+
+                parent.removeItem(menuItem);
+                parent.update();
+
+                thisMenu.hide();
+
+                if (   userTemplates.length == 0
+                    && menuTemplate.items.length == 4)
+                    menuTemplate.removeItemAt(3);
+            })
+            .catch(e =>
+            {
+                console.error(e);
+                throw e;
+            });
+        }
+    }
 }
 
 
