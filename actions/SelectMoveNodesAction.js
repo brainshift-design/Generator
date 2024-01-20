@@ -32,7 +32,7 @@ extends Action
         this.fromPos            = fromPos;
         this.toPos              = toPos;
 
-                
+
         const dx = this.toPos.x - this.fromPos.x;
         const dy = this.toPos.y - this.fromPos.y;
 
@@ -68,7 +68,7 @@ extends Action
     do(updateNodes)
     {
         const movedIds   = [...this.getMovedIds()];
-        const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
+        const movedNodes = movedIds.map(id => nodeFromId(id));
 
         for (let i = 0; i < movedNodes.length; i++)
         {
@@ -93,7 +93,7 @@ extends Action
     undo(updateNodes)
     {
         const movedIds   = [...this.getMovedIds()];
-        const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
+        const movedNodes = movedIds.map(id => nodeFromId(id));
 
         for (let i = 0; i < movedNodes.length; i++)
         {

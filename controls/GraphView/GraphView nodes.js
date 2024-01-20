@@ -152,8 +152,6 @@ GraphView.prototype.setNodePositions = function(nodes, dx, dy, updateTransform =
     {
         node.div.style.left = node.slx + dx + 'px';
         node.div.style.top  = node.sly + dy + 'px';
-
-        node.updateMeasureData();
     }
 
     if (updateTransform)

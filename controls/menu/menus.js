@@ -1134,8 +1134,8 @@ function initGeneratorMenus()
     
     btnSolo.highlight = () => graphView.soloMode;
 
-    btnSolo.div.style.position               = 'absolute';
-    btnSolo.div.style.right                  = '66px';
+    btnSolo.div.style.position = 'absolute';
+    btnSolo.div.style.right    = '66px';
 
 
     btnZoom = new MenuButton(

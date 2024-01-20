@@ -2365,6 +2365,13 @@ hideSaveAsTemplateDialog
 updateSaveAsTemplateInputBack
 saveSelectedAsTemplate
 checkoutTimer
+presetTemplates
+updateUserTemplatesFromDB
+initTemplateMenu
+initTemplateMenuTemplates
+curMenu
+modMenu
+nameParts
 subscriptionDialogShown
 initSubscriptionDialog
 onValidateClick

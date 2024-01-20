@@ -217,15 +217,8 @@ function loadTemplate(templateGraph, templateName)
 
 function updateTemplateMenu(menu)
 {
-    // const x = menu.x;
-    // const y = menu.y;
-    
-    // hideAllMenus();
-    menu.initMenu()
-    menu.update();//showAt(x, y);
-
-    // item.mouseOver = true;
-    // item.update();
+    menu.initMenu();
+    menu.update();
 }
 
 
