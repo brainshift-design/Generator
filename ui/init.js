@@ -168,24 +168,7 @@ function initGenerator(activate)
     100);
 
 
-    return postToServer(
-    {
-        action: 'getAllUserTemplates',
-        userId:  currentUser.id
-    })
-    .then(response =>
-    {
-        userTemplates = response.userTemplates.map(t => 
-        { 
-            t.graph = decodeURIComponent(t.graph); 
-            return t; 
-        });
-    })
-    .catch(e =>
-    {
-        console.error(e);
-        throw e;
-    });
+    updateUserTemplatesFromDB();
 }
 
 

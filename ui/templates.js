@@ -13,6 +13,30 @@ var userTemplates = [];
 
 
 
+function updateUserTemplatesFromDB()
+{
+    postToServer(
+    {
+        action: 'getAllUserTemplates',
+        userId:  currentUser.id
+    })
+    .then(response =>
+    {
+        userTemplates = response.userTemplates.map(t => 
+        { 
+            t.graph = decodeURIComponent(t.graph); 
+            return t; 
+        });
+    })
+    .catch(e =>
+    {
+        console.error(e);
+        throw e;
+    });
+}
+
+
+
 function initTemplateMenu(e)
 {
     menuTemplate.clearItems();
@@ -158,21 +182,8 @@ function adjustTemplateMenu(e, thisMenu, action, template)
             })
             .then(response =>
             {
-                const temp     = userTemplates.find(t => t.name == template.name);
-                const menuItem = menuTemplate.items.find(item => item.name == template.name);
-
-                removeFromArray(userTemplates, temp);
-
-                const parent = menuItem.parentMenu;
-
-                parent.removeItem(menuItem);
-                parent.update();
-
-                thisMenu.hide();
-
-                if (   userTemplates     .length == 0
-                    && menuTemplate.items.length == 4)
-                    menuTemplate.removeItemAt(3);
+                hideAllMenus();
+                updateUserTemplatesFromDB();
             })
             .catch(e =>
             {
