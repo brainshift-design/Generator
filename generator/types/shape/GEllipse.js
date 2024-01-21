@@ -7,6 +7,9 @@ extends GShape
     sweep    = null;
     inner    = null;
 
+    innerAbsolute;
+    sweepInDegrees;
+
 
 
     constructor(nodeId, options)
@@ -134,17 +137,6 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        // if (!this.position) this.position = this.value.position.copy();
-        // if (!this.x       ) this.x        = this.value.x       .copy();
-        // if (!this.y       ) this.y        = this.value.y       .copy();
-        // if (!this.width   ) this.width    = this.value.width   .copy();
-        // if (!this.height  ) this.height   = this.value.height  .copy();
-        // if (!this.round   ) this.round    = this.value.round   .copy();
-        // if (!this.start   ) this.start    = this.value.start   .copy();
-        // if (!this.sweep   ) this.sweep    = this.value.sweep   .copy();
-        // if (!this.inner   ) this.inner    = this.value.inner   .copy();
-
-
         this.validate();
 
         return this;
@@ -184,8 +176,8 @@ extends GShape
             let   h  = _h.value;
             let   r  = this.value.round .value;
             const st = this.value.start .value;
-            const sw = this.value.sweep .value;
-            const i  = this.value.inner .value;
+            let   sw = this.value.sweep .value;
+            let   i  = this.value.inner .value;
 
 
             [x, y, w, h, , ] = validateObjectRect(x, y, w, h);
@@ -194,6 +186,9 @@ extends GShape
             if (   w != 0 
                 && h != 0)
             {
+                if (this.innerAbsolute ) i   = i / Math.max(w, h) * 200;
+                if (this.sweepInDegrees) sw /= 3.6;
+
                 const ellipse = new FigmaEllipse(
                     this.nodeId,
                     this.nodeId,
@@ -213,36 +208,6 @@ extends GShape
    
     
         
-    // toValue()
-    // {
-    //     return this.value;
-
-    //     // const ellipse = new EllipseValue(
-    //     //     this.nodeId,
-    //     //     this.position.toValue(),
-    //     //     this.x       .toValue(),
-    //     //     this.y       .toValue(),
-    //     //     this.width   .toValue(),
-    //     //     this.height  .toValue(),
-    //     //     this.round   .toValue(),
-    //     //     this.from    .toValue(),
-    //     //     this.to      .toValue(),
-    //     //     this.inner   .toValue());
-
-    //     // ellipse.copyCustomParams(this.value);
-
-    //     // ellipse.props = this.props.toValue();
-
-    //     // ellipse.objects = 
-    //     //     this.value.objects
-    //     //     ? this.value.objects.map(o => o.copy())
-    //     //     : [];
-        
-    //     // return ellipse;
-    // }
-    
-
-    
     isValid()
     {
         return super.isValid()

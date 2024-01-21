@@ -185,6 +185,10 @@ function genParseEllipse(parse)
     }
     
     
+    ellipse.innerAbsolute  = parseInt(parse.move()) > 0;
+    ellipse.sweepInDegrees = parseInt(parse.move()) > 0;
+
+
     parse.inParam = false;
     parse.nTab--;
 

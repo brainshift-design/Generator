@@ -405,6 +405,10 @@ const ELLIPSE_VALUE        = 'ELPS#';
 const ELLIPSE              = 'ELPS'; 
 const ELLIPSE_TYPES        = [ELLIPSE_VALUE, ELLIPSE];
  
+const ARC_ELLIPSE_VALUE    = 'AELPS#';
+const ARC_ELLIPSE          = 'AELPS'; 
+const ARC_ELLIPSE_TYPES    = [ARC_ELLIPSE_VALUE, ARC_ELLIPSE];
+ 
 const TRAPEZE_VALUE        = 'TRPZ#';
 const TRAPEZE              = 'TRPZ';
 const TRAPEZE_TYPES        = [TRAPEZE_VALUE, TRAPEZE];
@@ -505,6 +509,7 @@ const SHAPE_VALUES =
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,
+    ARC_ELLIPSE_VALUE,
     TRAPEZE_VALUE,
     POLYGON_VALUE,
     STAR_VALUE,
@@ -542,6 +547,7 @@ const SHAPE_TYPES =
     ...RECTANGLE_TYPES,
     ...LINE_TYPES,
     ...ELLIPSE_TYPES,
+    ...ARC_ELLIPSE_TYPES,
     ...TRAPEZE_TYPES,
     ...POLYGON_TYPES,
     ...STAR_TYPES,
@@ -599,6 +605,7 @@ const ALL_VALUES =
        RECTANGLE_VALUE,
             LINE_VALUE,
          ELLIPSE_VALUE,
+     ARC_ELLIPSE_VALUE,
          TRAPEZE_VALUE,
          POLYGON_VALUE,
             STAR_VALUE,
@@ -765,6 +772,7 @@ const UNGROUP_NODES_ACTION       = 'UNGROUP_NODES';
 const HIGHLIGHT_NODES_ACTION     = 'HIGHLIGHT_NODES';
 const SCROLL_LIST_NODE_ACTION    = 'SCROLL_LIST_NODE';
 const SET_LIST_DIVIDER_ACTION    = 'SET_LIST_DIVIDER';
+const SET_NODE_PARAM_ACTION      = 'SET_NODE_PARAM';
 
 
 const BLEND_NORMAL               = 'BNORM';
@@ -868,8 +876,8 @@ const FO_WIDTH          = 26;
 const FO_HEIGHT         = 27;                                    
 
 const FO_RECT_ROUND     = 28;   const FO_ELLIPSE_ROUND   = 28;   const FO_VECTOR_NETWORK_DATA = 28;   const FO_VECTOR_PATH_DATA    = 28;   const FO_POLY_ROUND   = 28;   const FO_STAR_ROUND  = 28;   const FO_FIG_WIDTH      = 28;   const FO_FRAME_ROUND    = 28;
-                                const FO_ELLIPSE_START    = 29;                                        const FO_VECTOR_PATH_WINDING = 29;   const FO_POLY_CORNERS = 29;   const FO_STAR_POINTS = 29;   const FO_FIG_HEIGHT     = 29;   const FO_FRAME_CHILDREN = 29;
-                                const FO_ELLIPSE_SWEEP      = 30;                                        const FO_VECTOR_PATH_ROUND   = 30;                                 const FO_STAR_CONVEX = 30;   const FO_TEXT           = 30; 
+                                const FO_ELLIPSE_START   = 29;                                        const FO_VECTOR_PATH_WINDING = 29;   const FO_POLY_CORNERS = 29;   const FO_STAR_POINTS = 29;   const FO_FIG_HEIGHT     = 29;   const FO_FRAME_CHILDREN = 29;
+                                const FO_ELLIPSE_SWEEP   = 30;                                        const FO_VECTOR_PATH_ROUND   = 30;                                 const FO_STAR_CONVEX = 30;   const FO_TEXT           = 30; 
                                                                                                                                  
                                 const FO_ELLIPSE_INNER   = 31;                                                                                                                                        const FO_FONT           = 31;
                                                                                                                                                                                                       const FO_FONT_SIZE      = 32;

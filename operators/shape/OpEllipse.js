@@ -11,7 +11,12 @@ extends OpShape
     paramSweep;
     paramInner;
 
+    innerAbsolute;
+    sweepInDegrees;
 
+    menuInner;
+    menuSweep;
+    
     
     constructor()
     {
@@ -20,6 +25,10 @@ extends OpShape
         this.canDisable  = true;
         this.iconOffsetY = -1;
         
+
+        this.innerAbsolute  = false;
+        this.sweepInDegrees = false;
+
 
         this.addInput (this.createInputForObjects([ELLIPSE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([ELLIPSE_VALUE], this.output_genRequest));
@@ -39,15 +48,23 @@ extends OpShape
         this.paramPosition.divider = 0.4;
 
         this.paramStart.controls[0].setSuffix('°', true);
-        this.paramSweep.controls[0].setSuffix('°', true);
-        this.paramInner.controls[0].setSuffix('%', true);
-        this.paramSweep.controls[0].setSuffix('%', true);
-
         this.paramStart.controls[0].wrapValue     = true;
         this.paramStart.controls[0].suffixOffsetY = -4;
 
 
         this.addBaseParams();
+
+
+        this.menuInner = createEllipseParamMenu(this.paramInner, 'innerAbsolute' );
+        this.menuSweep = createEllipseParamMenu(this.paramSweep, 'sweepInDegrees');
+    }
+
+
+
+    genRequestInherited(gen, request)
+    {
+        request.push(this.innerAbsolute  ? 1 : 0);
+        request.push(this.sweepInDegrees ? 1 : 0);
     }
 
 
@@ -83,11 +100,90 @@ extends OpShape
         
         this.paramWidth .setName(center ? 'radius W' : 'width' );
         this.paramHeight.setName(center ? 'radius H' : 'height');
+
         
+        if (this.innerAbsolute)
+        {
+            this.paramInner.controls[0].setSuffix('', true);
+            this.paramInner.controls[0].setMin(0);
+            this.paramInner.controls[0].setMax(Number.MAX_SAFE_INTEGER);
+            this.paramInner.controls[0].resetRanges();
+        }
+        else
+        {
+            this.paramInner.controls[0].setSuffix('%', true);
+            this.paramInner.controls[0].setMin(  0);
+            this.paramInner.controls[0].setMax(100);
+        }
+
+
+        if (this.sweepInDegrees)
+        {
+            this.paramSweep.controls[0].setSuffix('°', true);
+            this.paramSweep.controls[0].setMin(  0);
+            this.paramSweep.controls[0].setMax(360);
+            this.paramSweep.controls[0].suffixOffsetY = -4;
+        }
+        else
+        {
+            this.paramSweep.controls[0].setSuffix('%', true);
+            this.paramSweep.controls[0].setMin(  0);
+            this.paramSweep.controls[0].setMax(100);
+            this.paramSweep.controls[0].suffixOffsetY = 0;
+        }
+
+
         // this.params.forEach(p => p.isNodeValue = this.headerInputs[0].connected);
         
         super.updateParams();
 
         //this.updateParamControls();
     }
+
+
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = HTAB;
+
+        let json = super.toJsonBase(nTab);
+
+        json += 
+              ',\n' + pos + tab + '"innerAbsolute": "'  + this.innerAbsolute  + '"'
+            + ',\n' + pos + tab + '"sweepInDegrees": "' + this.sweepInDegrees + '"';
+
+        return json;
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        super.loadParams(_node, pasting);
+
+        if (   _node.innerAbsolute
+            && _node.sweepInDegrees)
+        {
+            this.innerAbsolute  = parseBool(_node.innerAbsolute);
+            this.sweepInDegrees = parseBool(_node.sweepInDegrees);
+        }
+    }
+}
+
+
+
+function createEllipseParamMenu(param, valueId)
+{
+    const menu = new Menu('Inner', false, true);
+
+    menu.minWidth = 130;
+    
+    menu.addItems([
+        new MenuItem('relative', null, {checkCallback: () => !param.node[valueId], callback: () => { hideAllMenus(); actionManager.do(new SetNodeParamAction(param.node.nodeId, valueId, false)); }}),
+        new MenuItem('absolute', null, {checkCallback: () =>  param.node[valueId], callback: () => { hideAllMenus(); actionManager.do(new SetNodeParamAction(param.node.nodeId, valueId, true )); }})]);
+
+    param.div.addEventListener('pointerdown', e => param.node.showParamMenu(e, param, menu));
+
+    return menu;
 }

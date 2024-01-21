@@ -66,10 +66,20 @@ extends OperatorBase
             request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
 
 
+        this.node.genRequestInherited(gen, request);
+
+
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    genRequestInherited(gen, request)
+    {
+
     }
 
 
