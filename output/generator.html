@@ -4774,40 +4774,41 @@ const   TEXT_LIST_VALUE = 'TLIST#';
 const  SHAPE_LIST_VALUE = 'SLIST#';
 
 
-const NULL_NODE         = 'NULL';
-const VARIABLE          = 'VAR';
-const VARIABLE_GROUP    = 'VARGRP';
-const START             = 'START';
-const REPEAT            = 'REPT';
-const CACHE             = 'CACHE';
-const FREEZE            = 'FRZ';
-const TIMER             = 'TIMER';
-const VALUE_NAME        = 'VNAME';
-const LIST_VALUE_NAMES  = 'VNAMES';
-const OBJECT_NAME       = 'ONAME';
+const NULL_NODE            = 'NULL';
+const VARIABLE             = 'VAR';
+const VARIABLE_GROUP       = 'VARGRP';
+const START                = 'START';
+const REPEAT               = 'REPT';
+const CACHE                = 'CACHE';
+const FREEZE               = 'FRZ';
+const TIMER                = 'TIMER';
+const VALUE_NAME           = 'VNAME';
+const GET_LIST_VALUE_NAMES = 'GVNAMES';
+const LIST_VALUE_NAMES     = 'VNAMES';
+const OBJECT_NAME          = 'ONAME';
 
-const COMBINE           = 'CMB';
-const LIST_AS_ITEM      = 'LSASIT';
-const EXTRACT           = 'EXTR';
-const SET_PARAM         = 'SETP';
-const GET_PARAM         = 'GETP';
-const SUBLIST           = 'SUBLST';
-const UNIQUE            = 'UNIQ';
-const REVERSE_LIST      = 'REVLST';
-const SORT              = 'SORT';
-const COLUMN            = 'CLMN';
-const CELL              = 'CELL';
-const LIST              = 'LIST';
-const LIST_COUNT        = 'COUNT';
-const CONTAINS          = 'LCONT';
-const SELECT            = 'SELECT';
-const SELECT_FROM_LIST  = 'LSTSEL';
-const IF_ELSE           = 'IF';
-const FILTER            = 'LSTFLT';
-const DEFINE            = 'DEFINE';  
+const COMBINE              = 'CMB';
+const LIST_AS_ITEM         = 'LSASIT';
+const EXTRACT              = 'EXTR';
+const SET_PARAM            = 'SETP';
+const GET_PARAM            = 'GETP';
+const SUBLIST              = 'SUBLST';
+const UNIQUE               = 'UNIQ';
+const REVERSE_LIST         = 'REVLST';
+const SORT                 = 'SORT';
+const COLUMN               = 'CLMN';
+const CELL                 = 'CELL';
+const LIST                 = 'LIST';
+const LIST_COUNT           = 'COUNT';
+const CONTAINS             = 'LCONT';
+const SELECT               = 'SELECT';
+const SELECT_FROM_LIST     = 'LSTSEL';
+const IF_ELSE              = 'IF';
+const FILTER               = 'LSTFLT';
+const DEFINE               = 'DEFINE';  
 
 
-const ANY_VALUE         = 'ANY#';
+const ANY_VALUE            = 'ANY#';
 
 
 const LIST_TYPES =
@@ -4866,6 +4867,7 @@ const FLOW_TYPES =
     FREEZE,
     TIMER,
     VALUE_NAME,
+    GET_LIST_VALUE_NAMES,
     LIST_VALUE_NAMES,
     OBJECT_NAME
 ];
@@ -17178,6 +17180,113 @@ extends GOperator1
         super.resetLoop(parse, nodeId);
 
         if (this.name) this.name.resetLoop(parse, nodeId);
+    }
+}
+
+
+
+class GGetListValueNames
+extends GOperator1
+{
+    // cachedValue = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(GET_LIST_VALUE_NAMES, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        // this.cachedValue = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GGetListValueNames(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (   this.isCached())
+            //&& this.cachedValue)
+            return this;
+
+
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+
+
+        this.counts = new ListValue();
+
+
+        // if (this.cachedValue)
+        //     this.value = this.cachedValue.copy();
+
+        // else
+        // {
+            if (input)
+            {
+                if (this.options.enabled)
+                {
+                    this.value = new ListValue();
+                    this.value.objects = [];
+
+                    for (let i = 0; i < input.items.length; i++)
+                        this.value.items.push(new TextValue(input.items[i].valueId));
+
+                    if (input.objects)
+                    {
+                        for (let i = 0; i < input.objects.length; i++)
+                            this.value.objects.push(input.objects[i]);
+                    }
+                }
+                else
+                    this.value = input;
+            }
+            else
+                this.value = ListValue.NaN.copy();
+
+
+            // this.cachedValue = this.value.copy();
+        // }
+    
+
+        this.updateValueObjects();
+
+
+        this.setUpdateValues(parse, 
+        [
+            ['type',   this.outputListType()                   ],
+            ['length', new NumberValue(this.value.items.length)]
+        ]); 
+               
+
+        if (parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
+
+
+        this.validate();
+
+        return this;
     }
 }
 
@@ -43723,6 +43832,50 @@ function genParseValueName(parse)
 
 
 
+function genParseGetListValueNames(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const names = new GGetListValueNames(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(names, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, names);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        names.input = genParse(parse);
+  
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, names);
+    return names;
+}
+
+
+
 function genParseListValueNames(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -49423,6 +49576,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == FREEZE                 ) result = genParseFreeze            (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
     else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
+    else if (parse.next == GET_LIST_VALUE_NAMES   ) result = genParseGetListValueNames (parse);
     else if (parse.next == LIST_VALUE_NAMES       ) result = genParseListValueNames    (parse);
     else if (parse.next == OBJECT_NAME            ) result = genParseObjectName        (parse);
 

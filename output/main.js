@@ -560,6 +560,7 @@ const CACHE = 'CACHE';
 const FREEZE = 'FRZ';
 const TIMER = 'TIMER';
 const VALUE_NAME = 'VNAME';
+const GET_LIST_VALUE_NAMES = 'GVNAMES';
 const LIST_VALUE_NAMES = 'VNAMES';
 const OBJECT_NAME = 'ONAME';
 const COMBINE = 'CMB';
@@ -631,6 +632,7 @@ const FLOW_TYPES = [
     FREEZE,
     TIMER,
     VALUE_NAME,
+    GET_LIST_VALUE_NAMES,
     LIST_VALUE_NAMES,
     OBJECT_NAME
 ];

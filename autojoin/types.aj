@@ -80,6 +80,7 @@
 ../generator/types/flow/GFreeze.js
 ../generator/types/flow/GTimer.js
 ../generator/types/flow/GValueName.js
+../generator/types/flow/GGetListValueNames.js
 ../generator/types/flow/GListValueNames.js
 ../generator/types/flow/GObjectName.js
 

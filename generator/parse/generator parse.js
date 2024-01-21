@@ -143,6 +143,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == FREEZE                 ) result = genParseFreeze            (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
     else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
+    else if (parse.next == GET_LIST_VALUE_NAMES   ) result = genParseGetListValueNames (parse);
     else if (parse.next == LIST_VALUE_NAMES       ) result = genParseListValueNames    (parse);
     else if (parse.next == OBJECT_NAME            ) result = genParseObjectName        (parse);
 

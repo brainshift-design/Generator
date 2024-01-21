@@ -66,6 +66,8 @@ extends EventTarget
 
     alwaysRequest  = false;
 
+    showIndexName  = false;
+
 
 
     constructor(type, id, name, showName)
@@ -253,7 +255,7 @@ extends EventTarget
             const nameSize = this.divider <= 1 ? ((   this.divider *100) + '%') : (this.divider + 'px');
             const  valSize = this.divider <= 1 ? (((1-this.divider)*100) + '%') : ('calc(100% - ' + this.divider + 'px)');
 
-            this.divName.innerHTML =  this.name;
+            this.divName.innerHTML = this.showIndexName ? this.index : this.name;
    
             this.divName    .style.display = 'inline-block';
             this.divControls.style.display = this.showValue ? 'inline-block' : 'none';
