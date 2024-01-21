@@ -589,12 +589,11 @@ function initGeneratorMenus()
         new MenuItem('Less',             null, {icon: iconLess,           createType: NUMBER_LESS,             callback: e => actionManager.do(getCreateNodeAction(NUMBER_LESS,             btnNumber.div, getCreateOptions(e)))})]);
         
     
-    menuTrig = new Menu('Trigonometric', true, false);
-    menuTrig.addItems([
+    // menuTrig = new Menu('Trigonometric', true, false);
+    // menuTrig.addItems([
         // new MenuItem('Sine',       null, {icon: iconSine,    createType: NUMBER_SIN,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIN,   btnNumber.div, getCreateOptions(e)))}),
         // new MenuItem('Cosine',     null, {icon: iconCosine,  createType: NUMBER_COS,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_COS,   btnNumber.div, getCreateOptions(e)))}),
         // new MenuItem('Tangent',    null, {icon: iconTangent, createType: NUMBER_TAN,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_TAN,   btnNumber.div, getCreateOptions(e)))})]);
-        new MenuItem('Arctangent', null, {icon: iconAtan2,   createType: NUMBER_ATAN2, callback: e => actionManager.do(getCreateNodeAction(NUMBER_ATAN2, btnNumber.div, getCreateOptions(e)))})]);
         
     
     menuNumberBase = new Menu('Numbers', true, false);
@@ -611,6 +610,9 @@ function initGeneratorMenus()
                            new MenuItem('Round',         null, {icon: iconRound,       createType: NUMBER_ROUND,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,         btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('Min / max',     null, {icon: iconMinMax,      childMenu: menuMinMax, createType: NUMBER_SIMPLE_MINMAX, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MINMAX, btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('Limits',        null, {icon: iconLimits,      createType: NUMBER_LIMITS,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,        btnNumber.div, getCreateOptions(e)))}), 
+                           new MenuItem('',              null, {separator: true}),
+                           new MenuItem('Trigonometric', null, {icon: iconSine,        createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Arctangent',    null, {icon: iconAtan2,       createType: NUMBER_ATAN2, callback: e => actionManager.do(getCreateNodeAction(NUMBER_ATAN2, btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('',              null, {separator: true}),
         menuItemDateTime = new MenuItem('Date & time',   null, {icon: iconDateTime,    createType: NUMBER_DATETIME,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME,      btnNumber.div, getCreateOptions(e)))})]);
         
@@ -647,12 +649,11 @@ function initGeneratorMenus()
     menuNumber.addItems([
                           new MenuItem('Number',        null,                 {icon: iconNumber,      childMenu: menuNumberBase, createType: NUMBER, callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('',              null,                 {separator: true}),
-                          new MenuItem('Functions',     null,                 {icon: iconRound,       childMenu: menuFunctions}),
                           new MenuItem('Math',          null,                 {icon: iconMath,        childMenu: menuMath,          createType: NUMBER_SIMPLE_MATH, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MATH, btnNumber.div, getCreateOptions(e)))}),
-                          new MenuItem('Trigonometric', null,                 {icon: iconSine,        childMenu: menuTrig,          createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
-                          new MenuItem('Boolean',       null,                 {icon: iconBoolean,     /*childMenu: menuBoolean,  */ createType: NUMBER_BOOLEAN,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
-                          new MenuItem('',              null,                 {separator: true}),
+                          new MenuItem('Logic',         null,                 {icon: iconBoolean,     /*childMenu: menuBoolean,  */ createType: NUMBER_BOOLEAN,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('Compare',       null,                 {icon: iconCondition,   /*childMenu: menuCondition,*/ createType: NUMBER_CONDITION,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
+                          new MenuItem('',              null,                 {separator: true}),
+                          new MenuItem('Functions',     null,                 {icon: iconRound,       childMenu: menuFunctions}),
                           new MenuItem('Convert',       null,                 {icon: iconConvert,     childMenu: menuConvertNumber}),
                           new MenuItem('',              null,                 {separator: true}),
                           new MenuItem('Curve',         null,                 {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,         btnNumber.div, getCreateOptions(e)))}), 
@@ -1192,7 +1193,7 @@ function initGeneratorMenus()
         menuFunctions,
         menuMath,
         menuMinMax,
-        menuTrig,
+        //menuTrig,
         menuConvertNumber,
         menuConvertText,
         menuString,

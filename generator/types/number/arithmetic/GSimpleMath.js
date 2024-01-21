@@ -165,22 +165,12 @@ function getSimpleMathValue(input, operand, op, invert, enabled)
 
         switch (op.value)
         {
-            case 0: 
-                return invert.value == 0
-                    ? new NumberValue(input.value - operand.value, maxDecimals)
-                    : new NumberValue(operand.value - input.value, maxDecimals);
-
-            case 1: 
-                return invert.value == 0
-                    ? new NumberValue(input.value + operand.value, maxDecimals)
-                    : new NumberValue(operand.value + input.value, maxDecimals);
-
-            case 2: 
+            case 0: // % 
                 return invert.value == 0
                     ? new NumberValue(input.value % operand.value, maxDecimals)
                     : new NumberValue(operand.value % input.value, maxDecimals);
 
-            case 3: 
+            case 1: // /
                 if (      operand.value == 0
                        && invert .value == 0
                     ||    input  .value == 0
@@ -191,12 +181,22 @@ function getSimpleMathValue(input, operand, op, invert, enabled)
                         ? new NumberValue(input.value / operand.value, maxDecimals)
                         : new NumberValue(operand.value / input.value, maxDecimals);
 
-            case 4: 
+            case 2: // -
+                return invert.value == 0
+                    ? new NumberValue(input.value - operand.value, maxDecimals)
+                    : new NumberValue(operand.value - input.value, maxDecimals);
+
+            case 3: // +
+                return invert.value == 0
+                    ? new NumberValue(input.value + operand.value, maxDecimals)
+                    : new NumberValue(operand.value + input.value, maxDecimals);
+
+            case 4: // *
                 return invert.value == 0
                     ? new NumberValue(input.value * operand.value, maxDecimals)
                     : new NumberValue(operand.value * input.value, maxDecimals);
 
-            case 5: 
+            case 5: // eˣ
                 return invert.value == 0
                     ? new NumberValue(Math.pow(input.value, operand.value), maxDecimals)
                     : new NumberValue(Math.pow(operand.value, input.value), maxDecimals);

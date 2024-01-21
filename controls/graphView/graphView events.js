@@ -486,7 +486,7 @@ function graphView_onpointermove(e)
 function getScrollOffset(px, py)
 {
     const scrollBorder = 40;
-    const scrollOffset = 10;
+    const scrollOffset = 30;
 
     const dOffset = point(0, 0);
 

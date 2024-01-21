@@ -46,34 +46,34 @@ extends GOperator1
             return this;
 
             
+        const input      = this.input      ? (await this.input     .eval(parse)).toValue() : null;
         const position   = this.position   ? (await this.position  .eval(parse)).toValue() : null;
         const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
         const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
-        if (   this.input
+        if (   input
             && position)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = input;
 
             if (this.value)
                 this.value.nodeId = this.nodeId;
         }
         else
-            this.value = null;//new NullValue();
-
+            this.value = new NullValue();
 
 
         if (   position
-            && position.isValid())
-            // && position.objects
-            // && position.objects.length > 0)
+            && position.isValid()
+            && position.objects
+            && position.objects.length > 0)
         {
-            const p0 = position.toPoint();//point(
-                // position/*.objects[0]*/.x, 
-                // position/*.objects[0]*/.y);
+            const p0 = point(
+                position.objects[0].x, 
+                position.objects[0].y);
 
-            const p1 = addv(p0, subv(position/*.objects[0]*/.sp1, position/*.objects[0]*/.sp0));
-            const p2 = addv(p0, subv(position/*.objects[0]*/.sp2, position/*.objects[0]*/.sp0));
+            const p1 = addv(p0, subv(position.objects[0].sp1, position.objects[0].sp0));
+            const p2 = addv(p0, subv(position.objects[0].sp2, position.objects[0].sp0));
 
             await this.evalObjects(
                 parse, 
@@ -229,8 +229,8 @@ function getTransformFromPoints(p0, p1, p2)
     const sina = Math.sin(a);
 
 
-    const sx   = ((p1.y - p0.y) / nozero(p1.x - p0.x));
-    const sy   = ((p2.x - p0.x) / nozero(p2.y - p0.y));
+    // const sx   = ((p1.y - p0.y) / nozero(p1.x - p0.x));
+    // const sy   = ((p2.x - p0.x) / nozero(p2.y - p0.y));
 
     // TODO add skew 
 

@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 338;
+const generatorVersion = 339;
 
 
 const MAX_INT32        = 2147483647;
@@ -1453,23 +1453,23 @@ const VECTOR_PATH_TYPES    = [VECTOR_PATH_VALUE, VECTOR_PATH];
 const VECTOR_VERTEX_VALUE  = 'VPT#';
 const VECTOR_VERTEX        = 'VPT'; 
 const VECTOR_VERTEX_TYPES  = [VECTOR_VERTEX_VALUE, VECTOR_VERTEX];
- 
+
 const VECTOR_EDGE_VALUE    = 'VEDGE#';
 const VECTOR_EDGE          = 'VEDGE'; 
 const VECTOR_EDGE_TYPES    = [VECTOR_EDGE_VALUE, VECTOR_EDGE];
- 
+
 const VECTOR_REGION_VALUE  = 'VREG#';
 const VECTOR_REGION        = 'VREG'; 
 const VECTOR_REGION_TYPES  = [VECTOR_REGION_VALUE, VECTOR_REGION];
- 
+
 const VECTOR_NETWORK_VALUE = 'VNET#';
 const VECTOR_NETWORK       = 'VNET'; 
 const VECTOR_NETWORK_TYPES = [VECTOR_NETWORK_VALUE, VECTOR_NETWORK];
- 
+
 const SHAPE_GROUP_VALUE    = 'SGRP#';
 const SHAPE_GROUP          = 'SGRP';
 const SHAPE_GROUP_TYPES    = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
- 
+
 const FRAME_VALUE          = 'FRM#';
 const FRAME                = 'FRM';
 const FRAME_TYPES          = [FRAME_VALUE, FRAME];
@@ -1674,10 +1674,10 @@ const GRAPH         = 'GRAPH';
 
 const MATH_OPS = 
 [   // the order is important for logical keyboard value changes
-    [NUMBER_SUBTRACT, '−' ],
-    [NUMBER_ADD,      '+' ],
     [NUMBER_MODULO,   '%' ],
     [NUMBER_DIVIDE,   '/' ], //'÷' ],
+    [NUMBER_SUBTRACT, '−' ],
+    [NUMBER_ADD,      '+' ],
     [NUMBER_MULTIPLY, '×' ],
     [NUMBER_EXPONENT, 'e<sup>x'] 
 ];
@@ -1685,9 +1685,9 @@ const MATH_OPS =
 
 const MATH_OPS_SHORT = 
 [   // the order is important for logical keyboard value changes
+    [NUMBER_DIVIDE,   '/' ], //'÷' ],
     [NUMBER_SUBTRACT, '−' ],
     [NUMBER_ADD,      '+'],
-    [NUMBER_DIVIDE,   '/' ], //'÷' ],
     [NUMBER_MULTIPLY, '×']
 ];
 

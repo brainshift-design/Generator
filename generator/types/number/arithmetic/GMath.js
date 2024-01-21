@@ -50,10 +50,10 @@ extends GArithmetic
 
         switch (op.value)
         {
-            case 0: this.value = await evalSubtractInputs(this.inputs, parse); break;
-            case 1: this.value = await evalAddInputs     (this.inputs, parse); break;
-            case 2: this.value = await evalModuloInputs  (this.inputs, parse); break;
-            case 3: this.value = await evalDivideInputs  (this.inputs, parse); break;
+            case 0: this.value = await evalModuloInputs  (this.inputs, parse); break;
+            case 1: this.value = await evalDivideInputs  (this.inputs, parse); break;
+            case 2: this.value = await evalSubtractInputs(this.inputs, parse); break;
+            case 3: this.value = await evalAddInputs     (this.inputs, parse); break;
             case 4: this.value = await evalMultiplyInputs(this.inputs, parse); break;
             case 5: this.value = await evalExponentInputs(this.inputs, parse); break;
         }

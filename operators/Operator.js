@@ -723,7 +723,7 @@ class Operator
 
     setPosition(x, y, updateTransform = true)
     {
-        console.log('Operator.setPosition()');
+        //console.log('Operator.setPosition()');
    
         this.x = x;
         this.y = y;
@@ -758,7 +758,7 @@ class Operator
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        console.log('Operator.setRect()');
+        //console.log('Operator.setRect()');
 
         this.x      = x;
         this.y      = y;

@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_BOOLEAN, 'bool', 'boolean', '');
+        super(NUMBER_BOOLEAN, 'logic', 'logic', '');
 
         this.iconOffsetY      = -1;
 

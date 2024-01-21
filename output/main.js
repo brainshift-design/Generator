@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 338;
+const generatorVersion = 339;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -1064,17 +1064,17 @@ const PARAM = 'PARAM'; // nodeId paramId
 const LOG = 'LOG';
 const GRAPH = 'GRAPH';
 const MATH_OPS = [
-    [NUMBER_SUBTRACT, '−'],
-    [NUMBER_ADD, '+'],
     [NUMBER_MODULO, '%'],
     [NUMBER_DIVIDE, '/'],
+    [NUMBER_SUBTRACT, '−'],
+    [NUMBER_ADD, '+'],
     [NUMBER_MULTIPLY, '×'],
     [NUMBER_EXPONENT, 'e<sup>x']
 ];
 const MATH_OPS_SHORT = [
+    [NUMBER_DIVIDE, '/'],
     [NUMBER_SUBTRACT, '−'],
     [NUMBER_ADD, '+'],
-    [NUMBER_DIVIDE, '/'],
     [NUMBER_MULTIPLY, '×']
 ];
 const BOOLEAN_NOT = 0;
