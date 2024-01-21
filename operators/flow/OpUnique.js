@@ -12,7 +12,6 @@ extends OperatorBase
     {
         super(UNIQUE, 'unique', 'unique', iconUnique);
 
-        this.subscription      = true;
         this.canDisable        = true;
         this.showHeaderTooltip = true;
         

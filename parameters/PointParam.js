@@ -115,7 +115,7 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            if (this.input.connectedOutput.supportsTypes(this.input.types))
+            if (this.input.connected)//Output.supportsTypes(this.input.types))
                 request.push(...pushInputOrParam(this.input, gen));
             else
                 request.push(POINT_VALUE, '?,? ?,?');

@@ -13,8 +13,9 @@ extends OperatorBase
     {
         super(NUMBER_RANGE, 'range', 'range', iconRange);
 
-        this.cached     = false;
-        this.canDisable = true;
+        this.cached      = false;
+        this.canDisable  = true;
+        this.iconOffsetY = 2;
         
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
