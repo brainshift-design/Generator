@@ -7,9 +7,9 @@ extends OperatorBase
 
     constructor()
     {
-        super(GET_LIST_VALUE_NAMES, 'getNames', 'value names', iconListNames);
+        super(GET_LIST_VALUE_NAMES, 'getNames', 'get names', iconListNames);
 
-        
+
         this.canDisable        = true;
         this.showHeaderTooltip = true;
         
