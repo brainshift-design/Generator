@@ -16,6 +16,7 @@ function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true
     
     let json = 
           (encloseBraces ? '{\n' : '')
+          + tab + '"generatorVersion": "' + generatorVersion + '",\n'
           + tab + '"nodes":\n'
           + tab + '[';
 
@@ -522,8 +523,11 @@ function loadNodes(data, pasting)
    
     for (let i = 0; i < data.nodes.length; i++)
     {
-        //console.log('data.nodes['+i+'] =', data.nodes[i]);
-        const node = loadNode(data.nodes[i], pasting);
+        const node = loadNode(
+            data.nodes[i], 
+            pasting, 
+            data.generatorVersion ? data.generatorVersion : 0);
+            
         nodes.push(node);
     }
 
@@ -532,13 +536,9 @@ function loadNodes(data, pasting)
 
 
 
-function loadNode(_node, pasting)
+function loadNode(_node, pasting, genVersion = 0)
 {
-    // replace legacy
-         if (_node.type == 'CDENSE') _node.type = LIST_AS_ITEM;
-    else if (_node.type == 'SEL'   ) _node.type = SELECT_FROM_LIST;
-    else if (_node.type == 'EXTRP' ) _node.type = GET_PARAM;
-    else if (_node.type == 'CENTR' ) _node.type = SET_CENTER;
+    handleLegacy(_node, genVersion);
 
 
     const node = createNode(_node.type);
@@ -559,6 +559,39 @@ function loadNode(_node, pasting)
 
         
     return node;
+}
+
+
+
+function handleLegacy(_node, genVersion)
+{
+    // update legacy node names
+    
+         if (_node.type == 'CDENSE') _node.type = LIST_AS_ITEM;
+    else if (_node.type == 'SEL'   ) _node.type = SELECT_FROM_LIST;
+    else if (_node.type == 'EXTRP' ) _node.type = GET_PARAM;
+    else if (_node.type == 'CENTR' ) _node.type = SET_CENTER;
+
+
+    // handle math order of operations switch in version 339
+
+    if (   (   _node.type == NUMBER_MATH
+            || _node.type == NUMBER_SIMPLE_MATH)
+        && genVersion == 0)
+    {
+        let param = _node.params.find(p => p[1] == 'operation');
+
+        if (!param)
+            param = [NUMBER_VALUE, 'operation', '1,0'];
+
+        switch (param[2])
+        {
+            case '0,0': param[2] = '2,0'; break;
+            case '1,0': param[2] = '3,0'; break;
+            case '2,0': param[2] = '0,0'; break;
+            case '3,0': param[2] = '1,0'; break;
+        }
+    }
 }
 
 

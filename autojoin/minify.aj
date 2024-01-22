@@ -697,7 +697,6 @@ menuItemWave
 menuItemSequence
 menuItemDateTime
 menuItemIndexToName
-menuNumberSep1
 menuItemSolve
 menuItemValidColor
 menuItemCorrectColor

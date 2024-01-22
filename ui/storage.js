@@ -9,21 +9,6 @@ function     uiClearPageData(key)        { uiQueueMessageToFigma({ cmd:       'f
 
 
 
-// function saveToLocalFile(filename, str) 
-// {
-//     const link = document.createElement('a');
-//     link.style.display = 'none';
-    
-//     link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(str));
-//     link.setAttribute('download', filename);
-    
-//     document.body.appendChild(link);
-//     link.click();
-//     document.body.removeChild(link);
-// }
-
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
    
 
@@ -553,8 +538,7 @@ function resolveNodes(_nodes, first, last, nodes, pasting)
         {
             for (let i = first; i < last; i++)
             {
-                const node = loadNode(_nodes[i], pasting);
-                //console.log('node =', node);
+                const node = loadNode(_nodes[i], pasting, generatorVersion);
                 nodes.push(node);
             }
 
@@ -635,13 +619,6 @@ function resolveConnections(nodes, _connections, first, last)
         });
         // /);
 }
-
-
-
-// function uiSaveGraphView()
-// {
-//     uiSetPageData(currentUser.id + ',graphView', graphView.toJson());
-// }
 
 
 

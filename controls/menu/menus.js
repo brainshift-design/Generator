@@ -41,6 +41,7 @@ var menuDebugDelete;
 
 var menuFlow;
 var menuData;
+var menuItems;
 var menuNumber;
 var menuSets;
 var menuString;
@@ -60,7 +61,6 @@ var menuPanel;
 
 var menuNumberBase;
 var menuMath;
-var menuSelect;
 var menuMinMax;
 var menuBoolean;
 var menuCondition;
@@ -211,7 +211,6 @@ var menuItemSequence;
 var menuItemDateTime;
 var menuItemIndexToName;
 
-var menuNumberSep1;
 var menuItemSolve;  
 
 var menuItemTextJson;
@@ -522,31 +521,33 @@ function initGeneratorMenus()
                              new MenuItem('Parameters',        null, {childMenu: menuParams}),
                              new MenuItem('Value names',       null, {childMenu: menuNames}),
                              new MenuItem('',                  null, {separator: true}),
-        menuItemTimer      = new MenuItem('Timer ',            null, {icon: iconTimer,         createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))})]);
+        menuItemTimer      = new MenuItem('Timer ',            null, {icon: iconTimer,         createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemAnimate    = new MenuItem('Animate',           null, {icon: iconAnimate,       createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))})]);
     
 
-    menuSelect = new Menu('Select', true, false);
-    menuSelect.addItems([
-        new MenuItem('Select from list',  null, {icon: iconSelectFromList, createType: SELECT_FROM_LIST, callback: e => actionManager.do(getCreateNodeAction(SELECT_FROM_LIST, btnData.div, getCreateOptions(e)))})]);
-        
+    menuItems = new Menu('Data', true, false);
+    menuItems.addItems([
+                              new MenuItem('Sublist',           null,            {icon: iconSublist,      createType: SUBLIST,       callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnData.div, getCreateOptions(e)))}),
+                              new MenuItem('Extract items',     null,            {icon: iconExtract,      createType: EXTRACT,       callback: e => actionManager.do(getCreateNodeAction(EXTRACT,       btnData.div, getCreateOptions(e)))}),
+        menuItemFilter      = new MenuItem('Filter',            null,            {icon: iconFilter,       createType: FILTER,        callback: e => actionManager.do(getCreateNodeAction(FILTER,        btnData.div, getCreateOptions(e)))}),
+        menuItemSort        = new MenuItem('Sort',              null,            {icon: iconSort,         createType: SORT,          callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
+        menuItemUniqueList  = new MenuItem('Unique',            null,            {icon: iconUnique,       createType: UNIQUE,        callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
+        menuItemReverseList = new MenuItem('Reverse',           null,            {icon: iconReverseList,  createType: REVERSE_LIST,  callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))})]);
+    
 
     menuData = new Menu('Data', true, false);
     menuData.addItems([
         menuItemCombine     = new MenuItem('Combine',           null,            {icon: iconCombine,      createType: COMBINE,       callback: e => actionManager.do(getCreateNodeAction(COMBINE,       btnData.div, getCreateOptions(e)))}),
         menuItemList        = new MenuItem('List...',           null,            {icon: iconList,         createType: LIST,          callback: e => actionManager.do(getCreateNodeAction(LIST,          btnData.div, getCreateOptions(e)))}),
                               new MenuItem('',                  null,            {separator: true}),     
-        menuItemIfElse      = new MenuItem('I&hairsp;f / else', null,            {icon: iconIfElse,       createType: IF_ELSE,       callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,       btnData.div, getCreateOptions(e))), disambiguate: true}),
-        menuItemSelect      = new MenuItem('Select',            null,            {childMenu: menuSelect, icon: iconSelect,       createType: SELECT,        callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnData.div, getCreateOptions(e)))}),
-                              new MenuItem('',                  null,            {separator: true}),     
         menuItemCount       = new MenuItem('Count',             null,            {icon: iconCount,        createType: LIST_COUNT,    callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,    btnData.div, getCreateOptions(e)))}),
                               new MenuItem('Contains',          'List contains', {icon: iconContains,     createType: CONTAINS,      callback: e => actionManager.do(getCreateNodeAction(CONTAINS,      btnData.div, getCreateOptions(e))), disambiguate: true}),
                               new MenuItem('',                  null,            {separator: true}),     
-                              new MenuItem('Sublist',           null,            {icon: iconSublist,      createType: SUBLIST,       callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnData.div, getCreateOptions(e)))}),
-                              new MenuItem('Extract items',     null,            {icon: iconExtract,      createType: EXTRACT,       callback: e => actionManager.do(getCreateNodeAction(EXTRACT,       btnData.div, getCreateOptions(e)))}),
-        menuItemFilter      = new MenuItem('Filter',            null,            {icon: iconFilter,       createType: FILTER,        callback: e => actionManager.do(getCreateNodeAction(FILTER,        btnData.div, getCreateOptions(e)))}),
-        menuItemSort        = new MenuItem('Sort',              null,            {icon: iconSort,         createType: SORT,          callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
-        menuItemUniqueList  = new MenuItem('Unique',            null,            {icon: iconUnique,       createType: UNIQUE,        callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
-        menuItemReverseList = new MenuItem('Reverse',           null,            {icon: iconReverseList,  createType: REVERSE_LIST,  callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))}),
+                              new MenuItem('Items',             null,            {childMenu: menuItems}),
+                              new MenuItem('',                  null,            {separator: true}),     
+        menuItemIfElse      = new MenuItem('I&hairsp;f / else', null,            {icon: iconIfElse,       createType: IF_ELSE,       callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,       btnData.div, getCreateOptions(e))), disambiguate: true}),
+        menuItemSelect      = new MenuItem('Select',            null,            {icon: iconSelect,       createType: SELECT,        callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnData.div, getCreateOptions(e)))}),
+                              new MenuItem('Select from list',  null, {icon: iconSelectFromList, createType: SELECT_FROM_LIST, callback: e => actionManager.do(getCreateNodeAction(SELECT_FROM_LIST, btnData.div, getCreateOptions(e)))}),
                               new MenuItem('',                  null,            {separator: true}),     
                               new MenuItem('Column',            null,            {icon: iconColumn,       createType: COLUMN,        callback: e => actionManager.do(getCreateNodeAction(COLUMN,        btnData.div, getCreateOptions(e)))}),
                               new MenuItem('Cell',              null,            {icon: iconCell,         createType: CELL,          callback: e => actionManager.do(getCreateNodeAction(CELL,          btnData.div, getCreateOptions(e)))}),
@@ -664,11 +665,7 @@ function initGeneratorMenus()
                           new MenuItem('Convert',       null,                 {icon: iconConvert,     childMenu: menuConvertNumber}),
                           new MenuItem('',              null,                 {separator: true}),
                           new MenuItem('Curve',         null,                 {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,         btnNumber.div, getCreateOptions(e)))}), 
-                          new MenuItem('Interpolate',   'Interpolate number', {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
-        //                new MenuItem('',              null,                 {separator: true}),
-        //menuItemSolve = new MenuItem('Solve',         null,                 {icon: iconSolve,       createType: NUMBER_SOLVE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,    btnNumber.div, getCreateOptions(e)))}),
-         menuNumberSep1 = new MenuItem('',              null,                 {separator: true}),
-        menuItemAnimate = new MenuItem('Animate',       null,                 {icon: iconAnimate,       createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnNumber.div, getCreateOptions(e)))})]);
+                          new MenuItem('Interpolate',   'Interpolate number', {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))})]);
         
     
     menuString = new Menu('Text', true, false);
@@ -1192,9 +1189,9 @@ function initGeneratorMenus()
     [
         menuFlow,
         menuData,
+        menuItems,
         menuParams,
         menuNames,
-        menuSelect,
         menuSets,
         menuNumber,
         menuNumberBase,
