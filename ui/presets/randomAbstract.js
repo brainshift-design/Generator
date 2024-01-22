@@ -662,8 +662,8 @@ const presetRandomAbstract = '\
             "params":\
             [\
                 ["NUM#", "inner", "27.186353086580738,0"],\
-                ["NUM#", "from", "235.31566810576084,0"],\
-                ["NUM#", "to", "10.306737445608434,0"]\
+                ["NUM#", "start", "235.31566810576084,0"],\
+                ["NUM#", "sweep", "10.306737445608434,0"]\
             ]\
         }\
         ],\
@@ -1122,7 +1122,7 @@ const presetRandomAbstract = '\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "ellipse",\
-            "inputId": "from",\
+            "inputId": "start",\
             "list": "false"\
         },\
         {\
@@ -1130,7 +1130,7 @@ const presetRandomAbstract = '\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "ellipse",\
-            "inputId": "to",\
+            "inputId": "sweep",\
             "list": "false"\
         }\
         ]\

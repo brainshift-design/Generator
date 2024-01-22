@@ -511,6 +511,9 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes, zoo
     }
     catch (e)
     {
+        initCrashDialog(e);
+        showCrashDialog();
+
         return [[], []];
     }
 }
@@ -557,7 +560,7 @@ function loadNode(_node, pasting, genVersion = 0)
         parseFloat(_node.y),
         false);
 
-        
+    
     return node;
 }
 
@@ -579,6 +582,9 @@ function handleLegacy(_node, genVersion)
             || _node.type == NUMBER_SIMPLE_MATH)
         && genVersion == 0)
     {
+        if (!_node.params)
+            _node.params = [];
+        
         let param = _node.params.find(p => p[1] == 'operation');
 
         if (!param)
@@ -591,6 +597,11 @@ function handleLegacy(_node, genVersion)
             case '2,0': param[2] = '0,0'; break;
             case '3,0': param[2] = '1,0'; break;
         }
+
+        const value = _node.params.find(p => p[1] == 'value');
+
+        if (value) 
+            removeFromArray(_node.params, param);
     }
 }
 
