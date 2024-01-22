@@ -12,6 +12,7 @@ extends OperatorBase
     {
         super(UNIQUE, 'unique', 'unique', iconUnique);
 
+        
         this.canDisable        = true;
         this.showHeaderTooltip = true;
         
@@ -75,18 +76,21 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
+
         const length = values[paramIds.findIndex(id => id == 'length')];
 
         this.length = length.value;
+
 
         const sep = settings.showNodeId ? ' ' : '  ';
 
         this.paramCounts .setName('counts'  + sep + '[ ' + this.length + ' ]');
         this.paramIndices.setName('indices' + sep + '[ ' + this.length + ' ]');
 
-        const type = values[paramIds.findIndex(id => id == 'type')];
 
-        if (type)
+        const type = values[paramIds.findIndex(id => id == 'type')];
+        
+        if (type) 
             this.headerOutputs[0].types = [type.value];
     }
 

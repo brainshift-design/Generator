@@ -3,6 +3,7 @@ extends GOperator1
 {
     condition     = null;
     reverse       = null;
+    indices       = null;
 
     firstSortNode = null;
 
@@ -22,8 +23,9 @@ extends GOperator1
     {
         super.reset();
 
-        this.condition   = null;
-        this.reverse     = null;
+        this.condition = null;
+        this.reverse   = null;
+        this.indices   = null;
     }
 
 
@@ -36,6 +38,7 @@ extends GOperator1
 
         if (this.condition) copy.condition = this.condition.copy();
         if (this.reverse  ) copy.reverse   = this.reverse  .copy();
+        if (this.indices  ) copy.indices   = this.indices  .copy();
 
         return copy;
     }
@@ -55,9 +58,12 @@ extends GOperator1
         this.value         = new ListValue();
         this.value.objects = [];
 
+
         let maxColumns = 0;
 
-        
+        this.indices = new ListValue();
+
+
         if (   input
             && reverse)
         {
@@ -82,7 +88,8 @@ extends GOperator1
                         const unsorted          = [...input.items];
 
 
-                        input.items = await asyncSort(
+                        [ input       .items, 
+                          this.indices.items ] = await asyncSort(
                             parse, 
                             unsorted, 
                             this.condition 
@@ -129,8 +136,10 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type',    this.outputListType()],
-            ['reverse', reverse              ]
+            ['type',    this.outputListType()                   ],
+            ['length',  new NumberValue(this.value.items.length)],
+            ['reverse', reverse                                 ],
+            ['indices', this.indices                            ]
         ]);
         
 
@@ -191,24 +200,28 @@ extends GOperator1
 
 
 
-async function asyncSort(parse, array, conditionNode, node, condition, reverseMultiplier)
+async function asyncSort(parse, unsorted, conditionNode, node, condition, reverseMultiplier)
 {
     const oldInput = conditionNode ? conditionNode.input : null;
 
-    const sorted = [];
 
-    for (const item of array)
+    const sorted  = [];
+
+
+    for (let i = 0; i < unsorted.length; i++)
     {
+        const item = unsorted[i];
+
         const cond = await getSortCondition(parse, conditionNode, node, condition, item);
-        if (!cond) return array;
+        if (!cond) return [unsorted, [...unsorted.keys()]];
 
         const condValue = cond.toValue();
 
         if (   condValue.type != NUMBER_VALUE
             && condValue.type != TEXT_VALUE) 
-            return array;
+            return [unsorted, [...unsorted.keys()]];
 
-        sorted.push({item, condition: condValue.value});
+        sorted.push({item, condition: condValue.value, index: i});
     }
 
 
@@ -225,7 +238,8 @@ async function asyncSort(parse, array, conditionNode, node, condition, reverseMu
         conditionNode.input = oldInput;
 
 
-    return sorted.map(_item => _item.item);
+    return [ sorted.map(item => item.item), 
+             sorted.map(item => new NumberValue(item.index)) ];
 }
 
 

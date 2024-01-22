@@ -1,8 +1,11 @@
 class   OpSort
 extends OperatorBase
 {
+    paramIndices;
     paramCondition;
     paramReverse;
+
+    length;
 
 
     menuBoolReverse;
@@ -22,8 +25,9 @@ extends OperatorBase
         this.addInput (new Input (LIST_VALUES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramCondition = new NumberParam('condition', 'condition', false, true, true, 0, 0));
-        this.addParam(this.paramReverse   = new NumberParam('reverse',   'reverse',   true,  true, true, 0, 0, 1));
+        this.addParam(this.paramIndices   = new   ListParam('indices',   'indices',   false, false, true));
+        this.addParam(this.paramCondition = new NumberParam('condition', 'condition', false, true,  true, 0, 0));
+        this.addParam(this.paramReverse   = new NumberParam('reverse',   'reverse',   true,  true,  true, 0, 0, 1));
 
         this.paramCondition.controls[0].allowEditDecimals = false;
         
@@ -34,6 +38,8 @@ extends OperatorBase
         this.paramCondition.input.types.unshift(ANY_VALUE);
 
         this.menuBoolReverse = createBoolMenu(this.paramReverse);
+
+        this.paramIndices.itemName = [];
     }
 
 
@@ -92,16 +98,30 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
+
+        const length = values[paramIds.findIndex(id => id == 'length')];
+        
+        this.length = length.value;
+
+
+        const sep = settings.showNodeId ? ' ' : '  ';
+        
+        this.paramIndices.setName('indices' + sep + '[ ' + this.length + ' ]');
+
+
         const type = values[paramIds.findIndex(id => id == 'type')];
-        if (type) this.headerOutputs[0].types = [type.value];
+        
+        if (type) 
+            this.headerOutputs[0].types = [type.value];
     }
 
 
 
     updateParams()
     {
-        this.paramCondition  .enableControlText(false);
-        this.paramReverse.enableControlText(true);
+        this.paramIndices  .enableControlText(false, this.isUnknown());
+        this.paramCondition.enableControlText(false);
+        this.paramReverse  .enableControlText(true);
 
         updateParamConditionText(this.paramReverse, this.paramReverse.isUnknown(), false, 1);
 
