@@ -303,6 +303,7 @@ var menuItemNodeSep4;
 var menuItemNodeEnableDisable;
 var menuItemNodeSep5;
 var menuItemNodeConnectSeeds;
+var menuItemNodeRandomizeColor;
 var menuItemNodeRandomizeSeeds;
 
 
@@ -958,6 +959,7 @@ function initGeneratorMenus()
       //menuItemNodeSaveAsTemplate  = new MenuItem('Save as template', null, {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
       //                              new MenuItem('',                 null, {separator: true}),
         menuItemNodeSep5            = new MenuItem('',                 null, {separator: true}),
+        menuItemNodeRandomizeColor  = new MenuItem('Randomize color',  null, {shortcut:  osShift() + 'R', icon: iconProbability, callback: e => { hideAllMenus(); graphView.randomizeSelectedColors(); }}),
         menuItemNodeRandomizeSeeds  = new MenuItem('Randomize seeds',  null, {shortcut:  osShift() + 'R', icon: iconProbability, callback: e => { hideAllMenus(); graphView.randomizeSelectedSeeds(); }}),
         menuItemNodeConnectSeeds    = new MenuItem('Connect seeds',    null, {shortcut:  osShift() + 'C', callback: e => { hideAllMenus(); graphView.connectSelectedSeeds(); }}),
         menuItemNodeSep4            = new MenuItem('',                 null, {separator: true}),
@@ -984,6 +986,9 @@ function initGeneratorMenus()
                 || n.type == NUMBER_NOISE
                 || n.type == NUMBER_PROBABILITY);
         
+        const selectedColors    = graphView.selectedNodes.filter(n => n.type == COLOR);
+        const canRandomizeColor = selectedColors.length > 0;
+        
 
         const canRandomizeSeeds = selectedRandom.length > 0;
         const canConnectSeeds   = 
@@ -995,8 +1000,9 @@ function initGeneratorMenus()
         // menuNode.items.forEach(i => i.showIcon = true);
 
         
-        menuItemNodeRandomizeSeeds.setName('Randomize seed' + (selectedRandom.length == 1 ? '' : 's'));
-        menuItemNodeConnectSeeds  .setName('Connect seed'   + (selectedRandom.length == 1 ? '' : 's'));
+        menuItemNodeRandomizeColor.setName('Randomize color' + (selectedColors.length == 1 ? '' : 's'));
+        menuItemNodeRandomizeSeeds.setName('Randomize seed'  + (selectedRandom.length == 1 ? '' : 's'));
+        menuItemNodeConnectSeeds  .setName('Connect seed'    + (selectedRandom.length == 1 ? '' : 's'));
 
 
         menuNode.showChecks = isCondition;
@@ -1009,7 +1015,8 @@ function initGeneratorMenus()
         updateElementDisplay(menuItemNodeLayoutSep      .div, !single);
         updateElementDisplay(menuItemNodeLayout         .div, !single);
         //updateElementDisplay(menuItemNodeEdit         .div, single);
-        updateElementDisplay(menuItemNodeSep5           .div, canRandomizeSeeds || canConnectSeeds);
+        updateElementDisplay(menuItemNodeSep5           .div, canRandomizeSeeds || canConnectSeeds || canRandomizeColor);
+        updateElementDisplay(menuItemNodeRandomizeColor .div, canRandomizeColor);
         updateElementDisplay(menuItemNodeRandomizeSeeds .div, canRandomizeSeeds);
         updateElementDisplay(menuItemNodeConnectSeeds   .div, canConnectSeeds);
         updateElementDisplay(menuItemNodeSep2           .div, single);

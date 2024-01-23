@@ -407,10 +407,6 @@ const ELLIPSE_VALUE        = 'ELPS#';
 const ELLIPSE              = 'ELPS'; 
 const ELLIPSE_TYPES        = [ELLIPSE_VALUE, ELLIPSE];
  
-const ARC_ELLIPSE_VALUE    = 'AELPS#';
-const ARC_ELLIPSE          = 'AELPS'; 
-const ARC_ELLIPSE_TYPES    = [ARC_ELLIPSE_VALUE, ARC_ELLIPSE];
- 
 const TRAPEZE_VALUE        = 'TRPZ#';
 const TRAPEZE              = 'TRPZ';
 const TRAPEZE_TYPES        = [TRAPEZE_VALUE, TRAPEZE];
@@ -511,7 +507,6 @@ const SHAPE_VALUES =
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,
-    ARC_ELLIPSE_VALUE,
     TRAPEZE_VALUE,
     POLYGON_VALUE,
     STAR_VALUE,
@@ -549,7 +544,6 @@ const SHAPE_TYPES =
     ...RECTANGLE_TYPES,
     ...LINE_TYPES,
     ...ELLIPSE_TYPES,
-    ...ARC_ELLIPSE_TYPES,
     ...TRAPEZE_TYPES,
     ...POLYGON_TYPES,
     ...STAR_TYPES,
@@ -607,7 +601,6 @@ const ALL_VALUES =
        RECTANGLE_VALUE,
             LINE_VALUE,
          ELLIPSE_VALUE,
-     ARC_ELLIPSE_VALUE,
          TRAPEZE_VALUE,
          POLYGON_VALUE,
             STAR_VALUE,

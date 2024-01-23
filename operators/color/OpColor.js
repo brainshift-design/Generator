@@ -92,6 +92,14 @@ extends OpColorBase
         this.param2.setValue(new NumberValue(roundTo(this._color[2] * rgbFactor[1], this.param2.controls[0].decimals)), false, true, false);
         this.param3.setValue(new NumberValue(roundTo(this._color[3] * rgbFactor[2], this.param3.controls[0].decimals)), false, true, false);
 
+        this.param1.controls[0].setMin(0);
+        this.param2.controls[0].setMin(0);
+        this.param3.controls[0].setMin(0);
+
+        this.param1.controls[0].setMax(255);
+        this.param2.controls[0].setMax(255);
+        this.param3.controls[0].setMax(255);
+
 
         this.paramSpace.controls[0].barTop = 0.8;
 

@@ -372,6 +372,30 @@ GraphView.prototype.randomizeSelectedSeeds = function()
 
 
 
+GraphView.prototype.randomizeSelectedColors = function()
+{
+    const colors = graphView.selectedNodes.filter(n => 
+            n.type == COLOR
+        && !n.param1.controls[0].readOnly
+        && !n.param2.controls[0].readOnly
+        && !n.param3.controls[0].readOnly);
+        
+
+    const params = 
+    [ 
+        ...colors.map(n => n.paramFromId('c1')),
+        ...colors.map(n => n.paramFromId('c2')),
+        ...colors.map(n => n.paramFromId('c3'))
+    ];
+
+    const values = params.map(p => new NumberValue(Math.floor(p.controls[0].displayMin + Math.random() * (p.controls[0].displayMax - p.controls[0].displayMin))));
+
+    
+    actionManager.do(new SetMultipleValuesAction(params, values, true));
+};
+
+
+
 GraphView.prototype.connectSelectedSeeds = function()
 {
     const list = graphView.selectedNodes.find(n => n.type == LIST);

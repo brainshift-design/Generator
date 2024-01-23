@@ -75,15 +75,15 @@ extends GOperator
 
             index = 
                    index.isValid()
-                && index.value > -inputs.length
-                && index.value <  inputs.length
+                && index.value >= -inputs.length
+                && index.value <   inputs.length
                 ? new NumberValue(Math.round(index.value))
                 : new NumberValue(0);
             
 
             if (   index.isValid()
-                && index.value > -inputs.length
-                && index.value <  inputs.length)
+                && index.value >= -inputs.length
+                && index.value <   inputs.length)
             {
                 this.value = inputs.at(index.value);
 

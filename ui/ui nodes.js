@@ -590,6 +590,7 @@ function handleLegacy(_node, genVersion)
         if (!param)
             param = [NUMBER_VALUE, 'operation', '1,0'];
 
+            
         switch (param[2])
         {
             case '0,0': param[2] = '2,0'; break;
