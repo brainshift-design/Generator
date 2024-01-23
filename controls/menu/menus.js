@@ -45,6 +45,7 @@ var menuItems;
 var menuNumber;
 var menuSets;
 var menuString;
+var menuTextFunctions;
 var menuConvertNumber;
 var menuConvertText;
 var menuTextData;
@@ -519,8 +520,8 @@ function initGeneratorMenus()
                              new MenuItem('Variable',          null, {icon: iconVariable,      createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
       //menuItemVarGroup   = new MenuItem('Variable group',    null, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null, {separator: true}),
-                             new MenuItem('Parameters',        null, {childMenu: menuParams}),
-                             new MenuItem('Value names',       null, {childMenu: menuNames}),
+                             new MenuItem('Parameters',        null, {icon: iconParameters, childMenu: menuParams}),
+                             new MenuItem('Value names',       null, {icon: iconNames, childMenu: menuNames}),
                              new MenuItem('',                  null, {separator: true}),
         menuItemTimer      = new MenuItem('Timer ',            null, {icon: iconTimer,         createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
         menuItemAnimate    = new MenuItem('Animate',           null, {icon: iconAnimate,       createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))})]);
@@ -544,7 +545,7 @@ function initGeneratorMenus()
         menuItemCount       = new MenuItem('Count',             null,            {icon: iconCount,        createType: LIST_COUNT,    callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,    btnData.div, getCreateOptions(e)))}),
                               new MenuItem('Contains',          'List contains', {icon: iconContains,     createType: CONTAINS,      callback: e => actionManager.do(getCreateNodeAction(CONTAINS,      btnData.div, getCreateOptions(e))), disambiguate: true}),
                               new MenuItem('',                  null,            {separator: true}),     
-                              new MenuItem('Items',             null,            {childMenu: menuItems}),
+                              new MenuItem('Functions',         null,            {icon: iconListFunctions, childMenu: menuItems}),
                               new MenuItem('',                  null,            {separator: true}),     
         menuItemIfElse      = new MenuItem('I&hairsp;f / else', null,            {icon: iconIfElse,       createType: IF_ELSE,       callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,       btnData.div, getCreateOptions(e))), disambiguate: true}),
         menuItemSelect      = new MenuItem('Select',            null,            {icon: iconSelect,       createType: SELECT,        callback: e => actionManager.do(getCreateNodeAction(SELECT,        btnData.div, getCreateOptions(e)))}),
@@ -669,6 +670,17 @@ function initGeneratorMenus()
                           new MenuItem('Interpolate',   'Interpolate number', {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))})]);
         
     
+    menuTextFunctions = new Menu('Text functions', true, false);
+    menuTextFunctions.addItems([
+                           new MenuItem('Trim',       null,            {icon: iconTextTrim,      createType: TEXT_TRIM,      callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Spl it',     null,            {icon: iconTextSplit,     createType: TEXT_SPLIT,     callback: e => actionManager.do(getCreateNodeAction(TEXT_SPLIT,     btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Join',       null,            {icon: iconTextJoin,      createType: TEXT_JOIN,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Substring',  null,            {icon: iconTextSubstring, createType: TEXT_SUBSTRING, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Case',       null,            {icon: iconTextCase,      createType: TEXT_CASE,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CASE,      btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Replace',    null,            {icon: iconTextReplace,   createType: TEXT_REPLACE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Pad',        null,            {icon: iconTextPad,       createType: TEXT_PAD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_PAD,       btnText.div, getCreateOptions(e)))})]);
+
+
     menuString = new Menu('Text', true, false);
     menuString.addItems([
                            new MenuItem('Text',       null,            {icon: iconText,          createType: TEXT,           callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
@@ -677,13 +689,7 @@ function initGeneratorMenus()
                            new MenuItem('Compare',    null,            {icon: iconTextCompare,   createType: TEXT_COMPARE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_COMPARE,   btnText.div, getCreateOptions(e)))}),
                            new MenuItem('Contains',   'Text contains', {icon: iconTextContains,  createType: TEXT_CONTAINS,  callback: e => actionManager.do(getCreateNodeAction(TEXT_CONTAINS,  btnText.div, getCreateOptions(e)))}),
                            new MenuItem('',           null,            {separator: true}),
-                           new MenuItem('Trim',       null,            {icon: iconTextTrim,      createType: TEXT_TRIM,      callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
-                           new MenuItem('Spl it',     null,            {icon: iconTextSplit,     createType: TEXT_SPLIT,     callback: e => actionManager.do(getCreateNodeAction(TEXT_SPLIT,     btnText.div, getCreateOptions(e)))}),
-                           new MenuItem('Join',       null,            {icon: iconTextJoin,      createType: TEXT_JOIN,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))}),
-                           new MenuItem('Substring',  null,            {icon: iconTextSubstring, createType: TEXT_SUBSTRING, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
-                           new MenuItem('Case',       null,            {icon: iconTextCase,      createType: TEXT_CASE,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CASE,      btnText.div, getCreateOptions(e)))}),
-                           new MenuItem('Replace',    null,            {icon: iconTextReplace,   createType: TEXT_REPLACE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
-                           new MenuItem('Pad',        null,            {icon: iconTextPad,       createType: TEXT_PAD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_PAD,       btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Functions',  null,            {icon: iconTextFunctions, childMenu: menuTextFunctions}),
                            new MenuItem('',           null,            {separator: true}),
                            new MenuItem('Convert',    null,            {icon: iconConvert,      childMenu: menuConvertText}),
                            new MenuItem('Data',       null,            {icon: iconTextFile,     childMenu: menuTextData})]);
@@ -1209,6 +1215,7 @@ function initGeneratorMenus()
         menuConvertNumber,
         menuConvertText,
         menuString,
+        menuTextFunctions,
         menuTextData,
         menuColor,
         menuLayer,
