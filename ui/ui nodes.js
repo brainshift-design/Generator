@@ -578,7 +578,6 @@ function handleLegacy(_node, genVersion)
 
     // handle math order of operations switch in version 339
 
-    console.log('genVersion =', genVersion);
     if (   (   _node.type == NUMBER_MATH
             || _node.type == NUMBER_SIMPLE_MATH)
         && genVersion == 0)

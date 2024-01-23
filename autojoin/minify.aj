@@ -860,7 +860,6 @@ bounds3
 bounds3t
 writeTextToClipboard
 readTextFromClipboard
-generatorVersion
 MAX_INT32
 HTAB
 TAB
