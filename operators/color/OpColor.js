@@ -414,13 +414,6 @@ extends OpColorBase
         this.paramSpace.controls[0].textStyleDark   = rgba2style(colors.text);
 
 
-        // this.paramSpace. input.colorLight           =
-        // this.paramSpace. input.colorDark            = colors.input;
-
-        // this.paramSpace.output.colorLight           =
-        // this.paramSpace.output.colorDark            = colors.output;
-
-
         super.updateNode();
     }
 

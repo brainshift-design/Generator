@@ -50,7 +50,8 @@ extends GOperator1
 
         // else
         // {
-            if (input)
+            if (   input
+                && input.items)
             {
                 if (this.options.enabled)
                 {
