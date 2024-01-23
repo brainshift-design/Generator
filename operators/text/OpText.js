@@ -26,8 +26,6 @@ extends ResizableBase
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        this.updateValueParam();
-
         const valueHeight = 
               !this.headerOutputs[0].isCondition()
             || this.notCondition === true
@@ -43,7 +41,9 @@ extends ResizableBase
             ? Math.max(defHeaderHeight + valueHeight, h)
             : defHeaderHeight, 
             updateTransform);
-    }
+
+            this.updateValueParam();
+        }
 
     
     
