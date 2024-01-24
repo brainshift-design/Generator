@@ -104,8 +104,7 @@ document.addEventListener('keydown', e =>
           && !e.altKey
           && !getCtrlKey(e))
     {
-        graphView.randomizeSelectedSeeds();
-        graphView.randomizeSelectedColors();
+        graphView.randomizeSelectedSeedsAndColors();
     }    
 
     // connect seeds
