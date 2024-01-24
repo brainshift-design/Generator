@@ -449,6 +449,17 @@ class Operator
  
     
 
+    setParamIndex(param, index)
+    {
+        moveInArray(this.params, this.params.indexOf(param), index);
+        this.paramHolder.insertBefore(param.div, this.paramHolder.children[index]);
+
+        if (param. input) moveInArray(this. inputs, this. inputs.indexOf(param. input), index);
+        if (param.output) moveInArray(this.outputs, this.outputs.indexOf(param.output), index);
+    }
+
+
+
     createAndAddParamByType(type, id, showName, hasInput, hasOutput, volatile = false)
     {
              if (type ==       NUMBER_VALUE) return this.addParam(new      NumberParam(id, id, showName, hasInput, hasOutput), volatile);

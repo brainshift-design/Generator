@@ -65,6 +65,7 @@
 ../operators/flow/OpSublist.js
 ../operators/flow/OpUnique.js
 ../operators/flow/OpReverseList.js
+../operators/flow/OpReorderList.js
 ../operators/flow/OpSort.js
 ../operators/flow/OpFilter.js
 ../operators/flow/OpColumn.js

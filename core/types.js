@@ -26,6 +26,7 @@ const GET_PARAM            = 'GETP';
 const SUBLIST              = 'SUBLST';
 const UNIQUE               = 'UNIQ';
 const REVERSE_LIST         = 'REVLST';
+const REORDER_LIST         = 'RORD';
 const SORT                 = 'SORT';
 const COLUMN               = 'CLMN';
 const CELL                 = 'CELL';
@@ -82,6 +83,7 @@ const FLOW_TYPES =
     SUBLIST,
     UNIQUE,
     REVERSE_LIST,
+    REORDER_LIST,
     COLUMN,
     SORT,
     CELL,

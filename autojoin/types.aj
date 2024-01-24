@@ -92,6 +92,7 @@
 ../generator/types/flow/GSublist.js
 ../generator/types/flow/GUnique.js
 ../generator/types/flow/GReverseList.js
+../generator/types/flow/GReorderList.js
 ../generator/types/flow/GSort.js
 ../generator/types/flow/GFilter.js
 ../generator/types/flow/GColumn.js

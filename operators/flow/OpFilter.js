@@ -21,8 +21,8 @@ extends OperatorBase
         this.addInput (new Input (LIST_VALUES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramCondition = new NumberParam('condition', 'condition', false, true,  true, 0, 0));
         this.addParam(this.paramIndices   = new ListParam  ('indices',   'indices',   false, false, true));
+        this.addParam(this.paramCondition = new NumberParam('condition', 'condition', false, true,  true, 0, 0));
 
         this.paramCondition.controls[0].allowEditDecimals = false;
         

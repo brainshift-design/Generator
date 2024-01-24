@@ -512,6 +512,53 @@ function genParseReverseList(parse)
 
 
 
+function genParseReorderList(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const reorder = new GReorderList(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(reorder, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, reorder);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        reorder.input = genParse(parse);
+
+
+    reorder.indices = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, reorder);
+    return reorder;
+}
+
+
+
 function genParseSort(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

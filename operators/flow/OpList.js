@@ -405,6 +405,8 @@ extends ResizableBase
                    && paramIds[0] != '')
             && !this.hasConditionOutputs())
         {
+            let paramIndex = 0;
+            
             for (let i = 0; i < values.length; i++)
             {
                 const value   = values[i];
@@ -414,25 +416,42 @@ extends ResizableBase
                     continue;
 
                     
-                let param = oldParams.find(p => 
+                let oldParam = oldParams.find(p =>
                        p.id == valueId 
                     && p.node
                     && p.node.nodeId == this.nodeId);
 
-                if (   param
-                    && param.type != value.type)
+                if (   oldParam
+                    && oldParam.type != value.type)
                 {
-                    this.removeParam(param);
-                    param = null;
+                    this.removeParam(oldParam);
+                    oldParam = null;
                 }
 
-                if (   !param
-                    || !this.params.find(p => p.id == param.id))
+
+                const found = this.params.find(p => 
+                       oldParam 
+                    && p.id == oldParam.id);
+                
+                if (   !oldParam
+                    || !found)
                 {
-                    if (!param)
+                    if (!oldParam)
+                    {
                         this.createAndInsertParamByType(i, value.type, valueId, true, false, true, true);
-                    else if (!this.params.find(p => p.id == param.id))
-                        this.insertParam(i, param, true);
+                        paramIndex++;
+                    }
+                    else if (!found)
+                    {
+                        this.insertParam(i, oldParam, true);
+                        paramIndex++;
+                    }
+                }
+                else if (oldParam
+                      && found)
+                {
+                    this.setParamIndex(found, paramIndex);
+                    paramIndex++;
                 }
             }
         }

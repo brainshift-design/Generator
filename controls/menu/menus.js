@@ -184,6 +184,7 @@ var menuItemSelect;
 var menuItemCount;
 var menuItemIfElse;
 var menuItemUniqueList;
+var menuItemReorderList;
 var menuItemReverseList;
 var menuItemSort;
 var menuItemFilter;
@@ -534,6 +535,7 @@ function initGeneratorMenus()
         menuItemFilter      = new MenuItem('Filter',            null,            {icon: iconFilter,       createType: FILTER,        callback: e => actionManager.do(getCreateNodeAction(FILTER,        btnData.div, getCreateOptions(e)))}),
         menuItemSort        = new MenuItem('Sort',              null,            {icon: iconSort,         createType: SORT,          callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
         menuItemUniqueList  = new MenuItem('Unique',            null,            {icon: iconUnique,       createType: UNIQUE,        callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
+        menuItemReorderList = new MenuItem('Reorder',           null,            {icon: iconReorderList,  createType: REORDER_LIST,  callback: e => actionManager.do(getCreateNodeAction(REORDER_LIST,  btnData.div, getCreateOptions(e)))}),
         menuItemReverseList = new MenuItem('Reverse',           null,            {icon: iconReverseList,  createType: REVERSE_LIST,  callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))})]);
     
 

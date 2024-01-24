@@ -31,6 +31,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case SUBLIST:                 node = new OpSublist();           break;
         case UNIQUE:                  node = new OpUnique();            break;
         case REVERSE_LIST:            node = new OpReverseList();       break;
+        case REORDER_LIST:            node = new OpReorderList();       break;
         case SORT:                    node = new OpSort();              break;
         case FILTER:                  node = new OpFilter();            break;
         case COLUMN:                  node = new OpColumn();            break;
