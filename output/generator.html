@@ -19028,13 +19028,22 @@ extends GOperator1
                     }
                 }
                 else
-                    this.value = input;
+                {
+                    this.value   = input;
+                    this.indices = new ListValue(Array.from(Array(input.items.length).keys()).map(i => new NumberValue(i)));
+                }
             }
             else
-                this.value = input;
+            {
+                this.value   = input;
+                this.indices = new ListValue(Array.from(Array(input.items.length).keys()).map(i => new NumberValue(i)));
+            }
         }
         else
-            this.value = new ListValue();
+        {
+            this.value   = new ListValue();
+            this.indices = new ListValue();
+        }
 
 
         this.updateValueObjects();
