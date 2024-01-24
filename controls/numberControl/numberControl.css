@@ -83,8 +83,8 @@
     z-index:             1200;
 }
 
-.numberControlExtLeft  { left:  0px; }
-.numberControlExtRight { right: 0px; }
+.numberControlExtLeft  { left:  1px; }
+.numberControlExtRight { right: 1px; }
 
 
 /* .figma-light .numberControlExt

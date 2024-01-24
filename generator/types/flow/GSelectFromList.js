@@ -104,10 +104,11 @@ extends GOperator1
                 index      = NumberValue.NaN;
             }
         }
-        // else if (input)
-        //     this.value = input;
         else 
+        {
             this.value = new NullValue();
+            index      = NumberValue.NaN;
+        }
 
 
         const type = this.outputType();

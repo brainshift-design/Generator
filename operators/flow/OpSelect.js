@@ -135,7 +135,7 @@ extends ResizableBase
         const min = Math.min(0, -this.length.value  );
         const max = Math.max(0,  this.length.value-1);
 
-        this.paramIndex.controls[0].setMin(min, min);
+        this.paramIndex.controls[0].setMin(0,   min);
         this.paramIndex.controls[0].setMax(max, max);
 
 
