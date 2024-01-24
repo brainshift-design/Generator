@@ -23,9 +23,11 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramPosition   = new  PointParam('position',   'position',    false, true, true));
+        this.addParam(this.paramPosition   = new  PointParam('position',   'position',    true,  true, true));
         this.addParam(this.paramTransform  = new NumberParam('transform',  'transform',   true,  true, true, 1, 0, 1));
         this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true,  true, true, 0, 0, 1));
+
+        this.paramPosition.showValue = false;
 
         this.paramTransform .divider = 0.67;
         this.paramShowCenter.divider = 0.67;
