@@ -13,6 +13,7 @@ extends OperatorBase
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
+        this.canDisable       = true;
 
 
         this.addNewInput();

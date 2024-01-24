@@ -664,6 +664,7 @@ function initGeneratorMenus()
                           new MenuItem('Compare',       null,                 {icon: iconCondition,   /*childMenu: menuCondition,*/ createType: NUMBER_CONDITION,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('',              null,                 {separator: true}),
                           new MenuItem('Functions',     null,                 {icon: iconRound,       childMenu: menuFunctions}),
+                          new MenuItem('',              null,                 {separator: true}),
                           new MenuItem('Convert',       null,                 {icon: iconConvert,     childMenu: menuConvertNumber}),
                           new MenuItem('',              null,                 {separator: true}),
                           new MenuItem('Curve',         null,                 {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,         btnNumber.div, getCreateOptions(e)))}), 

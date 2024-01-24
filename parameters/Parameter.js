@@ -323,7 +323,8 @@ extends EventTarget
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
-        if (dispatchEvents)
+        if (   dispatchEvents
+            && this.node.enabled)
         {
             if (   !this.oldValue
                 || !value.equals(this.oldValue))
