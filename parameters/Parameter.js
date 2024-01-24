@@ -110,6 +110,63 @@ extends EventTarget
         //         }
         //     }
         // });
+
+
+        this.div.addEventListener('pointermove', e =>
+        {
+            if (panMode)
+            {
+                setCursor(panCursor);
+                return;
+            }
+
+            if (graphView.tempConn)
+                this.checkDragConnection();
+        });
+
+
+        this.div.addEventListener('pointerleave', e =>
+        {
+            if (panMode)
+                return;
+
+
+            if (graphView.tempConn)
+            {
+                if (   graphView.tempConn.output
+                    && graphView.tempConn.output.node != this.node)
+                {
+                    const input = graphView.overInput;
+                    
+                    graphView.overInput = null;
+                    
+                    if (input) // will be null if data types don't match or there's no auto input for someo other reason
+                    {
+                        input.mouseOver = false;
+                        input.updateControl();
+                    }
+                    
+                    graphView.tempConn.wire.inputPos = point_NaN;
+                }
+                else if (graphView.tempConn.input
+                    && graphView.tempConn.input.node != this.node)
+                {
+                    const output = graphView.overOutput;
+                    
+                    graphView.overOutput = null;
+
+                    if (output) // will be null if data types don't match or there's no auto output for someo other reason
+                    {
+                        output.mouseOver = false;
+                        output.updateControl();
+                    }
+
+                    graphView.tempConn.wire.outputPos = point_NaN;
+
+                    graphView.tempConn.input.updateControl();
+            }
+            }
+        });
     }
 
 
@@ -355,6 +412,65 @@ extends EventTarget
     updateSetting(setting, value)
     {
 
+    }
+
+
+
+    checkDragConnection()
+    {
+        let savedInput = 
+            graphView.savedConn
+            ? graphView.savedConn.input
+            : null;
+
+
+        if (    graphView.tempConn.output
+            &&  this.input
+            &&  this.input.canConnectFrom(graphView.tempConn.output)
+            && !graphView.tempConn.output.node.isOrFollows(this.node)
+            && (  !this.input.connected // not already connected to this input
+                || this.input.connectedOutput != graphView.tempConn.output
+                || this.input == savedInput))
+        {
+            graphView.overInput = this.input;
+                
+            this.input.mouseOver = true;
+            this.input.updateControl();
+
+
+            const rect = boundingRect(this.input.div);
+
+            graphView.tempConn.wire.inputPos = point(
+                rect.x + rect.w/2,
+                rect.y + rect.h/2 - getTopHeight());
+
+            graphView.tempConn.wire.update();
+
+
+            graphView.tempConn.output.updateControl();
+        }
+        else if ( graphView.tempConn.input
+                &&  this.output
+                &&  graphView.tempConn.input.canConnectFrom(this.output)
+                && !this.node.isOrFollows(graphView.tempConn.input.node))
+        {
+            graphView.overOutput = this.output;
+                
+            this.output.mouseOver = true;
+            this.output.updateControl();
+
+
+            const rect = boundingRect(this.output.div);
+
+            graphView.tempConn.wire.outputPos = point(
+                rect.x + rect.w/2,
+                rect.y + rect.h/2 - getTopHeight());
+
+            graphView.tempConn.wire.update();
+
+
+            graphView.tempConn.input.updateControl();
+        }
     }
 
 

@@ -311,11 +311,6 @@ NumberControl.prototype.initEvents = function()
                 }
             }
         }
-        else if (graphView.tempConn
-              && param)
-        {
-            this.checkDragConnection();
-        }
         else if (this.readOnly)
         {
             this.moved = true;

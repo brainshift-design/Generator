@@ -154,11 +154,6 @@ ColorControl.prototype.initEvents = function()
             //forwardEvent(e, this.textbox);
             // ...
         }
-        else if (graphView.tempConn
-              && this.param)
-        {
-            this.checkDragConnection();
-        }
         // else if (this.readOnly)
         // {
         //     this.moved = true;
