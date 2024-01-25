@@ -1409,7 +1409,7 @@ function updateSoloMode(enabled)
     graphView.soloMode = enabled;  
     btnSolo.update();
 
-    if (graphView.soloMode) graphView.soloNode(null);
+    if (graphView.soloMode) graphView.soloNode(graphView.overNode);
     else                    graphView.unsoloNode();
 }
 
@@ -1418,8 +1418,9 @@ function updateSoloMode(enabled)
 function getCreateOptions(e, options = {})
 {
     return {
-        insert:            e.ctrlKey,
-        autoConnect:       e.ctrlKey && e.altKey,
+        insert:      e.ctrlKey,
+        autoConnect:    e.ctrlKey 
+                     && e.altKey,
         fromSearch:  e.fromSearch === true,
         ...options
     };

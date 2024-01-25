@@ -55,7 +55,7 @@ document.addEventListener('keydown', e =>
             uiSaveToLocalFile();
     }
 
-    // focus mode
+    // highlight mode
     else if (e.code == 'Backquote'
          && !getCtrlKey(e)
          && !e.shiftKey
