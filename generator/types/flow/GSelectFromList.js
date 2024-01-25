@@ -101,13 +101,11 @@ extends GOperator1
             else
             {
                 this.value = new NullValue();
-                index      = NumberValue.NaN;
             }
         }
         else 
         {
             this.value = new NullValue();
-            index      = NumberValue.NaN;
         }
 
 

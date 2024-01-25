@@ -93,8 +93,8 @@ extends OperatorBase
         this.paramIndex.enableControlText(true, this.paramIndex.isUnknown());
 
 
-        const min = Math.min(0, -this.length.value  );
-        const max = Math.max(0,  this.length.value-1);
+        const min = this.length.value > 0 ? Math.min(0, -this.length.value  ) : Number.MIN_SAFE_INTEGER;
+        const max = this.length.value > 0 ? Math.max(0,  this.length.value-1) : Number.MAX_SAFE_INTEGER;
 
         this.paramIndex.controls[0].setMin(0,   min);
         this.paramIndex.controls[0].setMax(max, max);
@@ -131,7 +131,7 @@ extends OperatorBase
                     this.active
                 && !this.inputs[0].connected;
 
-            colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+            colors.output  = gray ? rgb_a(colors.text, 0.35)     : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
             colors.outWire = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
         }
         

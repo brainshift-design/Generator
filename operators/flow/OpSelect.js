@@ -132,8 +132,8 @@ extends ResizableBase
         this.paramIndex.enableControlText(true, this.paramIndex.isUnknown());
 
 
-        const min = Math.min(0, -this.length.value  );
-        const max = Math.max(0,  this.length.value-1);
+        const min = this.length.value > 0 ? Math.min(0, -this.length.value  ) : Number.MIN_SAFE_INTEGER;
+        const max = this.length.value > 0 ? Math.max(0,  this.length.value-1) : Number.MAX_SAFE_INTEGER;
 
         this.paramIndex.controls[0].setMin(0,   min);
         this.paramIndex.controls[0].setMax(max, max);
