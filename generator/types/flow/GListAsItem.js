@@ -1,7 +1,7 @@
 class GListAsItem
 extends GOperator1
 {
-    cachedValue = null;
+    // cachedValue = null;
 
 
 
@@ -16,7 +16,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.cachedValue = null;
+        // this.cachedValue = null;
     }
 
 
@@ -36,8 +36,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (   this.isCached()
-            && this.cachedValue)
+        if (   this.isCached())
+            // && this.cachedValue)
             return this;
 
 
@@ -50,11 +50,11 @@ extends GOperator1
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
 
-        if (this.cachedValue)
-            this.value = this.cachedValue.copy();
+        // if (this.cachedValue)
+        //     this.value = this.cachedValue.copy();
 
-        else
-        {
+        // else
+        // {
             if (input)
             {
                 length = input.items.length;
@@ -83,8 +83,8 @@ extends GOperator1
                 this.value = new ListValue();
 
 
-            this.cachedValue = this.value.copy();
-        }
+            // this.cachedValue = this.value.copy();
+        // }
     
 
         this.updateValueObjects();
