@@ -149,7 +149,7 @@ extends ResizableBase
             || this.paramValue.type != type
             || this.isBool != prevIsBool)
         {
-            this.connectedInputs.forEach(i => uiDisconnect(i, false));
+            this.connectedInputs .forEach(i => uiDisconnect(i, false));
             this.connectedOutputs.forEach(o => o.connectedInputs.forEach(i => uiDisconnect(i, false)));
 
             this.removeAllParams();

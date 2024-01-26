@@ -41775,22 +41775,23 @@ function genRequest(request, save)
                 n.topLevel 
             && !paramNodes.includes(n));
 
+    const otherNodes = parse.parsedNodes.filter(n =>
+               !paramNodes   .includes(n)
+            && !topLevelNodes.includes(n));
+
 
     (async () =>
     {
         let stop = false;
 
-        
-        for (const node of paramNodes)
-        {
-            if (await checkStop(parse.requestId)) { stop = true; break; }
-            await node.eval(parse);
-        }
 
-        for (const node of topLevelNodes)
-        { 
-            if (await checkStop(parse.requestId)) { stop = true; break; }
-            await node.eval(parse);
+        for (const nodes of [paramNodes, topLevelNodes, otherNodes])
+        {
+            for (const node of nodes)
+            {
+                if (await checkStop(parse.requestId)) { stop = true; break; }
+                await node.eval(parse);
+            }
         }
 
 

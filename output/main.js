@@ -3283,8 +3283,9 @@ function figUpdateVariable(varId, value) {
     const mode = collection.modes[0];
     // resolve if alias
     let curValue = variable.valuesByMode[mode.modeId];
-    while (curValue.type === 'VARIABLE_ALIAS') {
-        variable = figma.variables.getVariableById(curValue.id);
+    while (curValue.hasOwnProperty('type')
+        && curValue['type'] === 'VARIABLE_ALIAS') {
+        variable = figma.variables.getVariableById(curValue['id']);
         curValue = variable.valuesByMode[mode.modeId];
     }
     if (value !== null) {

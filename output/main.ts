@@ -4915,9 +4915,10 @@ function figUpdateVariable(varId, value)
 
     let curValue = variable.valuesByMode[mode.modeId];
     
-    while (curValue.type === 'VARIABLE_ALIAS')
+    while (curValue.hasOwnProperty('type')
+        && curValue['type'] === 'VARIABLE_ALIAS')
     {
-        variable = figma.variables.getVariableById(curValue.id);
+        variable = figma.variables.getVariableById(curValue['id']);
         curValue = variable.valuesByMode[mode.modeId];
     }
 

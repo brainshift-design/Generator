@@ -32,6 +32,7 @@ extends Action
         this.variableId   = variableId;
         this.variableType = resolvedType;
         this.variableName = variableName;
+        this.selfUpdate   = true;
     }
 
 
