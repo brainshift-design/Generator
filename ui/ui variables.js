@@ -33,7 +33,7 @@ function uiReturnFigGetVariableUpdates(values)
             && n.linkedVariableId != NULL);
 
 
-    for (const value of values)
+    for (let value of values)
     {
         const node = varNodes.find(n => n.linkedVariableId == value.id);
 

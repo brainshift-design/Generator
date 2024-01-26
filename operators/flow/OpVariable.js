@@ -200,7 +200,7 @@ extends ResizableBase
 
         if (values.length > 0)
         {
-            const val = values[0];
+            let val = values[0];
 
             if (val)
             {

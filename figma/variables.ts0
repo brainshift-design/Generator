@@ -55,13 +55,21 @@ function getVariableValues(varIds)
         {
             const vals = [];
 
+
             for (const mode of collection.modes)
             {
-                //const resolved = variable.resolveForConsumer(figma.currentPage);
-                //console.log('resolved =', resolved);
-                //vals.push(resolved)
-                vals.push(variable.valuesByMode[mode.modeId]);
+                let _var  = variable;
+                let value = _var.valuesByMode[mode.modeId];
+                
+                while (value.type === 'VARIABLE_ALIAS')
+                {
+                    _var  = figma.variables.getVariableById(value.id);
+                    value = _var.valuesByMode[mode.modeId];
+                }
+
+                vals.push(value);
             }
+
 
             values.push(
             {
@@ -101,43 +109,86 @@ function figUpdateVariable(varId, value)
 {
     const localVars = figma.variables.getLocalVariables();
 
-    const variable = localVars.find(v => v.id == varId);
+
+    let variable = localVars.find(v => v.id == varId);
     if (!variable) return;
 
-    const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
 
-    if (variable.resolvedType == 'BOOLEAN')
-        value = value != 0;
+    const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
+    const mode       = collection.modes[0];
+
     
+    // resolve if alias
+
+    let curValue = variable.valuesByMode[mode.modeId];
+    
+    while (curValue.type === 'VARIABLE_ALIAS')
+    {
+        variable = figma.variables.getVariableById(curValue.id);
+        curValue = variable.valuesByMode[mode.modeId];
+    }
+
+
     if (value !== null)
-        variable.setValueForMode(collection.modes[0].modeId, value);
+    {
+        if (variable.resolvedType == 'BOOLEAN')
+            value = value != 0;
+        else
+            variable.setValueForMode(mode.modeId, value);
+    }
 }
 
 
 
 function figLinkVariable(localVars, nodeId, varId)
 {
-    const variable = localVars.find(v => v.id == varId);
-    const values   = [];
+    let variable = localVars.find(v => v.id == varId);
+    if (!variable) return null;
 
-    if (variable)
-    {
-        const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
-        
-        for (const mode of collection.modes)
-            values.push(variable.valuesByMode[mode.modeId]);
-    }
+
+    const [resolvedVar, values] = figGetResolvedVariableValues(variable);
 
 
     figPostMessageToUi(
     {
         cmd:         'uiReturnFigLinkNodeToVariable',
         nodeId:       nodeId,
-        variableId:   variable ? variable.id           : NULL,
-        variableName: variable ? variable.name         : '',
-        resolvedType: variable ? variable.resolvedType : NULL,
+        variableId:   resolvedVar ? resolvedVar.id           : NULL,
+        variableName: resolvedVar ? resolvedVar.name         : '',
+        resolvedType: resolvedVar ? resolvedVar.resolvedType : NULL,
         values:       values
     });
 
-    return variable;
+
+    return resolvedVar;
+}
+
+
+
+function figGetResolvedVariableValues(variable)
+{
+    const values = [];
+
+    
+    if (!variable)
+        return values;
+
+
+    const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
+            
+    for (const mode of collection.modes)
+    {
+        let value = variable.valuesByMode[mode.modeId];
+        
+        while (value.type === 'VARIABLE_ALIAS')
+        {
+            variable = figma.variables.getVariableById(value.id);
+            value    = variable.valuesByMode[mode.modeId];
+        }
+        
+        values.push(value);
+    }
+
+
+    return [variable, values];
 }
