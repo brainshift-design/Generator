@@ -69,16 +69,18 @@ class Menu
 
     clearItems()
     {
+        for (const item of this.items)
+        {
+            item.div.querySelectorAll('br')
+                .forEach(br => 
+                    br.parentNode.removeChild(br));
+        }
+
         while (this.divItems.firstChild)
             this.divItems.removeChild(this.divItems.firstChild);
 
         this.items    = [];
         this.lastItem = null;
-
-        for (const child of this.div.children)
-            if (   child != this.divItems
-                && child != this.divArrow)
-                this.div.removeChild(child);
     }
 
 
@@ -88,6 +90,7 @@ class Menu
         for (let i = 0; i < items.length; i++)
         {
             const item = items[i];
+
 
             if (i > 0) 
                 item.div.appendChild(document.createElement('br'));
@@ -360,6 +363,12 @@ class Menu
             
             if (!subMenu)
                 left += 10; // so it doesn't hit a menu item by accident once the menu appears
+        }
+        else
+        {
+            left   += 10;
+            top    += 4;
+            height += 36; // for the search bar
         }
 
 

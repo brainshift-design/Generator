@@ -79,9 +79,11 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
         && n.linkedVariableId != NULL);
 
 
-    menuLocalVariables.clearItems();
+    menuLocalVariables.node      = node;
+    menuLocalVariables.variables = variables;
+    menuLocalVariables.menuItems = [];
 
-    
+
     for (const variable of variables)
     {
         const options = {};
@@ -117,11 +119,60 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
 
         item.setChecked(variable.id == node.linkedVariableId);
 
-        menuLocalVariables.addItems([item]);
+        menuLocalVariables.menuItems.push(item);
     }
 
 
-    if (!isEmpty(variables))
+    for (const child of menuLocalVariables.div.children)
+        if (   child != menuLocalVariables.divItems
+            && child != menuLocalVariables.divArrow)
+            menuLocalVariables.div.removeChild(child);
+
+
+    menuLocalVariables.divSearch     = createDiv    ('variableSearch'    );
+    menuLocalVariables.divIcon       = createDiv    ('variableSearchIcon');
+    menuLocalVariables.divSearchText = createTextbox('variableSearchText');
+
+    menuLocalVariables.divIcon.innerHTML = iconSearchMenu2;
+    
+    menuLocalVariables.divSearch.appendChild(menuLocalVariables.divIcon);
+    menuLocalVariables.divSearch.appendChild(menuLocalVariables.divSearchText);
+    
+
+    if (!menuLocalVariables.div.contains(menuLocalVariables.divSearch))
+        menuLocalVariables.div.insertBefore(menuLocalVariables.divSearch, menuLocalVariables.divItems);
+
+    menuLocalVariables.divItems.style.marginTop = '36px';
+
+    menuLocalVariables.divSearchText.placeholder      = 'Find...';
+    menuLocalVariables.divSearchText.style.background = 'none';
+
+    menuLocalVariables.showCallback = () => 
+    {
+        menuLocalVariables.divSearch.style.width = menuLocalVariables.divItems.offsetWidth;
+        menuLocalVariables.divSearchText.focus();
+    };
+
+    menuLocalVariables.divSearchText.addEventListener('keydown', e => e.stopImmediatePropagation());
+    menuLocalVariables.divSearchText.addEventListener('input',   e => updateMenuLocalVariables());
+
+
+    updateMenuLocalVariables();
+}
+
+
+
+function updateMenuLocalVariables()
+{
+    const items = menuLocalVariables.menuItems.filter(item => 
+           includesSimilar(item.name.toLowerCase(), menuLocalVariables.divSearchText.value.toLowerCase(), 1)
+        || item.name == 'None');
+        
+    menuLocalVariables.clearItems();
+    menuLocalVariables.addItems(items);
+
+
+    if (!isEmpty(items))
         menuLocalVariables.addItems([new MenuItem('', null, {separator: true})]);
 
         
@@ -129,35 +180,16 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     [
         new MenuItem('None', null, 
         {
-            callback: e => actionManager.do(new LinkExistingVariableAction(nodeId, NULL, NULL, '')),
-            enabled:  node.linkedVariableId != NULL
+            callback: e => actionManager.do(new LinkExistingVariableAction(menuLocalVariables.node.nodeId, NULL, NULL, '')),
+            enabled:  menuLocalVariables.node.linkedVariableId != NULL
         })
     ]);
 
 
-    const divSearch     = createDiv    ('variableSearch'    );
-    const divIcon       = createDiv    ('variableSearchIcon');
-    const divSearchText = createTextbox('variableSearchText');
-
-    divIcon.innerHTML = iconSearchMenu2;
-    
-    divSearch.appendChild(divIcon);
-    divSearch.appendChild(divSearchText);
-    
-
-    if (!menuLocalVariables.div.contains(divSearch))
-        menuLocalVariables.div.insertBefore(divSearch, menuLocalVariables.divItems);
-
-    menuLocalVariables.divItems.style.marginTop = '36px';
-
-    divSearchText.placeholder      = 'Find...';
-    divSearchText.style.background = 'none';
-
-    menuLocalVariables.showCallback = () => 
-    {
-        divSearch.style.width = menuLocalVariables.divItems.offsetWidth;
-        divSearchText.focus();
-    };
+    menuLocalVariables.showAt(
+        menuLocalVariables.div.getBoundingClientRect().x - 4,
+        menuLocalVariables.div.getBoundingClientRect().y,
+        false);
 }
 
 
