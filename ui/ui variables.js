@@ -142,7 +142,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     if (!menuLocalVariables.div.contains(menuLocalVariables.divSearch))
         menuLocalVariables.div.insertBefore(menuLocalVariables.divSearch, menuLocalVariables.divItems);
 
-    menuLocalVariables.divItems.style.marginTop = '36px';
+    menuLocalVariables.divItems.style.marginTop = '39px';
 
     menuLocalVariables.divSearchText.placeholder      = 'Find...';
     menuLocalVariables.divSearchText.style.background = 'none';
@@ -165,7 +165,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
 function updateMenuLocalVariables()
 {
     const items = menuLocalVariables.menuItems.filter(item => 
-           includesSimilar(item.name.toLowerCase(), menuLocalVariables.divSearchText.value.toLowerCase(), 1)
+           includesSimilar(item.name.toLowerCase(), menuLocalVariables.divSearchText.value.toLowerCase(), 0.5)
         || item.name == 'None');
         
     menuLocalVariables.clearItems();

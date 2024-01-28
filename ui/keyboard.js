@@ -164,6 +164,16 @@ document.addEventListener('keydown', e =>
         return false;
     }
 
+    // restart in Debug mode
+    else if (e.code == 'KeyD'
+          && getCtrlKey(e)
+          && e.shiftKey
+          && e.altKey)
+    {
+        e.preventDefault();
+        uiRestartGenerator(true);
+    }
+
     // disable nodes
     else if (e.code == 'KeyE'
           && getCtrlKey(e)

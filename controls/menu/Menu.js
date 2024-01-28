@@ -368,7 +368,9 @@ class Menu
         {
             left   += 10;
             top    += 4;
-            height += 36; // for the search bar
+            
+            if (this == menuLocalVariables)
+                height += 39; // for the search bar
         }
 
 
