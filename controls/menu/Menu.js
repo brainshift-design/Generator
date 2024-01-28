@@ -350,7 +350,7 @@ class Menu
         else
         {
             if (left + this.div.offsetWidth > graphView.div.offsetWidth - margin)
-                left = graphView.div.offsetWidth - this.div.offsetWidth - margin;
+                left = graphView.div.offsetWidth - this.div.offsetWidth - 28;
         }
 
 
@@ -366,8 +366,8 @@ class Menu
         }
         else
         {
-            left   += 10;
-            top    += 4;
+            left += 10;
+            top  +=  4;
             
             if (this == menuLocalVariables)
                 height += 39; // for the search bar
