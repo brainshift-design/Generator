@@ -366,8 +366,11 @@ class Menu
         }
         else
         {
-            left += 10;
-            top  +=  4;
+            if (!subMenu)
+            {
+                left += 10;
+                top += 4;
+            }
             
             if (this == menuLocalVariables)
                 height += 39; // for the search bar

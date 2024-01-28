@@ -279,7 +279,8 @@ extends OperatorBase
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        const headerHeight = this.measureData.headerOffset.height;//this.header.offsetHeight;//getStyleValue(this.header, 'height');
+        //console.log('this.header.offsetHeight =', this.header.offsetHeight);
+        const headerHeight = this.header.offsetHeight; //this.measureData.headerOffset.height;//this.header.offsetHeight;//getStyleValue(this.header, 'height');
         const paramHeight  = 0;
 
         const _w = Math.max(60, w);
