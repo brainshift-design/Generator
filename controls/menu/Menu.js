@@ -5,41 +5,45 @@ var currentMenuButton = null;
 
 class Menu
 {
-    parentMenu = null;
-    parentItem = null;
-
-    name;
-    button     = null;
-    fromButton = false;
+    parentMenu            = null;
+    parentItem            = null;
+        
+    name;           
+    button                = null;
+    fromButton            = false;
 
     div;
+    divBody;
     divArrow;
     divItems;
 
     showChecks;
     showIcons;
 
-    showOnLeft   = false;
-    activeOnLeft = false;
+    showOnLeft            = false;
+    activeOnLeft          = false;
 
     combineChecksAndIcons = false; // conflicts are resolved in favor of icons
 
-    overMenu   = false;
+    overMenu              = false;
+        
+    items                 = [];
+    lastItem              = null;
+            
+    reverse               = false;
+            
+    minWidth              = 200;
+    forceMinWidth         = false;
+        
+    init                  = null; // ()
+        
+    visible               = false;
+        
+        
+    onHide                = null; // removes itself after firing
 
-    items      = [];
-    lastItem   = null;
-    
-    reverse    = false;
-    
-    minWidth      = 200;
-    forceMinWidth = false;
 
-    init       = null; // ()
-
-    visible    = false;
-
-
-    onHide     = null; // removes itself after firing
+    showCallback          = null;
 
 
 
@@ -70,6 +74,11 @@ class Menu
 
         this.items    = [];
         this.lastItem = null;
+
+        for (const child of this.div.children)
+            if (   child != this.divItems
+                && child != this.divArrow)
+                this.div.removeChild(child);
     }
 
 
@@ -296,7 +305,11 @@ class Menu
 
         currentMenus.push(this);
 
+
+        if (this.showCallback)
+            this.showCallback();
         
+            
         this.visible = true;
     }
 

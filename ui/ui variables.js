@@ -81,6 +81,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
 
     menuLocalVariables.clearItems();
 
+    
     for (const variable of variables)
     {
         const options = {};
@@ -132,6 +133,34 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
             enabled:  node.linkedVariableId != NULL
         })
     ]);
+
+
+    const divSearch     = createDiv    ('variableSearch'    );
+    const divIcon       = createDiv    ('variableSearchIcon');
+    const divSearchText = createTextbox('variableSearchText');
+
+    divIcon.innerHTML = iconSearchMenu2;
+    
+    divSearch.appendChild(divIcon);
+    divSearch.appendChild(divSearchText);
+    
+
+    if (!menuLocalVariables.div.contains(divSearch))
+        menuLocalVariables.div.insertBefore(divSearch, menuLocalVariables.divItems);
+
+    menuLocalVariables.divItems.style.marginTop = '36px';
+
+    divSearchText.placeholder      = 'Find...';
+    divSearchText.style.background = 'none';
+
+    if (document.querySelector('.variableSearchText'))
+        document.querySelector('.variableSearchText').classList.remove('hover');
+
+    menuLocalVariables.showCallback = () => 
+    {
+        divSearch.style.width = menuLocalVariables.divItems.offsetWidth;
+        divSearchText.focus();
+    };
 }
 
 

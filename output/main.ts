@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 343;
+const generatorVersion = 344;
 
 
 const MAX_INT32        = 2147483647;
@@ -4854,7 +4854,7 @@ function getVariableValues(varIds)
                 let _var  = variable;
                 let value = _var.valuesByMode[mode.modeId];
                 
-                while (value.type === 'VARIABLE_ALIAS')
+                while (value && value.type === 'VARIABLE_ALIAS')
                 {
                     _var  = figma.variables.getVariableById(value.id);
                     value = _var.valuesByMode[mode.modeId];
@@ -4907,19 +4907,23 @@ function figUpdateVariable(varId, value)
     if (!variable) return;
 
 
-    const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
-    const mode       = collection.modes[0];
+    let collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
+    let mode       = collection.modes[0];
 
     
     // resolve if alias
 
     let curValue = variable.valuesByMode[mode.modeId];
     
-    while (curValue.hasOwnProperty('type')
+    while (curValue
+        && curValue.hasOwnProperty('type')
         && curValue['type'] === 'VARIABLE_ALIAS')
     {
         variable = figma.variables.getVariableById(curValue['id']);
         curValue = variable.valuesByMode[mode.modeId];
+        
+        collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
+        mode       = collection.modes[0];
     }
 
 
@@ -4974,7 +4978,8 @@ function figGetResolvedVariableValues(variable)
     {
         let value = variable.valuesByMode[mode.modeId];
         
-        while (value.type === 'VARIABLE_ALIAS')
+        while (   value
+               && value['type'] === 'VARIABLE_ALIAS')
         {
             variable = figma.variables.getVariableById(value.id);
             value    = variable.valuesByMode[mode.modeId];

@@ -98,8 +98,9 @@ function genRequest(request, save)
         genQueueMessageToUi({cmd: 'uiEndGlobalProgress'});
 
        
-        for (const node of topLevelNodes) 
-            node.pushValueUpdates(parse);
+        for (const nodes of [topLevelNodes, otherNodes])
+            for (const node of nodes) 
+                node.pushValueUpdates(parse);
         
         
         for (const node of parse.parsedNodes)
