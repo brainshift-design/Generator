@@ -153,9 +153,6 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     divSearchText.placeholder      = 'Find...';
     divSearchText.style.background = 'none';
 
-    if (document.querySelector('.variableSearchText'))
-        document.querySelector('.variableSearchText').classList.remove('hover');
-
     menuLocalVariables.showCallback = () => 
     {
         divSearch.style.width = menuLocalVariables.divItems.offsetWidth;

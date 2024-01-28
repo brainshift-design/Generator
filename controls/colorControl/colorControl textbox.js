@@ -350,9 +350,6 @@ ColorControl.prototype.showTextbox = function()
            hasFocus(this.div)
         && !this.clicked;
 
-    // this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
-    // this.textbox.style.outline   = 'none';
-
 
     this.param.formatControlTextbox(this);
 
@@ -361,8 +358,8 @@ ColorControl.prototype.showTextbox = function()
     
     this.param.div.parentNode.appendChild(this.textbox);
     
+    this.textbox.style.fontStyle = this.readOnly ? 'italic' : 'normal';
     this.textbox.focus();
-    // this.textbox.select();
 
     this.textbox.style.cursor = 'default';
 };

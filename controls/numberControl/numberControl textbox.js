@@ -483,7 +483,8 @@ NumberControl.prototype.showTextbox = function()
     this.textbox.focus();
     this.textbox.select();
 
-    this.textbox.style.cursor = 'default';
+    this.textbox.style.fontStyle = this.readOnly ? 'italic' : 'normal';
+    this.textbox.style.cursor    = 'default';
 };
 
 
