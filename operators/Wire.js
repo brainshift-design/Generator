@@ -505,7 +505,7 @@ class Wire
 
     updateStyle()
     {
-        const conn  = this.connection;
+        const conn = this.connection;
 
         this.isReset = 
                conn.input 
@@ -594,7 +594,7 @@ class Wire
                    && conn.output.node.isOrPrecededByUncached())
             && (   conn.input
                 && conn.input.node.isOrFollowedByMultiplier());
-                
+        
                 
         this.curve .style.stroke = wireStyle;
         this.curve2.style.stroke = rgb2style(rgbDocumentBody);

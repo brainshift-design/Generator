@@ -207,14 +207,28 @@ extends OperatorBase
         if (   this.outputs[0].supportsTypes([COLOR_VALUE])
             || this.outputs[0].supportsTypes([FILL_VALUE]))
         {
+            const noColor = rgbFromType(ANY_VALUE, true);
+                // darkMode
+                // ? rgbNoColorDark
+                // : rgbNoColorLight;
+
+            const unknown =
+                      this.inputs[0].connected
+                   && this.inputs[0].connectedOutput.node.isUnknown()
+                ||    this.inputs[1].connected
+                   && this.inputs[1].connectedOutput.node.isUnknown()
+                ||    this.paramCondition.input.connected
+                   && this.paramCondition.input.connectedOutput.node.isUnknown();
+
+
             if (   this.inputs[0].connected
                 && this.paramCondition.value.value > 0)
                 colors.output  =
-                colors.outWire = this.inputs[0].connectedOutput.wireColor;
+                colors.outWire = unknown ? noColor : this.inputs[0].connectedOutput.wireColor;
             else if (this.inputs[1].connected
                   && this.paramCondition.value.value == 0)
                 colors.output =
-                colors.outWire = this.inputs[1].connectedOutput.wireColor;
+                colors.outWire = unknown ? noColor : this.inputs[1].connectedOutput.wireColor;
         }
         else
         {

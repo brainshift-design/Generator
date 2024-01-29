@@ -178,7 +178,6 @@ extends EventTarget
                 return;
 
 
-            console.log('pointerup');
             if (graphView.tempConn)
             {
                 if (    graphView.tempConn.output
