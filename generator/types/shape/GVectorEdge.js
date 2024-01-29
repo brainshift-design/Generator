@@ -56,10 +56,10 @@ extends GOperator2
             return this;
 
         
-        let input0       = this.input0       ? (await this.input0      .eval(parse)).toValue() : VectorVertexValue.NaN;
-        let input1       = this.input1       ? (await this.input1      .eval(parse)).toValue() : VectorVertexValue.NaN;
-        let startTangent = this.startTangent ? (await this.startTangent.eval(parse)).toValue() : PointValue.NaN;
-        let   endTangent = this.  endTangent ? (await this.  endTangent.eval(parse)).toValue() : PointValue.NaN;
+        let input0       = this.input0       ? (await this.input0      .eval(parse)).toValue() : VectorVertexValue.NaN.copy();
+        let input1       = this.input1       ? (await this.input1      .eval(parse)).toValue() : VectorVertexValue.NaN.copy();
+        let startTangent = this.startTangent ? (await this.startTangent.eval(parse)).toValue() : PointValue       .NaN.copy();
+        let   endTangent = this.  endTangent ? (await this.  endTangent.eval(parse)).toValue() : PointValue       .NaN.copy();
 
 
         if (input0.type == POINT_VALUE) input0 = new VectorVertexValue(input0.nodeId, input0.x, input0.y);

@@ -74,10 +74,10 @@ extends GOperator1
                     this.value.value = this.value.value.substring(start.value, _end.value);
             }
             else
-                this.value = new TextValue();//TextValue.NaN;
+                this.value = new TextValue();//TextValue.NaN.copy();
         }
         else
-            this.value = new TextValue();//TextValue.NaN;
+            this.value = new TextValue();//TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

@@ -44,7 +44,7 @@ extends GArithmetic
 async function evalDivideInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
         
     let value = new NumberValue(0);
@@ -56,7 +56,7 @@ async function evalDivideInputs(inputs, parse)
 
         if (   !val0
             || !val0.isValid())
-            return NumberValue.NaN;
+            return NumberValue.NaN.copy();
 
 
         if (    isListType(val0.type)
@@ -66,7 +66,7 @@ async function evalDivideInputs(inputs, parse)
 
             if (   !item0
                 || !item0.isValid())
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
 
             value.value    = item0.value;
@@ -78,7 +78,7 @@ async function evalDivideInputs(inputs, parse)
 
                 if (   !item
                     || !item.isValid())
-                    return NumberValue.NaN;
+                    return NumberValue.NaN.copy();
 
                     
                 if (item.type == NUMBER_VALUE)
@@ -98,7 +98,7 @@ async function evalDivideInputs(inputs, parse)
         else
         {
             if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
             value.value    = val0.value;
             value.decimals = val0.decimals;
@@ -111,7 +111,7 @@ async function evalDivideInputs(inputs, parse)
 
             if (   !val
                 || !val.isValid())
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
 
             if (isListType(val.type))
@@ -120,7 +120,7 @@ async function evalDivideInputs(inputs, parse)
                 {
                     if (   !item
                         || !item.isValid())
-                        return NumberValue.NaN;
+                        return NumberValue.NaN.copy();
 
 
                     if (item.type == NUMBER_VALUE)

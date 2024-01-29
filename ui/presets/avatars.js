@@ -792,19 +792,15 @@ const presetAvatars = '\
             ]\
         },\
         {\
-            "type": "MATH",\
-            "id": "math8",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "1759",\
             "y": "9077",\
-            "z": "48",\
-            "params":\
-            [\
-                ["NUM#", "operation", "0,0"]\
-            ]\
+            "z": "48"\
         },\
         {\
             "type": "MATH",\
@@ -1318,19 +1314,15 @@ const presetAvatars = '\
             ]\
         },\
         {\
-            "type": "MATH",\
-            "id": "math2",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg2",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "2711",\
             "y": "7029",\
-            "z": "82",\
-            "params":\
-            [\
-                ["NUM#", "operation", "0,0"]\
-            ]\
+            "z": "82"\
         },\
         {\
             "type": "SGRP",\
@@ -1854,9 +1846,9 @@ const presetAvatars = '\
             ]\
         },\
         {\
-            "type": "MATH",\
-            "id": "math11",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg3",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
@@ -2521,7 +2513,7 @@ const presetAvatars = '\
             "list": "true"\
         },\
         {\
-            "outputNodeId": "math2",\
+            "outputNodeId": "neg2",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "move",\
@@ -2548,7 +2540,7 @@ const presetAvatars = '\
             "outputNodeId": "random13",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "math8",\
+            "inputNodeId": "neg",\
             "inputId": "h0",\
             "list": "false"\
         },\
@@ -3028,7 +3020,7 @@ const presetAvatars = '\
             "outputNodeId": "random16",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "math2",\
+            "inputNodeId": "neg2",\
             "inputId": "h0",\
             "list": "false"\
         },\
@@ -3289,7 +3281,7 @@ const presetAvatars = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "math8",\
+            "outputNodeId": "neg",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "math3",\
@@ -3332,7 +3324,7 @@ const presetAvatars = '\
             "outputNodeId": "random31",\
             "outputId": "h0",\
             "outputOrder": "1",\
-            "inputNodeId": "math11",\
+            "inputNodeId": "neg3",\
             "inputId": "h0",\
             "list": "false"\
         },\
@@ -3361,7 +3353,7 @@ const presetAvatars = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "math11",\
+            "outputNodeId": "neg3",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "move4",\

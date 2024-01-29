@@ -68,7 +68,7 @@ extends ShapeValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 

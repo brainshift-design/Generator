@@ -38,7 +38,7 @@ extends GOperator
             return this;
 
 
-        this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN;
+        this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN.copy();
 
 
         this.updateValues = [];

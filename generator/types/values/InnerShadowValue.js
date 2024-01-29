@@ -145,7 +145,7 @@ extends GValue
 
     getNaN()
     {
-        return InnerShadowValue.NaN;
+        return InnerShadowValue.NaN.copy();
     }
 
 

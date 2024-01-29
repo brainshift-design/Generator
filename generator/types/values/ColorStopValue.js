@@ -93,7 +93,7 @@ extends GValue
 
     getNaN()
     {
-        return ColorStopValue.NaN;
+        return ColorStopValue.NaN.copy();
     }
 
 

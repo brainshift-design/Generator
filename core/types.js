@@ -111,6 +111,7 @@ const NUMBER                  = 'NUM';
 const NUMBER_PRECISION        = 'NPREC';   
 const NUMBER_SIGN             = 'NSIGN';   
 const NUMBER_ABSOLUTE         = 'ABS';   
+const NUMBER_NEGATIVE         = 'NEG';   
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_SIMPLE_MINMAX    = 'SMINMAX';   
 const NUMBER_MINMAX           = 'MINMAX';   
@@ -239,6 +240,7 @@ const NUMBER_TYPES =
     NUMBER_PRECISION,
     NUMBER_SIGN,
     NUMBER_ABSOLUTE,
+    NUMBER_NEGATIVE,
     NUMBER_ROUND,
     NUMBER_SIMPLE_MINMAX,
     NUMBER_MINMAX,

@@ -118,7 +118,7 @@ extends ShapeValue
 
     getNaN()
     {
-        return VectorEdgeValue.NaN;
+        return VectorEdgeValue.NaN.copy();
     }
 
 

@@ -140,7 +140,7 @@ extends GValue
 
     getNaN()
     {
-        return VectorEdgeValue.NaN;
+        return VectorEdgeValue.NaN.copy();
     }
 
 

@@ -58,7 +58,7 @@ extends ShapeValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -99,7 +99,7 @@ extends ShapeValue
 
     toValue()
     {
-        return this;//.copy();
+        return this.copy();
     }
 
 
@@ -119,11 +119,11 @@ extends ShapeValue
     isValid()
     {
         return super.isValid()
-            && this.points .isValid()
-            && this.closed .isValid()
-            && this.degree .isValid()
-            && this.winding.isValid()
-            && this.round  .isValid();
+            && this.points  && this.points .isValid()
+            && this.closed  && this.closed .isValid()
+            && this.degree  && this.degree .isValid()
+            && this.winding && this.winding.isValid()
+            && this.round   && this.round  .isValid();
     }
 
 

@@ -45,7 +45,7 @@ extends GArithmetic
 async function evalAndInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
 
     const value = new NumberValue();
@@ -54,7 +54,7 @@ async function evalAndInputs(inputs, parse)
     if (!isEmpty(inputs))
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
-        if (!val0.isValid()) return NumberValue.NaN;
+        if (!val0.isValid()) return NumberValue.NaN.copy();
 
         if (    isListType(val0.type)
             && !isEmpty(val0.items))
@@ -74,7 +74,7 @@ async function evalAndInputs(inputs, parse)
         else
         {
             if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
             value.value = val0.toNumber();
         }
@@ -83,7 +83,7 @@ async function evalAndInputs(inputs, parse)
         for (let i = 1; i < inputs.length; i++)
         {
             const val = (await inputs[i].eval(parse)).toValue();
-            if (!val.isValid()) return NumberValue.NaN;
+            if (!val.isValid()) return NumberValue.NaN.copy();
 
             if (isListType(val.type))
             {

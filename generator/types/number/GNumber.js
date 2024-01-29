@@ -27,19 +27,20 @@ extends GOperator1
             return this;
 
 
-        if (this.input)
-        {
-            this.value = (await this.input.eval(parse)).toValue();
-        }
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+
+
+        if (input)
+            this.value = input.copy();
         else if (this.value)
             await this.value.eval(parse);
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse, 
         [
-            ['value', this.value]
+            ['value', this.value.copy()]
         ]);
 
 
@@ -52,6 +53,7 @@ extends GOperator1
 
     isValid()
     {
-        return !this.input || this.input.isValid();
+        return !this.input 
+             || this.input.isValid();
     }
 }

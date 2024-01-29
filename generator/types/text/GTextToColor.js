@@ -49,7 +49,7 @@ extends GOperator1
             }
         }
         else
-            this.value = ColorValue.NaN;
+            this.value = ColorValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

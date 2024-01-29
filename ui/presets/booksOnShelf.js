@@ -11,7 +11,11 @@ const presetBooksOnShelf = '\
         "highlight": "0",\
         "x": "7804",\
         "y": "-9",\
-        "z": "0"\
+        "z": "0",\
+        "params":\
+        [\
+                ["NUM#", "when", "1,0"]\
+        ]\
         },\
         {\
         "type": "CENTR",\

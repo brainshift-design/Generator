@@ -46,7 +46,7 @@ extends GOperator1
         if (input)
             this.length = new NumberValue(lengthv(input.toPoint()), -2);
         else
-            this.length = NumberValue.NaN;
+            this.length = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

@@ -42,7 +42,7 @@ extends GArithmetic
             return this;
 
 
-        const op = this.operation ? (await this.operation.eval(parse)).toValue().toInteger() : NumberValue.NaN;
+        const op = this.operation ? (await this.operation.eval(parse)).toValue().toInteger() : NumberValue.NaN.copy();
 
         if (op.isValid())
         {
@@ -72,7 +72,7 @@ extends GArithmetic
                 : null;
 
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

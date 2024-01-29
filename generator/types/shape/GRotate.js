@@ -48,7 +48,7 @@ extends GAffine
 
         if (input)
         {
-            this.value = input;
+            this.value = input.copy();
 
             if (this.value)
                 this.value.nodeId = this.nodeId;

@@ -186,7 +186,7 @@ extends GShape
             if (   w != 0 
                 && h != 0)
             {
-                if (this.innerAbsolute ) i   = i / Math.max(w, h) * 200;
+                if (this.innerAbsolute ) i = i / Math.max(w, h) * 200;
                 if (this.sweepInDegrees) sw /= 3.6;
 
                 const ellipse = new FigmaEllipse(

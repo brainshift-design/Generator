@@ -58,7 +58,7 @@ extends GValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -212,7 +212,7 @@ extends GValue
 
     getNaN()
     {
-        return ListValue.NaN;
+        return ListValue.NaN.copy();
     }
 
 

@@ -68,7 +68,7 @@ extends GOperator1
                     }
                 }
                 else
-                    this.value = input;
+                    this.value = input.copy();
             }
             else
                 this.value = ListValue.NaN.copy();

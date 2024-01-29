@@ -40,11 +40,11 @@ const presetSnowflakes = '\
         ]\
         },\
         {\
-        "type": "MATH",\
+        "type": "NEG",\
         "created": "1702902116783",\
         "updated": "1702905496921",\
-        "id": "math",\
-        "name": "math",\
+        "id": "neg",\
+        "name": "negative",\
         "renamed": "false",\
         "enabled": "true",\
         "highlight": "0",\
@@ -806,7 +806,7 @@ const presetSnowflakes = '\
         "outputNodeId": "rotate",\
         "outputId": "angle",\
         "outputOrder": "0",\
-        "inputNodeId": "math",\
+        "inputNodeId": "neg",\
         "inputId": "h0",\
         "list": "false"\
         },\
@@ -821,7 +821,7 @@ const presetSnowflakes = '\
         },\
         {\
         "created": "1702960670002",\
-        "outputNodeId": "math",\
+        "outputNodeId": "neg",\
         "outputId": "h0",\
         "outputOrder": "0",\
         "inputNodeId": "rotate2",\

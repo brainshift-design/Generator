@@ -67,7 +67,7 @@ extends GOperator1
             this.value.decimals = decDigits(this.value.value);
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

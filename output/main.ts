@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 344;
+const generatorVersion = 345;
 
 
 const MAX_INT32        = 2147483647;
@@ -1130,6 +1130,7 @@ const NUMBER                  = 'NUM';
 const NUMBER_PRECISION        = 'NPREC';   
 const NUMBER_SIGN             = 'NSIGN';   
 const NUMBER_ABSOLUTE         = 'ABS';   
+const NUMBER_NEGATIVE         = 'NEG';   
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_SIMPLE_MINMAX    = 'SMINMAX';   
 const NUMBER_MINMAX           = 'MINMAX';   
@@ -1258,6 +1259,7 @@ const NUMBER_TYPES =
     NUMBER_PRECISION,
     NUMBER_SIGN,
     NUMBER_ABSOLUTE,
+    NUMBER_NEGATIVE,
     NUMBER_ROUND,
     NUMBER_SIMPLE_MINMAX,
     NUMBER_MINMAX,

@@ -103,7 +103,7 @@ extends GArithmetic
 async function evalMinMaxInputs(inputs, op, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
 
     let value = new NumberValue(0);
@@ -138,7 +138,7 @@ async function evalMinMaxInputs(inputs, op, parse)
     else
     {
         if (val0.type != NUMBER_VALUE)
-            return NumberValue.NaN;
+            return NumberValue.NaN.copy();
 
         value = val0;
     }

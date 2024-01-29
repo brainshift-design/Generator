@@ -23,7 +23,7 @@ const presetNestedTorus = '\
             "enabled": "true",\
             "highlight": "0",\
             "x": "4182",\
-            "y": "3378",\
+            "y": "3398",\
             "z": "1",\
             "params":\
             [\
@@ -67,7 +67,7 @@ const presetNestedTorus = '\
             "enabled": "true",\
             "highlight": "0",\
             "x": "3012",\
-            "y": "3322",\
+            "y": "3342",\
             "z": "4",\
             "params":\
             [\

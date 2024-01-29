@@ -54,7 +54,7 @@ extends GOperator1
         if (   input
             && position)
         {
-            this.value = input;
+            this.value = input.copy();
 
             if (this.value)
                 this.value.nodeId = this.nodeId;

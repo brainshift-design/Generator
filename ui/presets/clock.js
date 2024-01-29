@@ -479,19 +479,15 @@ const presetClock = '\
             ]\
             },\
             {\
-            "type": "MATH",\
-            "id": "math",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "6569",\
             "y": "5177",\
-            "z": "29",\
-            "params":\
-            [\
-                    ["NUM#", "operation", "0,0"]\
-            ]\
+            "z": "29"\
             },\
             {\
             "type": "DRSH",\
@@ -1411,7 +1407,7 @@ const presetClock = '\
             "outputNodeId": "math2",\
             "outputId": "h0",\
             "outputOrder": "1",\
-            "inputNodeId": "math",\
+            "inputNodeId": "neg",\
             "inputId": "h0",\
             "list": "false"\
             },\
@@ -1624,7 +1620,7 @@ const presetClock = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "math",\
+            "outputNodeId": "neg",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "rotate2",\

@@ -139,23 +139,23 @@ extends GOperator1
                     parse.currentProgress += maxIter - iter;
 
                     input = (await this.input.eval(parse)).toValue();
-                    this.value = input;
+                    this.value = input.copy();
                 }
                 else
                 {
-                    this.value = NumberValue.NaN;
+                    this.value = NumberValue.NaN.copy();
                     console.warn('max solve iterations');
                 }
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
         {
             if (this.input) 
                 await this.input.eval(parse);
 
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
         }
 
         

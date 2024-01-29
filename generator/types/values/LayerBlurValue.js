@@ -100,7 +100,7 @@ extends GValue
 
     getNaN()
     {
-        return LayerBlurValue.NaN;
+        return LayerBlurValue.NaN.copy();
     }
 
 

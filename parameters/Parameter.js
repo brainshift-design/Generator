@@ -171,9 +171,6 @@ extends EventTarget
         
         this.div.addEventListener('pointerup', e =>
         {
-            e.stopPropagation();
-
-
             if (panMode)
                 return;
 

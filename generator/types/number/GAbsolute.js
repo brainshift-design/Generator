@@ -37,7 +37,7 @@ extends GOperator1
                 this.value.value = Math.abs(this.value.value);
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse, [['value', this.value]]);

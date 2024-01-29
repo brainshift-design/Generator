@@ -78,6 +78,8 @@ extends GOperator1
         if (this.isCached())
             return this;
 
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+
         let fills = this._fills ? (await this._fills.eval(parse)).toValue() : null;
 
         fills = this.validateFills(fills);
@@ -94,10 +96,8 @@ extends GOperator1
         const dashes = this.dashes ? (await this.dashes.eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             this.value = new StrokeValue(
                 fills  ?? input.fills,
                 weight ?? input.weight,

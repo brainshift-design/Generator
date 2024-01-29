@@ -112,7 +112,7 @@ extends GOperator1
                     this.value = (await this.input.eval(parse)).toValue();
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
             this.value = new ListValue();

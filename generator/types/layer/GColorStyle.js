@@ -59,7 +59,7 @@ extends GOperator
             this.evalStyle({rgba: rgbaStripe});
         }
         else
-            this.value = FillValue.NaN;
+            this.value = FillValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

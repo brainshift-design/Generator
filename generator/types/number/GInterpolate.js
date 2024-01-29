@@ -61,7 +61,7 @@ extends GOperator2
             this.value = (await this.input1.eval(parse)).toValue();
 
         else                  
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

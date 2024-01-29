@@ -119,7 +119,7 @@ extends GOperator
 async function evalJoinInputs(inputs, _with, parse)
 {
     if (isEmpty(inputs))
-        return new TextValue();//TextValue.NaN;
+        return new TextValue();//TextValue.NaN.copy();
 
 
     const value = new TextValue();

@@ -110,8 +110,8 @@ extends GOperator2
 
 async function evalCompareInputs(input0, input1, op, parse) 
 {
-    const val0 = input0 ? (await input0.eval(parse)).toValue() : TextValue.NaN;
-    const val1 = input1 ? (await input1.eval(parse)).toValue() : TextValue.NaN;
+    const val0 = input0 ? (await input0.eval(parse)).toValue() : TextValue.NaN.copy();
+    const val1 = input1 ? (await input1.eval(parse)).toValue() : TextValue.NaN.copy();
 
     if (   val0 && val0.isValid() 
         && val1 && val1.isValid())

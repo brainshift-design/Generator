@@ -64,7 +64,7 @@ extends GOperator1
                     this.value = await getValidColorValue(parse, this, input, quality);
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
             this.value = ColorValue.NaN.copy();

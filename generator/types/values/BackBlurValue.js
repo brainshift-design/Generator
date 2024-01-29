@@ -100,7 +100,7 @@ extends GValue
 
     getNaN()
     {
-        return BackBlurValue.NaN;
+        return BackBlurValue.NaN.copy();
     }
 
 

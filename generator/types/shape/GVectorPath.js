@@ -68,6 +68,7 @@ extends GShape
             return this;
 
 
+        const input   = this.input   ? (await this.input  .eval(parse)).toValue() : null;
         const points  = this.points  ? (await this.points .eval(parse)).toValue() : null;
         const closed  = this.closed  ? (await this.closed .eval(parse)).toValue() : null;
         const degree  = this.degree  ? (await this.degree .eval(parse)).toValue() : null;
@@ -75,15 +76,9 @@ extends GShape
         const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
 
 
-        let input = null;
-
-        if (this.input)
+        if (input)
         {
-            input = (await this.input.eval(parse)).toValue();
-
-
-            if (   input
-                && input.points
+            if (   input.points
                 && input.points.items
                 && input.points.objects)
             {
@@ -139,13 +134,13 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (  !this.points 
-            || this.points.items == 0) 
-                           this.points  = this.value.points .copy();
-        if (!this.closed ) this.closed  = this.value.closed .copy();
-        if (!this.degree ) this.degree  = this.value.degree .copy();
-        if (!this.winding) this.winding = this.value.winding.copy();
-        if (!this.round  ) this.round   = this.value.round  .copy();
+        // if (  !this.points 
+        //     || this.points.items == 0) 
+        //                    this.points  = this.value.points .copy();
+        // if (!this.closed ) this.closed  = this.value.closed .copy();
+        // if (!this.degree ) this.degree  = this.value.degree .copy();
+        // if (!this.winding) this.winding = this.value.winding.copy();
+        // if (!this.round  ) this.round   = this.value.round  .copy();
 
 
 

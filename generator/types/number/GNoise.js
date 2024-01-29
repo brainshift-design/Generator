@@ -66,69 +66,80 @@ extends GOperator
             return this;
 
 
-        const seed        = (await this.seed       .eval(parse)).toValue();
-        const min         = (await this.min        .eval(parse)).toValue();
-        const max         = (await this.max        .eval(parse)).toValue();
-        const scale       = (await this.scale      .eval(parse)).toValue();
-        const offset      = (await this.offset     .eval(parse)).toValue();
-        const interpolate = (await this.interpolate.eval(parse)).toValue();
-        const detail      = (await this.detail     .eval(parse)).toValue();
+        const seed        = this.seed        ? (await this.seed       .eval(parse)).toValue() : null;
+        const min         = this.min         ? (await this.min        .eval(parse)).toValue() : null;
+        const max         = this.max         ? (await this.max        .eval(parse)).toValue() : null;
+        const scale       = this.scale       ? (await this.scale      .eval(parse)).toValue() : null;
+        const offset      = this.offset      ? (await this.offset     .eval(parse)).toValue() : null;
+        const interpolate = this.interpolate ? (await this.interpolate.eval(parse)).toValue() : null;
+        const detail      = this.detail      ? (await this.detail     .eval(parse)).toValue() : null;
     
 
-        if (  !this.random
-            || this.random.seed != seed.value)
-            this.random = new Random(seed.value);
-
-        
-        let size  = 1;
-        let power = 1;
-        
-        const avg = (min.value + max.value) / 2;
-        let   r;
-
-        
-        if (   this.options.enabled
+        if (   seed
+            && min
+            && max
             && scale
-            && offset)
+            && offset
+            && interpolate
+            && detail)
         {
-            r = avg;
+            if (  !this.random
+                || this.random.seed != seed.value)
+                this.random = new Random(seed.value);
+
+
+            let size  = 1;
+            let power = 1;
             
-            for (let c = 0; c < detail.value; c++)
+            const avg = (min.value + max.value) / 2;
+            let   r;
+
+            
+            if (   this.options.enabled
+                && scale
+                && offset)
             {
-                const i = this.iteration / (Math.max(0.000001, scale.value) * size) + offset.value;
+                r = avg;
                 
-                const i0 = Math.floor(i);
-                const i1 = Math.ceil (i);
-
-                const r0 = this.random.get(i0);
-                const r1 = this.random.get(i1);
-
-
-                let _r;
-                
-                switch (interpolate.value)
+                for (let c = 0; c < detail.value; c++)
                 {
-                    case 0: _r = power * r0;                                                 break;
-                    case 1: _r = power * lerp(r0, r1, i-i0);                                 break;
-                    case 2: _r = power * (r0 + (r1 - r0) * (-Math.cos((i-i0)*Tau/2) + 1)/2); break;
+                    const i = this.iteration / (Math.max(0.000001, scale.value) * size) + offset.value;
+                    
+                    const i0 = Math.floor(i);
+                    const i1 = Math.ceil (i);
+
+                    const r0 = this.random.get(i0);
+                    const r1 = this.random.get(i1);
+
+
+                    let _r;
+                    
+                    switch (interpolate.value)
+                    {
+                        case 0: _r = power * r0;                                                 break;
+                        case 1: _r = power * lerp(r0, r1, i-i0);                                 break;
+                        case 2: _r = power * (r0 + (r1 - r0) * (-Math.cos((i-i0)*Tau/2) + 1)/2); break;
+                    }
+
+                    r += 
+                        - power * (avg       - min.value)
+                        + _r    * (max.value - min.value);
+
+
+                    size  /= 2;
+                    power /= 2;
                 }
-
-                r += 
-                    - power * (avg       - min.value)
-                    + _r    * (max.value - min.value);
-
-
-                size  /= 2;
-                power /= 2;
             }
+            else
+            {
+                r = min.value;
+            }
+
+
+            this.value = new NumberValue(r, Math.max(min.decimals, max.decimals));
         }
         else
-        {
-            r = min.value;
-        }
-
-
-        this.value = new NumberValue(r, Math.max(min.decimals, max.decimals));
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

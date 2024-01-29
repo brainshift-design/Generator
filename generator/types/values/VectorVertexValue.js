@@ -173,7 +173,7 @@ extends GValue
 
     getNaN()
     {
-        return VectorVertexValue.NaN;
+        return VectorVertexValue.NaN.copy();
     }
 
 

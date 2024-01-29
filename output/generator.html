@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 344;
+const generatorVersion = 345;
 
 
 const MAX_INT32        = 2147483647;
@@ -4881,6 +4881,7 @@ const NUMBER                  = 'NUM';
 const NUMBER_PRECISION        = 'NPREC';   
 const NUMBER_SIGN             = 'NSIGN';   
 const NUMBER_ABSOLUTE         = 'ABS';   
+const NUMBER_NEGATIVE         = 'NEG';   
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_SIMPLE_MINMAX    = 'SMINMAX';   
 const NUMBER_MINMAX           = 'MINMAX';   
@@ -5009,6 +5010,7 @@ const NUMBER_TYPES =
     NUMBER_PRECISION,
     NUMBER_SIGN,
     NUMBER_ABSOLUTE,
+    NUMBER_NEGATIVE,
     NUMBER_ROUND,
     NUMBER_SIMPLE_MINMAX,
     NUMBER_MINMAX,
@@ -9645,7 +9647,9 @@ extends GOperator
             const value = (await this.param.eval(parse)).toValue();
             this.value = value;
             
-            return this.value;
+            return this.value
+                 ? this.value.copy()
+                 : null;
         }
         else
             return this.value = new NullValue();
@@ -9963,7 +9967,7 @@ extends GValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -10117,7 +10121,7 @@ extends GValue
 
     getNaN()
     {
-        return ListValue.NaN;
+        return ListValue.NaN.copy();
     }
 
 
@@ -10330,7 +10334,7 @@ extends GValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -10399,7 +10403,7 @@ extends GValue
 
     getNaN()
     {
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
     }
 
 
@@ -10494,7 +10498,7 @@ extends GValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -10560,7 +10564,7 @@ extends GValue
 
     getNaN()
     {
-        return TextValue.NaN;
+        return TextValue.NaN.copy();
     }
 
 
@@ -10693,7 +10697,7 @@ extends GValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -10799,7 +10803,7 @@ extends GValue
 
     getNaN()
     {
-        return ColorValue.NaN;
+        return ColorValue.NaN.copy();
     }
 
 
@@ -10913,7 +10917,7 @@ extends GValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -10993,7 +10997,7 @@ extends GValue
 
     getNaN()
     {
-        return FillValue.NaN;
+        return FillValue.NaN.copy();
     }
 
 
@@ -11146,7 +11150,7 @@ extends GValue
 
     getNaN()
     {
-        return ColorStopValue.NaN;
+        return ColorStopValue.NaN.copy();
     }
 
 
@@ -11356,7 +11360,7 @@ extends GValue
 
     getNaN()
     {
-        return GradientValue.NaN;
+        return GradientValue.NaN.copy();
     }
 
 
@@ -11520,7 +11524,7 @@ extends GValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -11573,7 +11577,7 @@ extends GValue
 
     getNaN()
     {
-        return StrokeValue.NaN;
+        return StrokeValue.NaN.copy();
     }
 
 
@@ -11745,7 +11749,7 @@ extends GValue
 
     getNaN()
     {
-        return RoundCornersValue.NaN;
+        return RoundCornersValue.NaN.copy();
     }
 
 
@@ -11936,7 +11940,7 @@ extends GValue
 
     getNaN()
     {
-        return DropShadowValue.NaN;
+        return DropShadowValue.NaN.copy();
     }
 
 
@@ -12144,7 +12148,7 @@ extends GValue
 
     getNaN()
     {
-        return InnerShadowValue.NaN;
+        return InnerShadowValue.NaN.copy();
     }
 
 
@@ -12305,7 +12309,7 @@ extends GValue
 
     getNaN()
     {
-        return LayerBlurValue.NaN;
+        return LayerBlurValue.NaN.copy();
     }
 
 
@@ -12451,7 +12455,7 @@ extends GValue
 
     getNaN()
     {
-        return BackBlurValue.NaN;
+        return BackBlurValue.NaN.copy();
     }
 
 
@@ -12581,7 +12585,7 @@ extends GValue
 
     getNaN()
     {
-        return LayerBlendValue.NaN;
+        return LayerBlendValue.NaN.copy();
     }
 
 
@@ -12695,7 +12699,7 @@ extends GValue
 
     getNaN()
     {
-        return LayerMaskValue.NaN;
+        return LayerMaskValue.NaN.copy();
     }
 
 
@@ -12842,7 +12846,7 @@ extends ShapeValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -13014,7 +13018,7 @@ extends ShapeValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -13199,7 +13203,7 @@ extends ShapeValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
     
     
@@ -13418,7 +13422,7 @@ extends ShapeValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -13618,7 +13622,7 @@ extends ShapeValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -13830,7 +13834,7 @@ extends ShapeValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -14072,7 +14076,7 @@ extends ShapeValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -14375,7 +14379,7 @@ extends GValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -14459,7 +14463,7 @@ extends GValue
 
     getNaN()
     {
-        return PointValue.NaN;
+        return PointValue.NaN.copy();
     }
 
 
@@ -14563,7 +14567,7 @@ extends ShapeValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -14604,7 +14608,7 @@ extends ShapeValue
 
     toValue()
     {
-        return this;//.copy();
+        return this.copy();
     }
 
 
@@ -14624,11 +14628,11 @@ extends ShapeValue
     isValid()
     {
         return super.isValid()
-            && this.points .isValid()
-            && this.closed .isValid()
-            && this.degree .isValid()
-            && this.winding.isValid()
-            && this.round  .isValid();
+            && this.points  && this.points .isValid()
+            && this.closed  && this.closed .isValid()
+            && this.degree  && this.degree .isValid()
+            && this.winding && this.winding.isValid()
+            && this.round   && this.round  .isValid();
     }
 
 
@@ -14858,7 +14862,7 @@ extends GValue
 
     getNaN()
     {
-        return VectorVertexValue.NaN;
+        return VectorVertexValue.NaN.copy();
     }
 
 
@@ -15053,7 +15057,7 @@ extends GValue
 
     getNaN()
     {
-        return VectorEdgeValue.NaN;
+        return VectorEdgeValue.NaN.copy();
     }
 
 
@@ -15223,7 +15227,7 @@ extends ShapeValue
 
     getNaN()
     {
-        return VectorEdgeValue.NaN;
+        return VectorEdgeValue.NaN.copy();
     }
 
 
@@ -15379,7 +15383,7 @@ extends GValue
 
     getNaN()
     {
-        return VectorNetworkValue.NaN;
+        return VectorNetworkValue.NaN.copy();
     }
 
 
@@ -16616,7 +16620,7 @@ extends GOperator
             return this;
 
 
-        this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN;
+        this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN.copy();
 
 
         this.updateValues = [];
@@ -17251,7 +17255,7 @@ extends GOperator1
                     }
                 }
                 else
-                    this.value = input;
+                    this.value = input.copy();
             }
             else
                 this.value = ListValue.NaN.copy();
@@ -18175,7 +18179,7 @@ extends GOperator1
                     this.value = getGetParamValue(input, name);
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
         {
@@ -18396,7 +18400,7 @@ extends GOperator1
                             }
                         }
                         else
-                            this.value = input;//.copy();
+                            this.value = input.copy();//.copy();
                     }
                 }
                 else
@@ -18718,7 +18722,7 @@ extends GOperator1
                     }
                 }
                 else
-                    this.value = input;//.copy();
+                    this.value = input.copy();//.copy();
             }
             else
                 this.value = ListValue.NaN.copy();
@@ -18836,7 +18840,7 @@ extends GOperator1
                 }
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
             this.value = new ListValue();
@@ -19287,7 +19291,7 @@ extends GOperator1
                     this.value = (await this.input.eval(parse)).toValue();
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
             this.value = new ListValue();
@@ -20459,8 +20463,8 @@ extends GOperator2
 
                 this.value = new NumberValue(indices.length > 0 ? 1 : 0);
 
-                this.first = indices.length > 0 ? new NumberValue(indices.at( 0)) : NumberValue.NaN;
-                this.last  = indices.length > 0 ? new NumberValue(indices.at(-1)) : NumberValue.NaN;
+                this.first = indices.length > 0 ? new NumberValue(indices.at( 0)) : NumberValue.NaN.copy();
+                this.last  = indices.length > 0 ? new NumberValue(indices.at(-1)) : NumberValue.NaN.copy();
 
                 this.all   = new ListValue();
 
@@ -20471,17 +20475,17 @@ extends GOperator2
             {
                 this.value = new NumberValue(1);
 
-                this.first = NumberValue.NaN;
-                this.last  = NumberValue.NaN;
-                this.all   =   ListValue.NaN;
+                this.first = NumberValue.NaN.copy();
+                this.last  = NumberValue.NaN.copy();
+                this.all   =   ListValue.NaN.copy();
             }
         }
         else                  
         {
-            this.value = NumberValue.NaN;
-            this.first = NumberValue.NaN;
-            this.last  = NumberValue.NaN;
-            this.all   =   ListValue.NaN;
+            this.value = NumberValue.NaN.copy();
+            this.first = NumberValue.NaN.copy();
+            this.last  = NumberValue.NaN.copy();
+            this.all   =   ListValue.NaN.copy();
         }
     
 
@@ -20766,19 +20770,20 @@ extends GOperator1
             return this;
 
 
-        if (this.input)
-        {
-            this.value = (await this.input.eval(parse)).toValue();
-        }
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+
+
+        if (input)
+            this.value = input.copy();
         else if (this.value)
             await this.value.eval(parse);
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse, 
         [
-            ['value', this.value]
+            ['value', this.value.copy()]
         ]);
 
 
@@ -20791,7 +20796,8 @@ extends GOperator1
 
     isValid()
     {
-        return !this.input || this.input.isValid();
+        return !this.input 
+             || this.input.isValid();
     }
 }
 
@@ -20855,10 +20861,10 @@ extends GOperator1
             if (this.options.enabled)
                 this.value = new NumberValue(input.value, decimals.value);
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -20950,7 +20956,7 @@ extends GOperator1
                 this.value.value = Math.sign(this.value.value);
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse, 
@@ -21006,7 +21012,60 @@ extends GOperator1
                 this.value.value = Math.abs(this.value.value);
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
+
+
+        this.setUpdateValues(parse, [['value', this.value]]);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GNegative
+extends GOperator1
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_NEGATIVE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GNegative(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+
+            consoleAssert(
+                this.value.type == NUMBER_VALUE, 
+                'this.value.type must be NUMBER_VALUE');
+
+            if (this.options.enabled)
+                this.value.value = -this.value.value;
+        }
+        else
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse, [['value', this.value]]);
@@ -21094,7 +21153,7 @@ extends GOperator1
             }
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -21229,7 +21288,7 @@ extends GOperator1
                 }
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
             this.value = NumberValue.NaN.copy();
@@ -21416,7 +21475,7 @@ extends GArithmetic
 async function evalMinMaxInputs(inputs, op, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
 
     let value = new NumberValue(0);
@@ -21451,7 +21510,7 @@ async function evalMinMaxInputs(inputs, op, parse)
     else
     {
         if (val0.type != NUMBER_VALUE)
-            return NumberValue.NaN;
+            return NumberValue.NaN.copy();
 
         value = val0;
     }
@@ -21573,7 +21632,7 @@ extends GOperator1
             }
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -21723,10 +21782,10 @@ extends GOperator1
                 this.value = new NumberValue(f);
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -22420,10 +22479,10 @@ extends GOperator
                 this.value = getSequenceValue(start, mult, add, this.iteration, this.options.enabled);
 
             else
-                this.value = NumberValue.NaN;
+                this.value = NumberValue.NaN.copy();
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -22624,7 +22683,7 @@ extends GOperator
                 Math.max(start.decimals, end.decimals));
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -23221,69 +23280,80 @@ extends GOperator
             return this;
 
 
-        const seed        = (await this.seed       .eval(parse)).toValue();
-        const min         = (await this.min        .eval(parse)).toValue();
-        const max         = (await this.max        .eval(parse)).toValue();
-        const scale       = (await this.scale      .eval(parse)).toValue();
-        const offset      = (await this.offset     .eval(parse)).toValue();
-        const interpolate = (await this.interpolate.eval(parse)).toValue();
-        const detail      = (await this.detail     .eval(parse)).toValue();
+        const seed        = this.seed        ? (await this.seed       .eval(parse)).toValue() : null;
+        const min         = this.min         ? (await this.min        .eval(parse)).toValue() : null;
+        const max         = this.max         ? (await this.max        .eval(parse)).toValue() : null;
+        const scale       = this.scale       ? (await this.scale      .eval(parse)).toValue() : null;
+        const offset      = this.offset      ? (await this.offset     .eval(parse)).toValue() : null;
+        const interpolate = this.interpolate ? (await this.interpolate.eval(parse)).toValue() : null;
+        const detail      = this.detail      ? (await this.detail     .eval(parse)).toValue() : null;
     
 
-        if (  !this.random
-            || this.random.seed != seed.value)
-            this.random = new Random(seed.value);
-
-        
-        let size  = 1;
-        let power = 1;
-        
-        const avg = (min.value + max.value) / 2;
-        let   r;
-
-        
-        if (   this.options.enabled
+        if (   seed
+            && min
+            && max
             && scale
-            && offset)
+            && offset
+            && interpolate
+            && detail)
         {
-            r = avg;
+            if (  !this.random
+                || this.random.seed != seed.value)
+                this.random = new Random(seed.value);
+
+
+            let size  = 1;
+            let power = 1;
             
-            for (let c = 0; c < detail.value; c++)
+            const avg = (min.value + max.value) / 2;
+            let   r;
+
+            
+            if (   this.options.enabled
+                && scale
+                && offset)
             {
-                const i = this.iteration / (Math.max(0.000001, scale.value) * size) + offset.value;
+                r = avg;
                 
-                const i0 = Math.floor(i);
-                const i1 = Math.ceil (i);
-
-                const r0 = this.random.get(i0);
-                const r1 = this.random.get(i1);
-
-
-                let _r;
-                
-                switch (interpolate.value)
+                for (let c = 0; c < detail.value; c++)
                 {
-                    case 0: _r = power * r0;                                                 break;
-                    case 1: _r = power * lerp(r0, r1, i-i0);                                 break;
-                    case 2: _r = power * (r0 + (r1 - r0) * (-Math.cos((i-i0)*Tau/2) + 1)/2); break;
+                    const i = this.iteration / (Math.max(0.000001, scale.value) * size) + offset.value;
+                    
+                    const i0 = Math.floor(i);
+                    const i1 = Math.ceil (i);
+
+                    const r0 = this.random.get(i0);
+                    const r1 = this.random.get(i1);
+
+
+                    let _r;
+                    
+                    switch (interpolate.value)
+                    {
+                        case 0: _r = power * r0;                                                 break;
+                        case 1: _r = power * lerp(r0, r1, i-i0);                                 break;
+                        case 2: _r = power * (r0 + (r1 - r0) * (-Math.cos((i-i0)*Tau/2) + 1)/2); break;
+                    }
+
+                    r += 
+                        - power * (avg       - min.value)
+                        + _r    * (max.value - min.value);
+
+
+                    size  /= 2;
+                    power /= 2;
                 }
-
-                r += 
-                    - power * (avg       - min.value)
-                    + _r    * (max.value - min.value);
-
-
-                size  /= 2;
-                power /= 2;
             }
+            else
+            {
+                r = min.value;
+            }
+
+
+            this.value = new NumberValue(r, Math.max(min.decimals, max.decimals));
         }
         else
-        {
-            r = min.value;
-        }
-
-
-        this.value = new NumberValue(r, Math.max(min.decimals, max.decimals));
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -23572,7 +23642,7 @@ extends GOperator1
                     this.value = this.current.copy();
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
             this.value = NumberValue.NaN.copy();
@@ -23708,7 +23778,7 @@ extends GOperator2
             this.value = (await this.input1.eval(parse)).toValue();
 
         else                  
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -23902,23 +23972,23 @@ extends GOperator1
                     parse.currentProgress += maxIter - iter;
 
                     input = (await this.input.eval(parse)).toValue();
-                    this.value = input;
+                    this.value = input.copy();
                 }
                 else
                 {
-                    this.value = NumberValue.NaN;
+                    this.value = NumberValue.NaN.copy();
                     console.warn('max solve iterations');
                 }
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
         {
             if (this.input) 
                 await this.input.eval(parse);
 
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
         }
 
         
@@ -24220,7 +24290,7 @@ extends GArithmetic
             return this;
 
 
-        const op = this.operation ? (await this.operation.eval(parse)).toValue().toInteger() : NumberValue.NaN;
+        const op = this.operation ? (await this.operation.eval(parse)).toValue().toInteger() : NumberValue.NaN.copy();
 
         if (op.isValid())
         {
@@ -24250,7 +24320,7 @@ extends GArithmetic
                 : null;
 
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -24392,7 +24462,7 @@ extends GOperator1
                 }
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
             this.value = NumberValue.NaN.copy();
@@ -24564,7 +24634,7 @@ extends GArithmetic
 async function evalAddInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
 
     const value = new NumberValue(0);
@@ -24576,13 +24646,13 @@ async function evalAddInputs(inputs, parse)
         
         if (   !val
             || !val.isValid())
-            return NumberValue.NaN;
+            return NumberValue.NaN.copy();
 
         if (isListType(val.type))
         {
             if (   isEmpty(val.items)
                 || val.items[0].type != NUMBER_VALUE)
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
             for (const item of val.items)
             {
@@ -24656,7 +24726,7 @@ extends GArithmetic
 async function evalSubtractInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
 
     let value = new NumberValue(0);
@@ -24668,22 +24738,23 @@ async function evalSubtractInputs(inputs, parse)
 
         if (   !val0
             || !val0.isValid())
-            return NumberValue.NaN;
+            return NumberValue.NaN.copy();
 
 
-        if (   inputs.length == 1
-            && val0.type == NUMBER_VALUE)
-        {
-            value = new NumberValue(-val0.value, val0.decimals);
-        }
-        else if (isListType(val0.type)
+        // if (   inputs.length == 1
+        //     && val0.type == NUMBER_VALUE)
+        // {
+        //     value = new NumberValue(-val0.value, val0.decimals);
+        // }
+        //else 
+        if (     isListType(val0.type)
              && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
 
             if (   !item0
                 || !item0.isValid())
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
 
             value.value    = item0.value;
@@ -24695,7 +24766,7 @@ async function evalSubtractInputs(inputs, parse)
 
                 if (   !item
                     || !item.isValid())
-                    return NumberValue.NaN;
+                    return NumberValue.NaN.copy();
 
                 if (item.type == NUMBER_VALUE)
                 {
@@ -24707,7 +24778,7 @@ async function evalSubtractInputs(inputs, parse)
         else
         {
             if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
             value.value    = val0.value;
             value.decimals = val0.decimals;
@@ -24720,7 +24791,7 @@ async function evalSubtractInputs(inputs, parse)
 
             if (   !val
                 || !val.isValid())
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
 
             if (isListType(val.type))
@@ -24798,7 +24869,7 @@ extends GArithmetic
 async function evalMultiplyInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
 
     const value = new NumberValue(0);
@@ -24814,14 +24885,14 @@ async function evalMultiplyInputs(inputs, parse)
 
             if (   !val
                 || !val.isValid())
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
 
             if (isListType(val.type))
             {
                 if (   isEmpty(val.items)
                     || val.items[0].type != NUMBER_VALUE)
-                    return NumberValue.NaN;
+                    return NumberValue.NaN.copy();
 
                 for (const item of val.items)
                 {
@@ -24892,7 +24963,7 @@ extends GArithmetic
 async function evalDivideInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
         
     let value = new NumberValue(0);
@@ -24904,7 +24975,7 @@ async function evalDivideInputs(inputs, parse)
 
         if (   !val0
             || !val0.isValid())
-            return NumberValue.NaN;
+            return NumberValue.NaN.copy();
 
 
         if (    isListType(val0.type)
@@ -24914,7 +24985,7 @@ async function evalDivideInputs(inputs, parse)
 
             if (   !item0
                 || !item0.isValid())
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
 
             value.value    = item0.value;
@@ -24926,7 +24997,7 @@ async function evalDivideInputs(inputs, parse)
 
                 if (   !item
                     || !item.isValid())
-                    return NumberValue.NaN;
+                    return NumberValue.NaN.copy();
 
                     
                 if (item.type == NUMBER_VALUE)
@@ -24946,7 +25017,7 @@ async function evalDivideInputs(inputs, parse)
         else
         {
             if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
             value.value    = val0.value;
             value.decimals = val0.decimals;
@@ -24959,7 +25030,7 @@ async function evalDivideInputs(inputs, parse)
 
             if (   !val
                 || !val.isValid())
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
 
             if (isListType(val.type))
@@ -24968,7 +25039,7 @@ async function evalDivideInputs(inputs, parse)
                 {
                     if (   !item
                         || !item.isValid())
-                        return NumberValue.NaN;
+                        return NumberValue.NaN.copy();
 
 
                     if (item.type == NUMBER_VALUE)
@@ -25059,7 +25130,7 @@ extends GArithmetic
 async function evalModuloInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
         
     const value = new NumberValue(0);
@@ -25071,7 +25142,7 @@ async function evalModuloInputs(inputs, parse)
 
         if (   !val0
             || !val0.isValid())
-            return NumberValue.NaN;
+            return NumberValue.NaN.copy();
 
 
         if (    isListType(val0.type)
@@ -25081,7 +25152,7 @@ async function evalModuloInputs(inputs, parse)
 
             if (   !item0
                 || !item0.isValid())
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
 
             value.value    = item0.value;
@@ -25093,7 +25164,7 @@ async function evalModuloInputs(inputs, parse)
                 
                 if (   !item
                     || !item.isValid())
-                    return NumberValue.NaN;
+                    return NumberValue.NaN.copy();
 
 
                 if (item.type == NUMBER_VALUE)
@@ -25113,7 +25184,7 @@ async function evalModuloInputs(inputs, parse)
         else
         {
             if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
             value.value    = val0.value;
             value.decimals = val0.decimals;
@@ -25126,7 +25197,7 @@ async function evalModuloInputs(inputs, parse)
 
             if (   !val
                 || !val.isValid())
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
 
             if (isListType(val.type))
@@ -25135,7 +25206,7 @@ async function evalModuloInputs(inputs, parse)
                 {
                     if (   !item
                         || !item.isValid())
-                        return NumberValue.NaN;
+                        return NumberValue.NaN.copy();
 
 
                     if (item.type == NUMBER_VALUE)
@@ -25219,7 +25290,7 @@ extends GArithmetic
 async function evalExponentInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
 
     const value = new NumberValue(0);
@@ -25231,7 +25302,7 @@ async function evalExponentInputs(inputs, parse)
 
         if (   !val0
             || !val0.isValid())
-            return NumberValue.NaN;
+            return NumberValue.NaN.copy();
 
 
         if (    isListType(val0.type)
@@ -25241,7 +25312,7 @@ async function evalExponentInputs(inputs, parse)
 
             if (   !item0
                 || !item0.isValid())
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
 
             value.value    = item0.value;
@@ -25253,7 +25324,7 @@ async function evalExponentInputs(inputs, parse)
                 
                 if (   !item
                     || !item.isValid())
-                    return NumberValue.NaN;
+                    return NumberValue.NaN.copy();
 
 
                 if (item.type == NUMBER_VALUE)
@@ -25266,7 +25337,7 @@ async function evalExponentInputs(inputs, parse)
         else
         {
             if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
             value.value    = val0.value;
             value.decimals = val0.decimals;
@@ -25279,7 +25350,7 @@ async function evalExponentInputs(inputs, parse)
 
             if (   !val
                 || !val.isValid())
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
 
             if (isListType(val.type))
@@ -25288,7 +25359,7 @@ async function evalExponentInputs(inputs, parse)
                 {
                     if (   !item
                         || !item.isValid())
-                        return NumberValue.NaN;
+                        return NumberValue.NaN.copy();
 
                     if (item.type == NUMBER_VALUE)
                     {
@@ -25467,7 +25538,7 @@ extends GArithmetic
 async function evalNandInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
 
     const value = new NumberValue();
@@ -25476,7 +25547,7 @@ async function evalNandInputs(inputs, parse)
     if (!isEmpty(inputs))
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
-        if (!val0.isValid()) return NumberValue.NaN;
+        if (!val0.isValid()) return NumberValue.NaN.copy();
 
         if (    isListType(val0.type)
             && !isEmpty(val0.items))
@@ -25497,7 +25568,7 @@ async function evalNandInputs(inputs, parse)
         else
         {
             if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
             value.value = val0.toNumber() != 0 ? 0 : 1;
         }
@@ -25506,7 +25577,7 @@ async function evalNandInputs(inputs, parse)
         for (let i = 1; i < inputs.length; i++)
         {
             const val = (await inputs[i].eval(parse)).toValue();
-            if (!val.isValid()) return NumberValue.NaN;
+            if (!val.isValid()) return NumberValue.NaN.copy();
 
             if (isListType(val.type))
             {
@@ -25582,7 +25653,7 @@ extends GArithmetic
 async function evalAndInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
 
     const value = new NumberValue();
@@ -25591,7 +25662,7 @@ async function evalAndInputs(inputs, parse)
     if (!isEmpty(inputs))
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
-        if (!val0.isValid()) return NumberValue.NaN;
+        if (!val0.isValid()) return NumberValue.NaN.copy();
 
         if (    isListType(val0.type)
             && !isEmpty(val0.items))
@@ -25611,7 +25682,7 @@ async function evalAndInputs(inputs, parse)
         else
         {
             if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
             value.value = val0.toNumber();
         }
@@ -25620,7 +25691,7 @@ async function evalAndInputs(inputs, parse)
         for (let i = 1; i < inputs.length; i++)
         {
             const val = (await inputs[i].eval(parse)).toValue();
-            if (!val.isValid()) return NumberValue.NaN;
+            if (!val.isValid()) return NumberValue.NaN.copy();
 
             if (isListType(val.type))
             {
@@ -25700,7 +25771,7 @@ extends GArithmetic
 async function evalOrInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
 
     const value = new NumberValue();
@@ -25709,7 +25780,7 @@ async function evalOrInputs(inputs, parse)
     if (!isEmpty(inputs))
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
-        if (!val0.isValid()) return NumberValue.NaN;
+        if (!val0.isValid()) return NumberValue.NaN.copy();
 
         if (    isListType(val0.type)
             && !isEmpty(val0.items))
@@ -25729,7 +25800,7 @@ async function evalOrInputs(inputs, parse)
         else
         {
             if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
             value.value = val0.toNumber();
         }
@@ -25738,7 +25809,7 @@ async function evalOrInputs(inputs, parse)
         for (let i = 1; i < inputs.length; i++)
         {
             const val = (await inputs[i].eval(parse)).toValue();
-            if (!val.isValid()) return NumberValue.NaN;
+            if (!val.isValid()) return NumberValue.NaN.copy();
 
             if (isListType(val.type))
             {
@@ -25815,7 +25886,7 @@ extends GArithmetic
 async function evalXorInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
 
     const value = new NumberValue(0);
@@ -25826,7 +25897,7 @@ async function evalXorInputs(inputs, parse)
     if (!isEmpty(inputs))
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
-        if (!val0.isValid()) return NumberValue.NaN;
+        if (!val0.isValid()) return NumberValue.NaN.copy();
 
         if (    isListType(val0.type)
             && !isEmpty(val0.items))
@@ -25847,7 +25918,7 @@ async function evalXorInputs(inputs, parse)
         else
         {
             if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
             flipped = val0.toNumber() != 0;
         }
@@ -25856,7 +25927,7 @@ async function evalXorInputs(inputs, parse)
         for (let i = 1; i < inputs.length; i++)
         {
             const val = (await inputs[i].eval(parse)).toValue();
-            if (!val.isValid()) return NumberValue.NaN;
+            if (!val.isValid()) return NumberValue.NaN.copy();
 
             if (isListType(val.type))
             {
@@ -26006,14 +26077,14 @@ extends GOperator1
 
 async function evalConditionInputs(input0, input1, op, parse) 
 {
-    const val0 = input0 ? (await input0.eval(parse)).toValue() : NumberValue.NaN;
-    const val1 = input1 ? (await input1.eval(parse)).toValue() : NumberValue.NaN;
+    const val0 = input0 ? (await input0.eval(parse)).toValue() : NumberValue.NaN.copy();
+    const val1 = input1 ? (await input1.eval(parse)).toValue() : NumberValue.NaN.copy();
 
     if (   val0.isValid() 
         && val1.isValid())
         return new NumberValue(op(val0.toNumber(), val1.toNumber()) ? 1 : 0);
     else                  
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 }
 
 
@@ -26366,7 +26437,7 @@ extends GOperator1
             }
         }
         else
-            this.value = input;
+            this.value = input.copy();
 
 
         this.setUpdateValues(parse,
@@ -26475,7 +26546,7 @@ extends GOperator1
 async function evalSine(input, arc)
 {
     if (!input)
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
     const val = 
         !arc 
@@ -26536,7 +26607,7 @@ extends GOperator1
 async function evalCosine(input, arc)
 {
     if (!input)
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
     const val = 
         !arc 
@@ -26597,7 +26668,7 @@ extends GOperator1
 async function evalTangent(input, arc)
 {
     if (!input)
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
     const val = 
         !arc 
@@ -26784,7 +26855,7 @@ extends GOperator1
             this.value.decimals = decDigits(this.value.value);
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -26936,7 +27007,7 @@ extends GOperator1
             length = new NumberValue(input.value.length);
         }
         else
-            length = NumberValue.NaN;
+            length = NumberValue.NaN.copy();
     
 
         this.setUpdateValues(parse,
@@ -27026,7 +27097,7 @@ extends GOperator1
             }
         }
         else
-            this.value = new TextValue();//TextValue.NaN;
+            this.value = new TextValue();//TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -27177,10 +27248,10 @@ extends GOperator1
                     this.value.value = this.value.value.substring(start.value, _end.value);
             }
             else
-                this.value = new TextValue();//TextValue.NaN;
+                this.value = new TextValue();//TextValue.NaN.copy();
         }
         else
-            this.value = new TextValue();//TextValue.NaN;
+            this.value = new TextValue();//TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -27309,8 +27380,8 @@ extends GOperator2
                 
                 this.value = new NumberValue(indices.length > 0 ? 1 : 0);
 
-                this.first = indices.length > 0 ? new NumberValue(indices.at( 0)) : NumberValue.NaN;
-                this.last  = indices.length > 0 ? new NumberValue(indices.at(-1)) : NumberValue.NaN;
+                this.first = indices.length > 0 ? new NumberValue(indices.at( 0)) : NumberValue.NaN.copy();
+                this.last  = indices.length > 0 ? new NumberValue(indices.at(-1)) : NumberValue.NaN.copy();
 
                 this.all   = new ListValue();
 
@@ -27321,17 +27392,17 @@ extends GOperator2
             {
                 this.value = new NumberValue(1);
 
-                this.first = NumberValue.NaN;
-                this.last  = NumberValue.NaN;
-                this.all   =   ListValue.NaN;
+                this.first = NumberValue.NaN.copy();
+                this.last  = NumberValue.NaN.copy();
+                this.all   =   ListValue.NaN.copy();
             }
         }
         else                  
         {
-            this.value = NumberValue.NaN;
-            this.first = NumberValue.NaN;
-            this.last  = NumberValue.NaN;
-            this.all   =   ListValue.NaN;
+            this.value = NumberValue.NaN.copy();
+            this.first = NumberValue.NaN.copy();
+            this.last  = NumberValue.NaN.copy();
+            this.all   =   ListValue.NaN.copy();
         }
     
 
@@ -27431,7 +27502,7 @@ extends GOperator1
                 }
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
             this.value = new TextValue();
@@ -27753,7 +27824,7 @@ extends GOperator1
         }
 
         else
-            this.value = TextValue.NaN;
+            this.value = TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -27915,7 +27986,7 @@ extends GOperator1
         }
 
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -28081,7 +28152,7 @@ extends GOperator1
             }
         }
         else
-            this.value = ColorValue.NaN;
+            this.value = ColorValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -28491,7 +28562,7 @@ extends GOperator1
                 }
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
             this.value = new TextValue();
@@ -28726,7 +28797,7 @@ extends GOperator
 async function evalJoinInputs(inputs, _with, parse)
 {
     if (isEmpty(inputs))
-        return new TextValue();//TextValue.NaN;
+        return new TextValue();//TextValue.NaN.copy();
 
 
     const value = new TextValue();
@@ -28862,7 +28933,7 @@ extends GOperator1
             }
         }
         else
-            this.value = new TextValue();//TextValue.NaN;
+            this.value = new TextValue();//TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -29176,8 +29247,8 @@ extends GOperator2
 
 async function evalCompareInputs(input0, input1, op, parse) 
 {
-    const val0 = input0 ? (await input0.eval(parse)).toValue() : TextValue.NaN;
-    const val1 = input1 ? (await input1.eval(parse)).toValue() : TextValue.NaN;
+    const val0 = input0 ? (await input0.eval(parse)).toValue() : TextValue.NaN.copy();
+    const val1 = input1 ? (await input1.eval(parse)).toValue() : TextValue.NaN.copy();
 
     if (   val0 && val0.isValid() 
         && val1 && val1.isValid())
@@ -30365,17 +30436,15 @@ extends GOperator1
             return this;
 
 
+        const input = this.input ? (await this.input.eval(parse)).toValue()             : null;
         const space = this.space ? (await this.space.eval(parse)).toValue().toInteger() : null; 
         let   c1    = this._c1   ? (await this._c1  .eval(parse)).toValue()             : null;
         let   c2    = this._c2   ? (await this._c2  .eval(parse)).toValue()             : null;
         let   c3    = this._c3   ? (await this._c3  .eval(parse)).toValue()             : null;
 
         
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-            
             if (   input.isValid())
                 // && this.input.type != START)
             {
@@ -30412,7 +30481,7 @@ extends GOperator1
                     if (c3) { this.value.c3 = c3; this.c3 = c3; }
                 }
                 else
-                    this.value = input;
+                    this.value = input.copy();
             }
             else
                 this.value = ColorValue.NaN.copy();
@@ -30421,7 +30490,10 @@ extends GOperator1
             if (!this.convert)
                 this.convert = NumberValue.NaN.copy();
         }
-        else
+        else if (space
+              && c1
+              && c2
+              && c3)
         {
             this.value = new ColorValue(space, c1, c2, c3);
 
@@ -30432,6 +30504,7 @@ extends GOperator1
                 colorSpaceCount(parse)-1);
 
             this.value.space.value = toSpaceIndex;
+
 
             if (    this.convert
                 &&  this.convert.isValid()
@@ -30447,11 +30520,13 @@ extends GOperator1
                     colorSpace(toSpaceIndex));
             }
         }
+        else
+            this.value = ColorValue.NaN.copy();
 
 
         if (!this.value.space.isValid())
             this.value = new ColorValue(
-                this.space.toValue(),
+                this.space ? this.space.toValue() : NumberValue.NaN,
                 NumberValue.NaN,
                 NumberValue.NaN,
                 NumberValue.NaN);
@@ -30618,7 +30693,7 @@ extends GOperator1
                     this.value = await getValidColorValue(parse, this, input, quality);
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
             this.value = ColorValue.NaN.copy();
@@ -30896,11 +30971,11 @@ extends GOperator1
                 }
                 else
                 {
-                    this.order = NumberValue.NaN;
-                    this.c1    = NumberValue.NaN;
-                    this.c2    = NumberValue.NaN;
-                    this.c3    = NumberValue.NaN;
-                    this.value = input;
+                    this.order = NumberValue.NaN.copy();
+                    this.c1    = NumberValue.NaN.copy();
+                    this.c2    = NumberValue.NaN.copy();
+                    this.c3    = NumberValue.NaN.copy();
+                    this.value = input.copy();
     
                     this.setUpdateValues(parse,
                     [
@@ -30914,11 +30989,11 @@ extends GOperator1
             }
             else
             {
-                this.order = NumberValue.NaN;
-                this.c1    = NumberValue.NaN;
-                this.c2    = NumberValue.NaN;
-                this.c3    = NumberValue.NaN;
-                this.value = input;
+                this.order = NumberValue.NaN.copy();
+                this.c1    = NumberValue.NaN.copy();
+                this.c2    = NumberValue.NaN.copy();
+                this.c3    = NumberValue.NaN.copy();
+                this.value = input.copy();
 
                 this.setUpdateValues(parse,
                 [
@@ -30932,11 +31007,11 @@ extends GOperator1
         }
         else
         {
-            this.order = NumberValue.NaN;
-            this.c1    = NumberValue.NaN;
-            this.c2    = NumberValue.NaN;
-            this.c3    = NumberValue.NaN;
-            this.value = ColorValue .NaN;
+            this.order = NumberValue.NaN.copy();
+            this.c1    = NumberValue.NaN.copy();
+            this.c2    = NumberValue.NaN.copy();
+            this.c3    = NumberValue.NaN.copy();
+            this.value = ColorValue .NaN.copy();
 
             this.setUpdateValues(parse,
             [
@@ -31259,7 +31334,7 @@ extends GOperator1
                     this.value = await getConvertP3Value(input, from);
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
             this.value = ColorValue.NaN.copy();
@@ -31396,7 +31471,7 @@ extends GOperator1
                     this.value = getColorBlindValue(input, l, m, s);
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
             this.value = ColorValue.NaN.copy();
@@ -32281,7 +32356,7 @@ extends GOperator
             this.evalStyle({rgba: rgbaStripe});
         }
         else
-            this.value = FillValue.NaN;
+            this.value = FillValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -32470,7 +32545,7 @@ extends GOperator1
                 this.color   ? this.color  .toValue() : this.input.value.color  .toValue(),
                 this.opacity ? this.opacity.toValue() : this.input.value.opacity.toValue(),
                 this.blend   ? this.blend  .toValue() : this.input.value.blend  .toValue())
-            : FillValue.NaN;
+            : FillValue.NaN.copy();
     }
 
 
@@ -33009,6 +33084,8 @@ extends GOperator1
         if (this.isCached())
             return this;
 
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+
         let fills = this._fills ? (await this._fills.eval(parse)).toValue() : null;
 
         fills = this.validateFills(fills);
@@ -33025,10 +33102,8 @@ extends GOperator1
         const dashes = this.dashes ? (await this.dashes.eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             this.value = new StrokeValue(
                 fills  ?? input.fills,
                 weight ?? input.weight,
@@ -35050,7 +35125,7 @@ extends GShape
             if (   w != 0 
                 && h != 0)
             {
-                if (this.innerAbsolute ) i   = i / Math.max(w, h) * 200;
+                if (this.innerAbsolute ) i = i / Math.max(w, h) * 200;
                 if (this.sweepInDegrees) sw /= 3.6;
 
                 const ellipse = new FigmaEllipse(
@@ -36013,17 +36088,17 @@ extends GShape
 
         // for incorrect incoming types
         if (text          && text         .type !=   TEXT_VALUE) text          = new TextValue();
-        if (x             && x            .type != NUMBER_VALUE) x             = NumberValue.NaN;
-        if (y             && y            .type != NUMBER_VALUE) y             = NumberValue.NaN;
-        if (width         && width        .type != NUMBER_VALUE) width         = NumberValue.NaN;
-        if (height        && height       .type != NUMBER_VALUE) height        = NumberValue.NaN;
-        if (font          && font         .type != NUMBER_VALUE) font          = NumberValue.NaN;
-        if (style         && style        .type != NUMBER_VALUE) style         = NumberValue.NaN;
-        if (size          && size         .type != NUMBER_VALUE) size          = NumberValue.NaN;
-        if (alignH        && alignH       .type != NUMBER_VALUE) alignH        = NumberValue.NaN;
-        if (alignV        && alignV       .type != NUMBER_VALUE) alignV        = NumberValue.NaN;
-        if (lineHeight    && lineHeight   .type != NUMBER_VALUE) lineHeight    = NumberValue.NaN;
-        if (letterSpacing && letterSpacing.type != NUMBER_VALUE) letterSpacing = NumberValue.NaN;
+        if (x             && x            .type != NUMBER_VALUE) x             = NumberValue.NaN.copy();
+        if (y             && y            .type != NUMBER_VALUE) y             = NumberValue.NaN.copy();
+        if (width         && width        .type != NUMBER_VALUE) width         = NumberValue.NaN.copy();
+        if (height        && height       .type != NUMBER_VALUE) height        = NumberValue.NaN.copy();
+        if (font          && font         .type != NUMBER_VALUE) font          = NumberValue.NaN.copy();
+        if (style         && style        .type != NUMBER_VALUE) style         = NumberValue.NaN.copy();
+        if (size          && size         .type != NUMBER_VALUE) size          = NumberValue.NaN.copy();
+        if (alignH        && alignH       .type != NUMBER_VALUE) alignH        = NumberValue.NaN.copy();
+        if (alignV        && alignV       .type != NUMBER_VALUE) alignV        = NumberValue.NaN.copy();
+        if (lineHeight    && lineHeight   .type != NUMBER_VALUE) lineHeight    = NumberValue.NaN.copy();
+        if (letterSpacing && letterSpacing.type != NUMBER_VALUE) letterSpacing = NumberValue.NaN.copy();
 
         
         if (input)
@@ -36719,6 +36794,7 @@ extends GShape
             return this;
 
 
+        const input   = this.input   ? (await this.input  .eval(parse)).toValue() : null;
         const points  = this.points  ? (await this.points .eval(parse)).toValue() : null;
         const closed  = this.closed  ? (await this.closed .eval(parse)).toValue() : null;
         const degree  = this.degree  ? (await this.degree .eval(parse)).toValue() : null;
@@ -36726,15 +36802,9 @@ extends GShape
         const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
 
 
-        let input = null;
-
-        if (this.input)
+        if (input)
         {
-            input = (await this.input.eval(parse)).toValue();
-
-
-            if (   input
-                && input.points
+            if (   input.points
                 && input.points.items
                 && input.points.objects)
             {
@@ -36790,13 +36860,13 @@ extends GShape
         await this.evalObjects(parse);
 
 
-        if (  !this.points 
-            || this.points.items == 0) 
-                           this.points  = this.value.points .copy();
-        if (!this.closed ) this.closed  = this.value.closed .copy();
-        if (!this.degree ) this.degree  = this.value.degree .copy();
-        if (!this.winding) this.winding = this.value.winding.copy();
-        if (!this.round  ) this.round   = this.value.round  .copy();
+        // if (  !this.points 
+        //     || this.points.items == 0) 
+        //                    this.points  = this.value.points .copy();
+        // if (!this.closed ) this.closed  = this.value.closed .copy();
+        // if (!this.degree ) this.degree  = this.value.degree .copy();
+        // if (!this.winding) this.winding = this.value.winding.copy();
+        // if (!this.round  ) this.round   = this.value.round  .copy();
 
 
 
@@ -37226,10 +37296,10 @@ extends GOperator2
             return this;
 
         
-        let input0       = this.input0       ? (await this.input0      .eval(parse)).toValue() : VectorVertexValue.NaN;
-        let input1       = this.input1       ? (await this.input1      .eval(parse)).toValue() : VectorVertexValue.NaN;
-        let startTangent = this.startTangent ? (await this.startTangent.eval(parse)).toValue() : PointValue.NaN;
-        let   endTangent = this.  endTangent ? (await this.  endTangent.eval(parse)).toValue() : PointValue.NaN;
+        let input0       = this.input0       ? (await this.input0      .eval(parse)).toValue() : VectorVertexValue.NaN.copy();
+        let input1       = this.input1       ? (await this.input1      .eval(parse)).toValue() : VectorVertexValue.NaN.copy();
+        let startTangent = this.startTangent ? (await this.startTangent.eval(parse)).toValue() : PointValue       .NaN.copy();
+        let   endTangent = this.  endTangent ? (await this.  endTangent.eval(parse)).toValue() : PointValue       .NaN.copy();
 
 
         if (input0.type == POINT_VALUE) input0 = new VectorVertexValue(input0.nodeId, input0.x, input0.y);
@@ -38937,6 +39007,7 @@ extends GOperator1
             return this;
 
             
+        const input       = this.input       ? (await this.input      .eval(parse)).toValue() : null;
         const moveType    = this.moveType    ? (await this.moveType   .eval(parse)).toValue() : null;
         const x           = this.x           ? (await this.x          .eval(parse)).toValue() : null;
         const y           = this.y           ? (await this.y          .eval(parse)).toValue() : null;
@@ -38944,9 +39015,9 @@ extends GOperator1
         const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = input.copy();
 
             if (this.value)
                 this.value.nodeId = this.nodeId;
@@ -39067,8 +39138,8 @@ extends GOperator1
     toValue()
     {
         return this.value
-        ? this.value.copy()
-        : null;
+             ? this.value.copy()
+             : null;
     }
     
     
@@ -39329,7 +39400,7 @@ extends GAffine
 
         if (input)
         {
-            this.value = input;
+            this.value = input.copy();
 
             if (this.value)
                 this.value.nodeId = this.nodeId;
@@ -39485,6 +39556,7 @@ extends GAffine
             return this;
 
 
+        const input         = this.input         ? (await this.input        .eval(parse)).toValue() : null;
         const scaleX        = this.scaleX        ? (await this.scaleX       .eval(parse)).toValue() : null;
         const scaleY        = this.scaleY        ? (await this.scaleY       .eval(parse)).toValue() : null;
         const affectCorners = this.affectCorners ? (await this.affectCorners.eval(parse)).toValue() : null;
@@ -39493,10 +39565,10 @@ extends GAffine
         const [showCenter, affectSpace] = await this.evalBaseParams(parse);
 
 
-        if (this.input)
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
-
+            this.value = input.copy();
+            
             if (this.value)
                 this.value.nodeId = this.nodeId;
         }
@@ -39838,6 +39910,7 @@ extends GOperator1
             return this;
 
             
+        const input      = this.input      ? (await this.input     .eval(parse)).toValue() : null;
         const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
         const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
         const units      = this.units      ? (await this.units     .eval(parse)).toValue() : null;
@@ -39846,7 +39919,7 @@ extends GOperator1
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = input.copy();
 
             if (this.value)
                 this.value.nodeId = this.nodeId;
@@ -40214,8 +40287,8 @@ extends GOperator2
         }
         else
         {
-            this.distance = NumberValue.NaN;
-            this.angle    = NumberValue.NaN;
+            this.distance = NumberValue.NaN.copy();
+            this.angle    = NumberValue.NaN.copy();
         }
 
 
@@ -40320,7 +40393,7 @@ extends GOperator1
         if (input)
             this.length = new NumberValue(lengthv(input.toPoint()), -2);
         else
-            this.length = NumberValue.NaN;
+            this.length = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -41012,7 +41085,7 @@ extends GOperator1
         if (   input
             && position)
         {
-            this.value = input;
+            this.value = input.copy();
 
             if (this.value)
                 this.value.nodeId = this.nodeId;
@@ -41787,17 +41860,17 @@ function genRequest(request, save)
         logRequest(parse);
 
 
-    const paramNodes = parse.paramNodeIds.map(id =>
-        parse.parsedNodes.find(n => n.nodeId == id));
+    const paramNodes = parse.paramNodeIds
+        .map(id => parse.parsedNodes.find(n => n.nodeId == id));
 
     const topLevelNodes = parse.parsedNodes
         .filter(n => 
                 n.topLevel 
-            && !paramNodes.includes(n));
+            && !paramNodes.find(_n => _n.nodeId == n.nodeId));
 
     const otherNodes = parse.parsedNodes.filter(n =>
-               !paramNodes   .includes(n)
-            && !topLevelNodes.includes(n));
+               !paramNodes   .find(_n => _n.nodeId == n.nodeId)
+            && !topLevelNodes.find(_n => _n.nodeId == n.nodeId));
 
 
     (async () =>
@@ -41805,7 +41878,7 @@ function genRequest(request, save)
         let stop = false;
 
 
-        for (const nodes of [paramNodes, topLevelNodes, otherNodes])
+        for (const nodes of [paramNodes, topLevelNodes])//, otherNodes])
         {
             for (const node of nodes)
             {
@@ -45503,6 +45576,50 @@ function genParseAbsolute(parse)
 
     genParseNodeEnd(parse, abs);
     return abs;
+}
+
+
+
+function genParseNegative(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const neg = new GNegative(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(neg, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, neg);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        neg.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, neg);
+    return neg;
 }
 
 
@@ -49861,6 +49978,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_PRECISION       ) result = genParseSetPrecision      (parse);
     else if (parse.next == NUMBER_SIGN            ) result = genParseSign              (parse);
     else if (parse.next == NUMBER_ABSOLUTE        ) result = genParseAbsolute          (parse);
+    else if (parse.next == NUMBER_NEGATIVE        ) result = genParseNegative          (parse);
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound             (parse);
     else if (parse.next == NUMBER_MINMAX          ) result = genParseMinMax            (parse);
     else if (parse.next == NUMBER_SIMPLE_MINMAX   ) result = genParseSimpleMinMax      (parse);

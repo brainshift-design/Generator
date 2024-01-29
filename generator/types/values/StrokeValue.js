@@ -98,7 +98,7 @@ extends GValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -151,7 +151,7 @@ extends GValue
 
     getNaN()
     {
-        return StrokeValue.NaN;
+        return StrokeValue.NaN.copy();
     }
 
 

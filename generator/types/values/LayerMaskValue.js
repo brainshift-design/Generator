@@ -72,7 +72,7 @@ extends GValue
 
     getNaN()
     {
-        return LayerMaskValue.NaN;
+        return LayerMaskValue.NaN.copy();
     }
 
 

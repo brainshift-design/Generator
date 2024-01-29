@@ -102,7 +102,7 @@ extends GValue
 
     getNaN()
     {
-        return RoundCornersValue.NaN;
+        return RoundCornersValue.NaN.copy();
     }
 
 

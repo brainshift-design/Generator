@@ -50,6 +50,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_PRECISION:        node = new OpSetPrecision();      break;
         case NUMBER_SIGN:             node = new OpSign();              break;
         case NUMBER_ABSOLUTE:         node = new OpAbsolute();          break;
+        case NUMBER_NEGATIVE:         node = new OpNegative();          break;
         case NUMBER_ROUND:            node = new OpRound();             break;
         case NUMBER_SIMPLE_MINMAX:    node = new OpSimpleMinMax();      break;
         case NUMBER_MINMAX:           node = new OpMinMax();            break;

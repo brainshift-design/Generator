@@ -60,8 +60,8 @@ extends GOperator2
         }
         else
         {
-            this.distance = NumberValue.NaN;
-            this.angle    = NumberValue.NaN;
+            this.distance = NumberValue.NaN.copy();
+            this.angle    = NumberValue.NaN.copy();
         }
 
 

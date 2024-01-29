@@ -81,6 +81,7 @@
 ../operators/number/OpSetPrecision.js
 ../operators/number/OpSign.js
 ../operators/number/OpAbsolute.js
+../operators/number/OpNegative.js
 ../operators/number/OpRound.js
 ../operators/number/OpSimpleMinMax.js
 ../operators/number/OpMinMax.js

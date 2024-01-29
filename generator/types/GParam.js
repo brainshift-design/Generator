@@ -67,7 +67,9 @@ extends GOperator
             const value = (await this.param.eval(parse)).toValue();
             this.value = value;
             
-            return this.value;
+            return this.value
+                 ? this.value.copy()
+                 : null;
         }
         else
             return this.value = new NullValue();

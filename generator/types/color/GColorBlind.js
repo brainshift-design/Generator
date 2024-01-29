@@ -68,7 +68,7 @@ extends GOperator1
                     this.value = getColorBlindValue(input, l, m, s);
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
             this.value = ColorValue.NaN.copy();

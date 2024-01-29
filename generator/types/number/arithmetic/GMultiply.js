@@ -45,7 +45,7 @@ extends GArithmetic
 async function evalMultiplyInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
 
     const value = new NumberValue(0);
@@ -61,14 +61,14 @@ async function evalMultiplyInputs(inputs, parse)
 
             if (   !val
                 || !val.isValid())
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
 
             if (isListType(val.type))
             {
                 if (   isEmpty(val.items)
                     || val.items[0].type != NUMBER_VALUE)
-                    return NumberValue.NaN;
+                    return NumberValue.NaN.copy();
 
                 for (const item of val.items)
                 {

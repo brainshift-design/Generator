@@ -45,7 +45,7 @@ extends GArithmetic
 async function evalSubtractInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
 
     let value = new NumberValue(0);
@@ -57,22 +57,23 @@ async function evalSubtractInputs(inputs, parse)
 
         if (   !val0
             || !val0.isValid())
-            return NumberValue.NaN;
+            return NumberValue.NaN.copy();
 
 
-        if (   inputs.length == 1
-            && val0.type == NUMBER_VALUE)
-        {
-            value = new NumberValue(-val0.value, val0.decimals);
-        }
-        else if (isListType(val0.type)
+        // if (   inputs.length == 1
+        //     && val0.type == NUMBER_VALUE)
+        // {
+        //     value = new NumberValue(-val0.value, val0.decimals);
+        // }
+        //else 
+        if (     isListType(val0.type)
              && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
 
             if (   !item0
                 || !item0.isValid())
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
 
             value.value    = item0.value;
@@ -84,7 +85,7 @@ async function evalSubtractInputs(inputs, parse)
 
                 if (   !item
                     || !item.isValid())
-                    return NumberValue.NaN;
+                    return NumberValue.NaN.copy();
 
                 if (item.type == NUMBER_VALUE)
                 {
@@ -96,7 +97,7 @@ async function evalSubtractInputs(inputs, parse)
         else
         {
             if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
             value.value    = val0.value;
             value.decimals = val0.decimals;
@@ -109,7 +110,7 @@ async function evalSubtractInputs(inputs, parse)
 
             if (   !val
                 || !val.isValid())
-                return NumberValue.NaN;
+                return NumberValue.NaN.copy();
 
 
             if (isListType(val.type))

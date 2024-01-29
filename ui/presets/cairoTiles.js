@@ -239,19 +239,15 @@ const presetCairoTiles = '\
             ]\
             },\
             {\
-            "type": "MATH",\
-            "id": "math",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "3706.93",\
             "y": "5217",\
-            "z": "16",\
-            "params":\
-            [\
-                    ["NUM#", "operation", "0,0"]\
-            ]\
+            "z": "16"\
             },\
             {\
             "type": "SEQ",\
@@ -351,19 +347,15 @@ const presetCairoTiles = '\
             ]\
             },\
             {\
-            "type": "MATH",\
-            "id": "math2",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg2",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "3712.93",\
             "y": "5483",\
-            "z": "23",\
-            "params":\
-            [\
-                    ["NUM#", "operation", "0,0"]\
-            ]\
+            "z": "23"\
             },\
             {\
             "type": "NUM",\
@@ -716,7 +708,7 @@ const presetCairoTiles = '\
         "connections":\
         [\
             {\
-            "outputNodeId": "math",\
+            "outputNodeId": "neg",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "point",\
@@ -871,7 +863,7 @@ const presetCairoTiles = '\
             "outputNodeId": "num",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "math",\
+            "inputNodeId": "neg",\
             "inputId": "h0",\
             "list": "false"\
             },\
@@ -951,7 +943,7 @@ const presetCairoTiles = '\
             "outputNodeId": "num2",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "math2",\
+            "inputNodeId": "neg2",\
             "inputId": "h0",\
             "list": "false"\
             },\
@@ -988,7 +980,7 @@ const presetCairoTiles = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "math2",\
+            "outputNodeId": "neg2",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "point3",\

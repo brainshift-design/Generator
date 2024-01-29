@@ -111,7 +111,7 @@ extends GOperator1
                 this.color   ? this.color  .toValue() : this.input.value.color  .toValue(),
                 this.opacity ? this.opacity.toValue() : this.input.value.opacity.toValue(),
                 this.blend   ? this.blend  .toValue() : this.input.value.blend  .toValue())
-            : FillValue.NaN;
+            : FillValue.NaN.copy();
     }
 
 

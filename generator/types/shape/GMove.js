@@ -52,6 +52,7 @@ extends GOperator1
             return this;
 
             
+        const input       = this.input       ? (await this.input      .eval(parse)).toValue() : null;
         const moveType    = this.moveType    ? (await this.moveType   .eval(parse)).toValue() : null;
         const x           = this.x           ? (await this.x          .eval(parse)).toValue() : null;
         const y           = this.y           ? (await this.y          .eval(parse)).toValue() : null;
@@ -59,9 +60,9 @@ extends GOperator1
         const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = input.copy();
 
             if (this.value)
                 this.value.nodeId = this.nodeId;
@@ -182,8 +183,8 @@ extends GOperator1
     toValue()
     {
         return this.value
-        ? this.value.copy()
-        : null;
+             ? this.value.copy()
+             : null;
     }
     
     

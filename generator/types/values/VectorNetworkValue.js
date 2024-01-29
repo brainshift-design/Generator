@@ -107,7 +107,7 @@ extends GValue
 
     getNaN()
     {
-        return VectorNetworkValue.NaN;
+        return VectorNetworkValue.NaN.copy();
     }
 
 

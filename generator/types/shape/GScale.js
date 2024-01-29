@@ -49,6 +49,7 @@ extends GAffine
             return this;
 
 
+        const input         = this.input         ? (await this.input        .eval(parse)).toValue() : null;
         const scaleX        = this.scaleX        ? (await this.scaleX       .eval(parse)).toValue() : null;
         const scaleY        = this.scaleY        ? (await this.scaleY       .eval(parse)).toValue() : null;
         const affectCorners = this.affectCorners ? (await this.affectCorners.eval(parse)).toValue() : null;
@@ -57,10 +58,10 @@ extends GAffine
         const [showCenter, affectSpace] = await this.evalBaseParams(parse);
 
 
-        if (this.input)
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
-
+            this.value = input.copy();
+            
             if (this.value)
                 this.value.nodeId = this.nodeId;
         }

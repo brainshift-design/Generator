@@ -109,19 +109,15 @@ const presetQuadraticFormula = '\
             ]\
             },\
             {\
-            "type": "MATH",\
-            "id": "math",\
+            "type": "NEG",\
+            "id": "neg",\
             "name": "-b",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "2242",\
             "y": "3508",\
-            "z": "8",\
-            "params":\
-            [\
-                    ["NUM#", "operation", "0,0"]\
-            ]\
+            "z": "8"\
             },\
             {\
             "type": "MATH",\
@@ -316,7 +312,7 @@ const presetQuadraticFormula = '\
             "outputNodeId": "num2",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "math",\
+            "inputNodeId": "neg",\
             "inputId": "h0",\
             "list": "false"\
             },\
@@ -385,7 +381,7 @@ const presetQuadraticFormula = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "math",\
+            "outputNodeId": "neg",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "math6",\
@@ -401,7 +397,7 @@ const presetQuadraticFormula = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "math",\
+            "outputNodeId": "neg",\
             "outputId": "h0",\
             "outputOrder": "1",\
             "inputNodeId": "math7",\

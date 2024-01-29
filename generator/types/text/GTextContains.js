@@ -68,8 +68,8 @@ extends GOperator2
                 
                 this.value = new NumberValue(indices.length > 0 ? 1 : 0);
 
-                this.first = indices.length > 0 ? new NumberValue(indices.at( 0)) : NumberValue.NaN;
-                this.last  = indices.length > 0 ? new NumberValue(indices.at(-1)) : NumberValue.NaN;
+                this.first = indices.length > 0 ? new NumberValue(indices.at( 0)) : NumberValue.NaN.copy();
+                this.last  = indices.length > 0 ? new NumberValue(indices.at(-1)) : NumberValue.NaN.copy();
 
                 this.all   = new ListValue();
 
@@ -80,17 +80,17 @@ extends GOperator2
             {
                 this.value = new NumberValue(1);
 
-                this.first = NumberValue.NaN;
-                this.last  = NumberValue.NaN;
-                this.all   =   ListValue.NaN;
+                this.first = NumberValue.NaN.copy();
+                this.last  = NumberValue.NaN.copy();
+                this.all   =   ListValue.NaN.copy();
             }
         }
         else                  
         {
-            this.value = NumberValue.NaN;
-            this.first = NumberValue.NaN;
-            this.last  = NumberValue.NaN;
-            this.all   =   ListValue.NaN;
+            this.value = NumberValue.NaN.copy();
+            this.first = NumberValue.NaN.copy();
+            this.last  = NumberValue.NaN.copy();
+            this.all   =   ListValue.NaN.copy();
         }
     
 

@@ -62,17 +62,17 @@ function genRequest(request, save)
         logRequest(parse);
 
 
-    const paramNodes = parse.paramNodeIds.map(id =>
-        parse.parsedNodes.find(n => n.nodeId == id));
+    const paramNodes = parse.paramNodeIds
+        .map(id => parse.parsedNodes.find(n => n.nodeId == id));
 
     const topLevelNodes = parse.parsedNodes
         .filter(n => 
                 n.topLevel 
-            && !paramNodes.includes(n));
+            && !paramNodes.find(_n => _n.nodeId == n.nodeId));
 
     const otherNodes = parse.parsedNodes.filter(n =>
-               !paramNodes   .includes(n)
-            && !topLevelNodes.includes(n));
+               !paramNodes   .find(_n => _n.nodeId == n.nodeId)
+            && !topLevelNodes.find(_n => _n.nodeId == n.nodeId));
 
 
     (async () =>
@@ -80,7 +80,7 @@ function genRequest(request, save)
         let stop = false;
 
 
-        for (const nodes of [paramNodes, topLevelNodes, otherNodes])
+        for (const nodes of [paramNodes, topLevelNodes])//, otherNodes])
         {
             for (const node of nodes)
             {

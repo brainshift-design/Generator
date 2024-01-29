@@ -108,7 +108,7 @@ extends GValue
 
     async eval(parse)
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -192,7 +192,7 @@ extends GValue
 
     getNaN()
     {
-        return PointValue.NaN;
+        return PointValue.NaN.copy();
     }
 
 

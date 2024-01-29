@@ -73,17 +73,15 @@ extends GOperator1
             return this;
 
 
+        const input = this.input ? (await this.input.eval(parse)).toValue()             : null;
         const space = this.space ? (await this.space.eval(parse)).toValue().toInteger() : null; 
         let   c1    = this._c1   ? (await this._c1  .eval(parse)).toValue()             : null;
         let   c2    = this._c2   ? (await this._c2  .eval(parse)).toValue()             : null;
         let   c3    = this._c3   ? (await this._c3  .eval(parse)).toValue()             : null;
 
         
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-            
             if (   input.isValid())
                 // && this.input.type != START)
             {
@@ -120,7 +118,7 @@ extends GOperator1
                     if (c3) { this.value.c3 = c3; this.c3 = c3; }
                 }
                 else
-                    this.value = input;
+                    this.value = input.copy();
             }
             else
                 this.value = ColorValue.NaN.copy();
@@ -129,7 +127,10 @@ extends GOperator1
             if (!this.convert)
                 this.convert = NumberValue.NaN.copy();
         }
-        else
+        else if (space
+              && c1
+              && c2
+              && c3)
         {
             this.value = new ColorValue(space, c1, c2, c3);
 
@@ -140,6 +141,7 @@ extends GOperator1
                 colorSpaceCount(parse)-1);
 
             this.value.space.value = toSpaceIndex;
+
 
             if (    this.convert
                 &&  this.convert.isValid()
@@ -155,11 +157,13 @@ extends GOperator1
                     colorSpace(toSpaceIndex));
             }
         }
+        else
+            this.value = ColorValue.NaN.copy();
 
 
         if (!this.value.space.isValid())
             this.value = new ColorValue(
-                this.space.toValue(),
+                this.space ? this.space.toValue() : NumberValue.NaN,
                 NumberValue.NaN,
                 NumberValue.NaN,
                 NumberValue.NaN);

@@ -275,19 +275,15 @@ const presetClouds = '\
             ]\
         },\
         {\
-            "type": "MATH",\
-            "id": "math4",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg4",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "4080",\
             "y": "3388",\
-            "z": "17",\
-            "params":\
-            [\
-                ["NUM#", "operation", "0,0"]\
-            ]\
+            "z": "17"\
         },\
         {\
             "type": "MOVE",\
@@ -538,19 +534,15 @@ const presetClouds = '\
             ]\
         },\
         {\
-            "type": "MATH",\
-            "id": "math",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "4061",\
             "y": "3263",\
-            "z": "33",\
-            "params":\
-            [\
-                ["NUM#", "operation", "0,0"]\
-            ]\
+            "z": "33"\
         },\
         {\
             "type": "MATH",\
@@ -609,7 +601,7 @@ const presetClouds = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "math",\
+            "outputNodeId": "neg",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "noise",\
@@ -764,7 +756,7 @@ const presetClouds = '\
             "outputNodeId": "num4",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "math4",\
+            "inputNodeId": "neg4",\
             "inputId": "h0",\
             "list": "false"\
         },\
@@ -849,7 +841,7 @@ const presetClouds = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "math4",\
+            "outputNodeId": "neg4",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "noise2",\
@@ -892,7 +884,7 @@ const presetClouds = '\
             "outputNodeId": "num",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "math",\
+            "inputNodeId": "neg",\
             "inputId": "h0",\
             "list": "false"\
         },\

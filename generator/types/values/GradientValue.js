@@ -170,7 +170,7 @@ extends GValue
 
     getNaN()
     {
-        return GradientValue.NaN;
+        return GradientValue.NaN.copy();
     }
 
 

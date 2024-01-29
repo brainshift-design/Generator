@@ -59,7 +59,7 @@ extends GOperator1
             }
         }
         else
-            this.value = input;
+            this.value = input.copy();
 
 
         this.setUpdateValues(parse,

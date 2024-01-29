@@ -57,10 +57,10 @@ extends GOperator1
             if (this.options.enabled)
                 this.value = new NumberValue(input.value, decimals.value);
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
-            this.value = NumberValue.NaN;
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

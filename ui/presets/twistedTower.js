@@ -16,19 +16,15 @@ const presetTwistedTower = '\
             "height": "64"\
         },\
         {\
-            "type": "MATH",\
-            "id": "math5",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "5928",\
             "y": "5948",\
-            "z": "1",\
-            "params":\
-            [\
-                ["NUM#", "operation", "0,0"]\
-            ]\
+            "z": "1"\
         },\
         {\
             "type": "SEQ",\
@@ -632,12 +628,12 @@ const presetTwistedTower = '\
             "outputNodeId": "move8",\
             "outputId": "y",\
             "outputOrder": "1",\
-            "inputNodeId": "math5",\
+            "inputNodeId": "neg",\
             "inputId": "h0",\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "math5",\
+            "outputNodeId": "neg",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "sequence4",\

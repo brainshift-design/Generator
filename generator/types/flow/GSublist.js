@@ -95,7 +95,7 @@ extends GOperator1
                             }
                         }
                         else
-                            this.value = input;//.copy();
+                            this.value = input.copy();//.copy();
                     }
                 }
                 else

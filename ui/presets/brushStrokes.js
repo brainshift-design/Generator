@@ -151,19 +151,15 @@ const presetBrushStrokes = '\
             ]\
         },\
         {\
-            "type": "MATH",\
-            "id": "math",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "5767",\
             "y": "6752",\
-            "z": "9",\
-            "params":\
-            [\
-                ["NUM#", "operation", "0,0"]\
-            ]\
+            "z": "9"\
         },\
         {\
             "type": "RAND",\
@@ -607,19 +603,15 @@ const presetBrushStrokes = '\
             ]\
         },\
         {\
-            "type": "MATH",\
-            "id": "math2",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg2",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "5755",\
             "y": "7316",\
-            "z": "38",\
-            "params":\
-            [\
-                ["NUM#", "operation", "0,0"]\
-            ]\
+            "z": "38"\
         },\
         {\
             "type": "VPATH",\
@@ -738,19 +730,15 @@ const presetBrushStrokes = '\
             ]\
         },\
         {\
-            "type": "MATH",\
-            "id": "math5",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg5",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "5312",\
             "y": "6463",\
-            "z": "45",\
-            "params":\
-            [\
-                ["NUM#", "operation", "0,0"]\
-            ]\
+            "z": "45"\
         },\
         {\
             "type": "NOISE",\
@@ -772,9 +760,9 @@ const presetBrushStrokes = '\
             ]\
         },\
         {\
-            "type": "MATH",\
-            "id": "math4",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg4",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
@@ -1074,19 +1062,15 @@ const presetBrushStrokes = '\
             ]\
         },\
         {\
-            "type": "MATH",\
-            "id": "math6",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg6",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "5706",\
             "y": "6627",\
-            "z": "66",\
-            "params":\
-            [\
-                ["NUM#", "operation", "0,0"]\
-            ]\
+            "z": "66"\
         },\
         {\
             "type": "ROT",\
@@ -1187,19 +1171,15 @@ const presetBrushStrokes = '\
             ]\
         },\
         {\
-            "type": "MATH",\
-            "id": "math7",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg7",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "5256",\
             "y": "7289",\
-            "z": "73",\
-            "params":\
-            [\
-                ["NUM#", "operation", "0,0"]\
-            ]\
+            "z": "73"\
         },\
         {\
             "type": "REPT",\
@@ -1330,7 +1310,7 @@ const presetBrushStrokes = '\
             "outputNodeId": "num",\
             "outputId": "h0",\
             "outputOrder": "1",\
-            "inputNodeId": "math",\
+            "inputNodeId": "neg",\
             "inputId": "h0",\
             "list": "false"\
         },\
@@ -1343,7 +1323,7 @@ const presetBrushStrokes = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "math",\
+            "outputNodeId": "neg",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "random",\
@@ -1359,7 +1339,7 @@ const presetBrushStrokes = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "math6",\
+            "outputNodeId": "neg6",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "range2",\
@@ -1719,7 +1699,7 @@ const presetBrushStrokes = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "math7",\
+            "outputNodeId": "neg7",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "random4",\
@@ -1754,7 +1734,7 @@ const presetBrushStrokes = '\
             "outputNodeId": "num2",\
             "outputId": "h0",\
             "outputOrder": "1",\
-            "inputNodeId": "math2",\
+            "inputNodeId": "neg2",\
             "inputId": "h0",\
             "list": "false"\
         },\
@@ -1810,7 +1790,7 @@ const presetBrushStrokes = '\
             "outputNodeId": "num3",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "math5",\
+            "inputNodeId": "neg5",\
             "inputId": "h0",\
             "list": "false"\
         },\
@@ -1826,7 +1806,7 @@ const presetBrushStrokes = '\
             "outputNodeId": "noise7",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "math4",\
+            "inputNodeId": "neg4",\
             "inputId": "h0",\
             "list": "false"\
         },\
@@ -1967,7 +1947,7 @@ const presetBrushStrokes = '\
             "list": "true"\
         },\
         {\
-            "outputNodeId": "math4",\
+            "outputNodeId": "neg4",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "point",\
@@ -2026,7 +2006,7 @@ const presetBrushStrokes = '\
             "outputNodeId": "num4",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "math6",\
+            "inputNodeId": "neg6",\
             "inputId": "h0",\
             "list": "false"\
         },\
@@ -2055,7 +2035,7 @@ const presetBrushStrokes = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "math2",\
+            "outputNodeId": "neg2",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "random2",\
@@ -2079,7 +2059,7 @@ const presetBrushStrokes = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "math5",\
+            "outputNodeId": "neg5",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "random5",\
@@ -2130,7 +2110,7 @@ const presetBrushStrokes = '\
             "outputNodeId": "num5",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "math7",\
+            "inputNodeId": "neg7",\
             "inputId": "h0",\
             "list": "false"\
         },\

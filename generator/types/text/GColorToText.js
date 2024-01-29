@@ -69,7 +69,7 @@ extends GOperator1
         }
 
         else
-            this.value = TextValue.NaN;
+            this.value = TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

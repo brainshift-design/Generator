@@ -61,7 +61,7 @@ extends GOperator1
                     this.value = getGetParamValue(input, name);
             }
             else
-                this.value = input;
+                this.value = input.copy();
         }
         else
         {

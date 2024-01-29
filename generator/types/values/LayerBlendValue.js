@@ -84,7 +84,7 @@ extends GValue
 
     getNaN()
     {
-        return LayerBlendValue.NaN;
+        return LayerBlendValue.NaN.copy();
     }
 
 

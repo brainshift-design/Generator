@@ -140,7 +140,7 @@ extends GValue
 
     getNaN()
     {
-        return DropShadowValue.NaN;
+        return DropShadowValue.NaN.copy();
     }
 
 

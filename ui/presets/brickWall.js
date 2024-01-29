@@ -49,19 +49,15 @@ const presetBrickWall = '\
             ]\
         },\
         {\
-            "type": "MATH",\
-            "id": "math4",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "4232",\
             "y": "5465",\
-            "z": "3",\
-            "params":\
-            [\
-                ["NUM#", "operation", "0,0"]\
-            ]\
+            "z": "3"\
         },\
         {\
             "type": "INSH",\
@@ -414,7 +410,7 @@ const presetBrickWall = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "math4",\
+            "outputNodeId": "neg",\
             "outputId": "h0",\
             "outputOrder": "1",\
             "inputNodeId": "random4",\
@@ -433,7 +429,7 @@ const presetBrickWall = '\
             "outputNodeId": "num3",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "math4",\
+            "inputNodeId": "neg",\
             "inputId": "h0",\
             "list": "false"\
         },\
@@ -622,7 +618,7 @@ const presetBrickWall = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "math4",\
+            "outputNodeId": "neg",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "random3",\

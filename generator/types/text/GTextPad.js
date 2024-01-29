@@ -91,7 +91,7 @@ extends GOperator1
             }
         }
         else
-            this.value = new TextValue();//TextValue.NaN;
+            this.value = new TextValue();//TextValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

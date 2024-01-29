@@ -48,7 +48,7 @@ extends GOperator1
 async function evalTangent(input, arc)
 {
     if (!input)
-        return NumberValue.NaN;
+        return NumberValue.NaN.copy();
 
     const val = 
         !arc 

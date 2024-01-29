@@ -111,6 +111,7 @@
 ../generator/types/number/GSetPrecision.js
 ../generator/types/number/GSign.js
 ../generator/types/number/GAbsolute.js
+../generator/types/number/GNegative.js
 ../generator/types/number/GRound.js
 ../generator/types/number/GSimpleMinMax.js
 ../generator/types/number/GMinMax.js

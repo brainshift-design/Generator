@@ -136,19 +136,15 @@ const presetSpiderWeb = '\
             ]\
         },\
         {\
-            "type": "MATH",\
-            "id": "math2",\
-            "name": "math",\
+            "type": "NEG",\
+            "id": "neg",\
+            "name": "negative",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "5181",\
             "y": "6508",\
-            "z": "8",\
-            "params":\
-            [\
-                ["NUM#", "operation", "0,0"]\
-            ]\
+            "z": "8"\
         },\
         {\
             "type": "ROT",\
@@ -545,7 +541,7 @@ const presetSpiderWeb = '\
             "outputNodeId": "math",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "math2",\
+            "inputNodeId": "neg",\
             "inputId": "h0",\
             "list": "false"\
         },\
@@ -558,7 +554,7 @@ const presetSpiderWeb = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "math2",\
+            "outputNodeId": "neg",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "rotate",\
