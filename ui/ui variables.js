@@ -196,6 +196,21 @@ function updateMenuLocalVariables()
 
 function uiLinkNodeToVariable(node, varId, varType, varName)
 {
+    if (   node.linkedVariableType != NULL
+        && varType == NULL
+        && node.paramValue)
+    {
+        if (node.paramValue.input.connected)
+            uiDeleteSavedConn(node.paramValue.input.connection);
+
+        if (node.paramValue.output.connected)
+        {
+            for (const input of node.paramValue.output.connectedInputs)
+                uiDeleteSavedConn(input.connection);
+        }
+    }
+
+
     node.linkedVariableId   = varId;
     node.linkedVariableType = varType;
     node.linkedVariableName = varName;

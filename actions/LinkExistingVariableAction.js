@@ -22,11 +22,12 @@ extends Action
     inputValues  = []; // in id,value pairs, to be restored on undo
 
 
+
     constructor(nodeId, variableId, resolvedType, variableName)
     {
         super(
             LINK_VARIABLE_ACTION, 
-            'LINK VARIABLE \'' + nodeId + ' ⟶ ' + variableId + ')');
+            'LINK VARIABLE \'' + nodeId + ' ⟶ ' + (variableId != NULL ? variableId : 'NULL') + ')');
         
         this.nodeId       = nodeId;
         this.variableId   = variableId;
@@ -43,14 +44,37 @@ extends Action
         this.prevVariableType = this.node.linkedVariableType;
         this.prevVariableName = this.node.linkedVariableName;
         
+
         // connectAction_saveOutputValues(this);
         // connectAction_saveInputValues(this);
 
+        // if (   this.prevVariableId != NULL
+        //     && this.node.linkedVariableId == NULL
+        //     && this.node.paramValue)
+        // {
+        //     if (this.node.paramValue.input.connected)
+        //     {
+        //         uiDeleteSavedConn(this.node.paramValue.input.connection);
+        //         uiDisconnect(this.node.paramValue.input);
+        //     }    
+
+        //     if (this.node.paramValue.output.connected)
+        //     {
+        //         for (const input of this.node.paramValue.output.connectedInputs)
+        //         {
+        //             uiDeleteSavedConn(input.connection);
+        //             uiDisconnect(input);
+        //         }    
+        //     }
+        // }
+
+        
         uiLinkNodeToVariable(
             this.node,
             this.variableId,
             this.variableType,
             this.variableName);
+
 
         //pushUnique(updateNodes, this.node);
 
