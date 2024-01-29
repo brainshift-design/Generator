@@ -232,26 +232,27 @@ ColorControl.prototype.initEvents = function()
         clearTimeout(this.clickTimer);
 
 
-        if (graphView.tempConn)
-        {
-            if (    graphView.tempConn.output
-                && !graphView.tempConn.output.node.isOrFollows(this.param.node)
-                &&  graphView.overInput)
-            {
-                graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
-                graphView.overInput.endConnection();
-            }
-            else if (graphView.tempConn.input
-                && !this.param.node.isOrFollows(graphView.tempConn.input.node)
-                &&  graphView.overOutput)
-            {
-                graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
-                graphView.overOutput.endConnection();
-            }
-        }
+        // if (graphView.tempConn)
+        // {
+        //     if (    graphView.tempConn.output
+        //         && !graphView.tempConn.output.node.isOrFollows(this.param.node)
+        //         &&  graphView.overInput)
+        //     {
+        //         graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
+        //         graphView.overInput.endConnection();
+        //     }
+        //     else if (graphView.tempConn.input
+        //         && !this.param.node.isOrFollows(graphView.tempConn.input.node)
+        //         &&  graphView.overOutput)
+        //     {
+        //         graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
+        //         graphView.overOutput.endConnection();
+        //     }
+        // }
         
-        else if (/*this.moved
-              ||*/ document.menuHadFocus)
+        // else 
+        if (/*this.moved
+            ||*/ document.menuHadFocus)
         {
             this.unlockPointer(e.pointerId);
 

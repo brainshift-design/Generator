@@ -104,7 +104,7 @@ function initTemplateMenuTemplates(templates, showNames, modifiers)
                     });
 
                     if (modifiers)
-                        item.replaceExpand = '<svg width="2" height="5" viewBox="0 -1 2 5" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="2" height="1" fill="white"/><rect y="3" width="2" height="1" fill="white"/></svg>';
+                        item.replaceExpand = '<svg width="4" height="5" viewBox="0 -1 4 5" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="4" height="1" fill="white"/><rect y="3" width="4" height="1" fill="white"/></svg>';
 
                     curMenu.addItems([item]);
                 }
@@ -125,7 +125,7 @@ function initTemplateMenuTemplates(templates, showNames, modifiers)
             });
 
             if (modifiers)
-                item.replaceExpand = '<svg width="2" height="5" viewBox="0 -1 2 5" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="2" height="1" fill="white"/><rect y="3" width="2" height="1" fill="white"/></svg>';
+                item.replaceExpand = '<svg width="4" height="5" viewBox="0 -1 4 5" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="4" height="1" fill="white"/><rect y="3" width="4" height="1" fill="white"/></svg>';
 
             curMenu.addItems([item]);
         }

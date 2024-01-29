@@ -164,7 +164,39 @@ extends EventTarget
                     graphView.tempConn.wire.outputPos = point_NaN;
 
                     graphView.tempConn.input.updateControl();
+                }
             }
+        });
+
+        
+        this.div.addEventListener('pointerup', e =>
+        {
+            e.stopPropagation();
+
+
+            if (panMode)
+                return;
+
+
+            console.log('pointerup');
+            if (graphView.tempConn)
+            {
+                if (    graphView.tempConn.output
+                    && !graphView.tempConn.output.node.isOrFollows(this.node))
+                {
+                    graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
+
+                    if (graphView.overInput)
+                        graphView.overInput.endConnection();
+                }
+                else if (graphView.tempConn.input
+                    && !this.node.isOrFollows(graphView.tempConn.input.node))
+                {
+                    graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
+                    
+                    if (graphView.overOutput)
+                        graphView.overOutput.endConnection();
+                }
             }
         });
     }

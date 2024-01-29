@@ -428,26 +428,8 @@ NumberControl.prototype.initEvents = function()
         }
 
 
-        if (graphView.tempConn)
-        {
-            if (    graphView.tempConn.output
-                && !graphView.tempConn.output.node.isOrFollows(param.node)
-                &&  graphView.overInput)
-            {
-                graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
-                graphView.overInput.endConnection();
-            }
-            else if (graphView.tempConn.input
-                && !param.node.isOrFollows(graphView.tempConn.input.node)
-                &&  graphView.overOutput)
-            {
-                graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
-                graphView.overOutput.endConnection();
-            }
-        }
-        
-        else if (this.moved
-              || document.menuHadFocus)
+        if (   this.moved
+            || document.menuHadFocus)
         {
             if (param)
                 param.noUpdate = false;  
@@ -467,7 +449,6 @@ NumberControl.prototype.initEvents = function()
 
 
             this.update();
-
 
             pushUpdateFromParam(null, [param.node], param);
 
