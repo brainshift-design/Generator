@@ -55,11 +55,15 @@ extends GOperator1
         const invert  = this.invert    ? (await this.invert   .eval(parse)).toValue() : null;
 
 
-        op.value    = Math.min(Math.max(0, Math.round(op.value)), MATH_OPS.length-1);
-        op.decimals = 0;
+        if (op)
+        {
+            op.value    = Math.min(Math.max(0, Math.round(op.value)), MATH_OPS.length-1);
+            op.decimals = 0;
+        }
 
 
-        if (input)
+        if (   input
+            && op)
         {
             if (this.options.enabled)
             {

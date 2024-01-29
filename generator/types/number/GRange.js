@@ -54,53 +54,62 @@ extends GOperator
             return this;
 
             
-        const from   = (await this.from  .eval(parse)).toValue();
-        const start  = (await this.start .eval(parse)).toValue();
-        const end    = (await this.end   .eval(parse)).toValue();
-        const bias   = (await this.bias  .eval(parse)).toValue();
-        const spread = (await this.spread.eval(parse)).toValue();
+        const from   = this.from   ? (await this.from  .eval(parse)).toValue() : null;
+        const start  = this.start  ? (await this.start .eval(parse)).toValue() : null;
+        const end    = this.end    ? (await this.end   .eval(parse)).toValue() : null;
+        const bias   = this.bias   ? (await this.bias  .eval(parse)).toValue() : null;
+        const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
         const iteration = repeat ? repeat.iteration : 0;
 
 
-        let delta = end.value - start.value;
-
-        let step = 
-               repeat
-            && this.options.enabled
-            ? delta / Math.max(1, repeat.total - (from.value == 1 ? 1 : 0))
-            : 0;
-
-            
-        let startOffset;
-
-             if (from  .value == 2) startOffset = step;
-        else if (from  .value == 1
-              && repeat
-              && repeat.total == 1) startOffset = delta/2;
-        else                        startOffset = 0;
-
-
-        let f;
-        
-        if (repeat)
+        if (   from
+            && start
+            && end
+            && bias
+            && spread)
         {
-                 if (from.value == 2) f = iteration/repeat.total;
-            else if (from.value == 1) f = (repeat.total > 1 ? iteration/(repeat.total-1) : 0);
-            else if (from.value == 0) f = iteration/repeat.total;
+            let delta = end.value - start.value;
+
+            let step = 
+                repeat
+                && this.options.enabled
+                ? delta / Math.max(1, repeat.total - (from.value == 1 ? 1 : 0))
+                : 0;
+
+                
+            let startOffset;
+
+                 if (from  .value == 2) startOffset = step;
+            else if (from  .value == 1
+                && repeat
+                && repeat.total == 1) startOffset = delta/2;
+            else                        startOffset = 0;
+
+
+            let f;
+            
+            if (repeat)
+            {
+                     if (from.value == 2) f = iteration/repeat.total;
+                else if (from.value == 1) f = (repeat.total > 1 ? iteration/(repeat.total-1) : 0);
+                else if (from.value == 0) f = iteration/repeat.total;
+            }
+            else
+                f = 0;
+
+
+            f = getSpreadBias(f, bias.value, spread.value);
+
+
+            this.value = new NumberValue(
+                start.value + startOffset + delta * f,
+                Math.max(start.decimals, end.decimals));
         }
         else
-            f = 0;
-
-
-        f = getSpreadBias(f, bias.value, spread.value);
-
-
-        this.value = new NumberValue(
-            start.value + startOffset + delta * f,
-            Math.max(start.decimals, end.decimals));
+            this.value = NumberValue.NaN;
 
 
         this.setUpdateValues(parse,

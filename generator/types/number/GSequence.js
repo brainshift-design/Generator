@@ -55,10 +55,10 @@ extends GOperator
             return this;
             
 
-        const start = (await this.start   .eval(parse)).toValue();
-        const mult  = (await this.multiply.eval(parse)).toValue();
-        const add   = (await this.add     .eval(parse)).toValue();
-        const end   = (await this.end     .eval(parse)).toValue();
+        const start = this.start    ? (await this.start   .eval(parse)).toValue() : null;
+        const mult  = this.multiply ? (await this.multiply.eval(parse)).toValue() : null;
+        const add   = this.add      ? (await this.add     .eval(parse)).toValue() : null;
+        const end   = this.end      ? (await this.end     .eval(parse)).toValue() : null;
     
 
         if (   start
@@ -80,10 +80,10 @@ extends GOperator
                 this.value = getSequenceValue(start, mult, add, this.iteration, this.options.enabled);
 
             else
-                this.value = NumberValue.NaN.copy();
+                this.value = NumberValue.NaN;
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN;
 
 
         this.setUpdateValues(parse,

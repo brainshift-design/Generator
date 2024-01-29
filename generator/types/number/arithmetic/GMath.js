@@ -42,10 +42,13 @@ extends GArithmetic
             return this;
 
 
-        const op = (await this.operation.eval(parse)).toValue().toInteger();
+        const op = this.operation ? (await this.operation.eval(parse)).toValue().toInteger() : NumberValue.NaN;
 
-        op.value    = Math.min(Math.max(0, Math.round(op.value)), MATH_OPS.length-1);
-        op.decimals = 0;
+        if (op.isValid())
+        {
+            op.value    = Math.min(Math.max(0, Math.round(op.value)), MATH_OPS.length-1);
+            op.decimals = 0;
+        }
 
 
         if (this.options.enabled)
@@ -62,7 +65,11 @@ extends GArithmetic
         }
 
         else if (this.inputs.length > 0)
-            this.value = (await this.inputs[0].eval(parse)).toValue();
+            this.value = 
+                   this.inputs.length > 0 
+                && this.inputs[0] 
+                ? (await this.inputs[0].eval(parse)).toValue() 
+                : null;
 
         else
             this.value = NumberValue.NaN;
