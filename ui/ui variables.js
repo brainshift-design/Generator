@@ -82,6 +82,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     menuLocalVariables.node      = node;
     menuLocalVariables.variables = variables;
     menuLocalVariables.menuItems = [];
+    menuLocalVariables.itemIndex = -1;
 
 
     for (const variable of variables)
@@ -147,14 +148,105 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     menuLocalVariables.divSearchText.placeholder      = 'Find...';
     menuLocalVariables.divSearchText.style.background = 'none';
 
+
+    menuLocalVariables.selectIndex = index =>
+    {
+        menuLocalVariables.itemIndex = index;
+
+        if (menuLocalVariables.itemIndex > -1)
+            menuLocalVariables.items[menuLocalVariables.itemIndex].select();
+    };
+
+
     menuLocalVariables.showCallback = () => 
     {
         menuLocalVariables.divSearch.style.width = menuLocalVariables.divItems.offsetWidth;
         menuLocalVariables.divSearchText.focus();
+
+        // if (menuLocalVariables.items.length > 0)
+        // {
+        //     if (menuLocalVariables.itemIndex < 0)
+        //         menuLocalVariables.itemIndex = 0;
+        //     else
+        //         menuLocalVariables.itemIndex = Math.min(menuLocalVariables.itemIndex, menuLocalVariables.items.length-1);
+        
+        //     menuLocalVariables.updateItem(menuLocalVariables.items[menuLocalVariables.itemIndex], true);
+        // }
     };
 
-    menuLocalVariables.divSearchText.addEventListener('keydown', e => e.stopImmediatePropagation());
-    menuLocalVariables.divSearchText.addEventListener('input',   e => updateMenuLocalVariables());
+
+    menuLocalVariables.updateItem = (item, highlight) =>
+    {
+        item.divHighlight.style.left       = 0;
+        item.divHighlight.style.width      = 'calc(100% - ' + (item.childMenu && item.callback ? item.arrowWidth : 0) + 'px)';
+        item.divHighlight.style.background = highlight ? 'var(--figma-color-bg-brand)' : 'transparent';
+    };
+    
+
+
+    menuLocalVariables.divSearchText.addEventListener('input', e => updateMenuLocalVariables());
+
+    menuLocalVariables.divSearchText.addEventListener('keydown', e => 
+    {
+        e.stopImmediatePropagation();
+
+        if (e.code == 'ArrowUp')
+        {
+            e.preventDefault();
+
+            if (menuLocalVariables.itemIndex > -1)
+                menuLocalVariables.updateItem(menuLocalVariables.items[menuLocalVariables.itemIndex], false);
+            
+
+            let scroll = 25;
+
+            while (menuLocalVariables.itemIndex > 0
+                && menuLocalVariables.items[menuLocalVariables.itemIndex-1].separator)
+            {
+                menuLocalVariables.itemIndex = Math.max(0, menuLocalVariables.itemIndex - 1);
+                scroll += 25;
+            }
+
+
+            menuLocalVariables.itemIndex = Math.max(0, menuLocalVariables.itemIndex - 1);
+            menuLocalVariables.updateItem(menuLocalVariables.items[menuLocalVariables.itemIndex], true);
+
+            if (   menuLocalVariables.itemIndex > -1
+                && menuLocalVariables.itemIndex * 25 - menuLocalVariables.div.scrollTop < 0)
+                menuLocalVariables.div.scrollTop -= scroll;
+        }
+        else if (e.code == 'ArrowDown')
+        {
+            e.preventDefault();
+
+            if (menuLocalVariables.itemIndex > -1)
+                menuLocalVariables.updateItem(menuLocalVariables.items[menuLocalVariables.itemIndex], false);
+    
+
+            let scroll = 25;
+
+            while (menuLocalVariables.itemIndex < menuLocalVariables.items.length-1
+                && menuLocalVariables.items[menuLocalVariables.itemIndex+1].separator)
+            {
+                menuLocalVariables.itemIndex = Math.min(menuLocalVariables.itemIndex + 1, menuLocalVariables.items.length-1);
+                scroll += 25;
+            }
+
+            
+            menuLocalVariables.itemIndex = Math.min(menuLocalVariables.itemIndex + 1, menuLocalVariables.items.length-1);
+            menuLocalVariables.updateItem(menuLocalVariables.items[menuLocalVariables.itemIndex], true);
+
+            if (   menuLocalVariables.itemIndex > -1
+                && (menuLocalVariables.itemIndex+1) * 25 - menuLocalVariables.div.scrollTop > menuLocalVariables.div.offsetHeight - 39)
+                menuLocalVariables.div.scrollTop += scroll;
+        }
+        else if (e.code == 'Enter'
+              || e.code == 'NumpadEnter')
+        {
+            e.preventDefault();
+            menuLocalVariables.selectIndex(menuLocalVariables.itemIndex);
+        }
+    });
 
 
     updateMenuLocalVariables();
@@ -175,7 +267,6 @@ function updateMenuLocalVariables()
     if (!isEmpty(items))
         menuLocalVariables.addItems([new MenuItem('', null, {separator: true})]);
 
-        
     menuLocalVariables.addItems(
     [
         new MenuItem('None', null, 

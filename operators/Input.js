@@ -392,10 +392,10 @@ extends EventTarget
             && this.connectedOutput.node)
         {
             const result =
-                     this.connectedOutput.param
-                 && !this.connectedOutput.param.isNodeValue
-                 ? this.connectedOutput.param.isUnknown()
-                 : this.connectedOutput.node.isOrPrecededByUncached();
+                    this.connectedOutput.param
+                && !this.connectedOutput.param.isNodeValue
+                ? this.connectedOutput.param.isUnknown()
+                : this.connectedOutput.node.isOrPrecededByUncached();
 
             return result;
         }

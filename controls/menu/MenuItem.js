@@ -208,6 +208,9 @@ class MenuItem
                 this.update();
 
 
+                this.parentMenu.itemIndex = this.parentMenu.items.indexOf(this);
+
+
                 if (   this.button0
                     && this.callback
                     && distance(this.dragStart, clientPos(e)) > 5)
@@ -461,6 +464,12 @@ class MenuItem
 
         this.divExpand.style.backgroundPosition = '50% 50%';
         this.divExpand.style.backgroundRepeat   = 'no-repeat';
+
+
+        if (   this.parentMenu
+            && this.parentMenu.itemIndex > -1
+            && this.parentMenu.updateItem)
+            this.parentMenu.updateItem(this.parentMenu.items[this.parentMenu.itemIndex], false);
 
 
         this.divHighlight.style.background = 

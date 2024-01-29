@@ -13,7 +13,6 @@ class Menu
     fromButton            = false;
 
     div;
-    divBody;
     divArrow;
     divItems;
 
@@ -29,6 +28,8 @@ class Menu
         
     items                 = [];
     lastItem              = null;
+
+    itemIndex             = -1; // for menus with keyboard navigation
             
     reverse               = false;
             
@@ -94,9 +95,6 @@ class Menu
 
             if (i > 0) 
                 item.div.appendChild(document.createElement('br'));
-
-            // if (!this.showIcons  && item.divIcon ) item.divIcon .style.display = 'none';
-            // if (!this.showChecks && item.divCheck) item.divCheck.style.width   = this.showIcons ? 18 : 15;
 
             item.parentMenu = this;
             item.index      = i;
