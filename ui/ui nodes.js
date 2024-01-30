@@ -546,8 +546,6 @@ function loadNode(_node, pasting, genVersion = 0)
 
     const node = createNode(_node.type);
 
-    node.div.style.display = 'none';
-
 
     node.loadFromParsedJson(_node, pasting);
 
@@ -604,6 +602,50 @@ function handleLegacy(_node, genVersion)
         if (value) 
             removeFromArray(_node.params, param);
     }
+}
+
+
+
+function uiUpdateLegacyNodes()
+{
+    const params = [];
+    const values = [];
+
+
+    for (const node of graph.currentPage.nodes)
+    {
+        if (   node.type == NUMBER_MATH
+            || node.type == NUMBER_SIMPLE_MATH)
+        {
+            switch (node.paramOperation.value.value)
+            {
+                case 0:  params.push(node.paramOperation);  values.push(new NumberValue(2));  break;
+                case 1:  params.push(node.paramOperation);  values.push(new NumberValue(3));  break;
+                case 2:  params.push(node.paramOperation);  values.push(new NumberValue(0));  break;
+                case 3:  params.push(node.paramOperation);  values.push(new NumberValue(1));  break;
+            }
+        }
+    }
+
+
+    actionManager.do(new SetMultipleValuesAction(params, values, true));
+
+
+    // for (const node of graph.currentPage.nodes)
+    // {
+    //     if (   node.type == NUMBER_MATH
+    //         && node.inputs.length <= 2
+    //         && node.paramOperation.value.value == 2)
+    //     {
+    //         const inConns  = node.inputs.filter(i => i.connected).map(i => i.connection);
+    //         const outConns = node.outputs[0].connectedInputs.map(i => i.connection);
+
+    //         actionManager.do(new DeleteNodesAction([node.nodeId]));
+    //         actionManager.do(getCreateNodeAction(NUMBER_NEGATIVE, null, {}));
+
+
+    //     }
+    // }
 }
 
 

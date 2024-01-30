@@ -159,28 +159,13 @@ function getReplaceValue(input, _what, _with, _regex)
             value.value = input.value.replace(
                 new RegExp(unescapeRegexPattern(_what.value), 'gu'),
                 unescapeRegexReplacement(_with.value));
-
-            // value.value = input.value.replaceAll(
-            //     new RegExp(_what.value, 'g'),
-            //     match => 
-            //     {
-            //         return match
-            //             .split('')
-            //             .map(function(c) 
-            //             {
-            //                 return c >= '\uD800' 
-            //                     && c <= '\uDBFF'
-            //                     ? c
-            //                     : unescapeString(_with.value);
-            //             }).join('');
-            //     });
         }
         catch (e)
         {
-        
+            uiNotify(e.message, {error: true});
         }
     }
-    else
+    else if (input.value)
     {
         value.value = input.value.replaceAll(
             unescapeString(_what.value),

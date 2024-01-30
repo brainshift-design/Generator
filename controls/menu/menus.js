@@ -462,6 +462,8 @@ function initGeneratorMenus()
                          new MenuItem('',                      null, {separator: true}),   
                          new MenuItem('Delete',                null, {childMenu: menuDebugDelete}),
                          new MenuItem('',                      null, {separator: true}),   
+                         new MenuItem('Update legacy nodes',   null, {callback: () => uiUpdateLegacyNodes()}),
+                         new MenuItem('',                      null, {separator: true}),   
     menuItemDebugMode  = new MenuItem('Restart in debug mode', null, {callback: () => uiRestartGenerator(true)})]);
                      
 
