@@ -642,8 +642,6 @@ function uiUpdateLegacyNodes()
 
     //         actionManager.do(new DeleteNodesAction([node.nodeId]));
     //         actionManager.do(getCreateNodeAction(NUMBER_NEGATIVE, null, {}));
-
-
     //     }
     // }
 }
