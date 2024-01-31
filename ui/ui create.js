@@ -169,9 +169,10 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case SCALE:                   node = new OpScale();             break;
         case SKEW:                    node = new OpSkew();              break;
 
-        case SET_CENTER:                  node = new OpSetCenter();            break;
+        case SET_CENTER:              node = new OpSetCenter();         break;
         case RESET_XFORM:             node = new OpResetTransform();    break;
         
+        case JOIN_PATHS:              node = new OpJoinPaths();         break;
         case MEASURE_POINTS:          node = new OpMeasurePoints();     break;
         case VECTOR_LENGTH:           node = new OpVectorLength();      break;
         case CIRCLE_CENTER:           node = new OpCircleCenter();      break;

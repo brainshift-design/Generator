@@ -124,7 +124,11 @@ extends GShape
         
         this.setUpdateValues(parse, 
         [
-            ['value', this.value]
+            ['points',  points ],
+            ['closed',  closed ],
+            ['degree',  degree ],
+            ['winding', winding],
+            ['round',   round  ]
         ]);
 
 
@@ -132,16 +136,6 @@ extends GShape
 
 
         await this.evalObjects(parse);
-
-
-        // if (  !this.points 
-        //     || this.points.items == 0) 
-        //                    this.points  = this.value.points .copy();
-        // if (!this.closed ) this.closed  = this.value.closed .copy();
-        // if (!this.degree ) this.degree  = this.value.degree .copy();
-        // if (!this.winding) this.winding = this.value.winding.copy();
-        // if (!this.round  ) this.round   = this.value.round  .copy();
-
 
 
         this.validate();
@@ -213,26 +207,6 @@ extends GShape
 
         await super.evalObjects(parse);
     }
-
-
-
-    // toValue()
-    // {
-    //     const path = new VectorPathValue(
-    //         this.nodeId,
-    //         this.points .toValue(),
-    //         this.closed .toValue(),
-    //         this.degree .toValue(),
-    //         this.winding.toValue(),
-    //         this.round  .toValue());
-
-    //     path.copyCustomParams(this.value);
-
-    //     path.props   = this.props.toValue();
-    //     path.objects = this.value.objects.map(o => o.copy());
-
-    //     return path;
-    // }
 
 
 

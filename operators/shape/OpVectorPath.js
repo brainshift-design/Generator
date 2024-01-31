@@ -13,6 +13,7 @@ extends OpShape
     {
         super(VECTOR_PATH, 'path', 'path', iconVectorPath);
 
+        
         this.canDisable  = true;
         this.iconOffsetY = -1;
 
@@ -34,8 +35,6 @@ extends OpShape
         this.paramPoints.itemName    = ['point'];
         this.paramPoints.showZero    =  false;
 
-        this.paramDegree.reverseMenu =  true;
-
         
         this.paramWinding.divider = 0.38;
         this.paramRound  .divider = 0.565;
@@ -48,25 +47,16 @@ extends OpShape
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const points  = values[paramIds.findIndex(id => id == 'points' )];
+        const closed  = values[paramIds.findIndex(id => id == 'closed' )];
+        const degree  = values[paramIds.findIndex(id => id == 'degree' )];
+        const winding = values[paramIds.findIndex(id => id == 'winding')];
+        const round   = values[paramIds.findIndex(id => id == 'round'  )];
 
-        this.paramPoints .setValue(value.points,  false, true, false);
-        this.paramClosed .setValue(value.closed,  false, true, false);
-        this.paramDegree .setValue(value.degree,  false, true, false);
-        this.paramWinding.setValue(value.winding, false, true, false);
-        this.paramRound  .setValue(value.round,   false, true, false);
+        this.paramPoints .setValue(points,  false, true, false);
+        this.paramClosed .setValue(closed,  false, true, false);
+        this.paramDegree .setValue(degree,  false, true, false);
+        this.paramWinding.setValue(winding, false, true, false);
+        this.paramRound  .setValue(round,   false, true, false);
     }
-
-
-
-    // updateParams()
-    // {
-    //     this.paramPoints .enableControlText(true);
-    //     this.paramClosed .enableControlText(true);
-    //     this.paramDegree .enableControlText(true);
-    //     this.paramWinding.enableControlText(true);
-    //     this.paramRound  .enableControlText(true);
-
-    //     this.updateParamControls();
-    // }
 }

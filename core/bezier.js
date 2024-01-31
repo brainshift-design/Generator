@@ -245,3 +245,52 @@ function bounds3t(a, b, c, roots)
         }
     }
 }
+
+
+
+function linear2cubic(linear)
+{
+    if (linear.length == 0)
+        return [];
+
+
+    const cubic = [linear[0]];
+    
+    for (let i = 0; i < linear.length-1; i++)
+    {
+        const p0 = linear[i  ];
+        const p1 = linear[i+1];
+
+        cubic.push(
+            lerpv(p0, p1, 1/3),
+            lerpv(p0, p1, 2/3),
+            p1);
+    }
+
+    return cubic;
+}
+
+
+
+function quad2cubic(quad)
+{
+    if (quad.length == 0)
+        return [];
+
+
+    const cubic = [quad[0]];
+    
+    for (let i = 0; i < quad.length-2; i += 2)
+    {
+        const p0 = quad[i  ];
+        const p1 = quad[i+1];
+        const p2 = quad[i+2];
+
+        cubic.push(
+            lerpv(p0, p1, 2/3),
+            lerpv(p2, p1, 2/3),
+            p2);
+    }
+
+    return cubic;
+}

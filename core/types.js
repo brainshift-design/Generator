@@ -473,6 +473,7 @@ const RESET_XFORM          = 'RSTX';
 const PLACE                = 'PLACE';
 const SHAPE_APPLY          = 'APPLY';
   
+const JOIN_PATHS           = 'JOINPTH';
 const MEASURE_POINTS       = 'MESPT';
 const VECTOR_LENGTH        = 'VECLEN';
 const CIRCLE_CENTER        = 'CIRCEN';
@@ -562,15 +563,17 @@ const SHAPE_TYPES =
     ...SHAPE_GROUP_TYPES,
     ...FRAME_TYPES,
     ...BOOLEAN_TYPES,
-
+    
     MOVE,
     ...AFFINE_TYPES,
     SET_CENTER,
     RESET_XFORM,
-
+        
     PLACE,
     SHAPE_APPLY,
-
+    
+    JOIN_PATHS,
+    
     MEASURE_POINTS,
     VECTOR_LENGTH,
     CIRCLE_CENTER,

@@ -673,6 +673,67 @@ function genParseVectorPath(parse)
 
 
 
+function genParseJoinPaths(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const join = new GJoinPaths(nodeId, options);
+
+
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReq(join, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, join);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    for (let i = 0; i < nInputs; i++)
+        join.inputs.push(genParse(parse));
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {       
+        case 'closed':  join.closed  = genParse(parse); break;
+        case 'degree':  join.degree  = genParse(parse); break;
+        case 'winding': join.winding = genParse(parse); break;
+        case 'round':   join.round   = genParse(parse); break;
+        case 'props':   join.props   = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, join);
+    return join;
+}
+
+
+
 function genParseVectorVertexValue(parse)
 {
     parse.pos++; // VECTOR_POINT_VALUE
