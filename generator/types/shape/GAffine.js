@@ -96,8 +96,8 @@ extends GOperator1
             {
                 const p = this.value.objects[0].points[i].toPoint();
 
-                this.value.points.objects[i].x = p.x;
-                this.value.points.objects[i].y = p.y;
+                this.value.points.items[i].x.value = p.x;
+                this.value.points.items[i].y.value = p.y;
             }
         }
 

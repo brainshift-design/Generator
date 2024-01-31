@@ -153,16 +153,16 @@ extends GOperator1
             }
 
 
-            if (this.value.type == VECTOR_PATH_VALUE
-                  && this.value.objects
-                  && this.value.objects.length > 0)
+            if (   this.value.type == VECTOR_PATH_VALUE
+                && this.value.objects
+                && this.value.objects.length > 0)
             {
                 for (let i = 0; i < this.value.objects[0].points.length; i++)
                 {
                     const p = this.value.objects[0].points[i].toPoint();
     
-                    this.value.points.objects[i].x = p.x;
-                    this.value.points.objects[i].y = p.y;
+                    this.value.points.items[i].x.value = p.x;
+                    this.value.points.items[i].y.value = p.y;
                 }
             }
 

@@ -265,7 +265,7 @@ extends GShape
                 this.value.winding.value,
                 this.value.round  .value);
 
-            
+                
             const bounds = getObjBounds([path]);
 
             let x = bounds.x;
