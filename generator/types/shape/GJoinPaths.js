@@ -100,15 +100,15 @@ extends GShape
                 let pathPoints = path.objects[0].pathPoints;
 
 
-                switch (path.degree.value)
-                {
-                case 0: pathPoints = linear2cubic(pathPoints);                                         break;
-                case 1: pathPoints = quad2cubic(pathPoints);                                           break;
-              //case 2: pathPoints = pathPoints;                                                       break;
-                case 3: pathPoints = getSmoothPoints(pathPoints, path.closed.value, getSmoothSegment); break;
-                case 4: pathPoints = getSmoothPoints(pathPoints, path.closed.value, getSineXSegment ); break;
-                case 5: pathPoints = getSmoothPoints(pathPoints, path.closed.value, getSineYSegment ); break;
-                }
+            //     switch (path.degree.value)
+            //     {
+            //     case 0: pathPoints = linear2cubic(pathPoints);                                                break;
+            //     case 1: pathPoints = quad2cubic(pathPoints);                                                  break;
+            //   //case 2: pathPoints = pathPoints;                                                              break;
+            //     case 3: pathPoints = getSmoothPoints(pathPoints, path.closed.value, getSmoothSegment, false); break;
+            //     case 4: pathPoints = getSmoothPoints(pathPoints, path.closed.value, getSineXSegment,  false); break;
+            //     case 5: pathPoints = getSmoothPoints(pathPoints, path.closed.value, getSineYSegment,  false); break;
+            //     }
 
 
                 if (pathPoints.length == 0)
@@ -196,11 +196,6 @@ extends GShape
         }
         else
         {
-            const k     = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
-            const kCorr = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
-            const kf    = 1/3 + (k*kCorr - 1/3);
-
-
             switch (degree.value)
             {
                 case 0: // linear
@@ -214,13 +209,13 @@ extends GShape
                     break;
 
                 case 2: // sin X
-                    points.items.push(new PointValue(this.nodeId, new NumberValue(lerp(p_1.x, p0.x, kf)), new NumberValue(p_1.y)));
-                    points.items.push(new PointValue(this.nodeId, new NumberValue(lerp(p0.x, p_1.x, kf)), new NumberValue(p0.y)));
+                    points.items.push(new PointValue(this.nodeId, new NumberValue(lerp(p_1.x, p0.x, 0.3615)), new NumberValue(p_1.y)));
+                    points.items.push(new PointValue(this.nodeId, new NumberValue(lerp(p0.x, p_1.x, 0.3615)), new NumberValue(p0.y)));
                     break;
 
                 case 3: // sin Y
-                    points.items.push(new PointValue(this.nodeId, new NumberValue(p_1.x), new NumberValue(lerp(p_1.y, p0.y, kf))));
-                    points.items.push(new PointValue(this.nodeId, new NumberValue(p0 .x), new NumberValue(lerp(p0.y, p_1.y, kf))));
+                    points.items.push(new PointValue(this.nodeId, new NumberValue(p_1.x), new NumberValue(lerp(p_1.y, p0.y, 0.3615))));
+                    points.items.push(new PointValue(this.nodeId, new NumberValue(p0 .x), new NumberValue(lerp(p0.y, p_1.y, 0.3615))));
                     break;
             }
 
