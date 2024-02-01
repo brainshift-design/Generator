@@ -270,7 +270,6 @@ extends GShape
         }
 
 
-        console.log('this.value.objects =', this.value.objects);
         await super.evalObjects(parse);
     }
 

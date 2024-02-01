@@ -2,18 +2,20 @@ var deleteNodesWarningDialogVisible = false;
 
 
 
-function checkDeleteNodesWarning()
+function checkDeleteNodesWarning(success)
 {
     if (graph.currentPage.nodes.length > 0)
-        showDeleteNodesWarningDialog();
+        showDeleteNodesWarningDialog(success);
     else
-        uiOpenLocalFile();
+        success();
 }
 
 
 
-function showDeleteNodesWarningDialog()
+function showDeleteNodesWarningDialog(success)
 {
+    deleteNodesWarningDialog.success           = success;
+
     deleteNodesWarningDialog.style.left        = '50%';
     deleteNodesWarningDialog.style.top         = '50%';
     deleteNodesWarningDialog.style.transform   = 'translateX(-50%) translateY(-50%)';

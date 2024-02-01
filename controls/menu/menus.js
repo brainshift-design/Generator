@@ -330,7 +330,7 @@ function initGeneratorMenus()
 
     menuMainFile = new Menu('File', false);
     menuMainFile.addItems([
-                               new MenuItem('Open file . . .',          null, {callback: () => { hideAllMenus(); checkDeleteNodesWarning(); }}),
+                               new MenuItem('Open file . . .',          null, {callback: () => { hideAllMenus(); checkDeleteNodesWarning(() => uiOpenLocalFile()); }}),
                                new MenuItem('Import from file . . .',   null, {callback: () => { hideAllMenus(); uiImportFromLocalFile(); }}),
         menuFileSep1         = new MenuItem('',                         null, {separator: true}),    
         menuItemSaveToFile   = new MenuItem('Save to file . . .',       null, {shortcut: osCtrl() + 'S', callback: () => { hideAllMenus(); uiSaveToLocalFile(); }}),
