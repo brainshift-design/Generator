@@ -602,6 +602,15 @@ function handleLegacy(_node, genVersion)
         if (value) 
             removeFromArray(_node.params, param);
     }
+    else if (_node.type == ELLIPSE
+          && _node.params.length > 0)
+    {
+        const paramFrom = _node.params.find(p => p[1] == 'from');
+        if (paramFrom) paramFrom[1] = 'start';
+
+        const paramTo = _node.params.find(p => p[1] == 'to');
+        if (paramTo) paramTo[1] = 'sweep';
+    }
 }
 
 

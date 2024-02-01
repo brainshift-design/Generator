@@ -26,7 +26,7 @@ extends OpShapeBase
         this.paramY.isNodeValue = this.headerInputs[0].connected;
 
 
-        this.setAllParamDividers(0.45);
+        this.setAllParamDividers(0.43);
     }
 
 

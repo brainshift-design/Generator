@@ -103,10 +103,10 @@ extends OperatorBase
         const vector = this.paramMoveType.value.value == 1;
        
         this.paramX.setName(vector ? 'distance' : 'X');
-        this.paramX.divider = vector ? 0.55 : 0.45;
+        this.paramX.divider = vector ? 0.55 : 0.43;
 
         this.paramY.setName(vector ? 'angle' : 'Y');
-        this.paramY.divider = vector ? 0.55 : 0.45;
+        this.paramY.divider = vector ? 0.55 : 0.43;
 
         this.paramY.controls[0].suffix        = vector ? '°' : '';
         this.paramY.controls[0].suffixOffsetY = vector ? -4  : 0;

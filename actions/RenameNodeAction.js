@@ -27,7 +27,7 @@ extends Action
     {
         this.oldName = this.node.name;
 
-        this.node.setName(this.newName, {updateNodes: updateNodes});
+        this.node.setName(this.newName, {updateNodes});
         this.node.renamed = true;
 
         // this.node.updateNode();
@@ -35,9 +35,6 @@ extends Action
         //this.node.updateHeaderLabel();
 
         uiSaveNodes([this.nodeId]);
-
-
-        //addMetricsEvent(METRICS_NODE_NAME, this.node.name);
     }
 
 
