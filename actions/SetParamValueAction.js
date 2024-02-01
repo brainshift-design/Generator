@@ -43,8 +43,8 @@ extends Action
 
         this.name = 
               'SET PARAM VALUE ' 
-                    + this.param.node.id 
-            + '.'   + this.param.id;
+                  + this.param.node.id 
+            + '.' + this.param.id;
 
         if (this.setValue)
             this.param.setValue(this.newValue, false, true);
