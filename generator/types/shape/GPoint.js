@@ -95,10 +95,6 @@ extends GOperator1
         ]);
 
 
-        // if (!this.x) this.x = this.value.x.copy();
-        // if (!this.y) this.y = this.value.y.copy();
-
-
         this.validate();
 
         return this;
@@ -122,11 +118,11 @@ extends GOperator1
             const y = this.value.y.value;
 
             const point = new FigmaPoint(
-                this.nodeId, 
-                this.nodeId, 
-                this.nodeName, 
-                x, 
-                y, 
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                x,
+                y,
                 this.smooth ? this.smooth.value/100 : 1);
 
             point.createDefaultTransform(x, y);

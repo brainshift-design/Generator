@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 347;
+const generatorVersion = 348;
 
 
 const MAX_INT32        = 2147483647;
@@ -36494,10 +36494,6 @@ extends GOperator1
         ]);
 
 
-        // if (!this.x) this.x = this.value.x.copy();
-        // if (!this.y) this.y = this.value.y.copy();
-
-
         this.validate();
 
         return this;
@@ -36521,11 +36517,11 @@ extends GOperator1
             const y = this.value.y.value;
 
             const point = new FigmaPoint(
-                this.nodeId, 
-                this.nodeId, 
-                this.nodeName, 
-                x, 
-                y, 
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                x,
+                y,
                 this.smooth ? this.smooth.value/100 : 1);
 
             point.createDefaultTransform(x, y);
@@ -39121,8 +39117,8 @@ extends GOperator1
                 {
                     const p = this.value.objects[0].points[i].toPoint();
     
-                    this.value.points.items[i].x.value = p.x;
-                    this.value.points.items[i].y.value = p.y;
+                    this.value.points.objects[i].x = p.x;
+                    this.value.points.objects[i].y = p.y;
                 }
             }
 
@@ -39298,8 +39294,8 @@ extends GOperator1
             {
                 const p = this.value.objects[0].points[i].toPoint();
 
-                this.value.points.items[i].x.value = p.x;
-                this.value.points.items[i].y.value = p.y;
+                this.value.points.objects[i].x = p.x;
+                this.value.points.objects[i].y = p.y;
             }
         }
 
@@ -40502,6 +40498,7 @@ extends GShape
         }
 
 
+        console.log('this.value.objects =', this.value.objects);
         await super.evalObjects(parse);
     }
 

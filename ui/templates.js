@@ -5,7 +5,8 @@ const presetTemplates =
     {name: 'Fills/Filled stroke',     graph: templateFilledStroke   },
     {name: 'Fills/Filled color stop', graph: templateFilledColorStop},
 
-    {name: 'Random seeds',            graph: templateRandomSeeds    }
+    {name: 'Random seeds',            graph: templateRandomSeeds    },
+    {name: '2D grid',                 graph: template2Dgrid         }
 ];
 
 
