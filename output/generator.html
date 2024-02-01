@@ -36466,12 +36466,19 @@ extends GOperator1
             const _input = input;
 
             if (input.type == VECTOR_VERTEX_VALUE)
+            {
                 input = new PointValue(input.nodeId, input.x, input.y);
-
-            this.value        = input;
+                input.copyCustomParams(_input);
+            }
+            
+            this.value        = input.copy();
             this.value.nodeId = this.nodeId;
-            this.value.copyCustomParams(_input);
+            this.value.copyCustomParams(input);
 
+
+            this.value.x = new NumberValue(this.value.objects[0].x);
+            this.value.y = new NumberValue(this.value.objects[0].y);
+            
             if (x)  this.value.x = x;  else  x = this.value.x;
             if (y)  this.value.y = y;  else  y = this.value.y;
         }
@@ -36507,7 +36514,8 @@ extends GOperator1
             return;
             
             
-        this.value.objects = [];
+        if (!this.value.objects)
+            this.value.objects = [];
 
 
         if (   this.value.x.isValid()
@@ -37095,16 +37103,37 @@ extends GOperator1
 
         if (input)
         {
+            const _input = input;
+
             if (input.type == POINT_VALUE)
+            {
                 input = new VectorVertexValue(input.nodeId, input.x, input.y);
+                input.copyCustomParams(_input);
+            }
             
-            this.value = new VectorVertexValue(
-                this.nodeId,
-                x     ?? input.x,
-                y     ?? input.y,
-                join  ?? input.join,
-                cap   ?? input.cap,
-                round ?? input.round);
+            this.value        = input.copy();
+            this.value.nodeId = this.nodeId;
+            this.value.copyCustomParams(input);
+
+            // this.value = new VectorVertexValue(
+            //     this.nodeId,
+            //     x     ?? input.x,
+            //     y     ?? input.y,
+            //     join  ?? input.join,
+            //     cap   ?? input.cap,
+            //     round ?? input.round);
+                
+            this.value.x     = new NumberValue(this.value.objects[0].x    );
+            this.value.y     = new NumberValue(this.value.objects[0].y    );
+            this.value.join  = new NumberValue(this.value.objects[0].join );
+            this.value.cap   = new NumberValue(this.value.objects[0].cap  );
+            this.value.round = new NumberValue(this.value.objects[0].round);
+
+            if (x    )  this.value.x     = x;      else  x     = this.value.x;
+            if (y    )  this.value.y     = y;      else  y     = this.value.y;
+            if (join )  this.value.join  = join;   else  join  = this.value.join;
+            if (cap  )  this.value.cap   = cap;    else  cap   = this.value.cap;
+            if (round)  this.value.round = round;  else  round = this.value.round;
         }
         else
         {
@@ -39099,6 +39128,7 @@ extends GOperator1
                     createTransform(_x, _y),
                     createRotateTransform(-_a)); // for vector movement
 
+                    
             for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;
@@ -39402,7 +39432,7 @@ extends GAffine
         if (input)
         {
             this.value = input.copy();
-
+            
             if (this.value)
                 this.value.nodeId = this.nodeId;
         }

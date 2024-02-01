@@ -143,6 +143,7 @@ extends GOperator1
                     createTransform(_x, _y),
                     createRotateTransform(-_a)); // for vector movement
 
+                    
             for (const obj of this.value.objects)
             {
                 obj.nodeId   = this.nodeId;

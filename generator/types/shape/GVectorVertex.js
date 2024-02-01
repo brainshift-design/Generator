@@ -79,16 +79,37 @@ extends GOperator1
 
         if (input)
         {
+            const _input = input;
+
             if (input.type == POINT_VALUE)
+            {
                 input = new VectorVertexValue(input.nodeId, input.x, input.y);
+                input.copyCustomParams(_input);
+            }
             
-            this.value = new VectorVertexValue(
-                this.nodeId,
-                x     ?? input.x,
-                y     ?? input.y,
-                join  ?? input.join,
-                cap   ?? input.cap,
-                round ?? input.round);
+            this.value        = input.copy();
+            this.value.nodeId = this.nodeId;
+            this.value.copyCustomParams(input);
+
+            // this.value = new VectorVertexValue(
+            //     this.nodeId,
+            //     x     ?? input.x,
+            //     y     ?? input.y,
+            //     join  ?? input.join,
+            //     cap   ?? input.cap,
+            //     round ?? input.round);
+                
+            this.value.x     = new NumberValue(this.value.objects[0].x    );
+            this.value.y     = new NumberValue(this.value.objects[0].y    );
+            this.value.join  = new NumberValue(this.value.objects[0].join );
+            this.value.cap   = new NumberValue(this.value.objects[0].cap  );
+            this.value.round = new NumberValue(this.value.objects[0].round);
+
+            if (x    )  this.value.x     = x;      else  x     = this.value.x;
+            if (y    )  this.value.y     = y;      else  y     = this.value.y;
+            if (join )  this.value.join  = join;   else  join  = this.value.join;
+            if (cap  )  this.value.cap   = cap;    else  cap   = this.value.cap;
+            if (round)  this.value.round = round;  else  round = this.value.round;
         }
         else
         {

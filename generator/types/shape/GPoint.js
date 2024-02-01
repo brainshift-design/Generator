@@ -67,12 +67,19 @@ extends GOperator1
             const _input = input;
 
             if (input.type == VECTOR_VERTEX_VALUE)
+            {
                 input = new PointValue(input.nodeId, input.x, input.y);
-
-            this.value        = input;
+                input.copyCustomParams(_input);
+            }
+            
+            this.value        = input.copy();
             this.value.nodeId = this.nodeId;
-            this.value.copyCustomParams(_input);
+            this.value.copyCustomParams(input);
 
+
+            this.value.x = new NumberValue(this.value.objects[0].x);
+            this.value.y = new NumberValue(this.value.objects[0].y);
+            
             if (x)  this.value.x = x;  else  x = this.value.x;
             if (y)  this.value.y = y;  else  y = this.value.y;
         }
@@ -108,7 +115,8 @@ extends GOperator1
             return;
             
             
-        this.value.objects = [];
+        if (!this.value.objects)
+            this.value.objects = [];
 
 
         if (   this.value.x.isValid()
