@@ -1,6 +1,5 @@
 GraphView.prototype.startConnectionFromOutput = function(pointerId, output, updateTempWire = true, backInit = false)
 {
-    console.log('output =', output);
     this.connPointerId = pointerId;
 
     this.tempConn          = new Connection(output, null);
