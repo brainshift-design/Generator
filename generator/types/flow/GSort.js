@@ -120,6 +120,8 @@ extends GOperator1
                             }
                         }
                     }
+
+                    console.log('this.value =', this.value);
                 }
                 else
                 {
@@ -236,8 +238,18 @@ async function asyncSort(parse, unsorted, conditionNode, node, condition, revers
 
     sorted.sort((a, b) =>
     {
-        if (a.condition < b.condition) return -1*reverseMultiplier;
-        if (a.condition > b.condition) return  1*reverseMultiplier;
+        if (   typeof(a.condition) == 'number'
+            && typeof(b.condition) == 'number')
+        {
+            if (a.condition < b.condition) return -1*reverseMultiplier;
+            if (a.condition > b.condition) return  1*reverseMultiplier;
+        }
+        else if (typeof(a.condition) == 'string'
+              && typeof(b.condition) == 'string')
+        {
+            if (a.condition.localeCompare(b.condition) < 1) return -1*reverseMultiplier;
+            if (a.condition.localeCompare(b.condition) > 1) return  1*reverseMultiplier;
+        }
 
         return 0;
     });

@@ -197,7 +197,7 @@ async function asyncFilter(parse, array, conditionNode, node, condition)
         if (!cond) return array;
         
         const condValue = cond.toValue();
-        // console.log('condition =', condition)
+        //console.log('cond =', cond)
 
         if (   condValue.type == NUMBER_VALUE
             && condValue.value > 0)

@@ -1,7 +1,7 @@
 class   OpTextCompare
 extends OperatorBase
 {
-    paramResult;
+    paramValue;
     paramOperation;
 
 
@@ -17,10 +17,10 @@ extends OperatorBase
         this.addInput (new Input([TEXT_VALUE]));
         this.addInput (new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramResult    = new NumberParam('result',    '', false, false, true));
+        this.addParam(this.paramValue     = new NumberParam('value',     '', false, false, true));
         this.addParam(this.paramOperation = new SelectParam('operation', '', false, true,  true, CONDITION_OPS.map(s => s[1]), 3));
 
-        this.paramResult   .isNodeValue = true;
+        this.paramValue    .isNodeValue = true;
         this.paramOperation.reverseMenu = true;
     }
 
@@ -79,10 +79,10 @@ extends OperatorBase
         // this.updateIcon();
 
 
-        this.paramResult   .enableControlText(false);
+        this.paramValue   .enableControlText(false);
         this.paramOperation.enableControlText(true );
 
-        updateParamConditionText(this.paramResult, this.isUnknown() || this.hasConditionOutputs(), true);
+        updateParamConditionText(this.paramValue, this.isUnknown() || this.hasConditionOutputs(), true);
 
         
         if (this.hasConditionOutputs())

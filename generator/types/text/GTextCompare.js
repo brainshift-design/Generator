@@ -40,28 +40,32 @@ extends GOperator2
             return this;
 
 
-        const op = (await this.operation.eval(parse)).toValue().toInteger();
-
-        op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
+        this.value = NumberValue.NaN.copy();
+        
+        
+        const op = this.operation ? (await this.operation.eval(parse)).toValue().toInteger() : null;
 
         
-        let result;
-
-        switch (op.value)
+        if (op)
         {
-            case CONDITION_LESS:              result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a <  b), parse);  break;
-            case CONDITION_LESS_OR_EQUAL:     result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a <= b), parse);  break;
-            case CONDITION_NOT_EQUAL:         result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a != b), parse);  break;
-            case CONDITION_EQUAL:             result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a == b), parse);  break;
-            case CONDITION_GREATER_OR_EQUAL:  result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a >= b), parse);  break;
-            case CONDITION_GREATER:           result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a >  b), parse);  break;
+            op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
+
+            switch (op.value)
+            {
+                case CONDITION_LESS:              this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a <  b), parse);  break;
+                case CONDITION_LESS_OR_EQUAL:     this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a <= b), parse);  break;
+                case CONDITION_NOT_EQUAL:         this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a != b), parse);  break;
+                case CONDITION_EQUAL:             this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a == b), parse);  break;
+                case CONDITION_GREATER_OR_EQUAL:  this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a >= b), parse);  break;
+                case CONDITION_GREATER:           this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a >  b), parse);  break;
+            }
         }
 
 
         this.setUpdateValues(parse,
         [
-            ['result',    result],
-            ['operation', op    ]
+            ['value',     this.value],
+            ['operation', op        ]
         ]);
 
 

@@ -19076,6 +19076,8 @@ extends GOperator1
                             }
                         }
                     }
+
+                    console.log('this.value =', this.value);
                 }
                 else
                 {
@@ -19192,8 +19194,18 @@ async function asyncSort(parse, unsorted, conditionNode, node, condition, revers
 
     sorted.sort((a, b) =>
     {
-        if (a.condition < b.condition) return -1*reverseMultiplier;
-        if (a.condition > b.condition) return  1*reverseMultiplier;
+        if (   typeof(a.condition) == 'number'
+            && typeof(b.condition) == 'number')
+        {
+            if (a.condition < b.condition) return -1*reverseMultiplier;
+            if (a.condition > b.condition) return  1*reverseMultiplier;
+        }
+        else if (typeof(a.condition) == 'string'
+              && typeof(b.condition) == 'string')
+        {
+            if (a.condition.localeCompare(b.condition) < 1) return -1*reverseMultiplier;
+            if (a.condition.localeCompare(b.condition) > 1) return  1*reverseMultiplier;
+        }
 
         return 0;
     });
@@ -19422,7 +19434,7 @@ async function asyncFilter(parse, array, conditionNode, node, condition)
         if (!cond) return array;
         
         const condValue = cond.toValue();
-        // console.log('condition =', condition)
+        //console.log('cond =', cond)
 
         if (   condValue.type == NUMBER_VALUE
             && condValue.value > 0)
@@ -29208,28 +29220,32 @@ extends GOperator2
             return this;
 
 
-        const op = (await this.operation.eval(parse)).toValue().toInteger();
-
-        op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
+        this.value = NumberValue.NaN.copy();
+        
+        
+        const op = this.operation ? (await this.operation.eval(parse)).toValue().toInteger() : null;
 
         
-        let result;
-
-        switch (op.value)
+        if (op)
         {
-            case CONDITION_LESS:              result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a <  b), parse);  break;
-            case CONDITION_LESS_OR_EQUAL:     result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a <= b), parse);  break;
-            case CONDITION_NOT_EQUAL:         result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a != b), parse);  break;
-            case CONDITION_EQUAL:             result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a == b), parse);  break;
-            case CONDITION_GREATER_OR_EQUAL:  result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a >= b), parse);  break;
-            case CONDITION_GREATER:           result = await evalCompareInputs(this.input0, this.input1, ((a, b) => a >  b), parse);  break;
+            op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
+
+            switch (op.value)
+            {
+                case CONDITION_LESS:              this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a <  b), parse);  break;
+                case CONDITION_LESS_OR_EQUAL:     this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a <= b), parse);  break;
+                case CONDITION_NOT_EQUAL:         this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a != b), parse);  break;
+                case CONDITION_EQUAL:             this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a == b), parse);  break;
+                case CONDITION_GREATER_OR_EQUAL:  this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a >= b), parse);  break;
+                case CONDITION_GREATER:           this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a >  b), parse);  break;
+            }
         }
 
 
         this.setUpdateValues(parse,
         [
-            ['result',    result],
-            ['operation', op    ]
+            ['value',     this.value],
+            ['operation', op        ]
         ]);
 
 
