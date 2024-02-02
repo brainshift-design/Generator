@@ -80,7 +80,7 @@ extends GOperator1
 
         this.updateValues = [];
 
-        
+
         if (    this.value.isValid()
             &&  this.value.items
             && !isEmpty(this.value.items))
@@ -108,15 +108,11 @@ extends GOperator1
 
             this.updateValues.sort((a, b) => a.sortId - b.sortId);
 
+
             this.setUpdateValues(parse, [['-type-', this.outputType()]], true);
         }
         else
             this.setUpdateValues(parse, [['-type-', new TextValue(LIST_VALUE)]], true);
-
-
-        // if (this.value.objects)
-        //     for (let j = 0; j < this.value.objects.length; j++)
-        //         this.value.objects[j].nodeId = this.nodeId;
 
 
         this.updateValueObjects();

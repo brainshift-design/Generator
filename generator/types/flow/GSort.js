@@ -120,8 +120,6 @@ extends GOperator1
                             }
                         }
                     }
-
-                    console.log('this.value =', this.value);
                 }
                 else
                 {

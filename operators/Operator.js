@@ -449,14 +449,14 @@ class Operator
  
     
 
-    setParamIndex(param, index)
-    {
-        moveInArray(this.params, this.params.indexOf(param), index);
-        this.paramHolder.insertBefore(param.div, this.paramHolder.children[index]);
+    // setParamIndex(param, index)
+    // {
+    //     moveInArray(this.params, this.params.indexOf(param), index);
+    //     this.paramHolder.insertBefore(param.div, this.paramHolder.children[index]);
 
-        if (param. input) moveInArray(this. inputs, this. inputs.indexOf(param. input), index);
-        if (param.output) moveInArray(this.outputs, this.outputs.indexOf(param.output), index);
-    }
+    //     if (param. input) moveInArray(this. inputs, this. inputs.indexOf(param. input), index);
+    //     if (param.output) moveInArray(this.outputs, this.outputs.indexOf(param.output), index);
+    // }
 
 
 

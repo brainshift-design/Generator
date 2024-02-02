@@ -319,7 +319,7 @@ async function genUpdateValuesAndObjects(requestId, loadingNodes, actionId, obje
             nodeValChunk.push(nodeIds[n], counts[n]);
 
             const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
-            values.sort((a, b) => a.paramId - b.paramId);
+            //values.sort((a, b) => a.paramId - b.paramId);
 
             for (const v of values)
                 nodeValChunk.push(v.paramId, v.type, v.value);

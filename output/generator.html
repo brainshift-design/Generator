@@ -19076,8 +19076,6 @@ extends GOperator1
                             }
                         }
                     }
-
-                    console.log('this.value =', this.value);
                 }
                 else
                 {
@@ -19885,7 +19883,7 @@ extends GOperator1
 
         this.updateValues = [];
 
-        
+
         if (    this.value.isValid()
             &&  this.value.items
             && !isEmpty(this.value.items))
@@ -19913,15 +19911,11 @@ extends GOperator1
 
             this.updateValues.sort((a, b) => a.sortId - b.sortId);
 
+
             this.setUpdateValues(parse, [['-type-', this.outputType()]], true);
         }
         else
             this.setUpdateValues(parse, [['-type-', new TextValue(LIST_VALUE)]], true);
-
-
-        // if (this.value.objects)
-        //     for (let j = 0; j < this.value.objects.length; j++)
-        //         this.value.objects[j].nodeId = this.nodeId;
 
 
         this.updateValueObjects();
@@ -42500,7 +42494,7 @@ async function genUpdateValuesAndObjects(requestId, loadingNodes, actionId, obje
             nodeValChunk.push(nodeIds[n], counts[n]);
 
             const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
-            values.sort((a, b) => a.paramId - b.paramId);
+            //values.sort((a, b) => a.paramId - b.paramId);
 
             for (const v of values)
                 nodeValChunk.push(v.paramId, v.type, v.value);

@@ -93,7 +93,6 @@ GraphView.prototype.createEvents = function()
                 {
                     this.overInput.connecting = true;
                     this.startConnectionFromInput(e.pointerId, this.overInput, getCtrlKey(e));
-
                     
                     this.tempConn.wire.update(sx, sy);
                 }
