@@ -7,7 +7,10 @@ extends ResizableBase
 
     constructor()
     {
-        super(TEXT, 'text', 'text', '');
+        super(TEXT, 'text', 'text', iconText);
+
+        
+        this.showIcon = false;
 
 
         this.addInput (new Input (TEXT_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));

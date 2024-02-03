@@ -7,8 +7,12 @@ extends ResizableBase
 
     constructor()
     {
-        super(NUMBER, 'num', 'number', '');
+        super(NUMBER, 'num', 'number', iconNumber);
 
+
+        this.showIcon = false;
+
+        
         this.addInput (new Input ([NUMBER_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
