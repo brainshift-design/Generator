@@ -245,8 +245,8 @@ async function asyncSort(parse, unsorted, conditionNode, node, condition, revers
         else if (typeof(a.condition) == 'string'
               && typeof(b.condition) == 'string')
         {
-            if (a.condition.localeCompare(b.condition) < 1) return -1*reverseMultiplier;
-            if (a.condition.localeCompare(b.condition) > 1) return  1*reverseMultiplier;
+            if (a.condition.localeCompare(b.condition) < 0) return -1*reverseMultiplier;
+            if (a.condition.localeCompare(b.condition) > 0) return  1*reverseMultiplier;
         }
 
         return 0;
