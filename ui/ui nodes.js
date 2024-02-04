@@ -877,8 +877,6 @@ function uiSaveNodesJson(nodeIds, nodeJson)
 
 function uiSaveConn(conn)
 {
-    console.trace();
-    
     if (settings.logRawSaveConnections)
         console.log('%cSAVING CONN\n' + conn.toJson(), 'color: black; background: #ddffee;');
 

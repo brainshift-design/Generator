@@ -301,6 +301,12 @@ extends Parameter
         checkParamVisible(this);
 
 
+         const showColorBack = 
+               !this.isUnknown()
+            && (       this.node
+                   && !this.node.isUnknown() 
+                || !this.isNodeValue);
+        
         const noColor = 
             darkMode
             ? rgbNoColorDark
@@ -318,33 +324,45 @@ extends Parameter
         this.controls[0].backStyleDark  = 'transparent';
                
         this.controls[0].textStyleLight = 
-        this.controls[0].textStyleDark  = rgba2style(rgbaText);
+        this.controls[0].textStyleDark  = //rgba2style(rgbaText);
+            showColorBack
+            ? rgba2style(rgbaText)
+            : darkMode
+              ? this.textStyleDark
+              : this.textStyleLight;
       
       
         this.controls[1].backStyleLight = 
         this.controls[1].backStyleDark  = 'transparent';
    
-   
         this.controls[1].textStyleLight = 
-        this.controls[1].textStyleDark  = rgba2style(rgbaText);
+        this.controls[1].textStyleDark  = //rgba2style(rgbaText);
+            showColorBack
+            ? rgba2style(rgbaText)
+            : darkMode
+              ? this.textStyleDark
+              : this.textStyleLight;
 
 
         super.updateControls();
 
 
+        console.log('showColorBack =', showColorBack);
+        console.log('rgbaText =', rgbaText);
         if (this.input)
         {
             this.input.colorLight  = 
-            this.input.colorDark   = rgb_a(rgbaText, 0.2);
-            this.input.wireColor   = !rgbaIsNaN(rgbaStripe) ? rgbaStripe : noColor;
+            this.input.colorDark   = showColorBack ? rgb_a(rgbaText, 0.2) : noColor;
+            this.input.wireColor   = !rgbaIsNaN(rgbaStripe) && showColorBack ? rgbaStripe : noColor;
         }
 
         if (this.output)
         {
             this.output.colorLight =
-            this.output.colorDark  = rgb_a(rgbaText, 0.2);
-            this.output.wireColor  = !rgbaIsNaN(rgbaStripe) ? rgbaStripe : noColor;
+            this.output.colorDark  = showColorBack ? rgb_a(rgbaText, 0.2) : noColor;
+            this.output.wireColor  = !rgbaIsNaN(rgbaStripe) && showColorBack ? rgbaStripe : noColor;
         }
+        console.log('this.output.colorDark =', this.output.colorDark);
 
 
         this.checkers.style.background =
@@ -378,8 +396,17 @@ extends Parameter
         this.controls[1].textbox.style.background = 'transparent';
 
 
-        this.div.style.background                 = rgb2style(rgbaBack);
-        this.checkers.style.opacity               = 1 - rgbaBack[3];
+        // this.div.style.background                 = rgb2style(showColorBack ? rgbaBack : noColor);
+        this.div.style.background = 
+            showColorBack
+            ? (!rgbIsNaN(rgbaBack)
+               ? rgb2style(rgbaBack)
+               : rgb2style(rgbDocumentBody))
+            : darkMode
+              ? this.backStyleDark
+              : this.backStyleLight;
+
+        this.checkers.style.opacity = 1 - rgbaBack[3];
     }
 
 
@@ -407,7 +434,7 @@ extends Parameter
 
 
 
-    enableControlText(enable)
+    enableControlText(enable, unknown = false)
     {
         enable &= !this.input || !this.input.connected;
 
@@ -422,6 +449,25 @@ extends Parameter
         
         this.controls[0].readOnly = !enable;
         this.controls[1].readOnly = !enable;//opEnable;
+
+        
+        this.controls[0].valueText = 
+               unknown
+            ||    this.input 
+               && this.input.isUncached()
+               && this.node.hasMultipliedOutputs()
+               //&& this.output && this.output.isMultiplied()
+            ? UNKNOWN_DISPLAY
+            : '';
+
+        this.controls[1].valueText = 
+               unknown
+            ||    this.input 
+               && this.input.isUncached()
+               && this.node.hasMultipliedOutputs()
+               //&& this.output && this.output.isMultiplied()
+            ? UNKNOWN_DISPLAY
+            : '';
     }
     
     
