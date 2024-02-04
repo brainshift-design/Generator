@@ -603,6 +603,7 @@ function handleLegacy(_node, genVersion)
             removeFromArray(_node.params, param);
     }
     else if (_node.type == ELLIPSE
+          && _node.params
           && _node.params.length > 0)
     {
         const paramFrom = _node.params.find(p => p[1] == 'from');

@@ -236,7 +236,7 @@ extends GNode
 
 
     pushValueUpdates(parse)
-    {
+    {        
         if (!this.updateValues)
             return;
 

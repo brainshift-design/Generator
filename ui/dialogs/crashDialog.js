@@ -10,7 +10,7 @@ function crashAssert(condition, error, showDebugButton = true)
 
 
 
-function initCrashDialog(event, error, showDebugButton = true)
+function initCrashDialog(event, error = event, showDebugButton = true)
 {
     if (error)
     {

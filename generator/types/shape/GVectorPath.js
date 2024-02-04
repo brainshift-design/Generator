@@ -226,6 +226,9 @@ extends GShape
     {
         super.pushValueUpdates(parse);
 
+        if (this.nodeId == 'path3') 
+            console.log('this.input =', this.input);
+
         if (this.points ) this.points .pushValueUpdates(parse);
         if (this.closed ) this.closed .pushValueUpdates(parse);
         if (this.degree ) this.degree .pushValueUpdates(parse);

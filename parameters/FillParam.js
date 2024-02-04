@@ -347,8 +347,6 @@ extends Parameter
         super.updateControls();
 
 
-        console.log('showColorBack =', showColorBack);
-        console.log('rgbaText =', rgbaText);
         if (this.input)
         {
             this.input.colorLight  = 
@@ -362,7 +360,6 @@ extends Parameter
             this.output.colorDark  = showColorBack ? rgb_a(rgbaText, 0.2) : noColor;
             this.output.wireColor  = !rgbaIsNaN(rgbaStripe) && showColorBack ? rgbaStripe : noColor;
         }
-        console.log('this.output.colorDark =', this.output.colorDark);
 
 
         this.checkers.style.background =

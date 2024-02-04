@@ -9145,7 +9145,7 @@ extends GNode
 
 
     pushValueUpdates(parse)
-    {
+    {        
         if (!this.updateValues)
             return;
 
@@ -36996,6 +36996,9 @@ extends GShape
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
+
+        if (this.nodeId == 'path3') 
+            console.log('this.input =', this.input);
 
         if (this.points ) this.points .pushValueUpdates(parse);
         if (this.closed ) this.closed .pushValueUpdates(parse);
