@@ -23,15 +23,8 @@ extends OperatorBase
 
         this.addParam(this.paramCondition = new NumberParam('condition', 'condition', true, true, true, 1, 0, 1));
 
+
         this.paramCondition.divider = 0.62;
-
-
-        // this.inputs[0].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 0));
-        // this.inputs[0].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 0));
-
-        // this.inputs[1].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 1));
-        // this.inputs[1].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 1));
-
 
         this.menuBool = createBoolMenu(this.paramCondition);
     }
@@ -122,76 +115,8 @@ extends OperatorBase
 
         updateParamConditionText(this.paramCondition, this.paramCondition.isUnknown(), true, 1);
 
-
-        // if (   this.outputs[0].supportsTypes([COLOR_VALUE])
-        //     || this.outputs[0].supportsTypes([FILL_VALUE]))
-        // {
-        //     if (   this.inputs[0].connected
-        //         && this.paramCondition.value.value > 0)
-        //         this.outputs[0].colorLight =
-        //         this.outputs[0].colorDark =
-        //         this.outputs[0].wireColor = this.inputs[0].connectedOutput.wireColor;
-        //     else if (this.inputs[1].connected
-        //           && this.paramCondition.value.value == 0)
-        //         this.outputs[0].colorLight =
-        //         this.outputs[0].colorDark =
-        //         this.outputs[0].wireColor = this.inputs[1].connectedOutput.wireColor;
-        //     else
-        //         this.outputs[0].colorLight =
-        //         this.outputs[0].colorDark =
-        //         this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
-        // }
-
-        // // else if (this.outputs[0].supportsTypes([FILL_VALUE]))
-        // // {
-        // //     const colors = this.getHeaderColors();
-
-        // //     if (   this.inputs[0].connected
-        // //         && this.paramCondition.value.value > 0)
-        // //         this.outputs[0].wireColor = colors.outputWire;
-        // //     else if (this.inputs[1].connected
-        // //           && this.paramCondition.value.value == 0)
-        // //         this.outputs[0].wireColor = colors.outputWire;
-        // //     else
-        // //         this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
-        // // }
-        
-        // else
-        //     this.outputs[0].wireColor = rgbFromType(this.outputs[0].types[0], true);
-
-
         this.updateParamControls();
     }
-
-
-
-    // updateHeader()
-    // {
-    //     super.updateHeader();
-
-
-    //     const colors = super.getHeaderColors();
-
-    //     const type =
-    //         this.inputs[0].connected
-    //         ? this.inputs[0].types[0]
-    //         : this.inputs[1].connected
-    //           ? this.inputs[1].types[0]
-    //           : ANY_VALUE;
-
-
-    //     if (COLOR_TYPES.includes(type))
-    //     {
-    //         colors.output =
-    //             this.inputs[0].connected
-    //             ? this.inputs[0].connectedOutput.wireColor
-    //             : this.inputs[1].connected
-    //               ? this.inputs[1].connectedOutput.wireColor
-    //               : rgbFromType(IF_ELSE, true);
-
-    //         colors.outWire = colors.output;
-    //     }
-    // }
 
 
 

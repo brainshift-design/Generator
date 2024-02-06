@@ -335,6 +335,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == MEASURE_POINTS         ) result = genParseMeasurePoints     (parse);
     else if (parse.next == VECTOR_LENGTH          ) result = genParseVectorLength      (parse);
     else if (parse.next == CIRCLE_CENTER          ) result = genParseCircleCenter      (parse);
+    else if (parse.next == ARC_FROM_POINTS        ) result = genParseArcFromPoints     (parse);
     else if (parse.next == INTERSECT_LINES        ) result = genParseIntersectLines    (parse);
     else if (parse.next == INTERPOLATE_POINT      ) result = genParseInterpolatePoint  (parse);
     else if (parse.next == POINT_ON_PATH          ) result = genParsePointOnPath       (parse);

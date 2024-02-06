@@ -1621,6 +1621,66 @@ function genParseCircleCenter(parse)
 
 
 
+function genParseArcFromPoints(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const arc = new GArcFromPoints(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 3, 'nInputs must be [0, 3]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(arc, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, arc);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    
+    if (nInputs == 3)
+    {
+        arc.input0 = genParse(parse);
+        arc.input1 = genParse(parse);
+        arc.input2 = genParse(parse);
+    }
+    else if (nInputs == 2)
+    {
+        arc.input0 = genParse(parse);
+        arc.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        arc.input0 = genParse(parse);
+    }
+
+
+    arc.middle = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, arc);
+    return arc;
+}
+
+
+
 function genParseIntersectLines(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

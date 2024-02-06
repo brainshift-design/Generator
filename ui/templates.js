@@ -45,6 +45,7 @@ function initTemplateMenu(e)
     menuItemSaveTemplate = new MenuItem('Save as template...', null, {icon: iconManageTemplates,        callback: () => showSaveAsTemplateDialog()});    //menuItemManageTemplates = new MenuItem('Manage templates...', null, {icon: iconManageTemplates});
 
     const sub = subscribed();
+
     enableMenuItem(menuItemSaveTemplate,    graphView.selectedNodes.length > 0, sub);
     enableMenuItem(menuItemManageTemplates, true, sub);
 

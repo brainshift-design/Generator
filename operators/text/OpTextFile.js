@@ -13,7 +13,7 @@ extends ResizableBase
     {
         super(TEXT_FILE, 'file', 'file', iconTextFile, defNodeWidth, true);
 
-        this.subscription      = true;
+
         this.canDisable        = true;
         this.iconOffsetY       = -1;
         this.alwaysLoadParams  = true;

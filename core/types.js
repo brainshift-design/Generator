@@ -477,6 +477,7 @@ const JOIN_PATHS           = 'JOINPTH';
 const MEASURE_POINTS       = 'MESPT';
 const VECTOR_LENGTH        = 'VECLEN';
 const CIRCLE_CENTER        = 'CIRCEN';
+const ARC_FROM_POINTS      = 'ARCPT';
 const INTERSECT_LINES      = 'INTLIN';
 const INTERPOLATE_POINT    = 'PTLERP';
 const POINT_ON_PATH        = 'PONPT';
@@ -577,6 +578,7 @@ const SHAPE_TYPES =
     MEASURE_POINTS,
     VECTOR_LENGTH,
     CIRCLE_CENTER,
+    ARC_FROM_POINTS,
     INTERSECT_LINES,
     INTERPOLATE_POINT,
     POINT_ON_PATH,

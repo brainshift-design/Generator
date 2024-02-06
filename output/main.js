@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 350;
+const generatorVersion = 354;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -934,6 +934,7 @@ const JOIN_PATHS = 'JOINPTH';
 const MEASURE_POINTS = 'MESPT';
 const VECTOR_LENGTH = 'VECLEN';
 const CIRCLE_CENTER = 'CIRCEN';
+const ARC_FROM_POINTS = 'ARCPT';
 const INTERSECT_LINES = 'INTLIN';
 const INTERPOLATE_POINT = 'PTLERP';
 const POINT_ON_PATH = 'PONPT';
@@ -1012,6 +1013,7 @@ const SHAPE_TYPES = [
     MEASURE_POINTS,
     VECTOR_LENGTH,
     CIRCLE_CENTER,
+    ARC_FROM_POINTS,
     INTERSECT_LINES,
     INTERPOLATE_POINT,
     POINT_ON_PATH,
@@ -1405,7 +1407,7 @@ function logSavedConn(conn, darkMode) {
     }
 }
 console.clear();
-figma.payments.setPaymentStatusInDevelopment({ type: 'PAID' });
+figma.payments.setPaymentStatusInDevelopment({ type: 'UNPAID' });
 //figma.on('selectionchange', figOnSelectionChange);
 figma.on('documentchange', figOnDocumentChange);
 figma.on('selectionchange', figOnSelectionChange);
@@ -1736,7 +1738,7 @@ figma.ui.onmessage = function (msg) {
             break;
         case 'figSavePages':
             figSavePages(msg.pageIds, msg.pageJson, msg.currentPageId);
-            break;
+            break; // underscore is for minification
         case 'figLoadNodesAndConns':
             figLoadNodesAndConns(msg.debugMode);
             break;

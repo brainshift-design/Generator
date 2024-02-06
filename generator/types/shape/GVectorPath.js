@@ -102,7 +102,10 @@ extends GShape
 
             this.value = new VectorPathValue(
                 this.nodeId,
-                points && points.items.length > 0 ? points : input.points,
+                   points 
+                && points.items.length > 0 
+                    ? points 
+                    : input.points,
                 closed  ?? input.closed,
                 degree  ?? input.degree,
                 winding ?? input.winding,
@@ -225,9 +228,6 @@ extends GShape
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
-
-        if (this.nodeId == 'path3') 
-            console.log('this.input =', this.input);
 
         if (this.points ) this.points .pushValueUpdates(parse);
         if (this.closed ) this.closed .pushValueUpdates(parse);

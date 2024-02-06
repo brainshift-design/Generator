@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 350;
+const generatorVersion = 354;
 
 
 const MAX_INT32        = 2147483647;
@@ -2117,6 +2117,11 @@ function halfArcAngle(p1, p2, p3)
 }
 
 
+const quadrantKappa   = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
+const kappaCorrection = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
+
+
+
 function bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t)
 {
     const p0 = point(x0, y0);
@@ -2413,6 +2418,72 @@ function quad2cubic(quad)
 
     return cubic;
 }
+
+
+
+function makeArc(p1, p2, p3)
+{
+    const pc = circleCenter(p1, p2, p3);
+
+    const sa = angle(subv(p1, pc));
+    const ea = angle(subv(p3, pc));
+
+    while (ea > sa) ea -= Tau; // construction is CCW
+
+    return makeArc_(
+        pc,
+        lengthv(subv(p1, pc)),
+        sa,
+        ea);
+}
+
+
+
+function makeArc_(center, radius, startAngle, endAngle)
+{
+    let diff  = endAngle - startAngle; // angleDiff(startAngle, endAngle);
+    let angle = startAngle;
+
+    const points = [];
+
+
+    while (Math.abs(diff) > 0)
+    {
+        const da = 
+            diff >= 0 
+            ? Math.min(diff,  Tau/4) 
+            : Math.max(diff, -Tau/4);
+
+        const handle = radius * arcKappa(da) * kappaCorrection;
+
+        const p1 = addv(center, vector(angle,      radius));
+        const p2 = addv(center, vector(angle + da, radius));
+
+        const v1 = subv(p1, center);
+        const v2 = subv(p2, center);
+
+        points.push(
+            p1,
+            mulvs(subv(p1, crossv(unitv(v1))), handle),
+            mulvs(addv(p2, crossv(unitv(v2))), handle));
+
+        angle += da;
+        diff  -= da;
+    }
+
+    points.push(addv(center, vector(endAngle, radius)));
+
+
+    return points;
+}
+
+
+
+function arcKappa(angle) 
+{
+    return 4 * Math.tan(angle/4) / 3; 
+}
+
 
 
 class Point
@@ -4703,18 +4774,18 @@ function updateMenuItemShowColorLegendInMenus()
 
 function enableFeatures(sub, beta = false)
 {
+    enableMenuItem(menuItemSetValueNames,   true, sub);
     enableMenuItem(menuItemValueName,       true, sub);
     enableMenuItem(menuItemObjectName,      true, sub);
     enableMenuItem(menuItemTimer,           true, sub);
-    enableMenuItem(menuItemSort,            true, sub);
-    enableMenuItem(menuItemFilter,          true, sub);
-    enableMenuItem(menuItemReorderList,     true, sub);
+    // enableMenuItem(menuItemSort,            true, sub);
+    // enableMenuItem(menuItemFilter,          true, sub);
+    // enableMenuItem(menuItemReorderList,     true, sub);
     enableMenuItem(menuItemAnimate,         true, sub);
     enableMenuItem(menuItemSaveToFile,      true, sub);
     enableMenuItem(menuItemSaveSelected,    true, sub);
     enableMenuItem(menuItemFetch,           true, sub);
-    enableMenuItem(menuItemTextFile,        true, sub);
-    enableMenuItem(menuItemIndexToName,     true, sub);
+    // enableMenuItem(menuItemIndexToName,     true, sub);
     enableMenuItem(menuItemDateTime,        true, sub);
     enableMenuItem(menuItemSolve,           true, sub);
     enableMenuItem(menuItemTextJson,        true, sub);
@@ -5296,6 +5367,7 @@ const JOIN_PATHS           = 'JOINPTH';
 const MEASURE_POINTS       = 'MESPT';
 const VECTOR_LENGTH        = 'VECLEN';
 const CIRCLE_CENTER        = 'CIRCEN';
+const ARC_FROM_POINTS      = 'ARCPT';
 const INTERSECT_LINES      = 'INTLIN';
 const INTERPOLATE_POINT    = 'PTLERP';
 const POINT_ON_PATH        = 'PONPT';
@@ -5396,6 +5468,7 @@ const SHAPE_TYPES =
     MEASURE_POINTS,
     VECTOR_LENGTH,
     CIRCLE_CENTER,
+    ARC_FROM_POINTS,
     INTERSECT_LINES,
     INTERPOLATE_POINT,
     POINT_ON_PATH,
@@ -36873,7 +36946,10 @@ extends GShape
 
             this.value = new VectorPathValue(
                 this.nodeId,
-                points && points.items.length > 0 ? points : input.points,
+                   points 
+                && points.items.length > 0 
+                    ? points 
+                    : input.points,
                 closed  ?? input.closed,
                 degree  ?? input.degree,
                 winding ?? input.winding,
@@ -36996,9 +37072,6 @@ extends GShape
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
-
-        if (this.nodeId == 'path3') 
-            console.log('this.input =', this.input);
 
         if (this.points ) this.points .pushValueUpdates(parse);
         if (this.closed ) this.closed .pushValueUpdates(parse);
@@ -39154,7 +39227,8 @@ extends GOperator1
 
             if (   this.value.type == VECTOR_PATH_VALUE
                 && this.value.objects
-                && this.value.objects.length > 0)
+                && this.value.objects.length > 0
+                && this.value.points.objects)
             {
                 for (let i = 0; i < this.value.objects[0].points.length; i++)
                 {
@@ -39331,7 +39405,8 @@ extends GOperator1
 
         if (   this.value.type == VECTOR_PATH_VALUE
             && this.value.objects
-            && this.value.objects.length > 0)
+            && this.value.objects.length > 0
+            && this.value.points.objects)
         {
             for (let i = 0; i < this.value.objects[0].points.length; i++)
             {
@@ -40921,6 +40996,231 @@ extends GOperator3
 
 
         await super.evalObjects(parse);
+    }
+}
+
+
+class GArcFromPoints
+extends GShape
+{
+    middle = null;
+
+    input0 = null;
+    input1 = null;
+    input2 = null;
+
+    
+
+    constructor(nodeId, options)
+    {
+        super(ARC_FROM_POINTS, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.input0 = null;
+        this.input1 = null;
+        this.input2 = null;
+
+        this.middle = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GArcFromPoints(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (base.input0) this.input0 = base.input0.copy();
+        if (base.input1) this.input1 = base.input1.copy();
+        if (base.input2) this.input2 = base.input2.copy();
+
+        if (this.middle) copy.middle = this.middle.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
+        const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+        const input2 = this.input2 ? (await this.input2.eval(parse)).toValue() : null;
+
+        const middle = this.middle ? (await this.middle.eval(parse)).toValue() : null;
+
+
+        if (   input0 && input0.isValid()
+            && input1 && input1.isValid()
+            && input2 && input2.isValid()
+            && middle && middle.isValid())
+        {
+            const p0 = input0.toPoint();
+            const p1 = input1.toPoint();
+            const p2 = input2.toPoint();
+
+            // const pc = 
+            //     middle.value > 0
+            //     ? point(p2.x, p0.y)
+            //     : circleCenter(p0, p1, p2);
+
+            const points = makeArc(p0, p1, p2);
+
+            this.value = new VectorPathValue(
+                this.nodeId,
+                new ListValue(points.map(p => PointValue.fromPoint(this.nodeId, p))),
+                new NumberValue(0),
+                new NumberValue(2),
+                new NumberValue(0),
+                new NumberValue(0));
+        }
+        else
+        {
+            this.value = VectorPathValue.NaN.copy();
+        }
+
+
+        await this.evalObjects(parse);
+
+
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue()]
+            //['value', this.value]
+        ]);
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        const points = [];
+
+        if (this.value.points)
+        {
+            for (const pt of this.value.points.items)
+            {
+                const p = PointValue.create(this.nodeId, pt.x, pt.y);
+                
+                // if (pt.smooth != null)
+                //     p.smooth = new NumberValue(pt.smooth);
+
+                points.push(p);
+            }
+        }
+
+
+        this.value.objects = [];
+
+
+        console.log('this.value =', this.value);
+        console.log('this =', this);
+        console.log('super.baseIsValid() =', super.baseIsValid());
+        console.log('this.value.closed .isValid() =', this.value.closed .isValid());
+        console.log('this.value.degree .isValid() =', this.value.degree .isValid());
+        console.log('this.value.winding.isValid() =', this.value.winding.isValid());
+        console.log('this.value.round  .isValid() =', this.value.round  .isValid());
+
+        if (   super.baseIsValid()   
+            && points.length >= 2
+            && this.value.closed .isValid()
+            && this.value.degree .isValid()
+            && this.value.winding.isValid()
+            && this.value.round  .isValid())
+        {
+            const path = new FigmaVectorPath(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                points,
+                this.value.closed .value,
+                this.value.degree .value,
+                this.value.winding.value,
+                this.value.round  .value);
+
+            
+            const bounds = getObjBounds([path]);
+
+            let x = bounds.x;
+            let y = bounds.y;
+            let w = bounds.w;
+            let h = bounds.h;
+
+            
+            path.createDefaultTransform(x, y);
+            path.createDefaultTransformPoints(x, y, w, h);
+
+            this.value.objects.push(path);
+        }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
+    isValid()
+    {
+        return this.input0 && this.input0.isValid()
+            && this.input1 && this.input1.isValid()
+            && this.input2 && this.input2.isValid()
+            && this.middle && this.middle.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+        if (this.input2) this.input2.pushValueUpdates(parse);
+        if (this.middle) this.middle.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.input0) this.input0.invalidateInputs(parse, from, force);
+        if (this.input1) this.input1.invalidateInputs(parse, from, force);
+        if (this.input2) this.input2.invalidateInputs(parse, from, force);
+        if (this.middle) this.middle.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.input0) this.input0.iterateLoop(parse);
+        if (this.input1) this.input1.iterateLoop(parse);
+        if (this.input2) this.input2.iterateLoop(parse);
+        if (this.middle) this.middle.iterateLoop(parse);
     }
 }
 
@@ -48802,6 +49102,66 @@ function genParseCircleCenter(parse)
 
 
 
+function genParseArcFromPoints(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const arc = new GArcFromPoints(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 3, 'nInputs must be [0, 3]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(arc, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, arc);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    
+    if (nInputs == 3)
+    {
+        arc.input0 = genParse(parse);
+        arc.input1 = genParse(parse);
+        arc.input2 = genParse(parse);
+    }
+    else if (nInputs == 2)
+    {
+        arc.input0 = genParse(parse);
+        arc.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        arc.input0 = genParse(parse);
+    }
+
+
+    arc.middle = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, arc);
+    return arc;
+}
+
+
+
 function genParseIntersectLines(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -50583,6 +50943,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == MEASURE_POINTS         ) result = genParseMeasurePoints     (parse);
     else if (parse.next == VECTOR_LENGTH          ) result = genParseVectorLength      (parse);
     else if (parse.next == CIRCLE_CENTER          ) result = genParseCircleCenter      (parse);
+    else if (parse.next == ARC_FROM_POINTS        ) result = genParseArcFromPoints     (parse);
     else if (parse.next == INTERSECT_LINES        ) result = genParseIntersectLines    (parse);
     else if (parse.next == INTERPOLATE_POINT      ) result = genParseInterpolatePoint  (parse);
     else if (parse.next == POINT_ON_PATH          ) result = genParsePointOnPath       (parse);

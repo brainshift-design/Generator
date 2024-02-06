@@ -156,7 +156,8 @@ extends GOperator1
 
             if (   this.value.type == VECTOR_PATH_VALUE
                 && this.value.objects
-                && this.value.objects.length > 0)
+                && this.value.objects.length > 0
+                && this.value.points.objects)
             {
                 for (let i = 0; i < this.value.objects[0].points.length; i++)
                 {

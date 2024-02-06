@@ -256,6 +256,7 @@
 ../generator/types/shape/GMeasurePoints.js
 ../generator/types/shape/GVectorLength.js
 ../generator/types/shape/GCircleCenter.js
+../generator/types/shape/GArcFromPoints.js
 ../generator/types/shape/GIntersectLines.js
 ../generator/types/shape/GInterpolatePoint.js
 ../generator/types/shape/GPointOnPath.js

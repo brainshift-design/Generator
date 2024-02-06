@@ -1,3 +1,8 @@
+const quadrantKappa   = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
+const kappaCorrection = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
+
+
+
 function bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t)
 {
     const p0 = point(x0, y0);
@@ -293,4 +298,69 @@ function quad2cubic(quad)
     }
 
     return cubic;
+}
+
+
+
+function makeArc(p1, p2, p3)
+{
+    const pc = circleCenter(p1, p2, p3);
+
+    const sa = angle(subv(p1, pc));
+    const ea = angle(subv(p3, pc));
+
+    while (ea > sa) ea -= Tau; // construction is CCW
+
+    return makeArc_(
+        pc,
+        lengthv(subv(p1, pc)),
+        sa,
+        ea);
+}
+
+
+
+function makeArc_(center, radius, startAngle, endAngle)
+{
+    let diff  = endAngle - startAngle; // angleDiff(startAngle, endAngle);
+    let angle = startAngle;
+
+    const points = [];
+
+
+    while (Math.abs(diff) > 0)
+    {
+        const da = 
+            diff >= 0 
+            ? Math.min(diff,  Tau/4) 
+            : Math.max(diff, -Tau/4);
+
+        const handle = radius * arcKappa(da) * kappaCorrection;
+
+        const p1 = addv(center, vector(angle,      radius));
+        const p2 = addv(center, vector(angle + da, radius));
+
+        const v1 = subv(p1, center);
+        const v2 = subv(p2, center);
+
+        points.push(
+            p1,
+            mulvs(subv(p1, crossv(unitv(v1))), handle),
+            mulvs(addv(p2, crossv(unitv(v2))), handle));
+
+        angle += da;
+        diff  -= da;
+    }
+
+    points.push(addv(center, vector(endAngle, radius)));
+
+
+    return points;
+}
+
+
+
+function arcKappa(angle) 
+{
+    return 4 * Math.tan(angle/4) / 3; 
 }

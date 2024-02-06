@@ -13,7 +13,7 @@ extends OperatorBase
         super(FILTER, 'filter', 'filter', iconFilter);
 
 
-        this.subscription      = true;
+        // this.subscription      = true;
         this.canDisable        = true;
         this.showHeaderTooltip = true;
         

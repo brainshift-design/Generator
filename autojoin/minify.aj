@@ -4283,6 +4283,5 @@ blendSaturation
 blendColor
 blendLuminosity
 
-pageIds
 loadedFonts
 controls

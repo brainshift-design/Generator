@@ -321,18 +321,18 @@ function updateMenuItemShowColorLegendInMenus()
 
 function enableFeatures(sub, beta = false)
 {
+    enableMenuItem(menuItemSetValueNames,   true, sub);
     enableMenuItem(menuItemValueName,       true, sub);
     enableMenuItem(menuItemObjectName,      true, sub);
     enableMenuItem(menuItemTimer,           true, sub);
-    enableMenuItem(menuItemSort,            true, sub);
-    enableMenuItem(menuItemFilter,          true, sub);
-    enableMenuItem(menuItemReorderList,     true, sub);
+    // enableMenuItem(menuItemSort,            true, sub);
+    // enableMenuItem(menuItemFilter,          true, sub);
+    // enableMenuItem(menuItemReorderList,     true, sub);
     enableMenuItem(menuItemAnimate,         true, sub);
     enableMenuItem(menuItemSaveToFile,      true, sub);
     enableMenuItem(menuItemSaveSelected,    true, sub);
     enableMenuItem(menuItemFetch,           true, sub);
-    enableMenuItem(menuItemTextFile,        true, sub);
-    enableMenuItem(menuItemIndexToName,     true, sub);
+    // enableMenuItem(menuItemIndexToName,     true, sub);
     enableMenuItem(menuItemDateTime,        true, sub);
     enableMenuItem(menuItemSolve,           true, sub);
     enableMenuItem(menuItemTextJson,        true, sub);

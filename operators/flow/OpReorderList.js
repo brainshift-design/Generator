@@ -10,7 +10,7 @@ extends OperatorBase
         super(REORDER_LIST, 'reorder', 'reorder', iconReorderList);
 
 
-        this.subscription      = true;
+        // this.subscription      = true;
         this.canDisable        = true;
         this.showHeaderTooltip = true;
         
