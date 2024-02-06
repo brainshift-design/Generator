@@ -1,8 +1,10 @@
 class   OpTextSplit
 extends OperatorBase
 {
-    paramValue;
+    paramParts;
     paramSeparator;
+
+    length;
 
 
 
@@ -13,12 +15,14 @@ extends OperatorBase
 
         this.addInput(new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramValue     = new ListParam('value',     '',          false, false, true));
+        this.addParam(this.paramParts     = new ListParam('parts',     'parts',     false, false, true));
         this.addParam(this.paramSeparator = new TextParam('separator', 'separator', false, true,  true, ''));
 
 
-        this.paramValue.itemName    = ['value'];
-        this.paramValue.isNodeValue =  true;
+        this.paramParts.isNodeValue  = true;
+        this.paramParts.itemName     = [];
+        // this.paramParts.output.types = [TEXT_LIST_VALUE];
+
 
         setControlFont(this.paramSeparator.controls[0].textbox, 'Roboto Mono', 10, 'center');
         setControlFont(this.paramSeparator.controls[0].textbox, 'Roboto Mono', 10, 'center');
@@ -60,9 +64,26 @@ extends OperatorBase
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+
+        const length = values[paramIds.findIndex(id => id == 'length')];
+
+        this.length = length.value;
+
+
+        const sep = settings.showNodeId ? ' ' : '  ';
+
+        this.paramParts.setName('parts'  + sep + '[ ' + this.length + ' ]');
+    }
+
+
+
     updateParams()
     {
-        this.paramValue.enableControlText(false, this.isUnknown());
+        this.paramParts.enableControlText(false, this.isUnknown());
         this.paramSeparator.enableControlText(true);
 
         this.updateParamControls();

@@ -1,7 +1,7 @@
 class GTextSplit
 extends GOperator1
 {
-    value;
+    parts;
     separator;
 
 
@@ -17,7 +17,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.value     = null;
+        this.parts     = null;
         this.separator = null;
     }
 
@@ -29,7 +29,7 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.value    ) copy.value     = this.value    .copy();
+        if (this.parts    ) copy.parts     = this.parts    .copy();
         if (this.separator) copy.separator = this.separator.copy();
 
         return copy;
@@ -46,7 +46,7 @@ extends GOperator1
         const separator = this.separator ? (await this.separator.eval(parse)).toValue() : null;
 
 
-        this.value = new ListValue();
+        this.parts = new ListValue();
 
 
         if (   this.input
@@ -61,15 +61,15 @@ extends GOperator1
                 const items = input.value.split(unescapeString(separator.value));
 
                 for (const item of items)
-                    this.value.items.push(new TextValue(item));
+                    this.parts.items.push(new TextValue(item));
             }
         }
     
 
         this.setUpdateValues(parse,
         [
-            //['value',     this.value],
-            ['separator', separator ]
+            ['length',    new NumberValue(this.parts.items.length)],
+            ['separator', separator                               ]
         ]);
         
 

@@ -27095,6 +27095,10 @@ extends GOperator1
 class GTextLength
 extends GOperator1
 {
+    length;
+
+
+
     constructor(nodeId, options)
     {
         super(TEXT_LENGTH, nodeId, options);
@@ -27102,6 +27106,15 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.length = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTextLength(this.nodeId, this.options);
@@ -27121,23 +27134,21 @@ extends GOperator1
             return this;
 
 
-        let length;
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
-
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
             consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
 
-            length = new NumberValue(input.value.length);
+            this.length = new NumberValue(input.value.length);
         }
         else
-            length = NumberValue.NaN.copy();
+            this.length = NumberValue.NaN.copy();
     
 
         this.setUpdateValues(parse,
         [
-            ['length', length]
+            ['length', this.length]
         ]);
 
 
@@ -29130,7 +29141,7 @@ function getPadValue(input, startPad, startCount, endPad, endCount, enabled)
 class GTextSplit
 extends GOperator1
 {
-    value;
+    parts;
     separator;
 
 
@@ -29146,7 +29157,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.value     = null;
+        this.parts     = null;
         this.separator = null;
     }
 
@@ -29158,7 +29169,7 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.value    ) copy.value     = this.value    .copy();
+        if (this.parts    ) copy.parts     = this.parts    .copy();
         if (this.separator) copy.separator = this.separator.copy();
 
         return copy;
@@ -29175,7 +29186,7 @@ extends GOperator1
         const separator = this.separator ? (await this.separator.eval(parse)).toValue() : null;
 
 
-        this.value = new ListValue();
+        this.parts = new ListValue();
 
 
         if (   this.input
@@ -29190,15 +29201,15 @@ extends GOperator1
                 const items = input.value.split(unescapeString(separator.value));
 
                 for (const item of items)
-                    this.value.items.push(new TextValue(item));
+                    this.parts.items.push(new TextValue(item));
             }
         }
     
 
         this.setUpdateValues(parse,
         [
-            //['value',     this.value],
-            ['separator', separator ]
+            ['length',    new NumberValue(this.parts.items.length)],
+            ['separator', separator                               ]
         ]);
         
 

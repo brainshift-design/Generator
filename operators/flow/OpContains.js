@@ -25,6 +25,9 @@ extends OperatorBase
         this.addParam(this.paramAll   = new   ListParam('all',   'all',         false, false, true));
 
         this.paramValue.isNodeValue = true;
+        this.paramFirst.isNodeValue = true;
+        this.paramLast .isNodeValue = true;
+        this.paramAll  .isNodeValue = true;
 
         this.paramAll.itemName = [];
 
@@ -82,10 +85,14 @@ extends OperatorBase
 
     updateParams()
     {
+        // const inputsUnknown = 
+        //        (!this.headerInputs[0].connected || this.headerInputs[0].node.isUnknown())
+        //     || (!this.headerInputs[1].connected || this.headerInputs[1].node.isUnknown());
+
         // this.paramValue.enableControlText(false, this.isUnknown());
-        this.paramFirst.enableControlText(false, this.isUnknown());
-        this.paramLast .enableControlText(false, this.isUnknown());
-        this.paramAll  .enableControlText(false, this.isUnknown());
+        this.paramFirst.enableControlText(false, /*inputsUnknown ||*/ this.isUnknown());
+        this.paramLast .enableControlText(false, /*inputsUnknown ||*/ this.isUnknown());
+        this.paramAll  .enableControlText(false, /*inputsUnknown ||*/ this.isUnknown());
 
         updateParamConditionText(this.paramValue, this.isUnknown() || this.hasConditionOutputs(), true);
 

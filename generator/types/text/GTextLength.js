@@ -1,6 +1,10 @@
 class GTextLength
 extends GOperator1
 {
+    length;
+
+
+
     constructor(nodeId, options)
     {
         super(TEXT_LENGTH, nodeId, options);
@@ -8,6 +12,15 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.length = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTextLength(this.nodeId, this.options);
@@ -27,23 +40,21 @@ extends GOperator1
             return this;
 
 
-        let length;
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
-
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
             consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
 
-            length = new NumberValue(input.value.length);
+            this.length = new NumberValue(input.value.length);
         }
         else
-            length = NumberValue.NaN.copy();
+            this.length = NumberValue.NaN.copy();
     
 
         this.setUpdateValues(parse,
         [
-            ['length', length]
+            ['length', this.length]
         ]);
 
 
