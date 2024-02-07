@@ -61,7 +61,7 @@ extends ResizableBase
                     ? file.path 
                     : file.name;
 
-                const filePath = new TextValue(this.updateFilePath(path));
+                const filePath = new TextValue(path ? this.updateFilePath(path) : '');
 
 
                 this.file = file;
@@ -203,7 +203,8 @@ extends ResizableBase
             
             let path = decodeURIComponent(_node.path);
 
-            path = this.updateFilePath(path);
+            if (path)
+                path = this.updateFilePath(path);
             
             this.paramPath.setValue(new TextValue(path, false, true, false));
             this.cachedValue = decodeURIComponent(_node.cachedValue);

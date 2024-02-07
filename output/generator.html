@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 354;
+const generatorVersion = 356;
 
 
 const MAX_INT32        = 2147483647;
@@ -18477,6 +18477,9 @@ extends GOperator1
         const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
 
 
+        let length = 0;
+            
+
         // if (this.cachedValue)
         //     this.value = this.cachedValue.copy();
 
@@ -18485,23 +18488,32 @@ extends GOperator1
             this.value = new ListValue();
             this.value.objects = [];
 
+
             if (   input
                 && start
                 && end)
             {
                 if (input.items)
                 {
+                    length = input.items.length;
+
+
                     const _end =
                         end.isValid()
                         ? end
                         : new NumberValue(input.items.length);
 
 
-                    if (start.value < _end.value)
+                    if (this.options.enabled)
                     {
-                        if (this.options.enabled)
+                        const endValue = 
+                            _end.value < 0
+                            ? length + _end.value
+                            : _end.value;
+
+                        if (start.value < endValue)
                         {
-                            for (let i = start.value, j = 0; i < _end.value; i++, j++)
+                            for (let i = start.value, j = 0; i < endValue; i++, j++)
                             {
                                 const item = input.items[i];
                                 
@@ -18519,8 +18531,10 @@ extends GOperator1
                             }
                         }
                         else
-                            this.value = input.copy();//.copy();
+                            this.value = ListValue.NaN.copy();
                     }
+                    else
+                        this.value = input.copy();
                 }
                 else
                     this.value = ListValue.NaN.copy();
@@ -27136,7 +27150,8 @@ extends GOperator1
 
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
-        if (input)
+        if (   input
+            && input.value)
         {
             consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
 
@@ -27378,22 +27393,28 @@ extends GOperator1
                 : new NumberValue(input.value.length);
 
 
-            if (start.value <= _end.value)
+            if (this.options.enabled)
             {
-                if (this.options.enabled)
-                    this.value.value = this.value.value.substring(start.value, _end.value);
+                const endValue = 
+                    _end.value < 0
+                    ? length + _end.value
+                    : _end.value;
+
+                if (start.value <= endValue)
+                    this.value.value = this.value.value.substring(start.value, endValue);
+                else
+                    this.value = new TextValue();
             }
             else
-                this.value = new TextValue();//TextValue.NaN.copy();
+                this.value = input.copy();
         }
         else
-            this.value = new TextValue();//TextValue.NaN.copy();
+            this.value = new TextValue();
 
 
         this.setUpdateValues(parse,
         [
-            //['value',  this.value             ],
-            ['length', new NumberValue(length)], // used to set start and end maxima
+            ['length', new NumberValue(length)], // used to set start and end limits
             ['start',  start                  ],
             ['end',    end                    ]
         ]);

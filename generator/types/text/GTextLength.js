@@ -42,7 +42,8 @@ extends GOperator1
 
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
-        if (input)
+        if (   input
+            && input.value)
         {
             consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
 

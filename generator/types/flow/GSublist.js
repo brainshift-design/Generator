@@ -53,6 +53,9 @@ extends GOperator1
         const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
 
 
+        let length = 0;
+            
+
         // if (this.cachedValue)
         //     this.value = this.cachedValue.copy();
 
@@ -61,23 +64,32 @@ extends GOperator1
             this.value = new ListValue();
             this.value.objects = [];
 
+
             if (   input
                 && start
                 && end)
             {
                 if (input.items)
                 {
+                    length = input.items.length;
+
+
                     const _end =
                         end.isValid()
                         ? end
                         : new NumberValue(input.items.length);
 
 
-                    if (start.value < _end.value)
+                    if (this.options.enabled)
                     {
-                        if (this.options.enabled)
+                        const endValue = 
+                            _end.value < 0
+                            ? length + _end.value
+                            : _end.value;
+
+                        if (start.value < endValue)
                         {
-                            for (let i = start.value, j = 0; i < _end.value; i++, j++)
+                            for (let i = start.value, j = 0; i < endValue; i++, j++)
                             {
                                 const item = input.items[i];
                                 
@@ -95,8 +107,10 @@ extends GOperator1
                             }
                         }
                         else
-                            this.value = input.copy();//.copy();
+                            this.value = ListValue.NaN.copy();
                     }
+                    else
+                        this.value = input.copy();
                 }
                 else
                     this.value = ListValue.NaN.copy();

@@ -68,22 +68,28 @@ extends GOperator1
                 : new NumberValue(input.value.length);
 
 
-            if (start.value <= _end.value)
+            if (this.options.enabled)
             {
-                if (this.options.enabled)
-                    this.value.value = this.value.value.substring(start.value, _end.value);
+                const endValue = 
+                    _end.value < 0
+                    ? length + _end.value
+                    : _end.value;
+
+                if (start.value <= endValue)
+                    this.value.value = this.value.value.substring(start.value, endValue);
+                else
+                    this.value = new TextValue();
             }
             else
-                this.value = new TextValue();//TextValue.NaN.copy();
+                this.value = input.copy();
         }
         else
-            this.value = new TextValue();//TextValue.NaN.copy();
+            this.value = new TextValue();
 
 
         this.setUpdateValues(parse,
         [
-            //['value',  this.value             ],
-            ['length', new NumberValue(length)], // used to set start and end maxima
+            ['length', new NumberValue(length)], // used to set start and end limits
             ['start',  start                  ],
             ['end',    end                    ]
         ]);
