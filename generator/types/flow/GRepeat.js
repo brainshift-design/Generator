@@ -74,7 +74,8 @@ extends GOperator1
         this.value.objects = [];
 
 
-        if (count.value > 0)
+        if (   count.value > 0
+            && this.options.active)
         {
             if (this.input)
                 //&& this.input.isValid())

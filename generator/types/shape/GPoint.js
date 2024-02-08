@@ -77,8 +77,12 @@ extends GOperator1
             this.value.copyCustomParams(input);
 
 
-            this.value.x = new NumberValue(this.value.objects[0].x);
-            this.value.y = new NumberValue(this.value.objects[0].y);
+            if (   this.value.objects
+                && this.value.objects.length > 0)
+            {
+                this.value.x = new NumberValue(this.value.objects[0].x);
+                this.value.y = new NumberValue(this.value.objects[0].y);
+            }
             
             if (x)  this.value.x = x;  else  x = this.value.x;
             if (y)  this.value.y = y;  else  y = this.value.y;
@@ -119,7 +123,9 @@ extends GOperator1
             this.value.objects = [];
 
 
-        if (   this.value.x.isValid()
+        if (   this.value.x
+            && this.value.y   
+            && this.value.x.isValid()
             && this.value.y.isValid())
         {
             const x = this.value.x.value;
