@@ -129,7 +129,12 @@ extends GOperator1
             const showCenter  = options.showCenter .value;
 
 
-            const _a = y/360*Tau;
+            let _a = y/360*Tau;
+
+            while (_a <  0  ) _a += Tau;
+            while (_a >= Tau) _a -= Tau;
+
+
             const _v = vector(_a, x);
             
             const _x = moveType == 0 ? x : _v.x;
