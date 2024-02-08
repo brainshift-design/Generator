@@ -13,8 +13,9 @@ extends OpShape
         super(JOIN_PATHS, 'joinPath', 'join paths', iconJoinPaths);
 
         
-        this.canDisable  = true;
-        this.iconOffsetY = -1;
+        this.canDisable     = true;
+        this.variableInputs = true;
+        this.iconOffsetY    = -1;
 
 
         this.addNewInput();

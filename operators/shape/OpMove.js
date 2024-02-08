@@ -100,20 +100,20 @@ extends OperatorBase
         updateParamConditionText(this.paramAffectSpace, this.paramAffectSpace.isUnknown(), true,  1);
 
 
-        const vector = this.paramMoveType.value.value == 1;
+        const isVector = this.paramMoveType.value.value == 1;
        
-        this.paramX.setName(vector ? 'distance' : 'X');
-        this.paramX.divider = vector ? 0.55 : 0.43;
+        this.paramX.setName(isVector ? 'distance' : 'X');
+        this.paramX.divider = isVector ? 0.55 : 0.43;
 
-        this.paramY.setName(vector ? 'angle' : 'Y');
-        this.paramY.divider = vector ? 0.55 : 0.43;
+        this.paramY.setName(isVector ? 'angle' : 'Y');
+        this.paramY.divider = isVector ? 0.55 : 0.43;
 
-        this.paramY.controls[0].suffix        = vector ? '°' : '';
-        this.paramY.controls[0].suffixOffsetY = vector ? -4  : 0;
-        this.paramY.controls[0].wrapValue     = vector;
+        this.paramY.controls[0].suffix        = isVector ? '°' : '';
+        this.paramY.controls[0].suffixOffsetY = isVector ? -4  : 0;
+        this.paramY.controls[0].wrapValue     = isVector;
 
-        this.paramY.controls[0].setMin(vector ?   0 : Number.MIN_SAFE_INTEGER);
-        this.paramY.controls[0].setMax(vector ? 360 : Number.MAX_SAFE_INTEGER);
+        this.paramY.controls[0].setMin(isVector ?   0 : Number.MIN_SAFE_INTEGER);
+        this.paramY.controls[0].setMax(isVector ? 360 : Number.MAX_SAFE_INTEGER);
 
 
         this.updateParamControls();

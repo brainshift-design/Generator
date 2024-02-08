@@ -5,8 +5,9 @@ extends OpShape
     {
         super(VECTOR_NETWORK, 'network', 'network', iconVectorNetwork);
 
-        //this.canDisable  = true;
-        this.iconOffsetY = -3;
+        //this.canDisable   = true;
+        this.iconOffsetY    = -3;
+        this.variableInputs = true;
 
 
         this.addNewInput();
