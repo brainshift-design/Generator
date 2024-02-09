@@ -126,19 +126,20 @@ Operator.prototype.updateHeaderLabelText = function()
     
     let suffix;
 
-    const sep      = settings.showNodeId ? ' ' : '  ';
+    const sep      = settings.showNodeId ? ' '   : '  ';
     const ellipsis = settings.showNodeId ? '...' : ' . . .';
 
     //     if (this.type == COMBINE     ) suffix = sep + '[ ' + this.length        + ' ]';
     //else 
-         if (this.type == EXTRACT     ) suffix = sep + '[ ' + this.length        + ' ]';
-    else if (this.type == SUBLIST     ) suffix = sep + '[ ' + this.length        + ' ]';
-    else if (this.type == COLUMN      ) suffix = sep + '[ ' + this.columnLength  + ' ]';
-    else if (this.type == REVERSE_LIST) suffix = sep + '[ ' + this.length   + ' ]';
-    //else if (this.type == SORT      ) suffix = sep + '[ ' + this.length   + ' ]';
-    else if (this.type == FILTER      ) suffix = sep + '[ ' + this.length   + ' ]';
-    else if (this.type == UNIQUE      ) suffix = sep + '[ ' + this.length        + ' ]';
-    else if (this.type == LIST        ) suffix = ellipsis + sep + '[ ' + this.params.length + ' ]';
+         if (this.type == EXTRACT     ) suffix =            sep + '[ ' + (this.isUnknown() ? '?' : this.length       ) + ' ]';
+    else if (this.type == SUBLIST     ) suffix =            sep + '[ ' + (this.isUnknown() ? '?' : this.length       ) + ' ]';
+    else if (this.type == COLUMN      ) suffix =            sep + '[ ' + (this.isUnknown() ? '?' : this.columnLength ) + ' ]';
+    else if (this.type == REVERSE_LIST) suffix =            sep + '[ ' + (this.isUnknown() ? '?' : this.length       ) + ' ]';
+    //else if (this.type == SORT      ) suffix =            sep + '[ ' + (this.isUnknown() ? '?' : this.length       ) + ' ]';
+    else if (this.type == FILTER      ) suffix =            sep + '[ ' + (this.isUnknown() ? '?' : this.length       ) + ' ]';
+    else if (this.type == UNIQUE      ) suffix =            sep + '[ ' + (this.isUnknown() ? '?' : this.length       ) + ' ]';
+    else if (this.type == TEXT_SPLIT  ) suffix =            sep + '[ ' + (this.isUnknown() ? '?' : this.length       ) + ' ]';
+    else if (this.type == LIST        ) suffix = ellipsis + sep + '[ ' + (this.isUnknown() ? '?' : this.params.length) + ' ]';
     else if (this.type == CACHE       ) suffix = ellipsis;
     else
         suffix = 
