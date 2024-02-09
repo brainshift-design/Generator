@@ -68,7 +68,26 @@ document.addEventListener("drop", async e =>
         reader.readAsText(file,'UTF-8');
 
         reader.onload = e =>
-            actionManager.do(new PasteNodesAction(e.target.result, false, false, true));
+        {
+            if (isValidGeneratorFile(e.target.result))
+                actionManager.do(new PasteNodesAction(e.target.result, false, false, true));
+        };
     }
 });
 
+
+
+function isValidGeneratorFile(json)
+{
+    try
+    {
+        const obj = JSON.parse(json);
+
+        return Array.isArray(obj.nodes)
+            && Array.isArray(obj.connections);
+    }
+    catch (e)
+    {
+        return false;
+    }
+}

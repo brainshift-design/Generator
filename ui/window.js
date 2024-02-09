@@ -70,7 +70,8 @@ function uiSetWindowRect(x, y, width, height)
 
 function uiResizeWindow(width, height)
 {
-    width = Math.max(602, width);
+    width  = Math.max(minWindowWidth,  width );
+    height = Math.max(minWindowHeight, height);
 
     updateObjectCountDisplay();
 

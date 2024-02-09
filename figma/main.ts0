@@ -58,8 +58,8 @@ function figStartGenerator()
 
         
         figma.ui.resize(
-            Math.max(0, wndWidth),
-            Math.max(0, wndHeight));
+            Math.max(minWindowWidth,  wndWidth ),
+            Math.max(minWindowHeight, wndHeight));
 
         figma.ui.show();
 

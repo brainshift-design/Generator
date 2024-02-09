@@ -31,6 +31,8 @@ const nodeTag = 'G_NODE';
 const connTag = 'G_CONN';
 const pageTag = 'G_PAGE';
 const tempTag = 'G_TEMP';
+const minWindowWidth = 602;
+const minWindowHeight = 39;
 const identity = Object.freeze([[1, 0, 0],
     [0, 1, 0],
     [0, 0, 1]]);
@@ -1447,7 +1449,7 @@ function figStartGenerator() {
             }
             else
                 wndHeight = parseInt(_wndHeight);
-            figma.ui.resize(Math.max(0, wndWidth), Math.max(0, wndHeight));
+            figma.ui.resize(Math.max(minWindowWidth, wndWidth), Math.max(minWindowHeight, wndHeight));
             figma.ui.show();
             const fonts = yield figma.listAvailableFontsAsync();
             const eula = (yield figma.clientStorage.getAsync('eula')) === 'true';

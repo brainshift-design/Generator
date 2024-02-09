@@ -42,6 +42,8 @@ const connTag          = 'G_CONN';
 const pageTag          = 'G_PAGE';
 const tempTag          = 'G_TEMP';
 
+const minWindowWidth   = 602;
+const minWindowHeight  =  39;
 
 
 const identity = Object.freeze(
@@ -2236,8 +2238,8 @@ function figStartGenerator()
 
         
         figma.ui.resize(
-            Math.max(0, wndWidth),
-            Math.max(0, wndHeight));
+            Math.max(minWindowWidth,  wndWidth ),
+            Math.max(minWindowHeight, wndHeight));
 
         figma.ui.show();
 
