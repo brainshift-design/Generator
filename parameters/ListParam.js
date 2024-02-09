@@ -16,7 +16,8 @@ extends Parameter
     value;
 
 
-    listTypes = []; // the only types to consider, unless it's empty, then it's all types
+    listTypes   = []; // the only types to consider, unless it's empty, then it's all types
+    outputTypes = []; // overrides the value types for UI purposes
     
 
     
@@ -189,7 +190,12 @@ extends Parameter
         this.controls[0].textbox.value = value;
 
         if (this.output)
-            this.output.types = [finalListTypeFromItems(this.value.items)];
+        {
+            this.output.types = 
+                isEmpty(this.outputTypes)
+                ? [finalListTypeFromItems(this.value.items)]
+                : [...this.outputTypes];
+        }
 
 
         super.updateControls();

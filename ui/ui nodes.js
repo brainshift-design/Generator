@@ -541,7 +541,7 @@ function loadNodes(data, pasting)
 
 function loadNode(_node, pasting, genVersion = 0)
 {
-    handleLegacy(_node, genVersion);
+    handleLegacyNode(_node, genVersion);
 
 
     const node = createNode(_node.type);
@@ -564,7 +564,7 @@ function loadNode(_node, pasting, genVersion = 0)
 
 
 
-function handleLegacy(_node, genVersion)
+function handleLegacyNode(_node, genVersion)
 {
     // update legacy node names
     
@@ -602,6 +602,14 @@ function handleLegacy(_node, genVersion)
         if (value) 
             removeFromArray(_node.params, param);
     }
+    else if (_node.type == TEXT_SPLIT
+          && genVersion == 0)
+    {
+        let parts = _node.params.find(p => p[1] == 'parts');
+
+        if (parts) 
+            removeFromArray(_node.params, parts);
+    }
     else if (_node.type == ELLIPSE
           && _node.params
           && _node.params.length > 0)
@@ -612,6 +620,14 @@ function handleLegacy(_node, genVersion)
         const paramTo = _node.params.find(p => p[1] == 'to');
         if (paramTo) paramTo[1] = 'sweep';
     }
+}
+
+
+
+function handleLegacyConnection(_conn)
+{
+    if (_conn.outputId == 'parts')
+        _conn.outputId = 'h0';
 }
 
 
@@ -639,21 +655,6 @@ function uiUpdateLegacyNodes()
 
 
     actionManager.do(new SetMultipleValuesAction(params, values, true));
-
-
-    // for (const node of graph.currentPage.nodes)
-    // {
-    //     if (   node.type == NUMBER_MATH
-    //         && node.inputs.length <= 2
-    //         && node.paramOperation.value.value == 2)
-    //     {
-    //         const inConns  = node.inputs.filter(i => i.connected).map(i => i.connection);
-    //         const outConns = node.outputs[0].connectedInputs.map(i => i.connection);
-
-    //         actionManager.do(new DeleteNodesAction([node.nodeId]));
-    //         actionManager.do(getCreateNodeAction(NUMBER_NEGATIVE, null, {}));
-    //     }
-    // }
 }
 
 

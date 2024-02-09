@@ -581,6 +581,10 @@ function resolveConnections(nodes, _connections, first, last)
             {
                 const _conn = _connections[i];
 
+                
+                handleLegacyConnection(_conn);
+
+
                 const outputNode = nodes.find(n => (n.newId ?? n.id) == _conn.outputNodeId);
                 const  inputNode = nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId);
 

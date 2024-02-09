@@ -131,9 +131,9 @@ extends EventTarget
 
 
         this.hitbox.addEventListener('pointerdown', e => 
-        { 
-            if (!this.canReact(e)) 
-                return false; 
+        {
+            if (!this.canReact(e))
+                return false;
         });
 
 

@@ -1,7 +1,6 @@
 class   OpTextSplit
 extends OperatorBase
 {
-    paramParts;
     paramSeparator;
 
     length;
@@ -14,14 +13,9 @@ extends OperatorBase
 
 
         this.addInput(new Input([TEXT_VALUE]));
+        this.addOutput(new Output([TEXT_LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramParts     = new ListParam('parts',     'parts',     false, false, true));
         this.addParam(this.paramSeparator = new TextParam('separator', 'separator', false, true,  true, ''));
-
-
-        this.paramParts.isNodeValue  = true;
-        this.paramParts.itemName     = [];
-        // this.paramParts.output.types = [TEXT_LIST_VALUE];
 
 
         setControlFont(this.paramSeparator.controls[0].textbox, 'Roboto Mono', 10, 'center');
@@ -32,20 +26,20 @@ extends OperatorBase
 
 
 
-    genRequest(gen)
+    output_genRequest(gen)
     {
-        // 'this' is the node
+        // 'this' is the output
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
         
-        const input = this.inputs[0];
+        const input = this.node.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
@@ -53,11 +47,11 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.paramSeparator.genRequest(gen));
+        request.push(...this.node.paramSeparator.genRequest(gen));
 
         
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
 
         return request;
     }
@@ -72,18 +66,12 @@ extends OperatorBase
         const length = values[paramIds.findIndex(id => id == 'length')];
 
         this.length = length.value;
-
-
-        const sep = settings.showNodeId ? ' ' : '  ';
-
-        this.paramParts.setName('parts'  + sep + '[ ' + this.length + ' ]');
     }
 
 
 
     updateParams()
     {
-        this.paramParts.enableControlText(false, this.isUnknown());
         this.paramSeparator.enableControlText(true);
 
         this.updateParamControls();
