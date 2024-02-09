@@ -567,17 +567,6 @@ class Wire
                 color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th - dl]));
          }
     
-    
-        const wireStyle = rgba2style(color);
-
-        const arrowStyle = rgba2style(
-            rgbaLerp(
-                darkMode 
-                ? [0.5, 0.5, 0.5, 0.65] 
-                : [0.5, 0.5, 0.5, 0.5 ], 
-                color, 
-                color[3]));
-
                 
         const unknown = 
                conn.output 
@@ -595,6 +584,17 @@ class Wire
             && (   conn.input
                 && conn.input.node.isOrFollowedByMultiplier());
         
+    
+        const wireStyle = rgba2style(color);
+
+        const arrowStyle = rgba2style(
+            rgbaLerp(
+                darkMode 
+                ? [0.5, 0.5, 0.5, 0.65] 
+                : [0.5, 0.5, 0.5, 0.5 ], 
+                color, 
+                color[3]));
+
                 
         this.curve .style.stroke = wireStyle;
         this.curve2.style.stroke = rgb2style(rgbDocumentBody);

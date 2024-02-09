@@ -146,31 +146,34 @@ extends ResizableBase
 
     getHeaderColors(options = {})
     {
-        const colors = super.getHeaderColors(options);
-        const type   = this.outputs[0].types[0];
+        const colors   = super.getHeaderColors(options);
+        const type     = this.outputs[0].types[0];
+  
+        const anyColor = rgbFromType(ANY_VALUE, true);
 
-        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        colors.text = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
       
         if (   this.outputs[0].supportsTypes([COLOR_VALUE])
             && this.value.isValid())
         {
             colors.output  =
-            colors.outWire = this.value.toRgb();
+            colors.outWire = this.isUnknown() ? anyColor : this.value.toRgb();
         }
         else if (this.outputs[0].supportsTypes([FILL_VALUE])
               && this.value.isValid())
         {
             colors.output  =
-            colors.outWire = this.value.color.toRgb();
+            colors.outWire = this.isUnknown() ? anyColor : this.value.color.toRgb();
         }
         else
         {
             const gray =
-                    this.active
-                && !this.inputs[0].connected;
+                       this.active
+                   && !this.inputs[0].connected;
 
-            colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+            colors.output  = gray ? rgb_a(colors.text, 0.35)     : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
             colors.outWire = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
         }
         
