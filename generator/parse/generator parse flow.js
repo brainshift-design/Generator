@@ -1098,6 +1098,9 @@ function genParseRepeat(parse)
     const repeat = new GRepeat(nodeId, options);
 
 
+    repeat.activeAfter = parseInt(parse.move()) > 0;
+
+
     let nInputs = -1;
     
     if (!ignore)
@@ -1126,7 +1129,7 @@ function genParseRepeat(parse)
 
     repeat. count   = genParse(parse);
     repeat._while   = genParse(parse);
-    //repeat. iterate = genParse(parse);  // don't set target here
+  //repeat. iterate = genParse(parse);  // don't set target here
     repeat. loop    = genParse(parse);  // don't set target here
 
 

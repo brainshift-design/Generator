@@ -23,7 +23,7 @@ extends OperatorBase
 
         this.addParam(this.paramCount   = new NumberParam('count',   'count', true,  true, true, 5, 0, Number.MAX_SAFE_INTEGER, 0));
         this.addParam(this.paramWhile   = new NumberParam('while',   'while', true,  true, true, 1, 0, 1));
-        //this.addParam(this.paramIterate = new NumberParam('iterate', '',      false, true, false));
+      //this.addParam(this.paramIterate = new NumberParam('iterate', '',      false, true, false));
         this.addParam(this.paramLoop    = new NumberParam('loop',    '',      false, true, false));
 
 
@@ -67,6 +67,9 @@ extends OperatorBase
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
+
+
+        request.push(getActiveAfterNode(this.node, true) ? 1 : 0); // there are active nodes after this one
 
 
         const input = this.node.inputs[0];
