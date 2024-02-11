@@ -1,7 +1,7 @@
 class   OpArcFromPoints
 extends OpShapeBase
 {
-    paramMiddle;
+    paramTangent;
 
 
     menuBool;
@@ -22,12 +22,12 @@ extends OpShapeBase
         this.addOutput(new Output([POINT_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramMiddle = new NumberParam('middle', 'middle outside', true, true, true, 0, 0, 1));
+        this.addParam(this.paramTangent = new NumberParam('tangent', 'tangent', true, true, true, 0, 0, 1));
 
 
-        this.paramMiddle.divider = 0.735;
+        this.paramTangent.divider = 0.588;
 
-        this.menuBool = createBoolMenu(this.paramMiddle);
+        this.menuBool = createBoolMenu(this.paramTangent);
     }
 
 
@@ -63,7 +63,7 @@ extends OpShapeBase
         if (input2.connected)  request.push(...pushInputOrParam(input2, gen));
 
 
-        request.push(...this.node.paramMiddle.genRequest(gen));
+        request.push(...this.node.paramTangent.genRequest(gen));
 
 
         gen.scope.pop();
@@ -76,9 +76,9 @@ extends OpShapeBase
 
     updateParams()
     {
-        this.paramMiddle.enableControlText(true);
+        this.paramTangent.enableControlText(true);
 
-        updateParamConditionText(this.paramMiddle, this.paramMiddle.isUnknown(), false, 1);
+        updateParamConditionText(this.paramTangent, this.paramTangent.isUnknown(), false, 1);
 
         this.updateParamControls();
     }

@@ -304,10 +304,17 @@ function quad2cubic(quad)
 
 function makeArc(p1, p2, p3)
 {
+    if (crossv2(subv(p2, p1), subv(p3, p2)) >= 0) // clockwise
+    {
+        const pt = p1;
+        p1 = p3;
+        p3 = pt;
+    }
+
     const pc = circleCenter(p1, p2, p3);
 
     const sa = angle(subv(p1, pc));
-    const ea = angle(subv(p3, pc));
+    let   ea = angle(subv(p3, pc));
 
     while (ea > sa) ea -= Tau; // construction is CCW
 
@@ -325,6 +332,7 @@ function makeArc_(center, radius, startAngle, endAngle)
     let diff  = endAngle - startAngle; // angleDiff(startAngle, endAngle);
     let angle = startAngle;
 
+
     const points = [];
 
 
@@ -337,21 +345,23 @@ function makeArc_(center, radius, startAngle, endAngle)
 
         const handle = radius * arcKappa(da) * kappaCorrection;
 
-        const p1 = addv(center, vector(angle,      radius));
-        const p2 = addv(center, vector(angle + da, radius));
+        const p1     = addv(center, vector(angle,      radius));
+        const p2     = addv(center, vector(angle + da, radius));
+    
+        const v1     = subv(p1, center);
+        const v2     = subv(p2, center);
 
-        const v1 = subv(p1, center);
-        const v2 = subv(p2, center);
 
         points.push(
             p1,
-            mulvs(subv(p1, crossv(unitv(v1))), handle),
-            mulvs(addv(p2, crossv(unitv(v2))), handle));
+            subv(p1, mulvs(crossv(unitv(v1)), handle)),
+            addv(p2, mulvs(crossv(unitv(v2)), handle)));
 
         angle += da;
         diff  -= da;
     }
 
+    
     points.push(addv(center, vector(endAngle, radius)));
 
 

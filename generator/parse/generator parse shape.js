@@ -1669,7 +1669,7 @@ function genParseArcFromPoints(parse)
     }
 
 
-    arc.middle = genParse(parse);
+    arc.tangent = genParse(parse);
 
 
     parse.nTab--;
