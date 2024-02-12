@@ -226,9 +226,10 @@
 ../operators/shape/OpCircleCenter.js
 ../operators/shape/OpArcFromPoints.js
 ../operators/shape/OpPathLength.js
+../operators/shape/OpPointAlongPath.js
+../operators/shape/OpClosestPointOnPath.js
 ../operators/shape/OpIntersectLines.js
 ../operators/shape/OpInterpolatePoint.js
-../operators/shape/OpPointOnPath.js
 
 ../operators/shape/boolean/OpShapeBooleanBase.js
 ../operators/shape/boolean/OpShapeBoolean.js

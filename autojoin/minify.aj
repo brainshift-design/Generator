@@ -1275,7 +1275,8 @@ VECTOR_LENGTH
 CIRCLE_CENTER
 INTERSECT_LINES
 INTERPOLATE_POINT
-POINT_ON_PATH
+POINT_ALONG_PATH
+CLOSEST_POINT_ON_PATH
 BOOLEAN
 BOOLEAN_VALUE
 BOOL_UNION
@@ -1936,7 +1937,8 @@ GMove
 GPlace
 GPoint
 GPointCorner
-GPointOnPath
+GPointAlongPath
+GClosestPointOnPath
 GPolygon
 GRectangle
 GRender
@@ -2237,7 +2239,8 @@ OpMove
 OpPlace
 OpPoint
 OpPointCorner
-OpPointOnPath
+OpPointAlongPath
+OpClosestPointOnPath
 OpPolygon
 OpRectangle
 OpRender

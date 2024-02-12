@@ -258,9 +258,10 @@
 ../generator/types/shape/GCircleCenter.js
 ../generator/types/shape/GArcFromPoints.js
 ../generator/types/shape/GPathLength.js
+../generator/types/shape/GPointAlongPath.js
+../generator/types/shape/GClosestPointOnPath.js
 ../generator/types/shape/GIntersectLines.js
 ../generator/types/shape/GInterpolatePoint.js
-../generator/types/shape/GPointOnPath.js
 
 ../generator/types/shape/GPlace.js
 

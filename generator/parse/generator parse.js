@@ -339,7 +339,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == ARC_FROM_POINTS        ) result = genParseArcFromPoints     (parse);
     else if (parse.next == INTERSECT_LINES        ) result = genParseIntersectLines    (parse);
     else if (parse.next == INTERPOLATE_POINT      ) result = genParseInterpolatePoint  (parse);
-    else if (parse.next == POINT_ON_PATH          ) result = genParsePointOnPath       (parse);
+    else if (parse.next == POINT_ALONG_PATH       ) result = genParsePointAlongPath    (parse);
 
     else if (parse.next == PLACE                  ) result = genParsePlace             (parse);
     else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply        (parse);

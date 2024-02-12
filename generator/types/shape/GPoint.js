@@ -96,14 +96,14 @@ extends GOperator1
         }
 
 
-        await this.evalObjects(parse);
-
-
         this.setUpdateValues(parse, 
         [
             ['x', x],
             ['y', y]
         ]);
+
+
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -147,27 +147,6 @@ extends GOperator1
 
         await super.evalObjects(parse);
     }
-
-
-
-    // toValue()
-    // {
-    //     return this.value
-    //          ? this.value.copy()
-    //          : null;
-
-    //     // const point = new PointValue(
-    //     //     this.nodeId,
-    //     //     this.x.toValue(),
-    //     //     this.y.toValue());
-
-    //     // point.objects = 
-    //     //     this.value.objects
-    //     //     ? this.value.objects.map(o => o.copy())
-    //     //     : [];
-
-    //     // return point;
-    // }
 
 
 

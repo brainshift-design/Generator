@@ -1415,103 +1415,104 @@ const STYLE_VALUES =
 ];
 
 
-const COLOR_STYLE          = 'CSTL';
+const COLOR_STYLE           = 'CSTL';
  
  
-const SHAPE_VALUE          = 'SHP#'; // abstract placeholder
+const SHAPE_VALUE           = 'SHP#'; // abstract placeholder
  
-const RECTANGLE_VALUE      = 'RECT#';
-const RECTANGLE            = 'RECT'; 
-const RECTANGLE_TYPES      = [RECTANGLE_VALUE, RECTANGLE];
+const RECTANGLE_VALUE       = 'RECT#';
+const RECTANGLE             = 'RECT'; 
+const RECTANGLE_TYPES       = [RECTANGLE_VALUE, RECTANGLE];
  
-const LINE_VALUE           = 'LINE#';
-const LINE                 = 'LINE'; 
-const LINE_TYPES           = [LINE_VALUE, LINE];
+const LINE_VALUE            = 'LINE#';
+const LINE                  = 'LINE'; 
+const LINE_TYPES            = [LINE_VALUE, LINE];
    
-const ELLIPSE_VALUE        = 'ELPS#';
-const ELLIPSE              = 'ELPS'; 
-const ELLIPSE_TYPES        = [ELLIPSE_VALUE, ELLIPSE];
+const ELLIPSE_VALUE         = 'ELPS#';
+const ELLIPSE               = 'ELPS'; 
+const ELLIPSE_TYPES         = [ELLIPSE_VALUE, ELLIPSE];
  
-const TRAPEZE_VALUE        = 'TRPZ#';
-const TRAPEZE              = 'TRPZ';
-const TRAPEZE_TYPES        = [TRAPEZE_VALUE, TRAPEZE];
+const TRAPEZE_VALUE         = 'TRPZ#';
+const TRAPEZE               = 'TRPZ';
+const TRAPEZE_TYPES         = [TRAPEZE_VALUE, TRAPEZE];
  
-const POLYGON_VALUE        = 'POLY#';
-const POLYGON              = 'POLY'; 
-const POLYGON_TYPES        = [POLYGON_VALUE, POLYGON];
+const POLYGON_VALUE         = 'POLY#';
+const POLYGON               = 'POLY'; 
+const POLYGON_TYPES         = [POLYGON_VALUE, POLYGON];
    
-const STAR_VALUE           = 'STAR#';
-const STAR                 = 'STAR'; 
-const STAR_TYPES           = [STAR_VALUE, STAR];
+const STAR_VALUE            = 'STAR#';
+const STAR                  = 'STAR'; 
+const STAR_TYPES            = [STAR_VALUE, STAR];
    
-const TEXT_SHAPE_VALUE     = 'TXTS#';
-const TEXT_SHAPE           = 'TXTS'; 
-const TEXT_SHAPE_TYPES     = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
+const TEXT_SHAPE_VALUE      = 'TXTS#';
+const TEXT_SHAPE            = 'TXTS'; 
+const TEXT_SHAPE_TYPES      = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
   
-const POINT_VALUE          = 'PT#';
-const POINT                = 'PT';
-const POINT_TYPES          = [POINT_VALUE, POINT];
+const POINT_VALUE           = 'PT#';
+const POINT                 = 'PT';
+const POINT_TYPES           = [POINT_VALUE, POINT];
 
-const POINT_CORNER         = 'PCORN';
+const POINT_CORNER          = 'PCORN';
 
-const VECTOR_PATH_VALUE    = 'VPATH#';
-const VECTOR_PATH          = 'VPATH'; 
-const VECTOR_PATH_TYPES    = [VECTOR_PATH_VALUE, VECTOR_PATH];
+const VECTOR_PATH_VALUE     = 'VPATH#';
+const VECTOR_PATH           = 'VPATH'; 
+const VECTOR_PATH_TYPES     = [VECTOR_PATH_VALUE, VECTOR_PATH];
  
-const VECTOR_VERTEX_VALUE  = 'VPT#';
-const VECTOR_VERTEX        = 'VPT'; 
-const VECTOR_VERTEX_TYPES  = [VECTOR_VERTEX_VALUE, VECTOR_VERTEX];
+const VECTOR_VERTEX_VALUE   = 'VPT#';
+const VECTOR_VERTEX         = 'VPT'; 
+const VECTOR_VERTEX_TYPES   = [VECTOR_VERTEX_VALUE, VECTOR_VERTEX];
 
-const VECTOR_EDGE_VALUE    = 'VEDGE#';
-const VECTOR_EDGE          = 'VEDGE'; 
-const VECTOR_EDGE_TYPES    = [VECTOR_EDGE_VALUE, VECTOR_EDGE];
+const VECTOR_EDGE_VALUE     = 'VEDGE#';
+const VECTOR_EDGE           = 'VEDGE'; 
+const VECTOR_EDGE_TYPES     = [VECTOR_EDGE_VALUE, VECTOR_EDGE];
 
-const VECTOR_REGION_VALUE  = 'VREG#';
-const VECTOR_REGION        = 'VREG'; 
-const VECTOR_REGION_TYPES  = [VECTOR_REGION_VALUE, VECTOR_REGION];
+const VECTOR_REGION_VALUE   = 'VREG#';
+const VECTOR_REGION         = 'VREG'; 
+const VECTOR_REGION_TYPES   = [VECTOR_REGION_VALUE, VECTOR_REGION];
 
-const VECTOR_NETWORK_VALUE = 'VNET#';
-const VECTOR_NETWORK       = 'VNET'; 
-const VECTOR_NETWORK_TYPES = [VECTOR_NETWORK_VALUE, VECTOR_NETWORK];
+const VECTOR_NETWORK_VALUE  = 'VNET#';
+const VECTOR_NETWORK        = 'VNET'; 
+const VECTOR_NETWORK_TYPES  = [VECTOR_NETWORK_VALUE, VECTOR_NETWORK];
 
-const SHAPE_GROUP_VALUE    = 'SGRP#';
-const SHAPE_GROUP          = 'SGRP';
-const SHAPE_GROUP_TYPES    = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+const SHAPE_GROUP_VALUE     = 'SGRP#';
+const SHAPE_GROUP           = 'SGRP';
+const SHAPE_GROUP_TYPES     = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
 
-const FRAME_VALUE          = 'FRM#';
-const FRAME                = 'FRM';
-const FRAME_TYPES          = [FRAME_VALUE, FRAME];
+const FRAME_VALUE           = 'FRM#';
+const FRAME                 = 'FRM';
+const FRAME_TYPES           = [FRAME_VALUE, FRAME];
  
 
-const MOVE                 = 'MOVE';
-const ROTATE               = 'ROT';
-const SCALE                = 'SCALE';
-const SKEW                 = 'SKEW';
+const MOVE                  = 'MOVE';
+const ROTATE                = 'ROT';
+const SCALE                 = 'SCALE';
+const SKEW                  = 'SKEW';
 
-const SET_CENTER           = 'SCENTR';
-const RESET_XFORM          = 'RSTX';
+const SET_CENTER            = 'SCENTR';
+const RESET_XFORM           = 'RSTX';
 
-const PLACE                = 'PLACE';
-const SHAPE_APPLY          = 'APPLY';
+const PLACE                 = 'PLACE';
+const SHAPE_APPLY           = 'APPLY';
   
-const PATH_LENGTH          = 'PTHLEN';
-const JOIN_PATHS           = 'JOINPTH';
-const MEASURE_POINTS       = 'MESPT';
-const VECTOR_LENGTH        = 'VECLEN';
-const CIRCLE_CENTER        = 'CIRCEN';
-const ARC_FROM_POINTS      = 'ARCPT';
-const INTERSECT_LINES      = 'INTLIN';
-const INTERPOLATE_POINT    = 'PTLERP';
-const POINT_ON_PATH        = 'PONPT';
+const PATH_LENGTH           = 'PTHLEN';
+const JOIN_PATHS            = 'JOINPTH';
+const POINT_ALONG_PATH      = 'PTALPATH';
+const CLOSEST_POINT_ON_PATH = 'CPTONPATH';
+const MEASURE_POINTS        = 'MESPT';
+const VECTOR_LENGTH         = 'VECLEN';
+const CIRCLE_CENTER         = 'CIRCEN';
+const ARC_FROM_POINTS       = 'ARCPT';
+const INTERSECT_LINES       = 'INTLIN';
+const INTERPOLATE_POINT     = 'PTLERP';
 
 
-const BOOLEAN              = 'BOOL';
-const BOOLEAN_VALUE        = 'BOOL#';
+const BOOLEAN               = 'BOOL';
+const BOOLEAN_VALUE         = 'BOOL#';
 
-const BOOL_UNION           = 'BOOLU';
-const BOOL_SUBTRACT        = 'BOOLS';
-const BOOL_INTERSECT       = 'BOOLI';
-const BOOL_EXCLUDE         = 'BOOLE';
+const BOOL_UNION            = 'BOOLU';
+const BOOL_SUBTRACT         = 'BOOLS';
+const BOOL_INTERSECT        = 'BOOLI';
+const BOOL_EXCLUDE          = 'BOOLE';
 
 
 const BOOLEAN_TYPES =
@@ -1597,14 +1598,15 @@ const SHAPE_TYPES =
     
     PATH_LENGTH,
     JOIN_PATHS,
-    
+    POINT_ALONG_PATH,
+    CLOSEST_POINT_ON_PATH,
+        
     MEASURE_POINTS,
     VECTOR_LENGTH,
     CIRCLE_CENTER,
     ARC_FROM_POINTS,
     INTERSECT_LINES,
     INTERPOLATE_POINT,
-    POINT_ON_PATH,
 
     RENDER
 ];

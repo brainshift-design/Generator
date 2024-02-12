@@ -180,7 +180,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case ARC_FROM_POINTS:         node = new OpArcFromPoints();     break;
         case INTERSECT_LINES:         node = new OpIntersectLines();    break;
         case INTERPOLATE_POINT:       node = new OpInterpolatePoint();  break;
-        case POINT_ON_PATH:           node = new OpPointOnPath();       break;
+        case POINT_ALONG_PATH:        node = new OpPointAlongPath();       break;
 
         case PLACE:                   node = new OpPlace();             break;
 

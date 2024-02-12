@@ -288,6 +288,93 @@ function bounds3t(a, b, c, roots)
 
 
 
+function pointOnCurve(degree, points, t)
+{
+    consoleAssert(0 <= t && t <= 1);
+
+
+    const nSegments = Math.floor(points.length / degree);
+    const segSize   = 1 / (nSegments - 0.000000001);
+
+
+    let i = 0;
+
+    while (t - segSize >= 0)
+    {
+        t -= segSize;
+        i += degree;
+    }
+
+    if (i == points.length-1)
+    {
+        return t == 0
+             ? points.at(-1)
+             : Number.NaN;
+    }
+
+
+    console.log('degree =', degree);
+    
+    t /= segSize;
+
+    switch (degree)
+    {
+    case 1:  return lerpv (points[i], points[i+1],                           t);
+    case 2:  return lerpv2(points[i], points[i+1], points[i+2],              t);
+    case 3:  return lerpv3(points[i], points[i+1], points[i+2], points[i+3], t);
+    default: return point_NaN;
+    }
+}
+
+
+
+function positionOnCurve(degree, points, distance, error)
+{
+    const nSegments = points.length / points.Degree;
+
+    let t      = 0;
+    let length = 0;
+
+
+    let i;
+    for (i = 0; i < points.length - degree; i += degree)
+    {
+        let segLength = 0;
+
+        switch (degree)
+        {
+        case 1:  segLength = distv(points[i], points[i+1]);                                       break;
+        case 2:  segLength = arcLength2(points[i], points[i+1], points[i+2],              error);              break;
+        case 3:  segLength = arcLength3(points[i], points[i+1], points[i+2], points[i+3], error); break;
+        default: consoleAssert(false);
+        }
+
+        if (length + segLength >= distance)
+            break;
+
+        length += segLength;
+
+        t += 1 / nSegments;
+    }
+
+
+    if (i < points.length - degree)
+    {
+        switch (degree)
+        {
+        case 1: t += (distance - length) / distance(points[i], points[i+1])                                        / nSegments; break;
+        case 2: t += positionOnSegment2(points[i], points[i+1], points[i+2], distance - length, error)              / nSegments; break;
+        case 3: t += positionOnSegment3(points[i], points[i+1], points[i+2], points[i+3], distance - length, error) / nSegments; break;
+        default: consoleAssert(false);
+        }
+    }
+    
+    
+    return t;
+}
+
+
+
 function linear2cubic(linear)
 {
     if (linear.length == 0)
