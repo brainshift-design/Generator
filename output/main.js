@@ -79,7 +79,7 @@ function gcd(a, b) {
         b = temp;
     }
 }
-function distance(p1, p2) {
+function distv(p1, p2) {
     const dx = p2.x - p1.x;
     const dy = p2.y - p1.y;
     return Math.sqrt(dx * dx + dy * dy);
@@ -3378,8 +3378,8 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01) {
     const xp2 = genObj[FO_XP2];
     applyFigmaTransform(figObj, xp0, xp1, xp2);
     if (setSize) {
-        const scaleX = distance(xp0, xp1);
-        const scaleY = distance(xp0, xp2);
+        const scaleX = distv(xp0, xp1);
+        const scaleY = distv(xp0, xp2);
         const height = genObj[FO_TYPE] == TEXT_SHAPE
             ? genObj[FO_FIG_HEIGHT]
             : genObj[FO_HEIGHT];
@@ -3763,7 +3763,7 @@ function figUpdateText_(figText, genText, fontName) {
     // const xp0 = genText[FO_XP0];
     // const xp1 = genText[FO_XP1];
     // const xp2 = genText[FO_XP2];
-    // const scaleY = distance(xp0, xp2);
+    // const scaleY = distv(xp0, xp2);
     // console.log('scaleY =', scaleY);
     // figText.fontSize = 
     //       Math.max(1, genText[FO_FONT_SIZE])

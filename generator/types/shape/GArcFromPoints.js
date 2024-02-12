@@ -35,9 +35,9 @@ extends GShape
 
         copy.copyBase(this);
 
-        if (base.input0 ) this.input0  = base.input0.copy();
-        if (base.input1 ) this.input1  = base.input1.copy();
-        if (base.input2 ) this.input2  = base.input2.copy();
+        if (base.input0 ) this.input0  = base.input0 .copy();
+        if (base.input1 ) this.input1  = base.input1 .copy();
+        if (base.input2 ) this.input2  = base.input2 .copy();
 
         if (this.tangent) copy.tangent = this.tangent.copy();
 
@@ -68,7 +68,28 @@ extends GShape
             const p1 = input1.toPoint();
             const p2 = input2.toPoint();
 
-            const points = makeArc(p0, p1, p2);
+
+            let points;
+
+
+            if (tangent.value > 0)
+            {
+                const pc = intersectLines(
+                    lerpv(p0, p1, 0.5), addv(p0, crossv(subv(p1, p0))),
+                    lerpv(p2, p1, 0.5), addv(p2, crossv(subv(p1, p2))),
+                    false);
+
+                points = makeArc_(
+                    pc, 
+                    lerp(distv(pc, p0), distv(pc, p2), 0.5),
+                    anglev(pc, p0),
+                    anglev(pc, p2));
+            }
+            else
+            {
+                points = makeArc(p0, p1, p2);
+            }
+
 
             this.value = new VectorPathValue(
                 this.nodeId,
@@ -84,14 +105,17 @@ extends GShape
         }
 
 
-        await this.evalObjects(parse);
-
-
         this.setUpdateValues(parse, 
         [
-            ['', new NullValue()]
+            ['tangent', tangent]
         ]);
-        
+
+
+        await this.evalShapeBase(parse);
+
+
+        await this.evalObjects(parse);
+
 
         this.validate();
 
@@ -165,7 +189,8 @@ extends GShape
 
     isValid()
     {
-        return this.input0  && this.input0 .isValid()
+        return super.isValid()
+            && this.input0  && this.input0 .isValid()
             && this.input1  && this.input1 .isValid()
             && this.input2  && this.input2 .isValid()
             && this.tangent && this.tangent.isValid();

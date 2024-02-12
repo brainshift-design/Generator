@@ -189,7 +189,7 @@ function closestPointOnLine(l0, l1, p, segment)
         
     let d = mulvs(
         unitv(crossv(subv(l1, l0))), // perpendicular unit vector from p towards the line
-        distance(p, l0));            // the distance to any of the two points guarantees intersection with the line
+        distv(p, l0));            // the distance to any of the two points guarantees intersection with the line
 
     return intersect(l0, l1, p, subv(p, d), segment);
 }

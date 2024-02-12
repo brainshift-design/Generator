@@ -118,7 +118,7 @@ function gcd(a, b)
 
 
 
-function distance(p1, p2)
+function distv(p1, p2)
 {
     const dx = p2.x - p1.x;
     const dy = p2.y - p1.y;
@@ -1564,7 +1564,7 @@ function closestPointOnLine(l0, l1, p, segment)
         
     let d = mulvs(
         unitv(crossv(subv(l1, l0))), // perpendicular unit vector from p towards the line
-        distance(p, l0));            // the distance to any of the two points guarantees intersection with the line
+        distv(p, l0));            // the distance to any of the two points guarantees intersection with the line
 
     return intersect(l0, l1, p, subv(p, d), segment);
 }
@@ -1954,7 +1954,7 @@ function closestPointOnLine(l0, l1, p, segment)
         
     const d = mulvs(
         unitv(crossv(subv(l1, l0))), // perpendicular unit vector from p towards the line
-        distance(p, l0));            // the distance to any of the two points guarantees intersection with the line
+        distv(p, l0));            // the distance to any of the two points guarantees intersection with the line
 
     return intersectLines(l0, l1, p, subv(p, d), segment);
 }
@@ -2142,9 +2142,9 @@ function bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t)
 function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
 {
     const hullLength = 
-          distance(p0, p1) 
-        + distance(p1, p2)
-        + distance(p2, p3);
+          distv(p0, p1) 
+        + distv(p1, p2)
+        + distv(p2, p3);
 
     if (hullLength == 0)
         return Number.NAN;
@@ -2244,11 +2244,11 @@ function splitSeg(p0, p1, p2, p3, t)
 function arcLength(p0, p1, p2, p3, error = 0.0000001)
 {
     const arcLen = 
-          distance(p0, p1)
-        + distance(p1, p2)
-        + distance(p2, p3);
+          distv(p0, p1)
+        + distv(p1, p2)
+        + distv(p2, p3);
 
-    const chord = distance(p0, p3);
+    const chord = distv(p0, p3);
 
     if ((arcLen - chord) > error)
     {
@@ -2425,7 +2425,7 @@ function quad2cubic(quad)
 
 function makeArc(p1, p2, p3)
 {
-    if (crossv2(subv(p2, p1), subv(p3, p2)) >= 0) // clockwise
+    if (areClockwise(p1, p2, p3))
     {
         const pt = p1;
         p1 = p3;
@@ -2450,7 +2450,13 @@ function makeArc(p1, p2, p3)
 
 function makeArc_(center, radius, startAngle, endAngle)
 {
-    let diff  = endAngle - startAngle; // angleDiff(startAngle, endAngle);
+    console.log('center     =', center    );
+    console.log('radius     =', radius    );
+    console.log('startAngle =', startAngle);
+    console.log('endAngle   =', endAngle  );
+
+
+    let diff  = endAngle - startAngle;
     let angle = startAngle;
 
 
@@ -2496,6 +2502,12 @@ function arcKappa(angle)
     return 4 * Math.tan(angle/4) / 3; 
 }
 
+
+
+function areClockwise(p0, p1, p2)
+{
+    return crossv2(subv(p1, p0), subv(p2, p1)) >= 0;
+}
 
 
 class Point
@@ -6375,7 +6387,7 @@ function addGradientProp(obj, prop, target = obj.fills)
     
     let p2 = addv(
         addv(p0, vector(a + Tau/4, s * asp)),
-        mulvs(unitv(subv(p1, p0)), distance(p0, p1) * sk));
+        mulvs(unitv(subv(p1, p0)), distv(p0, p1) * sk));
 
 
     if (pos > 0)
@@ -7442,8 +7454,8 @@ function getSmoothPoints(points, closed, getSegment)
         }
         else // open
         {
-            bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp[2],     bp[0]    )), distance(bp[3],     bp[0]    )/3));
-            bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp.at(-3), bp.at(-1))), distance(bp.at(-4), bp.at(-1))/3));
+            bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp[2],     bp[0]    )), distv(bp[3],     bp[0]    )/3));
+            bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp.at(-3), bp.at(-1))), distv(bp.at(-4), bp.at(-1))/3));
         }
     }
 
@@ -40785,7 +40797,7 @@ extends GOperator2
         if (   input0
             && input1)
         {
-            const dist = distance(input0.toPoint(), input1.toPoint());
+            const dist = distv(input0.toPoint(), input1.toPoint());
 
             let ang = angle(subv(input1.toPoint(), input0.toPoint()));
             if (ang > Tau/2) ang -= Tau;
@@ -41090,9 +41102,9 @@ extends GShape
 
         copy.copyBase(this);
 
-        if (base.input0 ) this.input0  = base.input0.copy();
-        if (base.input1 ) this.input1  = base.input1.copy();
-        if (base.input2 ) this.input2  = base.input2.copy();
+        if (base.input0 ) this.input0  = base.input0 .copy();
+        if (base.input1 ) this.input1  = base.input1 .copy();
+        if (base.input2 ) this.input2  = base.input2 .copy();
 
         if (this.tangent) copy.tangent = this.tangent.copy();
 
@@ -41123,7 +41135,28 @@ extends GShape
             const p1 = input1.toPoint();
             const p2 = input2.toPoint();
 
-            const points = makeArc(p0, p1, p2);
+
+            let points;
+
+
+            if (tangent.value > 0)
+            {
+                const pc = intersectLines(
+                    lerpv(p0, p1, 0.5), addv(p0, crossv(subv(p1, p0))),
+                    lerpv(p2, p1, 0.5), addv(p2, crossv(subv(p1, p2))),
+                    false);
+
+                points = makeArc_(
+                    pc, 
+                    lerp(distv(pc, p0), distv(pc, p2), 0.5),
+                    anglev(pc, p0),
+                    anglev(pc, p2));
+            }
+            else
+            {
+                points = makeArc(p0, p1, p2);
+            }
+
 
             this.value = new VectorPathValue(
                 this.nodeId,
@@ -41139,14 +41172,17 @@ extends GShape
         }
 
 
-        await this.evalObjects(parse);
-
-
         this.setUpdateValues(parse, 
         [
-            ['', new NullValue()]
+            ['tangent', tangent]
         ]);
-        
+
+
+        await this.evalShapeBase(parse);
+
+
+        await this.evalObjects(parse);
+
 
         this.validate();
 
@@ -41220,7 +41256,8 @@ extends GShape
 
     isValid()
     {
-        return this.input0  && this.input0 .isValid()
+        return super.isValid()
+            && this.input0  && this.input0 .isValid()
             && this.input1  && this.input1 .isValid()
             && this.input2  && this.input2 .isValid()
             && this.tangent && this.tangent.isValid();
@@ -41329,7 +41366,7 @@ extends GOperator4
                     input1.toPoint(),
                     input2.toPoint(),
                     input3.toPoint(),
-                    segment.value != 0);
+                    segment.value > 0);
 
                 this.value = PointValue.fromPoint(this.nodeId, p);
             }
@@ -41501,8 +41538,8 @@ extends GOperator2
 
                 if (transform.value > 0)
                 {
-                    const l1 = distance(sp0, sp1);
-                    const l2 = distance(sp0, sp2);
+                    const l1 = distv(sp0, sp1);
+                    const l2 = distv(sp0, sp2);
 
                     sp0 = clone(p);
                     sp1 = addv(sp0, mulvs(unitv(subv(p1, p0)), l1));
@@ -41667,8 +41704,8 @@ extends GOperator2
 
                 // if (transform.value > 0)
                 // {
-                //     const l1 = distance(sp0, sp1);
-                //     const l2 = distance(sp0, sp2);
+                //     const l1 = distv(sp0, sp1);
+                //     const l2 = distv(sp0, sp2);
 
                 //     sp0 = clone(p);
                 //     sp1 = addv(sp0, mulvs(unitv(subv(p1, p0)), l1));
@@ -49192,9 +49229,23 @@ function genParseArcFromPoints(parse)
     }
 
 
-    arc.tangent = genParse(parse);
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {       
+        case 'tangent': arc.tangent = genParse(parse); break;
+        case 'props':   arc.props   = genParse(parse); break;
+        }
+    }
 
 
+    parse.inParam = false;
     parse.nTab--;
 
 

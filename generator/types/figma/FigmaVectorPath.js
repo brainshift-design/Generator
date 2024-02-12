@@ -411,8 +411,8 @@ function getSmoothPoints(points, closed, getSegment)
         }
         else // open
         {
-            bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp[2],     bp[0]    )), distance(bp[3],     bp[0]    )/3));
-            bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp.at(-3), bp.at(-1))), distance(bp.at(-4), bp.at(-1))/3));
+            bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp[2],     bp[0]    )), distv(bp[3],     bp[0]    )/3));
+            bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp.at(-3), bp.at(-1))), distv(bp.at(-4), bp.at(-1))/3));
         }
     }
 

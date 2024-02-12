@@ -213,7 +213,7 @@ class MenuItem
 
                 if (   this.button0
                     && this.callback
-                    && distance(this.dragStart, clientPos(e)) > 5)
+                    && distv(this.dragStart, clientPos(e)) > 5)
                 {
                     dragCreatingNode = true;
 

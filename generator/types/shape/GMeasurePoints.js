@@ -50,7 +50,7 @@ extends GOperator2
         if (   input0
             && input1)
         {
-            const dist = distance(input0.toPoint(), input1.toPoint());
+            const dist = distv(input0.toPoint(), input1.toPoint());
 
             let ang = angle(subv(input1.toPoint(), input0.toPoint()));
             if (ang > Tau/2) ang -= Tau;

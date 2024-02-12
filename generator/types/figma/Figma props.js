@@ -124,7 +124,7 @@ function addGradientProp(obj, prop, target = obj.fills)
     
     let p2 = addv(
         addv(p0, vector(a + Tau/4, s * asp)),
-        mulvs(unitv(subv(p1, p0)), distance(p0, p1) * sk));
+        mulvs(unitv(subv(p1, p0)), distv(p0, p1) * sk));
 
 
     if (pos > 0)

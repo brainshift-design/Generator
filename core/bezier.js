@@ -21,9 +21,9 @@ function bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t)
 function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
 {
     const hullLength = 
-          distance(p0, p1) 
-        + distance(p1, p2)
-        + distance(p2, p3);
+          distv(p0, p1) 
+        + distv(p1, p2)
+        + distv(p2, p3);
 
     if (hullLength == 0)
         return Number.NAN;
@@ -123,11 +123,11 @@ function splitSeg(p0, p1, p2, p3, t)
 function arcLength(p0, p1, p2, p3, error = 0.0000001)
 {
     const arcLen = 
-          distance(p0, p1)
-        + distance(p1, p2)
-        + distance(p2, p3);
+          distv(p0, p1)
+        + distv(p1, p2)
+        + distv(p2, p3);
 
-    const chord = distance(p0, p3);
+    const chord = distv(p0, p3);
 
     if ((arcLen - chord) > error)
     {
@@ -304,7 +304,7 @@ function quad2cubic(quad)
 
 function makeArc(p1, p2, p3)
 {
-    if (crossv2(subv(p2, p1), subv(p3, p2)) >= 0) // clockwise
+    if (areClockwise(p1, p2, p3))
     {
         const pt = p1;
         p1 = p3;
@@ -329,7 +329,13 @@ function makeArc(p1, p2, p3)
 
 function makeArc_(center, radius, startAngle, endAngle)
 {
-    let diff  = endAngle - startAngle; // angleDiff(startAngle, endAngle);
+    console.log('center     =', center    );
+    console.log('radius     =', radius    );
+    console.log('startAngle =', startAngle);
+    console.log('endAngle   =', endAngle  );
+
+
+    let diff  = endAngle - startAngle;
     let angle = startAngle;
 
 
@@ -373,4 +379,11 @@ function makeArc_(center, radius, startAngle, endAngle)
 function arcKappa(angle) 
 {
     return 4 * Math.tan(angle/4) / 3; 
+}
+
+
+
+function areClockwise(p0, p1, p2)
+{
+    return crossv2(subv(p1, p0), subv(p2, p1)) >= 0;
 }

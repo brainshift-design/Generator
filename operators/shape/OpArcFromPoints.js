@@ -1,5 +1,5 @@
 class   OpArcFromPoints
-extends OpShapeBase
+extends OpShape
 {
     paramTangent;
 
@@ -19,7 +19,7 @@ extends OpShapeBase
         this.addInput (new Input ([POINT_VALUE, VECTOR_VERTEX_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
         this.addInput (new Input ([POINT_VALUE, VECTOR_VERTEX_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
 
-        this.addOutput(new Output([POINT_VALUE], this.output_genRequest));
+        this.addOutput(new Output([VECTOR_PATH_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramTangent = new NumberParam('tangent', 'tangent', true, true, true, 0, 0, 1));
@@ -28,6 +28,9 @@ extends OpShapeBase
         this.paramTangent.divider = 0.588;
 
         this.menuBool = createBoolMenu(this.paramTangent);
+
+
+        this.addBaseParams();
     }
 
 
@@ -63,7 +66,13 @@ extends OpShapeBase
         if (input2.connected)  request.push(...pushInputOrParam(input2, gen));
 
 
-        request.push(...this.node.paramTangent.genRequest(gen));
+        request.push(this.node.params.length);
+
+        for (const param of this.node.params)
+            request.push(param.id, ...param.genRequest(gen));
+
+
+        this.node.genRequestInherited(gen, request);
 
 
         gen.scope.pop();

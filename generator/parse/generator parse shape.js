@@ -1669,9 +1669,23 @@ function genParseArcFromPoints(parse)
     }
 
 
-    arc.tangent = genParse(parse);
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {       
+        case 'tangent': arc.tangent = genParse(parse); break;
+        case 'props':   arc.props   = genParse(parse); break;
+        }
+    }
 
 
+    parse.inParam = false;
     parse.nTab--;
 
 

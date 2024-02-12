@@ -77,8 +77,8 @@ extends GOperator2
 
                 // if (transform.value > 0)
                 // {
-                //     const l1 = distance(sp0, sp1);
-                //     const l2 = distance(sp0, sp2);
+                //     const l1 = distv(sp0, sp1);
+                //     const l2 = distv(sp0, sp2);
 
                 //     sp0 = clone(p);
                 //     sp1 = addv(sp0, mulvs(unitv(subv(p1, p0)), l1));

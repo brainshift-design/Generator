@@ -63,7 +63,7 @@ extends GOperator4
                     input1.toPoint(),
                     input2.toPoint(),
                     input3.toPoint(),
-                    segment.value != 0);
+                    segment.value > 0);
 
                 this.value = PointValue.fromPoint(this.nodeId, p);
             }

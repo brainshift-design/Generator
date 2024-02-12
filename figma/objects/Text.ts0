@@ -97,7 +97,7 @@ function figUpdateText_(figText, genText, fontName)
     // const xp1 = genText[FO_XP1];
     // const xp2 = genText[FO_XP2];
 
-    // const scaleY = distance(xp0, xp2);
+    // const scaleY = distv(xp0, xp2);
     // console.log('scaleY =', scaleY);
     
     // figText.fontSize = 

@@ -137,7 +137,7 @@ function gcd(a, b)
 
 
 
-function distance(p1, p2)
+function distv(p1, p2)
 {
     const dx = p2.x - p1.x;
     const dy = p2.y - p1.y;
@@ -5077,8 +5077,8 @@ function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
 
     if (setSize)
     {
-        const scaleX = distance(xp0, xp1);
-        const scaleY = distance(xp0, xp2);
+        const scaleX = distv(xp0, xp1);
+        const scaleY = distv(xp0, xp2);
     
         const height =
             genObj[FO_TYPE] == TEXT_SHAPE
@@ -5768,7 +5768,7 @@ function figUpdateText_(figText, genText, fontName)
     // const xp1 = genText[FO_XP1];
     // const xp2 = genText[FO_XP2];
 
-    // const scaleY = distance(xp0, xp2);
+    // const scaleY = distv(xp0, xp2);
     // console.log('scaleY =', scaleY);
     
     // figText.fontSize = 
