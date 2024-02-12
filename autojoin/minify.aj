@@ -851,10 +851,13 @@ arrayToBase64
 UTF8ArrToStr
 strToUTF8Arr
 bezierTangent
-positionOnSegment
+positionOnSegment2
+positionOnSegment3
 arcLen
-splitSeg
-arcLength
+splitSeg2
+splitSeg3
+arcLength2
+arcLength3
 bounds2
 bounds3
 bounds3t

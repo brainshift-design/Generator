@@ -225,6 +225,7 @@
 ../operators/shape/OpVectorLength.js
 ../operators/shape/OpCircleCenter.js
 ../operators/shape/OpArcFromPoints.js
+../operators/shape/OpPathLength.js
 ../operators/shape/OpIntersectLines.js
 ../operators/shape/OpInterpolatePoint.js
 ../operators/shape/OpPointOnPath.js

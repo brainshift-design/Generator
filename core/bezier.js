@@ -18,7 +18,7 @@ function bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t)
 
 
 
-function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
+function positionOnSegment3(p0, p1, p2, p3, arcLen, error = 0.001)
 {
     const hullLength = 
           distv(p0, p1) 
@@ -35,10 +35,10 @@ function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
         return Number.NAN;
 
         
-    let halves = splitSeg(p0, p1, p2, p3, t);
+    let halves = splitSeg3(p0, p1, p2, p3, t);
     let l      = halves[0];
 
-    let length = arcLength(l[0], l[1], l[2], l[3], error);
+    let length = arcLength3(l[0], l[1], l[2], l[3], error);
 
 
     let loopProtect = 1000;
@@ -48,14 +48,14 @@ function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
     {
         t += (arcLen - length) / hullLength;
 
-        halves = splitSeg(p0, p1, p2, p3, t);
+        halves = splitSeg3(p0, p1, p2, p3, t);
         l      = halves[0];
 
-        length = arcLength(l[0], l[1], l[2], l[3], error);
+        length = arcLength3(l[0], l[1], l[2], l[3], error);
     }
 
     if (loopProtect == 0)
-        consoleError('endless loop in positionOnSegment()');
+        consoleError('endless loop in positionOnSegment3()');
 
 
     return t;
@@ -63,7 +63,20 @@ function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
 
 
 
-function splitSeg(p0, p1, p2, p3, t)
+function splitSeg2(p0, p1, p2, t)
+{
+    const c0  = lerpv(p0, p1, t);
+    const c1  = lerpv(p1, p2, t);
+
+    const c01 = lerpv(c0, c1, t);
+
+    return [ [p0, c0, c01],
+             [c01, c1, p2] ];
+}
+
+
+
+function splitSeg3(p0, p1, p2, p3, t)
 {
     const c0   = lerpv(p0, p1, t);
     const c1   = lerpv(p1, p2, t);
@@ -74,9 +87,8 @@ function splitSeg(p0, p1, p2, p3, t)
 
     const c012 = lerpv(c01, c12, t);
 
-    return [
-        [p0, c0, c01, c012],
-        [c012, c12, c2, p3] ];
+    return [ [p0, c0, c01, c012],
+             [c012, c12, c2, p3] ];
 }
 
 
@@ -120,7 +132,30 @@ function splitSeg(p0, p1, p2, p3, t)
 
 
 
-function arcLength(p0, p1, p2, p3, error = 0.0000001)
+function arcLength2(p0, p1, p2, error)
+{
+    const arcLen =
+          distv(p0, p1)
+        + distv(p1, p2);
+
+    const chord = distv(p0, p2);
+
+    if (arcLen - chord > error)
+    {
+        const halves = splitSeg2(p0, p1, p2, 0.5);
+        const l      = halves[0];
+        const r      = halves[1];
+            
+        return arcLength2(l[0], l[1], l[2], error)
+             + arcLength2(r[0], r[1], r[2], error);
+    }
+
+    return arcLen;
+}
+
+
+
+function arcLength3(p0, p1, p2, p3, error = 0.0000001)
 {
     const arcLen = 
           distv(p0, p1)
@@ -131,12 +166,12 @@ function arcLength(p0, p1, p2, p3, error = 0.0000001)
 
     if ((arcLen - chord) > error)
     {
-        const halves = splitSeg(p0, p1, p2, p3, 0.5);
+        const halves = splitSeg3(p0, p1, p2, p3, 0.5);
         const l      = halves[0];
         const r      = halves[1];
             
-        return arcLength(l[0], l[1], l[2], l[3], error)
-             + arcLength(r[0], r[1], r[2], r[3], error);
+        return arcLength3(l[0], l[1], l[2], l[3], error)
+             + arcLength3(r[0], r[1], r[2], r[3], error);
     }
 
     return arcLen;
@@ -329,12 +364,6 @@ function makeArc(p1, p2, p3)
 
 function makeArc_(center, radius, startAngle, endAngle)
 {
-    console.log('center     =', center    );
-    console.log('radius     =', radius    );
-    console.log('startAngle =', startAngle);
-    console.log('endAngle   =', endAngle  );
-
-
     let diff  = endAngle - startAngle;
     let angle = startAngle;
 
@@ -351,11 +380,11 @@ function makeArc_(center, radius, startAngle, endAngle)
 
         const handle = radius * arcKappa(da) * kappaCorrection;
 
-        const p1     = addv(center, vector(angle,      radius));
-        const p2     = addv(center, vector(angle + da, radius));
+        const p1 = addv(center, vector(angle,      radius));
+        const p2 = addv(center, vector(angle + da, radius));
     
-        const v1     = subv(p1, center);
-        const v2     = subv(p2, center);
+        const v1 = subv(p1, center);
+        const v2 = subv(p2, center);
 
 
         points.push(

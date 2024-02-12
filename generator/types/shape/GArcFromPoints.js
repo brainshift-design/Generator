@@ -5,8 +5,6 @@ extends GShape
     input1  = null;
     input2  = null;
 
-    tangent = null;
-
     
 
     constructor(nodeId, options)
@@ -23,8 +21,6 @@ extends GShape
         this.input0  = null;
         this.input1  = null;
         this.input2  = null;
-
-        this.tangent = null;
     }
 
 
@@ -38,8 +34,6 @@ extends GShape
         if (base.input0 ) this.input0  = base.input0 .copy();
         if (base.input1 ) this.input1  = base.input1 .copy();
         if (base.input2 ) this.input2  = base.input2 .copy();
-
-        if (this.tangent) copy.tangent = this.tangent.copy();
 
         return copy;
     }
@@ -56,40 +50,16 @@ extends GShape
         const input1  = this.input1  ? (await this.input1 .eval(parse)).toValue() : null;
         const input2  = this.input2  ? (await this.input2 .eval(parse)).toValue() : null;
 
-        const tangent = this.tangent ? (await this.tangent.eval(parse)).toValue() : null;
-
 
         if (   input0  && input0 .isValid()
             && input1  && input1 .isValid()
-            && input2  && input2 .isValid()
-            && tangent && tangent.isValid())
+            && input2  && input2 .isValid())
         {
             const p0 = input0.toPoint();
             const p1 = input1.toPoint();
             const p2 = input2.toPoint();
 
-
-            let points;
-
-
-            if (tangent.value > 0)
-            {
-                const pc = intersectLines(
-                    lerpv(p0, p1, 0.5), addv(p0, crossv(subv(p1, p0))),
-                    lerpv(p2, p1, 0.5), addv(p2, crossv(subv(p1, p2))),
-                    false);
-
-                points = makeArc_(
-                    pc, 
-                    lerp(distv(pc, p0), distv(pc, p2), 0.5),
-                    anglev(pc, p0),
-                    anglev(pc, p2));
-            }
-            else
-            {
-                points = makeArc(p0, p1, p2);
-            }
-
+            const points = makeArc(p0, p1, p2);
 
             this.value = new VectorPathValue(
                 this.nodeId,
@@ -107,7 +77,7 @@ extends GShape
 
         this.setUpdateValues(parse, 
         [
-            ['tangent', tangent]
+            ['', new NullValue()]
         ]);
 
 
@@ -190,10 +160,9 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.input0  && this.input0 .isValid()
-            && this.input1  && this.input1 .isValid()
-            && this.input2  && this.input2 .isValid()
-            && this.tangent && this.tangent.isValid();
+            && this.input0 && this.input0.isValid()
+            && this.input1 && this.input1.isValid()
+            && this.input2 && this.input2.isValid();
     }
 
 
@@ -202,10 +171,9 @@ extends GShape
     {
         super.pushValueUpdates(parse);
 
-        if (this.input0 ) this.input0 .pushValueUpdates(parse);
-        if (this.input1 ) this.input1 .pushValueUpdates(parse);
-        if (this.input2 ) this.input2 .pushValueUpdates(parse);
-        if (this.tangent) this.tangent.pushValueUpdates(parse);
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+        if (this.input2) this.input2.pushValueUpdates(parse);
     }
 
 
@@ -214,10 +182,9 @@ extends GShape
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.input0 ) this.input0 .invalidateInputs(parse, from, force);
-        if (this.input1 ) this.input1 .invalidateInputs(parse, from, force);
-        if (this.input2 ) this.input2 .invalidateInputs(parse, from, force);
-        if (this.tangent) this.tangent.invalidateInputs(parse, from, force);
+        if (this.input0) this.input0.invalidateInputs(parse, from, force);
+        if (this.input1) this.input1.invalidateInputs(parse, from, force);
+        if (this.input2) this.input2.invalidateInputs(parse, from, force);
     }
 
 
@@ -226,9 +193,8 @@ extends GShape
     {
         super.iterateLoop(parse);
 
-        if (this.input0 ) this.input0 .iterateLoop(parse);
-        if (this.input1 ) this.input1 .iterateLoop(parse);
-        if (this.input2 ) this.input2 .iterateLoop(parse);
-        if (this.tangent) this.tangent.iterateLoop(parse);
+        if (this.input0) this.input0.iterateLoop(parse);
+        if (this.input1) this.input1.iterateLoop(parse);
+        if (this.input2) this.input2.iterateLoop(parse);
     }
 }

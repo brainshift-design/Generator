@@ -28,7 +28,7 @@ extends OpShapeBase
 
         this.params.forEach(p => p.isNodeValue = true);
 
-        this.setAllParamDividers(0.5);
+        this.setAllParamDividers(0.48);
     }
 
 

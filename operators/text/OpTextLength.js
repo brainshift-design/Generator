@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(TEXT_LENGTH, 'length', 'length', iconTextLength);
+        super(TEXT_LENGTH, 'length', 'text length', iconTextLength);
 
 
         this.addInput(new Input([TEXT_VALUE]));

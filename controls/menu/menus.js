@@ -618,7 +618,9 @@ function initGeneratorMenus()
                            new MenuItem('Constant',      null, {icon: iconConstant,        createType: NUMBER_CONSTANT,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONSTANT,  btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('',              null, {separator: true}),
                            new MenuItem('Precision',     null, {icon: iconNumberPrecision, createType: NUMBER_PRECISION, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PRECISION, btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('NaN ⟶ Number', null, {icon: iconNaNisNumber,     createType: NUMBER_NAN,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NAN,       btnNumber.div, getCreateOptions(e)))})]);
+                           new MenuItem('NaN ⟶ Number', null, {icon: iconNaNisNumber,     createType: NUMBER_NAN,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NAN,       btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('',              null, {separator: true}),
+        menuItemDateTime = new MenuItem('Date & time',   null, {icon: iconDateTime,    createType: NUMBER_DATETIME,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME,      btnNumber.div, getCreateOptions(e)))})]);
 
     menuFunctions = new Menu('Functions', true, false);
     menuFunctions.addItems([
@@ -630,9 +632,7 @@ function initGeneratorMenus()
                            new MenuItem('Limits',        null, {icon: iconLimits,      createType: NUMBER_LIMITS,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,        btnNumber.div, getCreateOptions(e)))}), 
                            new MenuItem('',              null, {separator: true}),
                            new MenuItem('Trigonometric', null, {icon: iconSine,        createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('Arctangent',    null, {icon: iconAtan2,       createType: NUMBER_ATAN2, callback: e => actionManager.do(getCreateNodeAction(NUMBER_ATAN2, btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('',              null, {separator: true}),
-        menuItemDateTime = new MenuItem('Date & time',   null, {icon: iconDateTime,    createType: NUMBER_DATETIME,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME,      btnNumber.div, getCreateOptions(e)))})]);
+                           new MenuItem('Arctangent',    null, {icon: iconAtan2,       createType: NUMBER_ATAN2, callback: e => actionManager.do(getCreateNodeAction(NUMBER_ATAN2, btnNumber.div, getCreateOptions(e)))})]);
         
 
     menuConvertNumber = new Menu('Convert number', true, false);
@@ -787,18 +787,19 @@ function initGeneratorMenus()
     menuVector.addItems([
         new MenuItem('Point',              null,          {childMenu: menuPoint, icon: iconPoint, createType: POINT,             callback: e => actionManager.do(getCreateNodeAction(POINT,             btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Path',               'Vector path', {icon: iconVectorPath,                  createType: VECTOR_PATH,       callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH,       btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('',                   null,          {separator: true}),
-        new MenuItem('Arc from points',    null,          {icon: iconArcFromPoints,               createType: ARC_FROM_POINTS,   callback: e => actionManager.do(getCreateNodeAction(ARC_FROM_POINTS,   btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',                   null,          {separator: true}),           
         new MenuItem('Join paths',         null,          {icon: iconJoinPaths,                   createType: JOIN_PATHS,        callback: e => actionManager.do(getCreateNodeAction(JOIN_PATHS,        btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('',                   null,          {separator: true}),
+        new MenuItem('Arc from points',    null,          {icon: iconArcFromPoints,               createType: ARC_FROM_POINTS,   callback: e => actionManager.do(getCreateNodeAction(ARC_FROM_POINTS,   btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',                   null,          {separator: true}),           
         new MenuItem('Interpolate points', null,          {icon: iconInterpolatePoint,            createType: INTERPOLATE_POINT, callback: e => actionManager.do(getCreateNodeAction(INTERPOLATE_POINT, btnShape.div, getCreateOptions(e)))}),
         //new MenuItem('Point on path',    null,          {icon: iconPointOnPath,                 createType: POINT_ON_PATH,     callback: e => actionManager.do(getCreateNodeAction(POINT_ON_PATH,     btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Intersect lines',    null,          {icon: iconIntersectLines,              createType: INTERSECT_LINES,   callback: e => actionManager.do(getCreateNodeAction(INTERSECT_LINES,   btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Circle center',      null,          {icon: iconCircleCenter,                createType: CIRCLE_CENTER,     callback: e => actionManager.do(getCreateNodeAction(CIRCLE_CENTER,     btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',                   null,          {separator: true}),           
+        new MenuItem('Measure points',     null,          {icon: iconMeasurePoints,               createType: MEASURE_POINTS,    callback: e => actionManager.do(getCreateNodeAction(MEASURE_POINTS,    btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Vector length',      null,          {icon: iconVectorLength,                createType: VECTOR_LENGTH,     callback: e => actionManager.do(getCreateNodeAction(VECTOR_LENGTH,     btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Measure points',     null,          {icon: iconMeasurePoints,               createType: MEASURE_POINTS,    callback: e => actionManager.do(getCreateNodeAction(MEASURE_POINTS,    btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Path length',        null,          {icon: iconPathLength,                  createType: PATH_LENGTH,       callback: e => actionManager.do(getCreateNodeAction(PATH_LENGTH,       btnShape.div, getCreateOptions(e)))})]);
      // new MenuItem('',                   null,          {separator: true}),           
      // new MenuItem('Vertex',             null,          {icon: iconVectorVertex,                createType: VECTOR_VERTEX,     callback: e => actionManager.do(getCreateNodeAction(VECTOR_VERTEX,     btnShape.div, getCreateOptions(e)))}),
      // new MenuItem('Edge',               null,          {icon: iconVectorEdge,                  createType: VECTOR_EDGE,       callback: e => actionManager.do(getCreateNodeAction(VECTOR_EDGE,       btnShape.div, getCreateOptions(e)))}),

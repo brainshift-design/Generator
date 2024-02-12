@@ -473,6 +473,7 @@ const RESET_XFORM          = 'RSTX';
 const PLACE                = 'PLACE';
 const SHAPE_APPLY          = 'APPLY';
   
+const PATH_LENGTH          = 'PTHLEN';
 const JOIN_PATHS           = 'JOINPTH';
 const MEASURE_POINTS       = 'MESPT';
 const VECTOR_LENGTH        = 'VECLEN';
@@ -573,6 +574,7 @@ const SHAPE_TYPES =
     PLACE,
     SHAPE_APPLY,
     
+    PATH_LENGTH,
     JOIN_PATHS,
     
     MEASURE_POINTS,

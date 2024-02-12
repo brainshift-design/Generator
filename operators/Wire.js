@@ -436,7 +436,7 @@ class Wire
             || !equal(p2.y - p1.y, this.sp2.y - this.sp1.y, 0.005)
             || !equal(p3.y - p2.y, this.sp3.y - this.sp2.y, 0.005))
         {
-            this.sArcLength = arcLength(p0, p1, p2, p3);
+            this.sArcLength = arcLength3(p0, p1, p2, p3);
 
             this.sp0 = clone(p0);
             this.sp1 = clone(p1);
@@ -457,7 +457,7 @@ class Wire
         }
         
     
-        let t = positionOnSegment(p0, p1, p2, p3, al);
+        let t = positionOnSegment3(p0, p1, p2, p3, al);
         
         if (isNaN(t))
         {

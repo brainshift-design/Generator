@@ -1,13 +1,6 @@
 class   OpArcFromPoints
 extends OpShape
 {
-    paramTangent;
-
-
-    menuBool;
-
-
-
     constructor()
     {
         super(ARC_FROM_POINTS, 'arcFromPoints', 'arc', iconArcFromPoints);
@@ -20,14 +13,6 @@ extends OpShape
         this.addInput (new Input ([POINT_VALUE, VECTOR_VERTEX_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
 
         this.addOutput(new Output([VECTOR_PATH_VALUE], this.output_genRequest));
-
-
-        this.addParam(this.paramTangent = new NumberParam('tangent', 'tangent', true, true, true, 0, 0, 1));
-
-
-        this.paramTangent.divider = 0.588;
-
-        this.menuBool = createBoolMenu(this.paramTangent);
 
 
         this.addBaseParams();
@@ -79,16 +64,5 @@ extends OpShape
         pushUnique(gen.passedNodes, this.node);
 
         return request;
-    }
-
-
-
-    updateParams()
-    {
-        this.paramTangent.enableControlText(true);
-
-        updateParamConditionText(this.paramTangent, this.paramTangent.isUnknown(), false, 1);
-
-        this.updateParamControls();
     }
 }

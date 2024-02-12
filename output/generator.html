@@ -2139,7 +2139,7 @@ function bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t)
 
 
 
-function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
+function positionOnSegment3(p0, p1, p2, p3, arcLen, error = 0.001)
 {
     const hullLength = 
           distv(p0, p1) 
@@ -2156,10 +2156,10 @@ function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
         return Number.NAN;
 
         
-    let halves = splitSeg(p0, p1, p2, p3, t);
+    let halves = splitSeg3(p0, p1, p2, p3, t);
     let l      = halves[0];
 
-    let length = arcLength(l[0], l[1], l[2], l[3], error);
+    let length = arcLength3(l[0], l[1], l[2], l[3], error);
 
 
     let loopProtect = 1000;
@@ -2169,14 +2169,14 @@ function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
     {
         t += (arcLen - length) / hullLength;
 
-        halves = splitSeg(p0, p1, p2, p3, t);
+        halves = splitSeg3(p0, p1, p2, p3, t);
         l      = halves[0];
 
-        length = arcLength(l[0], l[1], l[2], l[3], error);
+        length = arcLength3(l[0], l[1], l[2], l[3], error);
     }
 
     if (loopProtect == 0)
-        consoleError('endless loop in positionOnSegment()');
+        consoleError('endless loop in positionOnSegment3()');
 
 
     return t;
@@ -2184,7 +2184,20 @@ function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
 
 
 
-function splitSeg(p0, p1, p2, p3, t)
+function splitSeg2(p0, p1, p2, t)
+{
+    const c0  = lerpv(p0, p1, t);
+    const c1  = lerpv(p1, p2, t);
+
+    const c01 = lerpv(c0, c1, t);
+
+    return [ [p0, c0, c01],
+             [c01, c1, p2] ];
+}
+
+
+
+function splitSeg3(p0, p1, p2, p3, t)
 {
     const c0   = lerpv(p0, p1, t);
     const c1   = lerpv(p1, p2, t);
@@ -2195,9 +2208,8 @@ function splitSeg(p0, p1, p2, p3, t)
 
     const c012 = lerpv(c01, c12, t);
 
-    return [
-        [p0, c0, c01, c012],
-        [c012, c12, c2, p3] ];
+    return [ [p0, c0, c01, c012],
+             [c012, c12, c2, p3] ];
 }
 
 
@@ -2241,7 +2253,30 @@ function splitSeg(p0, p1, p2, p3, t)
 
 
 
-function arcLength(p0, p1, p2, p3, error = 0.0000001)
+function arcLength2(p0, p1, p2, error)
+{
+    const arcLen =
+          distv(p0, p1)
+        + distv(p1, p2);
+
+    const chord = distv(p0, p2);
+
+    if (arcLen - chord > error)
+    {
+        const halves = splitSeg2(p0, p1, p2, 0.5);
+        const l      = halves[0];
+        const r      = halves[1];
+            
+        return arcLength2(l[0], l[1], l[2], error)
+             + arcLength2(r[0], r[1], r[2], error);
+    }
+
+    return arcLen;
+}
+
+
+
+function arcLength3(p0, p1, p2, p3, error = 0.0000001)
 {
     const arcLen = 
           distv(p0, p1)
@@ -2252,12 +2287,12 @@ function arcLength(p0, p1, p2, p3, error = 0.0000001)
 
     if ((arcLen - chord) > error)
     {
-        const halves = splitSeg(p0, p1, p2, p3, 0.5);
+        const halves = splitSeg3(p0, p1, p2, p3, 0.5);
         const l      = halves[0];
         const r      = halves[1];
             
-        return arcLength(l[0], l[1], l[2], l[3], error)
-             + arcLength(r[0], r[1], r[2], r[3], error);
+        return arcLength3(l[0], l[1], l[2], l[3], error)
+             + arcLength3(r[0], r[1], r[2], r[3], error);
     }
 
     return arcLen;
@@ -2450,12 +2485,6 @@ function makeArc(p1, p2, p3)
 
 function makeArc_(center, radius, startAngle, endAngle)
 {
-    console.log('center     =', center    );
-    console.log('radius     =', radius    );
-    console.log('startAngle =', startAngle);
-    console.log('endAngle   =', endAngle  );
-
-
     let diff  = endAngle - startAngle;
     let angle = startAngle;
 
@@ -2472,11 +2501,11 @@ function makeArc_(center, radius, startAngle, endAngle)
 
         const handle = radius * arcKappa(da) * kappaCorrection;
 
-        const p1     = addv(center, vector(angle,      radius));
-        const p2     = addv(center, vector(angle + da, radius));
+        const p1 = addv(center, vector(angle,      radius));
+        const p2 = addv(center, vector(angle + da, radius));
     
-        const v1     = subv(p1, center);
-        const v2     = subv(p2, center);
+        const v1 = subv(p1, center);
+        const v2 = subv(p2, center);
 
 
         points.push(
@@ -5387,6 +5416,7 @@ const RESET_XFORM          = 'RSTX';
 const PLACE                = 'PLACE';
 const SHAPE_APPLY          = 'APPLY';
   
+const PATH_LENGTH          = 'PTHLEN';
 const JOIN_PATHS           = 'JOINPTH';
 const MEASURE_POINTS       = 'MESPT';
 const VECTOR_LENGTH        = 'VECLEN';
@@ -5487,6 +5517,7 @@ const SHAPE_TYPES =
     PLACE,
     SHAPE_APPLY,
     
+    PATH_LENGTH,
     JOIN_PATHS,
     
     MEASURE_POINTS,
@@ -40802,8 +40833,8 @@ extends GOperator2
             let ang = angle(subv(input1.toPoint(), input0.toPoint()));
             if (ang > Tau/2) ang -= Tau;
 
-            this.distance = new NumberValue(dist);
-            this.angle    = new NumberValue(ang / Tau * 360);
+            this.distance = new NumberValue(dist,            -2);
+            this.angle    = new NumberValue(ang / Tau * 360, -2);
         }
         else
         {
@@ -41072,8 +41103,6 @@ extends GShape
     input1  = null;
     input2  = null;
 
-    tangent = null;
-
     
 
     constructor(nodeId, options)
@@ -41090,8 +41119,6 @@ extends GShape
         this.input0  = null;
         this.input1  = null;
         this.input2  = null;
-
-        this.tangent = null;
     }
 
 
@@ -41105,8 +41132,6 @@ extends GShape
         if (base.input0 ) this.input0  = base.input0 .copy();
         if (base.input1 ) this.input1  = base.input1 .copy();
         if (base.input2 ) this.input2  = base.input2 .copy();
-
-        if (this.tangent) copy.tangent = this.tangent.copy();
 
         return copy;
     }
@@ -41123,40 +41148,16 @@ extends GShape
         const input1  = this.input1  ? (await this.input1 .eval(parse)).toValue() : null;
         const input2  = this.input2  ? (await this.input2 .eval(parse)).toValue() : null;
 
-        const tangent = this.tangent ? (await this.tangent.eval(parse)).toValue() : null;
-
 
         if (   input0  && input0 .isValid()
             && input1  && input1 .isValid()
-            && input2  && input2 .isValid()
-            && tangent && tangent.isValid())
+            && input2  && input2 .isValid())
         {
             const p0 = input0.toPoint();
             const p1 = input1.toPoint();
             const p2 = input2.toPoint();
 
-
-            let points;
-
-
-            if (tangent.value > 0)
-            {
-                const pc = intersectLines(
-                    lerpv(p0, p1, 0.5), addv(p0, crossv(subv(p1, p0))),
-                    lerpv(p2, p1, 0.5), addv(p2, crossv(subv(p1, p2))),
-                    false);
-
-                points = makeArc_(
-                    pc, 
-                    lerp(distv(pc, p0), distv(pc, p2), 0.5),
-                    anglev(pc, p0),
-                    anglev(pc, p2));
-            }
-            else
-            {
-                points = makeArc(p0, p1, p2);
-            }
-
+            const points = makeArc(p0, p1, p2);
 
             this.value = new VectorPathValue(
                 this.nodeId,
@@ -41174,7 +41175,7 @@ extends GShape
 
         this.setUpdateValues(parse, 
         [
-            ['tangent', tangent]
+            ['', new NullValue()]
         ]);
 
 
@@ -41257,10 +41258,9 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.input0  && this.input0 .isValid()
-            && this.input1  && this.input1 .isValid()
-            && this.input2  && this.input2 .isValid()
-            && this.tangent && this.tangent.isValid();
+            && this.input0 && this.input0.isValid()
+            && this.input1 && this.input1.isValid()
+            && this.input2 && this.input2.isValid();
     }
 
 
@@ -41269,10 +41269,9 @@ extends GShape
     {
         super.pushValueUpdates(parse);
 
-        if (this.input0 ) this.input0 .pushValueUpdates(parse);
-        if (this.input1 ) this.input1 .pushValueUpdates(parse);
-        if (this.input2 ) this.input2 .pushValueUpdates(parse);
-        if (this.tangent) this.tangent.pushValueUpdates(parse);
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+        if (this.input2) this.input2.pushValueUpdates(parse);
     }
 
 
@@ -41281,10 +41280,9 @@ extends GShape
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.input0 ) this.input0 .invalidateInputs(parse, from, force);
-        if (this.input1 ) this.input1 .invalidateInputs(parse, from, force);
-        if (this.input2 ) this.input2 .invalidateInputs(parse, from, force);
-        if (this.tangent) this.tangent.invalidateInputs(parse, from, force);
+        if (this.input0) this.input0.invalidateInputs(parse, from, force);
+        if (this.input1) this.input1.invalidateInputs(parse, from, force);
+        if (this.input2) this.input2.invalidateInputs(parse, from, force);
     }
 
 
@@ -41293,12 +41291,110 @@ extends GShape
     {
         super.iterateLoop(parse);
 
-        if (this.input0 ) this.input0 .iterateLoop(parse);
-        if (this.input1 ) this.input1 .iterateLoop(parse);
-        if (this.input2 ) this.input2 .iterateLoop(parse);
-        if (this.tangent) this.tangent.iterateLoop(parse);
+        if (this.input0) this.input0.iterateLoop(parse);
+        if (this.input1) this.input1.iterateLoop(parse);
+        if (this.input2) this.input2.iterateLoop(parse);
     }
 }
+
+
+class GPathLength
+extends GOperator1
+{
+    length;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(PATH_LENGTH, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.length = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GPathLength(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.length) copy.length = this.length.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+
+
+        if (input)
+        {
+            consoleAssert(input.type == VECTOR_PATH_VALUE, 'input must be VECTOR_PATH_VALUE');
+
+            this.length = new NumberValue(0, -2);
+
+            const points = input.points.items.map(p => p.toPoint());
+
+            
+            for (let i = 0; i < points.length - input.degree.value; i += (input.degree.value+1))
+            {
+                switch (input.degree.value)
+                {
+                    case 0:
+                        this.length.value += distv(
+                            points[i  ], 
+                            points[i+1]);
+                        break;
+
+                    case 1:
+                        this.length.value += arcLength2(
+                            points[i  ], 
+                            points[i+1],
+                            points[i+2]);
+                        break;
+
+                    default:
+                        this.length.value += arcLength3(
+                            points[i  ], 
+                            points[i+1],
+                            points[i+2],
+                            points[i+3]);
+                        break;
+                }
+            }
+        }
+        else
+            this.length = NumberValue.NaN.copy();
+    
+
+        this.setUpdateValues(parse,
+        [
+            ['length', this.length]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
 
 
 class GIntersectLines
@@ -48233,6 +48329,50 @@ function genParseVectorPath(parse)
 
 
 
+function genParsePathLength(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const len = new GPathLength(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(len, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, len);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        len.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, len);
+    return len;
+}
+
+
+
 function genParseJoinPaths(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -48711,7 +48851,6 @@ function genParseFrame(parse)
         case 'y':        frame.y        = genParse(parse); break;
         case 'width':    frame.width    = genParse(parse); break;
         case 'height':   frame.height   = genParse(parse); break;
-        //case 'angle':    frame.angle    = genParse(parse); break;
         case 'round':    frame.round    = genParse(parse); break;
         case 'children': frame.children = genParse(parse); break;
         case 'props':    frame.props    = genParse(parse); break;
@@ -49239,7 +49378,6 @@ function genParseArcFromPoints(parse)
 
         switch (paramId)
         {       
-        case 'tangent': arc.tangent = genParse(parse); break;
         case 'props':   arc.props   = genParse(parse); break;
         }
     }
@@ -51032,6 +51170,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SET_CENTER             ) result = genParseCenter            (parse);
     else if (parse.next == RESET_XFORM            ) result = genParseResetTransform    (parse);
 
+    else if (parse.next == PATH_LENGTH            ) result = genParsePathLength        (parse);
     else if (parse.next == JOIN_PATHS             ) result = genParseJoinPaths         (parse);
     else if (parse.next == MEASURE_POINTS         ) result = genParseMeasurePoints     (parse);
     else if (parse.next == VECTOR_LENGTH          ) result = genParseVectorLength      (parse);

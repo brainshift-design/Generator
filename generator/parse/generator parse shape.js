@@ -673,6 +673,50 @@ function genParseVectorPath(parse)
 
 
 
+function genParsePathLength(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const len = new GPathLength(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(len, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, len);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        len.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, len);
+    return len;
+}
+
+
+
 function genParseJoinPaths(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -1151,7 +1195,6 @@ function genParseFrame(parse)
         case 'y':        frame.y        = genParse(parse); break;
         case 'width':    frame.width    = genParse(parse); break;
         case 'height':   frame.height   = genParse(parse); break;
-        //case 'angle':    frame.angle    = genParse(parse); break;
         case 'round':    frame.round    = genParse(parse); break;
         case 'children': frame.children = genParse(parse); break;
         case 'props':    frame.props    = genParse(parse); break;
@@ -1679,7 +1722,6 @@ function genParseArcFromPoints(parse)
 
         switch (paramId)
         {       
-        case 'tangent': arc.tangent = genParse(parse); break;
         case 'props':   arc.props   = genParse(parse); break;
         }
     }

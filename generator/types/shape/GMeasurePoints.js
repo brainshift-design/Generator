@@ -55,8 +55,8 @@ extends GOperator2
             let ang = angle(subv(input1.toPoint(), input0.toPoint()));
             if (ang > Tau/2) ang -= Tau;
 
-            this.distance = new NumberValue(dist);
-            this.angle    = new NumberValue(ang / Tau * 360);
+            this.distance = new NumberValue(dist,            -2);
+            this.angle    = new NumberValue(ang / Tau * 360, -2);
         }
         else
         {
