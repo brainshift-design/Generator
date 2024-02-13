@@ -61,31 +61,40 @@ extends GOperator1
             && input.objects.length > 0)
         {
             const degree = Math.min(input.degree.value, 2) + 1;
-            const points = input.objects[0].pathPoints;
-            console.log('points =', points);
             
-    
-            if (position.value > 0) // absolute
+            let points = input.objects[0].pathPoints;
+            points = points.slice(0, Math.floor((points.length-1) / degree) * degree + 1);
+
+            // console.log('degree =', degree);
+            // console.log('points =', points);
+
+            const length = curveLength(degree, points);
+
+            const dist = 
+                position.value > 0 
+                ? distance.value 
+                : distance.value/100 * length;
+
+            console.log('dist =',  dist);
+            console.log('length =', length);
+
+            
+            if (   dist >= 0 
+                && dist <= length)
             {
+                const t = positionOnCurve(degree, points, dist);
+
+                //console.log('t =', t);
+
                 this.value = PointValue.fromPoint(
                     this.nodeId, 
-                    pointOnCurve(
-                        degree, 
-                        points, 
-                        positionOnCurve(
-                            degree,
-                            points,
-                            distance.value)));
+                    pointOnCurve(degree, points, t));
             }
-            else // relative
-            {
-                this.value = PointValue.fromPoint(
-                    this.nodeId, 
-                    pointOnCurve(
-                        degree, 
-                        points, 
-                        distance.value / 100));
-            }
+            else
+                this.value = PointValue.NaN.copy();
+
+
+            console.log('');
         }
         else
             this.value = PointValue.NaN.copy();

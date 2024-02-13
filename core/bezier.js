@@ -18,6 +18,50 @@ function bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t)
 
 
 
+function positionOnSegment2(p0, p1, p2, arcLen, error = 0.001)
+{
+    const hullLength = 
+          distv(p0, p1) 
+        + distv(p1, p2);
+
+    if (hullLength == 0)
+        return Number.NAN;
+
+
+    let t = arcLen / hullLength;
+
+    if (t < 0 || t > 1)
+        return Number.NAN;
+
+        
+    let halves = splitSeg2(p0, p1, p2, t);
+    let l      = halves[0];
+
+    let length = arcLength2(l[0], l[1], l[2], error);
+
+
+    let loopProtect = 1000;
+
+    while (Math.abs(arcLen - length) > error
+        && loopProtect-- > 0)
+    {
+        t += (arcLen - length) / hullLength;
+
+        halves = splitSeg2(p0, p1, p2, t);
+        l      = halves[0];
+
+        length = arcLength2(l[0], l[1], l[2], error);
+    }
+
+    if (loopProtect == 0)
+        consoleError('endless loop in positionOnSegment2()');
+
+
+    return t;
+}
+
+
+
 function positionOnSegment3(p0, p1, p2, p3, arcLen, error = 0.001)
 {
     const hullLength = 
@@ -293,7 +337,7 @@ function pointOnCurve(degree, points, t)
     consoleAssert(0 <= t && t <= 1);
 
 
-    const nSegments = Math.floor(points.length / degree);
+    const nSegments = Math.floor((points.length-1) / degree);
     const segSize   = 1 / (nSegments - 0.000000001);
 
 
@@ -313,8 +357,6 @@ function pointOnCurve(degree, points, t)
     }
 
 
-    console.log('degree =', degree);
-    
     t /= segSize;
 
     switch (degree)
@@ -328,9 +370,12 @@ function pointOnCurve(degree, points, t)
 
 
 
-function positionOnCurve(degree, points, distance, error)
+function positionOnCurve(degree, points, distance, error = 0.000001)
 {
-    const nSegments = points.length / points.Degree;
+    const nSegments = Math.floor((points.length-1) / degree);
+    //const curLen    = curveLength(degree, points);
+
+    //console.log('nSegments =', nSegments);
 
     let t      = 0;
     let length = 0;
@@ -344,7 +389,7 @@ function positionOnCurve(degree, points, distance, error)
         switch (degree)
         {
         case 1:  segLength = distv(points[i], points[i+1]);                                       break;
-        case 2:  segLength = arcLength2(points[i], points[i+1], points[i+2],              error);              break;
+        case 2:  segLength = arcLength2(points[i], points[i+1], points[i+2],              error); break;
         case 3:  segLength = arcLength3(points[i], points[i+1], points[i+2], points[i+3], error); break;
         default: consoleAssert(false);
         }
@@ -358,19 +403,64 @@ function positionOnCurve(degree, points, distance, error)
     }
 
 
+    // console.log('length + segLength =', length + segLength);
+
+
     if (i < points.length - degree)
     {
+        const dl = distance - length;
+        console.log('dl =', dl);
+
         switch (degree)
         {
-        case 1: t += (distance - length) / distance(points[i], points[i+1])                                        / nSegments; break;
-        case 2: t += positionOnSegment2(points[i], points[i+1], points[i+2], distance - length, error)              / nSegments; break;
-        case 3: t += positionOnSegment3(points[i], points[i+1], points[i+2], points[i+3], distance - length, error) / nSegments; break;
+        case 1:  t += dl / distv(points[i], points[i+1])                                       / nSegments; break;
+        case 2:  t += dl / arcLength2(points[i], points[i+1], points[i+2],              error) / nSegments; break;
+        case 3:  t += dl / arcLength3(points[i], points[i+1], points[i+2], points[i+3], error) / nSegments; break;
         default: consoleAssert(false);
         }
     }
+
+    
+    console.log('t =', t);
     
     
     return t;
+}
+
+
+
+function curveLength(degree, points)
+{
+    let length = 0;
+
+    for (let i = 0; i < points.length - degree; i += degree)
+    {
+        switch (degree)
+        {
+            case 1:
+                length += distv(
+                    points[i  ], 
+                    points[i+1]);
+                break;
+
+            case 2:
+                length += arcLength2(
+                    points[i  ], 
+                    points[i+1],
+                    points[i+2]);
+                break;
+
+            case 3:
+                length += arcLength3(
+                    points[i  ], 
+                    points[i+1],
+                    points[i+2],
+                    points[i+3]);
+                break;
+        }
+    }
+
+    return length;
 }
 
 

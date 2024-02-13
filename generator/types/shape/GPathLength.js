@@ -47,37 +47,11 @@ extends GOperator1
         {
             consoleAssert(input.type == VECTOR_PATH_VALUE, 'input must be VECTOR_PATH_VALUE');
 
-            this.length = new NumberValue(0, -2);
-
-            const points = input.points.items.map(p => p.toPoint());
-
-            
-            for (let i = 0; i < points.length - input.degree.value; i += (input.degree.value+1))
-            {
-                switch (input.degree.value)
-                {
-                    case 0:
-                        this.length.value += distv(
-                            points[i  ], 
-                            points[i+1]);
-                        break;
-
-                    case 1:
-                        this.length.value += arcLength2(
-                            points[i  ], 
-                            points[i+1],
-                            points[i+2]);
-                        break;
-
-                    default:
-                        this.length.value += arcLength3(
-                            points[i  ], 
-                            points[i+1],
-                            points[i+2],
-                            points[i+3]);
-                        break;
-                }
-            }
+            this.length = new NumberValue(
+                curveLength(
+                    input.degree.value, 
+                    input.points.items.map(p => p.toPoint())),
+                -2);
         }
         else
             this.length = NumberValue.NaN.copy();
