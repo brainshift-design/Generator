@@ -60,23 +60,23 @@ extends GOperator1
         if (   input
             && input.objects.length > 0)
         {
-            const degree = Math.min(input.degree.value, 2) + 1;
-            
-            let points = input.objects[0].pathPoints;
-            points = points.slice(0, Math.floor((points.length-1) / degree) * degree + 1);
+            const degree     = Math.min(input.degree.value, 2) + 1;
+            const pathPoints = input.objects[0].pathPoints;
+
+            const points = pathPoints.slice(0, Math.floor((pathPoints.length-1) / degree) * degree + 1);
 
             // console.log('degree =', degree);
             // console.log('points =', points);
 
             const length = curveLength(degree, points);
+            // console.log('length =', length);
 
             const dist = 
-                position.value > 0 
+                position.value > 0 // absolute
                 ? distance.value 
                 : distance.value/100 * length;
 
-            console.log('dist =',  dist);
-            console.log('length =', length);
+            // console.log('dist =',  dist);
 
             
             if (   dist >= 0 
@@ -94,7 +94,7 @@ extends GOperator1
                 this.value = PointValue.NaN.copy();
 
 
-            console.log('');
+            // console.log('');
         }
         else
             this.value = PointValue.NaN.copy();

@@ -49,7 +49,7 @@ extends GOperator1
 
             this.length = new NumberValue(
                 curveLength(
-                    input.degree.value, 
+                    Math.min(input.degree.value, 2) + 1, 
                     input.points.items.map(p => p.toPoint())),
                 -2);
         }

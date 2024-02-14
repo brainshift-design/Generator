@@ -372,10 +372,8 @@ function pointOnCurve(degree, points, t)
 
 function positionOnCurve(degree, points, distance, error = 0.000001)
 {
-    const nSegments = Math.floor((points.length-1) / degree);
-    //const curLen    = curveLength(degree, points);
+    const curveLen = curveLength(degree, points);
 
-    //console.log('nSegments =', nSegments);
 
     let t      = 0;
     let length = 0;
@@ -399,30 +397,13 @@ function positionOnCurve(degree, points, distance, error = 0.000001)
 
         length += segLength;
 
-        t += 1 / nSegments;
+        t += segLength / curveLen;
     }
 
 
-    // console.log('length + segLength =', length + segLength);
+    if (distance > length)
+        t += (distance - length) / curveLen; 
 
-
-    if (i < points.length - degree)
-    {
-        const dl = distance - length;
-        console.log('dl =', dl);
-
-        switch (degree)
-        {
-        case 1:  t += dl / distv(points[i], points[i+1])                                       / nSegments; break;
-        case 2:  t += dl / arcLength2(points[i], points[i+1], points[i+2],              error) / nSegments; break;
-        case 3:  t += dl / arcLength3(points[i], points[i+1], points[i+2], points[i+3], error) / nSegments; break;
-        default: consoleAssert(false);
-        }
-    }
-
-    
-    console.log('t =', t);
-    
     
     return t;
 }

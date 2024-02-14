@@ -168,7 +168,7 @@ function unitv(v)
 
 
 
-function dot(v1, v2)
+function dotv(v1, v2)
 {
     return v1.x * v2.x + v1.y * v2.y;
 }
@@ -310,7 +310,7 @@ function createTransform(x = 0, y = 0, scaleX = 1, scaleY = 1, angle = 0, skewX 
 function crossv2(v1, v2)
 {
     // returns the magnitude of v1×v2 = ‖v1‖‖v2‖sinθ "perpendicular dot product",
-    // equivalent to dot(v1, cross(v2)) (same as in 3D with a Z component of 0)
+    // equivalent to dotv(v1, cross(v2)) (same as in 3D with a Z component of 0)
     // also the area of the parallelogram between the two vectors
     // also determinant of 2×2 matrix built from the two vectors
     // positive if turn from v1 to v2 is clockwise
