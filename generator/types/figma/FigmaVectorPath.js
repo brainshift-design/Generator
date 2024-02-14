@@ -315,7 +315,8 @@ function getCubicPathData(points, closed)
     }
 
 
-    if (points.length - i == 2)
+    if (   points.length - i == 2
+        && closed)
     {
         pathData += 
               ' C'
