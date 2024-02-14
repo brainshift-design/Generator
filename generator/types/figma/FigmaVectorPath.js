@@ -106,6 +106,17 @@ extends FigmaShape
                             this.pathPoints[i+1],
                             this.pathPoints[i+2]));
                 }
+
+                if (this.closed)
+                {
+                    bounds = expandRect(
+                        bounds, 
+                        bounds2(
+                            this.pathPoints.at(-2), 
+                            this.pathPoints.at(-1),
+                            this.pathPoints.at( 0)));
+                }
+
                 break;
 
             case 2:
@@ -122,6 +133,18 @@ extends FigmaShape
                             this.pathPoints[i+2],
                             this.pathPoints[i+3]));
                 }
+
+                if (this.closed)
+                {
+                    bounds = expandRect(
+                        bounds, 
+                        bounds3(
+                            this.pathPoints.at(-3), 
+                            this.pathPoints.at(-2), 
+                            this.pathPoints.at(-1),
+                            this.pathPoints.at( 0)));
+                }
+
                 break;
 
             default:
@@ -451,6 +474,7 @@ function getSmoothSegment(_pointP, _point, _pointN)
     let a = angleDiff(
         angle(subv(_p, _pp)), 
         angle(subv(_pn, _p)));
+        
 
     a = Math.abs(a);
     while (a >= Tau/2) a -= Tau;
