@@ -109,7 +109,11 @@ extends GOperator1
         ]);
         
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse,
+        {
+            transform:  transform,
+            showCenter: showCenter
+        });
 
 
         this.validate();
@@ -148,6 +152,13 @@ extends GOperator1
             point.createDefaultTransform(x, y);
 
             this.value.objects = [point];
+
+
+            if (options.showCenter.value > 0)
+            {
+                const objects = [...this.value.objects]; // avoids infinite growth
+                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
+            }
         }
 
 
