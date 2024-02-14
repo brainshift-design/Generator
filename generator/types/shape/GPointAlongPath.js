@@ -146,10 +146,11 @@ extends GOperator1
             point.createDefaultTransform(x, y);
 
 
-            if (options.tangent)
+            if (   options.transform.value > 0
+                && options.tangent)
             {
                 const a     = -anglev(options.tangent);
-                const xform = createRotateTransform(a);
+                const xform =  createRotateTransform(a);
 
                 point.applyTransform(xform, options.transform.value > 0);
             }
