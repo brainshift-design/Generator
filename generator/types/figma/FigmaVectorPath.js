@@ -97,56 +97,62 @@ extends FigmaShape
                 break;
 
             case 1:
-                for (let i = 0; i < this.pathPoints.length-2; i += 2)
                 {
-                    bounds = expandRect(
-                        bounds, 
-                        bounds2(
-                            this.pathPoints[i  ], 
-                            this.pathPoints[i+1],
-                            this.pathPoints[i+2]));
+                    let i;
+                    for (i = 0; i < this.pathPoints.length-2; i += 2)
+                    {
+                        bounds = expandRect(
+                            bounds, 
+                            bounds2(
+                                this.pathPoints[i  ], 
+                                this.pathPoints[i+1],
+                                this.pathPoints[i+2]));
+                    }
+
+                    if (   this.closed
+                        && i < this.pathPoints.length-1)
+                    {
+                        bounds = expandRect(
+                            bounds, 
+                            bounds2(
+                                this.pathPoints.at(-2), 
+                                this.pathPoints.at(-1),
+                                this.pathPoints.at( 0)));
+                    }
+
+                    break;
                 }
-
-                if (this.closed)
-                {
-                    bounds = expandRect(
-                        bounds, 
-                        bounds2(
-                            this.pathPoints.at(-2), 
-                            this.pathPoints.at(-1),
-                            this.pathPoints.at( 0)));
-                }
-
-                break;
-
             case 2:
             case 3:
             case 4:
             case 5:
-                for (let i = 0; i < this.pathPoints.length-3; i += 3)
                 {
-                    bounds = expandRect(
-                        bounds, 
-                        bounds3(
-                            this.pathPoints[i  ], 
-                            this.pathPoints[i+1],
-                            this.pathPoints[i+2],
-                            this.pathPoints[i+3]));
+                    let i;
+                    for (i = 0; i < this.pathPoints.length-3; i += 3)
+                    {
+                        bounds = expandRect(
+                            bounds, 
+                            bounds3(
+                                this.pathPoints[i  ], 
+                                this.pathPoints[i+1],
+                                this.pathPoints[i+2],
+                                this.pathPoints[i+3]));
+                    }
+
+                    if (   this.closed
+                        && i < this.pathPoints.length - 2)
+                    {
+                        bounds = expandRect(
+                            bounds, 
+                            bounds3(
+                                this.pathPoints.at(-3), 
+                                this.pathPoints.at(-2), 
+                                this.pathPoints.at(-1),
+                                this.pathPoints.at( 0)));
+                    }
+
+                    break;
                 }
-
-                if (this.closed)
-                {
-                    bounds = expandRect(
-                        bounds, 
-                        bounds3(
-                            this.pathPoints.at(-3), 
-                            this.pathPoints.at(-2), 
-                            this.pathPoints.at(-1),
-                            this.pathPoints.at( 0)));
-                }
-
-                break;
-
             default:
                 console.error('invalid curve degree');
         }
@@ -472,8 +478,8 @@ function getSmoothSegment(_pointP, _point, _pointN)
     
     
     let a = angleDiff(
-        angle(subv(_p, _pp)), 
-        angle(subv(_pn, _p)));
+        anglev(subv(_p, _pp)), 
+        anglev(subv(_pn, _p)));
         
 
     a = Math.abs(a);

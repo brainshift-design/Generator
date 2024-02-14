@@ -497,7 +497,7 @@ class Wire
     
         arrow.style.transformBox    = 'fill-box';
         arrow.style.transformOrigin = 'center';
-        arrow.style.transform       = 'rotate(' + (angle(ct) - Tau/4 + (!back || feedback ? 0 : Tau/2)) + 'rad)';
+        arrow.style.transform       = 'rotate(' + (anglev(ct) - Tau/4 + (!back || feedback ? 0 : Tau/2)) + 'rad)';
     }
 
 

@@ -128,7 +128,7 @@ function distv(p1, p2)
 
 
 
-function angle(v)
+function anglev(v)
 {
     let angle = Math.atan2(v.y, v.x);
     if (angle < 0) angle += Tau;
@@ -138,14 +138,14 @@ function angle(v)
 
 
 
-function anglev(v1, v2)
+function anglev2(v1, v2)
 {
-    return anglev_(v1.x, v1.y, v2.x, v2.y);
+    return anglev2_(v1.x, v1.y, v2.x, v2.y);
 }
 
 
 
-function anglev_(x1, y1, x2, y2)
+function anglev2_(x1, y1, x2, y2)
 {
     const dx = x2 - x1;
     const dy = y2 - y1;
@@ -1454,7 +1454,7 @@ function crossv(v)
 
 
 
-function angle(v)
+function anglev(v)
 {
     let angle = Math.atan2(v.y, v.x);
     if (angle < 0) angle += Tau;
@@ -1577,7 +1577,7 @@ function signedPosOnLine(p0, p1, p)
 
     let xform = mulm3m3(
         xmove(negv(p0)),
-        xrotate(-anglev(p0, p1)));
+        xrotate(-anglev2(p0, p1)));
         
     p0 = transform(p0, xform);
     p1 = transform(p1, xform);
@@ -1767,21 +1767,39 @@ function lerp(a, b, t)
 
 
 
-function lerp2(f0, f1, f2, t)
+function lerp2(p0, p1, p2, t)
 {
-    const c0 = lerp(f0, f1, t);
-    const c1 = lerp(f1, f2, t);
+    const c0 = lerp(p0, p1, t);
+    const c1 = lerp(p1, p2, t);
 
     return lerp(c0, c1, t);
 }
 
 
 
-function lerp3(f0, f1, f2, f3, t)
+function tangent2(p0, p1, p2, t)
 {
-    const c0  = lerp(f0, f1, t);
-    const c1  = lerp(f1, f2, t);
-    const c2  = lerp(f2, f3, t);
+    return addv(mulvs(p0, -2*(1-t)), addv(mulvs(p1, 2*(1-2*t)), mulvs(p2, 2*t)));
+}
+
+
+
+function tangent3(p0, p1, p2, p3, t)
+{
+    return addv(
+        mulvs(subv(p1, p0), 3 * Math.pow(1-t, 2)),
+        addv(
+           mulvs(subv(p2, p1), 6 * (1-t) * t),
+           mulvs(subv(p3, p2), 3 * Math.pow(t, 2))));
+}
+
+
+
+function lerp3(p0, p1, p2, p3, t)
+{
+    const c0  = lerp(p0, p1, t);
+    const c1  = lerp(p1, p2, t);
+    const c2  = lerp(p2, p3, t);
 
     const c01 = lerp(c0, c1, t);
     const c12 = lerp(c1, c2, t);
@@ -1967,7 +1985,7 @@ function signedPosOnLine(p0, p1, p)
 
     const xform = mulm3m3(
         xmove(-p0),
-        xrotate(-anglev(p0, p1)));
+        xrotate(-anglev2(p0, p1)));
 
     p0 = transform(p0, xform);
     p1 = transform(p1, xform);
@@ -2107,11 +2125,11 @@ function halfArcAngle(p1, p2, p3)
     const pc = circleCenter(p1, p2, p3);
 
     let a = angleDiff(
-        angle(subv(p1, pc)),
-        angle(subv(p2, pc)));
+        anglev(subv(p1, pc)),
+        anglev(subv(p2, pc)));
 
-    // console.log('angle(subv(p1, pc) =', angle(subv(p1, pc)));    
-    // console.log('angle(subv(p2, pc) =', angle(subv(p2, pc)));        
+    // console.log('anglev(subv(p1, pc) =', anglev(subv(p1, pc)));    
+    // console.log('anglev(subv(p2, pc) =', anglev(subv(p2, pc)));        
     // while (a < 0)
     //     a += Tau;
 
@@ -2491,6 +2509,44 @@ function pointOnCurve(degree, points, t)
 
 
 
+function tangentOnCurve(degree, points, t)
+{
+    consoleAssert(0 <= t && t <= 1);
+
+
+    const nSegments = Math.floor((points.length-1) / degree);
+    const segSize   = 1 / (nSegments - 0.000000001);
+
+
+    let i = 0;
+
+    while (t - segSize >= 0)
+    {
+        t -= segSize;
+        i += degree;
+    }
+
+    if (i == points.length-1)
+    {
+        return t == 0
+             ? points.at(-1)
+             : Number.NaN;
+    }
+
+
+    t /= segSize;
+
+    switch (degree)
+    {
+    case 1:  return subv(points[i+1], points[i]);
+    case 2:  return tangent2(points[i], points[i+1], points[i+2],              t);
+    case 3:  return tangent3(points[i], points[i+1], points[i+2], points[i+3], t);
+    default: return point_NaN;
+    }
+}
+
+
+
 function positionOnCurve(degree, points, distance, error = 0.000001)
 {
     const curveLen = curveLength(degree, points);
@@ -2627,8 +2683,8 @@ function makeArc(p1, p2, p3)
 
     const pc = circleCenter(p1, p2, p3);
 
-    const sa = angle(subv(p1, pc));
-    let   ea = angle(subv(p3, pc));
+    const sa = anglev(subv(p1, pc));
+    let   ea = anglev(subv(p3, pc));
 
     while (ea > sa) ea -= Tau; // construction is CCW
 
@@ -6377,7 +6433,7 @@ function getObjBounds(objects)
 
 function addObjectCenter(node, obj, zoom)
 {
-    const length = 10;
+    const length = 15;
     
     const sp0 = point(
         obj.sp0.x /*+ 0.5*/, 
@@ -7331,56 +7387,62 @@ extends FigmaShape
                 break;
 
             case 1:
-                for (let i = 0; i < this.pathPoints.length-2; i += 2)
                 {
-                    bounds = expandRect(
-                        bounds, 
-                        bounds2(
-                            this.pathPoints[i  ], 
-                            this.pathPoints[i+1],
-                            this.pathPoints[i+2]));
+                    let i;
+                    for (i = 0; i < this.pathPoints.length-2; i += 2)
+                    {
+                        bounds = expandRect(
+                            bounds, 
+                            bounds2(
+                                this.pathPoints[i  ], 
+                                this.pathPoints[i+1],
+                                this.pathPoints[i+2]));
+                    }
+
+                    if (   this.closed
+                        && i < this.pathPoints.length-1)
+                    {
+                        bounds = expandRect(
+                            bounds, 
+                            bounds2(
+                                this.pathPoints.at(-2), 
+                                this.pathPoints.at(-1),
+                                this.pathPoints.at( 0)));
+                    }
+
+                    break;
                 }
-
-                if (this.closed)
-                {
-                    bounds = expandRect(
-                        bounds, 
-                        bounds2(
-                            this.pathPoints.at(-2), 
-                            this.pathPoints.at(-1),
-                            this.pathPoints.at( 0)));
-                }
-
-                break;
-
             case 2:
             case 3:
             case 4:
             case 5:
-                for (let i = 0; i < this.pathPoints.length-3; i += 3)
                 {
-                    bounds = expandRect(
-                        bounds, 
-                        bounds3(
-                            this.pathPoints[i  ], 
-                            this.pathPoints[i+1],
-                            this.pathPoints[i+2],
-                            this.pathPoints[i+3]));
+                    let i;
+                    for (i = 0; i < this.pathPoints.length-3; i += 3)
+                    {
+                        bounds = expandRect(
+                            bounds, 
+                            bounds3(
+                                this.pathPoints[i  ], 
+                                this.pathPoints[i+1],
+                                this.pathPoints[i+2],
+                                this.pathPoints[i+3]));
+                    }
+
+                    if (   this.closed
+                        && i < this.pathPoints.length - 2)
+                    {
+                        bounds = expandRect(
+                            bounds, 
+                            bounds3(
+                                this.pathPoints.at(-3), 
+                                this.pathPoints.at(-2), 
+                                this.pathPoints.at(-1),
+                                this.pathPoints.at( 0)));
+                    }
+
+                    break;
                 }
-
-                if (this.closed)
-                {
-                    bounds = expandRect(
-                        bounds, 
-                        bounds3(
-                            this.pathPoints.at(-3), 
-                            this.pathPoints.at(-2), 
-                            this.pathPoints.at(-1),
-                            this.pathPoints.at( 0)));
-                }
-
-                break;
-
             default:
                 console.error('invalid curve degree');
         }
@@ -7706,8 +7768,8 @@ function getSmoothSegment(_pointP, _point, _pointN)
     
     
     let a = angleDiff(
-        angle(subv(_p, _pp)), 
-        angle(subv(_pn, _p)));
+        anglev(subv(_p, _pp)), 
+        anglev(subv(_pn, _p)));
         
 
     a = Math.abs(a);
@@ -40994,7 +41056,7 @@ extends GOperator2
         {
             const dist = distv(input0.toPoint(), input1.toPoint());
 
-            let ang = angle(subv(input1.toPoint(), input0.toPoint()));
+            let ang = anglev(subv(input1.toPoint(), input0.toPoint()));
             if (ang > Tau/2) ang -= Tau;
 
             this.distance = new NumberValue(dist,            -2);
@@ -41594,6 +41656,9 @@ extends GOperator1
         const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
 
+        let tangent = point_NaN;
+
+
         if (   input
             && input.objects.length > 0)
         {
@@ -41601,37 +41666,27 @@ extends GOperator1
             const pathPoints = input.objects[0].pathPoints;
 
             const points = pathPoints.slice(0, Math.floor((pathPoints.length-1) / degree) * degree + 1);
-
-            // console.log('degree =', degree);
-            // console.log('points =', points);
-
             const length = curveLength(degree, points);
-            // console.log('length =', length);
 
             const dist = 
-                position.value > 0 // absolute
-                ? distance.value 
-                : distance.value/100 * length;
+                position.value > 0 
+                ? distance.value               // absolute
+                : distance.value/100 * length; // relative
 
-            // console.log('dist =',  dist);
 
-            
             if (   dist >= 0 
                 && dist <= length)
             {
                 const t = positionOnCurve(degree, points, dist);
 
-                //console.log('t =', t);
-
                 this.value = PointValue.fromPoint(
                     this.nodeId, 
                     pointOnCurve(degree, points, t));
+
+                tangent = tangentOnCurve(degree, points, t);
             }
             else
                 this.value = PointValue.NaN.copy();
-
-
-            // console.log('');
         }
         else
             this.value = PointValue.NaN.copy();
@@ -41649,7 +41704,8 @@ extends GOperator1
         await this.evalObjects(parse,
         {
             transform:  transform,
-            showCenter: showCenter
+            showCenter: showCenter,
+            tangent:    tangent
         });
 
 
@@ -41688,6 +41744,16 @@ extends GOperator1
 
             point.createDefaultTransform(x, y);
 
+
+            if (options.tangent)
+            {
+                const a     = -anglev(options.tangent);
+                const xform = createRotateTransform(a);
+
+                point.applyTransform(xform, options.transform.value > 0);
+            }
+            
+            
             this.value.objects = [point];
 
 

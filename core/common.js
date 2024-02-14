@@ -122,7 +122,7 @@ function distv(p1, p2)
 
 
 
-function angle(v)
+function anglev(v)
 {
     let angle = Math.atan2(v.y, v.x);
     if (angle < 0) angle += Tau;
@@ -132,14 +132,14 @@ function angle(v)
 
 
 
-function anglev(v1, v2)
+function anglev2(v1, v2)
 {
-    return anglev_(v1.x, v1.y, v2.x, v2.y);
+    return anglev2_(v1.x, v1.y, v2.x, v2.y);
 }
 
 
 
-function anglev_(x1, y1, x2, y2)
+function anglev2_(x1, y1, x2, y2)
 {
     const dx = x2 - x1;
     const dy = y2 - y1;

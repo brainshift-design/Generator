@@ -79,7 +79,7 @@ function crossv(v)
 
 
 
-function angle(v)
+function anglev(v)
 {
     let angle = Math.atan2(v.y, v.x);
     if (angle < 0) angle += Tau;
@@ -202,7 +202,7 @@ function signedPosOnLine(p0, p1, p)
 
     let xform = mulm3m3(
         xmove(negv(p0)),
-        xrotate(-anglev(p0, p1)));
+        xrotate(-anglev2(p0, p1)));
         
     p0 = transform(p0, xform);
     p1 = transform(p1, xform);
@@ -392,21 +392,39 @@ function lerp(a, b, t)
 
 
 
-function lerp2(f0, f1, f2, t)
+function lerp2(p0, p1, p2, t)
 {
-    const c0 = lerp(f0, f1, t);
-    const c1 = lerp(f1, f2, t);
+    const c0 = lerp(p0, p1, t);
+    const c1 = lerp(p1, p2, t);
 
     return lerp(c0, c1, t);
 }
 
 
 
-function lerp3(f0, f1, f2, f3, t)
+function tangent2(p0, p1, p2, t)
 {
-    const c0  = lerp(f0, f1, t);
-    const c1  = lerp(f1, f2, t);
-    const c2  = lerp(f2, f3, t);
+    return addv(mulvs(p0, -2*(1-t)), addv(mulvs(p1, 2*(1-2*t)), mulvs(p2, 2*t)));
+}
+
+
+
+function tangent3(p0, p1, p2, p3, t)
+{
+    return addv(
+        mulvs(subv(p1, p0), 3 * Math.pow(1-t, 2)),
+        addv(
+           mulvs(subv(p2, p1), 6 * (1-t) * t),
+           mulvs(subv(p3, p2), 3 * Math.pow(t, 2))));
+}
+
+
+
+function lerp3(p0, p1, p2, p3, t)
+{
+    const c0  = lerp(p0, p1, t);
+    const c1  = lerp(p1, p2, t);
+    const c2  = lerp(p2, p3, t);
 
     const c01 = lerp(c0, c1, t);
     const c12 = lerp(c1, c2, t);

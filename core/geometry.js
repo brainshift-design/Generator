@@ -146,7 +146,7 @@ function signedPosOnLine(p0, p1, p)
 
     const xform = mulm3m3(
         xmove(-p0),
-        xrotate(-anglev(p0, p1)));
+        xrotate(-anglev2(p0, p1)));
 
     p0 = transform(p0, xform);
     p1 = transform(p1, xform);
@@ -286,11 +286,11 @@ function halfArcAngle(p1, p2, p3)
     const pc = circleCenter(p1, p2, p3);
 
     let a = angleDiff(
-        angle(subv(p1, pc)),
-        angle(subv(p2, pc)));
+        anglev(subv(p1, pc)),
+        anglev(subv(p2, pc)));
 
-    // console.log('angle(subv(p1, pc) =', angle(subv(p1, pc)));    
-    // console.log('angle(subv(p2, pc) =', angle(subv(p2, pc)));        
+    // console.log('anglev(subv(p1, pc) =', anglev(subv(p1, pc)));    
+    // console.log('anglev(subv(p2, pc) =', anglev(subv(p2, pc)));        
     // while (a < 0)
     //     a += Tau;
 

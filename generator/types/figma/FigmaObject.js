@@ -376,7 +376,7 @@ function getObjBounds(objects)
 
 function addObjectCenter(node, obj, zoom)
 {
-    const length = 10;
+    const length = 15;
     
     const sp0 = point(
         obj.sp0.x /*+ 0.5*/, 

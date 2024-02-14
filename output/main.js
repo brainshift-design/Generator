@@ -84,16 +84,16 @@ function distv(p1, p2) {
     const dy = p2.y - p1.y;
     return Math.sqrt(dx * dx + dy * dy);
 }
-function angle(v) {
+function anglev(v) {
     let angle = Math.atan2(v.y, v.x);
     if (angle < 0)
         angle += Tau;
     return angle;
 }
-function anglev(v1, v2) {
-    return anglev_(v1.x, v1.y, v2.x, v2.y);
+function anglev2(v1, v2) {
+    return anglev2_(v1.x, v1.y, v2.x, v2.y);
 }
-function anglev_(x1, y1, x2, y2) {
+function anglev2_(x1, y1, x2, y2) {
     const dx = x2 - x1;
     const dy = y2 - y1;
     let angle = Math.atan2(dy, dx);
@@ -3356,7 +3356,7 @@ function getFigmaTransform(tl, tr, bl) {
         [_sx, 1, 0],
         [0, 0, 1]], createTransform(dx, dy));
     xform = inversem3(xform);
-    const a = angle(vr);
+    const a = anglev(vr);
     if (a > Tau / 4
         && a < Tau * 3 / 4)
         xform = mulm3m3(xform, createTransform(0, 0, 1, 1, Tau / 2));

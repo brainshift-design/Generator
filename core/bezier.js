@@ -370,6 +370,44 @@ function pointOnCurve(degree, points, t)
 
 
 
+function tangentOnCurve(degree, points, t)
+{
+    consoleAssert(0 <= t && t <= 1);
+
+
+    const nSegments = Math.floor((points.length-1) / degree);
+    const segSize   = 1 / (nSegments - 0.000000001);
+
+
+    let i = 0;
+
+    while (t - segSize >= 0)
+    {
+        t -= segSize;
+        i += degree;
+    }
+
+    if (i == points.length-1)
+    {
+        return t == 0
+             ? points.at(-1)
+             : Number.NaN;
+    }
+
+
+    t /= segSize;
+
+    switch (degree)
+    {
+    case 1:  return subv(points[i+1], points[i]);
+    case 2:  return tangent2(points[i], points[i+1], points[i+2],              t);
+    case 3:  return tangent3(points[i], points[i+1], points[i+2], points[i+3], t);
+    default: return point_NaN;
+    }
+}
+
+
+
 function positionOnCurve(degree, points, distance, error = 0.000001)
 {
     const curveLen = curveLength(degree, points);
@@ -506,8 +544,8 @@ function makeArc(p1, p2, p3)
 
     const pc = circleCenter(p1, p2, p3);
 
-    const sa = angle(subv(p1, pc));
-    let   ea = angle(subv(p3, pc));
+    const sa = anglev(subv(p1, pc));
+    let   ea = anglev(subv(p3, pc));
 
     while (ea > sa) ea -= Tau; // construction is CCW
 

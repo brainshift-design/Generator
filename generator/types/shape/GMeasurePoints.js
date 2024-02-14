@@ -52,7 +52,7 @@ extends GOperator2
         {
             const dist = distv(input0.toPoint(), input1.toPoint());
 
-            let ang = angle(subv(input1.toPoint(), input0.toPoint()));
+            let ang = anglev(subv(input1.toPoint(), input0.toPoint()));
             if (ang > Tau/2) ang -= Tau;
 
             this.distance = new NumberValue(dist,            -2);

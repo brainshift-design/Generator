@@ -57,6 +57,9 @@ extends GOperator1
         const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
 
+        let tangent = point_NaN;
+
+
         if (   input
             && input.objects.length > 0)
         {
@@ -64,37 +67,27 @@ extends GOperator1
             const pathPoints = input.objects[0].pathPoints;
 
             const points = pathPoints.slice(0, Math.floor((pathPoints.length-1) / degree) * degree + 1);
-
-            // console.log('degree =', degree);
-            // console.log('points =', points);
-
             const length = curveLength(degree, points);
-            // console.log('length =', length);
 
             const dist = 
-                position.value > 0 // absolute
-                ? distance.value 
-                : distance.value/100 * length;
+                position.value > 0 
+                ? distance.value               // absolute
+                : distance.value/100 * length; // relative
 
-            // console.log('dist =',  dist);
 
-            
             if (   dist >= 0 
                 && dist <= length)
             {
                 const t = positionOnCurve(degree, points, dist);
 
-                //console.log('t =', t);
-
                 this.value = PointValue.fromPoint(
                     this.nodeId, 
                     pointOnCurve(degree, points, t));
+
+                tangent = tangentOnCurve(degree, points, t);
             }
             else
                 this.value = PointValue.NaN.copy();
-
-
-            // console.log('');
         }
         else
             this.value = PointValue.NaN.copy();
@@ -112,7 +105,8 @@ extends GOperator1
         await this.evalObjects(parse,
         {
             transform:  transform,
-            showCenter: showCenter
+            showCenter: showCenter,
+            tangent:    tangent
         });
 
 
@@ -151,6 +145,16 @@ extends GOperator1
 
             point.createDefaultTransform(x, y);
 
+
+            if (options.tangent)
+            {
+                const a     = -anglev(options.tangent);
+                const xform = createRotateTransform(a);
+
+                point.applyTransform(xform, options.transform.value > 0);
+            }
+            
+            
             this.value.objects = [point];
 
 
