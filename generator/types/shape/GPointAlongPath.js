@@ -66,13 +66,22 @@ extends GOperator1
             const degree     = Math.min(input.degree.value, 2) + 1;
             const pathPoints = input.objects[0].pathPoints;
 
-            const points = pathPoints.slice(0, Math.floor((pathPoints.length-1) / degree) * degree + 1);
-            const length = curveLength(degree, points);
+            const segPoints  = pathPoints.slice(0, Math.floor((pathPoints.length-1) / degree) * degree + 1);
 
+            const points =
+                   input.closed.value > 0
+                && pathPoints.length - segPoints.length == degree-1
+                ? [...pathPoints, pathPoints[0]]
+                : segPoints;
+
+
+            let length = curveLength(degree, points);
+
+            
             const dist = 
                 position.value > 0 
-                ? distance.value               // absolute
-                : distance.value/100 * length; // relative
+                ? distance.value                                         // absolute
+                : Math.min(Math.max(0, distance.value/100), 1) * length; // relative
 
 
             if (   dist >= 0 
