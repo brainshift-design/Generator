@@ -457,7 +457,7 @@ class Wire
         }
         
     
-        let t = positionOnSegment3(p0, p1, p2, p3, al);
+        let t = pointAlongSegment3(p0, p1, p2, p3, al);
         
         if (isNaN(t))
         {

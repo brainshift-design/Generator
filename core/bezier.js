@@ -18,8 +18,20 @@ function bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t)
 
 
 
-function positionOnSegment2(p0, p1, p2, arcLen, error = 0.001)
+function pointAlongLine(p0, p1, dist)
 {
+    return addv(p0, mulvs(unitv(subv(p1, p0)), dist));
+}
+
+
+
+function pointAlongSegment2(p0, p1, p2, dist, error = 0.001)
+{
+    console.log('p0 =', p0);
+    console.log('p1 =', p1);
+    console.log('p2 =', p2);
+    console.log('dist =', dist);
+
     const hullLength = 
           distv(p0, p1) 
         + distv(p1, p2);
@@ -28,7 +40,7 @@ function positionOnSegment2(p0, p1, p2, arcLen, error = 0.001)
         return Number.NAN;
 
 
-    let t = arcLen / hullLength;
+    let t = dist / hullLength;
 
     if (t < 0 || t > 1)
         return Number.NAN;
@@ -42,10 +54,10 @@ function positionOnSegment2(p0, p1, p2, arcLen, error = 0.001)
 
     let loopProtect = 1000;
 
-    while (Math.abs(arcLen - length) > error
+    while (Math.abs(dist - length) > error
         && loopProtect-- > 0)
     {
-        t += (arcLen - length) / hullLength;
+        t += (dist - length) / hullLength;
 
         halves = splitSeg2(p0, p1, p2, t);
         l      = halves[0];
@@ -54,7 +66,7 @@ function positionOnSegment2(p0, p1, p2, arcLen, error = 0.001)
     }
 
     if (loopProtect == 0)
-        consoleError('endless loop in positionOnSegment2()');
+        consoleError('endless loop in pointAlongSegment2()');
 
 
     return t;
@@ -62,7 +74,7 @@ function positionOnSegment2(p0, p1, p2, arcLen, error = 0.001)
 
 
 
-function positionOnSegment3(p0, p1, p2, p3, arcLen, error = 0.001)
+function pointAlongSegment3(p0, p1, p2, p3, dist, error = 0.001)
 {
     const hullLength = 
           distv(p0, p1) 
@@ -73,7 +85,7 @@ function positionOnSegment3(p0, p1, p2, p3, arcLen, error = 0.001)
         return Number.NAN;
 
 
-    let t = arcLen / hullLength;
+    let t = dist / hullLength;
 
     if (t < 0 || t > 1)
         return Number.NAN;
@@ -87,10 +99,10 @@ function positionOnSegment3(p0, p1, p2, p3, arcLen, error = 0.001)
 
     let loopProtect = 1000;
 
-    while (Math.abs(arcLen - length) > error
+    while (Math.abs(dist - length) > error
         && loopProtect-- > 0)
     {
-        t += (arcLen - length) / hullLength;
+        t += (dist - length) / hullLength;
 
         halves = splitSeg3(p0, p1, p2, p3, t);
         l      = halves[0];
@@ -99,7 +111,96 @@ function positionOnSegment3(p0, p1, p2, p3, arcLen, error = 0.001)
     }
 
     if (loopProtect == 0)
-        consoleError('endless loop in positionOnSegment3()');
+        consoleError('endless loop in pointAlongSegment3()');
+
+
+    return t;
+}
+
+
+
+function tangentAlongSegment2(p0, p1, p2, dist, error = 0.001)
+{
+    const hullLength = 
+          distv(p0, p1) 
+        + distv(p1, p2);
+
+    if (hullLength == 0)
+        return Number.NAN;
+
+
+    let t = dist / hullLength;
+
+    if (t < 0 || t > 1)
+        return Number.NAN;
+
+        
+    let halves = splitSeg2(p0, p1, p2, t);
+    let l      = halves[0];
+
+    let length = arcLength2(l[0], l[1], l[2], error);
+
+
+    let loopProtect = 1000;
+
+    while (Math.abs(dist - length) > error
+        && loopProtect-- > 0)
+    {
+        t += (dist - length) / hullLength;
+
+        halves = splitSeg2(p0, p1, p2, t);
+        l      = halves[0];
+
+        length = arcLength2(l[0], l[1], l[2], error);
+    }
+
+    if (loopProtect == 0)
+        consoleError('endless loop in pointAlongSegment2()');
+
+
+    return t;
+}
+
+
+
+function tangentAlongSegment3(p0, p1, p2, p3, dist, error = 0.001)
+{
+    const hullLength = 
+          distv(p0, p1) 
+        + distv(p1, p2)
+        + distv(p2, p3);
+
+    if (hullLength == 0)
+        return Number.NAN;
+
+
+    let t = dist / hullLength;
+
+    if (t < 0 || t > 1)
+        return Number.NAN;
+
+        
+    let halves = splitSeg3(p0, p1, p2, p3, t);
+    let l      = halves[0];
+
+    let length = arcLength3(l[0], l[1], l[2], l[3], error);
+
+
+    let loopProtect = 1000;
+
+    while (Math.abs(dist - length) > error
+        && loopProtect-- > 0)
+    {
+        t += (dist - length) / hullLength;
+
+        halves = splitSeg3(p0, p1, p2, p3, t);
+        l      = halves[0];
+
+        length = arcLength3(l[0], l[1], l[2], l[3], error);
+    }
+
+    if (loopProtect == 0)
+        consoleError('endless loop in pointAlongSegment3()');
 
 
     return t;
@@ -134,45 +235,6 @@ function splitSeg3(p0, p1, p2, p3, t)
     return [ [p0, c0, c01, c012],
              [c012, c12, c2, p3] ];
 }
-
-
-
-// function splitSegments(_p0, _p1, _p2, _p3, ts)
-// {
-//     const segments = [];
-
-
-//     let p0 = _p0, 
-//         p1 = _p1,
-//         p2 = _p2,
-//         p3 = _p3;
-
-//     for (let i = 0; i < ts.length; i++)
-//     {
-//         const parts = split(p0, p1, p2, p3, ts[i]);
-//         const l     = parts[0];
-//         const r     = parts[1];
-
-
-//         segments.push(l);
-
-
-//         if (i < ts.length-1)
-//         {
-//             p0 = r[0];
-//             p1 = r[1];
-//             p2 = r[2];
-//             p3 = r[3];
-
-//             for (let j = i+1; j < ts.length; j++)
-//                 ts[j] = 1 - (1 - ts[j]) / (1 - ts[i]);
-//         }
-//         else segments.push(r);
-//     }
-
-
-//     return segments;
-// }
 
 
 
@@ -332,96 +394,15 @@ function bounds3t(a, b, c, roots)
 
 
 
-function pointOnCurve(degree, points, t)
+function pointAlongCurve(degree, points, distance, error = 0.000001)
 {
-    consoleAssert(0 <= t && t <= 1);
-
-
-    const nSegments = Math.floor((points.length-1) / degree);
-    const segSize   = 1 / (nSegments - 0.000000001);
-
-
-    let i = 0;
-
-    while (t - segSize >= 0)
-    {
-        t -= segSize;
-        i += degree;
-    }
-
-    if (i == points.length-1)
-    {
-        return t == 0
-             ? points.at(-1)
-             : Number.NaN;
-    }
-
-
-    t /= segSize;
-
-    switch (degree)
-    {
-    case 1:  return lerpv (points[i], points[i+1],                           t);
-    case 2:  return lerpv2(points[i], points[i+1], points[i+2],              t);
-    case 3:  return lerpv3(points[i], points[i+1], points[i+2], points[i+3], t);
-    default: return point_NaN;
-    }
-}
-
-
-
-function tangentOnCurve(degree, points, t)
-{
-    consoleAssert(0 <= t && t <= 1);
-
-
-    const nSegments = Math.floor((points.length-1) / degree);
-    const segSize   = 1 / (nSegments - 0.000000001);
-
-
-    let i = 0;
-
-    while (t - segSize >= 0)
-    {
-        t -= segSize;
-        i += degree;
-    }
-
-    if (i == points.length-1)
-    {
-        return t == 0
-             ? points.at(-1)
-             : Number.NaN;
-    }
-
-
-    t /= segSize;
-
-    switch (degree)
-    {
-    case 1:  return subv(points[i+1], points[i]);
-    case 2:  return tangent2(points[i], points[i+1], points[i+2],              t);
-    case 3:  return tangent3(points[i], points[i+1], points[i+2], points[i+3], t);
-    default: return point_NaN;
-    }
-}
-
-
-
-function positionOnCurve(degree, points, distance, error = 0.000001)
-{
-    const curveLen = curveLength(degree, points);
-
-
-    let t      = 0;
-    let length = 0;
+    let length    = 0;
+    let segLength = 0;
 
 
     let i;
-    for (i = 0; i < points.length - degree; i += degree)
+    for (i = 0; i < points.length - degree - 1; i += degree)
     {
-        let segLength = 0;
-
         switch (degree)
         {
         case 1:  segLength = distv(points[i], points[i+1]);                                       break;
@@ -434,16 +415,57 @@ function positionOnCurve(degree, points, distance, error = 0.000001)
             break;
 
         length += segLength;
-
-        t += segLength / curveLen;
     }
 
 
-    if (distance > length)
-        t += (distance - length) / curveLen; 
+    switch (degree)
+    {
+    case 1:  return pointAlongLine(points[i], points[i+1], distance - length);
+    case 2:  return lerpv2        (points[i], points[i+1], points[i+2],              pointAlongSegment2(points[i], points[i+1], points[i+2],              distance - length));
+    case 3:  return lerpv3        (points[i], points[i+1], points[i+2], points[i+3], pointAlongSegment3(points[i], points[i+1], points[i+2], points[i+3], distance - length));
+    default: consoleAssert(false); 
+    }
 
     
-    return t;
+    return point_NaN;
+}
+
+
+
+function tangentAlongCurve(degree, points, distance, error = 0.000001)
+{
+    let length    = 0;
+    let segLength = 0;
+
+
+    let i;
+    for (i = 0; i < points.length - degree - 1; i += degree)
+    {
+        switch (degree)
+        {
+        case 1:  segLength = distv(points[i], points[i+1]);                                       break;
+        case 2:  segLength = arcLength2(points[i], points[i+1], points[i+2],              error); break;
+        case 3:  segLength = arcLength3(points[i], points[i+1], points[i+2], points[i+3], error); break;
+        default: consoleAssert(false);
+        }
+
+        if (length + segLength >= distance)
+            break;
+
+        length += segLength;
+    }
+
+
+    switch (degree)
+    {
+    case 1:  return subv    (points[i+1], points[i]);
+    case 2:  return tangent2(points[i], points[i+1], points[i+2],              pointAlongSegment2(points[i], points[i+1], points[i+2],              distance - length));
+    case 3:  return tangent3(points[i], points[i+1], points[i+2], points[i+3], pointAlongSegment3(points[i], points[i+1], points[i+2], points[i+3], distance - length));
+    default: consoleAssert(false); 
+    }
+
+    
+    return point_NaN;
 }
 
 

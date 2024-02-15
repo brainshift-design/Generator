@@ -57,6 +57,7 @@ extends GOperator1
         const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
 
+        let pt;
         let tangent = point_NaN;
 
 
@@ -87,13 +88,10 @@ extends GOperator1
             if (   dist >= 0 
                 && dist <= length)
             {
-                const t = positionOnCurve(degree, points, dist);
+                pt      =   pointAlongCurve(degree, points, dist);
+                tangent = tangentAlongCurve(degree, points, dist);
 
-                this.value = PointValue.fromPoint(
-                    this.nodeId, 
-                    pointOnCurve(degree, points, t));
-
-                tangent = tangentOnCurve(degree, points, t);
+                this.value = PointValue.fromPoint(this.nodeId, pt);
             }
             else
                 this.value = PointValue.NaN.copy();

@@ -851,8 +851,8 @@ arrayToBase64
 UTF8ArrToStr
 strToUTF8Arr
 bezierTangent
-positionOnSegment2
-positionOnSegment3
+pointAlongSegment2
+pointAlongSegment3
 arcLen
 splitSeg2
 splitSeg3
