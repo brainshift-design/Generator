@@ -43,14 +43,21 @@ extends GOperator1
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
 
-        if (input)
+        if (   input
+            && input.objects.length > 0)
         {
             consoleAssert(input.type == VECTOR_PATH_VALUE, 'input must be VECTOR_PATH_VALUE');
 
             const degree = Math.min(input.degree.value, 2) + 1;
-            const points = input.points.items.map(p => p.toPoint());
+
+            const points = completeCurve(
+                degree, 
+                input.objects[0].pathPoints, 
+                input.closed.value > 0);
+
 
             let length = curveLength(degree, points);
+
 
             if (input.closed.value > 0)
             {

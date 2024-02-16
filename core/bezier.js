@@ -631,3 +631,35 @@ function areClockwise(p0, p1, p2)
 {
     return crossv2(subv(p1, p0), subv(p2, p1)) >= 0;
 }
+
+
+
+function completeCurve(degree, pathPoints, closed)
+{
+    const segPoints = pathPoints.slice(0, Math.floor((pathPoints.length-1) / degree) * degree + 1);
+    let   points;
+    
+    
+    if (closed)
+    {
+        if (   pathPoints.length == segPoints.length
+            && equalv(pathPoints[0], pathPoints.at(-1)))
+            points = pathPoints;
+        else if (pathPoints.length - segPoints.length == degree-1)
+            points = [...pathPoints, pathPoints[0]];
+        else
+        {
+            switch (degree)
+            {
+            case 1: points = [...segPoints,                                                                                         segPoints[0]]; break;
+            case 2: points = [...segPoints, lerpv(segPoints.at(-1), segPoints[0], 1/2),                                             segPoints[0]]; break;
+            case 3: points = [...segPoints, lerpv(segPoints.at(-1), segPoints[0], 1/3), lerpv(segPoints.at(-1), segPoints[0], 2/3), segPoints[0]]; break;
+            }
+        }
+    }
+    else
+        points = segPoints;
+
+
+    return points;
+}
