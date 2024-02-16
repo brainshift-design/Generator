@@ -340,6 +340,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == INTERSECT_LINES        ) result = genParseIntersectLines    (parse);
     else if (parse.next == INTERPOLATE_POINT      ) result = genParseInterpolatePoint  (parse);
     else if (parse.next == POINT_ALONG_PATH       ) result = genParsePointAlongPath    (parse);
+    else if (parse.next == CLOSEST_POINT_ON_PATH  ) result = genParseClosestPointOnPath(parse);
 
     else if (parse.next == PLACE                  ) result = genParsePlace             (parse);
     else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply        (parse);

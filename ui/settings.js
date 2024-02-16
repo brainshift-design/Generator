@@ -4,7 +4,7 @@ const settings =
         
     enableZoomedOutParams:         false,
     minZoomForParams:              0.35,
-    objectCenterSize:              15,
+    objectCenterSize:              18,
     objectBatchSize:               500,
     showPages:                     false,
     showAllColorSpaces:            false,

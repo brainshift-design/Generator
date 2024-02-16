@@ -1910,6 +1910,61 @@ function genParsePointAlongPath(parse)
 
 
 
+function genParseClosestPointOnPath(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cpop = new GClosestPointOnPath(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(cpop, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cpop);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        cpop.input0 = genParse(parse);
+        cpop.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        cpop.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
+
+
+    cpop.transform  = genParse(parse);
+    cpop.showCenter = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cpop);
+    return cpop;
+}
+
+
+
 function genParsePlace(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

@@ -354,6 +354,13 @@ function addv(v1, v2)
 
 
 
+function sqrv(v)
+{
+    return mulv(v, v);
+}
+
+
+
 function mulv(v1, v2)
 {
     return point(
@@ -2185,7 +2192,7 @@ function logSavedConn(conn, darkMode)
 console.clear();
 
 
-figma.payments.setPaymentStatusInDevelopment({type: 'UNPAID'});
+figma.payments.setPaymentStatusInDevelopment({type: 'PAID'});
 
 
 //figma.on('selectionchange', figOnSelectionChange);

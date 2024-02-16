@@ -329,6 +329,13 @@ function addv(v1, v2)
 
 
 
+function sqrv(v)
+{
+    return mulv(v, v);
+}
+
+
+
 function mulv(v1, v2)
 {
     return point(

@@ -662,3 +662,194 @@ function completeCurve(degree, pathPoints, closed)
 
     return points;
 }
+
+
+
+function closestPointOnCurve(degree, points, p, error = 0.000001)
+{
+    const closestPoints = [];
+
+    let i;
+    for (i = 0; i < points.length - degree; i += degree)
+    {
+        switch (degree)
+        {
+        case 1:  closestPoints.push(closestPointOnLine(points[i], points[i+1], p, true));
+        case 2:  closestPoints.push(lerpv2(points[i], points[i+1], points[i+2],              closestPointOnSegment2(points[i], points[i+1], points[i+2],              p, 0, 1)));
+        case 3:  closestPoints.push(lerpv3(points[i], points[i+1], points[i+2], points[i+3], closestPointOnSegment3(points[i], points[i+1], points[i+2], points[i+3], p, 0, 1)));
+        default: consoleAssert(false);
+        }
+    }
+
+
+    let closest = point_NaN;
+
+    for (const cp of closestPoints)
+    {
+        if (   pointIsNaN(closest)
+            || distv(cp, p) < distv(closest, p))
+            closest = cp;
+    }
+
+
+    return closest;
+}
+
+
+
+function closestTangentOnCurve(degree, points, p, error = 0.000001)
+{
+    const closestPoints = [];
+
+    let i;
+    for (i = 0; i < points.length - degree; i += degree)
+    {
+        switch (degree)
+        {
+        case 1:  
+            closestPoints.push([
+                closestPointOnLine(points[i], points[i+1], p, true),
+                subv(points[i+1], points[i])]);
+
+            break;
+
+        case 2:  
+        {
+            const t = closestPointOnSegment2(points[i], points[i+1], points[i+2], p, 0, 1);
+
+            closestPoints.push([
+                lerpv2  (points[i], points[i+1], points[i+2], t), 
+                tangent2(points[i], points[i+1], points[i+2], t)]); 
+
+            break;
+        }
+        case 3:  
+        {
+            const t = closestPointOnSegment3(points[i], points[i+1], points[i+2], points[i+3], p, 0, 1);
+
+            closestPoints.push([
+                lerpv3  (points[i], points[i+1], points[i+2], points[i+3], t),
+                tangent3(points[i], points[i+1], points[i+2], points[i+3], t)]); 
+
+            break;
+        }
+        default: consoleAssert(false);
+        }
+    }
+
+
+    let closest = point_NaN;
+    let tangent = point_NaN;
+
+    for (let i = 0; i < closestPoints.length; i++)
+    {
+        const cp = closestPoints[i][0];
+
+        if (   pointIsNaN(closest)
+            || distv(cp, p) < distv(closest, p))
+        {
+            closest = cp;
+            tangent = closestPoints[i][1];
+        }
+    }
+
+
+    return [closest, tangent];
+}
+
+
+
+function closestPointOnSegment2(p0, p1, p2, p, start, end, nSlices = 100, nIterations = 100)
+{
+    if (nIterations <= 0) 
+        return (start + end) / 2;
+    
+
+    
+    const tick = (end - start) / nSlices;
+
+    if (tick <= 0.000001)
+        return (start + end) / 2;
+
+
+    let best = 0;
+
+    let bestDistance = Number.MAX_SAFE_INTEGER;
+    let currentDistance;
+
+
+    let t = start;
+    
+    while (t <= end) 
+    {
+        const hp  = lerpv2(p0, p1, p2, t);
+        const dp2 = sqrv(subv(hp, p));
+
+        currentDistance = dp2.x + dp2.y;
+
+        if (currentDistance < bestDistance) 
+        {
+            bestDistance = currentDistance;
+            best = t;
+        }
+        
+        t += tick;
+    }
+
+
+    return closestPointOnSegment2(
+        p0, p1, p2,
+        p, 
+        Math.max(best - tick, 0), 
+        Math.min(best + tick, 1), 
+        nSlices,
+        nIterations - 1);
+}
+
+
+
+function closestPointOnSegment3(p0, p1, p2, p3, p, start, end, nSlices = 100, nIterations = 100)
+{
+    if (nIterations <= 0)
+        return (start + end) / 2;
+
+    
+    const tick = (end - start) / nSlices;
+
+    if (tick <= 0.000001)
+        return (start + end) / 2;
+
+
+    let best = 0;
+
+    let bestDistance = Number.MAX_SAFE_INTEGER;
+    let currentDistance;
+
+
+    let t = start;
+    
+    while (t <= end) 
+    {
+        const hp  = lerpv3(p0, p1, p2, p3, t);
+        const dp2 = sqrv(subv(hp, p));
+        
+        currentDistance = dp2.x + dp2.y;
+
+        if (currentDistance < bestDistance) 
+        {
+            bestDistance = currentDistance;
+            best = t;
+        }
+        
+        t += tick;
+    }
+
+
+    return closestPointOnSegment3(
+        p0, p1, p2, p3,
+        p, 
+        Math.max(best - tick, 0), 
+        Math.min(best + tick, 1), 
+        nSlices,
+        nIterations - 1);
+}

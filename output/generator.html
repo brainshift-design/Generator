@@ -335,6 +335,13 @@ function addv(v1, v2)
 
 
 
+function sqrv(v)
+{
+    return mulv(v, v);
+}
+
+
+
 function mulv(v1, v2)
 {
     return point(
@@ -2803,6 +2810,197 @@ function completeCurve(degree, pathPoints, closed)
 }
 
 
+
+function closestPointOnCurve(degree, points, p, error = 0.000001)
+{
+    const closestPoints = [];
+
+    let i;
+    for (i = 0; i < points.length - degree; i += degree)
+    {
+        switch (degree)
+        {
+        case 1:  closestPoints.push(closestPointOnLine(points[i], points[i+1], p, true));
+        case 2:  closestPoints.push(lerpv2(points[i], points[i+1], points[i+2],              closestPointOnSegment2(points[i], points[i+1], points[i+2],              p, 0, 1)));
+        case 3:  closestPoints.push(lerpv3(points[i], points[i+1], points[i+2], points[i+3], closestPointOnSegment3(points[i], points[i+1], points[i+2], points[i+3], p, 0, 1)));
+        default: consoleAssert(false);
+        }
+    }
+
+
+    let closest = point_NaN;
+
+    for (const cp of closestPoints)
+    {
+        if (   pointIsNaN(closest)
+            || distv(cp, p) < distv(closest, p))
+            closest = cp;
+    }
+
+
+    return closest;
+}
+
+
+
+function closestTangentOnCurve(degree, points, p, error = 0.000001)
+{
+    const closestPoints = [];
+
+    let i;
+    for (i = 0; i < points.length - degree; i += degree)
+    {
+        switch (degree)
+        {
+        case 1:  
+            closestPoints.push([
+                closestPointOnLine(points[i], points[i+1], p, true),
+                subv(points[i+1], points[i])]);
+
+            break;
+
+        case 2:  
+        {
+            const t = closestPointOnSegment2(points[i], points[i+1], points[i+2], p, 0, 1);
+
+            closestPoints.push([
+                lerpv2  (points[i], points[i+1], points[i+2], t), 
+                tangent2(points[i], points[i+1], points[i+2], t)]); 
+
+            break;
+        }
+        case 3:  
+        {
+            const t = closestPointOnSegment3(points[i], points[i+1], points[i+2], points[i+3], p, 0, 1);
+
+            closestPoints.push([
+                lerpv3  (points[i], points[i+1], points[i+2], points[i+3], t),
+                tangent3(points[i], points[i+1], points[i+2], points[i+3], t)]); 
+
+            break;
+        }
+        default: consoleAssert(false);
+        }
+    }
+
+
+    let closest = point_NaN;
+    let tangent = point_NaN;
+
+    for (let i = 0; i < closestPoints.length; i++)
+    {
+        const cp = closestPoints[i][0];
+
+        if (   pointIsNaN(closest)
+            || distv(cp, p) < distv(closest, p))
+        {
+            closest = cp;
+            tangent = closestPoints[i][1];
+        }
+    }
+
+
+    return [closest, tangent];
+}
+
+
+
+function closestPointOnSegment2(p0, p1, p2, p, start, end, nSlices = 100, nIterations = 100)
+{
+    if (nIterations <= 0) 
+        return (start + end) / 2;
+    
+
+    
+    const tick = (end - start) / nSlices;
+
+    if (tick <= 0.000001)
+        return (start + end) / 2;
+
+
+    let best = 0;
+
+    let bestDistance = Number.MAX_SAFE_INTEGER;
+    let currentDistance;
+
+
+    let t = start;
+    
+    while (t <= end) 
+    {
+        const hp  = lerpv2(p0, p1, p2, t);
+        const dp2 = sqrv(subv(hp, p));
+
+        currentDistance = dp2.x + dp2.y;
+
+        if (currentDistance < bestDistance) 
+        {
+            bestDistance = currentDistance;
+            best = t;
+        }
+        
+        t += tick;
+    }
+
+
+    return closestPointOnSegment2(
+        p0, p1, p2,
+        p, 
+        Math.max(best - tick, 0), 
+        Math.min(best + tick, 1), 
+        nSlices,
+        nIterations - 1);
+}
+
+
+
+function closestPointOnSegment3(p0, p1, p2, p3, p, start, end, nSlices = 100, nIterations = 100)
+{
+    if (nIterations <= 0)
+        return (start + end) / 2;
+
+    
+    const tick = (end - start) / nSlices;
+
+    if (tick <= 0.000001)
+        return (start + end) / 2;
+
+
+    let best = 0;
+
+    let bestDistance = Number.MAX_SAFE_INTEGER;
+    let currentDistance;
+
+
+    let t = start;
+    
+    while (t <= end) 
+    {
+        const hp  = lerpv3(p0, p1, p2, p3, t);
+        const dp2 = sqrv(subv(hp, p));
+        
+        currentDistance = dp2.x + dp2.y;
+
+        if (currentDistance < bestDistance) 
+        {
+            bestDistance = currentDistance;
+            best = t;
+        }
+        
+        t += tick;
+    }
+
+
+    return closestPointOnSegment3(
+        p0, p1, p2, p3,
+        p, 
+        Math.max(best - tick, 0), 
+        Math.min(best + tick, 1), 
+        nSlices,
+        nIterations - 1);
+}
+
+
 class Point
 {
     x;
@@ -4772,7 +4970,7 @@ const settings =
         
     enableZoomedOutParams:         false,
     minZoomForParams:              0.35,
-    objectCenterSize:              15,
+    objectCenterSize:              18,
     objectBatchSize:               500,
     showPages:                     false,
     showAllColorSpaces:            false,
@@ -41912,7 +42110,199 @@ extends GOperator1
 }
 
 
+class GClosestPointOnPath
+extends GOperator2
+{
+    transform  = null;
+    showCenter = null;
+    
+    
+    
+    constructor(nodeId, options)
+    {
+        super(CLOSEST_POINT_ON_PATH, nodeId, options);
+    }
 
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.transform  = null;
+        this.showCenter = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GClosestPointOnPath(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.transform ) copy.transform  = this.transform .copy();
+        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input0     = this.input0     ? (await this.input0    .eval(parse)).toValue() : null;
+        const input1     = this.input1     ? (await this.input1    .eval(parse)).toValue() : null;
+
+        const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
+        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+
+
+        let tangent = point_NaN;
+
+
+        if (   input0
+            && input1
+            && input0.objects.length > 0
+            && input1.objects.length > 0)
+        {
+            const degree = Math.min(input0.degree.value, 2) + 1;
+
+            const points = completeCurve(
+                degree, 
+                input0.objects[0].pathPoints, 
+                input0.closed.value > 0);
+
+            let closest;
+            [closest, tangent] = closestTangentOnCurve(
+                degree, 
+                points, 
+                input1.objects[0].toPoint());
+                
+            this.value = PointValue.fromPoint(this.nodeId, closest);
+        }
+        else
+            this.value = PointValue.NaN.copy();
+
+
+        this.setUpdateValues(parse,
+        [
+            ['transform',  transform ],
+            ['showCenter', showCenter]
+        ]);
+        
+
+        await this.evalObjects(parse,
+        {
+            transform:  transform,
+            showCenter: showCenter,
+            tangent:    tangent
+        });
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        if (!this.value.objects)
+            this.value.objects = [];
+
+
+        if (   this.value.x
+            && this.value.y   
+            && this.value.x.isValid()
+            && this.value.y.isValid())
+        {
+            const x = this.value.x.value;
+            const y = this.value.y.value;
+
+            const point = new FigmaPoint(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                x,
+                y,
+                this.smooth ? this.smooth.value/100 : 1);
+
+            point.createDefaultTransform(x, y);
+
+
+            if (   options.transform.value > 0
+                && options.tangent)
+            {
+                const a     = -anglev(options.tangent);
+                const xform =  createRotateTransform(a);
+
+                point.applyTransform(xform, options.transform.value > 0);
+            }
+            
+            
+            this.value.objects = [point];
+
+
+            if (options.showCenter.value > 0)
+            {
+                const objects = [...this.value.objects]; // avoids infinite growth
+                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
+            }
+        }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.transform  && this.transform .isValid()
+            && this.showCenter && this.showCenter.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.transform ) this.transform .pushValueUpdates(parse);
+        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.transform ) this.transform .invalidateInputs(parse, from, force);
+        if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.transform ) this.transform .iterateLoop(parse);
+        if (this.showCenter) this.showCenter.iterateLoop(parse);
+    }
+}
 
 
 class GIntersectLines
@@ -49924,6 +50314,61 @@ function genParsePointAlongPath(parse)
 
 
 
+function genParseClosestPointOnPath(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cpop = new GClosestPointOnPath(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(cpop, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cpop);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        cpop.input0 = genParse(parse);
+        cpop.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        cpop.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
+
+
+    cpop.transform  = genParse(parse);
+    cpop.showCenter = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cpop);
+    return cpop;
+}
+
+
+
 function genParsePlace(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -51530,6 +51975,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == INTERSECT_LINES        ) result = genParseIntersectLines    (parse);
     else if (parse.next == INTERPOLATE_POINT      ) result = genParseInterpolatePoint  (parse);
     else if (parse.next == POINT_ALONG_PATH       ) result = genParsePointAlongPath    (parse);
+    else if (parse.next == CLOSEST_POINT_ON_PATH  ) result = genParseClosestPointOnPath(parse);
 
     else if (parse.next == PLACE                  ) result = genParsePlace             (parse);
     else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply        (parse);

@@ -196,6 +196,9 @@ function crossv2(v1, v2) {
 function addv(v1, v2) {
     return point(v1.x + v2.x, v1.y + v2.y);
 }
+function sqrv(v) {
+    return mulv(v, v);
+}
 function mulv(v1, v2) {
     return point(v1.x * v2.x, v1.y * v2.y);
 }
@@ -1413,7 +1416,7 @@ function logSavedConn(conn, darkMode) {
     }
 }
 console.clear();
-figma.payments.setPaymentStatusInDevelopment({ type: 'UNPAID' });
+figma.payments.setPaymentStatusInDevelopment({ type: 'PAID' });
 //figma.on('selectionchange', figOnSelectionChange);
 figma.on('documentchange', figOnDocumentChange);
 figma.on('selectionchange', figOnSelectionChange);
