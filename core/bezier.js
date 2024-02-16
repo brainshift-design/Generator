@@ -27,10 +27,10 @@ function pointAlongLine(p0, p1, dist)
 
 function pointAlongSegment2(p0, p1, p2, dist, error = 0.001)
 {
-    console.log('p0 =', p0);
-    console.log('p1 =', p1);
-    console.log('p2 =', p2);
-    console.log('dist =', dist);
+    // console.log('p0 =', p0);
+    // console.log('p1 =', p1);
+    // console.log('p2 =', p2);
+    // console.log('dist =', dist);
 
     const hullLength = 
           distv(p0, p1) 
@@ -405,7 +405,7 @@ function pointAlongCurve(degree, points, distance, error = 0.000001)
     {
         switch (degree)
         {
-        case 1:  segLength = distv(points[i], points[i+1]);                                       break;
+        case 1:  segLength = distv     (points[i], points[i+1]);                                  break;
         case 2:  segLength = arcLength2(points[i], points[i+1], points[i+2],              error); break;
         case 3:  segLength = arcLength3(points[i], points[i+1], points[i+2], points[i+3], error); break;
         default: consoleAssert(false);
@@ -443,7 +443,7 @@ function tangentAlongCurve(degree, points, distance, error = 0.000001)
     {
         switch (degree)
         {
-        case 1:  segLength = distv(points[i], points[i+1]);                                       break;
+        case 1:  segLength = distv     (points[i], points[i+1]);                                  break;
         case 2:  segLength = arcLength2(points[i], points[i+1], points[i+2],              error); break;
         case 3:  segLength = arcLength3(points[i], points[i+1], points[i+2], points[i+3], error); break;
         default: consoleAssert(false);

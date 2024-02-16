@@ -69,11 +69,30 @@ extends GOperator1
 
             const segPoints  = pathPoints.slice(0, Math.floor((pathPoints.length-1) / degree) * degree + 1);
 
-            const points =
-                   input.closed.value > 0
-                && pathPoints.length - segPoints.length == degree-1
-                ? [...pathPoints, pathPoints[0]]
-                : segPoints;
+            let points;
+            
+            if (input.closed.value > 0)
+            {
+                // console.log('pathPoints.length =', pathPoints.length);
+                // console.log('segPoints.length =', segPoints.length);
+
+                if (   pathPoints.length == segPoints.length
+                    && equalv(pathPoints[0], pathPoints.at(-1)))
+                    points = pathPoints;
+                else if (pathPoints.length - segPoints.length == degree-1)
+                    points = [...pathPoints, pathPoints[0]];
+                else
+                {
+                    switch (degree)
+                    {
+                    case 1: points = [...segPoints,                                                                                         segPoints[0]]; break;
+                    case 2: points = [...segPoints, lerpv(segPoints.at(-1), segPoints[0], 1/2),                                             segPoints[0]]; break;
+                    case 3: points = [...segPoints, lerpv(segPoints.at(-1), segPoints[0], 1/3), lerpv(segPoints.at(-1), segPoints[0], 2/3), segPoints[0]]; break;
+                    }
+                }
+            }
+            else
+                points = segPoints;
 
 
             let length = curveLength(degree, points);
@@ -86,7 +105,8 @@ extends GOperator1
 
 
             if (   dist >= 0 
-                && dist <= length)
+                && dist <= length
+                && points.length >= degree-1)
             {
                 pt      =   pointAlongCurve(degree, points, dist);
                 tangent = tangentAlongCurve(degree, points, dist);

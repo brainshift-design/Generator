@@ -138,7 +138,11 @@ extends GShape
         await this.evalShapeBase(parse);
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, 
+        {
+            closed: closed.value > 0,
+            degree: degree.value + 1
+        });
 
 
         this.validate();
@@ -170,6 +174,13 @@ extends GShape
                 points.push(p);
             }
         }
+
+
+        const segPoints = points.slice(0, Math.floor((points.length-1) / options.degree) * options.degree + 1);
+
+        if (   options.closed
+            && points.length - segPoints.length == options.degree-1)
+            points.push(points[0].copy());
 
 
         this.value.objects = [];
