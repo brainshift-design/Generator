@@ -16,6 +16,9 @@ extends OpShapeBase
     {
         super(POINT_ALONG_PATH, 'pointAlongPath', 'point along path', iconPointAlongPath);
 
+
+        this.subscription = true;
+        
         
         this.addInput (new Input ([VECTOR_PATH_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
         this.addOutput(new Output([POINT_VALUE], this.output_genRequest));
