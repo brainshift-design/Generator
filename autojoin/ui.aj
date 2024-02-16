@@ -34,6 +34,7 @@
 ../html/eula.html
 ../html/minZoom.html
 ../html/objectBatch.html
+../html/objectCenterSize.html
 ../html/whatsNew.html
 ../html/search.html
 

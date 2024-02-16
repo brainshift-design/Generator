@@ -376,14 +376,12 @@ function getObjBounds(objects)
 
 function addObjectCenter(node, obj, zoom)
 {
-    const length = 15;
-    
     const sp0 = point(
         obj.sp0.x /*+ 0.5*/, 
         obj.sp0.y /*+ 0.5*/);
 
-    const sp1 = addv(sp0, mulvs(      subv(obj.sp1, obj.sp0),      length));
-    const sp2 = addv(sp0, mulvs(mulvs(subv(obj.sp2, obj.sp0), -1), length));    
+    const sp1 = addv(sp0, mulvs(      subv(obj.sp1, obj.sp0),      settings.objectCenterSize));
+    const sp2 = addv(sp0, mulvs(mulvs(subv(obj.sp2, obj.sp0), -1), settings.objectCenterSize));    
 
     node.value.objects.push(
         createDecoPoly(

@@ -140,6 +140,7 @@ var menuItemShowTooltipColorBlindness;
 
 var menuItemEnableZoomedOutParams;
 var menuItemMinZoomForParams;
+var menuItemObjectCenterSize;
 var menuItemObjectBatchSize;
 var menuItemShowPages;
 var menuPrefSep1;
@@ -363,6 +364,7 @@ function initGeneratorMenus()
         // menuItemEnableMultiplayer       = new MenuItem('Enable multiplayer on this canvas',  null, {checkCallback: () => multiplayerEnabled,                  callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  enableMultiplayer(!multiplayerEnabled);     }}),
         //                                   new MenuItem('',                                   null, {separator: true}),    
         // menuItemEnableBetaFeatures      = new MenuItem('Enable beta features',               null, {checkCallback: () => settings.enableBetaFeatures,         callback: () => { updateSettingAndMenu('enableBetaFeatures',         true, !settings.enableBetaFeatures);         enableFeatures(true, settings.enableBetaFeatures); }}),
+        menuItemObjectCenterSize           = new MenuItem('Object center size . . .',           null, {callback: () => showObjectCenterSizeDialog()}),
         menuItemObjectBatchSize            = new MenuItem('Update batch size . . .',            null, {callback: () => showObjectBatchDialog()})]);
         
 

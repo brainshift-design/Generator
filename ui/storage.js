@@ -35,6 +35,12 @@ async function uiReturnFigGetLocalData(msg)
     
             break;
 
+        case 'objectCenterSize':
+            if (!isNaN(msg.value))
+                updateSetting(msg.key, parseFloat(msg.value));
+    
+            break;
+
         case 'objectBatchSize':
             if (!isNaN(msg.value))
                 updateSetting(msg.key, parseInt(msg.value));

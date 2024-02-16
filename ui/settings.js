@@ -4,6 +4,7 @@ const settings =
         
     enableZoomedOutParams:         false,
     minZoomForParams:              0.35,
+    objectCenterSize:              15,
     objectBatchSize:               500,
     showPages:                     false,
     showAllColorSpaces:            false,
@@ -65,6 +66,7 @@ function updateSetting(settingName, value)
                 
         case 'enableZoomedOutParams':         settings.enableZoomedOutParams         = value;  break;
         case 'minZoomForParams':              settings.minZoomForParams              = value;  break;
+        case 'objectCenterSize':              settings.objectCenterSize              = value;  break;
         case 'objectBatchSize':               settings.objectBatchSize               = value;  break;
         case 'showPages':                     settings.showPages                     = value;  break;
         case 'showAllColorSpaces':            settings.showAllColorSpaces            = value;  break;
@@ -114,6 +116,18 @@ function updateSetting(settingName, value)
 
         case 'sessionId':                     settings.sessionId                     = value;  break;
     } 
+
+
+    switch (settingName)
+    {
+        case 'objectCenterSize':
+            uiPostMessageToFigma(
+            {
+                cmd:             'figUpdateObjectCenterSize',
+                objectCenterSize: settings.objectCenterSize
+            });
+            break;
+    }
 }
 
 
@@ -147,7 +161,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showTooltipColorInterpolation': updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorInterpolation); break;
         case 'showTooltipColorBlindness':     updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorBlindness    ); break;
 
-        //case 'enableBetaFeatures':            //updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures           ); break;
+      //case 'enableBetaFeatures':          //updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures           ); break;
                       
         case 'logThreadMessages':             updateSettingAndMenu_(valid, settingName, value, menuItemLogThreadMessages            ); break;
         case 'logDataMessages':               updateSettingAndMenu_(valid, settingName, value, menuItemLogDataMessages              ); break;
@@ -186,13 +200,15 @@ function updateSettingAndMenu_(valid, setting, value, menu)
         settings[setting] = value;  
 
 
-    if (setting == 'showNodeId')
+    switch (setting)
     {
-        uiPostMessageToFigma(
-        {
-            cmd:    'figUpdateShowIds',
-            showIds: settings.showNodeId
-        });
+        case 'showNodeId':
+            uiPostMessageToFigma(
+            {
+                cmd:    'figUpdateShowIds',
+                showIds: settings.showNodeId
+            });
+            break;
     }
 
 
@@ -388,6 +404,7 @@ function loadLocalSettings()
         
     uiGetLocalData('enableZoomedOutParams'        );
     uiGetLocalData('minZoomForParams'             );
+    uiGetLocalData('objectCenterSize'             );
     uiGetLocalData('objectBatchSize'              );
     uiGetLocalData('showNodeIcons'                );
     uiGetLocalData('showBoolValues'               );

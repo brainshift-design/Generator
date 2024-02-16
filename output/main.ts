@@ -2218,7 +2218,8 @@ const clockMarker   = 'clock_';
 const clockInterval = 1000;
 
 
-var showIds = false;
+var showIds          = false;
+var objectCenterSize = 15;
 
 
 // figma.currentPage
@@ -2700,6 +2701,10 @@ figma.ui.onmessage = function(msg)
 
         case 'figUpdateShowIds':                      
             showIds = msg.showIds; 
+            break;
+     
+        case 'figUpdateObjectCenterSize':                      
+            objectCenterSize = msg.objectCenterSize; 
             break;
      
         case 'figDeleteAllObjects':                   figDeleteAllObjects                  ();                                            break;
@@ -3627,6 +3632,7 @@ async function figGetValueFromUiSync(key, params = null)
 }
 
 
+
 async function figGetValueFromUi(key, params = null) 
 {
     return new Promise((resolve, reject) => 
@@ -4491,7 +4497,7 @@ function updateDecoObjects()
 
 function updateDecoObject(figObj)
 {
-    figObj.strokeWeight = Math.max(0, 1 / curZoom);
+    figObj.strokeWeight = Math.max(0, 1.5 / curZoom);
 
 
     if (parseBool(figObj.getPluginData('isCenter')))
@@ -4507,8 +4513,8 @@ function updateDecoObject(figObj)
         const b = 0.05;
         const f = 1 - Math.pow(1 - Math.min(curZoom, 1), a) / Math.pow(a, b);
     
-        t = addv(c, mulvs(unitv(subv(t, c)), 10/f));
-        r = addv(c, mulvs(unitv(subv(r, c)), 10/f));
+        t = addv(c, mulvs(unitv(subv(t, c)), objectCenterSize/f));
+        r = addv(c, mulvs(unitv(subv(r, c)), objectCenterSize/f));
  
         parts[1] = t.x; parts[2] = t.y;
         parts[4] = c.x; parts[5] = c.y;

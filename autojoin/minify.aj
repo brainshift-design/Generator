@@ -645,6 +645,7 @@ menuItemShowTooltipColorContrast
 menuItemShowTooltipColorBlindness
 menuItemEnableZoomedOutParams
 menuItemMinZoomForParams
+menuItemObjectCenterSize
 menuItemObjectBatchSize
 menuItemShowPages
 menuPrefSep1

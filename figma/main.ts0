@@ -34,7 +34,8 @@ const clockMarker   = 'clock_';
 const clockInterval = 1000;
 
 
-var showIds = false;
+var showIds          = false;
+var objectCenterSize = 15;
 
 
 // figma.currentPage

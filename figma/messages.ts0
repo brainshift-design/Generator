@@ -96,6 +96,10 @@ figma.ui.onmessage = function(msg)
             showIds = msg.showIds; 
             break;
      
+        case 'figUpdateObjectCenterSize':                      
+            objectCenterSize = msg.objectCenterSize; 
+            break;
+     
         case 'figDeleteAllObjects':                   figDeleteAllObjects                  ();                                            break;
 
         case 'figUpdateObjectsAndStyles':

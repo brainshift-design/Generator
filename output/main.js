@@ -1431,6 +1431,7 @@ setInterval(figOnZoomInterval, 100);
 const clockMarker = 'clock_';
 const clockInterval = 1000;
 var showIds = false;
+var objectCenterSize = 15;
 // figma.currentPage
 //     .getPluginDataKeys()
 //     .forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k).replace('\\', '\\\\')));
@@ -1844,6 +1845,9 @@ figma.ui.onmessage = function (msg) {
             break;
         case 'figUpdateShowIds':
             showIds = msg.showIds;
+            break;
+        case 'figUpdateObjectCenterSize':
+            objectCenterSize = msg.objectCenterSize;
             break;
         case 'figDeleteAllObjects':
             figDeleteAllObjects();
@@ -3021,7 +3025,7 @@ function updateDecoObjects() {
     }
 }
 function updateDecoObject(figObj) {
-    figObj.strokeWeight = Math.max(0, 1 / curZoom);
+    figObj.strokeWeight = Math.max(0, 1.5 / curZoom);
     if (parseBool(figObj.getPluginData('isCenter'))) {
         const path = figObj.vectorPaths[0];
         const parts = path.data.split(' ');
@@ -3031,8 +3035,8 @@ function updateDecoObject(figObj) {
         const a = 2;
         const b = 0.05;
         const f = 1 - Math.pow(1 - Math.min(curZoom, 1), a) / Math.pow(a, b);
-        t = addv(c, mulvs(unitv(subv(t, c)), 10 / f));
-        r = addv(c, mulvs(unitv(subv(r, c)), 10 / f));
+        t = addv(c, mulvs(unitv(subv(t, c)), objectCenterSize / f));
+        r = addv(c, mulvs(unitv(subv(r, c)), objectCenterSize / f));
         parts[1] = t.x;
         parts[2] = t.y;
         parts[4] = c.x;
