@@ -139,10 +139,11 @@ function initSearchBox(query)
     searchMouseMoved = false;
 
 
-    for (let i = 0; i < search.found.length; i++)
+    for (let i = 0, j = 0; i < search.found.length; i++)
     {
-        const item   = search.found[i];
+        const item = search.found[i];
 
+            
         const result = createDiv('resultItem'  );
         const icon   = createDiv('resultIcon'  );
         const legend = createDiv('resultLegend');
@@ -172,7 +173,7 @@ function initSearchBox(query)
             result.callback = item.callback;
 
 
-        result.index = i;
+        result.index = j;
 
         result.appendChild(legend);
         result.appendChild(icon);
@@ -200,6 +201,8 @@ function initSearchBox(query)
         });
 
         searchItems.appendChild(result);
+
+        j++;
     }
      
 
@@ -210,6 +213,9 @@ function initSearchBox(query)
 
 function initSearchItem(item, search, query)
 {
+    if (!item.sub) 
+        return;
+
     if (   makeSearchable(item.name).includes(makeSearchable(query))
         && item.callback)
     {
