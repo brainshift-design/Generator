@@ -425,7 +425,9 @@ function uiShowParamValue(nodeId, paramName, value)
 
 function uiCopyNodes(nodeIds, keepVarsConnected = true)
 {
-    const nodes = graph.nodes.filter(n => nodeIds.includes(n.id));
+    const nodes = graph.nodes.filter(n => 
+           nodeIds.includes(n.id)
+        && (!n.subscription || subscribed()));
 
     const copiedJson = nodesToJson(nodes, true, false, keepVarsConnected);
 
