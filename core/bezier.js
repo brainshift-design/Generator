@@ -324,9 +324,13 @@ function bounds3(p0, p1, p2, p3)
 {
     let rect = Rect.NaN;
 
+    console.log('p0 =', p0);
+    console.log('p3 =', p3);
 
     rect = expandRect_(rect, p0);
     rect = expandRect_(rect, p3);
+    console.log('rect =', rect);
+    console.log('');
 
 
     const ax =   -p0.x + 3*p1.x - 3*p2.x + p3.x;
