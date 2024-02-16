@@ -697,7 +697,7 @@ function closestPointOnCurve(degree, points, p, error = 0.000001)
 
 
 
-function closestTangentOnCurve(degree, points, p, error = 0.000001)
+function closestTangentOnCurve(degree, points, p, constrain = 0, error = 0.000001)
 {
     const closestPoints = [];
 
@@ -715,7 +715,7 @@ function closestTangentOnCurve(degree, points, p, error = 0.000001)
 
         case 2:  
         {
-            const t = closestPointOnSegment2(points[i], points[i+1], points[i+2], p, 0, 1);
+            const t = closestPointOnSegment2(points[i], points[i+1], points[i+2], p, 0, 1, constrain);
 
             closestPoints.push([
                 lerpv2  (points[i], points[i+1], points[i+2], t), 
@@ -725,7 +725,7 @@ function closestTangentOnCurve(degree, points, p, error = 0.000001)
         }
         case 3:  
         {
-            const t = closestPointOnSegment3(points[i], points[i+1], points[i+2], points[i+3], p, 0, 1);
+            const t = closestPointOnSegment3(points[i], points[i+1], points[i+2], points[i+3], p, 0, 1, constrain);
 
             closestPoints.push([
                 lerpv3  (points[i], points[i+1], points[i+2], points[i+3], t),
@@ -759,7 +759,7 @@ function closestTangentOnCurve(degree, points, p, error = 0.000001)
 
 
 
-function closestPointOnSegment2(p0, p1, p2, p, start, end, nSlices = 100, nIterations = 100)
+function closestPointOnSegment2(p0, p1, p2, p, start, end, constrain = 0, nSlices = 1000, nIterations = 1000)
 {
     if (nIterations <= 0) 
         return (start + end) / 2;
@@ -785,7 +785,9 @@ function closestPointOnSegment2(p0, p1, p2, p, start, end, nSlices = 100, nItera
         const hp  = lerpv2(p0, p1, p2, t);
         const dp2 = sqrv(subv(hp, p));
 
-        currentDistance = dp2.x + dp2.y;
+        currentDistance = 
+              (constrain != 2 ? dp2.x : 0) 
+            + (constrain != 1 ? dp2.y : 0);
 
         if (currentDistance < bestDistance) 
         {
@@ -802,13 +804,14 @@ function closestPointOnSegment2(p0, p1, p2, p, start, end, nSlices = 100, nItera
         p, 
         Math.max(best - tick, 0), 
         Math.min(best + tick, 1), 
+        constrain,
         nSlices,
         nIterations - 1);
 }
 
 
 
-function closestPointOnSegment3(p0, p1, p2, p3, p, start, end, nSlices = 100, nIterations = 100)
+function closestPointOnSegment3(p0, p1, p2, p3, p, start, end, constrain = 0, nSlices = 1000, nIterations = 1000)
 {
     if (nIterations <= 0)
         return (start + end) / 2;
@@ -833,7 +836,9 @@ function closestPointOnSegment3(p0, p1, p2, p3, p, start, end, nSlices = 100, nI
         const hp  = lerpv3(p0, p1, p2, p3, t);
         const dp2 = sqrv(subv(hp, p));
         
-        currentDistance = dp2.x + dp2.y;
+        currentDistance = 
+              (constrain != 2 ? dp2.x : 0) 
+            + (constrain != 1 ? dp2.y : 0);
 
         if (currentDistance < bestDistance) 
         {

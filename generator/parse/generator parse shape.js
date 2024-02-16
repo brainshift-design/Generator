@@ -1952,6 +1952,7 @@ function genParseClosestPointOnPath(parse)
     }
 
 
+    cpop.constrain  = genParse(parse);
     cpop.transform  = genParse(parse);
     cpop.showCenter = genParse(parse);
 

@@ -1,6 +1,7 @@
 class   OpClosestPointOnPath
 extends OpShapeBase
 {
+    paramConstrain;
     paramTransform;
     paramShowCenter;
 
@@ -23,6 +24,7 @@ extends OpShapeBase
         this.addOutput(new Output([POINT_VALUE], this.output_genRequest));
 
 
+        this.addParam(this.paramConstrain  = new SelectParam('constrain',  'constrain',   false, true, true, ['X & Y', 'only X', 'only Y'], 0));
         this.addParam(this.paramTransform  = new NumberParam('transform',  'transform',   true, true, true, 1, 0, 1));
         this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
 
@@ -64,6 +66,7 @@ extends OpShapeBase
         else                       request.push(0);
 
             
+        request.push(...this.node.paramConstrain .genRequest(gen));
         request.push(...this.node.paramTransform .genRequest(gen));
         request.push(...this.node.paramShowCenter.genRequest(gen));
 
@@ -78,6 +81,7 @@ extends OpShapeBase
 
     updateParams()
     {
+        this.paramConstrain .enableControlText(true, this.paramConstrain .isUnknown());
         this.paramTransform .enableControlText(true, this.paramTransform .isUnknown());
         this.paramShowCenter.enableControlText(true, this.paramShowCenter.isUnknown());
 

@@ -1,6 +1,7 @@
 class GClosestPointOnPath
 extends GOperator2
 {
+    constrain  = null;
     transform  = null;
     showCenter = null;
     
@@ -17,6 +18,7 @@ extends GOperator2
     {
         super.reset();
 
+        this.constrain  = null;
         this.transform  = null;
         this.showCenter = null;
     }
@@ -29,6 +31,7 @@ extends GOperator2
 
         copy.copyBase(this);
 
+        if (this.constrain ) copy.constrain  = this.constrain .copy();
         if (this.transform ) copy.transform  = this.transform .copy();
         if (this.showCenter) copy.showCenter = this.showCenter.copy();
 
@@ -46,6 +49,7 @@ extends GOperator2
         const input0     = this.input0     ? (await this.input0    .eval(parse)).toValue() : null;
         const input1     = this.input1     ? (await this.input1    .eval(parse)).toValue() : null;
 
+        const constrain  = this.constrain  ? (await this.constrain .eval(parse)).toValue() : null;
         const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
         const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
@@ -69,7 +73,8 @@ extends GOperator2
             [closest, tangent] = closestTangentOnCurve(
                 degree, 
                 points, 
-                input1.objects[0].toPoint());
+                input1.objects[0].toPoint(),
+                constrain.value);
                 
             this.value = PointValue.fromPoint(this.nodeId, closest);
         }
@@ -79,6 +84,7 @@ extends GOperator2
 
         this.setUpdateValues(parse,
         [
+            ['constrain',  constrain ],
             ['transform',  transform ],
             ['showCenter', showCenter]
         ]);
