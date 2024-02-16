@@ -96,6 +96,9 @@ extends GOperator1
 
 
             let length = curveLength(degree, points);
+            // console.log('degree =', degree);
+            // console.log('points =', [...points]);
+            // console.log('length =', length);
 
             
             const dist = 

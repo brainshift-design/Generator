@@ -176,10 +176,10 @@ extends GShape
         }
 
 
-        const segPoints = points.slice(0, Math.floor((points.length-1) / options.degree) * options.degree + 1);
+        const nSegPoints = Math.floor((points.length-1) / options.degree) * options.degree + 1;
 
         if (   options.closed
-            && points.length - segPoints.length == options.degree-1)
+            && points.length - nSegPoints == options.degree-1)
             points.push(points[0].copy());
 
 
