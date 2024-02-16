@@ -2463,13 +2463,8 @@ function bounds3(p0, p1, p2, p3)
 {
     let rect = Rect.NaN;
 
-    console.log('p0 =', p0);
-    console.log('p3 =', p3);
-
     rect = expandRect_(rect, p0);
     rect = expandRect_(rect, p3);
-    console.log('rect =', rect);
-    console.log('');
 
 
     const ax =   -p0.x + 3*p1.x - 3*p2.x + p3.x;
@@ -2938,10 +2933,7 @@ extends Rect
 function expandRect(rect1, rect2)
 {
     if (rect1.isNaN  ) return rect2;
-    //if (rect1.isEmpty) return rect2;
-
     if (rect2.isNaN  ) return rect1;
-    //if (rect2.isEmpty) return rect1;
     
     return new AbsRect(
         Math.min(rect2.l, rect1.l),
@@ -2954,7 +2946,8 @@ function expandRect(rect1, rect2)
 
 function expandRect_(rect, p)
 {
-    if (rect.isNaN) return new Rect(p.x, p.y, 0, 0);
+    if (rect.isNaN) 
+        return new Rect(p.x, p.y, 0, 0);
 
     return new AbsRect(
         Math.min(p.x, rect.l),
@@ -7498,7 +7491,6 @@ extends FigmaShape
                                 this.pathPoints.at( 0)));
                     }
 
-                    console.log('bounds =', bounds);
                     break;
                 }
             default:

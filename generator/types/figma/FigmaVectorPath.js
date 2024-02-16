@@ -151,7 +151,6 @@ extends FigmaShape
                                 this.pathPoints.at( 0)));
                     }
 
-                    console.log('bounds =', bounds);
                     break;
                 }
             default:

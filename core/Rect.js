@@ -115,10 +115,7 @@ extends Rect
 function expandRect(rect1, rect2)
 {
     if (rect1.isNaN  ) return rect2;
-    //if (rect1.isEmpty) return rect2;
-
     if (rect2.isNaN  ) return rect1;
-    //if (rect2.isEmpty) return rect1;
     
     return new AbsRect(
         Math.min(rect2.l, rect1.l),
@@ -131,7 +128,8 @@ function expandRect(rect1, rect2)
 
 function expandRect_(rect, p)
 {
-    if (rect.isNaN) return new Rect(p.x, p.y, 0, 0);
+    if (rect.isNaN) 
+        return new Rect(p.x, p.y, 0, 0);
 
     return new AbsRect(
         Math.min(p.x, rect.l),
