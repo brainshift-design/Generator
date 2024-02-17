@@ -109,7 +109,7 @@ extends GShape
                 if (points.items.length == 0)
                     points.items.push(...pathPoints.map(p => PointValue.fromPoint(this.nodeId, p)));
 
-                else
+                else if (points.items.length > 1)
                 {
                     const p_2 = points.items.at(-2).toPoint();
                     const p_1 = points.items.at(-1).toPoint();
@@ -122,7 +122,8 @@ extends GShape
             }
 
 
-            if (closed.value > 0)
+            if (   closed.value > 0
+                && points.items.length > 1)
             {
                 const p_2 = points.items.at(-2).toPoint();
                 const p_1 = points.items.at(-1).toPoint();
