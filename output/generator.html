@@ -41035,8 +41035,13 @@ extends GShape
             const paths  = [];
             const points = new ListValue();
 
-            for (const input of this.inputs)
-                paths.push((await input.eval(parse)).toValue());
+            for (const _input of this.inputs)
+            {
+                const input = (await _input.eval(parse)).toValue();
+
+                if (isListType(input.type)) paths.push(...input.items)
+                else                        paths.push(input);
+            }
 
 
             // convert each path to cubic and 
@@ -41055,24 +41060,13 @@ extends GShape
 
                 let pathPoints = path.objects[0].pathPoints;
 
-
                 if (pathPoints.length == 0)
                     continue;
 
 
-                if (points.items.length == 0)
-                    points.items.push(...pathPoints.map(p => PointValue.fromPoint(this.nodeId, p)));
-
-                else if (points.items.length > 1)
-                {
-                    const p_2 = points.items.at(-2).toPoint();
-                    const p_1 = points.items.at(-1).toPoint();
-
-                    const p0  = pathPoints[0];
-                    const p1  = pathPoints[1];
-                    
-                    this.addSegment(points, pathPoints, p_2, p_1, p0, p1, degree);
-                }
+                const pathDegree = Math.min(path.degree.value, 2) + 1;
+ 
+                this.completeCurve(points, degree, pathPoints, pathDegree);
             }
 
 
@@ -41087,7 +41081,7 @@ extends GShape
                 
                 this.addSegment(points, null, p_2, p_1, p0, p1, degree);
     
-                points.items.push(new PointValue(this.nodeId, new NumberValue(p0.x), new NumberValue(p0.y)));
+                points.items.push(PointValue.fromPoint(this.nodeId, p0));
             }
 
 
@@ -41133,6 +41127,102 @@ extends GShape
 
 
 
+    completeCurve(points, degree, pathPoints, pathDegree)
+    {
+        const _points = [];
+
+
+        if (    points.items.length == 0)
+        //    || !equalv(points.items.at(-1).toPoint(), pathPoints[0]))
+            _points.push(pathPoints[0]);
+
+
+        if (pathDegree == 1)
+        {
+            for (let i = 0; i < pathPoints.length-1; i += 1)
+            {
+                const segPoints = linear2cubic(pathPoints.slice(i, i+2));
+                this.completeJoin(_points, segPoints, degree);
+                _points.push(...segPoints.slice(1)); 
+            }
+        }
+        else if (pathDegree == 2)
+        {
+            for (let i = 0; i < pathPoints.length-2; i += 2)
+            {
+                const segPoints = quad2cubic(pathPoints.slice(i, i+3));
+                this.completeJoin(_points, segPoints, degree);
+                _points.push(...segPoints.slice(1)); 
+            }
+        }
+        else if (pathDegree == 3)
+        {
+            for (let i = 0; i < pathPoints.length-3; i += 3)
+            {
+                const segPoints = quad2cubic(pathPoints.slice(i, i+3));
+                this.completeJoin(_points, segPoints, degree);
+                _points.push(...segPoints.slice(1)); 
+            }
+        }
+        
+        
+        points.items.push(..._points.map(p => PointValue.fromPoint(this.nodeId, p)));
+    }
+
+
+
+    completeJoin(_points, segPoints, degree)
+    {
+        if (   _points.length > 1
+            &&  segPoints.length > 1
+            && !equalv(_points.at(-1), segPoints[0])
+            && _points.length > 1)
+        {
+            _points.push(
+                ...this.getJoinPoints(
+                    _points.at(-2),
+                    _points.at(-1),
+                    segPoints[0],
+                    segPoints[1],
+                    degree),
+                segPoints[0]);
+        }
+    }
+
+
+
+    getJoinPoints(p_2, p_1, p0, p1, degree)
+    {
+        const points = [];
+
+        switch (degree.value)
+        {
+            case 0: // linear
+                points.push(lerpv(p_1, p0, 1/3));
+                points.push(lerpv(p_1, p0, 2/3));
+                break;
+
+            case 1: // smooth
+                points.push(addv(p_2, mulvs(subv(p_1, p_2), 2)));
+                points.push(addv(p1,  mulvs(subv(p0,  p1),  2)));
+                break;
+
+            case 2: // sin X
+                points.push(point(lerp(p_1.x, p0.x, 0.3615), p_1.y));
+                points.push(point(lerp(p0.x, p_1.x, 0.3615), p0 .y));
+                break;
+
+            case 3: // sin Y
+                points.push(point(p_1.x, lerp(p_1.y, p0.y, 0.3615)));
+                points.push(point(p0 .x, lerp(p0.y, p_1.y, 0.3615)));
+                break;
+        }
+
+        return points;
+    }
+
+
+
     addSegment(points, pathPoints, p_2, p_1, p0, p1, degree)
     {
         if (   equalv(p_1, p0)
@@ -41142,28 +41232,7 @@ extends GShape
         }
         else
         {
-            switch (degree.value)
-            {
-                case 0: // linear
-                    points.items.push(PointValue.fromPoint(this.nodeId, lerpv(p_1, p0, 1/3)));
-                    points.items.push(PointValue.fromPoint(this.nodeId, lerpv(p_1, p0, 2/3)));
-                    break;
-
-                case 1: // smooth
-                    points.items.push(PointValue.fromPoint(this.nodeId, addv(p_2, mulvs(subv(p_1, p_2), 2))));
-                    points.items.push(PointValue.fromPoint(this.nodeId, addv(p1,  mulvs(subv(p0,  p1),  2))));
-                    break;
-
-                case 2: // sin X
-                    points.items.push(new PointValue(this.nodeId, new NumberValue(lerp(p_1.x, p0.x, 0.3615)), new NumberValue(p_1.y)));
-                    points.items.push(new PointValue(this.nodeId, new NumberValue(lerp(p0.x, p_1.x, 0.3615)), new NumberValue(p0.y)));
-                    break;
-
-                case 3: // sin Y
-                    points.items.push(new PointValue(this.nodeId, new NumberValue(p_1.x), new NumberValue(lerp(p_1.y, p0.y, 0.3615))));
-                    points.items.push(new PointValue(this.nodeId, new NumberValue(p0 .x), new NumberValue(lerp(p0.y, p_1.y, 0.3615))));
-                    break;
-            }
+            points.items.push(...this.getJoinPoints(p_2, p_1, p0, p1, degree).map(p => PointValue.fromPoint(this.nodeId, p)));
 
             if (pathPoints)
                 points.items.push(...pathPoints.map(p => PointValue.fromPoint(this.nodeId, p)));
