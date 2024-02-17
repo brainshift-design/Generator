@@ -105,14 +105,30 @@ extends GShape
 
 
                 let pathPoints = path.objects[0].pathPoints;
+                if (pathPoints.length == 0) continue;
 
-                if (pathPoints.length == 0)
-                    continue;
+
+                if (points.items.length == 0)
+                    points.items.push(PointValue.fromPoint(this.nodeId, pathPoints[0]));
 
 
                 const pathDegree = Math.min(path.degree.value, 2) + 1;
- 
-                this.completeCurve(points, degree, pathPoints, pathDegree);
+                this.makeCubic(points, pathPoints, pathDegree);
+
+
+                if (i < path.length-1)
+                {
+                    const nextPath       = paths[i+1];
+                    const nextPathPoints = nextPath.objects[0].pathPoints;
+
+                    const p_2 = points.items.at(-2).toPoint();
+                    const p_1 = points.items.at(-1).toPoint();
+
+                    const p0  = nextPathPoints[0];
+                    const p1  = nextPathPoints[1];
+                    
+                    this.addSegment(points, null, p_2, p_1, p0, p1, degree);
+                }
             }
 
 
@@ -173,14 +189,9 @@ extends GShape
 
 
 
-    completeCurve(points, degree, pathPoints, pathDegree)
+    makeCubic(points, pathPoints, pathDegree)
     {
         const _points = [];
-
-
-        if (    points.items.length == 0)
-        //    || !equalv(points.items.at(-1).toPoint(), pathPoints[0]))
-            _points.push(pathPoints[0]);
 
 
         if (pathDegree == 1)
@@ -188,7 +199,6 @@ extends GShape
             for (let i = 0; i < pathPoints.length-1; i += 1)
             {
                 const segPoints = linear2cubic(pathPoints.slice(i, i+2));
-                this.completeJoin(_points, segPoints, degree);
                 _points.push(...segPoints.slice(1)); 
             }
         }
@@ -197,7 +207,6 @@ extends GShape
             for (let i = 0; i < pathPoints.length-2; i += 2)
             {
                 const segPoints = quad2cubic(pathPoints.slice(i, i+3));
-                this.completeJoin(_points, segPoints, degree);
                 _points.push(...segPoints.slice(1)); 
             }
         }
@@ -205,33 +214,33 @@ extends GShape
         {
             for (let i = 0; i < pathPoints.length-3; i += 3)
             {
-                const segPoints = quad2cubic(pathPoints.slice(i, i+3));
-                this.completeJoin(_points, segPoints, degree);
+                const segPoints = pathPoints.slice(i, i+3);
                 _points.push(...segPoints.slice(1)); 
             }
         }
-        
-        
+
+       
         points.items.push(..._points.map(p => PointValue.fromPoint(this.nodeId, p)));
     }
 
 
 
-    completeJoin(_points, segPoints, degree)
+    completeJoin(points, pathPoints, degree)
     {
-        if (   _points.length > 1
-            &&  segPoints.length > 1
-            && !equalv(_points.at(-1), segPoints[0])
-            && _points.length > 1)
+        if (    points.length > 1
+            &&  pathPoints.length > 1
+            && !equalv(points.at(-1), pathPoints[0])
+            &&  points.length > 1)
         {
-            _points.push(
+            points.push([
                 ...this.getJoinPoints(
-                    _points.at(-2),
-                    _points.at(-1),
-                    segPoints[0],
-                    segPoints[1],
+                    points.at(-2),
+                    points.at(-1),
+                    pathPoints[0],
+                    pathPoints[1],
                     degree),
-                segPoints[0]);
+                pathPoints[0]]
+                .map(p => PointValue.fromPoint(this.nodeId, p)));
         }
     }
 
@@ -241,6 +250,7 @@ extends GShape
     {
         const points = [];
 
+        console.log('degree.value =', degree.value);
         switch (degree.value)
         {
             case 0: // linear
