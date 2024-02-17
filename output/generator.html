@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 357;
+const generatorVersion = 359;
 
 
 const MAX_INT32        = 2147483647;
@@ -2779,7 +2779,7 @@ function areClockwise(p0, p1, p2)
 
 
 
-function completeCurve(degree, pathPoints, closed)
+function createCompleteCurve(degree, pathPoints, closed)
 {
     const segPoints = pathPoints.slice(0, Math.floor((pathPoints.length-1) / degree) * degree + 1);
     let   points;
@@ -5308,30 +5308,31 @@ function updateMenuItemShowColorLegendInMenus()
 
 function enableFeatures(sub, beta = false)
 {
-    enableMenuItem(menuItemSetValueNames,   true, sub);
-    enableMenuItem(menuItemValueName,       true, sub);
-    enableMenuItem(menuItemObjectName,      true, sub);
-    enableMenuItem(menuItemTimer,           true, sub);
+    enableMenuItem(menuItemSetValueNames,      true, sub);
+    enableMenuItem(menuItemValueName,          true, sub);
+    enableMenuItem(menuItemObjectName,         true, sub);
+    enableMenuItem(menuItemTimer,              true, sub);
     // enableMenuItem(menuItemSort,            true, sub);
     // enableMenuItem(menuItemFilter,          true, sub);
     // enableMenuItem(menuItemReorderList,     true, sub);
-    enableMenuItem(menuItemAnimate,         true, sub);
-    enableMenuItem(menuItemSaveToFile,      true, sub);
-    enableMenuItem(menuItemSaveSelected,    true, sub);
-    enableMenuItem(menuItemFetch,           true, sub);
+    enableMenuItem(menuItemAnimate,            true, sub);
+    enableMenuItem(menuItemSaveToFile,         true, sub);
+    enableMenuItem(menuItemSaveSelected,       true, sub);
+    enableMenuItem(menuItemFetch,              true, sub);
     // enableMenuItem(menuItemIndexToName,     true, sub);
-    enableMenuItem(menuItemDateTime,        true, sub);
-    enableMenuItem(menuItemSolve,           true, sub);
-    enableMenuItem(menuItemTextJson,        true, sub);
-    enableMenuItem(menuItemValidColor,      true, sub);
-    enableMenuItem(menuItemCorrectColor,    true, sub);
-    enableMenuItem(menuItemConvertToP3,     true, sub);
-    enableMenuItem(menuItemColorblind,      true, sub);
-    enableMenuItem(menuItemShapeRender,     true, sub);
-    enableMenuItem(menuItemPointAlongPath,  true, sub);
-    enableMenuItem(menuItemPathLength,      true, sub);
-    enableMenuItem(menuItemSaveTemplate,    true, sub);
-    enableMenuItem(menuItemManageTemplates, true, sub);
+    enableMenuItem(menuItemDateTime,           true, sub);
+    enableMenuItem(menuItemSolve,              true, sub);
+    enableMenuItem(menuItemTextJson,           true, sub);
+    enableMenuItem(menuItemValidColor,         true, sub);
+    enableMenuItem(menuItemCorrectColor,       true, sub);
+    enableMenuItem(menuItemConvertToP3,        true, sub);
+    enableMenuItem(menuItemColorblind,         true, sub);
+    enableMenuItem(menuItemShapeRender,        true, sub);
+    enableMenuItem(menuItemPointAlongPath,     true, sub);
+    enableMenuItem(menuItemClosestPointOnPath, true, sub);
+    enableMenuItem(menuItemPathLength,         true, sub);
+    enableMenuItem(menuItemSaveTemplate,       true, sub);
+    enableMenuItem(menuItemManageTemplates,    true, sub);
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
@@ -6710,8 +6711,7 @@ function addObjectCenter(node, obj, zoom)
     const sp1 = addv(sp0, mulvs(      subv(obj.sp1, obj.sp0),      settings.objectCenterSize));
     const sp2 = addv(sp0, mulvs(mulvs(subv(obj.sp2, obj.sp0), -1), settings.objectCenterSize));    
 
-    node.value.objects.push(
-        createDecoPoly(
+    const center = createDecoPoly(
             node, 
             sp0, 
             [sp2, sp0, sp1],
@@ -6719,7 +6719,11 @@ function addObjectCenter(node, obj, zoom)
             '',
             [242, 72, 34], 
             CENTER_SUFFIX,
-            true));
+            true);
+
+    node.value.objects.push(center);
+
+    return center;
 }
 
 
@@ -37143,8 +37147,9 @@ extends GOperator1
         let x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
         let y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
 
-
-        if (input)
+        if (   input
+            && x
+            && y)
         {
             const _input = input;
 
@@ -37169,13 +37174,15 @@ extends GOperator1
             if (x)  this.value.x = x;  else  x = this.value.x;
             if (y)  this.value.y = y;  else  y = this.value.y;
         }
-        else
+        else if (x && y)
         {
             this.value = new PointValue(
                 this.nodeId, 
                 x, 
                 y);
         }
+        else
+            this.value = PointValue.NaN.copy();
 
 
         this.setUpdateValues(parse, 
@@ -37606,7 +37613,7 @@ extends GShape
 
 
         const nSegPoints = Math.floor((points.length-1) / options.degree) * options.degree + 1;
-
+        
         if (   options.closed
             && points.length - nSegPoints == options.degree-1)
             points.push(points[0].copy());
@@ -41040,7 +41047,9 @@ extends GShape
                 const path = paths[i];
 
                 if (   !path
-                    || !path.points)
+                    || !path.points
+                    || !path.objects
+                    ||  path.objects.length == 0)
                     continue;
 
 
@@ -41855,7 +41864,7 @@ extends GOperator1
 
             const degree = Math.min(input.degree.value, 2) + 1;
 
-            const points = completeCurve(
+            const points = createCcompleteCurve(
                 degree, 
                 input.objects[0].pathPoints, 
                 input.closed.value > 0);
@@ -41895,6 +41904,7 @@ extends GOperator1
 {
     position   = null;
     distance   = null;
+    offset     = null;
     transform  = null;
     showCenter = null;
     
@@ -41913,6 +41923,7 @@ extends GOperator1
 
         this.position   = null;
         this.distance   = null;
+        this.offset     = null;
         this.transform  = null;
         this.showCenter = null;
     }
@@ -41927,6 +41938,7 @@ extends GOperator1
 
         if (this.position  ) copy.position   = this.position  .copy();
         if (this.distance  ) copy.distance   = this.distance  .copy();
+        if (this.offset    ) copy.offset     = this.offset    .copy();
         if (this.transform ) copy.transform  = this.transform .copy();
         if (this.showCenter) copy.showCenter = this.showCenter.copy();
 
@@ -41945,6 +41957,7 @@ extends GOperator1
 
         const position   = this.position   ? (await this.position  .eval(parse)).toValue() : null;
         const distance   = this.distance   ? (await this.distance  .eval(parse)).toValue() : null;
+        const offset     = this.offset     ? (await this.offset    .eval(parse)).toValue() : null;
         const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
         const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
@@ -41958,7 +41971,7 @@ extends GOperator1
         {
             const degree = Math.min(input.degree.value, 2) + 1;
 
-            const points = completeCurve(
+            const points = createCompleteCurve(
                 degree, 
                 input.objects[0].pathPoints, 
                 input.closed.value > 0);
@@ -41993,6 +42006,7 @@ extends GOperator1
         [
             ['position',   position  ],
             ['distance',   distance  ],
+            ['offset',     offset    ],
             ['transform',  transform ],
             ['showCenter', showCenter]
         ]);
@@ -42002,7 +42016,8 @@ extends GOperator1
         {
             transform:  transform,
             showCenter: showCenter,
-            tangent:    tangent
+            tangent:    tangent,
+            offset:     offset.value
         });
 
 
@@ -42046,12 +42061,17 @@ extends GOperator1
                 && options.tangent)
             {
                 const a     = -anglev(options.tangent);
-                const xform =  createRotateTransform(a);
+                let   xform = createTransform();
+
+                xform = mulm3m3(xform, createRotateTransform(a));
+
+                if (options.offset)
+                    xform = mulm3m3(xform, createTransform(0, options.offset));
 
                 point.applyTransform(xform, options.transform.value > 0);
             }
-            
-            
+
+
             this.value.objects = [point];
 
 
@@ -42073,6 +42093,7 @@ extends GOperator1
         return super.isValid()
             && this.position   && this.position  .isValid()
             && this.distance   && this.distance  .isValid()
+            && this.offset     && this.offset    .isValid()
             && this.transform  && this.transform .isValid()
             && this.showCenter && this.showCenter.isValid();
     }
@@ -42085,6 +42106,7 @@ extends GOperator1
 
         if (this.position  ) this.position  .pushValueUpdates(parse);
         if (this.distance  ) this.distance  .pushValueUpdates(parse);
+        if (this.offset    ) this.offset    .pushValueUpdates(parse);
         if (this.transform ) this.transform .pushValueUpdates(parse);
         if (this.showCenter) this.showCenter.pushValueUpdates(parse);
     }
@@ -42097,6 +42119,7 @@ extends GOperator1
 
         if (this.position  ) this.position  .invalidateInputs(parse, from, force);
         if (this.distance  ) this.distance  .invalidateInputs(parse, from, force);
+        if (this.offset    ) this.offset    .invalidateInputs(parse, from, force);
         if (this.transform ) this.transform .invalidateInputs(parse, from, force);
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
     }
@@ -42109,6 +42132,7 @@ extends GOperator1
 
         if (this.position  ) this.position  .iterateLoop(parse);
         if (this.distance  ) this.distance  .iterateLoop(parse);
+        if (this.offset    ) this.offset    .iterateLoop(parse);
         if (this.transform ) this.transform .iterateLoop(parse);
         if (this.showCenter) this.showCenter.iterateLoop(parse);
     }
@@ -42181,7 +42205,7 @@ extends GOperator2
         {
             const degree = Math.min(input0.degree.value, 2) + 1;
 
-            const points = completeCurve(
+            const points = createCompleteCurve(
                 degree, 
                 input0.objects[0].pathPoints, 
                 input0.closed.value > 0);
@@ -50312,6 +50336,7 @@ function genParsePointAlongPath(parse)
 
     pap.position   = genParse(parse);
     pap.distance   = genParse(parse);
+    pap.offset     = genParse(parse);
     pap.transform  = genParse(parse);
     pap.showCenter = genParse(parse);
 

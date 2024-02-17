@@ -3,6 +3,7 @@ extends GOperator1
 {
     position   = null;
     distance   = null;
+    offset     = null;
     transform  = null;
     showCenter = null;
     
@@ -21,6 +22,7 @@ extends GOperator1
 
         this.position   = null;
         this.distance   = null;
+        this.offset     = null;
         this.transform  = null;
         this.showCenter = null;
     }
@@ -35,6 +37,7 @@ extends GOperator1
 
         if (this.position  ) copy.position   = this.position  .copy();
         if (this.distance  ) copy.distance   = this.distance  .copy();
+        if (this.offset    ) copy.offset     = this.offset    .copy();
         if (this.transform ) copy.transform  = this.transform .copy();
         if (this.showCenter) copy.showCenter = this.showCenter.copy();
 
@@ -53,6 +56,7 @@ extends GOperator1
 
         const position   = this.position   ? (await this.position  .eval(parse)).toValue() : null;
         const distance   = this.distance   ? (await this.distance  .eval(parse)).toValue() : null;
+        const offset     = this.offset     ? (await this.offset    .eval(parse)).toValue() : null;
         const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
         const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
@@ -66,7 +70,7 @@ extends GOperator1
         {
             const degree = Math.min(input.degree.value, 2) + 1;
 
-            const points = completeCurve(
+            const points = createCompleteCurve(
                 degree, 
                 input.objects[0].pathPoints, 
                 input.closed.value > 0);
@@ -101,6 +105,7 @@ extends GOperator1
         [
             ['position',   position  ],
             ['distance',   distance  ],
+            ['offset',     offset    ],
             ['transform',  transform ],
             ['showCenter', showCenter]
         ]);
@@ -110,7 +115,8 @@ extends GOperator1
         {
             transform:  transform,
             showCenter: showCenter,
-            tangent:    tangent
+            tangent:    tangent,
+            offset:     offset.value
         });
 
 
@@ -154,12 +160,17 @@ extends GOperator1
                 && options.tangent)
             {
                 const a     = -anglev(options.tangent);
-                const xform =  createRotateTransform(a);
+                let   xform = createTransform();
+
+                xform = mulm3m3(xform, createRotateTransform(a));
+
+                if (options.offset)
+                    xform = mulm3m3(xform, createTransform(0, options.offset));
 
                 point.applyTransform(xform, options.transform.value > 0);
             }
-            
-            
+
+
             this.value.objects = [point];
 
 
@@ -181,6 +192,7 @@ extends GOperator1
         return super.isValid()
             && this.position   && this.position  .isValid()
             && this.distance   && this.distance  .isValid()
+            && this.offset     && this.offset    .isValid()
             && this.transform  && this.transform .isValid()
             && this.showCenter && this.showCenter.isValid();
     }
@@ -193,6 +205,7 @@ extends GOperator1
 
         if (this.position  ) this.position  .pushValueUpdates(parse);
         if (this.distance  ) this.distance  .pushValueUpdates(parse);
+        if (this.offset    ) this.offset    .pushValueUpdates(parse);
         if (this.transform ) this.transform .pushValueUpdates(parse);
         if (this.showCenter) this.showCenter.pushValueUpdates(parse);
     }
@@ -205,6 +218,7 @@ extends GOperator1
 
         if (this.position  ) this.position  .invalidateInputs(parse, from, force);
         if (this.distance  ) this.distance  .invalidateInputs(parse, from, force);
+        if (this.offset    ) this.offset    .invalidateInputs(parse, from, force);
         if (this.transform ) this.transform .invalidateInputs(parse, from, force);
         if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
     }
@@ -217,6 +231,7 @@ extends GOperator1
 
         if (this.position  ) this.position  .iterateLoop(parse);
         if (this.distance  ) this.distance  .iterateLoop(parse);
+        if (this.offset    ) this.offset    .iterateLoop(parse);
         if (this.transform ) this.transform .iterateLoop(parse);
         if (this.showCenter) this.showCenter.iterateLoop(parse);
     }

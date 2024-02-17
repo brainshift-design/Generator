@@ -633,7 +633,7 @@ function areClockwise(p0, p1, p2)
 
 
 
-function completeCurve(degree, pathPoints, closed)
+function createCompleteCurve(degree, pathPoints, closed)
 {
     const segPoints = pathPoints.slice(0, Math.floor((pathPoints.length-1) / degree) * degree + 1);
     let   points;

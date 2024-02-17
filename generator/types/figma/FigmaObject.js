@@ -383,8 +383,7 @@ function addObjectCenter(node, obj, zoom)
     const sp1 = addv(sp0, mulvs(      subv(obj.sp1, obj.sp0),      settings.objectCenterSize));
     const sp2 = addv(sp0, mulvs(mulvs(subv(obj.sp2, obj.sp0), -1), settings.objectCenterSize));    
 
-    node.value.objects.push(
-        createDecoPoly(
+    const center = createDecoPoly(
             node, 
             sp0, 
             [sp2, sp0, sp1],
@@ -392,7 +391,11 @@ function addObjectCenter(node, obj, zoom)
             '',
             [242, 72, 34], 
             CENTER_SUFFIX,
-            true));
+            true);
+
+    node.value.objects.push(center);
+
+    return center;
 }
 
 

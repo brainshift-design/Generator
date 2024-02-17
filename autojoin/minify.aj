@@ -613,6 +613,9 @@ menuVector
 menuPoint
 
 
+closestPointOnCurve
+closestPointOnSegment2
+closestPointOnSegment3
 menuShapes
 menuRectangle
 menuTransform

@@ -1897,6 +1897,7 @@ function genParsePointAlongPath(parse)
 
     pap.position   = genParse(parse);
     pap.distance   = genParse(parse);
+    pap.offset     = genParse(parse);
     pap.transform  = genParse(parse);
     pap.showCenter = genParse(parse);
 

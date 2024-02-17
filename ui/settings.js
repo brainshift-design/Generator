@@ -337,30 +337,31 @@ function updateMenuItemShowColorLegendInMenus()
 
 function enableFeatures(sub, beta = false)
 {
-    enableMenuItem(menuItemSetValueNames,   true, sub);
-    enableMenuItem(menuItemValueName,       true, sub);
-    enableMenuItem(menuItemObjectName,      true, sub);
-    enableMenuItem(menuItemTimer,           true, sub);
+    enableMenuItem(menuItemSetValueNames,      true, sub);
+    enableMenuItem(menuItemValueName,          true, sub);
+    enableMenuItem(menuItemObjectName,         true, sub);
+    enableMenuItem(menuItemTimer,              true, sub);
     // enableMenuItem(menuItemSort,            true, sub);
     // enableMenuItem(menuItemFilter,          true, sub);
     // enableMenuItem(menuItemReorderList,     true, sub);
-    enableMenuItem(menuItemAnimate,         true, sub);
-    enableMenuItem(menuItemSaveToFile,      true, sub);
-    enableMenuItem(menuItemSaveSelected,    true, sub);
-    enableMenuItem(menuItemFetch,           true, sub);
+    enableMenuItem(menuItemAnimate,            true, sub);
+    enableMenuItem(menuItemSaveToFile,         true, sub);
+    enableMenuItem(menuItemSaveSelected,       true, sub);
+    enableMenuItem(menuItemFetch,              true, sub);
     // enableMenuItem(menuItemIndexToName,     true, sub);
-    enableMenuItem(menuItemDateTime,        true, sub);
-    enableMenuItem(menuItemSolve,           true, sub);
-    enableMenuItem(menuItemTextJson,        true, sub);
-    enableMenuItem(menuItemValidColor,      true, sub);
-    enableMenuItem(menuItemCorrectColor,    true, sub);
-    enableMenuItem(menuItemConvertToP3,     true, sub);
-    enableMenuItem(menuItemColorblind,      true, sub);
-    enableMenuItem(menuItemShapeRender,     true, sub);
-    enableMenuItem(menuItemPointAlongPath,  true, sub);
-    enableMenuItem(menuItemPathLength,      true, sub);
-    enableMenuItem(menuItemSaveTemplate,    true, sub);
-    enableMenuItem(menuItemManageTemplates, true, sub);
+    enableMenuItem(menuItemDateTime,           true, sub);
+    enableMenuItem(menuItemSolve,              true, sub);
+    enableMenuItem(menuItemTextJson,           true, sub);
+    enableMenuItem(menuItemValidColor,         true, sub);
+    enableMenuItem(menuItemCorrectColor,       true, sub);
+    enableMenuItem(menuItemConvertToP3,        true, sub);
+    enableMenuItem(menuItemColorblind,         true, sub);
+    enableMenuItem(menuItemShapeRender,        true, sub);
+    enableMenuItem(menuItemPointAlongPath,     true, sub);
+    enableMenuItem(menuItemClosestPointOnPath, true, sub);
+    enableMenuItem(menuItemPathLength,         true, sub);
+    enableMenuItem(menuItemSaveTemplate,       true, sub);
+    enableMenuItem(menuItemManageTemplates,    true, sub);
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }

@@ -177,7 +177,7 @@ extends GShape
 
 
         const nSegPoints = Math.floor((points.length-1) / options.degree) * options.degree + 1;
-
+        
         if (   options.closed
             && points.length - nSegPoints == options.degree-1)
             points.push(points[0].copy());

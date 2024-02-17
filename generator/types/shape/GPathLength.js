@@ -50,7 +50,7 @@ extends GOperator1
 
             const degree = Math.min(input.degree.value, 2) + 1;
 
-            const points = completeCurve(
+            const points = createCcompleteCurve(
                 degree, 
                 input.objects[0].pathPoints, 
                 input.closed.value > 0);
