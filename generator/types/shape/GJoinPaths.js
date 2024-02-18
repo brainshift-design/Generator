@@ -104,46 +104,32 @@ extends GShape
                     continue;
 
 
-                let pathPoints = path.objects[0].pathPoints;
+                const pathPoints = path.objects[0].pathPoints;
+                const pathDegree = Math.min(path.degree.value, 2) + 1;
+                
                 if (pathPoints.length == 0) continue;
 
 
-                if (points.items.length == 0)
-                    points.items.push(PointValue.fromPoint(this.nodeId, pathPoints[0]));
+                const segment = this.makeCubic(pathPoints, pathDegree);
 
+                if (   i > 0
+                    && points.items.length > 1
+                    && segment.length > 1)
+                    this.completeSegment(points, segment, degree);
 
-                const pathDegree = Math.min(path.degree.value, 2) + 1;
-                this.makeCubic(points, pathPoints, pathDegree);
-
-
-                if (i < path.length-1)
-                {
-                    const nextPath       = paths[i+1];
-                    const nextPathPoints = nextPath.objects[0].pathPoints;
-
-                    const p_2 = points.items.at(-2).toPoint();
-                    const p_1 = points.items.at(-1).toPoint();
-
-                    const p0  = nextPathPoints[0];
-                    const p1  = nextPathPoints[1];
-                    
-                    this.addSegment(points, null, p_2, p_1, p0, p1, degree);
-                }
+                points.items.push(...segment.map(p => PointValue.fromPoint(this.nodeId, p)));
             }
 
 
             if (   closed.value > 0
                 && points.items.length > 1)
             {
-                const p_2 = points.items.at(-2).toPoint();
-                const p_1 = points.items.at(-1).toPoint();
+                const segment = [ points.items[0].toPoint(),
+                                  points.items[1].toPoint() ];
 
-                const p0  = points.items[0].toPoint();
-                const p1  = points.items[1].toPoint();
-                
-                this.addSegment(points, null, p_2, p_1, p0, p1, degree);
-    
-                points.items.push(PointValue.fromPoint(this.nodeId, p0));
+                this.completeSegment(points, segment, degree);
+
+                points.items.push(points.items[0].copy());
             }
 
 
@@ -189,59 +175,27 @@ extends GShape
 
 
 
-    makeCubic(points, pathPoints, pathDegree)
+    makeCubic(pathPoints, pathDegree)
     {
-        const _points = [];
+        const points = [pathPoints[0]];
 
 
-        if (pathDegree == 1)
+        for (let i = 0; i < pathPoints.length-pathDegree; i += pathDegree)
         {
-            for (let i = 0; i < pathPoints.length-1; i += 1)
+            let segPoints;
+
+            switch (pathDegree)
             {
-                const segPoints = linear2cubic(pathPoints.slice(i, i+2));
-                _points.push(...segPoints.slice(1)); 
+                case 1: segPoints = linear2cubic(pathPoints.slice(i, i+2)); break;
+                case 2: segPoints =   quad2cubic(pathPoints.slice(i, i+3)); break;
+                case 3: segPoints =              pathPoints.slice(i, i+4);  break;
             }
-        }
-        else if (pathDegree == 2)
-        {
-            for (let i = 0; i < pathPoints.length-2; i += 2)
-            {
-                const segPoints = quad2cubic(pathPoints.slice(i, i+3));
-                _points.push(...segPoints.slice(1)); 
-            }
-        }
-        else if (pathDegree == 3)
-        {
-            for (let i = 0; i < pathPoints.length-3; i += 3)
-            {
-                const segPoints = pathPoints.slice(i, i+3);
-                _points.push(...segPoints.slice(1)); 
-            }
+
+            points.push(...segPoints.slice(1)); 
         }
 
        
-        points.items.push(..._points.map(p => PointValue.fromPoint(this.nodeId, p)));
-    }
-
-
-
-    completeJoin(points, pathPoints, degree)
-    {
-        if (    points.length > 1
-            &&  pathPoints.length > 1
-            && !equalv(points.at(-1), pathPoints[0])
-            &&  points.length > 1)
-        {
-            points.push([
-                ...this.getJoinPoints(
-                    points.at(-2),
-                    points.at(-1),
-                    pathPoints[0],
-                    pathPoints[1],
-                    degree),
-                pathPoints[0]]
-                .map(p => PointValue.fromPoint(this.nodeId, p)));
-        }
+        return points;
     }
 
 
@@ -250,7 +204,7 @@ extends GShape
     {
         const points = [];
 
-        console.log('degree.value =', degree.value);
+
         switch (degree.value)
         {
             case 0: // linear
@@ -274,26 +228,32 @@ extends GShape
                 break;
         }
 
+        
         return points;
     }
 
 
 
-    addSegment(points, pathPoints, p_2, p_1, p0, p1, degree)
+    addSegment(points, p_2, p_1, p0, p1, degree)
     {
-        if (   equalv(p_1, p0)
-            && pathPoints)
-        {
-            points.items.push(...pathPoints.slice(1).map(p => PointValue.fromPoint(this.nodeId, p)));
-        }
-        else
-        {
-            points.items.push(...this.getJoinPoints(p_2, p_1, p0, p1, degree).map(p => PointValue.fromPoint(this.nodeId, p)));
-
-            if (pathPoints)
-                points.items.push(...pathPoints.map(p => PointValue.fromPoint(this.nodeId, p)));
-        }
+        points.items.push(...this.getJoinPoints(p_2, p_1, p0, p1, degree).map(p => PointValue.fromPoint(this.nodeId, p)));
     }
+
+
+
+    completeSegment(points, segment, degree)
+    {
+        const p_2 = points.items.at(-2).toPoint();
+        const p_1 = points.items.at(-1).toPoint();
+
+        const p0  = segment[0];
+        const p1  = segment[1];
+
+        if (!equalv(p_1, p0))
+            this.addSegment(points, p_2, p_1, p0, p1, degree);
+        else
+            points.items.pop();
+}
 
 
 
