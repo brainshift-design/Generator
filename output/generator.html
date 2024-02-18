@@ -1972,14 +1972,23 @@ function intersectLines(p1, p2, q1, q2, segment)
 
 
 
-function closestPointOnLine(l0, l1, p, segment)
+function closestPointOnLine(l0, l1, p, segment, constrain = 0)
 {
     if (equalv(p, l0))
         return l0;
-        
-    const d = mulvs(
-        unitv(crossv(subv(l1, l0))), // perpendicular unit vector from p towards the line
-        distv(p, l0));            // the distance to any of the two points guarantees intersection with the line
+
+    const v    = unitv(crossv(subv(l1, l0)));      // perpendicular unit vector from p towards the line
+    const dist = distv(p, lerpv(l0, l1, 1/2)) * 2; // the distance to any of the two points guarantees intersection with the line
+
+    const c    = lerpv(l0, l1, 1/2);
+    const dir  = distv(addv(p, v), c) < distv(p, c);
+
+
+    let d;
+    
+         if (constrain == 2) d = point(dir ? -dist : dist, 0);
+    else if (constrain == 1) d = point(0, dir ? -dist : dist);
+    else                     d = mulvs(v, dir ? -dist : dist); 
 
     return intersectLines(l0, l1, p, subv(p, d), segment);
 }
@@ -2811,7 +2820,7 @@ function createCompleteCurve(degree, pathPoints, closed)
 
 
 
-function closestPointOnCurve(degree, points, p, error = 0.000001)
+function closestPointOnCurve(degree, points, p)
 {
     const closestPoints = [];
 
@@ -2843,7 +2852,7 @@ function closestPointOnCurve(degree, points, p, error = 0.000001)
 
 
 
-function closestTangentOnCurve(degree, points, p, constrain = 0, error = 0.000001)
+function closestTangentOnCurve(degree, points, p, constrain = 0)
 {
     const closestPoints = [];
 
@@ -2854,7 +2863,7 @@ function closestTangentOnCurve(degree, points, p, constrain = 0, error = 0.00000
         {
         case 1:  
             closestPoints.push([
-                closestPointOnLine(points[i], points[i+1], p, true),
+                closestPointOnLine(points[i], points[i+1], p, true, constrain),
                 subv(points[i+1], points[i])]);
 
             break;
@@ -42257,6 +42266,9 @@ extends GOperator2
                 input1.objects[0].toPoint(),
                 constrain.value);
                 
+            console.log('closest =', closest);
+            console.log('tangent =', tangent);
+
             this.value = PointValue.fromPoint(this.nodeId, closest);
         }
         else

@@ -126,14 +126,23 @@ function intersectLines(p1, p2, q1, q2, segment)
 
 
 
-function closestPointOnLine(l0, l1, p, segment)
+function closestPointOnLine(l0, l1, p, segment, constrain = 0)
 {
     if (equalv(p, l0))
         return l0;
-        
-    const d = mulvs(
-        unitv(crossv(subv(l1, l0))), // perpendicular unit vector from p towards the line
-        distv(p, l0));            // the distance to any of the two points guarantees intersection with the line
+
+    const v    = unitv(crossv(subv(l1, l0)));      // perpendicular unit vector from p towards the line
+    const dist = distv(p, lerpv(l0, l1, 1/2)) * 2; // the distance to any of the two points guarantees intersection with the line
+
+    const c    = lerpv(l0, l1, 1/2);
+    const dir  = distv(addv(p, v), c) < distv(p, c);
+
+
+    let d;
+    
+         if (constrain == 2) d = point(dir ? -dist : dist, 0);
+    else if (constrain == 1) d = point(0, dir ? -dist : dist);
+    else                     d = mulvs(v, dir ? -dist : dist); 
 
     return intersectLines(l0, l1, p, subv(p, d), segment);
 }

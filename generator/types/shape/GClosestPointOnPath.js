@@ -76,6 +76,9 @@ extends GOperator2
                 input1.objects[0].toPoint(),
                 constrain.value);
                 
+            console.log('closest =', closest);
+            console.log('tangent =', tangent);
+
             this.value = PointValue.fromPoint(this.nodeId, closest);
         }
         else

@@ -665,7 +665,7 @@ function createCompleteCurve(degree, pathPoints, closed)
 
 
 
-function closestPointOnCurve(degree, points, p, error = 0.000001)
+function closestPointOnCurve(degree, points, p)
 {
     const closestPoints = [];
 
@@ -697,7 +697,7 @@ function closestPointOnCurve(degree, points, p, error = 0.000001)
 
 
 
-function closestTangentOnCurve(degree, points, p, constrain = 0, error = 0.000001)
+function closestTangentOnCurve(degree, points, p, constrain = 0)
 {
     const closestPoints = [];
 
@@ -708,7 +708,7 @@ function closestTangentOnCurve(degree, points, p, constrain = 0, error = 0.00000
         {
         case 1:  
             closestPoints.push([
-                closestPointOnLine(points[i], points[i+1], p, true),
+                closestPointOnLine(points[i], points[i+1], p, true, constrain),
                 subv(points[i+1], points[i])]);
 
             break;
