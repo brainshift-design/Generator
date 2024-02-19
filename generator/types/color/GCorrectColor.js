@@ -94,7 +94,6 @@ extends GOperator1
                 const inputColor = input.toDataColor();
 
 
-                //console.log('this.c1 =', this.c1);
                 const
               [ closestOrder,
                 closest1,
@@ -139,11 +138,28 @@ extends GOperator1
 
                         this.setUpdateValues(parse,
                         [
-                            ['order', new NumberValue(closestOrder)],
-                            ['c1',    new NumberValue(closest1    )],
-                            ['c2',    new NumberValue(closest2    )],
-                            ['c3',    new NumberValue(closest3    )],
-                            ['value', this.value                   ]
+                            ['order', new NumberValue(closestOrder, 0)],
+                            ['c1',    new NumberValue(closest1,     1)],
+                            ['c2',    new NumberValue(closest2,     1)],
+                            ['c3',    new NumberValue(closest3,     1)],
+                            ['value', this.value                      ]
+                        ]);
+                    }
+                    else
+                    {
+                        this.order = NumberValue.NaN.copy();
+                        this.c1    = NumberValue.NaN.copy();
+                        this.c2    = NumberValue.NaN.copy();
+                        this.c3    = NumberValue.NaN.copy();
+                        this.value = input.copy();
+        
+                        this.setUpdateValues(parse,
+                        [
+                            ['order', this.order],
+                            ['c1',    this.c1   ],
+                            ['c2',    this.c2   ],
+                            ['c3',    this.c3   ],
+                            ['value', this.value]
                         ]);
                     }
                 }

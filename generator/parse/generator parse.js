@@ -96,20 +96,6 @@ class Parse
                && this.repeats[0].iteration == this.repeats[0].total-1;
     }
 
-
-
-    // stop()
-    // {
-    //     // if (curRequestIds.includes(this.requestId))
-    //     // {
-    //     //     removeFromArray(curRequestIds, this.requestId);
-    //     //     true;
-    //     // }
-
-    //     this.stopGenerate = true;
-
-    //     return this.stopGenerate;
-    // }
 }
 
 

@@ -49,6 +49,7 @@ extends OpColorBase
 
 
         this.header.connectionPadding = 18;
+        this.setAllParamDividers(0.45);
     }
 
 
@@ -174,6 +175,9 @@ extends OpColorBase
 
 
         updateColorHeader(this, colors);
+
+        
+        this._warningOverlay.style.height = this.measureData.headerOffset.height;
     }
 
 

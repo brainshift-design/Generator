@@ -28,6 +28,13 @@ function initUtilContext()
 
 
 
+function swap(a, b)
+{
+    return [b, a];
+}
+
+
+
 function indexOfChild(parent, child)
 {
     return Array.prototype.indexOf.call(parent.children, child);

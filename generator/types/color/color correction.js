@@ -43,7 +43,7 @@ async function findCorrection(parse,
     dLoop:
     while (d > 1/1024)
     {
-        if (parse.stopGenerate)//stop()) 
+        if (parse.stopGenerate)
             break dLoop;
 
         let _closestColor = [...closestColor];
@@ -51,7 +51,7 @@ async function findCorrection(parse,
 
         for (let _order = 0; _order < 6; _order++)
         {
-            if (parse.stopGenerate)//stop()) 
+            if (parse.stopGenerate)
                 break dLoop;
 
             closestColor = [..._closestColor];
@@ -67,7 +67,8 @@ async function findCorrection(parse,
             // console.log('max1 =', max1);
             // console.log('closest1 =', closest1);
             // console.log('locked1 =', locked1);
-            // console.log('start1 =', start1);
+            //console.log('start = %s, %s, %s', start1, start2, start3);
+            //console.log('end = %s, %s, %s', end1, end2, end3);
             // console.log('_c1 =', _c1);
             
             if (locked1) { closest1 = _c1.toNumber(); start1 = closest1; end1 = closest1+Epsilon; }
@@ -116,8 +117,7 @@ async function findCorrection(parse,
     }
 
 
-    if (   /*!parse.stop()
-        &&*/ !parse.stopGenerate)
+    if (!parse.stopGenerate)
     {
         // reduce closest to necessary minimums
 
@@ -171,17 +171,17 @@ async function findCorrectionInOrder(parse,
     cLoop:
     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {
-        if (parse.stopGenerate)//stop()) 
+        if (parse.stopGenerate)
             break cLoop;
 
         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
         {
-            if (parse.stopGenerate)//stop()) 
+            if (parse.stopGenerate)
                 break cLoop;
 
             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
             {
-                if (parse.stopGenerate)//stop()) 
+                if (parse.stopGenerate)
                     break cLoop;
 
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
@@ -196,9 +196,9 @@ async function findCorrectionInOrder(parse,
                     if (!lockedOrder)
                         closestOrder = order;
 
-                    closest1     = m1;
-                    closest2     = m2;
-                    closest3     = m3;
+                    closest1 = m1;
+                    closest2 = m2;
+                    closest3 = m3;
                 }
 
                 progress++;
@@ -206,19 +206,6 @@ async function findCorrectionInOrder(parse,
         }
 
         
-        if (parse.repeats.length == 1)
-        {
-            // const stopRequestId = await genGetValueFromUi('stopRequestId');
-
-            // if (   parse.requestId == stopRequestId.value
-            //     || curRequestIds.includes(parse.requestId)) 
-            // { 
-            //     parse.stopGenerate = true;
-            //     break; 
-            // }
-        }
-
-
         genUpdateNodeProgress(parse, nodeId, progress / total, false);
     }
 
@@ -297,7 +284,7 @@ function correctChannel(color, iChan, margin)
     let  valid_ = _valid;
 
 
-    let stackOverflowProtect = 1/d;
+    let stackOverflowProtect = 1/d*2;
 
 
     while (   !_valid
@@ -309,7 +296,7 @@ function correctChannel(color, iChan, margin)
     }
 
 
-    stackOverflowProtect = 1/d;
+    stackOverflowProtect = 1/d*2;
     color = [...savedColor];
 
 
@@ -389,10 +376,10 @@ function getMinCorrections(space, order)
     switch (space)
     {
         case 'hex':
-        case 'rgb':    min = [0, 0, 0]; break;
+        case 'rgb':   min = [0, 0, 0]; break;
 
         case 'hsv': 
-        case 'hsl':    min = [0, 0, 0]; break;
+        case 'hsl':   min = [0, 0, 0]; break;
 
         case 'hclok':
         case 'hclab':
@@ -400,7 +387,7 @@ function getMinCorrections(space, order)
 
         case 'oklab':
         case 'lab':
-        case 'luv':    min = [0, -oppFactor[1]/2, -oppFactor[2]/2]; break;
+        case 'luv':   min = [0, -oppFactor[1]/2, -oppFactor[2]/2]; break;
         
         default:
             // should never get here
@@ -422,10 +409,10 @@ function getMaxCorrections(space, order)
     switch (space)
     {
         case 'hex':
-        case 'rgb':    max = [...rgbFactor]; break;
+        case 'rgb':   max = [...rgbFactor]; break;
 
         case 'hsv': 
-        case 'hsl':    max = [hs_Factor[0]/2, hs_Factor[1], hs_Factor[2]]; break;
+        case 'hsl':   max = [hs_Factor[0]/2, hs_Factor[1], hs_Factor[2]]; break;
 
         case 'hclok':
         case 'hclab':
@@ -433,7 +420,7 @@ function getMaxCorrections(space, order)
 
         case 'oklab':
         case 'lab':
-        case 'luv':    max = [...oppFactor]; break;
+        case 'luv':   max = [...oppFactor]; break;
         
         default:
             // should never get here

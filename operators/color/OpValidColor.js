@@ -117,6 +117,8 @@ extends OpColorBase
 
         const colors = this.getHeaderColors();
         updateColorHeader(this, colors);
+
+        this._warningOverlay.style.height = this.measureData.headerOffset.height;
     }
 
 

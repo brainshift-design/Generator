@@ -177,6 +177,8 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
 
     menuLocalVariables.updateItem = (item, highlight) =>
     {
+        if (!item) return;
+        
         item.divHighlight.style.left       = 0;
         item.divHighlight.style.width      = 'calc(100% - ' + (item.childMenu && item.callback ? item.arrowWidth : 0) + 'px)';
         item.divHighlight.style.background = highlight ? 'var(--figma-color-bg-brand)' : 'transparent';
