@@ -157,7 +157,8 @@ const presetNamesLogos = '\
             "z": "9",\
             "params":\
             [\
-                ["NUM#", "seed", "114,0"]\
+                ["NUM#", "seed", "114,0"],\
+                ["NUM#", "max", "255,0"]\
             ]\
         },\
         {\
@@ -172,7 +173,8 @@ const presetNamesLogos = '\
             "z": "10",\
             "params":\
             [\
-                ["NUM#", "seed", "109,0"]\
+                ["NUM#", "seed", "109,0"],\
+                ["NUM#", "max", "255,0"]\
             ]\
         },\
         {\
@@ -187,7 +189,8 @@ const presetNamesLogos = '\
             "z": "11",\
             "params":\
             [\
-                ["NUM#", "seed", "216,0"]\
+                ["NUM#", "seed", "216,0"],\
+                ["NUM#", "max", "255,0"]\
             ]\
         },\
         {\
