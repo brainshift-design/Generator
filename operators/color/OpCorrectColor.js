@@ -232,7 +232,8 @@ extends OpColorBase
         this.updateColorSpace();
 
         
-        if (this.paramOrder.value.isValid())
+        if (   this.paramOrder.value.isValid()
+            && this.corrections.length == 3)
         {
             const [i1, i2, i3] = getCorrectionsInOrder(this.paramOrder.value.value);
 
@@ -280,6 +281,7 @@ extends OpColorBase
         const correctionName = '<span style="position: relative; top: -1px; font-weight: 200;">±</span>&thinsp;' + correction.name;
 
         c.setName(correctionName, false);
+        
         c.controls[0].name = correctionName;
 
         c.controls[0].setMin(0);
