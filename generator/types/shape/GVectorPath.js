@@ -69,11 +69,14 @@ extends GShape
 
 
         const input   = this.input   ? (await this.input  .eval(parse)).toValue() : null;
-        const points  = this.points  ? (await this.points .eval(parse)).toValue() : null;
-        const closed  = this.closed  ? (await this.closed .eval(parse)).toValue() : null;
-        const degree  = this.degree  ? (await this.degree .eval(parse)).toValue() : null;
-        const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
-        const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
+        let   points  = this.points  ? (await this.points .eval(parse)).toValue() : null;
+        let   closed  = this.closed  ? (await this.closed .eval(parse)).toValue() : null;
+        let   degree  = this.degree  ? (await this.degree .eval(parse)).toValue() : null;
+        let   winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
+        let   round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
+
+
+        await this.evalBaseParams(parse);
 
 
         if (input)
@@ -88,8 +91,8 @@ extends GShape
 
                 for (let i = 0; i < input.points.items.length; i++)
                 {
-                    const item = input.points.items  [i];
-                    const obj  = input.points.objects[i];
+                    const item = input.points.items  [i].copy();
+                    const obj  = input.points.objects[i].copy();
 
                     if (item && obj)
                     {
@@ -112,6 +115,13 @@ extends GShape
                 round   ?? input.round);
 
             this.value.copyCustomParams(input);
+
+            
+            if (points )  this.value.points   = points;   else  points  = this.value.points;    
+            if (closed )  this.value.closed   = closed;   else  closed  = this.value.closed;    
+            if (degree )  this.value.degree   = degree;   else  degree  = this.value.degree;  
+            if (winding)  this.value.windingt = winding;  else  winding = this.value.winding; 
+            if (round  )  this.value.round    = round;    else  round   = this.value.round;  
         }
         else
         {
@@ -124,7 +134,7 @@ extends GShape
                 round);
         }
 
-
+        
         this.setUpdateValues(parse, 
         [
             ['points',  points ],

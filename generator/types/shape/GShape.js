@@ -76,7 +76,11 @@ extends GShapeBase
         if (this.value)
         {
             if (this.input)
+            {
                 this.value.props = props ?? this.input.toValue().props;
+                
+                if (props)  this.value.props = props;  else  props = this.value.props;  
+            }
             else
                 this.value.props = props;
 

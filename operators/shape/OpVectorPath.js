@@ -47,7 +47,6 @@ extends OpShape
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        // console.log('values =', [...values]);
         const points  = values[paramIds.findIndex(id => id == 'points' )];
         const closed  = values[paramIds.findIndex(id => id == 'closed' )];
         const degree  = values[paramIds.findIndex(id => id == 'degree' )];
