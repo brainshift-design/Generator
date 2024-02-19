@@ -275,26 +275,39 @@ extends OpColorBase
         const colors = super.getHeaderColors();
         const fills  = this.paramFills.value.items;
 
-        if (   fills.length > 0
-            && fills[0].isValid())
-        {
-            colors.back       = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
-            colors.stripeBack = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
-            colors.text       = getTextColorFromBackColor(colors.stripeBack, fills[0].toRgba()[3]);
-            colors.input      = rgb_a(colors.text, 0.2);
-            colors.output     = rgb_a(colors.text, 0.2);
 
-            colors.inWire  =
-            colors.outWire = 
-                !rgbaIsNaN(colors.stripeBack)
-                ? colors.stripeBack
-                : rgbFromType(ANY_VALUE, true);
+        colors.input      = rgb_a(colors.text, 0.2);
+        colors.output     = rgb_a(colors.text, 0.2);
+
+
+        if (this.isUnknown())
+        {
+            colors.back       = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
+            colors.stripeBack = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
+            colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+            colors.inWire     =
+            colors.outWire    = darkMode ? hex2rgb('888' ) : hex2rgb('aaa' );
         }
         else
         {
-            colors.stripeBack = rgbDocumentBody;
-        }
+            if (   fills.length > 0
+                && fills[0].isValid())
+            {
+                colors.back       = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
+                colors.stripeBack = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
+                colors.text       = getTextColorFromBackColor(colors.stripeBack, fills[0].toRgba()[3]);
 
+                colors.inWire  =
+                colors.outWire = 
+                    !rgbaIsNaN(colors.stripeBack)
+                    ? colors.stripeBack
+                    : rgbFromType(ANY_VALUE, true);
+            }
+            else
+            {
+                colors.stripeBack = rgbDocumentBody;
+            }
+        }
         
 
         return colors;
