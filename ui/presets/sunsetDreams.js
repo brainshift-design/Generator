@@ -181,7 +181,8 @@ const presetSunsetDreams = '\
             "z": "11",\
             "params":\
             [\
-                ["NUM#", "seed", "3282,0"]\
+                ["NUM#", "seed", "3282,0"],\
+                ["NUM#", "max", "255,0"]\
             ]\
         },\
         {\
@@ -249,7 +250,8 @@ const presetSunsetDreams = '\
             "z": "14",\
             "params":\
             [\
-                ["NUM#", "seed", "7005,0"]\
+                ["NUM#", "seed", "7005,0"],\
+                ["NUM#", "max", "255,0"]\
             ]\
         },\
         {\
@@ -279,7 +281,8 @@ const presetSunsetDreams = '\
             "z": "16",\
             "params":\
             [\
-                ["NUM#", "seed", "6076,0"]\
+                ["NUM#", "seed", "6076,0"],\
+                ["NUM#", "max", "255,0"]\
             ]\
         },\
         {\
@@ -321,7 +324,8 @@ const presetSunsetDreams = '\
             "z": "19",\
             "params":\
             [\
-                ["NUM#", "seed", "8927,0"]\
+                ["NUM#", "seed", "8927,0"],\
+                ["NUM#", "max", "255,0"]\
             ]\
         },\
         {\
@@ -447,7 +451,8 @@ const presetSunsetDreams = '\
             "z": "27",\
             "params":\
             [\
-                ["NUM#", "seed", "2725,0"]\
+                ["NUM#", "seed", "2725,0"],\
+                ["NUM#", "max", "255,0"]\
             ]\
         },\
         {\
@@ -525,7 +530,8 @@ const presetSunsetDreams = '\
             "z": "32",\
             "params":\
             [\
-                ["NUM#", "seed", "3781,0"]\
+                ["NUM#", "seed", "3781,0"],\
+                ["NUM#", "max", "255,0"]\
             ]\
         },\
         {\
@@ -698,7 +704,8 @@ const presetSunsetDreams = '\
             "z": "42",\
             "params":\
             [\
-                ["NUM#", "seed", "5568,0"]\
+                ["NUM#", "seed", "5568,0"],\
+                ["NUM#", "max", "255,0"]\
             ]\
         },\
         {\
@@ -713,7 +720,8 @@ const presetSunsetDreams = '\
             "z": "43",\
             "params":\
             [\
-                ["NUM#", "seed", "4459,0"]\
+                ["NUM#", "seed", "4459,0"],\
+                ["NUM#", "max", "255,0"]\
             ]\
         },\
         {\
@@ -728,7 +736,8 @@ const presetSunsetDreams = '\
             "z": "44",\
             "params":\
             [\
-                ["NUM#", "seed", "9130,0"]\
+                ["NUM#", "seed", "9130,0"],\
+                ["NUM#", "max", "255,0"]\
             ]\
         },\
         {\

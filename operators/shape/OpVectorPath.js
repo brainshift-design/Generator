@@ -30,10 +30,10 @@ extends OpShape
 
         
         this.paramPoints.input.types.push(SHAPE_LIST_VALUE);
-        this.paramPoints.listTypes   = [POINT_VALUE];
+        this.paramPoints.listTypes = [POINT_VALUE];
 
-        this.paramPoints.itemName    = ['point'];
-        this.paramPoints.showZero    =  false;
+        this.paramPoints.itemName  = ['point'];
+        this.paramPoints.showZero  =  false;
 
         
         this.paramWinding.divider = 0.38;
@@ -47,6 +47,7 @@ extends OpShape
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
+        // console.log('values =', [...values]);
         const points  = values[paramIds.findIndex(id => id == 'points' )];
         const closed  = values[paramIds.findIndex(id => id == 'closed' )];
         const degree  = values[paramIds.findIndex(id => id == 'degree' )];

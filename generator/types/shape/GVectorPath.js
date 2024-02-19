@@ -83,7 +83,7 @@ extends GShape
                 && input.points.objects)
             {
                 consoleAssert(
-                    input.points.items.length == input.points.objects.length,
+                     input.points.items.length == input.points.objects.length,
                     'Vector path points input item count must match object count');
 
                 for (let i = 0; i < input.points.items.length; i++)
@@ -104,7 +104,7 @@ extends GShape
                 this.nodeId,
                    points 
                 && points.items.length > 0 
-                    ? points 
+                    ? points
                     : input.points,
                 closed  ?? input.closed,
                 degree  ?? input.degree,

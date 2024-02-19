@@ -216,7 +216,8 @@ const presetRandomAbstract = '\
             [\
                 ["NUM#", "seed", "3691,0"],\
                 ["NUM#", "scale", "20,0"],\
-                ["NUM#", "offset", "0,1"]\
+                ["NUM#", "offset", "0,1"],\
+                ["NUM#", "max", "255,0"]\
             ]\
         },\
         {\
@@ -322,7 +323,8 @@ const presetRandomAbstract = '\
             [\
                 ["NUM#", "seed", "566,0"],\
                 ["NUM#", "scale", "1,1"],\
-                ["NUM#", "offset", "0,1"]\
+                ["NUM#", "offset", "0,1"],\
+                ["NUM#", "max", "255,0"]\
             ]\
         },\
         {\
@@ -505,7 +507,8 @@ const presetRandomAbstract = '\
             [\
                 ["NUM#", "seed", "4108,0"],\
                 ["NUM#", "scale", "10,0"],\
-                ["NUM#", "offset", "0,1"]\
+                ["NUM#", "offset", "0,1"],\
+                ["NUM#", "max", "255,0"]\
             ]\
         },\
         {\

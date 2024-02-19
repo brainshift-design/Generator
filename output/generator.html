@@ -17034,11 +17034,8 @@ extends GOperator1
             else if (this.input)
                 await this.input.eval(parse);
         }
-        else
-        {
-            if (this.input)
-                await this.input.eval(parse);
-        }
+        else if (this.input)
+            await this.input.eval(parse);
 
 
         const type = this.outputListType();
@@ -18315,7 +18312,6 @@ extends GOperator
         }
         
 
-        const preview = new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 10)));
         const length  = new NumberValue(this.value.items.length);
         const type    = new TextValue(finalListTypeFromItems(this.value.items));
 
@@ -37697,7 +37693,7 @@ extends GShape
                 && input.points.objects)
             {
                 consoleAssert(
-                    input.points.items.length == input.points.objects.length,
+                     input.points.items.length == input.points.objects.length,
                     'Vector path points input item count must match object count');
 
                 for (let i = 0; i < input.points.items.length; i++)
@@ -37718,7 +37714,7 @@ extends GShape
                 this.nodeId,
                    points 
                 && points.items.length > 0 
-                    ? points 
+                    ? points
                     : input.points,
                 closed  ?? input.closed,
                 degree  ?? input.degree,
@@ -45832,9 +45828,6 @@ function genParseRepeat(parse)
     const repeat = new GRepeat(nodeId, options);
 
 
-    repeat.activeAfter = parseInt(parse.move()) > 0;
-
-
     let nInputs = -1;
     
     if (!ignore)
@@ -45853,6 +45846,9 @@ function genParseRepeat(parse)
         genParseNodeEnd(parse, repeat);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
+
+
+    repeat.activeAfter = parseInt(parse.move()) > 0;
 
 
     parse.nTab++;

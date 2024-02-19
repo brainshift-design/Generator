@@ -1144,9 +1144,6 @@ function genParseRepeat(parse)
     const repeat = new GRepeat(nodeId, options);
 
 
-    repeat.activeAfter = parseInt(parse.move()) > 0;
-
-
     let nInputs = -1;
     
     if (!ignore)
@@ -1165,6 +1162,9 @@ function genParseRepeat(parse)
         genParseNodeEnd(parse, repeat);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
+
+
+    repeat.activeAfter = parseInt(parse.move()) > 0;
 
 
     parse.nTab++;

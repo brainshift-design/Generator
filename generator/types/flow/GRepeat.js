@@ -223,11 +223,8 @@ extends GOperator1
             else if (this.input)
                 await this.input.eval(parse);
         }
-        else
-        {
-            if (this.input)
-                await this.input.eval(parse);
-        }
+        else if (this.input)
+            await this.input.eval(parse);
 
 
         const type = this.outputListType();

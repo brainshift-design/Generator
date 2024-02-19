@@ -69,13 +69,12 @@ extends OperatorBase
         if (ignore) return request;
 
 
-        request.push(getActiveAfterNode(this.node, true) ? 1 : 0); // there are active nodes after this one
-
-
         const input = this.node.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
+
+        request.push(getActiveAfterNode(this.node, true) ? 1 : 0); // there are active nodes after this one
 
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
