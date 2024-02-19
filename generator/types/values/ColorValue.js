@@ -33,10 +33,10 @@ extends GValue
         consoleAssert(typeof c3    == 'number', 'ColorValue.create() c3 must be a number');
 
         return new ColorValue(
-            new NumberValue(space),
-            new NumberValue(c1   ),
-            new NumberValue(c2   ),
-            new NumberValue(c3   ));
+            new NumberValue(space, 0),
+            new NumberValue(c1,    0),
+            new NumberValue(c2,    0),
+            new NumberValue(c3,    0));
     }
 
 
