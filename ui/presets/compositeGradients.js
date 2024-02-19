@@ -129,7 +129,8 @@ const presetCompositeGradients = '\
         "z": "6",\
         "params":\
         [\
-                ["NUM#", "seed", "1836,0"]\
+                ["NUM#", "seed", "1836,0"],\
+                ["NUM#", "max", "360,0"]\
         ]\
         },\
         {\
@@ -219,7 +220,7 @@ const presetCompositeGradients = '\
         "prevSpace": "rgb",\
         "params":\
         [\
-                ["NUM#", "space", "1,0"],\
+                ["NUM#", "space", "2,0"],\
                 ["NUM#", "c1", "115,0"],\
                 ["NUM#", "c2", "30,0"],\
                 ["NUM#", "c3", "226,0"]\

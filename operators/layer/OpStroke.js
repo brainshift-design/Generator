@@ -276,8 +276,8 @@ extends OpColorBase
         const fills  = this.paramFills.value.items;
 
 
-        colors.input      = rgb_a(colors.text, 0.2);
-        colors.output     = rgb_a(colors.text, 0.2);
+        colors.input  = rgb_a(colors.text, 0.2);
+        colors.output = rgb_a(colors.text, 0.2);
 
 
         if (this.isUnknown())

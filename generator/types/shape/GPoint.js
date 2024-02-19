@@ -61,9 +61,7 @@ extends GOperator1
         let x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
         let y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
 
-        if (   input
-            && x
-            && y)
+        if (input)
         {
             const _input = input;
 
