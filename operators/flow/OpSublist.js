@@ -76,11 +76,15 @@ extends OperatorBase
             const min = fullLength.value > 0 ? Math.min(0, -fullLength.value) : Number.MIN_SAFE_INTEGER;
             const max = fullLength.value > 0 ? Math.max(0,  fullLength.value) : Number.MAX_SAFE_INTEGER;
 
-            this.paramEnd.controls[0].setMin(0,   min);
+            this.paramStart.controls[0].setMin(0, 0);
+            this.paramStart.controls[0].setMax(max, max);
+
+            this.paramEnd.controls[0].setMin(0);
             this.paramEnd.controls[0].setMax(max, max);
         }
         else
         {
+            this.paramStart.controls[0].setMin(0, 0);
             this.paramStart.controls[0].setMax();
 
             this.paramEnd  .controls[0].setMin();

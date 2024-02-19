@@ -79,7 +79,6 @@ extends GOperator1
         }
 
 
-        console.log('shift this.value.items =', [...this.value.items]);
         this.updateValueObjects();
 
 

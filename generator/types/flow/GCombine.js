@@ -94,7 +94,6 @@ extends GOperator
         }
 
 
-        console.log('combine this.value =', this.value);
         // reset object space
 
         const bounds = getObjBounds(this.value.objects);
