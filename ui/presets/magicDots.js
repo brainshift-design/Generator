@@ -305,7 +305,7 @@ const presetMagicDots = '\
         "z": "15",\
         "params":\
         [\
-                ["NUM#", "seed", "3810,0"]\
+                ["NUM#", "seed", "9730,0"]\
         ]\
         },\
         {\

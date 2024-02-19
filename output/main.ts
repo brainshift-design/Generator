@@ -1053,8 +1053,9 @@ const SET_PARAM            = 'SETP';
 const GET_PARAM            = 'GETP';
 const SUBLIST              = 'SUBLST';
 const UNIQUE               = 'UNIQ';
-const REVERSE_LIST         = 'REVLST';
 const REORDER_LIST         = 'RORD';
+const SHIFT_LIST           = 'SHFTLST';
+const REVERSE_LIST         = 'REVLST';
 const SORT                 = 'SORT';
 const COLUMN               = 'CLMN';
 const CELL                 = 'CELL';
@@ -1110,8 +1111,9 @@ const FLOW_TYPES =
     GET_PARAM,
     SUBLIST,
     UNIQUE,
-    REVERSE_LIST,
     REORDER_LIST,
+    SHIFT_LIST,
+    REVERSE_LIST,
     COLUMN,
     SORT,
     CELL,

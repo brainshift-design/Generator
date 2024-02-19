@@ -5462,8 +5462,9 @@ const SET_PARAM            = 'SETP';
 const GET_PARAM            = 'GETP';
 const SUBLIST              = 'SUBLST';
 const UNIQUE               = 'UNIQ';
-const REVERSE_LIST         = 'REVLST';
 const REORDER_LIST         = 'RORD';
+const SHIFT_LIST           = 'SHFTLST';
+const REVERSE_LIST         = 'REVLST';
 const SORT                 = 'SORT';
 const COLUMN               = 'CLMN';
 const CELL                 = 'CELL';
@@ -5519,8 +5520,9 @@ const FLOW_TYPES =
     GET_PARAM,
     SUBLIST,
     UNIQUE,
-    REVERSE_LIST,
     REORDER_LIST,
+    SHIFT_LIST,
+    REVERSE_LIST,
     COLUMN,
     SORT,
     CELL,
@@ -16869,10 +16871,10 @@ extends GOperator1
             return this;
             
 
-        let   count   = (await this.count  .eval(parse)).toValue();
+        let   count   = this.count ? (await this.count  .eval(parse)).toValue() : null;
         let  _while   = new NumberValue(1);
       //const iterate = (await this.iterate.eval(parse)).toValue();
-        const loop    = (await this.loop   .eval(parse)).toValue();
+        const loop    = this.loop  ? (await this.loop   .eval(parse)).toValue() : null;
 
 
         count = 
@@ -16881,15 +16883,16 @@ extends GOperator1
             : new NumberValue(0);
 
 
-      //if (this.iterate.type != NUMBER_VALUE) assertVolatile(this.iterate, this);
-        if (this.loop   .type != NUMBER_VALUE) assertVolatile(this.loop,    this);
+      //if (this.iterate && this.iterate.type != NUMBER_VALUE) assertVolatile(this.iterate, this);
+        if (this.loop    && this.loop   .type != NUMBER_VALUE) assertVolatile(this.loop,    this);
 
 
         this.value = new ListValue();
         this.value.objects = [];
 
 
-        if (   count.value > 0
+        if (   count
+            && count.value > 0
             && (   this.options.active
                 || this.activeAfter))
         {
@@ -16919,15 +16922,17 @@ extends GOperator1
                     parse.totalProgress += nRepeats;
 
 
-                if (this.loop.type != NUMBER_VALUE) 
+                if (   this.loop
+                    && this.loop.type != NUMBER_VALUE) 
                     this.loop.initLoop(parse, this.nodeId);
 
 
                 for (let i = 0, o = 0; i < Math.max(1, nRepeats); i++)
                 {
-                    _while = (await this._while.eval(parse)).toValue();
+                    _while = this._while ? (await this._while.eval(parse)).toValue() : null;
                     
-                    if (_while.value == 0)
+                    if (   _while 
+                        && _while.value == 0)
                         break;
                 
 
@@ -16986,7 +16991,8 @@ extends GOperator1
                     this.input.iterateLoop(parse);
 
 
-                    if (this.loop.type != NUMBER_VALUE)
+                    if (   this.loop
+                        && this.loop.type != NUMBER_VALUE)
                         this.loop.iterateCache(parse, this);
 
                     
@@ -17007,7 +17013,8 @@ extends GOperator1
                 }
 
 
-                if (this.loop.type != NUMBER_VALUE)
+                if (   this.loop
+                    && this.loop.type != NUMBER_VALUE)
                     this.loop.resetLoop(parse, this.nodeId);
 
 
@@ -18293,6 +18300,7 @@ extends GOperator
         }
 
 
+        console.log('combine this.value =', this.value);
         // reset object space
 
         const bounds = getObjBounds(this.value.objects);
@@ -19107,10 +19115,10 @@ extends GOperator1
                                     && this.value.objects
                                     && input.objects)
                                 {
-                                    const objects = input.objects.filter(o => o.itemIndex == i);
-                                    objects.forEach(o => o.itemIndex = j);
+                                    //const objects = input.objects.filter(o => o.itemIndex == i);
+                                    item.objects.forEach(o => o.itemIndex = j);
 
-                                    this.value.objects.push(...objects);
+                                    this.value.objects.push(...item.objects);
                                 }
                             }
                         }
@@ -19370,113 +19378,6 @@ extends GOperator1
 
 
 
-class GReverseList
-extends GOperator1
-{
-    // cachedValue = null;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(REVERSE_LIST, nodeId, options);
-    }
-
-
-    
-    reset()
-    {
-        super.reset();
-
-        // this.cachedValue = null;
-    }
-
-
-
-    copy()
-    {
-        const copy = new GReverseList(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (   this.isCached())
-            //&& this.cachedValue)
-            return this;
-
-
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-
-
-        this.counts = new ListValue();
-
-
-        // if (this.cachedValue)
-        //     this.value = this.cachedValue.copy();
-
-        // else
-        // {
-            if (input)
-            {
-                if (this.options.enabled)
-                {
-                    this.value = new ListValue();
-                    this.value.objects = [];
-
-                    for (let i = input.items.length-1; i >= 0; i--)
-                        this.value.items.push(input.items[i]);//.copy());
-
-                    if (input.objects)
-                    {
-                        for (let i = input.objects.length-1; i >= 0; i--)
-                            this.value.objects.push(input.objects[i]);
-                    }
-                }
-                else
-                    this.value = input.copy();//.copy();
-            }
-            else
-                this.value = ListValue.NaN.copy();
-
-
-            // this.cachedValue = this.value.copy();
-        // }
-    
-
-        this.updateValueObjects();
-
-
-        this.setUpdateValues(parse, 
-        [
-            ['type',   this.outputListType()                   ],
-            ['length', new NumberValue(this.value.items.length)]
-        ]); 
-               
-
-        if (parse.settings.showListTooltips)
-        {
-            this.setUpdateValues(parse,
-            [
-                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
-            ],
-            true);
-        }
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
 class GReorderList
 extends GOperator1
 {
@@ -19623,6 +19524,278 @@ extends GOperator1
         if (this.indices) this.indices.iterateLoop(parse);
     }
 }
+
+
+class GShiftList
+extends GOperator1
+{
+    offset = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(SHIFT_LIST, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.offset = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GShiftList(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.offset) copy.offset = this.offset.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (   this.isCached())
+            // && this.cachedValue)
+            return this;
+
+
+        const input  = this.input  ? (await this.input .eval(parse)).toValue() : null;
+        const offset = this.offset ? (await this.offset.eval(parse)).toValue() : null;
+
+
+        let length = 0;
+            
+
+        this.value = new ListValue();
+        this.value.objects = [];
+
+
+        if (   input
+            && offset)
+        {
+            if (input.items)
+            {
+                length = input.items.length;
+
+                if (this.options.enabled)
+                {
+                    let _offset = offset.value % input.items.length;
+                    while (_offset < 0) _offset += input.items.length;
+
+                    let j = 0;
+                    for (let i = _offset; i < input.items.length; i++, j++)
+                        this.addItem(input, i, j);
+
+                    for (let i = 0; i < _offset; i++, j++)
+                        this.addItem(input, i, j);
+                }
+                else
+                    this.value = input.copy();
+            }
+            else
+                this.value = ListValue.NaN.copy();
+        }
+
+
+        console.log('shift this.value.items =', [...this.value.items]);
+        this.updateValueObjects();
+
+
+        this.setUpdateValues(parse,
+        [
+            ['type',       this.outputListType()                          ],
+            ['length',     new NumberValue(this.value.items.length)       ], // used to set start and end maxima
+            ['offset',     offset                                         ]
+        ]);
+        
+
+        if (parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    addItem(input, i, j)
+    {
+        const item = input.items[i];
+
+        this.value.items.push(item ? item.copy() : new NullValue());
+        
+        if (   item
+            && this.value.objects
+            && input.objects)
+        {
+            // const objects = input.objects.filter(o => o.itemIndex == i);
+            item.objects.forEach(o => o.itemIndex = j);
+
+            this.value.objects.push(...item.objects);
+        }
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.offset && this.offset.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.offset) this.offset.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.offset) this.offset.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.offset) this.offset.iterateLoop(parse);
+    }
+}
+
+
+
+class GReverseList
+extends GOperator1
+{
+    // cachedValue = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(REVERSE_LIST, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        // this.cachedValue = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GReverseList(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (   this.isCached())
+            //&& this.cachedValue)
+            return this;
+
+
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+
+
+        this.counts = new ListValue();
+
+
+        // if (this.cachedValue)
+        //     this.value = this.cachedValue.copy();
+
+        // else
+        // {
+            if (input)
+            {
+                if (this.options.enabled)
+                {
+                    this.value = new ListValue();
+                    this.value.objects = [];
+
+                    for (let i = input.items.length-1; i >= 0; i--)
+                        this.value.items.push(input.items[i]);//.copy());
+
+                    if (input.objects)
+                    {
+                        for (let i = input.objects.length-1; i >= 0; i--)
+                            this.value.objects.push(input.objects[i]);
+                    }
+                }
+                else
+                    this.value = input.copy();//.copy();
+            }
+            else
+                this.value = ListValue.NaN.copy();
+
+
+            // this.cachedValue = this.value.copy();
+        // }
+    
+
+        this.updateValueObjects();
+
+
+        this.setUpdateValues(parse, 
+        [
+            ['type',   this.outputListType()                   ],
+            ['length', new NumberValue(this.value.items.length)]
+        ]); 
+               
+
+        if (parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
 
 
 class GSort
@@ -37569,7 +37742,7 @@ extends GShape
                 round);
         }
 
-        
+
         this.setUpdateValues(parse, 
         [
             ['points',  points ],
@@ -37585,8 +37758,8 @@ extends GShape
 
         await this.evalObjects(parse, 
         {
-            closed: closed.value > 0,
-            degree: degree.value + 1
+            closed: closed ? closed.value > 0 : false,
+            degree: degree ? degree.value + 1 : 0
         });
 
 
@@ -37624,6 +37797,7 @@ extends GShape
         const nSegPoints = Math.floor((points.length-1) / options.degree) * options.degree + 1;
         
         if (   options.closed
+            && points.length > 0
             && points.length - nSegPoints == options.degree-1)
             points.push(points[0].copy());
 
@@ -39978,7 +40152,8 @@ extends GOperator1
     async evalAffineObjects(parse, options, scaleCorners, scaleStyle, getXform)
     {
         if (   !this.value
-            || !this.value.isValid())
+            || !this.value.isValid()
+            || !this.input)
             return Rect.NaN;
 
 
@@ -40003,7 +40178,9 @@ extends GOperator1
 
             if (this.options.enabled)
             {
-                obj.applyTransform(xform, options.affectSpace.value > 0);
+                obj.applyTransform(
+                    xform, 
+                    options.affectSpace ? options.affectSpace.value > 0 : false);
 
                 obj.scaleCorners *= Math.abs(scaleCorners);
                 obj.scaleStyle   *= Math.abs(scaleStyle  );
@@ -40035,7 +40212,7 @@ extends GOperator1
         }
 
 
-        if (options.showCenter.value > 0)
+        if (options.showCenter ? options.showCenter.value > 0 : false)
         {
             const objects = [...this.value.objects]; // avoids infinite growth
             objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
@@ -40184,7 +40361,7 @@ extends GAffine
 
     async evalObjects(parse, options)
     {
-        const a     = options.angle.value/360*Tau;
+        const a     = options.angle ? options.angle.value/360*Tau : 0;
         const xform = createRotateTransform(a);
 
         return await this.evalAffineObjects(
@@ -40703,10 +40880,10 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input.value);
 
             
-            const centerX     = options.centerX   .value;
-            const centerY     = options.centerY   .value;
-            const units       = options.units     .value;
-            const showCenter  = options.showCenter.value;
+            const centerX     = options.centerX    ? options.centerX   .value : 0;
+            const centerY     = options.centerY    ? options.centerY   .value : 0;
+            const units       = options.units      ? options.units     .value : 0;
+            const showCenter  = options.showCenter ? options.showCenter.value : 0;
      
             const cx          = units == 0 ? centerX/100 : centerX;
             const cy          = units == 0 ? centerY/100 : centerY;
@@ -40840,14 +41017,15 @@ extends GOperator1
             return this;
 
 
+        const input      = this.input      ? (await this.input     .eval(parse)).toValue() : null;
         const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = input;
 
-            if (this.value)
+            // if (this.value)
                 this.value.nodeId = this.nodeId;
         }
         else
@@ -40881,7 +41059,7 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input.value);
 
 
-            const showCenter = options.showCenter.value;
+            const showCenter = options.showCenter ? options.showCenter.value : 0;
 
 
             const bounds = getObjBounds(this.value.objects);
@@ -42266,9 +42444,6 @@ extends GOperator2
                 input1.objects[0].toPoint(),
                 constrain.value);
                 
-            console.log('closest =', closest);
-            console.log('tangent =', tangent);
-
             this.value = PointValue.fromPoint(this.nodeId, closest);
         }
         else
@@ -43549,6 +43724,8 @@ function genRequest(request, save)
 
     const paramNodes = parse.paramNodeIds
         .map(id => parse.parsedNodes.find(n => n.nodeId == id));
+        //.filter(n => n !== undefined);
+
 
     const topLevelNodes = parse.parsedNodes
         .filter(n => 
@@ -44991,6 +45168,52 @@ function genParseUnique(parse)
 
     genParseNodeEnd(parse, unique);
     return unique;
+}
+
+
+
+function genParseShiftList(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const shift = new GShiftList(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(shift, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, shift);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        shift.input = genParse(parse);
+
+    shift.offset = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, shift);
+    return shift;
 }
 
 
@@ -51879,6 +52102,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);
     else if (parse.next == REORDER_LIST           ) result = genParseReorderList       (parse);
+    else if (parse.next == SHIFT_LIST             ) result = genParseShiftList         (parse);
     else if (parse.next == REVERSE_LIST           ) result = genParseReverseList       (parse);
     else if (parse.next == SORT                   ) result = genParseSort              (parse);
     else if (parse.next == FILTER                 ) result = genParseFilter            (parse);

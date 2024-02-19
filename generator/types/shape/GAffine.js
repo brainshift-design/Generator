@@ -46,7 +46,8 @@ extends GOperator1
     async evalAffineObjects(parse, options, scaleCorners, scaleStyle, getXform)
     {
         if (   !this.value
-            || !this.value.isValid())
+            || !this.value.isValid()
+            || !this.input)
             return Rect.NaN;
 
 
@@ -71,7 +72,9 @@ extends GOperator1
 
             if (this.options.enabled)
             {
-                obj.applyTransform(xform, options.affectSpace.value > 0);
+                obj.applyTransform(
+                    xform, 
+                    options.affectSpace ? options.affectSpace.value > 0 : false);
 
                 obj.scaleCorners *= Math.abs(scaleCorners);
                 obj.scaleStyle   *= Math.abs(scaleStyle  );
@@ -103,7 +106,7 @@ extends GOperator1
         }
 
 
-        if (options.showCenter.value > 0)
+        if (options.showCenter ? options.showCenter.value > 0 : false)
         {
             const objects = [...this.value.objects]; // avoids infinite growth
             objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));

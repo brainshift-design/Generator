@@ -64,6 +64,8 @@ function genRequest(request, save)
 
     const paramNodes = parse.paramNodeIds
         .map(id => parse.parsedNodes.find(n => n.nodeId == id));
+        //.filter(n => n !== undefined);
+
 
     const topLevelNodes = parse.parsedNodes
         .filter(n => 

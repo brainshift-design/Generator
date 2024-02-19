@@ -96,7 +96,7 @@ extends GAffine
 
     async evalObjects(parse, options)
     {
-        const a     = options.angle.value/360*Tau;
+        const a     = options.angle ? options.angle.value/360*Tau : 0;
         const xform = createRotateTransform(a);
 
         return await this.evalAffineObjects(

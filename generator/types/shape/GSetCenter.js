@@ -106,10 +106,10 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input.value);
 
             
-            const centerX     = options.centerX   .value;
-            const centerY     = options.centerY   .value;
-            const units       = options.units     .value;
-            const showCenter  = options.showCenter.value;
+            const centerX     = options.centerX    ? options.centerX   .value : 0;
+            const centerY     = options.centerY    ? options.centerY   .value : 0;
+            const units       = options.units      ? options.units     .value : 0;
+            const showCenter  = options.showCenter ? options.showCenter.value : 0;
      
             const cx          = units == 0 ? centerX/100 : centerX;
             const cy          = units == 0 ? centerY/100 : centerY;

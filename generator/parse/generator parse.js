@@ -155,6 +155,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SUBLIST                ) result = genParseSublist           (parse);
     else if (parse.next == UNIQUE                 ) result = genParseUnique            (parse);
     else if (parse.next == REORDER_LIST           ) result = genParseReorderList       (parse);
+    else if (parse.next == SHIFT_LIST             ) result = genParseShiftList         (parse);
     else if (parse.next == REVERSE_LIST           ) result = genParseReverseList       (parse);
     else if (parse.next == SORT                   ) result = genParseSort              (parse);
     else if (parse.next == FILTER                 ) result = genParseFilter            (parse);

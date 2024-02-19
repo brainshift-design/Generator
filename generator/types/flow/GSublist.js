@@ -99,10 +99,10 @@ extends GOperator1
                                     && this.value.objects
                                     && input.objects)
                                 {
-                                    const objects = input.objects.filter(o => o.itemIndex == i);
-                                    objects.forEach(o => o.itemIndex = j);
+                                    //const objects = input.objects.filter(o => o.itemIndex == i);
+                                    item.objects.forEach(o => o.itemIndex = j);
 
-                                    this.value.objects.push(...objects);
+                                    this.value.objects.push(...item.objects);
                                 }
                             }
                         }

@@ -60,10 +60,10 @@ extends GOperator1
             return this;
             
 
-        let   count   = (await this.count  .eval(parse)).toValue();
+        let   count   = this.count ? (await this.count  .eval(parse)).toValue() : null;
         let  _while   = new NumberValue(1);
       //const iterate = (await this.iterate.eval(parse)).toValue();
-        const loop    = (await this.loop   .eval(parse)).toValue();
+        const loop    = this.loop  ? (await this.loop   .eval(parse)).toValue() : null;
 
 
         count = 
@@ -72,15 +72,16 @@ extends GOperator1
             : new NumberValue(0);
 
 
-      //if (this.iterate.type != NUMBER_VALUE) assertVolatile(this.iterate, this);
-        if (this.loop   .type != NUMBER_VALUE) assertVolatile(this.loop,    this);
+      //if (this.iterate && this.iterate.type != NUMBER_VALUE) assertVolatile(this.iterate, this);
+        if (this.loop    && this.loop   .type != NUMBER_VALUE) assertVolatile(this.loop,    this);
 
 
         this.value = new ListValue();
         this.value.objects = [];
 
 
-        if (   count.value > 0
+        if (   count
+            && count.value > 0
             && (   this.options.active
                 || this.activeAfter))
         {
@@ -110,15 +111,17 @@ extends GOperator1
                     parse.totalProgress += nRepeats;
 
 
-                if (this.loop.type != NUMBER_VALUE) 
+                if (   this.loop
+                    && this.loop.type != NUMBER_VALUE) 
                     this.loop.initLoop(parse, this.nodeId);
 
 
                 for (let i = 0, o = 0; i < Math.max(1, nRepeats); i++)
                 {
-                    _while = (await this._while.eval(parse)).toValue();
+                    _while = this._while ? (await this._while.eval(parse)).toValue() : null;
                     
-                    if (_while.value == 0)
+                    if (   _while 
+                        && _while.value == 0)
                         break;
                 
 
@@ -177,7 +180,8 @@ extends GOperator1
                     this.input.iterateLoop(parse);
 
 
-                    if (this.loop.type != NUMBER_VALUE)
+                    if (   this.loop
+                        && this.loop.type != NUMBER_VALUE)
                         this.loop.iterateCache(parse, this);
 
                     
@@ -198,7 +202,8 @@ extends GOperator1
                 }
 
 
-                if (this.loop.type != NUMBER_VALUE)
+                if (   this.loop
+                    && this.loop.type != NUMBER_VALUE)
                     this.loop.resetLoop(parse, this.nodeId);
 
 

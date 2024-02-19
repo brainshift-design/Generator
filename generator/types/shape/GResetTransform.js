@@ -40,14 +40,15 @@ extends GOperator1
             return this;
 
 
+        const input      = this.input      ? (await this.input     .eval(parse)).toValue() : null;
         const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = input;
 
-            if (this.value)
+            // if (this.value)
                 this.value.nodeId = this.nodeId;
         }
         else
@@ -81,7 +82,7 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input.value);
 
 
-            const showCenter = options.showCenter.value;
+            const showCenter = options.showCenter ? options.showCenter.value : 0;
 
 
             const bounds = getObjBounds(this.value.objects);

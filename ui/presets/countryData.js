@@ -437,7 +437,7 @@ const presetCountryData = '\
             "params":\
             [\
                     ["NUM#", "operation", "3,0"],\
-                    ["NUM#", "operand", "5000000,0"]\
+                    ["NUM#", "operand", "500000,0"]\
             ]\
             },\
             {\

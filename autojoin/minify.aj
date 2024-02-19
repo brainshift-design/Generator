@@ -348,6 +348,8 @@ iconSetParam
 iconGetParam
 iconSublist
 iconUnique
+iconReorderList
+iconShiftList
 iconReverseList
 iconSort
 iconFilter
@@ -1623,6 +1625,8 @@ genParseSetParam
 genParseGetParam
 genParseSublist
 genParseUnique
+genParseReorderList
+genParseShiftList
 genParseReverseList
 genParseSort
 genParseFilter
@@ -1845,6 +1849,8 @@ GList
 GListCount
 GNull
 GRepeat
+GReorderList
+GShiftList
 GReverseList
 GSelect
 GSelectFromList
@@ -2143,6 +2149,8 @@ OpList
 OpListCount
 OpNull
 OpRepeat
+OpReorderList
+OpShiftList
 OpReverseList
 OpSelect
 OpSelectFromList

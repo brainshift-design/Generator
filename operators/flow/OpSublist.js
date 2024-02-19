@@ -33,20 +33,6 @@ extends OperatorBase
 
 
 
-    // isOrPrecededByUncached()
-    // {
-    //     return false;
-    // }
-
-
-
-    // isOrPrecededByMultiplier()
-    // {
-    //     return false;
-    // }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -129,8 +115,8 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramStart.enableControlText(true);
-        this.paramEnd  .enableControlText(true);
+        this.paramStart.enableControlText(true, this.paramStart.isUnknown());
+        this.paramEnd  .enableControlText(true, this.paramEnd  .isUnknown());
 
         this.updateParamControls();
     }

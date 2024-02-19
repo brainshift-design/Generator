@@ -124,7 +124,7 @@ extends GShape
                 round);
         }
 
-        
+
         this.setUpdateValues(parse, 
         [
             ['points',  points ],
@@ -140,8 +140,8 @@ extends GShape
 
         await this.evalObjects(parse, 
         {
-            closed: closed.value > 0,
-            degree: degree.value + 1
+            closed: closed ? closed.value > 0 : false,
+            degree: degree ? degree.value + 1 : 0
         });
 
 
@@ -179,6 +179,7 @@ extends GShape
         const nSegPoints = Math.floor((points.length-1) / options.degree) * options.degree + 1;
         
         if (   options.closed
+            && points.length > 0
             && points.length - nSegPoints == options.degree-1)
             points.push(points[0].copy());
 
