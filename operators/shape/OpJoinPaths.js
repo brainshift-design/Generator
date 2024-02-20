@@ -39,7 +39,7 @@ extends OpShape
 
     addNewInput()
     {
-        const newInput = new Input([VECTOR_PATH_VALUE]);//this.createInputForObjects([VECTOR_PATH_VALUE], getNodeInputValuesForUndo);//new Input([VECTOR_PATH_VALUE]);
+        const newInput = new Input(PATH_VALUES);//this.createInputForObjects([VECTOR_PATH_VALUE], getNodeInputValuesForUndo);//new Input([VECTOR_PATH_VALUE]);
         newInput.isNew = true;
 
 

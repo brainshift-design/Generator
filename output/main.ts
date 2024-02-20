@@ -1518,6 +1518,13 @@ const INTERSECT_LINES       = 'INTLIN';
 const INTERPOLATE_POINT     = 'PTLERP';
 
 
+const PATH_VALUES =
+[
+    VECTOR_PATH_VALUE, 
+    ARC_PATH_VALUE
+];
+
+
 const BOOLEAN               = 'BOOL';
 const BOOLEAN_VALUE         = 'BOOL#';
 
