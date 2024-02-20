@@ -96,16 +96,23 @@ extends GShape
             for (let i = 0; i < paths.length; i++)
             {
                 const path = paths[i];
-
+                
                 if (   !path
-                    || !path.points
+                    //|| !path.points
                     || !path.objects
                     ||  path.objects.length == 0)
                     continue;
 
 
+                let _degree;
+
+                     if (path.type == VECTOR_PATH_VALUE) _degree = path.degree.value;
+                else if (path.type == ARC_PATH_VALUE   ) _degree = 2;
+
+
                 const pathPoints = path.objects[0].pathPoints;
-                const pathDegree = Math.min(path.degree.value, 2) + 1;
+                const pathDegree = Math.min(_degree, 2) + 1;
+
                 
                 if (pathPoints.length == 0) continue;
 

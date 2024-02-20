@@ -332,6 +332,7 @@ function copyFigmaObject(obj)
         case POINT:       return FigmaPoint     .prototype.copy.call(obj);
         case VECTOR_PATH: return FigmaVectorPath.prototype.copy.call(obj);
         case BOOLEAN:     return FigmaBoolean   .prototype.copy.call(obj);
+        case ARC_PATH:    return FigmaArcPath   .prototype.copy.call(obj);
         case SHAPE_GROUP: return FigmaShapeGroup.prototype.copy.call(obj);
         case FRAME:       return FigmaFrame     .prototype.copy.call(obj);
     }
