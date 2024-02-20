@@ -23,12 +23,23 @@ extends FigmaVectorPath
             start + sweep)
             .map(p => PointValue.fromPoint(nodeId, p));
 
-        
+
         points.forEach(p => 
         {
-            if (pos > 0) p.y.value *= height/width;
-            else         p.y.value  = height/2 + (p.y.value - height/2) * height/width;
+            p.y.value = 
+                pos > 0
+                ? p.y.value * height/width
+                : height/2 + (p.y.value - height/2) * height/width;
+
+            if (pos == 0)
+            {
+                if (width  < 0) p.x.value += width;  
+                // if (height < 0) p.y.value += height; 
+            }
         });
+
+        if (width  < 0) width  *= -1; 
+        if (height < 0) height *= -1; 
 
 
         super(

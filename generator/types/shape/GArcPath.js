@@ -161,7 +161,7 @@ extends GShape
             let   sw = this.value.sweep.value/100 * Tau;
 
 
-            [x, y, w, h, , ] = validateObjectRect(x, y, w, h);
+            [x, , w, , , ] = validateObjectRect(x, y, w, h);
 
 
             if (   w != 0 
