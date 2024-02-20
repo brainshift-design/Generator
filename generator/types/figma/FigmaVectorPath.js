@@ -127,30 +127,38 @@ extends FigmaShape
             case 4:
             case 5:
                 {
+                    // console.log('1 bounds =', clone(bounds));
                     let i;
                     for (i = 0; i < this.pathPoints.length-3; i += 3)
                     {
+                        const b3 = bounds3(
+                            this.pathPoints[i  ], 
+                            this.pathPoints[i+1],
+                            this.pathPoints[i+2],
+                            this.pathPoints[i+3]);
+
+                        // console.log('b3 =', b3);
                         bounds = expandRect(
                             bounds, 
-                            bounds3(
-                                this.pathPoints[i  ], 
-                                this.pathPoints[i+1],
-                                this.pathPoints[i+2],
-                                this.pathPoints[i+3]));
+                            b3);
                     }
 
                     if (   this.closed
                         && i < this.pathPoints.length - 2)
                     {
+                        const b3 = bounds3(
+                            this.pathPoints.at(-3), 
+                            this.pathPoints.at(-2), 
+                            this.pathPoints.at(-1),
+                            this.pathPoints.at( 0));
+
+                        // console.log('b3 =', b3);
                         bounds = expandRect(
                             bounds, 
-                            bounds3(
-                                this.pathPoints.at(-3), 
-                                this.pathPoints.at(-2), 
-                                this.pathPoints.at(-1),
-                                this.pathPoints.at( 0)));
+                            b3);
                     }
 
+                    // console.log('2 bounds =', clone(bounds));
                     break;
                 }
             default:

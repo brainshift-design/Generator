@@ -345,12 +345,21 @@ function bounds3(p0, p1, p2, p3)
 
     for (const root of roots)
     {
+        const v = lerpv3(p0, p1, p2, p3, root);
+
+        // console.log('p0 =', p0);
+        // console.log('p1 =', p1);
+        // console.log('p2 =', p2);
+        // console.log('p3 =', p3);
+        // console.log('v  =', v );
+
         rect = expandRect_(
             rect, 
-            lerpv3(p0, p1, p2, p3, root));
+            v);
     }
 
 
+    // console.log('bounds rect =', clone(rect));
     return rect;
 }
 
@@ -358,33 +367,27 @@ function bounds3(p0, p1, p2, p3)
 
 function bounds3t(a, b, c, roots)
 {
-    let a_ = a * 3;
-    let b_ = b * 2;
+    a *= 3;
+    b *= 2;
 
 
-    let D = b_*b_ - 4*a_*c;
+    let D = b*b - 4*a*c;
     let r;
 
-    if (a_ == 0)
+    if (   Math.abs(a) < 1e-6
+        && Math.abs(b) > 1e-6) // avoid division by 0
     {
-        r = -c/b_;  if (r >= 0 && r <= 1) roots.push(r);
+        r = -c/b;  if (r >= 0 && r <= 1) roots.push(r);
+        return;
     }
-    else
-    {
-        const _2a = 1/(2*a_);
-        b_ *= _2a;
-    
-        if (D == 0)
-        {
-            if (b_ >= 0 && b_ <= 1) roots.push(-b_);
-        }
-        else if (D > 0)
-        {
-            D = Math.sqrt(D) * _2a;
 
-            r = -b_ + D;  if (r >= 0 && r <= 1) roots.push(r);
-            r = -b_ - D;  if (r >= 0 && r <= 1) roots.push(r);
-        }
+
+    if (D >= 0) // real roots exist
+    {
+        const sqrtD = Math.sqrt(D);
+
+        r = (-b + sqrtD) / (2*a);  if (r >= 0 && r <= 1) roots.push(r);
+        r = (-b - sqrtD) / (2*a);  if (r >= 0 && r <= 1) roots.push(r);
     }
 }
 

@@ -68,7 +68,7 @@ class Rect
 
 
     // w & h are kept 0 so that isEmpty() works logically on NaN rects
-    static get NaN() { return new Rect(Number.NaN, Number.NaN, 0, 0) };
+    static get NaN () { return new Rect(Number.NaN, Number.NaN, 0, 0) };
     static get Zero() { return new Rect(0, 0, 0, 0); }
 
 
@@ -114,8 +114,8 @@ extends Rect
 
 function expandRect(rect1, rect2)
 {
-    if (rect1.isNaN  ) return rect2;
-    if (rect2.isNaN  ) return rect1;
+    if (rect1.isNaN) return rect2;
+    if (rect2.isNaN) return rect1;
     
     return new AbsRect(
         Math.min(rect2.l, rect1.l),

@@ -115,7 +115,7 @@ extends GShape
                 if (   i > 0
                     && points.items.length > 1
                     && segment.length > 1)
-                    this.completeSegment(points, segment, degree);
+                    this.joinSegment(points, segment, degree);
 
                 points.items.push(...segment.map(p => PointValue.fromPoint(this.nodeId, p)));
             }
@@ -127,7 +127,7 @@ extends GShape
                 const segment = [ points.items[0].toPoint(),
                                   points.items[1].toPoint() ];
 
-                this.completeSegment(points, segment, degree);
+                this.joinSegment(points, segment, degree);
 
                 points.items.push(points.items[0].copy());
             }
@@ -175,6 +175,63 @@ extends GShape
 
 
 
+    joinSegment(points, segment, degree)
+    {
+        const p_2 = points.items.at(-2).toPoint();
+        const p_1 = points.items.at(-1).toPoint();
+
+        const p0  = segment[0];
+        const p1  = segment[1];
+
+        if (!equalv(p_1, p0))
+            points.items.push(...this.getJoinPoints(p_2, p_1, p0, p1, degree).map(p => PointValue.fromPoint(this.nodeId, p)));
+        else
+            points.items.pop();
+    }
+
+
+
+    getJoinPoints(p_2, p_1, p0, p1, degree)
+    {
+        const points = [];
+
+
+        switch (degree.value)
+        { 
+            case 0: // linear
+                points.push(lerpv(p_1, p0, 1/3));
+                points.push(lerpv(p_1, p0, 2/3));
+                break;
+
+            case 1: // cubic
+            {
+                const c = intersectLines(p_2, p_1, p1, p0, false);
+                points.push(lerpv(p_1, c, 2/3));
+                points.push(lerpv(p0,  c, 2/3));
+                break;
+            }
+            case 2: // smooth
+                points.push(addv(p_2, mulvs(subv(p_1, p_2), 2)));
+                points.push(addv(p1,  mulvs(subv(p0,  p1),  2)));
+                break;
+
+            case 3: // sin X
+                points.push(point(lerp(p_1.x, p0.x, 0.3615), p_1.y));
+                points.push(point(lerp(p0.x, p_1.x, 0.3615), p0 .y));
+                break;
+
+            case 4: // sin Y
+                points.push(point(p_1.x, lerp(p_1.y, p0.y, 0.3615)));
+                points.push(point(p0 .x, lerp(p0.y, p_1.y, 0.3615)));
+                break;
+        }
+
+        
+        return points;
+    }
+
+
+
     makeCubic(pathPoints, pathDegree)
     {
         const points = [pathPoints[0]];
@@ -197,63 +254,6 @@ extends GShape
        
         return points;
     }
-
-
-
-    getJoinPoints(p_2, p_1, p0, p1, degree)
-    {
-        const points = [];
-
-
-        switch (degree.value)
-        {
-            case 0: // linear
-                points.push(lerpv(p_1, p0, 1/3));
-                points.push(lerpv(p_1, p0, 2/3));
-                break;
-
-            case 1: // smooth
-                points.push(addv(p_2, mulvs(subv(p_1, p_2), 2)));
-                points.push(addv(p1,  mulvs(subv(p0,  p1),  2)));
-                break;
-
-            case 2: // sin X
-                points.push(point(lerp(p_1.x, p0.x, 0.3615), p_1.y));
-                points.push(point(lerp(p0.x, p_1.x, 0.3615), p0 .y));
-                break;
-
-            case 3: // sin Y
-                points.push(point(p_1.x, lerp(p_1.y, p0.y, 0.3615)));
-                points.push(point(p0 .x, lerp(p0.y, p_1.y, 0.3615)));
-                break;
-        }
-
-        
-        return points;
-    }
-
-
-
-    addSegment(points, p_2, p_1, p0, p1, degree)
-    {
-        points.items.push(...this.getJoinPoints(p_2, p_1, p0, p1, degree).map(p => PointValue.fromPoint(this.nodeId, p)));
-    }
-
-
-
-    completeSegment(points, segment, degree)
-    {
-        const p_2 = points.items.at(-2).toPoint();
-        const p_1 = points.items.at(-1).toPoint();
-
-        const p0  = segment[0];
-        const p1  = segment[1];
-
-        if (!equalv(p_1, p0))
-            this.addSegment(points, p_2, p_1, p0, p1, degree);
-        else
-            points.items.pop();
-}
 
 
 
