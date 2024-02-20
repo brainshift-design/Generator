@@ -1105,6 +1105,76 @@ function genParseShapeBoolean(parse)
 
 
 
+function genParseArcPath(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const arc = new GArcPath(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(arc, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, arc);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        arc.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'position': arc.position = genParse(parse); break;
+        case 'x':        arc.x        = genParse(parse); break;
+        case 'y':        arc.y        = genParse(parse); break;
+        case 'width':    arc.width    = genParse(parse); break;
+        case 'height':   arc.height   = genParse(parse); break;
+        case 'start':    arc.start    = genParse(parse); break;
+        case 'sweep':    arc.sweep    = genParse(parse); break;
+        case 'props':    arc.props    = genParse(parse); break;
+        }
+    }
+    
+    
+    arc.sweepInDegrees = parseInt(parse.move()) > 0;
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, arc);
+    return arc;
+}
+
+
+
 function genParseShapeGroup(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

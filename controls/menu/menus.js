@@ -797,6 +797,7 @@ function initGeneratorMenus()
                                      new MenuItem('',                      null,          {separator: true}),           
                                      new MenuItem('Join paths',            null,          {icon: iconJoinPaths,                   createType: JOIN_PATHS,            callback: e => actionManager.do(getCreateNodeAction(JOIN_PATHS,            btnShape.div, getCreateOptions(e)))}),
                                      new MenuItem('',                      null,          {separator: true}),
+                                     new MenuItem('Arc',                   null,          {icon: iconArcPath,                     createType: ARC_PATH,              callback: e => actionManager.do(getCreateNodeAction(ARC_PATH,              btnShape.div, getCreateOptions(e)))}),
                                      new MenuItem('Arc from points',       null,          {icon: iconArcFromPoints,               createType: ARC_FROM_POINTS,       callback: e => actionManager.do(getCreateNodeAction(ARC_FROM_POINTS,       btnShape.div, getCreateOptions(e)))}),
                                      new MenuItem('',                      null,          {separator: true}),           
                                      new MenuItem('Circle center',         null,          {icon: iconCircleCenter,                createType: CIRCLE_CENTER,         callback: e => actionManager.do(getCreateNodeAction(CIRCLE_CENTER,         btnShape.div, getCreateOptions(e)))}),

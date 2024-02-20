@@ -1491,6 +1491,9 @@ const FRAME_VALUE           = 'FRM#';
 const FRAME                 = 'FRM';
 const FRAME_TYPES           = [FRAME_VALUE, FRAME];
  
+const ARC_PATH_VALUE        = 'ARC#';
+const ARC_PATH              = 'ARC';
+const ARC_PATH_TYPES        = [ARC_PATH_VALUE, ARC_PATH];
 
 const MOVE                  = 'MOVE';
 const ROTATE                = 'ROT';
@@ -1555,6 +1558,7 @@ const SHAPE_VALUES =
     VECTOR_EDGE_VALUE,
     VECTOR_REGION_VALUE,
     VECTOR_NETWORK_VALUE,
+    ARC_PATH_VALUE,
     SHAPE_GROUP_VALUE,
     FRAME_VALUE,
     BOOLEAN_VALUE,
@@ -1593,6 +1597,7 @@ const SHAPE_TYPES =
     ...VECTOR_EDGE_TYPES,
     ...VECTOR_REGION_TYPES,
     ...VECTOR_NETWORK_TYPES,
+    ...ARC_PATH_TYPES,
     ...SHAPE_GROUP_TYPES,
     ...FRAME_TYPES,
     ...BOOLEAN_TYPES,
@@ -1613,6 +1618,7 @@ const SHAPE_TYPES =
     MEASURE_POINTS,
     VECTOR_LENGTH,
     CIRCLE_CENTER,
+    ARC_PATH,
     ARC_FROM_POINTS,
     INTERSECT_LINES,
     INTERPOLATE_POINT,

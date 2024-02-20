@@ -175,7 +175,7 @@ extends OpShape
 
 function createEllipseParamMenu(param, valueId)
 {
-    const menu = new Menu('Inner', false, true);
+    const menu = new Menu('Position', false, true);
 
     menu.minWidth = 130;
     

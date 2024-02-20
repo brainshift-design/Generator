@@ -48,13 +48,6 @@ extends FigmaVectorPath
         this.createDefaultSpace(
             x + width /2, 
             y + height/2);
-
-        // let bounds = this.getBounds();
-
-        // this.createDefaultSpace(
-        //     bounds.x + bounds.width /2,            
-        //     bounds.y + bounds.height/2            
-        // );
     }
 
 

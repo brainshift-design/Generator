@@ -5910,6 +5910,9 @@ const FRAME_VALUE           = 'FRM#';
 const FRAME                 = 'FRM';
 const FRAME_TYPES           = [FRAME_VALUE, FRAME];
  
+const ARC_PATH_VALUE        = 'ARC#';
+const ARC_PATH              = 'ARC';
+const ARC_PATH_TYPES        = [ARC_PATH_VALUE, ARC_PATH];
 
 const MOVE                  = 'MOVE';
 const ROTATE                = 'ROT';
@@ -5974,6 +5977,7 @@ const SHAPE_VALUES =
     VECTOR_EDGE_VALUE,
     VECTOR_REGION_VALUE,
     VECTOR_NETWORK_VALUE,
+    ARC_PATH_VALUE,
     SHAPE_GROUP_VALUE,
     FRAME_VALUE,
     BOOLEAN_VALUE,
@@ -6012,6 +6016,7 @@ const SHAPE_TYPES =
     ...VECTOR_EDGE_TYPES,
     ...VECTOR_REGION_TYPES,
     ...VECTOR_NETWORK_TYPES,
+    ...ARC_PATH_TYPES,
     ...SHAPE_GROUP_TYPES,
     ...FRAME_TYPES,
     ...BOOLEAN_TYPES,
@@ -6032,6 +6037,7 @@ const SHAPE_TYPES =
     MEASURE_POINTS,
     VECTOR_LENGTH,
     CIRCLE_CENTER,
+    ARC_PATH,
     ARC_FROM_POINTS,
     INTERSECT_LINES,
     INTERPOLATE_POINT,
@@ -8400,13 +8406,6 @@ extends FigmaVectorPath
         this.createDefaultSpace(
             x + width /2, 
             y + height/2);
-
-        // let bounds = this.getBounds();
-
-        // this.createDefaultSpace(
-        //     bounds.x + bounds.width /2,            
-        //     bounds.y + bounds.height/2            
-        // );
     }
 
 
@@ -8863,6 +8862,91 @@ extends FigmaShape
             operation: this.operation,
             children:  this.children
         };
+    }
+}
+
+
+class FigmaArcPath
+extends FigmaVectorPath
+{
+    position;
+    x;
+    y;
+    width;
+    height;
+
+    start;
+    sweep;
+
+    
+
+    constructor(nodeId, objectId, objectName, pos, x, y, width, height, start, sweep)
+    {
+        const points = makeArc_(
+            point(
+                x + width /2, 
+                y + height/2), 
+            width/2,  
+            start, 
+            start + sweep)
+            .map(p => PointValue.fromPoint(nodeId, p));
+
+        
+        points.forEach(p => 
+        {
+            if (pos > 0) p.y.value *= height/width;
+            else         p.y.value  = height/2 + (p.y.value - height/2) * height/width;
+        });
+
+
+        super(
+            nodeId, 
+            objectId,
+            objectName, 
+            points,
+            0,  // open
+            2,  // cubic
+            0,  // even-odd winding
+            0); // no round
+        
+        this.position = pos;
+        this.x        = x;
+        this.y        = y;
+        this.width    = width;
+        this.height   = height;
+
+        this.start    = start;
+        this.sweep    = sweep;
+
+        
+        this.createDefaultSpace(
+            x + width /2, 
+            y + height/2);
+    }
+
+
+
+    copy()
+    {
+        const copy = new FigmaArcPath(
+            this.nodeId,
+            this.objectId,
+            this.objectName,
+
+            this.position,
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            
+            this.start,
+            this.sweep);
+
+
+        copy.copyBase(this);
+
+
+        return copy;
     }
 }
 
@@ -16276,6 +16360,214 @@ function parseShapeBooleanValue(str, i = -1)
 
     
     return [bool, i - iStart];
+}
+
+
+
+class ArcPathValue
+extends ShapeValue
+{
+    position;
+    x;
+    y;
+    width;
+    height;
+    start;
+    sweep;
+
+
+
+    constructor(nodeId,
+                position = new NumberValue(0),
+                x        = new NumberValue(0), 
+                y        = new NumberValue(0), 
+                width    = new NumberValue(0), 
+                height   = new NumberValue(0), 
+                start    = new NumberValue(0),
+                sweep    = new NumberValue(0))
+    {
+        super(ARC_PATH_VALUE, nodeId);
+
+        this.position = position;
+        this.x        = x;
+        this.y        = y;
+        this.width    = width;
+        this.height   = height;
+        this.start    = start;
+        this.sweep    = sweep;
+    }
+
+
+
+    copy()
+    {
+        const copy = new ArcPathValue(
+            this.nodeId,
+            this.position.copy(), 
+            this.x       .copy(), 
+            this.y       .copy(), 
+            this.width   .copy(), 
+            this.height  .copy(), 
+            this.start   .copy(),
+            this.sweep   .copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(arc)
+    {
+        return arc
+            && this.position.equals(arc.position)
+            && this.x       .equals(arc.x       )
+            && this.y       .equals(arc.y       )
+            && this.width   .equals(arc.width   )
+            && this.height  .equals(arc.height  )
+            && this.start   .equals(arc.start   )
+            && this.sweep   .equals(arc.sweep   );
+    }
+
+
+
+    async eval(parse)
+    {
+        return this.copy();
+    }
+    
+    
+    
+    hasInitValue()
+    {
+        return super.hasInitValue()
+            && this.position.hasInitValue()
+            && this.x       .hasInitValue()
+            && this.y       .hasInitValue()
+            && this.width   .hasInitValue()
+            && this.height  .hasInitValue()
+            && this.start   .hasInitValue()
+            && this.sweep   .hasInitValue();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.position.isValid()
+            && this.x       .isValid()
+            && this.y       .isValid()
+            && this.width   .isValid()
+            && this.height  .isValid()
+            && this.start   .isValid()
+            && this.sweep   .isValid();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toString()
+    {
+        return      this.position.toString()
+            + ' ' + this.x       .toString()
+            + ' ' + this.y       .toString()
+            + ' ' + this.width   .toString()
+            + ' ' + this.height  .toString()
+            + ' ' + this.start   .toString()
+            + ' ' + this.sweep   .toString()
+            + ' ' + super.toString();
+    }
+
+
+
+    toPreviewString()
+    {
+        return 'arc';
+            // + ' ' + this.position.toPreviewString()
+            // + ' ' + this.x       .toPreviewString()
+            // + ' ' + this.y       .toPreviewString()
+            // + ' ' + this.width   .toPreviewString()
+            // + ' ' + this.height  .toPreviewString()
+            // + ' ' + this.start   .toPreviewString() + '°'
+            // + ' ' + this.sweep   .toPreviewString() + '°';
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.position.toDisplayString()
+            + ' ' + this.x       .toDisplayString()
+            + ' ' + this.y       .toDisplayString()
+            + ' ' + this.width   .toDisplayString()
+            + ' ' + this.height  .toDisplayString()
+            + ' ' + this.start   .toDisplayString()
+            + ' ' + this.sweep   .toDisplayString();
+    }
+
+
+
+    static NaN = new ArcPathValue(
+        '',
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
+}
+
+
+
+function parseArcPathValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [ArcPathValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const pos    = parseNumberValue(str[i]); i += pos   [1];
+    const x      = parseNumberValue(str[i]); i += x     [1];
+    const y      = parseNumberValue(str[i]); i += y     [1];
+    const width  = parseNumberValue(str[i]); i += width [1];
+    const height = parseNumberValue(str[i]); i += height[1];
+    const start  = parseNumberValue(str[i]); i += start [1];
+    const sweep  = parseNumberValue(str[i]); i += sweep [1];
+
+
+    const arc = new ArcPathValue(
+        '', // set node ID elsewhere,
+        pos   [0],
+        x     [0],
+        y     [0],
+        width [0],
+        height[0],
+        start [0],
+        sweep [0]);
+
+
+    i = parseShapeBaseValue(str, i, arc);
+
+    
+    return [arc, i - iStart];
 }
 
 
@@ -36294,27 +36586,6 @@ extends GShape
 
 
 
-    // toValue()
-    // {
-    //     const trap = new TrapezeValue(
-    //         this.nodeId,
-    //         this.x     .toValue(),
-    //         this.y     .toValue(),
-    //         this.width .toValue(),
-    //         this.height.toValue(),
-    //         this.round .toValue(),
-    //         this.bias  .toValue());
-
-    //     trap.copyCustomParams(this.value);
-
-    //     trap.props   = this.props.toValue();
-    //     trap.objects = this.value.objects.map(o => o.copy());
-
-    //     return trap;
-    // }
-
-
-
     isValid()
     {
         return super.isValid()
@@ -38845,6 +39116,240 @@ extends GShape
         super.iterateLoop(parse);
 
         this.inputs.forEach(i => i.iterateLoop(parse));
+    }
+}
+
+
+class GArcPath
+extends GShape
+{
+    position = null;
+    start    = null;
+    sweep    = null;
+
+    sweepInDegrees;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(ARC_PATH, nodeId, options);
+    }
+
+
+
+    reset()
+    {
+        super.reset();
+
+        this.position = null;
+        this.start    = null;
+        this.sweep    = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GArcPath(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.position) copy.position = this.position.copy();
+        if (this.start   ) copy.start    = this.start   .copy();
+        if (this.sweep   ) copy.sweep    = this.sweep   .copy();
+        
+        return copy;
+    }
+
+
+
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'position': return this.input ? this.value.position : this.position;
+            case 'x':        return this.input ? this.value.x        : this.x;
+            case 'y':        return this.input ? this.value.y        : this.y;
+            case 'width':    return this.input ? this.value.width    : this.width;
+            case 'height':   return this.input ? this.value.height   : this.height;
+            case 'start':    return this.input ? this.value.start    : this.start;
+            case 'sweep':    return this.input ? this.value.sweep    : this.sweep;
+        }
+
+        return super.paramFromId(paramId);
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        let [x, y, width, height] = await this.evalBaseParams(parse);
+
+        let input = this.input    ? (await this.input   .eval(parse)).toValue() : null;
+        let pos   = this.position ? (await this.position.eval(parse)).toValue() : null;
+        let start = this.start    ? (await this.start   .eval(parse)).toValue() : null;
+        let sweep = this.sweep    ? (await this.sweep   .eval(parse)).toValue() : null;
+
+
+        if (input)
+        {
+            this.value        = input.copy();
+            this.value.nodeId = this.nodeId;
+            this.value.copyCustomParams(input);
+
+            if (pos   )  this.value.position = pos;     else  pos    = this.value.position;
+            if (x     )  this.value.x        = x;       else  x      = this.value.x;      
+            if (y     )  this.value.y        = y;       else  y      = this.value.y;      
+            if (width )  this.value.width    = width;   else  width  = this.value.width;  
+            if (height)  this.value.height   = height;  else  height = this.value.height; 
+            if (start )  this.value.start    = start;   else  start  = this.value.start;
+            if (sweep )  this.value.sweep    = sweep;   else  sweep  = this.value.sweep;
+        }
+        else
+        {
+            this.value = new ArcPathValue(
+                this.nodeId,
+                pos,
+                x, 
+                y, 
+                width, 
+                height,
+                start,
+                sweep);
+        }
+
+
+        this.setUpdateValues(parse, 
+        [
+            ['position', pos   ],
+            ['x',        x     ],
+            ['y',        y     ],
+            ['width',    width ],
+            ['height',   height],
+            ['start',    start ],
+            ['sweep',    sweep ]
+        ]);
+
+
+        await this.evalShapeBase(parse);
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+       if (!this.options.enabled)
+           return;
+           
+           
+        this.value.objects = [];
+
+
+        if (   super.baseIsValid()
+            && this.value.x     .isValid()
+            && this.value.y     .isValid()
+            && this.value.width .isValid()
+            && this.value.height.isValid()) 
+        {
+            const vpos = this.value.position;
+            const vx   = this.value.x;
+            const vy   = this.value.y;
+            const vw   = this.value.width;
+            const vh   = this.value.height;
+
+            const _x = vpos.value <= 0 ? vx : new NumberValue(vx.value - vw.value, Math.max(vx.decimals, vw.decimals));
+            const _y = vpos.value <= 0 ? vy : new NumberValue(vy.value - vh.value, Math.max(vy.decimals, vh.decimals));
+            const _w = vpos.value <= 0 ? vw : new NumberValue(vw.value*2, Math.max(vx.decimals, vw.decimals));
+            const _h = vpos.value <= 0 ? vh : new NumberValue(vh.value*2, Math.max(vy.decimals, vh.decimals));            
+
+            let   x  = _x.value;
+            let   y  = _y.value;
+            let   w  = _w.value;
+            let   h  = _h.value;
+            const st = this.value.start.value/360 * Tau;
+            let   sw = this.value.sweep.value/100 * Tau;
+
+
+            [x, y, w, h, , ] = validateObjectRect(x, y, w, h);
+
+
+            if (   w != 0 
+                && h != 0)
+            {
+                if (this.sweepInDegrees) sw /= 3.6;
+
+                const arc = new FigmaArcPath(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    vpos.value,
+                    x, y, w, h, st, sw);
+
+                arc.createDefaultTransform(x, y);
+                arc.createDefaultTransformPoints(x, y, w, h);
+
+                this.value.objects.push(arc);
+            }
+        }
+
+
+        await super.evalObjects(parse);
+    }
+   
+    
+        
+    isValid()
+    {
+        return super.isValid()
+            && this.position && this.position.isValid()
+            && this.start    && this.start   .isValid()
+            && this.sweep    && this.sweep   .isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+ 
+        if (this.position) this.position.pushValueUpdates(parse);
+        if (this.start   ) this.start   .pushValueUpdates(parse);
+        if (this.sweep   ) this.sweep   .pushValueUpdates(parse);
+    }
+
+   
+        
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.position) this.position.invalidateInputs(parse, from, force);
+        if (this.start   ) this.start   .invalidateInputs(parse, from, force);
+        if (this.sweep   ) this.sweep   .invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+ 
+        if (this.position) this.position.iterateLoop(parse);
+        if (this.start   ) this.start   .iterateLoop(parse);
+        if (this.sweep   ) this.sweep   .iterateLoop(parse);
     }
 }
 
@@ -49834,6 +50339,76 @@ function genParseShapeBoolean(parse)
 
 
 
+function genParseArcPath(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const arc = new GArcPath(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(arc, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, arc);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        arc.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'position': arc.position = genParse(parse); break;
+        case 'x':        arc.x        = genParse(parse); break;
+        case 'y':        arc.y        = genParse(parse); break;
+        case 'width':    arc.width    = genParse(parse); break;
+        case 'height':   arc.height   = genParse(parse); break;
+        case 'start':    arc.start    = genParse(parse); break;
+        case 'sweep':    arc.sweep    = genParse(parse); break;
+        case 'props':    arc.props    = genParse(parse); break;
+        }
+    }
+    
+    
+    arc.sweepInDegrees = parseInt(parse.move()) > 0;
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, arc);
+    return arc;
+}
+
+
+
 function genParseShapeGroup(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -52265,6 +52840,9 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == BOOLEAN_VALUE          ) result = genParseShapeBooleanValue (parse);
     else if (parse.next == BOOLEAN                ) result = genParseShapeBoolean      (parse);
+
+    else if (parse.next == ARC_PATH_VALUE         ) result = genParseArcPathValue      (parse);
+    else if (parse.next == ARC_PATH               ) result = genParseArcPath           (parse);
 
     else if (parse.next == SHAPE_GROUP_VALUE      ) result = genParseShapeGroupValue   (parse);
     else if (parse.next == SHAPE_GROUP            ) result = genParseShapeGroup        (parse);

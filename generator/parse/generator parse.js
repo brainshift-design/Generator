@@ -304,6 +304,9 @@ function genParse(parse, inParam = true)
     else if (parse.next == BOOLEAN_VALUE          ) result = genParseShapeBooleanValue (parse);
     else if (parse.next == BOOLEAN                ) result = genParseShapeBoolean      (parse);
 
+    else if (parse.next == ARC_PATH_VALUE         ) result = genParseArcPathValue      (parse);
+    else if (parse.next == ARC_PATH               ) result = genParseArcPath           (parse);
+
     else if (parse.next == SHAPE_GROUP_VALUE      ) result = genParseShapeGroupValue   (parse);
     else if (parse.next == SHAPE_GROUP            ) result = genParseShapeGroup        (parse);
  

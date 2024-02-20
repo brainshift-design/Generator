@@ -16,6 +16,7 @@
 ../generator/types/figma/FigmaText.js
 ../generator/types/figma/FigmaPoint.js
 ../generator/types/figma/FigmaBoolean.js
+../generator/types/figma/FigmaArcPath.js
 ../generator/types/figma/FigmaShapeGroup.js
 ../generator/types/figma/FigmaFrame.js
 
@@ -67,6 +68,7 @@
 ../generator/types/values/VectorRegionValue.js
 ../generator/types/values/VectorNetworkValue.js
 ../generator/types/values/ShapeBooleanValue.js
+../generator/types/values/ArcPathValue.js
 ../generator/types/values/ShapeGroupValue.js
 ../generator/types/values/FrameValue.js
 
@@ -232,6 +234,7 @@
 ../generator/types/shape/GVectorEdge.js
 ../generator/types/shape/GVectorRegion.js
 ../generator/types/shape/GVectorNetwork.js
+../generator/types/shape/GArcPath.js
 ../generator/types/shape/GShapeGroup.js
 ../generator/types/shape/GFrame.js
 ../generator/types/shape/GApply.js
