@@ -682,7 +682,9 @@ function initGeneratorMenus()
                           new MenuItem('',              null,                 {separator: true}),
                           new MenuItem('Convert',       null,                 {icon: iconConvert,     childMenu: menuConvertNumber}),
                           new MenuItem('',              null,                 {separator: true}),
-                          new MenuItem('Curve',         null,                 {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,         btnNumber.div, getCreateOptions(e)))}), 
+                          new MenuItem('Quantize',      null,                 {icon: iconQuantize,    createType: NUMBER_QUANTIZE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_QUANTIZE,  btnNumber.div, getCreateOptions(e)))}),
+                          new MenuItem('Curve',         null,                 {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,     btnNumber.div, getCreateOptions(e)))}), 
+                          new MenuItem('',              null,                 {separator: true}),
                           new MenuItem('Interpolate',   'Interpolate number', {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))})]);
         
     

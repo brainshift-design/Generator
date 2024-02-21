@@ -46,13 +46,14 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const type = (await this.type    .eval(parse)).toValue();
-        const dec  = (await this.decimals.eval(parse)).toValue();
+        const input = this.input ? (await this.input   .eval(parse)).toValue() : null;
+        const type  = this.type  ? (await this.type    .eval(parse)).toValue() : null;
+        const dec   = this.dec   ? (await this.decimals.eval(parse)).toValue() : null;
 
 
-        if (this.input)
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = input;
 
             consoleAssert(
                 this.value.type == NUMBER_VALUE, 
@@ -77,9 +78,8 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            //['value',    this.value],
-            ['type',     type      ],
-            ['decimals', dec       ]
+            ['type',     type],
+            ['decimals', dec ]
         ]);
 
 

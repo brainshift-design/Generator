@@ -1143,6 +1143,7 @@ const NUMBER_SIGN             = 'NSIGN';
 const NUMBER_ABSOLUTE         = 'ABS';   
 const NUMBER_NEGATIVE         = 'NEG';   
 const NUMBER_ROUND            = 'ROUND';   
+const NUMBER_QUANTIZE         = 'QUANT';   
 const NUMBER_SIMPLE_MINMAX    = 'SMINMAX';   
 const NUMBER_MINMAX           = 'MINMAX';   
 const NUMBER_LIMITS           = 'LIM';   
@@ -1272,6 +1273,7 @@ const NUMBER_TYPES =
     NUMBER_ABSOLUTE,
     NUMBER_NEGATIVE,
     NUMBER_ROUND,
+    NUMBER_QUANTIZE,
     NUMBER_SIMPLE_MINMAX,
     NUMBER_MINMAX,
     NUMBER_LIMITS,
