@@ -1,4 +1,4 @@
-class GDefine
+class GIterate
 extends GOperator
 {
     inputs = [];
@@ -7,7 +7,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(DEFINE, nodeId, options);
+        super(ITERATE, nodeId, options);
     }
 
 
@@ -23,7 +23,7 @@ extends GOperator
 
     copy()
     {
-        const copy = new GDefine(this.nodeId, this.options);
+        const copy = new GIterate(this.nodeId, this.options);
 
         copy.copyBase(this);
 

@@ -1045,7 +1045,7 @@ const presetClock = '\
             "height": "64"\
             },\
             {\
-            "type": "DEFINE",\
+            "type": "ITER",\
             "id": "define",\
             "name": "define",\
             "renamed": "false",\
@@ -1104,7 +1104,7 @@ const presetClock = '\
             "z": "69"\
             },\
             {\
-            "type": "DEFINE",\
+            "type": "ITER",\
             "id": "define2",\
             "name": "define",\
             "renamed": "false",\

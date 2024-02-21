@@ -360,7 +360,7 @@ iconSelect
 iconCount
 iconContains
 iconForEach
-iconDefine
+iconIterate
 iconIfElse
 iconNumber
 iconConstant
@@ -1093,7 +1093,7 @@ CONTAINS
 SELECT
 IF_ELSE
 FILTER
-DEFINE
+ITERATE
 ANY_VALUE
 LIST_TYPES
 LIST_VALUES
@@ -1911,7 +1911,7 @@ GAnimate
 GConstant
 GConvertAngle
 GDateTime
-GDefine
+GIterate
 GInterpolate
 GLimits
 GMinMax
@@ -2213,7 +2213,7 @@ OpAnimate
 OpConstant
 OpConvertAngle
 OpDateTime
-OpDefine
+OpIterate
 OpInterpolate
 OpLimits
 OpMinMax

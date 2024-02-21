@@ -32,7 +32,8 @@ extends GOperator1
         {
             this.value = input;
 
-            input.points.items.reverse();
+            console.log('this.value =', this.value);
+            this.value.points.items.reverse();
 
             if (this.value)
                 this.value.nodeId = this.nodeId;
@@ -64,38 +65,38 @@ extends GOperator1
         if (   this.value
             && this.value.isValid())
         {
-            // this.value.objects = getValidObjects(this.input.value);
+            this.value.objects = getValidObjects(this.input.value);
 
 
-            // if (isListType(this.value.type))
-            // {
-            //     for (let i = 0; i < this.value.items.length; i++)
-            //         this.value.items[i].objects = this.value.objects.filter(o => o.itemIndex == i);
-            // }
+            if (isListType(this.value.type))
+            {
+                for (let i = 0; i < this.value.items.length; i++)
+                    this.value.items[i].objects = this.value.objects.filter(o => o.itemIndex == i);
+            }
    
             
 
 
-            // if (   this.value.type == VECTOR_PATH_VALUE
-            //     && this.value.objects
-            //     && this.value.objects.length > 0
-            //     && this.value.points.objects)
-            // {
-            //     for (let i = 0; i < this.value.objects[0].points.length; i++)
-            //     {
-            //         const p = this.value.objects[0].points[i].toPoint();
+            if (   PATH_VALUES.includes(this.value.type)
+                && this.value.objects
+                && this.value.objects.length > 0
+                && this.value.points.objects)
+            {
+                for (let i = 0; i < this.value.objects[0].points.length; i++)
+                {
+                    const p = this.value.objects[0].points[i].toPoint();
     
-            //         this.value.points.objects[i].x = p.x;
-            //         this.value.points.objects[i].y = p.y;
-            //     }
-            // }
+                    this.value.points.objects[i].x = p.x;
+                    this.value.points.objects[i].y = p.y;
+                }
+            }
 
 
-            // if (showCenter > 0)
-            // {
-            //     const objects = [...this.value.objects]; // avoids infinite growth
-            //     objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-            // }
+            if (showCenter > 0)
+            {
+                const objects = [...this.value.objects]; // avoids infinite growth
+                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
+            }
         }
         
         

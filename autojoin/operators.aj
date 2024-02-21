@@ -93,7 +93,7 @@
 ../operators/number/OpConstant.js
 
 ../operators/number/OpDateTime.js
-../operators/number/OpDefine.js
+../operators/number/OpIterate.js
 ../operators/number/OpSequence.js
 ../operators/number/OpRange.js
 ../operators/number/OpWave.js

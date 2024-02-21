@@ -299,7 +299,7 @@ extends GOperator1
 function assertVolatile(loop, node)
 {
     consoleAssert(
-           loop.type == DEFINE
+           loop.type == ITERATE
         || loop.type == FREEZE
         || loop.type == NUMBER_RANGE
         || loop.type == NUMBER_WAVE

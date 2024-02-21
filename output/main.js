@@ -588,7 +588,7 @@ const SELECT = 'SELECT';
 const SELECT_FROM_LIST = 'LSTSEL';
 const IF_ELSE = 'IF';
 const FILTER = 'LSTFLT';
-const DEFINE = 'DEFINE';
+const ITERATE = 'ITER';
 const ANY_VALUE = 'ANY#';
 const LIST_TYPES = [
     LIST_VALUE,
@@ -636,7 +636,7 @@ const FLOW_TYPES = [
     START,
     REPEAT,
     //FOREACH,
-    DEFINE,
+    ITERATE,
     CACHE,
     FREEZE,
     TIMER,

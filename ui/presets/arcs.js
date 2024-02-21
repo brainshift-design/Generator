@@ -102,7 +102,7 @@ const presetArcs = '\
       ]\
     },\
     {\
-      "type": "DEFINE",\
+      "type": "ITER",\
       "created": "1708458206457",\
       "updated": "1708458225930",\
       "id": "define",\

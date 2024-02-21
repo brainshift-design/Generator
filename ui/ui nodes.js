@@ -574,6 +574,7 @@ function handleLegacyNode(_node, genVersion)
     else if (_node.type == 'SEL'   ) _node.type = SELECT_FROM_LIST;
     else if (_node.type == 'EXTRP' ) _node.type = GET_PARAM;
     else if (_node.type == 'CENTR' ) _node.type = SET_CENTER;
+    else if (_node.type == 'DEFINE') _node.type = ITERATE;
 
 
     // handle math order of operations switch in version 339

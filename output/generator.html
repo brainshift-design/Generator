@@ -5485,7 +5485,7 @@ const SELECT               = 'SELECT';
 const SELECT_FROM_LIST     = 'LSTSEL';
 const IF_ELSE              = 'IF';
 const FILTER               = 'LSTFLT';
-const DEFINE               = 'DEFINE';  
+const ITERATE              = 'ITER';  
 
 
 const ANY_VALUE            = 'ANY#';
@@ -5544,7 +5544,7 @@ const FLOW_TYPES =
     START,
     REPEAT,
     //FOREACH,
-    DEFINE,
+    ITERATE,
     CACHE,
     FREEZE,
     TIMER,
@@ -17441,7 +17441,7 @@ extends GOperator1
 function assertVolatile(loop, node)
 {
     consoleAssert(
-           loop.type == DEFINE
+           loop.type == ITERATE
         || loop.type == FREEZE
         || loop.type == NUMBER_RANGE
         || loop.type == NUMBER_WAVE
@@ -23637,7 +23637,7 @@ extends GOperator
 
 
 
-class GDefine
+class GIterate
 extends GOperator
 {
     inputs = [];
@@ -23646,7 +23646,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(DEFINE, nodeId, options);
+        super(ITERATE, nodeId, options);
     }
 
 
@@ -23662,7 +23662,7 @@ extends GOperator
 
     copy()
     {
-        const copy = new GDefine(this.nodeId, this.options);
+        const copy = new GIterate(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -43580,6 +43580,122 @@ extends GOperator2
 }
 
 
+class GReversePath
+extends GOperator1
+{
+    constructor(nodeId, options)
+    {
+        super(REVERSE_PATH, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GReversePath(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+
+
+        if (input)
+        {
+            this.value = input;
+
+            console.log('this.value =', this.value);
+            this.value.points.items.reverse();
+
+            if (this.value)
+                this.value.nodeId = this.nodeId;
+        }
+        else
+        {
+            this.value = new NullValue();
+        }
+
+
+        await this.evalObjects(parse);
+
+
+        this.setUpdateValues(parse,
+        [
+            ['type', this.outputType()]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (   this.value
+            && this.value.isValid())
+        {
+            this.value.objects = getValidObjects(this.input.value);
+
+
+            if (isListType(this.value.type))
+            {
+                for (let i = 0; i < this.value.items.length; i++)
+                    this.value.items[i].objects = this.value.objects.filter(o => o.itemIndex == i);
+            }
+   
+            
+
+
+            if (   PATH_VALUES.includes(this.value.type)
+                && this.value.objects
+                && this.value.objects.length > 0
+                && this.value.points.objects)
+            {
+                for (let i = 0; i < this.value.objects[0].points.length; i++)
+                {
+                    const p = this.value.objects[0].points[i].toPoint();
+    
+                    this.value.points.objects[i].x = p.x;
+                    this.value.points.objects[i].y = p.y;
+                }
+            }
+
+
+            if (showCenter > 0)
+            {
+                const objects = [...this.value.objects]; // avoids infinite growth
+                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
+            }
+        }
+        
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+}
+
+
 class GPlace
 extends GOperator1
 {
@@ -48729,12 +48845,12 @@ function genParseConvertAngle(parse)
 
 
 
-function genParseDefine(parse)
+function genParseIterate(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const define = new GDefine(nodeId, options);
+    const define = new GIterate(nodeId, options);
 
 
     let nInputs = 0;
@@ -51488,6 +51604,50 @@ function genParseClosestPointOnPath(parse)
 
 
 
+function genParseReversePath(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const reverse = new GReversePath(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(reverse, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, reverse);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        reverse.input = genParse(parse);
+  
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, reverse);
+    return reverse;
+}
+
+
+
 function genParsePlace(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -52879,7 +53039,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == START                  ) result = genParseStart             (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
     else if (parse.next == CACHE                  ) result = genParseCache             (parse);
-    else if (parse.next == DEFINE                 ) result = genParseDefine            (parse);
+    else if (parse.next == ITERATE                ) result = genParseIterate           (parse);
     else if (parse.next == FREEZE                 ) result = genParseFreeze            (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
     else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
@@ -53086,6 +53246,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == INTERPOLATE_POINT      ) result = genParseInterpolatePoint  (parse);
     else if (parse.next == POINT_ALONG_PATH       ) result = genParsePointAlongPath    (parse);
     else if (parse.next == CLOSEST_POINT_ON_PATH  ) result = genParseClosestPointOnPath(parse);
+    else if (parse.next == REVERSE_PATH           ) result = genParseReversePath       (parse);
 
     else if (parse.next == PLACE                  ) result = genParsePlace             (parse);
     else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply        (parse);

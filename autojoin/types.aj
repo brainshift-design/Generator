@@ -124,7 +124,7 @@
 ../generator/types/number/GNaNisNumber.js
 ../generator/types/number/GConstant.js
 ../generator/types/number/GDateTime.js
-../generator/types/number/GDefine.js
+../generator/types/number/GIterate.js
 ../generator/types/number/GSequence.js
 ../generator/types/number/GRange.js
 ../generator/types/number/GWave.js

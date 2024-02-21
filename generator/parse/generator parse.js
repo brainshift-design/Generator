@@ -125,7 +125,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == START                  ) result = genParseStart             (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
     else if (parse.next == CACHE                  ) result = genParseCache             (parse);
-    else if (parse.next == DEFINE                 ) result = genParseDefine            (parse);
+    else if (parse.next == ITERATE                ) result = genParseIterate           (parse);
     else if (parse.next == FREEZE                 ) result = genParseFreeze            (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
     else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
@@ -332,6 +332,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == INTERPOLATE_POINT      ) result = genParseInterpolatePoint  (parse);
     else if (parse.next == POINT_ALONG_PATH       ) result = genParsePointAlongPath    (parse);
     else if (parse.next == CLOSEST_POINT_ON_PATH  ) result = genParseClosestPointOnPath(parse);
+    else if (parse.next == REVERSE_PATH           ) result = genParseReversePath       (parse);
 
     else if (parse.next == PLACE                  ) result = genParsePlace             (parse);
     else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply        (parse);

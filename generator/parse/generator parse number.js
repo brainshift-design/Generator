@@ -805,12 +805,12 @@ function genParseConvertAngle(parse)
 
 
 
-function genParseDefine(parse)
+function genParseIterate(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const define = new GDefine(nodeId, options);
+    const define = new GIterate(nodeId, options);
 
 
     let nInputs = 0;

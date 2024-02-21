@@ -341,7 +341,7 @@ const presetBrushStrokes = '\
             "height": "54"\
         },\
         {\
-            "type": "DEFINE",\
+            "type": "ITER",\
             "id": "define2",\
             "name": "define",\
             "renamed": "false",\
@@ -381,7 +381,7 @@ const presetBrushStrokes = '\
             "height": "54"\
         },\
         {\
-            "type": "DEFINE",\
+            "type": "DEITERFINE",\
             "id": "define",\
             "name": "define",\
             "renamed": "false",\

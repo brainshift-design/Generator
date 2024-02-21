@@ -1,4 +1,4 @@
-class   OpDefine
+class   OpIterate
 extends OperatorBase
 {
     paramValues;
@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(DEFINE, 'define', 'define', iconDefine);
+        super(ITERATE, 'iterate', 'iterate', iconIterate);
 
         this.cached         = false;
         this.iconOffsetY    = 1;

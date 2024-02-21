@@ -96,7 +96,7 @@ const presetBrickWall = '\
             ]\
         },\
         {\
-            "type": "DEFINE",\
+            "type": "ITER",\
             "id": "define",\
             "name": "define",\
             "renamed": "false",\

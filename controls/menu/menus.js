@@ -573,10 +573,11 @@ function initGeneratorMenus()
 
     menuSets = new Menu('Sets...', true, false);
     menuSets.addItems([
+        menuItemArray    = new MenuItem('Iterate. . .',     null, {icon: iconIterate,     createType: ITERATE,            callback: e => actionManager.do(getCreateNodeAction(ITERATE,            btnSets.div, getCreateOptions(e)))}),
+                           new MenuItem('',                 null, {separator: true}),
         menuItemSequence = new MenuItem('Sequence. . .',    null, {icon: iconSequence,    createType: NUMBER_SEQUENCE,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnSets.div, getCreateOptions(e)))}),
         menuItemRange    = new MenuItem('Range. . .',       null, {icon: iconRange,       createType: NUMBER_RANGE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANGE,       btnSets.div, getCreateOptions(e)))}),
         menuItemWave     = new MenuItem('Wave. . .',        null, {icon: iconWave,        createType: NUMBER_WAVE,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_WAVE,        btnSets.div, getCreateOptions(e)))}),
-        menuItemArray    = new MenuItem('Define. . .',      null, {icon: iconDefine,      createType: DEFINE,             callback: e => actionManager.do(getCreateNodeAction(DEFINE,             btnSets.div, getCreateOptions(e)))}),
                            new MenuItem('',                 null, {separator: true}),
                            new MenuItem('Random . . .',     null, {icon: iconRandom,      createType: NUMBER_RANDOM,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnSets.div, getCreateOptions(e)))}),
                            new MenuItem('Noise. . .',       null, {icon: iconNoise,       createType: NUMBER_NOISE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOISE,       btnSets.div, getCreateOptions(e)))}),

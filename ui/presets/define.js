@@ -153,7 +153,7 @@ const presetDefine = '\
             "active": "true"\
             },\
             {\
-            "type": "DEFINE",\
+            "type": "ITER",\
             "id": "define",\
             "name": "define",\
             "renamed": "false",\

@@ -38,7 +38,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case COLUMN:                  node = new OpColumn();             break;
         case CELL:                    node = new OpCell();               break;
          
-        case DEFINE:                  node = new OpDefine();             break;
+        case ITERATE:                 node = new OpIterate();             break;
         case NUMBER_SEQUENCE:         node = new OpSequence();           break;
         case NUMBER_RANGE:            node = new OpRange();              break;
         case NUMBER_WAVE:             node = new OpWave();               break;
@@ -185,6 +185,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case INTERPOLATE_POINT:       node = new OpInterpolatePoint();   break;
         case POINT_ALONG_PATH:        node = new OpPointAlongPath();     break;
         case CLOSEST_POINT_ON_PATH:   node = new OpClosestPointOnPath(); break;
+        case REVERSE_PATH:            node = new OpReversePath();        break;
 
         case PLACE:                   node = new OpPlace();              break;
  
