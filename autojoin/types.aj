@@ -267,6 +267,7 @@
 ../generator/types/shape/GClosestPointOnPath.js
 ../generator/types/shape/GIntersectLines.js
 ../generator/types/shape/GInterpolatePoint.js
+../generator/types/shape/GReversePath.js
 
 ../generator/types/shape/GPlace.js
 

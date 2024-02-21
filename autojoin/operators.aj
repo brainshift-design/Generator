@@ -233,6 +233,7 @@
 ../operators/shape/OpClosestPointOnPath.js
 ../operators/shape/OpIntersectLines.js
 ../operators/shape/OpInterpolatePoint.js
+../operators/shape/OpReversePath.js
 
 ../operators/shape/boolean/OpShapeBooleanBase.js
 ../operators/shape/boolean/OpShapeBoolean.js

@@ -490,6 +490,7 @@ const CIRCLE_CENTER         = 'CIRCEN';
 const ARC_FROM_POINTS       = 'ARCPT';
 const INTERSECT_LINES       = 'INTLIN';
 const INTERPOLATE_POINT     = 'PTLERP';
+const REVERSE_PATH          = 'REVPTH';
 
 
 const PATH_VALUES =
@@ -603,6 +604,7 @@ const SHAPE_TYPES =
     ARC_FROM_POINTS,
     INTERSECT_LINES,
     INTERPOLATE_POINT,
+    REVERSE_PATH,
 
     RENDER
 ];
