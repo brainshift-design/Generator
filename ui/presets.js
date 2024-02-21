@@ -117,7 +117,7 @@ function getPresetGraph(graphId)
         case 'falsePerspective':     return presetFalsePerspective;
         case 'rays':                 return presetRays;
         case 'magicDots':            return presetMagicDots;
-        
+        case 'arcs':                 return presetArcs;
 
         case 'twoMathNodes':         return presetTwoMathNodes;
         case 'quadraticFormula':     return presetQuadraticFormula;
