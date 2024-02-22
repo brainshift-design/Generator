@@ -28,12 +28,11 @@ extends GOperator1
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
 
 
-        if (input)
+        if (   input
+            && input.objects.length > 0
+            && input.objects[0].pathPoints)
         {
             this.value = input;
-
-            console.log('this.value =', this.value);
-            this.value.points.items.reverse();
 
             if (this.value)
                 this.value.nodeId = this.nodeId;
@@ -68,34 +67,25 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input.value);
 
 
-            if (isListType(this.value.type))
+            for (const obj of this.value.objects)
             {
-                for (let i = 0; i < this.value.items.length; i++)
-                    this.value.items[i].objects = this.value.objects.filter(o => o.itemIndex == i);
-            }
-   
-            
+                obj.nodeId   = this.nodeId;
+                obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-
-            if (   PATH_VALUES.includes(this.value.type)
-                && this.value.objects
-                && this.value.objects.length > 0
-                && this.value.points.objects)
-            {
-                for (let i = 0; i < this.value.objects[0].points.length; i++)
+                if (   this.options.enabled
+                    && (   obj.type == VECTOR_PATH
+                        || obj.type == ARC_PATH))
                 {
-                    const p = this.value.objects[0].points[i].toPoint();
-    
-                    this.value.points.objects[i].x = p.x;
-                    this.value.points.objects[i].y = p.y;
+                  //  obj.points     = obj.points    .reverse();
+                  //console.log('1 obj pathPoints =', [...obj.pathPoints]);
+                  obj.pathPoints = obj.pathPoints.reverse();
+                  //console.log('2 obj pathPoints =', [...obj.pathPoints]);
+                  //  obj.updatePathPoints();
+                  // obj.updatePathData();
+                  //console.log('1 obj pathData =', obj.pathData);
+                  obj.pathData = getPathDataFromPoints(obj.pathPoints, obj.closed, obj.degree);
+                  //console.log('2 obj pathPoints =', obj.pathData);
                 }
-            }
-
-
-            if (showCenter > 0)
-            {
-                const objects = [...this.value.objects]; // avoids infinite growth
-                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
             }
         }
         

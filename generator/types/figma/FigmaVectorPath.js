@@ -32,6 +32,7 @@ extends FigmaShape
         
 
         this.updatePathPoints();
+        this.updatePathData();
 
 
         let bounds = this.getBounds();
@@ -40,6 +41,10 @@ extends FigmaShape
             bounds.x + bounds.width /2,            
             bounds.y + bounds.height/2            
         );
+
+
+        // this.updatePathPoints();
+        // this.updatePathData();
     }
 
 
@@ -220,9 +225,8 @@ extends FigmaShape
 
     toData()
     {
-        this.updatePathPoints();
-        this.updatePathData();
-
+        // this.updatePathPoints();
+        // this.updatePathData();
 
         return [
             ...super.toData(),

@@ -1542,17 +1542,23 @@ function nodesAreParallel(nodes)
 
 function makeNodePath(node)
 {
+    if (!node) 
+        return '';
+
+
     let path = idFromNodePath(node.id);
 
+
     let group = node;
-    //console.log('group =', group);
-    //console.log('group.group =', group.group);
+    
     while (isValid(group = group.group))
         path = group.id + '/' + path;
+
 
     if (graph.currentPage.id != NULL)
         path = graph.currentPage.id + '/' + path;
 
+        
     return path;
 }
 
@@ -1560,7 +1566,9 @@ function makeNodePath(node)
 
 function idFromNodePath(path)
 {
-    return path.split('/').at(-1);
+    return path
+         ? path.split('/').at(-1)
+         : '';
 }
 
 
