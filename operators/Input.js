@@ -386,16 +386,19 @@ extends EventTarget
 
 
 
-    isUncached()
+    isUncached(stackOverflowProtect = 100)
     {
+        if (stackOverflowProtect <= 0)
+            return false;
+
         if (   this.connectedOutput
             && this.connectedOutput.node)
         {
             const result =
                     this.connectedOutput.param
                 && !this.connectedOutput.param.isNodeValue
-                ? this.connectedOutput.param.isUnknown()
-                : this.connectedOutput.node.isOrPrecededByUncached();
+                ? this.connectedOutput.param.isUnknown(stackOverflowProtect-1)
+                : this.connectedOutput.node.isOrPrecededByUncached(stackOverflowProtect-1);
 
             return result;
         }

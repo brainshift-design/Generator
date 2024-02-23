@@ -7627,7 +7627,7 @@ extends FigmaShape
         
         
         this.points  = points.map(p => p.copy());
-
+   
         this.closed  = closed;
         this.degree  = degree;
         this.winding = winding;
@@ -7648,19 +7648,22 @@ extends FigmaShape
             this.objectId,
             this.objectName,
 
-            this.points, 
+            this.points,
 
-            this.closed, 
+            this.closed,
             this.degree,
             this.winding,
 
             this.round);
 
 
-        copy.x      = this.x;
-        copy.y      = this.y;
-        copy.width  = this.width;
-        copy.height = this.height;
+        copy.x          = this.x;
+        copy.y          = this.y;
+        copy.width      = this.width;
+        copy.height     = this.height;
+
+        copy.pathPoints = [...this.pathPoints];
+        copy.pathData   = this.pathData;
 
 
         copy.copyBase(this);
@@ -8959,6 +8962,9 @@ extends FigmaVectorPath
             this.start,
             this.sweep);
 
+
+        copy.pathPoints = [...this.pathPoints];
+        copy.pathData   = this.pathData;
 
         copy.copyBase(this);
 
@@ -38267,7 +38273,7 @@ extends GShape
                 this.value.round  .value);
 
                 
-            const bounds = getObjBounds([path]);
+        const bounds = getObjBounds([path]);
 
             path.createDefaultSpace(
                 bounds.x + bounds.width /2,            
@@ -43620,10 +43626,8 @@ extends GOperator1
             && input.objects.length > 0
             && input.objects[0].pathPoints)
         {
-            this.value = input;
-
-            if (this.value)
-                this.value.nodeId = this.nodeId;
+            this.value        = input.copy();
+            this.value.nodeId = this.nodeId;
         }
         else
         {
@@ -43664,15 +43668,8 @@ extends GOperator1
                     && (   obj.type == VECTOR_PATH
                         || obj.type == ARC_PATH))
                 {
-                  //  obj.points     = obj.points    .reverse();
-                  //console.log('1 obj pathPoints =', [...obj.pathPoints]);
-                  obj.pathPoints = obj.pathPoints.reverse();
-                  //console.log('2 obj pathPoints =', [...obj.pathPoints]);
-                  //  obj.updatePathPoints();
-                  // obj.updatePathData();
-                  //console.log('1 obj pathData =', obj.pathData);
-                  obj.pathData = getPathDataFromPoints(obj.pathPoints, obj.closed, obj.degree);
-                  //console.log('2 obj pathPoints =', obj.pathData);
+                    obj.pathPoints.reverse();
+                    obj.updatePathData();
                 }
             }
         }

@@ -85,6 +85,9 @@ extends FigmaVectorPath
             this.sweep);
 
 
+        copy.pathPoints = [...this.pathPoints];
+        copy.pathData   = this.pathData;
+
         copy.copyBase(this);
 
 

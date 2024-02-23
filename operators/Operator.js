@@ -368,9 +368,12 @@ class Operator
 
 
 
-    getUncachedInputNodes()
+    getUncachedInputNodes(stackOverflowProtect = 100)
     {
         const uncachedNodes = [];
+
+        if (stackOverflowProtect <= 0)
+            return uncachedNodes;
 
         for (const input of this.inputs)
         {
@@ -379,7 +382,7 @@ class Operator
                 const node = input.connectedOutput.node;
 
                 if (!node.cached) pushUnique(uncachedNodes, node);
-                pushUnique(uncachedNodes, node.getUncachedInputNodes());
+                pushUnique(uncachedNodes, node.getUncachedInputNodes(stackOverflowProtect-1));
             }
         }
         
@@ -907,10 +910,10 @@ class Operator
 
 
 
-    isOrPrecededByUncached()
+    isOrPrecededByUncached(stackOverflowProtect = 100)
     {
         return !this.cached
-             || this.hasUncachedInputs();
+             || this.hasUncachedInputs(stackOverflowProtect-1);
     }
 
 
@@ -941,11 +944,14 @@ class Operator
 
 
 
-    hasUncachedInputs()
+    hasUncachedInputs(stackOverflowProtect = 100)
     {
+        if (stackOverflowProtect <= 0)
+            return false;
+
         for (const input of this.inputs)
         {
-            if (input.isUncached())
+            if (input.isUncached(stackOverflowProtect-1))
                 return true;
         }
 
@@ -991,9 +997,9 @@ class Operator
 
 
 
-    isUnknown()
+    isUnknown(stackOverflowProtect = 100)
     {
-        return this.isOrPrecededByUncached()
+        return this.isOrPrecededByUncached(stackOverflowProtect-1)
                //   this.hasUncachedInputs()
             && this.hasMultipliedOutputs();
     }

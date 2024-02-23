@@ -26,7 +26,7 @@ extends FigmaShape
         
         
         this.points  = points.map(p => p.copy());
-
+   
         this.closed  = closed;
         this.degree  = degree;
         this.winding = winding;
@@ -47,19 +47,22 @@ extends FigmaShape
             this.objectId,
             this.objectName,
 
-            this.points, 
+            this.points,
 
-            this.closed, 
+            this.closed,
             this.degree,
             this.winding,
 
             this.round);
 
 
-        copy.x      = this.x;
-        copy.y      = this.y;
-        copy.width  = this.width;
-        copy.height = this.height;
+        copy.x          = this.x;
+        copy.y          = this.y;
+        copy.width      = this.width;
+        copy.height     = this.height;
+
+        copy.pathPoints = [...this.pathPoints];
+        copy.pathData   = this.pathData;
 
 
         copy.copyBase(this);

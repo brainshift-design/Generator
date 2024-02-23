@@ -270,12 +270,12 @@ extends EventTarget
 
 
 
-    isUnknown()
+    isUnknown(stackOverflowProtect = 100)
     {
         return (      this.input
-                   && this.input.isUncached()
+                   && this.input.isUncached(stackOverflowProtect-1)
                 ||    this.isNodeValue
-                   && this.node.isUnknown())
+                   && this.node.isUnknown(stackOverflowProtect-1))
             && this.node.hasMultipliedOutputs();
     }
 

@@ -32,10 +32,8 @@ extends GOperator1
             && input.objects.length > 0
             && input.objects[0].pathPoints)
         {
-            this.value = input;
-
-            if (this.value)
-                this.value.nodeId = this.nodeId;
+            this.value        = input.copy();
+            this.value.nodeId = this.nodeId;
         }
         else
         {
@@ -76,15 +74,8 @@ extends GOperator1
                     && (   obj.type == VECTOR_PATH
                         || obj.type == ARC_PATH))
                 {
-                  //  obj.points     = obj.points    .reverse();
-                  //console.log('1 obj pathPoints =', [...obj.pathPoints]);
-                  obj.pathPoints = obj.pathPoints.reverse();
-                  //console.log('2 obj pathPoints =', [...obj.pathPoints]);
-                  //  obj.updatePathPoints();
-                  // obj.updatePathData();
-                  //console.log('1 obj pathData =', obj.pathData);
-                  obj.pathData = getPathDataFromPoints(obj.pathPoints, obj.closed, obj.degree);
-                  //console.log('2 obj pathPoints =', obj.pathData);
+                    obj.pathPoints.reverse();
+                    obj.updatePathData();
                 }
             }
         }

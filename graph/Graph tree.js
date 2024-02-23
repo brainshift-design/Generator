@@ -123,9 +123,12 @@ function getNodesAfterNode(node)
 
 
 
-function getProgressNodesAfterNode(node)
+function getProgressNodesAfterNode(node, stackOverflowProtect = 100)
 {
     let after = [];
+
+    if (stackOverflowProtect <= 0)
+        return after;
 
     for (const output of node.outputs)
     {
@@ -134,7 +137,7 @@ function getProgressNodesAfterNode(node)
             if (input.node.hasProgressBar)
                 pushUnique(after, input.node);
 
-            pushUnique(after, getProgressNodesAfterNode(input.node));
+            pushUnique(after, getProgressNodesAfterNode(input.node, stackOverflowProtect-1));
         }
     }
 
@@ -154,19 +157,23 @@ function getTerminalsInNodes(nodes)
 
 
 
-function getTerminalsAfterNode(node)
+function getTerminalsAfterNode(node, stackOverflowProtect = 100)
 {
     let after = [];
+
+
+    if (stackOverflowProtect <= 0)
+        return after;
 
 
     if (node.type == GROUP_NODE)
     {
         for (const input of node.inputs)
-            pushUnique(after, getTerminalsAfterNode(input.paramNode));
+            pushUnique(after, getTerminalsAfterNode(input.paramNode, stackOverflowProtect-1));
             
         for (const output of node.outputs) 
             for (const input of output.connectedInputs) 
-                pushUnique(after, getTerminalsAfterNode(input.node));//input.node);
+                pushUnique(after, getTerminalsAfterNode(input.node, stackOverflowProtect-1));//input.node);
     }
 
     else if (node.type == GROUP_PARAM)
@@ -185,7 +192,7 @@ function getTerminalsAfterNode(node)
             for (const output of node.outputs)
             {
                 for (const input of output.connectedInputs)
-                    pushUnique(afterNode, getTerminalsAfterNode(input.node));
+                    pushUnique(afterNode, getTerminalsAfterNode(input.node, stackOverflowProtect-1));
             }
 
             if (isEmpty(afterNode))
@@ -202,7 +209,7 @@ function getTerminalsAfterNode(node)
             for (const output of node.groupNode.outputs)
             {
                 for (const input of output.connectedInputs)
-                    pushUnique(afterGroupNode, getTerminalsAfterNode(input.node));
+                    pushUnique(afterGroupNode, getTerminalsAfterNode(input.node, stackOverflowProtect-1));
             }
 
             if (isEmpty(afterGroupNode))
@@ -217,7 +224,7 @@ function getTerminalsAfterNode(node)
         for (const output of node.outputs)
         {
             for (const input of output.connectedInputs)
-                pushUnique(after, getTerminalsAfterNode(input.node));
+                pushUnique(after, getTerminalsAfterNode(input.node, stackOverflowProtect-1));
         }
     }
 
