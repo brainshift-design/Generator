@@ -177,10 +177,10 @@ extends GShape
                     x, y, w, h, st, sw);
 
 
-                //arc.createDefaultSpace(x, y);
-    
-                arc.createDefaultTransform(x, y);
-                arc.createDefaultTransformPoints(x, y, w, h);
+                const bounds = getObjBounds([arc]);
+        
+                arc.createDefaultTransform(bounds.x, bounds.y);
+                arc.createDefaultTransformPoints(bounds.x, bounds.y, bounds.w, bounds.h);
 
 
                 this.value.objects.push(arc);
