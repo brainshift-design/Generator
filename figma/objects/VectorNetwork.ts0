@@ -11,16 +11,12 @@ function figCreateVectorNetwork(genNetwork)
     if (!genVectorNetworkIsValid(genNetwork))
         return null;
 
+        
     const figNetwork = figma.createVector();
 
     figUpdateVectorNetwork(figNetwork, genNetwork, true);
-    
-    // figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
 
     
-    // setObjectTransform(figNetwork, genNetwork, false);
-    // setObjectProps    (figNetwork, genNetwork);
-
     return figNetwork;
 }
 
@@ -33,7 +29,7 @@ function figUpdateVectorNetwork(figNetwork, genNetwork, isValid = false)
         return;
 
 
-    figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
+    figNetwork.setVectorNetworkAsync(genNetwork[FO_VECTOR_NETWORK_DATA]);
     
 
     setObjectTransform(figNetwork, genNetwork, false);

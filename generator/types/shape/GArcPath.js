@@ -176,8 +176,12 @@ extends GShape
                     vpos.value,
                     x, y, w, h, st, sw);
 
+
+                //arc.createDefaultSpace(x, y);
+    
                 arc.createDefaultTransform(x, y);
                 arc.createDefaultTransformPoints(x, y, w, h);
+
 
                 this.value.objects.push(arc);
             }

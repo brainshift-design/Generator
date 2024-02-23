@@ -202,8 +202,14 @@ extends GShape
                 this.value.winding.value,
                 this.value.round  .value);
 
-            
+                
             const bounds = getObjBounds([path]);
+
+            path.createDefaultSpace(
+                bounds.x + bounds.width /2,            
+                bounds.y + bounds.height/2            
+            );
+
 
             let x = bounds.x;
             let y = bounds.y;
@@ -213,7 +219,7 @@ extends GShape
             path.createDefaultTransform(x, y);
             path.createDefaultTransformPoints(x, y, w, h);
 
-            
+
             this.value.objects.push(path);
         }
 

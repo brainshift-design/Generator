@@ -1532,7 +1532,7 @@ figOnSelectionChange
 figPostMessageToUi
 makeObjectName
 figCreateObject
-figUpdateObject
+figUpdateObjectAsync
 genObjectIsValid
 figGetObjectSize
 clearObjectData
@@ -1603,8 +1603,8 @@ figNotifyMsg
 figNotify
 buttonText
 buttonAction
-figGetAllLocalVariables
-getVariableValues
+figGetAllLocalVariablesAsync
+getVariableValuesAsync
 figLinkNodeToVariable
 figUpdateVariable
 figLinkVariable

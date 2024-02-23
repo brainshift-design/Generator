@@ -2214,11 +2214,14 @@ console.clear();
 figma.payments.setPaymentStatusInDevelopment({type: 'PAID'});
 
 
-//figma.on('selectionchange', figOnSelectionChange);
+figma.loadAllPagesAsync().then(() =>
+{
+    //figma.on('selectionchange', figOnSelectionChange);
 
-figma.on('documentchange',  figOnDocumentChange);
-figma.on('selectionchange', figOnSelectionChange);
-figma.on('close',           figOnPluginClose);
+    figma.on('documentchange',  figOnDocumentChange);
+    figma.on('selectionchange', figOnSelectionChange);
+    figma.on('close',           figOnPluginClose);
+});
 
 
 figDeleteAllObjects(true);
@@ -2398,18 +2401,21 @@ function figDeleteObjectsFromNodeIds(nodeIds)
 
 function figDeleteAllObjects(forceDelete = false)
 {
-    for (const figObj of figma.currentPage.children)
+    figma.currentPage.loadAsync().then(() =>
     {
-        if (figObj.removed)
-            continue;
+        for (const figObj of figma.currentPage.children)
+        {
+            if (figObj.removed)
+                continue;
 
-        if (       figObj.getPluginData('objectId' ) != ''
-               &&  figObj.getPluginData('userId'   ) == figma.currentUser.id
-               //&&  figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
-               && (   parseInt(figObj.getPluginData('retain')) == 0
-                   || forceDelete)) 
-            figObj.remove();
-    }
+            if (    figObj.getPluginData('objectId') != ''
+                &&  figObj.getPluginData('userId'  ) == figma.currentUser.id
+                //&&  figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
+                && (   parseInt(figObj.getPluginData('retain')) == 0
+                    || forceDelete)) 
+                figObj.remove();
+        }
+    });
 }
 
 
@@ -2493,31 +2499,32 @@ function findObject(figObj, genIgnoreObjects)
 function figDeleteStylesFromNodeIds(nodeIds, mustDelete)
 {
     // styles are deleted first
-    
-    const paintStyles = figma.getLocalPaintStyles();
 
-    paintStyles
-        .filter(s => 
-                nodeIds.includes(s.getPluginData('nodeId')))
-//            && !parseBool(s.getPluginData('existing')))
-        .forEach(s => 
-        {
-            const nodeId   = s.getPluginData('nodeId');
-            const existing = parseBool(s.getPluginData('existing'));
-            
-            if (!existing) 
+    figma.getLocalPaintStylesAsync().then(paintStyles =>
+    {
+        paintStyles
+            .filter(s => 
+                    nodeIds.includes(s.getPluginData('nodeId')))
+    //            && !parseBool(s.getPluginData('existing')))
+            .forEach(s => 
             {
-                s.remove();
-            }
-            else if (mustDelete)
-            {
-                removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
+                const nodeId   = s.getPluginData('nodeId');
+                const existing = parseBool(s.getPluginData('existing'));
+                
+                if (!existing) 
+                {
+                    s.remove();
+                }
+                else if (mustDelete)
+                {
+                    removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
 
-                s.setPluginData('type',     NULL);
-                s.setPluginData('nodeId',   NULL);
-                s.setPluginData('existing', NULL);
-            }
-        });
+                    s.setPluginData('type',     NULL);
+                    s.setPluginData('nodeId',   NULL);
+                    s.setPluginData('existing', NULL);
+                }
+            });
+    });
 
 
     if (mustDelete)
@@ -2539,18 +2546,21 @@ var styleChangingFromGenerator = false;
         only one plugin runs at a time right now, so maybe it's not an issue.  */
 
 
-    // for (let i = 0; i < objNodes.length; i++)
+    // figma.currentPage.loadAsync().then(() =>
     // {
-    //     if (!objNodes[i]) continue;
-        
-    //     for (let j = 0; j < objNodes[i].length; j++)
-    //     {
-    //         if (!objNodes[i][j]) continue;
+        // for (let i = 0; i < objNodes.length; i++)
+        // {
+        //     if (!objNodes[i]) continue;
+            
+        //     for (let j = 0; j < objNodes[i].length; j++)
+        //     {
+        //         if (!objNodes[i][j]) continue;
 
-    //         const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('objectId')) == i);
-    //         if (!exists) objNodes[i][j] = null;
-    //     }
-    // }
+        //         const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('objectId')) == i);
+        //         if (!exists) objNodes[i][j] = null;
+        //     }
+        // }
+    // });
 //}
 
 
@@ -2713,9 +2723,9 @@ figma.ui.onmessage = function(msg)
         case 'figDeleteSavedConnectionsFromNode':     figDeleteSavedConnectionsFromNode    (msg.nodeId);                                  break;
         case 'figRemovePluginDataFromAllLocalStyles': figRemovePluginDataFromAllLocalStyles();                                            break;
 
-        case 'figGetAllLocalVariables':               figGetAllLocalVariables              (msg.nodeId, msg.px, msg.py);                  break;
+        case 'figGetAllLocalVariables':               figGetAllLocalVariablesAsync         (msg.nodeId, msg.px, msg.py);                  break;
         case 'figLinkNodeToVariable':                 figLinkNodeToVariable                (msg.nodeId, msg.variableId);                  break;
-        case 'figUpdateVariable':                     figUpdateVariable                    (msg.variableId, msg.value);                   break;
+        case 'figUpdateVariable':                     figUpdateVariableAsync               (msg.variableId, msg.value);                   break;
 
         case 'figGetAllLocalColorStyles':             figGetAllLocalColorStyles            (msg.nodeId, msg.px, msg.py);                  break;
         case 'figLinkNodeToExistingColorStyle':       figLinkNodeToExistingColorStyle      (msg.nodeId, msg.styleId);                     break;
@@ -2798,37 +2808,40 @@ async function figLoadLocal(key)
 
 function figGetLocalData(key)
 {
-    if (key == 'canvasEmpty')
+    figma.currentPage.loadAsync().then(() =>
     {
-        figPostMessageToUi(
+        if (key == 'canvasEmpty')
         {
-            cmd:  'uiReturnFigGetLocalData',
-            key:   key,
-            value: figma.currentPage.children.length == 0
-        });
-    }
-    else if (key == 'debugWarningCrash')
-    {
-        figma.clientStorage.getAsync('debugWarning').then(data =>
-        {
-            figPostMessageToUi({
+            figPostMessageToUi(
+            {
                 cmd:  'uiReturnFigGetLocalData',
                 key:   key,
-                value: data
+                value: figma.currentPage.children.length == 0
             });
-        });
-    }
-    else
-    {
-        figma.clientStorage.getAsync(key).then(data =>
+        }
+        else if (key == 'debugWarningCrash')
         {
-            figPostMessageToUi({
-                cmd:  'uiReturnFigGetLocalData',
-                key:   key,
-                value: data
+            figma.clientStorage.getAsync('debugWarning').then(data =>
+            {
+                figPostMessageToUi({
+                    cmd:  'uiReturnFigGetLocalData',
+                    key:   key,
+                    value: data
+                });
             });
-        });
-    }
+        }
+        else
+        {
+            figma.clientStorage.getAsync(key).then(data =>
+            {
+                figPostMessageToUi({
+                    cmd:  'uiReturnFigGetLocalData',
+                    key:   key,
+                    value: data
+                });
+            });
+        }
+    });
 }
 
 
@@ -2941,30 +2954,30 @@ function initPageStyles(nodes)
     figStyleArrays = [];
 
 
-    const paintStyles = figma.getLocalPaintStyles();
-
-
-    for (const _node of nodes)
+    figma.getLocalPaintStylesAsync().then(paintStyles =>
     {
-        const node = JSON.parse(_node);
-
-        if (node.type == COLOR_STYLE)
+        for (const _node of nodes)
         {
-            const style = paintStyles.find(s =>
-            {
-                const nodeId = s.getPluginData('nodeId');
-                return nodeId == node.id;
-            });
+            const node = JSON.parse(_node);
 
-            if (style)
+            if (node.type == COLOR_STYLE)
             {
-                figStyleArrays.push({
-                    nodeId:   node.id, 
-                    existing: parseBool(node.existing), 
-                    styles:   [style]});
+                const style = paintStyles.find(s =>
+                {
+                    const nodeId = s.getPluginData('nodeId');
+                    return nodeId == node.id;
+                });
+
+                if (style)
+                {
+                    figStyleArrays.push({
+                        nodeId:   node.id, 
+                        existing: parseBool(node.existing), 
+                        styles:   [style]});
+                }
             }
         }
-    }
+    });
 }
 
 
@@ -3188,8 +3201,8 @@ async function figGetValue(key, spec)
 
     switch (key)
     {
-        case 'getVariableData':  
-            result = getVariableValues(spec);
+        case 'getVariableData':
+            result = await getVariableValuesAsync(spec);
             break;
 
         case 'getPaidStatus':
@@ -3216,10 +3229,13 @@ async function figGetValue(key, spec)
 
 function figGetVariableUpdates(varIds)
 {
-    figPostMessageToUi(
+    getVariableValuesAsync(varIds).then(values =>
     {
-        cmd:   'uiReturnFigGetVariableUpdates',
-        values: getVariableValues(varIds)
+        figPostMessageToUi(
+        {
+            cmd:   'uiReturnFigGetVariableUpdates',
+            values: values
+        });
     });
 }
 
@@ -3326,14 +3342,15 @@ function figDeleteSavedConnectionsFromNode(nodeId)
 
 function figRemovePluginDataFromAllLocalStyles()
 {
-    const localStyles = figma.getLocalPaintStyles();
-
-    for (const style of localStyles)
+    figma.getLocalPaintStylesAsync().then(localStyles =>
     {
-        style.setPluginData('type',     '');
-        style.setPluginData('nodeId',   '');
-        style.setPluginData('existing', '');
-    }
+        for (const style of localStyles)
+        {
+            style.setPluginData('type',     '');
+            style.setPluginData('nodeId',   '');
+            style.setPluginData('existing', '');
+        }
+    });
 }
 
 
@@ -3368,46 +3385,46 @@ function figGetMousePosition(clientPosition)
 function figSetWindowRect(x, y, width, height)
 {
     return;
-    (async function()
-    {
-        //console.log('figma.viewport.bounds =', figma.viewport.bounds);
-        //console.log('_x =',      x);
-        //console.log('_y =',      y);
-        //console.log('_width =',  width);
-        //console.log('_height =', height);
+    // (async function()
+    // {
+    //     //console.log('figma.viewport.bounds =', figma.viewport.bounds);
+    //     //console.log('_x =',      x);
+    //     //console.log('_y =',      y);
+    //     //console.log('_width =',  width);
+    //     //console.log('_height =', height);
 
-        const rect = {
-            x:      Math.round(x),
-            y:      Math.round(y),
-            width:  Math.floor(Math.max(0, width )),
-            height: Math.floor(Math.max(0, height))    
-        };
+    //     const rect = {
+    //         x:      Math.round(x),
+    //         y:      Math.round(y),
+    //         width:  Math.floor(Math.max(0, width )),
+    //         height: Math.floor(Math.max(0, height))    
+    //     };
 
         
-        // if (windowDock != 'normal')
-        //     position = true;
+    //     // if (windowDock != 'normal')
+    //     //     position = true;
 
-        // if (isNaN(rect.x)) rect.x = await figma.clientStorage.getAsync('windowX');
-        // if (isNaN(rect.y)) rect.y = await figma.clientStorage.getAsync('windowY');
-
-
-        // dockWindow(
-        //     windowDock,
-        //     rect, 
-        //     figma.viewport.bounds);
+    //     // if (isNaN(rect.x)) rect.x = await figma.clientStorage.getAsync('windowX');
+    //     // if (isNaN(rect.y)) rect.y = await figma.clientStorage.getAsync('windowY');
 
 
-        figma.ui.reposition(rect.x,     rect.y     );
-        figma.ui.resize    (rect.width, rect.height);
-
-        figma.clientStorage.setAsync('windowX',      rect.x     );
-        figma.clientStorage.setAsync('windowY',      rect.y     );
-        figma.clientStorage.setAsync('windowWidth',  rect.width );
-        figma.clientStorage.setAsync('windowHeight', rect.height);
+    //     // dockWindow(
+    //     //     windowDock,
+    //     //     rect, 
+    //     //     figma.viewport.bounds);
 
 
-        figPostMessageToUi({cmd: 'uiReturnFigSetWindowRect'});
-    })();
+    //     figma.ui.reposition(rect.x,     rect.y     );
+    //     figma.ui.resize    (rect.width, rect.height);
+
+    //     figma.clientStorage.setAsync('windowX',      rect.x     );
+    //     figma.clientStorage.setAsync('windowY',      rect.y     );
+    //     figma.clientStorage.setAsync('windowWidth',  rect.width );
+    //     figma.clientStorage.setAsync('windowHeight', rect.height);
+
+
+    //     figPostMessageToUi({cmd: 'uiReturnFigSetWindowRect'});
+    // })();
 }
 
 
@@ -3791,7 +3808,7 @@ function figCreateObject(genObj, addObject = null)
 
 
 
-function figUpdateObject(figObj, genObj)
+async function figUpdateObjectAsync(figObj, genObj)
 {
     if (  !genObjectIsValid(genObj)
         || figObj == undefined
@@ -3826,6 +3843,9 @@ function figUpdateObject(figObj, genObj)
         &&  figObj != null
         && !figObj.removed)
     {
+        if (figObj.parent == figma.currentPage)
+            await figma.currentPage.loadAsync();
+
         figObj.parent.appendChild(figObj);
 
         if (genObj[FO_DECO])
@@ -3934,7 +3954,7 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
                && !figObj.removed
                &&  figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
         {
-            figUpdateObject(figObj, genObj);
+            await figUpdateObjectAsync(figObj, genObj);
 
             if (    figObj != undefined
                 &&  figObj != null
@@ -4002,6 +4022,9 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
     
     for (const point of figPoints)
     {
+        if (point.parent == figma.currentPage)
+            await figma.currentPage.loadAsync();
+        
         if (    point != undefined
             &&  point != null
             && !point.removed
@@ -4565,68 +4588,69 @@ function updateDecoObject(figObj)
 
 function figGetAllLocalColorStyles(nodeId, px, py)
 {
-    const _styles = figma.getLocalPaintStyles();
-
-
-    const styles = new Array();
-
-    for (const _style of _styles)
+    figma.getLocalPaintStylesAsync().then(_styles =>
     {
-        const _nodeId   = _style.getPluginData('nodeId');
-        const _existing = _style.getPluginData('existing');
+        const styles = new Array();
 
-        const existing = !!_existing;
-
-        const style = { 
-            id:       _style.id,
-            nodeId:   _nodeId,
-            name:     _style.name,
-            existing: existing,
-            paints:   new Array()
-        };
-
-        
-        let onlyPaint = true;
-
-        for (const _paint of _style.paints)
+        for (const _style of _styles)
         {
-            if (_paint.type == 'SOLID')
+            const _nodeId   = _style.getPluginData('nodeId');
+            const _existing = _style.getPluginData('existing');
+
+            const existing = !!_existing;
+
+            const style = { 
+                id:       _style.id,
+                nodeId:   _nodeId,
+                name:     _style.name,
+                existing: existing,
+                paints:   new Array()
+            };
+
+            
+            let onlyPaint = true;
+
+            for (const _paint of _style.paints)
             {
-                style.paints.push([
-                    _paint.color.r,
-                    _paint.color.g,
-                    _paint.color.b,
-                    _paint.opacity]);
+                if (_paint.type == 'SOLID')
+                {
+                    style.paints.push([
+                        _paint.color.r,
+                        _paint.color.g,
+                        _paint.color.b,
+                        _paint.opacity]);
+                }
+                else
+                {
+                    onlyPaint = false;
+                    break;
+                }
             }
-            else
-            {
-                onlyPaint = false;
-                break;
-            }
+
+
+            if (onlyPaint)
+                styles.push(style);
         }
 
 
-        if (onlyPaint)
-            styles.push(style);
-    }
-
-
-    figPostMessageToUi({
-        cmd:   'uiReturnFigGetAllLocalColorStyles',
-        nodeId: nodeId,
-        px:     px,
-        py:     py,
-        styles: JSON.stringify(styles)});
+        figPostMessageToUi({
+            cmd:   'uiReturnFigGetAllLocalColorStyles',
+            nodeId: nodeId,
+            px:     px,
+            py:     py,
+            styles: JSON.stringify(styles)});
+    });
 }
 
 
 
 function figLinkNodeToExistingColorStyle(nodeId, styleId)
 {
-    const localStyles = figma.getLocalPaintStyles();
-
-    if (styleId != NULL) figLinkColorStyle(localStyles, nodeId, styleId);
-    else                 figClearColorStyle(localStyles, nodeId);
+    figma.getLocalPaintStylesAsync().then(localStyles =>
+    {
+        if (styleId != NULL) figLinkColorStyle(localStyles, nodeId, styleId);
+        else                 figClearColorStyle(localStyles, nodeId);
+    });
 }
 
 
@@ -4736,53 +4760,56 @@ function figUpdateStyles(msg)
             figStyles = null;
 
 
-        const figStyle    = figStyles.styles[0];
+        const figStyle = figStyles.styles[0];
         
-        const localStyles = figma.getLocalPaintStyles();
-        const localStyle  = localStyles.find(s => s.getPluginData('nodeId') == genStyle[FO_NODE_ID]);
-
-
-        if (    isValid(figStyle)
-            && !isValid(localStyle)) // removed
+        
+        figma.getLocalPaintStylesAsync().then(localStyles =>
         {
-            removeFrom(figStyles.styles, figStyle);
-        }
+            const localStyle  = localStyles.find(s => s.getPluginData('nodeId') == genStyle[FO_NODE_ID]);
 
 
-        const existing = 
-               isValid(figStyle  )
-            && isValid(localStyle)
-            && figStyle.getPluginData('existing');
+            if (    isValid(figStyle)
+                && !isValid(localStyle)) // removed
+            {
+                removeFrom(figStyles.styles, figStyle);
+            }
 
 
-        if (   !isValid(figStyle  )
-            || !isValid(localStyle)) // no existing style, create new style
-        {
-            if (!existing)
+            const existing = 
+                isValid(figStyle  )
+                && isValid(localStyle)
+                && figStyle.getPluginData('existing');
+
+
+            if (   !isValid(figStyle  )
+                || !isValid(localStyle)) // no existing style, create new style
+            {
+                if (!existing)
+                {
+                    styleChangingFromGenerator = true;
+
+                    figLinkNodeToExistingColorStyle(
+                        genStyle[FO_NODE_ID ],
+                        genStyle[FO_STYLE_ID]);
+                    //figCreateColorStyle(figStyles.styles, genStyle);
+                }
+            }
+            else if (isValid(figStyle) 
+                && figStyle.getPluginData('type') == genStyle[FO_TYPE]) // update existing style
             {
                 styleChangingFromGenerator = true;
-
-                figLinkNodeToExistingColorStyle(
-                    genStyle[FO_NODE_ID ],
-                    genStyle[FO_STYLE_ID]);
-                //figCreateColorStyle(figStyles.styles, genStyle);
+                figUpdateColorStyle(localStyle, genStyle);
             }
-        }
-        else if (isValid(figStyle) 
-              && figStyle.getPluginData('type') == genStyle[FO_TYPE]) // update existing style
-        {
-            styleChangingFromGenerator = true;
-            figUpdateColorStyle(localStyle, genStyle);
-        }
-        // else // delete existing style, create new style
-        // {
-        //     if (!existing)
-        //     {
-        //         localStyle.remove();
-        //         styleChangingFromGenerator = true;
-        //         figCreateColorStyle(figStyles.styles, genStyle);
-        //     }
-        // }
+            // else // delete existing style, create new style
+            // {
+            //     if (!existing)
+            //     {
+            //         localStyle.remove();
+            //         styleChangingFromGenerator = true;
+            //         figCreateColorStyle(figStyles.styles, genStyle);
+            //     }
+            // }
+        });
     }
 }
 
@@ -4836,44 +4863,48 @@ function setStylePaints(figStyle, genStyle)
 
 
 
-function figGetAllLocalVariables(nodeId, px, py)
+async function figGetAllLocalVariablesAsync(nodeId, px, py)
 {
-    const localVars = figma.variables.getLocalVariables();
-
-    
-    const variables = new Array();
-
-    for (const _var of localVars)
+    figma.variables.getLocalVariablesAsync().then(async localVars =>
     {
-        //const _nodeId = _var.getPluginData('nodeId');
+        const variables = new Array();
 
-        const variable = 
-        { 
-            id:            _var.id,
-            resolvedType:  _var.resolvedType,
-            name:          _var.name,
-            collectionName: figma.variables.getVariableCollectionById(_var.variableCollectionId).name
-        };
+        for (const _var of localVars)
+        {
+            const collection = await figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
 
-        variables.push(variable);
-    }
+            const variable = 
+            { 
+                id:             _var.id,
+                resolvedType:   _var.resolvedType,
+                name:           _var.name,
+                collectionName: collection.name
+            };
+
+            variables.push(variable);
+        }
 
 
-    figPostMessageToUi(
-    {
-        cmd:         'uiReturnFigGetAllLocalVariables',
-        nodeId:       nodeId,
-        px:           px,
-        py:           py,
-        variables:    JSON.stringify(variables),
-        nCollections: figma.variables.getLocalVariableCollections().length
+        figma.variables.getLocalVariableCollectionsAsync().then(async collections =>
+        {
+            figPostMessageToUi(
+            {
+                cmd:         'uiReturnFigGetAllLocalVariables',
+                nodeId:       nodeId,
+                px:           px,
+                py:           py,
+                variables:    JSON.stringify(variables),
+                nCollections: collections.length
+            });
+        });
     });
 }
 
 
-function getVariableValues(varIds)
+
+async function getVariableValuesAsync(varIds)
 {
-    const localVars = figma.variables.getLocalVariables();
+    const localVars = await figma.variables.getLocalVariablesAsync();
 
     const variables = varIds.map(id => localVars.find(v => v.id == id));
     let   values    = [];
@@ -4885,7 +4916,7 @@ function getVariableValues(varIds)
         
         const collection = 
             variable != undefined // deleted
-            ? figma.variables.getVariableCollectionById(variable.variableCollectionId)
+            ? (await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId))
             : null;
         
             
@@ -4901,7 +4932,7 @@ function getVariableValues(varIds)
                 
                 while (value && value.type === 'VARIABLE_ALIAS')
                 {
-                    _var  = figma.variables.getVariableById(value.id);
+                    _var  = await figma.variables.getVariableByIdAsync(value.id);
                     value = _var.valuesByMode[mode.modeId];
                 }
 
@@ -4936,60 +4967,61 @@ function getVariableValues(varIds)
 
 function figLinkNodeToVariable(nodeId, varId)
 {
-    const localVars = figma.variables.getLocalVariables();
-
-    figLinkVariable(localVars, nodeId, varId);
+    figma.variables.getLocalVariablesAsync().then(localVars =>
+    {
+        figLinkVariableAsync(localVars, nodeId, varId);
+    });
 }
 
 
 
-function figUpdateVariable(varId, value)
+async function figUpdateVariableAsync(varId, value)
 {
-    const localVars = figma.variables.getLocalVariables();
-
-
-    let variable = localVars.find(v => v.id == varId);
-    if (!variable) return;
-
-
-    let collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
-    let mode       = collection.modes[0];
-
-    
-    // resolve if alias
-
-    let curValue = variable.valuesByMode[mode.modeId];
-    
-    while (curValue
-        && curValue.hasOwnProperty('type')
-        && curValue['type'] === 'VARIABLE_ALIAS')
+    figma.variables.getLocalVariablesAsync().then(async localVars =>
     {
-        variable = figma.variables.getVariableById(curValue['id']);
-        curValue = variable.valuesByMode[mode.modeId];
+        let variable = localVars.find(v => v.id == varId);
+        if (!variable) return;
+
+
+        let collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
+        let mode       = collection.modes[0];
+
         
-        collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
-        mode       = collection.modes[0];
-    }
+        // resolve if alias
+
+        let curValue = variable.valuesByMode[mode.modeId];
+        
+        while (curValue
+            && curValue.hasOwnProperty('type')
+            && curValue['type'] === 'VARIABLE_ALIAS')
+        {
+            variable = await figma.variables.getVariableByIdAsync(curValue['id']);
+            curValue = variable.valuesByMode[mode.modeId];
+            
+            collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
+            mode       = collection.modes[0];
+        }
 
 
-    if (value !== null)
-    {
-        if (variable.resolvedType == 'BOOLEAN')
-            value = value != 0;
-        else
-            variable.setValueForMode(mode.modeId, value);
-    }
+        if (value !== null)
+        {
+            if (variable.resolvedType == 'BOOLEAN')
+                value = value != 0;
+            else
+                variable.setValueForMode(mode.modeId, value);
+        }
+    });
 }
 
 
 
-function figLinkVariable(localVars, nodeId, varId)
+async function figLinkVariableAsync(localVars, nodeId, varId)
 {
     let variable = localVars.find(v => v.id == varId);
     if (!variable) return null;
 
 
-    const [resolvedVar, values] = figGetResolvedVariableValues(variable);
+    const [resolvedVar, values] = await figGetResolvedVariableValuesAsync(variable);
 
 
     figPostMessageToUi(
@@ -5008,7 +5040,7 @@ function figLinkVariable(localVars, nodeId, varId)
 
 
 
-function figGetResolvedVariableValues(variable)
+async function figGetResolvedVariableValuesAsync(variable)
 {
     const values = [];
 
@@ -5017,7 +5049,7 @@ function figGetResolvedVariableValues(variable)
         return values;
 
 
-    const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
+    const collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
             
     for (const mode of collection.modes)
     {
@@ -5026,7 +5058,7 @@ function figGetResolvedVariableValues(variable)
         while (   value
                && value['type'] === 'VARIABLE_ALIAS')
         {
-            variable = figma.variables.getVariableById(value.id);
+            variable = await figma.variables.getVariableByIdAsync(value.id);
             value    = variable.valuesByMode[mode.modeId];
         }
         
@@ -5244,17 +5276,7 @@ function figCreateEllipse(genEllipse)
     
     const figEllipse = figma.createEllipse();
 
-
     figUpdateEllipse(figEllipse, genEllipse, true);
-
-    // figUpdateEllipseData(figEllipse, genEllipse);
-
-    
-    // if (figPoints.includes(figEllipse))
-    //     updatePointObject(figEllipse);
-        
-    // else
-    //     setObjectProps(figEllipse, genEllipse);
 
     
     return figEllipse;
@@ -5832,16 +5854,12 @@ function figCreateVectorNetwork(genNetwork)
     if (!genVectorNetworkIsValid(genNetwork))
         return null;
 
+        
     const figNetwork = figma.createVector();
 
     figUpdateVectorNetwork(figNetwork, genNetwork, true);
-    
-    // figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
 
     
-    // setObjectTransform(figNetwork, genNetwork, false);
-    // setObjectProps    (figNetwork, genNetwork);
-
     return figNetwork;
 }
 
@@ -5854,7 +5872,7 @@ function figUpdateVectorNetwork(figNetwork, genNetwork, isValid = false)
         return;
 
 
-    figNetwork.vectorNetwork = genNetwork[FO_VECTOR_NETWORK_DATA];
+    figNetwork.setVectorNetworkAsync(genNetwork[FO_VECTOR_NETWORK_DATA]);
     
 
     setObjectTransform(figNetwork, genNetwork, false);

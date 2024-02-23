@@ -12,6 +12,8 @@
     "activeusers",
     "payments"
   ],
+
+  "documentAccess": "dynamic-page",
   
   "networkAccess": 
   {

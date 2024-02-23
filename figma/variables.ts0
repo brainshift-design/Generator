@@ -1,41 +1,45 @@
-function figGetAllLocalVariables(nodeId, px, py)
+async function figGetAllLocalVariablesAsync(nodeId, px, py)
 {
-    const localVars = figma.variables.getLocalVariables();
-
-    
-    const variables = new Array();
-
-    for (const _var of localVars)
+    figma.variables.getLocalVariablesAsync().then(async localVars =>
     {
-        //const _nodeId = _var.getPluginData('nodeId');
+        const variables = new Array();
 
-        const variable = 
-        { 
-            id:            _var.id,
-            resolvedType:  _var.resolvedType,
-            name:          _var.name,
-            collectionName: figma.variables.getVariableCollectionById(_var.variableCollectionId).name
-        };
+        for (const _var of localVars)
+        {
+            const collection = await figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
 
-        variables.push(variable);
-    }
+            const variable = 
+            { 
+                id:             _var.id,
+                resolvedType:   _var.resolvedType,
+                name:           _var.name,
+                collectionName: collection.name
+            };
+
+            variables.push(variable);
+        }
 
 
-    figPostMessageToUi(
-    {
-        cmd:         'uiReturnFigGetAllLocalVariables',
-        nodeId:       nodeId,
-        px:           px,
-        py:           py,
-        variables:    JSON.stringify(variables),
-        nCollections: figma.variables.getLocalVariableCollections().length
+        figma.variables.getLocalVariableCollectionsAsync().then(async collections =>
+        {
+            figPostMessageToUi(
+            {
+                cmd:         'uiReturnFigGetAllLocalVariables',
+                nodeId:       nodeId,
+                px:           px,
+                py:           py,
+                variables:    JSON.stringify(variables),
+                nCollections: collections.length
+            });
+        });
     });
 }
 
 
-function getVariableValues(varIds)
+
+async function getVariableValuesAsync(varIds)
 {
-    const localVars = figma.variables.getLocalVariables();
+    const localVars = await figma.variables.getLocalVariablesAsync();
 
     const variables = varIds.map(id => localVars.find(v => v.id == id));
     let   values    = [];
@@ -47,7 +51,7 @@ function getVariableValues(varIds)
         
         const collection = 
             variable != undefined // deleted
-            ? figma.variables.getVariableCollectionById(variable.variableCollectionId)
+            ? (await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId))
             : null;
         
             
@@ -63,7 +67,7 @@ function getVariableValues(varIds)
                 
                 while (value && value.type === 'VARIABLE_ALIAS')
                 {
-                    _var  = figma.variables.getVariableById(value.id);
+                    _var  = await figma.variables.getVariableByIdAsync(value.id);
                     value = _var.valuesByMode[mode.modeId];
                 }
 
@@ -98,60 +102,61 @@ function getVariableValues(varIds)
 
 function figLinkNodeToVariable(nodeId, varId)
 {
-    const localVars = figma.variables.getLocalVariables();
-
-    figLinkVariable(localVars, nodeId, varId);
+    figma.variables.getLocalVariablesAsync().then(localVars =>
+    {
+        figLinkVariableAsync(localVars, nodeId, varId);
+    });
 }
 
 
 
-function figUpdateVariable(varId, value)
+async function figUpdateVariableAsync(varId, value)
 {
-    const localVars = figma.variables.getLocalVariables();
-
-
-    let variable = localVars.find(v => v.id == varId);
-    if (!variable) return;
-
-
-    let collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
-    let mode       = collection.modes[0];
-
-    
-    // resolve if alias
-
-    let curValue = variable.valuesByMode[mode.modeId];
-    
-    while (curValue
-        && curValue.hasOwnProperty('type')
-        && curValue['type'] === 'VARIABLE_ALIAS')
+    figma.variables.getLocalVariablesAsync().then(async localVars =>
     {
-        variable = figma.variables.getVariableById(curValue['id']);
-        curValue = variable.valuesByMode[mode.modeId];
+        let variable = localVars.find(v => v.id == varId);
+        if (!variable) return;
+
+
+        let collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
+        let mode       = collection.modes[0];
+
         
-        collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
-        mode       = collection.modes[0];
-    }
+        // resolve if alias
+
+        let curValue = variable.valuesByMode[mode.modeId];
+        
+        while (curValue
+            && curValue.hasOwnProperty('type')
+            && curValue['type'] === 'VARIABLE_ALIAS')
+        {
+            variable = await figma.variables.getVariableByIdAsync(curValue['id']);
+            curValue = variable.valuesByMode[mode.modeId];
+            
+            collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
+            mode       = collection.modes[0];
+        }
 
 
-    if (value !== null)
-    {
-        if (variable.resolvedType == 'BOOLEAN')
-            value = value != 0;
-        else
-            variable.setValueForMode(mode.modeId, value);
-    }
+        if (value !== null)
+        {
+            if (variable.resolvedType == 'BOOLEAN')
+                value = value != 0;
+            else
+                variable.setValueForMode(mode.modeId, value);
+        }
+    });
 }
 
 
 
-function figLinkVariable(localVars, nodeId, varId)
+async function figLinkVariableAsync(localVars, nodeId, varId)
 {
     let variable = localVars.find(v => v.id == varId);
     if (!variable) return null;
 
 
-    const [resolvedVar, values] = figGetResolvedVariableValues(variable);
+    const [resolvedVar, values] = await figGetResolvedVariableValuesAsync(variable);
 
 
     figPostMessageToUi(
@@ -170,7 +175,7 @@ function figLinkVariable(localVars, nodeId, varId)
 
 
 
-function figGetResolvedVariableValues(variable)
+async function figGetResolvedVariableValuesAsync(variable)
 {
     const values = [];
 
@@ -179,7 +184,7 @@ function figGetResolvedVariableValues(variable)
         return values;
 
 
-    const collection = figma.variables.getVariableCollectionById(variable.variableCollectionId);
+    const collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
             
     for (const mode of collection.modes)
     {
@@ -188,7 +193,7 @@ function figGetResolvedVariableValues(variable)
         while (   value
                && value['type'] === 'VARIABLE_ALIAS')
         {
-            variable = figma.variables.getVariableById(value.id);
+            variable = await figma.variables.getVariableByIdAsync(value.id);
             value    = variable.valuesByMode[mode.modeId];
         }
         

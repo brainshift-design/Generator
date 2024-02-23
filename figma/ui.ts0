@@ -29,46 +29,46 @@ function figGetMousePosition(clientPosition)
 function figSetWindowRect(x, y, width, height)
 {
     return;
-    (async function()
-    {
-        //console.log('figma.viewport.bounds =', figma.viewport.bounds);
-        //console.log('_x =',      x);
-        //console.log('_y =',      y);
-        //console.log('_width =',  width);
-        //console.log('_height =', height);
+    // (async function()
+    // {
+    //     //console.log('figma.viewport.bounds =', figma.viewport.bounds);
+    //     //console.log('_x =',      x);
+    //     //console.log('_y =',      y);
+    //     //console.log('_width =',  width);
+    //     //console.log('_height =', height);
 
-        const rect = {
-            x:      Math.round(x),
-            y:      Math.round(y),
-            width:  Math.floor(Math.max(0, width )),
-            height: Math.floor(Math.max(0, height))    
-        };
+    //     const rect = {
+    //         x:      Math.round(x),
+    //         y:      Math.round(y),
+    //         width:  Math.floor(Math.max(0, width )),
+    //         height: Math.floor(Math.max(0, height))    
+    //     };
 
         
-        // if (windowDock != 'normal')
-        //     position = true;
+    //     // if (windowDock != 'normal')
+    //     //     position = true;
 
-        // if (isNaN(rect.x)) rect.x = await figma.clientStorage.getAsync('windowX');
-        // if (isNaN(rect.y)) rect.y = await figma.clientStorage.getAsync('windowY');
-
-
-        // dockWindow(
-        //     windowDock,
-        //     rect, 
-        //     figma.viewport.bounds);
+    //     // if (isNaN(rect.x)) rect.x = await figma.clientStorage.getAsync('windowX');
+    //     // if (isNaN(rect.y)) rect.y = await figma.clientStorage.getAsync('windowY');
 
 
-        figma.ui.reposition(rect.x,     rect.y     );
-        figma.ui.resize    (rect.width, rect.height);
-
-        figma.clientStorage.setAsync('windowX',      rect.x     );
-        figma.clientStorage.setAsync('windowY',      rect.y     );
-        figma.clientStorage.setAsync('windowWidth',  rect.width );
-        figma.clientStorage.setAsync('windowHeight', rect.height);
+    //     // dockWindow(
+    //     //     windowDock,
+    //     //     rect, 
+    //     //     figma.viewport.bounds);
 
 
-        figPostMessageToUi({cmd: 'uiReturnFigSetWindowRect'});
-    })();
+    //     figma.ui.reposition(rect.x,     rect.y     );
+    //     figma.ui.resize    (rect.width, rect.height);
+
+    //     figma.clientStorage.setAsync('windowX',      rect.x     );
+    //     figma.clientStorage.setAsync('windowY',      rect.y     );
+    //     figma.clientStorage.setAsync('windowWidth',  rect.width );
+    //     figma.clientStorage.setAsync('windowHeight', rect.height);
+
+
+    //     figPostMessageToUi({cmd: 'uiReturnFigSetWindowRect'});
+    // })();
 }
 
 

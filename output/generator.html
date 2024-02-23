@@ -6475,8 +6475,8 @@ class FigmaObject
         }
         else // units == 2
         {
-            _cx = /*this.x +*/ cx;
-            _cy = /*this.y +*/ cy;            
+            _cx = cx;
+            _cy = cy;            
         }
 
 
@@ -6662,9 +6662,9 @@ class FigmaObject
         /* 4 */ this.feedback,
         /* 5 */ this.retain,
         
-        /* 6 */ this.xp0 ? this.xp0/*.toPoint()*/ : null,
-        /* 7 */ this.xp1 ? this.xp1/*.toPoint()*/ : null,
-        /* 8 */ this.xp2 ? this.xp2/*.toPoint()*/ : null,
+        /* 6 */ this.xp0 ? this.xp0 : null,
+        /* 7 */ this.xp1 ? this.xp1 : null,
+        /* 8 */ this.xp2 ? this.xp2 : null,
 
         /* 9 */ 0 // for future use
         ];
@@ -7608,20 +7608,23 @@ extends FigmaShape
     height;
     
     points;
+
     closed;
     degree;
-
-    pathPoints;
-
-    pathData;
     winding;
+
+
     round;
+    
+    pathPoints;
+    pathData;
 
 
 
     constructor(nodeId, objectId, objectName, points, closed, degree, winding, round)
     {
         super(VECTOR_PATH, nodeId, objectId, objectName);
+        
         
         this.points  = points.map(p => p.copy());
 
@@ -7634,18 +7637,6 @@ extends FigmaShape
 
         this.updatePathPoints();
         this.updatePathData();
-
-
-        let bounds = this.getBounds();
-
-        this.createDefaultSpace(
-            bounds.x + bounds.width /2,            
-            bounds.y + bounds.height/2            
-        );
-
-
-        // this.updatePathPoints();
-        // this.updatePathData();
     }
 
 
@@ -7666,10 +7657,10 @@ extends FigmaShape
             this.round);
 
 
-        copy.x        = this.x;
-        copy.y        = this.y;
-        copy.width    = this.width;
-        copy.height   = this.height;
+        copy.x      = this.x;
+        copy.y      = this.y;
+        copy.width  = this.width;
+        copy.height = this.height;
 
 
         copy.copyBase(this);
@@ -7693,7 +7684,7 @@ extends FigmaShape
     {
         let bounds = Rect.NaN;
 
-        
+
         switch (this.degree)
         {
             case 0:
@@ -7733,7 +7724,7 @@ extends FigmaShape
             case 4:
             case 5:
                 {
-                    // console.log('1 bounds =', clone(bounds));
+                    //console.log('1 bounds =', clone(bounds));
                     let i;
                     for (i = 0; i < this.pathPoints.length-3; i += 3)
                     {
@@ -7743,7 +7734,7 @@ extends FigmaShape
                             this.pathPoints[i+2],
                             this.pathPoints[i+3]);
 
-                        // console.log('b3 =', b3);
+                        //console.log('b3 =', b3);
                         bounds = expandRect(
                             bounds, 
                             b3);
@@ -8886,10 +8877,10 @@ class FigmaArcPath
 extends FigmaVectorPath
 {
     position;
-    x;
-    y;
-    width;
-    height;
+    _x;
+    _y;
+    _width;
+    _height;
 
     start;
     sweep;
@@ -8917,35 +8908,36 @@ extends FigmaVectorPath
 
             if (   pos == 0
                 && width < 0) 
-                p.x.value += width;  
+                p.x.value += width;
         });
 
-        if (width  < 0) width  *= -1; 
-        if (height < 0) height *= -1; 
+        if (width  < 0) width  *= -1;
+        if (height < 0) height *= -1;
 
 
         super(
             nodeId, 
             objectId,
-            objectName, 
+            objectName,
             points,
             0,  // open
             2,  // cubic
             0,  // even-odd winding
             0); // no round
         
+
         this.position = pos;
-        this.x        = x;
-        this.y        = y;
-        this.width    = width;
-        this.height   = height;
+        this._x       = x;
+        this._y       = y;
+        this._width   = width;
+        this._height  = height;
 
         this.start    = start;
         this.sweep    = sweep;
 
-        
+
         this.createDefaultSpace(
-            x + width /2, 
+            x + width /2,
             y + height/2);
     }
 
@@ -8959,10 +8951,10 @@ extends FigmaVectorPath
             this.objectName,
 
             this.position,
-            this.x,
-            this.y,
-            this.width,
-            this.height,
+            this._x,
+            this._y,
+            this._width,
+            this._height,
             
             this.start,
             this.sweep);
@@ -8973,6 +8965,30 @@ extends FigmaVectorPath
 
         return copy;
     }
+
+
+
+    // updatePathData()
+    // {
+    //     // const bounds = this.getBounds();
+
+    //     // this.x      = bounds.x;
+    //     // this.y      = bounds.y;
+    //     // this.width  = bounds.width;
+    //     // this.height = bounds.height;
+
+    //     // this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
+
+    //     this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
+    // }
+
+
+
+    // getBounds()
+    // {
+    //     console.log('arc bounds');
+    //     return FigmaShape.prototype.getBounds.call(this);
+    // }
 }
 
 
@@ -38274,8 +38290,14 @@ extends GShape
                 this.value.winding.value,
                 this.value.round  .value);
 
-            
+                
             const bounds = getObjBounds([path]);
+
+            path.createDefaultSpace(
+                bounds.x + bounds.width /2,            
+                bounds.y + bounds.height/2            
+            );
+
 
             let x = bounds.x;
             let y = bounds.y;
@@ -38285,7 +38307,7 @@ extends GShape
             path.createDefaultTransform(x, y);
             path.createDefaultTransformPoints(x, y, w, h);
 
-            
+
             this.value.objects.push(path);
         }
 
@@ -39464,8 +39486,12 @@ extends GShape
                     vpos.value,
                     x, y, w, h, st, sw);
 
+
+                //arc.createDefaultSpace(x, y);
+    
                 arc.createDefaultTransform(x, y);
                 arc.createDefaultTransformPoints(x, y, w, h);
+
 
                 this.value.objects.push(arc);
             }

@@ -4,11 +4,14 @@ console.clear();
 figma.payments.setPaymentStatusInDevelopment({type: 'PAID'});
 
 
-//figma.on('selectionchange', figOnSelectionChange);
+figma.loadAllPagesAsync().then(() =>
+{
+    //figma.on('selectionchange', figOnSelectionChange);
 
-figma.on('documentchange',  figOnDocumentChange);
-figma.on('selectionchange', figOnSelectionChange);
-figma.on('close',           figOnPluginClose);
+    figma.on('documentchange',  figOnDocumentChange);
+    figma.on('selectionchange', figOnSelectionChange);
+    figma.on('close',           figOnPluginClose);
+});
 
 
 figDeleteAllObjects(true);

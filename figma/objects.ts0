@@ -89,7 +89,7 @@ function figCreateObject(genObj, addObject = null)
 
 
 
-function figUpdateObject(figObj, genObj)
+async function figUpdateObjectAsync(figObj, genObj)
 {
     if (  !genObjectIsValid(genObj)
         || figObj == undefined
@@ -124,6 +124,9 @@ function figUpdateObject(figObj, genObj)
         &&  figObj != null
         && !figObj.removed)
     {
+        if (figObj.parent == figma.currentPage)
+            await figma.currentPage.loadAsync();
+
         figObj.parent.appendChild(figObj);
 
         if (genObj[FO_DECO])
@@ -232,7 +235,7 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
                && !figObj.removed
                &&  figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
         {
-            figUpdateObject(figObj, genObj);
+            await figUpdateObjectAsync(figObj, genObj);
 
             if (    figObj != undefined
                 &&  figObj != null
@@ -300,6 +303,9 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
     
     for (const point of figPoints)
     {
+        if (point.parent == figma.currentPage)
+            await figma.currentPage.loadAsync();
+        
         if (    point != undefined
             &&  point != null
             && !point.removed

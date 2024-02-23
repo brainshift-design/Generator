@@ -26,18 +26,21 @@ function figDeleteObjectsFromNodeIds(nodeIds)
 
 function figDeleteAllObjects(forceDelete = false)
 {
-    for (const figObj of figma.currentPage.children)
+    figma.currentPage.loadAsync().then(() =>
     {
-        if (figObj.removed)
-            continue;
+        for (const figObj of figma.currentPage.children)
+        {
+            if (figObj.removed)
+                continue;
 
-        if (       figObj.getPluginData('objectId' ) != ''
-               &&  figObj.getPluginData('userId'   ) == figma.currentUser.id
-               //&&  figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
-               && (   parseInt(figObj.getPluginData('retain')) == 0
-                   || forceDelete)) 
-            figObj.remove();
-    }
+            if (    figObj.getPluginData('objectId') != ''
+                &&  figObj.getPluginData('userId'  ) == figma.currentUser.id
+                //&&  figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
+                && (   parseInt(figObj.getPluginData('retain')) == 0
+                    || forceDelete)) 
+                figObj.remove();
+        }
+    });
 }
 
 
@@ -121,31 +124,32 @@ function findObject(figObj, genIgnoreObjects)
 function figDeleteStylesFromNodeIds(nodeIds, mustDelete)
 {
     // styles are deleted first
-    
-    const paintStyles = figma.getLocalPaintStyles();
 
-    paintStyles
-        .filter(s => 
-                nodeIds.includes(s.getPluginData('nodeId')))
-//            && !parseBool(s.getPluginData('existing')))
-        .forEach(s => 
-        {
-            const nodeId   = s.getPluginData('nodeId');
-            const existing = parseBool(s.getPluginData('existing'));
-            
-            if (!existing) 
+    figma.getLocalPaintStylesAsync().then(paintStyles =>
+    {
+        paintStyles
+            .filter(s => 
+                    nodeIds.includes(s.getPluginData('nodeId')))
+    //            && !parseBool(s.getPluginData('existing')))
+            .forEach(s => 
             {
-                s.remove();
-            }
-            else if (mustDelete)
-            {
-                removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
+                const nodeId   = s.getPluginData('nodeId');
+                const existing = parseBool(s.getPluginData('existing'));
+                
+                if (!existing) 
+                {
+                    s.remove();
+                }
+                else if (mustDelete)
+                {
+                    removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
 
-                s.setPluginData('type',     NULL);
-                s.setPluginData('nodeId',   NULL);
-                s.setPluginData('existing', NULL);
-            }
-        });
+                    s.setPluginData('type',     NULL);
+                    s.setPluginData('nodeId',   NULL);
+                    s.setPluginData('existing', NULL);
+                }
+            });
+    });
 
 
     if (mustDelete)

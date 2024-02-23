@@ -20,17 +20,7 @@ function figCreateEllipse(genEllipse)
     
     const figEllipse = figma.createEllipse();
 
-
     figUpdateEllipse(figEllipse, genEllipse, true);
-
-    // figUpdateEllipseData(figEllipse, genEllipse);
-
-    
-    // if (figPoints.includes(figEllipse))
-    //     updatePointObject(figEllipse);
-        
-    // else
-    //     setObjectProps(figEllipse, genEllipse);
 
     
     return figEllipse;

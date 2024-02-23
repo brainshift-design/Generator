@@ -7,20 +7,23 @@ extends FigmaShape
     height;
     
     points;
+
     closed;
     degree;
-
-    pathPoints;
-
-    pathData;
     winding;
+
+
     round;
+    
+    pathPoints;
+    pathData;
 
 
 
     constructor(nodeId, objectId, objectName, points, closed, degree, winding, round)
     {
         super(VECTOR_PATH, nodeId, objectId, objectName);
+        
         
         this.points  = points.map(p => p.copy());
 
@@ -33,18 +36,6 @@ extends FigmaShape
 
         this.updatePathPoints();
         this.updatePathData();
-
-
-        let bounds = this.getBounds();
-
-        this.createDefaultSpace(
-            bounds.x + bounds.width /2,            
-            bounds.y + bounds.height/2            
-        );
-
-
-        // this.updatePathPoints();
-        // this.updatePathData();
     }
 
 
@@ -65,10 +56,10 @@ extends FigmaShape
             this.round);
 
 
-        copy.x        = this.x;
-        copy.y        = this.y;
-        copy.width    = this.width;
-        copy.height   = this.height;
+        copy.x      = this.x;
+        copy.y      = this.y;
+        copy.width  = this.width;
+        copy.height = this.height;
 
 
         copy.copyBase(this);
@@ -92,7 +83,7 @@ extends FigmaShape
     {
         let bounds = Rect.NaN;
 
-        
+
         switch (this.degree)
         {
             case 0:
@@ -132,7 +123,7 @@ extends FigmaShape
             case 4:
             case 5:
                 {
-                    // console.log('1 bounds =', clone(bounds));
+                    //console.log('1 bounds =', clone(bounds));
                     let i;
                     for (i = 0; i < this.pathPoints.length-3; i += 3)
                     {
@@ -142,7 +133,7 @@ extends FigmaShape
                             this.pathPoints[i+2],
                             this.pathPoints[i+3]);
 
-                        // console.log('b3 =', b3);
+                        //console.log('b3 =', b3);
                         bounds = expandRect(
                             bounds, 
                             b3);

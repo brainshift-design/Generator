@@ -2,10 +2,10 @@ class FigmaArcPath
 extends FigmaVectorPath
 {
     position;
-    x;
-    y;
-    width;
-    height;
+    _x;
+    _y;
+    _width;
+    _height;
 
     start;
     sweep;
@@ -33,35 +33,36 @@ extends FigmaVectorPath
 
             if (   pos == 0
                 && width < 0) 
-                p.x.value += width;  
+                p.x.value += width;
         });
 
-        if (width  < 0) width  *= -1; 
-        if (height < 0) height *= -1; 
+        if (width  < 0) width  *= -1;
+        if (height < 0) height *= -1;
 
 
         super(
             nodeId, 
             objectId,
-            objectName, 
+            objectName,
             points,
             0,  // open
             2,  // cubic
             0,  // even-odd winding
             0); // no round
         
+
         this.position = pos;
-        this.x        = x;
-        this.y        = y;
-        this.width    = width;
-        this.height   = height;
+        this._x       = x;
+        this._y       = y;
+        this._width   = width;
+        this._height  = height;
 
         this.start    = start;
         this.sweep    = sweep;
 
-        
+
         this.createDefaultSpace(
-            x + width /2, 
+            x + width /2,
             y + height/2);
     }
 
@@ -75,10 +76,10 @@ extends FigmaVectorPath
             this.objectName,
 
             this.position,
-            this.x,
-            this.y,
-            this.width,
-            this.height,
+            this._x,
+            this._y,
+            this._width,
+            this._height,
             
             this.start,
             this.sweep);
@@ -89,4 +90,28 @@ extends FigmaVectorPath
 
         return copy;
     }
+
+
+
+    // updatePathData()
+    // {
+    //     // const bounds = this.getBounds();
+
+    //     // this.x      = bounds.x;
+    //     // this.y      = bounds.y;
+    //     // this.width  = bounds.width;
+    //     // this.height = bounds.height;
+
+    //     // this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
+
+    //     this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
+    // }
+
+
+
+    // getBounds()
+    // {
+    //     console.log('arc bounds');
+    //     return FigmaShape.prototype.getBounds.call(this);
+    // }
 }

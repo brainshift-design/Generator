@@ -109,8 +109,8 @@ class FigmaObject
         }
         else // units == 2
         {
-            _cx = /*this.x +*/ cx;
-            _cy = /*this.y +*/ cy;            
+            _cx = cx;
+            _cy = cy;            
         }
 
 
@@ -296,9 +296,9 @@ class FigmaObject
         /* 4 */ this.feedback,
         /* 5 */ this.retain,
         
-        /* 6 */ this.xp0 ? this.xp0/*.toPoint()*/ : null,
-        /* 7 */ this.xp1 ? this.xp1/*.toPoint()*/ : null,
-        /* 8 */ this.xp2 ? this.xp2/*.toPoint()*/ : null,
+        /* 6 */ this.xp0 ? this.xp0 : null,
+        /* 7 */ this.xp1 ? this.xp1 : null,
+        /* 8 */ this.xp2 ? this.xp2 : null,
 
         /* 9 */ 0 // for future use
         ];

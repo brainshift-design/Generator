@@ -7,37 +7,40 @@ async function figLoadLocal(key)
 
 function figGetLocalData(key)
 {
-    if (key == 'canvasEmpty')
+    figma.currentPage.loadAsync().then(() =>
     {
-        figPostMessageToUi(
+        if (key == 'canvasEmpty')
         {
-            cmd:  'uiReturnFigGetLocalData',
-            key:   key,
-            value: figma.currentPage.children.length == 0
-        });
-    }
-    else if (key == 'debugWarningCrash')
-    {
-        figma.clientStorage.getAsync('debugWarning').then(data =>
-        {
-            figPostMessageToUi({
+            figPostMessageToUi(
+            {
                 cmd:  'uiReturnFigGetLocalData',
                 key:   key,
-                value: data
+                value: figma.currentPage.children.length == 0
             });
-        });
-    }
-    else
-    {
-        figma.clientStorage.getAsync(key).then(data =>
+        }
+        else if (key == 'debugWarningCrash')
         {
-            figPostMessageToUi({
-                cmd:  'uiReturnFigGetLocalData',
-                key:   key,
-                value: data
+            figma.clientStorage.getAsync('debugWarning').then(data =>
+            {
+                figPostMessageToUi({
+                    cmd:  'uiReturnFigGetLocalData',
+                    key:   key,
+                    value: data
+                });
             });
-        });
-    }
+        }
+        else
+        {
+            figma.clientStorage.getAsync(key).then(data =>
+            {
+                figPostMessageToUi({
+                    cmd:  'uiReturnFigGetLocalData',
+                    key:   key,
+                    value: data
+                });
+            });
+        }
+    });
 }
 
 
@@ -150,30 +153,30 @@ function initPageStyles(nodes)
     figStyleArrays = [];
 
 
-    const paintStyles = figma.getLocalPaintStyles();
-
-
-    for (const _node of nodes)
+    figma.getLocalPaintStylesAsync().then(paintStyles =>
     {
-        const node = JSON.parse(_node);
-
-        if (node.type == COLOR_STYLE)
+        for (const _node of nodes)
         {
-            const style = paintStyles.find(s =>
-            {
-                const nodeId = s.getPluginData('nodeId');
-                return nodeId == node.id;
-            });
+            const node = JSON.parse(_node);
 
-            if (style)
+            if (node.type == COLOR_STYLE)
             {
-                figStyleArrays.push({
-                    nodeId:   node.id, 
-                    existing: parseBool(node.existing), 
-                    styles:   [style]});
+                const style = paintStyles.find(s =>
+                {
+                    const nodeId = s.getPluginData('nodeId');
+                    return nodeId == node.id;
+                });
+
+                if (style)
+                {
+                    figStyleArrays.push({
+                        nodeId:   node.id, 
+                        existing: parseBool(node.existing), 
+                        styles:   [style]});
+                }
             }
         }
-    }
+    });
 }
 
 
@@ -397,8 +400,8 @@ async function figGetValue(key, spec)
 
     switch (key)
     {
-        case 'getVariableData':  
-            result = getVariableValues(spec);
+        case 'getVariableData':
+            result = await getVariableValuesAsync(spec);
             break;
 
         case 'getPaidStatus':
@@ -425,10 +428,13 @@ async function figGetValue(key, spec)
 
 function figGetVariableUpdates(varIds)
 {
-    figPostMessageToUi(
+    getVariableValuesAsync(varIds).then(values =>
     {
-        cmd:   'uiReturnFigGetVariableUpdates',
-        values: getVariableValues(varIds)
+        figPostMessageToUi(
+        {
+            cmd:   'uiReturnFigGetVariableUpdates',
+            values: values
+        });
     });
 }
 
@@ -535,12 +541,13 @@ function figDeleteSavedConnectionsFromNode(nodeId)
 
 function figRemovePluginDataFromAllLocalStyles()
 {
-    const localStyles = figma.getLocalPaintStyles();
-
-    for (const style of localStyles)
+    figma.getLocalPaintStylesAsync().then(localStyles =>
     {
-        style.setPluginData('type',     '');
-        style.setPluginData('nodeId',   '');
-        style.setPluginData('existing', '');
-    }
+        for (const style of localStyles)
+        {
+            style.setPluginData('type',     '');
+            style.setPluginData('nodeId',   '');
+            style.setPluginData('existing', '');
+        }
+    });
 }
