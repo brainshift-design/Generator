@@ -2784,6 +2784,45 @@ function arcKappa(angle)
 
 
 
+
+function makeWave(x, y, width, height, shape, base, amplitude, frequency, offset, bias)
+{
+    const w = width / frequency;
+
+
+    x += offset * width;
+    
+    while (x >  -w) x -= w;
+    while (x <= -w) x += w;
+
+
+    const points = [point(x, y+height)];
+
+
+    while (x < width)
+    {
+        points.push(
+            point(x     + (x+w/2 - x)   * 0.3615, y+height),
+            point(x+w/2 + (x - (x+w/2)) * 0.3615, y       ),
+            point(x+w/2,                          y       ));
+    
+        x += w/2;
+
+
+        points.push(
+            point(x     + (x+w/2 - x)   * 0.3615, y       ),
+            point(x+w/2 + (x - (x+w/2)) * 0.3615, y+height),
+            point(x+w/2,                          y+height));
+    
+        x += w/2;
+    }
+
+
+    return points;
+}
+
+
+
 function areClockwise(p0, p1, p2)
 {
     return crossv2(subv(p1, p0), subv(p2, p1)) >= 0;
@@ -5916,6 +5955,10 @@ const ARC_PATH_VALUE        = 'ARC#';
 const ARC_PATH              = 'ARC';
 const ARC_PATH_TYPES        = [ARC_PATH_VALUE, ARC_PATH];
 
+const WAVE_PATH_VALUE       = 'WAVEP#';
+const WAVE_PATH             = 'WAVEP';
+const WAVE_PATH_TYPES       = [WAVE_PATH_VALUE, WAVE_PATH];
+
 const MOVE                  = 'MOVE';
 const ROTATE                = 'ROT';
 const SCALE                 = 'SCALE';
@@ -5943,7 +5986,8 @@ const REVERSE_PATH          = 'REVPTH';
 const PATH_VALUES =
 [
     VECTOR_PATH_VALUE, 
-    ARC_PATH_VALUE
+    ARC_PATH_VALUE,
+    WAVE_PATH_VALUE
 ];
 
 
@@ -5988,6 +6032,7 @@ const SHAPE_VALUES =
     VECTOR_REGION_VALUE,
     VECTOR_NETWORK_VALUE,
     ARC_PATH_VALUE,
+    WAVE_PATH_VALUE,
     SHAPE_GROUP_VALUE,
     FRAME_VALUE,
     BOOLEAN_VALUE,
@@ -6027,6 +6072,7 @@ const SHAPE_TYPES =
     ...VECTOR_REGION_TYPES,
     ...VECTOR_NETWORK_TYPES,
     ...ARC_PATH_TYPES,
+    ...WAVE_PATH_TYPES,
     ...SHAPE_GROUP_TYPES,
     ...FRAME_TYPES,
     ...BOOLEAN_TYPES,
@@ -8961,6 +9007,114 @@ extends FigmaVectorPath
             
             this.start,
             this.sweep);
+
+
+        copy.pathPoints = [...this.pathPoints];
+        copy.pathData   = this.pathData;
+
+        copy.copyBase(this);
+
+
+        return copy;
+    }
+}
+
+
+class FigmaWavePath
+extends FigmaVectorPath
+{
+    _x;
+    _y;
+    _width;
+    _height;
+
+    shape;
+    base;
+    amplitude;
+    frequency;
+    offset;
+    bias;
+
+    
+
+    constructor(nodeId, objectId, objectName, x, y, width, height, shape, base, amplitude, frequency, offset, bias)
+    {
+        let points = makeWave(
+            x,
+            y,
+            width, 
+            height,  
+            shape, 
+            base, 
+            amplitude, 
+            frequency,
+            offset,
+            bias);
+
+        points = points.map(p => PointValue.fromPoint(nodeId, p));
+
+
+        points.forEach(p => 
+        {
+            // p.y.value = height/2 + (p.y.value - height/2) * height/width;
+
+            // if (width < 0) 
+            //     p.x.value += width;
+        });
+
+        // if (width  < 0) width  *= -1;
+        // if (height < 0) height *= -1;
+
+
+        super(
+            nodeId, 
+            objectId,
+            objectName,
+            points,
+            0,  // open
+            2,  // cubic
+            0,  // even-odd winding
+            0); // no round
+        
+
+        this._x        = x;
+        this._y        = y;
+        this._width    = width;
+        this._height   = height;
+
+        this.shape     = shape;
+        this.base      = base;
+        this.amplitude = amplitude;
+        this.frequency = frequency;
+        this.offset    = offset;
+        this.bias      = bias;
+
+
+        this.createDefaultSpace(
+            x + width /2,
+            y + height/2);
+    }
+
+
+
+    copy()
+    {
+        const copy = new FigmaWavePath(
+            this.nodeId,
+            this.objectId,
+            this.objectName,
+
+            this._x,
+            this._y,
+            this._width,
+            this._height,
+            
+            this.shape,
+            this.base,
+            this.amplitude,
+            this.frequency,
+            this.offset,
+            this.bias);
 
 
         copy.pathPoints = [...this.pathPoints];
@@ -16383,6 +16537,255 @@ function parseShapeBooleanValue(str, i = -1)
 
     
     return [bool, i - iStart];
+}
+
+
+
+class WavePathValue
+extends ShapeValue
+{
+    x;
+    y;
+    width;
+    height;
+
+    shape;
+    base;   
+    amplitude;
+    frequency;
+    offset;
+    bias;  
+
+
+
+    constructor(nodeId,
+                x         = new NumberValue(0), 
+                y         = new NumberValue(0), 
+                width     = new NumberValue(0), 
+                height    = new NumberValue(0), 
+                shape     = new NumberValue(0),
+                base      = new NumberValue(0),
+                amplitude = new NumberValue(0),
+                frequency = new NumberValue(0),
+                offset    = new NumberValue(0),
+                bias      = new NumberValue(0))
+    {
+        super(WAVE_PATH_VALUE, nodeId);
+
+        this.x         = x;
+        this.y         = y;
+        this.width     = width;
+        this.height    = height;
+
+        this.shape     = shape;
+        this.base      = base;
+        this.amplitude = amplitude;
+        this.frequency = frequency;
+        this.offset    = offset;
+        this.bias      = bias;
+    }
+
+
+
+    copy()
+    {
+        const copy = new WavePathValue(
+            this.nodeId,
+            this.x        .copy(), 
+            this.y        .copy(), 
+            this.width    .copy(), 
+            this.height   .copy(), 
+            this.shape    .copy(),
+            this.base     .copy(),
+            this.amplitude.copy(),
+            this.frequency.copy(),
+            this.offset   .copy(),
+            this.bias     .copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(wave)
+    {
+        return wave
+            && this.x        .equals(wave.x        )
+            && this.y        .equals(wave.y        )
+            && this.width    .equals(wave.width    )
+            && this.height   .equals(wave.height   )
+            && this.shape    .equals(wave.shape    )
+            && this.base     .equals(wave.base     )
+            && this.amplitude.equals(wave.amplitude)
+            && this.frequency.equals(wave.frequency)
+            && this.offset   .equals(wave.offset   )
+            && this.bias     .equals(wave.bias     );
+    }
+
+
+
+    async eval(parse)
+    {
+        return this.copy();
+    }
+    
+    
+    
+    hasInitValue()
+    {
+        return super.hasInitValue()
+            && this.x        .hasInitValue()
+            && this.y        .hasInitValue()
+            && this.width    .hasInitValue()
+            && this.height   .hasInitValue()
+            && this.shape    .hasInitValue()
+            && this.base     .hasInitValue()
+            && this.amplitude.hasInitValue()
+            && this.frequency.hasInitValue()
+            && this.offset   .hasInitValue()
+            && this.bias     .hasInitValue();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.x        .isValid()
+            && this.y        .isValid()
+            && this.width    .isValid()
+            && this.height   .isValid()
+            && this.shape    .isValid()
+            && this.base     .isValid()
+            && this.amplitude.isValid()
+            && this.frequency.isValid()
+            && this.offset   .isValid()
+            && this.bias     .isValid();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toString()
+    {
+        return      this.x        .toString()
+            + ' ' + this.y        .toString()
+            + ' ' + this.width    .toString()
+            + ' ' + this.height   .toString()
+            + ' ' + this.shape    .toString()
+            + ' ' + this.base     .toString()
+            + ' ' + this.amplitude.toString()
+            + ' ' + this.frequency.toString()
+            + ' ' + this.offset   .toString()
+            + ' ' + this.bias     .toString()
+            + ' ' + super.toString();
+    }
+
+
+
+    toPreviewString()
+    {
+        return 'wave';
+            // + ' ' + this.x        .toPreviewString()
+            // + ' ' + this.y        .toPreviewString()
+            // + ' ' + this.width    .toPreviewString()
+            // + ' ' + this.height   .toPreviewString()
+            // + ' ' + this.shape    .toPreviewString() + '°'
+            // + ' ' + this.base     .toPreviewString() + '°'
+            // + ' ' + this.amplitude.toPreviewString() + '°'
+            // + ' ' + this.frequency.toPreviewString() + '°'
+            // + ' ' + this.offset   .toPreviewString() + '°'
+            // + ' ' + this.bias     .toPreviewString() + '°';
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.x        .toDisplayString()
+            + ' ' + this.y        .toDisplayString()
+            + ' ' + this.width    .toDisplayString()
+            + ' ' + this.height   .toDisplayString()
+            + ' ' + this.shape    .toDisplayString()
+            + ' ' + this.base     .toDisplayString()
+            + ' ' + this.amplitude.toDisplayString()
+            + ' ' + this.frequency.toDisplayString()
+            + ' ' + this.offset   .toDisplayString()
+            + ' ' + this.bias     .toDisplayString();
+    }
+
+
+
+    static NaN = new WavePathValue(
+        '',
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
+}
+
+
+
+function parseWavePathValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [PathPathValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x         = parseNumberValue(str[i]); i += x        [1];
+    const y         = parseNumberValue(str[i]); i += y        [1];
+    const width     = parseNumberValue(str[i]); i += width    [1];
+    const height    = parseNumberValue(str[i]); i += height   [1];
+    const shape     = parseNumberValue(str[i]); i += shape    [1];
+    const base      = parseNumberValue(str[i]); i += base     [1];
+    const amplitude = parseNumberValue(str[i]); i += amplitude[1];
+    const frequency = parseNumberValue(str[i]); i += frequency[1];
+    const offset    = parseNumberValue(str[i]); i += offset   [1];
+    const bias      = parseNumberValue(str[i]); i += bias     [1];
+
+
+    const wave = new WavePathValue(
+        '', // set node ID elsewhere,
+        x        [0],
+        y        [0],
+        width    [0],
+        height   [0],
+        shape    [0],
+        base     [0],
+        amplitude[0],
+        frequency[0],
+        offset   [0],
+        bias     [0]);
+
+
+    i = parseShapeBaseValue(str, i, wave);
+
+    
+    return [wave, i - iStart];
 }
 
 
@@ -39528,6 +39931,282 @@ extends GShape
 }
 
 
+class GWavePath
+extends GShape
+{
+    shape     = null;
+    base      = null;
+    amplitude = null;
+    frequency = null;
+    offset    = null;
+    bias      = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(WAVE_PATH, nodeId, options);
+    }
+
+
+
+    reset()
+    {
+        super.reset();
+
+        this.shape     = null;
+        this.base      = null;
+        this.amplitude = null;
+        this.frequency = null;
+        this.offset    = null;
+        this.bias      = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GWavePath(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.shape    ) copy.shape     = this.shape    .copy();
+        if (this.base     ) copy.base      = this.base     .copy();
+        if (this.amplitude) copy.amplitude = this.amplitude.copy();
+        if (this.frequency) copy.frequency = this.frequency.copy();
+        if (this.offset   ) copy.offset    = this.offset   .copy();
+        if (this.bias     ) copy.bias      = this.bias     .copy();
+        
+        return copy;
+    }
+
+
+
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'x':         return this.input ? this.value.x         : this.x;
+            case 'y':         return this.input ? this.value.y         : this.y;
+            case 'width':     return this.input ? this.value.width     : this.width;
+            case 'height':    return this.input ? this.value.height    : this.height;
+            case 'shape':     return this.input ? this.value.shape     : this.shape;
+            case 'base':      return this.input ? this.value.base      : this.base;
+            case 'amplitude': return this.input ? this.value.amplitude : this.amplitude;
+            case 'frequency': return this.input ? this.value.frequency : this.frequency;
+            case 'offset':    return this.input ? this.value.offset    : this.offset;
+            case 'bias':      return this.input ? this.value.bias      : this.bias;
+        }
+
+        return super.paramFromId(paramId);
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        let [x, y, width, height] = await this.evalBaseParams(parse);
+
+
+        let input     = this.input     ? (await this.input    .eval(parse)).toValue() : null;
+        let shape     = this.shape     ? (await this.shape    .eval(parse)).toValue() : null;
+        let base      = this.base      ? (await this.base     .eval(parse)).toValue() : null;
+        let amplitude = this.amplitude ? (await this.amplitude.eval(parse)).toValue() : null;
+        let frequency = this.frequency ? (await this.frequency.eval(parse)).toValue() : null;
+        let offset    = this.offset    ? (await this.offset   .eval(parse)).toValue() : null;
+        let bias      = this.bias      ? (await this.bias     .eval(parse)).toValue() : null;
+
+
+        if (input)
+        {
+            this.value        = input.copy();
+            this.value.nodeId = this.nodeId;
+            this.value.copyCustomParams(input);
+
+            if (x        )  this.value.x         = x;          else  x          = this.value.x;      
+            if (y        )  this.value.y         = y;          else  y          = this.value.y;      
+            if (width    )  this.value.width     = width;      else  width      = this.value.width;  
+            if (height   )  this.value.height    = height;     else  height     = this.value.height; 
+            if (shape    )  this.value.shape     = shape;      else  shape      = this.value.shape;
+            if (base     )  this.value.base      = base;       else  base       = this.value.base;
+            if (amplitude)  this.value.amplitude = amplitude;  else  amplitude  = this.value.amplitude;
+            if (frequency)  this.value.frequency = frequency;  else  frequency  = this.value.frequency;
+            if (offset   )  this.value.offset    = offset;     else  offset     = this.value.offset;
+            if (bias     )  this.value.bias      = bias;       else  bias       = this.value.bias;
+        }
+        else
+        {
+            this.value = new WavePathValue(
+                this.nodeId,
+                x, 
+                y, 
+                width, 
+                height,
+                shape,
+                base,
+                amplitude,
+                frequency,
+                offset,
+                bias);
+        }
+
+
+        this.setUpdateValues(parse, 
+        [
+            ['x',          x        ],
+            ['y',          y        ],
+            ['width',      width    ],
+            ['height',     height   ],
+            ['shape',      shape    ],
+            ['base',       base     ],
+            ['amplitude',  amplitude],
+            ['frequency',  frequency],
+            ['offset',     offset   ],
+            ['bias',       bias     ]
+        ]);
+
+
+        await this.evalShapeBase(parse);
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+       if (!this.options.enabled)
+           return;
+           
+           
+        this.value.objects = [];
+
+
+        if (   super.baseIsValid()
+            && this.value.x        .isValid()
+            && this.value.y        .isValid()
+            && this.value.width    .isValid()
+            && this.value.height   .isValid()
+            && this.value.shape    .isValid()
+            && this.value.base     .isValid()
+            && this.value.amplitude.isValid()
+            && this.value.frequency.isValid()
+            && this.value.offset   .isValid()
+            && this.value.bias     .isValid()) 
+        {
+            let   x    = this.value.x        .value;
+            let   y    = this.value.y        .value;
+            let   w    = this.value.width    .value;
+            let   h    = this.value.height   .value;
+
+            const sh   = this.value.shape    .value;
+            const bs   = this.value.base     .value;
+            const amp  = this.value.amplitude.value;
+            const freq = this.value.frequency.value;
+            const off  = this.value.offset   .value;
+            const bias = this.value.bias     .value;
+
+
+            [x, y, w, h, , ] = validateObjectRect(x, y, w, h);
+
+
+            if (   w != 0 
+                && h != 0)
+            {
+                const wave = new FigmaWavePath(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    x, y, w, h, 
+                    sh, 
+                    bs,
+                    amp,
+                    freq,
+                    off,
+                    bias);
+
+
+                const bounds = getObjBounds([wave]);
+        
+                wave.createDefaultTransform(bounds.x, bounds.y);
+                wave.createDefaultTransformPoints(bounds.x, bounds.y, bounds.w, bounds.h);
+
+
+                this.value.objects.push(wave);
+            }
+        }
+
+
+        await super.evalObjects(parse);
+    }
+   
+    
+        
+    isValid()
+    {
+        return super.isValid()
+            && this.shape     && this.shape    .isValid()
+            && this.base      && this.base     .isValid()
+            && this.amplitude && this.amplitude.isValid()
+            && this.frequency && this.frequency.isValid()
+            && this.offset    && this.offset   .isValid()
+            && this.bias      && this.bias     .isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+ 
+        if (this.shape    ) this.shape    .pushValueUpdates(parse);
+        if (this.base     ) this.base     .pushValueUpdates(parse);
+        if (this.amplitude) this.amplitude.pushValueUpdates(parse);
+        if (this.frequency) this.frequency.pushValueUpdates(parse);
+        if (this.offset   ) this.offset   .pushValueUpdates(parse);
+        if (this.bias     ) this.bias     .pushValueUpdates(parse);
+    }
+
+   
+        
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.shape    ) this.shape    .invalidateInputs(parse, from, force);
+        if (this.base     ) this.base     .invalidateInputs(parse, from, force);
+        if (this.amplitude) this.amplitude.invalidateInputs(parse, from, force);
+        if (this.frequency) this.frequency.invalidateInputs(parse, from, force);
+        if (this.offset   ) this.offset   .invalidateInputs(parse, from, force);
+        if (this.bias     ) this.bias     .invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+ 
+        if (this.shape    ) this.shape    .iterateLoop(parse);
+        if (this.base     ) this.base     .iterateLoop(parse);
+        if (this.amplitude) this.amplitude.iterateLoop(parse);
+        if (this.frequency) this.frequency.iterateLoop(parse);
+        if (this.offset   ) this.offset   .iterateLoop(parse);
+        if (this.bias     ) this.bias     .iterateLoop(parse);
+    }
+}
+
+
 class GShapeGroup
 extends GShapeBase
 {
@@ -41933,7 +42612,6 @@ extends GShape
                 const path = paths[i];
                 
                 if (   !path
-                    //|| !path.points
                     || !path.objects
                     ||  path.objects.length == 0)
                     continue;
@@ -50735,6 +51413,79 @@ function genParseArcPath(parse)
 
 
 
+function genParseWavePath(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const wave = new GWavePath(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(wave, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, wave);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        wave.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'x':         wave.x         = genParse(parse); break;
+        case 'y':         wave.y         = genParse(parse); break;
+        case 'width':     wave.width     = genParse(parse); break;
+        case 'height':    wave.height    = genParse(parse); break;
+        case 'shape':     wave.shape     = genParse(parse); break;
+        case 'base':      wave.base      = genParse(parse); break;
+        case 'amplitude': wave.amplitude = genParse(parse); break;
+        case 'frequency': wave.frequency = genParse(parse); break;
+        case 'offset':    wave.offset    = genParse(parse); break;
+        case 'bias':      wave.bias      = genParse(parse); break;
+        case 'props':     wave.props     = genParse(parse); break;
+        }
+    }
+    
+    
+    wave.sweepInDegrees = parseInt(parse.move()) > 0;
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, wave);
+    return wave;
+}
+
+
+
 function genParseShapeGroup(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -53214,6 +53965,9 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == ARC_PATH_VALUE         ) result = genParseArcPathValue      (parse);
     else if (parse.next == ARC_PATH               ) result = genParseArcPath           (parse);
+
+    else if (parse.next == WAVE_PATH_VALUE        ) result = genParseWavePathValue     (parse);
+    else if (parse.next == WAVE_PATH              ) result = genParseWavePath          (parse);
 
     else if (parse.next == SHAPE_GROUP_VALUE      ) result = genParseShapeGroupValue   (parse);
     else if (parse.next == SHAPE_GROUP            ) result = genParseShapeGroup        (parse);

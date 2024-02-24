@@ -1175,6 +1175,79 @@ function genParseArcPath(parse)
 
 
 
+function genParseWavePath(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const wave = new GWavePath(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(wave, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, wave);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        wave.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'x':         wave.x         = genParse(parse); break;
+        case 'y':         wave.y         = genParse(parse); break;
+        case 'width':     wave.width     = genParse(parse); break;
+        case 'height':    wave.height    = genParse(parse); break;
+        case 'shape':     wave.shape     = genParse(parse); break;
+        case 'base':      wave.base      = genParse(parse); break;
+        case 'amplitude': wave.amplitude = genParse(parse); break;
+        case 'frequency': wave.frequency = genParse(parse); break;
+        case 'offset':    wave.offset    = genParse(parse); break;
+        case 'bias':      wave.bias      = genParse(parse); break;
+        case 'props':     wave.props     = genParse(parse); break;
+        }
+    }
+    
+    
+    wave.sweepInDegrees = parseInt(parse.move()) > 0;
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, wave);
+    return wave;
+}
+
+
+
 function genParseShapeGroup(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

@@ -629,6 +629,45 @@ function arcKappa(angle)
 
 
 
+
+function makeWave(x, y, width, height, shape, base, amplitude, frequency, offset, bias)
+{
+    const w = width / frequency;
+
+
+    x += offset * width;
+    
+    while (x >  -w) x -= w;
+    while (x <= -w) x += w;
+
+
+    const points = [point(x, y+height)];
+
+
+    while (x < width)
+    {
+        points.push(
+            point(x     + (x+w/2 - x)   * 0.3615, y+height),
+            point(x+w/2 + (x - (x+w/2)) * 0.3615, y       ),
+            point(x+w/2,                          y       ));
+    
+        x += w/2;
+
+
+        points.push(
+            point(x     + (x+w/2 - x)   * 0.3615, y       ),
+            point(x+w/2 + (x - (x+w/2)) * 0.3615, y+height),
+            point(x+w/2,                          y+height));
+    
+        x += w/2;
+    }
+
+
+    return points;
+}
+
+
+
 function areClockwise(p0, p1, p2)
 {
     return crossv2(subv(p1, p0), subv(p2, p1)) >= 0;

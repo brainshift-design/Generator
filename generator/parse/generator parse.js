@@ -308,6 +308,9 @@ function genParse(parse, inParam = true)
     else if (parse.next == ARC_PATH_VALUE         ) result = genParseArcPathValue      (parse);
     else if (parse.next == ARC_PATH               ) result = genParseArcPath           (parse);
 
+    else if (parse.next == WAVE_PATH_VALUE        ) result = genParseWavePathValue     (parse);
+    else if (parse.next == WAVE_PATH              ) result = genParseWavePath          (parse);
+
     else if (parse.next == SHAPE_GROUP_VALUE      ) result = genParseShapeGroupValue   (parse);
     else if (parse.next == SHAPE_GROUP            ) result = genParseShapeGroup        (parse);
  

@@ -98,7 +98,6 @@ extends GShape
                 const path = paths[i];
                 
                 if (   !path
-                    //|| !path.points
                     || !path.objects
                     ||  path.objects.length == 0)
                     continue;

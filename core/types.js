@@ -469,6 +469,10 @@ const ARC_PATH_VALUE        = 'ARC#';
 const ARC_PATH              = 'ARC';
 const ARC_PATH_TYPES        = [ARC_PATH_VALUE, ARC_PATH];
 
+const WAVE_PATH_VALUE       = 'WAVEP#';
+const WAVE_PATH             = 'WAVEP';
+const WAVE_PATH_TYPES       = [WAVE_PATH_VALUE, WAVE_PATH];
+
 const MOVE                  = 'MOVE';
 const ROTATE                = 'ROT';
 const SCALE                 = 'SCALE';
@@ -496,7 +500,8 @@ const REVERSE_PATH          = 'REVPTH';
 const PATH_VALUES =
 [
     VECTOR_PATH_VALUE, 
-    ARC_PATH_VALUE
+    ARC_PATH_VALUE,
+    WAVE_PATH_VALUE
 ];
 
 
@@ -541,6 +546,7 @@ const SHAPE_VALUES =
     VECTOR_REGION_VALUE,
     VECTOR_NETWORK_VALUE,
     ARC_PATH_VALUE,
+    WAVE_PATH_VALUE,
     SHAPE_GROUP_VALUE,
     FRAME_VALUE,
     BOOLEAN_VALUE,
@@ -580,6 +586,7 @@ const SHAPE_TYPES =
     ...VECTOR_REGION_TYPES,
     ...VECTOR_NETWORK_TYPES,
     ...ARC_PATH_TYPES,
+    ...WAVE_PATH_TYPES,
     ...SHAPE_GROUP_TYPES,
     ...FRAME_TYPES,
     ...BOOLEAN_TYPES,
