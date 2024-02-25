@@ -689,7 +689,7 @@ const presetPieChart = '\
                 ["TEXT#", "text", "O%2B", "center"],\
                 ["NUM#", "size", "7,0"],\
                 ["TEXT#", "style", "Regular"],\
-                ["NUM#", "alignH", "1,0"]\
+                ["NUM#", "alignX", "1,0"]\
         ]\
         },\
         {\
@@ -1198,7 +1198,7 @@ const presetPieChart = '\
         [\
                 ["TEXT#", "text", "Blood%20Group", "center"],\
                 ["TEXT#", "style", "Regular"],\
-                ["NUM#", "alignH", "1,0"]\
+                ["NUM#", "alignX", "1,0"]\
         ]\
         },\
         {\

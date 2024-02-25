@@ -630,37 +630,64 @@ function arcKappa(angle)
 
 
 
-function makeWave(x, y, width, height, shape, base, amplitude, frequency, offset, bias)
+function makeWave(shape, x, y, width, amplitude, frequency, offset, alignX, alignY)
 {
     const w = width / frequency;
 
 
-    x += offset * width;
+    x += offset * w;
     
     while (x >  -w) x -= w;
     while (x <= -w) x += w;
 
 
-    const points = [point(x, y+height)];
+    if (alignY == 1)
+        amplitude *= 2;
+
+        
+    let height = amplitude;
 
 
-    while (x < width)
+    switch (shape)
     {
-        points.push(
-            point(x     + (x+w/2 - x)   * 0.3615, y+height),
-            point(x+w/2 + (x - (x+w/2)) * 0.3615, y       ),
-            point(x+w/2,                          y       ));
-    
-        x += w/2;
+        case 4: // sine
+        {
+            const points = [point(x, y+height)];
+
+            while (x < width)
+            {
+                points.push(
+                    point(x     + (x+w/2 - x)   * 0.3615, y+height),
+                    point(x+w/2 + (x - (x+w/2)) * 0.3615, y       ),
+                    point(x+w/2,                          y       ));
+            
+                x += w/2;
 
 
-        points.push(
-            point(x     + (x+w/2 - x)   * 0.3615, y       ),
-            point(x+w/2 + (x - (x+w/2)) * 0.3615, y+height),
-            point(x+w/2,                          y+height));
-    
-        x += w/2;
+                points.push(
+                    point(x     + (x+w/2 - x)   * 0.3615, y       ),
+                    point(x+w/2 + (x - (x+w/2)) * 0.3615, y+height),
+                    point(x+w/2,                          y+height));
+            
+                x += w/2;
+            }
+
+            break;
+        }
     }
+    
+
+    points.forEach(p =>
+    {
+             if (alignX == 1) p.x -= width/2;
+        else if (alignX == 2) p.x -= width;
+    });
+
+    points.forEach(p =>
+    {
+             if (alignY == 1) p.y -= height/2;
+        else if (alignY == 2) p.y -= height;
+    });
 
 
     return points;

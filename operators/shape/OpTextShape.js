@@ -9,8 +9,8 @@ extends OpShape
     paramFont;
     paramSize;
     paramStyle;
-    paramAlignH;
-    paramAlignV;
+    paramAlignX;
+    paramAlignY;
     paramLineHeight;
     paramLetterSpacing;
 
@@ -38,8 +38,8 @@ extends OpShape
         this.addParam(this.paramFont          = new SelectParam('font',          'font',     false, true, true, figUniqueFontNames, interIndex));
         this.addParam(this.paramSize          = new NumberParam('size',          'size',     true,  true, true,  12, 1));
         this.addParam(this.paramStyle         = new SelectParam('style',         'style',    false, true, true, [''], 0));
-        this.addParam(this.paramAlignH        = new SelectParam('alignH',        'align H',  true,  true, true, ['left', 'center', 'right', 'justify'], 0));
-        this.addParam(this.paramAlignV        = new SelectParam('alignV',        'align V',  true,  true, true, ['bottom', 'middle', 'top'], 1));
+        this.addParam(this.paramAlignX        = new SelectParam('alignX',        'align X',  true,  true, true, ['left', 'center', 'right', 'justify'], 0));
+        this.addParam(this.paramAlignY        = new SelectParam('alignY',        'align Y',  true,  true, true, ['bottom', 'middle', 'top'], 1));
         this.addParam(this.paramLineHeight    = new NumberParam('lineHeight',    'line ↕',   true,  true, true, 100));
         this.addParam(this.paramLetterSpacing = new NumberParam('letterSpacing', 'letter ↔', true,  true, true, 0));
 
@@ -69,8 +69,8 @@ extends OpShape
         const font          = values[paramIds.findIndex(id => id == 'font'         )];
         const size          = values[paramIds.findIndex(id => id == 'size'         )];
         const style         = values[paramIds.findIndex(id => id == 'style'        )];
-        const alignH        = values[paramIds.findIndex(id => id == 'alignH'       )];
-        const alignV        = values[paramIds.findIndex(id => id == 'alignV'       )];
+        const alignX        = values[paramIds.findIndex(id => id == 'alignX'       )];
+        const alignY        = values[paramIds.findIndex(id => id == 'alignY'       )];
         const lineHeight    = values[paramIds.findIndex(id => id == 'lineHeight'   )];
         const letterSpacing = values[paramIds.findIndex(id => id == 'letterSpacing')];
 
@@ -82,8 +82,8 @@ extends OpShape
                                      this.paramFont         .setValue(font,          false, true, false);
                                      this.paramSize         .setValue(size,          false, true, false);
                                      this.paramStyle        .setValue(style,         false, true, false);
-                                     this.paramAlignH       .setValue(alignH,        false, true, false);
-                                     this.paramAlignV       .setValue(alignV,        false, true, false);
+                                     this.paramAlignX       .setValue(alignX,        false, true, false);
+                                     this.paramAlignY       .setValue(alignY,        false, true, false);
                                      this.paramLineHeight   .setValue(lineHeight,    false, true, false);
                                      this.paramLetterSpacing.setValue(letterSpacing, false, true, false);
     }
@@ -103,8 +103,8 @@ extends OpShape
         this.paramFont         .enableControlText(true, this.paramFont         .isUnknown());
         this.paramSize         .enableControlText(true, this.paramSize         .isUnknown());
         this.paramStyle        .enableControlText(true, this.paramStyle        .isUnknown());
-        this.paramAlignH       .enableControlText(true, this.paramAlignH       .isUnknown());
-        this.paramAlignV       .enableControlText(true, this.paramAlignV       .isUnknown());
+        this.paramAlignX       .enableControlText(true, this.paramAlignX       .isUnknown());
+        this.paramAlignY       .enableControlText(true, this.paramAlignY       .isUnknown());
         this.paramLineHeight   .enableControlText(true, this.paramLineHeight   .isUnknown());
         this.paramLetterSpacing.enableControlText(true, this.paramLetterSpacing.isUnknown());
 

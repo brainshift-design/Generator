@@ -623,6 +623,16 @@ function handleLegacyNode(_node, genVersion)
         const paramTo = _node.params.find(p => p[1] == 'to');
         if (paramTo) paramTo[1] = 'sweep';
     }
+    else if (_node.type == TEXT_SHAPE
+          && _node.params
+          && _node.params.length > 0)
+    {
+        const paramAlignH = _node.params.find(p => p[1] == 'alignH');
+        if (paramAlignH) paramAlignH[1] = 'alignX';
+
+        const paramAlignY = _node.params.find(p => p[1] == 'alignV');
+        if (paramAlignY) paramAlignY[1] = 'alignY';
+    }
 }
 
 

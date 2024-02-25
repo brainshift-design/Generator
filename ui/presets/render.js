@@ -75,7 +75,7 @@ const presetRender = '\
                 ["NUM#", "height", "28,0"],\
                 ["NUM#", "size", "24,0"],\
                 ["TEXT#", "style", "Bold"],\
-                ["NUM#", "alignH", "1,0"]\
+                ["NUM#", "alignX", "1,0"]\
             ]\
         },\
         {\

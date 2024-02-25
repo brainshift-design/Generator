@@ -359,7 +359,7 @@ const presetClock = '\
                     ["NUM#", "height", "50,0"],\
                     ["NUM#", "size", "35,0"],\
                     ["TEXT#", "style", "Black"],\
-                    ["NUM#", "alignH", "1,0"]\
+                    ["NUM#", "alignX", "1,0"]\
             ]\
             },\
             {\

@@ -9,8 +9,8 @@ extends GShape
     font          = null;
     size          = null;
     style         = null;
-    alignH        = null;
-    alignV        = null;
+    alignX        = null;
+    alignY        = null;
     lineHeight    = null;
     letterSpacing = null;
     
@@ -35,8 +35,8 @@ extends GShape
         this.font          = null;
         this.size          = null;
         this.style         = null;
-        this.alignH        = null;
-        this.alignV        = null;
+        this.alignX        = null;
+        this.alignY        = null;
         this.lineHeight    = null;
         this.letterSpacing = null;
     }
@@ -57,8 +57,8 @@ extends GShape
         if (this.font         ) copy.font          = this.font         .copy();
         if (this.style        ) copy.style         = this.style        .copy();
         if (this.size         ) copy.size          = this.size         .copy();
-        if (this.alignH       ) copy.alignH        = this.alignH       .copy();
-        if (this.alignV       ) copy.alignV        = this.alignV       .copy();
+        if (this.alignX       ) copy.alignX        = this.alignX       .copy();
+        if (this.alignY       ) copy.alignY        = this.alignY       .copy();
         if (this.lineHeight   ) copy.lineHeight    = this.lineHeight   .copy();
         if (this.letterSpacing) copy.letterSpacing = this.letterSpacing.copy();
 
@@ -79,8 +79,8 @@ extends GShape
             case 'font':          return this.input ? this.value.font          : this.font;
             case 'style':         return this.input ? this.value.style         : this.style;
             case 'size':          return this.input ? this.value.size          : this.size;
-            case 'alignH':        return this.input ? this.value.alignH        : this.alignH;
-            case 'alignV':        return this.input ? this.value.alignV        : this.alignV;
+            case 'alignX':        return this.input ? this.value.alignX        : this.alignX;
+            case 'alignY':        return this.input ? this.value.alignY        : this.alignY;
             case 'lineHeight':    return this.input ? this.value.lineHeight    : this.lineHeight;
             case 'letterSpacing': return this.input ? this.value.letterSpacing : this.letterSpacing;
         }
@@ -105,8 +105,8 @@ extends GShape
         let   font          = this.font          ? (await this.font         .eval(parse)).toValue() : null;
         let   style         = this.style         ? (await this.style        .eval(parse)).toValue() : null;
         let   size          = this.size          ? (await this.size         .eval(parse)).toValue() : null;
-        let   alignH        = this.alignH        ? (await this.alignH       .eval(parse)).toValue() : null;
-        let   alignV        = this.alignV        ? (await this.alignV       .eval(parse)).toValue() : null;
+        let   alignX        = this.alignX        ? (await this.alignX       .eval(parse)).toValue() : null;
+        let   alignY        = this.alignY        ? (await this.alignY       .eval(parse)).toValue() : null;
         let   lineHeight    = this.lineHeight    ? (await this.lineHeight   .eval(parse)).toValue() : null;
         let   letterSpacing = this.letterSpacing ? (await this.letterSpacing.eval(parse)).toValue() : null;
 
@@ -119,8 +119,8 @@ extends GShape
         if (font          && font         .type != NUMBER_VALUE) font          = NumberValue.NaN.copy();
         if (style         && style        .type != NUMBER_VALUE) style         = NumberValue.NaN.copy();
         if (size          && size         .type != NUMBER_VALUE) size          = NumberValue.NaN.copy();
-        if (alignH        && alignH       .type != NUMBER_VALUE) alignH        = NumberValue.NaN.copy();
-        if (alignV        && alignV       .type != NUMBER_VALUE) alignV        = NumberValue.NaN.copy();
+        if (alignX        && alignX       .type != NUMBER_VALUE) alignX        = NumberValue.NaN.copy();
+        if (alignY        && alignY       .type != NUMBER_VALUE) alignY        = NumberValue.NaN.copy();
         if (lineHeight    && lineHeight   .type != NUMBER_VALUE) lineHeight    = NumberValue.NaN.copy();
         if (letterSpacing && letterSpacing.type != NUMBER_VALUE) letterSpacing = NumberValue.NaN.copy();
 
@@ -139,8 +139,8 @@ extends GShape
             if (font         )  this.value.font          = font;           else  font          = this.value.font;
             if (style        )  this.value.style         = style;          else  style         = this.value.style;
             if (size         )  this.value.size          = size;           else  size          = this.value.size;
-            if (alignH       )  this.value.alignH        = alignH;         else  alignH        = this.value.alignH;
-            if (alignV       )  this.value.alignV        = alignV;         else  alignV        = this.value.alignV;
+            if (alignX       )  this.value.alignX        = alignX;         else  alignX        = this.value.alignX;
+            if (alignY       )  this.value.alignY        = alignY;         else  alignY        = this.value.alignY;
             if (lineHeight   )  this.value.lineHeight    = lineHeight;     else  lineHeight    = this.value.lineHeight;
             if (letterSpacing)  this.value.letterSpacing = letterSpacing;  else  letterSpacing = this.value.letterSpacing; 
         }
@@ -156,8 +156,8 @@ extends GShape
                 font, 
                 style,
                 size,
-                alignH,
-                alignV,
+                alignX,
+                alignY,
                 lineHeight,
                 letterSpacing);
         }
@@ -173,8 +173,8 @@ extends GShape
             ['font',          font         ],
             ['style',         style        ],
             ['size',          size         ],
-            ['alignH',        alignH       ],
-            ['alignV',        alignV       ],
+            ['alignX',        alignX       ],
+            ['alignY',        alignY       ],
             ['lineHeight',    lineHeight   ],
             ['letterSpacing', letterSpacing]
         ]);
@@ -194,8 +194,8 @@ extends GShape
         if (!this.font         ) this.font          = this.value.font         .copy();
         if (!this.style        ) this.style         = this.value.style        .copy();
         if (!this.size         ) this.size          = this.value.size         .copy();
-        if (!this.alignH       ) this.alignH        = this.value.alignH       .copy();
-        if (!this.alignV       ) this.alignV        = this.value.alignV       .copy();
+        if (!this.alignX       ) this.alignX        = this.value.alignX       .copy();
+        if (!this.alignY       ) this.alignY        = this.value.alignY       .copy();
         if (!this.lineHeight   ) this.lineHeight    = this.value.lineHeight   .copy();
         if (!this.letterSpacing) this.letterSpacing = this.value.letterSpacing.copy();
         
@@ -225,8 +225,8 @@ extends GShape
             && this.value.font         .isValid()
             && this.value.style        .isValid()
             && this.value.size         .isValid()
-            && this.value.alignH       .isValid()
-            && this.value.alignV       .isValid()
+            && this.value.alignX       .isValid()
+            && this.value.alignY       .isValid()
             && this.value.lineHeight   .isValid()
             && this.value.letterSpacing.isValid())
         {
@@ -247,8 +247,8 @@ extends GShape
                 fontName,
                 this.value.size         .value,
                 fontStyles[Math.min(this.value.style.value, fontStyles.length-1)],
-                this.value.alignH       .value,
-                this.value.alignV       .value,
+                this.value.alignX       .value,
+                this.value.alignY       .value,
                 this.value.lineHeight   .value,
                 this.value.letterSpacing.value);
 
@@ -295,38 +295,11 @@ extends GShape
             && this.font          && this.font         .isValid()
             && this.style         && this.style        .isValid()
             && this.size          && this.size         .isValid()
-            && this.alignH        && this.alignH       .isValid()
-            && this.alignV        && this.alignV       .isValid()
+            && this.alignX        && this.alignX       .isValid()
+            && this.alignY        && this.alignY       .isValid()
             && this.lineHeight    && this.lineHeight   .isValid()
             && this.letterSpacing && this.letterSpacing.isValid();
     }
-
-
-
-    // toValue()
-    // {
-    //     const text = new TextShapeValue(
-    //         this.nodeId,
-    //         this.text         .toValue(),
-    //         this.x            .toValue(),
-    //         this.y            .toValue(),
-    //         this.width        .toValue(),
-    //         this.height       .toValue(),
-    //         this.font         .toValue(),
-    //         this.style        .toValue(),
-    //         this.size         .toValue(),
-    //         this.alignH       .toValue(),
-    //         this.alignV       .toValue(),
-    //         this.lineHeight   .toValue(),
-    //         this.letterSpacing.toValue());
-
-    //     text.copyCustomParams(this.value);
-           
-    //     text.props   = this.props.toValue();
-    //     text.objects = this.value.objects.map(o => o.copy());
-        
-    //     return text;
-    // }
 
 
 
@@ -342,8 +315,8 @@ extends GShape
         if (this.font         ) this.font         .pushValueUpdates(parse);
         if (this.style        ) this.style        .pushValueUpdates(parse);
         if (this.size         ) this.size         .pushValueUpdates(parse);
-        if (this.alignH       ) this.alignH       .pushValueUpdates(parse);
-        if (this.alignV       ) this.alignV       .pushValueUpdates(parse);
+        if (this.alignX       ) this.alignX       .pushValueUpdates(parse);
+        if (this.alignY       ) this.alignY       .pushValueUpdates(parse);
         if (this.lineHeight   ) this.lineHeight   .pushValueUpdates(parse);
         if (this.letterSpacing) this.letterSpacing.pushValueUpdates(parse);
     }
@@ -362,8 +335,8 @@ extends GShape
         if (this.font         ) this.font         .invalidateInputs(parse, from, force);
         if (this.style        ) this.style        .invalidateInputs(parse, from, force);
         if (this.size         ) this.size         .invalidateInputs(parse, from, force);
-        if (this.alignH       ) this.alignH       .invalidateInputs(parse, from, force);
-        if (this.alignV       ) this.alignV       .invalidateInputs(parse, from, force);
+        if (this.alignX       ) this.alignX       .invalidateInputs(parse, from, force);
+        if (this.alignY       ) this.alignY       .invalidateInputs(parse, from, force);
         if (this.lineHeight   ) this.lineHeight   .invalidateInputs(parse, from, force);
         if (this.letterSpacing) this.letterSpacing.invalidateInputs(parse, from, force);
     }
@@ -382,8 +355,8 @@ extends GShape
         if (this.font         ) this.font         .iterateLoop(parse);
         if (this.style        ) this.style        .iterateLoop(parse);
         if (this.size         ) this.size         .iterateLoop(parse);
-        if (this.alignH       ) this.alignH       .iterateLoop(parse);
-        if (this.alignV       ) this.alignV       .iterateLoop(parse);
+        if (this.alignX       ) this.alignX       .iterateLoop(parse);
+        if (this.alignY       ) this.alignY       .iterateLoop(parse);
         if (this.lineHeight   ) this.lineHeight   .iterateLoop(parse);
         if (this.letterSpacing) this.letterSpacing.iterateLoop(parse);
     }

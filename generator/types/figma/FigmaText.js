@@ -15,15 +15,15 @@ extends FigmaShape
     size;
     style;
     
-    alignH;
-    alignV;
+    alignX;
+    alignY;
     
     lineHeight;
     letterSpacing;
 
 
 
-    constructor(nodeId, objectId, objectName, text, x, y, width, height, font, size, style, alignH, alignV, lineHeight, letterSpacing)
+    constructor(nodeId, objectId, objectName, text, x, y, width, height, font, size, style, alignX, alignY, lineHeight, letterSpacing)
     {
         super(TEXT_SHAPE, nodeId, objectId, objectName);
         
@@ -41,8 +41,8 @@ extends FigmaShape
         this.size          = size;
         this.style         = style;
     
-        this.alignH        = alignH;
-        this.alignV        = alignV;
+        this.alignX        = alignX;
+        this.alignY        = alignY;
     
         this.lineHeight    = lineHeight;
         this.letterSpacing = letterSpacing;
@@ -73,8 +73,8 @@ extends FigmaShape
             this.size,
             this.style,
     
-            this.alignH,
-            this.alignV,
+            this.alignX,
+            this.alignY,
     
             this.lineHeight,
             this.letterSpacing);
@@ -111,8 +111,8 @@ extends FigmaShape
             size:          this.size,
             style:         this.style,
 
-            alignH:        this.alignH,
-            alignV:        this.alignV,
+            alignX:        this.alignX,
+            alignY:        this.alignY,
             
             lineHeight:    this.lineHeight,
             letterSpacing: this.letterSpacing
@@ -140,8 +140,8 @@ extends FigmaShape
             /* 32 */ this.size,
             /* 33 */ this.style,
             
-            /* 34 */ this.alignH,
-            /* 35 */ this.alignV,
+            /* 34 */ this.alignX,
+            /* 35 */ this.alignY,
             
             /* 36 */ this.lineHeight,
             /* 37 */ this.letterSpacing

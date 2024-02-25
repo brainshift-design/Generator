@@ -128,7 +128,7 @@ const presetColorSwatches = '\
                 ["NUM#", "height", "18,0"],\
                 ["NUM#", "size", "18,0"],\
                 ["TEXT#", "style", "Medium"],\
-                ["NUM#", "alignH", "2,0"]\
+                ["NUM#", "alignX", "2,0"]\
             ]\
         },\
         {\
@@ -455,7 +455,7 @@ const presetColorSwatches = '\
                 ["NUM#", "width", "133,0"],\
                 ["NUM#", "height", "12,0"],\
                 ["TEXT#", "style", "Medium%20Italic"],\
-                ["NUM#", "alignH", "2,0"]\
+                ["NUM#", "alignX", "2,0"]\
             ]\
         },\
         {\

@@ -77,8 +77,8 @@
             [\
                     ["TEXT#", "text", "Hello", "center"],\
                     ["NUM#", "size", "38,0"],\
-                    ["NUM#", "alignH", "3,0"],\
-                    ["NUM#", "alignV", "2,0"],\
+                    ["NUM#", "alignX", "3,0"],\
+                    ["NUM#", "alignY", "2,0"],\
                     ["NUM#", "lineHeight", "38,0"],\
                     ["NUM#", "letterSpacing", "38,0"]\
             ]\
@@ -174,7 +174,7 @@
             [\
                     ["TEXT#", "text", "Hello", "center"],\
                     ["NUM#", "size", "38,0"],\
-                    ["NUM#", "alignH", "1,0"]\
+                    ["NUM#", "alignX", "1,0"]\
             ]\
             }\
         ],\

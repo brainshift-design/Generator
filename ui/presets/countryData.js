@@ -226,8 +226,8 @@ const presetCountryData = '\
                     ["NUM#", "height", "12,0"],\
                     ["NUM#", "size", "10,0"],\
                     ["TEXT#", "style", "Regular"],\
-                    ["NUM#", "alignH", "2,0"],\
-                    ["NUM#", "alignV", "2,0"]\
+                    ["NUM#", "alignX", "2,0"],\
+                    ["NUM#", "alignY", "2,0"]\
             ]\
             },\
             {\

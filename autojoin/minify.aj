@@ -3310,8 +3310,8 @@ createInputForObjects
 paramText
 paramFont
 paramStyle
-paramAlignH
-paramAlignV
+paramAlignX
+paramAlignY
 paramLineHeight
 paramLetterSpacing
 paramSmooth

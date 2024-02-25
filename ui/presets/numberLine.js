@@ -117,7 +117,7 @@ const presetNumberLine = '\
                 ["NUM#", "width", "17,0"],\
                 ["NUM#", "height", "12,0"],\
                 ["TEXT#", "style", "Medium"],\
-                ["NUM#", "alignH", "1,0"]\
+                ["NUM#", "alignX", "1,0"]\
             ]\
         },\
         {\

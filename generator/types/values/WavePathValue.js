@@ -1,45 +1,40 @@
 class WavePathValue
 extends ShapeValue
 {
+    shape;
     x;
     y;
     width;
-    height;
-
-    shape;
-    base;   
     amplitude;
     frequency;
     offset;
-    bias;  
+    alignX;  
+    alignY;  
 
 
 
     constructor(nodeId,
+                shape     = new NumberValue(0),
                 x         = new NumberValue(0), 
                 y         = new NumberValue(0), 
                 width     = new NumberValue(0), 
-                height    = new NumberValue(0), 
-                shape     = new NumberValue(0),
-                base      = new NumberValue(0),
                 amplitude = new NumberValue(0),
                 frequency = new NumberValue(0),
                 offset    = new NumberValue(0),
-                bias      = new NumberValue(0))
+                alignX    = new NumberValue(0),
+                alignY    = new NumberValue(0))
     {
         super(WAVE_PATH_VALUE, nodeId);
 
+        this.shape     = shape;
         this.x         = x;
         this.y         = y;
         this.width     = width;
-        this.height    = height;
-
-        this.shape     = shape;
-        this.base      = base;
         this.amplitude = amplitude;
         this.frequency = frequency;
         this.offset    = offset;
-        this.bias      = bias;
+        this.alignX    = alignX;
+        this.alignY    = alignY;
     }
 
 
@@ -48,16 +43,15 @@ extends ShapeValue
     {
         const copy = new WavePathValue(
             this.nodeId,
+            this.shape    .copy(),
             this.x        .copy(), 
             this.y        .copy(), 
             this.width    .copy(), 
-            this.height   .copy(), 
-            this.shape    .copy(),
-            this.base     .copy(),
             this.amplitude.copy(),
             this.frequency.copy(),
             this.offset   .copy(),
-            this.bias     .copy());
+            this.alignX   .copy(),
+            this.alignY   .copy());
 
         copy.copyBase(this);
 
@@ -69,16 +63,15 @@ extends ShapeValue
     equals(wave)
     {
         return wave
+            && this.shape    .equals(wave.shape    )
             && this.x        .equals(wave.x        )
             && this.y        .equals(wave.y        )
             && this.width    .equals(wave.width    )
-            && this.height   .equals(wave.height   )
-            && this.shape    .equals(wave.shape    )
-            && this.base     .equals(wave.base     )
             && this.amplitude.equals(wave.amplitude)
             && this.frequency.equals(wave.frequency)
             && this.offset   .equals(wave.offset   )
-            && this.bias     .equals(wave.bias     );
+            && this.alignX   .equals(wave.alignX   )
+            && this.alignY   .equals(wave.alignY   );
     }
 
 
@@ -93,16 +86,15 @@ extends ShapeValue
     hasInitValue()
     {
         return super.hasInitValue()
+            && this.shape    .hasInitValue()
             && this.x        .hasInitValue()
             && this.y        .hasInitValue()
             && this.width    .hasInitValue()
-            && this.height   .hasInitValue()
-            && this.shape    .hasInitValue()
-            && this.base     .hasInitValue()
             && this.amplitude.hasInitValue()
             && this.frequency.hasInitValue()
             && this.offset   .hasInitValue()
-            && this.bias     .hasInitValue();
+            && this.alignX   .hasInitValue()
+            && this.alignY   .hasInitValue();
     }
 
 
@@ -110,16 +102,15 @@ extends ShapeValue
     isValid()
     {
         return super.isValid()
+            && this.shape    .isValid()
             && this.x        .isValid()
             && this.y        .isValid()
             && this.width    .isValid()
-            && this.height   .isValid()
-            && this.shape    .isValid()
-            && this.base     .isValid()
             && this.amplitude.isValid()
             && this.frequency.isValid()
             && this.offset   .isValid()
-            && this.bias     .isValid();
+            && this.alignX   .isValid()
+            && this.alignY   .isValid();
     }
 
 
@@ -133,16 +124,15 @@ extends ShapeValue
 
     toString()
     {
-        return      this.x        .toString()
+        return      this.shape    .toString()
+            + ' ' + this.x        .toString()
             + ' ' + this.y        .toString()
             + ' ' + this.width    .toString()
-            + ' ' + this.height   .toString()
-            + ' ' + this.shape    .toString()
-            + ' ' + this.base     .toString()
             + ' ' + this.amplitude.toString()
             + ' ' + this.frequency.toString()
             + ' ' + this.offset   .toString()
-            + ' ' + this.bias     .toString()
+            + ' ' + this.alignX   .toString()
+            + ' ' + this.alignY   .toString()
             + ' ' + super.toString();
     }
 
@@ -151,39 +141,36 @@ extends ShapeValue
     toPreviewString()
     {
         return 'wave';
+            // + ' ' + this.shape    .toPreviewString() + '°'
             // + ' ' + this.x        .toPreviewString()
             // + ' ' + this.y        .toPreviewString()
             // + ' ' + this.width    .toPreviewString()
-            // + ' ' + this.height   .toPreviewString()
-            // + ' ' + this.shape    .toPreviewString() + '°'
-            // + ' ' + this.base     .toPreviewString() + '°'
             // + ' ' + this.amplitude.toPreviewString() + '°'
             // + ' ' + this.frequency.toPreviewString() + '°'
             // + ' ' + this.offset   .toPreviewString() + '°'
-            // + ' ' + this.bias     .toPreviewString() + '°';
+            // + ' ' + this.alignX   .toPreviewString()
+            // + ' ' + this.alignY   .toPreviewString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.x        .toDisplayString()
+        return      this.shape    .toDisplayString()
+            + ' ' + this.x        .toDisplayString()
             + ' ' + this.y        .toDisplayString()
             + ' ' + this.width    .toDisplayString()
-            + ' ' + this.height   .toDisplayString()
-            + ' ' + this.shape    .toDisplayString()
-            + ' ' + this.base     .toDisplayString()
             + ' ' + this.amplitude.toDisplayString()
             + ' ' + this.frequency.toDisplayString()
             + ' ' + this.offset   .toDisplayString()
-            + ' ' + this.bias     .toDisplayString();
+            + ' ' + this.alignX   .toDisplayString()
+            + ' ' + this.alignY   .toDisplayString();
     }
 
 
 
     static NaN = new WavePathValue(
         '',
-        NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -201,7 +188,7 @@ function parseWavePathValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [PathPathValue.NaN, 1];
+        return [WavePathValue.NaN, 1];
 
 
     if (i < 0)
@@ -213,30 +200,28 @@ function parseWavePathValue(str, i = -1)
 
     const iStart = i;
 
+    const shape     = parseNumberValue(str[i]); i += shape    [1];
     const x         = parseNumberValue(str[i]); i += x        [1];
     const y         = parseNumberValue(str[i]); i += y        [1];
     const width     = parseNumberValue(str[i]); i += width    [1];
-    const height    = parseNumberValue(str[i]); i += height   [1];
-    const shape     = parseNumberValue(str[i]); i += shape    [1];
-    const base      = parseNumberValue(str[i]); i += base     [1];
     const amplitude = parseNumberValue(str[i]); i += amplitude[1];
     const frequency = parseNumberValue(str[i]); i += frequency[1];
     const offset    = parseNumberValue(str[i]); i += offset   [1];
-    const bias      = parseNumberValue(str[i]); i += bias     [1];
+    const alignX    = parseNumberValue(str[i]); i += alignX   [1];
+    const alignY    = parseNumberValue(str[i]); i += alignY   [1];
 
 
     const wave = new WavePathValue(
         '', // set node ID elsewhere,
+        shape    [0],
         x        [0],
         y        [0],
         width    [0],
-        height   [0],
-        shape    [0],
-        base     [0],
         amplitude[0],
         frequency[0],
         offset   [0],
-        bias     [0]);
+        alignX   [0],
+        alignY   [0]);
 
 
     i = parseShapeBaseValue(str, i, wave);

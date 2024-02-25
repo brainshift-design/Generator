@@ -198,7 +198,7 @@ const presetTextFromBackground = '\
                     ["NUM#", "width", "300,0"],\
                     ["NUM#", "size", "30,0"],\
                     ["TEXT#", "style", "Semi%20Bold%20Italic"],\
-                    ["NUM#", "alignH", "1,0"]\
+                    ["NUM#", "alignX", "1,0"]\
             ]\
             },\
             {\

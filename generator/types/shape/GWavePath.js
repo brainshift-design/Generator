@@ -2,11 +2,11 @@ class GWavePath
 extends GShape
 {
     shape     = null;
-    base      = null;
     amplitude = null;
     frequency = null;
     offset    = null;
-    bias      = null;
+    alignX    = null;
+    alignY    = null;
 
 
 
@@ -22,11 +22,11 @@ extends GShape
         super.reset();
 
         this.shape     = null;
-        this.base      = null;
         this.amplitude = null;
         this.frequency = null;
         this.offset    = null;
-        this.bias      = null;
+        this.alignX    = null;
+        this.alignY    = null;
     }
 
 
@@ -38,11 +38,11 @@ extends GShape
         copy.copyBase(this);
 
         if (this.shape    ) copy.shape     = this.shape    .copy();
-        if (this.base     ) copy.base      = this.base     .copy();
         if (this.amplitude) copy.amplitude = this.amplitude.copy();
         if (this.frequency) copy.frequency = this.frequency.copy();
         if (this.offset   ) copy.offset    = this.offset   .copy();
-        if (this.bias     ) copy.bias      = this.bias     .copy();
+        if (this.alignX   ) copy.alignX    = this.alignX   .copy();
+        if (this.alignY   ) copy.alignY    = this.alignY   .copy();
         
         return copy;
     }
@@ -53,16 +53,15 @@ extends GShape
     {
         switch (paramId)
         {
+            case 'shape':     return this.input ? this.value.shape     : this.shape;
             case 'x':         return this.input ? this.value.x         : this.x;
             case 'y':         return this.input ? this.value.y         : this.y;
             case 'width':     return this.input ? this.value.width     : this.width;
-            case 'height':    return this.input ? this.value.height    : this.height;
-            case 'shape':     return this.input ? this.value.shape     : this.shape;
-            case 'base':      return this.input ? this.value.base      : this.base;
             case 'amplitude': return this.input ? this.value.amplitude : this.amplitude;
             case 'frequency': return this.input ? this.value.frequency : this.frequency;
             case 'offset':    return this.input ? this.value.offset    : this.offset;
-            case 'bias':      return this.input ? this.value.bias      : this.bias;
+            case 'alignX':    return this.input ? this.value.alignX    : this.alignX;
+            case 'alignY':    return this.input ? this.value.alignY    : this.alignY;
         }
 
         return super.paramFromId(paramId);
@@ -76,16 +75,16 @@ extends GShape
             return this;
 
 
-        let [x, y, width, height] = await this.evalBaseParams(parse);
+        let [x, y, width, ] = await this.evalBaseParams(parse);
 
 
         let input     = this.input     ? (await this.input    .eval(parse)).toValue() : null;
         let shape     = this.shape     ? (await this.shape    .eval(parse)).toValue() : null;
-        let base      = this.base      ? (await this.base     .eval(parse)).toValue() : null;
         let amplitude = this.amplitude ? (await this.amplitude.eval(parse)).toValue() : null;
         let frequency = this.frequency ? (await this.frequency.eval(parse)).toValue() : null;
         let offset    = this.offset    ? (await this.offset   .eval(parse)).toValue() : null;
-        let bias      = this.bias      ? (await this.bias     .eval(parse)).toValue() : null;
+        let alignX    = this.alignX    ? (await this.alignX   .eval(parse)).toValue() : null;
+        let alignY    = this.alignY    ? (await this.alignY   .eval(parse)).toValue() : null;
 
 
         if (input)
@@ -94,46 +93,43 @@ extends GShape
             this.value.nodeId = this.nodeId;
             this.value.copyCustomParams(input);
 
+            if (shape    )  this.value.shape     = shape;      else  shape      = this.value.shape;
             if (x        )  this.value.x         = x;          else  x          = this.value.x;      
             if (y        )  this.value.y         = y;          else  y          = this.value.y;      
             if (width    )  this.value.width     = width;      else  width      = this.value.width;  
-            if (height   )  this.value.height    = height;     else  height     = this.value.height; 
-            if (shape    )  this.value.shape     = shape;      else  shape      = this.value.shape;
-            if (base     )  this.value.base      = base;       else  base       = this.value.base;
             if (amplitude)  this.value.amplitude = amplitude;  else  amplitude  = this.value.amplitude;
             if (frequency)  this.value.frequency = frequency;  else  frequency  = this.value.frequency;
             if (offset   )  this.value.offset    = offset;     else  offset     = this.value.offset;
-            if (bias     )  this.value.bias      = bias;       else  bias       = this.value.bias;
+            if (alignX   )  this.value.alignX    = alignX;     else  alignX     = this.value.alignX;
+            if (alignY   )  this.value.alignY    = alignY;     else  alignY     = this.value.alignY;
         }
         else
         {
             this.value = new WavePathValue(
                 this.nodeId,
+                shape,
                 x, 
                 y, 
                 width, 
-                height,
-                shape,
-                base,
                 amplitude,
                 frequency,
                 offset,
-                bias);
+                alignX,
+                alignY);
         }
 
 
         this.setUpdateValues(parse, 
         [
-            ['x',          x        ],
-            ['y',          y        ],
-            ['width',      width    ],
-            ['height',     height   ],
-            ['shape',      shape    ],
-            ['base',       base     ],
-            ['amplitude',  amplitude],
-            ['frequency',  frequency],
-            ['offset',     offset   ],
-            ['bias',       bias     ]
+            ['shape',     shape    ],
+            ['x',         x        ],
+            ['y',         y        ],
+            ['width',     width    ],
+            ['amplitude', amplitude],
+            ['frequency', frequency],
+            ['offset',    offset   ],
+            ['alignX',    alignX   ],
+            ['alignY',    alignY   ]
         ]);
 
 
@@ -160,47 +156,44 @@ extends GShape
 
 
         if (   super.baseIsValid()
+            && this.value.shape    .isValid()
             && this.value.x        .isValid()
             && this.value.y        .isValid()
             && this.value.width    .isValid()
-            && this.value.height   .isValid()
-            && this.value.shape    .isValid()
-            && this.value.base     .isValid()
             && this.value.amplitude.isValid()
             && this.value.frequency.isValid()
             && this.value.offset   .isValid()
-            && this.value.bias     .isValid()) 
+            && this.value.alignX   .isValid()
+            && this.value.alignY   .isValid())
         {
-            let   x    = this.value.x        .value;
-            let   y    = this.value.y        .value;
-            let   w    = this.value.width    .value;
-            let   h    = this.value.height   .value;
-
-            const sh   = this.value.shape    .value;
-            const bs   = this.value.base     .value;
-            const amp  = this.value.amplitude.value;
-            const freq = this.value.frequency.value;
-            const off  = this.value.offset   .value;
-            const bias = this.value.bias     .value;
+            const sh     = this.value.shape    .value;
+            let   x      = this.value.x        .value;
+            let   y      = this.value.y        .value;
+            let   w      = this.value.width    .value;
+            const amp    = this.value.amplitude.value;
+            const freq   = this.value.frequency.value;
+            const off    = this.value.offset   .value;
+            const alignX = this.value.alignX   .value;
+            const alignY = this.value.alignY   .value;
 
 
-            [x, y, w, h, , ] = validateObjectRect(x, y, w, h);
+            [x, y, w, , ] = validateObjectRect(x, y, w, 0);
 
 
-            if (   w != 0 
-                && h != 0)
+            if (   w   != 0 
+                && amp != 0)
             {
                 const wave = new FigmaWavePath(
                     this.nodeId,
                     this.nodeId,
                     this.nodeName,
-                    x, y, w, h, 
                     sh, 
-                    bs,
+                    x, y, w,
                     amp,
                     freq,
                     off,
-                    bias);
+                    alignX,
+                    alignY);
 
 
                 const bounds = getObjBounds([wave]);
@@ -223,11 +216,11 @@ extends GShape
     {
         return super.isValid()
             && this.shape     && this.shape    .isValid()
-            && this.base      && this.base     .isValid()
             && this.amplitude && this.amplitude.isValid()
             && this.frequency && this.frequency.isValid()
             && this.offset    && this.offset   .isValid()
-            && this.bias      && this.bias     .isValid();
+            && this.alignX    && this.alignX   .isValid()
+            && this.alignY    && this.alignY   .isValid();
     }
 
 
@@ -237,11 +230,11 @@ extends GShape
         super.pushValueUpdates(parse);
  
         if (this.shape    ) this.shape    .pushValueUpdates(parse);
-        if (this.base     ) this.base     .pushValueUpdates(parse);
         if (this.amplitude) this.amplitude.pushValueUpdates(parse);
         if (this.frequency) this.frequency.pushValueUpdates(parse);
         if (this.offset   ) this.offset   .pushValueUpdates(parse);
-        if (this.bias     ) this.bias     .pushValueUpdates(parse);
+        if (this.alignX   ) this.alignX   .pushValueUpdates(parse);
+        if (this.alignY   ) this.alignY   .pushValueUpdates(parse);
     }
 
    
@@ -251,11 +244,11 @@ extends GShape
         super.invalidateInputs(parse, from, force);
 
         if (this.shape    ) this.shape    .invalidateInputs(parse, from, force);
-        if (this.base     ) this.base     .invalidateInputs(parse, from, force);
         if (this.amplitude) this.amplitude.invalidateInputs(parse, from, force);
         if (this.frequency) this.frequency.invalidateInputs(parse, from, force);
         if (this.offset   ) this.offset   .invalidateInputs(parse, from, force);
-        if (this.bias     ) this.bias     .invalidateInputs(parse, from, force);
+        if (this.alignX   ) this.alignX   .invalidateInputs(parse, from, force);
+        if (this.alignY   ) this.alignY   .invalidateInputs(parse, from, force);
     }
 
 
@@ -265,10 +258,10 @@ extends GShape
         super.iterateLoop(parse);
  
         if (this.shape    ) this.shape    .iterateLoop(parse);
-        if (this.base     ) this.base     .iterateLoop(parse);
         if (this.amplitude) this.amplitude.iterateLoop(parse);
         if (this.frequency) this.frequency.iterateLoop(parse);
         if (this.offset   ) this.offset   .iterateLoop(parse);
-        if (this.bias     ) this.bias     .iterateLoop(parse);
+        if (this.alignX   ) this.alignX   .iterateLoop(parse);
+        if (this.alignY   ) this.alignY   .iterateLoop(parse);
     }
 }

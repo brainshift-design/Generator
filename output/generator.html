@@ -2785,37 +2785,64 @@ function arcKappa(angle)
 
 
 
-function makeWave(x, y, width, height, shape, base, amplitude, frequency, offset, bias)
+function makeWave(shape, x, y, width, amplitude, frequency, offset, alignX, alignY)
 {
     const w = width / frequency;
 
 
-    x += offset * width;
+    x += offset * w;
     
     while (x >  -w) x -= w;
     while (x <= -w) x += w;
 
 
-    const points = [point(x, y+height)];
+    if (alignY == 1)
+        amplitude *= 2;
+
+        
+    let height = amplitude;
 
 
-    while (x < width)
+    switch (shape)
     {
-        points.push(
-            point(x     + (x+w/2 - x)   * 0.3615, y+height),
-            point(x+w/2 + (x - (x+w/2)) * 0.3615, y       ),
-            point(x+w/2,                          y       ));
-    
-        x += w/2;
+        case 4: // sine
+        {
+            const points = [point(x, y+height)];
+
+            while (x < width)
+            {
+                points.push(
+                    point(x     + (x+w/2 - x)   * 0.3615, y+height),
+                    point(x+w/2 + (x - (x+w/2)) * 0.3615, y       ),
+                    point(x+w/2,                          y       ));
+            
+                x += w/2;
 
 
-        points.push(
-            point(x     + (x+w/2 - x)   * 0.3615, y       ),
-            point(x+w/2 + (x - (x+w/2)) * 0.3615, y+height),
-            point(x+w/2,                          y+height));
-    
-        x += w/2;
+                points.push(
+                    point(x     + (x+w/2 - x)   * 0.3615, y       ),
+                    point(x+w/2 + (x - (x+w/2)) * 0.3615, y+height),
+                    point(x+w/2,                          y+height));
+            
+                x += w/2;
+            }
+
+            break;
+        }
     }
+    
+
+    points.forEach(p =>
+    {
+             if (alignX == 1) p.x -= width/2;
+        else if (alignX == 2) p.x -= width;
+    });
+
+    points.forEach(p =>
+    {
+             if (alignY == 1) p.y -= height/2;
+        else if (alignY == 2) p.y -= height;
+    });
 
 
     return points;
@@ -8664,15 +8691,15 @@ extends FigmaShape
     size;
     style;
     
-    alignH;
-    alignV;
+    alignX;
+    alignY;
     
     lineHeight;
     letterSpacing;
 
 
 
-    constructor(nodeId, objectId, objectName, text, x, y, width, height, font, size, style, alignH, alignV, lineHeight, letterSpacing)
+    constructor(nodeId, objectId, objectName, text, x, y, width, height, font, size, style, alignX, alignY, lineHeight, letterSpacing)
     {
         super(TEXT_SHAPE, nodeId, objectId, objectName);
         
@@ -8690,8 +8717,8 @@ extends FigmaShape
         this.size          = size;
         this.style         = style;
     
-        this.alignH        = alignH;
-        this.alignV        = alignV;
+        this.alignX        = alignX;
+        this.alignY        = alignY;
     
         this.lineHeight    = lineHeight;
         this.letterSpacing = letterSpacing;
@@ -8722,8 +8749,8 @@ extends FigmaShape
             this.size,
             this.style,
     
-            this.alignH,
-            this.alignV,
+            this.alignX,
+            this.alignY,
     
             this.lineHeight,
             this.letterSpacing);
@@ -8760,8 +8787,8 @@ extends FigmaShape
             size:          this.size,
             style:         this.style,
 
-            alignH:        this.alignH,
-            alignV:        this.alignV,
+            alignX:        this.alignX,
+            alignY:        this.alignY,
             
             lineHeight:    this.lineHeight,
             letterSpacing: this.letterSpacing
@@ -8789,8 +8816,8 @@ extends FigmaShape
             /* 32 */ this.size,
             /* 33 */ this.style,
             
-            /* 34 */ this.alignH,
-            /* 35 */ this.alignV,
+            /* 34 */ this.alignX,
+            /* 35 */ this.alignY,
             
             /* 36 */ this.lineHeight,
             /* 37 */ this.letterSpacing
@@ -9023,33 +9050,30 @@ extends FigmaVectorPath
 class FigmaWavePath
 extends FigmaVectorPath
 {
+    shape;
     _x;
     _y;
     _width;
-    _height;
-
-    shape;
-    base;
     amplitude;
     frequency;
     offset;
-    bias;
+    alignX;
+    alignY;
 
     
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, shape, base, amplitude, frequency, offset, bias)
+    constructor(nodeId, objectId, objectName, shape, x, y, width, amplitude, frequency, offset, alignX, alignY)
     {
         let points = makeWave(
+            shape, 
             x,
             y,
             width, 
-            height,  
-            shape, 
-            base, 
             amplitude, 
             frequency,
             offset,
-            bias);
+            alignX,
+            alignY);
 
         points = points.map(p => PointValue.fromPoint(nodeId, p));
 
@@ -9077,19 +9101,19 @@ extends FigmaVectorPath
             0); // no round
         
 
+        this.shape     = shape;
         this._x        = x;
         this._y        = y;
         this._width    = width;
-        this._height   = height;
-
-        this.shape     = shape;
-        this.base      = base;
         this.amplitude = amplitude;
         this.frequency = frequency;
         this.offset    = offset;
-        this.bias      = bias;
+        this.alignX    = alignX;
+        this.alignY    = alignY;
 
 
+        let height = amplitude;
+        
         this.createDefaultSpace(
             x + width /2,
             y + height/2);
@@ -9104,17 +9128,15 @@ extends FigmaVectorPath
             this.objectId,
             this.objectName,
 
+            this.shape,
             this._x,
             this._y,
             this._width,
-            this._height,
-            
-            this.shape,
-            this.base,
             this.amplitude,
             this.frequency,
             this.offset,
-            this.bias);
+            this.alignX,
+            this.alignY);
 
 
         copy.pathPoints = [...this.pathPoints];
@@ -14979,8 +15001,8 @@ extends ShapeValue
     font;
     style;
     size;
-    alignH;
-    alignV;
+    alignX;
+    alignY;
     lineHeight;
     letterSpacing;
 
@@ -14995,8 +15017,8 @@ extends ShapeValue
                 font          = new NumberValue(0),
                 style         = new NumberValue(0),
                 size          = new NumberValue(0),
-                alignH        = new NumberValue(0),
-                alignV        = new NumberValue(0),
+                alignX        = new NumberValue(0),
+                alignY        = new NumberValue(0),
                 lineHeight    = new NumberValue(0),
                 letterSpacing = new NumberValue(0))
     {
@@ -15010,8 +15032,8 @@ extends ShapeValue
         this.font          = font;
         this.style         = style;
         this.size          = size;
-        this.alignH        = alignH;
-        this.alignV        = alignV;
+        this.alignX        = alignX;
+        this.alignY        = alignY;
         this.lineHeight    = lineHeight;
         this.letterSpacing = letterSpacing;
 
@@ -15032,8 +15054,8 @@ extends ShapeValue
             this.font         .copy(),
             this.style        .copy(),
             this.size         .copy(),
-            this.alignH       .copy(),
-            this.alignV       .copy(),
+            this.alignX       .copy(),
+            this.alignY       .copy(),
             this.lineHeight   .copy(),
             this.letterSpacing.copy()); 
 
@@ -15055,8 +15077,8 @@ extends ShapeValue
             && this.font         .equals(text.font         )
             && this.style        .equals(text.style        )
             && this.size         .equals(text.size         )
-            && this.alignH       .equals(text.alignH       )
-            && this.alignV       .equals(text.alignV       )
+            && this.alignX       .equals(text.alignX       )
+            && this.alignY       .equals(text.alignY       )
             && this.lineHeight   .equals(text.lineHeight   )
             && this.letterSpacing.equals(text.letterSpacing);
     }
@@ -15081,8 +15103,8 @@ extends ShapeValue
             && this.font         .hasInitValue()
             && this.style        .hasInitValue()
             && this.size         .hasInitValue()
-            && this.alignH       .hasInitValue()
-            && this.alignV       .hasInitValue()
+            && this.alignX       .hasInitValue()
+            && this.alignY       .hasInitValue()
             && this.lineHeight   .hasInitValue()
             && this.letterSpacing.hasInitValue();
     }
@@ -15100,8 +15122,8 @@ extends ShapeValue
             && this.font         .isValid()
             && this.style        .isValid()
             && this.size         .isValid()
-            && this.alignH       .isValid()
-            && this.alignV       .isValid()
+            && this.alignX       .isValid()
+            && this.alignY       .isValid()
             && this.lineHeight   .isValid()
             && this.letterSpacing.isValid();
     }
@@ -15125,8 +15147,8 @@ extends ShapeValue
             + ' ' + this.font         .toString()
             + ' ' + this.style        .toString()
             + ' ' + this.size         .toString()
-            + ' ' + this.alignH       .toString()
-            + ' ' + this.alignV       .toString()
+            + ' ' + this.alignX       .toString()
+            + ' ' + this.alignY       .toString()
             + ' ' + this.lineHeight   .toString()
             + ' ' + this.letterSpacing.toString()
             + ' ' + super.toString();
@@ -15144,8 +15166,8 @@ extends ShapeValue
             + ' ' + this.font         .toPreviewString()
             + ' ' + this.style        .toPreviewString()
             + ' ' + this.size         .toPreviewString()
-            + ' ' + this.alignH       .toPreviewString()
-            + ' ' + this.alignV       .toPreviewString()
+            + ' ' + this.alignX       .toPreviewString()
+            + ' ' + this.alignY       .toPreviewString()
             + ' ' + this.lineHeight   .toPreviewString()
             + ' ' + this.letterSpacing.toPreviewString();
     }
@@ -15162,8 +15184,8 @@ extends ShapeValue
             + ' ' + this.font         .toDisplayString()
             + ' ' + this.style        .toDisplayString()
             + ' ' + this.size         .toDisplayString()
-            + ' ' + this.alignH       .toDisplayString()
-            + ' ' + this.alignV       .toDisplayString()
+            + ' ' + this.alignX       .toDisplayString()
+            + ' ' + this.alignY       .toDisplayString()
             + ' ' + this.lineHeight   .toDisplayString()
             + ' ' + this.letterSpacing.toDisplayString();
     }
@@ -15180,8 +15202,8 @@ extends ShapeValue
             + ' ' + this.font         .toJson()
             + ' ' + this.style        .toJson()
             + ' ' + this.size         .toJson()
-            + ' ' + this.alignH       .toJson()
-            + ' ' + this.alignV       .toJson()
+            + ' ' + this.alignX       .toJson()
+            + ' ' + this.alignY       .toJson()
             + ' ' + this.lineHeight   .toJson()
             + ' ' + this.letterSpacing.toJson();
     }
@@ -15228,8 +15250,8 @@ function parseTextShapeValue(str, i = -1)
     const font          = parseNumberValue(str[i]); i += font         [1];
     const style         = parseNumberValue(str[i]); i += style        [1];
     const size          = parseNumberValue(str[i]); i += size         [1];
-    const alignH        = parseNumberValue(str[i]); i += alignH       [1];
-    const alignV        = parseNumberValue(str[i]); i += alignV       [1];
+    const alignX        = parseNumberValue(str[i]); i += alignX       [1];
+    const alignY        = parseNumberValue(str[i]); i += alignY       [1];
     const lineHeight    = parseNumberValue(str[i]); i += lineHeight   [1];
     const letterSpacing = parseNumberValue(str[i]); i += letterSpacing[1];
 
@@ -15244,8 +15266,8 @@ function parseTextShapeValue(str, i = -1)
         font         [0],
         style        [0],
         size         [0],
-        alignH       [0],
-        alignV       [0],
+        alignX       [0],
+        alignY       [0],
         lineHeight   [0],
         letterSpacing[0]);
 
@@ -16544,45 +16566,40 @@ function parseShapeBooleanValue(str, i = -1)
 class WavePathValue
 extends ShapeValue
 {
+    shape;
     x;
     y;
     width;
-    height;
-
-    shape;
-    base;   
     amplitude;
     frequency;
     offset;
-    bias;  
+    alignX;  
+    alignY;  
 
 
 
     constructor(nodeId,
+                shape     = new NumberValue(0),
                 x         = new NumberValue(0), 
                 y         = new NumberValue(0), 
                 width     = new NumberValue(0), 
-                height    = new NumberValue(0), 
-                shape     = new NumberValue(0),
-                base      = new NumberValue(0),
                 amplitude = new NumberValue(0),
                 frequency = new NumberValue(0),
                 offset    = new NumberValue(0),
-                bias      = new NumberValue(0))
+                alignX    = new NumberValue(0),
+                alignY    = new NumberValue(0))
     {
         super(WAVE_PATH_VALUE, nodeId);
 
+        this.shape     = shape;
         this.x         = x;
         this.y         = y;
         this.width     = width;
-        this.height    = height;
-
-        this.shape     = shape;
-        this.base      = base;
         this.amplitude = amplitude;
         this.frequency = frequency;
         this.offset    = offset;
-        this.bias      = bias;
+        this.alignX    = alignX;
+        this.alignY    = alignY;
     }
 
 
@@ -16591,16 +16608,15 @@ extends ShapeValue
     {
         const copy = new WavePathValue(
             this.nodeId,
+            this.shape    .copy(),
             this.x        .copy(), 
             this.y        .copy(), 
             this.width    .copy(), 
-            this.height   .copy(), 
-            this.shape    .copy(),
-            this.base     .copy(),
             this.amplitude.copy(),
             this.frequency.copy(),
             this.offset   .copy(),
-            this.bias     .copy());
+            this.alignX   .copy(),
+            this.alignY   .copy());
 
         copy.copyBase(this);
 
@@ -16612,16 +16628,15 @@ extends ShapeValue
     equals(wave)
     {
         return wave
+            && this.shape    .equals(wave.shape    )
             && this.x        .equals(wave.x        )
             && this.y        .equals(wave.y        )
             && this.width    .equals(wave.width    )
-            && this.height   .equals(wave.height   )
-            && this.shape    .equals(wave.shape    )
-            && this.base     .equals(wave.base     )
             && this.amplitude.equals(wave.amplitude)
             && this.frequency.equals(wave.frequency)
             && this.offset   .equals(wave.offset   )
-            && this.bias     .equals(wave.bias     );
+            && this.alignX   .equals(wave.alignX   )
+            && this.alignY   .equals(wave.alignY   );
     }
 
 
@@ -16636,16 +16651,15 @@ extends ShapeValue
     hasInitValue()
     {
         return super.hasInitValue()
+            && this.shape    .hasInitValue()
             && this.x        .hasInitValue()
             && this.y        .hasInitValue()
             && this.width    .hasInitValue()
-            && this.height   .hasInitValue()
-            && this.shape    .hasInitValue()
-            && this.base     .hasInitValue()
             && this.amplitude.hasInitValue()
             && this.frequency.hasInitValue()
             && this.offset   .hasInitValue()
-            && this.bias     .hasInitValue();
+            && this.alignX   .hasInitValue()
+            && this.alignY   .hasInitValue();
     }
 
 
@@ -16653,16 +16667,15 @@ extends ShapeValue
     isValid()
     {
         return super.isValid()
+            && this.shape    .isValid()
             && this.x        .isValid()
             && this.y        .isValid()
             && this.width    .isValid()
-            && this.height   .isValid()
-            && this.shape    .isValid()
-            && this.base     .isValid()
             && this.amplitude.isValid()
             && this.frequency.isValid()
             && this.offset   .isValid()
-            && this.bias     .isValid();
+            && this.alignX   .isValid()
+            && this.alignY   .isValid();
     }
 
 
@@ -16676,16 +16689,15 @@ extends ShapeValue
 
     toString()
     {
-        return      this.x        .toString()
+        return      this.shape    .toString()
+            + ' ' + this.x        .toString()
             + ' ' + this.y        .toString()
             + ' ' + this.width    .toString()
-            + ' ' + this.height   .toString()
-            + ' ' + this.shape    .toString()
-            + ' ' + this.base     .toString()
             + ' ' + this.amplitude.toString()
             + ' ' + this.frequency.toString()
             + ' ' + this.offset   .toString()
-            + ' ' + this.bias     .toString()
+            + ' ' + this.alignX   .toString()
+            + ' ' + this.alignY   .toString()
             + ' ' + super.toString();
     }
 
@@ -16694,39 +16706,36 @@ extends ShapeValue
     toPreviewString()
     {
         return 'wave';
+            // + ' ' + this.shape    .toPreviewString() + '°'
             // + ' ' + this.x        .toPreviewString()
             // + ' ' + this.y        .toPreviewString()
             // + ' ' + this.width    .toPreviewString()
-            // + ' ' + this.height   .toPreviewString()
-            // + ' ' + this.shape    .toPreviewString() + '°'
-            // + ' ' + this.base     .toPreviewString() + '°'
             // + ' ' + this.amplitude.toPreviewString() + '°'
             // + ' ' + this.frequency.toPreviewString() + '°'
             // + ' ' + this.offset   .toPreviewString() + '°'
-            // + ' ' + this.bias     .toPreviewString() + '°';
+            // + ' ' + this.alignX   .toPreviewString()
+            // + ' ' + this.alignY   .toPreviewString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.x        .toDisplayString()
+        return      this.shape    .toDisplayString()
+            + ' ' + this.x        .toDisplayString()
             + ' ' + this.y        .toDisplayString()
             + ' ' + this.width    .toDisplayString()
-            + ' ' + this.height   .toDisplayString()
-            + ' ' + this.shape    .toDisplayString()
-            + ' ' + this.base     .toDisplayString()
             + ' ' + this.amplitude.toDisplayString()
             + ' ' + this.frequency.toDisplayString()
             + ' ' + this.offset   .toDisplayString()
-            + ' ' + this.bias     .toDisplayString();
+            + ' ' + this.alignX   .toDisplayString()
+            + ' ' + this.alignY   .toDisplayString();
     }
 
 
 
     static NaN = new WavePathValue(
         '',
-        NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -16744,7 +16753,7 @@ function parseWavePathValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [PathPathValue.NaN, 1];
+        return [WavePathValue.NaN, 1];
 
 
     if (i < 0)
@@ -16756,30 +16765,28 @@ function parseWavePathValue(str, i = -1)
 
     const iStart = i;
 
+    const shape     = parseNumberValue(str[i]); i += shape    [1];
     const x         = parseNumberValue(str[i]); i += x        [1];
     const y         = parseNumberValue(str[i]); i += y        [1];
     const width     = parseNumberValue(str[i]); i += width    [1];
-    const height    = parseNumberValue(str[i]); i += height   [1];
-    const shape     = parseNumberValue(str[i]); i += shape    [1];
-    const base      = parseNumberValue(str[i]); i += base     [1];
     const amplitude = parseNumberValue(str[i]); i += amplitude[1];
     const frequency = parseNumberValue(str[i]); i += frequency[1];
     const offset    = parseNumberValue(str[i]); i += offset   [1];
-    const bias      = parseNumberValue(str[i]); i += bias     [1];
+    const alignX    = parseNumberValue(str[i]); i += alignX   [1];
+    const alignY    = parseNumberValue(str[i]); i += alignY   [1];
 
 
     const wave = new WavePathValue(
         '', // set node ID elsewhere,
+        shape    [0],
         x        [0],
         y        [0],
         width    [0],
-        height   [0],
-        shape    [0],
-        base     [0],
         amplitude[0],
         frequency[0],
         offset   [0],
-        bias     [0]);
+        alignX   [0],
+        alignY   [0]);
 
 
     i = parseShapeBaseValue(str, i, wave);
@@ -37742,8 +37749,8 @@ extends GShape
     font          = null;
     size          = null;
     style         = null;
-    alignH        = null;
-    alignV        = null;
+    alignX        = null;
+    alignY        = null;
     lineHeight    = null;
     letterSpacing = null;
     
@@ -37768,8 +37775,8 @@ extends GShape
         this.font          = null;
         this.size          = null;
         this.style         = null;
-        this.alignH        = null;
-        this.alignV        = null;
+        this.alignX        = null;
+        this.alignY        = null;
         this.lineHeight    = null;
         this.letterSpacing = null;
     }
@@ -37790,8 +37797,8 @@ extends GShape
         if (this.font         ) copy.font          = this.font         .copy();
         if (this.style        ) copy.style         = this.style        .copy();
         if (this.size         ) copy.size          = this.size         .copy();
-        if (this.alignH       ) copy.alignH        = this.alignH       .copy();
-        if (this.alignV       ) copy.alignV        = this.alignV       .copy();
+        if (this.alignX       ) copy.alignX        = this.alignX       .copy();
+        if (this.alignY       ) copy.alignY        = this.alignY       .copy();
         if (this.lineHeight   ) copy.lineHeight    = this.lineHeight   .copy();
         if (this.letterSpacing) copy.letterSpacing = this.letterSpacing.copy();
 
@@ -37812,8 +37819,8 @@ extends GShape
             case 'font':          return this.input ? this.value.font          : this.font;
             case 'style':         return this.input ? this.value.style         : this.style;
             case 'size':          return this.input ? this.value.size          : this.size;
-            case 'alignH':        return this.input ? this.value.alignH        : this.alignH;
-            case 'alignV':        return this.input ? this.value.alignV        : this.alignV;
+            case 'alignX':        return this.input ? this.value.alignX        : this.alignX;
+            case 'alignY':        return this.input ? this.value.alignY        : this.alignY;
             case 'lineHeight':    return this.input ? this.value.lineHeight    : this.lineHeight;
             case 'letterSpacing': return this.input ? this.value.letterSpacing : this.letterSpacing;
         }
@@ -37838,8 +37845,8 @@ extends GShape
         let   font          = this.font          ? (await this.font         .eval(parse)).toValue() : null;
         let   style         = this.style         ? (await this.style        .eval(parse)).toValue() : null;
         let   size          = this.size          ? (await this.size         .eval(parse)).toValue() : null;
-        let   alignH        = this.alignH        ? (await this.alignH       .eval(parse)).toValue() : null;
-        let   alignV        = this.alignV        ? (await this.alignV       .eval(parse)).toValue() : null;
+        let   alignX        = this.alignX        ? (await this.alignX       .eval(parse)).toValue() : null;
+        let   alignY        = this.alignY        ? (await this.alignY       .eval(parse)).toValue() : null;
         let   lineHeight    = this.lineHeight    ? (await this.lineHeight   .eval(parse)).toValue() : null;
         let   letterSpacing = this.letterSpacing ? (await this.letterSpacing.eval(parse)).toValue() : null;
 
@@ -37852,8 +37859,8 @@ extends GShape
         if (font          && font         .type != NUMBER_VALUE) font          = NumberValue.NaN.copy();
         if (style         && style        .type != NUMBER_VALUE) style         = NumberValue.NaN.copy();
         if (size          && size         .type != NUMBER_VALUE) size          = NumberValue.NaN.copy();
-        if (alignH        && alignH       .type != NUMBER_VALUE) alignH        = NumberValue.NaN.copy();
-        if (alignV        && alignV       .type != NUMBER_VALUE) alignV        = NumberValue.NaN.copy();
+        if (alignX        && alignX       .type != NUMBER_VALUE) alignX        = NumberValue.NaN.copy();
+        if (alignY        && alignY       .type != NUMBER_VALUE) alignY        = NumberValue.NaN.copy();
         if (lineHeight    && lineHeight   .type != NUMBER_VALUE) lineHeight    = NumberValue.NaN.copy();
         if (letterSpacing && letterSpacing.type != NUMBER_VALUE) letterSpacing = NumberValue.NaN.copy();
 
@@ -37872,8 +37879,8 @@ extends GShape
             if (font         )  this.value.font          = font;           else  font          = this.value.font;
             if (style        )  this.value.style         = style;          else  style         = this.value.style;
             if (size         )  this.value.size          = size;           else  size          = this.value.size;
-            if (alignH       )  this.value.alignH        = alignH;         else  alignH        = this.value.alignH;
-            if (alignV       )  this.value.alignV        = alignV;         else  alignV        = this.value.alignV;
+            if (alignX       )  this.value.alignX        = alignX;         else  alignX        = this.value.alignX;
+            if (alignY       )  this.value.alignY        = alignY;         else  alignY        = this.value.alignY;
             if (lineHeight   )  this.value.lineHeight    = lineHeight;     else  lineHeight    = this.value.lineHeight;
             if (letterSpacing)  this.value.letterSpacing = letterSpacing;  else  letterSpacing = this.value.letterSpacing; 
         }
@@ -37889,8 +37896,8 @@ extends GShape
                 font, 
                 style,
                 size,
-                alignH,
-                alignV,
+                alignX,
+                alignY,
                 lineHeight,
                 letterSpacing);
         }
@@ -37906,8 +37913,8 @@ extends GShape
             ['font',          font         ],
             ['style',         style        ],
             ['size',          size         ],
-            ['alignH',        alignH       ],
-            ['alignV',        alignV       ],
+            ['alignX',        alignX       ],
+            ['alignY',        alignY       ],
             ['lineHeight',    lineHeight   ],
             ['letterSpacing', letterSpacing]
         ]);
@@ -37927,8 +37934,8 @@ extends GShape
         if (!this.font         ) this.font          = this.value.font         .copy();
         if (!this.style        ) this.style         = this.value.style        .copy();
         if (!this.size         ) this.size          = this.value.size         .copy();
-        if (!this.alignH       ) this.alignH        = this.value.alignH       .copy();
-        if (!this.alignV       ) this.alignV        = this.value.alignV       .copy();
+        if (!this.alignX       ) this.alignX        = this.value.alignX       .copy();
+        if (!this.alignY       ) this.alignY        = this.value.alignY       .copy();
         if (!this.lineHeight   ) this.lineHeight    = this.value.lineHeight   .copy();
         if (!this.letterSpacing) this.letterSpacing = this.value.letterSpacing.copy();
         
@@ -37958,8 +37965,8 @@ extends GShape
             && this.value.font         .isValid()
             && this.value.style        .isValid()
             && this.value.size         .isValid()
-            && this.value.alignH       .isValid()
-            && this.value.alignV       .isValid()
+            && this.value.alignX       .isValid()
+            && this.value.alignY       .isValid()
             && this.value.lineHeight   .isValid()
             && this.value.letterSpacing.isValid())
         {
@@ -37980,8 +37987,8 @@ extends GShape
                 fontName,
                 this.value.size         .value,
                 fontStyles[Math.min(this.value.style.value, fontStyles.length-1)],
-                this.value.alignH       .value,
-                this.value.alignV       .value,
+                this.value.alignX       .value,
+                this.value.alignY       .value,
                 this.value.lineHeight   .value,
                 this.value.letterSpacing.value);
 
@@ -38028,38 +38035,11 @@ extends GShape
             && this.font          && this.font         .isValid()
             && this.style         && this.style        .isValid()
             && this.size          && this.size         .isValid()
-            && this.alignH        && this.alignH       .isValid()
-            && this.alignV        && this.alignV       .isValid()
+            && this.alignX        && this.alignX       .isValid()
+            && this.alignY        && this.alignY       .isValid()
             && this.lineHeight    && this.lineHeight   .isValid()
             && this.letterSpacing && this.letterSpacing.isValid();
     }
-
-
-
-    // toValue()
-    // {
-    //     const text = new TextShapeValue(
-    //         this.nodeId,
-    //         this.text         .toValue(),
-    //         this.x            .toValue(),
-    //         this.y            .toValue(),
-    //         this.width        .toValue(),
-    //         this.height       .toValue(),
-    //         this.font         .toValue(),
-    //         this.style        .toValue(),
-    //         this.size         .toValue(),
-    //         this.alignH       .toValue(),
-    //         this.alignV       .toValue(),
-    //         this.lineHeight   .toValue(),
-    //         this.letterSpacing.toValue());
-
-    //     text.copyCustomParams(this.value);
-           
-    //     text.props   = this.props.toValue();
-    //     text.objects = this.value.objects.map(o => o.copy());
-        
-    //     return text;
-    // }
 
 
 
@@ -38075,8 +38055,8 @@ extends GShape
         if (this.font         ) this.font         .pushValueUpdates(parse);
         if (this.style        ) this.style        .pushValueUpdates(parse);
         if (this.size         ) this.size         .pushValueUpdates(parse);
-        if (this.alignH       ) this.alignH       .pushValueUpdates(parse);
-        if (this.alignV       ) this.alignV       .pushValueUpdates(parse);
+        if (this.alignX       ) this.alignX       .pushValueUpdates(parse);
+        if (this.alignY       ) this.alignY       .pushValueUpdates(parse);
         if (this.lineHeight   ) this.lineHeight   .pushValueUpdates(parse);
         if (this.letterSpacing) this.letterSpacing.pushValueUpdates(parse);
     }
@@ -38095,8 +38075,8 @@ extends GShape
         if (this.font         ) this.font         .invalidateInputs(parse, from, force);
         if (this.style        ) this.style        .invalidateInputs(parse, from, force);
         if (this.size         ) this.size         .invalidateInputs(parse, from, force);
-        if (this.alignH       ) this.alignH       .invalidateInputs(parse, from, force);
-        if (this.alignV       ) this.alignV       .invalidateInputs(parse, from, force);
+        if (this.alignX       ) this.alignX       .invalidateInputs(parse, from, force);
+        if (this.alignY       ) this.alignY       .invalidateInputs(parse, from, force);
         if (this.lineHeight   ) this.lineHeight   .invalidateInputs(parse, from, force);
         if (this.letterSpacing) this.letterSpacing.invalidateInputs(parse, from, force);
     }
@@ -38115,8 +38095,8 @@ extends GShape
         if (this.font         ) this.font         .iterateLoop(parse);
         if (this.style        ) this.style        .iterateLoop(parse);
         if (this.size         ) this.size         .iterateLoop(parse);
-        if (this.alignH       ) this.alignH       .iterateLoop(parse);
-        if (this.alignV       ) this.alignV       .iterateLoop(parse);
+        if (this.alignX       ) this.alignX       .iterateLoop(parse);
+        if (this.alignY       ) this.alignY       .iterateLoop(parse);
         if (this.lineHeight   ) this.lineHeight   .iterateLoop(parse);
         if (this.letterSpacing) this.letterSpacing.iterateLoop(parse);
     }
@@ -39935,11 +39915,11 @@ class GWavePath
 extends GShape
 {
     shape     = null;
-    base      = null;
     amplitude = null;
     frequency = null;
     offset    = null;
-    bias      = null;
+    alignX    = null;
+    alignY    = null;
 
 
 
@@ -39955,11 +39935,11 @@ extends GShape
         super.reset();
 
         this.shape     = null;
-        this.base      = null;
         this.amplitude = null;
         this.frequency = null;
         this.offset    = null;
-        this.bias      = null;
+        this.alignX    = null;
+        this.alignY    = null;
     }
 
 
@@ -39971,11 +39951,11 @@ extends GShape
         copy.copyBase(this);
 
         if (this.shape    ) copy.shape     = this.shape    .copy();
-        if (this.base     ) copy.base      = this.base     .copy();
         if (this.amplitude) copy.amplitude = this.amplitude.copy();
         if (this.frequency) copy.frequency = this.frequency.copy();
         if (this.offset   ) copy.offset    = this.offset   .copy();
-        if (this.bias     ) copy.bias      = this.bias     .copy();
+        if (this.alignX   ) copy.alignX    = this.alignX   .copy();
+        if (this.alignY   ) copy.alignY    = this.alignY   .copy();
         
         return copy;
     }
@@ -39986,16 +39966,15 @@ extends GShape
     {
         switch (paramId)
         {
+            case 'shape':     return this.input ? this.value.shape     : this.shape;
             case 'x':         return this.input ? this.value.x         : this.x;
             case 'y':         return this.input ? this.value.y         : this.y;
             case 'width':     return this.input ? this.value.width     : this.width;
-            case 'height':    return this.input ? this.value.height    : this.height;
-            case 'shape':     return this.input ? this.value.shape     : this.shape;
-            case 'base':      return this.input ? this.value.base      : this.base;
             case 'amplitude': return this.input ? this.value.amplitude : this.amplitude;
             case 'frequency': return this.input ? this.value.frequency : this.frequency;
             case 'offset':    return this.input ? this.value.offset    : this.offset;
-            case 'bias':      return this.input ? this.value.bias      : this.bias;
+            case 'alignX':    return this.input ? this.value.alignX    : this.alignX;
+            case 'alignY':    return this.input ? this.value.alignY    : this.alignY;
         }
 
         return super.paramFromId(paramId);
@@ -40009,16 +39988,16 @@ extends GShape
             return this;
 
 
-        let [x, y, width, height] = await this.evalBaseParams(parse);
+        let [x, y, width, ] = await this.evalBaseParams(parse);
 
 
         let input     = this.input     ? (await this.input    .eval(parse)).toValue() : null;
         let shape     = this.shape     ? (await this.shape    .eval(parse)).toValue() : null;
-        let base      = this.base      ? (await this.base     .eval(parse)).toValue() : null;
         let amplitude = this.amplitude ? (await this.amplitude.eval(parse)).toValue() : null;
         let frequency = this.frequency ? (await this.frequency.eval(parse)).toValue() : null;
         let offset    = this.offset    ? (await this.offset   .eval(parse)).toValue() : null;
-        let bias      = this.bias      ? (await this.bias     .eval(parse)).toValue() : null;
+        let alignX    = this.alignX    ? (await this.alignX   .eval(parse)).toValue() : null;
+        let alignY    = this.alignY    ? (await this.alignY   .eval(parse)).toValue() : null;
 
 
         if (input)
@@ -40027,46 +40006,43 @@ extends GShape
             this.value.nodeId = this.nodeId;
             this.value.copyCustomParams(input);
 
+            if (shape    )  this.value.shape     = shape;      else  shape      = this.value.shape;
             if (x        )  this.value.x         = x;          else  x          = this.value.x;      
             if (y        )  this.value.y         = y;          else  y          = this.value.y;      
             if (width    )  this.value.width     = width;      else  width      = this.value.width;  
-            if (height   )  this.value.height    = height;     else  height     = this.value.height; 
-            if (shape    )  this.value.shape     = shape;      else  shape      = this.value.shape;
-            if (base     )  this.value.base      = base;       else  base       = this.value.base;
             if (amplitude)  this.value.amplitude = amplitude;  else  amplitude  = this.value.amplitude;
             if (frequency)  this.value.frequency = frequency;  else  frequency  = this.value.frequency;
             if (offset   )  this.value.offset    = offset;     else  offset     = this.value.offset;
-            if (bias     )  this.value.bias      = bias;       else  bias       = this.value.bias;
+            if (alignX   )  this.value.alignX    = alignX;     else  alignX     = this.value.alignX;
+            if (alignY   )  this.value.alignY    = alignY;     else  alignY     = this.value.alignY;
         }
         else
         {
             this.value = new WavePathValue(
                 this.nodeId,
+                shape,
                 x, 
                 y, 
                 width, 
-                height,
-                shape,
-                base,
                 amplitude,
                 frequency,
                 offset,
-                bias);
+                alignX,
+                alignY);
         }
 
 
         this.setUpdateValues(parse, 
         [
-            ['x',          x        ],
-            ['y',          y        ],
-            ['width',      width    ],
-            ['height',     height   ],
-            ['shape',      shape    ],
-            ['base',       base     ],
-            ['amplitude',  amplitude],
-            ['frequency',  frequency],
-            ['offset',     offset   ],
-            ['bias',       bias     ]
+            ['shape',     shape    ],
+            ['x',         x        ],
+            ['y',         y        ],
+            ['width',     width    ],
+            ['amplitude', amplitude],
+            ['frequency', frequency],
+            ['offset',    offset   ],
+            ['alignX',    alignX   ],
+            ['alignY',    alignY   ]
         ]);
 
 
@@ -40093,47 +40069,44 @@ extends GShape
 
 
         if (   super.baseIsValid()
+            && this.value.shape    .isValid()
             && this.value.x        .isValid()
             && this.value.y        .isValid()
             && this.value.width    .isValid()
-            && this.value.height   .isValid()
-            && this.value.shape    .isValid()
-            && this.value.base     .isValid()
             && this.value.amplitude.isValid()
             && this.value.frequency.isValid()
             && this.value.offset   .isValid()
-            && this.value.bias     .isValid()) 
+            && this.value.alignX   .isValid()
+            && this.value.alignY   .isValid())
         {
-            let   x    = this.value.x        .value;
-            let   y    = this.value.y        .value;
-            let   w    = this.value.width    .value;
-            let   h    = this.value.height   .value;
-
-            const sh   = this.value.shape    .value;
-            const bs   = this.value.base     .value;
-            const amp  = this.value.amplitude.value;
-            const freq = this.value.frequency.value;
-            const off  = this.value.offset   .value;
-            const bias = this.value.bias     .value;
+            const sh     = this.value.shape    .value;
+            let   x      = this.value.x        .value;
+            let   y      = this.value.y        .value;
+            let   w      = this.value.width    .value;
+            const amp    = this.value.amplitude.value;
+            const freq   = this.value.frequency.value;
+            const off    = this.value.offset   .value;
+            const alignX = this.value.alignX   .value;
+            const alignY = this.value.alignY   .value;
 
 
-            [x, y, w, h, , ] = validateObjectRect(x, y, w, h);
+            [x, y, w, , ] = validateObjectRect(x, y, w, 0);
 
 
-            if (   w != 0 
-                && h != 0)
+            if (   w   != 0 
+                && amp != 0)
             {
                 const wave = new FigmaWavePath(
                     this.nodeId,
                     this.nodeId,
                     this.nodeName,
-                    x, y, w, h, 
                     sh, 
-                    bs,
+                    x, y, w,
                     amp,
                     freq,
                     off,
-                    bias);
+                    alignX,
+                    alignY);
 
 
                 const bounds = getObjBounds([wave]);
@@ -40156,11 +40129,11 @@ extends GShape
     {
         return super.isValid()
             && this.shape     && this.shape    .isValid()
-            && this.base      && this.base     .isValid()
             && this.amplitude && this.amplitude.isValid()
             && this.frequency && this.frequency.isValid()
             && this.offset    && this.offset   .isValid()
-            && this.bias      && this.bias     .isValid();
+            && this.alignX    && this.alignX   .isValid()
+            && this.alignY    && this.alignY   .isValid();
     }
 
 
@@ -40170,11 +40143,11 @@ extends GShape
         super.pushValueUpdates(parse);
  
         if (this.shape    ) this.shape    .pushValueUpdates(parse);
-        if (this.base     ) this.base     .pushValueUpdates(parse);
         if (this.amplitude) this.amplitude.pushValueUpdates(parse);
         if (this.frequency) this.frequency.pushValueUpdates(parse);
         if (this.offset   ) this.offset   .pushValueUpdates(parse);
-        if (this.bias     ) this.bias     .pushValueUpdates(parse);
+        if (this.alignX   ) this.alignX   .pushValueUpdates(parse);
+        if (this.alignY   ) this.alignY   .pushValueUpdates(parse);
     }
 
    
@@ -40184,11 +40157,11 @@ extends GShape
         super.invalidateInputs(parse, from, force);
 
         if (this.shape    ) this.shape    .invalidateInputs(parse, from, force);
-        if (this.base     ) this.base     .invalidateInputs(parse, from, force);
         if (this.amplitude) this.amplitude.invalidateInputs(parse, from, force);
         if (this.frequency) this.frequency.invalidateInputs(parse, from, force);
         if (this.offset   ) this.offset   .invalidateInputs(parse, from, force);
-        if (this.bias     ) this.bias     .invalidateInputs(parse, from, force);
+        if (this.alignX   ) this.alignX   .invalidateInputs(parse, from, force);
+        if (this.alignY   ) this.alignY   .invalidateInputs(parse, from, force);
     }
 
 
@@ -40198,11 +40171,11 @@ extends GShape
         super.iterateLoop(parse);
  
         if (this.shape    ) this.shape    .iterateLoop(parse);
-        if (this.base     ) this.base     .iterateLoop(parse);
         if (this.amplitude) this.amplitude.iterateLoop(parse);
         if (this.frequency) this.frequency.iterateLoop(parse);
         if (this.offset   ) this.offset   .iterateLoop(parse);
-        if (this.bias     ) this.bias     .iterateLoop(parse);
+        if (this.alignX   ) this.alignX   .iterateLoop(parse);
+        if (this.alignY   ) this.alignY   .iterateLoop(parse);
     }
 }
 
@@ -50692,8 +50665,8 @@ function genParseTextShape(parse)
         case 'size':          text.size          = genParse(parse); break;
         case 'style':         text.style         = genParse(parse); break;
         case 'props':         text.props         = genParse(parse); break;
-        case 'alignH':        text.alignH        = genParse(parse); break;
-        case 'alignV':        text.alignV        = genParse(parse); break;
+        case 'alignX':        text.alignX        = genParse(parse); break;
+        case 'alignY':        text.alignY        = genParse(parse); break;
         case 'lineHeight':    text.lineHeight    = genParse(parse); break;
         case 'letterSpacing': text.letterSpacing = genParse(parse); break;
         }
@@ -51405,7 +51378,7 @@ function genParseArcPath(parse)
 
     parse.inParam = false;
     parse.nTab--;
-
+``
 
     genParseNodeEnd(parse, arc);
     return arc;
@@ -51458,16 +51431,15 @@ function genParseWavePath(parse)
 
         switch (paramId)
         {
+        case 'shape':     wave.shape     = genParse(parse); break;
         case 'x':         wave.x         = genParse(parse); break;
         case 'y':         wave.y         = genParse(parse); break;
         case 'width':     wave.width     = genParse(parse); break;
-        case 'height':    wave.height    = genParse(parse); break;
-        case 'shape':     wave.shape     = genParse(parse); break;
-        case 'base':      wave.base      = genParse(parse); break;
         case 'amplitude': wave.amplitude = genParse(parse); break;
         case 'frequency': wave.frequency = genParse(parse); break;
         case 'offset':    wave.offset    = genParse(parse); break;
-        case 'bias':      wave.bias      = genParse(parse); break;
+        case 'alignX':    wave.alignX    = genParse(parse); break;
+        case 'alignY':    wave.alignY    = genParse(parse); break;
         case 'props':     wave.props     = genParse(parse); break;
         }
     }

@@ -1,33 +1,30 @@
 class FigmaWavePath
 extends FigmaVectorPath
 {
+    shape;
     _x;
     _y;
     _width;
-    _height;
-
-    shape;
-    base;
     amplitude;
     frequency;
     offset;
-    bias;
+    alignX;
+    alignY;
 
     
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, shape, base, amplitude, frequency, offset, bias)
+    constructor(nodeId, objectId, objectName, shape, x, y, width, amplitude, frequency, offset, alignX, alignY)
     {
         let points = makeWave(
+            shape, 
             x,
             y,
             width, 
-            height,  
-            shape, 
-            base, 
             amplitude, 
             frequency,
             offset,
-            bias);
+            alignX,
+            alignY);
 
         points = points.map(p => PointValue.fromPoint(nodeId, p));
 
@@ -55,19 +52,19 @@ extends FigmaVectorPath
             0); // no round
         
 
+        this.shape     = shape;
         this._x        = x;
         this._y        = y;
         this._width    = width;
-        this._height   = height;
-
-        this.shape     = shape;
-        this.base      = base;
         this.amplitude = amplitude;
         this.frequency = frequency;
         this.offset    = offset;
-        this.bias      = bias;
+        this.alignX    = alignX;
+        this.alignY    = alignY;
 
 
+        let height = amplitude;
+        
         this.createDefaultSpace(
             x + width /2,
             y + height/2);
@@ -82,17 +79,15 @@ extends FigmaVectorPath
             this.objectId,
             this.objectName,
 
+            this.shape,
             this._x,
             this._y,
             this._width,
-            this._height,
-            
-            this.shape,
-            this.base,
             this.amplitude,
             this.frequency,
             this.offset,
-            this.bias);
+            this.alignX,
+            this.alignY);
 
 
         copy.pathPoints = [...this.pathPoints];

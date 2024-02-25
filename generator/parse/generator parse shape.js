@@ -454,8 +454,8 @@ function genParseTextShape(parse)
         case 'size':          text.size          = genParse(parse); break;
         case 'style':         text.style         = genParse(parse); break;
         case 'props':         text.props         = genParse(parse); break;
-        case 'alignH':        text.alignH        = genParse(parse); break;
-        case 'alignV':        text.alignV        = genParse(parse); break;
+        case 'alignX':        text.alignX        = genParse(parse); break;
+        case 'alignY':        text.alignY        = genParse(parse); break;
         case 'lineHeight':    text.lineHeight    = genParse(parse); break;
         case 'letterSpacing': text.letterSpacing = genParse(parse); break;
         }
@@ -1167,7 +1167,7 @@ function genParseArcPath(parse)
 
     parse.inParam = false;
     parse.nTab--;
-
+``
 
     genParseNodeEnd(parse, arc);
     return arc;
@@ -1220,16 +1220,15 @@ function genParseWavePath(parse)
 
         switch (paramId)
         {
+        case 'shape':     wave.shape     = genParse(parse); break;
         case 'x':         wave.x         = genParse(parse); break;
         case 'y':         wave.y         = genParse(parse); break;
         case 'width':     wave.width     = genParse(parse); break;
-        case 'height':    wave.height    = genParse(parse); break;
-        case 'shape':     wave.shape     = genParse(parse); break;
-        case 'base':      wave.base      = genParse(parse); break;
         case 'amplitude': wave.amplitude = genParse(parse); break;
         case 'frequency': wave.frequency = genParse(parse); break;
         case 'offset':    wave.offset    = genParse(parse); break;
-        case 'bias':      wave.bias      = genParse(parse); break;
+        case 'alignX':    wave.alignX    = genParse(parse); break;
+        case 'alignY':    wave.alignY    = genParse(parse); break;
         case 'props':     wave.props     = genParse(parse); break;
         }
     }

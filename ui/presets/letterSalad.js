@@ -381,7 +381,7 @@ const presetLetterSalad = '\
                 ["NUM#", "height", "45,0"],\
                 ["NUM#", "size", "45,0"],\
                 ["TEXT#", "style", "Regular"],\
-                ["NUM#", "alignH", "1,0"]\
+                ["NUM#", "alignX", "1,0"]\
             ]\
         },\
         {\

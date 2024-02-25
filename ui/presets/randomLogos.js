@@ -324,7 +324,7 @@ const presetNamesLogos = '\
                 ["NUM#", "height", "17,0"],\
                 ["TEXT#", "font", "Asset"],\
                 ["NUM#", "size", "17,0"],\
-                ["NUM#", "alignH", "1,0"]\
+                ["NUM#", "alignX", "1,0"]\
             ]\
         },\
         {\

@@ -65,7 +65,7 @@ const presetBooksOnShelf = '\
                 ["NUM#", "height", "30,0"],\
                 ["TEXT#", "font", "Almendra%20SC"],\
                 ["NUM#", "size", "16,0"],\
-                ["NUM#", "alignV", "2,0"]\
+                ["NUM#", "alignY", "2,0"]\
         ]\
         },\
         {\
@@ -1340,7 +1340,7 @@ const presetBooksOnShelf = '\
                 ["NUM#", "height", "30,0"],\
                 ["TEXT#", "font", "Arimo"],\
                 ["NUM#", "size", "20,0"],\
-                ["NUM#", "alignV", "2,0"]\
+                ["NUM#", "alignY", "2,0"]\
         ]\
         }\
     ],\
