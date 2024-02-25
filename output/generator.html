@@ -2787,8 +2787,11 @@ function arcKappa(angle)
 
 function makeWave(shape, x, y, width, amplitude, frequency, offset, alignX, alignY)
 {
-    const w = width / frequency;
+    const startX = x;
+    const w      = width / frequency;
+    
 
+    offset -= 0.25;
 
     x += offset * w;
     
@@ -2803,34 +2806,67 @@ function makeWave(shape, x, y, width, amplitude, frequency, offset, alignX, alig
     let height = amplitude;
 
 
+    const points = [];
+
+
     switch (shape)
     {
+        case 0: // square
+            break;
+            
+        case 1: // saw
+            break;
+
+        case 2: // back saw
+            break;
+
+        case 3: // triangle
+            break;
+
         case 4: // sine
         {
-            const points = [point(x, y+height)];
+            let p0, p1, p2, p3;
 
-            while (x < width)
+            let i = 0;
+            while (x < startX + width)
             {
-                points.push(
-                    point(x     + (x+w/2 - x)   * 0.3615, y+height),
-                    point(x+w/2 + (x - (x+w/2)) * 0.3615, y       ),
-                    point(x+w/2,                          y       ));
-            
+                if (x + w/2 > startX)
+                {
+                    p0 = point(x,                              y+height);
+                    p1 = point(x     + (x+w/2 - x)   * 0.3615, y+height);
+                    p2 = point(x+w/2 + (x - (x+w/2)) * 0.3615, y       );
+                    p3 = point(x+w/2,                          y       );
+
+                    clipSinSegment(p0, p1, p2, p3, startX, width);
+
+                    if (i++ == 0) points.push(p0);
+                    points.push(p1, p2, p3);
+                }
+
                 x += w/2;
 
 
-                points.push(
-                    point(x     + (x+w/2 - x)   * 0.3615, y       ),
-                    point(x+w/2 + (x - (x+w/2)) * 0.3615, y+height),
-                    point(x+w/2,                          y+height));
-            
+                if (x < startX + width)
+                {
+                    p0 = point(x,                              y       );
+                    p1 = point(x     + (x+w/2 - x)   * 0.3615, y       );
+                    p2 = point(x+w/2 + (x - (x+w/2)) * 0.3615, y+height);
+                    p3 = point(x+w/2,                          y+height);
+                    
+                    clipSinSegment(p0, p1, p2, p3, startX, width);
+                    
+                    if (i++ == 0) points.push(p0);
+                    points.push(p1, p2, p3);
+                }
+
                 x += w/2;
             }
+
 
             break;
         }
     }
-    
+
 
     points.forEach(p =>
     {
@@ -2846,6 +2882,37 @@ function makeWave(shape, x, y, width, amplitude, frequency, offset, alignX, alig
 
 
     return points;
+}
+
+
+
+function clipSinSegment(p0, p1, p2, p3, startX, width)
+{
+    if (   p0.x <  startX
+        && p3.x >= startX)
+    {
+        const t        = findTforX3(p0, p1, p2, p3, startX);
+        const segments = splitSeg3(p0, p1, p2, p3, t);
+        const seg      = segments[1];
+
+        p0.x = seg[0].x;  p0.y = seg[0].y;
+        p1.x = seg[1].x;  p1.y = seg[1].y;
+        p2.x = seg[2].x;  p2.y = seg[2].y;
+        p3.x = seg[3].x;  p3.y = seg[3].y;
+    }
+    
+    if (   p0.x <  startX + width
+        && p3.x >= startX + width)
+    {
+        const t        = findTforX3(p0, p1, p2, p3, startX + width);
+        const segments = splitSeg3(p0, p1, p2, p3, t);
+        const seg      = segments[0];
+
+        p0.x = seg[0].x;  p0.y = seg[0].y;
+        p1.x = seg[1].x;  p1.y = seg[1].y;
+        p2.x = seg[2].x;  p2.y = seg[2].y;
+        p3.x = seg[3].x;  p3.y = seg[3].y;
+    }
 }
 
 
@@ -2889,7 +2956,46 @@ function createCompleteCurve(degree, pathPoints, closed)
 
 
 
-function closestPointOnCurve(degree, points, p)
+function findTforX3(p0, p1, p2, p3, x) 
+{
+    // Newton-Raphson method: t1 = t0 - f(t0) / f'(t0)
+
+
+    let precision     = 0.00001;
+    let t             = 0.5; // initial guess
+    let maxIterations = 20;
+    let i             = 0;
+  
+    while (i < maxIterations) 
+    {
+        let xAtT =     (1 - t)**3        * p0.x
+                 + 3 * (1 - t)**2 * t    * p1.x
+                 + 3 * (1 - t)    * t**2 * p2.x
+                 +                  t**3 * p3.x;
+    
+        let dAtT = -3 * (1 - t)**2 * p0.x 
+                  + 3 * (1 - t)**2 * p1.x - 6 * t * (1 - t) * p1.x 
+                  - 3 *      t **2 * p2.x + 6 * t * (1 - t) * p2.x 
+                  + 3 *      t **2 * p3.x;
+    
+        let tNext = t - (xAtT - x) / dAtT;
+    
+
+        if (Math.abs(tNext - t) < precision) 
+          return tNext;
+
+          
+        t = tNext;
+        i++;
+    }
+  
+
+    return t;
+}
+  
+  
+  
+  function closestPointOnCurve(degree, points, p)
 {
     const closestPoints = [];
 
