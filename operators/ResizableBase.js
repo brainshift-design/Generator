@@ -170,6 +170,9 @@ extends OperatorBase
 
     setRectL = (sizer, dx, dy) => // these have to be lambdas for 'this'
     {
+        if (!sizer.startRect)
+            return;
+
         this.setRect(
             sizer.startRect.x + dx,
             sizer.startRect.y, 
@@ -183,6 +186,9 @@ extends OperatorBase
 
     setRectR = (sizer, dx, dy) =>
     {
+        if (!sizer.startRect)
+            return;
+
         this.setRect(
             sizer.startRect.x, 
             sizer.startRect.y, 
@@ -196,6 +202,9 @@ extends OperatorBase
 
     setRectT = (sizer, dx, dy) =>
     {
+        if (!sizer.startRect)
+            return;
+
         this.setRect(
             sizer.startRect.x, 
             sizer.startRect.y + dy, 
@@ -209,6 +218,9 @@ extends OperatorBase
 
     setRectB = (sizer, dx, dy) =>
     {
+        if (!sizer.startRect)
+            return;
+
         this.setRect(
             sizer.startRect.x, 
             sizer.startRect.y, 
@@ -223,6 +235,9 @@ extends OperatorBase
 
     setRectTL = (sizer, dx, dy) => // these have to be lambdas for 'this'
     {
+        if (!sizer.startRect)
+            return;
+
         this.setRect(
             sizer.startRect.x + dx,
             sizer.startRect.y + dy, 
@@ -237,6 +252,9 @@ extends OperatorBase
 
     setRectTR = (sizer, dx, dy) =>
     {
+        if (!sizer.startRect)
+            return;
+
         this.setRect(
             sizer.startRect.x, 
             sizer.startRect.y + dy, 
@@ -251,6 +269,9 @@ extends OperatorBase
 
     setRectBL = (sizer, dx, dy) =>
     {
+        if (!sizer.startRect)
+            return;
+
         this.setRect(
             sizer.startRect.x + dx, 
             sizer.startRect.y, 
@@ -265,6 +286,9 @@ extends OperatorBase
 
     setRectBR = (sizer, dx, dy) =>
     {
+        if (!sizer.startRect)
+            return;
+
         this.setRect(
             sizer.startRect.x, 
             sizer.startRect.y, 
