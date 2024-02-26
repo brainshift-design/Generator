@@ -155,6 +155,9 @@ extends GOperator1
                         
                             if (this.input.value.objects)
                             {
+                                // if (this.nodeId == 'repeat2')
+                                //     console.log('this.input.value.objects =', this.input.value.objects);
+                                
                                 for (let j = 0; j < this.input.value.objects.length; j++, o++)
                                 {
                                     const obj = copyFigmaObject(this.input.value.objects[j]);

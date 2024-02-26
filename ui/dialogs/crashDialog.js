@@ -31,7 +31,8 @@ function initCrashDialog(event, error = event, showDebugButton = true)
 
     if (!crashed)
     {
-        crashBack.addEventListener('pointerdown', e => { e.preventDefault(); });
+        crashDialog.addEventListener('pointerdown', e => {                     hideAllMenus(); });
+        crashBack  .addEventListener('pointerdown', e => { e.preventDefault(); hideAllMenus(); });
 
         
         btnCrashSaveRestart.addEventListener('click', async () => { await uiSaveToLocalFile('crashed.gen'); clearGraph(); uiRestartGenerator(false); });

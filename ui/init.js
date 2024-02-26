@@ -155,8 +155,8 @@ function initGenerator(activate)
     //     showSubscriptionDialog(activate);
 
 
-    //initCrashDialog(); // for testing
-    //showCrashDialog(); // crash dialog
+    initCrashDialog(); // for testing
+    showCrashDialog(); // crash dialog
 
     setTimeout(() => 
     {

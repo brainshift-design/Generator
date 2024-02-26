@@ -843,13 +843,6 @@ class Operator
 
 
 
-    // isUncached()
-    // {
-    //     return this.inputs.find(i => i.isUncached());
-    // }
-
-
-
     isConnectedTo(node)
     {
         return this. inputs.find(i => i.connected && i.connectedOutput.node == node)
@@ -885,7 +878,7 @@ class Operator
         for (const input of this.inputs)
         {
             if (   input.connected
-                && input.connectedOutput.node.isOrFollows(node, considerIs, stackOverflowProtect-1))
+                && input.connectedOutput.node.isOrFollows(node, true, stackOverflowProtect-1))
                 return true;
         }
 

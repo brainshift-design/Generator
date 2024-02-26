@@ -429,7 +429,7 @@ function getActiveAfterNode(node, includeParams = false, alreadyChecked = [])
             ? output.connectedInputs
             : output.connectedHeaderInputs;
 
-        for (const input of connectedInputs)//.filter(i => !i.param))
+        for (const input of connectedInputs)
         {
             if (!alreadyChecked.includes(input.node))
             {
