@@ -260,6 +260,7 @@ extends OpColorBase
             colors.back       = !rgbIsNaN(colors.back      ) && !isNaN(opacity) ? rgb_a(colors.back,       opacity) : rgb_NaN;//rgbDocumentBody;
             colors.stripeBack = !rgbIsNaN(colors.stripeBack) && !isNaN(opacity) ? rgb_a(colors.stripeBack, opacity) : rgbDocumentBody;
             colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
+
             colors.inWire     =
             colors.outWire    = 
                 !rgbaIsNaN(colors.stripeBack)
