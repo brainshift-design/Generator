@@ -4,6 +4,7 @@ extends GOperator1
     type;
     base;
     step;
+    amount;
 
 
 
@@ -18,9 +19,10 @@ extends GOperator1
     {
         super.reset();
 
-        this.type = null;
-        this.base = null;
-        this.step = null;
+        this.type   = null;
+        this.base   = null;
+        this.step   = null;
+        this.amount = null;
     }
 
 
@@ -31,9 +33,10 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.type = this.type.copy();
-        copy.base = this.base.copy();
-        copy.step = this.step.copy();
+        copy.type   = this.type  .copy();
+        copy.base   = this.base  .copy();
+        copy.step   = this.step  .copy();
+        copy.amount = this.amount.copy();
 
         return copy;
     }
@@ -49,10 +52,11 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        const type  = this.type  ? (await this.type .eval(parse)).toValue() : null;
-        const base  = this.base  ? (await this.base .eval(parse)).toValue() : null;
-        const step  = this.step  ? (await this.step .eval(parse)).toValue() : null;
+        const input  = this.input  ? (await this.input .eval(parse)).toValue() : null;
+        const type   = this.type   ? (await this.type  .eval(parse)).toValue() : null;
+        const base   = this.base   ? (await this.base  .eval(parse)).toValue() : null;
+        const step   = this.step   ? (await this.step  .eval(parse)).toValue() : null;
+        const amount = this.amount ? (await this.amount.eval(parse)).toValue() : null;
 
 
         if (input)
@@ -66,13 +70,16 @@ extends GOperator1
             
             if (this.options.enabled)
             {
+                let qval;
+
                 switch (type.value)
                 {
-                    case 0: this.value.value = base.value + floorTo((this.value.value - base.value) / step.value, this.value.decimals) * step.value; break;
-                    case 1: this.value.value = base.value + roundTo((this.value.value - base.value) / step.value, this.value.decimals) * step.value; break;
-                    case 2: this.value.value = base.value +  ceilTo((this.value.value - base.value) / step.value, this.value.decimals) * step.value; break;
+                    case 0: qval = base.value + floorTo((this.value.value - base.value) / step.value, this.value.decimals) * step.value; break;
+                    case 1: qval = base.value + roundTo((this.value.value - base.value) / step.value, this.value.decimals) * step.value; break;
+                    case 2: qval = base.value +  ceilTo((this.value.value - base.value) / step.value, this.value.decimals) * step.value; break;
                 }
 
+                this.value.value    = this.value.value + (qval - this.value.value) * amount.value/100;
                 this.value.decimals = Math.max(base.decimals, step.decimals);
             }
         }
@@ -82,9 +89,10 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type', type],
-            ['base', base],
-            ['step', step]
+            ['type',   type  ],
+            ['base',   base  ],
+            ['step',   step  ],
+            ['amount', amount]
         ]);
 
 
@@ -98,9 +106,10 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.type && this.type.isValid()
-            && this.base && this.base.isValid()
-            && this.step && this.step.isValid();
+            && this.type   && this.type  .isValid()
+            && this.base   && this.base  .isValid()
+            && this.step   && this.step  .isValid()
+            && this.amount && this.amount.isValid();
     }
 
 
@@ -109,9 +118,10 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.type) this.type.pushValueUpdates(parse);
-        if (this.base) this.base.pushValueUpdates(parse);
-        if (this.step) this.step.pushValueUpdates(parse);
+        if (this.type  ) this.type  .pushValueUpdates(parse);
+        if (this.base  ) this.base  .pushValueUpdates(parse);
+        if (this.step  ) this.step  .pushValueUpdates(parse);
+        if (this.amount) this.amount.pushValueUpdates(parse);
     }
 
 
@@ -120,9 +130,10 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.type) this.type.invalidateInputs(parse, from, force);
-        if (this.base) this.base.invalidateInputs(parse, from, force);
-        if (this.step) this.step.invalidateInputs(parse, from, force);
+        if (this.type  ) this.type  .invalidateInputs(parse, from, force);
+        if (this.base  ) this.base  .invalidateInputs(parse, from, force);
+        if (this.step  ) this.step  .invalidateInputs(parse, from, force);
+        if (this.amount) this.amount.invalidateInputs(parse, from, force);
     }
 
 
@@ -131,8 +142,9 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.type) this.type.iterateLoop(parse);
-        if (this.base) this.base.iterateLoop(parse);
-        if (this.step) this.step.iterateLoop(parse);
+        if (this.type  ) this.type  .iterateLoop(parse);
+        if (this.base  ) this.base  .iterateLoop(parse);
+        if (this.step  ) this.step  .iterateLoop(parse);
+        if (this.amount) this.amount.iterateLoop(parse);
     }
 }

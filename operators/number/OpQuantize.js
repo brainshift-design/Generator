@@ -4,12 +4,13 @@ extends OperatorBase
     paramType;
     paramBase;
     paramStep;
+    paramAmount;
 
 
 
     constructor()
     {
-        super(NUMBER_QUANTIZE, 'quantize', 'qunantize', iconQuantize);
+        super(NUMBER_QUANTIZE, 'quantize', 'quantize', iconQuantize);
 
         this.canDisable = true;
         
@@ -17,15 +18,18 @@ extends OperatorBase
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramType = new SelectParam('type', 'type', false, true, true, ['floor', 'round', 'ceiling'], 1));
-        this.addParam(this.paramBase = new NumberParam('base', 'base', true,  true, true, 0));
-        this.addParam(this.paramStep = new NumberParam('step', 'step', true,  true, true, 1, 0));
+        this.addParam(this.paramType   = new SelectParam('type',   'type',   false, true, true, ['floor', 'round', 'ceiling'], 1));
+        this.addParam(this.paramBase   = new NumberParam('base',   'base',   true,  true, true, 0));
+        this.addParam(this.paramStep   = new NumberParam('step',   'step',   true,  true, true, 1, 0));
+        this.addParam(this.paramAmount = new NumberParam('amount', 'amount', true,  true, true, 100, 0, 100, 0));
 
 
         this.paramType.reverseMenu = true;
 
         this.paramBase.divider = 0.5;
         this.paramStep.divider = 0.5;
+
+        this.paramAmount.controls[0].setSuffix('%', true);
     }
 
 
@@ -51,9 +55,10 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         
-        request.push(...this.node.paramType.genRequest(gen));
-        request.push(...this.node.paramBase.genRequest(gen));
-        request.push(...this.node.paramStep.genRequest(gen));
+        request.push(...this.node.paramType  .genRequest(gen));
+        request.push(...this.node.paramBase  .genRequest(gen));
+        request.push(...this.node.paramStep  .genRequest(gen));
+        request.push(...this.node.paramAmount.genRequest(gen));
 
         
         gen.scope.pop();
@@ -66,9 +71,10 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramType.enableControlText(true, this.paramType.isUnknown());
-        this.paramBase.enableControlText(true, this.paramBase.isUnknown());
-        this.paramStep.enableControlText(true, this.paramStep.isUnknown());
+        this.paramType  .enableControlText(true, this.paramType.isUnknown());
+        this.paramBase  .enableControlText(true, this.paramBase.isUnknown());
+        this.paramStep  .enableControlText(true, this.paramStep.isUnknown());
+        this.paramAmount.enableControlText(true, this.paramStep.isUnknown());
 
         this.updateParamControls();
     }

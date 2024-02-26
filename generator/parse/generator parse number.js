@@ -383,9 +383,10 @@ function genParseQuantize(parse)
     if (nInputs == 1)
         quant.input = genParse(parse);
 
-    quant.type = genParse(parse);
-    quant.base = genParse(parse);
-    quant.step = genParse(parse);
+    quant.type   = genParse(parse);
+    quant.base   = genParse(parse);
+    quant.step   = genParse(parse);
+    quant.amount = genParse(parse);
 
     
     parse.nTab--;
