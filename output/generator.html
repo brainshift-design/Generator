@@ -6379,6 +6379,7 @@ const SHAPE_TYPES =
     VECTOR_LENGTH,
     CIRCLE_CENTER,
     ARC_PATH,
+    WAVE_PATH,
     ARC_FROM_POINTS,
     INTERSECT_LINES,
     INTERPOLATE_POINT,
@@ -7030,6 +7031,7 @@ function copyFigmaObject(obj)
         case VECTOR_PATH: return FigmaVectorPath.prototype.copy.call(obj);
         case BOOLEAN:     return FigmaBoolean   .prototype.copy.call(obj);
         case ARC_PATH:    return FigmaArcPath   .prototype.copy.call(obj);
+        case WAVE_PATH:   return FigmaWavePath  .prototype.copy.call(obj);
         case SHAPE_GROUP: return FigmaShapeGroup.prototype.copy.call(obj);
         case FRAME:       return FigmaFrame     .prototype.copy.call(obj);
     }
@@ -24371,6 +24373,28 @@ extends GOperator
 
         this.value = _values[this.iteration % _values.length];
 
+
+        if (this.value.objects)
+        {
+            for (let i = 0; i < this.value.objects.length; i++)
+            {
+                const obj = this.value.objects[i];
+    
+                obj.nodeId = this.nodeId;
+                obj.listId = -1;
+    
+                obj.objectId = this.nodeId;
+                
+                if (obj.objectId != NULL) 
+                    obj.objectId += '/';
+    
+                obj.objectId += i.toString();
+            }
+        }
+
+
+        this.evalObjects(parse);
+        
 
         this.setUpdateValues(parse,
         [
@@ -42885,6 +42909,7 @@ extends GShape
 
                      if (path.type == VECTOR_PATH_VALUE) _degree = path.degree.value;
                 else if (path.type == ARC_PATH_VALUE   ) _degree = 2;
+                else if (path.type == WAVE_PATH_VALUE  ) _degree = path.shape.value == 4 ? 2 : 0;
 
 
                 const pathPoints = path.objects[0].pathPoints;
@@ -44607,8 +44632,7 @@ extends GOperator1
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
                 if (   this.options.enabled
-                    && (   obj.type == VECTOR_PATH
-                        || obj.type == ARC_PATH))
+                    && PATH_VALUES.includes(obj.type))
                 {
                     obj.pathPoints.reverse();
                     obj.updatePathData();

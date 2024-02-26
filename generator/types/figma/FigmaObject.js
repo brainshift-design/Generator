@@ -333,6 +333,7 @@ function copyFigmaObject(obj)
         case VECTOR_PATH: return FigmaVectorPath.prototype.copy.call(obj);
         case BOOLEAN:     return FigmaBoolean   .prototype.copy.call(obj);
         case ARC_PATH:    return FigmaArcPath   .prototype.copy.call(obj);
+        case WAVE_PATH:   return FigmaWavePath  .prototype.copy.call(obj);
         case SHAPE_GROUP: return FigmaShapeGroup.prototype.copy.call(obj);
         case FRAME:       return FigmaFrame     .prototype.copy.call(obj);
     }

@@ -107,6 +107,7 @@ extends GShape
 
                      if (path.type == VECTOR_PATH_VALUE) _degree = path.degree.value;
                 else if (path.type == ARC_PATH_VALUE   ) _degree = 2;
+                else if (path.type == WAVE_PATH_VALUE  ) _degree = path.shape.value == 4 ? 2 : 0;
 
 
                 const pathPoints = path.objects[0].pathPoints;

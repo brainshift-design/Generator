@@ -873,16 +873,19 @@ class Operator
 
 
 
-    isOrFollows(node, considerIs = true)
+    isOrFollows(node, considerIs = true, stackOverflowProtect = 100)
     {
         if (   this == node
             && considerIs)
             return true;
 
+        if (stackOverflowProtect <= 0)
+            return false;
+
         for (const input of this.inputs)
         {
             if (   input.connected
-                && input.connectedOutput.node.isOrFollows(node))
+                && input.connectedOutput.node.isOrFollows(node, considerIs, stackOverflowProtect-1))
                 return true;
         }
 

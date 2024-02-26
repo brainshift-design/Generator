@@ -71,8 +71,7 @@ extends GOperator1
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
                 if (   this.options.enabled
-                    && (   obj.type == VECTOR_PATH
-                        || obj.type == ARC_PATH))
+                    && PATH_VALUES.includes(obj.type))
                 {
                     obj.pathPoints.reverse();
                     obj.updatePathData();

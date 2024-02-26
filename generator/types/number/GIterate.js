@@ -63,6 +63,28 @@ extends GOperator
         this.value = _values[this.iteration % _values.length];
 
 
+        if (this.value.objects)
+        {
+            for (let i = 0; i < this.value.objects.length; i++)
+            {
+                const obj = this.value.objects[i];
+    
+                obj.nodeId = this.nodeId;
+                obj.listId = -1;
+    
+                obj.objectId = this.nodeId;
+                
+                if (obj.objectId != NULL) 
+                    obj.objectId += '/';
+    
+                obj.objectId += i.toString();
+            }
+        }
+
+
+        this.evalObjects(parse);
+        
+
         this.setUpdateValues(parse,
         [
             ['type', new TextValue(finalTypeFromItems(_values))]
