@@ -211,7 +211,12 @@ extends GShape
 
 
                 const bounds = getObjBounds([wave]);
-        
+
+                wave.createDefaultSpace(
+                    bounds.x + bounds.width /2,            
+                    bounds.y + bounds.height/2            
+                );
+
                 wave.createDefaultTransform(bounds.x, bounds.y);
                 wave.createDefaultTransformPoints(bounds.x, bounds.y, bounds.w, bounds.h);
 
