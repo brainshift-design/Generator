@@ -243,15 +243,13 @@ extends OpColorBase
             : Number.NaN;
 
 
-        colors.input  = rgb_a(colors.text, 0.2);
-        colors.output = rgb_a(colors.text, 0.2);
-        
-
         if (this.isUnknown())
         {
             colors.back       = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
             colors.stripeBack = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
             colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+            colors.input  = rgb_a(colors.text, 0.3);
+            colors.output = rgb_a(colors.text, 0.3);
             colors.inWire     =
             colors.outWire    = darkMode ? hex2rgb('888' ) : hex2rgb('aaa' );
         }
@@ -260,7 +258,8 @@ extends OpColorBase
             colors.back       = !rgbIsNaN(colors.back      ) && !isNaN(opacity) ? rgb_a(colors.back,       opacity) : rgb_NaN;//rgbDocumentBody;
             colors.stripeBack = !rgbIsNaN(colors.stripeBack) && !isNaN(opacity) ? rgb_a(colors.stripeBack, opacity) : rgbDocumentBody;
             colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
-
+            colors.input      = rgb_a(colors.text, 0.3);
+            colors.output     = rgb_a(colors.text, 0.3);
             colors.inWire     =
             colors.outWire    = 
                 !rgbaIsNaN(colors.stripeBack)
