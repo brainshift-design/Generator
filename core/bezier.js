@@ -203,6 +203,16 @@ function tangentAlongSegment3(p0, p1, p2, p3, dist, error = 0.001)
 
 
 
+function splitLineSeg(p0, p1, t)
+{
+    const c = lerpv(p0, p1, t);
+
+    return [ [p0, c],
+             [c, p1] ];
+}
+
+
+
 function splitSeg2(p0, p1, p2, t)
 {
     const c0  = lerpv(p0, p1, t);

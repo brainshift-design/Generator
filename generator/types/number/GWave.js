@@ -87,12 +87,18 @@ extends GOperator
                     ? repeat.total / nozero(freq.value)
                     : freq.value;
 
-                const _offset =
+                let _offset =
                     this.offsetAbsolute
                     ? offset.value/repeat.total
                     : (offset.value/100)/_freq;
 
+                if (shape.value == 3)
+                    _offset -= 0.25;
+
                 t = (iteration/repeat.total - _offset) * _freq;
+
+                while (t < 0) t++;
+                while (t > 1) t--;
 
                 switch (shape.value)
                 {

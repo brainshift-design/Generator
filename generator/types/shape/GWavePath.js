@@ -186,16 +186,13 @@ extends GShape
             const _freq = this.useWavelength ? w/nozero(freq) : freq;
             const wl    = this.useWavelength ? freq : w/nozero(freq);
 
-            console.log('_freq =', _freq);
-            console.log('wl =', wl);
+            const so    = this.shape.value >= 3 ? 0.25 : 0;
 
             const _off =
                 this.offsetAbsolute
-                ? off - 0.25*wl
-                : (off/100 - 0.25) * wl;
+                ? off - so*wl
+                : (off/100 - so) * wl;
 
-            console.log('this.offsetAbsolute =', this.offsetAbsolute);
-            console.log('_off =', _off);
 
             if (   w   != 0 
                 && amp != 0)

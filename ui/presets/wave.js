@@ -13,6 +13,7 @@ const presetWave = '\
             "y": "2372",\
             "z": "0",\
             "active": "true",\
+            "useWavelength": "false",\
             "params":\
             [\
                     ["NUM#", "amplitude", "200,0"],\

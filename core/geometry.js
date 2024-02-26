@@ -71,8 +71,8 @@ function clipEdge(p, q, t0, t1)
 
 function clipLine(x1, y1, x2, y2, left, top, right, bottom)
 {
-    const t0 = 0;
-    const t1 = 1;
+    let   t0 = 0;
+    let   t1 = 1;
 
     const dx = x2 - x1;
     const dy = y2 - y1;
@@ -331,27 +331,30 @@ function makeWave(shape, x, y, width, amplitude, frequency, offset, alignX, alig
     const points = [];
 
 
-    switch (shape)
+    if (Math.abs(w) > 0.0000001)
     {
-        case 0: makeSquareWave  (x, y, width, height, startX, w, points); break;
-        case 1: makeSawWave     (x, y, width, height, startX, w, points); break;
-        case 2: makeBackSawWave (x, y, width, height, startX, w, points); break;
-        case 3: makeTriangleWave(x, y, width, height, startX, w, points); break;
-        case 4: makeSineWave    (x, y, width, height, startX, w, points); break;
+        switch (shape)
+        {
+            case 0: makeSquareWave  (x, y, width, height, startX, w, points); break;
+            case 1: makeSawWave     (x, y, width, height, startX, w, points); break;
+            case 2: makeBackSawWave (x, y, width, height, startX, w, points); break;
+            case 3: makeTriangleWave(x, y, width, height, startX, w, points); break;
+            case 4: makeSineWave    (x, y, width, height, startX, w, points); break;
+        }
+
+        
+        points.forEach(p =>
+        {
+                 if (alignX == 1) p.x -= width/2;
+            else if (alignX == 2) p.x -= width;
+        });
+
+        points.forEach(p =>
+        {
+                 if (alignY == 1) p.y -= height/2;
+            else if (alignY == 2) p.y -= height;
+        });
     }
-
-
-    points.forEach(p =>
-    {
-             if (alignX == 1) p.x -= width/2;
-        else if (alignX == 2) p.x -= width;
-    });
-
-    points.forEach(p =>
-    {
-             if (alignY == 1) p.y -= height/2;
-        else if (alignY == 2) p.y -= height;
-    });
 
 
     return points;
@@ -361,23 +364,19 @@ function makeWave(shape, x, y, width, amplitude, frequency, offset, alignX, alig
 
 function makeSquareWave(x, y, width, height, startX, w, points)
 {
-    let p0, p1, p2, p3;
+    let p0, p1;
 
     
-    let i = 0;
     while (x < startX + width)
     {
         if (x + w/2 > startX)
         {
-            p0 = point(x,                              y+height);
-            p1 = point(x     + (x+w/2 - x)   * 0.3615, y+height);
-            p2 = point(x+w/2 + (x - (x+w/2)) * 0.3615, y       );
-            p3 = point(x+w/2,                          y       );
+            p0 = point(x,     y);
+            p1 = point(x+w/2, y);
 
-            clipSinSegment(p0, p1, p2, p3, startX, width);
+            clipLineSegment(p0, p1, startX, width);
 
-            if (i++ == 0) points.push(p0);
-            points.push(p1, p2, p3);
+            points.push(p0, p1);
         }
 
         x += w/2;
@@ -385,15 +384,12 @@ function makeSquareWave(x, y, width, height, startX, w, points)
 
         if (x < startX + width)
         {
-            p0 = point(x,                              y       );
-            p1 = point(x     + (x+w/2 - x)   * 0.3615, y       );
-            p2 = point(x+w/2 + (x - (x+w/2)) * 0.3615, y+height);
-            p3 = point(x+w/2,                          y+height);
+            p0 = point(x,     y+height);
+            p1 = point(x+w/2, y+height);
             
-            clipSinSegment(p0, p1, p2, p3, startX, width);
+            clipLineSegment(p0, p1, startX, width);
             
-            if (i++ == 0) points.push(p0);
-            points.push(p1, p2, p3);
+            points.push(p0, p1);
         }
 
         x += w/2;
@@ -404,19 +400,84 @@ function makeSquareWave(x, y, width, height, startX, w, points)
 
 function makeSawWave(x, y, width, height, startX, w, points)
 {
+    let p0, p1;
+
     
+    while (x < startX + width)
+    {
+        if (x + w > startX)
+        {
+            p0 = point(x,   y       );
+            p1 = point(x+w, y+height);
+
+            clipLineSegment(p0, p1, startX, width);
+
+            points.push(p0, p1);
+        }
+
+        x += w;
+    }
 }
 
 
 
 function makeBackSawWave(x, y, width, height, startX, w, points)
 {
+    let p0, p1;
+
+    
+    while (x < startX + width)
+    {
+        if (x + w > startX)
+        {
+            p0 = point(x,   y+height);
+            p1 = point(x+w, y       );
+
+            clipLineSegment(p0, p1, startX, width);
+
+            points.push(p0, p1);
+        }
+
+        x += w;
+    }
 }
 
 
 
 function makeTriangleWave(x, y, width, height, startX, w, points)
 {
+    let p0, p1;
+
+    let i = 0;
+    while (x < startX + width)
+    {
+        if (x + w/2 > startX)
+        {
+            p0 = point(x,     y+height);
+            p1 = point(x+w/2, y       );
+
+            clipLineSegment(p0, p1, startX, width);
+
+            if (i++ == 0) points.push(p0);
+            points.push(p1);
+        }
+
+        x += w/2;
+
+
+        if (x < startX + width)
+        {
+            p0 = point(x,     y       );
+            p1 = point(x+w/2, y+height);
+
+            clipLineSegment(p0, p1, startX, width);
+
+            if (i++ == 0) points.push(p0);
+            points.push(p1);
+        }
+
+        x += w/2;
+    }
 }
 
 
@@ -458,6 +519,33 @@ function makeSineWave(x, y, width, height, startX, w, points)
         }
 
         x += w/2;
+    }
+}
+
+
+
+function clipLineSegment(p0, p1, startX, width)
+{
+    if (   p0.x <  startX
+        && p1.x >= startX)
+    {
+        const t        = (startX - p0.x) / nozero(p1.x - p0.x);
+        const segments = splitLineSeg(p0, p1, t);
+        const seg      = segments[1];
+
+        p0.x = seg[0].x;  p0.y = seg[0].y;
+        p1.x = seg[1].x;  p1.y = seg[1].y;
+    }
+    
+    if (   p0.x <  startX + width
+        && p1.x >= startX + width)
+    {
+        const t        = (startX + width - p0.x) / nozero(p1.x - p0.x);
+        const segments = splitLineSeg(p0, p1, t);
+        const seg      = segments[0];
+
+        p0.x = seg[0].x;  p0.y = seg[0].y;
+        p1.x = seg[1].x;  p1.y = seg[1].y;
     }
 }
 
