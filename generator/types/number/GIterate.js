@@ -87,7 +87,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['type', new TextValue(finalTypeFromItems(_values))]
+            ['type', this.outputType()]
         ]);
         
 

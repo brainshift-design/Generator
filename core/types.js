@@ -497,6 +497,13 @@ const INTERPOLATE_POINT     = 'PTLERP';
 const REVERSE_PATH          = 'REVPTH';
 
 
+const PATH_TYPES =
+[
+    VECTOR_PATH, 
+    ARC_PATH,
+    WAVE_PATH
+];
+
 const PATH_VALUES =
 [
     VECTOR_PATH_VALUE, 

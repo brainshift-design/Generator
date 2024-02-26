@@ -6268,6 +6268,13 @@ const INTERPOLATE_POINT     = 'PTLERP';
 const REVERSE_PATH          = 'REVPTH';
 
 
+const PATH_TYPES =
+[
+    VECTOR_PATH, 
+    ARC_PATH,
+    WAVE_PATH
+];
+
 const PATH_VALUES =
 [
     VECTOR_PATH_VALUE, 
@@ -24398,7 +24405,7 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['type', new TextValue(finalTypeFromItems(_values))]
+            ['type', this.outputType()]
         ]);
         
 
@@ -44632,7 +44639,7 @@ extends GOperator1
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
                 if (   this.options.enabled
-                    && PATH_VALUES.includes(obj.type))
+                    && PATH_TYPES.includes(obj.type))
                 {
                     obj.pathPoints.reverse();
                     obj.updatePathData();
