@@ -29,27 +29,15 @@ extends FigmaVectorPath
         points = points.map(p => PointValue.fromPoint(nodeId, p));
 
 
-        points.forEach(p => 
-        {
-            // p.y.value = height/2 + (p.y.value - height/2) * height/width;
-
-            // if (width < 0) 
-            //     p.x.value += width;
-        });
-
-        // if (width  < 0) width  *= -1;
-        // if (height < 0) height *= -1;
-
-
         super(
             nodeId, 
             objectId,
             objectName,
             points,
-            0,  // open
-            2,  // cubic
-            0,  // even-odd winding
-            0); // no round
+            0,                  // open
+            shape == 4 ? 2 : 0, // cubic
+            0,                  // even-odd winding
+            0);                 // no round
         
 
         this.shape     = shape;

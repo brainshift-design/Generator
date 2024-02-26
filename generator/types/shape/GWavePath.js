@@ -8,6 +8,9 @@ extends GShape
     alignX    = null;
     alignY    = null;
 
+    useWavelength;
+    offsetAbsolute;
+
 
 
     constructor(nodeId, options)
@@ -171,7 +174,7 @@ extends GShape
             let   y      = this.value.y        .value;
             let   w      = this.value.width    .value;
             const amp    = this.value.amplitude.value;
-            const freq   = this.value.frequency.value;
+            let   freq   = this.value.frequency.value;
             const off    = this.value.offset   .value;
             const alignX = this.value.alignX   .value;
             const alignY = this.value.alignY   .value;
@@ -179,6 +182,20 @@ extends GShape
 
             [x, y, w, , ] = validateObjectRect(x, y, w, 0);
 
+
+            const _freq = this.useWavelength ? w/nozero(freq) : freq;
+            const wl    = this.useWavelength ? freq : w/nozero(freq);
+
+            console.log('_freq =', _freq);
+            console.log('wl =', wl);
+
+            const _off =
+                this.offsetAbsolute
+                ? off - 0.25*wl
+                : (off/100 - 0.25) * wl;
+
+            console.log('this.offsetAbsolute =', this.offsetAbsolute);
+            console.log('_off =', _off);
 
             if (   w   != 0 
                 && amp != 0)
@@ -190,8 +207,8 @@ extends GShape
                     sh, 
                     x, y, w,
                     amp,
-                    freq,
-                    off,
+                    _freq,
+                    _off,
                     alignX,
                     alignY);
 

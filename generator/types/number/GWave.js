@@ -8,7 +8,10 @@ extends GOperator
     offset    = null;
     bias      = null;
     
-    
+    useWavelength;
+    offsetAbsolute;
+
+
 
     constructor(nodeId, options)
     {
@@ -60,7 +63,7 @@ extends GOperator
         const shape  = this.shape     ? (await this.shape    .eval(parse)).toValue() : null;
         const base   = this.base      ? (await this.base     .eval(parse)).toValue() : null;
         const amp    = this.amplitude ? (await this.amplitude.eval(parse)).toValue() : null;
-        const freq   = this.frequency ? (await this.frequency.eval(parse)).toValue() : null;
+        let   freq   = this.frequency ? (await this.frequency.eval(parse)).toValue() : null;
         const offset = this.offset    ? (await this.offset   .eval(parse)).toValue() : null;
         const bias   = this.bias      ? (await this.bias     .eval(parse)).toValue() : null;
     
@@ -79,7 +82,17 @@ extends GOperator
                 && freq
                 && offset)
             {
-                t = (iteration/repeat.total) * freq.value - offset.value/freq.value*2;
+                const _freq =
+                    this.useWavelength
+                    ? repeat.total / nozero(freq.value)
+                    : freq.value;
+
+                const _offset =
+                    this.offsetAbsolute
+                    ? offset.value/repeat.total
+                    : (offset.value/100)/_freq;
+
+                t = (iteration/repeat.total - _offset) * _freq;
 
                 switch (shape.value)
                 {

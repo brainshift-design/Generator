@@ -914,6 +914,10 @@ function genParseWave(parse)
     wave.bias      = genParse(parse);
 
 
+    wave.useWavelength  = parseInt(parse.move()) > 0;
+    wave.offsetAbsolute = parseInt(parse.move()) > 0;
+
+
     parse.nTab--;
 
 

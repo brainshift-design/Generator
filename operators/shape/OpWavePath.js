@@ -12,7 +12,14 @@ extends OpShape
     paramAlignY;
 
 
+    useWavelength;
+    offsetAbsolute;
+ 
+    menuWavelength;
+    menuOffset;
+
     
+
     constructor()
     {
         super(WAVE_PATH, 'wave', 'wave', iconWavePath);
@@ -38,10 +45,23 @@ extends OpShape
 
         this.setAllParamDividers(0.55);
 
-        this.paramOffset.controls[0].setDecimals(2);
+        this.paramAlignX.divider = 0.5;
+        this.paramAlignY.divider = 0.5;
 
-        
+
         this.addBaseParams();
+
+
+        this.menuWavelength = createWavelengthParamMenu(this.paramFrequency, 'useWavelength');
+        this.menuOffset     = createOffsetParamMenu    (this.paramOffset,    'offsetAbsolute');
+    }
+
+
+
+    genRequestInherited(gen, request)
+    {
+        request.push(this.useWavelength  ? 1 : 0);
+        request.push(this.offsetAbsolute ? 1 : 0);
     }
 
 
@@ -69,5 +89,43 @@ extends OpShape
         this.paramOffset   .setValue(offset,    false, true, false);
         this.paramAlignX   .setValue(alignX,    false, true, false);
         this.paramAlignY   .setValue(alignY,    false, true, false);
+    }
+
+
+
+    updateParams()
+    {
+        this.paramFrequency.setName(this.useWavelength ? 'wavelength' : 'frequency');
+        this.paramFrequency.divider = this.useWavelength ? 0.6 : 0.55;
+
+        this.paramOffset.controls[0].setSuffix(this.offsetAbsolute ? '' : '%', true);
+
+        super.updateParams();
+    }
+
+
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = HTAB;
+
+        let json = super.toJsonBase(nTab);
+
+        json += 
+              ',\n' + pos + tab + '"useWavelength": "'  + this.useWavelength  + '"'
+            + ',\n' + pos + tab + '"offsetAbsolute": "' + this.offsetAbsolute + '"';
+
+        return json;
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        super.loadParams(_node, pasting);
+
+        this.useWavelength  = _node.useWavelength  ? parseBool(_node.useWavelength ) : true;
+        this.offsetAbsolute = _node.offsetAbsolute ? parseBool(_node.offsetAbsolute) : false;
     }
 }

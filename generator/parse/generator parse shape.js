@@ -1234,7 +1234,8 @@ function genParseWavePath(parse)
     }
     
     
-    wave.sweepInDegrees = parseInt(parse.move()) > 0;
+    wave.useWavelength  = parseInt(parse.move()) > 0;
+    wave.offsetAbsolute = parseInt(parse.move()) > 0;
 
 
     parse.inParam = false;

@@ -305,3 +305,189 @@ function halfArcAngle(p1, p2, p3)
 
     return a;
 }
+
+
+
+function makeWave(shape, x, y, width, amplitude, frequency, offset, alignX, alignY)
+{
+    const startX = x;
+    const w      = width / frequency;
+    
+
+    x += offset;
+    
+    
+    while (x >  -w) x -= w;
+    while (x <= -w) x += w;
+
+
+    if (alignY == 1)
+        amplitude *= 2;
+
+        
+    let height = amplitude;
+
+
+    const points = [];
+
+
+    switch (shape)
+    {
+        case 0: makeSquareWave  (x, y, width, height, startX, w, points); break;
+        case 1: makeSawWave     (x, y, width, height, startX, w, points); break;
+        case 2: makeBackSawWave (x, y, width, height, startX, w, points); break;
+        case 3: makeTriangleWave(x, y, width, height, startX, w, points); break;
+        case 4: makeSineWave    (x, y, width, height, startX, w, points); break;
+    }
+
+
+    points.forEach(p =>
+    {
+             if (alignX == 1) p.x -= width/2;
+        else if (alignX == 2) p.x -= width;
+    });
+
+    points.forEach(p =>
+    {
+             if (alignY == 1) p.y -= height/2;
+        else if (alignY == 2) p.y -= height;
+    });
+
+
+    return points;
+}
+
+
+
+function makeSquareWave(x, y, width, height, startX, w, points)
+{
+    let p0, p1, p2, p3;
+
+    
+    let i = 0;
+    while (x < startX + width)
+    {
+        if (x + w/2 > startX)
+        {
+            p0 = point(x,                              y+height);
+            p1 = point(x     + (x+w/2 - x)   * 0.3615, y+height);
+            p2 = point(x+w/2 + (x - (x+w/2)) * 0.3615, y       );
+            p3 = point(x+w/2,                          y       );
+
+            clipSinSegment(p0, p1, p2, p3, startX, width);
+
+            if (i++ == 0) points.push(p0);
+            points.push(p1, p2, p3);
+        }
+
+        x += w/2;
+
+
+        if (x < startX + width)
+        {
+            p0 = point(x,                              y       );
+            p1 = point(x     + (x+w/2 - x)   * 0.3615, y       );
+            p2 = point(x+w/2 + (x - (x+w/2)) * 0.3615, y+height);
+            p3 = point(x+w/2,                          y+height);
+            
+            clipSinSegment(p0, p1, p2, p3, startX, width);
+            
+            if (i++ == 0) points.push(p0);
+            points.push(p1, p2, p3);
+        }
+
+        x += w/2;
+    }
+}
+
+
+
+function makeSawWave(x, y, width, height, startX, w, points)
+{
+    
+}
+
+
+
+function makeBackSawWave(x, y, width, height, startX, w, points)
+{
+}
+
+
+
+function makeTriangleWave(x, y, width, height, startX, w, points)
+{
+}
+
+
+
+function makeSineWave(x, y, width, height, startX, w, points)
+{
+    let p0, p1, p2, p3;
+
+    let i = 0;
+    while (x < startX + width)
+    {
+        if (x + w/2 > startX)
+        {
+            p0 = point(x,                              y+height);
+            p1 = point(x     + (x+w/2 - x)   * 0.3615, y+height);
+            p2 = point(x+w/2 + (x - (x+w/2)) * 0.3615, y       );
+            p3 = point(x+w/2,                          y       );
+
+            clipSinSegment(p0, p1, p2, p3, startX, width);
+
+            if (i++ == 0) points.push(p0);
+            points.push(p1, p2, p3);
+        }
+
+        x += w/2;
+
+
+        if (x < startX + width)
+        {
+            p0 = point(x,                              y       );
+            p1 = point(x     + (x+w/2 - x)   * 0.3615, y       );
+            p2 = point(x+w/2 + (x - (x+w/2)) * 0.3615, y+height);
+            p3 = point(x+w/2,                          y+height);
+            
+            clipSinSegment(p0, p1, p2, p3, startX, width);
+            
+            if (i++ == 0) points.push(p0);
+            points.push(p1, p2, p3);
+        }
+
+        x += w/2;
+    }
+}
+
+
+
+function clipSinSegment(p0, p1, p2, p3, startX, width)
+{
+    if (   p0.x <  startX
+        && p3.x >= startX)
+    {
+        const t        = findTforX3(p0, p1, p2, p3, startX);
+        const segments = splitSeg3(p0, p1, p2, p3, t);
+        const seg      = segments[1];
+
+        p0.x = seg[0].x;  p0.y = seg[0].y;
+        p1.x = seg[1].x;  p1.y = seg[1].y;
+        p2.x = seg[2].x;  p2.y = seg[2].y;
+        p3.x = seg[3].x;  p3.y = seg[3].y;
+    }
+    
+    if (   p0.x <  startX + width
+        && p3.x >= startX + width)
+    {
+        const t        = findTforX3(p0, p1, p2, p3, startX + width);
+        const segments = splitSeg3(p0, p1, p2, p3, t);
+        const seg      = segments[0];
+
+        p0.x = seg[0].x;  p0.y = seg[0].y;
+        p1.x = seg[1].x;  p1.y = seg[1].y;
+        p2.x = seg[2].x;  p2.y = seg[2].y;
+        p3.x = seg[3].x;  p3.y = seg[3].y;
+    }
+}
