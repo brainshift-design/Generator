@@ -42990,8 +42990,8 @@ extends GShape
             case 1: // cubic
             {
                 const c = intersectLines(p_2, p_1, p1, p0, false);
-                points.push(lerpv(p_1, c, 2/3));
-                points.push(lerpv(p0,  c, 2/3));
+                points.push(addv(p_1, mulvs(unitv(subv(c, p_1)), Math.min(distv(p_2, p_1), distv(p_1, c) * 2/3))));
+                points.push(addv(p0,  mulvs(unitv(subv(c, p0 )), Math.min(distv(p1,  p0),  distv(p0,  c) * 2/3))));
                 break;
             }
             case 2: // smooth
