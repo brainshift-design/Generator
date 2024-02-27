@@ -60,10 +60,14 @@ extends GOperator
         }
             
 
-        this.value = _values[this.iteration % _values.length];
+        this.value = 
+            _values.length > 0
+            ? _values[this.iteration % _values.length]
+            : new NullValue();
 
 
-        if (this.value.objects)
+        if (   this.value 
+            && this.value.objects)
         {
             for (let i = 0; i < this.value.objects.length; i++)
             {

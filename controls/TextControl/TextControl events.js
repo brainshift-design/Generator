@@ -181,7 +181,6 @@ TextControl.prototype.initEvents = function()
         if (touchpad)
         {
             e.preventDefault();
-            e.stopPropagation();
             return;
         }
 

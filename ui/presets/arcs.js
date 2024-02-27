@@ -105,8 +105,8 @@ const presetArcs = '\
       "type": "ITER",\
       "created": "1708458206457",\
       "updated": "1708458225930",\
-      "id": "define",\
-      "name": "define",\
+      "id": "iterate",\
+      "name": "iterate",\
       "renamed": "false",\
       "enabled": "true",\
       "highlight": "0",\
@@ -311,7 +311,7 @@ const presetArcs = '\
       "outputNodeId": "color",\
       "outputId": "h0",\
       "outputOrder": "0",\
-      "inputNodeId": "define",\
+      "inputNodeId": "iterate",\
       "inputId": "h0",\
       "list": "false"\
     },\
@@ -320,7 +320,7 @@ const presetArcs = '\
       "outputNodeId": "color2",\
       "outputId": "h0",\
       "outputOrder": "0",\
-      "inputNodeId": "define",\
+      "inputNodeId": "iterate",\
       "inputId": "h1",\
       "list": "false"\
     },\
@@ -329,7 +329,7 @@ const presetArcs = '\
       "outputNodeId": "color3",\
       "outputId": "h0",\
       "outputOrder": "0",\
-      "inputNodeId": "define",\
+      "inputNodeId": "iterate",\
       "inputId": "h2",\
       "list": "false"\
     },\
@@ -389,7 +389,7 @@ const presetArcs = '\
     },\
     {\
       "created": "1708458211585",\
-      "outputNodeId": "define",\
+      "outputNodeId": "iterate",\
       "outputId": "h0",\
       "outputOrder": "0",\
       "inputNodeId": "fill",\
