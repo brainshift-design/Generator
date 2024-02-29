@@ -66,18 +66,11 @@ extends GOperator1
             length = input.items.length;
 
 
-            index = 
-                   index.isValid()
-                && index.value >= -input.items.length
-                && index.value <   input.items.length
-                ? new NumberValue(Math.round(index.value))
-                : new NumberValue(0);
-            
-
             if (   index.isValid()
                 && index.value >= -input.items.length
                 && index.value <   input.items.length)
             {
+                index      = new NumberValue(Math.round(index.value));
                 this.value = input.items.at(index.value);
 
                 if (this.value.objects)
@@ -100,6 +93,7 @@ extends GOperator1
             }
             else
             {
+                index      = NumberValue.NaN.copy();
                 this.value = new NullValue();
             }
         }

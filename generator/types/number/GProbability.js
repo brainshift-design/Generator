@@ -1,10 +1,11 @@
 class GProbability
 extends GOperator
 {
-    seed   = null;
-    chance = null;
+    seed      = null;
+    iteration = null;
+    chance    = null;
 
-    random = null;
+    random    = null;
 
 
 
@@ -19,8 +20,9 @@ extends GOperator
     {
         super.reset();
 
-        this.seed   = null;
-        this.chance = null;
+        this.seed      = null;
+        this.iteration = null;
+        this.chance    = null;
     }
 
 
@@ -31,8 +33,9 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.seed  ) copy.seed   = this.seed  .copy();
-        if (this.chance) copy.chance = this.chance.copy();
+        if (this.seed     ) copy.seed      = this.seed     .copy();
+        if (this.iteration) copy.iteration = this.iteration.copy();
+        if (this.chance   ) copy.chance    = this.chance   .copy();
 
         if (this.random) copy.random = this.random.copy();
 
@@ -47,8 +50,9 @@ extends GOperator
             return this;
 
 
-        const seed   = (await this.seed  .eval(parse)).toValue();
-        const chance = (await this.chance.eval(parse)).toValue();
+        const seed      = this.seed      ? (await this.seed     .eval(parse)).toValue() : null;
+        const iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
+        const chance    = this.chance    ? (await this.chance   .eval(parse)).toValue() : null;
     
 
         if (  !this.random
@@ -56,9 +60,13 @@ extends GOperator
             this.random = new Random(seed.value);
 
 
+        if (iteration.isValid())
+            this.currentIteration = iteration.value;
+
+
         const r = 
             this.options.enabled
-            ? (this.random.get(this.iteration) > 1 - chance.value/100 ? 1 : 0)
+            ? (this.random.get(this.currentIteration) > 1 - chance.value/100 ? 1 : 0)
             : 0;
 
 
@@ -67,8 +75,9 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['seed',   seed  ],
-            ['chance', chance],
+            ['seed',      seed     ],
+            ['iteration', iteration],
+            ['chance',    chance   ],
         ]);
         
 
@@ -90,9 +99,9 @@ extends GOperator
 
     isValid()
     {
-        return this.seed   && this.seed  .isValid()
-            && this.chance && this.chance.isValid()
-            && this.max    && this.max   .isValid();
+        return this.seed      && this.seed     .isValid()
+            && this.iteration && this.iteration.isValid()
+            && this.chance    && this.chance   .isValid();
     }
 
 
@@ -101,8 +110,9 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.seed  ) this.seed  .pushValueUpdates(parse);
-        if (this.chance) this.chance.pushValueUpdates(parse);
+        if (this.seed     ) this.seed     .pushValueUpdates(parse);
+        if (this.iteration) this.iteration.pushValueUpdates(parse);
+        if (this.chance   ) this.chance   .pushValueUpdates(parse);
     }
 
 
@@ -111,8 +121,9 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.seed  ) this.seed  .invalidateInputs(parse, from, force);
-        if (this.chance) this.chance.invalidateInputs(parse, from, force);
+        if (this.seed     ) this.seed     .invalidateInputs(parse, from, force);
+        if (this.iteration) this.iteration.invalidateInputs(parse, from, force);
+        if (this.chance   ) this.chance   .invalidateInputs(parse, from, force);
     }
 
 
@@ -121,7 +132,8 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.seed  ) this.seed  .iterateLoop(parse);
-        if (this.chance) this.chance.iterateLoop(parse);
+        if (this.seed     ) this.seed     .iterateLoop(parse);
+        if (this.iteration) this.iteration.iterateLoop(parse);
+        if (this.chance   ) this.chance   .iterateLoop(parse);
     }
 }

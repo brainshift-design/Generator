@@ -168,8 +168,8 @@ extends GNode
 
     initLoop(parse, nodeId)
     {
-        this.loopId    = nodeId;
-        this.iteration = 0;
+        this.loopId           = nodeId;
+        this.currentIteration = 0;
     }
 
 
@@ -196,7 +196,7 @@ extends GNode
             && !this.iterated)
         {
             //console.log('iterating');
-            this.iteration++;
+            this.currentIteration++;
             this.iterated = true;
         }
     }
@@ -212,8 +212,8 @@ extends GNode
 
     resetLoop(parse, nodeId)
     {
-        this.valid     = false;
-        this.iteration = 0;
+        this.valid            = false;
+        this.currentIteration = 0;
     }    
 
 

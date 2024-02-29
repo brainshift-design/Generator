@@ -66,10 +66,10 @@ extends GOperator
             && add
             && end)
         {
-            const value = start.value + (this.options.enabled ? add.value * this.iteration : 0);
+            const value = start.value + (this.options.enabled ? add.value * this.currentIteration : 0);
 
             if (!end.isValid())
-                this.value = getSequenceValue(start, mult, add, this.iteration, this.options.enabled);
+                this.value = getSequenceValue(start, mult, add, this.currentIteration, this.options.enabled);
 
             else if (   end.isValid()   
                      && (   add.value == 0
@@ -77,7 +77,7 @@ extends GOperator
                                            &&       value < end.value
                          || add.value <  0 && start.value > end.value
                                            &&       value > end.value))
-                this.value = getSequenceValue(start, mult, add, this.iteration, this.options.enabled);
+                this.value = getSequenceValue(start, mult, add, this.currentIteration, this.options.enabled);
 
             else
                 this.value = NumberValue.NaN.copy();

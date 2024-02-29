@@ -987,12 +987,13 @@ function genParseRandom(parse)
     parse.nTab++;
 
 
-    rnd.seed        = genParse(parse);
-    rnd.min         = genParse(parse);
-    rnd.max         = genParse(parse);
-    rnd.bias        = genParse(parse);
-    rnd.spread      = genParse(parse);
-    rnd.unique      = genParse(parse);
+    rnd.seed      = genParse(parse);
+    rnd.iteration = genParse(parse);
+    rnd.min       = genParse(parse);
+    rnd.max       = genParse(parse);
+    rnd.bias      = genParse(parse);
+    rnd.spread    = genParse(parse);
+    rnd.unique    = genParse(parse);
 
 
     parse.nTab--;
@@ -1027,6 +1028,7 @@ function genParseNoise(parse)
 
 
     noise.seed        = genParse(parse);
+    noise.iteration   = genParse(parse);
     noise.min         = genParse(parse);
     noise.max         = genParse(parse);
     noise.scale       = genParse(parse);
@@ -1066,8 +1068,9 @@ function genParseProbability(parse)
     parse.nTab++;
 
 
-    prob.seed   = genParse(parse);
-    prob.chance = genParse(parse);
+    prob.seed      = genParse(parse);
+    prob.iteration = genParse(parse);
+    prob.chance    = genParse(parse);
 
 
     parse.nTab--;

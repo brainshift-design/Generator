@@ -62,7 +62,7 @@ extends GOperator
 
         this.value = 
             _values.length > 0
-            ? _values[this.iteration % _values.length]
+            ? _values[this.currentIteration % _values.length]
             : new NullValue();
 
 

@@ -7,19 +7,19 @@ class GNode
 
     valid; // has been evaluated
 
-    listId        = -1;
+    listId           = -1;
     uniqueId;
 
-    cached        = true;
-    unknown       = false;
+    cached           = true;
+    unknown          = false;
 
-    loopId        = NULL;
+    loopId           = NULL;
 
-    iteration     = 0;
-    iterated      = false;
+    currentIteration = 0;
+    iterated         = false;
 
 
-    updateValues  = null;
+    updateValues     = null;
 
 
 
@@ -37,15 +37,15 @@ class GNode
 
     reset()
     {
-        //this.listId       = -1;
+        //this.listId           = -1;
     
-        //this.cached       = true;
-        //this.unknown      = false;
+        //this.cached           = true;
+        //this.unknown          = false;
     
-        //this.loopId       = NULL;
+        //this.loopId           = NULL;
     
-        //this.iteration    = 0;
-        //this.iterated     = false;
+        //this.currentIteration = 0;
+        //this.iterated         = false;
     
         this.updateValues = null;
     }

@@ -1,12 +1,13 @@
 class GRandom
 extends GOperator
 {
-    seed   = null;
-    min    = null;
-    max    = null;
-    bias   = null;
-    spread = null;
-    unique = null;
+    seed         = null;
+    iteration    = null;
+    min          = null;
+    max          = null;
+    bias         = null;
+    spread       = null;
+    unique       = null;
 
     random       = null;
     randomUnique = null;
@@ -28,12 +29,13 @@ extends GOperator
     {
         super.reset();
 
-        this.seed   = null;
-        this.min    = null;
-        this.max    = null;
-        this.bias   = null;
-        this.spread = null;
-        this.unique = null;
+        this.seed      = null;
+        this.iteration = null;
+        this.min       = null;
+        this.max       = null;
+        this.bias      = null;
+        this.spread    = null;
+        this.unique    = null;
     }
 
 
@@ -44,14 +46,15 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.seed  ) copy.seed   = this.seed  .copy();
-        if (this.min   ) copy.min    = this.min   .copy();
-        if (this.max   ) copy.max    = this.max   .copy();
-        if (this.bias  ) copy.bias   = this.bias  .copy();
-        if (this.spread) copy.spread = this.spread.copy();
-        if (this.unique) copy.unique = this.unique.copy();
+        if (this.seed     ) copy.seed      = this.seed     .copy();
+        if (this.iteration) copy.iteration = this.iteration.copy();
+        if (this.min      ) copy.min       = this.min      .copy();
+        if (this.max      ) copy.max       = this.max      .copy();
+        if (this.bias     ) copy.bias      = this.bias     .copy();
+        if (this.spread   ) copy.spread    = this.spread   .copy();
+        if (this.unique   ) copy.unique    = this.unique   .copy();
 
-        if (this.random) copy.random = this.random.copy();
+        if (this.random   ) copy.random    = this.random   .copy();
 
         return copy;
     }
@@ -64,15 +67,17 @@ extends GOperator
             return this;
 
 
-        const seed   = this.seed   ? (await this.seed  .eval(parse)).toValue() : null;
-        const min    = this.min    ? (await this.min   .eval(parse)).toValue() : null;
-        const max    = this.max    ? (await this.max   .eval(parse)).toValue() : null;
-        const bias   = this.bias   ? (await this.bias  .eval(parse)).toValue() : null;
-        const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
-        const unique = this.unique ? (await this.unique.eval(parse)).toValue() : null;
+        const seed      = this.seed      ? (await this.seed     .eval(parse)).toValue() : null;
+        const iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
+        const min       = this.min       ? (await this.min      .eval(parse)).toValue() : null;
+        const max       = this.max       ? (await this.max      .eval(parse)).toValue() : null;
+        const bias      = this.bias      ? (await this.bias     .eval(parse)).toValue() : null;
+        const spread    = this.spread    ? (await this.spread   .eval(parse)).toValue() : null;
+        const unique    = this.unique    ? (await this.unique   .eval(parse)).toValue() : null;
     
 
         if (   this.options.enabled
+            && iteration
             && seed
             && min
             && max
@@ -88,7 +93,11 @@ extends GOperator
             }
 
 
-            let f = this.random.get(this.iteration + this.uniqueOffset);
+            if (iteration.isValid())
+                this.currentIteration = iteration.value;
+
+
+            let f = this.random.get(this.currentIteration + this.uniqueOffset);
             f = getSpreadBias(f, bias.value, spread.value);
             
             f = min.value + f * (max.value - min.value);
@@ -102,9 +111,9 @@ extends GOperator
             if (max.value - min.value >= 1)
             {
                 while (this.value.toNumber() == this.lastValue1
-                    && this.randomUnique.get(this.iteration) < _unique)
+                    && this.randomUnique.get(this.currentIteration) < _unique)
                     this.value = new NumberValue(
-                        min.value + this.random.get(this.iteration + ++this.uniqueOffset) * (max.value - min.value),
+                        min.value + this.random.get(this.currentIteration + ++this.uniqueOffset) * (max.value - min.value),
                         Math.max(min.decimals, max.decimals));
             }
 
@@ -112,9 +121,9 @@ extends GOperator
             {
                 while ((   this.value.toNumber() == this.lastValue1
                         || this.value.toNumber() == this.lastValue2)
-                    && this.randomUnique.get(this.iteration) < Math.max(_unique - 1))
+                    && this.randomUnique.get(this.currentIteration) < Math.max(_unique - 1))
                     this.value = new NumberValue(
-                        min.value + this.random.get(this.iteration + ++this.uniqueOffset) * (max.value - min.value),
+                        min.value + this.random.get(this.currentIteration + ++this.uniqueOffset) * (max.value - min.value),
                         Math.max(min.decimals, max.decimals));
             }        
         }
@@ -131,12 +140,13 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['seed',   seed  ],
-            ['min',    min   ],
-            ['max',    max   ],
-            ['bias',   bias  ],
-            ['spread', spread],
-            ['unique', unique]
+            ['iteration', iteration],
+            ['seed',      seed     ],
+            ['min',       min      ],
+            ['max',       max      ],
+            ['bias',      bias     ],
+            ['spread',    spread   ],
+            ['unique',    unique   ]
         ]);
         
 
@@ -158,12 +168,13 @@ extends GOperator
 
     isValid()
     {
-        return this.seed   && this.seed  .isValid()
-            && this.min    && this.min   .isValid()
-            && this.max    && this.max   .isValid()
-            && this.bias   && this.bias  .isValid()
-            && this.spread && this.spread.isValid()
-            && this.unique && this.unique.isValid();
+        return this.seed      && this.seed     .isValid()
+            && this.iteration && this.iteration.isValid()
+            && this.min       && this.min      .isValid()
+            && this.max       && this.max      .isValid()
+            && this.bias      && this.bias     .isValid()
+            && this.spread    && this.spread   .isValid()
+            && this.unique    && this.unique   .isValid();
     }
 
 
@@ -172,12 +183,13 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.seed  ) this.seed  .pushValueUpdates(parse);
-        if (this.min   ) this.min   .pushValueUpdates(parse);
-        if (this.max   ) this.max   .pushValueUpdates(parse);
-        if (this.bias  ) this.bias  .pushValueUpdates(parse);
-        if (this.spread) this.spread.pushValueUpdates(parse);
-        if (this.unique) this.unique.pushValueUpdates(parse);
+        if (this.seed     ) this.seed     .pushValueUpdates(parse);
+        if (this.iteration) this.iteration.pushValueUpdates(parse);
+        if (this.min      ) this.min      .pushValueUpdates(parse);
+        if (this.max      ) this.max      .pushValueUpdates(parse);
+        if (this.bias     ) this.bias     .pushValueUpdates(parse);
+        if (this.spread   ) this.spread   .pushValueUpdates(parse);
+        if (this.unique   ) this.unique   .pushValueUpdates(parse);
     }
 
 
@@ -186,12 +198,13 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.seed  ) this.seed  .invalidateInputs(parse, from, force);
-        if (this.min   ) this.min   .invalidateInputs(parse, from, force);
-        if (this.max   ) this.max   .invalidateInputs(parse, from, force);
-        if (this.bias  ) this.bias  .invalidateInputs(parse, from, force);
-        if (this.spread) this.spread.invalidateInputs(parse, from, force);
-        if (this.unique) this.unique.invalidateInputs(parse, from, force);
+        if (this.seed     ) this.seed     .invalidateInputs(parse, from, force);
+        if (this.iteration) this.iteration.invalidateInputs(parse, from, force);
+        if (this.min      ) this.min      .invalidateInputs(parse, from, force);
+        if (this.max      ) this.max      .invalidateInputs(parse, from, force);
+        if (this.bias     ) this.bias     .invalidateInputs(parse, from, force);
+        if (this.spread   ) this.spread   .invalidateInputs(parse, from, force);
+        if (this.unique   ) this.unique   .invalidateInputs(parse, from, force);
     }
 
 
@@ -200,12 +213,13 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.seed  ) this.seed  .iterateLoop(parse);
-        if (this.min   ) this.min   .iterateLoop(parse);
-        if (this.max   ) this.max   .iterateLoop(parse);
-        if (this.bias  ) this.bias  .iterateLoop(parse);
-        if (this.spread) this.spread.iterateLoop(parse);
-        if (this.unique) this.unique.iterateLoop(parse);
+        if (this.seed     ) this.seed     .iterateLoop(parse);
+        if (this.iteration) this.iteration.iterateLoop(parse);
+        if (this.min      ) this.min      .iterateLoop(parse);
+        if (this.max      ) this.max      .iterateLoop(parse);
+        if (this.bias     ) this.bias     .iterateLoop(parse);
+        if (this.spread   ) this.spread   .iterateLoop(parse);
+        if (this.unique   ) this.unique   .iterateLoop(parse);
     }
 
 
