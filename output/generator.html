@@ -17971,9 +17971,6 @@ extends GOperator1
                         
                             if (this.input.value.objects)
                             {
-                                // if (this.nodeId == 'repeat2')
-                                //     console.log('this.input.value.objects =', this.input.value.objects);
-                                
                                 for (let j = 0; j < this.input.value.objects.length; j++, o++)
                                 {
                                     const obj = copyFigmaObject(this.input.value.objects[j]);
@@ -21863,11 +21860,18 @@ extends GOperator
             length = inputs.length;
 
 
+            index = 
+                   index.isValid()
+                && index.value >= -inputs.length
+                && index.value <   inputs.length
+                ? new NumberValue(Math.round(index.value))
+                : new NumberValue(0);
+            
+
             if (   index.isValid()
                 && index.value >= -inputs.length
                 && index.value <   inputs.length)
             {
-                index      = new NumberValue(Math.round(index.value));
                 this.value = inputs.at(index.value);
 
                 if (this.value.objects)
@@ -21890,7 +21894,6 @@ extends GOperator
             }
             else
             {
-                index      = NumberValue.NaN.copy();
                 this.value = new NullValue();
             }
         }
@@ -22048,11 +22051,18 @@ extends GOperator1
             length = input.items.length;
 
 
+            index = 
+                   index.isValid()
+                && index.value >= -input.items.length
+                && index.value <   input.items.length
+                ? new NumberValue(Math.round(index.value))
+                : new NumberValue(0);
+            
+
             if (   index.isValid()
                 && index.value >= -input.items.length
                 && index.value <   input.items.length)
             {
-                index      = new NumberValue(Math.round(index.value));
                 this.value = input.items.at(index.value);
 
                 if (this.value.objects)
@@ -22075,7 +22085,6 @@ extends GOperator1
             }
             else
             {
-                index      = NumberValue.NaN.copy();
                 this.value = new NullValue();
             }
         }
@@ -25161,7 +25170,7 @@ extends GOperator
 
 
             if (iteration.isValid())
-                this.currentIteration = iteration.value;
+                this.currentIteration = Math.round(iteration.value);
 
 
             let f = this.random.get(this.currentIteration + this.uniqueOffset);
@@ -25414,7 +25423,7 @@ extends GOperator
 
             
             if (iteration.isValid())
-                this.currentIteration = iteration.value;
+                this.currentIteration = Math.round(iteration.value);
 
 
             if (   this.options.enabled
@@ -25619,7 +25628,7 @@ extends GOperator
 
 
         if (iteration.isValid())
-            this.currentIteration = iteration.value;
+            this.currentIteration = Math.round(iteration.value);
 
 
         const r = 

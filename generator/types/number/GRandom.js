@@ -94,7 +94,7 @@ extends GOperator
 
 
             if (iteration.isValid())
-                this.currentIteration = iteration.value;
+                this.currentIteration = Math.round(iteration.value);
 
 
             let f = this.random.get(this.currentIteration + this.uniqueOffset);

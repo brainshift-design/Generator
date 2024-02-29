@@ -61,7 +61,7 @@ extends GOperator
 
 
         if (iteration.isValid())
-            this.currentIteration = iteration.value;
+            this.currentIteration = Math.round(iteration.value);
 
 
         const r = 
