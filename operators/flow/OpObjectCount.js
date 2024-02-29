@@ -1,4 +1,4 @@
-class   OpListCount
+class   OpObjectCount
 extends OperatorBase
 {
     paramValue;
@@ -8,12 +8,12 @@ extends OperatorBase
     
     constructor()
     {
-        super(LIST_COUNT, 'itemCount', 'item count', iconCount);
+        super(OBJECT_COUNT, 'objCount', 'object count', iconCount);
 
         this.iconOffsetY = 1;
 
 
-        this.addInput(new Input(LIST_VALUES));
+        this.addInput(new Input([ANY_VALUE]));
 
         this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, true, 0, 0));
         this.addParam(this.paramStart = new NumberParam('start', 'start', true,  true,  true, 1, 0, 1));

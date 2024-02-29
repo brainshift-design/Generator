@@ -21,6 +21,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case LIST_AS_ITEM:            node = new OpListAsItem();         break;
         case LIST:                    node = new OpList();               break;
         case LIST_COUNT:              node = new OpListCount();          break;
+        case OBJECT_COUNT:            node = new OpObjectCount();        break;
         case SELECT:                  node = new OpSelect();             break;
         case SELECT_FROM_LIST:        node = new OpSelectFromList();     break;
         case CONTAINS:                node = new OpContains();           break;

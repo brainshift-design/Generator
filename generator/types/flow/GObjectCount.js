@@ -1,4 +1,4 @@
-class GListCount
+class GObjectCount
 extends GOperator1
 {
     start = null;
@@ -58,7 +58,11 @@ extends GOperator1
         
         if (input)
         {
-            const count = input.items.length;
+            const count = 
+                input.objects
+                ? input.objects.length
+                : 0;
+
             this.value = new NumberValue(count - (start.value == 0 ? 1 : 0));
         }
         else

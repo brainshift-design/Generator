@@ -1,9 +1,9 @@
 class   OpMove
 extends OperatorBase
 {
+    paramMoveType;
     paramX;
     paramY;
-    paramMoveType;
     paramAffectSpace;
     paramShowCenter;
 

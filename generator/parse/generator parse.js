@@ -151,6 +151,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SELECT                 ) result = genParseSelect            (parse);
     else if (parse.next == SELECT_FROM_LIST       ) result = genParseSelectFromList    (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
+    else if (parse.next == OBJECT_COUNT           ) result = genParseObjectCount       (parse);
     else if (parse.next == CONTAINS               ) result = genParseListContains      (parse);
      
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue          (parse);

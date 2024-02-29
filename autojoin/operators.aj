@@ -75,6 +75,7 @@
 ../operators/flow/OpSelect.js
 ../operators/flow/OpSelectFromList.js
 ../operators/flow/OpListCount.js
+../operators/flow/OpObjectCount.js
 ../operators/flow/OpContains.js
 ../operators/flow/OpIfElse.js
 

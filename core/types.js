@@ -33,6 +33,7 @@ const COLUMN               = 'CLMN';
 const CELL                 = 'CELL';
 const LIST                 = 'LIST';
 const LIST_COUNT           = 'COUNT';
+const OBJECT_COUNT         = 'OBJCOUNT';
 const CONTAINS             = 'LCONT';
 const SELECT               = 'SELECT';
 const SELECT_FROM_LIST     = 'LSTSEL';
