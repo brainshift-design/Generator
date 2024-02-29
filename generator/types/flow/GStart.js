@@ -109,9 +109,6 @@ extends GOperator1
         }
 
 
-        //this.from = null;
-
-        
         await super.evalObjects(parse);
     }
 
@@ -145,9 +142,16 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        this.from = from;
-
         if (this.feedback) this.feedback.invalidateInputs(parse, from, force);
+    }
+
+
+
+    initLoop(parse, nodeId)
+    {
+        super.initLoop(parse, nodeId);
+
+        this.from = parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
 
@@ -155,7 +159,14 @@ extends GOperator1
     iterateLoop(parse)
     {
         super.iterateLoop(parse);
+    }
 
-        if (this.feedback) this.feedback.iterateLoop(parse);
+
+
+    resetLoop(parse, nodeId)
+    {
+        super.resetLoop(parse, nodeId);
+
+        this.from = null;
     }
 }

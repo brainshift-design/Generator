@@ -10398,23 +10398,6 @@ extends GNode
 
 
 
-    // resetNode()
-    // {
-    //     for (const prop in this)
-    //     {
-    //         if (this.hasOwnProperty(prop))
-    //         {
-    //             if (   this[prop]
-    //                 && this[prop].resetNode)
-    //                 this[prop].resetNode();
-
-    //             this[prop] = null;
-    //         }
-    //     }
-    // }
-
-
-
     setConditionInput(input)
     {
 
@@ -10974,8 +10957,9 @@ extends GOperator
 
     iterateCache(parse, from)
     {
-        const node = parse.parsedNodes.find(n => n.nodeId == from.nodeId);
-        
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        //if (this.node.nodeId == 'start') console.log('node =', node);
+
         node.iterateCache(parse, from);
     }
 
@@ -10986,6 +10970,15 @@ extends GOperator
         const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
         
         node.invalidateLoop(parse, nodeId);
+    }
+
+
+
+    initLoop(parse, nodeId)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        
+        node.initLoop(parse, nodeId);
     }
 
 
@@ -17756,9 +17749,6 @@ extends GOperator1
         }
 
 
-        //this.from = null;
-
-        
         await super.evalObjects(parse);
     }
 
@@ -17792,9 +17782,16 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        this.from = from;
-
         if (this.feedback) this.feedback.invalidateInputs(parse, from, force);
+    }
+
+
+
+    initLoop(parse, nodeId)
+    {
+        super.initLoop(parse, nodeId);
+
+        this.from = parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
 
@@ -17802,8 +17799,15 @@ extends GOperator1
     iterateLoop(parse)
     {
         super.iterateLoop(parse);
+    }
 
-        if (this.feedback) this.feedback.iterateLoop(parse);
+
+
+    resetLoop(parse, nodeId)
+    {
+        super.resetLoop(parse, nodeId);
+
+        this.from = null;
     }
 }
 
@@ -17923,7 +17927,7 @@ extends GOperator1
 
 
                 if (   this.loop
-                    && this.loop.type != NUMBER_VALUE) 
+                    && this.loop.initLoop)//type != NUMBER_VALUE) 
                     this.loop.initLoop(parse, this.nodeId);
 
 
@@ -17992,7 +17996,7 @@ extends GOperator1
 
 
                     if (   this.loop
-                        && this.loop.type != NUMBER_VALUE)
+                        && this.loop.iterateCache)
                         this.loop.iterateCache(parse, this);
 
                     
@@ -18010,15 +18014,11 @@ extends GOperator1
 
                     if (showProgress)
                         genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
-
-
-                    if (this.nodeId == 'repeat2')
-                        console.log('repeat 1');
                 }
 
 
                 if (   this.loop
-                    && this.loop.type != NUMBER_VALUE)
+                    && this.loop.resetLoop)//;type != NUMBER_VALUE)
                     this.loop.resetLoop(parse, this.nodeId);
 
 

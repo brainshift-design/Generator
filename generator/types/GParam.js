@@ -121,8 +121,9 @@ extends GOperator
 
     iterateCache(parse, from)
     {
-        const node = parse.parsedNodes.find(n => n.nodeId == from.nodeId);
-        
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        //if (this.node.nodeId == 'start') console.log('node =', node);
+
         node.iterateCache(parse, from);
     }
 
@@ -133,6 +134,15 @@ extends GOperator
         const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
         
         node.invalidateLoop(parse, nodeId);
+    }
+
+
+
+    initLoop(parse, nodeId)
+    {
+        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
+        
+        node.initLoop(parse, nodeId);
     }
 
 

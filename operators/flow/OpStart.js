@@ -80,21 +80,14 @@ extends OperatorBase
 
 
 
-    getHeaderColors(options = {})
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const colors = super.getHeaderColors(options);
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+        
+        const type  = values[paramIds.findIndex(id => id == 'type'  )];
 
-        const type = 
-            this.inputs[0].connected 
-            ? this.inputs[0].connectedOutput.node.type 
-            : this.type;
-
-        colors.text    = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
-
-        colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-        colors.outWire = rgbFromType(type, true);
-
-        return colors;
+        if (type)
+            this.headerOutputs[0].types = [type.value];
     }
 
 
@@ -112,6 +105,45 @@ extends OperatorBase
         this.paramFrom.controls[0].valueText = '<svg width="25" height="9" viewBox="0 0 25 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.53553 0L0 3.53553L0.707107 4.24264L3.00001 1.94974V4C3.00001 6.76142 5.23859 9 8.00001 9H12V8H8.00001C5.79087 8 4.00001 6.20914 4.00001 4L4.00001 1.85242L6.37717 4.22958L7.08428 3.52247L3.56735 0.00553989L3.55421 0.0186768L3.53553 0Z" fill="' + arrowStyle + '"/><circle cx="16.5" cy="8.5" r="0.5" fill="' + arrowStyle + '"/><circle cx="20.5" cy="8.5" r="0.5" fill="' + arrowStyle + '"/><circle cx="24.5" cy="8.5" r="0.5" fill="' + arrowStyle + '"/></svg>';
 
         this.updateParamControls();
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors   = super.getHeaderColors(options);
+        const type     = this.outputs[0].types[0];
+  
+        const anyColor = rgbFromType(ANY_VALUE, true);
+
+
+        colors.text = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+      
+        if (   this.outputs[0].supportsTypes([COLOR_VALUE])
+            && this.value.isValid())
+        {
+            colors.output  =
+            colors.outWire = this.isUnknown() ? anyColor : this.value.toRgb();
+        }
+        else if (this.outputs[0].supportsTypes([FILL_VALUE])
+              && this.value.isValid())
+        {
+            colors.output  =
+            colors.outWire = this.isUnknown() ? anyColor : this.value.color.toRgb();
+        }
+        else
+        {
+            const gray =
+                       this.active
+                   && !this.inputs[0].connected;
+
+            colors.output  = gray ? rgb_a(colors.text, 0.35)     : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+            colors.outWire = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
+        }
+
+        
+        return colors;
     }
 }
 

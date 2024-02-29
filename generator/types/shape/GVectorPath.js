@@ -107,8 +107,8 @@ extends GShape
                 this.nodeId,
                    points 
                 && points.items.length > 0 
-                    ? points
-                    : input.points,
+                ? points
+                : input.points,
                 closed  ?? input.closed,
                 degree  ?? input.degree,
                 winding ?? input.winding,

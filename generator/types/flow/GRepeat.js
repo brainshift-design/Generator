@@ -112,7 +112,7 @@ extends GOperator1
 
 
                 if (   this.loop
-                    && this.loop.type != NUMBER_VALUE) 
+                    && this.loop.initLoop)//type != NUMBER_VALUE) 
                     this.loop.initLoop(parse, this.nodeId);
 
 
@@ -181,7 +181,7 @@ extends GOperator1
 
 
                     if (   this.loop
-                        && this.loop.type != NUMBER_VALUE)
+                        && this.loop.iterateCache)
                         this.loop.iterateCache(parse, this);
 
                     
@@ -199,15 +199,11 @@ extends GOperator1
 
                     if (showProgress)
                         genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
-
-
-                    if (this.nodeId == 'repeat2')
-                        console.log('repeat 1');
                 }
 
 
                 if (   this.loop
-                    && this.loop.type != NUMBER_VALUE)
+                    && this.loop.resetLoop)//;type != NUMBER_VALUE)
                     this.loop.resetLoop(parse, this.nodeId);
 
 

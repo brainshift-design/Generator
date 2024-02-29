@@ -268,23 +268,6 @@ extends GNode
 
 
 
-    // resetNode()
-    // {
-    //     for (const prop in this)
-    //     {
-    //         if (this.hasOwnProperty(prop))
-    //         {
-    //             if (   this[prop]
-    //                 && this[prop].resetNode)
-    //                 this[prop].resetNode();
-
-    //             this[prop] = null;
-    //         }
-    //     }
-    // }
-
-
-
     setConditionInput(input)
     {
 
