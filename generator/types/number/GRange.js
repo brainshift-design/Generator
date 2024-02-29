@@ -62,7 +62,7 @@ extends GOperator
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : 0;
+        const iteration = repeat ? repeat.currentIteration : 0;
 
 
         if (   from

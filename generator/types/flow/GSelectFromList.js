@@ -50,16 +50,14 @@ extends GOperator1
         if (this.isCached())
             return this;
 
-
-        let index  = this.index ? (await this.index.eval(parse)).toValue() : null;
-        let length = 0;
-
-
+        
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        let   index = this.index ? (await this.index.eval(parse)).toValue() : null;
+        
+        let  length = 0;
         
         
-        if (   index
-            && input
+        if (   input
             && input.items
             && input.items.length > 0)
         {

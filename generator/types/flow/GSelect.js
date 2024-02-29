@@ -67,8 +67,7 @@ extends GOperator
             inputs.push((await this.inputs[i].eval(parse)).toValue());
 
 
-        if (   index
-            && inputs.length > 0)
+        if (inputs.length > 0)
         {
             length = inputs.length;
 
@@ -123,7 +122,7 @@ extends GOperator
             ['value',      type == COLOR_VALUE 
                         || type == FILL_VALUE 
                         ? this.value 
-                        : new NullValue()],
+                        : new NullValue()      ],
             ['type',    type                   ],
             ['length',  new NumberValue(length)],
             ['index',   index                  ]

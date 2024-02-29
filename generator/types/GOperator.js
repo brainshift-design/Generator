@@ -223,8 +223,8 @@ extends GNode
         if (    parse.repeats.length == 0
             ||  this.unknown && parse.repeats[0].total == 0
             || !this.unknown
-            ||  parse.repeats.at(-1).iteration == 0
-            ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
+            ||  parse.repeats.at(-1).currentIteration == 0
+            ||  parse.repeats.at(-1).currentIteration == parse.repeats.at(-1).total-1)
         {
             if (add) this.updateValues.push(...values);
             else     this.updateValues = [...values];

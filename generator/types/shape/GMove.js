@@ -7,7 +7,9 @@ extends GOperator1
     affectSpace = null;
     showCenter  = null;
     
-    
+    _a          = 0;
+
+
 
     constructor(nodeId, options)
     {
@@ -25,6 +27,8 @@ extends GOperator1
         this.y           = null;
         this.affectSpace = null;
         this.showCenter  = null;
+
+        this._a          = 0;
     }
 
 

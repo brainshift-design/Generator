@@ -1,8 +1,8 @@
 class GNoise
 extends GOperator
 {
-    iteration   = null;
     seed        = null;
+    iteration   = null;
     min         = null;
     max         = null;
     scale       = null;
@@ -25,8 +25,8 @@ extends GOperator
     {
         super.reset();
         
-        this.iteration   = null;
         this.seed        = null;
+        this.iteration   = null;
         this.min         = null;
         this.max         = null;
         this.scale       = null;
@@ -43,8 +43,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.iteration  ) copy.iteration   = this.iteration  .copy();
         if (this.seed       ) copy.seed        = this.seed       .copy();
+        if (this.iteration  ) copy.iteration   = this.iteration  .copy();
         if (this.min        ) copy.min         = this.min        .copy();
         if (this.max        ) copy.max         = this.max        .copy();
         if (this.scale      ) copy.scale       = this.scale      .copy();
@@ -62,15 +62,15 @@ extends GOperator
     async eval(parse)
     {
         // const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        // const iteration = repeat ? repeat.iteration : 0;
+        // const iteration = repeat ? repeat.currentIteration : 0;
 
 
         if (this.isCached())
             return this;
 
 
-        const iteration   = this.iteration   ? (await this.iteration  .eval(parse)).toValue() : null;
         const seed        = this.seed        ? (await this.seed       .eval(parse)).toValue() : null;
+        const iteration   = this.iteration   ? (await this.iteration  .eval(parse)).toValue() : null;
         const min         = this.min         ? (await this.min        .eval(parse)).toValue() : null;
         const max         = this.max         ? (await this.max        .eval(parse)).toValue() : null;
         const scale       = this.scale       ? (await this.scale      .eval(parse)).toValue() : null;
@@ -80,8 +80,8 @@ extends GOperator
     
 
         if (   this.options.enabled
-            && iteration
             && seed
+            && iteration
             && min
             && max
             && scale
@@ -104,40 +104,43 @@ extends GOperator
             if (iteration.isValid())
                 this.currentIteration = Math.round(iteration.value);
 
-
+                
             if (   this.options.enabled
                 && scale
                 && offset)
             {
                 r = avg;
                 
-                for (let c = 0; c < detail.value; c++)
+                if (this.currentIteration >= 0)
                 {
-                    const i = this.currentIteration / (Math.max(0.000001, scale.value) * size) + offset.value;
-                    
-                    const i0 = Math.floor(i);
-                    const i1 = Math.ceil (i);
-
-                    const r0 = this.random.get(i0);
-                    const r1 = this.random.get(i1);
-
-
-                    let _r;
-                    
-                    switch (interpolate.value)
+                    for (let c = 0; c < detail.value; c++)
                     {
-                        case 0: _r = power * r0;                                                 break;
-                        case 1: _r = power * lerp(r0, r1, i-i0);                                 break;
-                        case 2: _r = power * (r0 + (r1 - r0) * (-Math.cos((i-i0)*Tau/2) + 1)/2); break;
+                        const i  = this.currentIteration / (Math.max(0.000001, scale.value) * size) + offset.value;
+                        
+                        const i0 = Math.floor(i);
+                        const i1 = Math.ceil (i);
+
+                        const r0 = this.random.get(i0);
+                        const r1 = this.random.get(i1);
+
+
+                        let _r;
+                        
+                        switch (interpolate.value)
+                        {
+                            case 0: _r = power * r0;                                                 break;
+                            case 1: _r = power * lerp(r0, r1, i-i0);                                 break;
+                            case 2: _r = power * (r0 + (r1 - r0) * (-Math.cos((i-i0)*Tau/2) + 1)/2); break;
+                        }
+
+                        r += 
+                            - power * (avg       - min.value)
+                            + _r    * (max.value - min.value);
+
+
+                        size  /= 2;
+                        power /= 2;
                     }
-
-                    r += 
-                        - power * (avg       - min.value)
-                        + _r    * (max.value - min.value);
-
-
-                    size  /= 2;
-                    power /= 2;
                 }
             }
             else
@@ -154,8 +157,8 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['iteration',   iteration  ],
             ['seed',        seed       ],
+            ['iteration',   iteration  ],
             ['min',         min        ],
             ['max',         max        ],
             ['scale',       scale      ],
@@ -183,8 +186,8 @@ extends GOperator
 
     isValid()
     {
-        return this.iteration   && this.iteration  .isValid()
-            && this.seed        && this.seed       .isValid()
+        return this.seed        && this.seed       .isValid()
+            && this.iteration   && this.iteration  .isValid()
             && this.min         && this.min        .isValid()
             && this.max         && this.max        .isValid()
             && this.scale       && this.scale      .isValid()
@@ -199,8 +202,8 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.iteration  ) this.iteration  .pushValueUpdates(parse);
         if (this.seed       ) this.seed       .pushValueUpdates(parse);
+        if (this.iteration  ) this.iteration  .pushValueUpdates(parse);
         if (this.min        ) this.min        .pushValueUpdates(parse);
         if (this.max        ) this.max        .pushValueUpdates(parse);
         if (this.scale      ) this.scale      .pushValueUpdates(parse);
@@ -215,8 +218,8 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.iteration  ) this.iteration  .invalidateInputs(parse, from, force);
         if (this.seed       ) this.seed       .invalidateInputs(parse, from, force);
+        if (this.iteration  ) this.iteration  .invalidateInputs(parse, from, force);
         if (this.min        ) this.min        .invalidateInputs(parse, from, force);
         if (this.max        ) this.max        .invalidateInputs(parse, from, force);
         if (this.scale      ) this.scale      .invalidateInputs(parse, from, force);
@@ -231,8 +234,8 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.iteration  ) this.iteration  .iterateLoop(parse);
         if (this.seed       ) this.seed       .iterateLoop(parse);
+        if (this.iteration  ) this.iteration  .iterateLoop(parse);
         if (this.min        ) this.min        .iterateLoop(parse);
         if (this.max        ) this.max        .iterateLoop(parse);
         if (this.scale      ) this.scale      .iterateLoop(parse);

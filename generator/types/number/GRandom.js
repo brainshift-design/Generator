@@ -97,35 +97,40 @@ extends GOperator
                 this.currentIteration = Math.round(iteration.value);
 
 
-            let f = this.random.get(this.currentIteration + this.uniqueOffset);
-            f = getSpreadBias(f, bias.value, spread.value);
-            
-            f = min.value + f * (max.value - min.value);
-            
-            this.value = new NumberValue(f, Math.max(min.decimals, max.decimals));
+            if (this.currentIteration >= 0)
+            {
+                let f  = this.random.get(this.currentIteration + this.uniqueOffset);
 
+                f = getSpreadBias(f, bias.value, spread.value);
+                f = min.value + f * (max.value - min.value);
                 
-            const _unique = unique.value/100;
-            
+                this.value = new NumberValue(f, Math.max(min.decimals, max.decimals));
 
-            if (max.value - min.value >= 1)
-            {
-                while (this.value.toNumber() == this.lastValue1
-                    && this.randomUnique.get(this.currentIteration) < _unique)
-                    this.value = new NumberValue(
-                        min.value + this.random.get(this.currentIteration + ++this.uniqueOffset) * (max.value - min.value),
-                        Math.max(min.decimals, max.decimals));
+                    
+                const _unique = unique.value/100;
+                
+
+                if (max.value - min.value >= 1)
+                {
+                    while (this.value.toNumber() == this.lastValue1
+                        && this.randomUnique.get(this.currentIteration) < _unique)
+                        this.value = new NumberValue(
+                            min.value + this.random.get(this.currentIteration + ++this.uniqueOffset) * (max.value - min.value),
+                            Math.max(min.decimals, max.decimals));
+                }
+
+                if (max.value - min.value >= 2)
+                {
+                    while ((   this.value.toNumber() == this.lastValue1
+                            || this.value.toNumber() == this.lastValue2)
+                        && this.randomUnique.get(this.currentIteration) < Math.max(_unique - 1))
+                        this.value = new NumberValue(
+                            min.value + this.random.get(this.currentIteration + ++this.uniqueOffset) * (max.value - min.value),
+                            Math.max(min.decimals, max.decimals));
+                }        
             }
-
-            if (max.value - min.value >= 2)
-            {
-                while ((   this.value.toNumber() == this.lastValue1
-                        || this.value.toNumber() == this.lastValue2)
-                    && this.randomUnique.get(this.currentIteration) < Math.max(_unique - 1))
-                    this.value = new NumberValue(
-                        min.value + this.random.get(this.currentIteration + ++this.uniqueOffset) * (max.value - min.value),
-                        Math.max(min.decimals, max.decimals));
-            }        
+            else
+                this.value = new NumberValue((min.value + max.value) / 2);
         }
         else
             this.value = NumberValue.NaN.copy();

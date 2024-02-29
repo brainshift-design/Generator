@@ -10353,8 +10353,8 @@ extends GNode
         if (    parse.repeats.length == 0
             ||  this.unknown && parse.repeats[0].total == 0
             || !this.unknown
-            ||  parse.repeats.at(-1).iteration == 0
-            ||  parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
+            ||  parse.repeats.at(-1).currentIteration == 0
+            ||  parse.repeats.at(-1).currentIteration == parse.repeats.at(-1).total-1)
         {
             if (add) this.updateValues.push(...values);
             else     this.updateValues = [...values];
@@ -17712,7 +17712,8 @@ extends GOperator1
 
         this.setUpdateValues(parse, 
         [
-            ['feedback', feedback]
+            ['type',     this.outputType()],
+            ['feedback', feedback         ]
         ]);
 
 
@@ -17731,21 +17732,31 @@ extends GOperator1
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
 
-        this.updateObjects(
-               this.from
+        const objects =
+               options.feedback
             && repeat
-            && repeat.iteration > 0
-            && options.feedback
-            ? this.from.iterationObjects 
+            && repeat.currentIteration > 0
+            && this.from
+            ? this.from.iterationObjects
             : (   this.input 
                && this.input.value.objects 
                ? this.input.value.objects 
-               : []),
-            repeat 
-            ? repeat.iteration.toString()
-            : '');
+               : []);
 
-        this.from = null;
+        
+        if (this.value.isValid())
+        {
+            this.value.objects = objects.map(o => o.copy());
+
+            for (const obj of this.value.objects)
+            {
+                obj.nodeId   = this.nodeId;
+                obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            }
+        }
+
+
+        //this.from = null;
 
         
         await super.evalObjects(parse);
@@ -17753,22 +17764,6 @@ extends GOperator1
 
 
 
-    updateObjects(objects, iteration)
-    {
-        if (!this.value.isValid())
-            return;
-            
-        this.value.objects = objects.map(o => o.copy());
-
-        for (const obj of this.value.objects)
-        {
-            obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-        }
-    }
-    
-
-    
     toValue()
     {
         return this.value.copy();
@@ -17915,9 +17910,9 @@ extends GOperator1
 
                 let repeat =
                 {
-                    repeatId:  this.nodeId,
-                    iteration: 0,
-                    total:     nRepeats
+                    repeatId:         this.nodeId,
+                    currentIteration: 0,
+                    total:            nRepeats
                 };
 
                     
@@ -17964,9 +17959,9 @@ extends GOperator1
                         this.value.items.push(input);
 
 
-                        if (   this.options.active
-                            || this.options.beforeActive)
-                        {
+                        // if (   this.options.active
+                        //     || this.options.beforeActive)
+                        // {
                             this.iterationObjects = [];
                         
                             if (this.input.value.objects)
@@ -17989,7 +17984,7 @@ extends GOperator1
                                         this.value.objects.push(obj);
                                 }
                             }
-                        }
+                        //}
                     }
 
 
@@ -18015,6 +18010,10 @@ extends GOperator1
 
                     if (showProgress)
                         genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
+
+
+                    if (this.nodeId == 'repeat2')
+                        console.log('repeat 1');
                 }
 
 
@@ -18576,7 +18575,7 @@ extends GOperator1
 
 
         if (      repeat
-               && repeat.iteration == 0
+               && repeat.currentIteration == 0
             || !this.options.enabled)
             this.frozen = false;
 
@@ -21854,8 +21853,7 @@ extends GOperator
             inputs.push((await this.inputs[i].eval(parse)).toValue());
 
 
-        if (   index
-            && inputs.length > 0)
+        if (inputs.length > 0)
         {
             length = inputs.length;
 
@@ -21910,7 +21908,7 @@ extends GOperator
             ['value',      type == COLOR_VALUE 
                         || type == FILL_VALUE 
                         ? this.value 
-                        : new NullValue()],
+                        : new NullValue()      ],
             ['type',    type                   ],
             ['length',  new NumberValue(length)],
             ['index',   index                  ]
@@ -22035,16 +22033,14 @@ extends GOperator1
         if (this.isCached())
             return this;
 
-
-        let index  = this.index ? (await this.index.eval(parse)).toValue() : null;
-        let length = 0;
-
-
+        
         const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        let   index = this.index ? (await this.index.eval(parse)).toValue() : null;
+        
+        let  length = 0;
         
         
-        if (   index
-            && input
+        if (   input
             && input.items
             && input.items.length > 0)
         {
@@ -24710,7 +24706,7 @@ extends GOperator
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : 0;
+        const iteration = repeat ? repeat.currentIteration : 0;
 
 
         if (   from
@@ -24929,7 +24925,7 @@ extends GOperator
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        const iteration = repeat ? repeat.iteration : 0;
+        const iteration = repeat ? repeat.currentIteration : 0;
 
  
         if (this.options.enabled)
@@ -25173,35 +25169,40 @@ extends GOperator
                 this.currentIteration = Math.round(iteration.value);
 
 
-            let f = this.random.get(this.currentIteration + this.uniqueOffset);
-            f = getSpreadBias(f, bias.value, spread.value);
-            
-            f = min.value + f * (max.value - min.value);
-            
-            this.value = new NumberValue(f, Math.max(min.decimals, max.decimals));
+            if (this.currentIteration >= 0)
+            {
+                let f  = this.random.get(this.currentIteration + this.uniqueOffset);
 
+                f = getSpreadBias(f, bias.value, spread.value);
+                f = min.value + f * (max.value - min.value);
                 
-            const _unique = unique.value/100;
-            
+                this.value = new NumberValue(f, Math.max(min.decimals, max.decimals));
 
-            if (max.value - min.value >= 1)
-            {
-                while (this.value.toNumber() == this.lastValue1
-                    && this.randomUnique.get(this.currentIteration) < _unique)
-                    this.value = new NumberValue(
-                        min.value + this.random.get(this.currentIteration + ++this.uniqueOffset) * (max.value - min.value),
-                        Math.max(min.decimals, max.decimals));
+                    
+                const _unique = unique.value/100;
+                
+
+                if (max.value - min.value >= 1)
+                {
+                    while (this.value.toNumber() == this.lastValue1
+                        && this.randomUnique.get(this.currentIteration) < _unique)
+                        this.value = new NumberValue(
+                            min.value + this.random.get(this.currentIteration + ++this.uniqueOffset) * (max.value - min.value),
+                            Math.max(min.decimals, max.decimals));
+                }
+
+                if (max.value - min.value >= 2)
+                {
+                    while ((   this.value.toNumber() == this.lastValue1
+                            || this.value.toNumber() == this.lastValue2)
+                        && this.randomUnique.get(this.currentIteration) < Math.max(_unique - 1))
+                        this.value = new NumberValue(
+                            min.value + this.random.get(this.currentIteration + ++this.uniqueOffset) * (max.value - min.value),
+                            Math.max(min.decimals, max.decimals));
+                }        
             }
-
-            if (max.value - min.value >= 2)
-            {
-                while ((   this.value.toNumber() == this.lastValue1
-                        || this.value.toNumber() == this.lastValue2)
-                    && this.randomUnique.get(this.currentIteration) < Math.max(_unique - 1))
-                    this.value = new NumberValue(
-                        min.value + this.random.get(this.currentIteration + ++this.uniqueOffset) * (max.value - min.value),
-                        Math.max(min.decimals, max.decimals));
-            }        
+            else
+                this.value = new NumberValue((min.value + max.value) / 2);
         }
         else
             this.value = NumberValue.NaN.copy();
@@ -25322,8 +25323,8 @@ extends GOperator
 class GNoise
 extends GOperator
 {
-    iteration   = null;
     seed        = null;
+    iteration   = null;
     min         = null;
     max         = null;
     scale       = null;
@@ -25346,8 +25347,8 @@ extends GOperator
     {
         super.reset();
         
-        this.iteration   = null;
         this.seed        = null;
+        this.iteration   = null;
         this.min         = null;
         this.max         = null;
         this.scale       = null;
@@ -25364,8 +25365,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.iteration  ) copy.iteration   = this.iteration  .copy();
         if (this.seed       ) copy.seed        = this.seed       .copy();
+        if (this.iteration  ) copy.iteration   = this.iteration  .copy();
         if (this.min        ) copy.min         = this.min        .copy();
         if (this.max        ) copy.max         = this.max        .copy();
         if (this.scale      ) copy.scale       = this.scale      .copy();
@@ -25383,15 +25384,15 @@ extends GOperator
     async eval(parse)
     {
         // const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        // const iteration = repeat ? repeat.iteration : 0;
+        // const iteration = repeat ? repeat.currentIteration : 0;
 
 
         if (this.isCached())
             return this;
 
 
-        const iteration   = this.iteration   ? (await this.iteration  .eval(parse)).toValue() : null;
         const seed        = this.seed        ? (await this.seed       .eval(parse)).toValue() : null;
+        const iteration   = this.iteration   ? (await this.iteration  .eval(parse)).toValue() : null;
         const min         = this.min         ? (await this.min        .eval(parse)).toValue() : null;
         const max         = this.max         ? (await this.max        .eval(parse)).toValue() : null;
         const scale       = this.scale       ? (await this.scale      .eval(parse)).toValue() : null;
@@ -25401,8 +25402,8 @@ extends GOperator
     
 
         if (   this.options.enabled
-            && iteration
             && seed
+            && iteration
             && min
             && max
             && scale
@@ -25425,40 +25426,43 @@ extends GOperator
             if (iteration.isValid())
                 this.currentIteration = Math.round(iteration.value);
 
-
+                
             if (   this.options.enabled
                 && scale
                 && offset)
             {
                 r = avg;
                 
-                for (let c = 0; c < detail.value; c++)
+                if (this.currentIteration >= 0)
                 {
-                    const i = this.currentIteration / (Math.max(0.000001, scale.value) * size) + offset.value;
-                    
-                    const i0 = Math.floor(i);
-                    const i1 = Math.ceil (i);
-
-                    const r0 = this.random.get(i0);
-                    const r1 = this.random.get(i1);
-
-
-                    let _r;
-                    
-                    switch (interpolate.value)
+                    for (let c = 0; c < detail.value; c++)
                     {
-                        case 0: _r = power * r0;                                                 break;
-                        case 1: _r = power * lerp(r0, r1, i-i0);                                 break;
-                        case 2: _r = power * (r0 + (r1 - r0) * (-Math.cos((i-i0)*Tau/2) + 1)/2); break;
+                        const i  = this.currentIteration / (Math.max(0.000001, scale.value) * size) + offset.value;
+                        
+                        const i0 = Math.floor(i);
+                        const i1 = Math.ceil (i);
+
+                        const r0 = this.random.get(i0);
+                        const r1 = this.random.get(i1);
+
+
+                        let _r;
+                        
+                        switch (interpolate.value)
+                        {
+                            case 0: _r = power * r0;                                                 break;
+                            case 1: _r = power * lerp(r0, r1, i-i0);                                 break;
+                            case 2: _r = power * (r0 + (r1 - r0) * (-Math.cos((i-i0)*Tau/2) + 1)/2); break;
+                        }
+
+                        r += 
+                            - power * (avg       - min.value)
+                            + _r    * (max.value - min.value);
+
+
+                        size  /= 2;
+                        power /= 2;
                     }
-
-                    r += 
-                        - power * (avg       - min.value)
-                        + _r    * (max.value - min.value);
-
-
-                    size  /= 2;
-                    power /= 2;
                 }
             }
             else
@@ -25475,8 +25479,8 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['iteration',   iteration  ],
             ['seed',        seed       ],
+            ['iteration',   iteration  ],
             ['min',         min        ],
             ['max',         max        ],
             ['scale',       scale      ],
@@ -25504,8 +25508,8 @@ extends GOperator
 
     isValid()
     {
-        return this.iteration   && this.iteration  .isValid()
-            && this.seed        && this.seed       .isValid()
+        return this.seed        && this.seed       .isValid()
+            && this.iteration   && this.iteration  .isValid()
             && this.min         && this.min        .isValid()
             && this.max         && this.max        .isValid()
             && this.scale       && this.scale      .isValid()
@@ -25520,8 +25524,8 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.iteration  ) this.iteration  .pushValueUpdates(parse);
         if (this.seed       ) this.seed       .pushValueUpdates(parse);
+        if (this.iteration  ) this.iteration  .pushValueUpdates(parse);
         if (this.min        ) this.min        .pushValueUpdates(parse);
         if (this.max        ) this.max        .pushValueUpdates(parse);
         if (this.scale      ) this.scale      .pushValueUpdates(parse);
@@ -25536,8 +25540,8 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.iteration  ) this.iteration  .invalidateInputs(parse, from, force);
         if (this.seed       ) this.seed       .invalidateInputs(parse, from, force);
+        if (this.iteration  ) this.iteration  .invalidateInputs(parse, from, force);
         if (this.min        ) this.min        .invalidateInputs(parse, from, force);
         if (this.max        ) this.max        .invalidateInputs(parse, from, force);
         if (this.scale      ) this.scale      .invalidateInputs(parse, from, force);
@@ -25552,8 +25556,8 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.iteration  ) this.iteration  .iterateLoop(parse);
         if (this.seed       ) this.seed       .iterateLoop(parse);
+        if (this.iteration  ) this.iteration  .iterateLoop(parse);
         if (this.min        ) this.min        .iterateLoop(parse);
         if (this.max        ) this.max        .iterateLoop(parse);
         if (this.scale      ) this.scale      .iterateLoop(parse);
@@ -25622,22 +25626,34 @@ extends GOperator
         const chance    = this.chance    ? (await this.chance   .eval(parse)).toValue() : null;
     
 
-        if (  !this.random
-            || this.random.seed != seed.value)
-            this.random = new Random(seed.value);
+        if (   this.options.enabled
+            && seed
+            && iteration
+            && chance)
+        {
+            if (  !this.random
+                || this.random.seed != seed.value)
+                this.random = new Random(seed.value);
 
 
-        if (iteration.isValid())
-            this.currentIteration = Math.round(iteration.value);
+            if (iteration.isValid())
+                this.currentIteration = Math.round(iteration.value);
 
 
-        const r = 
-            this.options.enabled
-            ? (this.random.get(this.currentIteration) > 1 - chance.value/100 ? 1 : 0)
-            : 0;
+            if (this.currentIteration >= 0)
+            {
+                const r = 
+                    this.options.enabled
+                    ? (this.random.get(this.currentIteration) > 1 - chance.value/100 ? 1 : 0)
+                    : 0;
 
-
-        this.value = new NumberValue(Math.round(r));
+                this.value = new NumberValue(Math.round(r));
+            }
+            else
+                this.value = new NumberValue(0);
+        }
+        else
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -38907,8 +38923,8 @@ extends GShape
                 this.nodeId,
                    points 
                 && points.items.length > 0 
-                    ? points
-                    : input.points,
+                ? points
+                : input.points,
                 closed  ?? input.closed,
                 degree  ?? input.degree,
                 winding ?? input.winding,
@@ -41576,7 +41592,9 @@ extends GOperator1
     affectSpace = null;
     showCenter  = null;
     
-    
+    _a          = 0;
+
+
 
     constructor(nodeId, options)
     {
@@ -41594,6 +41612,8 @@ extends GOperator1
         this.y           = null;
         this.affectSpace = null;
         this.showCenter  = null;
+
+        this._a          = 0;
     }
 
 
@@ -54160,7 +54180,7 @@ class Parse
     {
         return isEmpty(this.repeats)
             ||    this.repeats.length == 1
-               && this.repeats[0].iteration == this.repeats[0].total-1;
+               && this.repeats[0].currentIteration == this.repeats[0].total-1;
     }
 
 }

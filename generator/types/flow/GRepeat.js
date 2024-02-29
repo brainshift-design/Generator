@@ -99,9 +99,9 @@ extends GOperator1
 
                 let repeat =
                 {
-                    repeatId:  this.nodeId,
-                    iteration: 0,
-                    total:     nRepeats
+                    repeatId:         this.nodeId,
+                    currentIteration: 0,
+                    total:            nRepeats
                 };
 
                     
@@ -148,9 +148,9 @@ extends GOperator1
                         this.value.items.push(input);
 
 
-                        if (   this.options.active
-                            || this.options.beforeActive)
-                        {
+                        // if (   this.options.active
+                        //     || this.options.beforeActive)
+                        // {
                             this.iterationObjects = [];
                         
                             if (this.input.value.objects)
@@ -173,7 +173,7 @@ extends GOperator1
                                         this.value.objects.push(obj);
                                 }
                             }
-                        }
+                        //}
                     }
 
 
@@ -199,6 +199,10 @@ extends GOperator1
 
                     if (showProgress)
                         genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
+
+
+                    if (this.nodeId == 'repeat2')
+                        console.log('repeat 1');
                 }
 
 

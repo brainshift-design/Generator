@@ -55,22 +55,34 @@ extends GOperator
         const chance    = this.chance    ? (await this.chance   .eval(parse)).toValue() : null;
     
 
-        if (  !this.random
-            || this.random.seed != seed.value)
-            this.random = new Random(seed.value);
+        if (   this.options.enabled
+            && seed
+            && iteration
+            && chance)
+        {
+            if (  !this.random
+                || this.random.seed != seed.value)
+                this.random = new Random(seed.value);
 
 
-        if (iteration.isValid())
-            this.currentIteration = Math.round(iteration.value);
+            if (iteration.isValid())
+                this.currentIteration = Math.round(iteration.value);
 
 
-        const r = 
-            this.options.enabled
-            ? (this.random.get(this.currentIteration) > 1 - chance.value/100 ? 1 : 0)
-            : 0;
+            if (this.currentIteration >= 0)
+            {
+                const r = 
+                    this.options.enabled
+                    ? (this.random.get(this.currentIteration) > 1 - chance.value/100 ? 1 : 0)
+                    : 0;
 
-
-        this.value = new NumberValue(Math.round(r));
+                this.value = new NumberValue(Math.round(r));
+            }
+            else
+                this.value = new NumberValue(0);
+        }
+        else
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

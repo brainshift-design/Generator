@@ -65,7 +65,8 @@ extends GOperator1
 
         this.setUpdateValues(parse, 
         [
-            ['feedback', feedback]
+            ['type',     this.outputType()],
+            ['feedback', feedback         ]
         ]);
 
 
@@ -84,21 +85,31 @@ extends GOperator1
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
 
-        this.updateObjects(
-               this.from
+        const objects =
+               options.feedback
             && repeat
-            && repeat.iteration > 0
-            && options.feedback
-            ? this.from.iterationObjects 
+            && repeat.currentIteration > 0
+            && this.from
+            ? this.from.iterationObjects
             : (   this.input 
                && this.input.value.objects 
                ? this.input.value.objects 
-               : []),
-            repeat 
-            ? repeat.iteration.toString()
-            : '');
+               : []);
 
-        this.from = null;
+        
+        if (this.value.isValid())
+        {
+            this.value.objects = objects.map(o => o.copy());
+
+            for (const obj of this.value.objects)
+            {
+                obj.nodeId   = this.nodeId;
+                obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            }
+        }
+
+
+        //this.from = null;
 
         
         await super.evalObjects(parse);
@@ -106,22 +117,6 @@ extends GOperator1
 
 
 
-    updateObjects(objects, iteration)
-    {
-        if (!this.value.isValid())
-            return;
-            
-        this.value.objects = objects.map(o => o.copy());
-
-        for (const obj of this.value.objects)
-        {
-            obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-        }
-    }
-    
-
-    
     toValue()
     {
         return this.value.copy();

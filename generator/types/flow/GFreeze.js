@@ -46,7 +46,7 @@ extends GOperator1
 
 
         if (      repeat
-               && repeat.iteration == 0
+               && repeat.currentIteration == 0
             || !this.options.enabled)
             this.frozen = false;
 
