@@ -327,8 +327,8 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == PATH_LENGTH            ) result = genParsePathLength        (parse);
     else if (parse.next == JOIN_PATHS             ) result = genParseJoinPaths         (parse);
-    else if (parse.next == MEASURE_POINTS         ) result = genParseMeasurePoints     (parse);
-    else if (parse.next == VECTOR_LENGTH          ) result = genParseVectorLength      (parse);
+    else if (parse.next == MEASURE_VECTOR         ) result = genParseMeasureVector     (parse);
+    else if (parse.next == VECTOR          ) result = genParseVector      (parse);
     else if (parse.next == CIRCLE_CENTER          ) result = genParseCircleCenter      (parse);
     else if (parse.next == ARC_FROM_POINTS        ) result = genParseArcFromPoints     (parse);
     else if (parse.next == INTERSECT_LINES        ) result = genParseIntersectLines    (parse);

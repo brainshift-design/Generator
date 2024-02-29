@@ -261,8 +261,8 @@
 ../generator/types/shape/GResetTransform.js
 
 ../generator/types/shape/GJoinPaths.js
-../generator/types/shape/GMeasurePoints.js
-../generator/types/shape/GVectorLength.js
+../generator/types/shape/GMeasureVector.js
+../generator/types/shape/GVector.js
 ../generator/types/shape/GCircleCenter.js
 ../generator/types/shape/GArcFromPoints.js
 ../generator/types/shape/GPathLength.js

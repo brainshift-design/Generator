@@ -178,8 +178,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         
         case PATH_LENGTH:             node = new OpPathLength();         break;
         case JOIN_PATHS:              node = new OpJoinPaths();          break;
-        case MEASURE_POINTS:          node = new OpMeasurePoints();      break;
-        case VECTOR_LENGTH:           node = new OpVectorLength();       break;
+        case MEASURE_VECTOR:          node = new OpMeasureVector();      break;
+        case VECTOR:           node = new OpVector();       break;
         case CIRCLE_CENTER:           node = new OpCircleCenter();       break;
         case ARC_FROM_POINTS:         node = new OpArcFromPoints();      break;
         case INTERSECT_LINES:         node = new OpIntersectLines();     break;

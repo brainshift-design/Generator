@@ -1,4 +1,4 @@
-const generatorVersion = 369;
+const generatorVersion = 370;
 
 
 const MAX_INT32        = 2147483647;
@@ -155,6 +155,13 @@ function anglev2_(x1, y1, x2, y2)
 function lengthv(v)
 {
     return Math.sqrt(v.x*v.x + v.y*v.y);
+}
+
+
+
+function lengthv_(x, y)
+{
+    return Math.sqrt(x*x + y*y);
 }
 
 

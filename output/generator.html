@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 369;
+const generatorVersion = 370;
 
 
 const MAX_INT32        = 2147483647;
@@ -161,6 +161,13 @@ function anglev2_(x1, y1, x2, y2)
 function lengthv(v)
 {
     return Math.sqrt(v.x*v.x + v.y*v.y);
+}
+
+
+
+function lengthv_(x, y)
+{
+    return Math.sqrt(x*x + y*y);
 }
 
 
@@ -6259,8 +6266,8 @@ const PATH_LENGTH           = 'PTHLEN';
 const JOIN_PATHS            = 'JOINPTH';
 const POINT_ALONG_PATH      = 'PTALPATH';
 const CLOSEST_POINT_ON_PATH = 'CPTONPATH';
-const MEASURE_POINTS        = 'MESPT';
-const VECTOR_LENGTH         = 'VECLEN';
+const MEASURE_VECTOR        = 'MESPT';
+const VECTOR         = 'VECLEN';
 const CIRCLE_CENTER         = 'CIRCEN';
 const ARC_FROM_POINTS       = 'ARCPT';
 const INTERSECT_LINES       = 'INTLIN';
@@ -6382,8 +6389,8 @@ const SHAPE_TYPES =
     POINT_ALONG_PATH,
     CLOSEST_POINT_ON_PATH,
         
-    MEASURE_POINTS,
-    VECTOR_LENGTH,
+    MEASURE_VECTOR,
+    VECTOR,
     CIRCLE_CENTER,
     ARC_PATH,
     WAVE_PATH,
@@ -43191,136 +43198,17 @@ extends GShape
 }
 
 
-class GMeasurePoints
-extends GOperator2
-{
-    distance = null;
-    angle    = null;
-
-
-    
-    constructor(nodeId, options)
-    {
-        super(MEASURE_POINTS, nodeId, options);
-    }
-
-
-    
-    reset()
-    {
-        super.reset();
-
-        this.distance = null;
-        this.angle    = null;
-    }
-
-
-
-    copy()
-    {
-        const copy = new GMeasurePoints(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.distance) copy.distance = this.distance.copy();
-        if (this.angle   ) copy.angle    = this.angle   .copy();
-
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
-        const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
-
-
-        if (   input0
-            && input1)
-        {
-            const dist = distv(input0.toPoint(), input1.toPoint());
-
-            let ang = anglev(subv(input1.toPoint(), input0.toPoint()));
-            if (ang > Tau/2) ang -= Tau;
-
-            this.distance = new NumberValue(dist,            -2);
-            this.angle    = new NumberValue(ang / Tau * 360, -2);
-        }
-        else
-        {
-            this.distance = NumberValue.NaN.copy();
-            this.angle    = NumberValue.NaN.copy();
-        }
-
-
-        this.setUpdateValues(parse,
-        [
-            ['distance', this.distance],
-            ['angle',    this.angle   ]
-        ]);
-        
-
-        this.validate();
-
-        return this;
-    }
-
-
-
-    // isValid()
-    // {
-    //     return super.isValid()
-    //         && this.distance && this.distance.isValid()
-    //         && this.angle    && this.angle   .isValid();
-    // }
-
-
-
-    // pushValueUpdates(parse)
-    // {
-    //     super.pushValueUpdates(parse);
-
-    //     if (this.distance) this.distance.pushValueUpdates(parse);
-    //     if (this.angle   ) this.angle   .pushValueUpdates(parse);
-    // }
-
-
-
-    // invalidateInputs(parse, from, force)
-    // {
-    //     super.invalidateInputs(parse, from, force);
-
-    //     if (this.distance) this.distance.invalidateInputs(parse, from, force);
-    //     if (this.angle   ) this.angle   .invalidateInputs(parse, from, force);
-    // }
-
-
-
-    // iterateLoop(parse)
-    // {
-    //     super.iterateLoop(parse);
-
-    //     if (this.distance) this.distance.iterateLoop(parse);
-    //     if (this.angle   ) this.angle   .iterateLoop(parse);
-    // }
-}
-
-
-class GVectorLength
+class GMeasureVector
 extends GOperator1
 {
     length = null;
+    angle  = null;
 
 
     
     constructor(nodeId, options)
     {
-        super(VECTOR_LENGTH, nodeId, options);
+        super(MEASURE_VECTOR, nodeId, options);
     }
 
 
@@ -43330,17 +43218,19 @@ extends GOperator1
         super.reset();
 
         this.length = null;
+        this.angle  = null;
     }
 
 
 
     copy()
     {
-        const copy = new GVectorLength(this.nodeId, this.options);
+        const copy = new GMeasureVector(this.nodeId, this.options);
 
         copy.copyBase(this);
 
         if (this.length) copy.length = this.length.copy();
+        if (this.angle ) copy.angle  = this.angle .copy();
 
         return copy;
     }
@@ -43357,14 +43247,117 @@ extends GOperator1
 
 
         if (input)
-            this.length = new NumberValue(lengthv(input.toPoint()), -2);
+        {
+            const v   = input.toPoint();
+
+            const len = lengthv(v);
+            let   ang = anglev (v);
+
+            if (ang > Tau/2) ang -= Tau;
+
+            this.length = new NumberValue(len, -2);
+
+            this.angle = 
+                len > 0 
+                ? new NumberValue(ang/Tau * 360, -2) 
+                : NumberValue.NaN.copy();
+        }
         else
+        {
             this.length = NumberValue.NaN.copy();
+            this.angle  = NumberValue.NaN.copy();
+        }
 
 
         this.setUpdateValues(parse,
         [
-            ['length', this.length]
+            ['length', this.length],
+            ['angle',  this.angle ]
+        ]);
+        
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+class GVector
+extends GOperator2
+{
+    transform  = null;
+    showCenter = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(VECTOR, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+        
+        this.transform  = null;
+        this.showCenter = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GVector(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.transform ) copy.transform  = this.transform .copy();
+        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input0     = this.input0     ? (await this.input0    .eval(parse)).toValue() : null;
+        const input1     = this.input1     ? (await this.input1    .eval(parse)).toValue() : null;
+        const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
+        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+
+
+        if (   input0
+            && input1)
+        {
+            this.value = PointValue.fromPoint(
+                this.nodeId,
+                subv(input1.toPoint(), input0.toPoint()));
+
+            await this.evalObjects(
+                parse, 
+                {
+                    transform:  transform,
+                    showCenter: showCenter
+                });
+        }
+        else
+        {
+            this.value = PointValue.NaN.copy();
+        }
+
+
+        this.setUpdateValues(parse,
+        [
+            ['transform',  transform ],
+            ['showCenter', showCenter]
         ]);
         
 
@@ -43375,11 +43368,69 @@ extends GOperator1
 
 
 
+    async evalObjects(parse, options = {})
+    {
+        // if (!this.options.enabled)
+        //     return;
+            
+            
+        if (!this.value.objects)
+            this.value.objects = [];
+
+
+        if (   this.value.x
+            && this.value.y   
+            && this.value.x.isValid()
+            && this.value.y.isValid())
+        {
+            const x = this.value.x.value;
+            const y = this.value.y.value;
+
+            const point = new FigmaPoint(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                x,
+                y,
+                this.smooth ? this.smooth.value/100 : 1);
+
+
+            point.createDefaultTransform(x, y);
+
+            
+            if (options.transform.value > 0)
+            {
+                point.applyTransform(
+                    getTransformFromAngle(anglev(point.toPoint())),
+                    true);
+            }
+    
+    
+            this.value.objects = [point];
+
+
+            if (lengthv_(x, y) > 0)
+            {
+                if (options.showCenter.value > 0)
+                {
+                    const objects = [...this.value.objects]; // avoids infinite growth
+                    objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
+                }
+            }
+        }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
     isValid()
     {
         return super.isValid()
-            && this.length && this.length.isValid();
-    }
+            && this.transform  && this.transform .isValid()
+            && this.showCenter && this.showCenter.isValid();
+}
 
 
 
@@ -43387,7 +43438,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.length) this.length.pushValueUpdates(parse);
+        if (this.transform ) this.transform .pushValueUpdates(parse);
+        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
     }
 
 
@@ -43396,7 +43448,8 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.length) this.length.invalidateInputs(parse, from, force);
+        if (this.transform ) this.transform .invalidateInputs(parse, from, force);
+        if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
     }
 
 
@@ -43405,8 +43458,21 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.length) this.length.iterateLoop(parse);
+        if (this.transform ) this.transform .iterateLoop(parse);
+        if (this.showCenter) this.showCenter.iterateLoop(parse);
     }
+}
+
+
+
+function getTransformFromAngle(a) 
+{
+    const cosa = Math.cos(a);
+    const sina = Math.sin(a);
+
+    return [[ cosa, -sina, 0 ], 
+            [ sina,  cosa, 0 ], 
+            [ 0,     0,    1 ]];
 }
 
 
@@ -52190,12 +52256,12 @@ function genParseResetTransform(parse)
 
 
 
-function genParseMeasurePoints(parse)
+function genParseMeasureVector(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const measure = new GMeasurePoints(nodeId, options);
+    const measure = new GMeasureVector(nodeId, options);
 
 
     let nInputs = -1;
@@ -52203,7 +52269,7 @@ function genParseMeasurePoints(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -52221,17 +52287,11 @@ function genParseMeasurePoints(parse)
     parse.nTab++;
 
     
-    if (nInputs == 2)
-    {
-        measure.input0 = genParse(parse);
-        measure.input1 = genParse(parse);
-    }
-    else if (nInputs == 1)
-    {
-        measure.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-    }
+    if (nInputs == 1)
+        measure.input = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
 
 
+        
     parse.nTab--;
 
 
@@ -52241,12 +52301,12 @@ function genParseMeasurePoints(parse)
 
 
 
-function genParseVectorLength(parse)
+function genParseVector(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const len = new GVectorLength(nodeId, options);
+    const vector = new GVector(nodeId, options);
 
 
     let nInputs = -1;
@@ -52254,17 +52314,17 @@ function genParseVectorLength(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
     if (parse.settings.logRequests) 
-        logReq(len, parse, ignore, nInputs);
+        logReq(vector, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, len);
+        genParseNodeEnd(parse, vector);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -52272,17 +52332,26 @@ function genParseVectorLength(parse)
     parse.nTab++;
 
     
-    if (nInputs == 1)
-        len.input = genParse(parse);
+    if (nInputs == 2)
+    {
+        vector.input0 = genParse(parse);
+        vector.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        vector.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
 
-    len.length = genParse(parse);
+
+    vector.transform  = genParse(parse);
+    vector.showCenter = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, len);
-    return len;
+    genParseNodeEnd(parse, vector);
+    return vector;
 }
 
 
@@ -54284,8 +54353,8 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == PATH_LENGTH            ) result = genParsePathLength        (parse);
     else if (parse.next == JOIN_PATHS             ) result = genParseJoinPaths         (parse);
-    else if (parse.next == MEASURE_POINTS         ) result = genParseMeasurePoints     (parse);
-    else if (parse.next == VECTOR_LENGTH          ) result = genParseVectorLength      (parse);
+    else if (parse.next == MEASURE_VECTOR         ) result = genParseMeasureVector     (parse);
+    else if (parse.next == VECTOR          ) result = genParseVector      (parse);
     else if (parse.next == CIRCLE_CENTER          ) result = genParseCircleCenter      (parse);
     else if (parse.next == ARC_FROM_POINTS        ) result = genParseArcFromPoints     (parse);
     else if (parse.next == INTERSECT_LINES        ) result = genParseIntersectLines    (parse);

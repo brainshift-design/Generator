@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 369;
+const generatorVersion = 370;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -103,6 +103,9 @@ function anglev2_(x1, y1, x2, y2) {
 }
 function lengthv(v) {
     return Math.sqrt(v.x * v.x + v.y * v.y);
+}
+function lengthv_(x, y) {
+    return Math.sqrt(x * x + y * y);
 }
 function unitv(v) {
     return point(v.x == 0 ? 0 : v.x / lengthv(v), v.y == 0 ? 0 : v.y / lengthv(v));
@@ -949,8 +952,8 @@ const PATH_LENGTH = 'PTHLEN';
 const JOIN_PATHS = 'JOINPTH';
 const POINT_ALONG_PATH = 'PTALPATH';
 const CLOSEST_POINT_ON_PATH = 'CPTONPATH';
-const MEASURE_POINTS = 'MESPT';
-const VECTOR_LENGTH = 'VECLEN';
+const MEASURE_VECTOR = 'MESPT';
+const VECTOR = 'VECLEN';
 const CIRCLE_CENTER = 'CIRCEN';
 const ARC_FROM_POINTS = 'ARCPT';
 const INTERSECT_LINES = 'INTLIN';
@@ -1045,8 +1048,8 @@ const SHAPE_TYPES = [
     JOIN_PATHS,
     POINT_ALONG_PATH,
     CLOSEST_POINT_ON_PATH,
-    MEASURE_POINTS,
-    VECTOR_LENGTH,
+    MEASURE_VECTOR,
+    VECTOR,
     CIRCLE_CENTER,
     ARC_PATH,
     WAVE_PATH,

@@ -1653,12 +1653,12 @@ function genParseResetTransform(parse)
 
 
 
-function genParseMeasurePoints(parse)
+function genParseMeasureVector(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const measure = new GMeasurePoints(nodeId, options);
+    const measure = new GMeasureVector(nodeId, options);
 
 
     let nInputs = -1;
@@ -1666,7 +1666,7 @@ function genParseMeasurePoints(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -1684,17 +1684,11 @@ function genParseMeasurePoints(parse)
     parse.nTab++;
 
     
-    if (nInputs == 2)
-    {
-        measure.input0 = genParse(parse);
-        measure.input1 = genParse(parse);
-    }
-    else if (nInputs == 1)
-    {
-        measure.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-    }
+    if (nInputs == 1)
+        measure.input = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
 
 
+        
     parse.nTab--;
 
 
@@ -1704,12 +1698,12 @@ function genParseMeasurePoints(parse)
 
 
 
-function genParseVectorLength(parse)
+function genParseVector(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const len = new GVectorLength(nodeId, options);
+    const vector = new GVector(nodeId, options);
 
 
     let nInputs = -1;
@@ -1717,17 +1711,17 @@ function genParseVectorLength(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
     if (parse.settings.logRequests) 
-        logReq(len, parse, ignore, nInputs);
+        logReq(vector, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, len);
+        genParseNodeEnd(parse, vector);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -1735,17 +1729,26 @@ function genParseVectorLength(parse)
     parse.nTab++;
 
     
-    if (nInputs == 1)
-        len.input = genParse(parse);
+    if (nInputs == 2)
+    {
+        vector.input0 = genParse(parse);
+        vector.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        vector.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
 
-    len.length = genParse(parse);
+
+    vector.transform  = genParse(parse);
+    vector.showCenter = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, len);
-    return len;
+    genParseNodeEnd(parse, vector);
+    return vector;
 }
 
 

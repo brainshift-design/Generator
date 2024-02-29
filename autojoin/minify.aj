@@ -498,8 +498,8 @@ iconCenter
 iconResetXform
 iconPlace
 iconApply
-iconMeasurePoints
-iconVectorLength
+iconMeasureVector
+iconVector
 iconCircleCenter
 iconIntersectLines
 iconInterpolatePoint
@@ -1282,8 +1282,8 @@ SET_CENTER
 RESET_XFORM
 PLACE
 SHAPE_APPLY
-MEASURE_POINTS
-VECTOR_LENGTH
+MEASURE_VECTOR
+VECTOR
 CIRCLE_CENTER
 INTERSECT_LINES
 INTERPOLATE_POINT
@@ -1741,8 +1741,8 @@ genParseScale
 genParseSkew
 genParseCenter
 genParseResetTransform
-genParseMeasurePoints
-genParseVectorLength
+genParseMeasureVector
+genParseVector
 genParseCircleCenter
 genParseIntersectLines
 genParseInterpolatePoint
@@ -1948,7 +1948,7 @@ GFrame
 GInterpolatePoint
 GIntersectLines
 GLine
-GMeasurePoints
+GMeasureVector
 GMove
 GPlace
 GPoint
@@ -1969,7 +1969,7 @@ GStar
 GTextShape
 GTrapeze
 GVectorEdge
-GVectorLength
+GVector
 GVectorNetwork
 GVectorPath
 GVectorRegion
@@ -2252,7 +2252,7 @@ OpFrame
 OpInterpolatePoint
 OpIntersectLines
 OpLine
-OpMeasurePoints
+OpMeasureVector
 OpMove
 OpPlace
 OpPoint
@@ -2275,7 +2275,7 @@ OpStar
 OpTextShape
 OpTrapeze
 OpVectorEdge
-OpVectorLength
+OpVector
 OpVectorNetwork
 OpVectorPath
 OpVectorRegion

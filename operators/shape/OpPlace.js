@@ -76,15 +76,6 @@ extends OperatorBase
 
 
 
-    // updateValues(requestId, actionId, updateParamId, paramIds, values)
-    // {
-    //     const position = values[paramIds.findIndex(id => id == 'position')];
-
-    //     if (position) this.paramPosition.setValue(position, false, true, false);
-    // }
-
-
-
     updateParams()
     {
         this.paramPosition  .enableControlText(true);
