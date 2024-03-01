@@ -56,12 +56,14 @@ const presetHotSpring = '\
             "x": "4786",\
             "y": "3611",\
             "z": "3",\
+            "useWavelength": "false",\
+            "offsetAbsolute": "false",\
             "params":\
             [\
                     ["NUM#", "base", "100,0"],\
                     ["NUM#", "amplitude", "80,0"],\
                     ["NUM#", "frequency", "4,0"],\
-                    ["NUM#", "offset", "0.93,2"]\
+                    ["NUM#", "offset", "93,2"]\
             ]\
             },\
             {\
@@ -160,11 +162,13 @@ const presetHotSpring = '\
             "x": "5915",\
             "y": "3397",\
             "z": "10",\
+            "useWavelength": "false",\
+            "offsetAbsolute": "false",\
             "params":\
             [\
                     ["NUM#", "amplitude", "458,0"],\
                     ["NUM#", "frequency", "4,0"],\
-                    ["NUM#", "offset", "0.5,1"]\
+                    ["NUM#", "offset", "-25,1"]\
             ]\
             },\
             {\
@@ -177,10 +181,12 @@ const presetHotSpring = '\
             "x": "5694",\
             "y": "3493",\
             "z": "11",\
+            "useWavelength": "false",\
+            "offsetAbsolute": "false",\
             "params":\
             [\
                     ["NUM#", "frequency", "4,0"],\
-                    ["NUM#", "offset", "0.55,2"]\
+                    ["NUM#", "offset", "50,2"]\
             ]\
             },\
             {\
@@ -282,6 +288,8 @@ const presetHotSpring = '\
             "x": "5049",\
             "y": "3735",\
             "z": "17",\
+            "useWavelength": "false",\
+            "offsetAbsolute": "false",\
             "params":\
             [\
                     ["NUM#", "amplitude", "75,0"],\

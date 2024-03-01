@@ -12,8 +12,8 @@ extends OpShape
     paramAlignY;
 
 
-    useWavelength;
-    offsetAbsolute;
+    useWavelength  = false;
+    offsetAbsolute = false;
  
     menuWavelength;
     menuOffset;

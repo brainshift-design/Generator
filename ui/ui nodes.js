@@ -633,6 +633,13 @@ function handleLegacyNode(_node, genVersion)
         const paramAlignY = _node.params.find(p => p[1] == 'alignV');
         if (paramAlignY) paramAlignY[1] = 'alignY';
     }
+    else if (_node.type == NUMBER_WAVE)
+        //   && _node.params
+        //   && _node.params.length > 0)
+    {
+        if (!_node.useWavelength)
+            _node.useWavelength = false;
+    }
 }
 
 

@@ -9,8 +9,8 @@ extends OperatorBase
     paramBias;
 
 
-    useWavelength;
-    offsetAbsolute;
+    useWavelength  = false;
+    offsetAbsolute = false;
  
     menuWavelength;
     menuOffset;
