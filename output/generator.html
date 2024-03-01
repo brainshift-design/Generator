@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 371;
+const generatorVersion = 372;
 
 
 const MAX_INT32        = 2147483647;
@@ -23144,12 +23144,14 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const input = this.input ? (await this.input   .eval(parse)).toValue() : null;
-        const type  = this.type  ? (await this.type    .eval(parse)).toValue() : null;
-        const dec   = this.dec   ? (await this.decimals.eval(parse)).toValue() : null;
+        const input = this.input    ? (await this.input   .eval(parse)).toValue() : null;
+        const type  = this.type     ? (await this.type    .eval(parse)).toValue() : null;
+        const dec   = this.decimals ? (await this.decimals.eval(parse)).toValue() : null;
 
 
-        if (input)
+        if (   input
+            && type
+            && dec)
         {
             this.value = input;
 
@@ -23304,9 +23306,9 @@ extends GOperator1
 
                 switch (type.value)
                 {
-                    case 0: qval = base.value + floorTo((this.value.value - base.value) / step.value, this.value.decimals) * step.value; break;
-                    case 1: qval = base.value + roundTo((this.value.value - base.value) / step.value, this.value.decimals) * step.value; break;
-                    case 2: qval = base.value +  ceilTo((this.value.value - base.value) / step.value, this.value.decimals) * step.value; break;
+                    case 0: qval = base.value + step.value * Math.floor((this.value.value - base.value) / step.value); break;
+                    case 1: qval = base.value + step.value * Math.round((this.value.value - base.value) / step.value); break;
+                    case 2: qval = base.value + step.value * Math. ceil((this.value.value - base.value) / step.value); break;
                 }
 
                 this.value.value    = this.value.value + (qval - this.value.value) * amount.value/100;

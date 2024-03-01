@@ -74,9 +74,9 @@ extends GOperator1
 
                 switch (type.value)
                 {
-                    case 0: qval = base.value + floorTo((this.value.value - base.value) / step.value, this.value.decimals) * step.value; break;
-                    case 1: qval = base.value + roundTo((this.value.value - base.value) / step.value, this.value.decimals) * step.value; break;
-                    case 2: qval = base.value +  ceilTo((this.value.value - base.value) / step.value, this.value.decimals) * step.value; break;
+                    case 0: qval = base.value + step.value * Math.floor((this.value.value - base.value) / step.value); break;
+                    case 1: qval = base.value + step.value * Math.round((this.value.value - base.value) / step.value); break;
+                    case 2: qval = base.value + step.value * Math. ceil((this.value.value - base.value) / step.value); break;
                 }
 
                 this.value.value    = this.value.value + (qval - this.value.value) * amount.value/100;

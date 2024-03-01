@@ -46,12 +46,14 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const input = this.input ? (await this.input   .eval(parse)).toValue() : null;
-        const type  = this.type  ? (await this.type    .eval(parse)).toValue() : null;
-        const dec   = this.dec   ? (await this.decimals.eval(parse)).toValue() : null;
+        const input = this.input    ? (await this.input   .eval(parse)).toValue() : null;
+        const type  = this.type     ? (await this.type    .eval(parse)).toValue() : null;
+        const dec   = this.decimals ? (await this.decimals.eval(parse)).toValue() : null;
 
 
-        if (input)
+        if (   input
+            && type
+            && dec)
         {
             this.value = input;
 

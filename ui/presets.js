@@ -180,5 +180,6 @@ function getPresetGraph(graphId)
         case 'brushStrokes':         return presetBrushStrokes;
         case 'gradientCircles':      return presetGradientCircles;
         case 'hotSpring':            return presetHotSpring;
+        case 'nightPalace':          return nightPalace;
     }
 }
