@@ -145,12 +145,25 @@ extends GOperator1
                     if (   input
                         && nRepeats > 0)
                     {
-                        this.value.items.push(input);
+                        // lists are automatically expanded unless explicitly kept as item
+                        
+                        if (isListType(input.type))
+                        {
+                            if (input.condensed === true)
+                                this.value.items.push(input);
+                            else
+                            {
+                                for (const item of input.items)
+                                    this.value.items.push(item);
+                            }
+                        }
+                        else
+                            this.value.items.push(input);
+        
 
-
-                        // if (   this.options.active
-                        //     || this.options.beforeActive)
-                        // {
+                        if (   this.options.active
+                            || this.options.beforeActive)
+                        {
                             this.iterationObjects = [];
                         
                             if (this.input.value.objects)
@@ -173,7 +186,7 @@ extends GOperator1
                                         this.value.objects.push(obj);
                                 }
                             }
-                        //}
+                        }
                     }
 
 

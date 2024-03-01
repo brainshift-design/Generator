@@ -26,10 +26,6 @@ extends OperatorBase
         this.paramShowCenter.divider = 0.68;
 
         this.menuBoolShowCenter = createBoolMenu(this.paramShowCenter);
-
-
-        // this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
-        // this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
     }
 
 
@@ -90,47 +86,4 @@ extends OperatorBase
 
         this.updateParamControls();
     }
-
-
-
-    // getHeaderColors(options = {})
-    // {
-    //     const colors = super.getHeaderColors(options);
-
-    //     const type = 
-    //         this.inputs[0].connected 
-    //         ? this.inputs[0].connectedOutput.node.type 
-    //         : this.type;
-
-    //     // colors.back = 
-    //     //     this.headerColor
-    //     //     ? this.headerColor
-    //     //     : this.inert
-    //     //     ? rgb_a(rgbDocumentBody, 0.95)
-    //     //     : rgb_a(rgbFromType(type, this.active), 0.95);
-
-
-    //     colors.text    = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
-
-    //     colors.input   = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-    //     colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-    //     colors.inWire  = 
-    //     colors.outWire = rgbFromType(type, true);
-
-    //     return colors;
-    // }
 }
-
-
-
-// function OpCopy_onConnectInput(node)
-// {
-//     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
-// }
-
-
-
-// function OpCopy_onDisconnectInput(node)
-// {
-//     node.outputs[0].types = [ANY_VALUE];
-// }
