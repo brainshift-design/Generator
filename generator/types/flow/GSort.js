@@ -223,8 +223,9 @@ async function asyncSort(parse, unsorted, conditionNode, node, condition, revers
 
         const cond = await getSortCondition(parse, conditionNode, node, condition, item);
         if (!cond) return [unsorted, [...unsorted.keys()]];
-
+        
         const condValue = cond.toValue();
+        //console.log('condValue =', condValue.value);
 
         if (   condValue.type != NUMBER_VALUE
             && condValue.type != TEXT_VALUE) 

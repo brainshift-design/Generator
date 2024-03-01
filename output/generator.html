@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 372;
+const generatorVersion = 373;
 
 
 const MAX_INT32        = 2147483647;
@@ -21035,8 +21035,9 @@ async function asyncSort(parse, unsorted, conditionNode, node, condition, revers
 
         const cond = await getSortCondition(parse, conditionNode, node, condition, item);
         if (!cond) return [unsorted, [...unsorted.keys()]];
-
+        
         const condValue = cond.toValue();
+        //console.log('condValue =', condValue.value);
 
         if (   condValue.type != NUMBER_VALUE
             && condValue.type != TEXT_VALUE) 
