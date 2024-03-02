@@ -210,7 +210,7 @@ class FigmaObject
             this.applyObjectTransform(xform, space);
 
             this.updatePoints(xform, space);
-            this.updatePathPoints();
+            //this.updatePathPoints();
             //this.updatePathData();
 
             if (affectSpace)
