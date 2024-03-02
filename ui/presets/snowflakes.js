@@ -17,7 +17,9 @@ const presetSnowflakes = '\
         "params":\
         [\
                 ["NUM#", "seed", "6,0"],\
-                ["NUM#", "max", "40,0"]\
+                ["NUM#", "min", "2,0"],\
+                ["NUM#", "max", "40,0"],\
+                ["NUM#", "bias", "-200,0"]\
         ]\
         },\
         {\

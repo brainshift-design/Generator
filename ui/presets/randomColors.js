@@ -10,7 +10,7 @@ const presetRandomColors = '\
             "enabled": "true",\
             "highlight": "0",\
             "x": "2623",\
-            "y": "3720",\
+            "y": "3620",\
             "z": "0",\
             "params":\
             [\
@@ -25,7 +25,7 @@ const presetRandomColors = '\
             "enabled": "true",\
             "highlight": "0",\
             "x": "2623",\
-            "y": "4072.28",\
+            "y": "4172.28",\
             "z": "1",\
             "params":\
             [\
