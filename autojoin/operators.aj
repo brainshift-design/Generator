@@ -90,6 +90,7 @@
 ../operators/number/OpMinMax.js
 ../operators/number/OpLimits.js
 ../operators/number/OpNumberCurve.js
+../operators/number/OpNumberBias.js
 ../operators/number/OpNaNisNumber.js
 ../operators/number/OpConstant.js
 

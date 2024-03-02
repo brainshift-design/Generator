@@ -4,8 +4,6 @@ extends OperatorBase
     paramFrom;
     paramStart;
     paramEnd;
-    paramSpread;
-    paramBias;
 
 
 
@@ -24,12 +22,6 @@ extends OperatorBase
         this.addParam(this.paramFrom   = new SelectParam('from',   'from',   true, true, true, ['start', 'middle', 'end'], 1));
         this.addParam(this.paramStart  = new NumberParam('start',  'start',  true, true, true, 0));
         this.addParam(this.paramEnd    = new NumberParam('end',    'end',    true, true, true, 100));
-        this.addParam(this.paramBias   = new NumberParam('bias',   'bias',   true, true, true, 0, -100, 100));
-        this.addParam(this.paramSpread = new NumberParam('spread', 'spread', true, true, true, 0, -100, 100));
-
-
-        this.paramBias  .controls[0].suffix = '%';
-        this.paramSpread.controls[0].suffix = '%';
     }
 
 
@@ -49,8 +41,6 @@ extends OperatorBase
         request.push(...this.node.paramFrom  .genRequest(gen));
         request.push(...this.node.paramStart .genRequest(gen));
         request.push(...this.node.paramEnd   .genRequest(gen));
-        request.push(...this.node.paramBias  .genRequest(gen));
-        request.push(...this.node.paramSpread.genRequest(gen));
 
 
         gen.scope.pop();

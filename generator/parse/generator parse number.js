@@ -572,8 +572,6 @@ function genParseNumberCurve(parse)
     curve.min    = genParse(parse);
     curve.max    = genParse(parse);
     curve.power  = genParse(parse);
-    curve.bias   = genParse(parse);
-    curve.spread = genParse(parse);
 
     
     parse.nTab--;
@@ -581,6 +579,55 @@ function genParseNumberCurve(parse)
 
     genParseNodeEnd(parse, curve);
     return curve;
+}
+
+
+
+function genParseNumberBias(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const bias = new GNumberBias(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(bias, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, bias);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        bias.input = genParse(parse);
+
+    bias.min    = genParse(parse);
+    bias.max    = genParse(parse);
+    bias.bias   = genParse(parse);
+    bias.spread = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, bias);
+    return bias;
 }
 
 
@@ -872,8 +919,6 @@ function genParseRange(parse)
     dist.from   = genParse(parse);
     dist.start  = genParse(parse);
     dist.end    = genParse(parse);
-    dist.bias   = genParse(parse);
-    dist.spread = genParse(parse);
 
 
     parse.nTab--;

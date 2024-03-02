@@ -141,9 +141,7 @@ const presetRange = '\
             "z": "8",\
             "params":\
             [\
-                    ["NUM#", "end", "500,0"],\
-                    ["NUM#", "bias", "0,0"],\
-                    ["NUM#", "spread", "32,0"]\
+                    ["NUM#", "end", "500,0"]\
             ]\
             },\
             {\
@@ -168,54 +166,6 @@ const presetRange = '\
             "x": "1123",\
             "y": "2371",\
             "z": "10",\
-            "active": "true"\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment3",\
-            "name": "Because%20the%20end%20value%20is%20known%2C%20curvature%20can%20be",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "1002",\
-            "y": "2536",\
-            "z": "11",\
-            "active": "true"\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment4",\
-            "name": "controlled%20using%20the%20spread%20and%20bias%20parameters",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "999",\
-            "y": "2577",\
-            "z": "12",\
-            "active": "true"\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment5",\
-            "name": "in%20ways%20not%20possible%20with%20a%20sequence",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "998",\
-            "y": "2616",\
-            "z": "13",\
-            "active": "true"\
-            },\
-            {\
-            "type": "CMNT",\
-            "id": "comment6",\
-            "name": "%E2%9F%B5",\
-            "renamed": "true",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "940",\
-            "y": "2581",\
-            "z": "14",\
             "active": "true"\
             }\
         ],\

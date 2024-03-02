@@ -59,6 +59,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_MINMAX:           node = new OpMinMax();             break;
         case NUMBER_LIMITS:           node = new OpLimits();             break;
         case NUMBER_CURVE:            node = new OpNumberCurve();        break;
+        case NUMBER_BIAS:             node = new OpNumberBias();         break;
         case NUMBER_NAN:              node = new OpNaNisNumber();        break;
         case NUMBER_CONSTANT:         node = new OpConstant();           break;
         case NUMBER_DATETIME:         node = new OpDateTime();           break;

@@ -412,8 +412,7 @@ const presetSnowflakes = '\
         [\
                 ["NUM#", "seed", "8587,0"],\
                 ["NUM#", "min", "0.2,1"],\
-                ["NUM#", "max", "0.8,1"],\
-                ["NUM#", "bias", "50,0"]\
+                ["NUM#", "max", "0.8,1"]\
         ]\
         },\
         {\

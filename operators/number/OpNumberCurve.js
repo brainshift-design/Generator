@@ -4,8 +4,6 @@ extends OperatorBase
     paramMin;
     paramMax;
     paramPower;
-    paramBias;
-    paramSpread;
 
 
 
@@ -19,19 +17,14 @@ extends OperatorBase
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramMin    = new NumberParam('min',    'min',    true, true, true,   0));
-        this.addParam(this.paramMax    = new NumberParam('max',    'max',    true, true, true, 100));
-        this.addParam(this.paramPower  = new NumberParam('power',  'power',  true, true, true, 1));
-        this.addParam(this.paramBias   = new NumberParam('bias',   'bias',   true, true, true, 0, -100, 100));
-        this.addParam(this.paramSpread = new NumberParam('spread', 'spread', true, true, true, 0, -100, 100));
+        this.addParam(this.paramMin   = new NumberParam('min',   'min',   true, true, true,   0));
+        this.addParam(this.paramMax   = new NumberParam('max',   'max',   true, true, true, 100));
+        this.addParam(this.paramPower = new NumberParam('power', 'power', true, true, true, 1));
 
-        this.paramMin.divider = 0.42;
-        this.paramMax.divider = 0.42;
 
-        this.paramPower .controls[0].setDecimals(2);
-      
-        this.paramBias  .controls[0].suffix = '%';
-        this.paramSpread.controls[0].suffix = '%';
+        this.setAllParamDividers(0.45);
+
+        this.paramPower.controls[0].setDecimals(2);
     }
 
 
@@ -59,8 +52,6 @@ extends OperatorBase
         request.push(...this.node.paramMin   .genRequest(gen));
         request.push(...this.node.paramMax   .genRequest(gen));
         request.push(...this.node.paramPower .genRequest(gen));
-        request.push(...this.node.paramBias  .genRequest(gen));
-        request.push(...this.node.paramSpread.genRequest(gen));
 
         
         gen.scope.pop();
@@ -73,23 +64,10 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramMin   .enableControlText(true, this.paramMin   .isUnknown());
-        this.paramMax   .enableControlText(true, this.paramMax   .isUnknown());
-        this.paramPower .enableControlText(true, this.paramPower .isUnknown());
-        this.paramBias  .enableControlText(true, this.paramBias  .isUnknown());
-        this.paramSpread.enableControlText(true, this.paramSpread.isUnknown());
+        this.paramMin  .enableControlText(true, this.paramMin  .isUnknown());
+        this.paramMax  .enableControlText(true, this.paramMax  .isUnknown());
+        this.paramPower.enableControlText(true, this.paramPower.isUnknown());
 
         this.updateParamControls();
     }
-
-
-
-    // toJsCode(gen)
-    // {
-    //     return this.inputs[0].connected
-    //          ? 'Math.min(Math.max(' 
-    //                 + this.paramMin.toJsCode(gen) + ', ' + this.inputs[0].connectedOutput.toJsCode(gen) + '), ' 
-    //                 + this.paramMax.toJsCode(gen) + ')'
-    //          : 'Number.NaN';
-    // }
 }

@@ -124,6 +124,7 @@
 ../generator/types/number/GMinMax.js
 ../generator/types/number/GLimits.js
 ../generator/types/number/GNumberCurve.js
+../generator/types/number/GNumberBias.js
 ../generator/types/number/GNaNisNumber.js
 ../generator/types/number/GConstant.js
 ../generator/types/number/GDateTime.js

@@ -5899,6 +5899,7 @@ const NUMBER_SIMPLE_MINMAX    = 'SMINMAX';
 const NUMBER_MINMAX           = 'MINMAX';   
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_CURVE            = 'NCURVE';   
+const NUMBER_BIAS             = 'NBIAS';   
 const NUMBER_NAN              = 'NANISNUM';
 const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DATETIME         = 'DATE';  
@@ -6029,6 +6030,7 @@ const NUMBER_TYPES =
     NUMBER_MINMAX,
     NUMBER_LIMITS,
     NUMBER_CURVE,
+    NUMBER_BIAS,
     NUMBER_NAN,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
@@ -23869,11 +23871,9 @@ extends GOperator1
 class GNumberCurve
 extends GOperator1
 {
-    min    = null;
-    max    = null;
-    power  = null;
-    bias   = null;
-    spread = null;
+    min   = null;
+    max   = null;
+    power = null;
 
 
     
@@ -23888,9 +23888,152 @@ extends GOperator1
     {
         super.reset();
 
+        this.min   = null;
+        this.max   = null;
+        this.power = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GNumberCurve(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.min   = this.min  .copy();
+        copy.max   = this.max  .copy();
+        copy.power = this.power.copy();
+
+        return copy;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.min   || this.min  .isCached())
+            && (!this.max   || this.max  .isCached())
+            && (!this.power || this.power.isCached());
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const min   = (await this.min  .eval(parse)).toValue();
+        const max   = (await this.max  .eval(parse)).toValue();
+        const power = (await this.power.eval(parse)).toValue();
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            if (this.options.enabled)
+            {
+                let f = (input.value - min.value) / (max.value - min.value);
+
+                f = Math.pow(f, power.value);
+                
+                f = min.value + f * (max.value - min.value);
+                
+                this.value = new NumberValue(f);
+            }
+            else
+                this.value = input.copy();
+        }
+        else
+            this.value = NumberValue.NaN.copy();
+
+
+        this.setUpdateValues(parse,
+        [
+            ['min',   min  ],
+            ['max',   max  ],
+            ['power', power]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.min   && this.min  .isValid()
+            && this.max   && this.max  .isValid()
+            && this.power && this.power.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.min  ) this.min  .pushValueUpdates(parse);
+        if (this.max  ) this.max  .pushValueUpdates(parse);
+        if (this.power) this.power.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.min  ) this.min  .invalidateInputs(parse, from, force);
+        if (this.max  ) this.max  .invalidateInputs(parse, from, force);
+        if (this.power) this.power.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.min  ) this.min  .iterateLoop(parse);
+        if (this.max  ) this.max  .iterateLoop(parse);
+        if (this.power) this.power.iterateLoop(parse);
+    }
+}
+
+
+
+class GNumberBias
+extends GOperator1
+{
+    min    = null;
+    max    = null;
+    bias   = null;
+    spread = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(NUMBER_BIAS, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
         this.min    = null;
         this.max    = null;
-        this.power  = null;
         this.bias   = null;
         this.spread = null;
     }
@@ -23899,13 +24042,12 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GLimits(this.nodeId, this.options);
+        const copy = new GNumberBias(this.nodeId, this.options);
 
         copy.copyBase(this);
 
         copy.min    = this.min   .copy();
         copy.max    = this.max   .copy();
-        copy.power  = this.power .copy();
         copy.bias   = this.bias  .copy();
         copy.spread = this.spread.copy();
 
@@ -23919,7 +24061,6 @@ extends GOperator1
         return super.isCached()
             && (!this.min    || this.min   .isCached())
             && (!this.max    || this.max   .isCached())
-            && (!this.power  || this.power .isCached())
             && (!this.bias   || this.bias  .isCached())
             && (!this.spread || this.spread.isCached());
     }
@@ -23934,7 +24075,6 @@ extends GOperator1
             
         const min    = (await this.min   .eval(parse)).toValue();
         const max    = (await this.max   .eval(parse)).toValue();
-        const power  = (await this.power .eval(parse)).toValue();
         const bias   = (await this.bias  .eval(parse)).toValue();
         const spread = (await this.spread.eval(parse)).toValue();
 
@@ -23947,7 +24087,6 @@ extends GOperator1
             {
                 let f = (input.value - min.value) / (max.value - min.value);
 
-                f = Math.pow(f, power.value);
                 f = getSpreadBias(f, bias.value, spread.value);
                 
                 f = min.value + f * (max.value - min.value);
@@ -23963,12 +24102,10 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            //['value',  this.value],
-            ['min',    min       ],
-            ['max',    max       ],
-            ['power',  power     ],
-            ['bias',   bias      ],
-            ['spread', spread    ]
+            ['min',    min   ],
+            ['max',    max   ],
+            ['bias',   bias  ],
+            ['spread', spread]
         ]);
 
 
@@ -23984,7 +24121,6 @@ extends GOperator1
         return super.isValid()
             && this.min    && this.min   .isValid()
             && this.max    && this.max   .isValid()
-            && this.power  && this.power .isValid()
             && this.bias   && this.bias  .isValid()
             && this.spread && this.spread.isValid();
     }
@@ -23995,10 +24131,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.input ) this.input .pushValueUpdates(parse);
         if (this.min   ) this.min   .pushValueUpdates(parse);
         if (this.max   ) this.max   .pushValueUpdates(parse);
-        if (this.power ) this.power .pushValueUpdates(parse);
         if (this.bias  ) this.bias  .pushValueUpdates(parse);
         if (this.spread) this.spread.pushValueUpdates(parse);
     }
@@ -24009,10 +24143,8 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.input ) this.input .invalidateInputs(parse, from, force);
         if (this.min   ) this.min   .invalidateInputs(parse, from, force);
         if (this.max   ) this.max   .invalidateInputs(parse, from, force);
-        if (this.power ) this.power .invalidateInputs(parse, from, force);
         if (this.bias  ) this.bias  .invalidateInputs(parse, from, force);
         if (this.spread) this.spread.invalidateInputs(parse, from, force);
     }
@@ -24023,15 +24155,34 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.input ) this.input .iterateLoop(parse);
         if (this.min   ) this.min   .iterateLoop(parse);
         if (this.max   ) this.max   .iterateLoop(parse);
-        if (this.power ) this.power .iterateLoop(parse);
         if (this.bias  ) this.bias  .iterateLoop(parse);
         if (this.spread) this.spread.iterateLoop(parse);
     }
 }
 
+
+
+function getSpreadBias(f, bias, spread)
+{
+    const b = bias   / 50;
+    const s = spread / 50;
+
+
+    f = 
+        b >= 0
+        ? 1 - Math.pow(1-f, 1+b)
+        :     Math.pow(  f, 1-b);
+
+
+         if (s >= 0 && f >= 0.5) f = 1 - Math.pow((1-f)*2, 1+s) / 2;
+    else if (s >= 0 && f <  0.5) f = Math.pow(f*2, 1+s) / 2;
+    else if (s < 0)              f = lerp3(0, (1-s)/3, (2+s)/3, 1, f);
+
+
+    return f;
+}
 
 
 class GNaNisNumber
@@ -24774,11 +24925,9 @@ function getSequenceValue(start, mult, add, iteration, enabled)
 class GRange
 extends GOperator
 {
-    from   = null;
-    start  = null;
-    end    = null;
-    bias   = null;
-    spread = null;
+    from  = null;
+    start = null;
+    end   = null;
     
     
 
@@ -24793,11 +24942,9 @@ extends GOperator
     {
         super.reset();
 
-        this.from   = null;
-        this.start  = null;
-        this.end    = null;
-        this.bias   = null;
-        this.spread = null;
+        this.from  = null;
+        this.start = null;
+        this.end   = null;
     }
 
 
@@ -24808,11 +24955,9 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.from  ) copy.from   = this.from  .copy();
-        if (this.start ) copy.start  = this.start .copy();
-        if (this.end   ) copy.end    = this.end   .copy();
-        if (this.bias  ) copy.bias   = this.bias  .copy();
-        if (this.spread) copy.spread = this.spread.copy();
+        if (this.from   ) copy.from    = this.from   .copy();
+        if (this.start  ) copy.start   = this.start  .copy();
+        if (this.end    ) copy.end     = this.end    .copy();
 
         if (this.current) copy.current = this.current.copy();
 
@@ -24827,11 +24972,9 @@ extends GOperator
             return this;
 
             
-        const from   = this.from   ? (await this.from  .eval(parse)).toValue() : null;
-        const start  = this.start  ? (await this.start .eval(parse)).toValue() : null;
-        const end    = this.end    ? (await this.end   .eval(parse)).toValue() : null;
-        const bias   = this.bias   ? (await this.bias  .eval(parse)).toValue() : null;
-        const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
+        const from  = this.from  ? (await this.from .eval(parse)).toValue() : null;
+        const start = this.start ? (await this.start.eval(parse)).toValue() : null;
+        const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
@@ -24840,9 +24983,7 @@ extends GOperator
 
         if (   from
             && start
-            && end
-            && bias
-            && spread)
+            && end)
         {
             let delta = end.value - start.value;
 
@@ -24874,11 +25015,8 @@ extends GOperator
                 f = 0;
 
 
-            f = getSpreadBias(f, bias.value, spread.value);
-
-
             this.value = new NumberValue(
-                start.value + startOffset + delta * f,
+                start.value + startOffset + f * delta,
                 Math.max(start.decimals, end.decimals));
         }
         else
@@ -24887,11 +25025,9 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            ['from',   from  ],
-            ['start',  start ],
-            ['end',    end   ],
-            ['bias',   bias  ],
-            ['spread', spread]
+            ['from',  from ],
+            ['start', start],
+            ['end',   end  ]
         ]);
 
 
@@ -24913,11 +25049,9 @@ extends GOperator
 
     isValid()
     {
-        return this.from   && this.from  .isValid()
-            && this.start  && this.start .isValid()
-            && this.end    && this.end   .isValid()
-            && this.bias   && this.bias  .isValid()
-            && this.spread && this.spread.isValid();
+        return this.from  && this.from .isValid()
+            && this.start && this.start.isValid()
+            && this.end   && this.end  .isValid();
     }
 
 
@@ -24926,11 +25060,9 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.from  ) this.from  .pushValueUpdates(parse);
-        if (this.start ) this.start .pushValueUpdates(parse);
-        if (this.end   ) this.end   .pushValueUpdates(parse);
-        if (this.bias  ) this.bias  .pushValueUpdates(parse);
-        if (this.spread) this.spread.pushValueUpdates(parse);
+        if (this.from ) this.from .pushValueUpdates(parse);
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
     }
 
 
@@ -24939,11 +25071,9 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.from  ) this.from  .invalidateInputs(parse, from, force);
-        if (this.start ) this.start .invalidateInputs(parse, from, force);
-        if (this.end   ) this.end   .invalidateInputs(parse, from, force);
-        if (this.bias  ) this.bias  .invalidateInputs(parse, from, force);
-        if (this.spread) this.spread.invalidateInputs(parse, from, force);
+        if (this.from ) this.from .invalidateInputs(parse, from, force);
+        if (this.start) this.start.invalidateInputs(parse, from, force);
+        if (this.end  ) this.end  .invalidateInputs(parse, from, force);
     }
 
 
@@ -24952,35 +25082,12 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.from  ) this.from  .iterateLoop(parse);
-        if (this.start ) this.start .iterateLoop(parse);
-        if (this.end   ) this.end   .iterateLoop(parse);
-        if (this.bias  ) this.bias  .iterateLoop(parse);
-        if (this.spread) this.spread.iterateLoop(parse);
+        if (this.from ) this.from .iterateLoop(parse);
+        if (this.start) this.start.iterateLoop(parse);
+        if (this.end  ) this.end  .iterateLoop(parse);
     }
 }
 
-
-
-function getSpreadBias(f, bias, spread)
-{
-    const b = bias   / 50;
-    const s = spread / 50;
-
-
-    f = 
-        b >= 0
-        ? 1 - Math.pow(1-f, 1+b)
-        :     Math.pow(  f, 1-b);
-
-
-         if (s >= 0 && f >= 0.5) f = 1 - Math.pow((1-f)*2, 1+s) / 2;
-    else if (s >= 0 && f <  0.5) f = Math.pow(f*2, 1+s) / 2;
-    else if (s < 0)              f = lerp3(0, (1-s)/3, (2+s)/3, 1, f);
-
-
-    return f;
-}
 
 
 class GWave
@@ -49876,8 +49983,6 @@ function genParseNumberCurve(parse)
     curve.min    = genParse(parse);
     curve.max    = genParse(parse);
     curve.power  = genParse(parse);
-    curve.bias   = genParse(parse);
-    curve.spread = genParse(parse);
 
     
     parse.nTab--;
@@ -49885,6 +49990,55 @@ function genParseNumberCurve(parse)
 
     genParseNodeEnd(parse, curve);
     return curve;
+}
+
+
+
+function genParseNumberBias(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const bias = new GNumberBias(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(bias, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, bias);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        bias.input = genParse(parse);
+
+    bias.min    = genParse(parse);
+    bias.max    = genParse(parse);
+    bias.bias   = genParse(parse);
+    bias.spread = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, bias);
+    return bias;
 }
 
 
@@ -50176,8 +50330,6 @@ function genParseRange(parse)
     dist.from   = genParse(parse);
     dist.start  = genParse(parse);
     dist.end    = genParse(parse);
-    dist.bias   = genParse(parse);
-    dist.spread = genParse(parse);
 
 
     parse.nTab--;
@@ -54428,6 +54580,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_SIMPLE_MINMAX   ) result = genParseSimpleMinMax      (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits            (parse);
     else if (parse.next == NUMBER_CURVE           ) result = genParseNumberCurve       (parse);
+    else if (parse.next == NUMBER_BIAS            ) result = genParseNumberBias        (parse);
     else if (parse.next == NUMBER_NAN             ) result = genParseNaNisNumber       (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant          (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime          (parse);

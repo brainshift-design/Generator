@@ -5,8 +5,8 @@ extends OperatorBase
     paramIteration;
     paramMin;
     paramMax;
-    paramBias;
-    paramSpread;
+    paramBias;   // random has its own bias and spread because
+    paramSpread; // this has to happen before the uniqueness test
     paramUnique;
 
 

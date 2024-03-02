@@ -121,6 +121,7 @@ const NUMBER_SIMPLE_MINMAX    = 'SMINMAX';
 const NUMBER_MINMAX           = 'MINMAX';   
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_CURVE            = 'NCURVE';   
+const NUMBER_BIAS             = 'NBIAS';   
 const NUMBER_NAN              = 'NANISNUM';
 const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DATETIME         = 'DATE';  
@@ -251,6 +252,7 @@ const NUMBER_TYPES =
     NUMBER_MINMAX,
     NUMBER_LIMITS,
     NUMBER_CURVE,
+    NUMBER_BIAS,
     NUMBER_NAN,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
