@@ -35,7 +35,7 @@ extends FigmaShape
         
 
         this.updatePathPoints();
-        this.updatePathData();
+        //this.updatePathData();
     }
 
 
@@ -220,7 +220,7 @@ extends FigmaShape
     toData()
     {
         // this.updatePathPoints();
-        // this.updatePathData();
+        this.updatePathData();
 
         return [
             ...super.toData(),

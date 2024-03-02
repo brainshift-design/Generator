@@ -74,7 +74,7 @@ extends GOperator1
                     && PATH_TYPES.includes(obj.type))
                 {
                     obj.pathPoints.reverse();
-                    obj.updatePathData();
+                    //obj.updatePathData();
                 }
             }
         }

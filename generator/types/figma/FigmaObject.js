@@ -204,13 +204,14 @@ class FigmaObject
                 this.applySpaceTransform(xform, space);
         }
         else if (this.type == VECTOR_PATH
+              || this.type == ARC_PATH
               || this.type == TRAPEZE)
         {
             this.applyObjectTransform(xform, space);
 
             this.updatePoints(xform, space);
             this.updatePathPoints();
-            this.updatePathData();
+            //this.updatePathData();
 
             if (affectSpace)
                 this.applySpaceTransform(xform, space);
@@ -433,7 +434,7 @@ function createDecoPoly(node, center, points, closed, dashes, color, suffix, isC
 
 
     path.createDefaultTransform(center.x, center.y);
-    path.updatePathData();
+    //path.updatePathData();
 
 
     return path;

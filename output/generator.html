@@ -6282,14 +6282,16 @@ const PATH_TYPES =
 [
     VECTOR_PATH, 
     ARC_PATH,
-    WAVE_PATH
+    WAVE_PATH,
+    TRAPEZE
 ];
 
 const PATH_VALUES =
 [
     VECTOR_PATH_VALUE, 
     ARC_PATH_VALUE,
-    WAVE_PATH_VALUE
+    WAVE_PATH_VALUE,
+    TRAPEZE_VALUE
 ];
 
 
@@ -6919,13 +6921,14 @@ class FigmaObject
                 this.applySpaceTransform(xform, space);
         }
         else if (this.type == VECTOR_PATH
+              || this.type == ARC_PATH
               || this.type == TRAPEZE)
         {
             this.applyObjectTransform(xform, space);
 
             this.updatePoints(xform, space);
             this.updatePathPoints();
-            this.updatePathData();
+            //this.updatePathData();
 
             if (affectSpace)
                 this.applySpaceTransform(xform, space);
@@ -7148,7 +7151,7 @@ function createDecoPoly(node, center, points, closed, dashes, color, suffix, isC
 
 
     path.createDefaultTransform(center.x, center.y);
-    path.updatePathData();
+    //path.updatePathData();
 
 
     return path;
@@ -7986,7 +7989,7 @@ extends FigmaShape
         
 
         this.updatePathPoints();
-        this.updatePathData();
+        //this.updatePathData();
     }
 
 
@@ -8171,7 +8174,7 @@ extends FigmaShape
     toData()
     {
         // this.updatePathPoints();
-        // this.updatePathData();
+        this.updatePathData();
 
         return [
             ...super.toData(),
@@ -45001,7 +45004,7 @@ extends GOperator1
                     && PATH_TYPES.includes(obj.type))
                 {
                     obj.pathPoints.reverse();
-                    obj.updatePathData();
+                    //obj.updatePathData();
                 }
             }
         }
