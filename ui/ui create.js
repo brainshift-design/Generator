@@ -203,7 +203,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         default:                      consoleError('Graph.js/createNode() cannot create type ' + nodeType);
     }
     
-    node._creatingButton = creatingButton;
+    if (node)
+        node._creatingButton = creatingButton;
 
     return node;
 }

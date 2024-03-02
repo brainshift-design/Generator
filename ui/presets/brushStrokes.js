@@ -342,8 +342,8 @@ const presetBrushStrokes = '\
         },\
         {\
             "type": "ITER",\
-            "id": "define2",\
-            "name": "define",\
+            "id": "iterate2",\
+            "name": "iterate",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
@@ -381,9 +381,9 @@ const presetBrushStrokes = '\
             "height": "54"\
         },\
         {\
-            "type": "DEITERFINE",\
-            "id": "define",\
-            "name": "define",\
+            "type": "ITER",\
+            "id": "iterate",\
+            "name": "iterate",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
@@ -1478,7 +1478,7 @@ const presetBrushStrokes = '\
             "outputNodeId": "num8",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "define2",\
+            "inputNodeId": "iterate2",\
             "inputId": "h0",\
             "list": "false"\
         },\
@@ -1486,12 +1486,12 @@ const presetBrushStrokes = '\
             "outputNodeId": "num9",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "define2",\
+            "inputNodeId": "iterate2",\
             "inputId": "h1",\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "define2",\
+            "outputNodeId": "iterate2",\
             "outputId": "h0",\
             "outputOrder": "2",\
             "inputNodeId": "fill3",\
@@ -1502,7 +1502,7 @@ const presetBrushStrokes = '\
             "outputNodeId": "num6",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "define",\
+            "inputNodeId": "iterate",\
             "inputId": "h0",\
             "list": "false"\
         },\
@@ -1510,7 +1510,7 @@ const presetBrushStrokes = '\
             "outputNodeId": "num7",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "define",\
+            "inputNodeId": "iterate",\
             "inputId": "h1",\
             "list": "false"\
         },\
@@ -1523,7 +1523,7 @@ const presetBrushStrokes = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "define",\
+            "outputNodeId": "iterate",\
             "outputId": "h0",\
             "outputOrder": "1",\
             "inputNodeId": "repeat6",\
@@ -1899,7 +1899,7 @@ const presetBrushStrokes = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "define2",\
+            "outputNodeId": "iterate2",\
             "outputId": "h0",\
             "outputOrder": "1",\
             "inputNodeId": "repeat7",\
@@ -1915,7 +1915,7 @@ const presetBrushStrokes = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "define",\
+            "outputNodeId": "iterate",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "fill2",\
