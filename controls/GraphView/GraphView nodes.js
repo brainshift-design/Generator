@@ -409,42 +409,48 @@ GraphView.prototype.randomizeSelectedSeedsAndColors = function()
     const values = [];
 
 
-    const randoms = graphView.selectedNodes.filter(n => 
-           (   n.type == NUMBER_RANDOM
-            || n.type == NUMBER_NOISE
-            || n.type == NUMBER_PROBABILITY)
-        && !n.paramSeed.controls[0].readOnly);
-
-    if (randoms.length > 0)
+    if (settings.randomShiftR)
     {
-        const randomParams = randoms.map(n => n.paramFromId('seed'));
+        const randoms = graphView.selectedNodes.filter(n => 
+            (   n.type == NUMBER_RANDOM
+                || n.type == NUMBER_NOISE
+                || n.type == NUMBER_PROBABILITY)
+            && !n.paramSeed.controls[0].readOnly);
 
-        params.push(...randomParams);
-        values.push(...Array.from(
-            {length: randoms.length},
-            (_, index) => new NumberValue(Math.floor(Math.random() * 10000))));
+        if (randoms.length > 0)
+        {
+            const randomParams = randoms.map(n => n.paramFromId('seed'));
+
+            params.push(...randomParams);
+            values.push(...Array.from(
+                {length: randoms.length},
+                (_, index) => new NumberValue(Math.floor(Math.random() * 10000))));
+        }
     }
 
 
-    const colors = graphView.selectedNodes.filter(n => 
-            n.type == COLOR
-        && !n.param1.controls[0].readOnly
-        && !n.param2.controls[0].readOnly
-        && !n.param3.controls[0].readOnly);
-        
-    if (colors.length > 0)
+    if (settings.colorShiftR)
     {
-        const colorParams = 
-        [ 
-            ...colors.map(n => n.paramFromId('c1')),
-            ...colors.map(n => n.paramFromId('c2')),
-            ...colors.map(n => n.paramFromId('c3'))
-        ];
+        const colors = graphView.selectedNodes.filter(n => 
+                n.type == COLOR
+            && !n.param1.controls[0].readOnly
+            && !n.param2.controls[0].readOnly
+            && !n.param3.controls[0].readOnly);
+            
+        if (colors.length > 0)
+        {
+            const colorParams = 
+            [ 
+                ...colors.map(n => n.paramFromId('c1')),
+                ...colors.map(n => n.paramFromId('c2')),
+                ...colors.map(n => n.paramFromId('c3'))
+            ];
 
-        params.push(...colorParams);
-        values.push(...colorParams.map(p => new NumberValue(Math.floor(p.controls[0].displayMin + Math.random() * (p.controls[0].displayMax - p.controls[0].displayMin)))));
+            params.push(...colorParams);
+            values.push(...colorParams.map(p => new NumberValue(Math.floor(p.controls[0].displayMin + Math.random() * (p.controls[0].displayMax - p.controls[0].displayMin)))));
+        }
     }
-
+    
 
     actionManager.do(new SetMultipleValuesAction(params, values, true));
 };

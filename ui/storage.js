@@ -55,6 +55,8 @@ async function uiReturnFigGetLocalData(msg)
         case 'showBoolValues':
         case 'separateThousands':
         case 'invertSimpleMathParamOrder':
+        case 'randomShiftR':
+        case 'colorShiftR':
         case 'showColorLegendInMenus':
         case 'showClearUndoWarning':
         case 'shareUsageMetrics':

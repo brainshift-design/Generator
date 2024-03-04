@@ -27,6 +27,7 @@ var menuBarMenus;
 
 var menuMain;
 var menuMainFile;
+var menuShiftR;
 var menuMainPreferences;
 var menuMainDebug;
 var menuMainHelp;
@@ -150,6 +151,8 @@ var menuItemShowColorLegendInMenus;
 var menuItemShowBoolValues;
 var menuItemSeparateThousands;
 var menuItemInvertSimpleMathParamOrder;
+var menuItemRandomShiftR;
+var menuItemColorShiftR;
 var menuItemShowClearUndoWarning;
 var menuItemShareUsageMetrics;
 var menuItemShowTooltips;
@@ -343,6 +346,12 @@ function initGeneratorMenus()
         menuItemSaveSelected = new MenuItem('Save selected . . .',      null, {shortcut: osCtrlShift() + 'S', callback: () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
 
 
+    menuShiftR = new Menu('Shift+R', false);
+    menuShiftR.addItems([
+        menuItemRandomShiftR = new MenuItem('Random nodes', null, {checkCallback: () => settings.randomShiftR, callback: () => { updateSettingAndMenu('randomShiftR', true, !settings.randomShiftR); }}),
+        menuItemColorShiftR  = new MenuItem('Color nodes',  null, {checkCallback: () => settings.colorShiftR,  callback: () => { updateSettingAndMenu('colorShiftR',  true, !settings.colorShiftR);  }})]);
+
+
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
         // menuItemShowPages               = new MenuItem('Show pages',                         null, {checkCallback: () => settings.showAllColorSpaces,         callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  updateMenuItemShowPages();                  }}),
@@ -352,6 +361,7 @@ function initGeneratorMenus()
         menuItemShowBoolValues             = new MenuItem('Show boolean values as   ✓ ✗',      null, {checkCallback: () => settings.showBoolValues,             callback: () => { updateSettingAndMenu('showBoolValues',             true, !settings.showBoolValues);             updateMenuItemShowBoolValues();             }}),
         menuItemSeparateThousands          = new MenuItem('Separate thousands in numbers',      null, {checkCallback: () => settings.separateThousands,          callback: () => { updateSettingAndMenu('separateThousands',          true, !settings.separateThousands);          updateMenuItemSeparateThousands();          }}),
         menuItemInvertSimpleMathParamOrder = new MenuItem('Invert simple math parameters',      null, {checkCallback: () => settings.invertSimpleMathParamOrder, callback: () => { updateSettingAndMenu('invertSimpleMathParamOrder', true, !settings.invertSimpleMathParamOrder); updateMenuItemInvertSimpleMathParamOrder(); }}),
+                                             new MenuItem( osShift(true) + 'R randomizes selected . . .',                 null, {childMenu: menuShiftR}),
         //menuItemShowColorLegendInMenus   = new MenuItem('Show color legend in menus',         null, {checkCallback: () => settings.showColorLegendInMenus,     callback: () => { updateSettingAndMenu('showColorLegendInMenus',     true, !settings.showColorLegendInMenus);     updateMenuItemShowColorLegendInMenus();     }}),
                                              new MenuItem('',                                   null, {separator: true}),    
         menuItemShowTooltips               = new MenuItem('Show tooltips',                      null, {childMenu: menuShowTooltips}),

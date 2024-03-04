@@ -1538,17 +1538,17 @@ const REVERSE_PATH          = 'REVPTH';
 const PATH_TYPES =
 [
     VECTOR_PATH, 
+    TRAPEZE,
     ARC_PATH,
-    WAVE_PATH,
-    TRAPEZE
+    WAVE_PATH
 ];
 
 const PATH_VALUES =
 [
     VECTOR_PATH_VALUE, 
+    TRAPEZE_VALUE,
     ARC_PATH_VALUE,
-    WAVE_PATH_VALUE,
-    TRAPEZE_VALUE
+    WAVE_PATH_VALUE
 ];
 
 
