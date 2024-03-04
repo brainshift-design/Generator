@@ -3465,6 +3465,7 @@ class Rect
 }
 
 
+
 class   AbsRect
 extends Rect
 {
@@ -3478,8 +3479,8 @@ extends Rect
 
 function expandRect(rect1, rect2)
 {
-    if (rect1.isNaN) return rect2;
-    if (rect2.isNaN) return rect1;
+    if (rect1.isNaN) return Rect.fromRect(rect2);
+    if (rect2.isNaN) return Rect.fromRect(rect1);
     
     return new AbsRect(
         Math.min(rect2.l, rect1.l),
@@ -6281,17 +6282,17 @@ const REVERSE_PATH          = 'REVPTH';
 const PATH_TYPES =
 [
     VECTOR_PATH, 
+    TRAPEZE,
     ARC_PATH,
-    WAVE_PATH,
-    TRAPEZE
+    WAVE_PATH
 ];
 
 const PATH_VALUES =
 [
     VECTOR_PATH_VALUE, 
+    TRAPEZE_VALUE,
     ARC_PATH_VALUE,
-    WAVE_PATH_VALUE,
-    TRAPEZE_VALUE
+    WAVE_PATH_VALUE
 ];
 
 
@@ -6838,6 +6839,10 @@ class FigmaObject
 
         this.sp1  = addv(this.sp0, ds1);
         this.sp2  = addv(this.sp0, ds2);
+
+
+        if (PATH_TYPES.includes(this.type))
+            this.updatePathPoints();
     }
 
 
@@ -6920,14 +6925,12 @@ class FigmaObject
             if (affectSpace)
                 this.applySpaceTransform(xform, space);
         }
-        else if (this.type == VECTOR_PATH
-              || this.type == ARC_PATH
-              || this.type == TRAPEZE)
+        else if (PATH_TYPES.includes(this.type))
         {
             this.applyObjectTransform(xform, space);
 
             this.updatePoints(xform, space);
-            //this.updatePathPoints();
+            this.updatePathPoints();
             //this.updatePathData();
 
             if (affectSpace)
@@ -8173,7 +8176,7 @@ extends FigmaShape
 
     toData()
     {
-        this.updatePathPoints();
+        // this.updatePathPoints();
         this.updatePathData();
 
         return [

@@ -121,6 +121,10 @@ class FigmaObject
 
         this.sp1  = addv(this.sp0, ds1);
         this.sp2  = addv(this.sp0, ds2);
+
+
+        if (PATH_TYPES.includes(this.type))
+            this.updatePathPoints();
     }
 
 
@@ -203,14 +207,12 @@ class FigmaObject
             if (affectSpace)
                 this.applySpaceTransform(xform, space);
         }
-        else if (this.type == VECTOR_PATH
-              || this.type == ARC_PATH
-              || this.type == TRAPEZE)
+        else if (PATH_TYPES.includes(this.type))
         {
             this.applyObjectTransform(xform, space);
 
             this.updatePoints(xform, space);
-            //this.updatePathPoints();
+            this.updatePathPoints();
             //this.updatePathData();
 
             if (affectSpace)

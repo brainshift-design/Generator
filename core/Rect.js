@@ -101,6 +101,7 @@ class Rect
 }
 
 
+
 class   AbsRect
 extends Rect
 {
@@ -114,8 +115,8 @@ extends Rect
 
 function expandRect(rect1, rect2)
 {
-    if (rect1.isNaN) return rect2;
-    if (rect2.isNaN) return rect1;
+    if (rect1.isNaN) return Rect.fromRect(rect2);
+    if (rect2.isNaN) return Rect.fromRect(rect1);
     
     return new AbsRect(
         Math.min(rect2.l, rect1.l),
