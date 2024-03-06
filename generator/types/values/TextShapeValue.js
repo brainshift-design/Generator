@@ -166,18 +166,19 @@ extends ShapeValue
 
     toPreviewString()
     {
-        return      this.text         .toJson() // otherwise the string can't contain another string
-            + ' ' + this.x            .toPreviewString()
-            + ' ' + this.y            .toPreviewString()
-            + ' ' + this.width        .toPreviewString()
-            + ' ' + this.height       .toPreviewString()
-            + ' ' + this.font         .toPreviewString()
-            + ' ' + this.style        .toPreviewString()
-            + ' ' + this.size         .toPreviewString()
-            + ' ' + this.alignX       .toPreviewString()
-            + ' ' + this.alignY       .toPreviewString()
-            + ' ' + this.lineHeight   .toPreviewString()
-            + ' ' + this.letterSpacing.toPreviewString();
+        return 'textShape';      
+            //this.text         .toJson() // otherwise the string can't contain another string
+            //+ ' ' + this.x            .toPreviewString()
+            //+ ' ' + this.y            .toPreviewString()
+            //+ ' ' + this.width        .toPreviewString()
+            //+ ' ' + this.height       .toPreviewString()
+            //+ ' ' + this.font         .toPreviewString()
+            //+ ' ' + this.style        .toPreviewString()
+            //+ ' ' + this.size         .toPreviewString()
+            //+ ' ' + this.alignX       .toPreviewString()
+            //+ ' ' + this.alignY       .toPreviewString()
+            //+ ' ' + this.lineHeight   .toPreviewString()
+            //+ ' ' + this.letterSpacing.toPreviewString();
     }
 
 

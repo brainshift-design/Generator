@@ -215,6 +215,9 @@ function figResizeWindow(width, height)
 
         figma.ui.resize(width, height);
 
+
+        await figma.currentPage.loadAsync();
+
         figma.currentPage.setPluginData(figma.currentUser.id + ',windowWidth',  width .toString());
         figma.currentPage.setPluginData(figma.currentUser.id + ',windowHeight', height.toString());
 

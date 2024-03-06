@@ -133,19 +133,44 @@ extends GShape
 
 
 
-    // toValue()
-    // {
-    //     const line = new LineValue(
-    //         this.nodeId,
-    //         this.x     .toValue(),
-    //         this.y     .toValue(),
-    //         this.width .toValue());
+    isValid()
+    {
+        return super.isValid()
+            && this.x     && this.x    .isValid()
+            && this.y     && this.y    .isValid()
+            && this.width && this.width.isValid();
+    }
 
-    //     line.copyCustomParams(this.value);
 
-    //     line.props   = this.props.toValue();
-    //     line.objects = this.value.objects.map(o => o.copy());
 
-    //     return line;
-    // }
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+ 
+        if (this.x    ) this.x    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
+        if (this.width) this.width.pushValueUpdates(parse);
+    }
+
+   
+        
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.x    ) this.x    .invalidateInputs(parse, from, force);
+        if (this.y    ) this.y    .invalidateInputs(parse, from, force);
+        if (this.width) this.width.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+ 
+        if (this.x    ) this.x    .iterateLoop(parse);
+        if (this.y    ) this.y    .iterateLoop(parse);
+        if (this.width) this.width.iterateLoop(parse);
+    }
 }

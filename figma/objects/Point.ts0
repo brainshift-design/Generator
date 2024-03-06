@@ -82,33 +82,35 @@ function updatePointStyles(figPoint)
     if (figPoint.removed) 
         return;
 
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const isCenter   = parseBool(figPoint.getPluginData('isCenter'));
+        const isSelected = figma.currentPage.selection.includes(figPoint);
+
+        const color =
+            isCenter
+            ? [0xf2, 0x48, 0x22]
+            : isSelected
+            ? [ 12, 140, 233]
+            : [255, 255, 255];
+
+        const border =
+            isCenter
+            ? [255, 255, 255]
+            : isSelected
+            ? [255, 255, 255]
+            : [ 12, 140, 233];
+
+
+        figPoint.fills = getObjectFills([['SOLID', color[0], color[1], color[2], 100]]);
+
+
+        const effects = [];
         
-    const isCenter   = parseBool(figPoint.getPluginData('isCenter'));
-    const isSelected = figma.currentPage.selection.includes(figPoint);
-
-    const color =
-        isCenter
-        ? [0xf2, 0x48, 0x22]
-        : isSelected
-          ? [ 12, 140, 233]
-          : [255, 255, 255];
-
-    const border =
-        isCenter
-        ? [255, 255, 255]
-        : isSelected
-          ? [255, 255, 255]
-          : [ 12, 140, 233];
+        effects.push(...getObjectEffects([['DROP_SHADOW', border[0]/255, border[1]/255, border[2]/255,  1, 0, 0, 0, (isCenter ? 3 : isSelected ? 5 : 3.6)/curZoom, 'NORMAL', true, true]], true));
+        effects.push(...getObjectEffects([['DROP_SHADOW', color[0]/255, color[1]/255, color[2]/255, 1, 0, 0, 0, (isSelected ? 4 : 2.4)/curZoom, 'NORMAL', true, true]], true));
 
 
-    figPoint.fills = getObjectFills([['SOLID', color[0], color[1], color[2], 100]]);
-
-
-    const effects = [];
-    
-    effects.push(...getObjectEffects([['DROP_SHADOW', border[0]/255, border[1]/255, border[2]/255,  1, 0, 0, 0, (isCenter ? 3 : isSelected ? 5 : 3.6)/curZoom, 'NORMAL', true, true]], true));
-    effects.push(...getObjectEffects([['DROP_SHADOW', color[0]/255, color[1]/255, color[2]/255, 1, 0, 0, 0, (isSelected ? 4 : 2.4)/curZoom, 'NORMAL', true, true]], true));
-
-
-    figPoint.effects = effects;
+        figPoint.effects = effects;
+    });
 }

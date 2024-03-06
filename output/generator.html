@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 373;
+const generatorVersion = 375;
 
 
 const MAX_INT32        = 2147483647;
@@ -5787,11 +5787,11 @@ function loadLocalSettings()
 }
 
 
-const LIST_VALUE        = 'LIST#';
+const LIST_VALUE           = 'LIST#';
 
-const NUMBER_LIST_VALUE = 'NLIST#';
-const   TEXT_LIST_VALUE = 'TLIST#';
-const  SHAPE_LIST_VALUE = 'SLIST#';
+const NUMBER_LIST_VALUE    = 'NLIST#';
+const   TEXT_LIST_VALUE    = 'TLIST#';
+const  SHAPE_LIST_VALUE    = 'SLIST#';
 
 
 const NULL_NODE            = 'NULL';
@@ -6281,7 +6281,7 @@ const JOIN_PATHS            = 'JOINPTH';
 const POINT_ALONG_PATH      = 'PTALPATH';
 const CLOSEST_POINT_ON_PATH = 'CPTONPATH';
 const MEASURE_VECTOR        = 'MESPT';
-const VECTOR         = 'VECLEN';
+const VECTOR                = 'VECLEN';
 const CIRCLE_CENTER         = 'CIRCEN';
 const ARC_FROM_POINTS       = 'ARCPT';
 const INTERSECT_LINES       = 'INTLIN';
@@ -6326,7 +6326,7 @@ const BOOLEAN_TYPES =
 ];
 
 
-const RENDER             = 'RENDER';
+const RENDER               = 'RENDER';
 
 
 const SHAPE_VALUES =
@@ -10046,6 +10046,8 @@ function parseValueFromType(type, value)
         case VECTOR_NETWORK_VALUE: return parseVectorNetworkValue(value)[0];
         case        BOOLEAN_VALUE: return parseShapeBooleanValue (value)[0];
         case    SHAPE_GROUP_VALUE: return parseShapeGroupValue   (value)[0];
+        case       ARC_PATH_VALUE: return parseArcPathValue      (value)[0];
+        case      WAVE_PATH_VALUE: return parseWavePathValue     (value)[0];
         case          FRAME_VALUE: return parseFrameValue        (value)[0];
         
         default: 
@@ -15432,18 +15434,19 @@ extends ShapeValue
 
     toPreviewString()
     {
-        return      this.text         .toJson() // otherwise the string can't contain another string
-            + ' ' + this.x            .toPreviewString()
-            + ' ' + this.y            .toPreviewString()
-            + ' ' + this.width        .toPreviewString()
-            + ' ' + this.height       .toPreviewString()
-            + ' ' + this.font         .toPreviewString()
-            + ' ' + this.style        .toPreviewString()
-            + ' ' + this.size         .toPreviewString()
-            + ' ' + this.alignX       .toPreviewString()
-            + ' ' + this.alignY       .toPreviewString()
-            + ' ' + this.lineHeight   .toPreviewString()
-            + ' ' + this.letterSpacing.toPreviewString();
+        return 'textShape';      
+            //this.text         .toJson() // otherwise the string can't contain another string
+            //+ ' ' + this.x            .toPreviewString()
+            //+ ' ' + this.y            .toPreviewString()
+            //+ ' ' + this.width        .toPreviewString()
+            //+ ' ' + this.height       .toPreviewString()
+            //+ ' ' + this.font         .toPreviewString()
+            //+ ' ' + this.style        .toPreviewString()
+            //+ ' ' + this.size         .toPreviewString()
+            //+ ' ' + this.alignX       .toPreviewString()
+            //+ ' ' + this.alignY       .toPreviewString()
+            //+ ' ' + this.lineHeight   .toPreviewString()
+            //+ ' ' + this.letterSpacing.toPreviewString();
     }
 
 
@@ -17481,25 +17484,27 @@ function parseShapeGroupValue(str, i = -1)
 class FrameValue
 extends ShapeValue
 {
+    children;
+    position;
     x;
     y;
     width;
     height;
     round;
-    children;
 
 
 
-    constructor(nodeId, x, y, width, height, round, children)
+    constructor(nodeId, children, position, x, y, width, height, round)
     {
         super(FRAME_VALUE, nodeId);
 
+        this.children = children;
+        this.position = position;
         this.x        = x;
         this.y        = y;
         this.width    = width;
         this.height   = height;
         this.round    = round;
-        this.children = children;
 
         this.objects = 
                children
@@ -17514,12 +17519,13 @@ extends ShapeValue
     {
         const copy = new FrameValue(
             this.nodeId,
+            this.children.copy(),
+            this.position.copy(),
             this.x       .copy(),
             this.y       .copy(),
             this.width   .copy(),
             this.height  .copy(),
-            this.round   .copy(),
-            this.children.copy());
+            this.round   .copy());
 
         copy.copyBase(this);
 
@@ -17531,12 +17537,13 @@ extends ShapeValue
     equals(frame)
     {
         return frame
+            && this.children.equals(frame.children)
+            && this.position.equals(frame.position)
             && this.x       .equals(frame.x       )
             && this.y       .equals(frame.y       )
             && this.width   .equals(frame.width   )
             && this.height  .equals(frame.height  )
-            && this.round   .equals(frame.round   )
-            && this.children.equals(frame.children);
+            && this.round   .equals(frame.round   );
     }
 
 
@@ -17550,36 +17557,41 @@ extends ShapeValue
 
     toString()
     {
-        return      this.x       .toString()
-            + ' ' + this.y       .toString()
-            + ' ' + this.width   .toString()
-            + ' ' + this.height  .toString()
-            + ' ' + this.round   .toString()
-            + ' ' + this.children.toString();
+        return       this.children.toString()
+             + ' ' + this.position.toString()
+             + ' ' + this.x       .toString()
+             + ' ' + this.y       .toString()
+             + ' ' + this.width   .toString()
+             + ' ' + this.height  .toString()
+             + ' ' + this.round   .toString()
+             + ' ' + super.toString();
     }
 
 
 
     toPreviewString()
     {
-        return      this.x       .toPreviewString()
-            + ' ' + this.y       .toPreviewString()
-            + ' ' + this.width   .toPreviewString()
-            + ' ' + this.height  .toPreviewString()
-            + ' ' + this.round   .toPreviewString()
-            + ' ' + this.children.toPreviewString();
+        return 'frame';
+            //   this.children.toPreviewString()
+            //  + ' ' + this.position.toPreviewString()
+            //  + ' ' + this.x       .toPreviewString()
+            //  + ' ' + this.y       .toPreviewString()
+            //  + ' ' + this.width   .toPreviewString()
+            //  + ' ' + this.height  .toPreviewString()
+            //  + ' ' + this.round   .toPreviewString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.x       .toDisplayString()
-            + ' ' + this.y       .toDisplayString()
-            + ' ' + this.width   .toDisplayString()
-            + ' ' + this.height  .toDisplayString()
-            + ' ' + this.round   .toDisplayString()
-            + ' ' + this.children.toDisplayString();
+        return       this.children.toDisplayString()
+             + ' ' + this.position.toDisplayString()
+             + ' ' + this.x       .toDisplayString()
+             + ' ' + this.y       .toDisplayString()
+             + ' ' + this.width   .toDisplayString()
+             + ' ' + this.height  .toDisplayString()
+             + ' ' + this.round   .toDisplayString();
     }
 
 
@@ -17593,25 +17605,27 @@ extends ShapeValue
 
     isValid()
     {
-        return this.x       .isValid()
+        return super.isValid()
+            && this.children.isValid()
+            && this.position.isValid()
+            && this.x       .isValid()
             && this.y       .isValid()
             && this.width   .isValid()
             && this.height  .isValid()
-            && this.round   .isValid()
-            && this.children.isValid()
-            && super.isValid();
+            && this.round   .isValid();
     }
 
 
     
     static NaN = new FrameValue(
         '',
+        ListValue  .NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        ListValue  .NaN);
+        NumberValue.NaN);
 }
 
 
@@ -17632,21 +17646,23 @@ function parseFrameValue(str, i = -1)
 
     const iStart = i;
 
-    const x        = parseNumberValue(str[i]); i += x      [1];
-    const y        = parseNumberValue(str[i]); i += y      [1];
-    const width    = parseNumberValue(str[i]); i += width  [1];
-    const height   = parseNumberValue(str[i]); i += height [1];
-    const round    = parseNumberValue(str[i]); i += round  [1];
     const children = parseListValue  (str, i); i += children[1];
+    const position = parseNumberValue(str[i]); i += position[1];
+    const x        = parseNumberValue(str[i]); i += x       [1];
+    const y        = parseNumberValue(str[i]); i += y       [1];
+    const width    = parseNumberValue(str[i]); i += width   [1];
+    const height   = parseNumberValue(str[i]); i += height  [1];
+    const round    = parseNumberValue(str[i]); i += round   [1];
 
     const frame = new FrameValue(
         '', // set node ID elsewhere
+        children[0],
+        position[0],
         x       [0],
         y       [0],
         width   [0],
         height  [0],
-        round   [0],
-        children[0]);
+        round   [0]);
 
 
     i = parseShapeBaseValue(str, i, frame);
@@ -37319,21 +37335,46 @@ extends GShape
 
 
 
-    // toValue()
-    // {
-    //     const line = new LineValue(
-    //         this.nodeId,
-    //         this.x     .toValue(),
-    //         this.y     .toValue(),
-    //         this.width .toValue());
+    isValid()
+    {
+        return super.isValid()
+            && this.x     && this.x    .isValid()
+            && this.y     && this.y    .isValid()
+            && this.width && this.width.isValid();
+    }
 
-    //     line.copyCustomParams(this.value);
 
-    //     line.props   = this.props.toValue();
-    //     line.objects = this.value.objects.map(o => o.copy());
 
-    //     return line;
-    // }
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+ 
+        if (this.x    ) this.x    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
+        if (this.width) this.width.pushValueUpdates(parse);
+    }
+
+   
+        
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.x    ) this.x    .invalidateInputs(parse, from, force);
+        if (this.y    ) this.y    .invalidateInputs(parse, from, force);
+        if (this.width) this.width.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+ 
+        if (this.x    ) this.x    .iterateLoop(parse);
+        if (this.y    ) this.y    .iterateLoop(parse);
+        if (this.width) this.width.iterateLoop(parse);
+    }
 }
 
 
@@ -41045,8 +41086,9 @@ extends GShapeBase
 class GFrame
 extends GShape
 {
-    round    = null;
     children = null;
+    position = null;
+    round    = null;
 
 
 
@@ -41061,8 +41103,9 @@ extends GShape
     {
         super.reset();
 
-        this.round    = null;
         this.children = null;
+        this.position = null;
+        this.round    = null;
     }
 
 
@@ -41073,8 +41116,9 @@ extends GShape
 
         copy.copyBase(this);
 
-        if (this.round   ) copy.round    = this.round   .copy();
         if (this.children) copy.children = this.children.copy();
+        if (this.position) copy.position = this.position.copy();
+        if (this.round   ) copy.round    = this.round   .copy();
 
         return copy;
     }
@@ -41085,12 +41129,13 @@ extends GShape
     {
         switch (paramId)
         {
+            case 'children': return this.input ? this.value.children : this.children;
+            case 'position': return this.input ? this.value.position : this.position;
             case 'x':        return this.input ? this.value.x        : this.x;
             case 'y':        return this.input ? this.value.y        : this.y;
             case 'width':    return this.input ? this.value.width    : this.width;
             case 'height':   return this.input ? this.value.height   : this.height;
             case 'round':    return this.input ? this.value.round    : this.round;
-            case 'children': return this.input ? this.value.children : this.children;
         }
 
         return super.paramFromId(paramId);
@@ -41106,8 +41151,9 @@ extends GShape
 
         const [x, y, width, height] = await this.evalBaseParams(parse);
 
-        const round    = this.round    ? (await this.round   .eval(parse)).toValue() : null;
         let   children = this.children ? (await this.children.eval(parse)).toValue() : null;
+        const position = this.position ? (await this.position.eval(parse)).toValue() : null;
+        const round    = this.round    ? (await this.round   .eval(parse)).toValue() : null;
 
         if (   children
             && SHAPE_VALUES.includes(children.type)
@@ -41127,29 +41173,39 @@ extends GShape
 
             this.value = new FrameValue(
                 this.nodeId,
+                children ?? input.children,
+                position ?? input.position,
                 x        ?? input.x,
                 y        ?? input.y,
                 width    ?? input.width,
                 height   ?? input.height,
-                round    ?? input.round,
-                children ?? input.children);
+                round    ?? input.round);
         }
         else
         {
             this.value = new FrameValue(
                 this.nodeId, 
+                children,
+                position,
                 x, 
                 y, 
                 width,
                 height, 
-                round, 
-                children);
+                round);
         }
 
 
+        const childType = new TextValue(finalListTypeFromItems(children.items));
+
         this.setUpdateValues(parse, 
         [
-            ['value', this.value]
+            ['childType', childType],
+            ['position',  position ],
+            ['x',         x        ],
+            ['y',         y        ],
+            ['width',     width    ],
+            ['height',    height   ],
+            ['round',     round    ]
         ]);
 
 
@@ -41159,12 +41215,13 @@ extends GShape
         await this.evalObjects(parse);
 
 
+        if (!this.children) this.children = this.value.children.copy();
+        if (!this.position) this.position = this.value.position.copy();
         if (!this.x       ) this.x        = this.value.x       .copy();
         if (!this.y       ) this.y        = this.value.y       .copy();
         if (!this.width   ) this.width    = this.value.width   .copy();
         if (!this.height  ) this.height   = this.value.height  .copy();
         if (!this.round   ) this.round    = this.value.round   .copy();
-        if (!this.children) this.children = this.value.children.copy();
 
 
         this.validate();
@@ -41180,17 +41237,19 @@ extends GShape
             return;
             
 
-        if (   this.value.x
+        if (   this.value.position
+            && this.value.x
             && this.value.y
             && this.value.width
             && this.value.height
             && this.value.round)
         {
-            let   x = this.value.x     .value;
-            let   y = this.value.y     .value;
-            let   w = this.value.width .value;
-            let   h = this.value.height.value;
-            const r = Math.max(0, this.value.round.value);
+            let   pos = this.value.position.value;
+            let   x   = this.value.x       .value;
+            let   y   = this.value.y       .value;
+            let   w   = this.value.width   .value;
+            let   h   = this.value.height  .value;
+            const r   = Math.max(0, this.value.round.value);
 
 
             const frame = new FigmaFrame(
@@ -41246,8 +41305,9 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round    && this.round   .isValid()
-            && this.children && this.children.isValid();
+            && this.children && this.children.isValid()
+            && this.position && this.position.isValid()
+            && this.round    && this.round   .isValid();
     }
 
 
@@ -41256,8 +41316,9 @@ extends GShape
     {
         super.pushValueUpdates(parse);
 
-        if (this.round   ) this.round   .pushValueUpdates(parse);
         if (this.children) this.children.pushValueUpdates(parse);
+        if (this.position) this.position.pushValueUpdates(parse);
+        if (this.round   ) this.round   .pushValueUpdates(parse);
     }
 
 
@@ -41266,8 +41327,9 @@ extends GShape
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.round   ) this.round   .invalidateInputs(parse, from, force);
         if (this.children) this.children.invalidateInputs(parse, from, force);
+        if (this.position) this.position.invalidateInputs(parse, from, force);
+        if (this.round   ) this.round   .invalidateInputs(parse, from, force);
     }
 
 
@@ -41276,8 +41338,9 @@ extends GShape
     {
         super.iterateLoop(parse);
 
-        if (this.round   ) this.round   .iterateLoop(parse);
         if (this.children) this.children.iterateLoop(parse);
+        if (this.position) this.position.iterateLoop(parse);
+        if (this.round   ) this.round   .iterateLoop(parse);
     }
 }
 
@@ -52341,12 +52404,13 @@ function genParseFrame(parse)
 
         switch (paramId)
         {
+        case 'children': frame.children = genParse(parse); break;
+        case 'position': frame.position = genParse(parse); break;
         case 'x':        frame.x        = genParse(parse); break;
         case 'y':        frame.y        = genParse(parse); break;
         case 'width':    frame.width    = genParse(parse); break;
         case 'height':   frame.height   = genParse(parse); break;
         case 'round':    frame.round    = genParse(parse); break;
-        case 'children': frame.children = genParse(parse); break;
         case 'props':    frame.props    = genParse(parse); break;
         }
     }
@@ -55257,9 +55321,9 @@ function logReqValue(type, val, parse)
 
 
 
-function logSavedNode(nodeKey, darkMode)
+async function logSavedNode(nodeKey, darkMode)
 {
-    const log  = formatSavedNodeJson(figGetPageData(nodeKey, false));
+    const log  = formatSavedNodeJson(await figGetPageData(nodeKey, false));
 
     if (darkMode)
     {

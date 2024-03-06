@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 373;
+const generatorVersion = 375;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -1406,13 +1406,15 @@ function base32toArray(base32, chars = base32chars) {
     return array;
 }
 function logSavedNode(nodeKey, darkMode) {
-    const log = formatSavedNodeJson(figGetPageData(nodeKey, false));
-    if (darkMode) {
-        console.log('%c%s\n%c%s', 'background: #fa24; color: white;', noNodeTag(nodeKey), 'background: #fa44; color: #edc;', log);
-    }
-    else {
-        console.log('%c%s\n%c%s', 'background: #fdb; color: black;', noNodeTag(nodeKey), 'background: #fed; color: black;', log);
-    }
+    return __awaiter(this, void 0, void 0, function* () {
+        const log = formatSavedNodeJson(yield figGetPageData(nodeKey, false));
+        if (darkMode) {
+            console.log('%c%s\n%c%s', 'background: #fa24; color: white;', noNodeTag(nodeKey), 'background: #fa44; color: #edc;', log);
+        }
+        else {
+            console.log('%c%s\n%c%s', 'background: #fdb; color: black;', noNodeTag(nodeKey), 'background: #fed; color: black;', log);
+        }
+    });
 }
 function formatSavedNodeJson(json) {
     let formJson = json
@@ -1479,40 +1481,42 @@ var objectCenterSize = 15;
 function figStartGenerator() {
     (function () {
         return __awaiter(this, void 0, void 0, function* () {
-            let _wndWidth = yield figma.currentPage.getPluginData(figma.currentUser.id + ',windowWidth');
-            let _wndHeight = yield figma.currentPage.getPluginData(figma.currentUser.id + ',windowHeight');
-            let wndWidth;
-            let wndHeight;
-            if (_wndWidth === NULL) {
-                wndWidth = 800;
-                figma.currentPage.setPluginData(figma.currentUser.id + ',windowWidth', _wndWidth.toString());
-            }
-            else
-                wndWidth = parseInt(_wndWidth);
-            if (_wndHeight === NULL) {
-                wndHeight = 600;
-                figma.currentPage.setPluginData(figma.currentUser.id + ',windowHeight', _wndHeight.toString());
-            }
-            else
-                wndHeight = parseInt(_wndHeight);
-            figma.ui.resize(Math.max(minWindowWidth, wndWidth), Math.max(minWindowHeight, wndHeight));
-            figma.ui.show();
-            const fonts = yield figma.listAvailableFontsAsync();
-            const eula = (yield figma.clientStorage.getAsync('eula')) === 'true';
-            const tutorials = (yield figma.clientStorage.getAsync('tutorials')) === 'true';
-            const isLocked = figPageIsLocked();
-            figPostMessageToUi({
-                cmd: 'uiReturnFigStartGenerator',
-                currentUser: figma.currentUser,
-                viewportRect: figma.viewport.bounds,
-                viewportZoom: figma.viewport.zoom,
-                fonts: fonts,
-                eula: eula,
-                tutorials: tutorials,
-                isLocked: isLocked,
-                windowWidth: wndWidth,
-                windowHeight: wndHeight
-            });
+            figma.currentPage.loadAsync().then(() => __awaiter(this, void 0, void 0, function* () {
+                let _wndWidth = yield figma.currentPage.getPluginData(figma.currentUser.id + ',windowWidth');
+                let _wndHeight = yield figma.currentPage.getPluginData(figma.currentUser.id + ',windowHeight');
+                let wndWidth;
+                let wndHeight;
+                if (_wndWidth === NULL) {
+                    wndWidth = 800;
+                    figma.currentPage.setPluginData(figma.currentUser.id + ',windowWidth', _wndWidth.toString());
+                }
+                else
+                    wndWidth = parseInt(_wndWidth);
+                if (_wndHeight === NULL) {
+                    wndHeight = 600;
+                    figma.currentPage.setPluginData(figma.currentUser.id + ',windowHeight', _wndHeight.toString());
+                }
+                else
+                    wndHeight = parseInt(_wndHeight);
+                figma.ui.resize(Math.max(minWindowWidth, wndWidth), Math.max(minWindowHeight, wndHeight));
+                figma.ui.show();
+                const fonts = yield figma.listAvailableFontsAsync();
+                const eula = (yield figma.clientStorage.getAsync('eula')) === 'true';
+                const tutorials = (yield figma.clientStorage.getAsync('tutorials')) === 'true';
+                const isLocked = yield figPageIsLocked();
+                figPostMessageToUi({
+                    cmd: 'uiReturnFigStartGenerator',
+                    currentUser: figma.currentUser,
+                    viewportRect: figma.viewport.bounds,
+                    viewportZoom: figma.viewport.zoom,
+                    fonts: fonts,
+                    eula: eula,
+                    tutorials: tutorials,
+                    isLocked: isLocked,
+                    windowWidth: wndWidth,
+                    windowHeight: wndHeight
+                });
+            }));
         });
     })();
 }
@@ -1538,16 +1542,19 @@ function figOnIdInterval() {
     figSetPageData(clockMarker + figma.currentUser.sessionId.toString(), Date.now().toString());
 }
 function figPageIsLocked() {
-    const clocks = figma.currentPage.getPluginDataKeys()
-        .filter(k => k.length > clockMarker.length
-        && k.substring(0, clockMarker.length) == clockMarker
-        && k.substring(clockMarker.length) != figma.currentUser.sessionId.toString())
-        .map(k => parseInt(figGetPageData(k)));
-    clocks.sort();
-    const now = Date.now();
-    const locked = clocks.length > 0
-        && now - clocks[clocks.length - 1] < clockInterval * 2;
-    return locked;
+    return __awaiter(this, void 0, void 0, function* () {
+        yield figma.currentPage.loadAsync();
+        const clocks = figma.currentPage.getPluginDataKeys()
+            .filter(k => k.length > clockMarker.length
+            && k.substring(0, clockMarker.length) == clockMarker
+            && k.substring(clockMarker.length) != figma.currentUser.sessionId.toString())
+            .map((k) => __awaiter(this, void 0, void 0, function* () { return parseInt(yield figGetPageData(k)); }));
+        clocks.sort();
+        const now = Date.now();
+        const locked = clocks.length > 0
+            && now - (yield clocks[clocks.length - 1]) < clockInterval * 2;
+        return locked;
+    });
 }
 function figOnSelectionChange() {
     updatePointObjects();
@@ -1563,25 +1570,24 @@ function figDeleteObjectsFromNodeIds(nodeIds) {
         if (figEmptyObjects[i].removed
             || nodeIds.includes(figEmptyObjects[i].getPluginData('nodeId')))
             figEmptyObjects.splice(i, 1);
-    figma.currentPage
-        .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
-        .forEach(o => { if (!o.removed)
-        o.remove(); });
+    figma.currentPage.loadAsync().then(() => {
+        figma.currentPage
+            .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
+            .forEach(o => { if (!o.removed)
+            o.remove(); });
+    });
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
 }
 function figDeleteAllObjects(forceDelete = false) {
-    figma.currentPage.loadAsync().then(() => {
-        for (const figObj of figma.currentPage.children) {
-            if (figObj.removed)
-                continue;
-            if (figObj.getPluginData('objectId') != ''
-                && figObj.getPluginData('userId') == figma.currentUser.id
-                //&&  figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
-                && (parseInt(figObj.getPluginData('retain')) == 0
-                    || forceDelete))
-                figObj.remove();
-        }
-    });
+    for (const figObj of figma.currentPage.children) {
+        if (figObj.removed)
+            continue;
+        if (figObj.getPluginData('objectId') != ''
+            && figObj.getPluginData('userId') == figma.currentUser.id
+            && (parseInt(figObj.getPluginData('retain')) == 0
+                || forceDelete))
+            figObj.remove();
+    }
 }
 function figDeleteObjectsExcept(nodeIds, genIgnoreObjects) {
     for (let i = figObjectArrays.length - 1; i >= 0; i--) {
@@ -1984,15 +1990,18 @@ function figClearAllLocalData() {
     });
 }
 function figGetPageData(key, postToUi = true) {
-    const data = figma.currentPage.getPluginData(key);
-    if (postToUi) {
-        figPostMessageToUi({
-            cmd: 'uiReturnFigGetPageData',
-            key: key,
-            value: data
-        });
-    }
-    return data;
+    return __awaiter(this, void 0, void 0, function* () {
+        yield figma.currentPage.loadAsync();
+        const data = figma.currentPage.getPluginData(key);
+        if (postToUi) {
+            figPostMessageToUi({
+                cmd: 'uiReturnFigGetPageData',
+                key: key,
+                value: data
+            });
+        }
+        return data;
+    });
 }
 function figSetPageData(key, value) {
     figClearPageData(key); // remove possible existing values first
@@ -2002,30 +2011,32 @@ function figClearPageData(key) {
     figma.currentPage.setPluginData(key, '');
 }
 function figLoadNodesAndConns(debugMode) {
-    // const pageIds  = figma.currentPage.getPluginData('pages');
-    const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
-    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
-    if (!debugMode)
-        figMarkForLoading(nodeKeys, connKeys);
-    const pages = pageKeys.map(k => figma.currentPage.getPluginData(k));
-    const nodes = nodeKeys.map(k => figma.currentPage.getPluginData(k));
-    const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
-    const pageOrder = figma.currentPage.getPluginData('pageOrder').split(',');
-    const currentPageId = figma.currentPage.getPluginData('currentPageId');
-    initPageStyles(nodes);
-    const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');
-    figPostMessageToUi({
-        cmd: 'uiReturnFigLoadNodesAndConns',
-        showAllColorSpaces: showAllColorSpaces,
-        pageKeys: pageKeys,
-        pageJson: pages,
-        pageOrder: pageOrder,
-        currentPageId: currentPageId,
-        nodeKeys: nodeKeys,
-        nodeJson: nodes,
-        connKeys: connKeys,
-        connJson: conns
+    figma.currentPage.loadAsync().then(() => {
+        // const pageIds  = figma.currentPage.getPluginData('pages');
+        const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
+        const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
+        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        if (!debugMode)
+            figMarkForLoading(nodeKeys, connKeys);
+        const pages = pageKeys.map(k => figma.currentPage.getPluginData(k));
+        const nodes = nodeKeys.map(k => figma.currentPage.getPluginData(k));
+        const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
+        const pageOrder = figma.currentPage.getPluginData('pageOrder').split(',');
+        const currentPageId = figma.currentPage.getPluginData('currentPageId');
+        initPageStyles(nodes);
+        const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');
+        figPostMessageToUi({
+            cmd: 'uiReturnFigLoadNodesAndConns',
+            showAllColorSpaces: showAllColorSpaces,
+            pageKeys: pageKeys,
+            pageJson: pages,
+            pageOrder: pageOrder,
+            currentPageId: currentPageId,
+            nodeKeys: nodeKeys,
+            nodeJson: nodes,
+            connKeys: connKeys,
+            connJson: conns
+        });
     });
 }
 function initPageStyles(nodes) {
@@ -2050,15 +2061,17 @@ function initPageStyles(nodes) {
     });
 }
 function figMarkForLoading(nodeKeys, connKeys) {
-    const loadingFlag = '"loading": "true"';
-    const not = '{\n';
-    const set = '{\n' + HTAB + loadingFlag + ',\n';
-    nodeKeys.forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k)
-        .replace(set, not)
-        .replace(not, set)));
-    connKeys.forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k)
-        .replace(set, not)
-        .replace(not, set)));
+    figma.currentPage.loadAsync().then(() => {
+        const loadingFlag = '"loading": "true"';
+        const not = '{\n';
+        const set = '{\n' + HTAB + loadingFlag + ',\n';
+        nodeKeys.forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k)
+            .replace(set, not)
+            .replace(not, set)));
+        connKeys.forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k)
+            .replace(set, not)
+            .replace(not, set)));
+    });
 }
 function figSavePages(pageIds, pageJson, currentPageId) {
     for (let i = 0; i < pageIds.length; i++) {
@@ -2087,73 +2100,92 @@ function figSaveLocalTemplate(templateName, template) {
     figSetLocalData(tempTag + ' ' + templateName, template);
 }
 function figRemoveConnsToNodes(nodeIds) {
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
-    for (const key of connKeys) {
-        const parts = noConnTag(key).split(' ');
-        if (nodeIds.includes(parts[0])
-            || nodeIds.includes(parts[2]))
-            figClearPageData(key);
-    }
+    figma.currentPage.loadAsync().then(() => {
+        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        for (const key of connKeys) {
+            const parts = noConnTag(key).split(' ');
+            if (nodeIds.includes(parts[0])
+                || nodeIds.includes(parts[2]))
+                figClearPageData(key);
+        }
+    });
 }
 function figRemoveSavedNodesAndConns(nodeIds) {
-    figRemoveConnsToNodes(nodeIds);
-    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k)
-        && nodeIds.includes(noNodeTag(k)));
-    nodeKeys.forEach(k => figClearPageData(k));
+    figma.currentPage.loadAsync().then(() => {
+        figRemoveConnsToNodes(nodeIds);
+        const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k)
+            && nodeIds.includes(noNodeTag(k)));
+        nodeKeys.forEach(k => figClearPageData(k));
+    });
 }
 function figRemoveAllSavedNodesAndConns() {
-    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
-    for (const key of nodeKeys)
-        figClearPageData(key);
-    for (const key of connKeys)
-        figClearPageData(key);
+    figma.currentPage.loadAsync().then(() => {
+        const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
+        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        for (const key of nodeKeys)
+            figClearPageData(key);
+        for (const key of connKeys)
+            figClearPageData(key);
+    });
 }
 function figLogAllSavedNodesAndConns(darkMode) {
-    figLogAllSavedNodes(darkMode);
-    figLogAllSavedConns(darkMode);
+    return __awaiter(this, void 0, void 0, function* () {
+        yield figLogAllSavedNodes(darkMode);
+        figLogAllSavedConns(darkMode);
+    });
 }
 function figLogAllSavedNodes(darkMode) {
-    figma.currentPage.getPluginDataKeys()
-        .filter(k => isNodeKey(k))
-        .forEach(k => logSavedNode(k, darkMode));
+    return __awaiter(this, void 0, void 0, function* () {
+        yield figma.currentPage.loadAsync();
+        figma.currentPage.getPluginDataKeys()
+            .filter(k => isNodeKey(k))
+            .forEach((k) => __awaiter(this, void 0, void 0, function* () { return yield logSavedNode(k, darkMode); }));
+    });
 }
 function figLogAllSavedConns(darkMode) {
-    const connKeys = figma.currentPage.getPluginDataKeys()
-        .filter(k => isConnKey(k));
-    connKeys.sort((key1, key2) => {
-        const p1 = noConnTag(key1).split(' ');
-        const p2 = noConnTag(key2).split(' ');
-        if (p1[2] != p2[2])
-            return p1[2] < p2[2] ? -1 : 1;
-        if (p1[3] != p2[3])
-            return parseInt(p1[3]) - parseInt(p2[3]);
-        if (p1[2] == p2[0])
-            return -1;
-        if (p2[2] == p1[0])
-            return 1;
-        return 0;
+    figma.currentPage.loadAsync().then(() => {
+        const connKeys = figma.currentPage.getPluginDataKeys()
+            .filter(k => isConnKey(k));
+        connKeys.sort((key1, key2) => {
+            const p1 = noConnTag(key1).split(' ');
+            const p2 = noConnTag(key2).split(' ');
+            if (p1[2] != p2[2])
+                return p1[2] < p2[2] ? -1 : 1;
+            if (p1[3] != p2[3])
+                return parseInt(p1[3]) - parseInt(p2[3]);
+            if (p1[2] == p2[0])
+                return -1;
+            if (p2[2] == p1[0])
+                return 1;
+            return 0;
+        });
+        connKeys.forEach(k => logSavedConn(JSON.parse(figma.currentPage.getPluginData(k)), darkMode));
     });
-    connKeys.forEach(k => logSavedConn(JSON.parse(figma.currentPage.getPluginData(k)), darkMode));
 }
 function figLogAllSavedPageKeys(darkMode) {
-    const connKeys = figma.currentPage.getPluginDataKeys()
-        .filter(k => isPageKey(k));
-    connKeys.forEach(k => console.log('%c' + k, 'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
-    const pageOrder = figma.currentPage.getPluginData('pageOrder');
-    console.log('%c' + pageOrder, 'background: #fff; color: ' + (darkMode ? 'black' : 'white'));
+    figma.currentPage.loadAsync().then(() => {
+        const connKeys = figma.currentPage.getPluginDataKeys()
+            .filter(k => isPageKey(k));
+        connKeys.forEach(k => console.log('%c' + k, 'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
+        const pageOrder = figma.currentPage.getPluginData('pageOrder');
+        console.log('%c' + pageOrder, 'background: #fff; color: ' + (darkMode ? 'black' : 'white'));
+    });
 }
 function figLogAllSavedPages(darkMode) {
-    const connKeys = figma.currentPage.getPluginDataKeys()
-        .filter(k => isPageKey(k));
-    connKeys.forEach(k => console.log('%c' + figma.currentPage.getPluginData(k), 'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
-    const pageOrder = figma.currentPage.getPluginData('pageOrder');
-    console.log('%c' + pageOrder, 'background: #fff; color: ' + (darkMode ? 'black' : 'white'));
+    figma.currentPage.loadAsync().then(() => {
+        const connKeys = figma.currentPage.getPluginDataKeys()
+            .filter(k => isPageKey(k));
+        connKeys.forEach(k => console.log('%c' + figma.currentPage.getPluginData(k), 'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
+        const pageOrder = figma.currentPage.getPluginData('pageOrder');
+        console.log('%c' + pageOrder, 'background: #fff; color: ' + (darkMode ? 'black' : 'white'));
+    });
 }
 function figLogAllSavedConnKeys(darkMode) {
-    const connKeys = figma.currentPage.getPluginDataKeys()
-        .filter(k => isConnKey(k));
-    connKeys.forEach(k => console.log('%c' + k, 'background: #dff; color: ' + (darkMode ? 'black' : 'white')));
+    figma.currentPage.loadAsync().then(() => {
+        const connKeys = figma.currentPage.getPluginDataKeys()
+            .filter(k => isConnKey(k));
+        connKeys.forEach(k => console.log('%c' + k, 'background: #dff; color: ' + (darkMode ? 'black' : 'white')));
+    });
 }
 function figLogAllLocalData(darkMode) {
     figma.clientStorage.keysAsync().then(keys => keys.forEach(k => figma.clientStorage.getAsync(k).then(val => console.log(k + ': ' + val))));
@@ -2190,15 +2222,19 @@ function figGetVariableUpdates(varIds) {
     });
 }
 function figRemoveSavedPage(pageId) {
-    figClearPageData(getPageKey(pageId));
-    const pageOrder = figGetPageData('pageOrder').split(',');
-    removeFromArrayWhere(pageOrder, id => id == pageId);
-    figSetPageData('pageOrder', pageOrder.join(','));
+    return __awaiter(this, void 0, void 0, function* () {
+        figClearPageData(getPageKey(pageId));
+        const pageOrder = (yield figGetPageData('pageOrder')).split(',');
+        removeFromArrayWhere(pageOrder, id => id == pageId);
+        figSetPageData('pageOrder', pageOrder.join(','));
+    });
 }
 function figRemoveAllSavedPages() {
-    const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
-    pageKeys.forEach(k => figClearPageData(k));
-    figClearPageData('pageOrder');
+    figma.currentPage.loadAsync().then(() => {
+        const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
+        pageKeys.forEach(k => figClearPageData(k));
+        figClearPageData('pageOrder');
+    });
 }
 function figSaveConnection(key, json) {
     figSetPageData(key, json);
@@ -2222,24 +2258,30 @@ function figDeleteSavedConnection(key) {
     figClearPageData(key);
 }
 function figRemoveAllSavedConnections() {
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
-    connKeys.forEach(k => figClearPageData(k));
+    figma.currentPage.loadAsync().then(() => {
+        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        connKeys.forEach(k => figClearPageData(k));
+    });
 }
 function figDeleteSavedConnectionsToNode(nodeId) {
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
-    for (const key of connKeys) {
-        const parts = key.split(' ');
-        if (parts[4] == nodeId)
-            figClearPageData(key);
-    }
+    figma.currentPage.loadAsync().then(() => {
+        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        for (const key of connKeys) {
+            const parts = key.split(' ');
+            if (parts[4] == nodeId)
+                figClearPageData(key);
+        }
+    });
 }
 function figDeleteSavedConnectionsFromNode(nodeId) {
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
-    for (const key of connKeys) {
-        const parts = key.split(' ');
-        if (parts[1] == nodeId)
-            figClearPageData(key);
-    }
+    figma.currentPage.loadAsync().then(() => {
+        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        for (const key of connKeys) {
+            const parts = key.split(' ');
+            if (parts[1] == nodeId)
+                figClearPageData(key);
+        }
+    });
 }
 function figRemovePluginDataFromAllLocalStyles() {
     figma.getLocalPaintStylesAsync().then(localStyles => {
@@ -2404,6 +2446,7 @@ function figResizeWindow(width, height) {
             // console.log('width =',  width);
             // console.log('height =', height);
             figma.ui.resize(width, height);
+            yield figma.currentPage.loadAsync();
             figma.currentPage.setPluginData(figma.currentUser.id + ',windowWidth', width.toString());
             figma.currentPage.setPluginData(figma.currentUser.id + ',windowHeight', height.toString());
             // if (position)
@@ -2495,77 +2538,79 @@ function makeObjectName(obj) {
         + (showIds ? obj[FO_OBJECT_ID] : obj[FO_OBJECT_NAME]);
 }
 function figCreateObject(genObj, addObject = null) {
-    if (!genObjectIsValid(genObj))
-        return null;
-    let figObj;
-    switch (genObj[FO_TYPE]) {
-        case RECTANGLE:
-            figObj = figCreateRect(genObj);
-            break;
-        case LINE:
-            figObj = figCreateLine(genObj);
-            break;
-        case ELLIPSE:
-            figObj = figCreateEllipse(genObj);
-            break;
-        case POLYGON:
-            figObj = figCreatePolygon(genObj);
-            break;
-        case STAR:
-            figObj = figCreateStar(genObj);
-            break;
-        case TEXT_SHAPE:
-            figObj = figCreateText(genObj);
-            break;
-        case POINT:
-            figObj = figCreatePoint(genObj);
-            break;
-        case VECTOR_PATH:
-            figObj = figCreateVectorPath(genObj);
-            break;
-        case VECTOR_NETWORK:
-            figObj = figCreateVectorNetwork(genObj);
-            break;
-        case BOOLEAN:
-            figObj = figCreateBoolean(genObj);
-            break;
-        case SHAPE_GROUP:
-            figObj = figCreateShapeGroup(genObj);
-            break;
-        case FRAME:
-            figObj = figCreateFrame(genObj);
-            break;
-    }
-    if (addObject
-        && figObj != undefined
-        && figObj != null
-        && !figObj.removed) {
-        figObj.name = makeObjectName(genObj);
-        consoleAssert(genObj[FO_TYPE] == SHAPE_GROUP // cannot exist without children
-            || !!figObj, 'no Figma object created');
-        if (figObj != undefined
-            && figObj != null) {
-            figObj.setPluginData('retain', genObj[FO_RETAIN].toString());
-            if (genObj[FO_RETAIN] < 2) {
-                figObj.setPluginData('userId', figma.currentUser.id);
-                figObj.setPluginData('sessionId', figma.currentUser.sessionId.toString());
-                figObj.setPluginData('type', genObj[FO_TYPE]);
-                figObj.setPluginData('nodeId', genObj[FO_NODE_ID]);
-                figObj.setPluginData('objectId', genObj[FO_OBJECT_ID]);
-                figObj.setPluginData('isCenter', boolToString(genObj[FO_IS_CENTER]));
-                if (genObj[FO_TYPE] == POINT)
-                    figPoints.push(figObj);
-                if (genObj[FO_DECO])
-                    updateDecoObject(figObj);
-            }
-            addObject(figObj);
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!genObjectIsValid(genObj))
+            return null;
+        let figObj;
+        switch (genObj[FO_TYPE]) {
+            case RECTANGLE:
+                figObj = figCreateRect(genObj);
+                break;
+            case LINE:
+                figObj = figCreateLine(genObj);
+                break;
+            case ELLIPSE:
+                figObj = figCreateEllipse(genObj);
+                break;
+            case POLYGON:
+                figObj = figCreatePolygon(genObj);
+                break;
+            case STAR:
+                figObj = figCreateStar(genObj);
+                break;
+            case TEXT_SHAPE:
+                figObj = figCreateText(genObj);
+                break;
+            case POINT:
+                figObj = figCreatePoint(genObj);
+                break;
+            case VECTOR_PATH:
+                figObj = figCreateVectorPath(genObj);
+                break;
+            case VECTOR_NETWORK:
+                figObj = figCreateVectorNetwork(genObj);
+                break;
+            case BOOLEAN:
+                figObj = yield figCreateBoolean(genObj);
+                break;
+            case SHAPE_GROUP:
+                figObj = yield figCreateShapeGroup(genObj);
+                break;
+            case FRAME:
+                figObj = yield figCreateFrame(genObj);
+                break;
         }
-    }
-    if (!genObj.counted) {
-        actualObjectCount++;
-        genObj.counted = true;
-    }
-    return figObj;
+        if (addObject
+            && figObj != undefined
+            && figObj != null
+            && !figObj.removed) {
+            figObj.name = makeObjectName(genObj);
+            consoleAssert(genObj[FO_TYPE] == SHAPE_GROUP // cannot exist without children
+                || !!figObj, 'no Figma object created');
+            if (figObj != undefined
+                && figObj != null) {
+                figObj.setPluginData('retain', genObj[FO_RETAIN].toString());
+                if (genObj[FO_RETAIN] < 2) {
+                    figObj.setPluginData('userId', figma.currentUser.id);
+                    figObj.setPluginData('sessionId', figma.currentUser.sessionId.toString());
+                    figObj.setPluginData('type', genObj[FO_TYPE]);
+                    figObj.setPluginData('nodeId', genObj[FO_NODE_ID]);
+                    figObj.setPluginData('objectId', genObj[FO_OBJECT_ID]);
+                    figObj.setPluginData('isCenter', boolToString(genObj[FO_IS_CENTER]));
+                    if (genObj[FO_TYPE] == POINT)
+                        figPoints.push(figObj);
+                    if (genObj[FO_DECO])
+                        updateDecoObject(figObj);
+                }
+                addObject(figObj);
+            }
+        }
+        if (!genObj.counted) {
+            actualObjectCount++;
+            genObj.counted = true;
+        }
+        return figObj;
+    });
 }
 function figUpdateObjectAsync(figObj, genObj) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -2682,7 +2727,7 @@ function figUpdateObjects(figParent, genObjects, batchSize, totalObjects = -1, n
                 || figObj == null
                 || figObj.removed) // no existing object, create new one
              {
-                const newObj = figCreateObject(genObj, addObject);
+                const newObj = yield figCreateObject(genObj, addObject);
                 updateObjects.push(newObj);
             }
             else if (figObj != undefined
@@ -2703,7 +2748,7 @@ function figUpdateObjects(figParent, genObjects, batchSize, totalObjects = -1, n
                     removeFromArray(figPoints, figObj);
                 if (figEmptyObjects.includes(figObj))
                     removeFromArray(figEmptyObjects, figObj);
-                figCreateObject(genObj, addObject);
+                yield figCreateObject(genObj, addObject);
             }
             updateObjectCount++;
             if (updateObjectCount >= batchSize) {
@@ -2777,21 +2822,23 @@ function genObjectIsValid(genObj) {
     }
 }
 function figGetObjectSize(genObj) {
-    (() => __awaiter(this, void 0, void 0, function* () {
-        const figObj = figCreateObject(genObj);
-        const width = figObj.width;
-        const height = figObj.height;
-        figObj.remove();
-        figPostMessageToUi({
-            cmd: 'uiForwardToGenerator',
-            msg: {
-                cmd: 'returnFigGetObjectSize',
-                objectId: genObj[FO_OBJECT_ID],
-                width: width,
-                height: height
-            }
-        });
-    }))();
+    return __awaiter(this, void 0, void 0, function* () {
+        (() => __awaiter(this, void 0, void 0, function* () {
+            const figObj = yield figCreateObject(genObj);
+            const width = figObj.width;
+            const height = figObj.height;
+            figObj.remove();
+            figPostMessageToUi({
+                cmd: 'uiForwardToGenerator',
+                msg: {
+                    cmd: 'returnFigGetObjectSize',
+                    objectId: genObj[FO_OBJECT_ID],
+                    width: width,
+                    height: height
+                }
+            });
+        }))();
+    });
 }
 function clearObjectData(figObj) {
     figObj.setPluginData('type', '');
@@ -3056,23 +3103,25 @@ function updateEmptyObjects() {
     }
 }
 function setEmptyObjectStroke(obj) {
-    const back = figma.currentPage.backgrounds.find(b => b.type == 'SOLID');
-    let phantomColor;
-    if (back) {
-        const l = back.color.r * 0.2126
-            + back.color.g * 0.7152
-            + back.color.b * 0.0722;
-        phantomColor =
-            l > 0.5
-                ? { r: 0, g: 0, b: 0 }
-                : { r: 1, g: 1, b: 1 };
-    }
-    else
-        phantomColor = { r: 1, g: 0, b: 1 };
-    setObjectStroke_(obj, [{ type: 'SOLID',
-            color: phantomColor,
-            opacity: 0.5 }], 1 / curZoom, 'CENTER', 'MITER', 1, 'NONE', [1 / curZoom,
-        2 / curZoom]);
+    figma.currentPage.loadAsync().then(() => {
+        const back = figma.currentPage.backgrounds.find(b => b.type == 'SOLID');
+        let phantomColor;
+        if (back) {
+            const l = back.color.r * 0.2126
+                + back.color.g * 0.7152
+                + back.color.b * 0.0722;
+            phantomColor =
+                l > 0.5
+                    ? { r: 0, g: 0, b: 0 }
+                    : { r: 1, g: 1, b: 1 };
+        }
+        else
+            phantomColor = { r: 1, g: 0, b: 1 };
+        setObjectStroke_(obj, [{ type: 'SOLID',
+                color: phantomColor,
+                opacity: 0.5 }], 1 / curZoom, 'CENTER', 'MITER', 1, 'NONE', [1 / curZoom,
+            2 / curZoom]);
+    });
 }
 function updateDecoObjects() {
     for (const figObj of figDecoObjects) {
@@ -3490,32 +3539,35 @@ function genBooleanIsValid(genBool) {
     return genBool.children.length > 0;
 }
 function figCreateBoolean(genBool) {
-    let objects = [];
-    for (const obj of genBool.children)
-        figCreateObject(obj, o => objects = [...objects, o]);
-    let figBool = null;
-    if (!isEmpty(objects)) {
-        switch (genBool.operation) {
-            case 0:
-                figBool = figma.union(objects, figma.currentPage);
-                break;
-            case 1:
-                figBool = figma.subtract(objects, figma.currentPage);
-                break;
-            case 2:
-                figBool = figma.intersect(objects, figma.currentPage);
-                break;
-            case 3:
-                figBool = figma.exclude(objects, figma.currentPage);
-                break;
+    return __awaiter(this, void 0, void 0, function* () {
+        let objects = [];
+        for (const obj of genBool.children)
+            yield figCreateObject(obj, o => objects = [...objects, o]);
+        yield figma.currentPage.loadAsync();
+        let figBool = null;
+        if (!isEmpty(objects)) {
+            switch (genBool.operation) {
+                case 0:
+                    figBool = figma.union(objects, figma.currentPage);
+                    break;
+                case 1:
+                    figBool = figma.subtract(objects, figma.currentPage);
+                    break;
+                case 2:
+                    figBool = figma.intersect(objects, figma.currentPage);
+                    break;
+                case 3:
+                    figBool = figma.exclude(objects, figma.currentPage);
+                    break;
+            }
         }
-    }
-    if (figBool) {
-        setObjectTransform(figBool, genBool);
-        if (!genBooleanIsValid(genBool))
-            return figBool;
-    }
-    return figBool;
+        if (figBool) {
+            setObjectTransform(figBool, genBool);
+            if (!genBooleanIsValid(genBool))
+                return figBool;
+        }
+        return figBool;
+    });
 }
 function figUpdateBoolean(figBool, genBool, isValid = false) {
     if (!isValid
@@ -3573,18 +3625,20 @@ function genFrameIsValid(genFrame) {
         && genFrame[FO_FRAME_ROUND] != null && !isNaN(genFrame[FO_FRAME_ROUND]);
 }
 function figCreateFrame(genFrame) {
-    if (!genFrameIsValid(genFrame))
-        return null;
-    const figFrame = figma.createFrame();
-    if (figFrame) {
-        figUpdateFrameData(figFrame, genFrame);
-        let objects = [];
-        for (const obj of genFrame[FO_FRAME_CHILDREN])
-            figCreateObject(obj, o => objects = [...objects, o]);
-        for (const obj of objects)
-            figFrame.appendChild(obj);
-    }
-    return figFrame;
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!genFrameIsValid(genFrame))
+            return null;
+        const figFrame = figma.createFrame();
+        if (figFrame) {
+            figUpdateFrameData(figFrame, genFrame);
+            let objects = [];
+            for (const obj of genFrame[FO_FRAME_CHILDREN])
+                yield figCreateObject(obj, o => objects = [...objects, o]);
+            for (const obj of objects)
+                figFrame.appendChild(obj);
+        }
+        return figFrame;
+    });
 }
 function figUpdateFrame(figFrame, genFrame) {
     figUpdateFrameData(figFrame, genFrame);
@@ -3599,15 +3653,18 @@ function genShapeGroupIsValid(genGroup) {
     return true; //genGroup[FO_GROUP_CHILDREN].length > 0;
 }
 function figCreateShapeGroup(genGroup) {
-    let objects = [];
-    for (const obj of genGroup[FO_GROUP_CHILDREN])
-        figCreateObject(obj, o => objects = [...objects, o]);
-    const figGroup = !isEmpty(objects)
-        ? figma.group(objects, figma.currentPage)
-        : null;
-    if (figGroup)
-        figUpdateShapeGroup(figGroup, genGroup);
-    return figGroup;
+    return __awaiter(this, void 0, void 0, function* () {
+        let objects = [];
+        for (const obj of genGroup[FO_GROUP_CHILDREN])
+            yield figCreateObject(obj, o => objects = [...objects, o]);
+        yield figma.currentPage.loadAsync();
+        const figGroup = !isEmpty(objects)
+            ? figma.group(objects, figma.currentPage)
+            : null;
+        if (figGroup)
+            figUpdateShapeGroup(figGroup, genGroup);
+        return figGroup;
+    });
 }
 function figUpdateShapeGroup(figGroup, genGroup) {
     if (genGroup[FO_GROUP_CHILDREN].length == 0) {
@@ -3678,23 +3735,25 @@ function updatePointObject_(figPoint, genPoint) {
 function updatePointStyles(figPoint) {
     if (figPoint.removed)
         return;
-    const isCenter = parseBool(figPoint.getPluginData('isCenter'));
-    const isSelected = figma.currentPage.selection.includes(figPoint);
-    const color = isCenter
-        ? [0xf2, 0x48, 0x22]
-        : isSelected
-            ? [12, 140, 233]
-            : [255, 255, 255];
-    const border = isCenter
-        ? [255, 255, 255]
-        : isSelected
+    figma.currentPage.loadAsync().then(() => {
+        const isCenter = parseBool(figPoint.getPluginData('isCenter'));
+        const isSelected = figma.currentPage.selection.includes(figPoint);
+        const color = isCenter
+            ? [0xf2, 0x48, 0x22]
+            : isSelected
+                ? [12, 140, 233]
+                : [255, 255, 255];
+        const border = isCenter
             ? [255, 255, 255]
-            : [12, 140, 233];
-    figPoint.fills = getObjectFills([['SOLID', color[0], color[1], color[2], 100]]);
-    const effects = [];
-    effects.push(...getObjectEffects([['DROP_SHADOW', border[0] / 255, border[1] / 255, border[2] / 255, 1, 0, 0, 0, (isCenter ? 3 : isSelected ? 5 : 3.6) / curZoom, 'NORMAL', true, true]], true));
-    effects.push(...getObjectEffects([['DROP_SHADOW', color[0] / 255, color[1] / 255, color[2] / 255, 1, 0, 0, 0, (isSelected ? 4 : 2.4) / curZoom, 'NORMAL', true, true]], true));
-    figPoint.effects = effects;
+            : isSelected
+                ? [255, 255, 255]
+                : [12, 140, 233];
+        figPoint.fills = getObjectFills([['SOLID', color[0], color[1], color[2], 100]]);
+        const effects = [];
+        effects.push(...getObjectEffects([['DROP_SHADOW', border[0] / 255, border[1] / 255, border[2] / 255, 1, 0, 0, 0, (isCenter ? 3 : isSelected ? 5 : 3.6) / curZoom, 'NORMAL', true, true]], true));
+        effects.push(...getObjectEffects([['DROP_SHADOW', color[0] / 255, color[1] / 255, color[2] / 255, 1, 0, 0, 0, (isSelected ? 4 : 2.4) / curZoom, 'NORMAL', true, true]], true));
+        figPoint.effects = effects;
+    });
 }
 function genPolygonIsValid(genPoly) {
     return genPoly[FO_X] != null && !isNaN(genPoly[FO_X])

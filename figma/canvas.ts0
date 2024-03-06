@@ -15,9 +15,12 @@ function figDeleteObjectsFromNodeIds(nodeIds)
             || nodeIds.includes(figEmptyObjects[i].getPluginData('nodeId')))
             figEmptyObjects.splice(i, 1);
 
-    figma.currentPage
-        .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
-        .forEach(o => { if (!o.removed) o.remove(); });
+    figma.currentPage.loadAsync().then(() =>
+    {
+        figma.currentPage
+            .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
+            .forEach(o => { if (!o.removed) o.remove(); });
+    });
 
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
 }
@@ -26,21 +29,17 @@ function figDeleteObjectsFromNodeIds(nodeIds)
 
 function figDeleteAllObjects(forceDelete = false)
 {
-    figma.currentPage.loadAsync().then(() =>
+    for (const figObj of figma.currentPage.children)
     {
-        for (const figObj of figma.currentPage.children)
-        {
-            if (figObj.removed)
-                continue;
+        if (figObj.removed)
+            continue;
 
-            if (    figObj.getPluginData('objectId') != ''
-                &&  figObj.getPluginData('userId'  ) == figma.currentUser.id
-                //&&  figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
-                && (   parseInt(figObj.getPluginData('retain')) == 0
-                    || forceDelete)) 
-                figObj.remove();
-        }
-    });
+        if (    figObj.getPluginData('objectId') != ''
+            &&  figObj.getPluginData('userId'  ) == figma.currentUser.id
+            && (   parseInt(figObj.getPluginData('retain')) == 0
+                || forceDelete)) 
+            figObj.remove();
+    }
 }
 
 

@@ -175,6 +175,8 @@ function parseValueFromType(type, value)
         case VECTOR_NETWORK_VALUE: return parseVectorNetworkValue(value)[0];
         case        BOOLEAN_VALUE: return parseShapeBooleanValue (value)[0];
         case    SHAPE_GROUP_VALUE: return parseShapeGroupValue   (value)[0];
+        case       ARC_PATH_VALUE: return parseArcPathValue      (value)[0];
+        case      WAVE_PATH_VALUE: return parseWavePathValue     (value)[0];
         case          FRAME_VALUE: return parseFrameValue        (value)[0];
         
         default: 

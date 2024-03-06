@@ -1,6 +1,6 @@
-function logSavedNode(nodeKey, darkMode)
+async function logSavedNode(nodeKey, darkMode)
 {
-    const log  = formatSavedNodeJson(figGetPageData(nodeKey, false));
+    const log  = formatSavedNodeJson(await figGetPageData(nodeKey, false));
 
     if (darkMode)
     {

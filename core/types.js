@@ -1,8 +1,8 @@
-const LIST_VALUE        = 'LIST#';
+const LIST_VALUE           = 'LIST#';
 
-const NUMBER_LIST_VALUE = 'NLIST#';
-const   TEXT_LIST_VALUE = 'TLIST#';
-const  SHAPE_LIST_VALUE = 'SLIST#';
+const NUMBER_LIST_VALUE    = 'NLIST#';
+const   TEXT_LIST_VALUE    = 'TLIST#';
+const  SHAPE_LIST_VALUE    = 'SLIST#';
 
 
 const NULL_NODE            = 'NULL';
@@ -492,7 +492,7 @@ const JOIN_PATHS            = 'JOINPTH';
 const POINT_ALONG_PATH      = 'PTALPATH';
 const CLOSEST_POINT_ON_PATH = 'CPTONPATH';
 const MEASURE_VECTOR        = 'MESPT';
-const VECTOR         = 'VECLEN';
+const VECTOR                = 'VECLEN';
 const CIRCLE_CENTER         = 'CIRCEN';
 const ARC_FROM_POINTS       = 'ARCPT';
 const INTERSECT_LINES       = 'INTLIN';
@@ -537,7 +537,7 @@ const BOOLEAN_TYPES =
 ];
 
 
-const RENDER             = 'RENDER';
+const RENDER               = 'RENDER';
 
 
 const SHAPE_VALUES =

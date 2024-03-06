@@ -88,9 +88,10 @@ class Graph
         for (const id of nodeIds)
         {
             const node = this.nodes.find(n => n.id == id);
+            if (!node) continue;
 
-            node.selected    = false;
-            node.graph = null;
+            node.selected = false;
+            node.graph    = null;
 
             node.div.style.display = 'none';
 

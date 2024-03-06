@@ -1,12 +1,13 @@
 class   OpFrame
 extends OpShape
 {
+    paramChildren;
+    paramPosition;
     paramX;
     paramY;
     paramWidth;
     paramHeight;
     paramRound;
-    paramChildren;
 
 
 
@@ -22,12 +23,13 @@ extends OpShape
         this.addOutput(new Output([FRAME_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX        = new NumberParam('x',        'X',       true,  true, true, 0));
-        this.addParam(this.paramY        = new NumberParam('y',        'Y',       true,  true, true, 0));
-        this.addParam(this.paramWidth    = new NumberParam('width',    'width',   true,  true, true, 100, 0.01));
-        this.addParam(this.paramHeight   = new NumberParam('height',   'height',  true,  true, true, 100, 0.01));
-        this.addParam(this.paramRound    = new NumberParam('round',    'round',   true,  true, true, 0, 0));
-        this.addParam(this.paramChildren = new ListParam  ('children', 'objects', false, true, true));
+        this.addParam(this.paramChildren = new ListParam  ('children', 'objects',  false, true, true));
+        this.addParam(this.paramPosition = new SelectParam('position', 'position', true,  true, true, ['relative', 'absolute'], 0));
+        this.addParam(this.paramX        = new NumberParam('x',        'X',        true,  true, true, 0));
+        this.addParam(this.paramY        = new NumberParam('y',        'Y',        true,  true, true, 0));
+        this.addParam(this.paramWidth    = new NumberParam('width',    'width',    true,  true, true, 100, 0.01));
+        this.addParam(this.paramHeight   = new NumberParam('height',   'height',   true,  true, true, 100, 0.01));
+        this.addParam(this.paramRound    = new NumberParam('round',    'round',    true,  true, true, 0, 0));
 
 
         this.paramWidth .addEventListener('change', () => this.updateRound());
@@ -40,6 +42,7 @@ extends OpShape
         this.paramChildren.showZero     = false;
         this.paramChildren.getItemCount = () => 0;
 
+        this.setAllParamDividers(0.47);
 
         this.addBaseParams();
     }
@@ -62,18 +65,23 @@ extends OpShape
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        // const children = values[paramIds.findIndex(id => id == 'children')];
+        const position  = values[paramIds.findIndex(id => id == 'position')];
+        const x         = values[paramIds.findIndex(id => id == 'x'       )];
+        const y         = values[paramIds.findIndex(id => id == 'y'       )];
+        const width     = values[paramIds.findIndex(id => id == 'width'   )];
+        const height    = values[paramIds.findIndex(id => id == 'height'  )];
+        const round     = values[paramIds.findIndex(id => id == 'round'   )];
 
-        this.paramX     .setValue(value.x,      false, true, false);
-        this.paramY     .setValue(value.y,      false, true, false);
-        this.paramWidth .setValue(value.width,  false, true, false);
-        this.paramHeight.setValue(value.height, false, true, false);
-        this.paramRound .setValue(value.round,  false, true, false);
+        const childType = values[paramIds.findIndex(id => id == 'childType')];
 
+        this.paramChildren.output.types = [childType.value];//[finalListTypeFromItems(children.items)];
 
-        // const nChildren = values[paramIds.findIndex(id => id == 'nChildren')];
-
-        // this.paramChildren.getItemCount = () => nChildren.value;
-        this.paramChildren.output.types = [finalListTypeFromItems(value.children.items)];
+        this.paramPosition.setValue(position, false, true, false);
+        this.paramX       .setValue(x,        false, true, false);
+        this.paramY       .setValue(y,        false, true, false);
+        this.paramWidth   .setValue(width,    false, true, false);
+        this.paramHeight  .setValue(height,   false, true, false);
+        this.paramRound   .setValue(round,    false, true, false);
     }
 }

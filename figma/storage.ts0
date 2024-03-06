@@ -71,8 +71,10 @@ async function figClearAllLocalData()
 
 
 
-function figGetPageData(key, postToUi = true)
+async function figGetPageData(key, postToUi = true)
 {
+    await figma.currentPage.loadAsync();
+
     const data = figma.currentPage.getPluginData(key);
 
     if (postToUi)
@@ -106,43 +108,46 @@ function figClearPageData(key)
 
 function figLoadNodesAndConns(debugMode)
 {
-    // const pageIds  = figma.currentPage.getPluginData('pages');
+    figma.currentPage.loadAsync().then(() =>
+    {
+        // const pageIds  = figma.currentPage.getPluginData('pages');
 
 
-    const pageKeys  = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
-    const nodeKeys  = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
-    const connKeys  = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        const pageKeys  = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
+        const nodeKeys  = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
+        const connKeys  = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
 
-    if (!debugMode)
-        figMarkForLoading(nodeKeys, connKeys);
+        if (!debugMode)
+            figMarkForLoading(nodeKeys, connKeys);
 
-    const pages     = pageKeys.map(k => figma.currentPage.getPluginData(k));
-    const nodes     = nodeKeys.map(k => figma.currentPage.getPluginData(k));
-    const conns     = connKeys.map(k => figma.currentPage.getPluginData(k));
-
-
-    const pageOrder     = figma.currentPage.getPluginData('pageOrder').split(',');
-    const currentPageId = figma.currentPage.getPluginData('currentPageId');
-    
-
-    initPageStyles(nodes);
+        const pages     = pageKeys.map(k => figma.currentPage.getPluginData(k));
+        const nodes     = nodeKeys.map(k => figma.currentPage.getPluginData(k));
+        const conns     = connKeys.map(k => figma.currentPage.getPluginData(k));
 
 
-    const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');
+        const pageOrder     = figma.currentPage.getPluginData('pageOrder').split(',');
+        const currentPageId = figma.currentPage.getPluginData('currentPageId');
+        
+
+        initPageStyles(nodes);
 
 
-    figPostMessageToUi({
-        cmd:               'uiReturnFigLoadNodesAndConns',
-        showAllColorSpaces: showAllColorSpaces,
-        pageKeys:           pageKeys,
-        pageJson:           pages,
-        pageOrder:          pageOrder,
-        currentPageId:      currentPageId,
-        nodeKeys:           nodeKeys,
-        nodeJson:           nodes,
-        connKeys:           connKeys,
-        connJson:           conns
+        const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');
+
+
+        figPostMessageToUi({
+            cmd:               'uiReturnFigLoadNodesAndConns',
+            showAllColorSpaces: showAllColorSpaces,
+            pageKeys:           pageKeys,
+            pageJson:           pages,
+            pageOrder:          pageOrder,
+            currentPageId:      currentPageId,
+            nodeKeys:           nodeKeys,
+            nodeJson:           nodes,
+            connKeys:           connKeys,
+            connJson:           conns
+        });
     });
 }
 
@@ -183,19 +188,22 @@ function initPageStyles(nodes)
 
 function figMarkForLoading(nodeKeys, connKeys)
 {
-    const loadingFlag = '"loading": "true"';
-    const not         = '{\n';
-    const set         = '{\n' + HTAB + loadingFlag + ',\n';
+    figma.currentPage.loadAsync().then(() =>
+    { 
+        const loadingFlag = '"loading": "true"';
+        const not         = '{\n';
+        const set         = '{\n' + HTAB + loadingFlag + ',\n';
 
-    nodeKeys.forEach(k => figma.currentPage.setPluginData(k, 
-        figma.currentPage.getPluginData(k)
-            .replace(set, not)
-            .replace(not, set)));
-    
-    connKeys.forEach(k => figma.currentPage.setPluginData(k, 
-        figma.currentPage.getPluginData(k)
-            .replace(set, not)
-            .replace(not, set)));
+        nodeKeys.forEach(k => figma.currentPage.setPluginData(k, 
+            figma.currentPage.getPluginData(k)
+                .replace(set, not)
+                .replace(not, set)));
+        
+        connKeys.forEach(k => figma.currentPage.setPluginData(k, 
+            figma.currentPage.getPluginData(k)
+                .replace(set, not)
+                .replace(not, set)));
+    });
 }
 
 
@@ -254,132 +262,155 @@ function figSaveLocalTemplate(templateName, template)
 
 function figRemoveConnsToNodes(nodeIds)
 {
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
-
-    for (const key of connKeys)
+    figma.currentPage.loadAsync().then(() =>
     {
-        const parts = noConnTag(key).split(' ');
+        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
-        if (   nodeIds.includes(parts[0])
-            || nodeIds.includes(parts[2]))
-            figClearPageData(key);
-    }
+        for (const key of connKeys)
+        {
+            const parts = noConnTag(key).split(' ');
+
+            if (   nodeIds.includes(parts[0])
+                || nodeIds.includes(parts[2]))
+                figClearPageData(key);
+        }
+    });
 }
 
 
 
 function figRemoveSavedNodesAndConns(nodeIds)
 {
-    figRemoveConnsToNodes(nodeIds);
+    figma.currentPage.loadAsync().then(() =>
+    {
+        figRemoveConnsToNodes(nodeIds);
 
-    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(
-           k => isNodeKey(k)
-        && nodeIds.includes(noNodeTag(k)));
+        const nodeKeys = figma.currentPage.getPluginDataKeys().filter(
+            k => isNodeKey(k)
+            && nodeIds.includes(noNodeTag(k)));
 
-    nodeKeys.forEach(k => figClearPageData(k));
+        nodeKeys.forEach(k => figClearPageData(k));
+    });
 }
 
 
 
 function figRemoveAllSavedNodesAndConns()
 {
-    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
+        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
-    for (const key of nodeKeys) figClearPageData(key);
-    for (const key of connKeys) figClearPageData(key);
+        for (const key of nodeKeys) figClearPageData(key);
+        for (const key of connKeys) figClearPageData(key);
+    });
 }
 
 
 
-function figLogAllSavedNodesAndConns(darkMode)
+async function figLogAllSavedNodesAndConns(darkMode)
 {
-    figLogAllSavedNodes(darkMode);
-    figLogAllSavedConns(darkMode);
+    await figLogAllSavedNodes(darkMode);
+          figLogAllSavedConns(darkMode);
 }
 
 
 
-function figLogAllSavedNodes(darkMode)
+async function figLogAllSavedNodes(darkMode)
 {
+    await figma.currentPage.loadAsync();
+
     figma.currentPage.getPluginDataKeys()
         .filter (k => isNodeKey(k))
-        .forEach(k => logSavedNode(k, darkMode));
+        .forEach(async k => await logSavedNode(k, darkMode));
 }
 
 
 
 function figLogAllSavedConns(darkMode)
 {
-    const connKeys = figma.currentPage.getPluginDataKeys()
-        .filter(k => isConnKey(k));
-        
-    connKeys.sort((key1, key2) => 
+    figma.currentPage.loadAsync().then(() =>
     {
-        const p1 = noConnTag(key1).split(' ');
-        const p2 = noConnTag(key2).split(' ');
+        const connKeys = figma.currentPage.getPluginDataKeys()
+            .filter(k => isConnKey(k));
+            
+        connKeys.sort((key1, key2) => 
+        {
+            const p1 = noConnTag(key1).split(' ');
+            const p2 = noConnTag(key2).split(' ');
 
-        if (p1[2] != p2[2]) return p1[2] < p2[2] ? -1 : 1;
-        if (p1[3] != p2[3]) return parseInt(p1[3]) - parseInt(p2[3]);
-        
-        if (p1[2] == p2[0]) return -1;
-        if (p2[2] == p1[0]) return  1;
+            if (p1[2] != p2[2]) return p1[2] < p2[2] ? -1 : 1;
+            if (p1[3] != p2[3]) return parseInt(p1[3]) - parseInt(p2[3]);
+            
+            if (p1[2] == p2[0]) return -1;
+            if (p2[2] == p1[0]) return  1;
 
-        return 0;
+            return 0;
+        });
+
+        connKeys.forEach(k => logSavedConn(JSON.parse(figma.currentPage.getPluginData(k)), darkMode));
     });
-
-    connKeys.forEach(k => logSavedConn(JSON.parse(figma.currentPage.getPluginData(k)), darkMode));
 }
 
 
 
 function figLogAllSavedPageKeys(darkMode)
 {
-    const connKeys = figma.currentPage.getPluginDataKeys()
-        .filter(k => isPageKey(k));
-        
-    connKeys.forEach(k => 
-        console.log(
-            '%c'+k, 
-            'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const connKeys = figma.currentPage.getPluginDataKeys()
+            .filter(k => isPageKey(k));
+            
+        connKeys.forEach(k => 
+            console.log(
+                '%c'+k, 
+                'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
 
-    const pageOrder = figma.currentPage.getPluginData('pageOrder');
-        
-    console.log(
-        '%c'+pageOrder, 
-        'background: #fff; color: ' + (darkMode ? 'black' : 'white'));
+        const pageOrder = figma.currentPage.getPluginData('pageOrder');
+            
+        console.log(
+            '%c'+pageOrder, 
+            'background: #fff; color: ' + (darkMode ? 'black' : 'white'));
+    });
 }
 
 
 
 function figLogAllSavedPages(darkMode)
 {
-    const connKeys = figma.currentPage.getPluginDataKeys()
-        .filter(k => isPageKey(k));
-        
-    connKeys.forEach(k => 
-        console.log(
-            '%c'+figma.currentPage.getPluginData(k), 
-            'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const connKeys = figma.currentPage.getPluginDataKeys()
+            .filter(k => isPageKey(k));
+            
+        connKeys.forEach(k => 
+            console.log(
+                '%c'+figma.currentPage.getPluginData(k), 
+                'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
 
-    const pageOrder = figma.currentPage.getPluginData('pageOrder');
-        
-    console.log(
-        '%c'+pageOrder, 
-        'background: #fff; color: ' + (darkMode ? 'black' : 'white'));
+        const pageOrder = figma.currentPage.getPluginData('pageOrder');
+            
+        console.log(
+            '%c'+pageOrder, 
+            'background: #fff; color: ' + (darkMode ? 'black' : 'white'));
+    });
 }
 
 
 
 function figLogAllSavedConnKeys(darkMode)
 {
-    const connKeys = figma.currentPage.getPluginDataKeys()
-        .filter(k => isConnKey(k));
-        
-    connKeys.forEach(k => 
-        console.log(
-            '%c'+k, 
-            'background: #dff; color: ' + (darkMode ? 'black' : 'white')));
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const connKeys = figma.currentPage.getPluginDataKeys()
+            .filter(k => isConnKey(k));
+            
+        connKeys.forEach(k => 
+            console.log(
+                '%c'+k, 
+                'background: #dff; color: ' + (darkMode ? 'black' : 'white')));
+    });
 }
 
 
@@ -440,11 +471,11 @@ function figGetVariableUpdates(varIds)
 
 
 
-function figRemoveSavedPage(pageId)
+async function figRemoveSavedPage(pageId)
 {
     figClearPageData(getPageKey(pageId));
 
-    const pageOrder = figGetPageData('pageOrder').split(',');
+    const pageOrder = (await figGetPageData('pageOrder')).split(',');
     removeFromArrayWhere(pageOrder, id => id == pageId);
     figSetPageData('pageOrder', pageOrder.join(','));
 }
@@ -453,10 +484,13 @@ function figRemoveSavedPage(pageId)
 
 function figRemoveAllSavedPages()
 {
-    const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
-    pageKeys.forEach(k => figClearPageData(k));
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
+        pageKeys.forEach(k => figClearPageData(k));
 
-    figClearPageData('pageOrder');
+        figClearPageData('pageOrder');
+    });
 }
 
 
@@ -503,38 +537,47 @@ function figDeleteSavedConnection(key)
 
 function figRemoveAllSavedConnections()
 {
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
-    connKeys.forEach(k => figClearPageData(k));
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        connKeys.forEach(k => figClearPageData(k));
+    });
 }
 
 
 
 function figDeleteSavedConnectionsToNode(nodeId)
 {
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
-
-    for (const key of connKeys)
+    figma.currentPage.loadAsync().then(() =>
     {
-        const parts = key.split(' ');
+        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
-        if (parts[4] == nodeId)
-            figClearPageData(key);        
-    }
+        for (const key of connKeys)
+        {
+            const parts = key.split(' ');
+
+            if (parts[4] == nodeId)
+                figClearPageData(key);        
+        }
+    });
 }
 
 
 
 function figDeleteSavedConnectionsFromNode(nodeId)
 {
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
-
-    for (const key of connKeys)
+    figma.currentPage.loadAsync().then(() =>
     {
-        const parts = key.split(' ');
+        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
-        if (parts[1] == nodeId)
-            figClearPageData(key);        
-    }
+        for (const key of connKeys)
+        {
+            const parts = key.split(' ');
+
+            if (parts[1] == nodeId)
+                figClearPageData(key);        
+        }
+    });
 }
 
 

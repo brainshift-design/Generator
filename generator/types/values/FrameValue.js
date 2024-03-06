@@ -1,25 +1,27 @@
 class FrameValue
 extends ShapeValue
 {
+    children;
+    position;
     x;
     y;
     width;
     height;
     round;
-    children;
 
 
 
-    constructor(nodeId, x, y, width, height, round, children)
+    constructor(nodeId, children, position, x, y, width, height, round)
     {
         super(FRAME_VALUE, nodeId);
 
+        this.children = children;
+        this.position = position;
         this.x        = x;
         this.y        = y;
         this.width    = width;
         this.height   = height;
         this.round    = round;
-        this.children = children;
 
         this.objects = 
                children
@@ -34,12 +36,13 @@ extends ShapeValue
     {
         const copy = new FrameValue(
             this.nodeId,
+            this.children.copy(),
+            this.position.copy(),
             this.x       .copy(),
             this.y       .copy(),
             this.width   .copy(),
             this.height  .copy(),
-            this.round   .copy(),
-            this.children.copy());
+            this.round   .copy());
 
         copy.copyBase(this);
 
@@ -51,12 +54,13 @@ extends ShapeValue
     equals(frame)
     {
         return frame
+            && this.children.equals(frame.children)
+            && this.position.equals(frame.position)
             && this.x       .equals(frame.x       )
             && this.y       .equals(frame.y       )
             && this.width   .equals(frame.width   )
             && this.height  .equals(frame.height  )
-            && this.round   .equals(frame.round   )
-            && this.children.equals(frame.children);
+            && this.round   .equals(frame.round   );
     }
 
 
@@ -70,36 +74,41 @@ extends ShapeValue
 
     toString()
     {
-        return      this.x       .toString()
-            + ' ' + this.y       .toString()
-            + ' ' + this.width   .toString()
-            + ' ' + this.height  .toString()
-            + ' ' + this.round   .toString()
-            + ' ' + this.children.toString();
+        return       this.children.toString()
+             + ' ' + this.position.toString()
+             + ' ' + this.x       .toString()
+             + ' ' + this.y       .toString()
+             + ' ' + this.width   .toString()
+             + ' ' + this.height  .toString()
+             + ' ' + this.round   .toString()
+             + ' ' + super.toString();
     }
 
 
 
     toPreviewString()
     {
-        return      this.x       .toPreviewString()
-            + ' ' + this.y       .toPreviewString()
-            + ' ' + this.width   .toPreviewString()
-            + ' ' + this.height  .toPreviewString()
-            + ' ' + this.round   .toPreviewString()
-            + ' ' + this.children.toPreviewString();
+        return 'frame';
+            //   this.children.toPreviewString()
+            //  + ' ' + this.position.toPreviewString()
+            //  + ' ' + this.x       .toPreviewString()
+            //  + ' ' + this.y       .toPreviewString()
+            //  + ' ' + this.width   .toPreviewString()
+            //  + ' ' + this.height  .toPreviewString()
+            //  + ' ' + this.round   .toPreviewString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.x       .toDisplayString()
-            + ' ' + this.y       .toDisplayString()
-            + ' ' + this.width   .toDisplayString()
-            + ' ' + this.height  .toDisplayString()
-            + ' ' + this.round   .toDisplayString()
-            + ' ' + this.children.toDisplayString();
+        return       this.children.toDisplayString()
+             + ' ' + this.position.toDisplayString()
+             + ' ' + this.x       .toDisplayString()
+             + ' ' + this.y       .toDisplayString()
+             + ' ' + this.width   .toDisplayString()
+             + ' ' + this.height  .toDisplayString()
+             + ' ' + this.round   .toDisplayString();
     }
 
 
@@ -113,25 +122,27 @@ extends ShapeValue
 
     isValid()
     {
-        return this.x       .isValid()
+        return super.isValid()
+            && this.children.isValid()
+            && this.position.isValid()
+            && this.x       .isValid()
             && this.y       .isValid()
             && this.width   .isValid()
             && this.height  .isValid()
-            && this.round   .isValid()
-            && this.children.isValid()
-            && super.isValid();
+            && this.round   .isValid();
     }
 
 
     
     static NaN = new FrameValue(
         '',
+        ListValue  .NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        ListValue  .NaN);
+        NumberValue.NaN);
 }
 
 
@@ -152,21 +163,23 @@ function parseFrameValue(str, i = -1)
 
     const iStart = i;
 
-    const x        = parseNumberValue(str[i]); i += x      [1];
-    const y        = parseNumberValue(str[i]); i += y      [1];
-    const width    = parseNumberValue(str[i]); i += width  [1];
-    const height   = parseNumberValue(str[i]); i += height [1];
-    const round    = parseNumberValue(str[i]); i += round  [1];
     const children = parseListValue  (str, i); i += children[1];
+    const position = parseNumberValue(str[i]); i += position[1];
+    const x        = parseNumberValue(str[i]); i += x       [1];
+    const y        = parseNumberValue(str[i]); i += y       [1];
+    const width    = parseNumberValue(str[i]); i += width   [1];
+    const height   = parseNumberValue(str[i]); i += height  [1];
+    const round    = parseNumberValue(str[i]); i += round   [1];
 
     const frame = new FrameValue(
         '', // set node ID elsewhere
+        children[0],
+        position[0],
         x       [0],
         y       [0],
         width   [0],
         height  [0],
-        round   [0],
-        children[0]);
+        round   [0]);
 
 
     i = parseShapeBaseValue(str, i, frame);

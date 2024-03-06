@@ -1,8 +1,9 @@
 class GFrame
 extends GShape
 {
-    round    = null;
     children = null;
+    position = null;
+    round    = null;
 
 
 
@@ -17,8 +18,9 @@ extends GShape
     {
         super.reset();
 
-        this.round    = null;
         this.children = null;
+        this.position = null;
+        this.round    = null;
     }
 
 
@@ -29,8 +31,9 @@ extends GShape
 
         copy.copyBase(this);
 
-        if (this.round   ) copy.round    = this.round   .copy();
         if (this.children) copy.children = this.children.copy();
+        if (this.position) copy.position = this.position.copy();
+        if (this.round   ) copy.round    = this.round   .copy();
 
         return copy;
     }
@@ -41,12 +44,13 @@ extends GShape
     {
         switch (paramId)
         {
+            case 'children': return this.input ? this.value.children : this.children;
+            case 'position': return this.input ? this.value.position : this.position;
             case 'x':        return this.input ? this.value.x        : this.x;
             case 'y':        return this.input ? this.value.y        : this.y;
             case 'width':    return this.input ? this.value.width    : this.width;
             case 'height':   return this.input ? this.value.height   : this.height;
             case 'round':    return this.input ? this.value.round    : this.round;
-            case 'children': return this.input ? this.value.children : this.children;
         }
 
         return super.paramFromId(paramId);
@@ -62,8 +66,9 @@ extends GShape
 
         const [x, y, width, height] = await this.evalBaseParams(parse);
 
-        const round    = this.round    ? (await this.round   .eval(parse)).toValue() : null;
         let   children = this.children ? (await this.children.eval(parse)).toValue() : null;
+        const position = this.position ? (await this.position.eval(parse)).toValue() : null;
+        const round    = this.round    ? (await this.round   .eval(parse)).toValue() : null;
 
         if (   children
             && SHAPE_VALUES.includes(children.type)
@@ -83,29 +88,39 @@ extends GShape
 
             this.value = new FrameValue(
                 this.nodeId,
+                children ?? input.children,
+                position ?? input.position,
                 x        ?? input.x,
                 y        ?? input.y,
                 width    ?? input.width,
                 height   ?? input.height,
-                round    ?? input.round,
-                children ?? input.children);
+                round    ?? input.round);
         }
         else
         {
             this.value = new FrameValue(
                 this.nodeId, 
+                children,
+                position,
                 x, 
                 y, 
                 width,
                 height, 
-                round, 
-                children);
+                round);
         }
 
 
+        const childType = new TextValue(finalListTypeFromItems(children.items));
+
         this.setUpdateValues(parse, 
         [
-            ['value', this.value]
+            ['childType', childType],
+            ['position',  position ],
+            ['x',         x        ],
+            ['y',         y        ],
+            ['width',     width    ],
+            ['height',    height   ],
+            ['round',     round    ]
         ]);
 
 
@@ -115,12 +130,13 @@ extends GShape
         await this.evalObjects(parse);
 
 
+        if (!this.children) this.children = this.value.children.copy();
+        if (!this.position) this.position = this.value.position.copy();
         if (!this.x       ) this.x        = this.value.x       .copy();
         if (!this.y       ) this.y        = this.value.y       .copy();
         if (!this.width   ) this.width    = this.value.width   .copy();
         if (!this.height  ) this.height   = this.value.height  .copy();
         if (!this.round   ) this.round    = this.value.round   .copy();
-        if (!this.children) this.children = this.value.children.copy();
 
 
         this.validate();
@@ -136,17 +152,19 @@ extends GShape
             return;
             
 
-        if (   this.value.x
+        if (   this.value.position
+            && this.value.x
             && this.value.y
             && this.value.width
             && this.value.height
             && this.value.round)
         {
-            let   x = this.value.x     .value;
-            let   y = this.value.y     .value;
-            let   w = this.value.width .value;
-            let   h = this.value.height.value;
-            const r = Math.max(0, this.value.round.value);
+            let   pos = this.value.position.value;
+            let   x   = this.value.x       .value;
+            let   y   = this.value.y       .value;
+            let   w   = this.value.width   .value;
+            let   h   = this.value.height  .value;
+            const r   = Math.max(0, this.value.round.value);
 
 
             const frame = new FigmaFrame(
@@ -202,8 +220,9 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round    && this.round   .isValid()
-            && this.children && this.children.isValid();
+            && this.children && this.children.isValid()
+            && this.position && this.position.isValid()
+            && this.round    && this.round   .isValid();
     }
 
 
@@ -212,8 +231,9 @@ extends GShape
     {
         super.pushValueUpdates(parse);
 
-        if (this.round   ) this.round   .pushValueUpdates(parse);
         if (this.children) this.children.pushValueUpdates(parse);
+        if (this.position) this.position.pushValueUpdates(parse);
+        if (this.round   ) this.round   .pushValueUpdates(parse);
     }
 
 
@@ -222,8 +242,9 @@ extends GShape
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.round   ) this.round   .invalidateInputs(parse, from, force);
         if (this.children) this.children.invalidateInputs(parse, from, force);
+        if (this.position) this.position.invalidateInputs(parse, from, force);
+        if (this.round   ) this.round   .invalidateInputs(parse, from, force);
     }
 
 
@@ -232,7 +253,8 @@ extends GShape
     {
         super.iterateLoop(parse);
 
-        if (this.round   ) this.round   .iterateLoop(parse);
         if (this.children) this.children.iterateLoop(parse);
+        if (this.position) this.position.iterateLoop(parse);
+        if (this.round   ) this.round   .iterateLoop(parse);
     }
 }

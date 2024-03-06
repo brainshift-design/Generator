@@ -5,14 +5,16 @@ function genShapeGroupIsValid(genGroup)
 
 
 
-function figCreateShapeGroup(genGroup)
+async function figCreateShapeGroup(genGroup)
 {
     let objects = [];
 
     for (const obj of genGroup[FO_GROUP_CHILDREN])
-        figCreateObject(obj, o => objects = [...objects, o]);
+        await figCreateObject(obj, o => objects = [...objects, o]);
 
 
+    await figma.currentPage.loadAsync();
+    
     const figGroup = 
         !isEmpty(objects)
         ? figma.group(objects, figma.currentPage)
