@@ -96,6 +96,7 @@ function getPresetGraph(graphId)
         case 'tableBasics':          return presetTableBasics;
         case 'countryData':          return presetCountryData;
         case 'pieChart':             return presetPieChart;
+        case 'lineGraph':            return presetLineGraph;
 
 
         case 'sequence':             return presetSequence;

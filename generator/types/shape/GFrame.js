@@ -174,8 +174,17 @@ extends GShape
                 x, y, w, h, r);
 
 
+            const xoff = createTransform(-x, -y);
+
             for (let i = 0; i < this.value.objects.length; i++)
-                this.addChildObject(frame.children, this.value.objects[i]);
+            {
+                const obj = this.value.objects[i];
+
+                if (pos > 0)
+                    obj.applyTransform(xoff);
+
+                this.addChildObject(frame.children, obj);
+            }
 
 
             frame.createDefaultTransform(x, y);

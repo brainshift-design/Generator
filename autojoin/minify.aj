@@ -4295,3 +4295,5 @@ blendLuminosity
 
 loadedFonts
 controls
+
+loadPresetGraph
