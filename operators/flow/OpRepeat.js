@@ -36,8 +36,9 @@ extends OperatorBase
         this.paramIteration.divider                   = 0.52;
         this.paramWhile    .divider                   = 0.6;
 
-        //this.paramIterate.input.types.push(ANY_VALUE);
-        this.paramLoop   .input.types.push(ANY_VALUE);
+        this.paramIteration.input.types.push(TEXT_VALUE);
+      //this.paramIterate  .input.types.push(ANY_VALUE);
+        this.paramLoop     .input.types.push(ANY_VALUE);
 
 
         this.paramLoop.getTooltip = () => 
@@ -107,7 +108,15 @@ extends OperatorBase
         {
             this.paramCount.setValue(count, false, true, false);
             this.paramIteration.controls[0].setMax(count.value);
+
+            const textConnected =
+                   this.paramIteration.input.connected
+                && this.paramIteration.input.connectedOutput.types.includes(TEXT_VALUE);
+
+            this.paramIteration.controls[0].overrideText = textConnected ? NAN_DISPLAY : '';
+            this.paramIteration.output.types             = textConnected ? [TEXT_VALUE] : [NUMBER_VALUE];
         }
+
 
         this.outputs[0].types = 
                type
@@ -122,9 +131,10 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramCount.enableControlText(true, this.paramCount.isUnknown());
-        this.paramWhile.enableControlText(false);
-        this.paramLoop .enableControlText(false);
+        this.paramCount    .enableControlText(true, this.paramCount    .isUnknown());
+        this.paramIteration.enableControlText(true, this.paramIteration.isUnknown());
+        this.paramWhile    .enableControlText(false);
+        this.paramLoop     .enableControlText(false);
 
         this.paramWhile.controls[0].valueText = '﻿';
 

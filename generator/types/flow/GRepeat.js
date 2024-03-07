@@ -64,10 +64,49 @@ extends GOperator1
             
 
         let   count     = this.count     ? (await this.count    .eval(parse)).toValue() : null;
-        const iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
+        let   iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
         let  _while     = new NumberValue(1);
       //const iterate   = (await this.iterate.eval(parse)).toValue();
         const loop      = this.loop      ? (await this.loop     .eval(parse)).toValue() : null;
+
+
+        let iterations = [];
+
+        if (iteration.isValid())
+        {
+            if (iteration.type != TEXT_VALUE)
+                iteration = new TextValue(iteration.value.toString());
+
+            const _iterations = iteration.value.split(',');
+            
+            if (_iterations.length > 1)
+            {
+                for (const iter of _iterations)
+                {
+                    if (iter.includes('-'))
+                    {
+                        const iterParts = iter.split('-');
+
+                        if (iterParts.length == 2)
+                        {
+                            let start = iterParts[0];
+                            let end   = iterParts[1];
+
+                            if (   !isNaN(Number(start))
+                                && !isNaN(Number(end  )))
+                            {
+                                for (let i = start; i <= end; i++)
+                                    iterations.push(parseInt(i));
+                            }
+                        }
+                    }
+                    else
+                        iterations.push(parseInt(iter));
+                }
+            }
+            else
+                iterations.push(parseInt(iteration.value));
+        }
 
 
         count = 
@@ -179,7 +218,7 @@ extends GOperator1
                                     this.iterationObjects.push(obj.copy());
 
                                     if (  !iteration.isValid()
-                                        || iteration.value == i+1)
+                                        || iterations.includes(i+1))
                                     {
                                         obj.nodeId      = this.nodeId;
                                         obj.listId      = i;
