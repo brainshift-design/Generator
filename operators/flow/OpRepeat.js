@@ -2,6 +2,7 @@ class   OpRepeat
 extends OperatorBase
 {
     paramCount;
+    paramIteration;
     paramWhile;
     //paramIterate;
     paramLoop;
@@ -21,17 +22,19 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramCount   = new NumberParam('count',   'count', true,  true, true, 5, 0, Number.MAX_SAFE_INTEGER, 0));
-        this.addParam(this.paramWhile   = new NumberParam('while',   'while', true,  true, true, 1, 0, 1));
-      //this.addParam(this.paramIterate = new NumberParam('iterate', '',      false, true, false));
-        this.addParam(this.paramLoop    = new NumberParam('loop',    '',      false, true, false));
+        this.addParam(this.paramCount     = new NumberParam('count',     'count',     true,  true, true, 5, 0, Number.MAX_SAFE_INTEGER, 0));
+        this.addParam(this.paramIteration = new NumberParam('iteration', 'iteration', true,  true, true, Number.NaN, 1));
+        this.addParam(this.paramWhile     = new NumberParam('while',     'while',     true,  true, true, 1, 0, 1));
+      //this.addParam(this.paramIterate   = new NumberParam('iterate',   '',          false, true, false));
+        this.addParam(this.paramLoop      = new NumberParam('loop',      '',          false, true, false));
 
 
         this.paramCount.controls[0].allowEditDecimals = false;
-        this.paramCount.divider                       = 0.52;
         this.paramCount.affectsHeader                 = false;
-
-        this.paramWhile.divider                       = 0.6;
+        
+        this.paramCount    .divider                   = 0.52;
+        this.paramIteration.divider                   = 0.52;
+        this.paramWhile    .divider                   = 0.6;
 
         //this.paramIterate.input.types.push(ANY_VALUE);
         this.paramLoop   .input.types.push(ANY_VALUE);
@@ -79,9 +82,10 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramCount.genRequest(gen));
-        request.push(...this.node.paramWhile.genRequest(gen));
-        request.push(...this.node.paramLoop .genRequest(gen));
+        request.push(...this.node.paramCount    .genRequest(gen));
+        request.push(...this.node.paramIteration.genRequest(gen));
+        request.push(...this.node.paramWhile    .genRequest(gen));
+        request.push(...this.node.paramLoop     .genRequest(gen));
 
         
         gen.scope.pop();

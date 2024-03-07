@@ -2,6 +2,7 @@ class GRepeat
 extends GOperator1
 {
     count            = null;
+    iteration        = null;
    _while            = null;
   //iterate          = null;
     loop             = null;
@@ -24,6 +25,7 @@ extends GOperator1
         super.reset();
 
         this. count      = null;
+        this. iteration  = null;
         this._while      = null;
       //this. iterate    = null;
         this. loop       = null;
@@ -41,11 +43,12 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this. value  ) copy. value   = this. value  .copy();
-        if (this. count  ) copy. count   = this. count  .copy();
-        if (this._while  ) copy._while   = this._while  .copy();
-      //if (this. iterate) copy. iterate = this. iterate.copy();
-        if (this. loop   ) copy. loop    = this. loop   .copy();
+        if (this. value    ) copy. value     = this. value    .copy();
+        if (this. iteration) copy. iteration = this. iteration.copy();
+        if (this. count    ) copy. count     = this. count    .copy();
+        if (this._while    ) copy._while     = this._while    .copy();
+      //if (this. iterate  ) copy. iterate   = this. iterate  .copy();
+        if (this. loop     ) copy. loop      = this. loop     .copy();
 
         copy.activeAfter = this.activeAfter;
 
@@ -60,10 +63,11 @@ extends GOperator1
             return this;
             
 
-        let   count   = this.count ? (await this.count  .eval(parse)).toValue() : null;
-        let  _while   = new NumberValue(1);
-      //const iterate = (await this.iterate.eval(parse)).toValue();
-        const loop    = this.loop  ? (await this.loop   .eval(parse)).toValue() : null;
+        let   count     = this.count     ? (await this.count    .eval(parse)).toValue() : null;
+        const iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
+        let  _while     = new NumberValue(1);
+      //const iterate   = (await this.iterate.eval(parse)).toValue();
+        const loop      = this.loop      ? (await this.loop     .eval(parse)).toValue() : null;
 
 
         count = 
@@ -166,7 +170,9 @@ extends GOperator1
                         {
                             this.iterationObjects = [];
                         
-                            if (this.input.value.objects)
+                            if (   this.input.value.objects
+                                && (  !iteration.isValid()
+                                    || iteration.value == i+1))
                             {
                                 for (let j = 0; j < this.input.value.objects.length; j++, o++)
                                 {
@@ -266,8 +272,9 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this. count && this. count.isValid()
-            && this._while && this._while.isValid();
+            && this. count     && this. count    .isValid()
+            && this. iteration && this. iteration.isValid()
+            && this._while     && this._while    .isValid();
     }
 
 
@@ -276,10 +283,11 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this. count  ) this. count  .pushValueUpdates(parse);
-        if (this._while  ) this._while  .pushValueUpdates(parse);
-      //if (this. iterate) this. iterate.pushValueUpdates(parse);
-        if (this. loop   ) this. loop   .pushValueUpdates(parse);
+        if (this. count    ) this. count    .pushValueUpdates(parse);
+        if (this. iteration) this. iteration.pushValueUpdates(parse);
+        if (this._while    ) this._while    .pushValueUpdates(parse);
+      //if (this. iterate  ) this. iterate  .pushValueUpdates(parse);
+        if (this. loop     ) this. loop     .pushValueUpdates(parse);
     }
 
 
@@ -288,10 +296,11 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this. count  ) this. count  .invalidateInputs(parse, from, force);
-        if (this._while  ) this._while  .invalidateInputs(parse, from, force);
-      //if (this. iterate) this. iterate.invalidateInputs(parse, from, force);
-        if (this. loop   ) this. loop   .invalidateInputs(parse, from, force);
+        if (this. count    ) this. count    .invalidateInputs(parse, from, force);
+        if (this. iteration) this. iteration.invalidateInputs(parse, from, force);
+        if (this._while    ) this._while    .invalidateInputs(parse, from, force);
+      //if (this. iterate  ) this. iterate  .invalidateInputs(parse, from, force);
+        if (this. loop     ) this. loop     .invalidateInputs(parse, from, force);
     }
 
 
@@ -300,10 +309,11 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this. count  ) this. count  .iterateLoop(parse);
-        if (this._while  ) this._while  .iterateLoop(parse);
-      //if (this. iterate) this. iterate.iterateLoop(parse);
-        if (this. loop   ) this. loop   .iterateLoop(parse);
+        if (this. count    ) this. count    .iterateLoop(parse);
+        if (this. iteration) this. iteration.iterateLoop(parse);
+        if (this._while    ) this._while    .iterateLoop(parse);
+      //if (this. iterate  ) this. iterate  .iterateLoop(parse);
+        if (this. loop     ) this. loop     .iterateLoop(parse);
     }
 }
 
