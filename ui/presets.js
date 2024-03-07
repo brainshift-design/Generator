@@ -82,7 +82,7 @@ function getPresetGraph(graphId)
     switch (graphId)
     {
         case 'default':              return presetDefault;
-
+I
         case 'basics':               return presetNodeBasics;
         case 'dataTypes':            return presetDataTypes;
         case 'organize':             return presetOrganize;
@@ -102,7 +102,7 @@ function getPresetGraph(graphId)
         case 'sequence':             return presetSequence;
         case 'range':                return presetRange;
         case 'wave':                 return presetWave;
-        case 'define':               return presetDefine;
+        case 'iterate':              return presetIterate;
         case 'random':               return presetRandom;
         case 'noise':                return presetNoise;
         case 'probability':          return presetProbability;

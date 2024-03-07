@@ -244,7 +244,7 @@ extends GNode
             genPushUpdateValue(parse, this.nodeId, value[0], value[1]);
 
         //if (this.isValid())
-            this.updateValues = [];
+        this.updateValues = [];
     }
 
 

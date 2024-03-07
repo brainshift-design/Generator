@@ -246,11 +246,11 @@ class FigmaObject
     {
         if (   this.xp0.x == this.xp1.x
             && this.xp0.y == this.xp1.y)
-            this.xp1.x += 0.000000001;
+            this.xp1.x += 0.0001;
 
         if (   this.xp0.x == this.xp2.x
             && this.xp0.y == this.xp2.y)
-            this.xp2.y += 0.000000001;
+            this.xp2.y += 0.0001;
 
         this.xp0 = transformPoint(this.xp0, xform, space);
         this.xp1 = transformPoint(this.xp1, xform, space);
