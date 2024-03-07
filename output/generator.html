@@ -18020,9 +18020,7 @@ extends GOperator1
                         {
                             this.iterationObjects = [];
                         
-                            if (   this.input.value.objects
-                                && (  !iteration.isValid()
-                                    || iteration.value == i+1))
+                            if (this.input.value.objects)
                             {
                                 for (let j = 0; j < this.input.value.objects.length; j++, o++)
                                 {
@@ -18030,16 +18028,20 @@ extends GOperator1
 
                                     this.iterationObjects.push(obj.copy());
 
-                                    obj.nodeId      = this.nodeId;
-                                    obj.listId      = i;
+                                    if (  !iteration.isValid()
+                                        || iteration.value == i+1)
+                                    {
+                                        obj.nodeId      = this.nodeId;
+                                        obj.listId      = i;
 
-                                    obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
-                                    obj.objectName += ' ' + (o+1).toString();
+                                        obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
+                                        obj.objectName += ' ' + (o+1).toString();
 
-                                    obj.itemIndex   = repeat.currentIteration;
+                                        obj.itemIndex   = repeat.currentIteration;
 
-                                    if (this.value.objects)
-                                        this.value.objects.push(obj);
+                                        if (this.value.objects)
+                                            this.value.objects.push(obj);
+                                    }
                                 }
                             }
                         }
