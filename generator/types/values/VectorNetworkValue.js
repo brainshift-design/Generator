@@ -32,10 +32,10 @@ extends GValue
 
 
 
-    equals(region)
+    equals(other)
     {
-        return region
-            && this.regions.equals(region.regions);
+        return other
+            && this.regions.equals(other.regions);
     }
 
 

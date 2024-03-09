@@ -108,13 +108,23 @@ extends FigmaShape
 
         for (let i = 0; i < this.edges.length; i++)
         {
+            const edge = this.edges[i];
+
+            const s  = edge.start;
+            const e  = edge.end;
+            let   st = edge.startTangent;
+            let   et = edge.endTangent;
+
+            if (!st.isValid()) st = s.copy();
+            if (!et.isValid()) et = e.copy();
+
             bounds = expandRect(
                 bounds, 
                 bounds3(
-                    this.edges[i].start.toPoint(), 
-                    this.edges[i].start.toPoint(),
-                    this.edges[i].end  .toPoint(),
-                    this.edges[i].end  .toPoint()));
+                    s .toPoint(), 
+                    st.toPoint(),
+                    et.toPoint(),
+                    e .toPoint()));
         }
 
         return bounds;

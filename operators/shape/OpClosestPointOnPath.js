@@ -16,9 +16,6 @@ extends OpShapeBase
         super(CLOSEST_POINT_ON_PATH, 'closestOnPath', 'closest on path', iconClosestPointOnPath);
 
 
-        this.subscription = true;
-        
-        
         this.addInput (new Input ([VECTOR_PATH_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
         this.addInput (new Input ([POINT_VALUE],       getNodeInputValuesForUndo));//, this.input_getBackInitValue));
         this.addOutput(new Output([POINT_VALUE], this.output_genRequest));

@@ -89,10 +89,28 @@ extends GShape
             {
                 const _loop = new ListValue();
 
-                for (const item of input.items)
+                for (let j = 0; j < input.items.length; j++)
                 {
+                    const item = input.items[j];
+
                     if (item.type == VECTOR_EDGE_VALUE)
-                        _loop.items.push(item);
+                    {
+                        const edge = item.copy();
+
+                        if (_loop.items.length > 0)
+                        {
+                            const prevEdge = _loop.items.at(-1);
+
+                            if (   edge.end.x.equals(prevEdge.end.x)
+                                && edge.end.y.equals(prevEdge.end.y))
+                            {
+                                [edge.start,        edge.end       ] = [edge.end,        edge.start       ];
+                                [edge.startTangent, edge.endTangent] = [edge.endTangent, edge.startTangent];
+                            }
+                        }
+
+                        _loop.items.push(edge);
+                    }
                 }
 
                 if (!isEmpty(_loop.items))
@@ -104,7 +122,21 @@ extends GShape
                      input.type == VECTOR_EDGE_VALUE, 
                     'input.type must be VECTOR_EDGE_VALUE');
 
-                loop.items.push(input);
+                const edge = input.copy();
+
+                if (loop.items.length > 0)
+                {
+                    const prevEdge = loop.items.at(-1);
+
+                    if (   edge.end.x.equals(prevEdge.end.x)
+                        && edge.end.y.equals(prevEdge.end.y))
+                    {
+                        [edge.start,        edge.end       ] = [edge.end,        edge.start       ];
+                        [edge.startTangent, edge.endTangent] = [edge.endTangent, edge.startTangent];
+                    }
+                }
+
+                loop.items.push(edge);
             }
         }
 
@@ -117,6 +149,9 @@ extends GShape
             this.nodeId,
             this.loops, 
             winding);
+
+
+        this.value.uniqueId = this.uniqueId;
 
 
         this.setUpdateValues(parse,
@@ -159,7 +194,7 @@ extends GShape
             {
                 const loop = this.loops.items[i];
 
-                console.log('loop.items =', loop.items);
+
                 const points = [];
     
                 for (let j = 0; j < loop.items.length; j++)

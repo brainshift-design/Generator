@@ -11,7 +11,8 @@ extends OpShapeBase
         super(VECTOR_EDGE, 'edge', 'edge', iconVectorEdge);
 
         //this.canDisable  = true;
-        this.iconOffsetY = -1;
+        this.subscription = true;
+        this.iconOffsetY  = -1;
 
 
         this.addInput (new Input ([POINT_VALUE, VECTOR_VERTEX_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));

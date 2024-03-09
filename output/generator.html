@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 376;
+const generatorVersion = 377;
 
 
 const MAX_INT32        = 2147483647;
@@ -5687,9 +5687,10 @@ function enableFeatures(sub, beta = false)
     enableMenuItem(menuItemConvertToP3,        true, sub);
     enableMenuItem(menuItemColorblind,         true, sub);
     enableMenuItem(menuItemShapeRender,        true, sub);
-    enableMenuItem(menuItemPointAlongPath,     true, sub);
-    enableMenuItem(menuItemClosestPointOnPath, true, sub);
-    enableMenuItem(menuItemPathLength,         true, sub);
+    enableMenuItem(menuItemVectorVertex,       true, sub);
+    enableMenuItem(menuItemVectorEdge,         true, sub);
+    enableMenuItem(menuItemVectorRegion,       true, sub);
+    enableMenuItem(menuItemVectorNetwork,      true, sub);
     enableMenuItem(menuItemSaveTemplate,       true, sub);
     enableMenuItem(menuItemManageTemplates,    true, sub);
 
@@ -8618,13 +8619,23 @@ extends FigmaShape
 
         for (let i = 0; i < this.edges.length; i++)
         {
+            const edge = this.edges[i];
+
+            const s  = edge.start;
+            const e  = edge.end;
+            let   st = edge.startTangent;
+            let   et = edge.endTangent;
+
+            if (!st.isValid()) st = s.copy();
+            if (!et.isValid()) et = e.copy();
+
             bounds = expandRect(
                 bounds, 
                 bounds3(
-                    this.edges[i].start.toPoint(), 
-                    this.edges[i].start.toPoint(),
-                    this.edges[i].end  .toPoint(),
-                    this.edges[i].end  .toPoint()));
+                    s .toPoint(), 
+                    st.toPoint(),
+                    et.toPoint(),
+                    e .toPoint()));
         }
 
         return bounds;
@@ -9908,7 +9919,8 @@ class GValue
     {
         //super.copyBase(base);
         
-        this.valueId = base.valueId;
+        this.valueId  = base.valueId;
+        this.uniqueId = base.uniqueId;
 
         this.copyCustomParams(base);
 
@@ -16286,9 +16298,9 @@ extends GValue
     isValid()
     {
         return this.start       .isValid()
-            && this.end         .isValid();
-            // && this.startTangent.isValid()
-            // && this.endTangent  .isValid();
+            && this.end         .isValid()
+            && this.startTangent.isValid()
+            && this.endTangent  .isValid();
     }
 
 
@@ -16590,10 +16602,10 @@ extends GValue
 
 
 
-    equals(region)
+    equals(other)
     {
-        return region
-            && this.regions.equals(region.regions);
+        return other
+            && this.regions.equals(other.regions);
     }
 
 
@@ -38909,14 +38921,17 @@ extends GOperator1
             this.value = PointValue.NaN.copy();
 
 
+        this.value.uniqueId = this.uniqueId;
+
+
+        await this.evalObjects(parse);
+
+
         this.setUpdateValues(parse, 
         [
             ['x', x],
             ['y', y]
-        ]);
-
-
-        await this.evalObjects(parse);
+        ]);    
 
 
         this.validate();
@@ -39565,6 +39580,9 @@ extends GOperator1
         }
 
        
+        this.value.uniqueId = this.uniqueId;
+
+
         await this.evalObjects(parse);
 
 
@@ -39763,6 +39781,9 @@ extends GOperator2
             input1,
             startTangent,
               endTangent);
+
+
+        this.value.uniqueId = this.uniqueId;
 
 
         await this.evalObjects(parse);
@@ -39978,10 +39999,28 @@ extends GShape
             {
                 const _loop = new ListValue();
 
-                for (const item of input.items)
+                for (let j = 0; j < input.items.length; j++)
                 {
+                    const item = input.items[j];
+
                     if (item.type == VECTOR_EDGE_VALUE)
-                        _loop.items.push(item);
+                    {
+                        const edge = item.copy();
+
+                        if (_loop.items.length > 0)
+                        {
+                            const prevEdge = _loop.items.at(-1);
+
+                            if (   edge.end.x.equals(prevEdge.end.x)
+                                && edge.end.y.equals(prevEdge.end.y))
+                            {
+                                [edge.start,        edge.end       ] = [edge.end,        edge.start       ];
+                                [edge.startTangent, edge.endTangent] = [edge.endTangent, edge.startTangent];
+                            }
+                        }
+
+                        _loop.items.push(edge);
+                    }
                 }
 
                 if (!isEmpty(_loop.items))
@@ -39993,7 +40032,21 @@ extends GShape
                      input.type == VECTOR_EDGE_VALUE, 
                     'input.type must be VECTOR_EDGE_VALUE');
 
-                loop.items.push(input);
+                const edge = input.copy();
+
+                if (loop.items.length > 0)
+                {
+                    const prevEdge = loop.items.at(-1);
+
+                    if (   edge.end.x.equals(prevEdge.end.x)
+                        && edge.end.y.equals(prevEdge.end.y))
+                    {
+                        [edge.start,        edge.end       ] = [edge.end,        edge.start       ];
+                        [edge.startTangent, edge.endTangent] = [edge.endTangent, edge.startTangent];
+                    }
+                }
+
+                loop.items.push(edge);
             }
         }
 
@@ -40006,6 +40059,9 @@ extends GShape
             this.nodeId,
             this.loops, 
             winding);
+
+
+        this.value.uniqueId = this.uniqueId;
 
 
         this.setUpdateValues(parse,
@@ -40048,7 +40104,7 @@ extends GShape
             {
                 const loop = this.loops.items[i];
 
-                console.log('loop.items =', loop.items);
+
                 const points = [];
     
                 for (let j = 0; j < loop.items.length; j++)

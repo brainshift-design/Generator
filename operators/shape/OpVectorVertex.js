@@ -16,7 +16,8 @@ extends OpShapeBase
         super(VECTOR_VERTEX, 'vertex', 'vertex', iconVectorVertex);
 
         //this.canDisable  = true;
-        this.iconOffsetY = -1;
+        this.subscription = true;
+        this.iconOffsetY  = -1;
 
 
         this.addInput (new Input ([VECTOR_VERTEX_VALUE, POINT_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));

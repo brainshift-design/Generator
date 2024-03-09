@@ -365,9 +365,10 @@ function enableFeatures(sub, beta = false)
     enableMenuItem(menuItemConvertToP3,        true, sub);
     enableMenuItem(menuItemColorblind,         true, sub);
     enableMenuItem(menuItemShapeRender,        true, sub);
-    enableMenuItem(menuItemPointAlongPath,     true, sub);
-    enableMenuItem(menuItemClosestPointOnPath, true, sub);
-    enableMenuItem(menuItemPathLength,         true, sub);
+    enableMenuItem(menuItemVectorVertex,       true, sub);
+    enableMenuItem(menuItemVectorEdge,         true, sub);
+    enableMenuItem(menuItemVectorRegion,       true, sub);
+    enableMenuItem(menuItemVectorNetwork,      true, sub);
     enableMenuItem(menuItemSaveTemplate,       true, sub);
     enableMenuItem(menuItemManageTemplates,    true, sub);
 

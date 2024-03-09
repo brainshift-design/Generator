@@ -82,7 +82,7 @@ function getPresetGraph(graphId)
     switch (graphId)
     {
         case 'default':              return presetDefault;
-I
+
         case 'basics':               return presetNodeBasics;
         case 'dataTypes':            return presetDataTypes;
         case 'organize':             return presetOrganize;

@@ -9,9 +9,6 @@ extends OperatorBase
     {
         super(PATH_LENGTH, 'length', 'path length', iconPathLength);
 
-        this.subscription = true;
-        
-
         this.addInput(new Input([VECTOR_PATH_VALUE]));
 
         this.addParam(this.paramLength = new NumberParam('length', 'length', false, false, true));

@@ -10,7 +10,8 @@ extends OpShape
         super(VECTOR_REGION, 'region', 'region', iconVectorRegion);
 
         //this.canDisable = true;
-        this.iconOffsetY = 2;
+        this.subscription = true;
+        this.iconOffsetY  = 2;
 
 
         this.addNewInput();

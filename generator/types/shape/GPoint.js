@@ -97,14 +97,17 @@ extends GOperator1
             this.value = PointValue.NaN.copy();
 
 
+        this.value.uniqueId = this.uniqueId;
+
+
+        await this.evalObjects(parse);
+
+
         this.setUpdateValues(parse, 
         [
             ['x', x],
             ['y', y]
-        ]);
-
-
-        await this.evalObjects(parse);
+        ]);    
 
 
         this.validate();

@@ -77,6 +77,9 @@ extends GOperator2
               endTangent);
 
 
+        this.value.uniqueId = this.uniqueId;
+
+
         await this.evalObjects(parse);
 
 

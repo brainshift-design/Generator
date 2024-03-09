@@ -87,9 +87,9 @@ extends GValue
     isValid()
     {
         return this.start       .isValid()
-            && this.end         .isValid();
-            // && this.startTangent.isValid()
-            // && this.endTangent  .isValid();
+            && this.end         .isValid()
+            && this.startTangent.isValid()
+            && this.endTangent  .isValid();
     }
 
 

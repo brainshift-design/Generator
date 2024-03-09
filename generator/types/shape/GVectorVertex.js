@@ -123,6 +123,9 @@ extends GOperator1
         }
 
        
+        this.value.uniqueId = this.uniqueId;
+
+
         await this.evalObjects(parse);
 
 

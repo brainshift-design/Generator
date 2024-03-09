@@ -37,7 +37,8 @@ class GValue
     {
         //super.copyBase(base);
         
-        this.valueId = base.valueId;
+        this.valueId  = base.valueId;
+        this.uniqueId = base.uniqueId;
 
         this.copyCustomParams(base);
 
