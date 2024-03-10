@@ -4,20 +4,6 @@ const presetRandomSeeds = '\
     "nodes":\
     [\
         {\
-        "type": "CMNT",\
-        "created": "1709380436897",\
-        "updated": "1709380437102",\
-        "id": "comment15",\
-        "name": "The%20%3Cb%3Efreeze%20node%3C%2Fb%3E%20stops%20anything%20to%20the%20left%20of%20it",\
-        "renamed": "true",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "notCondition": "false",\
-        "x": "5687",\
-        "y": "7295",\
-        "z": "0"\
-        },\
-        {\
         "type": "RECT",\
         "created": "1709380436908",\
         "updated": "1709380437102",\
@@ -188,25 +174,6 @@ const presetRandomSeeds = '\
         ]\
         },\
         {\
-        "type": "PANEL",\
-        "created": "1709380436949",\
-        "updated": "1709380437102",\
-        "id": "panel3",\
-        "name": "",\
-        "renamed": "false",\
-        "enabled": "true",\
-        "highlight": "6",\
-        "notCondition": "false",\
-        "x": "5649",\
-        "y": "7253",\
-        "z": "10",\
-        "width": "664",\
-        "height": "204.16025645645797",\
-        "params":\
-        [\
-        ]\
-        },\
-        {\
         "type": "COL",\
         "created": "1709380436954",\
         "updated": "1709380436954",\
@@ -313,6 +280,7 @@ const presetRandomSeeds = '\
         "enabled": "true",\
         "highlight": "6",\
         "notCondition": "false",\
+        "active": "true",\
         "x": "6101",\
         "y": "6983",\
         "z": "16",\
@@ -440,20 +408,6 @@ const presetRandomSeeds = '\
                 ["NUM#", "width", "111,0"],\
                 ["NUM#", "height", "173,0"]\
         ]\
-        },\
-        {\
-        "type": "CMNT",\
-        "created": "1709380436991",\
-        "updated": "1709380437102",\
-        "id": "comment17",\
-        "name": "is%20done%2C%20freeze%20caches%20the%20results.",\
-        "renamed": "true",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "notCondition": "false",\
-        "x": "5690",\
-        "y": "7381",\
-        "z": "24"\
         },\
         {\
         "type": "RECT",\
@@ -680,20 +634,6 @@ const presetRandomSeeds = '\
                 ["NUM#", "seed", "119,0"],\
                 ["NUM#", "iteration", "?,0"]\
         ]\
-        },\
-        {\
-        "type": "CMNT",\
-        "created": "1709380437041",\
-        "updated": "1709380437102",\
-        "id": "comment16",\
-        "name": "from%20generating%20new%20values.%20%20Once%20the%20repeat",\
-        "renamed": "true",\
-        "enabled": "true",\
-        "highlight": "0",\
-        "notCondition": "false",\
-        "x": "5692",\
-        "y": "7337",\
-        "z": "37"\
         },\
         {\
         "type": "CMNT",\

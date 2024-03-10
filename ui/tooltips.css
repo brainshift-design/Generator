@@ -122,3 +122,57 @@
 {
     position: static;
 }
+
+
+#ttAscii
+{
+    width:       500px; 
+    height:      260px;
+}
+
+
+#asciiTable
+{
+    color:         white;
+    font-family:     Inter;
+    font-size:       9px;
+    width:           100%;
+    border-collapse: collapse;
+    position:        absolute;
+    top:             10px;
+    left:            -5px;
+}
+
+
+#asciiInfo
+{
+    position:  absolute;
+    bottom:    30px;
+    left:      50%;
+    transform: translateX(-45%);
+    width:     100%;
+}
+
+
+#asciiTable tr
+{
+    height: 7px;
+}
+
+
+.asciiCode
+{
+    width:                6.25%;
+    text-align:           right;
+    font-variant-numeric: tabular-nums;
+    opacity:              35%;
+ /* box-shadow:           0 0 0 1px red inset; */
+}
+
+
+.asciiChar
+{
+    width:      6.25%;
+    text-align: center;
+ /* box-shadow: 0 0 0 1px blue inset; */
+}

@@ -199,7 +199,7 @@ class Operator
 
     
 
-    constructor(type, id, name, icon, defWidth = defNodeWidth, progressBar = false)
+    constructor(type, id, name, icon, defWidth = defNodeWidth, progressBar = false, createTooltip = true)
     {
         this.createTime        = Date.now();
         this.updateTime        = this.createTime;
@@ -232,7 +232,8 @@ class Operator
         if (progressBar)
             this.createProgressBar();
 
-        createHeaderTooltip(this);
+        if (createTooltip)
+            createHeaderTooltip(this);
 
 
         this.setName(name);
@@ -1575,13 +1576,15 @@ function idFromNodePath(path)
 
 
 
-function createHeaderTooltip(node)
+function createHeaderTooltip(node, tooltip = ttText)
 {
     createTooltipSrc(
         node.header, 
         node.header, 
-        () => ttText, 
-        () => node.showHeaderTooltip && settings.showTooltipLists);
+        () => tooltip, 
+        () =>    node.showHeaderTooltip 
+              && (   node.type == TEXT_CHAR
+                  || settings.showTooltipLists));
 
 
     node.header.addEventListener('pointerenter', e =>

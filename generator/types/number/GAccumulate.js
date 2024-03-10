@@ -135,5 +135,6 @@ extends GOperator1
         super.resetLoop(parse, nodeId);
 
         this.current = new NumberValue(0);
+        console.log('resetLoop()');
     }
 }

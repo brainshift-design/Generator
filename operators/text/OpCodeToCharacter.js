@@ -3,11 +3,14 @@ extends OperatorBase
 {
     constructor()
     {
-        super(TEXT_CHAR, 'codeToChar', 'code to char', iconCodeToCharacter);
+        super(TEXT_CHAR, 'codeToChar', 'code to char', iconCodeToCharacter, defNodeWidth, false, false);
 
+        this.showHeaderTooltip = true;
 
         this.addInput (new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
+       
+        createHeaderTooltip(this, ttAscii);
     }
 
 
