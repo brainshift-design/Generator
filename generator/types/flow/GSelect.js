@@ -101,6 +101,12 @@ extends GOperator
                             obj.objectId += '/';
 
                         obj.objectId += index.value.toString();
+
+                        if (this.value.objects.length > 1)
+                        {
+                            obj.objectId += '/';
+                            obj.objectId += i.toString();
+                        }
                     }
                 }
             }
