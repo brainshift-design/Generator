@@ -66,3 +66,4 @@ createTooltipPointerTrap(ttWcag2);
 createTooltipPointerTrap(ttWcag3);
 createTooltipPointerTrap(ttInterpolationSpace);
 createTooltipPointerTrap(ttColorblind);
+createTooltipPointerTrap(ttAscii);

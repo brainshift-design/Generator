@@ -29,8 +29,9 @@ const settings =
     showTooltipColorInterpolation: true,
     showTooltipColorBlindness:     true,
     showTooltipColorContrast:      true,
+    showTooltipAscii:              true,
 
-    //enableBetaFeatures:            false,
+  //enableBetaFeatures:            false,
             
     logThreadMessages:             false,
     logDataMessages:               false,
@@ -93,8 +94,9 @@ function updateSetting(settingName, value)
         case 'showTooltipColorInterpolation': settings.showTooltipColorInterpolation = value;  break;
         case 'showTooltipColorBlindness':     settings.showTooltipColorBlindness     = value;  break;
         case 'showTooltipColorContrast':      settings.showTooltipColorContrast      = value;  break;
+        case 'showTooltipAscii':              settings.showTooltipAscii              = value;  break;
 
-        //case 'enableBetaFeatures':            settings.enableBetaFeatures            = value;  break;
+      //case 'enableBetaFeatures':            settings.enableBetaFeatures            = value;  break;
                    
         case 'logThreadMessages':             settings.logThreadMessages             = value;  break;
         case 'logDataMessages':               settings.logDataMessages               = value;  break;
@@ -163,9 +165,10 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         
         case 'showTooltipLists':              updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipLists             ); break;
         case 'showTooltipLongText':           updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipLongText          ); break;
-        case 'showTooltipColorContrast':      updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorContrast     ); break;
         case 'showTooltipColorInterpolation': updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorInterpolation); break;
         case 'showTooltipColorBlindness':     updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorBlindness    ); break;
+        case 'showTooltipColorContrast':      updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorContrast     ); break;
+        case 'showTooltipAscii':              updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorBlindness    ); break;
 
       //case 'enableBetaFeatures':          //updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures           ); break;
                       
@@ -252,6 +255,7 @@ function updateSettingsMenus()
     menuItemShowTooltipColorInterpolation.setChecked(settings.showTooltipColorInterpolation);
     menuItemShowTooltipColorBlindness    .setChecked(settings.showTooltipColorBlindness    );
     menuItemShowTooltipColorContrast     .setChecked(settings.showTooltipColorContrast     );
+    menuItemShowTooltipAscii             .setChecked(settings.showTooltipAscii             );
 
   //menuItemEnableBetaFeatures           .setChecked(settings.enableBetaFeatures           );
                   
@@ -438,6 +442,7 @@ function loadLocalSettings()
     uiGetLocalData('showTooltipColorInterpolation');
     uiGetLocalData('showTooltipColorBlindness'    );
     uiGetLocalData('showTooltipColorContrast'     );
+    uiGetLocalData('showTooltipAscii'             );
 
   //uiGetLocalData('enableBetaFeatures'           );
             

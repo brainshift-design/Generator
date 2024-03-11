@@ -52,7 +52,7 @@
         to simulate types of color vision deficiency.
     </div>
 
-    <div class="tooltipBottom"><div class="ignoreButton" id="ignoreColorBlindness" onclick="updateSettingAndMenu("showTooltipColorBlindness", true, false); hideTooltip(ttColorblind);">'Don't show</div></div>
+    <div class="tooltipBottom"><div class="ignoreButton" id="ignoreColorBlindness" onclick="updateSettingAndMenu('showTooltipColorBlindness', true, false); hideTooltip(ttColorblind);">'Don't show</div></div>
 </div>
 
 
@@ -89,7 +89,7 @@
         <line x1="72.3693" y1="54.0053" x2="15.8716" y2="54.0053" stroke="white" stroke-dasharray="2 2"/>
     </svg>
 
-    <div class="tooltipBottom"><div class="ignoreButton" id="ignoreColorInterpolation" onclick="updateSettingAndMenu("showTooltipColorInterpolation", true, false); hideTooltip(ttInterpolationSpace);">Don't show</div></div>
+    <div class="tooltipBottom"><div class="ignoreButton" id="ignoreColorInterpolation" onclick="updateSettingAndMenu('showTooltipColorInterpolation', true, false); hideTooltip(ttInterpolationSpace);">Don't show</div></div>
 </div>
 
 
@@ -129,7 +129,7 @@
     <div class="wcag2value" style="left:  90px;"> 7  </div>
     <div class="wcag2value" style="left: 239px;">21  </div>
 
-    <div class="tooltipBottom"><div class="ignoreButton" id="ignoreColorContrast2" onclick="updateSettingAndMenu("showTooltipColorContrast", true, false); hideTooltip(ttWcag2);">Don't show</div></div>
+    <div class="tooltipBottom"><div class="ignoreButton" id="ignoreColorContrast2" onclick="updateSettingAndMenu('showTooltipColorContrast', true, false); hideTooltip(ttWcag2);">Don't show</div></div>
     <!-- <div id="wcag2info"><a href="https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast7.html#visual-audio-contrast7-87-head" target="_blank">More details</a></div> -->
 </div>
 
@@ -170,7 +170,7 @@
     <div class="wcag3value" style="left: 210px;"> 90</div>
     <div class="wcag3value" style="left: 239px;">105</div>
 
-    <div class="tooltipBottom"><div class="ignoreButton" id="ignoreColorContrast3" onclick="updateSettingAndMenu("showTooltipColorContrast", true, false); hideTooltip(ttWcag3);">Don't show</div></div>
+    <div class="tooltipBottom"><div class="ignoreButton" id="ignoreColorContrast3" onclick="updateSettingAndMenu('showTooltipColorContrast', true, false); hideTooltip(ttWcag3);">Don't show</div></div>
     <!-- <div id="wcag3info"><a href="https://www.myndex.com/APCA/#font-size-and-weight" target="_blank">More details</a></div> -->
 </div>
 
@@ -185,7 +185,7 @@
 
 <div id="ttAscii" class="tooltip">
     <table id="asciiTable">
-        <tr><td class="asciiCode"> 0</td><td class="asciiChar"> </td><td class="asciiCode">16</td><td class="asciiChar"> </td><td class="asciiCode">32</td><td class="asciiChar"><span style="opacity: 35%;">space</span></td><td class="asciiCode">48</td><td class="asciiChar">0    </td><td class="asciiCode">64</td><td class="asciiChar">@</td><td class="asciiCode">80</td><td class="asciiChar">P</td><td class="asciiCode"> 96</td><td class="asciiChar">`</td><td class="asciiCode">112</td><td class="asciiChar">p</td></tr>
+        <tr><td class="asciiCode"> 0</td><td class="asciiChar"> </td><td class="asciiCode">16</td><td class="asciiChar"> </td><td class="asciiCode">32</td><td class="asciiChar"><span style="opacity: 35%;">&nbsp;space</span></td><td class="asciiCode">48</td><td class="asciiChar">0    </td><td class="asciiCode">64</td><td class="asciiChar">@</td><td class="asciiCode">80</td><td class="asciiChar">P</td><td class="asciiCode"> 96</td><td class="asciiChar">`</td><td class="asciiCode">112</td><td class="asciiChar">p</td></tr>
         <tr><td class="asciiCode"> 1</td><td class="asciiChar"> </td><td class="asciiCode">17</td><td class="asciiChar"> </td><td class="asciiCode">33</td><td class="asciiChar">!</td><td class="asciiCode">49</td><td class="asciiChar">1    </td><td class="asciiCode">65</td><td class="asciiChar">A</td><td class="asciiCode">81</td><td class="asciiChar">Q</td><td class="asciiCode"> 97</td><td class="asciiChar">a</td><td class="asciiCode">113</td><td class="asciiChar">q</td></tr>
         <tr><td class="asciiCode"> 2</td><td class="asciiChar"> </td><td class="asciiCode">18</td><td class="asciiChar"> </td><td class="asciiCode">34</td><td class="asciiChar">"</td><td class="asciiCode">50</td><td class="asciiChar">2    </td><td class="asciiCode">66</td><td class="asciiChar">B</td><td class="asciiCode">82</td><td class="asciiChar">R</td><td class="asciiCode"> 98</td><td class="asciiChar">b</td><td class="asciiCode">114</td><td class="asciiChar">r</td></tr>
         <tr><td class="asciiCode"> 3</td><td class="asciiChar"> </td><td class="asciiCode">19</td><td class="asciiChar"> </td><td class="asciiCode">35</td><td class="asciiChar">#</td><td class="asciiCode">51</td><td class="asciiChar">3    </td><td class="asciiCode">67</td><td class="asciiChar">C</td><td class="asciiCode">83</td><td class="asciiChar">S</td><td class="asciiCode"> 99</td><td class="asciiChar">c</td><td class="asciiCode">115</td><td class="asciiChar">s</td></tr>
@@ -194,16 +194,16 @@
         <tr><td class="asciiCode"> 6</td><td class="asciiChar"> </td><td class="asciiCode">22</td><td class="asciiChar"> </td><td class="asciiCode">38</td><td class="asciiChar">&</td><td class="asciiCode">54</td><td class="asciiChar">6    </td><td class="asciiCode">70</td><td class="asciiChar">F</td><td class="asciiCode">86</td><td class="asciiChar">V</td><td class="asciiCode">102</td><td class="asciiChar">f</td><td class="asciiCode">118</td><td class="asciiChar">v</td></tr>
         <tr><td class="asciiCode"> 7</td><td class="asciiChar"> </td><td class="asciiCode">23</td><td class="asciiChar"> </td><td class="asciiCode">39</td><td class="asciiChar">'</td><td class="asciiCode">55</td><td class="asciiChar">7    </td><td class="asciiCode">71</td><td class="asciiChar">G</td><td class="asciiCode">87</td><td class="asciiChar">W</td><td class="asciiCode">103</td><td class="asciiChar">g</td><td class="asciiCode">119</td><td class="asciiChar">w</td></tr>
         <tr><td class="asciiCode"> 8</td><td class="asciiChar"> </td><td class="asciiCode">24</td><td class="asciiChar"> </td><td class="asciiCode">40</td><td class="asciiChar">(</td><td class="asciiCode">56</td><td class="asciiChar">8    </td><td class="asciiCode">72</td><td class="asciiChar">H</td><td class="asciiCode">88</td><td class="asciiChar">X</td><td class="asciiCode">104</td><td class="asciiChar">h</td><td class="asciiCode">120</td><td class="asciiChar">x</td></tr>
-        <tr><td class="asciiCode"> 9</td><td class="asciiChar">⇥</td><td class="asciiCode">25</td><td class="asciiChar"> </td><td class="asciiCode">41</td><td class="asciiChar">)</td><td class="asciiCode">57</td><td class="asciiChar">9    </td><td class="asciiCode">73</td><td class="asciiChar">I</td><td class="asciiCode">89</td><td class="asciiChar">Y</td><td class="asciiCode">105</td><td class="asciiChar">i</td><td class="asciiCode">121</td><td class="asciiChar">y</td></tr>
+        <tr><td class="asciiCode"> 9</td><td class="asciiChar"><span style="opacity: 35%;">tab</span></td><td class="asciiCode">25</td><td class="asciiChar"> </td><td class="asciiCode">41</td><td class="asciiChar">)</td><td class="asciiCode">57</td><td class="asciiChar">9    </td><td class="asciiCode">73</td><td class="asciiChar">I</td><td class="asciiCode">89</td><td class="asciiChar">Y</td><td class="asciiCode">105</td><td class="asciiChar">i</td><td class="asciiCode">121</td><td class="asciiChar">y</td></tr>
         <tr><td class="asciiCode">10</td><td class="asciiChar"> </td><td class="asciiCode">26</td><td class="asciiChar"> </td><td class="asciiCode">42</td><td class="asciiChar">*</td><td class="asciiCode">58</td><td class="asciiChar">:    </td><td class="asciiCode">74</td><td class="asciiChar">J</td><td class="asciiCode">90</td><td class="asciiChar">Z</td><td class="asciiCode">106</td><td class="asciiChar">j</td><td class="asciiCode">122</td><td class="asciiChar">z</td></tr>
         <tr><td class="asciiCode">11</td><td class="asciiChar"> </td><td class="asciiCode">27</td><td class="asciiChar"> </td><td class="asciiCode">43</td><td class="asciiChar">+</td><td class="asciiCode">59</td><td class="asciiChar">;    </td><td class="asciiCode">75</td><td class="asciiChar">K</td><td class="asciiCode">91</td><td class="asciiChar">[</td><td class="asciiCode">107</td><td class="asciiChar">k</td><td class="asciiCode">123</td><td class="asciiChar">{</td></tr>
         <tr><td class="asciiCode">12</td><td class="asciiChar"> </td><td class="asciiCode">28</td><td class="asciiChar"> </td><td class="asciiCode">44</td><td class="asciiChar">,</td><td class="asciiCode">60</td><td class="asciiChar"><    </td><td class="asciiCode">76</td><td class="asciiChar">L</td><td class="asciiCode">92</td><td class="asciiChar">\</td><td class="asciiCode">108</td><td class="asciiChar">l</td><td class="asciiCode">124</td><td class="asciiChar">|</td></tr>
-        <tr><td class="asciiCode">13</td><td class="asciiChar">↵</td><td class="asciiCode">29</td><td class="asciiChar"> </td><td class="asciiCode">45</td><td class="asciiChar">-</td><td class="asciiCode">61</td><td class="asciiChar">=    </td><td class="asciiCode">77</td><td class="asciiChar">M</td><td class="asciiCode">93</td><td class="asciiChar">]</td><td class="asciiCode">109</td><td class="asciiChar">m</td><td class="asciiCode">125</td><td class="asciiChar">}</td></tr>
+        <tr><td class="asciiCode">13</td><td class="asciiChar"><span style="opacity: 35%;">&nbsp;return</span></td><td class="asciiCode">29</td><td class="asciiChar"> </td><td class="asciiCode">45</td><td class="asciiChar">-</td><td class="asciiCode">61</td><td class="asciiChar">=    </td><td class="asciiCode">77</td><td class="asciiChar">M</td><td class="asciiCode">93</td><td class="asciiChar">]</td><td class="asciiCode">109</td><td class="asciiChar">m</td><td class="asciiCode">125</td><td class="asciiChar">}</td></tr>
         <tr><td class="asciiCode">14</td><td class="asciiChar"> </td><td class="asciiCode">30</td><td class="asciiChar"> </td><td class="asciiCode">46</td><td class="asciiChar">.</td><td class="asciiCode">62</td><td class="asciiChar">>    </td><td class="asciiCode">78</td><td class="asciiChar">N</td><td class="asciiCode">94</td><td class="asciiChar">^</td><td class="asciiCode">110</td><td class="asciiChar">n</td><td class="asciiCode">126</td><td class="asciiChar">~</td></tr>
         <tr><td class="asciiCode">15</td><td class="asciiChar"> </td><td class="asciiCode">31</td><td class="asciiChar"> </td><td class="asciiCode">47</td><td class="asciiChar">/</td><td class="asciiCode">63</td><td class="asciiChar">?    </td><td class="asciiCode">79</td><td class="asciiChar">O</td><td class="asciiCode">95</td><td class="asciiChar">_</td><td class="asciiCode">111</td><td class="asciiChar">o</td><td class="asciiCode">127</td><td class="asciiChar"> </td></tr>
     </table>
     <div class="tooltipBottom">
         <div id="asciiInfo">For all other codes see the <a href="https://symbl.cc" target="_blank">list of Unicode symbols</a>.</div>
-        <div class="ignoreButton" id="ignoreColorContrast3" onclick="updateSettingAndMenu("showTooltipColorContrast", true, false); hideTooltip(ttWcag3);">Don't show</div>
+        <div class="ignoreButton" id="ignoreAscii" onclick="updateSettingAndMenu('showTooltipAscii', true, false); hideTooltip(ttAscii);">Don't show</div>
     </div>
 </div>

@@ -137,8 +137,9 @@ var menuItemSortConnsCreated;
 var menuItemShowTooltipLongText;
 var menuItemShowTooltipLists;
 var menuItemShowTooltipColorInterpolation;
-var menuItemShowTooltipColorContrast;
 var menuItemShowTooltipColorBlindness;
+var menuItemShowTooltipColorContrast;
+var menuItemShowTooltipAscii;
 
 
 var menuItemEnableZoomedOutParams;
@@ -337,6 +338,7 @@ function initGeneratorMenus()
     menuShowTooltips.addItems([
         menuItemShowTooltipLists              = new MenuItem('List items',          null, {checkCallback: () => settings.showTooltipLists,              callback: () => { updateSettingAndMenu('showTooltipLists',              true, !settings.showTooltipLists             ); }}),
         menuItemShowTooltipLongText           = new MenuItem('Long text',           null, {checkCallback: () => settings.showTooltipLongText,           callback: () => { updateSettingAndMenu('showTooltipLongText',           true, !settings.showTooltipLongText          ); }}),
+        menuItemShowTooltipAscii              = new MenuItem('ASCII',               null, {checkCallback: () => settings.showTooltipAscii,              callback: () => { updateSettingAndMenu('showTooltipAscii',              true, !settings.showTooltipAscii             ); }}),        
         menuItemShowTooltipColorContrast      = new MenuItem('Color contrast',      null, {checkCallback: () => settings.showTooltipColorContrast,      callback: () => { updateSettingAndMenu('showTooltipColorContrast',      true, !settings.showTooltipColorContrast     ); }}),
         menuItemShowTooltipColorInterpolation = new MenuItem('Color interpolation', null, {checkCallback: () => settings.showTooltipColorInterpolation, callback: () => { updateSettingAndMenu('showTooltipColorInterpolation', true, !settings.showTooltipColorInterpolation); }}),
         menuItemShowTooltipColorBlindness     = new MenuItem('Color blindness',     null, {checkCallback: () => settings.showTooltipColorBlindness,     callback: () => { updateSettingAndMenu('showTooltipColorBlindness',     true, !settings.showTooltipColorBlindness    ); }})]);

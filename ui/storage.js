@@ -72,6 +72,7 @@ async function uiReturnFigGetLocalData(msg)
         case 'showTooltipColorInterpolation':
         case 'showTooltipColorBlindness':
         case 'showTooltipColorContrast':
+        case 'showTooltipAscii':
 
         //case 'enableBetaFeatures':       
 

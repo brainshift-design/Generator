@@ -1583,7 +1583,8 @@ function createHeaderTooltip(node, tooltip = ttText)
         node.header, 
         () => tooltip, 
         () =>    node.showHeaderTooltip 
-              && (   node.type == TEXT_CHAR
+              && (      node.type == TEXT_CHAR
+                     && settings.showTooltipAscii  
                   || settings.showTooltipLists));
 
 

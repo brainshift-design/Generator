@@ -4241,6 +4241,7 @@ updateValueObjects
 NullValue
 ttWcag2
 ttWcag3
+ttAscii
 ttInterpolationSpace
 ttColorblind
 separatorsBefore

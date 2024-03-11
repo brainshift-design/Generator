@@ -126,8 +126,8 @@
 
 #ttAscii
 {
-    width:       500px; 
-    height:      260px;
+    width:       420px; 
+    height:      242px;
 }
 
 
@@ -147,10 +147,9 @@
 #asciiInfo
 {
     position:  absolute;
-    bottom:    30px;
-    left:      50%;
-    transform: translateX(-45%);
-    width:     100%;
+    top:       6px;
+    left:      8px;
+    width:     auto;
 }
 
 
@@ -172,7 +171,18 @@
 
 .asciiChar
 {
-    width:      6.25%;
-    text-align: center;
+    width:       6.25%;
+    text-align:  center;
+    font-weight: 500;
  /* box-shadow: 0 0 0 1px blue inset; */
+}
+
+
+#asciiMisc
+{
+    position:  absolute;
+    left:      50%;
+    transform: translateX(-50%);
+    bottom:    32px;
+    opacity:   35%;
 }
