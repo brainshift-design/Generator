@@ -17851,6 +17851,8 @@ extends GOperator1
     iterateLoop(parse)
     {
         super.iterateLoop(parse);
+
+        if (this.feedback) this.feedback.iterateLoop(parse);
     }
 
 
@@ -17934,7 +17936,7 @@ extends GOperator1
         let   iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
         let  _while     = new NumberValue(1);
       //const iterate   = (await this.iterate.eval(parse)).toValue();
-        const loop      = this.loop      ? (await this.loop     .eval(parse)).toValue() : null;
+      //const loop      = this.loop      ? (await this.loop     .eval(parse)).toValue() : null; // don't evaluate this
 
 
         let iterations = [];
@@ -26202,7 +26204,6 @@ extends GOperator1
         super.resetLoop(parse, nodeId);
 
         this.current = new NumberValue(0);
-        console.log('resetLoop()');
     }
 }
 

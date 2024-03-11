@@ -159,6 +159,8 @@ extends GOperator1
     iterateLoop(parse)
     {
         super.iterateLoop(parse);
+
+        if (this.feedback) this.feedback.iterateLoop(parse);
     }
 
 
