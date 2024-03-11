@@ -67,7 +67,6 @@ extends GOperator1
         let   iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
         let  _while     = new NumberValue(1);
       //const iterate   = (await this.iterate.eval(parse)).toValue();
-      //const loop      = this.loop      ? (await this.loop     .eval(parse)).toValue() : null; // don't evaluate this
 
 
         let iterations = [];
@@ -181,7 +180,7 @@ extends GOperator1
 
                     this.input.invalidateInputs(parse, this, false);
 
-
+                    
                     const input = (await this.input.eval(parse)).toValue();
 
 
@@ -260,6 +259,10 @@ extends GOperator1
                     if (showProgress)
                         genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
                 }
+
+
+                if (this.loop)
+                    await this.loop.eval(parse); // it needs to be evaluated at least once, better do it at the end
 
 
                 if (   this.loop
