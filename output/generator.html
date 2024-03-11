@@ -6884,6 +6884,11 @@ class FigmaObject
 
     createSpaceTransform()
     {
+        console.log('this =', this);
+        console.log('this.sp0 =', this.sp0);
+        console.log('this.sp1 =', this.sp1);
+        console.log('this.sp2 =', this.sp2);
+
         let vr = point(this.sp1.x - this.sp0.x, this.sp1.y - this.sp0.y);
         let vb = point(this.sp2.x - this.sp0.x, this.sp2.y - this.sp0.y);
     
@@ -26120,7 +26125,7 @@ extends GOperator1
 
                 if (input)
                 {
-                    this.current.value += input.value;
+                    this.current.value   += input.value;
                     this.current.decimals = Math.max(this.current.decimals, input.decimals);
                 }
 
@@ -40623,6 +40628,7 @@ extends GShape
 
                 const bounds = getObjBounds([arc]);
         
+                arc.createDefaultSpace(x + w/2, y + h/2);
                 arc.createDefaultTransform(bounds.x, bounds.y);
                 arc.createDefaultTransformPoints(bounds.x, bounds.y, bounds.w, bounds.h);
 
@@ -43622,6 +43628,7 @@ extends GShape
             let h = bounds.h;
 
             
+            path.createDefaultSpace(x + w/2, y + h/2);
             path.createDefaultTransform(x, y);
             path.createDefaultTransformPoints(x, y, w, h);
 
@@ -44219,6 +44226,7 @@ extends GShape
             let h = bounds.h;
 
             
+            path.createDefaultSpace(x + w/2, y + h/2);
             path.createDefaultTransform(x, y);
             path.createDefaultTransformPoints(x, y, w, h);
 

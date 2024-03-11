@@ -145,6 +145,7 @@ extends GShape
             let h = bounds.h;
 
             
+            path.createDefaultSpace(x + w/2, y + h/2);
             path.createDefaultTransform(x, y);
             path.createDefaultTransformPoints(x, y, w, h);
 

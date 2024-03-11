@@ -59,7 +59,7 @@ extends GOperator1
 
                 if (input)
                 {
-                    this.current.value += input.value;
+                    this.current.value   += input.value;
                     this.current.decimals = Math.max(this.current.decimals, input.decimals);
                 }
 
