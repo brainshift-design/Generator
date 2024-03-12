@@ -1211,6 +1211,7 @@ function genParseRepeat(parse)
 
 
     repeat.activeAfter = parseInt(parse.move()) > 0;
+    repeat.listAfter   = parseInt(parse.move()) > 0;
 
 
     parse.nTab++;

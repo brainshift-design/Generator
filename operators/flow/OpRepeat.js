@@ -79,6 +79,7 @@ extends OperatorBase
         request.push(input.connected ? 1 : 0);
 
         request.push(getActiveAfterNode(this.node, true) ? 1 : 0); // there are active nodes after this one
+        request.push(getListAfterNode  (this.node, true) ? 1 : 0); // there is a list node after this one
 
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));

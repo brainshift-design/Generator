@@ -370,7 +370,8 @@ extends Parameter
 
         if (!rgbIsNaN(rgb))
         {
-            if (  !rgbIsValid(rgb)
+            if (      !rgbIsValid(rgb)
+                   && !this.isUnknown()
                 || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
