@@ -129,7 +129,7 @@ extends GOperator1
             ],
             true);
         }
-        else if (isListType(type.value) && parse.settings.showListTooltips)
+        else if (isListValueType(type.value) && parse.settings.showListTooltips)
         {
             this.setUpdateValues(parse,
             [

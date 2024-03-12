@@ -415,10 +415,11 @@ function genParseNodeOptions(parse)
     {
         active:       ((opt >>  0) & 1) != 0,
         beforeActive: ((opt >>  1) & 1) != 0,
-        enabled:      ((opt >>  2) & 1) != 0,
-        cached:       ((opt >>  3) & 1) != 0,
-        unknown:      ((opt >>  4) & 1) != 0,
-        notCondition: ((opt >>  5) & 1) != 0,
+        beforeList:   ((opt >>  2) & 1) != 0,
+        enabled:      ((opt >>  3) & 1) != 0,
+        cached:       ((opt >>  4) & 1) != 0,
+        unknown:      ((opt >>  5) & 1) != 0,
+        notCondition: ((opt >>  6) & 1) != 0,
         hasInputs:    ((opt >> 20) & 1) != 0,
         existing:     ((opt >> 21) & 1) != 0
     };

@@ -694,7 +694,8 @@ const PANEL         = 'PANEL';
 
 
 const ACTIVE        = 'ACT';
-const BEFORE_ACTIVE = 'BEF';
+const BEFORE_ACTIVE = 'BFACT';
+const BEFORE_LIST   = 'BFLST';
 const DISABLED      = 'DIS';
 const NOCACHE       = 'NOC';
  

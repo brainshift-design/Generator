@@ -64,7 +64,7 @@ async function evalMultiplyInputs(inputs, parse)
                 return NumberValue.NaN.copy();
 
 
-            if (isListType(val.type))
+            if (isListValueType(val.type))
             {
                 if (   isEmpty(val.items)
                     || val.items[0].type != NUMBER_VALUE)

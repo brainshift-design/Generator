@@ -47,7 +47,7 @@ extends GOperator1
         {
             const input = (await this. input.eval(parse)).toValue();
 
-            if (isListType(input.type))
+            if (isListValueType(input.type))
             {
                 this.value = new ListValue();
 

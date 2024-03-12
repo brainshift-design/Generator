@@ -134,7 +134,7 @@ extends GOperator1//Shape
                     }
 
 
-                    if (isListType(props.type))
+                    if (isListValueType(props.type))
                     {               
                         for (let i = props.items.length-1; i >= 0; i--)
                             addProp(obj, props.items[i]);

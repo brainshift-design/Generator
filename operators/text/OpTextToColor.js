@@ -75,7 +75,7 @@ extends OperatorBase
     isUnknown()
     {
         return super.isUnknown()
-            || isListType(this.outputs[0].types[0]);
+            || isListValueType(this.outputs[0].types[0]);
     }
 
 

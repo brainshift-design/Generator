@@ -162,7 +162,7 @@ extends GValue
 
             const item = this.items[i];
 
-            if (isListType(item.type))
+            if (isListValueType(item.type))
                 // str += 'list [' + item.items.length + ']';
             {
                 for (let j = 0; j < item.items.length; j++)

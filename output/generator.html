@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 377;
+const generatorVersion = 378;
 
 
 const MAX_INT32        = 2147483647;
@@ -1008,7 +1008,7 @@ function getObjectFills(genObjFills)
 
 
 
-function isListType(type)
+function isListValueType(type)
 {
     return LIST_VALUES.includes(type);
 }
@@ -6489,7 +6489,8 @@ const PANEL         = 'PANEL';
 
 
 const ACTIVE        = 'ACT';
-const BEFORE_ACTIVE = 'BEF';
+const BEFORE_ACTIVE = 'BFACT';
+const BEFORE_LIST   = 'BFLST';
 const DISABLED      = 'DIS';
 const NOCACHE       = 'NOC';
  
@@ -10295,7 +10296,7 @@ extends GNode
     {
         return this.value
             ? new TextValue(
-                isListType(this.value.type)
+                isListValueType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : new TextValue(ANY_VALUE);
@@ -11375,7 +11376,7 @@ extends GValue
 
             const item = this.items[i];
 
-            if (isListType(item.type))
+            if (isListValueType(item.type))
                 // str += 'list [' + item.items.length + ']';
             {
                 for (let j = 0; j < item.items.length; j++)
@@ -17873,12 +17874,12 @@ extends GOperator1
     count            = null;
     iteration        = null;
    _while            = null;
-  //iterate          = null;
     loop             = null;
 
     iterationObjects = [];
 
     activeAfter      = false; // there are active nodes after this one
+    listAfter        = false; // there is a list node after this one
 
 
 
@@ -17896,10 +17897,10 @@ extends GOperator1
         this. count      = null;
         this. iteration  = null;
         this._while      = null;
-      //this. iterate    = null;
         this. loop       = null;
 
         this.activeAfter = false;
+        this.listAfter   = false;
 
         this.iterationObjects = [];
     }
@@ -17916,10 +17917,10 @@ extends GOperator1
         if (this. iteration) copy. iteration = this. iteration.copy();
         if (this. count    ) copy. count     = this. count    .copy();
         if (this._while    ) copy._while     = this._while    .copy();
-      //if (this. iterate  ) copy. iterate   = this. iterate  .copy();
         if (this. loop     ) copy. loop      = this. loop     .copy();
 
         copy.activeAfter = this.activeAfter;
+        copy.listAfter   = this.listAfter;
 
         return copy;
     }
@@ -17935,7 +17936,6 @@ extends GOperator1
         let   count     = this.count     ? (await this.count    .eval(parse)).toValue() : null;
         let   iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
         let  _while     = new NumberValue(1);
-      //const iterate   = (await this.iterate.eval(parse)).toValue();
 
 
         let iterations = [];
@@ -17994,7 +17994,8 @@ extends GOperator1
         if (   count
             && count.value > 0
             && (   this.options.active
-                || this.activeAfter))
+                || this.activeAfter
+                || this.listAfter))
         {
             if (this.input)
             {
@@ -18058,7 +18059,7 @@ extends GOperator1
                     {
                         // lists are automatically expanded unless explicitly kept as item
                         
-                        if (isListType(input.type))
+                        if (isListValueType(input.type))
                         {
                             if (input.condensed === true)
                                 this.value.items.push(input);
@@ -18073,7 +18074,8 @@ extends GOperator1
         
 
                         if (   this.options.active
-                            || this.options.beforeActive)
+                            || this.options.beforeActive
+                            || this.options.beforeList)
                         {
                             this.iterationObjects = [];
                         
@@ -19395,7 +19397,7 @@ extends GOperator
             if (   input
                 && this.options.enabled)
             {
-                if (isListType(input.type))
+                if (isListValueType(input.type))
                 {
                     if (input.condensed === true)
                         this.value.items.push(input);
@@ -19600,7 +19602,7 @@ extends GOperator1
                 length = input.items.length;
                 
                     
-                if (   isListType(input.type)
+                if (   isListValueType(input.type)
                     && this.options.enabled)
                 {
                     for (const item of input.items)
@@ -19853,7 +19855,7 @@ extends GOperator2
             let nameValue = name.value.trim();
 
 
-            if (isListType(input0.type))
+            if (isListValueType(input0.type))
             {
                 this.value = new ListValue();
 
@@ -19999,7 +20001,7 @@ extends GOperator1
         {
             if (this.options.enabled)
             {
-                if (isListType(input.type))
+                if (isListValueType(input.type))
                 {
                     this.value = new ListValue();
 
@@ -20039,7 +20041,7 @@ extends GOperator1
             ],
             true);
         }
-        else if (isListType(type.value)   && parse.settings.showListTooltips)
+        else if (isListValueType(type.value)   && parse.settings.showListTooltips)
         {
             this.setUpdateValues(parse,
             [
@@ -21019,7 +21021,7 @@ extends GOperator1
                             reverseMultiplier);
 
 
-                        input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
+                        input.items.forEach(i => maxColumns = Math.max(maxColumns, isListValueType(i.type) ? i.items.length : 1));
                         
 
                         for (let i = 0; i < input.items.length; i++)
@@ -21286,7 +21288,7 @@ extends GOperator1
                             this.condition);
 
 
-                        input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
+                        input.items.forEach(i => maxColumns = Math.max(maxColumns, isListValueType(i.type) ? i.items.length : 1));
                         
 
                         for (let i = 0; i < input.items.length; i++)
@@ -21534,7 +21536,7 @@ extends GOperator1
                         }
                     }
                 }
-                else if (isListType(input.type))
+                else if (isListValueType(input.type))
                 {
                     this.value = input.copy();
                     maxColumns = 1;
@@ -21612,12 +21614,12 @@ extends GOperator1
 
 function isTable(value)
 {
-    if (!isListType(value.type))
+    if (!isListValueType(value.type))
         return false;
 
     for (const item of value.items)
     {
-        if (!isListType(item.type))
+        if (!isListValueType(item.type))
             return false;
     }
 
@@ -22051,7 +22053,7 @@ extends GOperator
             ],
             true);
         }
-        else if (isListType(type.value) && parse.settings.showListTooltips)
+        else if (isListValueType(type.value) && parse.settings.showListTooltips)
         {
             this.setUpdateValues(parse,
             [
@@ -22240,7 +22242,7 @@ extends GOperator1
             ],
             true);
         }
-        else if (isListType(type.value) && parse.settings.showListTooltips)
+        else if (isListValueType(type.value) && parse.settings.showListTooltips)
         {
             this.setUpdateValues(parse,
             [
@@ -23554,7 +23556,7 @@ extends GOperator1
         {
             if (this.options.enabled)
             {
-                if (isListType(input.type))
+                if (isListValueType(input.type))
                 {
                     this.value = new ListValue();
 
@@ -23775,7 +23777,7 @@ async function evalMinMaxInputs(inputs, op, parse)
     {
         value = new NumberValue(-val0.value);//, val0.decimals);
     }
-    else if (isListType(val0.type)
+    else if (isListValueType(val0.type)
             && !isEmpty(val0.items))
     {
         value = val0.items[0].copy();
@@ -23807,7 +23809,7 @@ async function evalMinMaxInputs(inputs, op, parse)
         const val = (await inputs[i].eval(parse)).toValue();
 
 
-        if (isListType(val.type))
+        if (isListValueType(val.type))
         {
             for (const item of val.items)
             {
@@ -24345,7 +24347,7 @@ extends GOperator1
         {
             const input = (await this. input.eval(parse)).toValue();
 
-            if (isListType(input.type))
+            if (isListValueType(input.type))
             {
                 this.value = new ListValue();
 
@@ -24761,7 +24763,7 @@ extends GOperator
             if (   input
                 && this.options.enabled)            
             {
-                if (isListType(input.type))
+                if (isListValueType(input.type))
                 {
                     for (const item of input.items)
                         _values.push(item.copy());   
@@ -26939,7 +26941,7 @@ extends GOperator1
         {
             if (this.options.enabled)
             {
-                if (isListType(input.type))
+                if (isListValueType(input.type))
                 {
                     this.value = new ListValue();
 
@@ -27145,7 +27147,7 @@ async function evalAddInputs(inputs, parse)
             || !val.isValid())
             return NumberValue.NaN.copy();
 
-        if (isListType(val.type))
+        if (isListValueType(val.type))
         {
             if (   isEmpty(val.items)
                 || val.items[0].type != NUMBER_VALUE)
@@ -27244,7 +27246,7 @@ async function evalSubtractInputs(inputs, parse)
         //     value = new NumberValue(-val0.value, val0.decimals);
         // }
         //else 
-        if (     isListType(val0.type)
+        if (     isListValueType(val0.type)
              && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -27291,7 +27293,7 @@ async function evalSubtractInputs(inputs, parse)
                 return NumberValue.NaN.copy();
 
 
-            if (isListType(val.type))
+            if (isListValueType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -27385,7 +27387,7 @@ async function evalMultiplyInputs(inputs, parse)
                 return NumberValue.NaN.copy();
 
 
-            if (isListType(val.type))
+            if (isListValueType(val.type))
             {
                 if (   isEmpty(val.items)
                     || val.items[0].type != NUMBER_VALUE)
@@ -27475,7 +27477,7 @@ async function evalDivideInputs(inputs, parse)
             return NumberValue.NaN.copy();
 
 
-        if (    isListType(val0.type)
+        if (    isListValueType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -27530,7 +27532,7 @@ async function evalDivideInputs(inputs, parse)
                 return NumberValue.NaN.copy();
 
 
-            if (isListType(val.type))
+            if (isListValueType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -27642,7 +27644,7 @@ async function evalModuloInputs(inputs, parse)
             return NumberValue.NaN.copy();
 
 
-        if (    isListType(val0.type)
+        if (    isListValueType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -27697,7 +27699,7 @@ async function evalModuloInputs(inputs, parse)
                 return NumberValue.NaN.copy();
 
 
-            if (isListType(val.type))
+            if (isListValueType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -27802,7 +27804,7 @@ async function evalExponentInputs(inputs, parse)
             return NumberValue.NaN.copy();
 
 
-        if (    isListType(val0.type)
+        if (    isListValueType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -27850,7 +27852,7 @@ async function evalExponentInputs(inputs, parse)
                 return NumberValue.NaN.copy();
 
 
-            if (isListType(val.type))
+            if (isListValueType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -28046,7 +28048,7 @@ async function evalNandInputs(inputs, parse)
         const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN.copy();
 
-        if (    isListType(val0.type)
+        if (    isListValueType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -28076,7 +28078,7 @@ async function evalNandInputs(inputs, parse)
             const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN.copy();
 
-            if (isListType(val.type))
+            if (isListValueType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -28161,7 +28163,7 @@ async function evalAndInputs(inputs, parse)
         const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN.copy();
 
-        if (    isListType(val0.type)
+        if (    isListValueType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -28190,7 +28192,7 @@ async function evalAndInputs(inputs, parse)
             const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN.copy();
 
-            if (isListType(val.type))
+            if (isListValueType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -28279,7 +28281,7 @@ async function evalOrInputs(inputs, parse)
         const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN.copy();
 
-        if (    isListType(val0.type)
+        if (    isListValueType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -28308,7 +28310,7 @@ async function evalOrInputs(inputs, parse)
             const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN.copy();
 
-            if (isListType(val.type))
+            if (isListValueType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -28396,7 +28398,7 @@ async function evalXorInputs(inputs, parse)
         const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN.copy();
 
-        if (    isListType(val0.type)
+        if (    isListValueType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -28426,7 +28428,7 @@ async function evalXorInputs(inputs, parse)
             const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN.copy();
 
-            if (isListType(val.type))
+            if (isListValueType(val.type))
             {
                 for (const item of val.items)
                 {
@@ -29586,7 +29588,7 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
             
-            if (isListType(input.type))
+            if (isListValueType(input.type))
             {
                 this.value = new ListValue();
 
@@ -29997,7 +29999,7 @@ extends GOperator1
         {
             if (this.options.enabled)
             {
-                if (isListType(input.type))
+                if (isListValueType(input.type))
                 {
                     this.value = new ListValue();
 
@@ -30173,7 +30175,7 @@ extends GOperator1
 
         if (input)
         {
-            if (isListType(input.type))
+            if (isListValueType(input.type))
             {
                 this.value = new ListValue();
 
@@ -30318,7 +30320,7 @@ extends GOperator1
             const input = (await this.input.eval(parse)).toValue();
 
 
-            if (isListType(input.type))
+            if (isListValueType(input.type))
             {
                 this.value = new ListValue();
 
@@ -30480,7 +30482,7 @@ extends GOperator1
         if (   input
             && input.isValid())
         {
-            if (isListType(input.type))
+            if (isListValueType(input.type))
             {
                 this.value = new ListValue();
 
@@ -30647,7 +30649,7 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            if (isListType(input.type))
+            if (isListValueType(input.type))
             {
                 this.value = new ListValue();
 
@@ -30730,7 +30732,7 @@ extends GOperator1
 
         if (input)
         {
-            if (isListType(input.type))
+            if (isListValueType(input.type))
             {
                 this.value = new ListValue();
 
@@ -30806,7 +30808,7 @@ extends GOperator1
 
         if (input)
         {
-            if (isListType(input.type))
+            if (isListValueType(input.type))
             {
                 this.value = new ListValue();
 
@@ -31057,7 +31059,7 @@ extends GOperator1
         {
             if (this.options.enabled)
             {
-                if (isListType(input.type))
+                if (isListValueType(input.type))
                 {
                     this.value = new ListValue();
 
@@ -31313,7 +31315,7 @@ async function evalJoinInputs(inputs, _with, parse)
             value.value += w;
 
 
-        if (isListType(val.type))
+        if (isListValueType(val.type))
         {
             for (let j = 0; j < val.items.length; j++)
             {
@@ -31401,7 +31403,7 @@ extends GOperator1
         {
             const input = (await this.input.eval(parse)).toValue();
             
-            if (isListType(input.type))
+            if (isListValueType(input.type))
             {
                 this.value = new ListValue();
 
@@ -33170,7 +33172,7 @@ extends GOperator1
 
             if (this.options.enabled)
             {
-                if (isListType(input.type))
+                if (isListValueType(input.type))
                 {
                     this.value = new ListValue();
 
@@ -33827,7 +33829,7 @@ extends GOperator1
 
             if (this.options.enabled)
             {
-                if (isListType(input.type))
+                if (isListValueType(input.type))
                 {
                     this.value = new ListValue();
 
@@ -33964,7 +33966,7 @@ extends GOperator1
 
             if (this.options.enabled)
             {
-                if (isListType(input.type))
+                if (isListValueType(input.type))
                 {
                     this.value = new ListValue();
 
@@ -35371,7 +35373,7 @@ extends GOperator
             if (   input
                 && this.options.enabled)
             {
-                if (isListType(input.type))
+                if (isListValueType(input.type))
                 {
                     for (const item of input.items)
                         stops.items.push(item);
@@ -35594,7 +35596,7 @@ extends GOperator1
 
         fills = this.validateFills(fills);
 
-        if (!isListType(this._fills.type))
+        if (!isListValueType(this._fills.type))
             this.fills = fills;
 
 
@@ -36999,7 +37001,7 @@ extends GShapeBase
                 continue;
     
             
-            if (isListType(this.value.props.type))
+            if (isListValueType(this.value.props.type))
             {               
                 for (let i = 0; i < this.value.props.items.length; i++)
                     addProp(obj, this.value.props.items[i]);
@@ -40011,7 +40013,7 @@ extends GShape
         {
             const input = (await this.inputs[i].eval(parse)).toValue();
 
-            if (isListType(input.type))
+            if (isListValueType(input.type))
             {
                 const _loop = new ListValue();
 
@@ -41614,7 +41616,7 @@ extends GOperator1//Shape
                     }
 
 
-                    if (isListType(props.type))
+                    if (isListValueType(props.type))
                     {               
                         for (let i = props.items.length-1; i >= 0; i--)
                             addProp(obj, props.items[i]);
@@ -42152,7 +42154,7 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input.value);
 
 
-            if (isListType(this.value.type))
+            if (isListValueType(this.value.type))
             {
                 for (let i = 0; i < this.value.items.length; i++)
                     this.value.items[i].objects = this.value.objects.filter(o => o.itemIndex == i);
@@ -42339,7 +42341,7 @@ extends GOperator1
 
         this.value.objects = getValidObjects(this.input.value);
         
-        if (isListType(this.value.type))
+        if (isListValueType(this.value.type))
         {
             for (let i = 0; i < this.value.items.length; i++)
                 this.value.items[i].objects = this.value.objects.filter(o => o.itemIndex == i);
@@ -43406,7 +43408,7 @@ extends GShape
             {
                 const input = (await _input.eval(parse)).toValue();
 
-                if (isListType(input.type)) paths.push(...input.items);
+                if (isListValueType(input.type)) paths.push(...input.items);
                 else                        paths.push(input);
             }
 
@@ -48259,6 +48261,7 @@ function genParseRepeat(parse)
 
 
     repeat.activeAfter = parseInt(parse.move()) > 0;
+    repeat.listAfter   = parseInt(parse.move()) > 0;
 
 
     parse.nTab++;
@@ -55045,10 +55048,11 @@ function genParseNodeOptions(parse)
     {
         active:       ((opt >>  0) & 1) != 0,
         beforeActive: ((opt >>  1) & 1) != 0,
-        enabled:      ((opt >>  2) & 1) != 0,
-        cached:       ((opt >>  3) & 1) != 0,
-        unknown:      ((opt >>  4) & 1) != 0,
-        notCondition: ((opt >>  5) & 1) != 0,
+        beforeList:   ((opt >>  2) & 1) != 0,
+        enabled:      ((opt >>  3) & 1) != 0,
+        cached:       ((opt >>  4) & 1) != 0,
+        unknown:      ((opt >>  5) & 1) != 0,
+        notCondition: ((opt >>  6) & 1) != 0,
         hasInputs:    ((opt >> 20) & 1) != 0,
         existing:     ((opt >> 21) & 1) != 0
     };
@@ -55364,6 +55368,7 @@ function logReqOptions(node)
 
     if ( node.options.active      ) log += ' ' + ACTIVE;
     if ( node.options.beforeActive) log += ' ' + BEFORE_ACTIVE;
+    if ( node.options.beforeList  ) log += ' ' + BEFORE_LIST;
     if (!node.options.enabled     ) log += ' ' + DISABLED;
 
     if (!node.cached              ) log += ' ' + NOCACHE;

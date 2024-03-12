@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 377;
+const generatorVersion = 378;
 
 
 const MAX_INT32        = 2147483647;
@@ -1027,7 +1027,7 @@ function getObjectFills(genObjFills)
 
 
 
-function isListType(type)
+function isListValueType(type)
 {
     return LIST_VALUES.includes(type);
 }
@@ -1729,7 +1729,8 @@ const PANEL         = 'PANEL';
 
 
 const ACTIVE        = 'ACT';
-const BEFORE_ACTIVE = 'BEF';
+const BEFORE_ACTIVE = 'BFACT';
+const BEFORE_LIST   = 'BFLST';
 const DISABLED      = 'DIS';
 const NOCACHE       = 'NOC';
  

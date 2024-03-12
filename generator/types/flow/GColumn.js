@@ -97,7 +97,7 @@ extends GOperator1
                         }
                     }
                 }
-                else if (isListType(input.type))
+                else if (isListValueType(input.type))
                 {
                     this.value = input.copy();
                     maxColumns = 1;
@@ -175,12 +175,12 @@ extends GOperator1
 
 function isTable(value)
 {
-    if (!isListType(value.type))
+    if (!isListValueType(value.type))
         return false;
 
     for (const item of value.items)
     {
-        if (!isListType(item.type))
+        if (!isListValueType(item.type))
             return false;
     }
 

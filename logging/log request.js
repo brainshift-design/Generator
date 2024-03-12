@@ -53,6 +53,7 @@ function logReqOptions(node)
 
     if ( node.options.active      ) log += ' ' + ACTIVE;
     if ( node.options.beforeActive) log += ' ' + BEFORE_ACTIVE;
+    if ( node.options.beforeList  ) log += ' ' + BEFORE_LIST;
     if (!node.options.enabled     ) log += ' ' + DISABLED;
 
     if (!node.cached              ) log += ' ' + NOCACHE;

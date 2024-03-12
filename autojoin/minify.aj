@@ -963,7 +963,7 @@ consoleError
 trimCharFromStart
 trimCharFromEnd
 getObjectFills
-isListType
+isListValueType
 rgbFromType
 rgbFromTypeMode
 isDataColorNaN
@@ -1309,6 +1309,7 @@ COMMENT_ARROW
 PANEL
 ACTIVE
 BEFORE_ACTIVE
+BEFORE_LIST
 DISABLED
 NOCACHE
 LOG

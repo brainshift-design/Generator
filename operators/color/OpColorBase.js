@@ -98,7 +98,7 @@ extends Operator
             : dataColor2rgb(this._color);
             
         if (   this.outputs.length > 0
-            && isListType(this.outputs[0].types[0]))
+            && isListValueType(this.outputs[0].types[0]))
             rgbBack = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
             
 

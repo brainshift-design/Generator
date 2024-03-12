@@ -66,7 +66,7 @@ async function evalSubtractInputs(inputs, parse)
         //     value = new NumberValue(-val0.value, val0.decimals);
         // }
         //else 
-        if (     isListType(val0.type)
+        if (     isListValueType(val0.type)
              && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -113,7 +113,7 @@ async function evalSubtractInputs(inputs, parse)
                 return NumberValue.NaN.copy();
 
 
-            if (isListType(val.type))
+            if (isListValueType(val.type))
             {
                 for (const item of val.items)
                 {

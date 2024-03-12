@@ -100,7 +100,7 @@ extends GOperator1
                             reverseMultiplier);
 
 
-                        input.items.forEach(i => maxColumns = Math.max(maxColumns, isListType(i.type) ? i.items.length : 1));
+                        input.items.forEach(i => maxColumns = Math.max(maxColumns, isListValueType(i.type) ? i.items.length : 1));
                         
 
                         for (let i = 0; i < input.items.length; i++)

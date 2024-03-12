@@ -110,7 +110,7 @@ extends GOperator
             if (   input
                 && this.options.enabled)
             {
-                if (isListType(input.type))
+                if (isListValueType(input.type))
                 {
                     for (const item of input.items)
                         stops.items.push(item);

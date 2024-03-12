@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 377;
+const generatorVersion = 378;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -552,7 +552,7 @@ function getObjectFills(genObjFills) {
     }
     return fills;
 }
-function isListType(type) {
+function isListValueType(type) {
     return LIST_VALUES.includes(type);
 }
 const LIST_VALUE = 'LIST#';
@@ -1112,7 +1112,8 @@ const COMMENT = 'CMNT';
 const COMMENT_ARROW = 'CMNTARR';
 const PANEL = 'PANEL';
 const ACTIVE = 'ACT';
-const BEFORE_ACTIVE = 'BEF';
+const BEFORE_ACTIVE = 'BFACT';
+const BEFORE_LIST = 'BFLST';
 const DISABLED = 'DIS';
 const NOCACHE = 'NOC';
 const PARAM = 'PARAM'; // nodeId paramId

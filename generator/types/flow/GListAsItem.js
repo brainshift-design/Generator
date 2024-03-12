@@ -60,7 +60,7 @@ extends GOperator1
                 length = input.items.length;
                 
                     
-                if (   isListType(input.type)
+                if (   isListValueType(input.type)
                     && this.options.enabled)
                 {
                     for (const item of input.items)

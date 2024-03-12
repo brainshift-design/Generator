@@ -52,7 +52,7 @@ extends GOperator2
             let nameValue = name.value.trim();
 
 
-            if (isListType(input0.type))
+            if (isListValueType(input0.type))
             {
                 this.value = new ListValue();
 

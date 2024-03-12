@@ -119,7 +119,7 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input.value);
 
 
-            if (isListType(this.value.type))
+            if (isListValueType(this.value.type))
             {
                 for (let i = 0; i < this.value.items.length; i++)
                     this.value.items[i].objects = this.value.objects.filter(o => o.itemIndex == i);

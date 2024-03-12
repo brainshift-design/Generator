@@ -117,7 +117,7 @@ async function evalMinMaxInputs(inputs, op, parse)
     {
         value = new NumberValue(-val0.value);//, val0.decimals);
     }
-    else if (isListType(val0.type)
+    else if (isListValueType(val0.type)
             && !isEmpty(val0.items))
     {
         value = val0.items[0].copy();
@@ -149,7 +149,7 @@ async function evalMinMaxInputs(inputs, op, parse)
         const val = (await inputs[i].eval(parse)).toValue();
 
 
-        if (isListType(val.type))
+        if (isListValueType(val.type))
         {
             for (const item of val.items)
             {

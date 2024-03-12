@@ -55,7 +55,7 @@ extends GOperator1
         if (   input
             && input.isValid())
         {
-            if (isListType(input.type))
+            if (isListValueType(input.type))
             {
                 this.value = new ListValue();
 

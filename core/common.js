@@ -1,4 +1,4 @@
-const generatorVersion = 377;
+const generatorVersion = 378;
 
 
 const MAX_INT32        = 2147483647;
@@ -1002,7 +1002,7 @@ function getObjectFills(genObjFills)
 
 
 
-function isListType(type)
+function isListValueType(type)
 {
     return LIST_VALUES.includes(type);
 }

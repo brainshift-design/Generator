@@ -55,7 +55,7 @@ extends GOperator1
         {
             if (this.options.enabled)
             {
-                if (isListType(input.type))
+                if (isListValueType(input.type))
                 {
                     this.value = new ListValue();
 

@@ -433,12 +433,54 @@ function getActiveAfterNode(node, includeParams = false, alreadyChecked = [])
         {
             if (!alreadyChecked.includes(input.node))
             {
-                const rightActive = getActiveAfterNode(
+                const activeAfter = getActiveAfterNode(
                     input.node, 
                     includeParams,
                     alreadyChecked);
 
-                if (rightActive) return rightActive;
+                if (activeAfter) return activeAfter;
+            }
+        }
+    }
+
+
+    return null;
+}
+
+
+
+function getListAfterNode(node, includeParams = false, alreadyChecked = [])
+{
+    if (    node.type == LIST
+        && !alreadyChecked.includes(node)) 
+        return node;
+
+    pushUnique(alreadyChecked, node);
+
+
+    const outputs = 
+        includeParams 
+        ? node.outputs 
+        : node.headerOutputs;
+
+
+    for (const output of outputs)
+    {
+        const connectedInputs = 
+            includeParams 
+            ? output.connectedInputs
+            : output.connectedHeaderInputs;
+
+        for (const input of connectedInputs)
+        {
+            if (!alreadyChecked.includes(input.node))
+            {
+                const listAfter = getListAfterNode(
+                    input.node, 
+                    includeParams,
+                    alreadyChecked);
+
+                if (listAfter) return listAfter;
             }
         }
     }

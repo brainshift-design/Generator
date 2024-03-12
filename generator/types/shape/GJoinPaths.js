@@ -85,7 +85,7 @@ extends GShape
             {
                 const input = (await _input.eval(parse)).toValue();
 
-                if (isListType(input.type)) paths.push(...input.items);
+                if (isListValueType(input.type)) paths.push(...input.items);
                 else                        paths.push(input);
             }
 

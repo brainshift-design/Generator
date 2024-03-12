@@ -4,12 +4,12 @@ extends GOperator1
     count            = null;
     iteration        = null;
    _while            = null;
-  //iterate          = null;
     loop             = null;
 
     iterationObjects = [];
 
     activeAfter      = false; // there are active nodes after this one
+    listAfter        = false; // there is a list node after this one
 
 
 
@@ -27,10 +27,10 @@ extends GOperator1
         this. count      = null;
         this. iteration  = null;
         this._while      = null;
-      //this. iterate    = null;
         this. loop       = null;
 
         this.activeAfter = false;
+        this.listAfter   = false;
 
         this.iterationObjects = [];
     }
@@ -47,10 +47,10 @@ extends GOperator1
         if (this. iteration) copy. iteration = this. iteration.copy();
         if (this. count    ) copy. count     = this. count    .copy();
         if (this._while    ) copy._while     = this._while    .copy();
-      //if (this. iterate  ) copy. iterate   = this. iterate  .copy();
         if (this. loop     ) copy. loop      = this. loop     .copy();
 
         copy.activeAfter = this.activeAfter;
+        copy.listAfter   = this.listAfter;
 
         return copy;
     }
@@ -66,7 +66,6 @@ extends GOperator1
         let   count     = this.count     ? (await this.count    .eval(parse)).toValue() : null;
         let   iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
         let  _while     = new NumberValue(1);
-      //const iterate   = (await this.iterate.eval(parse)).toValue();
 
 
         let iterations = [];
@@ -125,7 +124,8 @@ extends GOperator1
         if (   count
             && count.value > 0
             && (   this.options.active
-                || this.activeAfter))
+                || this.activeAfter
+                || this.listAfter))
         {
             if (this.input)
             {
@@ -189,7 +189,7 @@ extends GOperator1
                     {
                         // lists are automatically expanded unless explicitly kept as item
                         
-                        if (isListType(input.type))
+                        if (isListValueType(input.type))
                         {
                             if (input.condensed === true)
                                 this.value.items.push(input);
@@ -204,7 +204,8 @@ extends GOperator1
         
 
                         if (   this.options.active
-                            || this.options.beforeActive)
+                            || this.options.beforeActive
+                            || this.options.beforeList)
                         {
                             this.iterationObjects = [];
                         

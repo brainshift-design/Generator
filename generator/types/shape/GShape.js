@@ -120,7 +120,7 @@ extends GShapeBase
                 continue;
     
             
-            if (isListType(this.value.props.type))
+            if (isListValueType(this.value.props.type))
             {               
                 for (let i = 0; i < this.value.props.items.length; i++)
                     addProp(obj, this.value.props.items[i]);

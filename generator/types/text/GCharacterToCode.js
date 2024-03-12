@@ -30,7 +30,7 @@ extends GOperator1
 
         if (input)
         {
-            if (isListType(input.type))
+            if (isListValueType(input.type))
             {
                 this.value = new ListValue();
 

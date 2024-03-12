@@ -56,7 +56,7 @@ async function evalAndInputs(inputs, parse)
         const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN.copy();
 
-        if (    isListType(val0.type)
+        if (    isListValueType(val0.type)
             && !isEmpty(val0.items))
         {
             const item0 = val0.items[0];
@@ -85,7 +85,7 @@ async function evalAndInputs(inputs, parse)
             const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN.copy();
 
-            if (isListType(val.type))
+            if (isListValueType(val.type))
             {
                 for (const item of val.items)
                 {

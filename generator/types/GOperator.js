@@ -127,7 +127,7 @@ extends GNode
     {
         return this.value
             ? new TextValue(
-                isListType(this.value.type)
+                isListValueType(this.value.type)
                 ? finalListTypeFromItems(this.value.items)
                 : this.value.type)
             : new TextValue(ANY_VALUE);

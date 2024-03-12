@@ -50,7 +50,7 @@ extends GOperator1
         {
             if (this.options.enabled)
             {
-                if (isListType(input.type))
+                if (isListValueType(input.type))
                 {
                     this.value = new ListValue();
 
@@ -90,7 +90,7 @@ extends GOperator1
             ],
             true);
         }
-        else if (isListType(type.value)   && parse.settings.showListTooltips)
+        else if (isListValueType(type.value)   && parse.settings.showListTooltips)
         {
             this.setUpdateValues(parse,
             [

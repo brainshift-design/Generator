@@ -94,7 +94,7 @@ extends OpColorBase
 
         this._color = 
                 value
-            && !isListType(value.type)
+            && !isListValueType(value.type)
             ? value.toDataColor()
             : dataColor_NaN;
 
