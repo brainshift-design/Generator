@@ -595,7 +595,7 @@ class Wire
                 color, 
                 color[3]));
 
-                
+               
         this.curve .style.stroke = wireStyle;
         this.curve2.style.stroke = rgb2style(rgbDocumentBody);
     

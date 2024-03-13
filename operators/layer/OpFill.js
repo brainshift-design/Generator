@@ -248,8 +248,8 @@ extends OpColorBase
             colors.back       = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
             colors.stripeBack = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
             colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
-            colors.input  = rgb_a(colors.text, 0.3);
-            colors.output = rgb_a(colors.text, 0.3);
+            colors.input      = rgb_a(colors.text, 0.3);
+            colors.output     = rgb_a(colors.text, 0.3);
             colors.inWire     =
             colors.outWire    = darkMode ? hex2rgb('888' ) : hex2rgb('aaa' );
         }
@@ -290,8 +290,6 @@ extends OpColorBase
 
     updateWarningOverlay() 
     {
-        //console.log(this.id + '.updateWarningOverlay()');
-
         const colors = this.getHeaderColors();
         
             
