@@ -252,6 +252,7 @@
 ../generator/types/shape/boolean/GShapeExclude.js
 
 ../generator/types/shape/GRender.js
+../generator/types/shape/GExport.js
 
 
 ../generator/types/shape/GMove.js

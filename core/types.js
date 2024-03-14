@@ -538,6 +538,7 @@ const BOOLEAN_TYPES =
 
 
 const RENDER               = 'RENDER';
+const EXPORT               = 'EXPORT';
 
 
 const SHAPE_VALUES =
@@ -626,7 +627,8 @@ const SHAPE_TYPES =
     INTERPOLATE_POINT,
     REVERSE_PATH,
 
-    RENDER
+    RENDER,
+    EXPORT
 ];
 
 

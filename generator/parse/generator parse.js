@@ -343,6 +343,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply        (parse);
     
     else if (parse.next == RENDER                 ) result = genParseRender            (parse);
+    else if (parse.next == EXPORT                 ) result = genParseExport            (parse);
  
     else if (parse.next == GROUP_NODE             ) result = genParseGroupNode         (parse);
     else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam        (parse);

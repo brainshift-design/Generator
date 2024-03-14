@@ -248,6 +248,7 @@ var menuItemStyleSep2;
 var menuItemShapeSep1;
 var menuItemShapeSelected;
 var menuItemShapeRender;
+var menuItemShapeExport;
 
 var menuItemManageTemplates;
 
@@ -900,7 +901,8 @@ function initGeneratorMenus()
                                 new MenuItem('Effects',     null, {icon: iconEffects, childMenu: menuEffects}),
                                 new MenuItem('Styles',      null, {icon: iconStyle, childMenu: menuStyles}),
                                 new MenuItem('',            null, {separator: true}),
-        menuItemShapeRender   = new MenuItem('Render',      null, {icon: iconRenderDown, createType: RENDER, callback: e => actionManager.do(getCreateNodeAction(RENDER, btnShape.div, getCreateOptions(e)))})]);
+        menuItemShapeRender   = new MenuItem('Render',      null, {icon: iconRenderDown, createType: RENDER, callback: e => actionManager.do(getCreateNodeAction(RENDER, btnShape.div, getCreateOptions(e)))}),
+        menuItemShapeExport   = new MenuItem('Export',      null, {icon: iconExportDown, createType: EXPORT, callback: e => actionManager.do(getCreateNodeAction(EXPORT, btnShape.div, getCreateOptions(e)))})]);
 
 
     menuTemplate = new Menu('Templates', true, false);

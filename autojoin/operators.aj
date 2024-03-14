@@ -248,6 +248,7 @@
 ../operators/shape/OpPlace.js
 
 ../operators/shape/OpRender.js
+../operators/shape/OpExport.js
 
 
 ../operators/group/OpGroupNode.js
