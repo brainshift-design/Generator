@@ -69,9 +69,9 @@ extends GShapeBase
         const profile    = this.profile  ? (await this.size.eval(parse)).toValue() : null;
 
 
-        // this.value = new ListValue();
+        this.value = new ListValue();
 
-        // this.value.objects = [];
+        this.value.objects = [];
 
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)

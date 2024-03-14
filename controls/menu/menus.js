@@ -902,7 +902,7 @@ function initGeneratorMenus()
                                 new MenuItem('Styles',      null, {icon: iconStyle, childMenu: menuStyles}),
                                 new MenuItem('',            null, {separator: true}),
         menuItemShapeRender   = new MenuItem('Render',      null, {icon: iconRenderDown, createType: RENDER, callback: e => actionManager.do(getCreateNodeAction(RENDER, btnShape.div, getCreateOptions(e)))}),
-        menuItemShapeExport   = new MenuItem('Export',      null, {icon: iconExportDown, createType: EXPORT, callback: e => actionManager.do(getCreateNodeAction(EXPORT, btnShape.div, getCreateOptions(e)))})]);
+        menuItemShapeExport   = new MenuItem('Export',      null, {icon: iconExport,     createType: EXPORT, callback: e => actionManager.do(getCreateNodeAction(EXPORT, btnShape.div, getCreateOptions(e)))})]);
 
 
     menuTemplate = new Menu('Templates', true, false);

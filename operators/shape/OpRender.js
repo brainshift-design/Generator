@@ -31,7 +31,7 @@ extends OpShapeBase
         this.addBaseParams();
 
 
-        this.btnFinal = createDiv('btnRenderFinal');
+        this.btnFinal      = createDiv('btnRenderFinal');
         this.btnFinal.over = false;
         this.btnFinal.down = false;
 
