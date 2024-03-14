@@ -336,7 +336,6 @@ extends OpColorBase
         if (  !rgbIsNaN(colors.back)
             && this.paramFills.value.isValid())
         {
-            console.log('this.paramFills.value.isValid() =', this.paramFills.value.isValid());
             if (  !this.paramFills.value.isValid()
                 || this.forceShowWarning)
             {

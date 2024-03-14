@@ -119,6 +119,7 @@ function getPresetGraph(graphId)
         case 'rays':                 return presetRays;
         case 'magicDots':            return presetMagicDots;
         case 'arcs':                 return presetArcs;
+        case 'randomCircles':        return presetRandomCircles;
 
         case 'twoMathNodes':         return presetTwoMathNodes;
         case 'quadraticFormula':     return presetQuadraticFormula;
