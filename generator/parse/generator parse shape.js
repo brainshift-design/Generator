@@ -2330,10 +2330,10 @@ function genParseExport(parse)
     for (let i = 0; i < nInputs; i++)
         _export.inputs.push(genParse(parse));
 
-    _export.size     = genParse(parse);
+    _export.scale    = genParse(parse);
     _export.format   = genParse(parse);
-    // _export.contents = genParse(parse);
-    // _export.crop     = genParse(parse);
+ // _export.contents = genParse(parse);
+ // _export.crop     = genParse(parse);
     _export.suffix   = genParse(parse);
     _export.profile  = genParse(parse);
 

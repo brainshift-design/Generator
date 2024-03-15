@@ -144,7 +144,7 @@ Operator.prototype.updateHeaderLabelText = function()
     else
         suffix = 
                this.cached 
-            || this.type == START 
+            || this.type == FEEDBACK 
             ? '' 
             : ellipsis;
 

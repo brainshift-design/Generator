@@ -1136,12 +1136,12 @@ function genParseIfElse(parse)
 
 
 
-function genParseStart(parse)
+function genParseFeedback(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const feedback = new GStart(nodeId, options);
+    const feedback = new GFeedback(nodeId, options);
 
 
     let nInputs = -1;
@@ -1170,7 +1170,8 @@ function genParseStart(parse)
     if (nInputs == 1)
         feedback.input = genParse(parse);
 
-    feedback.feedback = genParse(parse);
+    feedback.objects    = genParse(parse);
+    feedback.transforms = genParse(parse);
 
 
     parse.nTab--;

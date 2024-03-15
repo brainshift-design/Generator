@@ -8,7 +8,7 @@ const  SHAPE_LIST_VALUE    = 'SLIST#';
 const NULL_NODE            = 'NULL';
 const VARIABLE             = 'VAR';
 const VARIABLE_GROUP       = 'VARGRP';
-const START                = 'START';
+const FEEDBACK             = 'FEEDBK';
 const REPEAT               = 'REPT';
 const CACHE                = 'CACHE';
 const FREEZE               = 'FRZ';
@@ -95,7 +95,7 @@ const FLOW_TYPES =
     SELECT_FROM_LIST,
     IF_ELSE,
     FILTER,
-    START,
+    FEEDBACK,
     REPEAT,
     //FOREACH,
     ITERATE,

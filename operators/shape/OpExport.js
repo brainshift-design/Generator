@@ -1,12 +1,12 @@
 class OpExport
 extends OpShapeBase
 {
-    paramSize;
+    paramScale;
     paramFormat;
  // paramContents;
  // paramCrop;
     paramSuffix;
-    paramProfile;
+ // paramProfile;
 
     btnExport;
 
@@ -24,13 +24,15 @@ extends OpShapeBase
         this.addNewInput();
 
  
-        this.addParam(this.paramSize     = new NumberParam('size',    'size',            true,  true, true, 1, 0.01));
-        this.addParam(this.paramFormat   = new SelectParam('format',  'format',          true,  true, true, ['PNG', 'JPG', 'SVG', 'PDF'], 0));
-     // this.addParam(this.paramContents = new NumberParam('contents','contents only',   true,  true, true, 1, 0, 1));
-     // this.addParam(this.paramCrop     = new NumberParam('crop',    'crop',            true,  true, true, 1, 0, 1));
-        this.addParam(this.paramSuffix   = new   TextParam('suffix',  'suffix',          true,  true, true));
-        this.addParam(this.paramProfile  = new SelectParam('profile', 'color profile',   false, true, true, ['sRGB', 'display P3'], 0));
+        this.addParam(this.paramScale    = new NumberParam('scale',   'scale',         true, true, true, 1, 0.01));
+        this.addParam(this.paramFormat   = new SelectParam('format',  'format',        true, true, true, ['PNG', 'JPG', 'SVG', 'PDF'], 0));
+     // this.addParam(this.paramContents = new NumberParam('contents','contents only', true, true, true, 1, 0, 1));
+     // this.addParam(this.paramCrop     = new NumberParam('crop',    'crop',          true, true, true, 1, 0, 1));
+        this.addParam(this.paramSuffix   = new   TextParam('suffix',  'suffix',        true, true, true));
+     // this.addParam(this.paramProfile  = new SelectParam('profile', 'colors',        true, true, true, ['current', 'sRGB', 'P3'], 0));
 
+
+        this.setAllParamDividers(0.47);
      // this.paramContents.divider = 0.7;
      // this.paramCrop    .divider = 0.7;
 
@@ -64,6 +66,16 @@ extends OpShapeBase
 
 
             e.stopPropagation();
+
+
+            uiPostMessageToFigma(
+            {
+                cmd:      'figExport',
+                objectIds: [],
+                scale:     this.paramScale .value.toNumber(),
+                format:    this.paramFormat.value.toNumber(),
+                suffix:    this.paramSuffix.value.value
+            });
 
 
             // uiMakeNodeActive(this, true);
@@ -135,12 +147,12 @@ extends OpShapeBase
         for (const input of connectedInputs)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.paramSize    .genRequest(gen));
+        request.push(...this.paramScale   .genRequest(gen));
         request.push(...this.paramFormat  .genRequest(gen));
      // request.push(...this.paramContents.genRequest(gen));
      // request.push(...this.paramCrop    .genRequest(gen));
         request.push(...this.paramSuffix  .genRequest(gen));
-        request.push(...this.paramProfile .genRequest(gen));
+     // request.push(...this.paramProfile .genRequest(gen));
                                                     
         
         gen.scope.pop();
@@ -162,15 +174,15 @@ extends OpShapeBase
 
     updateParams()
     {
-        this.paramSize    .enableControlText(true, this.paramSize    .isUnknown());
+        this.paramScale   .enableControlText(true, this.paramScale   .isUnknown());
         this.paramFormat  .enableControlText(true, this.paramFormat  .isUnknown());
      // this.paramContents.enableControlText(true);
      // this.paramCrop    .enableControlText(true);
         this.paramSuffix  .enableControlText(true, this.paramSuffix  .isUnknown());
-        this.paramProfile .enableControlText(true, this.paramProfile .isUnknown());
+     // this.paramProfile .enableControlText(true, this.paramProfile .isUnknown());
 
      // updateParamConditionText(this.paramContents, this.paramContents.isUnknown(), false, 1);
-     // updateParamConditionText(this.paramCrop,   this.paramCrop  .isUnknown(), false, 1);
+     // updateParamConditionText(this.paramCrop,     this.paramCrop    .isUnknown(), false, 1);
 
         this.updateParamControls();
     }
@@ -181,14 +193,8 @@ extends OpShapeBase
     {
         const colors     = this.getHeaderColors();
 
-        //const rgba       = rgb_a(rgbFromType(ANY_VALUE));
-        //const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
-
         const headerStyle = rgba2style(
             rgb_a(
-                //rgbFromType(ANY_VALUE)
-                //? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
-                //: 
                 colors.text, 
                 this.btnExport.down 
                 ? 1 

@@ -20,6 +20,10 @@ class Parse
     
     inParam = false;
 
+
+    evalAccumulate = true;
+    evalFeedback   = true;
+
     
     updateNodeId;
     updateParamId;
@@ -122,7 +126,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == VARIABLE               ) result = genParseVariable          (parse);
     else if (parse.next == VARIABLE_GROUP         ) result = genParseVariableGroup     (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse            (parse);
-    else if (parse.next == START                  ) result = genParseStart             (parse);
+    else if (parse.next == FEEDBACK               ) result = genParseFeedback          (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
     else if (parse.next == CACHE                  ) result = genParseCache             (parse);
     else if (parse.next == ITERATE                ) result = genParseIterate           (parse);

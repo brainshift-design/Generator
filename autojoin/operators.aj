@@ -44,8 +44,8 @@
 ../operators/ResizableBase.js
 
 
-../operators/flow/OpStart.js
 ../operators/flow/OpRepeat.js
+../operators/flow/OpFeedback.js
 ../operators/flow/OpNull.js
 ../operators/flow/OpVariable.js
 ../operators/flow/OpVariableGroup.js

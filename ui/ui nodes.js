@@ -575,6 +575,7 @@ function handleLegacyNode(_node, genVersion)
     else if (_node.type == 'EXTRP' ) _node.type = GET_PARAM;
     else if (_node.type == 'CENTR' ) _node.type = SET_CENTER;
     else if (_node.type == 'DEFINE') _node.type = ITERATE;
+    else if (_node.type == 'START' ) _node.type = FEEDBACK;
 
 
     // handle math order of operations switch in version 339
@@ -639,6 +640,13 @@ function handleLegacyNode(_node, genVersion)
     {
         if (!_node.useWavelength)
             _node.useWavelength = false;
+    }
+    else if (_node.type == FEEDBACK
+          && _node.params
+          && _node.params.length > 0)
+    {
+        const paramFeedback = _node.params.find(p => p[1] == 'feedback');
+        if (paramFeedback) paramFeedback[1] = 'objects';
     }
 }
 

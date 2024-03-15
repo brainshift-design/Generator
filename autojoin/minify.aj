@@ -1070,7 +1070,7 @@ SHAPE_LIST_VALUE
 NULL_NODE
 VARIABLE
 VARIABLE_GROUP
-START
+FEEDBACK
 REPEAT
 CACHE
 FREEZE
@@ -1644,7 +1644,7 @@ genParseSelect
 genParseListCount
 genParseListContains
 genParseIfElse
-genParseStart
+genParseFeedback
 genParseRepeat
 genParseCache
 genParseFreeze
@@ -1864,7 +1864,7 @@ GSelectFromList
 GSetParam
 GGetParam
 GSort
-GStart
+GFeedback
 GSublist
 GTimer
 GUnique
@@ -2164,7 +2164,7 @@ OpSelectFromList
 OpSetParam
 OpGetParam
 OpSort
-OpStart
+OpFeedback
 OpSublist
 OpTimer
 OpUnique

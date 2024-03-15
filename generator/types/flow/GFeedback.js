@@ -1,16 +1,17 @@
-class GStart
+class GFeedback
 extends GOperator1
 {
-    feedback = null;
-    from     = null;
+    objects    = null;
+    transforms = null;
+    from       = null;
 
-    loopId   = NULL;
+    loopId     = NULL;
 
     
 
     constructor(nodeId, options)
     {
-        super(START, nodeId, options);
+        super(FEEDBACK, nodeId, options);
     }
 
 
@@ -19,20 +20,22 @@ extends GOperator1
     {
         super.reset();
 
-        this.feedback = null;
-        this.from     = null;
+        this.objects    = null;
+        this.transforms = null;
+        this.from       = null;
     }
 
 
 
     copy()
     {
-        const copy = new GStart(this.nodeId, this.options);
+        const copy = new GFeedback(this.nodeId, this.options);
 
         copy.copyBase(this);
 
-        if (this.value   ) copy.value    = this.value   .copy();
-        if (this.feedback) copy.feedback = this.feedback.copy();
+        if (this.value     ) copy.value      = this.value     .copy();
+        if (this.objects   ) copy.objects    = this.objects   .copy();
+        if (this.transforms) copy.transforms = this.transforms.copy();
 
         return copy;
     }
@@ -50,11 +53,13 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (this.isCached())
+        if (    this.isCached()
+            || !parse.evalFeedback)
             return this;
 
 
-        const feedback = this.feedback ? (await this.feedback.eval(parse)).toValue() : null;
+        const objects    = this.objects    ? (await this.objects   .eval(parse)).toValue() : null;
+        const transforms = this.transforms ? (await this.transforms.eval(parse)).toValue() : null;
 
 
         this.value = 
@@ -65,12 +70,13 @@ extends GOperator1
 
         this.setUpdateValues(parse, 
         [
-            ['type',     this.outputType()],
-            ['feedback', feedback         ]
+            ['type',       this.outputType()],
+            ['objects',    objects          ],
+            ['transforms', transforms       ]
         ]);
 
 
-        await this.evalObjects(parse, {feedback: feedback.value > 0});
+        await this.evalObjects(parse, {objects: objects.value > 0});
 
         
         this.validate();
@@ -86,7 +92,7 @@ extends GOperator1
 
 
         const objects =
-               options.feedback
+               options.objects
             && repeat
             && repeat.currentIteration > 0
             && this.from
@@ -124,7 +130,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.feedback && this.feedback.isValid();
+            && this.objects    && this.objects   .isValid()
+            && this.transforms && this.transforms.isValid();
     }
 
 
@@ -133,7 +140,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.feedback) this.feedback.pushValueUpdates(parse);
+        if (this.objects   ) this.objects   .pushValueUpdates(parse);
+        if (this.transforms) this.transforms.pushValueUpdates(parse);
     }
 
 
@@ -142,7 +150,8 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.feedback) this.feedback.invalidateInputs(parse, from, force);
+        if (this.objects   ) this.objects   .invalidateInputs(parse, from, force);
+        if (this.transforms) this.transforms.invalidateInputs(parse, from, force);
     }
 
 
@@ -160,7 +169,8 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.feedback) this.feedback.iterateLoop(parse);
+        if (this.objects   ) this.objects   .iterateLoop(parse);
+        if (this.transforms) this.transforms.iterateLoop(parse);
     }
 
 

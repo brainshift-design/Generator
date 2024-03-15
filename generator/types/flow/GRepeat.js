@@ -158,6 +158,14 @@ extends GOperator1
                     this.loop.initLoop(parse, this.nodeId);
 
 
+                if (this.loop)
+                {
+                    parse.evalAccumulate = false;
+                    await this.loop.eval(parse); // it needs to be evaluated at least once, better do it at the end
+                    parse.evalAccumulate = true;
+                }
+
+
                 for (let i = 0, o = 0; i < Math.max(1, nRepeats); i++)
                 {
                     _while = this._while ? (await this._while.eval(parse)).toValue() : null;
@@ -262,13 +270,17 @@ extends GOperator1
                 }
 
 
-                if (this.loop)
-                    await this.loop.eval(parse); // it needs to be evaluated at least once, better do it at the end
-
-
                 if (   this.loop
                     && this.loop.resetLoop)//;type != NUMBER_VALUE)
                     this.loop.resetLoop(parse, this.nodeId);
+
+
+                // if (this.loop)
+                // {
+                //     parse.evalFeedback = false;
+                //     await this.loop.eval(parse); // it needs to be evaluated at least once, better do it at the end
+                //     parse.evalFeedback = true;
+                // }
 
 
                 if (this.startTimer > -1)
@@ -376,6 +388,6 @@ function assertVolatile(loop, node)
         || loop.type == NUMBER_NOISE
         || loop.type == NUMBER_PROBABILITY
         || loop.type == COMBINE
-        || loop.type == PARAM, // for OpStart
+        || loop.type == PARAM, // for OpFeedback
         'only volatile types can be repeated');
 }

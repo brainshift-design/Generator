@@ -539,8 +539,8 @@ function initGeneratorMenus()
 
     menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
-        menuItemStart      = new MenuItem('Start . . .',       null, {icon: iconStart,         createType: START,            callback: e => actionManager.do(getCreateNodeAction(START,           btnFlow.div, getCreateOptions(e)))}),
         menuItemRepeat     = new MenuItem('. . . Repeat',      null, {icon: iconRepeat,        createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
+        menuItemStart      = new MenuItem('Feedback . . .',    null, {icon: iconFeedback,      createType: FEEDBACK,         callback: e => actionManager.do(getCreateNodeAction(FEEDBACK,        btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null, {separator: true}),
         menuItemCache      = new MenuItem('Cache. . .',        null, {icon: iconCache,         createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
         menuItemFreeze     = new MenuItem('Freeze',            null, {icon: iconFreeze,        createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
@@ -794,7 +794,7 @@ function initGeneratorMenus()
     
     menuStyles = new Menu('Styles', true, false);
     menuStyles.addItems([
-        new MenuItem('Color style', null, {icon: iconColorStyle, createType: START, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE, btnShape.div, getCreateOptions(e, {existing: true})))})]);
+        new MenuItem('Color style', null, {icon: iconColorStyle, createType: COLOR_STYLE, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE, btnShape.div, getCreateOptions(e, {existing: true})))})]);
     
     
     // menuLayer = new Menu('Style', true, false);
@@ -902,6 +902,7 @@ function initGeneratorMenus()
                                 new MenuItem('Styles',      null, {icon: iconStyle, childMenu: menuStyles}),
                                 new MenuItem('',            null, {separator: true}),
         menuItemShapeRender   = new MenuItem('Render',      null, {icon: iconRenderDown, createType: RENDER, callback: e => actionManager.do(getCreateNodeAction(RENDER, btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('',            null, {separator: true}),
         menuItemShapeExport   = new MenuItem('Export',      null, {icon: iconExport,     createType: EXPORT, callback: e => actionManager.do(getCreateNodeAction(EXPORT, btnShape.div, getCreateOptions(e)))})]);
 
 

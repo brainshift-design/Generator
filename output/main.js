@@ -562,7 +562,7 @@ const SHAPE_LIST_VALUE = 'SLIST#';
 const NULL_NODE = 'NULL';
 const VARIABLE = 'VAR';
 const VARIABLE_GROUP = 'VARGRP';
-const START = 'START';
+const FEEDBACK = 'FEEDBK';
 const REPEAT = 'REPT';
 const CACHE = 'CACHE';
 const FREEZE = 'FRZ';
@@ -637,7 +637,7 @@ const FLOW_TYPES = [
     SELECT_FROM_LIST,
     IF_ELSE,
     FILTER,
-    START,
+    FEEDBACK,
     REPEAT,
     //FOREACH,
     ITERATE,
@@ -1893,6 +1893,9 @@ figma.ui.onmessage = function (msg) {
             figLinkNodeToExistingColorStyle(msg.nodeId, msg.styleId);
             break;
         // case 'figUpdateViewportRect':                 figPostMessageToUi({cmd: 'uiReturnUpdateViewportRect', viewportRect: figma.viewport.bounds }); break;
+        case 'figExport':
+            figExport(msg.objectIds, msg.scale, msg.format, msg.suffix);
+            break;
         case 'figGetObjectSize':
             figGetObjectSize(msg.object);
             break;
@@ -2875,6 +2878,10 @@ function figGetObjectBounds(objects) {
         width: bounds.right - bounds.left,
         height: bounds.bottom - bounds.top
     };
+}
+function figExport(objectIds, scale, format, suffix) {
+    // get node ID from msg
+    // export the node
 }
 const figEmptyObjects = [];
 const figDecoObjects = [];

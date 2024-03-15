@@ -437,3 +437,11 @@ function figGetObjectBounds(objects)
         width:  bounds.right  - bounds.left,
         height: bounds.bottom - bounds.top };
 }
+
+
+
+function figExport(objectIds, scale, format, suffix)
+{
+    // get node ID from msg
+    // export the node
+}

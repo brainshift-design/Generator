@@ -5804,7 +5804,7 @@ const  SHAPE_LIST_VALUE    = 'SLIST#';
 const NULL_NODE            = 'NULL';
 const VARIABLE             = 'VAR';
 const VARIABLE_GROUP       = 'VARGRP';
-const START                = 'START';
+const FEEDBACK             = 'FEEDBK';
 const REPEAT               = 'REPT';
 const CACHE                = 'CACHE';
 const FREEZE               = 'FRZ';
@@ -5891,7 +5891,7 @@ const FLOW_TYPES =
     SELECT_FROM_LIST,
     IF_ELSE,
     FILTER,
-    START,
+    FEEDBACK,
     REPEAT,
     //FOREACH,
     ITERATE,
@@ -10941,10 +10941,17 @@ extends GOperator
 
         if (isValid(this.param))
         {
-            // await this.node.eval(parse);
-            const value = (await this.param.eval(parse)).toValue();
-            this.value = value;
-            
+            if (   this.node.type != FEEDBACK
+                && this.paramId != 'from')
+            {
+                // await this.node.eval(parse);
+                const value = (await this.param.eval(parse)).toValue();
+                this.value = value;
+            }
+            else
+                this.value = new NullValue();
+
+                
             return this.value
                  ? this.value.copy()
                  : null;
@@ -17694,183 +17701,6 @@ function parseFrameValue(str, i = -1)
 
 
 
-class GStart
-extends GOperator1
-{
-    feedback = null;
-    from     = null;
-
-    loopId   = NULL;
-
-    
-
-    constructor(nodeId, options)
-    {
-        super(START, nodeId, options);
-    }
-
-
-    
-    reset()
-    {
-        super.reset();
-
-        this.feedback = null;
-        this.from     = null;
-    }
-
-
-
-    copy()
-    {
-        const copy = new GStart(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.value   ) copy.value    = this.value   .copy();
-        if (this.feedback) copy.feedback = this.feedback.copy();
-
-        return copy;
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached()
-            && (  !this.input 
-                || this.input.isCached());
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const feedback = this.feedback ? (await this.feedback.eval(parse)).toValue() : null;
-
-
-        this.value = 
-            this.input 
-            ? (await this.input.eval(parse)).toValue() 
-            : new NullValue();
-
-
-        this.setUpdateValues(parse, 
-        [
-            ['type',     this.outputType()],
-            ['feedback', feedback         ]
-        ]);
-
-
-        await this.evalObjects(parse, {feedback: feedback.value > 0});
-
-        
-        this.validate();
-
-        return this;
-    }
-
-
-
-    async evalObjects(parse, options = {})
-    {
-        const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
-
-
-        const objects =
-               options.feedback
-            && repeat
-            && repeat.currentIteration > 0
-            && this.from
-            ? this.from.iterationObjects
-            : (   this.input 
-               && this.input.value.objects 
-               ? this.input.value.objects 
-               : []);
-
-        
-        if (this.value.isValid())
-        {
-            this.value.objects = objects.map(o => o.copy());
-
-            for (const obj of this.value.objects)
-            {
-                obj.nodeId   = this.nodeId;
-                obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-            }
-        }
-
-
-        await super.evalObjects(parse);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
-
-
-
-    isValid()
-    {
-        return super.isValid()
-            && this.feedback && this.feedback.isValid();
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.feedback) this.feedback.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(parse, from, force)
-    {
-        super.invalidateInputs(parse, from, force);
-
-        if (this.feedback) this.feedback.invalidateInputs(parse, from, force);
-    }
-
-
-
-    initLoop(parse, nodeId)
-    {
-        super.initLoop(parse, nodeId);
-
-        this.from = parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-
-    iterateLoop(parse)
-    {
-        super.iterateLoop(parse);
-
-        if (this.feedback) this.feedback.iterateLoop(parse);
-    }
-
-
-
-    resetLoop(parse, nodeId)
-    {
-        super.resetLoop(parse, nodeId);
-
-        this.from = null;
-    }
-}
-
-
-
 class GRepeat
 extends GOperator1
 {
@@ -18031,6 +17861,14 @@ extends GOperator1
                     this.loop.initLoop(parse, this.nodeId);
 
 
+                if (this.loop)
+                {
+                    parse.evalAccumulate = false;
+                    await this.loop.eval(parse); // it needs to be evaluated at least once, better do it at the end
+                    parse.evalAccumulate = true;
+                }
+
+
                 for (let i = 0, o = 0; i < Math.max(1, nRepeats); i++)
                 {
                     _while = this._while ? (await this._while.eval(parse)).toValue() : null;
@@ -18135,13 +17973,17 @@ extends GOperator1
                 }
 
 
-                if (this.loop)
-                    await this.loop.eval(parse); // it needs to be evaluated at least once, better do it at the end
-
-
                 if (   this.loop
                     && this.loop.resetLoop)//;type != NUMBER_VALUE)
                     this.loop.resetLoop(parse, this.nodeId);
+
+
+                // if (this.loop)
+                // {
+                //     parse.evalFeedback = false;
+                //     await this.loop.eval(parse); // it needs to be evaluated at least once, better do it at the end
+                //     parse.evalFeedback = true;
+                // }
 
 
                 if (this.startTimer > -1)
@@ -18249,9 +18091,196 @@ function assertVolatile(loop, node)
         || loop.type == NUMBER_NOISE
         || loop.type == NUMBER_PROBABILITY
         || loop.type == COMBINE
-        || loop.type == PARAM, // for OpStart
+        || loop.type == PARAM, // for OpFeedback
         'only volatile types can be repeated');
 }
+
+
+class GFeedback
+extends GOperator1
+{
+    objects    = null;
+    transforms = null;
+    from       = null;
+
+    loopId     = NULL;
+
+    
+
+    constructor(nodeId, options)
+    {
+        super(FEEDBACK, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.objects    = null;
+        this.transforms = null;
+        this.from       = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GFeedback(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.value     ) copy.value      = this.value     .copy();
+        if (this.objects   ) copy.objects    = this.objects   .copy();
+        if (this.transforms) copy.transforms = this.transforms.copy();
+
+        return copy;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (  !this.input 
+                || this.input.isCached());
+    }
+
+
+
+    async eval(parse)
+    {
+        if (    this.isCached()
+            || !parse.evalFeedback)
+            return this;
+
+
+        const objects    = this.objects    ? (await this.objects   .eval(parse)).toValue() : null;
+        const transforms = this.transforms ? (await this.transforms.eval(parse)).toValue() : null;
+
+
+        this.value = 
+            this.input 
+            ? (await this.input.eval(parse)).toValue() 
+            : new NullValue();
+
+
+        this.setUpdateValues(parse, 
+        [
+            ['type',       this.outputType()],
+            ['objects',    objects          ],
+            ['transforms', transforms       ]
+        ]);
+
+
+        await this.evalObjects(parse, {objects: objects.value > 0});
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
+
+
+        const objects =
+               options.objects
+            && repeat
+            && repeat.currentIteration > 0
+            && this.from
+            ? this.from.iterationObjects
+            : (   this.input 
+               && this.input.value.objects 
+               ? this.input.value.objects 
+               : []);
+
+        
+        if (this.value.isValid())
+        {
+            this.value.objects = objects.map(o => o.copy());
+
+            for (const obj of this.value.objects)
+            {
+                obj.nodeId   = this.nodeId;
+                obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            }
+        }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.objects    && this.objects   .isValid()
+            && this.transforms && this.transforms.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.objects   ) this.objects   .pushValueUpdates(parse);
+        if (this.transforms) this.transforms.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.objects   ) this.objects   .invalidateInputs(parse, from, force);
+        if (this.transforms) this.transforms.invalidateInputs(parse, from, force);
+    }
+
+
+
+    initLoop(parse, nodeId)
+    {
+        super.initLoop(parse, nodeId);
+
+        this.from = parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.objects   ) this.objects   .iterateLoop(parse);
+        if (this.transforms) this.transforms.iterateLoop(parse);
+    }
+
+
+
+    resetLoop(parse, nodeId)
+    {
+        super.resetLoop(parse, nodeId);
+
+        this.from = null;
+    }
+}
+
 
 
 class GNull
@@ -26118,7 +26147,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (this.isCached())
+        if (    this.isCached()
+            || !parse.evalAccumulate)
             return this;
 
 
@@ -32938,8 +32968,7 @@ extends GOperator1
         
         if (input)
         {
-            if (   input.isValid())
-                // && this.input.type != START)
+            if (input.isValid())
             {
                 if (this.options.enabled)
                 {
@@ -42051,12 +42080,12 @@ extends GShapeBase
 {
     inputs = [];
 
-    size;
+    scale;
     format;
  // contents;
  // crop;
     suffix;
-    profile;
+ // profile;
 
 
 
@@ -42073,12 +42102,12 @@ extends GShapeBase
 
         this.inputs = [];
         
-        this.size     = null;
+        this.scale    = null;
         this.format   = null;
      // this.contents = null;
      // this.crop     = null;
         this.suffix   = null;
-        this.profile  = null;
+     // this.profile  = null;
     }
 
 
@@ -42091,12 +42120,12 @@ extends GShapeBase
 
         copy.inputs = this.inputs.map(i => i.copy());
 
-        if (this.size    ) copy.size     = this.size    .copy();
+        if (this.scale   ) copy.scale    = this.scale   .copy();
         if (this.format  ) copy.format   = this.format  .copy();
      // if (this.contents) copy.contents = this.contents.copy();
      // if (this.crop    ) copy.crop     = this.crop    .copy();
         if (this.suffix  ) copy.suffix   = this.suffix  .copy();
-        if (this.profile ) copy.profile  = this.profile .copy();
+     // if (this.profile ) copy.profile  = this.profile .copy();
 
         return copy;
     }
@@ -42109,12 +42138,12 @@ extends GShapeBase
             return this;
 
 
-        const size       = this.size     ? (await this.size.eval(parse)).toValue() : null;
-        const format     = this.format   ? (await this.size.eval(parse)).toValue() : null;
-     // const contents   = this.contents ? (await this.size.eval(parse)).toValue() : null;
-     // const crop       = this.crop     ? (await this.size.eval(parse)).toValue() : null;
-        const suffix     = this.suffix   ? (await this.size.eval(parse)).toValue() : null;
-        const profile    = this.profile  ? (await this.size.eval(parse)).toValue() : null;
+        const scale      = this.scale    ? (await this.scale   .eval(parse)).toValue() : null;
+        const format     = this.format   ? (await this.format  .eval(parse)).toValue() : null;
+     // const contents   = this.contents ? (await this.contents.eval(parse)).toValue() : null;
+     // const crop       = this.crop     ? (await this.crop    .eval(parse)).toValue() : null;
+        const suffix     = this.suffix   ? (await this.suffix  .eval(parse)).toValue() : null;
+     // const profile    = this.profile  ? (await this.profile .eval(parse)).toValue() : null;
 
 
         this.value = new ListValue();
@@ -42167,12 +42196,12 @@ extends GShapeBase
     {
         return super.isValid()
             && !this.inputs.find(i => !i.isValid())
-            && this.size     && this.size    .isValid()
+            && this.scale    && this.scale   .isValid()
             && this.format   && this.format  .isValid()
          // && this.contents && this.contents.isValid()
          // && this.crop     && this.crop    .isValid()
-            && this.suffix   && this.suffix  .isValid()
-            && this.profile  && this.profile .isValid();
+            && this.suffix   && this.suffix  .isValid();
+         // && this.profile  && this.profile .isValid();
     }
 
 
@@ -42183,12 +42212,12 @@ extends GShapeBase
 
         this.inputs.forEach(i => i.pushValueUpdates(parse));
 
-        if (this.size    ) this.size    .pushValueUpdates(parse);
+        if (this.scale   ) this.scale   .pushValueUpdates(parse);
         if (this.format  ) this.format  .pushValueUpdates(parse);
      // if (this.contents) this.contents.pushValueUpdates(parse);
      // if (this.crop    ) this.crop    .pushValueUpdates(parse);
         if (this.suffix  ) this.suffix  .pushValueUpdates(parse);
-        if (this.profile ) this.profile .pushValueUpdates(parse);
+     // if (this.profile ) this.profile .pushValueUpdates(parse);
     }
 
 
@@ -42199,12 +42228,12 @@ extends GShapeBase
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
 
-        if (this.size    ) this.size    .invalidateInputs(parse, from, force);
+        if (this.scale   ) this.scale   .invalidateInputs(parse, from, force);
         if (this.format  ) this.format  .invalidateInputs(parse, from, force);
      // if (this.contents) this.contents.invalidateInputs(parse, from, force);
      // if (this.crop    ) this.crop    .invalidateInputs(parse, from, force);
         if (this.suffix  ) this.suffix  .invalidateInputs(parse, from, force);
-        if (this.profile ) this.profile .invalidateInputs(parse, from, force);
+     // if (this.profile ) this.profile .invalidateInputs(parse, from, force);
     }
 
 
@@ -42215,12 +42244,12 @@ extends GShapeBase
 
         this.inputs.forEach(i => i.iterateLoop(parse));
 
-        if (this.size    ) this.size    .iterateLoop(parse);
+        if (this.scale   ) this.scale   .iterateLoop(parse);
         if (this.format  ) this.format  .iterateLoop(parse);
      // if (this.contents) this.contents.iterateLoop(parse);
      // if (this.crop    ) this.crop    .iterateLoop(parse);
         if (this.suffix  ) this.suffix  .iterateLoop(parse);
-        if (this.profile ) this.profile .iterateLoop(parse);
+     // if (this.profile ) this.profile .iterateLoop(parse);
     }
 }
 
@@ -48378,12 +48407,12 @@ function genParseIfElse(parse)
 
 
 
-function genParseStart(parse)
+function genParseFeedback(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const feedback = new GStart(nodeId, options);
+    const feedback = new GFeedback(nodeId, options);
 
 
     let nInputs = -1;
@@ -48412,7 +48441,8 @@ function genParseStart(parse)
     if (nInputs == 1)
         feedback.input = genParse(parse);
 
-    feedback.feedback = genParse(parse);
+    feedback.objects    = genParse(parse);
+    feedback.transforms = genParse(parse);
 
 
     parse.nTab--;
@@ -53731,10 +53761,10 @@ function genParseExport(parse)
     for (let i = 0; i < nInputs; i++)
         _export.inputs.push(genParse(parse));
 
-    _export.size     = genParse(parse);
+    _export.scale    = genParse(parse);
     _export.format   = genParse(parse);
-    // _export.contents = genParse(parse);
-    // _export.crop     = genParse(parse);
+ // _export.contents = genParse(parse);
+ // _export.crop     = genParse(parse);
     _export.suffix   = genParse(parse);
     _export.profile  = genParse(parse);
 
@@ -54893,6 +54923,10 @@ class Parse
     
     inParam = false;
 
+
+    evalAccumulate = true;
+    evalFeedback   = true;
+
     
     updateNodeId;
     updateParamId;
@@ -54995,7 +55029,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == VARIABLE               ) result = genParseVariable          (parse);
     else if (parse.next == VARIABLE_GROUP         ) result = genParseVariableGroup     (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse            (parse);
-    else if (parse.next == START                  ) result = genParseStart             (parse);
+    else if (parse.next == FEEDBACK               ) result = genParseFeedback          (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat            (parse);
     else if (parse.next == CACHE                  ) result = genParseCache             (parse);
     else if (parse.next == ITERATE                ) result = genParseIterate           (parse);

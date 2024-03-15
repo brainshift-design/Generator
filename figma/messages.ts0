@@ -89,6 +89,8 @@ figma.ui.onmessage = function(msg)
      
      // case 'figUpdateViewportRect':                 figPostMessageToUi({cmd: 'uiReturnUpdateViewportRect', viewportRect: figma.viewport.bounds }); break;
      
+        case 'figExport':                             figExport                            (msg.objectIds, msg.scale, msg.format, msg.suffix); break;
+
         case 'figGetObjectSize':                      figGetObjectSize                     (msg.object);                                  break;
         case 'figGetVariableUpdates':                 figGetVariableUpdates                (msg.linkedVarIds);                            break;
 

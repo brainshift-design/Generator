@@ -63,10 +63,17 @@ extends GOperator
 
         if (isValid(this.param))
         {
-            // await this.node.eval(parse);
-            const value = (await this.param.eval(parse)).toValue();
-            this.value = value;
-            
+            if (   this.node.type != FEEDBACK
+                && this.paramId != 'from')
+            {
+                // await this.node.eval(parse);
+                const value = (await this.param.eval(parse)).toValue();
+                this.value = value;
+            }
+            else
+                this.value = new NullValue();
+
+                
             return this.value
                  ? this.value.copy()
                  : null;
