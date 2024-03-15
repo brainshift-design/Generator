@@ -3,9 +3,9 @@ const presetFeedback = '\
         "nodes":\
         [\
             {\
-            "type": "START",\
-            "id": "start",\
-            "name": "start",\
+            "type": "FEEDBK",\
+            "id": "feedback",\
+            "name": "feedback",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "5",\
@@ -14,7 +14,6 @@ const presetFeedback = '\
             "z": "0",\
             "params":\
             [\
-                    ["NUM#", "feedback", "1,0"]\
             ]\
             },\
             {\
@@ -176,7 +175,7 @@ const presetFeedback = '\
             "outputNodeId": "rect",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "start",\
+            "inputNodeId": "feedback",\
             "inputId": "h0",\
             "list": "false"\
             },\
@@ -221,7 +220,7 @@ const presetFeedback = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "start",\
+            "outputNodeId": "feedback",\
             "outputId": "from",\
             "outputOrder": "0",\
             "inputNodeId": "repeat",\
@@ -229,7 +228,7 @@ const presetFeedback = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "start",\
+            "outputNodeId": "feedback",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "move",\

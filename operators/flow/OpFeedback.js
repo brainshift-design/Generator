@@ -1,8 +1,6 @@
 class   OpFeedback
 extends OperatorBase
 {
-    paramObjects;
-    paramTransforms;
     paramFrom;
 
 
@@ -19,15 +17,9 @@ extends OperatorBase
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramObjects    = new NumberParam('objects',    'objects',    true,  true,  true, 1, 0, 1));
-        this.addParam(this.paramTransforms = new NumberParam('transforms', 'transforms', true,  true,  true, 1, 0, 1));
-        this.addParam(this.paramFrom       = new NumberParam('from',       '',           false, false, true));
+        this.addParam(this.paramFrom = new NumberParam('from',  '',     false, false, true));
 
         
-        this.paramObjects   .divider = 0.65;
-        this.paramTransforms.divider = 0.65;
-
-
         this.inputs[0].addEventListener('connect',    () => OpStart_onConnectInput   (this));
         this.inputs[0].addEventListener('disconnect', () => OpStart_onDisconnectInput(this));
 
@@ -72,10 +64,6 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
 
-        request.push(...this.node.paramObjects   .genRequest(gen));
-        request.push(...this.node.paramTransforms.genRequest(gen));
-
-        
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
@@ -88,7 +76,7 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
         
-        const type  = values[paramIds.findIndex(id => id == 'type'  )];
+        const type  = values[paramIds.findIndex(id => id == 'type')];
 
         if (type)
             this.headerOutputs[0].types = [type.value];
@@ -98,14 +86,7 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramObjects   .enableControlText(true);
-        this.paramTransforms.enableControlText(true);
-
         this.paramFrom.enableControlText(false);
-
-        updateParamConditionText(this.paramObjects,    this.paramObjects   .isUnknown(), true, 0);
-        updateParamConditionText(this.paramTransforms, this.paramTransforms.isUnknown(), true, 0);
-
 
         const arrowStyle = darkMode ? 'white' : 'black';
 

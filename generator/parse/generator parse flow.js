@@ -1170,9 +1170,6 @@ function genParseFeedback(parse)
     if (nInputs == 1)
         feedback.input = genParse(parse);
 
-    feedback.objects    = genParse(parse);
-    feedback.transforms = genParse(parse);
-
 
     parse.nTab--;
 

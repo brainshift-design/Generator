@@ -1,11 +1,9 @@
 class GFeedback
 extends GOperator1
 {
-    objects    = null;
-    transforms = null;
-    from       = null;
+    from   = null;
 
-    loopId     = NULL;
+    loopId = NULL;
 
     
 
@@ -20,9 +18,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.objects    = null;
-        this.transforms = null;
-        this.from       = null;
+        this.from = null;
     }
 
 
@@ -33,9 +29,7 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.value     ) copy.value      = this.value     .copy();
-        if (this.objects   ) copy.objects    = this.objects   .copy();
-        if (this.transforms) copy.transforms = this.transforms.copy();
+        if (this.value) copy.value = this.value.copy();
 
         return copy;
     }
@@ -58,10 +52,6 @@ extends GOperator1
             return this;
 
 
-        const objects    = this.objects    ? (await this.objects   .eval(parse)).toValue() : null;
-        const transforms = this.transforms ? (await this.transforms.eval(parse)).toValue() : null;
-
-
         this.value = 
             this.input 
             ? (await this.input.eval(parse)).toValue() 
@@ -70,13 +60,11 @@ extends GOperator1
 
         this.setUpdateValues(parse, 
         [
-            ['type',       this.outputType()],
-            ['objects',    objects          ],
-            ['transforms', transforms       ]
+            ['type', this.outputType()]
         ]);
 
 
-        await this.evalObjects(parse, {objects: objects.value > 0});
+        await this.evalObjects(parse);
 
         
         this.validate();
@@ -92,8 +80,7 @@ extends GOperator1
 
 
         const objects =
-               options.objects
-            && repeat
+               repeat
             && repeat.currentIteration > 0
             && this.from
             ? this.from.iterationObjects
@@ -127,50 +114,11 @@ extends GOperator1
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.objects    && this.objects   .isValid()
-            && this.transforms && this.transforms.isValid();
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.objects   ) this.objects   .pushValueUpdates(parse);
-        if (this.transforms) this.transforms.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(parse, from, force)
-    {
-        super.invalidateInputs(parse, from, force);
-
-        if (this.objects   ) this.objects   .invalidateInputs(parse, from, force);
-        if (this.transforms) this.transforms.invalidateInputs(parse, from, force);
-    }
-
-
-
     initLoop(parse, nodeId)
     {
         super.initLoop(parse, nodeId);
 
         this.from = parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-
-    iterateLoop(parse)
-    {
-        super.iterateLoop(parse);
-
-        if (this.objects   ) this.objects   .iterateLoop(parse);
-        if (this.transforms) this.transforms.iterateLoop(parse);
     }
 
 

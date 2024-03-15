@@ -641,13 +641,6 @@ function handleLegacyNode(_node, genVersion)
         if (!_node.useWavelength)
             _node.useWavelength = false;
     }
-    else if (_node.type == FEEDBACK
-          && _node.params
-          && _node.params.length > 0)
-    {
-        const paramFeedback = _node.params.find(p => p[1] == 'feedback');
-        if (paramFeedback) paramFeedback[1] = 'objects';
-    }
 }
 
 
