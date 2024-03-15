@@ -41388,11 +41388,21 @@ extends GShape
                 x, y, w, h, r);
 
 
+            const bounds = getObjBounds(this.value.objects);
+
+            const singlePoint =
+                   this.value.objects.length  == 1 
+                && this.value.objects[0].type == POINT;
+
+                
             const xoff = createTransform(-x, -y);
 
             for (let i = 0; i < this.value.objects.length; i++)
             {
                 const obj = this.value.objects[i];
+
+                obj.createDefaultSpace();
+                obj.resetSpace(bounds, singlePoint);
 
                 if (pos > 0)
                     obj.applyTransform(xoff);
