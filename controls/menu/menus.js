@@ -901,9 +901,9 @@ function initGeneratorMenus()
                                 new MenuItem('Effects',     null, {icon: iconEffects, childMenu: menuEffects}),
                                 new MenuItem('Styles',      null, {icon: iconStyle, childMenu: menuStyles}),
                                 new MenuItem('',            null, {separator: true}),
-        menuItemShapeRender   = new MenuItem('Render',      null, {icon: iconRenderDown, createType: RENDER, callback: e => actionManager.do(getCreateNodeAction(RENDER, btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('',            null, {separator: true}),
-        menuItemShapeExport   = new MenuItem('Export',      null, {icon: iconExport,     createType: EXPORT, callback: e => actionManager.do(getCreateNodeAction(EXPORT, btnShape.div, getCreateOptions(e)))})]);
+        menuItemShapeRender   = new MenuItem('Render',      null, {icon: iconRenderDown, createType: RENDER, callback: e => actionManager.do(getCreateNodeAction(RENDER, btnShape.div, getCreateOptions(e)))})]);
+        //                         new MenuItem('',            null, {separator: true}),
+        // menuItemShapeExport   = new MenuItem('Export',      null, {icon: iconExport,     createType: EXPORT, callback: e => actionManager.do(getCreateNodeAction(EXPORT, btnShape.div, getCreateOptions(e)))})]);
 
 
     menuTemplate = new Menu('Templates', true, false);

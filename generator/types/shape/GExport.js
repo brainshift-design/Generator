@@ -96,7 +96,10 @@ extends GShapeBase
         }
 
 
-        this.setUpdateValues(parse, [['', new NullValue()]]);
+        this.setUpdateValues(parse, 
+        [
+            ['objectIds', new ListValue(this.value.objects.map(o => new TextValue(o.objectId)))]
+        ]);
 
 
         this.validate();

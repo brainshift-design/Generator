@@ -10,6 +10,8 @@ extends OpShapeBase
 
     btnExport;
 
+    objectIds;
+
 
 
     constructor()
@@ -71,7 +73,7 @@ extends OpShapeBase
             uiPostMessageToFigma(
             {
                 cmd:      'figExport',
-                objectIds: [],
+                objectIds: this.objectIds,
                 scale:     this.paramScale .value.toNumber(),
                 format:    this.paramFormat.value.toNumber(),
                 suffix:    this.paramSuffix.value.value
@@ -168,6 +170,17 @@ extends OpShapeBase
         super.updateHeader();
 
         this.updateExportIcon();
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const objectIds = values[paramIds.findIndex(id => id == 'objectIds')].items.map(i => i.value);
+
+        this.objectIds = objectIds;
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 

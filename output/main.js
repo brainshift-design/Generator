@@ -2880,8 +2880,25 @@ function figGetObjectBounds(objects) {
     };
 }
 function figExport(objectIds, scale, format, suffix) {
-    // get node ID from msg
-    // export the node
+    return __awaiter(this, void 0, void 0, function* () {
+        yield figma.currentPage.loadAsync();
+        for (const objId of objectIds) {
+            let figObj = figma.currentPage.children.find(o => !o.removed
+                && o.getPluginData('userId') == figma.currentUser.id
+                && o.getPluginData('objectId') == objId);
+            if (!figObj)
+                continue;
+            const settings = {
+                constraint: {
+                    type: 'SCALE',
+                    value: scale
+                },
+                format: format == 0 ? 'PNG' : 'JPG',
+                suffix: suffix
+            };
+            yield figObj.exportAsync(settings);
+        }
+    });
 }
 const figEmptyObjects = [];
 const figDecoObjects = [];

@@ -440,8 +440,33 @@ function figGetObjectBounds(objects)
 
 
 
-function figExport(objectIds, scale, format, suffix)
+async function figExport(objectIds, scale, format, suffix)
 {
-    // get node ID from msg
-    // export the node
+    await figma.currentPage.loadAsync();
+    
+
+    for (const objId of objectIds)
+    {
+        let figObj = figma.currentPage.children.find(o => 
+              !o.removed
+            && o.getPluginData('userId'  ) == figma.currentUser.id
+            && o.getPluginData('objectId') == objId);
+    
+        if (!figObj) continue;
+
+
+        const settings: ExportSettingsImage = 
+        {
+            constraint: 
+            {
+                type: 'SCALE',
+                value: scale
+            },
+            format: format == 0 ? 'PNG' : 'JPG',
+            suffix: suffix
+        };
+
+
+        await figObj.exportAsync(settings);
+    }
 }

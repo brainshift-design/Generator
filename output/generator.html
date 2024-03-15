@@ -5691,7 +5691,7 @@ function enableFeatures(sub, beta = false)
     enableMenuItem(menuItemConvertToP3,        true, sub);
     enableMenuItem(menuItemColorblind,         true, sub);
     enableMenuItem(menuItemShapeRender,        true, sub);
-    enableMenuItem(menuItemShapeExport,        true, sub);
+    // enableMenuItem(menuItemShapeExport,        true, sub);
     enableMenuItem(menuItemVectorVertex,       true, sub);
     enableMenuItem(menuItemVectorEdge,         true, sub);
     enableMenuItem(menuItemVectorRegion,       true, sub);
@@ -42121,7 +42121,10 @@ extends GShapeBase
         }
 
 
-        this.setUpdateValues(parse, [['', new NullValue()]]);
+        this.setUpdateValues(parse, 
+        [
+            ['objectIds', new ListValue(this.value.objects.map(o => new TextValue(o.objectId)))]
+        ]);
 
 
         this.validate();
