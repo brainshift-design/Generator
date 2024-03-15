@@ -2,6 +2,7 @@ class   OpObjectName
 extends OperatorBase
 {
     paramName;
+    // paramLogo;
 
 
 
@@ -17,11 +18,10 @@ extends OperatorBase
         this.addInput (new Input(SHAPE_VALUES));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramName = new TextParam('name', 'name', false, true, true));
+        // this.addParam(this.paramLogo = new NumberParam('addLogo', 'prefix&nbsp;&nbsp;' + GENERATOR_LOGO + '&nbsp;', true,  true, true, 1, 0, 1));
+        this.addParam(this.paramName = new   TextParam('name',    'name',  false, true, true));
 
-
-        // this.inputs[0].addEventListener('connect',    () => OpObjectName_onConnectInput(this));
-        // this.inputs[0].addEventListener('disconnect', () => OpObjectName_onDisconnectInput(this));
+        //this.paramLogo.divider = 0.67;
     }
 
 
@@ -54,6 +54,7 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         request.push(...this.node.paramName.genRequest(gen));
+        // request.push(...this.node.paramLogo.genRequest(gen));
 
         
         gen.scope.pop();
@@ -76,6 +77,18 @@ extends OperatorBase
 
 
 
+    // updateParams()
+    // {
+    //     this.paramName.enableControlText(true, this.paramName.isUnknown());
+    //     // this.paramLogo.enableControlText(true);
+
+    //     // updateParamConditionText(this.paramLogo, this.paramLogo.isUnknown(), false, 1);
+
+    //     this.updateParamControls();
+    // }
+
+
+
     getHeaderColors(options = {})
     {
         const colors = super.getHeaderColors(options);
@@ -91,17 +104,3 @@ extends OperatorBase
         return colors;
     }
 }
-
-
-
-// function OpObjectName_onConnectInput(node)
-// {
-//     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
-// }
-
-
-
-// function OpObjectName_onDisconnectInput(node)
-// {
-//     node.outputs[0].types = [ANY_VALUE];
-// }

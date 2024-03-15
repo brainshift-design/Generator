@@ -1551,7 +1551,8 @@ function genParseObjectName(parse)
     if (nInputs == 1)
         name.input = genParse(parse);
 
-    name.name = genParse(parse);
+    name.name    = genParse(parse);
+ // name.addLogo = genParse(parse);
 
 
     parse.nTab--;
