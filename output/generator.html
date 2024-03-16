@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 379;
+const generatorVersion = 380;
 
 
 const MAX_INT32        = 2147483647;
@@ -18573,6 +18573,7 @@ extends GOperator1
         copy.copyBase(this);
 
         if (this.value) copy.value = this.value.copy();
+        // if (this.cachedValue) copy.cachedValue = this.cachedValue.copy();
 
         return copy;
     }
@@ -18599,7 +18600,8 @@ extends GOperator1
                 ? (await this.input.eval(parse)).toValue() 
                 : new NullValue();
 
-            if (this.options.enabled)
+            if (   this.options.enabled
+                && this.value)
                 this.cachedValue = this.value.copy();
         }
 
@@ -26272,9 +26274,11 @@ extends GOperator2
 
         const values = [];
         
-        for (const input of this.inputs)
+        for (const _input of this.inputs)
         {
-            if (isListValueType(input))
+            const input = (await _input.eval(parse)).toValue();
+
+            if (isListValueType(input.type))
             {
                 for (const item of input.items)
                 {
@@ -26287,7 +26291,6 @@ extends GOperator2
                 const value = (await input.eval(parse)).toValue();
                 values.push(value);
             }
-
         }
         
         

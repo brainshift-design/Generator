@@ -55,9 +55,11 @@ extends GOperator2
 
         const values = [];
         
-        for (const input of this.inputs)
+        for (const _input of this.inputs)
         {
-            if (isListValueType(input))
+            const input = (await _input.eval(parse)).toValue();
+
+            if (isListValueType(input.type))
             {
                 for (const item of input.items)
                 {
@@ -70,7 +72,6 @@ extends GOperator2
                 const value = (await input.eval(parse)).toValue();
                 values.push(value);
             }
-
         }
         
         

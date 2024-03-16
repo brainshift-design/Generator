@@ -28,6 +28,7 @@ extends GOperator1
         copy.copyBase(this);
 
         if (this.value) copy.value = this.value.copy();
+        // if (this.cachedValue) copy.cachedValue = this.cachedValue.copy();
 
         return copy;
     }
@@ -54,7 +55,8 @@ extends GOperator1
                 ? (await this.input.eval(parse)).toValue() 
                 : new NullValue();
 
-            if (this.options.enabled)
+            if (   this.options.enabled
+                && this.value)
                 this.cachedValue = this.value.copy();
         }
 
