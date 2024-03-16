@@ -23,8 +23,8 @@ extends OpShape
 
 
         this.addParam(this.paramPoints  = new ListParam  ('points',  'points',  false, true, true));
-        this.addParam(this.paramClosed  = new SelectParam('closed',  'closed',  false, true, true, ['open', 'closed'], 0));
         this.addParam(this.paramDegree  = new SelectParam('degree',  'degree',  false, true, true, ['linear', 'quadratic', 'cubic', 'smooth', 'sine X', 'sine Y'], 3));
+        this.addParam(this.paramClosed  = new SelectParam('closed',  'closed',  false, true, true, ['open', 'closed'], 0));
         this.addParam(this.paramWinding = new SelectParam('winding', 'wind',    true,  true, true, ['even-odd', 'non-zero']));
         this.addParam(this.paramRound   = new NumberParam('round',   'round',   true,  true, true, 0, 0));
 

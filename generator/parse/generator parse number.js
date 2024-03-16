@@ -1181,15 +1181,12 @@ function genParseInterpolate(parse)
     const lerp = new GInterpolate(nodeId, options);
 
 
-    let nInputs = -1;
-
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
-    }
-
+    let nInputs = 0;
     
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
     if (parse.settings.logRequests) 
         logReq(lerp, parse, ignore, nInputs);
 
@@ -1203,21 +1200,13 @@ function genParseInterpolate(parse)
 
     parse.nTab++;
 
-    if (nInputs == 2)
-    {
-        lerp.input0 = genParse(parse);
-        lerp.input1 = genParse(parse);
-        lerp.amount = genParse(parse);
-    }
-    else if (nInputs == 1)
-    {
-        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-        lerp.amount = genParse(parse);
-    }
-    else if (nInputs == 0)
-    {
-        lerp.amount = genParse(parse);
-    }
+    for (let i = 0; i < nInputs; i++)
+        lerp.inputs.push(genParse(parse));
+
+
+    lerp.amount = genParse(parse);
+    lerp.degree = genParse(parse);
+
 
     parse.nTab--;
 
