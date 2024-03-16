@@ -12,6 +12,7 @@ extends OperatorBase
 
 
         // this.canDisable = true;
+        this.iconOffsetY = -1;
         
 
         this.addNewInput();

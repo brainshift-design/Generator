@@ -7,7 +7,7 @@ extends GShape
     degree;
 
 
-    
+
     constructor(nodeId, options)
     {
         super(BLEND_PATH, nodeId, options);
@@ -80,6 +80,12 @@ extends GShape
 
         else if (paths.length > 0)
         {
+            // convert all paths to cubic
+
+            // find the index and localAmount for maxSegments
+
+            
+
             // const index = Math.min(Math.floor((values.length-1)/deg * amount.value/100), nSegments-1);
 
             // const localAmount = 
@@ -111,7 +117,7 @@ extends GShape
         }
 
         else                  
-            this.value = VectprPathValue.NaN.copy();
+            this.value = VectorPathValue.NaN.copy();
 
 
         await this.evalObjects(parse);

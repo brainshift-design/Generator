@@ -120,6 +120,8 @@ function getPresetGraph(graphId)
         case 'magicDots':            return presetMagicDots;
         case 'arcs':                 return presetArcs;
         case 'randomCircles':        return presetRandomCircles;
+        case 'progressiveBlur':      return presetProgressiveBlur;
+        case 'noiseBlur':            return presetNoiseBlur;
 
         case 'twoMathNodes':         return presetTwoMathNodes;
         case 'quadraticFormula':     return presetQuadraticFormula;
