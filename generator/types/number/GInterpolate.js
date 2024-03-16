@@ -99,7 +99,7 @@ extends GOperator2
                 : amount.value/100;
 
 
-            if (degree.value == 0)
+            if (degree.value == 0) // linear
             {
                 const val0 = values[index*deg  ];
                 const val1 = values[index*deg+1];
@@ -108,7 +108,7 @@ extends GOperator2
                     lerp(val0.value, val1.value, localAmount),
                     maxDec);
             }
-            else if (degree.value == 1)
+            else if (degree.value == 1) // quadratic
             {
                 const val0 = values[index*deg  ];
                 const val1 = values[index*deg+1];
@@ -118,7 +118,7 @@ extends GOperator2
                     lerp2(val0.value, val1.value, val2.value, localAmount),
                     maxDec);
             }
-            else if (degree.value == 2)
+            else if (degree.value == 2) // cubic
             {
                 const val0 = values[index*deg  ];
                 const val1 = values[index*deg+1];
@@ -129,7 +129,7 @@ extends GOperator2
                     lerp3(val0.value, val1.value, val2.value, val3.value, localAmount),
                     maxDec);
             }
-            else if (degree.value == 3)
+            else if (degree.value == 3) // cosine
             {
                 const val0 = values[index*deg  ];
                 const val1 = values[index*deg+1];

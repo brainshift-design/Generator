@@ -237,6 +237,7 @@
 ../operators/shape/OpIntersectLines.js
 ../operators/shape/OpInterpolatePoint.js
 ../operators/shape/OpReversePath.js
+../operators/shape/OpBlendPath.js
 
 ../operators/shape/boolean/OpShapeBooleanBase.js
 ../operators/shape/boolean/OpShapeBoolean.js

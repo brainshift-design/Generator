@@ -189,6 +189,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case POINT_ALONG_PATH:        node = new OpPointAlongPath();     break;
         case CLOSEST_POINT_ON_PATH:   node = new OpClosestPointOnPath(); break;
         case REVERSE_PATH:            node = new OpReversePath();        break;
+        case BLEND_PATH:              node = new OpBlendPath();          break;
 
         case PLACE:                   node = new OpPlace();              break;
  

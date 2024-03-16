@@ -1533,6 +1533,7 @@ const ARC_FROM_POINTS       = 'ARCPT';
 const INTERSECT_LINES       = 'INTLIN';
 const INTERPOLATE_POINT     = 'PTLERP';
 const REVERSE_PATH          = 'REVPTH';
+const BLEND_PATH            = 'BLENDPTH';
 
 
 const PATH_TYPES =
@@ -1661,6 +1662,7 @@ const SHAPE_TYPES =
     INTERSECT_LINES,
     INTERPOLATE_POINT,
     REVERSE_PATH,
+    BLEND_PATH,
 
     RENDER,
     EXPORT

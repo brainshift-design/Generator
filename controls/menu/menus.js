@@ -828,6 +828,7 @@ function initGeneratorMenus()
         menuItemPathLength         = new MenuItem('Path length',           null, {icon: iconPathLength,                  createType: PATH_LENGTH,           callback: e => actionManager.do(getCreateNodeAction(PATH_LENGTH,           btnShape.div, getCreateOptions(e)))}),
                                      new MenuItem('',                      null, {separator: true}),
                                      new MenuItem('Join paths',            null, {icon: iconJoinPaths,                   createType: JOIN_PATHS,            callback: e => actionManager.do(getCreateNodeAction(JOIN_PATHS,            btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('Blend path',            null, {icon: iconBlendPath,                   createType: BLEND_PATH,            callback: e => actionManager.do(getCreateNodeAction(BLEND_PATH,            btnShape.div, getCreateOptions(e)))}),
                                      new MenuItem('Reverse path',          null, {icon: iconReversePath,                 createType: REVERSE_PATH,          callback: e => actionManager.do(getCreateNodeAction(REVERSE_PATH,          btnShape.div, getCreateOptions(e)))})]);
 
 

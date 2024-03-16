@@ -274,6 +274,7 @@
 ../generator/types/shape/GIntersectLines.js
 ../generator/types/shape/GInterpolatePoint.js
 ../generator/types/shape/GReversePath.js
+../generator/types/shape/GBlendPath.js
 
 ../generator/types/shape/GPlace.js
 

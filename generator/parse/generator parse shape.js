@@ -2158,6 +2158,51 @@ function genParseReversePath(parse)
 
 
 
+function genParseBlendPath(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const blend = new GBlendPath(nodeId, options);
+   
+
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReq(blend, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, blend);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    
+    for (let i = 0; i < nInputs; i++)
+        blend.inputs.push(genParse(parse));
+
+
+    blend.amount = genParse(parse);
+    blend.degree = genParse(parse);
+  
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, blend);
+    return blend;
+}
+
+
+
 function genParsePlace(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

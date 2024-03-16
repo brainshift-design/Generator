@@ -10,6 +10,7 @@ extends OperatorBase
     {
         super(NUMBER_INTERPOLATE, 'inter', 'interpolate', iconInterpolate);
 
+        
         this.iconOffsetY = -2;
 
 

@@ -342,6 +342,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == POINT_ALONG_PATH       ) result = genParsePointAlongPath    (parse);
     else if (parse.next == CLOSEST_POINT_ON_PATH  ) result = genParseClosestPointOnPath(parse);
     else if (parse.next == REVERSE_PATH           ) result = genParseReversePath       (parse);
+    else if (parse.next == BLEND_PATH             ) result = genParseBlendPath         (parse);
 
     else if (parse.next == PLACE                  ) result = genParsePlace             (parse);
     else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply        (parse);
