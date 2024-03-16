@@ -26300,30 +26300,25 @@ extends GOperator2
             : 1;
 
         const nSegments = Math.floor((values.length-1)/deg);
-        const index     = Math.floor((values.length-1)/deg * amount.value/100);
+        const index     = Math.min(Math.floor((values.length-1)/deg * amount.value/100), nSegments-1);
 
 
-        if (amount.value == 100)
-        {
-            const nValues = Math.floor((values.length-1)/deg)*deg + 1;
+        if (values.length == 1)
+            this.value = values[0];
 
-            this.value = new NumberValue(values[nValues-1].value, maxDec);
-        }
-
-        else if (values.length > 0)
+        else if (values.length > 0
+              && index < values.length - deg)
         {
             const localAmount = 
                 nSegments > 1
                 ? (amount.value/100 - index/nSegments) * nSegments
                 : amount.value/100;
 
-            console.log('index =', index);
-            console.log('localAmount =', localAmount);
 
             if (degree.value == 0)
             {
-                const val0 = values[index  ];
-                const val1 = values[index+1];
+                const val0 = values[index*deg  ];
+                const val1 = values[index*deg+1];
 
                 this.value = new NumberValue(
                     lerp(val0.value, val1.value, localAmount),
@@ -26331,9 +26326,9 @@ extends GOperator2
             }
             else if (degree.value == 1)
             {
-                const val0 = values[index  ];
-                const val1 = values[index+1];
-                const val2 = values[index+2];
+                const val0 = values[index*deg  ];
+                const val1 = values[index*deg+1];
+                const val2 = values[index*deg+2];
 
                 this.value = new NumberValue(
                     lerp2(val0.value, val1.value, val2.value, localAmount),
@@ -26341,10 +26336,10 @@ extends GOperator2
             }
             else if (degree.value == 2)
             {
-                const val0 = values[index  ];
-                const val1 = values[index+1];
-                const val2 = values[index+2];
-                const val3 = values[index+3];
+                const val0 = values[index*deg  ];
+                const val1 = values[index*deg+1];
+                const val2 = values[index*deg+2];
+                const val3 = values[index*deg+3];
 
                 this.value = new NumberValue(
                     lerp3(val0.value, val1.value, val2.value, val3.value, localAmount),
@@ -26352,13 +26347,15 @@ extends GOperator2
             }
             else if (degree.value == 3)
             {
-                const val0 = values[index  ];
-                const val1 = values[index+1];
+                const val0 = values[index*deg  ];
+                const val1 = values[index*deg+1];
 
                 this.value = new NumberValue(
                     lerpCos(val0.value, val1.value, localAmount),
                     maxDec);
             }
+            else
+                this.value = NumberValue.NaN.copy();
         }
 
         else                  
