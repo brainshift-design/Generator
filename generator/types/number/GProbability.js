@@ -4,6 +4,7 @@ extends GOperator2
     seed      = null;
     iteration = null;
     chance    = null;
+    alternate = null;
 
     random    = null;
 
@@ -23,6 +24,7 @@ extends GOperator2
         this.seed      = null;
         this.iteration = null;
         this.chance    = null;
+        this.alternate = null;
     }
 
 
@@ -36,6 +38,7 @@ extends GOperator2
         if (this.seed     ) copy.seed      = this.seed     .copy();
         if (this.iteration) copy.iteration = this.iteration.copy();
         if (this.chance   ) copy.chance    = this.chance   .copy();
+        if (this.alternate) copy.alternate = this.alternate.copy();
 
         if (this.random) copy.random = this.random.copy();
 
@@ -52,14 +55,17 @@ extends GOperator2
 
         const input0    = this.input0    ? (await this.input0   .eval(parse)).toValue() : null;
         const input1    = this.input1    ? (await this.input1   .eval(parse)).toValue() : null;
+        
         const seed      = this.seed      ? (await this.seed     .eval(parse)).toValue() : null;
         const iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
         const chance    = this.chance    ? (await this.chance   .eval(parse)).toValue() : null;
+        const alternate = this.alternate ? (await this.alternate.eval(parse)).toValue() : null;
     
 
         if (   seed
             && iteration
-            && chance)
+            && chance
+            && alternate)
         {
             if (  !this.random
                 || this.random.seed != seed.value)
@@ -78,20 +84,35 @@ extends GOperator2
                     if (   input0 && input0.isValid()
                         && input1 && input1.isValid())
                     {
-                        this.value = new NumberValue(Math.round(
+                        let val = Math.round(
                             this.random.get(this.currentIteration) > 1 - chance.value/100 
                             ? input0.value 
-                            : input1.value));
+                            : input1.value);
+
+                        const alt = 
+                            this.currentIteration % 2 == 0 
+                            ? input0.value 
+                            : input1.value;
+
+                        val = val + Math.round(alternate.value/100) * (alt - val);
+
+                        this.value = new NumberValue(val);
                     }
                     else
                         this.value = NumberValue.NaN.copy();
                 }
                 else
                 {
-                    this.value = new NumberValue(Math.round(
+                    let val = Math.round(
                         this.random.get(this.currentIteration) > 1 - chance.value/100 
                         ? 1 
-                        : 0));
+                        : 0);
+
+                    const alt = this.currentIteration % 2;
+    
+                    val = val + Math.round(alternate.value/100) * (alt - val);
+
+                    this.value = new NumberValue(val);
                 }
             }
             else
@@ -106,6 +127,7 @@ extends GOperator2
             ['seed',      seed     ],
             ['iteration', iteration],
             ['chance',    chance   ],
+            ['alternate', alternate]
         ]);
         
 
@@ -129,7 +151,8 @@ extends GOperator2
     {
         return this.seed      && this.seed     .isValid()
             && this.iteration && this.iteration.isValid()
-            && this.chance    && this.chance   .isValid();
+            && this.chance    && this.chance   .isValid()
+            && this.alternate && this.alternate.isValid();
     }
 
 
@@ -141,6 +164,7 @@ extends GOperator2
         if (this.seed     ) this.seed     .pushValueUpdates(parse);
         if (this.iteration) this.iteration.pushValueUpdates(parse);
         if (this.chance   ) this.chance   .pushValueUpdates(parse);
+        if (this.alternate) this.alternate.pushValueUpdates(parse);
     }
 
 
@@ -152,6 +176,7 @@ extends GOperator2
         if (this.seed     ) this.seed     .invalidateInputs(parse, from, force);
         if (this.iteration) this.iteration.invalidateInputs(parse, from, force);
         if (this.chance   ) this.chance   .invalidateInputs(parse, from, force);
+        if (this.alternate) this.alternate.invalidateInputs(parse, from, force);
     }
 
 
@@ -163,5 +188,6 @@ extends GOperator2
         if (this.seed     ) this.seed     .iterateLoop(parse);
         if (this.iteration) this.iteration.iterateLoop(parse);
         if (this.chance   ) this.chance   .iterateLoop(parse);
+        if (this.alternate) this.alternate.iterateLoop(parse);
     }
 }

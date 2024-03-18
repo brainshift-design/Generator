@@ -1143,6 +1143,7 @@ function genParseProbability(parse)
     prob.seed      = genParse(parse);
     prob.iteration = genParse(parse);
     prob.chance    = genParse(parse);
+    prob.alternate = genParse(parse);
 
 
     parse.nTab--;
