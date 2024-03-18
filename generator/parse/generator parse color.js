@@ -229,23 +229,21 @@ function genParseColorContrast(parse)
 
     parse.nTab++;
 
+
     if (nInputs == 2)
     {
         cnt.input0   = genParse(parse);
         cnt.input1   = genParse(parse);
-        cnt.standard = genParse(parse);
     }
     else if (nInputs == 1)
     {
              if (valueIndex == 0) cnt.input0 = genParse(parse); 
         else if (valueIndex == 1) cnt.input1 = genParse(parse); 
+    }
+  
 
-        cnt.standard = genParse(parse);
-    }
-    else if (nInputs == 0)
-    {
-        cnt.standard = genParse(parse);
-    }
+    cnt.standard = genParse(parse);
+
 
     parse.nTab--;
 

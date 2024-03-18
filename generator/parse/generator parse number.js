@@ -1099,8 +1099,23 @@ function genParseProbability(parse)
     const prob = new GProbability(nodeId, options);
 
 
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+
+    const valueIndex = 
+        nInputs == 1
+        ? parseInt(parse.move())
+        : -1;
+
+
     if (parse.settings.logRequests) 
-        logReq(prob, parse, ignore);
+        logReq(prob, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -1111,6 +1126,18 @@ function genParseProbability(parse)
 
 
     parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        prob.input0   = genParse(parse);
+        prob.input1   = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+             if (valueIndex == 0) prob.input0 = genParse(parse); 
+        else if (valueIndex == 1) prob.input1 = genParse(parse); 
+    }
 
 
     prob.seed      = genParse(parse);

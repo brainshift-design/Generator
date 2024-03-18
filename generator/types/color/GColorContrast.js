@@ -42,20 +42,18 @@ extends GOperator2
             return this;
 
 
-        const standard = (await this.standard.eval(parse)).toValue().toInteger();
+        const input0   = this.input0   ? (await this.input0  .eval(parse)).toValue() : null;
+        const input1   = this.input1   ? (await this.input1  .eval(parse)).toValue() : null;
+        const standard = this.standard ? (await this.standard.eval(parse)).toValue().toInteger() : null;
 
         
         if (standard.isValid())
             standard.value = Math.min(Math.max(0, standard.value), 1);
 
 
-        if (   this.input0 
-            && this.input1)
+        if (   input0 
+            && input1)
         {
-            const input0 = (await this.input0.eval(parse)).toValue();
-            const input1 = (await this.input1.eval(parse)).toValue();
-
-
             if (   input0.isValid()
                 && input1.isValid())
             {

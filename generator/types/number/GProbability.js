@@ -1,5 +1,5 @@
 class GProbability
-extends GOperator
+extends GOperator2
 {
     seed      = null;
     iteration = null;
@@ -50,13 +50,14 @@ extends GOperator
             return this;
 
 
+        const input0    = this.input0    ? (await this.input0   .eval(parse)).toValue() : null;
+        const input1    = this.input1    ? (await this.input1   .eval(parse)).toValue() : null;
         const seed      = this.seed      ? (await this.seed     .eval(parse)).toValue() : null;
         const iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
         const chance    = this.chance    ? (await this.chance   .eval(parse)).toValue() : null;
     
 
-        if (   this.options.enabled
-            && seed
+        if (   seed
             && iteration
             && chance)
         {
@@ -71,15 +72,30 @@ extends GOperator
 
             if (this.currentIteration >= 0)
             {
-                const r = 
-                    this.options.enabled
-                    ? (this.random.get(this.currentIteration) > 1 - chance.value/100 ? 1 : 0)
-                    : 0;
-
-                this.value = new NumberValue(Math.round(r));
+                if (   input0 
+                    || input1)
+                {
+                    if (   input0 && input0.isValid()
+                        && input1 && input1.isValid())
+                    {
+                        this.value = new NumberValue(Math.round(
+                            this.random.get(this.currentIteration) > 1 - chance.value/100 
+                            ? input0.value 
+                            : input1.value));
+                    }
+                    else
+                        this.value = NumberValue.NaN.copy();
+                }
+                else
+                {
+                    this.value = new NumberValue(Math.round(
+                        this.random.get(this.currentIteration) > 1 - chance.value/100 
+                        ? 1 
+                        : 0));
+                }
             }
             else
-                this.value = new NumberValue(0);
+                this.value = NumberValue.NaN.copy();
         }
         else
             this.value = NumberValue.NaN.copy();
