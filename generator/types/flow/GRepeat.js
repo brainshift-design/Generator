@@ -125,11 +125,11 @@ extends GOperator1
 
 
         if (   count
-            && count.value > 0)
-            // && (   this.options.active
-            //     || this.isTerminal
-            //     || this.activeAfter
-            //     || this.listAfter))
+            && count.value > 0
+            && (   this.options.active
+                //|| this.isTerminal
+                || this.activeAfter
+                || this.listAfter))
         {
             if (this.input)
             {

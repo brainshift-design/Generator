@@ -58,6 +58,7 @@ extends GOperator1
         
         
         if (   input
+            && input.isValid()
             && input.items
             && input.items.length > 0)
         {

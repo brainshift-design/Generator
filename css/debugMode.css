@@ -27,8 +27,8 @@
     font-size:   11px;
     display:     inline;
     position:    absolute;
-    left:        218px;
-    top:         23px;
+    left:        200px;
+    top:         15px;
 }
 
 
@@ -42,8 +42,8 @@
 
     position:       absolute;
     
-    left:           400px;
-    top:            23px;
+    left:           200px;
+    top:            31px;
 
     user-select:    text;
     line-height:    1.4em;
