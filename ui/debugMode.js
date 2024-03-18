@@ -11,6 +11,9 @@ var connSortOrderIn  = 'inputId';
 function initDebugMode()
 {
     btnDebugModeRestart.addEventListener('click', () => uiRestartGenerator(false));
+
+    debugVersion.innerHTML = 'Generator&nbsp;&hairsp;version&nbsp;&thinsp;' + generatorVersion;
+    debugUserId .innerHTML = '<span style="user-select: none;">Your Figma user ID:&nbsp;&nbsp;</span>' + currentUser.id;
 }
 
 
@@ -20,6 +23,19 @@ debugModeView.addEventListener('pointerdown', e =>
     if (   e.button == 0
         || e.button == 2)
         hideAllMenus();
+});
+
+
+
+debugModeTitleBar.addEventListener('pointerdown', e =>
+{
+    e.preventDefault();
+
+    if (e.button == 2)
+    {
+        e.stopPropagation();
+        menuDebugMain.showAt(e.clientX, e.clientY, false);
+    }
 });
 
 

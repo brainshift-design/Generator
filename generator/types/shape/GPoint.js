@@ -61,7 +61,8 @@ extends GOperator1
         let x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
         let y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
 
-        if (input)
+        if (   input
+            && input.isValid())
         {
             const _input = input;
 
@@ -86,7 +87,8 @@ extends GOperator1
             if (x)  this.value.x = x;  else  x = this.value.x;
             if (y)  this.value.y = y;  else  y = this.value.y;
         }
-        else if (x && y)
+        else if (x && x.isValid() 
+              && y && y.isValid())
         {
             this.value = new PointValue(
                 this.nodeId, 

@@ -74,7 +74,6 @@ initUtilContext();
 
 
 initLoadingOverlay();
-initDebugMode();
 initEulaDialog();
 initWhatsNewDialog();
 initAboutDialog();
@@ -90,6 +89,9 @@ async function uiReturnFigStartGenerator(msg)
     tutorialsShown  = msg.tutorials;
 
     loadLocalSettings();
+
+
+    initDebugMode(); // must be done after currentUser is initialized
 
 
     figFonts           = [...msg.fonts];
