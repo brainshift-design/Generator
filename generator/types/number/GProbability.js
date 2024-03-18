@@ -78,42 +78,25 @@ extends GOperator2
 
             if (this.currentIteration >= 0)
             {
+                const calt  = this.currentIteration % 2 == 0 ? 0 : 1;
+
+                let   cval  = chance.value/100;
+                      cval += alternate.value/100 * (calt - cval);
+
+                const ch    = this.random.get(this.currentIteration) > cval ? 0 : 1;
+
+                
                 if (   input0 
                     || input1)
                 {
                     if (   input0 && input0.isValid()
                         && input1 && input1.isValid())
-                    {
-                        let val = Math.round(
-                            this.random.get(this.currentIteration) > 1 - chance.value/100 
-                            ? input0.value 
-                            : input1.value);
-
-                        const alt = 
-                            this.currentIteration % 2 == 0 
-                            ? input0.value 
-                            : input1.value;
-
-                        val = val + Math.round(alternate.value/100) * (alt - val);
-
-                        this.value = new NumberValue(val);
-                    }
+                        this.value = new NumberValue(ch < 0.5 ? input0.value : input1.value);
                     else
                         this.value = NumberValue.NaN.copy();
                 }
                 else
-                {
-                    let val = Math.round(
-                        this.random.get(this.currentIteration) > 1 - chance.value/100 
-                        ? 1 
-                        : 0);
-
-                    const alt = this.currentIteration % 2;
-    
-                    val = val + Math.round(alternate.value/100) * (alt - val);
-
-                    this.value = new NumberValue(val);
-                }
+                    this.value = new NumberValue(ch < 0.5 ? 0 : 1);
             }
             else
                 this.value = NumberValue.NaN.copy();
