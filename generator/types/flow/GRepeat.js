@@ -8,6 +8,7 @@ extends GOperator1
 
     iterationObjects = [];
 
+    isTerminal       = false; // this is a terminal, active or not
     activeAfter      = false; // there are active nodes after this one
     listAfter        = false; // there is a list node after this one
 
@@ -29,6 +30,7 @@ extends GOperator1
         this._while      = null;
         this. loop       = null;
 
+        this.isTerminal  = false;
         this.activeAfter = false;
         this.listAfter   = false;
 
@@ -49,6 +51,7 @@ extends GOperator1
         if (this._while    ) copy._while     = this._while    .copy();
         if (this. loop     ) copy. loop      = this. loop     .copy();
 
+        copy.isTerminal  = this.isTerminal;
         copy.activeAfter = this.activeAfter;
         copy.listAfter   = this.listAfter;
 
@@ -122,10 +125,11 @@ extends GOperator1
 
 
         if (   count
-            && count.value > 0
-            && (   this.options.active
-                || this.activeAfter
-                || this.listAfter))
+            && count.value > 0)
+            // && (   this.options.active
+            //     || this.isTerminal
+            //     || this.activeAfter
+            //     || this.listAfter))
         {
             if (this.input)
             {
@@ -307,8 +311,9 @@ extends GOperator1
         
         this.setUpdateValues(parse,
         [
-            ['type',  type ],
-            ['count', count]
+            ['type',      type     ],
+            ['count',     count    ],
+            ['iteration', iteration]
         ]);
 
 

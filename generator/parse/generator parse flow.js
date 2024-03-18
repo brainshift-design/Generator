@@ -1208,6 +1208,7 @@ function genParseRepeat(parse)
     }
 
 
+    repeat.isTerminal  = parseInt(parse.move()) > 0;
     repeat.activeAfter = parseInt(parse.move()) > 0;
     repeat.listAfter   = parseInt(parse.move()) > 0;
 
