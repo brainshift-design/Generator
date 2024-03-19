@@ -42,8 +42,8 @@ extends GOperator
             return this;
 
 
-        const name  = (await this.name .eval(parse)).toValue();
-        const index = (await this.index.eval(parse)).toValue();
+        const name  = await evalTextValue  (this.name,  parse);
+        const index = await evalNumberValue(this.index, parse);
 
 
         switch (name.value)

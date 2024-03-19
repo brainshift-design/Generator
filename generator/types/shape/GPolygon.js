@@ -66,10 +66,10 @@ extends GShape
             
         let [x, y, width, height] = await this.evalBaseParams(parse);
 
-        let input   = this.input    ? (await this.input   .eval(parse)).toValue() : null;
-        let pos     = this.position ? (await this.position.eval(parse)).toValue() : null;
-        let round   = this.round    ? (await this.round   .eval(parse)).toValue() : null;
-        let corners = this.corners  ? (await this.corners .eval(parse)).toValue() : null;
+        let input   = await evalPolygonValue(this.input,    parse);
+        let pos     = await evalNumberValue (this.position, parse);
+        let round   = await evalNumberValue (this.round,    parse);
+        let corners = await evalNumberValue (this.corners,  parse);
 
 
         if (input)

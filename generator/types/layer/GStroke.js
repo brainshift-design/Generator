@@ -78,9 +78,8 @@ extends GOperator1
         if (this.isCached())
             return this;
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-
-        let fills = this._fills ? (await this._fills.eval(parse)).toValue() : null;
+        const input = await evalStrokeValue(this. input, parse);
+        let   fills = await evalListValue  (this._fills, parse);
 
         fills = this.validateFills(fills);
 
@@ -88,12 +87,12 @@ extends GOperator1
             this.fills = fills;
 
 
-        const weight = this.weight ? (await this.weight.eval(parse)).toValue() : null;
-        const fit    = this.fit    ? (await this.fit   .eval(parse)).toValue() : null;
-        const join   = this.join   ? (await this.join  .eval(parse)).toValue() : null;
-        const miter  = this.miter  ? (await this.miter .eval(parse)).toValue() : null;
-        const cap    = this.cap    ? (await this.cap   .eval(parse)).toValue() : null;
-        const dashes = this.dashes ? (await this.dashes.eval(parse)).toValue() : null;
+        const weight = await evalNumberValue(this.weight, parse);
+        const fit    = await evalNumberValue(this.fit,    parse);
+        const join   = await evalNumberValue(this.join,   parse);
+        const miter  = await evalNumberValue(this.miter,  parse);
+        const cap    = await evalNumberValue(this.cap,    parse);
+        const dashes = await evalTextValue  (this.dashes, parse);
 
 
         if (input)

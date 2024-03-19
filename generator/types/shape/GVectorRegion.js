@@ -73,7 +73,7 @@ extends GShape
             return this;
 
         
-        const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
+        const winding = await evalNumberValue(this.winding, parse);
 
 
         this.loops = new ListValue();
@@ -83,7 +83,7 @@ extends GShape
 
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const input = (await this.inputs[i].eval(parse)).toValue();
+            const input = await evalVectorEdgeValue(this.inputs[i], parse);
 
             if (isListValueType(input.type))
             {

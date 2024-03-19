@@ -67,13 +67,13 @@ extends GOperator
             return this;
 
 
-        const seed      = this.seed      ? (await this.seed     .eval(parse)).toValue() : null;
-        const iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
-        const min       = this.min       ? (await this.min      .eval(parse)).toValue() : null;
-        const max       = this.max       ? (await this.max      .eval(parse)).toValue() : null;
-        const bias      = this.bias      ? (await this.bias     .eval(parse)).toValue() : null;
-        const spread    = this.spread    ? (await this.spread   .eval(parse)).toValue() : null;
-        const unique    = this.unique    ? (await this.unique   .eval(parse)).toValue() : null;
+        const seed      = await evalNumberValue(this.seed,      parse);
+        const iteration = await evalNumberValue(this.iteration, parse);
+        const min       = await evalNumberValue(this.min,       parse);
+        const max       = await evalNumberValue(this.max,       parse);
+        const bias      = await evalNumberValue(this.bias,      parse);
+        const spread    = await evalNumberValue(this.spread,    parse);
+        const unique    = await evalNumberValue(this.unique,    parse);
     
 
         if (   this.options.enabled

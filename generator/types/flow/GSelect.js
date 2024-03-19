@@ -57,14 +57,14 @@ extends GOperator
         if (this.isCached())
             return this;
 
-        let index  = this.index ? (await this.index.eval(parse)).toValue() : null;
+        let index  = await evalNumberValue(this.index, parse);
         let length = 0;
 
 
         const inputs = [];
 
         for (let i = 0; i < this.inputs.length; i++)
-            inputs.push((await this.inputs[i].eval(parse)).toValue());
+            inputs.push(await evalValue(this.inputs[i], parse));
 
 
         if (inputs.length > 0)

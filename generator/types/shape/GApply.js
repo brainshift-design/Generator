@@ -43,9 +43,9 @@ extends GOperator1//Shape
             return this;
 
         
-        const input   = this.input   ? (await this.input  .eval(parse)).toValue() : null;
-        const props   = this.props   ? (await this.props  .eval(parse)).toValue() : null;
-        const replace = this.replace ? (await this.replace.eval(parse)).toValue() : null;
+        const input   = await evalValue    (this.input,   parse);
+        const props   = await evalListValue(this.props,   parse);
+        const replace = await evalValue    (this.replace, parse);
 
 
 

@@ -43,8 +43,8 @@ extends GOperator
             return this;
 
 
-        const opacity = (await this.opacity.eval(parse)).toValue();
-        const blend   = (await this.blend  .eval(parse)).toValue();
+        const opacity = await evalNumberValue(this.opacity, parse);
+        const blend   = await evalNumberValue(this.blend,   parse);
 
 
         this.value = 

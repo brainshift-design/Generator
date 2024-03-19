@@ -71,11 +71,11 @@ extends GShape
             
         let [x, y, width, height] = await this.evalBaseParams(parse);
 
-        let input  = this.input    ? (await this.input   .eval(parse)).toValue() : null;
-        let pos    = this.position ? (await this.position.eval(parse)).toValue() : null;
-        let round  = this.round    ? (await this.round   .eval(parse)).toValue() : null;
-        let points = this.points   ? (await this.points  .eval(parse)).toValue() : null;
-        let convex = this.convex   ? (await this.convex  .eval(parse)).toValue() : null;
+        let input  = await evalValue      (this.input,    parse);
+        let pos    = await evalNumberValue(this.position, parse);
+        let round  = await evalNumberValue(this.round,    parse);
+        let points = await evalNumberValue(this.points,   parse);
+        let convex = await evalNumberValue(this.convex,   parse);
 
 
         if (input)

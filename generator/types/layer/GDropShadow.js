@@ -58,13 +58,14 @@ extends GOperator1
             return this;
 
 
-        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
-        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
-        const blur   = this.blur   ? (await this.blur  .eval(parse)).toValue() : null;
-        const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
-        let   fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
-        const blend  = this.blend  ? (await this.blend .eval(parse)).toValue() : null;
-        const behind = this.behind ? (await this.behind.eval(parse)).toValue() : null;
+        const input  = await evalValue      (this.input,  parse);
+        const x      = await evalNumberValue(this.x,      parse);
+        const y      = await evalNumberValue(this.y,      parse);
+        const blur   = await evalNumberValue(this.blur,   parse);
+        const spread = await evalNumberValue(this.spread, parse);
+        let   fill   = await evalFillValue  (this.fill,   parse);
+        const blend  = await evalNumberValue(this.blend,  parse);
+        const behind = await evalNumberValue(this.behind, parse);
 
 
         if (   fill
@@ -72,10 +73,8 @@ extends GOperator1
             fill = new FillValue(fill);
 
         
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             this.value = new DropShadowValue(
                 x      ?? input.x,
                 y      ?? input.y,

@@ -55,7 +55,7 @@ extends GOperator
             return this;
 
 
-        const _with = (await this.with.eval(parse)).toValue();
+        const _with = await evalTextValue(this.with, parse);
 
         this.value = await evalJoinInputs(this.inputs, _with, parse);
 
@@ -127,7 +127,7 @@ async function evalJoinInputs(inputs, _with, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
-        const val = (await inputs[i].eval(parse)).toValue();
+        const val = await evalTextValue(inputs[i], parse);
         if (!val) continue;
 
 

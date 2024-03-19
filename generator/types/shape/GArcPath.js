@@ -68,10 +68,10 @@ extends GShape
 
         let [x, y, width, height] = await this.evalBaseParams(parse);
 
-        let input = this.input    ? (await this.input   .eval(parse)).toValue() : null;
-        let pos   = this.position ? (await this.position.eval(parse)).toValue() : null;
-        let start = this.start    ? (await this.start   .eval(parse)).toValue() : null;
-        let sweep = this.sweep    ? (await this.sweep   .eval(parse)).toValue() : null;
+        let input = await evalArcPathValue(this.input,    parse);
+        let pos   = await evalNumberValue (this.position, parse);
+        let start = await evalNumberValue (this.start,    parse);
+        let sweep = await evalNumberValue (this.sweep,    parse);
 
 
         if (input)

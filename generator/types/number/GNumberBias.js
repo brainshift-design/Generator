@@ -60,16 +60,15 @@ extends GOperator1
             return this;
 
             
-        const min    = (await this.min   .eval(parse)).toValue();
-        const max    = (await this.max   .eval(parse)).toValue();
-        const bias   = (await this.bias  .eval(parse)).toValue();
-        const spread = (await this.spread.eval(parse)).toValue();
+        const input  = await evalNumberValue(this.input,  parse);
+        const min    = await evalNumberValue(this.min,    parse);
+        const max    = await evalNumberValue(this.max,    parse);
+        const bias   = await evalNumberValue(this.bias,   parse);
+        const spread = await evalNumberValue(this.spread, parse);
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             if (this.options.enabled)
             {
                 let f = (input.value - min.value) / (max.value - min.value);

@@ -55,7 +55,7 @@ async function evalXorInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = (await inputs[0].eval(parse)).toValue();
+        const val0 = await evalNumberValue(inputs[0], parse);
         if (!val0.isValid()) return NumberValue.NaN.copy();
 
         if (    isListValueType(val0.type)
@@ -85,7 +85,7 @@ async function evalXorInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = (await inputs[i].eval(parse)).toValue();
+            const val = await evalNumberValue(inputs[i], parse);
             if (!val.isValid()) return NumberValue.NaN.copy();
 
             if (isListValueType(val.type))

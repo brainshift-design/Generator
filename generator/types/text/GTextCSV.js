@@ -43,8 +43,8 @@ extends GOperator1
             return this;
 
 
-        const rowSeparator    = this.rowSeparator    ? (await this.rowSeparator   .eval(parse)).toValue() : null;
-        const columnSeparator = this.columnSeparator ? (await this.columnSeparator.eval(parse)).toValue() : null;
+        const rowSeparator    = await evalTextValue(this.rowSeparator,    parse);
+        const columnSeparator = await evalTextValue(this.columnSeparator, parse);
 
 
         this.value = new ListValue();
@@ -62,7 +62,7 @@ extends GOperator1
             && columnSeparator
             && rowSeparator.value != '')
         {
-            const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+            const input = await evalTextValue(this.input, parse);
             
 
             const rows = 

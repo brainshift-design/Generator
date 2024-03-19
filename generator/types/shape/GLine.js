@@ -39,7 +39,7 @@ extends GShape
             return this;
 
 
-        let input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        let input = await evalLineValue(this.input, parse);
 
         let [x, y, width, ] = await this.evalBaseParams(parse, false);
             

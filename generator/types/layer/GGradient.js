@@ -89,23 +89,23 @@ extends GOperator
         if (this.isCached())
             return this;
 
-        const gradType = this.gradType ? (await this.gradType.eval(parse)).toValue() : null;
-        const position = this.position ? (await this.position.eval(parse)).toValue() : null;
-        const x        = this.x        ? (await this.x       .eval(parse)).toValue() : null;
-        const y        = this.y        ? (await this.y       .eval(parse)).toValue() : null;
-        const size     = this.size     ? (await this.size    .eval(parse)).toValue() : null;
-        const angle    = this.angle    ? (await this.angle   .eval(parse)).toValue() : null;
-        const aspect   = this.aspect   ? (await this.aspect  .eval(parse)).toValue() : null;
-        const skew     = this.skew     ? (await this.skew    .eval(parse)).toValue() : null;
-        const blend    = this.blend    ? (await this.blend   .eval(parse)).toValue() : null;
+            
+        const gradType = await evalNumberValue(this.gradType, parse);
+        const position = await evalNumberValue(this.position, parse);
+        const x        = await evalNumberValue(this.x,        parse);
+        const y        = await evalNumberValue(this.y,        parse);
+        const size     = await evalNumberValue(this.size,     parse);
+        const angle    = await evalNumberValue(this.angle,    parse);
+        const aspect   = await evalNumberValue(this.aspect,   parse);
+        const skew     = await evalNumberValue(this.skew,     parse);
+        const blend    = await evalNumberValue(this.blend,    parse);
 
 
         let stops = new ListValue();
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
-            const input = (await this.inputs[i].eval(parse)).toValue();
-
+            const input = await evalColorStopValue(this.inputs[i], parse);
 
             if (   input
                 && this.options.enabled)

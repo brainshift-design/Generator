@@ -43,8 +43,8 @@ extends GOperator1
             return this;
 
 
-        const op      = (await this.operation.eval(parse)).toValue();
-        const operand = (await this.operand  .eval(parse)).toValue();
+        const op      = await evalNumberValue(this.operation, parse);
+        const operand = await evalNumberValue(this.operand,   parse);
 
         op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
 
@@ -117,8 +117,8 @@ extends GOperator1
 
 async function evalConditionInputs(input0, input1, op, parse) 
 {
-    const val0 = input0 ? (await input0.eval(parse)).toValue() : NumberValue.NaN.copy();
-    const val1 = input1 ? (await input1.eval(parse)).toValue() : NumberValue.NaN.copy();
+    const val0 = await evalNumberValue(input0, parse);
+    const val1 = await evalNumberValue(input1, parse);
 
     if (   val0.isValid() 
         && val1.isValid())

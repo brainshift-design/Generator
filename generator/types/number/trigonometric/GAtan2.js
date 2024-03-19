@@ -43,8 +43,8 @@ extends GOperator
             return this;
 
 
-        const x = this.x ? (await this.x.eval(parse)).toValue() : null;
-        const y = this.y ? (await this.y.eval(parse)).toValue() : null;
+        const x = await evalNumberValue(this.x, parse);
+        const y = await evalNumberValue(this.y, parse);
 
 
         this.value = new NumberValue(Math.atan2(y.value, x.value));

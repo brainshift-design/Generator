@@ -42,8 +42,8 @@ extends GOperator2
             return this;
 
 
-        const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
-        const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+        const input0 = await evalTextValue(this.input0, parse);
+        const input1 = await evalTextValue(this.input1, parse);
     
 
         if (   input0 && input0.isValid() 

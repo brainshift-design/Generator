@@ -66,8 +66,8 @@ extends GOperator1
             return this;
             
 
-        let   count     = this.count     ? (await this.count    .eval(parse)).toValue() : null;
-        let   iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
+        let   count     = await evalNumberValue(this.count,     parse);
+        let   iteration = await evalNumberValue(this.iteration, parse);
         let  _while     = new NumberValue(1);
 
 
@@ -172,7 +172,7 @@ extends GOperator1
 
                 for (let i = 0, o = 0; i < Math.max(1, nRepeats); i++)
                 {
-                    _while = this._while ? (await this._while.eval(parse)).toValue() : null;
+                    _while = await evalNumberValue(this._while, parse);
                     
                     if (   _while 
                         && _while.value == 0)
@@ -193,7 +193,7 @@ extends GOperator1
                     this.input.invalidateInputs(parse, this, false);
 
                     
-                    const input = (await this.input.eval(parse)).toValue();
+                    const input = await evalValue(this.input, parse);
 
 
                     if (   input

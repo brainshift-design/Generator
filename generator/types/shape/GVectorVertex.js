@@ -68,13 +68,12 @@ extends GOperator1
             return this;
 
         
-        let   input = this.input ? (await this.input.eval(parse)).toValue() : null;
-
-        const x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
-        const y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
-        const join  = this.join  ? (await this.join .eval(parse)).toValue() : null;
-        const cap   = this.cap   ? (await this.cap  .eval(parse)).toValue() : null;
-        const round = this.round ? (await this.round.eval(parse)).toValue() : null;
+        let input = await evalVectorVertexValue(this.input, parse);
+        let x     = await evalNumberValue      (this.x,     parse);
+        let y     = await evalNumberValue      (this.y,     parse);
+        let join  = await evalNumberValue      (this.join,  parse);
+        let cap   = await evalNumberValue      (this.cap,   parse);
+        let round = await evalNumberValue      (this.round, parse);
 
 
         if (input)

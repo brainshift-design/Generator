@@ -61,12 +61,12 @@ extends GShapeBase
             return this;
 
 
-        const scale      = this.scale    ? (await this.scale   .eval(parse)).toValue() : null;
-        const format     = this.format   ? (await this.format  .eval(parse)).toValue() : null;
-     // const contents   = this.contents ? (await this.contents.eval(parse)).toValue() : null;
-     // const crop       = this.crop     ? (await this.crop    .eval(parse)).toValue() : null;
-        const suffix     = this.suffix   ? (await this.suffix  .eval(parse)).toValue() : null;
-     // const profile    = this.profile  ? (await this.profile .eval(parse)).toValue() : null;
+        const scale      = await evalNumberValue(this.scale,    parse);
+        const format     = await evalNumberValue(this.format,   parse);
+     // const contents   = await evalNumberValue(this.contents, parse);
+     // const crop       = await evalNumberValue(this.crop,     parse);
+        const suffix     = await evalTextValue  (this.suffix,   parse);
+     // const profile    = await evalNumberValue(this.profile,  parse);
 
 
         this.value = new ListValue();

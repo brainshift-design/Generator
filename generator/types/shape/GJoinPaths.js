@@ -70,10 +70,10 @@ extends GShape
             return this;
 
 
-        const closed  = this.closed  ? (await this.closed .eval(parse)).toValue() : null;
-        const degree  = this.degree  ? (await this.degree .eval(parse)).toValue() : null;
-        const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
-        const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
+        const closed  = await evalNumberValue(this.closed,  parse);
+        const degree  = await evalNumberValue(this.degree,  parse);
+        const winding = await evalNumberValue(this.winding, parse);
+        const round   = await evalNumberValue(this.round,   parse);
 
 
         if (this.inputs.length > 0)
@@ -83,10 +83,10 @@ extends GShape
 
             for (const _input of this.inputs)
             {
-                const input = (await _input.eval(parse)).toValue();
+                const input = await evalVectorPathValue(_input);
 
                 if (isListValueType(input.type)) paths.push(...input.items);
-                else                        paths.push(input);
+                else                             paths.push(input);
             }
 
 

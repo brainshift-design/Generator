@@ -47,7 +47,7 @@ extends GOperator1
         let length = 0;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input = await evalListValue(this.input, parse);
 
 
         // if (this.cachedValue)

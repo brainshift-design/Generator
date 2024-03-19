@@ -55,9 +55,9 @@ extends GOperator1
             return this;
 
 
-        const  interval = (await this. interval.eval(parse)).toValue();
-        const _while    = (await this._while   .eval(parse)).toValue();
-        const  loop     = (await this. loop    .eval(parse)).toValue();
+        const  interval = await evalNumberValue(this. interval, parse);
+        const _while    = await evalNumberValue(this._while,    parse);
+        const  loop     = await evalNumberValue(this. loop,     parse);
             
 
         if (this.loop.type != NUMBER_VALUE) assertVolatile(this.loop, this);
@@ -70,7 +70,7 @@ extends GOperator1
         {
             this.input.invalidateInputs(parse, this, true);
 
-            const input = (await this.input.eval(parse)).toValue();
+            const input = await evalValue(this.input, parse);
 
             this.value = input ? input : new NullValue();
 

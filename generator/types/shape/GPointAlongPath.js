@@ -52,13 +52,12 @@ extends GOperator1
             return this;
 
 
-        const input      = this.input      ? (await this.input     .eval(parse)).toValue() : null;
-
-        const position   = this.position   ? (await this.position  .eval(parse)).toValue() : null;
-        const distance   = this.distance   ? (await this.distance  .eval(parse)).toValue() : null;
-        const offset     = this.offset     ? (await this.offset    .eval(parse)).toValue() : null;
-        const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+        const input      = await evalVectorPathValue(this.input,      parse);
+        const position   = await evalNumberValue    (this.position,   parse);
+        const distance   = await evalNumberValue    (this.distance,   parse);
+        const offset     = await evalNumberValue    (this.offset,     parse);
+        const transform  = await evalNumberValue    (this.transform,  parse);
+        const showCenter = await evalNumberValue    (this.showCenter, parse);
 
 
         let pt;

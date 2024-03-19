@@ -40,8 +40,9 @@ extends GAffine
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        const angle = this.angle ? (await this.angle.eval(parse)).toValue() : null;
+        const input = await evalValue      (this.input, parse);
+        const angle = await evalNumberValue(this.angle, parse);
+
 
         const [showCenter, affectSpace] = await this.evalBaseParams(parse);
 

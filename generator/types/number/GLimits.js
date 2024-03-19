@@ -52,13 +52,14 @@ extends GOperator1
             return this;
 
             
-        const min = (await this.min.eval(parse)).toValue();
-        const max = (await this.max.eval(parse)).toValue();
+        const input = await evalNumberValue(this.input, parse);
+        const min   = await evalNumberValue(this.min,   parse);
+        const max   = await evalNumberValue(this.max,   parse);
 
 
-        if (this.input)
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = input;
 
             consoleAssert(
                 this.value.type == NUMBER_VALUE, 

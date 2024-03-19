@@ -47,7 +47,7 @@ extends GOperator1
             : new NullValue();
 
         
-        const name = (await this.name.eval(parse)).toValue();
+        const name = await evalTextValue(this.name, parse);
 
 
         if (   this.options.enabled

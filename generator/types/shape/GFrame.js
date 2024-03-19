@@ -66,9 +66,14 @@ extends GShape
 
         const [x, y, width, height] = await this.evalBaseParams(parse);
 
-        let   children = this.children ? (await this.children.eval(parse)).toValue() : null;
-        const position = this.position ? (await this.position.eval(parse)).toValue() : null;
-        const round    = this.round    ? (await this.round   .eval(parse)).toValue() : null;
+        let children = await evalListValue  (this.children, parse);
+        let position = await evalNumberValue(this.position, parse);
+        let round    = await evalNumberValue(this.round,    parse);
+
+        if (children && !children.isValid()) children = new ListValue();
+        if (position && !position.isValid()) position = NumberValue.NaN.copy();
+        if (round    && !round   .isValid()) round    = NumberValue.NaN.copy();
+
 
         if (   children
             && SHAPE_VALUES.includes(children.type)
@@ -84,7 +89,7 @@ extends GShape
 
         if (this.input)
         {
-            input = (await this.input.eval(parse)).toValue();
+            input = await evalFrameValue(this.input, parse);
 
             this.value = new FrameValue(
                 this.nodeId,

@@ -43,12 +43,13 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const from = (await this.from.eval(parse)).toValue();
+        const input = await evalNumberValue(this.input, parse);
+        const from  = await evalNumberValue(this.from,  parse);
 
 
-        if (this.input)
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = input;
 
             consoleAssert(
                 this.value.type == NUMBER_VALUE, 

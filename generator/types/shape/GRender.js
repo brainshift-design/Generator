@@ -44,7 +44,7 @@ extends GShapeBase
         if (this.isCached())
             return this;
 
-        const retain   = (await this.retain.eval(parse)).toValue();
+        const retain   = await evalNumberValue(this.retain, parse);
         const finalize = this.finalize.value > 0;
 
 

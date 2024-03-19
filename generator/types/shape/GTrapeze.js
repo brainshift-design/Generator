@@ -60,10 +60,11 @@ extends GShape
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        let   round = this.round ? (await this.round.eval(parse)).toValue() : null;
-        let   bias  = this.bias  ? (await this.bias .eval(parse)).toValue() : null;
-        
+        const input = await evalValue      (this.input, parse);
+        let   round = await evalNumberValue(this.round, parse);
+        let   bias  = await evalNumberValue(this.bias,  parse);
+
+       
         let [x, y, width, height] = await this.evalBaseParams(parse);
 
 

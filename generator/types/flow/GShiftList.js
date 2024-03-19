@@ -41,8 +41,8 @@ extends GOperator1
             return this;
 
 
-        const input  = this.input  ? (await this.input .eval(parse)).toValue() : null;
-        const offset = this.offset ? (await this.offset.eval(parse)).toValue() : null;
+        const input  = await evalListValue  (this.input,  parse);
+        const offset = await evalNumberValue(this.offset, parse);
 
 
         let length = 0;

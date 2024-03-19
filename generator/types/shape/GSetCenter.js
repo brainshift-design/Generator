@@ -49,11 +49,11 @@ extends GOperator1
             return this;
 
             
-        const input      = this.input      ? (await this.input     .eval(parse)).toValue() : null;
-        const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
-        const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
-        const units      = this.units      ? (await this.units     .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+        const input      = await evalValue      (this.input,      parse);
+        const centerX    = await evalNumberValue(this.centerX,    parse);
+        const centerY    = await evalNumberValue(this.centerY,    parse);
+        const units      = await evalNumberValue(this.units,      parse);
+        const showCenter = await evalNumberValue(this.showCenter, parse);
 
 
         if (this.input)

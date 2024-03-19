@@ -60,12 +60,12 @@ extends GOperator
             return this;
             
 
-        const shape  = this.shape     ? (await this.shape    .eval(parse)).toValue() : null;
-        const base   = this.base      ? (await this.base     .eval(parse)).toValue() : null;
-        const amp    = this.amplitude ? (await this.amplitude.eval(parse)).toValue() : null;
-        let   freq   = this.frequency ? (await this.frequency.eval(parse)).toValue() : null;
-        const offset = this.offset    ? (await this.offset   .eval(parse)).toValue() : null;
-        const bias   = this.bias      ? (await this.bias     .eval(parse)).toValue() : null;
+        const shape  = await evalNumberValue(this.shape,     parse);
+        const base   = await evalNumberValue(this.base,      parse);
+        const amp    = await evalNumberValue(this.amplitude, parse);
+        let   freq   = await evalNumberValue(this.frequency, parse);
+        const offset = await evalNumberValue(this.offset,    parse);
+        const bias   = await evalNumberValue(this.bias,      parse);
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);

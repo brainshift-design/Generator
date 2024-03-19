@@ -42,16 +42,17 @@ extends GOperator2
             return this;
 
 
-        const mode    = (await this.mode   .eval(parse)).toValue().toInteger();
-        const opacity = (await this.opacity.eval(parse)).toValue();
+        const input0  = await evalColorValue (this.input0,  parse);
+        const input1  = await evalColorValue (this.input1,  parse);
+        let   mode    = await evalNumberValue(this.mode,    parse);
+        const opacity = await evalNumberValue(this.opacity, parse);
+        
+        if (mode) mode = mode.toInteger();
 
 
-        if (   this.input0 
-            && this.input1)
+        if (   input0 
+            && input1)
         {
-            const input0 = (await this.input0.eval(parse)).toValue();
-            const input1 = (await this.input1.eval(parse)).toValue();
-
             consoleAssert(
                 opacity.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
@@ -70,11 +71,11 @@ extends GOperator2
             this.value = ColorValue.fromRgb(scaleRgb(col));
         }
 
-        else if (this.input0) 
-            this.value = (await this.input0.eval(parse)).toValue();
+        else if (input0) 
+            this.value = input0;
 
         else if (this.input1) 
-            this.value = (await this.input1.eval(parse)).toValue();
+            this.value = input1;
             
         else 
             this.value = ColorValue.NaN.copy();

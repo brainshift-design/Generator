@@ -80,9 +80,11 @@ function showCrashDialog()
 
 
 
-function hideCrashDialog()
+function hideCrashDialog(hideBack = true)
 {
-    crashBack  .style.display = 'none';
+    if (hideBack)
+        crashBack.style.display = 'none';
+    
     crashDialog.style.display = 'none';
 
     dialogShown = false;

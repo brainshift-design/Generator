@@ -43,8 +43,8 @@ extends GOperator
             return this;
 
 
-        const request     = (await this.request    .eval(parse)).toValue();
-        const cachedValue = (await this.cachedValue.eval(parse)).toValue();
+        const request     = await evalTextValue(this.request,     parse);
+        const cachedValue = await evalTextValue(this.cachedValue, parse);
 
         
         genInitNodeProgress(this.nodeId);

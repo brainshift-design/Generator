@@ -40,37 +40,26 @@ extends GOperator4
             return this;
 
 
-        const segment = this.segment ? (await this.segment.eval(parse)).toValue() : null;
+        const input0  = await evalPointValue (this.input0,  parse);
+        const input1  = await evalPointValue (this.input1,  parse);
+        const input2  = await evalPointValue (this.input2,  parse);
+        const input3  = await evalPointValue (this.input3,  parse);
+        const segment = await evalNumberValue(this.segment, parse);
 
 
-        if (   this.input0
-            && this.input1
-            && this.input2
-            && this.input3)
+        if (   input0
+            && input1
+            && input2
+            && input3)
         {
-            const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
-            const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
-            const input2 = this.input2 ? (await this.input2.eval(parse)).toValue() : null;
-            const input3 = this.input3 ? (await this.input3.eval(parse)).toValue() : null;
+            const p = intersectLines(
+                input0.toPoint(),
+                input1.toPoint(),
+                input2.toPoint(),
+                input3.toPoint(),
+                segment.value > 0);
 
-            if (   input0
-                && input1
-                && input2
-                && input3)
-            {
-                const p = intersectLines(
-                    input0.toPoint(),
-                    input1.toPoint(),
-                    input2.toPoint(),
-                    input3.toPoint(),
-                    segment.value > 0);
-
-                this.value = PointValue.fromPoint(this.nodeId, p);
-            }
-            else
-            {
-                this.value = PointValue.NaN.copy();
-            }
+            this.value = PointValue.fromPoint(this.nodeId, p);
         }
         else
         {

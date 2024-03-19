@@ -43,8 +43,9 @@ extends GOperator
         // input not used for evaluation
 
 
-        const constant = (await this.constant.eval(parse)).toValue();
-    
+        const constant = await evalNumberValue(this.constant, parse);
+
+        
         let value;
 
         switch (Math.min(Math.max(0, constant.toNumber()), 5))

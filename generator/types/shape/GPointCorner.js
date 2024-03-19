@@ -41,8 +41,8 @@ extends GOperator1
             return this;
 
         
-        const input  = this.input  ? (await this.input .eval(parse)).toValue() : null;
-        const smooth = this.smooth ? (await this.smooth.eval(parse)).toValue() : null;
+        const input  = await evalPointValue (this.input,  parse);
+        const smooth = await evalNumberValue(this.smooth, parse);
         
         if (input)
         {

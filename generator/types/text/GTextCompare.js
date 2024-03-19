@@ -43,7 +43,7 @@ extends GOperator2
         this.value = NumberValue.NaN.copy();
         
         
-        const op = this.operation ? (await this.operation.eval(parse)).toValue().toInteger() : null;
+        const op = await evalNumberValue(this.operation, parse);
 
         
         if (op)
@@ -114,8 +114,8 @@ extends GOperator2
 
 async function evalCompareInputs(input0, input1, op, parse) 
 {
-    const val0 = input0 ? (await input0.eval(parse)).toValue() : TextValue.NaN.copy();
-    const val1 = input1 ? (await input1.eval(parse)).toValue() : TextValue.NaN.copy();
+    const val0 = await evalTextValue(input0, parse);
+    const val1 = await evalTextValue(input1, parse);
 
     if (   val0 && val0.isValid() 
         && val1 && val1.isValid())

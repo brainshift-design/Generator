@@ -70,15 +70,17 @@ extends GOperator1
             return this;
 
 
-        const input = this.input  ? (await this. input.eval(parse)).toValue()             : null;
-        const order = this._order ? (await this._order.eval(parse)).toValue().toInteger() : null;
-        const c1    = this._c1    ? (await this._c1   .eval(parse)).toValue()             : null;
-        const c2    = this._c2    ? (await this._c2   .eval(parse)).toValue()             : null;
-        const c3    = this._c3    ? (await this._c3   .eval(parse)).toValue()             : null;
+        const input = await evalColorValue (this. input, parse);
+        let   order = await evalNumberValue(this._order, parse);
+        const c1    = await evalNumberValue(this._c1,    parse);
+        const c2    = await evalNumberValue(this._c2,    parse);
+        const c3    = await evalNumberValue(this._c3,    parse);
 
-    
-        if (order)
+        if (order) 
+        {
+            order       = order.toInteger();
             order.value = Math.min(Math.max(0, order.value), 5);
+        }
 
 
         if (input)

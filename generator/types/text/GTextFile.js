@@ -42,8 +42,8 @@ extends GOperator
             return this;
 
 
-        const cachedValue = this.cachedValue ? (await this.cachedValue.eval(parse)).toValue() : null;
-        //const path        = this.path        ? (await this.path       .eval(parse)).toValue() : null;
+        const cachedValue = await evalTextValue(this.cachedValue, parse);
+      //const path        = await evalTextValue(this.path,        parse);
 
         
         genInitNodeProgress(this.nodeId);

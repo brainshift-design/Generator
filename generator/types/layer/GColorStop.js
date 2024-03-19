@@ -55,18 +55,18 @@ extends GOperator1
         if (this.isCached())
             return this;
 
-        let fill = this.fill ? (await this.fill.eval(parse)).toValue() : null;
-
+        
+        
+        
+        const input    = await evalColorStopValue(this.input,    parse);
+        let   fill     = await evalFillValue     (this.fill,     parse);
+        const position = await evalNumberValue   (this.position, parse);
+        
         fill = this.validateFill(fill);
 
 
-        const position = this.position ? (await this.position.eval(parse)).toValue() : null;
-
-
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             this.value = new ColorStopValue(
                 fill     ?? input.fill,
                 position ?? input.position);

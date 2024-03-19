@@ -50,8 +50,8 @@ extends GOperator1
             : new NullValue();
 
         
-        const name    = this.name    ? (await this.name   .eval(parse)).toValue() : null;
-        //const addLogo = this.addLogo ? (await this.addLogo.eval(parse)).toValue() : null;
+        const name    = await evalTextValue  (this.name, parse);
+      //const addLogo = await evalNumberValue(this.addLogo, parse);
 
         
         if (   this.options.enabled
@@ -62,7 +62,7 @@ extends GOperator1
             {
                 obj.nodeId     = this.nodeId;
                 obj.objectName = name.value;
-                // obj.objectName = (addLogo.value > 0 ? OBJECT_PREFIX : '') + name.value;
+             // obj.objectName = (addLogo.value > 0 ? OBJECT_PREFIX : '') + name.value;
             }
         }
 

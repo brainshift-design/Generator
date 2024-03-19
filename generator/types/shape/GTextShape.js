@@ -96,19 +96,34 @@ extends GShape
             return this;
 
 
-        const input         = this.input         ? (await this.input        .eval(parse)).toValue() : null;
-        let   text          = this.text          ? (await this.text         .eval(parse)).toValue() : null;
-        let   x             = this.x             ? (await this.x            .eval(parse)).toValue() : null;
-        let   y             = this.y             ? (await this.y            .eval(parse)).toValue() : null;
-        let   width         = this.width         ? (await this.width        .eval(parse)).toValue() : null;
-        let   height        = this.height        ? (await this.height       .eval(parse)).toValue() : null;
-        let   font          = this.font          ? (await this.font         .eval(parse)).toValue() : null;
-        let   style         = this.style         ? (await this.style        .eval(parse)).toValue() : null;
-        let   size          = this.size          ? (await this.size         .eval(parse)).toValue() : null;
-        let   alignX        = this.alignX        ? (await this.alignX       .eval(parse)).toValue() : null;
-        let   alignY        = this.alignY        ? (await this.alignY       .eval(parse)).toValue() : null;
-        let   lineHeight    = this.lineHeight    ? (await this.lineHeight   .eval(parse)).toValue() : null;
-        let   letterSpacing = this.letterSpacing ? (await this.letterSpacing.eval(parse)).toValue() : null;
+        const input         = await evalTextShapeValue(this.input,         parse);
+        let   text          = await evalNumberValue   (this.text,          parse);
+        let   x             = await evalNumberValue   (this.x,             parse);
+        let   y             = await evalNumberValue   (this.y,             parse);
+        let   width         = await evalNumberValue   (this.width,         parse);
+        let   height        = await evalNumberValue   (this.height,        parse);
+        let   font          = await evalNumberValue   (this.font,          parse);
+        let   style         = await evalNumberValue   (this.style,         parse);
+        let   size          = await evalNumberValue   (this.size,          parse);
+        let   alignX        = await evalNumberValue   (this.alignX,        parse);
+        let   alignY        = await evalNumberValue   (this.alignY,        parse);
+        let   lineHeight    = await evalNumberValue   (this.lineHeight,    parse);
+        let   letterSpacing = await evalNumberValue   (this.letterSpacing, parse);
+
+
+        if (text          && !text         .isValid()) text          = new TextValue();
+        if (x             && !x            .isValid()) x             = NumberValue.NaN.copy();
+        if (y             && !y            .isValid()) y             = NumberValue.NaN.copy();
+        if (width         && !width        .isValid()) width         = NumberValue.NaN.copy();
+        if (height        && !height       .isValid()) height        = NumberValue.NaN.copy();
+        if (font          && !font         .isValid()) font          = NumberValue.NaN.copy();
+        if (style         && !style        .isValid()) style         = NumberValue.NaN.copy();
+        if (size          && !size         .isValid()) size          = NumberValue.NaN.copy();
+        if (alignX        && !alignX       .isValid()) alignX        = NumberValue.NaN.copy();
+        if (alignY        && !alignY       .isValid()) alignY        = NumberValue.NaN.copy();
+        if (lineHeight    && !lineHeight   .isValid()) lineHeight    = NumberValue.NaN.copy();
+        if (letterSpacing && !letterSpacing.isValid()) letterSpacing = NumberValue.NaN.copy();
+
 
         // for incorrect incoming types
         if (text          && text         .type !=   TEXT_VALUE) text          = new TextValue();

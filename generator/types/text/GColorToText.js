@@ -40,14 +40,12 @@ extends GOperator1
             return this;
 
 
-        const format = (await this.format.eval(parse)).toValue();
+        const input  = await evalColorValue (this.input,  parse);
+        const format = await evalNumberValue(this.format, parse);
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-
             if (isListValueType(input.type))
             {
                 this.value = new ListValue();

@@ -40,7 +40,7 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input = await evalVectorPathValue(this.input, parse);
 
 
         if (   input

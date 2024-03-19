@@ -25,9 +25,12 @@ extends GOperator1
             return this;
 
 
-        if (this.input)
+        const input = await evalNumberValue(this.input, parse);
+
+            
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = input;
 
             consoleAssert(
                 this.value.type == NUMBER_VALUE, 

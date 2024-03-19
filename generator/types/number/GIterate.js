@@ -44,7 +44,7 @@ extends GOperator
 
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const input = (await this.inputs[i].eval(parse)).toValue();
+            const input = await evalValue(this.inputs[i], parse);
 
             if (   input
                 && this.options.enabled)            

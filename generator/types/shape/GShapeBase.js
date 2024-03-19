@@ -41,12 +41,10 @@ extends GOperator
 
     async evalBaseParams(parse, evalHeight = true)
     {
-        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
-        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
-        const width  = this.width  ? (await this.width .eval(parse)).toValue() : null;
-
-        const height = evalHeight
-                    && this.height ? (await this.height.eval(parse)).toValue() : null;
+        let x      = await evalNumberValue(this.x,     parse);
+        let y      = await evalNumberValue(this.y,     parse);
+        let width  = await evalNumberValue(this.width, parse);
+        let height = evalHeight ? await evalNumberValue(height, parse) : null;
 
         return [x, y, width, height];
     }

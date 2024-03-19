@@ -55,7 +55,7 @@ extends GShape
 
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const input = (await this.inputs[i].eval(parse)).toValue();
+            const input = await evalVectorRegionValue(this.inputs[i], parse);
 
             consoleAssert(
                  input.type == VECTOR_REGION_VALUE, 

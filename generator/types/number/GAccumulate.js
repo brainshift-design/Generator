@@ -46,8 +46,8 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        const when  = this.when  ? (await this.when .eval(parse)).toValue() : null;
+        const input = await evalNumberValue(this.input, parse);
+        const when  = await evalNumberValue(this.when,  parse);
             
 
         if (   input

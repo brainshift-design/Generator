@@ -30,7 +30,7 @@ extends GOperator1
 
         if (this.input)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            const input = await evalTextValue(this.input, parse);
             
             try
             {
@@ -44,7 +44,6 @@ extends GOperator1
         }
     
 
-        // console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
             ['length',  new NumberValue(this.value.items.length)]

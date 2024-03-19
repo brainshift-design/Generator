@@ -60,10 +60,10 @@ extends GOperator
             return this;
 
         
-        const input0 = this.input0    ? (await this.input0   .eval(parse)).toValue() : null;
-        const input1 = this.input1    ? (await this.input1   .eval(parse)).toValue() : null;
+        const input0 = await evalValue(this.input0, parse);
+        const input1 = await evalValue(this.input1, parse);
         
-        const cond   = this.condition ? (await this.condition.eval(parse)).toValue() : null;
+        const cond   = await evalNumberValue(this.condition, parse);
 
 
           if (   input0 

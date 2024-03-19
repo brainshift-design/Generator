@@ -51,8 +51,8 @@ extends GOperator1
             return this;
 
 
-        const input   = this.input   ? (await this.input  .eval(parse)).toValue() : null;
-        const reverse = this.reverse ? (await this.reverse.eval(parse)).toValue() : null;
+        const input   = await evalListValue  (this.input,   parse);
+        const reverse = await evalNumberValue(this.reverse, parse);
 
 
         this.value         = new ListValue();

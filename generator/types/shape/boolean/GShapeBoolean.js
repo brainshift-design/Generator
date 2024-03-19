@@ -51,8 +51,8 @@ extends GShapeBase
 
         await this.evalBaseParams(parse);
 
-        const operation = this.operation ? (await this.operation.eval(parse)).toValue() : null;
-        let   children  = this.children  ? (await this.children .eval(parse)).toValue() : null;
+        let   children  = await evalListValue  (this.children,  parse);
+        const operation = await evalNumberValue(this.operation, parse);
 
 
         if (   children
@@ -65,7 +65,7 @@ extends GShapeBase
 
         if (this.input)
         {
-            input = (await this.input.eval(parse)).toValue();
+            input = await evalValue(this.input, parse);
 
             this.value = new ShapeBooleanValue(
                 this.nodeId,

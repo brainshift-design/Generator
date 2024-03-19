@@ -42,9 +42,9 @@ extends GOperator2
             return this;
 
 
-        const input0   = this.input0   ? (await this.input0  .eval(parse)).toValue() : null;
-        const input1   = this.input1   ? (await this.input1  .eval(parse)).toValue() : null;
-        const standard = this.standard ? (await this.standard.eval(parse)).toValue().toInteger() : null;
+        const input0   = await evalColorValue (this.input0,   parse);
+        const input1   = await evalColorValue (this.input1,   parse);
+        const standard = await evalNumberValue(this.standard, parse);
 
         
         if (standard.isValid())
@@ -91,10 +91,8 @@ extends GOperator2
             ]);
         }
 
-        else if (this.input0) 
+        else if (input0) 
         {
-            const input0 = (await this.input0.eval(parse)).toValue();
-
             this.setUpdateValues(parse,
             [
                 ['text', input0.isValid() ? input0 : ColorValue.NaN],
@@ -105,23 +103,21 @@ extends GOperator2
             this.contrast = NumberValue.NaN.copy();
         }
 
-        else if (this.input1) 
+        else if (input1) 
         {
-            const input1 = (await this.input1.eval(parse)).toValue();
-
             this.setUpdateValues(parse,
             [
                 ['text', ColorValue.NaN                            ],
                 ['back', input1.isValid() ? input1 : ColorValue.NaN]
             ]);
 
-            this.value    = ColorValue.NaN.copy();
+            this.value    = ColorValue .NaN.copy();
             this.contrast = NumberValue.NaN.copy();
         }
 
         else
         {
-            this.value    = ColorValue.NaN.copy();
+            this.value    = ColorValue .NaN.copy();
             this.contrast = NumberValue.NaN.copy();
 
             this.setUpdateValues(parse,

@@ -55,16 +55,15 @@ extends GOperator1
             return this;
 
 
-        let   current = (await this.current.eval(parse)).toValue();
-        const target  = (await this.target .eval(parse)).toValue();
+        let   input   = await evalNumberValue(this.input,   parse);
+        let   current = await evalNumberValue(this.current, parse);
+        const target  = await evalNumberValue(this.target,  parse);
 
 
-        if (   this.input
+        if (   input
             && current.isValid()
             && target .isValid())
         {
-            let input = (await this.input.eval(parse)).toValue();
-
             consoleAssert(
                 input.type == NUMBER_VALUE, 
                 'input.type must be NUMBER_VALUE');
@@ -103,7 +102,7 @@ extends GOperator1
 
                         
                     this.current.invalidateInputs(parse, this);
-                    current = (await this.current.eval(parse)).toValue();
+                    current = await evalNumberValue(this.current, parse);
 
 
                     // if (!current.isValid())
@@ -138,7 +137,7 @@ extends GOperator1
                 {
                     parse.currentProgress += maxIter - iter;
 
-                    input = (await this.input.eval(parse)).toValue();
+                    input = await evalNumberValue(this.input, parse);
                     this.value = input.copy();
                 }
                 else

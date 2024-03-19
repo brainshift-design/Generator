@@ -57,7 +57,7 @@ async function evalMultiplyInputs(inputs, parse)
 
         for (let i = 0; i < inputs.length; i++)
         {
-            const val = (await inputs[i].eval(parse)).toValue();
+            const val = await evalNumberValue(inputs[i], parse);
 
             if (   !val
                 || !val.isValid())

@@ -46,62 +46,59 @@ extends GOperator2
             return this;
 
 
-        const amount     = this.amount     ? (await this.amount    .eval(parse)).toValue() : null;
-        const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+        const input0     = await evalPointValue (this.input0,     parse);
+        const input1     = await evalPointValue (this.input1,     parse);
+        const amount     = await evalNumberValue(this.amount,     parse);
+        const transform  = await evalNumberValue(this.transform,  parse);
+        const showCenter = await evalNumberValue(this.showCenter, parse);
 
 
-        if (   this.input0
-            && this.input1)
+        if (   input0
+            && input1
+            && input0.isValid()
+            && input1.isValid())
         {
-            const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
-            const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+            const p0  = point(input0.objects[0].x, input0.objects[0].y);
+            const p1  = point(input1.objects[0].x, input1.objects[0].y);
+            const amt = amount.value / 100;
 
-            if (   input0
-                && input1
-                && input0.isValid()
-                && input1.isValid())
+            const p   = lerpv(p0, p1, amt);
+
+                
+            let sp0 = lerpv(input0.objects[0].sp0, input1.objects[0].sp0, amt);
+            let sp1 = lerpv(input0.objects[0].sp1, input1.objects[0].sp1, amt);
+            let sp2 = lerpv(input0.objects[0].sp2, input1.objects[0].sp2, amt);
+
+            if (transform.value > 0)
             {
-                const p0  = point(input0.objects[0].x, input0.objects[0].y);
-                const p1  = point(input1.objects[0].x, input1.objects[0].y);
-                const amt = amount.value / 100;
+                const l1 = distv(sp0, sp1);
+                const l2 = distv(sp0, sp2);
 
-                const p   = lerpv(p0, p1, amt);
-
-                    
-                let sp0 = lerpv(input0.objects[0].sp0, input1.objects[0].sp0, amt);
-                let sp1 = lerpv(input0.objects[0].sp1, input1.objects[0].sp1, amt);
-                let sp2 = lerpv(input0.objects[0].sp2, input1.objects[0].sp2, amt);
-
-                if (transform.value > 0)
-                {
-                    const l1 = distv(sp0, sp1);
-                    const l2 = distv(sp0, sp2);
-
-                    sp0 = clone(p);
-                    sp1 = addv(sp0, mulvs(unitv(subv(p1, p0)), l1));
-                    sp2 = addv(sp0, crossv(mulvs(unitv(subv(p1, p0)), l2)));
-                }
+                sp0 = clone(p);
+                sp1 = addv(sp0, mulvs(unitv(subv(p1, p0)), l1));
+                sp2 = addv(sp0, crossv(mulvs(unitv(subv(p1, p0)), l2)));
+            }
 
 
-                this.value = new PointValue(this.nodeId, new NumberValue(p.x), new NumberValue(p.y));
+            this.value = new PointValue(this.nodeId, new NumberValue(p.x), new NumberValue(p.y));
 
-                const pt = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, p.x, p.y);
-                pt.createDefaultTransform(p.x, p.y);
-                this.value.objects = [pt];
+            const pt = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, p.x, p.y);
+            pt.createDefaultTransform(p.x, p.y);
+            this.value.objects = [pt];
 
-                this.value.objects[0].sp0 = sp0;
-                this.value.objects[0].sp1 = sp1;
-                this.value.objects[0].sp2 = sp2;
+            this.value.objects[0].sp0 = sp0;
+            this.value.objects[0].sp1 = sp1;
+            this.value.objects[0].sp2 = sp2;
 
 
-                if (showCenter.value > 0)
-                {
-                    const objects = [...this.value.objects]; // avoids infinite growth
-                    objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-                }
+            if (showCenter.value > 0)
+            {
+                const objects = [...this.value.objects]; // avoids infinite growth
+                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
             }
         }
+        else
+            this.value = PointValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

@@ -46,9 +46,9 @@ extends GShape
             return this;
 
 
-        const input0  = this.input0  ? (await this.input0 .eval(parse)).toValue() : null;
-        const input1  = this.input1  ? (await this.input1 .eval(parse)).toValue() : null;
-        const input2  = this.input2  ? (await this.input2 .eval(parse)).toValue() : null;
+        const input0  = await evalPointValue(this.input0, parse);
+        const input1  = await evalPointValue(this.input1, parse);
+        const input2  = await evalPointValue(this.input2, parse);
 
 
         if (   input0  && input0 .isValid()

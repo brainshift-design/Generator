@@ -43,9 +43,9 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        const start = this.start ? (await this.start.eval(parse)).toValue() : null;
-        const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
+        const input = await evalTextValue  (this.input, parse);
+        const start = await evalNumberValue(this.start, parse);
+        const end   = await evalNumberValue(this.end,   parse);
 
 
         let length = 0;

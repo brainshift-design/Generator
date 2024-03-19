@@ -53,13 +53,12 @@ extends GOperator2
             return this;
 
 
-        const input0    = this.input0    ? (await this.input0   .eval(parse)).toValue() : null;
-        const input1    = this.input1    ? (await this.input1   .eval(parse)).toValue() : null;
-        
-        const seed      = this.seed      ? (await this.seed     .eval(parse)).toValue() : null;
-        const iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
-        const chance    = this.chance    ? (await this.chance   .eval(parse)).toValue() : null;
-        const alternate = this.alternate ? (await this.alternate.eval(parse)).toValue() : null;
+        const input0    = await evalValue      (this.input0,    parse);
+        const input1    = await evalValue      (this.input1,    parse);
+        const seed      = await evalNumberValue(this.seed,      parse);
+        const iteration = await evalNumberValue(this.iteration, parse);
+        const chance    = await evalNumberValue(this.chance,    parse);
+        const alternate = await evalNumberValue(this.alternate, parse);
     
 
         if (   seed

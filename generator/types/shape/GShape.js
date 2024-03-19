@@ -66,7 +66,7 @@ extends GShapeBase
 
     async evalShapeBase(parse)
     {
-        let props = this.props ? (await this.props.eval(parse)).toValue() : null;
+        let props = await evalListValue(this.props, parse);
 
         if (   props
             && STYLE_VALUES.includes(props.type))

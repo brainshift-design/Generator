@@ -68,12 +68,12 @@ extends GShape
             return this;
 
 
-        const input   = this.input   ? (await this.input  .eval(parse)).toValue() : null;
-        let   points  = this.points  ? (await this.points .eval(parse)).toValue() : null;
-        let   closed  = this.closed  ? (await this.closed .eval(parse)).toValue() : null;
-        let   degree  = this.degree  ? (await this.degree .eval(parse)).toValue() : null;
-        let   winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
-        let   round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
+        const input   = await evalVectorPathValue(this.input,   parse);
+        let   points  = await evalNumberValue    (this.points,  parse);
+        let   closed  = await evalNumberValue    (this.closed,  parse);
+        let   degree  = await evalNumberValue    (this.degree,  parse);
+        let   winding = await evalNumberValue    (this.winding, parse);
+        let   round   = await evalNumberValue    (this.round,   parse);
 
 
         await this.evalBaseParams(parse);

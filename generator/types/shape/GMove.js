@@ -56,12 +56,12 @@ extends GOperator1
             return this;
 
             
-        const input       = this.input       ? (await this.input      .eval(parse)).toValue() : null;
-        const moveType    = this.moveType    ? (await this.moveType   .eval(parse)).toValue() : null;
-        const x           = this.x           ? (await this.x          .eval(parse)).toValue() : null;
-        const y           = this.y           ? (await this.y          .eval(parse)).toValue() : null;
-        const affectSpace = this.affectSpace ? (await this.affectSpace.eval(parse)).toValue() : null;
-        const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
+        const input       = await evalValue      (this.input,       parse);
+        const moveType    = await evalNumberValue(this.moveType,    parse);
+        const x           = await evalNumberValue(this.x,           parse);
+        const y           = await evalNumberValue(this.y,           parse);
+        const affectSpace = await evalNumberValue(this.affectSpace, parse);
+        const showCenter  = await evalNumberValue(this.showCenter,  parse);
 
 
         if (input)

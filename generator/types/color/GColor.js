@@ -73,11 +73,13 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue()             : null;
-        const space = this.space ? (await this.space.eval(parse)).toValue().toInteger() : null; 
-        let   c1    = this._c1   ? (await this._c1  .eval(parse)).toValue()             : null;
-        let   c2    = this._c2   ? (await this._c2  .eval(parse)).toValue()             : null;
-        let   c3    = this._c3   ? (await this._c3  .eval(parse)).toValue()             : null;
+        const input = await evalValue      (this.input, parse);
+        let   space = await evalNumberValue(this.space, parse); 
+        let   c1    = await evalNumberValue(this._c1,   parse);
+        let   c2    = await evalNumberValue(this._c2,   parse);
+        let   c3    = await evalNumberValue(this._c3,   parse);
+
+        if (space) space = space.toInteger();
 
         
         if (input)

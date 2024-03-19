@@ -51,7 +51,8 @@ extends GOperator1
         else
         {
             this.value = 
-                this.input 
+                   this.input
+                && this.input.isValid() 
                 ? (await this.input.eval(parse)).toValue() 
                 : new NullValue();
 

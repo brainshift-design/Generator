@@ -40,8 +40,8 @@ extends GOperator1
             return this;
 
 
-        const input   = this.input   ? (await this.input  .eval(parse)).toValue() : null;
-        const indices = this.indices ? (await this.indices.eval(parse)).toValue() : null;
+        const input   = await evalListValue(this.input,   parse);
+        const indices = await evalListValue(this.indices, parse);
 
 
         this.value         = new ListValue();

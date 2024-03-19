@@ -42,7 +42,7 @@ extends GOperator
             return this;
 
         
-        this.value = (await this.genValue.eval(parse)).toValue();
+        this.value = await evalColorValue(this.genValue, parse);
 
 
         if (   this.value.isValid()

@@ -49,11 +49,12 @@ extends GAffine
             return this;
 
 
-        const input         = this.input         ? (await this.input        .eval(parse)).toValue() : null;
-        const scaleX        = this.scaleX        ? (await this.scaleX       .eval(parse)).toValue() : null;
-        const scaleY        = this.scaleY        ? (await this.scaleY       .eval(parse)).toValue() : null;
-        const affectCorners = this.affectCorners ? (await this.affectCorners.eval(parse)).toValue() : null;
-        const affectStyle   = this.affectStyle   ? (await this.affectStyle  .eval(parse)).toValue() : null;
+        const input         = await evalValue      (this.input,         parse);
+        let   scaleX        = await evalNumberValue(this.scaleX,        parse);
+        let   scaleY        = await evalNumberValue(this.scaleY,        parse);
+        let   affectCorners = await evalNumberValue(this.affectCorners, parse);
+        let   affectStyle   = await evalNumberValue(this.affectStyle,   parse);
+
 
         const [showCenter, affectSpace] = await this.evalBaseParams(parse);
 

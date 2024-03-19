@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 383;
+const generatorVersion = 384;
 
 
 const MAX_INT32        = 2147483647;
@@ -10458,6 +10458,54 @@ extends GNode
 }
 
 
+
+async function evalValue(_value, parse, nan = () => new NullValue())
+{
+    let value  = 
+        _value 
+        ? (await _value.eval(parse)).toValue() 
+        : null;
+
+    if (    value 
+        && !value.isValid()) 
+        value = nan();
+
+    return value;
+}
+
+
+
+async function evalNumberValue        (_value, parse) { return await evalValue(_value, parse, () => NumberValue        .NaN.copy()); }
+async function evalTextValue          (_value, parse) { return await evalValue(_value, parse, () => new TextValue());                }
+
+async function evalColorValue         (_value, parse) { return await evalValue(_value, parse, () => ColorValue         .NaN.copy()); }
+async function evalFillValue          (_value, parse) { return await evalValue(_value, parse, () => FillValue          .NaN.copy()); }
+async function evalStrokeValue        (_value, parse) { return await evalValue(_value, parse, () => StrokeValue        .NaN.copy()); }
+async function evalColorStopValue     (_value, parse) { return await evalValue(_value, parse, () => ColorStopValue     .NaN.copy()); }
+async function evalGradientValue      (_value, parse) { return await evalValue(_value, parse, () => GradientValue      .NaN.copy()); }
+
+async function evalListValue          (_value, parse) { return await evalValue(_value, parse, () => new ListValue());                }
+
+async function evalRectangleValue     (_value, parse) { return await evalValue(_value, parse, () => RectangleValue     .NaN.copy()); }
+async function evalLineValue          (_value, parse) { return await evalValue(_value, parse, () => LineValue          .NaN.copy()); }
+async function evalPolygonValue       (_value, parse) { return await evalValue(_value, parse, () => PolygonValue       .NaN.copy()); }
+async function evalTextShapeValue     (_value, parse) { return await evalValue(_value, parse, () => TextShapeValue     .NaN.copy()); }
+
+async function evalPointValue         (_value, parse) { return await evalValue(_value, parse, () => PointValue         .NaN.copy()); }
+async function evalVectorPathValue    (_value, parse) { return await evalValue(_value, parse, () => VectorPathValue    .NaN.copy()); }
+async function evalArcPathValue       (_value, parse) { return await evalValue(_value, parse, () => ArcPathValue       .NaN.copy()); }
+async function evalWavePathValue      (_value, parse) { return await evalValue(_value, parse, () => WavePathValue      .NaN.copy()); }
+async function evalVectorEdgeValue    (_value, parse) { return await evalValue(_value, parse, () => VectorEdgeValue    .NaN.copy()); }
+async function evalVectorRegionValue  (_value, parse) { return await evalValue(_value, parse, () => VectorRegionValue  .NaN.copy()); }
+
+async function evalFrameValue         (_value, parse) { return await evalValue(_value, parse, () => FrameValue         .NaN.copy()); }
+
+async function evalInnerShadowValue   (_value, parse) { return await evalValue(_value, parse, () => InnerShadowValue   .NaN.copy()); }
+async function evalLayerBlurValue     (_value, parse) { return await evalValue(_value, parse, () => LayerBlurValue     .NaN.copy()); }
+async function evalRoundedCornersValue(_value, parse) { return await evalValue(_value, parse, () => RoundedCornersValue.NaN.copy()); }
+
+
+
 class GOperator1
 extends GOperator
 {
@@ -10954,11 +11002,7 @@ extends GOperator
         {
             if (   this.node.type != FEEDBACK
                 && this.paramId != 'from')
-            {
-                // await this.node.eval(parse);
-                const value = (await this.param.eval(parse)).toValue();
-                this.value = value;
-            }
+                this.value = await evalValue(this.param, parse);
             else
                 this.value = new NullValue();
 
@@ -17264,7 +17308,7 @@ extends ShapeValue
 
 
 
-    static NaN = new ArcPathValue(
+    static NaN = Object.freeze(new ArcPathValue(
         '',
         NumberValue.NaN,
         NumberValue.NaN,
@@ -17272,7 +17316,7 @@ extends ShapeValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        NumberValue.NaN);
+        NumberValue.NaN));
 }
 
 
@@ -17780,8 +17824,8 @@ extends GOperator1
             return this;
             
 
-        let   count     = this.count     ? (await this.count    .eval(parse)).toValue() : null;
-        let   iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
+        let   count     = await evalNumberValue(this.count,     parse);
+        let   iteration = await evalNumberValue(this.iteration, parse);
         let  _while     = new NumberValue(1);
 
 
@@ -17886,7 +17930,7 @@ extends GOperator1
 
                 for (let i = 0, o = 0; i < Math.max(1, nRepeats); i++)
                 {
-                    _while = this._while ? (await this._while.eval(parse)).toValue() : null;
+                    _while = await evalNumberValue(this._while, parse);
                     
                     if (   _while 
                         && _while.value == 0)
@@ -17907,7 +17951,7 @@ extends GOperator1
                     this.input.invalidateInputs(parse, this, false);
 
                     
-                    const input = (await this.input.eval(parse)).toValue();
+                    const input = await evalValue(this.input, parse);
 
 
                     if (   input
@@ -18450,7 +18494,7 @@ extends GOperator
             return this;
 
 
-        this.value = this.input ? (await this.input.eval(parse)).toValue() : ListValue.NaN.copy();
+        this.value = await evalListValue(this.input, parse);
 
 
         this.updateValues = [];
@@ -18603,7 +18647,8 @@ extends GOperator1
         else
         {
             this.value = 
-                this.input 
+                   this.input
+                && this.input.isValid() 
                 ? (await this.input.eval(parse)).toValue() 
                 : new NullValue();
 
@@ -18794,9 +18839,9 @@ extends GOperator1
             return this;
 
 
-        const  interval = (await this. interval.eval(parse)).toValue();
-        const _while    = (await this._while   .eval(parse)).toValue();
-        const  loop     = (await this. loop    .eval(parse)).toValue();
+        const  interval = await evalNumberValue(this. interval, parse);
+        const _while    = await evalNumberValue(this._while,    parse);
+        const  loop     = await evalNumberValue(this. loop,     parse);
             
 
         if (this.loop.type != NUMBER_VALUE) assertVolatile(this.loop, this);
@@ -18809,7 +18854,7 @@ extends GOperator1
         {
             this.input.invalidateInputs(parse, this, true);
 
-            const input = (await this.input.eval(parse)).toValue();
+            const input = await evalValue(this.input, parse);
 
             this.value = input ? input : new NullValue();
 
@@ -18936,7 +18981,7 @@ extends GOperator1
             : new NullValue();
 
         
-        const name = (await this.name.eval(parse)).toValue();
+        const name = await evalTextValue(this.name, parse);
 
 
         if (   this.options.enabled
@@ -19058,7 +19103,7 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input = await evalListValue(this.input, parse);
 
 
         this.counts = new ListValue();
@@ -19154,8 +19199,8 @@ extends GOperator2
             return this;
 
 
-        const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
-        const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+        const input0 = await evalListValue(this.input0, parse);
+        const input1 = await evalListValue(this.input1, parse);
 
         
         if (   this.options.enabled
@@ -19243,8 +19288,8 @@ extends GOperator1
             : new NullValue();
 
         
-        const name    = this.name    ? (await this.name   .eval(parse)).toValue() : null;
-        //const addLogo = this.addLogo ? (await this.addLogo.eval(parse)).toValue() : null;
+        const name    = await evalTextValue  (this.name, parse);
+      //const addLogo = await evalNumberValue(this.addLogo, parse);
 
         
         if (   this.options.enabled
@@ -19255,7 +19300,7 @@ extends GOperator1
             {
                 obj.nodeId     = this.nodeId;
                 obj.objectName = name.value;
-                // obj.objectName = (addLogo.value > 0 ? OBJECT_PREFIX : '') + name.value;
+             // obj.objectName = (addLogo.value > 0 ? OBJECT_PREFIX : '') + name.value;
             }
         }
 
@@ -19400,7 +19445,7 @@ extends GOperator
 
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const input = (await this.inputs[i].eval(parse)).toValue();
+            const input = await evalValue(this.inputs[i], parse);
 
 
             if (   input
@@ -19599,7 +19644,7 @@ extends GOperator1
         let length = 0;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input = await evalListValue(this.input, parse);
 
 
         // if (this.cachedValue)
@@ -19703,8 +19748,8 @@ extends GOperator1
             return this;
 
 
-        const input   = this.input   ? (await this.input  .eval(parse)).toValue() : null;
-        const indices = this.indices ? (await this.indices.eval(parse)).toValue() : null;
+        const input   = await evalListInput(this.input,   parse);
+        const indices = await evalListInput(this.indices, parse);
 
 
         this.value = new ListValue();
@@ -19853,10 +19898,9 @@ extends GOperator2
             return this;
 
 
-        const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
-        const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
-
-        const name   = this.name  ? (await this.name .eval(parse)).toValue() : null;
+        const input0 = await evalValue    (this.input0, parse);
+        const input1 = await evalValue    (this.input1, parse);
+        const name   = await evalTextValue(this.name,   parse);
 
 
         if (   input0
@@ -20001,8 +20045,8 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        const name  = this.name  ? (await this.name .eval(parse)).toValue() : null;
+        const input = await evalValue    (this.input, parse);
+        const name  = await evalTextValue(this.name,  parse);
 
 
         if (   input
@@ -20196,9 +20240,9 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        const start = this.start ? (await this.start.eval(parse)).toValue() : null;
-        const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
+        const input = await evalListValue  (this.input, parse);
+        const start = await evalNumberValue(this.start, parse);
+        const end   = await evalNumberValue(this.end,   parse);
 
 
         let length = 0;
@@ -20389,7 +20433,7 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input = await evalListValue(this.input, parse);
 
 
         // if (this.cachedValue)
@@ -20552,8 +20596,8 @@ extends GOperator1
             return this;
 
 
-        const input   = this.input   ? (await this.input  .eval(parse)).toValue() : null;
-        const indices = this.indices ? (await this.indices.eval(parse)).toValue() : null;
+        const input   = await evalListValue(this.input,   parse);
+        const indices = await evalListValue(this.indices, parse);
 
 
         this.value         = new ListValue();
@@ -20701,8 +20745,8 @@ extends GOperator1
             return this;
 
 
-        const input  = this.input  ? (await this.input .eval(parse)).toValue() : null;
-        const offset = this.offset ? (await this.offset.eval(parse)).toValue() : null;
+        const input  = await evalListValue  (this.input,  parse);
+        const offset = await evalNumberValue(this.offset, parse);
 
 
         let length = 0;
@@ -20863,7 +20907,7 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input = await evalValue(this.input, parse);
 
 
         this.counts = new ListValue();
@@ -20982,8 +21026,8 @@ extends GOperator1
             return this;
 
 
-        const input   = this.input   ? (await this.input  .eval(parse)).toValue() : null;
-        const reverse = this.reverse ? (await this.reverse.eval(parse)).toValue() : null;
+        const input   = await evalListValue  (this.input,   parse);
+        const reverse = await evalNumberValue(this.reverse, parse);
 
 
         this.value         = new ListValue();
@@ -21256,7 +21300,7 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input = await evalListValue(this.input, parse);
 
 
         this.value         = new ListValue();
@@ -21320,7 +21364,7 @@ extends GOperator1
                     }
                 }
                 else
-                    this.value = (await this.input.eval(parse)).toValue();
+                    this.value = await evalListValue(this.input, parse);
             }
             else
                 this.value = input.copy();
@@ -21494,8 +21538,8 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        const index = this.index ? (await this.index.eval(parse)).toValue() : null;
+        const input = await evalListValue  (this.input, parse);
+        const index = await evalNumberValue(this.index, parse);
 
         
         this.value = new ListValue();
@@ -21682,22 +21726,19 @@ extends GOperator1
             return this;
 
 
-        const column = this.column ? (await this.column.eval(parse)).toValue() : null;
-        const row    = this.row    ? (await this.row   .eval(parse)).toValue() : null;
+        const input  = await evalListValue  (this.input,  parse);
+        const column = await evalNumberValue(this.column, parse);
+        const row    = await evalNumberValue(this.row,    parse);
 
 
         let columns = 0;
         let rows    = 0;
 
-        if (   this.input
+        if (   input
             && column
             && row)
         {
-            const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-
-            
-            if (   input
-                && isTable(input))
+            if (isTable(input))
             {
                 rows = input.items.length;
 
@@ -21844,7 +21885,7 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null; 
+        const input = await evalListValue(this.input, parse); 
 
 
         if (this.cachedValue)
@@ -21977,14 +22018,14 @@ extends GOperator
         if (this.isCached())
             return this;
 
-        let index  = this.index ? (await this.index.eval(parse)).toValue() : null;
+        let index  = await evalNumberValue(this.index, parse);
         let length = 0;
 
 
         const inputs = [];
 
         for (let i = 0; i < this.inputs.length; i++)
-            inputs.push((await this.inputs[i].eval(parse)).toValue());
+            inputs.push(await evalValue(this.inputs[i], parse));
 
 
         if (inputs.length > 0)
@@ -22174,14 +22215,15 @@ extends GOperator1
             return this;
 
         
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        let   index = this.index ? (await this.index.eval(parse)).toValue() : null;
+        const input = await evalListValue  (this.input, parse);
+        let   index = await evalNumberValue(this.index, parse);
         
         let  length = 0;
         
         
         if (   input
             && input.isValid()
+            && isListValueType(input.type)
             && input.items
             && input.items.length > 0)
         {
@@ -22359,8 +22401,8 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        const start = this.start ? (await this.start.eval(parse)).toValue() : null;
+        const input = await evalListValue  (this.input, parse);
+        const start = await evalNumberValue(this.start, parse);
 
         
         if (input)
@@ -22475,8 +22517,8 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        const start = this.start ? (await this.start.eval(parse)).toValue() : null;
+        const input = await evalValue      (this.input, parse);
+        const start = await evalNumberValue(this.start, parse);
 
         
         if (input)
@@ -22585,8 +22627,8 @@ extends GOperator2
             return this;
 
 
-        const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
-        const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+        const input0 = await evalListValue(this.input0, parse);
+        const input1 = await evalValue    (this.input1, parse);
     
 
         if (   input0 && input0.isValid() 
@@ -22721,10 +22763,10 @@ extends GOperator
             return this;
 
         
-        const input0 = this.input0    ? (await this.input0   .eval(parse)).toValue() : null;
-        const input1 = this.input1    ? (await this.input1   .eval(parse)).toValue() : null;
+        const input0 = await evalValue(this.input0, parse);
+        const input1 = await evalValue(this.input1, parse);
         
-        const cond   = this.condition ? (await this.condition.eval(parse)).toValue() : null;
+        const cond   = await evalNumberValue(this.condition, parse);
 
 
           if (   input0 
@@ -22914,11 +22956,11 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input = await evalNumberValue(this.input, parse);
 
 
         if (input)
-            this.value = input.copy();
+            this.value = input;//.copy();
         else if (this.value)
             await this.value.eval(parse);
         else
@@ -22927,7 +22969,7 @@ extends GOperator1
 
         this.setUpdateValues(parse, 
         [
-            ['value', this.value.copy()]
+            ['value', this.value]//.copy()]
         ]);
 
 
@@ -22991,8 +23033,8 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const input    = this.input    ? (await this.input   .eval(parse)).toValue() : null;
-        const decimals = this.decimals ? (await this.decimals.eval(parse)).toValue() : null;
+        const input    = await evalNumberValue(this.input,    parse);
+        const decimals = await evalNumberValue(this.decimals, parse);
 
 
         if (input)
@@ -23088,10 +23130,13 @@ extends GOperator1
             return this;
 
 
-        if (this.input)
-        {
-            this.value = (await this.input.eval(parse)).toValue();
+        const input = await evalNumberValue(this.input, parse);
 
+
+        if (input)
+        {
+            this.value = input;
+            
             consoleAssert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must be NUMBER_VALUE');
@@ -23146,7 +23191,7 @@ extends GOperator1
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = await evalNumberValue(this.input, parse);
 
             consoleAssert(
                 this.value.type == NUMBER_VALUE, 
@@ -23197,9 +23242,12 @@ extends GOperator1
             return this;
 
 
-        if (this.input)
+        const input = await evalNumberValue(this.input, parse);
+
+            
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = input;
 
             consoleAssert(
                 this.value.type == NUMBER_VALUE, 
@@ -23271,9 +23319,9 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const input = this.input    ? (await this.input   .eval(parse)).toValue() : null;
-        const type  = this.type     ? (await this.type    .eval(parse)).toValue() : null;
-        const dec   = this.decimals ? (await this.decimals.eval(parse)).toValue() : null;
+        const input = await evalNumberValue(this.input,    parse);
+        const type  = await evalNumberValue(this.type,     parse);
+        const dec   = await evalNumberValue(this.decimals, parse);
 
 
         if (   input
@@ -23411,11 +23459,11 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const input  = this.input  ? (await this.input .eval(parse)).toValue() : null;
-        const type   = this.type   ? (await this.type  .eval(parse)).toValue() : null;
-        const base   = this.base   ? (await this.base  .eval(parse)).toValue() : null;
-        const step   = this.step   ? (await this.step  .eval(parse)).toValue() : null;
-        const amount = this.amount ? (await this.amount.eval(parse)).toValue() : null;
+        const input  = await evalNumberValue(this.input,  parse);
+        const type   = await evalNumberValue(this.type,   parse);
+        const base   = await evalNumberValue(this.base,   parse);
+        const step   = await evalNumberValue(this.step,   parse);
+        const amount = await evalNumberValue(this.amount, parse);
 
 
         if (input)
@@ -23558,9 +23606,9 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const input   = this.input     ? (await this.input    .eval(parse)).toValue() : null;
-        const operand = this.operand   ? (await this.operand  .eval(parse)).toValue() : null;
-        const op      = this.operation ? (await this.operation.eval(parse)).toValue() : null;
+        const input   = await evalNumberValue(this.input,     parse);
+        const operand = await evalNumberValue(this.operand,   parse);
+        const op      = await evalNumberValue(this.operation, parse);
 
 
         if (input)
@@ -23712,7 +23760,10 @@ extends GArithmetic
             return this;
 
 
-        const op = (await this.operation.eval(parse)).toValue().toInteger();
+        const op = await evalNumberValue(this.operation, parse);
+
+        if (op) op = op.toInteger();
+
 
         if (this.options.enabled)
             op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
@@ -23780,7 +23831,7 @@ async function evalMinMaxInputs(inputs, op, parse)
     let value = new NumberValue(0);
 
 
-    const val0 = (await inputs[0].eval(parse)).toValue();
+    const val0 = await evalNumberValue(inputs[0], parse);
 
 
     if (   inputs.length == 1
@@ -23817,7 +23868,7 @@ async function evalMinMaxInputs(inputs, op, parse)
 
     for (let i = 1; i < inputs.length; i++)
     {
-        const val = (await inputs[i].eval(parse)).toValue();
+        const val = await evalNumberValue(inputs[i], parse);
 
 
         if (isListValueType(val.type))
@@ -23909,13 +23960,14 @@ extends GOperator1
             return this;
 
             
-        const min = (await this.min.eval(parse)).toValue();
-        const max = (await this.max.eval(parse)).toValue();
+        const input = await evalNumberValue(this.input, parse);
+        const min   = await evalNumberValue(this.min,   parse);
+        const max   = await evalNumberValue(this.max,   parse);
 
 
-        if (this.input)
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = input;
 
             consoleAssert(
                 this.value.type == NUMBER_VALUE, 
@@ -24050,15 +24102,14 @@ extends GOperator1
             return this;
 
             
-        const min   = (await this.min  .eval(parse)).toValue();
-        const max   = (await this.max  .eval(parse)).toValue();
-        const power = (await this.power.eval(parse)).toValue();
+        const input = await evalNumberValue(this.input, parse);
+        const min   = await evalNumberValue(this.min,   parse);
+        const max   = await evalNumberValue(this.max,   parse);
+        const power = await evalNumberValue(this.power, parse);
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             if (this.options.enabled)
             {
                 let f = (input.value - min.value) / (max.value - min.value);
@@ -24197,16 +24248,15 @@ extends GOperator1
             return this;
 
             
-        const min    = (await this.min   .eval(parse)).toValue();
-        const max    = (await this.max   .eval(parse)).toValue();
-        const bias   = (await this.bias  .eval(parse)).toValue();
-        const spread = (await this.spread.eval(parse)).toValue();
+        const input  = await evalNumberValue(this.input,  parse);
+        const min    = await evalNumberValue(this.min,    parse);
+        const max    = await evalNumberValue(this.max,    parse);
+        const bias   = await evalNumberValue(this.bias,   parse);
+        const spread = await evalNumberValue(this.spread, parse);
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             if (this.options.enabled)
             {
                 let f = (input.value - min.value) / (max.value - min.value);
@@ -24351,13 +24401,12 @@ extends GOperator1
             return this;
 
 
-        const _value = (await this._value.eval(parse)).toValue();
+        const  input = await evalNumberValue(this. input, parse);
+        const _value = await evalNumberValue(this._value, parse);
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this. input.eval(parse)).toValue();
-
             if (isListValueType(input.type))
             {
                 this.value = new ListValue();
@@ -24487,8 +24536,9 @@ extends GOperator
         // input not used for evaluation
 
 
-        const constant = (await this.constant.eval(parse)).toValue();
-    
+        const constant = await evalNumberValue(this.constant, parse);
+
+        
         let value;
 
         switch (Math.min(Math.max(0, constant.toNumber()), 5))
@@ -24769,7 +24819,7 @@ extends GOperator
 
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const input = (await this.inputs[i].eval(parse)).toValue();
+            const input = await evalValue(this.inputs[i], parse);
 
             if (   input
                 && this.options.enabled)            
@@ -24928,10 +24978,10 @@ extends GOperator
             return this;
             
 
-        const start = this.start    ? (await this.start   .eval(parse)).toValue() : null;
-        const mult  = this.multiply ? (await this.multiply.eval(parse)).toValue() : null;
-        const add   = this.add      ? (await this.add     .eval(parse)).toValue() : null;
-        const end   = this.end      ? (await this.end     .eval(parse)).toValue() : null;
+        const start = await evalNumberValue(this.start,    parse);
+        const mult  = await evalNumberValue(this.multiply, parse);
+        const add   = await evalNumberValue(this.add,      parse);
+        const end   = await evalNumberValue(this.end,      parse);
     
 
         if (   start
@@ -25096,9 +25146,9 @@ extends GOperator
             return this;
 
             
-        const from  = this.from  ? (await this.from .eval(parse)).toValue() : null;
-        const start = this.start ? (await this.start.eval(parse)).toValue() : null;
-        const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
+        const from  = await evalNumberValue(this.from,  parse);
+        const start = await evalNumberValue(this.start, parse);
+        const end   = await evalNumberValue(this.end,   parse);
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
@@ -25276,12 +25326,12 @@ extends GOperator
             return this;
             
 
-        const shape  = this.shape     ? (await this.shape    .eval(parse)).toValue() : null;
-        const base   = this.base      ? (await this.base     .eval(parse)).toValue() : null;
-        const amp    = this.amplitude ? (await this.amplitude.eval(parse)).toValue() : null;
-        let   freq   = this.frequency ? (await this.frequency.eval(parse)).toValue() : null;
-        const offset = this.offset    ? (await this.offset   .eval(parse)).toValue() : null;
-        const bias   = this.bias      ? (await this.bias     .eval(parse)).toValue() : null;
+        const shape  = await evalNumberValue(this.shape,     parse);
+        const base   = await evalNumberValue(this.base,      parse);
+        const amp    = await evalNumberValue(this.amplitude, parse);
+        let   freq   = await evalNumberValue(this.frequency, parse);
+        const offset = await evalNumberValue(this.offset,    parse);
+        const bias   = await evalNumberValue(this.bias,      parse);
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
@@ -25499,13 +25549,13 @@ extends GOperator
             return this;
 
 
-        const seed      = this.seed      ? (await this.seed     .eval(parse)).toValue() : null;
-        const iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
-        const min       = this.min       ? (await this.min      .eval(parse)).toValue() : null;
-        const max       = this.max       ? (await this.max      .eval(parse)).toValue() : null;
-        const bias      = this.bias      ? (await this.bias     .eval(parse)).toValue() : null;
-        const spread    = this.spread    ? (await this.spread   .eval(parse)).toValue() : null;
-        const unique    = this.unique    ? (await this.unique   .eval(parse)).toValue() : null;
+        const seed      = await evalNumberValue(this.seed,      parse);
+        const iteration = await evalNumberValue(this.iteration, parse);
+        const min       = await evalNumberValue(this.min,       parse);
+        const max       = await evalNumberValue(this.max,       parse);
+        const bias      = await evalNumberValue(this.bias,      parse);
+        const spread    = await evalNumberValue(this.spread,    parse);
+        const unique    = await evalNumberValue(this.unique,    parse);
     
 
         if (   this.options.enabled
@@ -25751,14 +25801,14 @@ extends GOperator
             return this;
 
 
-        const seed        = this.seed        ? (await this.seed       .eval(parse)).toValue() : null;
-        const iteration   = this.iteration   ? (await this.iteration  .eval(parse)).toValue() : null;
-        const min         = this.min         ? (await this.min        .eval(parse)).toValue() : null;
-        const max         = this.max         ? (await this.max        .eval(parse)).toValue() : null;
-        const scale       = this.scale       ? (await this.scale      .eval(parse)).toValue() : null;
-        const offset      = this.offset      ? (await this.offset     .eval(parse)).toValue() : null;
-        const interpolate = this.interpolate ? (await this.interpolate.eval(parse)).toValue() : null;
-        const detail      = this.detail      ? (await this.detail     .eval(parse)).toValue() : null;
+        const seed        = await evalNumberValue(this.seed,        parse);
+        const iteration   = await evalNumberValue(this.iteration,   parse);
+        const min         = await evalNumberValue(this.min,         parse);
+        const max         = await evalNumberValue(this.max,         parse);
+        const scale       = await evalNumberValue(this.scale,       parse);
+        const offset      = await evalNumberValue(this.offset,      parse);
+        const interpolate = await evalNumberValue(this.interpolate, parse);
+        const detail      = await evalNumberValue(this.detail,      parse);
     
 
         if (   this.options.enabled
@@ -25984,13 +26034,12 @@ extends GOperator2
             return this;
 
 
-        const input0    = this.input0    ? (await this.input0   .eval(parse)).toValue() : null;
-        const input1    = this.input1    ? (await this.input1   .eval(parse)).toValue() : null;
-        
-        const seed      = this.seed      ? (await this.seed     .eval(parse)).toValue() : null;
-        const iteration = this.iteration ? (await this.iteration.eval(parse)).toValue() : null;
-        const chance    = this.chance    ? (await this.chance   .eval(parse)).toValue() : null;
-        const alternate = this.alternate ? (await this.alternate.eval(parse)).toValue() : null;
+        const input0    = await evalValue      (this.input0,    parse);
+        const input1    = await evalValue      (this.input1,    parse);
+        const seed      = await evalNumberValue(this.seed,      parse);
+        const iteration = await evalNumberValue(this.iteration, parse);
+        const chance    = await evalNumberValue(this.chance,    parse);
+        const alternate = await evalNumberValue(this.alternate, parse);
     
 
         if (   seed
@@ -26156,8 +26205,8 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        const when  = this.when  ? (await this.when .eval(parse)).toValue() : null;
+        const input = await evalNumberValue(this.input, parse);
+        const when  = await evalNumberValue(this.when,  parse);
             
 
         if (   input
@@ -26302,27 +26351,27 @@ extends GOperator2
             return this;
 
 
-        const amount = this.amount ? (await this.amount.eval(parse)).toValue() : null;
-        const degree = this.degree ? (await this.degree.eval(parse)).toValue() : null;
+        const amount = await evalNumberValue(this.amount, parse);
+        const degree = await evalNumberValue(this.degree, parse);
 
 
         const values = [];
         
         for (const _input of this.inputs)
         {
-            const input = (await _input.eval(parse)).toValue();
+            const input = await evalNumberValue(_input, parse);
 
             if (isListValueType(input.type))
             {
                 for (const item of input.items)
                 {
-                    const value = (await item.eval(parse)).toValue();
+                    const value = await evalNumberValue(item, parse);
                     values.push(value);
                 }
             }
             else
             {
-                const value = (await input.eval(parse)).toValue();
+                const value = await evalNumberValue(input, parse);
                 values.push(value);
             }
         }
@@ -26519,16 +26568,15 @@ extends GOperator1
             return this;
 
 
-        let   current = (await this.current.eval(parse)).toValue();
-        const target  = (await this.target .eval(parse)).toValue();
+        let   input   = await evalNumberValue(this.input,   parse);
+        let   current = await evalNumberValue(this.current, parse);
+        const target  = await evalNumberValue(this.target,  parse);
 
 
-        if (   this.input
+        if (   input
             && current.isValid()
             && target .isValid())
         {
-            let input = (await this.input.eval(parse)).toValue();
-
             consoleAssert(
                 input.type == NUMBER_VALUE, 
                 'input.type must be NUMBER_VALUE');
@@ -26567,7 +26615,7 @@ extends GOperator1
 
                         
                     this.current.invalidateInputs(parse, this);
-                    current = (await this.current.eval(parse)).toValue();
+                    current = await evalNumberValue(this.current, parse);
 
 
                     // if (!current.isValid())
@@ -26602,7 +26650,7 @@ extends GOperator1
                 {
                     parse.currentProgress += maxIter - iter;
 
-                    input = (await this.input.eval(parse)).toValue();
+                    input = await evalNumberValue(this.input, parse);
                     this.value = input.copy();
                 }
                 else
@@ -26737,12 +26785,12 @@ extends GOperator
             return this;
 
 
-        const from   = (await this.from  .eval(parse)).toValue();
-        const to     = (await this.to    .eval(parse)).toValue();
-        const curve  = (await this.curve .eval(parse)).toValue();
-        const repeat = (await this.repeat.eval(parse)).toValue();
-        const length = (await this.length.eval(parse)).toValue();
-        const time   = (await this.time  .eval(parse)).toValue();
+        const from   = await evalNumberValue(this.from,   parse);
+        const to     = await evalNumberValue(this.to,     parse);
+        const curve  = await evalNumberValue(this.curve,  parse);
+        const repeat = await evalNumberValue(this.repeat, parse);
+        const length = await evalNumberValue(this.length, parse);
+        const time   = await evalNumberValue(this.time,   parse);
     
 
         const maxDec = Math.max(from.decimals, to.decimals);
@@ -26921,7 +26969,10 @@ extends GArithmetic
             return this;
 
 
-        const op = this.operation ? (await this.operation.eval(parse)).toValue().toInteger() : NumberValue.NaN.copy();
+        let op = await evalNumberValue(this.operation, parse);
+
+        if (op) op = op.toInteger();
+        
 
         if (op.isValid())
         {
@@ -27055,10 +27106,10 @@ extends GOperator1
         this.value = new NumberValue(0);
 
 
-        const input   = this.input     ? (await this.input    .eval(parse)).toValue() : null;
-        const op      = this.operation ? (await this.operation.eval(parse)).toValue() : null;
-        const operand = this.operand   ? (await this.operand  .eval(parse)).toValue() : null;
-        const invert  = this.invert    ? (await this.invert   .eval(parse)).toValue() : null;
+        const input   = await evalNumberValue(this.input,     parse);
+        const op      = await evalNumberValue(this.operation, parse);
+        const operand = await evalNumberValue(this.operand,   parse);
+        const invert  = await evalNumberValue(this.invert,    parse);
 
 
         if (op)
@@ -27273,7 +27324,7 @@ async function evalAddInputs(inputs, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
-        const val = (await inputs[i].eval(parse)).toValue();
+        const val = await evalNumberValue(inputs[i], parse);
         
         if (   !val
             || !val.isValid())
@@ -27365,7 +27416,7 @@ async function evalSubtractInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = (await inputs[0].eval(parse)).toValue();
+        const val0 = await evalNumberValue(inputs[0], parse);
 
         if (   !val0
             || !val0.isValid())
@@ -27418,7 +27469,7 @@ async function evalSubtractInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = (await inputs[i].eval(parse)).toValue();
+            const val = await evalNumberValue(inputs[i], parse);
 
             if (   !val
                 || !val.isValid())
@@ -27512,7 +27563,7 @@ async function evalMultiplyInputs(inputs, parse)
 
         for (let i = 0; i < inputs.length; i++)
         {
-            const val = (await inputs[i].eval(parse)).toValue();
+            const val = await evalNumberValue(inputs[i], parse);
 
             if (   !val
                 || !val.isValid())
@@ -27602,7 +27653,7 @@ async function evalDivideInputs(inputs, parse)
         
     if (!isEmpty(inputs))
     {
-        const val0 = (await inputs[0].eval(parse)).toValue();
+        const val0 = await evalNumberValue(inputs[0], parse);
 
         if (   !val0
             || !val0.isValid())
@@ -27657,7 +27708,7 @@ async function evalDivideInputs(inputs, parse)
         
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = (await inputs[i].eval(parse)).toValue();
+            const val = await evalNumberValue(inputs[i], parse);
 
             if (   !val
                 || !val.isValid())
@@ -27769,7 +27820,7 @@ async function evalModuloInputs(inputs, parse)
         
     if (!isEmpty(inputs))
     {
-        const val0 = (await inputs[0].eval(parse)).toValue();
+        const val0 = await evalNumberValue(inputs[0], parse);
 
         if (   !val0
             || !val0.isValid())
@@ -27824,7 +27875,7 @@ async function evalModuloInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = (await inputs[i].eval(parse)).toValue();
+            const val = await evalNumberValue(inputs[i], parse);
 
             if (   !val
                 || !val.isValid())
@@ -27929,7 +27980,7 @@ async function evalExponentInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = (await inputs[0].eval(parse)).toValue();
+        const val0 = await evalNumberValue(inputs[0], parse);
 
         if (   !val0
             || !val0.isValid())
@@ -27977,7 +28028,7 @@ async function evalExponentInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = (await inputs[i].eval(parse)).toValue();
+            const val = await evalNumberValue(inputs[i], parse);
 
             if (   !val
                 || !val.isValid())
@@ -28059,9 +28110,13 @@ extends GArithmetic
             return this;
 
 
-        const op = (await this.operation.eval(parse)).toValue().toInteger();
+        let op = await evalNumberValue(this.operation, parse);
 
-        op.value = op.initValue = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
+        if (op) op = op.toInteger();
+
+
+        op.value     = 
+        op.initValue = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
 
         
         switch (op.value)
@@ -28177,7 +28232,7 @@ async function evalNandInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = (await inputs[0].eval(parse)).toValue();
+        const val0 = await evalNumberValue(inputs[0], parse);
         if (!val0.isValid()) return NumberValue.NaN.copy();
 
         if (    isListValueType(val0.type)
@@ -28207,7 +28262,7 @@ async function evalNandInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = (await inputs[i].eval(parse)).toValue();
+            const val = await evalNumberValue(inputs[i], parse);
             if (!val.isValid()) return NumberValue.NaN.copy();
 
             if (isListValueType(val.type))
@@ -28292,8 +28347,9 @@ async function evalAndInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = (await inputs[0].eval(parse)).toValue();
+        const val0 = await evalNumberValue(inputs[0], parse);
         if (!val0.isValid()) return NumberValue.NaN.copy();
+
 
         if (    isListValueType(val0.type)
             && !isEmpty(val0.items))
@@ -28321,8 +28377,9 @@ async function evalAndInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = (await inputs[i].eval(parse)).toValue();
+            const val = await evalNumberValue(inputs[i], parse);
             if (!val.isValid()) return NumberValue.NaN.copy();
+
 
             if (isListValueType(val.type))
             {
@@ -28410,7 +28467,7 @@ async function evalOrInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = (await inputs[0].eval(parse)).toValue();
+        const val0 = await evalNumberValue(inputs[0], parse);
         if (!val0.isValid()) return NumberValue.NaN.copy();
 
         if (    isListValueType(val0.type)
@@ -28439,7 +28496,7 @@ async function evalOrInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = (await inputs[i].eval(parse)).toValue();
+            const val = await evalNumberValue(inputs[i], parse);
             if (!val.isValid()) return NumberValue.NaN.copy();
 
             if (isListValueType(val.type))
@@ -28527,7 +28584,7 @@ async function evalXorInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = (await inputs[0].eval(parse)).toValue();
+        const val0 = await evalNumberValue(inputs[0], parse);
         if (!val0.isValid()) return NumberValue.NaN.copy();
 
         if (    isListValueType(val0.type)
@@ -28557,7 +28614,7 @@ async function evalXorInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = (await inputs[i].eval(parse)).toValue();
+            const val = await evalNumberValue(inputs[i], parse);
             if (!val.isValid()) return NumberValue.NaN.copy();
 
             if (isListValueType(val.type))
@@ -28634,8 +28691,8 @@ extends GOperator1
             return this;
 
 
-        const op      = (await this.operation.eval(parse)).toValue();
-        const operand = (await this.operand  .eval(parse)).toValue();
+        const op      = await evalNumberValue(this.operation, parse);
+        const operand = await evalNumberValue(this.operand,   parse);
 
         op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
 
@@ -28708,8 +28765,8 @@ extends GOperator1
 
 async function evalConditionInputs(input0, input1, op, parse) 
 {
-    const val0 = input0 ? (await input0.eval(parse)).toValue() : NumberValue.NaN.copy();
-    const val1 = input1 ? (await input1.eval(parse)).toValue() : NumberValue.NaN.copy();
+    const val0 = await evalNumberValue(input0, parse);
+    const val1 = await evalNumberValue(input1, parse);
 
     if (   val0.isValid() 
         && val1.isValid())
@@ -29049,8 +29106,8 @@ extends GOperator1
             return this;
 
 
-        const input = this.input    ? (await this.input   .eval(parse)).toValue() : null;
-        const func  = this.function ? (await this.function.eval(parse)).toValue().toInteger() : null;
+        const input = await evalNumberValue(this.input,    parse);
+        const func  = await evalNumberValue(this.function, parse);
 
         func.value = Math.min(Math.max(0, func.value), TRIG_OPS.length-1);
 
@@ -29355,8 +29412,8 @@ extends GOperator
             return this;
 
 
-        const x = this.x ? (await this.x.eval(parse)).toValue() : null;
-        const y = this.y ? (await this.y.eval(parse)).toValue() : null;
+        const x = await evalNumberValue(this.x, parse);
+        const y = await evalNumberValue(this.y, parse);
 
 
         this.value = new NumberValue(Math.atan2(y.value, x.value));
@@ -29462,12 +29519,13 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const from = (await this.from.eval(parse)).toValue();
+        const input = await evalNumberValue(this.input, parse);
+        const from  = await evalNumberValue(this.from,  parse);
 
 
-        if (this.input)
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = input;
 
             consoleAssert(
                 this.value.type == NUMBER_VALUE, 
@@ -29569,7 +29627,7 @@ extends GOperator1
 
 
         if (this.input)
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = await evalTextValue(this.input, parse);
         else if (this.value)
             await this.value.eval(parse);
         else
@@ -29640,7 +29698,7 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input = await evalTextValue(this.input, parse);
 
         if (   input
             && input.value)
@@ -29712,13 +29770,13 @@ extends GOperator1
             return this;
 
 
-        const start = (await this.start.eval(parse)).toValue();
-        const end   = (await this.end  .eval(parse)).toValue();
+        const start = await evalNumberValue(this.start, parse);
+        const end   = await evalNumberValue(this.end,   parse);
 
 
         if (this.input)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            const input = await evalTextValue(this.input, parse);
             
             if (isListValueType(input.type))
             {
@@ -29860,9 +29918,9 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        const start = this.start ? (await this.start.eval(parse)).toValue() : null;
-        const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
+        const input = await evalTextValue  (this.input, parse);
+        const start = await evalNumberValue(this.start, parse);
+        const end   = await evalNumberValue(this.end,   parse);
 
 
         let length = 0;
@@ -30003,8 +30061,8 @@ extends GOperator2
             return this;
 
 
-        const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
-        const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+        const input0 = await evalTextValue(this.input0, parse);
+        const input1 = await evalTextValue(this.input1, parse);
     
 
         if (   input0 && input0.isValid() 
@@ -30123,8 +30181,8 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        const _case = this.case  ? (await this.case .eval(parse)).toValue() : null;
+        const input = await evalTextValue  (this.input, parse);
+        const _case = await evalNumberValue(this.case,  parse);
 
 
         if (input)
@@ -30299,10 +30357,10 @@ extends GOperator1
             return this;
 
 
-        const input     = this.input     ? (await this.input    .eval(parse)).toValue() : null;
-        const base      = this.base      ? (await this.base     .eval(parse)).toValue() : null;
-        const decimals  = this.decimals  ? (await this.decimals .eval(parse)).toValue() : null;
-        const thousands = this.thousands ? (await this.thousands.eval(parse)).toValue() : null;
+        const input     = await evalNumberValue(this.input,     parse);
+        const base      = await evalNumberValue(this.base,      parse);
+        const decimals  = await evalNumberValue(this.decimals,  parse);
+        const thousands = await evalNumberValue(this.thousands, parse);
 
 
         if (input)
@@ -30444,14 +30502,12 @@ extends GOperator1
             return this;
 
 
-        const format = (await this.format.eval(parse)).toValue();
+        const input  = await evalColorValue (this.input,  parse);
+        const format = await evalNumberValue(this.format, parse);
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-
             if (isListValueType(input.type))
             {
                 this.value = new ListValue();
@@ -30605,10 +30661,10 @@ extends GOperator1
             return this;
 
 
-        const input     = this.input     ? (await this.input    .eval(parse)).toValue() : null;
-        const base      = this.base      ? (await this.base     .eval(parse)).toValue() : null;
-        const decimals  = this.decimals  ? (await this.decimals .eval(parse)).toValue() : null;
-        const thousands = this.thousands ? (await this.thousands.eval(parse)).toValue() : null;
+        const input     = await evalTextValue  (this.input,     parse);
+        const base      = await evalNumberValue(this.base,      parse);
+        const decimals  = await evalNumberValue(this.decimals,  parse);
+        const thousands = await evalTextValue  (this.thousands, parse);
 
 
         if (   input
@@ -30779,7 +30835,7 @@ extends GOperator1
 
         if (this.input)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            const input = await evalTextValue(this.input, parse);
 
             if (isListValueType(input.type))
             {
@@ -30859,7 +30915,7 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input = await evalNumberValue(this.input, parse);
 
 
         if (input)
@@ -30935,7 +30991,7 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input = await evalTextValue(this.input, parse);
 
 
         if (input)
@@ -31030,8 +31086,8 @@ extends GOperator
             return this;
 
 
-        const name  = (await this.name .eval(parse)).toValue();
-        const index = (await this.index.eval(parse)).toValue();
+        const name  = await evalTextValue  (this.name,  parse);
+        const index = await evalNumberValue(this.index, parse);
 
 
         switch (name.value)
@@ -31181,10 +31237,10 @@ extends GOperator1
             return this;
 
 
-        const  input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        const _what  = this.what  ? (await this.what .eval(parse)).toValue() : null;
-        const _with  = this.with  ? (await this.with .eval(parse)).toValue() : null;
-        const _regex = this.regex ? (await this.regex.eval(parse)).toValue() : null;
+        const  input = await evalTextValue  (this.input, parse);
+        const _what  = await evalTextValue  (this.what,  parse);
+        const _with  = await evalTextValue  (this.with,  parse);
+        const _regex = await evalNumberValue(this.regex, parse);
 
 
         if (input)
@@ -31367,7 +31423,7 @@ extends GOperator
             return this;
 
 
-        const _with = (await this.with.eval(parse)).toValue();
+        const _with = await evalTextValue(this.with, parse);
 
         this.value = await evalJoinInputs(this.inputs, _with, parse);
 
@@ -31439,7 +31495,7 @@ async function evalJoinInputs(inputs, _with, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
-        const val = (await inputs[i].eval(parse)).toValue();
+        const val = await evalTextValue(inputs[i], parse);
         if (!val) continue;
 
 
@@ -31525,15 +31581,15 @@ extends GOperator1
             return this;
 
 
-        const startPad   = (await this.startPad  .eval(parse)).toValue();
-        const startCount = (await this.startCount.eval(parse)).toValue();
-        const endPad     = (await this.endPad    .eval(parse)).toValue();
-        const endCount   = (await this.endCount  .eval(parse)).toValue();
+        const startPad   = await evalTextValue  (this.startPad,   parse);
+        const startCount = await evalNumberValue(this.startCount, parse);
+        const endPad     = await evalTextValue  (this.endPad,     parse);
+        const endCount   = await evalNumberValue(this.endCount,   parse);
 
 
         if (this.input)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            const input = await evalTextValue(this.input, parse);
             
             if (isListValueType(input.type))
             {
@@ -31693,7 +31749,7 @@ extends GOperator1
             return this;
 
 
-        const separator = this.separator ? (await this.separator.eval(parse)).toValue() : null;
+        const separator = await evalTextValue(this.separator, parse);
 
 
         this.value = new ListValue();
@@ -31702,7 +31758,7 @@ extends GOperator1
         if (   this.input
             && separator)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            const input = await evalTextValue(this.input, parse);
             
             if (   input
                 && input.value)
@@ -31811,7 +31867,7 @@ extends GOperator2
         this.value = NumberValue.NaN.copy();
         
         
-        const op = this.operation ? (await this.operation.eval(parse)).toValue().toInteger() : null;
+        const op = await evalNumberValue(this.operation, parse);
 
         
         if (op)
@@ -31882,8 +31938,8 @@ extends GOperator2
 
 async function evalCompareInputs(input0, input1, op, parse) 
 {
-    const val0 = input0 ? (await input0.eval(parse)).toValue() : TextValue.NaN.copy();
-    const val1 = input1 ? (await input1.eval(parse)).toValue() : TextValue.NaN.copy();
+    const val0 = await evalTextValue(input0, parse);
+    const val1 = await evalTextValue(input1, parse);
 
     if (   val0 && val0.isValid() 
         && val1 && val1.isValid())
@@ -31938,8 +31994,8 @@ extends GOperator1
             return this;
 
 
-        const rowSeparator    = this.rowSeparator    ? (await this.rowSeparator   .eval(parse)).toValue() : null;
-        const columnSeparator = this.columnSeparator ? (await this.columnSeparator.eval(parse)).toValue() : null;
+        const rowSeparator    = await evalTextValue(this.rowSeparator,    parse);
+        const columnSeparator = await evalTextValue(this.columnSeparator, parse);
 
 
         this.value = new ListValue();
@@ -31957,7 +32013,7 @@ extends GOperator1
             && columnSeparator
             && rowSeparator.value != '')
         {
-            const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+            const input = await evalTextValue(this.input, parse);
             
 
             const rows = 
@@ -32090,7 +32146,7 @@ extends GOperator1
 
         if (this.input)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            const input = await evalTextValue(this.input, parse);
             
             try
             {
@@ -32104,7 +32160,6 @@ extends GOperator1
         }
     
 
-        // console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
             ['length',  new NumberValue(this.value.items.length)]
@@ -32217,8 +32272,8 @@ extends GOperator
             return this;
 
 
-        const request     = (await this.request    .eval(parse)).toValue();
-        const cachedValue = (await this.cachedValue.eval(parse)).toValue();
+        const request     = await evalTextValue(this.request,     parse);
+        const cachedValue = await evalTextValue(this.cachedValue, parse);
 
         
         genInitNodeProgress(this.nodeId);
@@ -32353,8 +32408,8 @@ extends GOperator
             return this;
 
 
-        const cachedValue = this.cachedValue ? (await this.cachedValue.eval(parse)).toValue() : null;
-        //const path        = this.path        ? (await this.path       .eval(parse)).toValue() : null;
+        const cachedValue = await evalTextValue(this.cachedValue, parse);
+      //const path        = await evalTextValue(this.path,        parse);
 
         
         genInitNodeProgress(this.nodeId);
@@ -33058,11 +33113,13 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue()             : null;
-        const space = this.space ? (await this.space.eval(parse)).toValue().toInteger() : null; 
-        let   c1    = this._c1   ? (await this._c1  .eval(parse)).toValue()             : null;
-        let   c2    = this._c2   ? (await this._c2  .eval(parse)).toValue()             : null;
-        let   c3    = this._c3   ? (await this._c3  .eval(parse)).toValue()             : null;
+        const input = await evalValue      (this.input, parse);
+        let   space = await evalNumberValue(this.space, parse); 
+        let   c1    = await evalNumberValue(this._c1,   parse);
+        let   c2    = await evalNumberValue(this._c2,   parse);
+        let   c3    = await evalNumberValue(this._c3,   parse);
+
+        if (space) space = space.toInteger();
 
         
         if (input)
@@ -33294,13 +33351,12 @@ extends GOperator1
             return this;
 
 
-        const quality = this.quality ? (await this.quality.eval(parse)).toValue().toInteger() : null;
+        const input   = await evalColorValue (this.input,   parse);
+        const quality = await evalNumberValue(this.quality, parse);
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             if (this.options.enabled)
             {
                 if (isListValueType(input.type))
@@ -33513,15 +33569,17 @@ extends GOperator1
             return this;
 
 
-        const input = this.input  ? (await this. input.eval(parse)).toValue()             : null;
-        const order = this._order ? (await this._order.eval(parse)).toValue().toInteger() : null;
-        const c1    = this._c1    ? (await this._c1   .eval(parse)).toValue()             : null;
-        const c2    = this._c2    ? (await this._c2   .eval(parse)).toValue()             : null;
-        const c3    = this._c3    ? (await this._c3   .eval(parse)).toValue()             : null;
+        const input = await evalColorValue (this. input, parse);
+        let   order = await evalNumberValue(this._order, parse);
+        const c1    = await evalNumberValue(this._c1,    parse);
+        const c2    = await evalNumberValue(this._c2,    parse);
+        const c3    = await evalNumberValue(this._c3,    parse);
 
-    
-        if (order)
+        if (order) 
+        {
+            order       = order.toInteger();
             order.value = Math.min(Math.max(0, order.value), 5);
+        }
 
 
         if (input)
@@ -33760,9 +33818,9 @@ extends GOperator2
             return this;
 
 
-        const input0   = this.input0   ? (await this.input0  .eval(parse)).toValue() : null;
-        const input1   = this.input1   ? (await this.input1  .eval(parse)).toValue() : null;
-        const standard = this.standard ? (await this.standard.eval(parse)).toValue().toInteger() : null;
+        const input0   = await evalColorValue (this.input0,   parse);
+        const input1   = await evalColorValue (this.input1,   parse);
+        const standard = await evalNumberValue(this.standard, parse);
 
         
         if (standard.isValid())
@@ -33809,10 +33867,8 @@ extends GOperator2
             ]);
         }
 
-        else if (this.input0) 
+        else if (input0) 
         {
-            const input0 = (await this.input0.eval(parse)).toValue();
-
             this.setUpdateValues(parse,
             [
                 ['text', input0.isValid() ? input0 : ColorValue.NaN],
@@ -33823,23 +33879,21 @@ extends GOperator2
             this.contrast = NumberValue.NaN.copy();
         }
 
-        else if (this.input1) 
+        else if (input1) 
         {
-            const input1 = (await this.input1.eval(parse)).toValue();
-
             this.setUpdateValues(parse,
             [
                 ['text', ColorValue.NaN                            ],
                 ['back', input1.isValid() ? input1 : ColorValue.NaN]
             ]);
 
-            this.value    = ColorValue.NaN.copy();
+            this.value    = ColorValue .NaN.copy();
             this.contrast = NumberValue.NaN.copy();
         }
 
         else
         {
-            this.value    = ColorValue.NaN.copy();
+            this.value    = ColorValue .NaN.copy();
             this.contrast = NumberValue.NaN.copy();
 
             this.setUpdateValues(parse,
@@ -33949,13 +34003,14 @@ extends GOperator1
             return this;
 
 
-        const from = this.from ? (await this.from.eval(parse)).toValue().toInteger() : null;
+        const input = await evalColorValue (this.input, parse);
+        let   from  = await evalNumberValue(this.from,  parse);
 
+        if (from) from = from.toInteger();
+        
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             if (this.options.enabled)
             {
                 if (isListValueType(input.type))
@@ -34083,16 +34138,14 @@ extends GOperator1
             return this;
 
 
-        const l = (await this.l.eval(parse)).toValue();        
-        const m = (await this.m.eval(parse)).toValue();
-        const s = (await this.s.eval(parse)).toValue();
+        const input = await evalColorValue (this.input, parse);
+        const l     = await evalNumberValue(this.l,     parse); 
+        const m     = await evalNumberValue(this.m,     parse);
+        const s     = await evalNumberValue(this.s,     parse);
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-
             if (this.options.enabled)
             {
                 if (isListValueType(input.type))
@@ -34246,17 +34299,18 @@ extends GOperator2
             return this;
 
 
-        const space  = (await this.space .eval(parse)).toValue().toInteger();
-        const amount = (await this.amount.eval(parse)).toValue();
-        const gamma  = (await this.gamma .eval(parse)).toValue();
+        const input0 = await evalColorValue (this.input0, parse);
+        const input1 = await evalColorValue (this.input1, parse);
+        let   space  = await evalNumberValue(this.space,  parse);
+        const amount = await evalNumberValue(this.amount, parse);
+        const gamma  = await evalNumberValue(this.gamma,  parse);
 
+        if (space) space = space.toInteger();
+        
 
-        if (   this.input0 
-            && this.input1)
+        if (   input0 
+            && input1)
         {
-            const input0 = (await this.input0.eval(parse)).toValue();
-            const input1 = (await this.input1.eval(parse)).toValue();
-
             consoleAssert(
                 amount.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
@@ -34283,11 +34337,11 @@ extends GOperator2
             this.value = ColorValue.fromDataColor(_color, spaceIndex);
         }
 
-        else if (this.input0) 
-            this.value = (await this.input0.eval(parse)).toValue();
+        else if (input0) 
+            this.value = input0;
 
-        else if (this.input1) 
-            this.value = (await this.input1.eval(parse)).toValue();
+        else if (input1) 
+            this.value = input1;
             
         else 
             this.value = ColorValue.NaN.copy();
@@ -34438,16 +34492,17 @@ extends GOperator2
             return this;
 
 
-        const mode    = (await this.mode   .eval(parse)).toValue().toInteger();
-        const opacity = (await this.opacity.eval(parse)).toValue();
+        const input0  = await evalColorValue (this.input0,  parse);
+        const input1  = await evalColorValue (this.input1,  parse);
+        let   mode    = await evalNumberValue(this.mode,    parse);
+        const opacity = await evalNumberValue(this.opacity, parse);
+        
+        if (mode) mode = mode.toInteger();
 
 
-        if (   this.input0 
-            && this.input1)
+        if (   input0 
+            && input1)
         {
-            const input0 = (await this.input0.eval(parse)).toValue();
-            const input1 = (await this.input1.eval(parse)).toValue();
-
             consoleAssert(
                 opacity.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
@@ -34466,11 +34521,11 @@ extends GOperator2
             this.value = ColorValue.fromRgb(scaleRgb(col));
         }
 
-        else if (this.input0) 
-            this.value = (await this.input0.eval(parse)).toValue();
+        else if (input0) 
+            this.value = input0;
 
         else if (this.input1) 
-            this.value = (await this.input1.eval(parse)).toValue();
+            this.value = input1;
             
         else 
             this.value = ColorValue.NaN.copy();
@@ -34974,7 +35029,7 @@ extends GOperator
             return this;
 
         
-        this.value = (await this.genValue.eval(parse)).toValue();
+        this.value = await evalColorValue(this.genValue, parse);
 
 
         if (   this.value.isValid()
@@ -35129,15 +35184,14 @@ extends GOperator1
             return this;
 
 
-        let color   = this.color   ? (await this.color  .eval(parse)).toValue() : null;
-        let opacity = this.opacity ? (await this.opacity.eval(parse)).toValue() : null;
-        let blend   = this.blend   ? (await this.blend  .eval(parse)).toValue() : null;
+        const input   = await evalFillValue  (this.input,   parse);
+        let   color   = await evalColorValue (this.color,   parse);
+        let   opacity = await evalNumberValue(this.opacity, parse);
+        let   blend   = await evalNumberValue(this.blend,   parse);
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             this.value = new FillValue(
                 color   ?? input.color,
                 opacity ?? input.opacity,
@@ -35285,18 +35339,18 @@ extends GOperator1
         if (this.isCached())
             return this;
 
-        let fill = this.fill ? (await this.fill.eval(parse)).toValue() : null;
-
+        
+        
+        
+        const input    = await evalColorStopValue(this.input,    parse);
+        let   fill     = await evalFillValue     (this.fill,     parse);
+        const position = await evalNumberValue   (this.position, parse);
+        
         fill = this.validateFill(fill);
 
 
-        const position = this.position ? (await this.position.eval(parse)).toValue() : null;
-
-
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             this.value = new ColorStopValue(
                 fill     ?? input.fill,
                 position ?? input.position);
@@ -35481,23 +35535,23 @@ extends GOperator
         if (this.isCached())
             return this;
 
-        const gradType = this.gradType ? (await this.gradType.eval(parse)).toValue() : null;
-        const position = this.position ? (await this.position.eval(parse)).toValue() : null;
-        const x        = this.x        ? (await this.x       .eval(parse)).toValue() : null;
-        const y        = this.y        ? (await this.y       .eval(parse)).toValue() : null;
-        const size     = this.size     ? (await this.size    .eval(parse)).toValue() : null;
-        const angle    = this.angle    ? (await this.angle   .eval(parse)).toValue() : null;
-        const aspect   = this.aspect   ? (await this.aspect  .eval(parse)).toValue() : null;
-        const skew     = this.skew     ? (await this.skew    .eval(parse)).toValue() : null;
-        const blend    = this.blend    ? (await this.blend   .eval(parse)).toValue() : null;
+            
+        const gradType = await evalNumberValue(this.gradType, parse);
+        const position = await evalNumberValue(this.position, parse);
+        const x        = await evalNumberValue(this.x,        parse);
+        const y        = await evalNumberValue(this.y,        parse);
+        const size     = await evalNumberValue(this.size,     parse);
+        const angle    = await evalNumberValue(this.angle,    parse);
+        const aspect   = await evalNumberValue(this.aspect,   parse);
+        const skew     = await evalNumberValue(this.skew,     parse);
+        const blend    = await evalNumberValue(this.blend,    parse);
 
 
         let stops = new ListValue();
 
         for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
-            const input = (await this.inputs[i].eval(parse)).toValue();
-
+            const input = await evalColorStopValue(this.inputs[i], parse);
 
             if (   input
                 && this.options.enabled)
@@ -35719,9 +35773,8 @@ extends GOperator1
         if (this.isCached())
             return this;
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-
-        let fills = this._fills ? (await this._fills.eval(parse)).toValue() : null;
+        const input = await evalStrokeValue(this. input, parse);
+        let   fills = await evalListValue  (this._fills, parse);
 
         fills = this.validateFills(fills);
 
@@ -35729,12 +35782,12 @@ extends GOperator1
             this.fills = fills;
 
 
-        const weight = this.weight ? (await this.weight.eval(parse)).toValue() : null;
-        const fit    = this.fit    ? (await this.fit   .eval(parse)).toValue() : null;
-        const join   = this.join   ? (await this.join  .eval(parse)).toValue() : null;
-        const miter  = this.miter  ? (await this.miter .eval(parse)).toValue() : null;
-        const cap    = this.cap    ? (await this.cap   .eval(parse)).toValue() : null;
-        const dashes = this.dashes ? (await this.dashes.eval(parse)).toValue() : null;
+        const weight = await evalNumberValue(this.weight, parse);
+        const fit    = await evalNumberValue(this.fit,    parse);
+        const join   = await evalNumberValue(this.join,   parse);
+        const miter  = await evalNumberValue(this.miter,  parse);
+        const cap    = await evalNumberValue(this.cap,    parse);
+        const dashes = await evalTextValue  (this.dashes, parse);
 
 
         if (input)
@@ -35927,16 +35980,15 @@ extends GOperator1
             return this;
 
 
-        const tl = this.tl ? (await this.tl.eval(parse)).toValue() : null;
-        const tr = this.tr ? (await this.tr.eval(parse)).toValue() : null;
-        const bl = this.bl ? (await this.bl.eval(parse)).toValue() : null;
-        const br = this.br ? (await this.br.eval(parse)).toValue() : null;
+        const input = await evalRoundedCornersValue(this.input, parse);
+        const tl    = await evalNumberValue        (this.tl,    parse);
+        const tr    = await evalNumberValue        (this.tr,    parse);
+        const bl    = await evalNumberValue        (this.bl,    parse);
+        const br    = await evalNumberValue        (this.br,    parse);
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             this.value = new RoundCornersValue(
                 tl ?? input.tl,
                 tr ?? input.tr,
@@ -36093,13 +36145,14 @@ extends GOperator1
             return this;
 
 
-        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
-        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
-        const blur   = this.blur   ? (await this.blur  .eval(parse)).toValue() : null;
-        const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
-        let   fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
-        const blend  = this.blend  ? (await this.blend .eval(parse)).toValue() : null;
-        const behind = this.behind ? (await this.behind.eval(parse)).toValue() : null;
+        const input  = await evalValue      (this.input,  parse);
+        const x      = await evalNumberValue(this.x,      parse);
+        const y      = await evalNumberValue(this.y,      parse);
+        const blur   = await evalNumberValue(this.blur,   parse);
+        const spread = await evalNumberValue(this.spread, parse);
+        let   fill   = await evalFillValue  (this.fill,   parse);
+        const blend  = await evalNumberValue(this.blend,  parse);
+        const behind = await evalNumberValue(this.behind, parse);
 
 
         if (   fill
@@ -36107,10 +36160,8 @@ extends GOperator1
             fill = new FillValue(fill);
 
         
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             this.value = new DropShadowValue(
                 x      ?? input.x,
                 y      ?? input.y,
@@ -36288,12 +36339,13 @@ extends GOperator1
             return this;
 
 
-        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
-        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
-        const blur   = this.blur   ? (await this.blur  .eval(parse)).toValue() : null;
-        const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
-        let   fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
-        const blend  = this.blend  ? (await this.blend .eval(parse)).toValue() : null;
+        const input  = await evalInnerShadowValue(this.input,  parse);
+        const x      = await evalNumberValue     (this.x,      parse);
+        const y      = await evalNumberValue     (this.y,      parse);
+        const blur   = await evalNumberValue     (this.blur,   parse);
+        const spread = await evalNumberValue     (this.spread, parse);
+        let   fill   = await evalFillValue       (this.fill,   parse);
+        const blend  = await evalNumberValue     (this.blend,  parse);
 
         
         if (   fill
@@ -36301,10 +36353,8 @@ extends GOperator1
             fill = new FillValue(fill);
 
 
-         if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             this.value = new InnerShadowValue(
                 x      ?? input.x,
                 y      ?? input.y,
@@ -36459,13 +36509,12 @@ extends GOperator1
             return this;
 
 
-        const radius = this.radius ? (await this.radius.eval(parse)).toValue() : null;
+        const input  = await evalLayerBlurValue(this.input,  parse);
+        const radius = await evalNumberValue   (this.radius, parse);
 
         
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             this.value = new LayerBlurValue(
                 radius ?? input.radius,
                 this.options.enabled);
@@ -36580,13 +36629,12 @@ extends GOperator1
             return this;
 
 
-        const radius = this.radius ? (await this.radius.eval(parse)).toValue() : null;
+        const input  = await evalValue      (this.input,  parse);
+        const radius = await evalNumberValue(this.radius, parse);
 
         
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             this.value = new BackBlurValue(
                 radius ?? input.radius,
                 this.options.enabled);
@@ -36704,8 +36752,8 @@ extends GOperator
             return this;
 
 
-        const opacity = (await this.opacity.eval(parse)).toValue();
-        const blend   = (await this.blend  .eval(parse)).toValue();
+        const opacity = await evalNumberValue(this.opacity, parse);
+        const blend   = await evalNumberValue(this.blend,   parse);
 
 
         this.value = 
@@ -36815,7 +36863,7 @@ extends GOperator
             return this;
 
 
-        const maskType = (await this.maskType.eval(parse)).toValue();
+        const maskType = await evalNumberValue(this.maskType, parse);
 
 
         this.value = new LayerMaskValue(maskType, this.options.enabled);
@@ -36918,12 +36966,10 @@ extends GOperator
 
     async evalBaseParams(parse, evalHeight = true)
     {
-        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
-        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
-        const width  = this.width  ? (await this.width .eval(parse)).toValue() : null;
-
-        const height = evalHeight
-                    && this.height ? (await this.height.eval(parse)).toValue() : null;
+        let x      = await evalNumberValue(this.x,     parse);
+        let y      = await evalNumberValue(this.y,     parse);
+        let width  = await evalNumberValue(this.width, parse);
+        let height = evalHeight ? await evalNumberValue(height, parse) : null;
 
         return [x, y, width, height];
     }
@@ -37076,7 +37122,7 @@ extends GShapeBase
 
     async evalShapeBase(parse)
     {
-        let props = this.props ? (await this.props.eval(parse)).toValue() : null;
+        let props = await evalListValue(this.props, parse);
 
         if (   props
             && STYLE_VALUES.includes(props.type))
@@ -37247,9 +37293,12 @@ extends GShape
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        let   round = this.round ? (await this.round.eval(parse)).toValue() : null;
+        const input = await evalRectangleValue(this.input, parse);
+        let   round = await evalNumberValue   (this.round, parse);
 
+        if (round && !round.isValid()) round = NumberValue.NaN.copy();
+
+        
         let [x, y, width, height] = await this.evalBaseParams(parse);
 
 
@@ -37451,7 +37500,7 @@ extends GShape
             return this;
 
 
-        let input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        let input = await evalLineValue(this.input, parse);
 
         let [x, y, width, ] = await this.evalBaseParams(parse, false);
             
@@ -37667,12 +37716,18 @@ extends GShape
 
         let [x, y, width, height] = await this.evalBaseParams(parse);
 
-        let input = this.input    ? (await this.input   .eval(parse)).toValue() : null;
-        let pos   = this.position ? (await this.position.eval(parse)).toValue() : null;
-        let round = this.round    ? (await this.round   .eval(parse)).toValue() : null;
-        let start = this.start    ? (await this.start   .eval(parse)).toValue() : null;
-        let sweep = this.sweep    ? (await this.sweep   .eval(parse)).toValue() : null;
-        let inner = this.inner    ? (await this.inner   .eval(parse)).toValue() : null;
+        let input = await evalValue      (this.input,    parse);
+        let pos   = await evalNumberValue(this.position, parse);
+        let round = await evalNumberValue(this.round,    parse);
+        let start = await evalNumberValue(this.start,    parse);
+        let sweep = await evalNumberValue(this.sweep,    parse);
+        let inner = await evalNumberValue(this.inner,    parse);
+
+        if (pos   && !pos  .isValid()) pos   = NumberValue.NaN.copy();
+        if (round && !round.isValid()) round = NumberValue.NaN.copy();
+        if (start && !start.isValid()) start = NumberValue.NaN.copy();
+        if (sweep && !sweep.isValid()) sweep = NumberValue.NaN.copy();
+        if (inner && !inner.isValid()) inner = NumberValue.NaN.copy();
 
 
         if (input)
@@ -37911,10 +37966,11 @@ extends GShape
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        let   round = this.round ? (await this.round.eval(parse)).toValue() : null;
-        let   bias  = this.bias  ? (await this.bias .eval(parse)).toValue() : null;
-        
+        const input = await evalValue      (this.input, parse);
+        let   round = await evalNumberValue(this.round, parse);
+        let   bias  = await evalNumberValue(this.bias,  parse);
+
+       
         let [x, y, width, height] = await this.evalBaseParams(parse);
 
 
@@ -38133,10 +38189,10 @@ extends GShape
             
         let [x, y, width, height] = await this.evalBaseParams(parse);
 
-        let input   = this.input    ? (await this.input   .eval(parse)).toValue() : null;
-        let pos     = this.position ? (await this.position.eval(parse)).toValue() : null;
-        let round   = this.round    ? (await this.round   .eval(parse)).toValue() : null;
-        let corners = this.corners  ? (await this.corners .eval(parse)).toValue() : null;
+        let input   = await evalPolygonValue(this.input,    parse);
+        let pos     = await evalNumberValue (this.position, parse);
+        let round   = await evalNumberValue (this.round,    parse);
+        let corners = await evalNumberValue (this.corners,  parse);
 
 
         if (input)
@@ -38400,11 +38456,11 @@ extends GShape
             
         let [x, y, width, height] = await this.evalBaseParams(parse);
 
-        let input  = this.input    ? (await this.input   .eval(parse)).toValue() : null;
-        let pos    = this.position ? (await this.position.eval(parse)).toValue() : null;
-        let round  = this.round    ? (await this.round   .eval(parse)).toValue() : null;
-        let points = this.points   ? (await this.points  .eval(parse)).toValue() : null;
-        let convex = this.convex   ? (await this.convex  .eval(parse)).toValue() : null;
+        let input  = await evalValue      (this.input,    parse);
+        let pos    = await evalNumberValue(this.position, parse);
+        let round  = await evalNumberValue(this.round,    parse);
+        let points = await evalNumberValue(this.points,   parse);
+        let convex = await evalNumberValue(this.convex,   parse);
 
 
         if (input)
@@ -38702,19 +38758,34 @@ extends GShape
             return this;
 
 
-        const input         = this.input         ? (await this.input        .eval(parse)).toValue() : null;
-        let   text          = this.text          ? (await this.text         .eval(parse)).toValue() : null;
-        let   x             = this.x             ? (await this.x            .eval(parse)).toValue() : null;
-        let   y             = this.y             ? (await this.y            .eval(parse)).toValue() : null;
-        let   width         = this.width         ? (await this.width        .eval(parse)).toValue() : null;
-        let   height        = this.height        ? (await this.height       .eval(parse)).toValue() : null;
-        let   font          = this.font          ? (await this.font         .eval(parse)).toValue() : null;
-        let   style         = this.style         ? (await this.style        .eval(parse)).toValue() : null;
-        let   size          = this.size          ? (await this.size         .eval(parse)).toValue() : null;
-        let   alignX        = this.alignX        ? (await this.alignX       .eval(parse)).toValue() : null;
-        let   alignY        = this.alignY        ? (await this.alignY       .eval(parse)).toValue() : null;
-        let   lineHeight    = this.lineHeight    ? (await this.lineHeight   .eval(parse)).toValue() : null;
-        let   letterSpacing = this.letterSpacing ? (await this.letterSpacing.eval(parse)).toValue() : null;
+        const input         = await evalTextShapeValue(this.input,         parse);
+        let   text          = await evalNumberValue   (this.text,          parse);
+        let   x             = await evalNumberValue   (this.x,             parse);
+        let   y             = await evalNumberValue   (this.y,             parse);
+        let   width         = await evalNumberValue   (this.width,         parse);
+        let   height        = await evalNumberValue   (this.height,        parse);
+        let   font          = await evalNumberValue   (this.font,          parse);
+        let   style         = await evalNumberValue   (this.style,         parse);
+        let   size          = await evalNumberValue   (this.size,          parse);
+        let   alignX        = await evalNumberValue   (this.alignX,        parse);
+        let   alignY        = await evalNumberValue   (this.alignY,        parse);
+        let   lineHeight    = await evalNumberValue   (this.lineHeight,    parse);
+        let   letterSpacing = await evalNumberValue   (this.letterSpacing, parse);
+
+
+        if (text          && !text         .isValid()) text          = new TextValue();
+        if (x             && !x            .isValid()) x             = NumberValue.NaN.copy();
+        if (y             && !y            .isValid()) y             = NumberValue.NaN.copy();
+        if (width         && !width        .isValid()) width         = NumberValue.NaN.copy();
+        if (height        && !height       .isValid()) height        = NumberValue.NaN.copy();
+        if (font          && !font         .isValid()) font          = NumberValue.NaN.copy();
+        if (style         && !style        .isValid()) style         = NumberValue.NaN.copy();
+        if (size          && !size         .isValid()) size          = NumberValue.NaN.copy();
+        if (alignX        && !alignX       .isValid()) alignX        = NumberValue.NaN.copy();
+        if (alignY        && !alignY       .isValid()) alignY        = NumberValue.NaN.copy();
+        if (lineHeight    && !lineHeight   .isValid()) lineHeight    = NumberValue.NaN.copy();
+        if (letterSpacing && !letterSpacing.isValid()) letterSpacing = NumberValue.NaN.copy();
+
 
         // for incorrect incoming types
         if (text          && text         .type !=   TEXT_VALUE) text          = new TextValue();
@@ -39028,9 +39099,10 @@ extends GOperator1
             return this;
 
         
-        let input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        let x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
-        let y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
+        let input = await evalPointValue (this.input, parse);
+        let x     = await evalNumberValue(this.x,     parse);
+        let y     = await evalNumberValue(this.y,     parse);
+
 
         if (   input
             && input.isValid())
@@ -39058,8 +39130,8 @@ extends GOperator1
             if (x)  this.value.x = x;  else  x = this.value.x;
             if (y)  this.value.y = y;  else  y = this.value.y;
         }
-        else if (x && x.isValid() 
-              && y && y.isValid())
+        else if (x 
+              && y)
         {
             this.value = new PointValue(
                 this.nodeId, 
@@ -39209,8 +39281,8 @@ extends GOperator1
             return this;
 
         
-        const input  = this.input  ? (await this.input .eval(parse)).toValue() : null;
-        const smooth = this.smooth ? (await this.smooth.eval(parse)).toValue() : null;
+        const input  = await evalPointValue (this.input,  parse);
+        const smooth = await evalNumberValue(this.smooth, parse);
         
         if (input)
         {
@@ -39392,12 +39464,12 @@ extends GShape
             return this;
 
 
-        const input   = this.input   ? (await this.input  .eval(parse)).toValue() : null;
-        let   points  = this.points  ? (await this.points .eval(parse)).toValue() : null;
-        let   closed  = this.closed  ? (await this.closed .eval(parse)).toValue() : null;
-        let   degree  = this.degree  ? (await this.degree .eval(parse)).toValue() : null;
-        let   winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
-        let   round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
+        const input   = await evalVectorPathValue(this.input,   parse);
+        let   points  = await evalNumberValue    (this.points,  parse);
+        let   closed  = await evalNumberValue    (this.closed,  parse);
+        let   degree  = await evalNumberValue    (this.degree,  parse);
+        let   winding = await evalNumberValue    (this.winding, parse);
+        let   round   = await evalNumberValue    (this.round,   parse);
 
 
         await this.evalBaseParams(parse);
@@ -39674,13 +39746,12 @@ extends GOperator1
             return this;
 
         
-        let   input = this.input ? (await this.input.eval(parse)).toValue() : null;
-
-        const x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
-        const y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
-        const join  = this.join  ? (await this.join .eval(parse)).toValue() : null;
-        const cap   = this.cap   ? (await this.cap  .eval(parse)).toValue() : null;
-        const round = this.round ? (await this.round.eval(parse)).toValue() : null;
+        let input = await evalVectorVertexValue(this.input, parse);
+        let x     = await evalNumberValue      (this.x,     parse);
+        let y     = await evalNumberValue      (this.y,     parse);
+        let join  = await evalNumberValue      (this.join,  parse);
+        let cap   = await evalNumberValue      (this.cap,   parse);
+        let round = await evalNumberValue      (this.round, parse);
 
 
         if (input)
@@ -39911,11 +39982,10 @@ extends GOperator2
             return this;
 
         
-        let input0       = this.input0       ? (await this.input0      .eval(parse)).toValue() : VectorVertexValue.NaN.copy();
-        let input1       = this.input1       ? (await this.input1      .eval(parse)).toValue() : VectorVertexValue.NaN.copy();
-        let startTangent = this.startTangent ? (await this.startTangent.eval(parse)).toValue() : PointValue       .NaN.copy();
-        let   endTangent = this.  endTangent ? (await this.  endTangent.eval(parse)).toValue() : PointValue       .NaN.copy();
-
+        let input0       = await this.evalPointValue (this.input0      );
+        let input1       = await this.evalPointValue (this.input1      );
+        let startTangent = await this.evalNumberValue(this.startTangent, parse);
+        let   endTangent = await this.evalNumberValue(this.  endTangent);
 
         if (input0.type == POINT_VALUE) input0 = new VectorVertexValue(input0.nodeId, input0.x, input0.y);
         if (input1.type == POINT_VALUE) input1 = new VectorVertexValue(input1.nodeId, input1.x, input1.y);
@@ -40132,7 +40202,7 @@ extends GShape
             return this;
 
         
-        const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
+        const winding = await evalNumberValue(this.winding, parse);
 
 
         this.loops = new ListValue();
@@ -40142,7 +40212,7 @@ extends GShape
 
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const input = (await this.inputs[i].eval(parse)).toValue();
+            const input = await evalVectorEdgeValue(this.inputs[i], parse);
 
             if (isListValueType(input.type))
             {
@@ -40430,7 +40500,7 @@ extends GShape
 
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const input = (await this.inputs[i].eval(parse)).toValue();
+            const input = await evalVectorRegionValue(this.inputs[i], parse);
 
             consoleAssert(
                  input.type == VECTOR_REGION_VALUE, 
@@ -40655,10 +40725,10 @@ extends GShape
 
         let [x, y, width, height] = await this.evalBaseParams(parse);
 
-        let input = this.input    ? (await this.input   .eval(parse)).toValue() : null;
-        let pos   = this.position ? (await this.position.eval(parse)).toValue() : null;
-        let start = this.start    ? (await this.start   .eval(parse)).toValue() : null;
-        let sweep = this.sweep    ? (await this.sweep   .eval(parse)).toValue() : null;
+        let input = await evalArcPathValue(this.input,    parse);
+        let pos   = await evalNumberValue (this.position, parse);
+        let start = await evalNumberValue (this.start,    parse);
+        let sweep = await evalNumberValue (this.sweep,    parse);
 
 
         if (input)
@@ -40907,13 +40977,13 @@ extends GShape
         let [x, y, width, ] = await this.evalBaseParams(parse);
 
 
-        let input     = this.input     ? (await this.input    .eval(parse)).toValue() : null;
-        let shape     = this.shape     ? (await this.shape    .eval(parse)).toValue() : null;
-        let amplitude = this.amplitude ? (await this.amplitude.eval(parse)).toValue() : null;
-        let frequency = this.frequency ? (await this.frequency.eval(parse)).toValue() : null;
-        let offset    = this.offset    ? (await this.offset   .eval(parse)).toValue() : null;
-        let alignX    = this.alignX    ? (await this.alignX   .eval(parse)).toValue() : null;
-        let alignY    = this.alignY    ? (await this.alignY   .eval(parse)).toValue() : null;
+        let input     = await evalWavePathValue(this.input,     parse);
+        let shape     = await evalNumberValue  (this.shape,     parse);
+        let amplitude = await evalNumberValue  (this.amplitude, parse);
+        let frequency = await evalNumberValue  (this.frequency, parse);
+        let offset    = await evalNumberValue  (this.offset,    parse);
+        let alignX    = await evalNumberValue  (this.alignX,    parse);
+        let alignY    = await evalNumberValue  (this.alignY,    parse);
 
 
         if (input)
@@ -41165,7 +41235,7 @@ extends GShapeBase
         {
             for (let i = 0; i < this.inputs.length; i++)
             {
-                const input = (await this.inputs[i].eval(parse)).toValue();
+                const input = await evalValue(this.inputs[i], parse);
 
                 if (input)            
                 {
@@ -41408,9 +41478,14 @@ extends GShape
 
         const [x, y, width, height] = await this.evalBaseParams(parse);
 
-        let   children = this.children ? (await this.children.eval(parse)).toValue() : null;
-        const position = this.position ? (await this.position.eval(parse)).toValue() : null;
-        const round    = this.round    ? (await this.round   .eval(parse)).toValue() : null;
+        let children = await evalListValue  (this.children, parse);
+        let position = await evalNumberValue(this.position, parse);
+        let round    = await evalNumberValue(this.round,    parse);
+
+        if (children && !children.isValid()) children = new ListValue();
+        if (position && !position.isValid()) position = NumberValue.NaN.copy();
+        if (round    && !round   .isValid()) round    = NumberValue.NaN.copy();
+
 
         if (   children
             && SHAPE_VALUES.includes(children.type)
@@ -41426,7 +41501,7 @@ extends GShape
 
         if (this.input)
         {
-            input = (await this.input.eval(parse)).toValue();
+            input = await evalFrameValue(this.input, parse);
 
             this.value = new FrameValue(
                 this.nodeId,
@@ -41666,9 +41741,9 @@ extends GOperator1//Shape
             return this;
 
         
-        const input   = this.input   ? (await this.input  .eval(parse)).toValue() : null;
-        const props   = this.props   ? (await this.props  .eval(parse)).toValue() : null;
-        const replace = this.replace ? (await this.replace.eval(parse)).toValue() : null;
+        const input   = await evalValue    (this.input,   parse);
+        const props   = await evalListValue(this.props,   parse);
+        const replace = await evalValue    (this.replace, parse);
 
 
 
@@ -41872,8 +41947,8 @@ extends GShapeBase
 
         await this.evalBaseParams(parse);
 
-        const operation = this.operation ? (await this.operation.eval(parse)).toValue() : null;
-        let   children  = this.children  ? (await this.children .eval(parse)).toValue() : null;
+        let   children  = await evalListValue  (this.children,  parse);
+        const operation = await evalNumberValue(this.operation, parse);
 
 
         if (   children
@@ -41886,7 +41961,7 @@ extends GShapeBase
 
         if (this.input)
         {
-            input = (await this.input.eval(parse)).toValue();
+            input = await evalValue(this.input, parse);
 
             this.value = new ShapeBooleanValue(
                 this.nodeId,
@@ -42072,7 +42147,7 @@ extends GShapeBase
         if (this.isCached())
             return this;
 
-        const retain   = (await this.retain.eval(parse)).toValue();
+        const retain   = await evalNumberValue(this.retain, parse);
         const finalize = this.finalize.value > 0;
 
 
@@ -42237,12 +42312,12 @@ extends GShapeBase
             return this;
 
 
-        const scale      = this.scale    ? (await this.scale   .eval(parse)).toValue() : null;
-        const format     = this.format   ? (await this.format  .eval(parse)).toValue() : null;
-     // const contents   = this.contents ? (await this.contents.eval(parse)).toValue() : null;
-     // const crop       = this.crop     ? (await this.crop    .eval(parse)).toValue() : null;
-        const suffix     = this.suffix   ? (await this.suffix  .eval(parse)).toValue() : null;
-     // const profile    = this.profile  ? (await this.profile .eval(parse)).toValue() : null;
+        const scale      = await evalNumberValue(this.scale,    parse);
+        const format     = await evalNumberValue(this.format,   parse);
+     // const contents   = await evalNumberValue(this.contents, parse);
+     // const crop       = await evalNumberValue(this.crop,     parse);
+        const suffix     = await evalTextValue  (this.suffix,   parse);
+     // const profile    = await evalNumberValue(this.profile,  parse);
 
 
         this.value = new ListValue();
@@ -42414,12 +42489,12 @@ extends GOperator1
             return this;
 
             
-        const input       = this.input       ? (await this.input      .eval(parse)).toValue() : null;
-        const moveType    = this.moveType    ? (await this.moveType   .eval(parse)).toValue() : null;
-        const x           = this.x           ? (await this.x          .eval(parse)).toValue() : null;
-        const y           = this.y           ? (await this.y          .eval(parse)).toValue() : null;
-        const affectSpace = this.affectSpace ? (await this.affectSpace.eval(parse)).toValue() : null;
-        const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
+        const input       = await evalValue      (this.input,       parse);
+        const moveType    = await evalNumberValue(this.moveType,    parse);
+        const x           = await evalNumberValue(this.x,           parse);
+        const y           = await evalNumberValue(this.y,           parse);
+        const affectSpace = await evalNumberValue(this.affectSpace, parse);
+        const showCenter  = await evalNumberValue(this.showCenter,  parse);
 
 
         if (input)
@@ -42646,8 +42721,8 @@ extends GOperator1
 
     async evalBaseParams(parse)
     {
-        const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
-        const affectSpace = this.affectSpace ? (await this.affectSpace.eval(parse)).toValue() : null;
+        const showCenter  = await evalNumber(this.showCenter,  parse);
+        const affectSpace = await evalNumber(this.affectSpace, parse);
 
         return [showCenter, affectSpace];
     }
@@ -42810,8 +42885,9 @@ extends GAffine
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        const angle = this.angle ? (await this.angle.eval(parse)).toValue() : null;
+        const input = await evalValue      (this.input, parse);
+        const angle = await evalNumberValue(this.angle, parse);
+
 
         const [showCenter, affectSpace] = await this.evalBaseParams(parse);
 
@@ -42974,11 +43050,12 @@ extends GAffine
             return this;
 
 
-        const input         = this.input         ? (await this.input        .eval(parse)).toValue() : null;
-        const scaleX        = this.scaleX        ? (await this.scaleX       .eval(parse)).toValue() : null;
-        const scaleY        = this.scaleY        ? (await this.scaleY       .eval(parse)).toValue() : null;
-        const affectCorners = this.affectCorners ? (await this.affectCorners.eval(parse)).toValue() : null;
-        const affectStyle   = this.affectStyle   ? (await this.affectStyle  .eval(parse)).toValue() : null;
+        const input         = await evalValue      (this.input,         parse);
+        let   scaleX        = await evalNumberValue(this.scaleX,        parse);
+        let   scaleY        = await evalNumberValue(this.scaleY,        parse);
+        let   affectCorners = await evalNumberValue(this.affectCorners, parse);
+        let   affectStyle   = await evalNumberValue(this.affectStyle,   parse);
+
 
         const [showCenter, affectSpace] = await this.evalBaseParams(parse);
 
@@ -43157,15 +43234,17 @@ extends GAffine
             return this;
 
             
-        const skewX = this.skewX ? (await this.skewX.eval(parse)).toValue() : null;
-        const skewY = this.skewY ? (await this.skewY.eval(parse)).toValue() : null;
+        const input = await evalValue      (this.input, parse);
+        let   skewX = await evalNumberValue(this.skewX, parse);
+        let   skewY = await evalNumberValue(this.skewY, parse);
+
 
         const [showCenter, affectSpace] = await this.evalBaseParams(parse);
 
 
-        if (this.input)
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = input;
 
             if (this.value)
                 this.value.nodeId = this.nodeId;
@@ -43328,11 +43407,11 @@ extends GOperator1
             return this;
 
             
-        const input      = this.input      ? (await this.input     .eval(parse)).toValue() : null;
-        const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
-        const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
-        const units      = this.units      ? (await this.units     .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+        const input      = await evalValue      (this.input,      parse);
+        const centerX    = await evalNumberValue(this.centerX,    parse);
+        const centerY    = await evalNumberValue(this.centerY,    parse);
+        const units      = await evalNumberValue(this.units,      parse);
+        const showCenter = await evalNumberValue(this.showCenter, parse);
 
 
         if (this.input)
@@ -43522,8 +43601,8 @@ extends GOperator1
             return this;
 
 
-        const input      = this.input      ? (await this.input     .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+        const input      = await evalValue      (this.input,      parse);
+        const showCenter = await evalNumberValue(this.showCenter, parse);
 
 
         if (input)
@@ -43716,10 +43795,10 @@ extends GShape
             return this;
 
 
-        const closed  = this.closed  ? (await this.closed .eval(parse)).toValue() : null;
-        const degree  = this.degree  ? (await this.degree .eval(parse)).toValue() : null;
-        const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
-        const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
+        const closed  = await evalNumberValue(this.closed,  parse);
+        const degree  = await evalNumberValue(this.degree,  parse);
+        const winding = await evalNumberValue(this.winding, parse);
+        const round   = await evalNumberValue(this.round,   parse);
 
 
         if (this.inputs.length > 0)
@@ -43729,10 +43808,10 @@ extends GShape
 
             for (const _input of this.inputs)
             {
-                const input = (await _input.eval(parse)).toValue();
+                const input = await evalVectorPathValue(_input);
 
                 if (isListValueType(input.type)) paths.push(...input.items);
-                else                        paths.push(input);
+                else                             paths.push(input);
             }
 
 
@@ -44075,7 +44154,7 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input = await evalPointValue(this.input, parse);
 
 
         if (input)
@@ -44160,10 +44239,10 @@ extends GOperator2
             return this;
 
 
-        const input0     = this.input0     ? (await this.input0    .eval(parse)).toValue() : null;
-        const input1     = this.input1     ? (await this.input1    .eval(parse)).toValue() : null;
-        const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+        const input0     = await evalPointValue (this.input0,     parse);
+        const input1     = await evalPointValue (this.input1,     parse);
+        const transform  = await evalNumberValue(this.transform,  parse);
+        const showCenter = await evalNumberValue(this.showCenter, parse);
 
 
         if (   input0
@@ -44342,9 +44421,9 @@ extends GOperator3
             return this;
 
 
-        const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
-        const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
-        const input2 = this.input2 ? (await this.input2.eval(parse)).toValue() : null;
+        const input0 = await evalPointValue(this.input0, parse);
+        const input1 = await evalPointValue(this.input1, parse);
+        const input2 = await evalPointValue(this.input2, parse);
 
 
         if (   input0 && input0.isValid()
@@ -44457,9 +44536,9 @@ extends GShape
             return this;
 
 
-        const input0  = this.input0  ? (await this.input0 .eval(parse)).toValue() : null;
-        const input1  = this.input1  ? (await this.input1 .eval(parse)).toValue() : null;
-        const input2  = this.input2  ? (await this.input2 .eval(parse)).toValue() : null;
+        const input0  = await evalPointValue(this.input0, parse);
+        const input1  = await evalPointValue(this.input1, parse);
+        const input2  = await evalPointValue(this.input2, parse);
 
 
         if (   input0  && input0 .isValid()
@@ -44654,7 +44733,7 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input = await evalVectorPathValue(this.input, parse);
 
 
         if (   input
@@ -44753,13 +44832,12 @@ extends GOperator1
             return this;
 
 
-        const input      = this.input      ? (await this.input     .eval(parse)).toValue() : null;
-
-        const position   = this.position   ? (await this.position  .eval(parse)).toValue() : null;
-        const distance   = this.distance   ? (await this.distance  .eval(parse)).toValue() : null;
-        const offset     = this.offset     ? (await this.offset    .eval(parse)).toValue() : null;
-        const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+        const input      = await evalVectorPathValue(this.input,      parse);
+        const position   = await evalNumberValue    (this.position,   parse);
+        const distance   = await evalNumberValue    (this.distance,   parse);
+        const offset     = await evalNumberValue    (this.offset,     parse);
+        const transform  = await evalNumberValue    (this.transform,  parse);
+        const showCenter = await evalNumberValue    (this.showCenter, parse);
 
 
         let pt;
@@ -44987,12 +45065,12 @@ extends GOperator2
             return this;
 
 
-        const input0     = this.input0     ? (await this.input0    .eval(parse)).toValue() : null;
-        const input1     = this.input1     ? (await this.input1    .eval(parse)).toValue() : null;
+        const input0     = await evalVectorPathValue(this.input0,     parse);
+        const input1     = await evalPointValue     (this.input1,     parse);
 
-        const constrain  = this.constrain  ? (await this.constrain .eval(parse)).toValue() : null;
-        const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+        const constrain  = await evalNumberValue    (this.constrain,  parse);
+        const transform  = await evalNumberValue    (this.transform,  parse);
+        const showCenter = await evalNumberValue    (this.showCenter, parse);
 
 
         let tangent = point_NaN;
@@ -45182,37 +45260,26 @@ extends GOperator4
             return this;
 
 
-        const segment = this.segment ? (await this.segment.eval(parse)).toValue() : null;
+        const input0  = await evalPointValue (this.input0,  parse);
+        const input1  = await evalPointValue (this.input1,  parse);
+        const input2  = await evalPointValue (this.input2,  parse);
+        const input3  = await evalPointValue (this.input3,  parse);
+        const segment = await evalNumberValue(this.segment, parse);
 
 
-        if (   this.input0
-            && this.input1
-            && this.input2
-            && this.input3)
+        if (   input0
+            && input1
+            && input2
+            && input3)
         {
-            const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
-            const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
-            const input2 = this.input2 ? (await this.input2.eval(parse)).toValue() : null;
-            const input3 = this.input3 ? (await this.input3.eval(parse)).toValue() : null;
+            const p = intersectLines(
+                input0.toPoint(),
+                input1.toPoint(),
+                input2.toPoint(),
+                input3.toPoint(),
+                segment.value > 0);
 
-            if (   input0
-                && input1
-                && input2
-                && input3)
-            {
-                const p = intersectLines(
-                    input0.toPoint(),
-                    input1.toPoint(),
-                    input2.toPoint(),
-                    input3.toPoint(),
-                    segment.value > 0);
-
-                this.value = PointValue.fromPoint(this.nodeId, p);
-            }
-            else
-            {
-                this.value = PointValue.NaN.copy();
-            }
+            this.value = PointValue.fromPoint(this.nodeId, p);
         }
         else
         {
@@ -45348,62 +45415,59 @@ extends GOperator2
             return this;
 
 
-        const amount     = this.amount     ? (await this.amount    .eval(parse)).toValue() : null;
-        const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+        const input0     = await evalPointValue (this.input0,     parse);
+        const input1     = await evalPointValue (this.input1,     parse);
+        const amount     = await evalNumberValue(this.amount,     parse);
+        const transform  = await evalNumberValue(this.transform,  parse);
+        const showCenter = await evalNumberValue(this.showCenter, parse);
 
 
-        if (   this.input0
-            && this.input1)
+        if (   input0
+            && input1
+            && input0.isValid()
+            && input1.isValid())
         {
-            const input0 = this.input0 ? (await this.input0.eval(parse)).toValue() : null;
-            const input1 = this.input1 ? (await this.input1.eval(parse)).toValue() : null;
+            const p0  = point(input0.objects[0].x, input0.objects[0].y);
+            const p1  = point(input1.objects[0].x, input1.objects[0].y);
+            const amt = amount.value / 100;
 
-            if (   input0
-                && input1
-                && input0.isValid()
-                && input1.isValid())
+            const p   = lerpv(p0, p1, amt);
+
+                
+            let sp0 = lerpv(input0.objects[0].sp0, input1.objects[0].sp0, amt);
+            let sp1 = lerpv(input0.objects[0].sp1, input1.objects[0].sp1, amt);
+            let sp2 = lerpv(input0.objects[0].sp2, input1.objects[0].sp2, amt);
+
+            if (transform.value > 0)
             {
-                const p0  = point(input0.objects[0].x, input0.objects[0].y);
-                const p1  = point(input1.objects[0].x, input1.objects[0].y);
-                const amt = amount.value / 100;
+                const l1 = distv(sp0, sp1);
+                const l2 = distv(sp0, sp2);
 
-                const p   = lerpv(p0, p1, amt);
-
-                    
-                let sp0 = lerpv(input0.objects[0].sp0, input1.objects[0].sp0, amt);
-                let sp1 = lerpv(input0.objects[0].sp1, input1.objects[0].sp1, amt);
-                let sp2 = lerpv(input0.objects[0].sp2, input1.objects[0].sp2, amt);
-
-                if (transform.value > 0)
-                {
-                    const l1 = distv(sp0, sp1);
-                    const l2 = distv(sp0, sp2);
-
-                    sp0 = clone(p);
-                    sp1 = addv(sp0, mulvs(unitv(subv(p1, p0)), l1));
-                    sp2 = addv(sp0, crossv(mulvs(unitv(subv(p1, p0)), l2)));
-                }
+                sp0 = clone(p);
+                sp1 = addv(sp0, mulvs(unitv(subv(p1, p0)), l1));
+                sp2 = addv(sp0, crossv(mulvs(unitv(subv(p1, p0)), l2)));
+            }
 
 
-                this.value = new PointValue(this.nodeId, new NumberValue(p.x), new NumberValue(p.y));
+            this.value = new PointValue(this.nodeId, new NumberValue(p.x), new NumberValue(p.y));
 
-                const pt = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, p.x, p.y);
-                pt.createDefaultTransform(p.x, p.y);
-                this.value.objects = [pt];
+            const pt = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, p.x, p.y);
+            pt.createDefaultTransform(p.x, p.y);
+            this.value.objects = [pt];
 
-                this.value.objects[0].sp0 = sp0;
-                this.value.objects[0].sp1 = sp1;
-                this.value.objects[0].sp2 = sp2;
+            this.value.objects[0].sp0 = sp0;
+            this.value.objects[0].sp1 = sp1;
+            this.value.objects[0].sp2 = sp2;
 
 
-                if (showCenter.value > 0)
-                {
-                    const objects = [...this.value.objects]; // avoids infinite growth
-                    objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-                }
+            if (showCenter.value > 0)
+            {
+                const objects = [...this.value.objects]; // avoids infinite growth
+                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
             }
         }
+        else
+            this.value = PointValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -45491,7 +45555,7 @@ extends GOperator1
             return this;
 
             
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input = await evalVectorPathValue(this.input, parse);
 
 
         if (   input
@@ -45608,27 +45672,27 @@ extends GShape
             return this;
 
             
-        const amount = this.amount ? (await this.amount.eval(parse)).toValue() : null;
-        const degree = this.degree ? (await this.degree.eval(parse)).toValue() : null;
+        const amount = await evalNumberValue(this.amount, parse);
+        const degree = await evalNumberValue(this.degree, parse);
 
 
         const paths = [];
         
         for (const _input of this.inputs)
         {
-            const input = (await _input.eval(parse)).toValue();
+            const input = await evalVectorPathValue(_input, parse);
 
             if (isListValueType(input.type))
             {
                 for (const item of input.items)
                 {
-                    const path = (await item.eval(parse)).toValue();
+                    const path = await evalVectorPathValue(item, parse);
                     paths.push(path);
                 }
             }
             else
             {
-                const path = (await input.eval(parse)).toValue();
+                const path = await evalVectorPathValue(input, parse);
                 paths.push(path);
             }
         }
@@ -45825,10 +45889,10 @@ extends GOperator1
             return this;
 
             
-        const input      = this.input      ? (await this.input     .eval(parse)).toValue() : null;
-        const position   = this.position   ? (await this.position  .eval(parse)).toValue() : null;
-        const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+        const input      = await evalValue      (this.input,      parse);
+        const position   = await evalPointValue (this.position,   parse);
+        const transform  = await evalNumberValue(this.transform,  parse);
+        const showCenter = await evalNumberValue(this.showCenter, parse);
 
         if (   input
             && position)

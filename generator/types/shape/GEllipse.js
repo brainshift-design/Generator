@@ -77,12 +77,18 @@ extends GShape
 
         let [x, y, width, height] = await this.evalBaseParams(parse);
 
-        let input = this.input    ? (await this.input   .eval(parse)).toValue() : null;
-        let pos   = this.position ? (await this.position.eval(parse)).toValue() : null;
-        let round = this.round    ? (await this.round   .eval(parse)).toValue() : null;
-        let start = this.start    ? (await this.start   .eval(parse)).toValue() : null;
-        let sweep = this.sweep    ? (await this.sweep   .eval(parse)).toValue() : null;
-        let inner = this.inner    ? (await this.inner   .eval(parse)).toValue() : null;
+        let input = await evalValue      (this.input,    parse);
+        let pos   = await evalNumberValue(this.position, parse);
+        let round = await evalNumberValue(this.round,    parse);
+        let start = await evalNumberValue(this.start,    parse);
+        let sweep = await evalNumberValue(this.sweep,    parse);
+        let inner = await evalNumberValue(this.inner,    parse);
+
+        if (pos   && !pos  .isValid()) pos   = NumberValue.NaN.copy();
+        if (round && !round.isValid()) round = NumberValue.NaN.copy();
+        if (start && !start.isValid()) start = NumberValue.NaN.copy();
+        if (sweep && !sweep.isValid()) sweep = NumberValue.NaN.copy();
+        if (inner && !inner.isValid()) inner = NumberValue.NaN.copy();
 
 
         if (input)

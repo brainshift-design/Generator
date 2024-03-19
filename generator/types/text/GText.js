@@ -28,7 +28,7 @@ extends GOperator1
 
 
         if (this.input)
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = await evalTextValue(this.input, parse);
         else if (this.value)
             await this.value.eval(parse);
         else

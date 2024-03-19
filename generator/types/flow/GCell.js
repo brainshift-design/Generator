@@ -43,22 +43,19 @@ extends GOperator1
             return this;
 
 
-        const column = this.column ? (await this.column.eval(parse)).toValue() : null;
-        const row    = this.row    ? (await this.row   .eval(parse)).toValue() : null;
+        const input  = await evalListValue  (this.input,  parse);
+        const column = await evalNumberValue(this.column, parse);
+        const row    = await evalNumberValue(this.row,    parse);
 
 
         let columns = 0;
         let rows    = 0;
 
-        if (   this.input
+        if (   input
             && column
             && row)
         {
-            const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-
-            
-            if (   input
-                && isTable(input))
+            if (isTable(input))
             {
                 rows = input.items.length;
 

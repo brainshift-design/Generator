@@ -56,15 +56,14 @@ extends GOperator1
             return this;
 
             
-        const min   = (await this.min  .eval(parse)).toValue();
-        const max   = (await this.max  .eval(parse)).toValue();
-        const power = (await this.power.eval(parse)).toValue();
+        const input = await evalNumberValue(this.input, parse);
+        const min   = await evalNumberValue(this.min,   parse);
+        const max   = await evalNumberValue(this.max,   parse);
+        const power = await evalNumberValue(this.power, parse);
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             if (this.options.enabled)
             {
                 let f = (input.value - min.value) / (max.value - min.value);

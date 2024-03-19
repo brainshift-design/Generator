@@ -81,13 +81,13 @@ extends GShape
         let [x, y, width, ] = await this.evalBaseParams(parse);
 
 
-        let input     = this.input     ? (await this.input    .eval(parse)).toValue() : null;
-        let shape     = this.shape     ? (await this.shape    .eval(parse)).toValue() : null;
-        let amplitude = this.amplitude ? (await this.amplitude.eval(parse)).toValue() : null;
-        let frequency = this.frequency ? (await this.frequency.eval(parse)).toValue() : null;
-        let offset    = this.offset    ? (await this.offset   .eval(parse)).toValue() : null;
-        let alignX    = this.alignX    ? (await this.alignX   .eval(parse)).toValue() : null;
-        let alignY    = this.alignY    ? (await this.alignY   .eval(parse)).toValue() : null;
+        let input     = await evalWavePathValue(this.input,     parse);
+        let shape     = await evalNumberValue  (this.shape,     parse);
+        let amplitude = await evalNumberValue  (this.amplitude, parse);
+        let frequency = await evalNumberValue  (this.frequency, parse);
+        let offset    = await evalNumberValue  (this.offset,    parse);
+        let alignX    = await evalNumberValue  (this.alignX,    parse);
+        let alignY    = await evalNumberValue  (this.alignY,    parse);
 
 
         if (input)

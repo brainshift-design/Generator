@@ -48,9 +48,9 @@ extends GOperator
             return this;
 
             
-        const from  = this.from  ? (await this.from .eval(parse)).toValue() : null;
-        const start = this.start ? (await this.start.eval(parse)).toValue() : null;
-        const end   = this.end   ? (await this.end  .eval(parse)).toValue() : null;
+        const from  = await evalNumberValue(this.from,  parse);
+        const start = await evalNumberValue(this.start, parse);
+        const end   = await evalNumberValue(this.end,   parse);
     
 
         const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);

@@ -40,7 +40,7 @@ extends GOperator
             return this;
 
 
-        const maskType = (await this.maskType.eval(parse)).toValue();
+        const maskType = await evalNumberValue(this.maskType, parse);
 
 
         this.value = new LayerMaskValue(maskType, this.options.enabled);

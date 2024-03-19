@@ -40,7 +40,7 @@ extends GOperator1
             return this;
 
 
-        const separator = this.separator ? (await this.separator.eval(parse)).toValue() : null;
+        const separator = await evalTextValue(this.separator, parse);
 
 
         this.value = new ListValue();
@@ -49,7 +49,7 @@ extends GOperator1
         if (   this.input
             && separator)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            const input = await evalTextValue(this.input, parse);
             
             if (   input
                 && input.value)

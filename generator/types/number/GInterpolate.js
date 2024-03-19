@@ -49,27 +49,27 @@ extends GOperator2
             return this;
 
 
-        const amount = this.amount ? (await this.amount.eval(parse)).toValue() : null;
-        const degree = this.degree ? (await this.degree.eval(parse)).toValue() : null;
+        const amount = await evalNumberValue(this.amount, parse);
+        const degree = await evalNumberValue(this.degree, parse);
 
 
         const values = [];
         
         for (const _input of this.inputs)
         {
-            const input = (await _input.eval(parse)).toValue();
+            const input = await evalNumberValue(_input, parse);
 
             if (isListValueType(input.type))
             {
                 for (const item of input.items)
                 {
-                    const value = (await item.eval(parse)).toValue();
+                    const value = await evalNumberValue(item, parse);
                     values.push(value);
                 }
             }
             else
             {
-                const value = (await input.eval(parse)).toValue();
+                const value = await evalNumberValue(input, parse);
                 values.push(value);
             }
         }

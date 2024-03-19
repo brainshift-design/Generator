@@ -41,9 +41,13 @@ extends GArithmetic
             return this;
 
 
-        const op = (await this.operation.eval(parse)).toValue().toInteger();
+        let op = await evalNumberValue(this.operation, parse);
 
-        op.value = op.initValue = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
+        if (op) op = op.toInteger();
+
+
+        op.value     = 
+        op.initValue = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
 
         
         switch (op.value)

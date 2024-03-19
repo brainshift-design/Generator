@@ -51,14 +51,15 @@ extends GOperator1
             return this;
 
         
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        let   index = this.index ? (await this.index.eval(parse)).toValue() : null;
+        const input = await evalListValue  (this.input, parse);
+        let   index = await evalNumberValue(this.index, parse);
         
         let  length = 0;
         
         
         if (   input
             && input.isValid()
+            && isListValueType(input.type)
             && input.items
             && input.items.length > 0)
         {

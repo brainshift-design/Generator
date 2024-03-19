@@ -46,9 +46,9 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const input   = this.input     ? (await this.input    .eval(parse)).toValue() : null;
-        const operand = this.operand   ? (await this.operand  .eval(parse)).toValue() : null;
-        const op      = this.operation ? (await this.operation.eval(parse)).toValue() : null;
+        const input   = await evalNumberValue(this.input,     parse);
+        const operand = await evalNumberValue(this.operand,   parse);
+        const op      = await evalNumberValue(this.operation, parse);
 
 
         if (input)

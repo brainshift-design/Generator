@@ -43,13 +43,13 @@ extends GOperator1
             return this;
 
 
-        const start = (await this.start.eval(parse)).toValue();
-        const end   = (await this.end  .eval(parse)).toValue();
+        const start = await evalNumberValue(this.start, parse);
+        const end   = await evalNumberValue(this.end,   parse);
 
 
         if (this.input)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            const input = await evalTextValue(this.input, parse);
             
             if (isListValueType(input.type))
             {

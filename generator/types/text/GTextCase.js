@@ -40,8 +40,8 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        const _case = this.case  ? (await this.case .eval(parse)).toValue() : null;
+        const input = await evalTextValue  (this.input, parse);
+        const _case = await evalNumberValue(this.case,  parse);
 
 
         if (input)

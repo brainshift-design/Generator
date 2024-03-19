@@ -149,7 +149,7 @@ extends ShapeValue
 
 
 
-    static NaN = new ArcPathValue(
+    static NaN = Object.freeze(new ArcPathValue(
         '',
         NumberValue.NaN,
         NumberValue.NaN,
@@ -157,7 +157,7 @@ extends ShapeValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        NumberValue.NaN);
+        NumberValue.NaN));
 }
 
 

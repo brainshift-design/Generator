@@ -65,11 +65,7 @@ extends GOperator
         {
             if (   this.node.type != FEEDBACK
                 && this.paramId != 'from')
-            {
-                // await this.node.eval(parse);
-                const value = (await this.param.eval(parse)).toValue();
-                this.value = value;
-            }
+                this.value = await evalValue(this.param, parse);
             else
                 this.value = new NullValue();
 

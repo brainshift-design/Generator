@@ -41,13 +41,14 @@ extends GOperator1
             return this;
 
 
-        const from = this.from ? (await this.from.eval(parse)).toValue().toInteger() : null;
+        const input = await evalColorValue (this.input, parse);
+        let   from  = await evalNumberValue(this.from,  parse);
 
+        if (from) from = from.toInteger();
+        
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             if (this.options.enabled)
             {
                 if (isListValueType(input.type))

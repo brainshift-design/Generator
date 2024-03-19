@@ -43,10 +43,10 @@ extends GOperator2
             return this;
 
 
-        const input0     = this.input0     ? (await this.input0    .eval(parse)).toValue() : null;
-        const input1     = this.input1     ? (await this.input1    .eval(parse)).toValue() : null;
-        const transform  = this.transform  ? (await this.transform .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+        const input0     = await evalPointValue (this.input0,     parse);
+        const input1     = await evalPointValue (this.input1,     parse);
+        const transform  = await evalNumberValue(this.transform,  parse);
+        const showCenter = await evalNumberValue(this.showCenter, parse);
 
 
         if (   input0

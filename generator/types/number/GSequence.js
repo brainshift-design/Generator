@@ -55,10 +55,10 @@ extends GOperator
             return this;
             
 
-        const start = this.start    ? (await this.start   .eval(parse)).toValue() : null;
-        const mult  = this.multiply ? (await this.multiply.eval(parse)).toValue() : null;
-        const add   = this.add      ? (await this.add     .eval(parse)).toValue() : null;
-        const end   = this.end      ? (await this.end     .eval(parse)).toValue() : null;
+        const start = await evalNumberValue(this.start,    parse);
+        const mult  = await evalNumberValue(this.multiply, parse);
+        const add   = await evalNumberValue(this.add,      parse);
+        const end   = await evalNumberValue(this.end,      parse);
     
 
         if (   start

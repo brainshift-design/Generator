@@ -60,15 +60,14 @@ extends GOperator1
             return this;
 
 
-        let color   = this.color   ? (await this.color  .eval(parse)).toValue() : null;
-        let opacity = this.opacity ? (await this.opacity.eval(parse)).toValue() : null;
-        let blend   = this.blend   ? (await this.blend  .eval(parse)).toValue() : null;
+        const input   = await evalFillValue  (this.input,   parse);
+        let   color   = await evalColorValue (this.color,   parse);
+        let   opacity = await evalNumberValue(this.opacity, parse);
+        let   blend   = await evalNumberValue(this.blend,   parse);
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             this.value = new FillValue(
                 color   ?? input.color,
                 opacity ?? input.opacity,

@@ -27,11 +27,11 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input = await evalNumberValue(this.input, parse);
 
 
         if (input)
-            this.value = input.copy();
+            this.value = input;//.copy();
         else if (this.value)
             await this.value.eval(parse);
         else
@@ -40,7 +40,7 @@ extends GOperator1
 
         this.setUpdateValues(parse, 
         [
-            ['value', this.value.copy()]
+            ['value', this.value]//.copy()]
         ]);
 
 

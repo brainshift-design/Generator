@@ -69,14 +69,14 @@ extends GOperator
             return this;
 
 
-        const seed        = this.seed        ? (await this.seed       .eval(parse)).toValue() : null;
-        const iteration   = this.iteration   ? (await this.iteration  .eval(parse)).toValue() : null;
-        const min         = this.min         ? (await this.min        .eval(parse)).toValue() : null;
-        const max         = this.max         ? (await this.max        .eval(parse)).toValue() : null;
-        const scale       = this.scale       ? (await this.scale      .eval(parse)).toValue() : null;
-        const offset      = this.offset      ? (await this.offset     .eval(parse)).toValue() : null;
-        const interpolate = this.interpolate ? (await this.interpolate.eval(parse)).toValue() : null;
-        const detail      = this.detail      ? (await this.detail     .eval(parse)).toValue() : null;
+        const seed        = await evalNumberValue(this.seed,        parse);
+        const iteration   = await evalNumberValue(this.iteration,   parse);
+        const min         = await evalNumberValue(this.min,         parse);
+        const max         = await evalNumberValue(this.max,         parse);
+        const scale       = await evalNumberValue(this.scale,       parse);
+        const offset      = await evalNumberValue(this.offset,      parse);
+        const interpolate = await evalNumberValue(this.interpolate, parse);
+        const detail      = await evalNumberValue(this.detail,      parse);
     
 
         if (   this.options.enabled

@@ -56,9 +56,12 @@ extends GShape
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        let   round = this.round ? (await this.round.eval(parse)).toValue() : null;
+        const input = await evalRectangleValue(this.input, parse);
+        let   round = await evalNumberValue   (this.round, parse);
 
+        if (round && !round.isValid()) round = NumberValue.NaN.copy();
+
+        
         let [x, y, width, height] = await this.evalBaseParams(parse);
 
 

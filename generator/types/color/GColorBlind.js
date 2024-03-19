@@ -45,16 +45,14 @@ extends GOperator1
             return this;
 
 
-        const l = (await this.l.eval(parse)).toValue();        
-        const m = (await this.m.eval(parse)).toValue();
-        const s = (await this.s.eval(parse)).toValue();
+        const input = await evalColorValue (this.input, parse);
+        const l     = await evalNumberValue(this.l,     parse); 
+        const m     = await evalNumberValue(this.m,     parse);
+        const s     = await evalNumberValue(this.s,     parse);
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
-
             if (this.options.enabled)
             {
                 if (isListValueType(input.type))

@@ -49,15 +49,15 @@ extends GOperator1
             return this;
 
 
-        const startPad   = (await this.startPad  .eval(parse)).toValue();
-        const startCount = (await this.startCount.eval(parse)).toValue();
-        const endPad     = (await this.endPad    .eval(parse)).toValue();
-        const endCount   = (await this.endCount  .eval(parse)).toValue();
+        const startPad   = await evalTextValue  (this.startPad,   parse);
+        const startCount = await evalNumberValue(this.startCount, parse);
+        const endPad     = await evalTextValue  (this.endPad,     parse);
+        const endCount   = await evalNumberValue(this.endCount,   parse);
 
 
         if (this.input)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            const input = await evalTextValue(this.input, parse);
             
             if (isListValueType(input.type))
             {

@@ -42,7 +42,10 @@ extends GArithmetic
             return this;
 
 
-        const op = this.operation ? (await this.operation.eval(parse)).toValue().toInteger() : NumberValue.NaN.copy();
+        let op = await evalNumberValue(this.operation, parse);
+
+        if (op) op = op.toInteger();
+        
 
         if (op.isValid())
         {

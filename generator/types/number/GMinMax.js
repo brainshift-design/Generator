@@ -41,7 +41,10 @@ extends GArithmetic
             return this;
 
 
-        const op = (await this.operation.eval(parse)).toValue().toInteger();
+        const op = await evalNumberValue(this.operation, parse);
+
+        if (op) op = op.toInteger();
+
 
         if (this.options.enabled)
             op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
@@ -109,7 +112,7 @@ async function evalMinMaxInputs(inputs, op, parse)
     let value = new NumberValue(0);
 
 
-    const val0 = (await inputs[0].eval(parse)).toValue();
+    const val0 = await evalNumberValue(inputs[0], parse);
 
 
     if (   inputs.length == 1
@@ -146,7 +149,7 @@ async function evalMinMaxInputs(inputs, op, parse)
 
     for (let i = 1; i < inputs.length; i++)
     {
-        const val = (await inputs[i].eval(parse)).toValue();
+        const val = await evalNumberValue(inputs[i], parse);
 
 
         if (isListValueType(val.type))

@@ -40,13 +40,12 @@ extends GOperator1
             return this;
 
 
-        const radius = this.radius ? (await this.radius.eval(parse)).toValue() : null;
+        const input  = await evalValue      (this.input,  parse);
+        const radius = await evalNumberValue(this.radius, parse);
 
         
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             this.value = new BackBlurValue(
                 radius ?? input.radius,
                 this.options.enabled);

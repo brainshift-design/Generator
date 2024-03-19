@@ -43,15 +43,17 @@ extends GAffine
             return this;
 
             
-        const skewX = this.skewX ? (await this.skewX.eval(parse)).toValue() : null;
-        const skewY = this.skewY ? (await this.skewY.eval(parse)).toValue() : null;
+        const input = await evalValue      (this.input, parse);
+        let   skewX = await evalNumberValue(this.skewX, parse);
+        let   skewY = await evalNumberValue(this.skewY, parse);
+
 
         const [showCenter, affectSpace] = await this.evalBaseParams(parse);
 
 
-        if (this.input)
+        if (input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value = input;
 
             if (this.value)
                 this.value.nodeId = this.nodeId;

@@ -45,17 +45,18 @@ extends GOperator2
             return this;
 
 
-        const space  = (await this.space .eval(parse)).toValue().toInteger();
-        const amount = (await this.amount.eval(parse)).toValue();
-        const gamma  = (await this.gamma .eval(parse)).toValue();
+        const input0 = await evalColorValue (this.input0, parse);
+        const input1 = await evalColorValue (this.input1, parse);
+        let   space  = await evalNumberValue(this.space,  parse);
+        const amount = await evalNumberValue(this.amount, parse);
+        const gamma  = await evalNumberValue(this.gamma,  parse);
 
+        if (space) space = space.toInteger();
+        
 
-        if (   this.input0 
-            && this.input1)
+        if (   input0 
+            && input1)
         {
-            const input0 = (await this.input0.eval(parse)).toValue();
-            const input1 = (await this.input1.eval(parse)).toValue();
-
             consoleAssert(
                 amount.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
@@ -82,11 +83,11 @@ extends GOperator2
             this.value = ColorValue.fromDataColor(_color, spaceIndex);
         }
 
-        else if (this.input0) 
-            this.value = (await this.input0.eval(parse)).toValue();
+        else if (input0) 
+            this.value = input0;
 
-        else if (this.input1) 
-            this.value = (await this.input1.eval(parse)).toValue();
+        else if (input1) 
+            this.value = input1;
             
         else 
             this.value = ColorValue.NaN.copy();

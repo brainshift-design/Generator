@@ -45,7 +45,7 @@ extends GOperator1
             return this;
 
 
-        const input = this.input ? (await this.input.eval(parse)).toValue() : null;
+        const input = await evalListValue(this.input, parse);
 
 
         this.value         = new ListValue();
@@ -109,7 +109,7 @@ extends GOperator1
                     }
                 }
                 else
-                    this.value = (await this.input.eval(parse)).toValue();
+                    this.value = await evalListValue(this.input, parse);
             }
             else
                 this.value = input.copy();

@@ -57,9 +57,10 @@ extends GOperator1
             return this;
 
         
-        let input = this.input ? (await this.input.eval(parse)).toValue() : null;
-        let x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
-        let y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
+        let input = await evalPointValue (this.input, parse);
+        let x     = await evalNumberValue(this.x,     parse);
+        let y     = await evalNumberValue(this.y,     parse);
+
 
         if (   input
             && input.isValid())
@@ -87,8 +88,8 @@ extends GOperator1
             if (x)  this.value.x = x;  else  x = this.value.x;
             if (y)  this.value.y = y;  else  y = this.value.y;
         }
-        else if (x && x.isValid() 
-              && y && y.isValid())
+        else if (x 
+              && y)
         {
             this.value = new PointValue(
                 this.nodeId, 

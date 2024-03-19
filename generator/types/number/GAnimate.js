@@ -55,12 +55,12 @@ extends GOperator
             return this;
 
 
-        const from   = (await this.from  .eval(parse)).toValue();
-        const to     = (await this.to    .eval(parse)).toValue();
-        const curve  = (await this.curve .eval(parse)).toValue();
-        const repeat = (await this.repeat.eval(parse)).toValue();
-        const length = (await this.length.eval(parse)).toValue();
-        const time   = (await this.time  .eval(parse)).toValue();
+        const from   = await evalNumberValue(this.from,   parse);
+        const to     = await evalNumberValue(this.to,     parse);
+        const curve  = await evalNumberValue(this.curve,  parse);
+        const repeat = await evalNumberValue(this.repeat, parse);
+        const length = await evalNumberValue(this.length, parse);
+        const time   = await evalNumberValue(this.time,   parse);
     
 
         const maxDec = Math.max(from.decimals, to.decimals);

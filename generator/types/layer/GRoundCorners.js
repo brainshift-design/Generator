@@ -49,16 +49,15 @@ extends GOperator1
             return this;
 
 
-        const tl = this.tl ? (await this.tl.eval(parse)).toValue() : null;
-        const tr = this.tr ? (await this.tr.eval(parse)).toValue() : null;
-        const bl = this.bl ? (await this.bl.eval(parse)).toValue() : null;
-        const br = this.br ? (await this.br.eval(parse)).toValue() : null;
+        const input = await evalRoundedCornersValue(this.input, parse);
+        const tl    = await evalNumberValue        (this.tl,    parse);
+        const tr    = await evalNumberValue        (this.tr,    parse);
+        const bl    = await evalNumberValue        (this.bl,    parse);
+        const br    = await evalNumberValue        (this.br,    parse);
 
 
-        if (this.input)
+        if (input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-
             this.value = new RoundCornersValue(
                 tl ?? input.tl,
                 tr ?? input.tr,
