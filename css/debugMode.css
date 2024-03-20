@@ -32,6 +32,17 @@
 }
 
 
+.debugModeText
+{
+    color:      var(--figma-color-text);
+    font-size:  11px;
+    position:   absolute;
+    top:        9px;
+    right:      18px;
+    text-align: right;
+}
+
+
 #debugUserId
 {
     font-size:      11px;

@@ -12,7 +12,7 @@ function initDebugMode()
 {
     btnDebugModeRestart.addEventListener('click', () => uiRestartGenerator(false));
 
-    debugVersion.innerHTML = 'Generator&nbsp;&hairsp;version:&nbsp;&thinsp;<b>' + generatorVersion + '</b>';
+    debugVersion.innerHTML = 'Generator&nbsp;&hairsp;version:&nbsp;&thinsp;<span style="font-weight: 500;">' + generatorVersion + '</span>';
     debugUserId .innerHTML = '<span style="user-select: none;">Your Figma user ID:&nbsp;&nbsp;</span>' + currentUser.id;
 }
 

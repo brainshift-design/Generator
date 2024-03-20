@@ -35,8 +35,8 @@ extends GOperator1
 
     async evalBaseParams(parse)
     {
-        const showCenter  = await evalNumber(this.showCenter,  parse);
-        const affectSpace = await evalNumber(this.affectSpace, parse);
+        const showCenter  = await evalNumberValue(this.showCenter,  parse);
+        const affectSpace = await evalNumberValue(this.affectSpace, parse);
 
         return [showCenter, affectSpace];
     }

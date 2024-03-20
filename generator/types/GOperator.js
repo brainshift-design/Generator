@@ -278,13 +278,14 @@ extends GNode
 
 async function evalValue(_value, parse, nan = () => new NullValue())
 {
-    let value  = 
+    let value = 
         _value 
         ? (await _value.eval(parse)).toValue() 
         : null;
 
     if (    value 
-        && !value.isValid()) 
+        && !value.isValid()
+        && nan) 
         value = nan();
 
     return value;
@@ -301,7 +302,7 @@ async function evalStrokeValue        (_value, parse) { return await evalValue(_
 async function evalColorStopValue     (_value, parse) { return await evalValue(_value, parse, () => ColorStopValue     .NaN.copy()); }
 async function evalGradientValue      (_value, parse) { return await evalValue(_value, parse, () => GradientValue      .NaN.copy()); }
 
-async function evalListValue          (_value, parse) { return await evalValue(_value, parse, () => new ListValue());                }
+async function evalListValue          (_value, parse) { return await evalValue(_value, parse, () => ListValue          .NaN.copy()); }
 
 async function evalRectangleValue     (_value, parse) { return await evalValue(_value, parse, () => RectangleValue     .NaN.copy()); }
 async function evalLineValue          (_value, parse) { return await evalValue(_value, parse, () => LineValue          .NaN.copy()); }

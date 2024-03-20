@@ -44,7 +44,7 @@ extends GOperator
         let x      = await evalNumberValue(this.x,     parse);
         let y      = await evalNumberValue(this.y,     parse);
         let width  = await evalNumberValue(this.width, parse);
-        let height = evalHeight ? await evalNumberValue(height, parse) : null;
+        let height = evalHeight ? await evalNumberValue(this.height, parse) : null;
 
         return [x, y, width, height];
     }

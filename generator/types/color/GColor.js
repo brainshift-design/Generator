@@ -73,7 +73,7 @@ extends GOperator1
             return this;
 
 
-        const input = await evalValue      (this.input, parse);
+        const input = await evalColorValue (this.input, parse);
         let   space = await evalNumberValue(this.space, parse); 
         let   c1    = await evalNumberValue(this._c1,   parse);
         let   c2    = await evalNumberValue(this._c2,   parse);

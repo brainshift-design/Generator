@@ -778,6 +778,48 @@ function genParseJoinPaths(parse)
 
 
 
+function genParseReorientPaths(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const reorient = new GReorientPaths(nodeId, options);
+
+
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReq(reorient, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, reorient);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    for (let i = 0; i < nInputs; i++)
+        reorient.inputs.push(genParse(parse));
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, reorient);
+    return reorient;
+}
+
+
+
 function genParseVectorVertexValue(parse)
 {
     parse.pos++; // VECTOR_POINT_VALUE

@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 384;
+const generatorVersion = 385;
 
 
 const MAX_INT32        = 2147483647;
@@ -6294,6 +6294,7 @@ const SHAPE_APPLY           = 'APPLY';
   
 const PATH_LENGTH           = 'PTHLEN';
 const JOIN_PATHS            = 'JOINPTH';
+const REORIENT_PATHS        = 'REORPTH';
 const POINT_ALONG_PATH      = 'PTALPATH';
 const CLOSEST_POINT_ON_PATH = 'CPTONPATH';
 const MEASURE_VECTOR        = 'MESPT';
@@ -6420,6 +6421,7 @@ const SHAPE_TYPES =
     
     PATH_LENGTH,
     JOIN_PATHS,
+    REORIENT_PATHS,
     POINT_ALONG_PATH,
     CLOSEST_POINT_ON_PATH,
         
@@ -10461,13 +10463,14 @@ extends GNode
 
 async function evalValue(_value, parse, nan = () => new NullValue())
 {
-    let value  = 
+    let value = 
         _value 
         ? (await _value.eval(parse)).toValue() 
         : null;
 
     if (    value 
-        && !value.isValid()) 
+        && !value.isValid()
+        && nan) 
         value = nan();
 
     return value;
@@ -10484,7 +10487,7 @@ async function evalStrokeValue        (_value, parse) { return await evalValue(_
 async function evalColorStopValue     (_value, parse) { return await evalValue(_value, parse, () => ColorStopValue     .NaN.copy()); }
 async function evalGradientValue      (_value, parse) { return await evalValue(_value, parse, () => GradientValue      .NaN.copy()); }
 
-async function evalListValue          (_value, parse) { return await evalValue(_value, parse, () => new ListValue());                }
+async function evalListValue          (_value, parse) { return await evalValue(_value, parse, () => ListValue          .NaN.copy()); }
 
 async function evalRectangleValue     (_value, parse) { return await evalValue(_value, parse, () => RectangleValue     .NaN.copy()); }
 async function evalLineValue          (_value, parse) { return await evalValue(_value, parse, () => LineValue          .NaN.copy()); }
@@ -17883,11 +17886,11 @@ extends GOperator1
 
 
         if (   count
-            && count.value > 0
-            && (   this.options.active
-                //|| this.isTerminal
-                || this.activeAfter
-                || this.listAfter))
+            && count.value > 0)
+            // && (   this.options.active
+            //     // || this.isTerminal
+            //     || this.activeAfter
+            //     || this.listAfter))
         {
             if (this.input)
             {
@@ -18066,7 +18069,7 @@ extends GOperator1
 
 
         const type = this.outputListType();
-        
+
         this.setUpdateValues(parse,
         [
             ['type',      type     ],
@@ -18646,11 +18649,7 @@ extends GOperator1
 
         else
         {
-            this.value = 
-                   this.input
-                && this.input.isValid() 
-                ? (await this.input.eval(parse)).toValue() 
-                : new NullValue();
+            this.value = await evalValue(this.input, parse);
 
             if (   this.options.enabled
                 && this.value)
@@ -23760,7 +23759,7 @@ extends GArithmetic
             return this;
 
 
-        const op = await evalNumberValue(this.operation, parse);
+        let op = await evalNumberValue(this.operation, parse);
 
         if (op) op = op.toInteger();
 
@@ -33113,7 +33112,7 @@ extends GOperator1
             return this;
 
 
-        const input = await evalValue      (this.input, parse);
+        const input = await evalColorValue (this.input, parse);
         let   space = await evalNumberValue(this.space, parse); 
         let   c1    = await evalNumberValue(this._c1,   parse);
         let   c2    = await evalNumberValue(this._c2,   parse);
@@ -36969,7 +36968,7 @@ extends GOperator
         let x      = await evalNumberValue(this.x,     parse);
         let y      = await evalNumberValue(this.y,     parse);
         let width  = await evalNumberValue(this.width, parse);
-        let height = evalHeight ? await evalNumberValue(height, parse) : null;
+        let height = evalHeight ? await evalNumberValue(this.height, parse) : null;
 
         return [x, y, width, height];
     }
@@ -42721,8 +42720,8 @@ extends GOperator1
 
     async evalBaseParams(parse)
     {
-        const showCenter  = await evalNumber(this.showCenter,  parse);
-        const affectSpace = await evalNumber(this.affectSpace, parse);
+        const showCenter  = await evalNumberValue(this.showCenter,  parse);
+        const affectSpace = await evalNumberValue(this.affectSpace, parse);
 
         return [showCenter, affectSpace];
     }
@@ -43808,7 +43807,7 @@ extends GShape
 
             for (const _input of this.inputs)
             {
-                const input = await evalVectorPathValue(_input);
+                const input = await evalVectorPathValue(_input, parse);
 
                 if (isListValueType(input.type)) paths.push(...input.items);
                 else                             paths.push(input);
@@ -44105,6 +44104,244 @@ extends GShape
         if (this.degree ) this.degree .iterateLoop(parse);
         if (this.winding) this.winding.iterateLoop(parse);
         if (this.round  ) this.round  .iterateLoop(parse);
+    }
+}
+
+
+class GReorientPaths
+extends GShape
+{
+    inputs  = [];
+
+
+
+    constructor(nodeId, options)
+    {
+        super(JOIN_PATHS, nodeId, options);
+    }
+
+
+
+    reset()
+    {
+        super.reset();
+
+        this.inputs  = [];
+    }
+
+
+
+    copy()
+    {
+        const copy = new GReorientPaths(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.inputs = this.inputs.map(i => i.copy());
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.inputs.length > 0)
+        {
+            // const paths  = [];
+            // const points = new ListValue();
+
+            // for (const _input of this.inputs)
+            // {
+            //     const input = await evalVectorPathValue(_input, parse);
+
+            //     if (isListValueType(input.type)) paths.push(...input.items);
+            //     else                             paths.push(input);
+            // }
+
+
+            // // convert each path to cubic and 
+            // // add the points to the list of points
+
+            // for (let i = 0; i < paths.length; i++)
+            // {
+            //     const path = paths[i];
+                
+            //     if (   !path
+            //         || !path.objects
+            //         ||  path.objects.length == 0)
+            //         continue;
+
+
+            //     let _degree;
+
+            //          if (path.type == VECTOR_PATH_VALUE) _degree = path.degree.value;
+            //     else if (path.type == ARC_PATH_VALUE   ) _degree = 2;
+            //     else if (path.type == WAVE_PATH_VALUE  ) _degree = path.shape.value == 4 ? 2 : 0;
+
+
+            //     const pathPoints = path.objects[0].pathPoints;
+            //     const pathDegree = Math.min(_degree, 2) + 1;
+
+                
+            //     if (pathPoints.length == 0) continue;
+
+
+            //     const segment = this.makeCubic(pathPoints, pathDegree);
+
+            //     if (   i > 0
+            //         && points.items.length > 1
+            //         && segment.length > 1)
+            //         this.joinSegment(points, segment, degree);
+
+            //     points.items.push(...segment.map(p => PointValue.fromPoint(this.nodeId, p)));
+            // }
+
+
+            // if (   closed.value > 0
+            //     && points.items.length > 1)
+            // {
+            //     const segment = [ points.items[0].toPoint(),
+            //                       points.items[1].toPoint() ];
+
+            //     this.joinSegment(points, segment, degree);
+
+            //     points.items.push(points.items[0].copy());
+            // }
+
+
+            // this.value = new VectorPathValue(
+            //     this.nodeId, 
+            //     points, 
+            //     closed, 
+            //     new NumberValue(2),
+            //     winding, 
+            //     round);
+            this.value = new ListValue();
+        }
+        else
+        {
+            this.value = new ListValue();
+        }
+
+
+        this.setUpdateValues(parse, 
+        [
+            ['', new NullValue]
+        ]);
+
+
+        await this.evalShapeBase(parse);
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+
+        // const points = [];
+
+        // for (const pt of this.value.points.items)
+        // {
+        //     const p = PointValue.create(this.nodeId, pt.x.value, pt.y.value);
+            
+        //     if (pt.smooth != null)
+        //         p.smooth = new NumberValue(pt.smooth);
+
+        //     points.push(p);
+        // }
+
+
+        this.value.objects = [];
+
+
+        // if (   super.baseIsValid()   
+        //     && points.length >= 2)
+        // {
+        //     const path = new FigmaVectorPath(
+        //         this.nodeId,
+        //         this.nodeId,
+        //         this.nodeName,
+        //         points,
+        //         this.value.closed .value,
+        //         this.value.degree .value,
+        //         this.value.winding.value,
+        //         this.value.round  .value);
+
+                
+        //     const bounds = getObjBounds([path]);
+
+        //     let x = bounds.x;
+        //     let y = bounds.y;
+        //     let w = bounds.w;
+        //     let h = bounds.h;
+
+            
+        //     path.createDefaultSpace(x + w/2, y + h/2);
+        //     path.createDefaultTransform(x, y);
+        //     path.createDefaultTransformPoints(x, y, w, h);
+
+        //     this.value.objects.push(path);
+        // }
+
+
+        await super.evalObjects(parse);
+    }
+
+
+
+    isValid()
+    {
+        if (!super.isValid()) 
+            return false;
+
+        for (const input of this.inputs)
+            if (!input.isValid())
+                return false;
+
+        return true;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
     }
 }
 
@@ -52606,6 +52843,48 @@ function genParseJoinPaths(parse)
 
 
 
+function genParseReorientPaths(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const reorient = new GReorientPaths(nodeId, options);
+
+
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReq(reorient, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, reorient);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    for (let i = 0; i < nInputs; i++)
+        reorient.inputs.push(genParse(parse));
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, reorient);
+    return reorient;
+}
+
+
+
 function genParseVectorVertexValue(parse)
 {
     parse.pos++; // VECTOR_POINT_VALUE
@@ -55678,6 +55957,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == PATH_LENGTH            ) result = genParsePathLength        (parse);
     else if (parse.next == JOIN_PATHS             ) result = genParseJoinPaths         (parse);
+    else if (parse.next == REORIENT_PATHS         ) result = genParseReorientPaths     (parse);
     else if (parse.next == MEASURE_VECTOR         ) result = genParseMeasureVector     (parse);
     else if (parse.next == VECTOR          ) result = genParseVector      (parse);
     else if (parse.next == CIRCLE_CENTER          ) result = genParseCircleCenter      (parse);

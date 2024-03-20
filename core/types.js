@@ -489,6 +489,7 @@ const SHAPE_APPLY           = 'APPLY';
   
 const PATH_LENGTH           = 'PTHLEN';
 const JOIN_PATHS            = 'JOINPTH';
+const REORIENT_PATHS        = 'REORPTH';
 const POINT_ALONG_PATH      = 'PTALPATH';
 const CLOSEST_POINT_ON_PATH = 'CPTONPATH';
 const MEASURE_VECTOR        = 'MESPT';
@@ -615,6 +616,7 @@ const SHAPE_TYPES =
     
     PATH_LENGTH,
     JOIN_PATHS,
+    REORIENT_PATHS,
     POINT_ALONG_PATH,
     CLOSEST_POINT_ON_PATH,
         

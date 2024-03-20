@@ -41,7 +41,7 @@ extends GArithmetic
             return this;
 
 
-        const op = await evalNumberValue(this.operation, parse);
+        let op = await evalNumberValue(this.operation, parse);
 
         if (op) op = op.toInteger();
 

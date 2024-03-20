@@ -83,7 +83,7 @@ extends GShape
 
             for (const _input of this.inputs)
             {
-                const input = await evalVectorPathValue(_input);
+                const input = await evalVectorPathValue(_input, parse);
 
                 if (isListValueType(input.type)) paths.push(...input.items);
                 else                             paths.push(input);

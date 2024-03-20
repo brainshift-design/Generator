@@ -50,11 +50,7 @@ extends GOperator1
 
         else
         {
-            this.value = 
-                   this.input
-                && this.input.isValid() 
-                ? (await this.input.eval(parse)).toValue() 
-                : new NullValue();
+            this.value = await evalValue(this.input, parse);
 
             if (   this.options.enabled
                 && this.value)

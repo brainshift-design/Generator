@@ -227,6 +227,7 @@
 ../operators/shape/OpResetTransform.js
 
 ../operators/shape/OpJoinPaths.js
+../operators/shape/OpReorientPaths.js
 ../operators/shape/OpMeasureVector.js
 ../operators/shape/OpVector.js
 ../operators/shape/OpCircleCenter.js

@@ -1,6 +1,6 @@
 const nightPalace = '\
 {\
-    "generatorVersion": "372",\
+    "generatorVersion": "384",\
     "nodes":\
     [\
         {\
@@ -13,8 +13,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13579",\
-        "y": "4493",\
+        "x": "13929",\
+        "y": "4843",\
         "z": "0"\
         },\
         {\
@@ -27,8 +27,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13743",\
-        "y": "4375",\
+        "x": "14093",\
+        "y": "4725",\
         "z": "1",\
         "params":\
         [\
@@ -46,8 +46,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "12884",\
-        "y": "4282",\
+        "x": "13234",\
+        "y": "4632",\
         "z": "2",\
         "params":\
         [\
@@ -64,8 +64,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "12880",\
-        "y": "4157",\
+        "x": "13230",\
+        "y": "4507",\
         "z": "3",\
         "params":\
         [\
@@ -82,8 +82,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13498",\
-        "y": "4260",\
+        "x": "13848",\
+        "y": "4610",\
         "z": "4",\
         "params":\
         [\
@@ -101,8 +101,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13897",\
-        "y": "4265",\
+        "x": "14247",\
+        "y": "4615",\
         "z": "5"\
         },\
         {\
@@ -115,8 +115,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "14055",\
-        "y": "4349",\
+        "x": "14405",\
+        "y": "4699",\
         "z": "6",\
         "params":\
         [\
@@ -134,13 +134,13 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "11985",\
-        "y": "5732",\
+        "x": "12335",\
+        "y": "6082",\
         "z": "7",\
         "params":\
         [\
                 ["NUM#", "add", "1,0"],\
-                ["NUM#", "end", "?,0"]\
+                ["NUM#", "end", "?,?"]\
         ]\
         },\
         {\
@@ -153,13 +153,13 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "11050",\
-        "y": "4650",\
+        "x": "11400",\
+        "y": "5000",\
         "z": "8",\
         "params":\
         [\
                 ["NUM#", "seed", "6105,0"],\
-                ["NUM#", "iteration", "?,0"],\
+                ["NUM#", "iteration", "?,?"],\
                 ["NUM#", "max", "400,0"],\
                 ["NUM#", "scale", "4,0"],\
                 ["NUM#", "offset", "0,1"]\
@@ -175,8 +175,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "12234",\
-        "y": "4765",\
+        "x": "12584",\
+        "y": "5115",\
         "z": "9",\
         "params":\
         [\
@@ -193,12 +193,13 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "14413",\
-        "y": "4620",\
+        "x": "14763",\
+        "y": "4970",\
         "z": "10",\
         "params":\
         [\
-                ["NUM#", "count", "100,0"]\
+                ["NUM#", "count", "100,0"],\
+                ["NUM#", "iteration", "?,0"]\
         ]\
         },\
         {\
@@ -211,8 +212,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "14654",\
-        "y": "4949",\
+        "x": "15004",\
+        "y": "5299",\
         "z": "11",\
         "params":\
         [\
@@ -233,8 +234,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "14977",\
-        "y": "4787",\
+        "x": "15327",\
+        "y": "5137",\
         "z": "12",\
         "params":\
         [\
@@ -244,24 +245,24 @@ const nightPalace = '\
         {\
         "type": "REPT",\
         "created": "1709228057225",\
-        "updated": "1709303304804",\
+        "updated": "1710924881119",\
         "id": "repeat2",\
         "name": "repeat",\
         "renamed": "false",\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "15221",\
-        "y": "5673",\
+        "x": "15571",\
+        "y": "6023",\
         "z": "13",\
-        "active": "true",\
         "params":\
         [\
-                ["NUM#", "count", "50,0"]\
+                ["NUM#", "count", "50,0"],\
+                ["NUM#", "iteration", "?,0"]\
         ]\
         },\
         {\
-        "type": "START",\
+        "type": "FEEDBK",\
         "created": "1709192044039",\
         "updated": "1709301852405",\
         "id": "start",\
@@ -270,8 +271,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "12507",\
-        "y": "4636",\
+        "x": "12857",\
+        "y": "4986",\
         "z": "14",\
         "params":\
         [\
@@ -288,13 +289,13 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "14295",\
-        "y": "4885",\
+        "x": "14645",\
+        "y": "5235",\
         "z": "15",\
         "params":\
         [\
                 ["NUM#", "seed", "1888,0"],\
-                ["NUM#", "iteration", "?,0"],\
+                ["NUM#", "iteration", "?,?"],\
                 ["NUM#", "min", "-30,0"],\
                 ["NUM#", "max", "120,0"],\
                 ["NUM#", "scale", "5,0"],\
@@ -311,8 +312,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "14492",\
-        "y": "4976",\
+        "x": "14842",\
+        "y": "5326",\
         "z": "16",\
         "prevSpace": "hsv",\
         "params":\
@@ -333,13 +334,13 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "11055",\
-        "y": "4891",\
+        "x": "11405",\
+        "y": "5241",\
         "z": "17",\
         "params":\
         [\
                 ["NUM#", "seed", "8994,0"],\
-                ["NUM#", "iteration", "?,0"],\
+                ["NUM#", "iteration", "?,?"],\
                 ["NUM#", "max", "400,0"],\
                 ["NUM#", "scale", "4,0"],\
                 ["NUM#", "offset", "0,1"]\
@@ -355,8 +356,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "11264",\
-        "y": "4772",\
+        "x": "11614",\
+        "y": "5122",\
         "z": "18",\
         "params":\
         [\
@@ -374,12 +375,13 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "11424",\
-        "y": "4772",\
+        "x": "11774",\
+        "y": "5122",\
         "z": "19",\
         "params":\
         [\
-                ["NUM#", "count", "50,0"]\
+                ["NUM#", "count", "50,0"],\
+                ["NUM#", "iteration", "?,0"]\
         ]\
         },\
         {\
@@ -392,8 +394,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "14200",\
-        "y": "4094",\
+        "x": "14550",\
+        "y": "4444",\
         "z": "20",\
         "params":\
         [\
@@ -412,8 +414,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "11838",\
-        "y": "4765",\
+        "x": "12188",\
+        "y": "5115",\
         "z": "21"\
         },\
         {\
@@ -426,8 +428,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "12663",\
-        "y": "4084",\
+        "x": "13013",\
+        "y": "4434",\
         "z": "22",\
         "params":\
         [\
@@ -445,8 +447,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13884",\
-        "y": "4493",\
+        "x": "14234",\
+        "y": "4843",\
         "z": "23",\
         "params":\
         [\
@@ -465,8 +467,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "12009",\
-        "y": "4866",\
+        "x": "12359",\
+        "y": "5216",\
         "z": "24",\
         "params":\
         [\
@@ -483,9 +485,9 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13082",\
-        "y": "4171",\
-        "z": "26",\
+        "x": "13432",\
+        "y": "4521",\
+        "z": "25",\
         "params":\
         [\
                 ["NUM#", "seed", "2435,0"],\
@@ -506,9 +508,9 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13084",\
-        "y": "4396",\
-        "z": "27",\
+        "x": "13434",\
+        "y": "4746",\
+        "z": "26",\
         "params":\
         [\
                 ["NUM#", "seed", "2662,0"],\
@@ -529,9 +531,9 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13288",\
-        "y": "4203",\
-        "z": "28",\
+        "x": "13638",\
+        "y": "4553",\
+        "z": "27",\
         "params":\
         [\
                 ["NUM#", "operation", "4,0"]\
@@ -547,12 +549,57 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13288",\
-        "y": "4286",\
-        "z": "29",\
+        "x": "13638",\
+        "y": "4636",\
+        "z": "28",\
         "params":\
         [\
                 ["NUM#", "operation", "4,0"]\
+        ]\
+        },\
+        {\
+        "type": "FRM",\
+        "created": "1710924826939",\
+        "updated": "1710924882262",\
+        "id": "frame",\
+        "name": "frame",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "notCondition": "false",\
+        "x": "15860",\
+        "y": "5998",\
+        "z": "29",\
+        "active": "true",\
+        "params":\
+        [\
+                ["NUM#", "position", "1,0"],\
+                ["NUM#", "x", "-59,0"],\
+                ["NUM#", "y", "-191,0"],\
+                ["NUM#", "width", "590,0"],\
+                ["NUM#", "height", "780,0"]\
+        ]\
+        },\
+        {\
+        "type": "COL",\
+        "created": "1710924872970",\
+        "updated": "1710924879308",\
+        "id": "color",\
+        "name": "color",\
+        "renamed": "false",\
+        "enabled": "true",\
+        "highlight": "0",\
+        "notCondition": "false",\
+        "x": "15696",\
+        "y": "6187",\
+        "z": "30",\
+        "prevSpace": "hex",\
+        "params":\
+        [\
+                ["NUM#", "space", "0,0"],\
+                ["NUM#", "c1", "0,0"],\
+                ["NUM#", "c2", "0,0"],\
+                ["NUM#", "c3", "0,0"]\
         ]\
         }\
     ],\
@@ -898,6 +945,24 @@ const nightPalace = '\
         "outputOrder": "0",\
         "inputNodeId": "math8",\
         "inputId": "h1",\
+        "list": "false"\
+        },\
+        {\
+        "created": "1710924881119",\
+        "outputNodeId": "repeat2",\
+        "outputId": "h0",\
+        "outputOrder": "0",\
+        "inputNodeId": "frame",\
+        "inputId": "children",\
+        "list": "true"\
+        },\
+        {\
+        "created": "1710924879307",\
+        "outputNodeId": "color",\
+        "outputId": "h0",\
+        "outputOrder": "0",\
+        "inputNodeId": "frame",\
+        "inputId": "props",\
         "list": "false"\
         }\
     ]\
