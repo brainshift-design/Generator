@@ -148,25 +148,25 @@ extends GShape
             const vw   = this.value.width;
             const vh   = this.value.height;
 
-            const _x = vpos.value <= 0 ? vx : new NumberValue(vx.value - vw.value, Math.max(vx.decimals, vw.decimals));
-            const _y = vpos.value <= 0 ? vy : new NumberValue(vy.value - vh.value, Math.max(vy.decimals, vh.decimals));
-            const _w = vpos.value <= 0 ? vw : new NumberValue(vw.value*2, Math.max(vx.decimals, vw.decimals));
-            const _h = vpos.value <= 0 ? vh : new NumberValue(vh.value*2, Math.max(vy.decimals, vh.decimals));            
+            const _x   = vpos.value <= 0 ? vx : new NumberValue(vx.value - vw.value, Math.max(vx.decimals, vw.decimals));
+            const _y   = vpos.value <= 0 ? vy : new NumberValue(vy.value - vh.value, Math.max(vy.decimals, vh.decimals));
+            const _w   = vpos.value <= 0 ? vw : new NumberValue(vw.value*2, Math.max(vx.decimals, vw.decimals));
+            const _h   = vpos.value <= 0 ? vh : new NumberValue(vh.value*2, Math.max(vy.decimals, vh.decimals));            
 
-            let   x  = _x.value;
-            let   y  = _y.value;
-            let   w  = _w.value;
-            let   h  = _h.value;
-            const st = this.value.start.value/360 * Tau;
-            let   sw = this.value.sweep.value/100 * Tau;
+            let   x    = _x.value;
+            let   y    = _y.value;
+            let   w    = _w.value;
+            let   h    = _h.value;
+            const st   = this.value.start.value/360 * Tau;
+            let   sw   = this.value.sweep.value/100 * Tau;
 
 
             [x, , w, , , ] = validateObjectRect(x, y, w, h);
 
 
-            if (   w != 0 
-                && h != 0)
-            {
+            // if (   w != 0 
+            //     && h != 0)
+            // {
                 if (this.sweepInDegrees) sw /= 3.6;
 
                 const arc = new FigmaArcPath(
@@ -185,7 +185,7 @@ extends GShape
 
 
                 this.value.objects.push(arc);
-            }
+            // }
         }
 
 

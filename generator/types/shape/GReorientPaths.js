@@ -51,7 +51,7 @@ extends GShape
 
         if (this.inputs.length > 0)
         {
-            const paths  = [];
+            const paths = [];
 
             for (const _input of this.inputs)
             {
@@ -68,7 +68,9 @@ extends GShape
             this.value = new ListValue();
 
             
-            for (let i = 0; i < paths.length; i++)
+            consoleAssert(paths.length == reorientedPaths.length, 'original path count must match reoriented path count')
+            
+            for (let i = 0; i < reorientedPaths.length; i++)
             {
                 const points = 
                     this.options.enabled
@@ -225,8 +227,11 @@ extends GShape
 
 function reorientPaths(paths, reverse) 
 {
-    const orderedPaths   = [];
-    let   remainingPaths = paths.map(c => c.toPointArray());
+    const orderedPaths = [];
+
+    let remainingPaths = paths
+        .filter(path => path.objects && path.objects.length > 0)
+        .map   (path => path.objects[0].pathPoints);
 
 
     orderedPaths.push(remainingPaths.shift());
@@ -238,19 +243,17 @@ function reorientPaths(paths, reverse)
         
         const { closestPathIndex, shouldReverse } = findNextPath(currentPath, remainingPaths);
 
-        if (closestPathIndex === -1) 
+        if (closestPathIndex == -1) 
             break; // no more close curves found
 
         let nextPath = remainingPaths.splice(closestPathIndex, 1)[0];
         
         if (shouldReverse)
-            nextPath.reverse();//nextPath = nextPath.slice().reverse();
+            nextPath.reverse();
 
         orderedPaths.push(nextPath);
     }
 
-
-    console.log('orderedPaths =', orderedPaths);
 
     return reverse
          ? orderedPaths.reverse().map(path => path.slice().reverse())

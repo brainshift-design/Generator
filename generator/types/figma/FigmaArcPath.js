@@ -2,10 +2,10 @@ class FigmaArcPath
 extends FigmaVectorPath
 {
     position;
-    _x;
-    _y;
-    _width;
-    _height;
+    // _x;
+    // _y;
+    // _width;
+    // _height;
 
     start;
     sweep;
@@ -14,22 +14,23 @@ extends FigmaVectorPath
 
     constructor(nodeId, objectId, objectName, pos, x, y, width, height, start, sweep)
     {
-        const points = makeArc_(
+        let points = makeArc_(
             point(
                 x + width /2, 
                 y + height/2), 
             width/2,  
             start, 
-            start + sweep)
-            .map(p => PointValue.fromPoint(nodeId, p));
+            start + sweep);
+            
+        points = points.map(p => PointValue.fromPoint(nodeId, p));
 
 
         points.forEach(p => 
         {
             p.y.value = 
                 pos > 0
-                ? p.y.value * height/width
-                : height/2 + (p.y.value - height/2) * height/width;
+                ? p.y.value * height/nozero(width)
+                : height/2 + (p.y.value - height/2) * height/nozero(width);
 
             if (   pos == 0
                 && width < 0) 
@@ -52,10 +53,10 @@ extends FigmaVectorPath
         
 
         this.position = pos;
-        this._x       = x;
-        this._y       = y;
-        this._width   = width;
-        this._height  = height;
+        this.x       = x;
+        this.y       = y;
+        this.width   = width;
+        this.height  = height;
 
         this.start    = start;
         this.sweep    = sweep;
@@ -76,10 +77,10 @@ extends FigmaVectorPath
             this.objectName,
 
             this.position,
-            this._x,
-            this._y,
-            this._width,
-            this._height,
+            this.x,
+            this.y,
+            this.width,
+            this.height,
             
             this.start,
             this.sweep);

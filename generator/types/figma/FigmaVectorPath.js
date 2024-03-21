@@ -126,7 +126,7 @@ extends FigmaShape
             case 4:
             case 5:
                 {
-                    //console.log('1 bounds =', clone(bounds));
+                    // console.log('1 bounds =', clone(bounds));
                     let i;
                     for (i = 0; i < this.pathPoints.length-3; i += 3)
                     {
@@ -136,7 +136,7 @@ extends FigmaShape
                             this.pathPoints[i+2],
                             this.pathPoints[i+3]);
 
-                        //console.log('b3 =', b3);
+                        // console.log('b3 =', b3);
                         bounds = expandRect(
                             bounds, 
                             b3);
@@ -158,6 +158,7 @@ extends FigmaShape
                     }
 
                     // console.log('2 bounds =', clone(bounds));
+                    // console.log('');
                     break;
                 }
             default:

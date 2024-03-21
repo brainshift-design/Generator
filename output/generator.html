@@ -8115,7 +8115,7 @@ extends FigmaShape
             case 4:
             case 5:
                 {
-                    //console.log('1 bounds =', clone(bounds));
+                    // console.log('1 bounds =', clone(bounds));
                     let i;
                     for (i = 0; i < this.pathPoints.length-3; i += 3)
                     {
@@ -8125,7 +8125,7 @@ extends FigmaShape
                             this.pathPoints[i+2],
                             this.pathPoints[i+3]);
 
-                        //console.log('b3 =', b3);
+                        // console.log('b3 =', b3);
                         bounds = expandRect(
                             bounds, 
                             b3);
@@ -8147,6 +8147,7 @@ extends FigmaShape
                     }
 
                     // console.log('2 bounds =', clone(bounds));
+                    // console.log('');
                     break;
                 }
             default:
@@ -9278,10 +9279,10 @@ class FigmaArcPath
 extends FigmaVectorPath
 {
     position;
-    _x;
-    _y;
-    _width;
-    _height;
+    // _x;
+    // _y;
+    // _width;
+    // _height;
 
     start;
     sweep;
@@ -9290,22 +9291,23 @@ extends FigmaVectorPath
 
     constructor(nodeId, objectId, objectName, pos, x, y, width, height, start, sweep)
     {
-        const points = makeArc_(
+        let points = makeArc_(
             point(
                 x + width /2, 
                 y + height/2), 
             width/2,  
             start, 
-            start + sweep)
-            .map(p => PointValue.fromPoint(nodeId, p));
+            start + sweep);
+            
+        points = points.map(p => PointValue.fromPoint(nodeId, p));
 
 
         points.forEach(p => 
         {
             p.y.value = 
                 pos > 0
-                ? p.y.value * height/width
-                : height/2 + (p.y.value - height/2) * height/width;
+                ? p.y.value * height/nozero(width)
+                : height/2 + (p.y.value - height/2) * height/nozero(width);
 
             if (   pos == 0
                 && width < 0) 
@@ -9328,10 +9330,10 @@ extends FigmaVectorPath
         
 
         this.position = pos;
-        this._x       = x;
-        this._y       = y;
-        this._width   = width;
-        this._height  = height;
+        this.x       = x;
+        this.y       = y;
+        this.width   = width;
+        this.height  = height;
 
         this.start    = start;
         this.sweep    = sweep;
@@ -9352,10 +9354,10 @@ extends FigmaVectorPath
             this.objectName,
 
             this.position,
-            this._x,
-            this._y,
-            this._width,
-            this._height,
+            this.x,
+            this.y,
+            this.width,
+            this.height,
             
             this.start,
             this.sweep);
@@ -15933,13 +15935,6 @@ extends ShapeValue
     async eval(parse)
     {
         return this.copy();
-    }
-
-
-
-    toPointArray()
-    {
-        return this.points.items.map(p => p.toPoint());
     }
 
 
@@ -40822,25 +40817,25 @@ extends GShape
             const vw   = this.value.width;
             const vh   = this.value.height;
 
-            const _x = vpos.value <= 0 ? vx : new NumberValue(vx.value - vw.value, Math.max(vx.decimals, vw.decimals));
-            const _y = vpos.value <= 0 ? vy : new NumberValue(vy.value - vh.value, Math.max(vy.decimals, vh.decimals));
-            const _w = vpos.value <= 0 ? vw : new NumberValue(vw.value*2, Math.max(vx.decimals, vw.decimals));
-            const _h = vpos.value <= 0 ? vh : new NumberValue(vh.value*2, Math.max(vy.decimals, vh.decimals));            
+            const _x   = vpos.value <= 0 ? vx : new NumberValue(vx.value - vw.value, Math.max(vx.decimals, vw.decimals));
+            const _y   = vpos.value <= 0 ? vy : new NumberValue(vy.value - vh.value, Math.max(vy.decimals, vh.decimals));
+            const _w   = vpos.value <= 0 ? vw : new NumberValue(vw.value*2, Math.max(vx.decimals, vw.decimals));
+            const _h   = vpos.value <= 0 ? vh : new NumberValue(vh.value*2, Math.max(vy.decimals, vh.decimals));            
 
-            let   x  = _x.value;
-            let   y  = _y.value;
-            let   w  = _w.value;
-            let   h  = _h.value;
-            const st = this.value.start.value/360 * Tau;
-            let   sw = this.value.sweep.value/100 * Tau;
+            let   x    = _x.value;
+            let   y    = _y.value;
+            let   w    = _w.value;
+            let   h    = _h.value;
+            const st   = this.value.start.value/360 * Tau;
+            let   sw   = this.value.sweep.value/100 * Tau;
 
 
             [x, , w, , , ] = validateObjectRect(x, y, w, h);
 
 
-            if (   w != 0 
-                && h != 0)
-            {
+            // if (   w != 0 
+            //     && h != 0)
+            // {
                 if (this.sweepInDegrees) sw /= 3.6;
 
                 const arc = new FigmaArcPath(
@@ -40859,7 +40854,7 @@ extends GShape
 
 
                 this.value.objects.push(arc);
-            }
+            // }
         }
 
 
@@ -41107,9 +41102,9 @@ extends GShape
                 : (off/100 - so) * wl;
 
 
-            if (   w   != 0 
-                && amp != 0)
-            {
+            // if (   w   != 0 
+            //     && amp != 0)
+            // {
                 const wave = new FigmaWavePath(
                     this.nodeId,
                     this.nodeId,
@@ -41135,7 +41130,7 @@ extends GShape
 
 
                 this.value.objects.push(wave);
-            }
+            //}
         }
 
 
@@ -44179,7 +44174,7 @@ extends GShape
 
         if (this.inputs.length > 0)
         {
-            const paths  = [];
+            const paths = [];
 
             for (const _input of this.inputs)
             {
@@ -44196,7 +44191,9 @@ extends GShape
             this.value = new ListValue();
 
             
-            for (let i = 0; i < paths.length; i++)
+            consoleAssert(paths.length == reorientedPaths.length, 'original path count must match reoriented path count')
+            
+            for (let i = 0; i < reorientedPaths.length; i++)
             {
                 const points = 
                     this.options.enabled
@@ -44353,8 +44350,11 @@ extends GShape
 
 function reorientPaths(paths, reverse) 
 {
-    const orderedPaths   = [];
-    let   remainingPaths = paths.map(c => c.toPointArray());
+    const orderedPaths = [];
+
+    let remainingPaths = paths
+        .filter(path => path.objects && path.objects.length > 0)
+        .map   (path => path.objects[0].pathPoints);
 
 
     orderedPaths.push(remainingPaths.shift());
@@ -44366,19 +44366,17 @@ function reorientPaths(paths, reverse)
         
         const { closestPathIndex, shouldReverse } = findNextPath(currentPath, remainingPaths);
 
-        if (closestPathIndex === -1) 
+        if (closestPathIndex == -1) 
             break; // no more close curves found
 
         let nextPath = remainingPaths.splice(closestPathIndex, 1)[0];
         
         if (shouldReverse)
-            nextPath.reverse();//nextPath = nextPath.slice().reverse();
+            nextPath.reverse();
 
         orderedPaths.push(nextPath);
     }
 
-
-    console.log('orderedPaths =', orderedPaths);
 
     return reverse
          ? orderedPaths.reverse().map(path => path.slice().reverse())

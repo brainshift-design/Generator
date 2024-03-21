@@ -194,9 +194,9 @@ extends GShape
                 : (off/100 - so) * wl;
 
 
-            if (   w   != 0 
-                && amp != 0)
-            {
+            // if (   w   != 0 
+            //     && amp != 0)
+            // {
                 const wave = new FigmaWavePath(
                     this.nodeId,
                     this.nodeId,
@@ -222,7 +222,7 @@ extends GShape
 
 
                 this.value.objects.push(wave);
-            }
+            //}
         }
 
 
