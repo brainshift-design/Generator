@@ -86,30 +86,38 @@ extends GOperator2
 
                 
                 if (   input0 
-                    || input1)
+                    && input1)
                 {
-                    if (   input0 && input0.isValid()
-                        && input1 && input1.isValid())
-                        this.value = new NumberValue(ch < 0.5 ? input0.value : input1.value);
+                    if (   input0.isValid()
+                        && input1.isValid())
+                        this.value = ch < 0.5 ? input0 : input1;
                     else
-                        this.value = NumberValue.NaN.copy();
+                        this.value = new NullValue();
                 }
+
+                else if (input0)
+                    this.value = input0;
+                
+                else if (input1)
+                    this.value = input1;
+                
                 else
                     this.value = new NumberValue(ch < 0.5 ? 0 : 1);
             }
             else
-                this.value = NumberValue.NaN.copy();
+                this.value = new NullValue();
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = new NullValue();
 
 
         this.setUpdateValues(parse,
         [
-            ['seed',      seed     ],
-            ['iteration', iteration],
-            ['chance',    chance   ],
-            ['alternate', alternate]
+            ['type',      this.outputType()],
+            ['seed',      seed             ],
+            ['iteration', iteration        ],
+            ['chance',    chance           ],
+            ['alternate', alternate        ]
         ]);
         
 

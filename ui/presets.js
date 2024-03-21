@@ -123,6 +123,8 @@ function getPresetGraph(graphId)
         case 'progressiveBlur':      return presetProgressiveBlur;
         case 'noiseBlur':            return presetNoiseBlur;
 
+        case 'arcLetters':           return presetArcLetters;
+        
         case 'twoMathNodes':         return presetTwoMathNodes;
         case 'quadraticFormula':     return presetQuadraticFormula;
         case 'opponentColor':        return presetOpponentColor;

@@ -63,6 +63,13 @@ extends ShapeValue
 
 
 
+    toPointArray()
+    {
+        return this.points.items.map(p => p.toPoint());
+    }
+
+
+
     toString()
     {
         return      this.points .toString()

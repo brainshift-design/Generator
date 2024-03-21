@@ -42,76 +42,45 @@ extends GShape
 
         if (this.inputs.length > 0)
         {
-            // const paths  = [];
-            // const points = new ListValue();
+            const paths = [];
+        
+            for (const _input of this.inputs)
+            {
+                const input = await evalVectorPathValue(_input, parse);
+    
+                if (isListValueType(input.type))
+                {
+                    for (const item of input.items)
+                    {
+                        if (!PATH_VALUES.includes(item.type))
+                            continue;
 
-            // for (const _input of this.inputs)
-            // {
-            //     const input = await evalVectorPathValue(_input, parse);
-
-            //     if (isListValueType(input.type)) paths.push(...input.items);
-            //     else                             paths.push(input);
-            // }
-
-
-            // // convert each path to cubic and 
-            // // add the points to the list of points
-
-            // for (let i = 0; i < paths.length; i++)
-            // {
-            //     const path = paths[i];
-                
-            //     if (   !path
-            //         || !path.objects
-            //         ||  path.objects.length == 0)
-            //         continue;
-
-
-            //     let _degree;
-
-            //          if (path.type == VECTOR_PATH_VALUE) _degree = path.degree.value;
-            //     else if (path.type == ARC_PATH_VALUE   ) _degree = 2;
-            //     else if (path.type == WAVE_PATH_VALUE  ) _degree = path.shape.value == 4 ? 2 : 0;
+                        const path = await evalVectorPathValue(item, parse);
+                        paths.push(path);
+                    }
+                }
+                else
+                {
+                    const path = await evalNumberValue(input, parse);
+                    paths.push(path);
+                }
+            }
 
 
-            //     const pathPoints = path.objects[0].pathPoints;
-            //     const pathDegree = Math.min(_degree, 2) + 1;
+            const reorientedPaths = reorientPaths(paths);
 
-                
-            //     if (pathPoints.length == 0) continue;
-
-
-            //     const segment = this.makeCubic(pathPoints, pathDegree);
-
-            //     if (   i > 0
-            //         && points.items.length > 1
-            //         && segment.length > 1)
-            //         this.joinSegment(points, segment, degree);
-
-            //     points.items.push(...segment.map(p => PointValue.fromPoint(this.nodeId, p)));
-            // }
-
-
-            // if (   closed.value > 0
-            //     && points.items.length > 1)
-            // {
-            //     const segment = [ points.items[0].toPoint(),
-            //                       points.items[1].toPoint() ];
-
-            //     this.joinSegment(points, segment, degree);
-
-            //     points.items.push(points.items[0].copy());
-            // }
-
-
-            // this.value = new VectorPathValue(
-            //     this.nodeId, 
-            //     points, 
-            //     closed, 
-            //     new NumberValue(2),
-            //     winding, 
-            //     round);
             this.value = new ListValue();
+
+            for (let i = 0; i < paths.length; i++)
+            {
+                this.value.items.push(new VectorPathValue(
+                    this.nodeId,
+                    new ListValue(reorientedPaths[i].map(p => PointValue.fromPoint(this.nodeId, p))),
+                    paths[i].closed,
+                    paths[i].degree,
+                    paths[i].winding,
+                    paths[i].round));
+            }
         }
         else
         {
@@ -144,50 +113,69 @@ extends GShape
             return;
             
 
-        // const points = [];
-
-        // for (const pt of this.value.points.items)
-        // {
-        //     const p = PointValue.create(this.nodeId, pt.x.value, pt.y.value);
-            
-        //     if (pt.smooth != null)
-        //         p.smooth = new NumberValue(pt.smooth);
-
-        //     points.push(p);
-        // }
-
-
         this.value.objects = [];
 
 
-        // if (   super.baseIsValid()   
-        //     && points.length >= 2)
-        // {
-        //     const path = new FigmaVectorPath(
-        //         this.nodeId,
-        //         this.nodeId,
-        //         this.nodeName,
-        //         points,
-        //         this.value.closed .value,
-        //         this.value.degree .value,
-        //         this.value.winding.value,
-        //         this.value.round  .value);
+        for (const _path of this.value.items)
+        {
+            const points = [];
 
-                
-        //     const bounds = getObjBounds([path]);
+            if (_path.points.objects)
+            {
+                const objPoints = _path.points.objects.filter(o => o.type == POINT);
 
-        //     let x = bounds.x;
-        //     let y = bounds.y;
-        //     let w = bounds.w;
-        //     let h = bounds.h;
+                for (const pt of objPoints)
+                {
+                    const p = PointValue.create(this.nodeId, pt.x, pt.y);
+                    
+                    if (pt.smooth != null)
+                        p.smooth = new NumberValue(pt.smooth);
 
+                    points.push(p);
+                }
+            }
+
+
+            if (   super.baseIsValid()   
+                && points.length >= 2
+                && this.value.closed .isValid()
+                && this.value.degree .isValid()
+                && this.value.winding.isValid()
+                && this.value.round  .isValid())
+            {
+                const path = new FigmaVectorPath(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    points,
+                    this.value.closed .value,
+                    this.value.degree .value,
+                    this.value.winding.value,
+                    this.value.round  .value);
+
+                this.value.objects.push(path);
+            }
+        }
+
+
+        const bounds = getObjBounds(this.value.objects);
+
+        for (const path of this.value.objects)
+        {
+            path.createDefaultSpace(
+                bounds.x + bounds.width /2,            
+                bounds.y + bounds.height/2            
+            );
+
+
+            let x = bounds.x;
+            let y = bounds.y;
+            let w = bounds.w;
+            let h = bounds.h;
             
-        //     path.createDefaultSpace(x + w/2, y + h/2);
-        //     path.createDefaultTransform(x, y);
-        //     path.createDefaultTransformPoints(x, y, w, h);
-
-        //     this.value.objects.push(path);
-        // }
+            path.createDefaultTransform(x, y);
+            path.createDefaultTransformPoints(x, y, w, h);
+        }
 
 
         await super.evalObjects(parse);
@@ -233,4 +221,73 @@ extends GShape
 
         this.inputs.forEach(i => i.iterateLoop(parse));
     }
+}
+
+
+
+function reorientPaths(paths) 
+{
+    const orderedPaths   = [];
+    let   remainingPaths = paths.map(c => c.toPointArray());//slice();
+
+
+    // start with the first curve (could enhance by choosing a smarter start)
+    
+    orderedPaths.push(remainingPaths.shift());
+
+
+    // iterate until all curves are reoriented and ordered
+    
+    while (remainingPaths.length > 0) 
+    {
+        const currentPath = orderedPaths.at(-1);
+        
+        const { closestPathIndex, shouldReverse } = findNextPath(currentPath, remainingPaths);
+
+        if (closestPathIndex === -1) 
+            break; // no more close curves found
+
+        let nextPath = remainingPaths.splice(closestPathIndex, 1)[0];
+        
+        if (shouldReverse)
+            nextPath = nextPath.slice().reverse();
+
+        orderedPaths.push(nextPath);
+    }
+
+
+    return orderedPaths;
+}
+
+
+
+function findNextPath(currentPath, remainingPaths)
+{
+    let minDistance      = Infinity;
+    let closestPathIndex = -1;
+    let shouldReverse    = false;
+
+    const currentEndPoint = currentPath.at(-1);
+
+    remainingPaths.forEach((path, index) => 
+    {
+        const distanceToStart = distv(currentEndPoint, path.at( 0));
+        const distanceToEnd   = distv(currentEndPoint, path.at(-1));
+
+        if (distanceToStart < minDistance) 
+        {
+            minDistance      = distanceToStart;
+            closestPathIndex = index;
+            shouldReverse    = false;
+        }
+
+        if (distanceToEnd < minDistance) 
+        {
+            minDistance      = distanceToEnd;
+            closestPathIndex = index;
+            shouldReverse    = true;
+        }
+    });
+
+    return { closestPathIndex, shouldReverse };
 }

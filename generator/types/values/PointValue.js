@@ -63,7 +63,7 @@ extends GValue
 
 
     createDefaultSpace(cx = 0, cy = 0)
-    {
+{
         this.sp0 = point(cx,   cy  );
         this.sp1 = point(cx+1, cy  );
         this.sp2 = point(cx,   cy+1);

@@ -3,7 +3,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(REORIENT_PATHS, 'reorientPaths', 'reorient paths', iconReorientPaths);
+        super(REORIENT_PATHS, 'reorient', 'reorient', iconReorientPaths);
 
         
         this.canDisable     = true;
@@ -19,7 +19,7 @@ extends OperatorBase
 
     addNewInput()
     {
-        const newInput = new Input([...PATH_VALUES, SHAPE_LIST_VALUE]);//this.createInputForObjects([VECTOR_PATH_VALUE], getNodeInputValuesForUndo);//new Input([VECTOR_PATH_VALUE]);
+        const newInput = new Input([...PATH_VALUES, SHAPE_LIST_VALUE]);
         newInput.isNew = true;
 
 
