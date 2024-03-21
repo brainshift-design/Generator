@@ -3,8 +3,7 @@ extends OperatorBase
 {
     paramCondition;
 
-
-    menuBool;
+    menuCondition;
 
 
 
@@ -26,7 +25,7 @@ extends OperatorBase
 
         this.paramCondition.divider = 0.62;
 
-        this.menuBool = createBoolMenu(this.paramCondition);
+        this.menuCondition = createBoolMenu(this.paramCondition);
     }
     
     

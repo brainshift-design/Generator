@@ -810,6 +810,9 @@ function genParseReorientPaths(parse)
         reorient.inputs.push(genParse(parse));
 
 
+    reorient.reverse = genParse(parse);
+    
+        
     parse.inParam = false;
     parse.nTab--;
 

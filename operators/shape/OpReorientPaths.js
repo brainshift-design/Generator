@@ -1,6 +1,12 @@
 class   OpReorientPaths
 extends OperatorBase
 {
+    paramReverse;
+
+    menuReverse;
+
+
+
     constructor()
     {
         super(REORIENT_PATHS, 'reorient', 'reorient', iconReorientPaths);
@@ -13,6 +19,12 @@ extends OperatorBase
 
         this.addNewInput();
         this.addOutput(new Output([SHAPE_LIST_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramReverse = new NumberParam('reverse', 'reverse', true, true, true, 0, 0, 1));
+
+        this.paramReverse.divider = 0.6;
+
+        this.menuReverse = createBoolMenu(this.paramReverse);
     }
 
 
@@ -65,9 +77,23 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
 
+        request.push(...this.node.paramReverse.genRequest(gen));
+
+
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateParams()
+    {
+        this.paramReverse.enableControlText(true);
+
+        updateParamConditionText(this.paramReverse, this.paramReverse.isUnknown(), false, 1);
+
+        this.updateParamControls();
     }
 }

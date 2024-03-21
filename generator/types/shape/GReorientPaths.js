@@ -3,6 +3,8 @@ extends GShape
 {
     inputs  = [];
 
+    reverse = null;
+
 
 
     constructor(nodeId, options)
@@ -17,6 +19,8 @@ extends GShape
         super.reset();
 
         this.inputs  = [];
+
+        this.reverse = null;
     }
 
 
@@ -29,6 +33,8 @@ extends GShape
 
         copy.inputs = this.inputs.map(i => i.copy());
 
+        if (this.reverse) copy.reverse = this.reverse.copy();
+
         return copy;
     }
 
@@ -38,6 +44,9 @@ extends GShape
     {
         if (this.isCached())
             return this;
+
+
+        const reverse = await evalNumberValue(this.reverse, parse);
 
 
         if (this.inputs.length > 0)
@@ -67,7 +76,7 @@ extends GShape
             }
 
 
-            const reorientedPaths = reorientPaths(paths);
+            const reorientedPaths = reorientPaths(paths, reverse.value > 0);
 
             this.value = new ListValue();
 
@@ -90,7 +99,7 @@ extends GShape
 
         this.setUpdateValues(parse, 
         [
-            ['', new NullValue]
+            ['reverse', reverse]
         ]);
 
 
@@ -192,7 +201,7 @@ extends GShape
             if (!input.isValid())
                 return false;
 
-        return true;
+        return this.reverse && this.reverse.isValid();
     }
 
 
@@ -202,6 +211,8 @@ extends GShape
         super.pushValueUpdates(parse);
 
         this.inputs.forEach(i => i.pushValueUpdates(parse));
+
+        if (this.reverse) this.reverse.pushValueUpdates(parse);
     }
 
 
@@ -211,6 +222,8 @@ extends GShape
         super.invalidateInputs(parse, from, force);
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
+    
+        if (this.reverse) this.reverse.invalidateInputs(parse, from, force);
     }
 
 
@@ -220,12 +233,14 @@ extends GShape
         super.iterateLoop(parse);
 
         this.inputs.forEach(i => i.iterateLoop(parse));
+
+        if (this.reverse) this.reverse.iterateLoop(parse);
     }
 }
 
 
 
-function reorientPaths(paths) 
+function reorientPaths(paths, reverse) 
 {
     const orderedPaths   = [];
     let   remainingPaths = paths.map(c => c.toPointArray());//slice();
@@ -256,7 +271,9 @@ function reorientPaths(paths)
     }
 
 
-    return orderedPaths;
+    return reverse
+         ? orderedPaths.reverse().map(path => path.slice().reverse())
+         : orderedPaths;
 }
 
 
