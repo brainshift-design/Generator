@@ -22,7 +22,7 @@ extends OperatorBase
 
         this.addParam(this.paramReverse = new NumberParam('reverse', 'reverse', true, true, true, 0, 0, 1));
 
-        this.paramReverse.divider = 0.6;
+        this.paramReverse.divider = 0.59;
 
         this.menuReverse = createBoolMenu(this.paramReverse);
     }

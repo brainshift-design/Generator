@@ -51,44 +51,41 @@ extends GShape
 
         if (this.inputs.length > 0)
         {
-            const paths = [];
-        
+            const paths  = [];
+
             for (const _input of this.inputs)
             {
                 const input = await evalVectorPathValue(_input, parse);
-    
-                if (isListValueType(input.type))
-                {
-                    for (const item of input.items)
-                    {
-                        if (!PATH_VALUES.includes(item.type))
-                            continue;
 
-                        const path = await evalVectorPathValue(item, parse);
-                        paths.push(path);
-                    }
-                }
-                else
-                {
-                    const path = await evalNumberValue(input, parse);
-                    paths.push(path);
-                }
+                if (isListValueType(input.type)) paths.push(...input.items);
+                else                             paths.push(input);
             }
 
 
             const reorientedPaths = reorientPaths(paths, reverse.value > 0);
 
+            
             this.value = new ListValue();
 
+            
             for (let i = 0; i < paths.length; i++)
             {
-                this.value.items.push(new VectorPathValue(
+                const points = 
+                    this.options.enabled
+                    ? reorientedPaths[i].map(p => PointValue.fromPoint(this.nodeId, p))
+                    : paths[i].points.items;
+
+                const path = new VectorPathValue(
                     this.nodeId,
-                    new ListValue(reorientedPaths[i].map(p => PointValue.fromPoint(this.nodeId, p))),
+                    new ListValue(points),
                     paths[i].closed,
                     paths[i].degree,
                     paths[i].winding,
-                    paths[i].round));
+                    paths[i].round);
+
+                path.copyBase(paths[i]);
+
+                this.value.items.push(path);
             }
         }
         else
@@ -118,49 +115,35 @@ extends GShape
 
     async evalObjects(parse, options = {})
     {
-        if (!this.options.enabled)
-            return;
-            
-
         this.value.objects = [];
 
 
-        for (const _path of this.value.items)
+        for (let i = 0; i < this.value.items.length; i++)
         {
-            const points = [];
+            const _path = this.value.items[i];
 
-            if (_path.points.objects)
-            {
-                const objPoints = _path.points.objects.filter(o => o.type == POINT);
-
-                for (const pt of objPoints)
-                {
-                    const p = PointValue.create(this.nodeId, pt.x, pt.y);
-                    
-                    if (pt.smooth != null)
-                        p.smooth = new NumberValue(pt.smooth);
-
-                    points.push(p);
-                }
-            }
-
-
-            if (   super.baseIsValid()   
-                && points.length >= 2
-                && this.value.closed .isValid()
-                && this.value.degree .isValid()
-                && this.value.winding.isValid()
-                && this.value.round  .isValid())
+            if (   _path.points.items.length >= 2
+                && _path.closed .isValid()
+                && _path.degree .isValid()
+                && _path.winding.isValid()
+                && _path.round  .isValid())
             {
                 const path = new FigmaVectorPath(
-                    this.nodeId,
-                    this.nodeId,
-                    this.nodeName,
-                    points,
-                    this.value.closed .value,
-                    this.value.degree .value,
-                    this.value.winding.value,
-                    this.value.round  .value);
+                     this.nodeId,
+                     this.nodeId + OBJECT_SEPARATOR + i,
+                     this.nodeName,
+                    _path.points.items,
+                    _path.closed .value,
+                    _path.degree .value,
+                    _path.winding.value,
+                    _path.round  .value);
+
+
+                if (_path.props)
+                    addProps(path, _path.props);
+
+                    
+                _path.objects = [path];
 
                 this.value.objects.push(path);
             }
@@ -243,16 +226,12 @@ extends GShape
 function reorientPaths(paths, reverse) 
 {
     const orderedPaths   = [];
-    let   remainingPaths = paths.map(c => c.toPointArray());//slice();
+    let   remainingPaths = paths.map(c => c.toPointArray());
 
 
-    // start with the first curve (could enhance by choosing a smarter start)
-    
     orderedPaths.push(remainingPaths.shift());
 
 
-    // iterate until all curves are reoriented and ordered
-    
     while (remainingPaths.length > 0) 
     {
         const currentPath = orderedPaths.at(-1);
@@ -265,11 +244,13 @@ function reorientPaths(paths, reverse)
         let nextPath = remainingPaths.splice(closestPathIndex, 1)[0];
         
         if (shouldReverse)
-            nextPath = nextPath.slice().reverse();
+            nextPath.reverse();//nextPath = nextPath.slice().reverse();
 
         orderedPaths.push(nextPath);
     }
 
+
+    console.log('orderedPaths =', orderedPaths);
 
     return reverse
          ? orderedPaths.reverse().map(path => path.slice().reverse())
@@ -283,6 +264,7 @@ function findNextPath(currentPath, remainingPaths)
     let minDistance      = Infinity;
     let closestPathIndex = -1;
     let shouldReverse    = false;
+
 
     const currentEndPoint = currentPath.at(-1);
 
@@ -305,6 +287,7 @@ function findNextPath(currentPath, remainingPaths)
             shouldReverse    = true;
         }
     });
+
 
     return { closestPathIndex, shouldReverse };
 }

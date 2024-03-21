@@ -116,17 +116,8 @@ extends GShapeBase
             consoleAssert(obj.effects, 'obj.effects must not be null');
 
 
-            if (!this.value.props)
-                continue;
-    
-            
-            if (isListValueType(this.value.props.type))
-            {               
-                for (let i = 0; i < this.value.props.items.length; i++)
-                    addProp(obj, this.value.props.items[i]);
-            }
-            else
-                addProp(obj, this.value.props);
+            if (this.value.props)
+                addProps(obj, this.value.props);
         }
     }
 
@@ -175,4 +166,17 @@ extends GShapeBase
         if (this.input) this.input.iterateLoop(parse);
         if (this.props) this.props.iterateLoop(parse);
     }
+}
+
+
+
+function addProps(obj, props)
+{
+    if (isListValueType(props.type))
+    {               
+        for (let i = 0; i < props.items.length; i++)
+            addProp(obj, props.items[i]);
+    }
+    else
+        addProp(obj, props);
 }

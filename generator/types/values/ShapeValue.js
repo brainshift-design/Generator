@@ -1,7 +1,5 @@
-/*
-    This is getting closer to Figma now, so here the format changes,
-    and objects hold stroke values directly, which incoming stroke values just set.
-*/
+// This is getting closer to Figma now, so here the format changes,
+// and objects hold stroke values directly, which incoming stroke values just set.
 
 class ShapeValue
 extends GValue
