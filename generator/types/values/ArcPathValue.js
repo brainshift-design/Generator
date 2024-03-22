@@ -9,6 +9,8 @@ extends ShapeValue
     start;
     sweep;
 
+    degree; // for algos that work on curves
+
 
 
     constructor(nodeId,
@@ -29,6 +31,8 @@ extends ShapeValue
         this.height   = height;
         this.start    = start;
         this.sweep    = sweep;
+
+        this.degree   = new NumberValue(2);
     }
 
 

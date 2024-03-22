@@ -230,7 +230,7 @@ extends GOperator1
                                     this.iterationObjects.push(obj.copy());
 
                                     if (  !iteration.isValid()
-                                        || iterations.includes(i+1))
+                                        || iterations.includes(i))
                                     {
                                         obj.nodeId      = this.nodeId;
                                         obj.listId      = i;

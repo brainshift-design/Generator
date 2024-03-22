@@ -11,6 +11,8 @@ extends ShapeValue
     alignX;  
     alignY;  
 
+    degree;
+
 
 
     constructor(nodeId,
@@ -35,6 +37,8 @@ extends ShapeValue
         this.offset    = offset;
         this.alignX    = alignX;
         this.alignY    = alignY;
+
+        this.degree   = new NumberValue(2);
     }
 
 

@@ -68,14 +68,22 @@ extends GShape
             this.value = new ListValue();
 
             
-            consoleAssert(paths.length == reorientedPaths.length, 'original path count must match reoriented path count')
+            consoleAssert(paths.length == reorientedPaths.length, 'original path count must match reoriented path count');
             
             for (let i = 0; i < reorientedPaths.length; i++)
             {
                 const points = 
-                    this.options.enabled
+                       this.options.enabled
+                    && reorientedPaths[i]
                     ? reorientedPaths[i].map(p => PointValue.fromPoint(this.nodeId, p))
-                    : paths[i].points.items;
+                    :    paths[i]
+                      && paths[i].points
+                      ? paths[i].points.items
+                      : [];
+
+                if (points.length == 0)
+                    continue;
+
 
                 const path = new VectorPathValue(
                     this.nodeId,
@@ -123,6 +131,8 @@ extends GShape
         for (let i = 0; i < this.value.items.length; i++)
         {
             const _path = this.value.items[i];
+            if (!_path) continue;
+
 
             if (   _path.points.items.length >= 2
                 && _path.closed .isValid()
