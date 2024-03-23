@@ -1,0 +1,43 @@
+#graphVersions
+{
+    position:     absolute;
+    bottom:       0;
+    left:         0;
+    width:        calc(100% - 4px);
+    height:       auto;
+    z-index:      1000;
+    padding-top:  4px;
+    padding-left: 5px;
+    row-gap:      4px;
+    column-gap:   0px;
+    outline:      1px solid #ffffff28;
+    /* box-shadow:   0 0 0 1px red inset; */
+}
+
+
+.figma-light #graphVersions { background-color: #eee;    }
+.figma-dark  #graphVersions { background-color: #2c2c2c; }
+
+
+.versionThumbnail
+{
+    display:       inline-block;
+    width:         64px;
+    height:        64px;
+    border-radius: 2px;
+    /* box-shadow:    0 0 0 1px orange inset; */
+    margin-right:  5px;
+    margin-bottom: 5px;
+}
+
+
+.figma-light .versionThumbnail { background-color: #eee;    }
+.figma-dark  .versionThumbnail { background-color: #222; }
+
+
+.versionAddThumbnail
+{
+    background:          url('data:image/svg+xml;utf8,<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 11H6L6 6H11V5H6L6 0H5L5 5H0V6H5L5 11Z" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
