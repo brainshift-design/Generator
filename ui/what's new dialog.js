@@ -3,7 +3,7 @@ function initWhatsNewDialog()
     //whatsNew0.innerHTML = whatsNew0.innerHTML.replace('%Ctrl%', osCtrl());
 
 
-    initCheckbox(chkHideWhatsNew, 'Don\'t show again', false);
+    initCheckbox(chkHideWhatsNew, 'Don\'t show again until next update', false);
     chkHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', generatorVersion));
 
 

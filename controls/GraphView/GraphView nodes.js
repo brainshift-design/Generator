@@ -409,14 +409,23 @@ GraphView.prototype.randomizeSelectedSeedsAndColors = function()
     const values = [];
 
 
-    if (settings.randomShiftR)
-    {
-        const randoms = graphView.selectedNodes.filter(n => 
-            (   n.type == NUMBER_RANDOM
-                || n.type == NUMBER_NOISE
-                || n.type == NUMBER_PROBABILITY)
-            && !n.paramSeed.controls[0].readOnly);
+    const randoms = graphView.selectedNodes.filter(n => 
+        (   n.type == NUMBER_RANDOM
+            || n.type == NUMBER_NOISE
+            || n.type == NUMBER_PROBABILITY)
+        && !n.paramSeed.controls[0].readOnly);
 
+    const colors = graphView.selectedNodes.filter(n => 
+            n.type == COLOR
+        && !n.param1.controls[0].readOnly
+        && !n.param2.controls[0].readOnly
+        && !n.param3.controls[0].readOnly);
+
+
+    if (   settings.randomShiftR
+        ||    randoms.length >  0
+           && colors .length == 0)
+    {
         if (randoms.length > 0)
         {
             const randomParams = randoms.map(n => n.paramFromId('seed'));
@@ -429,14 +438,10 @@ GraphView.prototype.randomizeSelectedSeedsAndColors = function()
     }
 
 
-    if (settings.colorShiftR)
+    if (   settings.colorShiftR
+        ||    colors .length >  0
+           && randoms.length == 0)
     {
-        const colors = graphView.selectedNodes.filter(n => 
-                n.type == COLOR
-            && !n.param1.controls[0].readOnly
-            && !n.param2.controls[0].readOnly
-            && !n.param3.controls[0].readOnly);
-            
         if (colors.length > 0)
         {
             const colorParams = 
