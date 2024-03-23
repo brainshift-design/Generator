@@ -1,0 +1,49 @@
+#snapshotBar
+{
+    position:     absolute;
+    bottom:       0;
+    left:         0;
+    width:        100%;
+    height:       auto;
+    row-gap:      4px;
+    column-gap:   0px;
+    outline:      1px solid #ffffff18;
+    /* box-shadow:   0 0 0 1px red inset; */
+}
+
+
+.figma-light #snapshots { background-color: #eee;    }
+.figma-dark  #snapshots { background-color: #292929; }
+
+
+.snapshotThumbnail
+{
+    display:       inline-block;
+    width:         52px;
+    height:        56px;
+    border-radius: 2px;
+    /* box-shadow:    0 0 0 1px orange inset; */
+}
+
+
+.figma-light .snapshotThumbnail 
+{ 
+    background-color: #eee; 
+}
+
+.figma-dark .snapshotThumbnail 
+{ 
+    border-right: 1px solid #fff1;
+}
+
+
+.figma-lihgt .snapshotThumbnail:hover { background-color: #fff; }
+.figma-dark  .snapshotThumbnail:hover { background-color: #111; }
+
+
+.addSnapshot
+{
+    background:          url('data:image/svg+xml;utf8,<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 11H6L6 6H11V5H6L6 0H5L5 5H0V6H5L5 11Z" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}

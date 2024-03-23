@@ -77,7 +77,8 @@ initLoadingOverlay();
 initEulaDialog();
 initWhatsNewDialog();
 initAboutDialog();
-initGraphVersions();
+
+initSnapshots();
 
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});

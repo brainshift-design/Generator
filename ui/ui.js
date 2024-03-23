@@ -35,6 +35,13 @@ function getTopHeight()
 
 
 
+function getBottomHeight() 
+{ 
+    return snapshotBar.offsetHeight;
+}
+
+
+
 function uiError(text, options = {}, delay = 6000)
 {
     uiNotify(

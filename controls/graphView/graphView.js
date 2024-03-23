@@ -142,7 +142,7 @@ class GraphView
     {
         graphView.updatePanAndZoom(false);
         graphView.updateScrollWithBounds();
-        graphView.div.style.height = 'calc(100% - ' + getTopHeight() + 'px)';
+        graphView.div.style.height = 'calc(100% - ' + (getTopHeight() + getBottomHeight()) + 'px)';
         graphView.updateMeasureData();
     }
 
