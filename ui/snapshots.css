@@ -4,7 +4,7 @@
     bottom:       0;
     left:         0;
     width:        100%;
-    height:       auto;
+    height:       48px;
     row-gap:      4px;
     column-gap:   0px;
     outline:      1px solid #ffffff18;
@@ -19,8 +19,8 @@
 .snapshotThumbnail
 {
     display:       inline-block;
-    width:         52px;
-    height:        56px;
+    width:         48px;
+    height:        48px;
     border-radius: 2px;
     /* box-shadow:    0 0 0 1px orange inset; */
 }
