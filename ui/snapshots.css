@@ -4,7 +4,7 @@
     bottom:       0;
     left:         0;
     width:        100%;
-    height:       48px;
+    height:       50px;
     row-gap:      4px;
     column-gap:   0px;
     outline:      1px solid #ffffff18;
@@ -16,11 +16,21 @@
 .figma-dark  #snapshots { background-color: #292929; }
 
 
+#snapshotThumbs
+{
+    position:    absolute;
+    top:         0;
+    white-space: nowrap;
+    width:       auto;
+    /* box-shadow:  0 0 0 1px orange inset; */
+}
+
+
 .snapshotThumbnail
 {
     display:       inline-block;
-    width:         48px;
-    height:        48px;
+    width:         50px;
+    height:        50px;
     border-radius: 2px;
     /* box-shadow:    0 0 0 1px orange inset; */
 }
@@ -33,7 +43,7 @@
 
 .figma-dark .snapshotThumbnail 
 { 
-    border-right: 1px solid #fff1;
+    border-right: 1px solid #ffffff28;
 }
 
 
