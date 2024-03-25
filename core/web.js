@@ -86,6 +86,18 @@ function createTextarea(className = '')
 
 
 
+function createCanvas(className = '')
+{
+    const canvas = document.createElement('canvas');
+
+    if (className.trim() != '')
+        canvas.className = className;
+    
+    return canvas;
+}
+
+
+
 function enableElementText(elem, enable, bold = true)
 {
     elem.style.fontStyle  = enable ? 'normal' : 'italic'; 

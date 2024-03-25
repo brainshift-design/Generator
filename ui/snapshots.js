@@ -45,6 +45,12 @@ function updateSnapshots()
 
 
 
+function updateSnapshotByIndex(index)
+{
+}
+
+
+
 function hideSnapshots()
 {
     snapshotBar.style.display = 'none';
@@ -69,22 +75,46 @@ function uiSaveSnapshot()
 
     
     const now   = Date.now();
-    const index = snapshots.length + 1;
+    const index = snapshots.length;
 
     snapshots.push(
     {
-        graph:   json,
-        index:   index,
-        created: now,
-        updated: now
+        graph:      json,
+        index:      index,
+        created:    now,
+        updated:    now,
+        iconWidth:  0,
+        iconHeight: 0,
+        icon:       []
     });
 
+    
+    const thumb     = createDiv('snapshotThumbnail');
+    const thumbIcon = createCanvas('snapshotIcon');
 
-    const objectIds = lastObjects.map(o => o.objectId);
+    thumb.appendChild(thumbIcon);
+    
+    snapshotThumbs.appendChild(thumb);
+
+
+    const objectIds = lastObjects.map(o => o[FO_OBJECT_ID]);
 
     uiQueueMessageToFigma({
         cmd:      'figSaveSnapshot',
         index:     index,
         objectIds: objectIds
     });
+}
+
+
+
+function uiReturnFigSaveSnapshot(msg)
+{
+    consoleAssert(msg.index < snapshots.length, 'snapshot index exceeds snapshot count');
+
+    snapshots[msg.index].iconWidth  = msg.iconWidth;
+    snapshots[msg.index].iconHeight = msg.iconHeight;
+    snapshots[msg.index].icon       = msg.icon;
+
+    updateSnapshotByIndex(msg.index);
 }

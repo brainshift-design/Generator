@@ -597,12 +597,26 @@ function figRemovePluginDataFromAllLocalStyles()
 
 
 
-function figSaveSnapshot(index, objectIds)
+async function figSaveSnapshot(index, objectIds)
 {
+    const objects = await figGetObjectsFromIds(objectIds);
+    const group   = figma.group(objects, figma.currentPage);
+
+
+    const settings: ExportSettingsImage = { format: 'PNG' };
+
+    const icon = await group.exportAsync(settings);
+
+
+    figma.ungroup(group);
+
+
     figPostMessageToUi(
     {
-        cmd:  'uiReturnFigSaveSnapshot',
-        index: index,
-        icon:  []
+        cmd:       'uiReturnFigSaveSnapshot',
+        index:      index,
+        iconWidth:  group.width,
+        iconHeight: group.height,
+        icon:       icon
     });
 }

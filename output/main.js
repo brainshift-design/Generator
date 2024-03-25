@@ -1567,6 +1567,20 @@ function figOnSelectionChange() {
 }
 var figObjectArrays = new Array(); // [ {nodeId, [objects]} ]
 var figStyleArrays = new Array(); // [ {nodeId, [styles]}  ]
+function figGetObjectsFromIds(objectIds) {
+    return __awaiter(this, void 0, void 0, function* () {
+        for (let i = figPoints.length - 1; i >= 0; i--)
+            if (!figPoints[i].removed
+                && objectIds.includes(figPoints[i].getPluginData('objectId')))
+                figPoints.splice(i, 1);
+        for (let i = figEmptyObjects.length - 1; i >= 0; i--)
+            if (figEmptyObjects[i].removed
+                || objectIds.includes(figEmptyObjects[i].getPluginData('objectId')))
+                figEmptyObjects.splice(i, 1);
+        yield figma.currentPage.loadAsync();
+        return figma.currentPage.findAll(o => objectIds.includes(o.getPluginData('objectId')));
+    });
+}
 function figDeleteObjectsFromNodeIds(nodeIds) {
     for (let i = figPoints.length - 1; i >= 0; i--)
         if (!figPoints[i].removed
@@ -2305,10 +2319,19 @@ function figRemovePluginDataFromAllLocalStyles() {
     });
 }
 function figSaveSnapshot(index, objectIds) {
-    figPostMessageToUi({
-        cmd: 'uiReturnFigSaveSnapshot',
-        index: index,
-        icon: []
+    return __awaiter(this, void 0, void 0, function* () {
+        const objects = yield figGetObjectsFromIds(objectIds);
+        const group = figma.group(objects, figma.currentPage);
+        const settings = { format: 'PNG' };
+        const icon = yield group.exportAsync(settings);
+        figma.ungroup(group);
+        figPostMessageToUi({
+            cmd: 'uiReturnFigSaveSnapshot',
+            index: index,
+            iconWidth: group.width,
+            iconHeight: group.height,
+            icon: icon
+        });
     });
 }
 var notifyNotificationHandler = null;

@@ -62,6 +62,8 @@ onmessage = e =>
         
         case 'uiReturnFigGetMousePosition':       uiUpdateWindowStartRect          (msg);               break;
 
+        case 'uiReturnFigSaveSnapshot':           uiReturnFigSaveSnapshot          (msg);               break;
+        
         case 'uiSetStyleId':                      uiSetStyleId                     (msg);               break;
         case 'uiHideClearUndoWarning':            uiHideClearUndoWarning           ();                  break;
 

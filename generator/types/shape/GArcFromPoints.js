@@ -50,10 +50,13 @@ extends GShape
         const input1  = await evalPointValue(this.input1, parse);
         const input2  = await evalPointValue(this.input2, parse);
 
+        console.log('input0 =', input0);
+        console.log('input1 =', input1);
+        console.log('input2 =', input2);
 
-        if (   input0  && input0 .isValid()
-            && input1  && input1 .isValid()
-            && input2  && input2 .isValid())
+        if (   input0 && input0.isValid()
+            && input1 && input1.isValid()
+            && input2 && input2.isValid())
         {
             const p0 = input0.toPoint();
             const p1 = input1.toPoint();

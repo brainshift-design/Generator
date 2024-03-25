@@ -2418,6 +2418,25 @@ var figStyleArrays  = new Array(); // [ {nodeId, [styles]}  ]
 
 
 
+async function figGetObjectsFromIds(objectIds)
+{
+    for (let i = figPoints.length-1; i >= 0; i--)
+        if (  !figPoints[i].removed
+            && objectIds.includes(figPoints[i].getPluginData('objectId')))
+            figPoints.splice(i, 1);
+
+    for (let i = figEmptyObjects.length-1; i >= 0; i--)
+        if (   figEmptyObjects[i].removed
+            || objectIds.includes(figEmptyObjects[i].getPluginData('objectId')))
+            figEmptyObjects.splice(i, 1);
+
+    await figma.currentPage.loadAsync();
+
+    return figma.currentPage.findAll(o => objectIds.includes(o.getPluginData('objectId')));
+}
+
+
+
 function figDeleteObjectsFromNodeIds(nodeIds)
 {
     for (let i = figPoints.length-1; i >= 0; i--)
@@ -3441,13 +3460,27 @@ function figRemovePluginDataFromAllLocalStyles()
 
 
 
-function figSaveSnapshot(index, objectIds)
+async function figSaveSnapshot(index, objectIds)
 {
+    const objects = await figGetObjectsFromIds(objectIds);
+    const group   = figma.group(objects, figma.currentPage);
+
+
+    const settings: ExportSettingsImage = { format: 'PNG' };
+
+    const icon = await group.exportAsync(settings);
+
+
+    figma.ungroup(group);
+
+
     figPostMessageToUi(
     {
-        cmd:  'uiReturnFigSaveSnapshot',
-        index: index,
-        icon:  []
+        cmd:       'uiReturnFigSaveSnapshot',
+        index:      index,
+        iconWidth:  group.width,
+        iconHeight: group.height,
+        icon:       icon
     });
 }
 

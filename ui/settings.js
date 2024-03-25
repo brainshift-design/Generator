@@ -367,17 +367,18 @@ function updateMenuItemShowColorLegendInMenus()
 function enableFeatures(sub, beta = false)
 {
     enableMenuItem(menuItemSetValueNames,      true, sub);
+    enableMenuItem(menuItemShowSnapshots,      true, sub);
     enableMenuItem(menuItemValueName,          true, sub);
     enableMenuItem(menuItemObjectName,         true, sub);
     enableMenuItem(menuItemTimer,              true, sub);
-    // enableMenuItem(menuItemSort,            true, sub);
-    // enableMenuItem(menuItemFilter,          true, sub);
-    // enableMenuItem(menuItemReorderList,     true, sub);
+ // enableMenuItem(menuItemSort,               true, sub);
+ // enableMenuItem(menuItemFilter,             true, sub);
+ // enableMenuItem(menuItemReorderList,        true, sub);
     enableMenuItem(menuItemAnimate,            true, sub);
     enableMenuItem(menuItemSaveToFile,         true, sub);
     enableMenuItem(menuItemSaveSelected,       true, sub);
     enableMenuItem(menuItemFetch,              true, sub);
-    // enableMenuItem(menuItemIndexToName,     true, sub);
+ // enableMenuItem(menuItemIndexToName,        true, sub);
     enableMenuItem(menuItemDateTime,           true, sub);
     enableMenuItem(menuItemSolve,              true, sub);
     enableMenuItem(menuItemTextJson,           true, sub);
@@ -386,7 +387,7 @@ function enableFeatures(sub, beta = false)
     enableMenuItem(menuItemConvertToP3,        true, sub);
     enableMenuItem(menuItemColorblind,         true, sub);
     enableMenuItem(menuItemShapeRender,        true, sub);
-    // enableMenuItem(menuItemShapeExport,        true, sub);
+ // enableMenuItem(menuItemShapeExport,        true, sub);
     enableMenuItem(menuItemVectorVertex,       true, sub);
     enableMenuItem(menuItemVectorEdge,         true, sub);
     enableMenuItem(menuItemVectorRegion,       true, sub);
