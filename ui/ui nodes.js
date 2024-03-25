@@ -10,14 +10,22 @@ function idFromNode(node)
 
 
 
-function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true, keepVarsConnected = true)
+function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true, keepVarsConnected = true, isSnapshot = false)
 {
     const tab = HTAB;
     
-    let json = 
-          (encloseBraces ? '{\n' : '')
-          + tab + '"generatorVersion": "' + generatorVersion + '",\n'
-          + tab + '"nodes":\n'
+    let json = '';
+
+    json +=
+           (encloseBraces ? '{\n' : '')
+          + tab + '"generatorVersion": "' + generatorVersion + '",\n';
+
+    
+    if (isSnapshot)
+        json += tab + '"snapshot": "true",\n';
+    
+    json +=
+            tab + '"nodes":\n'
           + tab + '[';
 
     let first = true;

@@ -594,3 +594,15 @@ function figRemovePluginDataFromAllLocalStyles()
         }
     });
 }
+
+
+
+function figSaveSnapshot(index, objectIds)
+{
+    figPostMessageToUi(
+    {
+        cmd:  'uiReturnFigSaveSnapshot',
+        index: index,
+        icon:  []
+    });
+}

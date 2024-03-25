@@ -2817,6 +2817,8 @@ figma.ui.onmessage = function(msg)
     
         case 'figTriggerUndo': figma.triggerUndo(); break;
         case 'figCommitUndo':  figma.commitUndo();  break;
+
+        case 'figSaveSnapshot': figSaveSnapshot(msg.index, msg.objectIds); break
     }
 
 
@@ -3434,6 +3436,18 @@ function figRemovePluginDataFromAllLocalStyles()
             style.setPluginData('nodeId',   '');
             style.setPluginData('existing', '');
         }
+    });
+}
+
+
+
+function figSaveSnapshot(index, objectIds)
+{
+    figPostMessageToUi(
+    {
+        cmd:  'uiReturnFigSaveSnapshot',
+        index: index,
+        icon:  []
     });
 }
 

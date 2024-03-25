@@ -14,6 +14,8 @@ const settings =
     invertSimpleMathParamOrder:    true,
     randomShiftR:                  true,
     colorShiftR:                   true,
+
+    showSnapshots:                 false,
     showColorLegendInMenus:        false,
     showClearUndoWarning:          true,
     shareUsageMetrics:             true,
@@ -79,6 +81,8 @@ function updateSetting(settingName, value)
         case 'invertSimpleMathParamOrder':    settings.invertSimpleMathParamOrder    = value;  break;
         case 'randomShiftR':                  settings.randomShiftR                  = value;  break;
         case 'colorShiftR':                   settings.colorShiftR                   = value;  break;
+        
+        case 'showSnapshots':                 settings.showSnapshots                 = value;  break;
         case 'showColorLegendInMenus':        settings.showColorLegendInMenus        = value;  break;
         case 'showClearUndoWarning':          settings.showClearUndoWarning          = value;  break;
         case 'shareUsageMetrics':             settings.shareUsageMetrics             = value;  break;
@@ -153,6 +157,8 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'invertSimpleMathParamOrder':    updateSettingAndMenu_(valid, settingName, value, menuItemInvertSimpleMathParamOrder   ); break;
         case 'randomShiftR':                  updateSettingAndMenu_(valid, settingName, value, menuItemRandomShiftR                 ); break;
         case 'colorShiftR':                   updateSettingAndMenu_(valid, settingName, value, menuItemColorShiftR                  ); break;
+
+        case 'showSnapshots':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowSnapshots                ); break;
         case 'showColorLegendInMenus':        updateSettingAndMenu_(valid, settingName, value, menuItemShowColorLegendInMenus       ); break;
         case 'showClearUndoWarning':          updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning         ); break;
         case 'shareUsageMetrics':             updateSettingAndMenu_(valid, settingName, value, menuItemShareUsageMetrics            ); break;
@@ -240,6 +246,8 @@ function updateSettingsMenus()
     menuItemInvertSimpleMathParamOrder   .setChecked(settings.invertSimpleMathParamOrder   );
     menuItemRandomShiftR                 .setChecked(settings.randomShiftR                 );
     menuItemColorShiftR                  .setChecked(settings. colorShiftR                 );
+
+    menuItemShowSnapshots                .setChecked(settings.showSnapshots       );
     menuItemShowColorLegendInMenus       .setChecked(settings.showColorLegendInMenus       );
     menuItemShowClearUndoWarning         .setChecked(settings.showClearUndoWarning         );
     menuItemShareUsageMetrics            .setChecked(settings.shareUsageMetrics            );
@@ -290,6 +298,15 @@ function updateMenuItemShowPages()
     uiSetPageData('showPages', boolToString(settings.showPages));
     graph.updatePages();
     graphView.update();
+}
+
+
+
+function updateMenuItemShowSnapshots()
+{
+    uiSetPageData('showSnapshots', boolToString(settings.showSnapshots));
+
+    snapshotBar.style.display = settings.showSnapshots ? 'block' : 'none';
 }
 
 
@@ -427,6 +444,8 @@ function loadLocalSettings()
     uiGetLocalData('invertSimpleMathParamOrder'   );
     uiGetLocalData('randomShiftR'                 );
     uiGetLocalData('colorShiftR'                  );
+
+    uiGetLocalData('showSnapshots'                );
     uiGetLocalData('showColorLegendInMenus'       );
     uiGetLocalData('showPages'                    );
     uiGetLocalData('showClearUndoWarning'         );

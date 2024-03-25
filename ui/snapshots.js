@@ -1,19 +1,20 @@
+var snapshots = [];
+
+
+
 function initSnapshots()
 {
-    for (let i = 0; i < 20; i++)
-    {
-        const thumb = createDiv('snapshotThumbnail');
-        snapshotThumbs.appendChild(thumb);
-    }
+    const addSnapshot = createDiv('snapshotThumbnail addSnapshot');
+    snapshotThumbs.appendChild(addSnapshot);
 
 
-    const addThumb = createDiv('snapshotThumbnail addSnapshot');
-    snapshotThumbs.appendChild(addThumb);
+    if (settings.showSnapshots)
+        snapshotBar.style.display = settings.showSnapshots ? 'block' : 'none';
 
 
     snapshotBar.addEventListener('pointermove', e =>
     {
-        const margin        = 40;
+        const margin        = 80;
 
         const totalWidth    = snapshotBar.offsetWidth;
         const snapshotWidth = snapshotThumbs.offsetWidth;
@@ -23,6 +24,9 @@ function initSnapshots()
 
         snapshotThumbs.style.left = (-offset) + 'px';
     });
+
+
+    addSnapshot.addEventListener('click', () => uiSaveSnapshot());
 }
 
 
@@ -30,4 +34,41 @@ function initSnapshots()
 function updateSnapshots()
 {
 
+}
+
+
+
+function uiSaveSnapshot()
+{
+    if (!subscribed())
+        return;
+
+
+    const json = nodesToJson(
+        graph.currentPage.nodes, 
+        true, 
+        false, 
+        true, 
+        true);
+
+    
+    const now   = Date.now();
+    const index = snapshots.length + 1;
+
+    snapshots.push(
+    {
+        graph:   json,
+        index:   index,
+        created: now,
+        updated: now
+    });
+
+
+    const objectIds = lastObjects.map(o => o.objectId);
+
+    uiQueueMessageToFigma({
+        cmd:      'figSaveSnapshot',
+        index:     index,
+        objectIds: objectIds
+    });
 }

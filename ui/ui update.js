@@ -4,6 +4,8 @@ var totalObjectProgress = 1;
 
 var objectProgressTimer = null;
 
+var lastObjects         = [];
+
 
 
 function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, objectBatchSize, totalObjects, values, objects, styles, updatedNodes, totalNodes, isFirstChunk, isLastChunk, save)
@@ -89,6 +91,12 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         uiStartObjectProgress();
     
     updateObjectCountDisplay();
+
+
+    if (isFirstChunk)
+        lastObjects = [];
+
+    lastObjects.push(...objects);
 
 
     if (   !isEmpty(objects)
