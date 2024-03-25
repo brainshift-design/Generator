@@ -163,10 +163,11 @@ function getSequenceValue(start, mult, add, iteration, enabled)
 
     if (enabled)
     {
-        const _mult = Math.pow(mult.value, iteration);
-        const _add  = add.value * iteration;
-
-        value = start.value * _mult + _add;
+        for (let i = 0; i < iteration; i++)
+        {
+            value *= mult.value;
+            value += add .value;
+        }
     }
 
     return new NumberValue(value);
