@@ -13,11 +13,13 @@ function initSnapshots()
 
     snapshotBar.addEventListener('pointermove', e =>
     {
+        const margin        = 40;
+
         const totalWidth    = snapshotBar.offsetWidth;
         const snapshotWidth = snapshotThumbs.offsetWidth;
 
-        const range      = Math.max(0, snapshotWidth - totalWidth);
-        const offset     = Math.min(Math.max(0, range * e.clientX / totalWidth), range);
+        const range         = Math.max(0, snapshotWidth - totalWidth);
+        const offset        = Math.min(Math.max(0, range * smoothstep((e.clientX - margin) / (totalWidth - margin*2))), range);
 
         snapshotThumbs.style.left = (-offset) + 'px';
     });

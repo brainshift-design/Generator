@@ -469,3 +469,14 @@ function dot3(m, v)
    
     return result;
 }
+
+
+
+function smoothstep(x)
+{
+    if (   x < 0 
+        || x > 1) 
+        return x;
+
+    return 3*x*x - 2*x*x*x;
+}

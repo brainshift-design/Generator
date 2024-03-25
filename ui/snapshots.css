@@ -50,6 +50,9 @@
 .figma-lihgt .snapshotThumbnail:hover { background-color: #fff; }
 .figma-dark  .snapshotThumbnail:hover { background-color: #111; }
 
+.figma-lihgt .snapshotThumbnail:active { background-color: #eee; }
+.figma-dark  .snapshotThumbnail:active { background-color: #000; }
+
 
 .addSnapshot
 {
