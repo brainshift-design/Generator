@@ -4,6 +4,13 @@ var snapshots = [];
 
 function initSnapshots()
 {
+    // for (let i = 0; i < 20; i++)
+    // {
+    //     const thumb = createDiv('snapshotThumbnail');
+    //     snapshotThumbs.appendChild(thumb);
+    // }
+
+
     const addSnapshot = createDiv('snapshotThumbnail addSnapshot');
     snapshotThumbs.appendChild(addSnapshot);
 
@@ -34,6 +41,15 @@ function initSnapshots()
 function updateSnapshots()
 {
 
+}
+
+
+
+function hideSnapshots()
+{
+    snapshotBar.style.display = 'none';
+
+    updateSettingAndMenu('showSnapshots', true, !settings.showSnapshots);
 }
 
 
