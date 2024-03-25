@@ -44908,21 +44908,20 @@ extends GShape
             return this;
 
 
-        const input0  = await evalPointValue(this.input0, parse);
-        const input1  = await evalPointValue(this.input1, parse);
-        const input2  = await evalPointValue(this.input2, parse);
+        const input0 = await evalPointValue(this.input0, parse);
+        const input1 = await evalPointValue(this.input1, parse);
+        const input2 = await evalPointValue(this.input2, parse);
 
-        console.log('input0 =', input0);
-        console.log('input1 =', input1);
-        console.log('input2 =', input2);
 
         if (   input0 && input0.isValid()
             && input1 && input1.isValid()
             && input2 && input2.isValid())
         {
-            const p0 = input0.toPoint();
-            const p1 = input1.toPoint();
-            const p2 = input2.toPoint();
+            // const objPoints = this.value.points.objects.filter(o => o.type == POINT);
+
+            const p0 = input0.objects[0].toPoint();
+            const p1 = input1.objects[0].toPoint();
+            const p2 = input2.objects[0].toPoint();
 
             const points = makeArc(p0, p1, p2);
 
