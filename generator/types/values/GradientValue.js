@@ -38,6 +38,9 @@ extends GValue
         this.skew     = skew    .copy();
         this.blend    = blend   .copy();
 
+        this.position.value = Math.round(this.position.value);
+        this.blend   .value = Math.round(this.blend   .value);
+
         this.valid = true;
     }
 

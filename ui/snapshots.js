@@ -16,7 +16,10 @@ function initSnapshots()
 
 
     if (settings.showSnapshots)
+    {
         snapshotBar.style.display = settings.showSnapshots ? 'block' : 'none';
+        graphView.updateScrollWithBounds();
+    }
 
 
     snapshotBar.addEventListener('pointermove', e =>
@@ -51,9 +54,17 @@ function updateSnapshotByIndex(index)
 
 
 
+function showSnapshots()
+{
+    snapshotBar.style.display = 'block';
+    //graphView.updateScrollWithBounds();
+}
+
+
 function hideSnapshots()
 {
     snapshotBar.style.display = 'none';
+    //graphView.updateScrollWithBounds();
 
     updateSettingAndMenu('showSnapshots', true, !settings.showSnapshots);
 }
@@ -93,7 +104,7 @@ function uiSaveSnapshot()
     const thumbIcon = createCanvas('snapshotIcon');
 
     thumb.appendChild(thumbIcon);
-    
+
     snapshotThumbs.appendChild(thumb);
 
 
