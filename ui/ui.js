@@ -37,7 +37,7 @@ function getTopHeight()
 
 function getBottomHeight() 
 { 
-    return snapshotBar.offsetHeight;
+    return 0; //snapshotBar.offsetHeight;
 }
 
 

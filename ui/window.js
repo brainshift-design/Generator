@@ -122,7 +122,7 @@ function uiReturnFigResizeWindow(width, height)
     graphView.update();
     updateWhatsNewScrollbar(0);
 
-    updateSnapshots();
+    // updateSnapshots();
 
 
     graph.updatePageName();
