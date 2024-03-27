@@ -368,7 +368,7 @@ function updateMenuItemShowColorLegendInMenus()
 function enableFeatures(sub, beta = false)
 {
     enableMenuItem(menuItemSetValueNames,   true, sub);
-  //enableMenuItem(menuItemShowSnapshots,   true, sub);
+ // enableMenuItem(menuItemShowSnapshots,   true, sub);
     enableMenuItem(menuItemValueName,       true, sub);
     enableMenuItem(menuItemObjectName,      true, sub);
     enableMenuItem(menuItemTimer,           true, sub);
