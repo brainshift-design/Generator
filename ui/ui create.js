@@ -163,9 +163,9 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case VECTOR_EDGE:             node = new OpVectorEdge();         break;
         case VECTOR_REGION:           node = new OpVectorRegion();       break;
         case VECTOR_NETWORK:          node = new OpVectorNetwork();      break;
-        case BOOLEAN:                 node = new OpShapeBoolean();       break;
         case ARC_PATH:                node = new OpArcPath();            break;
         case WAVE_PATH:               node = new OpWavePath();           break;
+        case SHAPE_BOOLEAN:           node = new OpShapeBoolean();       break;
         case SHAPE_GROUP:             node = new OpShapeGroup();         break;
         case FRAME:                   node = new OpFrame();              break;
         case SHAPE_APPLY:             node = new OpApply();              break;

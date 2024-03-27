@@ -518,19 +518,19 @@ const PATH_VALUES =
 ];
 
 
-const BOOLEAN               = 'BOOL';
-const BOOLEAN_VALUE         = 'BOOL#';
+const SHAPE_BOOLEAN         = 'SBOOL';
+const SHAPE_BOOLEAN_VALUE   = 'SBOOL#';
 
-const BOOL_UNION            = 'BOOLU';
-const BOOL_SUBTRACT         = 'BOOLS';
-const BOOL_INTERSECT        = 'BOOLI';
-const BOOL_EXCLUDE          = 'BOOLE';
+const BOOL_UNION            = 'SBOOLU';
+const BOOL_SUBTRACT         = 'SBOOLS';
+const BOOL_INTERSECT        = 'SBOOLI';
+const BOOL_EXCLUDE          = 'SBOOLE';
 
 
 const BOOLEAN_TYPES =
 [
-    BOOLEAN,
-    BOOLEAN_VALUE,
+    SHAPE_BOOLEAN,
+    SHAPE_BOOLEAN_VALUE,
     BOOL_UNION,
     BOOL_SUBTRACT,
     BOOL_INTERSECT,
@@ -563,7 +563,7 @@ const SHAPE_VALUES =
     WAVE_PATH_VALUE,
     SHAPE_GROUP_VALUE,
     FRAME_VALUE,
-    BOOLEAN_VALUE,
+    SHAPE_BOOLEAN_VALUE,
     DROP_SHADOW_VALUE,
     INNER_SHADOW_VALUE,
     LAYER_BLUR_VALUE,

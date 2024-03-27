@@ -32,7 +32,7 @@ async function figCreateObject(genObj, addObject = null)
         case POINT:          figObj =       figCreatePoint        (genObj);  break;
         case VECTOR_PATH:    figObj =       figCreateVectorPath   (genObj);  break;
         case VECTOR_NETWORK: figObj =       figCreateVectorNetwork(genObj);  break;
-        case BOOLEAN:        figObj = await figCreateBoolean      (genObj);  break;
+        case SHAPE_BOOLEAN:  figObj = await figCreateShapeBoolean (genObj);  break;
         case SHAPE_GROUP:    figObj = await figCreateShapeGroup   (genObj);  break;
         case FRAME:          figObj = await figCreateFrame        (genObj);  break;
     }
@@ -114,7 +114,7 @@ async function figUpdateObjectAsync(figObj, genObj)
         case POINT:          figUpdatePoint        (figObj, genObj);  break;
         case VECTOR_PATH:    figUpdateVectorPath   (figObj, genObj);  break;
         case VECTOR_NETWORK: figUpdateVectorNetwork(figObj, genObj);  break;
-        case BOOLEAN:        figUpdateBoolean      (figObj, genObj);  break;
+        case SHAPE_BOOLEAN:  figUpdateBoolean      (figObj, genObj);  break;
         case SHAPE_GROUP:    figUpdateShapeGroup   (figObj, genObj);  break;
         case FRAME:          figUpdateFrame        (figObj, genObj);  break;
     }
@@ -207,6 +207,8 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
              //&& o.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
                && o.getPluginData('objectId' ) == genObj[FO_OBJECT_ID]);
 
+        // console.log('genObj =', genObj);
+        // console.log('figObj =', figObj);
 
         if (   figObj != undefined
             && figObj != null
@@ -364,7 +366,7 @@ function genObjectIsValid(genObj)
         case POINT:          return genPointIsValid        (genObj);
         case VECTOR_PATH:    return genVectorPathIsValid   (genObj);
         case VECTOR_NETWORK: return genVectorNetworkIsValid(genObj);
-        case BOOLEAN:        return genBooleanIsValid      (genObj);
+        case SHAPE_BOOLEAN:  return genBooleanIsValid      (genObj);
         case SHAPE_GROUP:    return genShapeGroupIsValid   (genObj);
         case FRAME:          return genFrameIsValid        (genObj);
     }

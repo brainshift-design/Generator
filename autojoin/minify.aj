@@ -1289,8 +1289,8 @@ INTERSECT_LINES
 INTERPOLATE_POINT
 POINT_ALONG_PATH
 CLOSEST_POINT_ON_PATH
-BOOLEAN
-BOOLEAN_VALUE
+SHAPE_BOOLEAN
+SHAPE_BOOLEAN_VALUE
 BOOL_UNION
 BOOL_SUBTRACT
 BOOL_INTERSECT
@@ -2759,7 +2759,7 @@ actualObjectCount
 updateObjectCount
 figCreateVectorPath
 figCreateVectorNetwork
-figCreateBoolean
+figCreateShapeBoolean
 figCreateShapeGroup
 figCreateFrame
 figUpdatePoint

@@ -325,20 +325,20 @@ function copyFigmaObject(obj)
 {
     switch (obj.type)
     {
-        case RECTANGLE:   return FigmaRectangle .prototype.copy.call(obj);
-        case LINE:        return FigmaLine      .prototype.copy.call(obj);
-        case ELLIPSE:     return FigmaEllipse   .prototype.copy.call(obj);
-        case TRAPEZE:     return FigmaTrapeze   .prototype.copy.call(obj);
-        case POLYGON:     return FigmaPolygon   .prototype.copy.call(obj);
-        case STAR:        return FigmaStar      .prototype.copy.call(obj);
-        case TEXT_SHAPE:  return FigmaText      .prototype.copy.call(obj);
-        case POINT:       return FigmaPoint     .prototype.copy.call(obj);
-        case VECTOR_PATH: return FigmaVectorPath.prototype.copy.call(obj);
-        case BOOLEAN:     return FigmaBoolean   .prototype.copy.call(obj);
-        case ARC_PATH:    return FigmaArcPath   .prototype.copy.call(obj);
-        case WAVE_PATH:   return FigmaWavePath  .prototype.copy.call(obj);
-        case SHAPE_GROUP: return FigmaShapeGroup.prototype.copy.call(obj);
-        case FRAME:       return FigmaFrame     .prototype.copy.call(obj);
+        case RECTANGLE:     return FigmaRectangle .prototype.copy.call(obj);
+        case LINE:          return FigmaLine      .prototype.copy.call(obj);
+        case ELLIPSE:       return FigmaEllipse   .prototype.copy.call(obj);
+        case TRAPEZE:       return FigmaTrapeze   .prototype.copy.call(obj);
+        case POLYGON:       return FigmaPolygon   .prototype.copy.call(obj);
+        case STAR:          return FigmaStar      .prototype.copy.call(obj);
+        case TEXT_SHAPE:    return FigmaText      .prototype.copy.call(obj);
+        case POINT:         return FigmaPoint     .prototype.copy.call(obj);
+        case VECTOR_PATH:   return FigmaVectorPath.prototype.copy.call(obj);
+        case ARC_PATH:      return FigmaArcPath   .prototype.copy.call(obj);
+        case WAVE_PATH:     return FigmaWavePath  .prototype.copy.call(obj);
+        case SHAPE_BOOLEAN: return FigmaBoolean   .prototype.copy.call(obj);
+        case SHAPE_GROUP:   return FigmaShapeGroup.prototype.copy.call(obj);
+        case FRAME:         return FigmaFrame     .prototype.copy.call(obj);
     }
 
     consoleError('invalid Figma object type \'' + obj.type + '\'');

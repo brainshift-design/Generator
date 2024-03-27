@@ -29,14 +29,12 @@ extends OpShapeBase
         {
             onVariableConnectInput(e.detail.input); 
             e.detail.input.isNew = false; 
-            //this.updateHeader();
         });
 
 
         newInput.addEventListener('disconnect', e => 
         {
             onVariableDisconnectInput(e.detail.input);
-            //this.updateHeader();
         });
 
 

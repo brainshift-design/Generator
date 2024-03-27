@@ -3,14 +3,14 @@ extends GShapeBase
 {
     input     = null;
 
-    operation = null;
     children  = null;
+    operation = null;
 
 
 
     constructor(nodeId, options)
     {
-        super(BOOLEAN, nodeId, options);
+        super(SHAPE_BOOLEAN, nodeId, options);
     }
 
 
@@ -20,8 +20,8 @@ extends GShapeBase
         super.reset();
 
         this.input     = null;
-        this.operation = null;
         this.children  = null;
+        this.operation = null;
     }
 
 
@@ -35,8 +35,8 @@ extends GShapeBase
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.operation) copy.operation = this.operation.copy();
         if (this.children ) copy.children  = this.children .copy();
+        if (this.operation) copy.operation = this.operation.copy();
 
         return copy;
     }
@@ -84,12 +84,12 @@ extends GShapeBase
         this.setUpdateValues(parse,
         [
             //['value',     this.value          ],
-            ['operation', this.value.operation],
-            ['children',  this.value.children ]
+            //['children',  children ]
+            ['operation', operation]
         ]);
 
 
-        await this.evalShapeBase(parse);
+        // await this.evalShapeBase(parse);
 
         await this.evalObjects(parse);
 
@@ -158,7 +158,8 @@ extends GShapeBase
     isValid()
     {
         return super.isValid()
-            && this.children.isValid();
+            && this.children  && this.children .isValid()
+            && this.operation && this.operation.isValid();
     }
 
 
@@ -167,8 +168,9 @@ extends GShapeBase
     {
         super.pushValueUpdates(parse);
 
-        if (this.input   ) this.input   .pushValueUpdates(parse);
-        if (this.children) this.children.pushValueUpdates(parse);
+        if (this.input    ) this.input    .pushValueUpdates(parse);
+        if (this.children ) this.children .pushValueUpdates(parse);
+        if (this.operation) this.operation.pushValueUpdates(parse);
     }
 
 
@@ -177,8 +179,9 @@ extends GShapeBase
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.input   ) this.input   .invalidateInputs(parse, from, force);
-        if (this.children) this.children.invalidateInputs(parse, from, force);
+        if (this.input    ) this.input    .invalidateInputs(parse, from, force);
+        if (this.children ) this.children .invalidateInputs(parse, from, force);
+        if (this.operation) this.operation.invalidateInputs(parse, from, force);
     }
 
 
@@ -187,7 +190,8 @@ extends GShapeBase
     {
         super.iterateLoop(parse);
 
-        if (this.input   ) this.input   .iterateLoop(parse);
-        if (this.children) this.children.iterateLoop(parse);
+        if (this.input    ) this.input    .iterateLoop(parse);
+        if (this.children ) this.children .iterateLoop(parse);
+        if (this.operation) this.operation.iterateLoop(parse);
     }
 }

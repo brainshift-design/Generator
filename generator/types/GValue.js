@@ -174,7 +174,7 @@ function parseValueFromType(type, value)
         case    VECTOR_EDGE_VALUE: return parseVectorEdgeValue   (value)[0];
         case  VECTOR_REGION_VALUE: return parseVectorRegionValue (value)[0];
         case VECTOR_NETWORK_VALUE: return parseVectorNetworkValue(value)[0];
-        case        BOOLEAN_VALUE: return parseShapeBooleanValue (value)[0];
+        case  SHAPE_BOOLEAN_VALUE: return parseShapeBooleanValue (value)[0];
         case    SHAPE_GROUP_VALUE: return parseShapeGroupValue   (value)[0];
         case       ARC_PATH_VALUE: return parseArcPathValue      (value)[0];
         case      WAVE_PATH_VALUE: return parseWavePathValue     (value)[0];
@@ -227,7 +227,7 @@ function displayValue(type, value)
         case    VECTOR_EDGE_VALUE: return parseVectorEdgeValue   (value)[0].toDisplayString();
         case  VECTOR_REGION_VALUE: return parseVectorRegionValue (value)[0].toDisplayString();
         case VECTOR_NETWORK_VALUE: return parseVectorNetworkValue(value)[0].toDisplayString();
-        case        BOOLEAN_VALUE: return parseShapeBooleanValue (value)[0].toDisplayString();
+        case  SHAPE_BOOLEAN_VALUE: return parseShapeBooleanValue (value)[0].toDisplayString();
         case    SHAPE_GROUP_VALUE: return parseShapeGroupValue   (value)[0].toDisplayString();
         case          FRAME_VALUE: return parseFrameValue        (value)[0].toDisplayString();
     }
@@ -270,7 +270,7 @@ function nanFromType(type)
         case     VECTOR_EDGE_VALUE: return    VectorEdgeValue.NaN;
         case   VECTOR_REGION_VALUE: return  VectorRegionValue.NaN;
         case  VECTOR_NETWORK_VALUE: return VectorNetworkValue.NaN;
-        case         BOOLEAN_VALUE: return  ShapeBooleanValue.NaN;
+        case   SHAPE_BOOLEAN_VALUE: return  ShapeBooleanValue.NaN;
         case     SHAPE_GROUP_VALUE: return    ShapeGroupValue.NaN;
         case           FRAME_VALUE: return         FrameValue.NaN;
     }

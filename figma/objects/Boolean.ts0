@@ -5,7 +5,7 @@ function genBooleanIsValid(genBool)
 
 
 
-async function figCreateBoolean(genBool)
+async function figCreateShapeBoolean(genBool)
 {
     let objects = [];
 

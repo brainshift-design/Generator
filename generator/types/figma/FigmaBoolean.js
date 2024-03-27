@@ -8,7 +8,7 @@ extends FigmaShape
 
     constructor(nodeId, objectId, objectName, operation, children = [])
     {
-        super(BOOLEAN, nodeId, objectId, objectName);
+        super(SHAPE_BOOLEAN, nodeId, objectId, objectName);
         
         this.operation = operation;
         this.children  = children.map(c => c.copy());

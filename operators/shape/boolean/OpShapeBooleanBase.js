@@ -16,8 +16,8 @@ extends OpShapeBase
         this.canDisable = true;
 
 
-        this.addInput (this.createInputForObjects([BOOLEAN_VALUE], getNodeInputValuesForUndo));
-        this.addOutput(new Output([BOOLEAN_VALUE], this.output_genRequest));
+        this.addInput (this.createInputForObjects([SHAPE_BOOLEAN_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([SHAPE_BOOLEAN_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramX        = new NumberParam('x',        'x',       true, false, false,   0));

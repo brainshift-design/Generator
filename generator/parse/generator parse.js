@@ -308,8 +308,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == VECTOR_NETWORK_VALUE   ) result = genParseVectorNetworkValue(parse);
     else if (parse.next == VECTOR_NETWORK         ) result = genParseVectorNetwork     (parse);
 
-    else if (parse.next == BOOLEAN_VALUE          ) result = genParseShapeBooleanValue (parse);
-    else if (parse.next == BOOLEAN                ) result = genParseShapeBoolean      (parse);
+    else if (parse.next == SHAPE_BOOLEAN_VALUE    ) result = genParseShapeBooleanValue (parse);
+    else if (parse.next == SHAPE_BOOLEAN          ) result = genParseShapeBoolean      (parse);
 
     else if (parse.next == ARC_PATH_VALUE         ) result = genParseArcPathValue      (parse);
     else if (parse.next == ARC_PATH               ) result = genParseArcPath           (parse);
