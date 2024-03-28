@@ -6,12 +6,12 @@ extends ShapeValue
 
 
 
-    constructor(nodeId, operation, children)
+    constructor(nodeId, children, operation)
     {
         super(SHAPE_BOOLEAN_VALUE, nodeId);
 
-        this.operation = operation;
         this.children  = children;
+        this.operation = operation;
 
         this.objects = 
             children.objects
@@ -25,8 +25,8 @@ extends ShapeValue
     {
         const copy = new ShapeGroupValue(
             this.nodeId,
-            this.operation.copy(),
-            this.children .copy());
+            this.children .copy(),
+            this.operation.copy());
 
         copy.copyBase(this);
 
@@ -38,8 +38,8 @@ extends ShapeValue
     equals(bool)
     {
         return bool
-            && this.operation.equals(bool.operation)
-            && this.children .equals(bool.children );
+            && this.children .equals(bool.children )
+            && this.operation.equals(bool.operation);
     }
 
 
@@ -53,24 +53,24 @@ extends ShapeValue
 
     toString()
     {
-        return      this.operation.toString()
-            + ' ' + this.children .toString();
+        return      this.children .toString()
+            + ' ' + this.operation.toString();
     }
 
 
 
     toPreviewString()
     {
-        return      this.operation.toPreviewString()
-            + ' ' + this.children .toPreviewString();
+        return      this.children .toPreviewString()
+            + ' ' + this.operation.toPreviewString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.operation.toDisplayString()
-            + ' ' + this.children .toDisplayString();
+        return      this.children .toDisplayString()
+            + ' ' + this.operation.toDisplayString();
     }
 
 
@@ -85,16 +85,16 @@ extends ShapeValue
     isValid()
     {
         return super.isValid()
-            && this.operation.isValid()
-            && this.children .isValid();
+            && this.children .isValid()
+            && this.operation.isValid();
     }
 
 
     
     static NaN = new ShapeBooleanValue(
         '',
-        NumberValue.NaN,
-        ListValue  .NaN);
+        ListValue  .NaN,
+        NumberValue.NaN);
 }
 
 
@@ -115,13 +115,13 @@ function parseShapeBooleanValue(str, i = -1)
 
     const iStart = i;
 
-    const operation = parseNumberValue(str[i]); i += operation[1];
     const children  = parseListValue  (str, i); i += children [1];
+    const operation = parseNumberValue(str[i]); i += operation[1];
 
     const bool = new ShapeBooleanValue(
         '', // set node ID elsewhere
-        operation[0],
-        children [0]);
+        children [0],
+        operation[0]);
 
 
     i = parseShapeBaseValue(str, i, bool);

@@ -923,8 +923,8 @@ const FO_OPACITY        = 21;
 const FO_BLEND          = 22;
 const FO_MASK           = 23;
 
-const FO_X              = 24;                                                                                                                                                                                                         const FO_GROUP_CHILDREN = 24;
-const FO_Y              = 25;                                    
+const FO_X              = 24;                                                                         const FO_BOOLEAN_CHILDREN    = 24;                                                                                              const FO_GROUP_CHILDREN = 24;
+const FO_Y              = 25;                                                                         const FO_BOOLEAN_OPERATION   = 25;
 const FO_WIDTH          = 26;   
 const FO_HEIGHT         = 27;                                    
 

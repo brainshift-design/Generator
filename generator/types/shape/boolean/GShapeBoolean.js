@@ -1,8 +1,6 @@
 class GShapeBoolean
-extends GShapeBase
+extends GShape
 {
-    input     = null;
-
     children  = null;
     operation = null;
 
@@ -19,7 +17,6 @@ extends GShapeBase
     {
         super.reset();
 
-        this.input     = null;
         this.children  = null;
         this.operation = null;
     }
@@ -32,13 +29,23 @@ extends GShapeBase
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
         if (this.children ) copy.children  = this.children .copy();
         if (this.operation) copy.operation = this.operation.copy();
 
         return copy;
+    }
+
+
+
+    paramFromId(paramId)
+    {
+        switch (paramId)
+        {
+            case 'children':  return this.input ? this.value.children  : this.children;
+            case 'operation': return this.input ? this.value.operation : this.operation;
+        }
+
+        return super.paramFromId(paramId);
     }
 
 
@@ -58,7 +65,11 @@ extends GShapeBase
         if (   children
             && SHAPE_VALUES.includes(children.type)
             && children.type != SHAPE_LIST_VALUE)
-            children = new ListValue([children]);
+        {
+            const objects    = children.objects;
+            children         = new ListValue([children]);
+            children.objects = objects;
+        }
 
 
         let input = null;
@@ -69,29 +80,32 @@ extends GShapeBase
 
             this.value = new ShapeBooleanValue(
                 this.nodeId,
-                operation ?? input.operation,
-                children  ?? input.children);
+                children  ?? input.children,
+                operation ?? input.operation);
         }
         else
         {
             this.value = new ShapeBooleanValue(
                 this.nodeId, 
-                operation,
-                children);
+                children,
+                operation);
         }
 
 
         this.setUpdateValues(parse,
         [
-            //['value',     this.value          ],
-            //['children',  children ]
             ['operation', operation]
         ]);
 
 
-        // await this.evalShapeBase(parse);
+        await this.evalShapeBase(parse);
+
 
         await this.evalObjects(parse);
+
+
+        if (!this.children ) this.children  = this.value.children .copy();
+        if (!this.operation) this.operation = this.value.operation.copy();
 
 
         this.validate();
@@ -107,45 +121,83 @@ extends GShapeBase
             return;
             
 
-        if (this.value.children)
+        if (   this.value.objects
+            && this.value.operation)
         {
             const bool = new FigmaBoolean(
                 this.nodeId,
                 this.nodeId,
                 this.nodeName,
-                this.operation);
+                this.operation.value);
 
 
-            if (this.children.objects)
+            const bounds = getObjBounds(this.value.objects);
+
+            for (let i = 0; i < this.value.objects.length; i++)
             {
-                for (let i = 0; i < this.children.objects.length; i++)
-                {
-                    const obj    = this.children.objects[i].copy();
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    obj.listId   = -1;
-                    bool.children.push(obj);
-                }
+                const obj = this.value.objects[i];
+
+                obj.createDefaultSpace();
+                obj.resetSpace(bounds, false);
+
+                this.addChildObject(bool.children, obj, i);
             }
 
 
+            bool.x      = bounds.x;
+            bool.y      = bounds.y;
+            bool.width  = bounds.width;
+            bool.height = bounds.height;
+
+            
+            bool.createDefaultSpace();
+            bool.resetSpace(bounds);
+
+            bool.createDefaultTransform(bounds.x, bounds.y);
+            bool.createDefaultTransformPoints(bounds.x, bounds.y, bounds.width, bounds.height);
+        
             this.value.objects = [bool];
 
-            this.updateValues.push(['nObjects', new NumberValue(
-                this.children.objects 
-                ? this.children.objects.length
-                : 0)]);
+
+            this.setUpdateValues(parse,
+            [
+                [
+                   'nChildren', 
+                    new NumberValue(
+                        this.children.objects 
+                        ? this.children.objects.length
+                        : 0)
+                ]
+            ],
+            true);
         }
         else
         {
             this.value.objects = [];
-            this.updateValues.push(['nObjects', new NumberValue(0)]);
+            
+            this.setUpdateValues(parse,
+            [
+                ['nChildren', new NumberValue(0)]
+            ],
+            true);
         }
 
         
         await super.evalObjects(parse);
     }
 
+
+
+    addChildObject(objects, _obj, inputIndex)
+    {
+        const obj = copyFigmaObject(_obj);
+
+        obj.nodeId    = this.nodeId;
+        obj.objectId += OBJECT_SEPARATOR + inputIndex;
+        obj.listId    = -1;
+
+        objects.push(obj);
+    }
 
 
     toValue()

@@ -70,10 +70,6 @@ extends GShape
         let position = await evalNumberValue(this.position, parse);
         let round    = await evalNumberValue(this.round,    parse);
 
-        if (children && !children.isValid()) children = new ListValue();
-        if (position && !position.isValid()) position = NumberValue.NaN.copy();
-        if (round    && !round   .isValid()) round    = NumberValue.NaN.copy();
-
 
         if (   children
             && SHAPE_VALUES.includes(children.type)

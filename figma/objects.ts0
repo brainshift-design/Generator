@@ -207,8 +207,6 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
              //&& o.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
                && o.getPluginData('objectId' ) == genObj[FO_OBJECT_ID]);
 
-        // console.log('genObj =', genObj);
-        // console.log('figObj =', figObj);
 
         if (   figObj != undefined
             && figObj != null

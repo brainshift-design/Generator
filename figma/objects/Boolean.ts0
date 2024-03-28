@@ -1,15 +1,16 @@
 function genBooleanIsValid(genBool)
 {
-    return genBool.children.length > 0;
+    return genBool[FO_BOOLEAN_CHILDREN].length > 0;
 }
 
 
 
 async function figCreateShapeBoolean(genBool)
 {
+    console.log('genBool =', genBool);
     let objects = [];
 
-    for (const obj of genBool.children)
+    for (const obj of genBool[FO_BOOLEAN_CHILDREN])
         await figCreateObject(obj, o => objects = [...objects, o]);
 
 
@@ -20,7 +21,7 @@ async function figCreateShapeBoolean(genBool)
 
     if (!isEmpty(objects))
     {
-        switch (genBool.operation)
+        switch (genBool[FO_BOOLEAN_OPERATION])
         {
             case 0: figBool = figma.union    (objects, figma.currentPage); break;
             case 1: figBool = figma.subtract (objects, figma.currentPage); break;
@@ -58,6 +59,6 @@ function figUpdateBoolean(figBool, genBool, isValid = false)
 
     figUpdateObjects(
         figBool, 
-        genBool.children, 
-        genBool.children.length);
+        genBool[FO_BOOLEAN_CHILDREN], 
+        genBool[FO_BOOLEAN_CHILDREN].length);
 }

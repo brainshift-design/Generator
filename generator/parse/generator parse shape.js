@@ -1136,6 +1136,7 @@ function genParseShapeBoolean(parse)
         {
         case 'children':  bool.children  = genParse(parse); break;
         case 'operation': bool.operation = genParse(parse); break;
+        case 'props':     bool.props     = genParse(parse); break;
         }
     }
 

@@ -15,6 +15,7 @@ extends OpShape
     {
         super(FRAME, 'frame', 'frame', iconFrame);
 
+
         this.canDisable     = true;
         this.iconOffsetY    = -1;
 
@@ -38,12 +39,13 @@ extends OpShape
 
         this.paramChildren.input.types.push(SHAPE_LIST_VALUE, ...SHAPE_VALUES);
         this.paramChildren.listTypes    = SHAPE_VALUES;
-        this.paramChildren.itemName     = [];//'object'];
+        this.paramChildren.itemName     = [];
         this.paramChildren.showZero     = false;
         this.paramChildren.getItemCount = () => 0;
 
         this.setAllParamDividers(0.47);
 
+        
         this.addBaseParams();
     }
     
@@ -75,7 +77,7 @@ extends OpShape
 
         const childType = values[paramIds.findIndex(id => id == 'childType')];
 
-        this.paramChildren.output.types = [childType.value];//[finalListTypeFromItems(children.items)];
+        this.paramChildren.output.types = [childType.value];
 
         this.paramPosition.setValue(position, false, true, false);
         this.paramX       .setValue(x,        false, true, false);
