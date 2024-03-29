@@ -10530,6 +10530,9 @@ async function evalValue(_value, parse, nan = () => new NullValue())
         ? (await _value.eval(parse)).toValue() 
         : null;
 
+    console.log('_value =', _value);
+    console.log('value =', value);
+
     if (    value 
         && !value.isValid()
         && nan) 
@@ -16880,7 +16883,7 @@ extends ShapeValue
 
     copy()
     {
-        const copy = new ShapeGroupValue(
+        const copy = new ShapeBooleanValue(
             this.nodeId,
             this.children .copy(),
             this.operation.copy());

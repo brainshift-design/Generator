@@ -23,7 +23,7 @@ extends ShapeValue
 
     copy()
     {
-        const copy = new ShapeGroupValue(
+        const copy = new ShapeBooleanValue(
             this.nodeId,
             this.children .copy(),
             this.operation.copy());
