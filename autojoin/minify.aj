@@ -3671,7 +3671,6 @@ startCount
 endPad
 endCount
 _case
-showCenter
 updateSettingAndMenu_
 settingName
 moveType
