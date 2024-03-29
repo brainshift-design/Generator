@@ -66,7 +66,8 @@ function addGradientProp(obj, prop, target = obj.fills)
     [
         '', // type
         [], // transform
-        []  // stops
+        [], // stops
+        ''  // blend mode
     ];
 
 
@@ -96,7 +97,7 @@ function addGradientProp(obj, prop, target = obj.fills)
 
     if (pos > 0)
     {
-        const aspect = bounds.width / nozero(bounds.height);
+        //const aspect = bounds.width / nozero(bounds.height);
 
         if (   pos == 1
             || pos == 2) 
@@ -225,6 +226,7 @@ function addGradientProp(obj, prop, target = obj.fills)
     }
 
 
+    console.log('prop.blend.value =', prop.blend.value);
     gradient[3] = BlendModes[prop.blend.value][2];    
 
 

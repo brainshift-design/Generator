@@ -7319,7 +7319,8 @@ function addGradientProp(obj, prop, target = obj.fills)
     [
         '', // type
         [], // transform
-        []  // stops
+        [], // stops
+        ''  // blend mode
     ];
 
 
@@ -7349,7 +7350,7 @@ function addGradientProp(obj, prop, target = obj.fills)
 
     if (pos > 0)
     {
-        const aspect = bounds.width / nozero(bounds.height);
+        //const aspect = bounds.width / nozero(bounds.height);
 
         if (   pos == 1
             || pos == 2) 
@@ -7478,6 +7479,7 @@ function addGradientProp(obj, prop, target = obj.fills)
     }
 
 
+    console.log('prop.blend.value =', prop.blend.value);
     gradient[3] = BlendModes[prop.blend.value][2];    
 
 
@@ -9310,41 +9312,6 @@ extends FigmaShape
 
 
 
-    // getCount()
-    // {
-    //     let nObjects =
-    //         this.children.length > 0
-    //         ? super.getCount()
-    //         : 0;
-
-    //     for (const obj of this.children)
-    //         nObjects += obj.getCount();
-
-    //     return nObjects;
-    // }
-
-
-
-    // createDefaultSpace(cx = 0, cy = 0)
-    // {
-    //     super.createDefaultSpace(cx, cy);
-
-    //     for (const obj of this.children)
-    //         obj.createDefaultSpace(cx, cy);
-    // }
-
-
-
-    // resetSpace(bounds, singlePoint = false, cx = 0.5, cy = 0.5, units = 0)
-    // {
-    //     super.resetSpace(bounds, singlePoint, cx, cy, units);
-
-    //     for (const obj of this.children)
-    //         obj.resetSpace(bounds, singlePoint, cx, cy, units);
-    // }
-
-
-
     getBounds()
     {
         return getObjBounds(this.children);
@@ -9354,8 +9321,6 @@ extends FigmaShape
 
     applyTransform(xform, affectSpace)
     {
-        // super.applyTransform(xform, affectSpace);
-        
         for (const obj of this.children)
             obj.applyTransform(xform, affectSpace);
     }
@@ -9652,8 +9617,6 @@ extends FigmaShape
 
     applyTransform(xform, affectSpace)
     {
-        // super.applyTransform(xform, affectSpace);
-
         for (const obj of this.children)
             obj.applyTransform(xform, affectSpace);
     }
@@ -12714,9 +12677,6 @@ extends GValue
         this.aspect   = aspect  .copy();
         this.skew     = skew    .copy();
         this.blend    = blend   .copy();
-
-        this.position.value = Math.round(this.position.value);
-        this.blend   .value = Math.round(this.blend   .value);
 
         this.valid = true;
     }
@@ -35679,6 +35639,10 @@ extends GOperator
         const aspect   = await evalNumberValue(this.aspect,   parse);
         const skew     = await evalNumberValue(this.skew,     parse);
         const blend    = await evalNumberValue(this.blend,    parse);
+
+        
+        if (position) position.value = Math.min(Math.max(0, Math.floor(position.value)), 1);
+        if (blend   ) blend   .value = Math.min(Math.max(0, Math.floor(blend   .value)), BlendModes.length-1);
 
 
         let stops = new ListValue();
