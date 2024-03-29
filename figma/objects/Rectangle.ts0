@@ -9,7 +9,7 @@ function genRectIsValid(genRect)
 
 
 
-function figCreateRect(genRect)
+function figCreateRect(genRect, addProps)
 {
     if (!genRectIsValid(genRect))
         return null;
@@ -17,14 +17,14 @@ function figCreateRect(genRect)
 
     const figRect = figma.createRectangle();
 
-    figUpdateRect(figRect, genRect, true);
+    figUpdateRect(figRect, genRect, addProps, true);
 
     return figRect;
 }
 
 
 
-function figUpdateRect(figRect, genRect, isValid = false)
+function figUpdateRect(figRect, genRect, addProps, isValid = false)
 {
     if (   !isValid
         && !genRectIsValid(genRect))
@@ -47,5 +47,5 @@ function figUpdateRect(figRect, genRect, isValid = false)
 
 
     setObjectTransform(figRect, genRect);
-    setObjectProps    (figRect, genRect);
+    setObjectProps    (figRect, genRect, addProps);
 }

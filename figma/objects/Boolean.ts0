@@ -1,13 +1,12 @@
 function genBooleanIsValid(genBool)
 {
-    return genBool[FO_BOOLEAN_CHILDREN].length > 0;
+    return true;//genBool[FO_BOOLEAN_CHILDREN].length > 0;
 }
 
 
 
-async function figCreateShapeBoolean(genBool)
+async function figCreateShapeBoolean(genBool, addProps)
 {
-    console.log('genBool =', genBool);
     let objects = [];
 
     for (const obj of genBool[FO_BOOLEAN_CHILDREN])
@@ -33,10 +32,8 @@ async function figCreateShapeBoolean(genBool)
 
     if (figBool)
     {
-        setObjectTransform(figBool, genBool);
-
-        if (!genBooleanIsValid(genBool))
-            return figBool;
+        figBool.expanded = false;
+        figUpdateBoolean(figBool, genBool, addProps);
     }
 
 
@@ -45,20 +42,26 @@ async function figCreateShapeBoolean(genBool)
 
 
 
-function figUpdateBoolean(figBool, genBool, isValid = false)
+function figUpdateBoolean(figBool, genBool, addProps) //, isValid = false)
 {
-    if (   !isValid
-        && !genBooleanIsValid(genBool))
+    if (genBool[FO_BOOLEAN_CHILDREN].length == 0)
     {
         figBool.remove();
         return;
     }
 
-
-    setObjectTransform(figBool, genBool);
-
+    
     figUpdateObjects(
         figBool, 
         genBool[FO_BOOLEAN_CHILDREN], 
-        genBool[FO_BOOLEAN_CHILDREN].length);
+        genBool[FO_BOOLEAN_CHILDREN].length,
+        -1,
+        [], 
+        false,
+        false,
+        false,
+        false);
+
+
+    setObjectProps(figBool, genBool, addProps && genBool[FO_BOOLEAN_CHILDREN].length == 0);
 }

@@ -42101,9 +42101,20 @@ extends GShape
         if (   this.value.objects
             && this.value.operation)
         {
+            let typeSuffix = '';
+
+            switch (this.operation.value)
+            {
+                case 0: typeSuffix = '+'; break;
+                case 1: typeSuffix = '-'; break;
+                case 2: typeSuffix = '×'; break;
+                case 3: typeSuffix = '○'; break;
+            }
+
+
             const bool = new FigmaBoolean(
                 this.nodeId,
-                this.nodeId,
+                this.nodeId + OBJECT_SEPARATOR + typeSuffix,
                 this.nodeName,
                 this.operation.value);
 
@@ -42136,15 +42147,15 @@ extends GShape
             this.value.objects = [bool];
 
 
+            const nChildren = new NumberValue(
+                this.children.objects 
+                ? this.children.objects.length
+                : 0);
+
+
             this.setUpdateValues(parse,
             [
-                [
-                   'nChildren', 
-                    new NumberValue(
-                        this.children.objects 
-                        ? this.children.objects.length
-                        : 0)
-                ]
+                ['nChildren', nChildren]
             ],
             true);
         }

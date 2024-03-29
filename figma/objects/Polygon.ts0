@@ -10,7 +10,7 @@ function genPolygonIsValid(genPoly)
 
 
 
-function figCreatePolygon(genPoly)
+function figCreatePolygon(genPoly, addProps)
 {
     if (!genPolygonIsValid(genPoly))
         return null;
@@ -18,14 +18,14 @@ function figCreatePolygon(genPoly)
         
     const figPoly = figma.createPolygon();
 
-    figUpdatePolygon(figPoly, genPoly, true);
+    figUpdatePolygon(figPoly, genPoly, addProps, true);
 
     return figPoly;
 }
 
 
 
-function figUpdatePolygon(figPoly, genPoly, isValid = false)
+function figUpdatePolygon(figPoly, genPoly, addProps, isValid = false)
 {
     if (   !isValid
         && !genPolygonIsValid(genPoly))
@@ -37,5 +37,5 @@ function figUpdatePolygon(figPoly, genPoly, isValid = false)
 
 
     setObjectTransform(figPoly, genPoly);
-    setObjectProps    (figPoly, genPoly);
+    setObjectProps    (figPoly, genPoly, addProps);
 }

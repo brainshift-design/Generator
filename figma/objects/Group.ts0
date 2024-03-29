@@ -22,7 +22,10 @@ async function figCreateShapeGroup(genGroup)
 
 
     if (figGroup)
+    {
+        figGroup.expanded = false;
         figUpdateShapeGroup(figGroup, genGroup);
+    }
 
 
     return figGroup;
@@ -44,5 +47,6 @@ function figUpdateShapeGroup(figGroup, genGroup)
         genGroup[FO_GROUP_CHILDREN],
         genGroup[FO_GROUP_CHILDREN].length);
 
+        
     setObjectEffects(figGroup, genGroup);
 }

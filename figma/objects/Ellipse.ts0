@@ -12,7 +12,7 @@ function genEllipseIsValid(genEllipse)
 
 
 
-function figCreateEllipse(genEllipse)
+function figCreateEllipse(genEllipse, addProps)
 {
     if (!genEllipseIsValid(genEllipse))
         return null;
@@ -20,7 +20,7 @@ function figCreateEllipse(genEllipse)
     
     const figEllipse = figma.createEllipse();
 
-    figUpdateEllipse(figEllipse, genEllipse, true);
+    figUpdateEllipse(figEllipse, genEllipse, addProps, true);
 
     
     return figEllipse;
@@ -28,7 +28,7 @@ function figCreateEllipse(genEllipse)
 
 
 
-function figUpdateEllipse(figEllipse, genEllipse, isValid = false)
+function figUpdateEllipse(figEllipse, genEllipse, addProps, isValid = false)
 {
     if (   !isValid
         && !genEllipseIsValid(genEllipse))
@@ -40,8 +40,8 @@ function figUpdateEllipse(figEllipse, genEllipse, isValid = false)
 
     if (figPoints.includes(figEllipse))
         updatePointObject(figEllipse);
-    else
-        setObjectProps(figEllipse, genEllipse);
+    else 
+        setObjectProps(figEllipse, genEllipse, addProps);
 }
 
 

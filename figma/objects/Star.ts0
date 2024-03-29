@@ -11,7 +11,7 @@ function genStarIsValid(genStar)
 
 
 
-function figCreateStar(genStar)
+function figCreateStar(genStar, addProps)
 {
     if (!genStarIsValid(genStar))
         return null;
@@ -19,14 +19,14 @@ function figCreateStar(genStar)
     
     const figStar = figma.createStar();
 
-    figUpdateStar(figStar, genStar, true);
+    figUpdateStar(figStar, genStar, addProps, true);
 
     return figStar;
 }
 
 
 
-function figUpdateStar(figStar, genStar, isValid = false)
+function figUpdateStar(figStar, genStar, addProps, isValid = false)
 {
     if (   !isValid
         && !genStarIsValid(genStar))
@@ -39,5 +39,5 @@ function figUpdateStar(figStar, genStar, isValid = false)
 
 
     setObjectTransform(figStar, genStar);
-    setObjectProps    (figStar, genStar);
+    setObjectProps    (figStar, genStar, addProps);
 }

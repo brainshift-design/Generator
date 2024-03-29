@@ -22,7 +22,7 @@ async function figGetObjectsFromIds(objectIds)
 
 
 
-function figDeleteObjectsFromNodeIds(nodeIds)
+async function figDeleteObjectsFromNodeIds(nodeIds)
 {
     for (let i = figPoints.length-1; i >= 0; i--)
         if (  !figPoints[i].removed
@@ -34,12 +34,12 @@ function figDeleteObjectsFromNodeIds(nodeIds)
             || nodeIds.includes(figEmptyObjects[i].getPluginData('nodeId')))
             figEmptyObjects.splice(i, 1);
 
-    figma.currentPage.loadAsync().then(() =>
-    {
-        figma.currentPage
-            .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
-            .forEach(o => { if (!o.removed) o.remove(); });
-    });
+    await figma.currentPage.loadAsync();
+
+    figma.currentPage
+        .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
+        .forEach(o => { if (!o.removed) o.remove(); });
+
 
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
 }
