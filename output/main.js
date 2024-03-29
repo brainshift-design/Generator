@@ -3560,7 +3560,6 @@ function getFigmaTransform(tl, tr, bl) {
 }
 function applyFigmaTransform(figObj, tl, tr, bl) {
     const xform = getFigmaTransform(tl, tr, bl);
-    console.log('xform =', xform);
     figObj.relativeTransform =
         [
             xform[0],

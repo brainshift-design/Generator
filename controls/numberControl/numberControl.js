@@ -499,7 +499,10 @@ extends Control
 
     updateCursor()
     {
-        this.divValue.style.cursor = 
+        if (!this.param)
+            return;
+        
+        this.param.div.style.cursor = 
                this.readOnly 
             || containsChild(this.divValue, this.textbox)
             || graphView.wheelTimer 

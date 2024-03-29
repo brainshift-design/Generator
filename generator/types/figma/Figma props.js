@@ -226,7 +226,6 @@ function addGradientProp(obj, prop, target = obj.fills)
     }
 
 
-    console.log('prop.blend.value =', prop.blend.value);
     gradient[3] = BlendModes[prop.blend.value][2];    
 
 
