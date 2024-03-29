@@ -28,11 +28,61 @@ extends FigmaShape
             this.operation,
             this.children);
 
-
         copy.copyBase(this);
-
         
         return copy;
+    }
+
+
+
+    // getCount()
+    // {
+    //     let nObjects =
+    //         this.children.length > 0
+    //         ? super.getCount()
+    //         : 0;
+
+    //     for (const obj of this.children)
+    //         nObjects += obj.getCount();
+
+    //     return nObjects;
+    // }
+
+
+
+    // createDefaultSpace(cx = 0, cy = 0)
+    // {
+    //     super.createDefaultSpace(cx, cy);
+
+    //     for (const obj of this.children)
+    //         obj.createDefaultSpace(cx, cy);
+    // }
+
+
+
+    // resetSpace(bounds, singlePoint = false, cx = 0.5, cy = 0.5, units = 0)
+    // {
+    //     super.resetSpace(bounds, singlePoint, cx, cy, units);
+
+    //     for (const obj of this.children)
+    //         obj.resetSpace(bounds, singlePoint, cx, cy, units);
+    // }
+
+
+
+    getBounds()
+    {
+        return getObjBounds(this.children);
+    }
+
+
+
+    applyTransform(xform, affectSpace)
+    {
+        // super.applyTransform(xform, affectSpace);
+        
+        for (const obj of this.children)
+            obj.applyTransform(xform, affectSpace);
     }
 
 

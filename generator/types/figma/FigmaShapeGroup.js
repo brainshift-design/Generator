@@ -57,10 +57,10 @@ extends FigmaShape
 
     resetSpace(bounds, singlePoint = false, cx = 0.5, cy = 0.5, units = 0)
     {
-        super.resetSpace(bounds, singlePoint, cx, cy, units);
+        super.resetSpace(bounds, false, cx, cy, units);
 
         for (const obj of this.children)
-            obj.resetSpace(bounds, singlePoint, cx, cy, units);
+            obj.resetSpace(bounds, false, cx, cy, units);
     }
 
 
@@ -74,6 +74,8 @@ extends FigmaShape
 
     applyTransform(xform, affectSpace)
     {
+        // super.applyTransform(xform, affectSpace);
+
         for (const obj of this.children)
             obj.applyTransform(xform, affectSpace);
     }

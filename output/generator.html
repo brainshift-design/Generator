@@ -9303,11 +9303,61 @@ extends FigmaShape
             this.operation,
             this.children);
 
-
         copy.copyBase(this);
-
         
         return copy;
+    }
+
+
+
+    // getCount()
+    // {
+    //     let nObjects =
+    //         this.children.length > 0
+    //         ? super.getCount()
+    //         : 0;
+
+    //     for (const obj of this.children)
+    //         nObjects += obj.getCount();
+
+    //     return nObjects;
+    // }
+
+
+
+    // createDefaultSpace(cx = 0, cy = 0)
+    // {
+    //     super.createDefaultSpace(cx, cy);
+
+    //     for (const obj of this.children)
+    //         obj.createDefaultSpace(cx, cy);
+    // }
+
+
+
+    // resetSpace(bounds, singlePoint = false, cx = 0.5, cy = 0.5, units = 0)
+    // {
+    //     super.resetSpace(bounds, singlePoint, cx, cy, units);
+
+    //     for (const obj of this.children)
+    //         obj.resetSpace(bounds, singlePoint, cx, cy, units);
+    // }
+
+
+
+    getBounds()
+    {
+        return getObjBounds(this.children);
+    }
+
+
+
+    applyTransform(xform, affectSpace)
+    {
+        // super.applyTransform(xform, affectSpace);
+        
+        for (const obj of this.children)
+            obj.applyTransform(xform, affectSpace);
     }
 
 
@@ -9585,10 +9635,10 @@ extends FigmaShape
 
     resetSpace(bounds, singlePoint = false, cx = 0.5, cy = 0.5, units = 0)
     {
-        super.resetSpace(bounds, singlePoint, cx, cy, units);
+        super.resetSpace(bounds, false, cx, cy, units);
 
         for (const obj of this.children)
-            obj.resetSpace(bounds, singlePoint, cx, cy, units);
+            obj.resetSpace(bounds, false, cx, cy, units);
     }
 
 
@@ -9602,6 +9652,8 @@ extends FigmaShape
 
     applyTransform(xform, affectSpace)
     {
+        // super.applyTransform(xform, affectSpace);
+
         for (const obj of this.children)
             obj.applyTransform(xform, affectSpace);
     }
@@ -10529,9 +10581,6 @@ async function evalValue(_value, parse, nan = () => new NullValue())
         _value 
         ? (await _value.eval(parse)).toValue() 
         : null;
-
-    console.log('_value =', _value);
-    console.log('value =', value);
 
     if (    value 
         && !value.isValid()
@@ -42110,8 +42159,8 @@ extends GShape
             {
                 case 0: typeSuffix = '+'; break;
                 case 1: typeSuffix = '-'; break;
-                case 2: typeSuffix = '×'; break;
-                case 3: typeSuffix = '○'; break;
+                case 2: typeSuffix = '*'; break;
+                case 3: typeSuffix = '/'; break;
             }
 
 
@@ -42131,10 +42180,11 @@ extends GShape
                 obj.createDefaultSpace();
                 obj.resetSpace(bounds, false);
 
-                this.addChildObject(bool.children, obj, i);
+                this.addChildObject(bool.children, obj);
             }
 
 
+            // console.log('bounds =', bounds);
             bool.x      = bounds.x;
             bool.y      = bounds.y;
             bool.width  = bounds.width;
@@ -42179,13 +42229,13 @@ extends GShape
 
 
 
-    addChildObject(objects, _obj, inputIndex)
+    addChildObject(objects, _obj)
     {
         const obj = copyFigmaObject(_obj);
 
-        obj.nodeId    = this.nodeId;
-        obj.objectId += OBJECT_SEPARATOR + inputIndex;
-        obj.listId    = -1;
+        obj.nodeId   = this.nodeId;
+        obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+        obj.listId   = -1;
 
         objects.push(obj);
     }

@@ -63,5 +63,6 @@ function figUpdateBoolean(figBool, genBool, addProps) //, isValid = false)
         false);
 
 
+    setObjectTransform(figBool, genBool, false);
     setObjectProps(figBool, genBool, addProps && genBool[FO_BOOLEAN_CHILDREN].length == 0);
 }

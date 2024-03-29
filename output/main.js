@@ -3560,6 +3560,7 @@ function getFigmaTransform(tl, tr, bl) {
 }
 function applyFigmaTransform(figObj, tl, tr, bl) {
     const xform = getFigmaTransform(tl, tr, bl);
+    console.log('xform =', xform);
     figObj.relativeTransform =
         [
             xform[0],
@@ -3639,6 +3640,7 @@ function figUpdateBoolean(figBool, genBool, addProps) {
         return;
     }
     figUpdateObjects(figBool, genBool[FO_BOOLEAN_CHILDREN], genBool[FO_BOOLEAN_CHILDREN].length, -1, [], false, false, false, false);
+    setObjectTransform(figBool, genBool, false);
     setObjectProps(figBool, genBool, addProps && genBool[FO_BOOLEAN_CHILDREN].length == 0);
 }
 function genEllipseIsValid(genEllipse) {

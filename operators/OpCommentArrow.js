@@ -141,7 +141,7 @@ extends OperatorBase
             Math.max(this.handle0.p.x, this.handle1.p.x, this.handle2.p.x, this.handle3.p.x),
             Math.max(this.handle0.p.y, this.handle1.p.y, this.handle2.p.y, this.handle3.p.y));
 
-        console.log('bounds =', bounds);
+        // console.log('bounds =', bounds);
 
         this.div.style.left   = bounds.x;
         this.div.style.top    = bounds.y;

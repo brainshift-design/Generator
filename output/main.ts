@@ -5285,6 +5285,7 @@ function getFigmaTransform(tl, tr, bl)
 function applyFigmaTransform(figObj, tl, tr, bl) 
 {
     const xform = getFigmaTransform(tl, tr, bl);
+    console.log('xform =', xform);
 
     figObj.relativeTransform = 
     [
@@ -5425,6 +5426,7 @@ function figUpdateBoolean(figBool, genBool, addProps) //, isValid = false)
         false);
 
 
+    setObjectTransform(figBool, genBool, false);
     setObjectProps(figBool, genBool, addProps && genBool[FO_BOOLEAN_CHILDREN].length == 0);
 }
 

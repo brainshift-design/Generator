@@ -130,8 +130,8 @@ extends GShape
             {
                 case 0: typeSuffix = '+'; break;
                 case 1: typeSuffix = '-'; break;
-                case 2: typeSuffix = '×'; break;
-                case 3: typeSuffix = '○'; break;
+                case 2: typeSuffix = '*'; break;
+                case 3: typeSuffix = '/'; break;
             }
 
 
@@ -151,10 +151,11 @@ extends GShape
                 obj.createDefaultSpace();
                 obj.resetSpace(bounds, false);
 
-                this.addChildObject(bool.children, obj, i);
+                this.addChildObject(bool.children, obj);
             }
 
 
+            // console.log('bounds =', bounds);
             bool.x      = bounds.x;
             bool.y      = bounds.y;
             bool.width  = bounds.width;
@@ -199,13 +200,13 @@ extends GShape
 
 
 
-    addChildObject(objects, _obj, inputIndex)
+    addChildObject(objects, _obj)
     {
         const obj = copyFigmaObject(_obj);
 
-        obj.nodeId    = this.nodeId;
-        obj.objectId += OBJECT_SEPARATOR + inputIndex;
-        obj.listId    = -1;
+        obj.nodeId   = this.nodeId;
+        obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+        obj.listId   = -1;
 
         objects.push(obj);
     }

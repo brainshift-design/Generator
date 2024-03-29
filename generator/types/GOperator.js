@@ -283,9 +283,6 @@ async function evalValue(_value, parse, nan = () => new NullValue())
         ? (await _value.eval(parse)).toValue() 
         : null;
 
-    console.log('_value =', _value);
-    console.log('value =', value);
-
     if (    value 
         && !value.isValid()
         && nan) 
