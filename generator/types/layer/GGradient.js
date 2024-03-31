@@ -149,16 +149,16 @@ extends GOperator
             
         this.setUpdateValues(parse,
         [
-            ['value',    this.value   ],
-            ['gradType', this.gradType],
-            ['position', this.position],
-            ['x',        this.x       ],
-            ['y',        this.y       ],
-            ['size',     this.size    ],
-            ['angle',    this.angle   ],
-            ['aspect',   this.aspect  ],
-            ['skew',     this.skew    ],
-            ['blend',    this.blend   ]
+            ['value',    this.value   ]//,
+            // ['gradType', this.gradType],
+            // ['position', this.position],
+            // ['x',        this.x       ],
+            // ['y',        this.y       ],
+            // ['size',     this.size    ],
+            // ['angle',    this.angle   ],
+            // ['aspect',   this.aspect  ],
+            // ['skew',     this.skew    ],
+            // ['blend',    this.blend   ]
         ]);
         
 

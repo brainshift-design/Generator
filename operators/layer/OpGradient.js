@@ -43,15 +43,15 @@ extends OpColorBase
         this.addOutput(new Output([GRADIENT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
         
 
-        this.addParam(this.paramType     = new SelectParam('type',   '',           false, true, true, ['linear', 'radial', 'angular', 'diamond'], 0));
+        this.addParam(this.paramType     = new SelectParam('gradType', '',         false, true, true, ['linear', 'radial', 'angular', 'diamond'], 0));
         this.addParam(this.paramPosition = new SelectParam('position', 'position', false, true, true, ['proportional', 'relative W', 'relative H', 'absolute'], 1));
-        this.addParam(this.paramX        = new NumberParam('x',      'x',          true,  true, true,   0));
-        this.addParam(this.paramY        = new NumberParam('y',      'y',          true,  true, true,  50));
-        this.addParam(this.paramSize     = new NumberParam('size',   'size',       true,  true, true, 100));
-        this.addParam(this.paramAngle    = new NumberParam('angle',  'angle',      true,  true, true,   0));
-        this.addParam(this.paramAspect   = new NumberParam('aspect', 'aspect',     true,  true, true, 100));
-        this.addParam(this.paramSkew     = new NumberParam('skew',   'skew',       true,  true, true,   0));
-        this.addParam(this.paramBlend    = new SelectParam('blend',  'blend',      false, true, true, BlendModes.map(bm => bm[1]), 0));
+        this.addParam(this.paramX        = new NumberParam('x',        'x',        true,  true, true,   0));
+        this.addParam(this.paramY        = new NumberParam('y',        'y',        true,  true, true,  50));
+        this.addParam(this.paramSize     = new NumberParam('size',     'size',     true,  true, true, 100));
+        this.addParam(this.paramAngle    = new NumberParam('angle',    'angle',    true,  true, true,   0));
+        this.addParam(this.paramAspect   = new NumberParam('aspect',   'aspect',   true,  true, true, 100));
+        this.addParam(this.paramSkew     = new NumberParam('skew',     'skew',     true,  true, true,   0));
+        this.addParam(this.paramBlend    = new SelectParam('blend',    'blend',    false, true, true, BlendModes.map(bm => bm[1]), 0));
 
 
         this.paramX     .controls[0].suffix        = '%';
@@ -136,25 +136,25 @@ extends OpColorBase
     {
         this.value     = values[paramIds.findIndex(id => id == 'value'   )];
 
-        const gradType = values[paramIds.findIndex(id => id == 'gradType')];
-        const position = values[paramIds.findIndex(id => id == 'position')];
-        const x        = values[paramIds.findIndex(id => id == 'x'       )];
-        const y        = values[paramIds.findIndex(id => id == 'y'       )];
-        const size     = values[paramIds.findIndex(id => id == 'size'    )];
-        const angle    = values[paramIds.findIndex(id => id == 'angle'   )];
-        const aspect   = values[paramIds.findIndex(id => id == 'aspect'  )];
-        const skew     = values[paramIds.findIndex(id => id == 'skew'    )];
-        const blend    = values[paramIds.findIndex(id => id == 'blend'   )];
+        // const gradType = values[paramIds.findIndex(id => id == 'gradType')];
+        // const position = values[paramIds.findIndex(id => id == 'position')];
+        // const x        = values[paramIds.findIndex(id => id == 'x'       )];
+        // const y        = values[paramIds.findIndex(id => id == 'y'       )];
+        // const size     = values[paramIds.findIndex(id => id == 'size'    )];
+        // const angle    = values[paramIds.findIndex(id => id == 'angle'   )];
+        // const aspect   = values[paramIds.findIndex(id => id == 'aspect'  )];
+        // const skew     = values[paramIds.findIndex(id => id == 'skew'    )];
+        // const blend    = values[paramIds.findIndex(id => id == 'blend'   )];
 
-        this.paramType    .setValue(gradType, false, true, false);
-        this.paramPosition.setValue(position, false, true, false);
-        this.paramX       .setValue(x,        false, true, false);
-        this.paramY       .setValue(y,        false, true, false);
-        this.paramSize    .setValue(size,     false, true, false);
-        this.paramAngle   .setValue(angle,    false, true, false);
-        this.paramAspect  .setValue(aspect,   false, true, false);
-        this.paramSkew    .setValue(skew,     false, true, false);
-        this.paramBlend   .setValue(blend,    false, true, false);
+        this.paramType    .setValue(this.value.gradType, false, true, false);
+        this.paramPosition.setValue(this.value.position, false, true, false);
+        this.paramX       .setValue(this.value.x,        false, true, false);
+        this.paramY       .setValue(this.value.y,        false, true, false);
+        this.paramSize    .setValue(this.value.size,     false, true, false);
+        this.paramAngle   .setValue(this.value.angle,    false, true, false);
+        this.paramAspect  .setValue(this.value.aspect,   false, true, false);
+        this.paramSkew    .setValue(this.value.skew,     false, true, false);
+        this.paramBlend   .setValue(this.value.blend,    false, true, false);
     }
 
 

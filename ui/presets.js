@@ -142,6 +142,7 @@ function getPresetGraph(graphId)
         case 'textFromBackground':   return presetTextFromBackground;
 
         case 'compositeGradients':   return presetCompositeGradients;
+        case 'nightLights':          return presetNightLights;
 
 
         case 'randomColors':         return presetRandomColors;
