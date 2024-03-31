@@ -216,13 +216,15 @@ function initSearchItem(item, search, query)
     if (!item.sub) 
         return;
 
-    if (   makeSearchable(item.name).includes(makeSearchable(query))
+    if (   (   makeSearchable(item.name      ).includes(makeSearchable(query))
+            || makeSearchable(item.searchName).includes(makeSearchable(query)))
         && item.callback)
     {
         item.foundExact = 0;
         search.found.push(item);
     }
-    else if (includesSimilar(makeSearchable(item.name), makeSearchable(query), 1)
+    else if ((   includesSimilar(makeSearchable(item.name      ), makeSearchable(query), 1)
+              || includesSimilar(makeSearchable(item.searchName), makeSearchable(query), 1))
           && item.callback)
     {
         item.foundExact = 1;
@@ -243,14 +245,16 @@ function initTemplateSearchItem(item, search, query)
     else if (item.parentMenu != menuTemplate
           || menuTemplate.items.indexOf(item) > 0)
     {
-        if (   makeSearchable(item.name).includes(makeSearchable(query))
+        if (   (   makeSearchable(item.name)      .includes(makeSearchable(query))
+                || makeSearchable(item.searchName).includes(makeSearchable(query)))
             && item.callback)
         {
             item.foundExact = 0;
             search.found.push(item);
         }
-        else if (includesSimilar(makeSearchable(item.name), makeSearchable(query), 1)
-            && item.callback)
+        else if ((   includesSimilar(makeSearchable(item.name),       makeSearchable(query), 1)
+                  || includesSimilar(makeSearchable(item.searchName), makeSearchable(query), 1))
+              && item.callback)
         {
             item.foundExact = 1;
             search.found.push(item);
