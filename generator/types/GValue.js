@@ -182,6 +182,7 @@ function parseValueFromType(type, value)
         
         default: 
             console.error('unknown type \'' + type + '\'');
+            console.log('value =', value);
             return null;
     }
 }

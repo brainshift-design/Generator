@@ -24,6 +24,7 @@
 
 #debugVersion
 {
+    color:       var(--figma-color-text);
     font-size:   11px;
     display:     inline;
     position:    absolute;
@@ -45,6 +46,8 @@
 
 #debugUserId
 {
+    color:          var(--figma-color-text);
+
     font-size:      11px;
     text-align:     center;
 

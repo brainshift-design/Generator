@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 389;
+const generatorVersion = 390;
 
 
 const MAX_INT32        = 2147483647;
@@ -10162,6 +10162,7 @@ function parseValueFromType(type, value)
         
         default: 
             console.error('unknown type \'' + type + '\'');
+            console.log('value =', value);
             return null;
     }
 }
@@ -35639,7 +35640,7 @@ extends GOperator
         const skew     = await evalNumberValue(this.skew,     parse);
         const blend    = await evalNumberValue(this.blend,    parse);
 
-        
+
         if (position) position.value = Math.min(Math.max(0, Math.floor(position.value)), 1);
         if (blend   ) blend   .value = Math.min(Math.max(0, Math.floor(blend   .value)), BlendModes.length-1);
 
