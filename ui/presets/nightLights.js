@@ -1,6 +1,6 @@
 const presetNightLights = '\
 {\
-    "generatorVersion": "390",\
+    "generatorVersion": "391",\
     "nodes":\
     [\
         {\
