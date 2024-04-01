@@ -475,7 +475,7 @@ function initGeneratorMenus()
                            new MenuItem('',                 null, {separator: true}),
                            new MenuItem('Random . . .',     null, {icon: iconRandom,      createType: NUMBER_RANDOM,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnSets.div, getCreateOptions(e)))}),
                            new MenuItem('Noise. . .',       null, {icon: iconNoise,       createType: NUMBER_NOISE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOISE,       btnSets.div, getCreateOptions(e)))}),
-                           new MenuItem('Probability. . .', null, {icon: iconProbability, createType: NUMBER_PROBABILITY, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PROBABILITY, btnSets.div, getCreateOptions(e)))}),
+                           new MenuItem('Probability. . .', null, {icon: iconProbability, createType: PROBABILITY,        callback: e => actionManager.do(getCreateNodeAction(PROBABILITY,        btnSets.div, getCreateOptions(e)))}),
                            new MenuItem('',                 null, {separator: true}),
                            new MenuItem('Accumulate. . .',  null, {icon: iconAccumulate,  createType: NUMBER_ACCUMULATE,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_ACCUMULATE,  btnSets.div, getCreateOptions(e)))})]);
         
@@ -930,7 +930,7 @@ function initGeneratorMenus()
             graphView.selectedNodes.filter(n => 
                    n.type == NUMBER_RANDOM
                 || n.type == NUMBER_NOISE
-                || n.type == NUMBER_PROBABILITY);
+                || n.type == PROBABILITY);
         
         const selectedColors    = graphView.selectedNodes.filter(n => n.type == COLOR);
         const canRandomizeColor = selectedColors.length > 0;

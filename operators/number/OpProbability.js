@@ -10,7 +10,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_PROBABILITY, 'prob', 'probability', iconProbability);
+        super(PROBABILITY, 'prob', 'probability', iconProbability);
 
         this.cached      = false;
         this.iconOffsetY = -2;

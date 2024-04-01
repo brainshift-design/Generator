@@ -1074,7 +1074,6 @@ const SELECT               = 'SELECT';
 const SELECT_FROM_LIST     = 'LSTSEL';
 const IF_ELSE              = 'IF';
 const FILTER               = 'LSTFLT';
-const ITERATE              = 'ITER';  
 
 
 const ANY_VALUE            = 'ANY#';
@@ -1107,41 +1106,8 @@ const LIST_VALUES =
 ];
 
 
-const FLOW_TYPES =
-[
-    NULL_NODE,
-    VARIABLE,
-    VARIABLE_GROUP,
-    ...LIST_TYPES,
-    LIST_AS_ITEM,
-    EXTRACT,
-    SET_PARAM,
-    GET_PARAM,
-    SUBLIST,
-    UNIQUE,
-    REORDER_LIST,
-    SHIFT_LIST,
-    REVERSE_LIST,
-    COLUMN,
-    SORT,
-    CELL,
-    LIST,
-    SELECT,
-    SELECT_FROM_LIST,
-    IF_ELSE,
-    FILTER,
-    FEEDBACK,
-    REPEAT,
-    //FOREACH,
-    ITERATE,
-    CACHE,
-    FREEZE,
-    TIMER,
-    VALUE_NAME,
-    GET_LIST_VALUE_NAMES,
-    LIST_VALUE_NAMES,
-    OBJECT_NAME
-];
+const ITERATE                 = 'ITER';  
+const PROBABILITY             = 'PROB';  
 
 
 const NUMBER_VALUE            = 'NUM#';  
@@ -1165,7 +1131,6 @@ const NUMBER_RANGE            = 'RANGE';
 const NUMBER_WAVE             = 'WAVE';  
 const NUMBER_RANDOM           = 'RAND';  
 const NUMBER_NOISE            = 'NOISE';  
-const NUMBER_PROBABILITY      = 'PROB';  
 const NUMBER_ACCUMULATE       = 'ACCUM';  
 const NUMBER_INTERPOLATE      = 'LERP'; 
 const NUMBER_SOLVE            = 'SOLVE';
@@ -1201,6 +1166,45 @@ const NUMBER_TAN              = 'TAN';
 const NUMBER_ATAN2            = 'ATAN2';
 
 const CONVERT_ANGLE           = 'CNVANG';
+
+
+const FLOW_TYPES =
+[
+    NULL_NODE,
+    VARIABLE,
+    VARIABLE_GROUP,
+    ...LIST_TYPES,
+    LIST_AS_ITEM,
+    EXTRACT,
+    SET_PARAM,
+    GET_PARAM,
+    SUBLIST,
+    UNIQUE,
+    REORDER_LIST,
+    SHIFT_LIST,
+    REVERSE_LIST,
+    COLUMN,
+    SORT,
+    CELL,
+    LIST,
+    SELECT,
+    SELECT_FROM_LIST,
+    IF_ELSE,
+    FILTER,
+    FEEDBACK,
+    REPEAT,
+    //FOREACH,
+    ITERATE,
+    PROBABILITY,
+    CACHE,
+    FREEZE,
+    TIMER,
+    VALUE_NAME,
+    GET_LIST_VALUE_NAMES,
+    LIST_VALUE_NAMES,
+    OBJECT_NAME
+];
+
 
 const MATH_TYPES =
 [

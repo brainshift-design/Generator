@@ -357,7 +357,7 @@ GraphView.prototype.randomizeSelectedSeeds = function()
     const randoms = graphView.selectedNodes.filter(n => 
            (   n.type == NUMBER_RANDOM
             || n.type == NUMBER_NOISE
-            || n.type == NUMBER_PROBABILITY)
+            || n.type == PROBABILITY)
         && !n.paramSeed.controls[0].readOnly);
      
         
@@ -412,7 +412,7 @@ GraphView.prototype.randomizeSelectedSeedsAndColors = function()
     const randoms = graphView.selectedNodes.filter(n => 
         (   n.type == NUMBER_RANDOM
             || n.type == NUMBER_NOISE
-            || n.type == NUMBER_PROBABILITY)
+            || n.type == PROBABILITY)
         && !n.paramSeed.controls[0].readOnly);
 
     const colors = graphView.selectedNodes.filter(n => 
@@ -469,7 +469,7 @@ GraphView.prototype.connectSelectedSeeds = function()
     const randoms = graphView.selectedNodes.filter(n => 
            n.type == NUMBER_RANDOM
         || n.type == NUMBER_NOISE
-        || n.type == NUMBER_PROBABILITY);
+        || n.type == PROBABILITY);
 
 
     for (let i = 0, j = 0; i < list.params.length && j < randoms.length; i++, j++)

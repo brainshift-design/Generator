@@ -12,7 +12,7 @@ extends GOperator2
 
     constructor(nodeId, options)
     {
-        super(NUMBER_PROBABILITY, nodeId, options);
+        super(PROBABILITY, nodeId, options);
     }
 
 
