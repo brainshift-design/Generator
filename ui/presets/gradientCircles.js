@@ -31,7 +31,7 @@ const presetGradientCircles = '\
             "z": "1",\
             "params":\
             [\
-                ["NUM#", "type", "3,0"],\
+                ["NUM#", "gradType", "3,0"],\
                 ["NUM#", "x", "47,0"],\
                 ["NUM#", "y", "32,0"],\
                 ["NUM#", "size", "192,0"],\

@@ -128,7 +128,7 @@ const presetLinesOfFire = '\
             "z": "7",\
             "params":\
             [\
-                ["NUM#", "type", "1,0"],\
+                ["NUM#", "gradType", "1,0"],\
                 ["NUM#", "x", "50,0"],\
                 ["NUM#", "size", "50,0"],\
                 ["NUM#", "blend", "9,0"]\
@@ -405,7 +405,7 @@ const presetLinesOfFire = '\
             "z": "23",\
             "params":\
             [\
-                ["NUM#", "type", "1,0"],\
+                ["NUM#", "gradType", "1,0"],\
                 ["NUM#", "x", "50,0"],\
                 ["NUM#", "size", "80,0"],\
                 ["NUM#", "angle", "90,0"]\

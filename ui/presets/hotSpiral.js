@@ -273,7 +273,7 @@ const presetHotSpring = '\
             "params":\
             [\
                     ["NUM#", "size", "100,0"],\
-                    ["NUM#", "type", "1,0"],\
+                    ["NUM#", "gradType", "1,0"],\
                     ["NUM#", "y", "0,0"],\
                     ["NUM#", "aspect", "100,0"]\
             ]\

@@ -315,7 +315,7 @@ const presetPolarizedLights = '\
             "z": "19",\
             "params":\
             [\
-                    ["NUM#", "type", "1,0"],\
+                    ["NUM#", "gradType", "1,0"],\
                     ["NUM#", "x", "50,0"],\
                     ["NUM#", "size", "50,0"],\
                     ["NUM#", "aspect", "100,0"],\
@@ -464,7 +464,7 @@ const presetPolarizedLights = '\
             "z": "28",\
             "params":\
             [\
-                    ["NUM#", "type", "1,0"],\
+                    ["NUM#", "gradType", "1,0"],\
                     ["NUM#", "x", "80,0"],\
                     ["NUM#", "y", "100,0"],\
                     ["NUM#", "size", "170,0"],\

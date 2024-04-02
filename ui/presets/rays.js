@@ -299,7 +299,7 @@ const presetRays = '\
         "z": "15",\
         "params":\
         [\
-                ["NUM#", "type", "1,0"],\
+                ["NUM#", "gradType", "1,0"],\
                 ["NUM#", "x", "50,0"],\
                 ["NUM#", "size", "50,0"]\
         ]\

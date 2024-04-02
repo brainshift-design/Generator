@@ -106,7 +106,7 @@ const presetCompositeGradients = '\
         "z": "5",\
         "params":\
         [\
-                ["NUM#", "type", "1,0"],\
+                ["NUM#", "gradType", "1,0"],\
                 ["NUM#", "x", "2,0"],\
                 ["NUM#", "y", "23,0"],\
                 ["NUM#", "size", "137,0"],\
@@ -574,7 +574,7 @@ const presetCompositeGradients = '\
         "outputId": "h0",\
         "outputOrder": "0",\
         "inputNodeId": "grad",\
-        "inputId": "type",\
+        "inputId": "gradType",\
         "list": "false"\
         },\
         {\
