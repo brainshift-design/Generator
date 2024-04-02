@@ -5376,7 +5376,7 @@ async function figCreateShapeBoolean(genBool, addProps)
     let objects = [];
 
     for (const obj of genBool[FO_BOOLEAN_CHILDREN])
-        await figCreateObject(obj, o => objects = [...objects, o]);
+        await figCreateObject(obj, o => objects = [...objects, o], false);
 
 
     await figma.currentPage.loadAsync();
@@ -5408,7 +5408,7 @@ async function figCreateShapeBoolean(genBool, addProps)
 
 
 
-function figUpdateBoolean(figBool, genBool, addProps) //, isValid = false)
+async function figUpdateBoolean(figBool, genBool, addProps) //, isValid = false)
 {
     if (genBool[FO_BOOLEAN_CHILDREN].length == 0)
     {
@@ -5417,7 +5417,7 @@ function figUpdateBoolean(figBool, genBool, addProps) //, isValid = false)
     }
 
     
-    figUpdateObjects(
+    await figUpdateObjects(
         figBool, 
         genBool[FO_BOOLEAN_CHILDREN], 
         genBool[FO_BOOLEAN_CHILDREN].length,
@@ -5430,7 +5430,7 @@ function figUpdateBoolean(figBool, genBool, addProps) //, isValid = false)
 
 
     setObjectTransform(figBool, genBool, false);
-    setObjectProps(figBool, genBool, addProps && genBool[FO_BOOLEAN_CHILDREN].length == 0);
+    setObjectProps(figBool, genBool, !addProps);// && genBool[FO_BOOLEAN_CHILDREN].length == 0);
 }
 
 

@@ -614,6 +614,7 @@ function handleLegacyNode(_node, genVersion)
         if (value) 
             removeFromArray(_node.params, param);
     }
+
     else if (_node.type == TEXT_SPLIT
           && genVersion == 0)
     {
@@ -622,6 +623,7 @@ function handleLegacyNode(_node, genVersion)
         if (parts) 
             removeFromArray(_node.params, parts);
     }
+
     else if (_node.type == ELLIPSE
           && _node.params
           && _node.params.length > 0)
@@ -632,6 +634,7 @@ function handleLegacyNode(_node, genVersion)
         const paramTo = _node.params.find(p => p[1] == 'to');
         if (paramTo) paramTo[1] = 'sweep';
     }
+
     else if (_node.type == GRADIENT
           && _node.params
           && _node.params.length > 0)
@@ -642,6 +645,7 @@ function handleLegacyNode(_node, genVersion)
         const paramTo = _node.params.find(p => p[1] == 'to');
         if (paramTo) paramTo[1] = 'sweep';
     }
+
     else if (_node.type == TEXT_SHAPE
           && _node.params
           && _node.params.length > 0)
@@ -652,9 +656,8 @@ function handleLegacyNode(_node, genVersion)
         const paramAlignY = _node.params.find(p => p[1] == 'alignV');
         if (paramAlignY) paramAlignY[1] = 'alignY';
     }
+
     else if (_node.type == NUMBER_WAVE)
-        //   && _node.params
-        //   && _node.params.length > 0)
     {
         if (!_node.useWavelength)
             _node.useWavelength = false;

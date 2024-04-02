@@ -3608,7 +3608,7 @@ function figCreateShapeBoolean(genBool, addProps) {
     return __awaiter(this, void 0, void 0, function* () {
         let objects = [];
         for (const obj of genBool[FO_BOOLEAN_CHILDREN])
-            yield figCreateObject(obj, o => objects = [...objects, o]);
+            yield figCreateObject(obj, o => objects = [...objects, o], false);
         yield figma.currentPage.loadAsync();
         let figBool = null;
         if (!isEmpty(objects)) {
@@ -3635,13 +3635,15 @@ function figCreateShapeBoolean(genBool, addProps) {
     });
 }
 function figUpdateBoolean(figBool, genBool, addProps) {
-    if (genBool[FO_BOOLEAN_CHILDREN].length == 0) {
-        figBool.remove();
-        return;
-    }
-    figUpdateObjects(figBool, genBool[FO_BOOLEAN_CHILDREN], genBool[FO_BOOLEAN_CHILDREN].length, -1, [], false, false, false, false);
-    setObjectTransform(figBool, genBool, false);
-    setObjectProps(figBool, genBool, addProps && genBool[FO_BOOLEAN_CHILDREN].length == 0);
+    return __awaiter(this, void 0, void 0, function* () {
+        if (genBool[FO_BOOLEAN_CHILDREN].length == 0) {
+            figBool.remove();
+            return;
+        }
+        yield figUpdateObjects(figBool, genBool[FO_BOOLEAN_CHILDREN], genBool[FO_BOOLEAN_CHILDREN].length, -1, [], false, false, false, false);
+        setObjectTransform(figBool, genBool, false);
+        setObjectProps(figBool, genBool, !addProps); // && genBool[FO_BOOLEAN_CHILDREN].length == 0);
+    });
 }
 function genEllipseIsValid(genEllipse) {
     return genEllipse[FO_X] != null && !isNaN(genEllipse[FO_X])
