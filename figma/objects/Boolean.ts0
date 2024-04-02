@@ -63,6 +63,13 @@ async function figUpdateBoolean(figBool, genBool, addProps) //, isValid = false)
         false);
 
 
-    setObjectTransform(figBool, genBool, false);
-    setObjectProps(figBool, genBool, !addProps);// && genBool[FO_BOOLEAN_CHILDREN].length == 0);
+    // setObjectTransform(figBool, genBool, false);
+
+    
+    const hasProps =
+           genBool[FO_FILLS  ].length > 0
+        || genBool[FO_STROKES].length > 0
+        || genBool[FO_EFFECTS].length > 0;
+
+    setObjectProps(figBool, genBool, !hasProps && addProps);
 }

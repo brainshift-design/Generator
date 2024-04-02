@@ -3641,8 +3641,11 @@ function figUpdateBoolean(figBool, genBool, addProps) {
             return;
         }
         yield figUpdateObjects(figBool, genBool[FO_BOOLEAN_CHILDREN], genBool[FO_BOOLEAN_CHILDREN].length, -1, [], false, false, false, false);
-        setObjectTransform(figBool, genBool, false);
-        setObjectProps(figBool, genBool, !addProps); // && genBool[FO_BOOLEAN_CHILDREN].length == 0);
+        // setObjectTransform(figBool, genBool, false);
+        const hasProps = genBool[FO_FILLS].length > 0
+            || genBool[FO_STROKES].length > 0
+            || genBool[FO_EFFECTS].length > 0;
+        setObjectProps(figBool, genBool, !hasProps && addProps);
     });
 }
 function genEllipseIsValid(genEllipse) {
