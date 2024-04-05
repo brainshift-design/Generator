@@ -119,6 +119,12 @@ function initSearchBox(query)
             const qa = a.indexOf(query);
             const qb = b.indexOf(query);
 
+            const la = a.length;
+            const lb = b.length;
+            
+            if (la < lb) return -1;
+            if (la > lb) return  1;
+
             if (ea < eb) return -1;
             if (ea > eb) return  1;
 
