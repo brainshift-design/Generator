@@ -295,6 +295,12 @@ extends OpColorBase
             else
                 this.header.style.backgroundSize = '100% 100%';
         }
+
+
+        const outlineColor = darkMode ? '#000' : '#fff';
+
+        this.divIcon  .style.filter = 'drop-shadow(0 1px 0px '+outlineColor+') drop-shadow(0 -1px 0px '+outlineColor+') drop-shadow(1px 0 0px '+outlineColor+') drop-shadow(-1px 0 0px '+outlineColor+')';
+        this.labelText.style.filter = 'drop-shadow(0 1px 0px '+outlineColor+') drop-shadow(0 -1px 0px '+outlineColor+') drop-shadow(1px 0 0px '+outlineColor+') drop-shadow(-1px 0 0px '+outlineColor+')';
     }
 
 
