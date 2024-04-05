@@ -87,7 +87,7 @@
     position:       relative;
     left:           17px;
 
-    user-select:    text;
+    user-select:    none;
 }
 
 
@@ -101,7 +101,7 @@
     transform:      translateX(-50%);
     top:            70px;
     pointer-events: all;
-    user-select:    text;
+    user-select:    none;
     /* box-shadow: 0 0 0 1px blue inset; */
 }
 
