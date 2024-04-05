@@ -5,7 +5,7 @@ function genBooleanIsValid(genBool)
 
 
 
-async function figCreateShapeBoolean(genBool, addProps)
+async function figCreateShapeBoolean(genBool, addProps, transform)
 {
     let objects = [];
 
@@ -33,7 +33,7 @@ async function figCreateShapeBoolean(genBool, addProps)
     if (figBool)
     {
         figBool.expanded = false;
-        figUpdateBoolean(figBool, genBool, addProps);
+        figUpdateBoolean(figBool, genBool, addProps, transform);
     }
 
 
@@ -42,7 +42,7 @@ async function figCreateShapeBoolean(genBool, addProps)
 
 
 
-async function figUpdateBoolean(figBool, genBool, addProps) //, isValid = false)
+async function figUpdateBoolean(figBool, genBool, addProps, transform) //, isValid = false)
 {
     if (genBool[FO_BOOLEAN_CHILDREN].length == 0)
     {
@@ -60,10 +60,12 @@ async function figUpdateBoolean(figBool, genBool, addProps) //, isValid = false)
         false,
         false,
         false,
+        false,
         false);
 
 
-    // setObjectTransform(figBool, genBool, false);
+    if (transform)
+        setObjectTransform(figBool, genBool, false);
 
     
     const hasProps =

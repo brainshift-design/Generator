@@ -134,7 +134,7 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        this.value     = values[paramIds.findIndex(id => id == 'value'   )];
+        this.value = values[paramIds.findIndex(id => id == 'value')];
 
         // const gradType = values[paramIds.findIndex(id => id == 'gradType')];
         // const position = values[paramIds.findIndex(id => id == 'position')];

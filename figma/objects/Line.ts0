@@ -7,7 +7,7 @@ function genLineIsValid(genLine)
 
 
 
-function figCreateLine(genLine, addProps)
+function figCreateLine(genLine, addProps, transform)
 {
     if (!genLineIsValid(genLine))
         return null;
@@ -15,19 +15,21 @@ function figCreateLine(genLine, addProps)
 
     const figLine = figma.createLine();
 
-    figUpdateLine(figLine, genLine, addProps, true);
+    figUpdateLine(figLine, genLine, addProps, transform, true);
     
     return figLine;
 }
 
 
 
-function figUpdateLine(figLine, genLine, addProps, isValid = false)
+function figUpdateLine(figLine, genLine, addProps, transform, isValid = false)
 {
     if (   !isValid
         && !genLineIsValid(genLine))
         return;
 
-    setObjectTransform(figLine, genLine, true, 0);
-    setObjectProps    (figLine, genLine, addProps);
+    if (transform)
+        setObjectTransform(figLine, genLine, true, 0);
+    
+    setObjectProps(figLine, genLine, addProps);
 }

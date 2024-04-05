@@ -6,7 +6,7 @@ function genVectorNetworkIsValid(genNetwork)
 
 
 
-function figCreateVectorNetwork(genNetwork, addProps)
+function figCreateVectorNetwork(genNetwork, addProps, transform)
 {
     if (!genVectorNetworkIsValid(genNetwork))
         return null;
@@ -14,7 +14,7 @@ function figCreateVectorNetwork(genNetwork, addProps)
         
     const figNetwork = figma.createVector();
 
-    figUpdateVectorNetwork(figNetwork, genNetwork, addProps, true);
+    figUpdateVectorNetwork(figNetwork, genNetwork, addProps, transform, true);
 
     
     return figNetwork;
@@ -22,7 +22,7 @@ function figCreateVectorNetwork(genNetwork, addProps)
 
 
 
-function figUpdateVectorNetwork(figNetwork, genNetwork, addProps, isValid = false)
+function figUpdateVectorNetwork(figNetwork, genNetwork, addProps, transform, isValid = false)
 {
     if (   !isValid
         && !genVectorNetworkIsValid(genNetwork))
@@ -32,6 +32,8 @@ function figUpdateVectorNetwork(figNetwork, genNetwork, addProps, isValid = fals
     figNetwork.setVectorNetworkAsync(genNetwork[FO_VECTOR_NETWORK_DATA]);
     
 
-    setObjectTransform(figNetwork, genNetwork, false);
-    setObjectProps    (figNetwork, genNetwork, addProps);
+    if (transform)
+        setObjectTransform(figNetwork, genNetwork, false);
+    
+    setObjectProps(figNetwork, genNetwork, addProps);
 }

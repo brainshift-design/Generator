@@ -78,7 +78,6 @@ extends GOperator1
 
                 obj.scaleCorners *= Math.abs(scaleCorners);
                 obj.scaleStyle   *= Math.abs(scaleStyle  );
-
                 
                 if (obj.type == TEXT_SHAPE)
                 {

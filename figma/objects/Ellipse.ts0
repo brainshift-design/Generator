@@ -12,7 +12,7 @@ function genEllipseIsValid(genEllipse)
 
 
 
-function figCreateEllipse(genEllipse, addProps)
+function figCreateEllipse(genEllipse, addProps, transform)
 {
     if (!genEllipseIsValid(genEllipse))
         return null;
@@ -20,7 +20,7 @@ function figCreateEllipse(genEllipse, addProps)
     
     const figEllipse = figma.createEllipse();
 
-    figUpdateEllipse(figEllipse, genEllipse, addProps, true);
+    figUpdateEllipse(figEllipse, genEllipse, addProps, transform, true);
 
     
     return figEllipse;
@@ -28,14 +28,14 @@ function figCreateEllipse(genEllipse, addProps)
 
 
 
-function figUpdateEllipse(figEllipse, genEllipse, addProps, isValid = false)
+function figUpdateEllipse(figEllipse, genEllipse, addProps, transform, isValid = false)
 {
     if (   !isValid
         && !genEllipseIsValid(genEllipse))
         return;
 
 
-    figUpdateEllipseData(figEllipse, genEllipse);
+    figUpdateEllipseData(figEllipse, genEllipse, transform);
 
 
     if (figPoints.includes(figEllipse))
@@ -46,7 +46,7 @@ function figUpdateEllipse(figEllipse, genEllipse, addProps, isValid = false)
 
 
 
-function figUpdateEllipseData(figEllipse, genEllipse)
+function figUpdateEllipseData(figEllipse, genEllipse, transform)
 {
     figEllipse.cornerRadius = genEllipse[FO_ELLIPSE_ROUND];
 
@@ -60,5 +60,6 @@ function figUpdateEllipseData(figEllipse, genEllipse)
         innerRadius:   Math.min(Math.max(0, genEllipse[FO_ELLIPSE_INNER]/100), 1)
     };
 
-    setObjectTransform(figEllipse, genEllipse);
+    if (transform)
+        setObjectTransform(figEllipse, genEllipse);
 }

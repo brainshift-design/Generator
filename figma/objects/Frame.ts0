@@ -9,7 +9,7 @@ function genFrameIsValid(genFrame)
 
 
 
-async function figCreateFrame(genFrame, addProps)
+async function figCreateFrame(genFrame, addProps, transform)
 {
     if (!genFrameIsValid(genFrame))
         return null;
@@ -22,7 +22,7 @@ async function figCreateFrame(genFrame, addProps)
     
     if (figFrame)
     {
-        figUpdateFrameData(figFrame, genFrame, addProps);
+        figUpdateFrameData(figFrame, genFrame, addProps, transform);
 
 
         let objects = [];
@@ -40,9 +40,9 @@ async function figCreateFrame(genFrame, addProps)
 
 
 
-function figUpdateFrame(figFrame, genFrame, addProps)
+function figUpdateFrame(figFrame, genFrame, addProps, transform)
 {
-    figUpdateFrameData(figFrame, genFrame, addProps);
+    figUpdateFrameData(figFrame, genFrame, addProps, transform);
 
     figUpdateObjects(
         figFrame, 
@@ -52,10 +52,12 @@ function figUpdateFrame(figFrame, genFrame, addProps)
 
 
 
-function figUpdateFrameData(figFrame, genFrame, addProps)
+function figUpdateFrameData(figFrame, genFrame, addProps, transform)
 {
     figFrame.cornerRadius = genFrame[FO_FRAME_ROUND];
 
-    setObjectTransform(figFrame, genFrame);
-    setObjectProps    (figFrame, genFrame, addProps && genFrame[FO_FRAME_CHILDREN].length == 0);
+    if (transform)
+        setObjectTransform(figFrame, genFrame);
+    
+    setObjectProps(figFrame, genFrame, addProps && genFrame[FO_FRAME_CHILDREN].length == 0);
 }

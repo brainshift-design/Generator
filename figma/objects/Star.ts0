@@ -11,7 +11,7 @@ function genStarIsValid(genStar)
 
 
 
-function figCreateStar(genStar, addProps)
+function figCreateStar(genStar, addProps, transform)
 {
     if (!genStarIsValid(genStar))
         return null;
@@ -19,14 +19,14 @@ function figCreateStar(genStar, addProps)
     
     const figStar = figma.createStar();
 
-    figUpdateStar(figStar, genStar, addProps, true);
+    figUpdateStar(figStar, genStar, addProps, transform, true);
 
     return figStar;
 }
 
 
 
-function figUpdateStar(figStar, genStar, addProps, isValid = false)
+function figUpdateStar(figStar, genStar, addProps, transform, isValid = false)
 {
     if (   !isValid
         && !genStarIsValid(genStar))
@@ -38,6 +38,8 @@ function figUpdateStar(figStar, genStar, addProps, isValid = false)
     figStar.innerRadius  = Math.min(Math.max(0, genStar[FO_STAR_CONVEX] / 100), 1);
 
 
-    setObjectTransform(figStar, genStar);
-    setObjectProps    (figStar, genStar, addProps);
+    if (transform)
+        setObjectTransform(figStar, genStar);
+    
+    setObjectProps(figStar, genStar, addProps);
 }

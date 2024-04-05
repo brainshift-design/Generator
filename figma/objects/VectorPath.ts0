@@ -7,18 +7,18 @@ function genVectorPathIsValid(genPath)
 
 
 
-function figCreateVectorPath(genPath, addProps)
+function figCreateVectorPath(genPath, addProps, transform)
 {
     const figPath = figma.createVector();
 
-    figUpdateVectorPath(figPath, genPath, addProps, true);
+    figUpdateVectorPath(figPath, genPath, addProps, transform, true);
 
     return figPath;
 }
 
 
 
-function figUpdateVectorPath(figPath, genPath, addProps, isValid = false)
+function figUpdateVectorPath(figPath, genPath, addProps, transform, isValid = false)
 {
     if (   !isValid
         && !genVectorPathIsValid(genPath))
@@ -34,7 +34,8 @@ function figUpdateVectorPath(figPath, genPath, addProps, isValid = false)
     figPath.cornerRadius = genPath[FO_VECTOR_PATH_ROUND];
     
 
-    setObjectTransform(figPath, genPath, false);
-    setObjectProps    (figPath, genPath, addProps);
+    if (transform)
+        setObjectTransform(figPath, genPath, false);
+    
+    setObjectProps(figPath, genPath, addProps);
 }
-

@@ -101,7 +101,7 @@ extends GOperator
         const blend    = await evalNumberValue(this.blend,    parse);
 
 
-        if (position) position.value = Math.min(Math.max(0, Math.floor(position.value)), 1);
+        if (position) position.value = Math.min(Math.max(0, Math.floor(position.value)), 3);
         if (blend   ) blend   .value = Math.min(Math.max(0, Math.floor(blend   .value)), BlendModes.length-1);
 
 
@@ -149,7 +149,7 @@ extends GOperator
             
         this.setUpdateValues(parse,
         [
-            ['value',    this.value   ]//,
+            ['value', this.value]//,
             // ['gradType', this.gradType],
             // ['position', this.position],
             // ['x',        this.x       ],

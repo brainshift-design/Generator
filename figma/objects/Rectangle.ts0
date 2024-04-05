@@ -9,7 +9,7 @@ function genRectIsValid(genRect)
 
 
 
-function figCreateRect(genRect, addProps)
+function figCreateRect(genRect, addProps, transform)
 {
     if (!genRectIsValid(genRect))
         return null;
@@ -17,14 +17,14 @@ function figCreateRect(genRect, addProps)
 
     const figRect = figma.createRectangle();
 
-    figUpdateRect(figRect, genRect, addProps, true);
+    figUpdateRect(figRect, genRect, addProps, transform, true);
 
     return figRect;
 }
 
 
 
-function figUpdateRect(figRect, genRect, addProps, isValid = false)
+function figUpdateRect(figRect, genRect, addProps, transform, isValid = false)
 {
     if (   !isValid
         && !genRectIsValid(genRect))
@@ -46,6 +46,8 @@ function figUpdateRect(figRect, genRect, addProps, isValid = false)
         figRect.cornerRadius = genRect[FO_RECT_ROUND];
 
 
-    setObjectTransform(figRect, genRect);
-    setObjectProps    (figRect, genRect, addProps);
+    if (transform)
+        setObjectTransform(figRect, genRect);
+    
+    setObjectProps(figRect, genRect, addProps);
 }

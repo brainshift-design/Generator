@@ -461,3 +461,162 @@ function genParseColorBlend(parse)
     genParseNodeEnd(parse, blend);
     return blend;
 }
+
+
+
+function genParseGradientValue(parse)
+{
+    parse.pos++; // GRADIENT_VALUE
+
+    const grad = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(GRADIENT_VALUE, grad, parse);
+
+    return parseGradientValue(grad)[0];
+}
+
+
+
+function genParseGradient(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const grad = new GGradient(nodeId, options);
+
+    grad.hasInputs = options.hasInputs;
+
+
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReq(grad, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, grad);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    for (let i = 0; i < nInputs; i++)
+        grad.inputs.push(genParse(parse));
+
+
+    grad.gradType = genParse(parse); 
+    grad.position = genParse(parse); 
+    grad.x        = genParse(parse); 
+    grad.y        = genParse(parse); 
+    grad.size     = genParse(parse); 
+    grad.angle    = genParse(parse); 
+    grad.aspect   = genParse(parse); 
+    grad.skew     = genParse(parse); 
+    grad.blend    = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, grad);
+    return grad;
+}
+
+
+
+// function genParseGradientParam(parse)
+// {
+//     const grd = genParse(parse); 
+
+//     if (COLOR_TYPES.includes(grd.type))
+//         grd.options.opacity = genParse(parse);
+
+//     return grd;
+// }
+
+
+
+function genParseColorStopValue(parse)
+{
+    parse.pos++; // COLOR_STOP_VALUE
+
+    const stop = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(COLOR_STOP_VALUE, stop, parse);
+
+    return parseColorStopValue(stop)[0];
+}
+
+
+
+function genParseColorStop(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const stop = new GColorStop(nodeId, options);
+
+    stop.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(stop, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, stop);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+    {
+        stop.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['fill', 'position'];
+
+
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'fill':     stop.fill     = genParse(parse); break;
+        case 'position': stop.position = genParse(parse); break;
+        }
+    }
+    
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, stop);
+    return stop;
+}

@@ -15,7 +15,7 @@ function genTextIsValid(genText)
 
 
 
-function figCreateText(genText, addProps)
+function figCreateText(genText, addProps, transform)
 {
     if (!genTextIsValid(genText))
         return null;
@@ -23,7 +23,7 @@ function figCreateText(genText, addProps)
 
     const figText = figma.createText();
 
-    figUpdateText(figText, genText, addProps, true);
+    figUpdateText(figText, genText, addProps, transform, true);
 
     
     return figText;
@@ -31,7 +31,7 @@ function figCreateText(genText, addProps)
 
 
 
-function figUpdateText(figText, genText, addProps, isValid = false)
+function figUpdateText(figText, genText, addProps, transform, isValid = false)
 {
     if (   !isValid
         && !genTextIsValid(genText))
@@ -51,12 +51,12 @@ function figUpdateText(figText, genText, addProps, isValid = false)
             figma.loadFontAsync(fontName).then(() =>
             {
                 loadedFonts.push(fontName);
-                figUpdateText_(figText, genText, fontName, addProps);
+                figUpdateText_(figText, genText, fontName, addProps, transform);
             });
         }
         else
         {
-            figUpdateText_(figText, genText, fontName, addProps);
+            figUpdateText_(figText, genText, fontName, addProps, transform);
         }
     }
     catch (e) 
@@ -67,7 +67,7 @@ function figUpdateText(figText, genText, addProps, isValid = false)
 
 
 
-function figUpdateText_(figText, genText, fontName, addProps)
+function figUpdateText_(figText, genText, fontName, addProps, transform)
 {
     figText.fontName      = fontName;
 
@@ -89,8 +89,10 @@ function figUpdateText_(figText, genText, fontName, addProps)
     else if (genText[FO_ALIGN_V] == 2) figText.textAlignVertical   = 'BOTTOM';
 
 
-    setObjectTransform(figText, genText);
-    setObjectProps    (figText, genText, addProps);
+    if (transform)
+        setObjectTransform(figText, genText);
+    
+    setObjectProps(figText, genText, addProps);
 
 
     // const xp0 = genText[FO_XP0];
