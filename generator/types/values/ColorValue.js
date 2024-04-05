@@ -143,6 +143,13 @@ extends GValue
 
 
 
+    toRgba()
+    {
+        return rgb_a(this.toRgb());
+    }
+
+
+
     toRgbObject(limit = false)
     {
         const rgb = dataColor2rgb(this.toDataColor());
