@@ -1,4 +1,4 @@
-const generatorVersion = 394;
+const generatorVersion = 395;
 
 
 const MAX_INT32        = 2147483647;
