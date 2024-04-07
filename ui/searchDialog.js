@@ -122,11 +122,11 @@ function initSearchBox(query)
             const la = a.length;
             const lb = b.length;
             
-            if (la < lb) return -1;
-            if (la > lb) return  1;
-
             if (ea < eb) return -1;
             if (ea > eb) return  1;
+
+            if (la < lb) return -1;
+            if (la > lb) return  1;
 
             if (qa < qb) return -1;
             if (qa > qb) return  1;
