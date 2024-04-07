@@ -328,7 +328,11 @@ function uiReturnFigLoadNodesAndConns(msg)
             
         graph.clear();
 
-        loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress);
+        loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress).then(result =>
+        {
+            if (graph.nodes.length == 0)
+                graph.currentPage.zoom = 1;
+        });
     }
 }
 
@@ -344,7 +348,7 @@ function setLoadingProgress(progress)
 
 
 
-function loadNodesAndConnsAsync(_nodes, _conns, setProgress, pasting = false)
+async function loadNodesAndConnsAsync(_nodes, _conns, setProgress, pasting = false)
 {
     loadingProgress.style.width   = 0;
     loadingOverlay .style.display = 'block';

@@ -192,10 +192,7 @@ function validateInit(eulaAgreed)
                     if (result == 2)
                         subscriptionActive = true;
         
-                    uiSetLocalData(
-                        'pro', 
-                            subscriptionActive);
-        
+                    uiSetLocalData('pro', subscriptionActive);
                     finalizeInit(eulaAgreed, result == 1);
                 })
                 .catch(error =>
@@ -206,10 +203,7 @@ function validateInit(eulaAgreed)
             }
             else
             {
-                uiSetLocalData(
-                    'pro', 
-                    subscriptionActive);
-
+                uiSetLocalData('pro', subscriptionActive);
                 finalizeInit(eulaAgreed, subscriptionActive);
             }
         })
