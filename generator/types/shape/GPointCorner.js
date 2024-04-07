@@ -47,12 +47,21 @@ extends GOperator1
         if (input)
         {
             this.value        = input;
+            this.value.nodeId = this.nodeId;
+            this.value.copyCustomParams(input);
+
             this.value.smooth = smooth;
+
+
+            if (   this.value.objects
+                && this.value.objects.length > 0)
+            {
+                this.value.x = new NumberValue(this.value.objects[0].x);
+                this.value.y = new NumberValue(this.value.objects[0].y);
+            }
         }
         else
-        {
             this.value = PointValue.NaN.copy();
-        }
 
 
         await this.evalObjects(parse);
@@ -60,8 +69,7 @@ extends GOperator1
 
         this.setUpdateValues(parse, 
         [
-            //['value',  this.value],
-            ['smooth', smooth    ]
+            ['smooth', smooth]
         ]);
 
 
@@ -88,7 +96,13 @@ extends GOperator1
             const y      = this.value.y.value;
             const smooth = this.value.smooth ? this.value.smooth.value/100 : 1;
 
-            const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y, smooth);
+            const point = new FigmaPoint(
+                this.nodeId, 
+                this.nodeId, 
+                this.nodeName, 
+                x, 
+                y, 
+                smooth);
 
             point.createDefaultTransform(x, y);
 

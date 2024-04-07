@@ -73,7 +73,7 @@ extends GOperator1
                 input.copyCustomParams(_input);
             }
             
-            this.value        = input.copy();
+            this.value        = input;
             this.value.nodeId = this.nodeId;
             this.value.copyCustomParams(input);
 

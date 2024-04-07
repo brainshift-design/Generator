@@ -20,6 +20,7 @@ extends OperatorBase
 
         this.setAllParamDividers(0.53);
 
+        this.paramSmooth.controls[0].setMin(  0);
         this.paramSmooth.controls[0].setMax(100);
         this.paramSmooth.controls[0].suffix = '%';
     }
