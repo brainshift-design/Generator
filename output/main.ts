@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 395;
+const generatorVersion = 396;
 
 
 const MAX_INT32        = 2147483647;
@@ -5427,11 +5427,11 @@ async function figUpdateBoolean(figBool, genBool, addProps, transform) //, isVal
         false,
         false,
         false,
-        false);
+        true);
 
 
-    if (transform)
-        setObjectTransform(figBool, genBool, false);
+    // if (transform)
+    //     setObjectTransform(figBool, genBool, false);
 
     
     const hasProps =

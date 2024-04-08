@@ -97,11 +97,9 @@ extends GOperator1
                                 
                                 if (   item
                                     && this.value.objects
-                                    && input.objects)
+                                    && item.objects)
                                 {
-                                    //const objects = input.objects.filter(o => o.itemIndex == i);
                                     item.objects.forEach(o => o.itemIndex = j);
-
                                     this.value.objects.push(...item.objects);
                                 }
                             }

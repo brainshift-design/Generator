@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 395;
+const generatorVersion = 396;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -3640,9 +3640,9 @@ function figUpdateBoolean(figBool, genBool, addProps, transform) {
             figBool.remove();
             return;
         }
-        yield figUpdateObjects(figBool, genBool[FO_BOOLEAN_CHILDREN], genBool[FO_BOOLEAN_CHILDREN].length, -1, [], false, false, false, false, false);
-        if (transform)
-            setObjectTransform(figBool, genBool, false);
+        yield figUpdateObjects(figBool, genBool[FO_BOOLEAN_CHILDREN], genBool[FO_BOOLEAN_CHILDREN].length, -1, [], false, false, false, false, true);
+        // if (transform)
+        //     setObjectTransform(figBool, genBool, false);
         const hasProps = genBool[FO_FILLS].length > 0
             || genBool[FO_STROKES].length > 0
             || genBool[FO_EFFECTS].length > 0;

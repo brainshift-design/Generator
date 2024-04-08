@@ -61,11 +61,11 @@ async function figUpdateBoolean(figBool, genBool, addProps, transform) //, isVal
         false,
         false,
         false,
-        false);
+        true);
 
 
-    if (transform)
-        setObjectTransform(figBool, genBool, false);
+    // if (transform)
+    //     setObjectTransform(figBool, genBool, false);
 
     
     const hasProps =

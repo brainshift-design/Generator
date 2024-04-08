@@ -54,17 +54,21 @@ extends NumberParamBase
 
         this.controls[0].addEventListener('finishedit', e =>
         { 
-            let dec = decCount(e.detail.valueString);
-            
+            console.log('e.detail =', e.detail);
             if (!e.detail.success)
                 return;
+            
+            
+            let dec = this.value.decimals;
 
-                
             if (this.controls[0].allowEditDecimals)
             {
-                this.setValue(new NumberValue(e.detail.value, dec), true);
-                e.preventSetValue = true;
+                dec = decCount(e.detail.valueString);
+                console.log('dec =', dec);
             }
+
+            this.setValue(new NumberValue(e.detail.value, dec), true);
+            e.preventSetValue = true;
         });
 
 

@@ -480,3 +480,48 @@ function smoothstep(x)
 
     return 3*x*x - 2*x*x*x;
 }
+
+
+
+function getMean(values)
+{
+    return values.length > 0
+         ? values.reduce((acc, cur) => acc + cur, 0) / values.length
+         : Number.NaN;
+}
+
+
+
+function getTrimmedMean(values, trimStart, trimEnd = trimStart)
+{
+    if (   trimStart <  0
+        || trimStart >= 0.5
+        || trimEnd   <  0
+        || trimEnd   >= 0.5)
+        throw new Error('trimStart = ' + trimStart + ', trimEnd = ' + trimEnd + ', trim must be between 0 and 0.5');
+
+    
+    const sorted         = values.slice().sort((a, b) => a - b);
+
+    const trimCountStart = Math.floor(sorted.length * trimStart);
+    const trimCountEnd   = Math.floor(sorted.length * trimEnd  );
+
+    const trimmed   = sorted.slice(trimCountStart, sorted.length - trimCountEnd);
+    const sum       = trimmed.reduce((acc, val) => acc + val, 0);
+
+    return trimmed.length > 0
+         ? sum / values.length
+         : Number.NaN;
+}
+
+
+
+function getMedian(values)
+{
+    const sorted = [...values].sort((a, b) => a - b);
+    const middle = Math.floor(sorted.length / 2);
+
+    return sorted.length % 2 == 0
+         ? (sorted[middle-1] + sorted[middle]) / 2
+         : sorted[middle];
+}

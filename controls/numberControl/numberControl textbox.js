@@ -426,7 +426,7 @@ NumberControl.prototype.initTextbox = function()
         if (!isNaN(val))
             val /= this.valueScale;
 
-       
+
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
             'value':           val,
