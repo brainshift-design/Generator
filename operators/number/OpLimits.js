@@ -1,5 +1,5 @@
 class   OpLimits
-extends OperatorBase//WithValue
+extends OperatorBase
 {
     paramMin;
     paramMax;
@@ -14,10 +14,9 @@ extends OperatorBase//WithValue
         this.iconOffsetY = 1;
         
 
-        this.addInput (new Input (NUMBER_TYPES));
+        this.addInput (new Input ([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        //this.addParam(this.paramValue);
         this.addParam(this.paramMin = new NumberParam('min', 'min', true, true, true,   0));
         this.addParam(this.paramMax = new NumberParam('max', 'max', true, true, true, 100));
 
@@ -59,6 +58,18 @@ extends OperatorBase//WithValue
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const type = values[paramIds.findIndex(id => id == 'type')];
+
+        if (type)
+            this.headerOutputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
     updateParams()
     {
         //this.paramValue.enableControlText(false, this.isUnknown());
@@ -66,6 +77,25 @@ extends OperatorBase//WithValue
         this.paramMax  .enableControlText(true);
 
         this.updateParamControls();
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+        const type   = this.outputs[0].types[0];
+
+        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        const gray =
+               this.active
+            && this.outputs[0].types[0] == LIST_VALUE;
+
+        colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.outWire = rgbFromType(type, true);
+
+        return colors;
     }
 
 
