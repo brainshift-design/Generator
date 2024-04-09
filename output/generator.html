@@ -5981,6 +5981,7 @@ const NUMBER_SIMPLE_MINMAX    = 'SMINMAX';
 const NUMBER_MINMAX           = 'MINMAX';   
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_CURVE            = 'NCURVE';   
+const NUMBER_MAP              = 'NMAP';   
 const NUMBER_BIAS             = 'NBIAS';   
 const NUMBER_NAN              = 'NANISNUM';
 const NUMBER_CONSTANT         = 'CONST';  
@@ -6150,6 +6151,7 @@ const NUMBER_TYPES =
     NUMBER_MINMAX,
     NUMBER_LIMITS,
     NUMBER_CURVE,
+    NUMBER_MAP,
     NUMBER_BIAS,
     NUMBER_NAN,
     NUMBER_CONSTANT,
@@ -24322,6 +24324,162 @@ extends GOperator1
 
 
 
+class GNumberMap
+extends GOperator1
+{
+    from = null;
+    to   = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(NUMBER_MAP, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.from = null;
+        this.to   = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GNumberMap(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.from = this.from.copy();
+        copy.to   = this.to  .copy();
+
+        return copy;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.from  || this.from.isCached())
+            && (!this.to    || this.to  .isCached());
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const input = await evalNumberValue(this.input, parse);
+        const from  = await evalNumberValue(this.from,  parse);
+        const to    = await evalNumberValue(this.to,    parse);
+
+
+        if (input)
+        {
+            if (this.options.enabled)
+            {
+                const f = 0;
+
+                // TODO get f from input
+
+
+                const maxDec    = to.items.reduce((max, v) => Math.max(max, v.decimals), 0);
+
+                const nSegments = Math.floor(to.items.length-1);
+                const index     = Math.min(Math.floor((to.items.length-1) * f), nSegments-1);
+        
+        
+                if (to.items.length == 1)
+                    this.value = to.items[0];
+        
+                else if (to.items.length > 0
+                      && index < to.items.length - deg)
+                {
+                    const localAmount = 
+                        nSegments > 1
+                        ? (f - index/nSegments) * nSegments
+                        : f;
+        
+        
+                    const val0 = to.items[index*deg  ];
+                    const val1 = to.items[index*deg+1];
+    
+                    this.value = new NumberValue(
+                        lerp(val0.value, val1.value, localAmount),
+                        maxDec);
+                }
+            }
+            else
+                this.value = input//.copy();
+        }
+        else
+            this.value = NumberValue.NaN.copy();
+
+
+        this.setUpdateValues(parse,
+        [
+            ['type', this.outputType()],
+            ['from', from             ],
+            ['to',   to               ]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.from && this.from.isValid()
+            && this.to   && this.to  .isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.from) this.from.pushValueUpdates(parse);
+        if (this.to  ) this.to  .pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.from) this.from.invalidateInputs(parse, from, force);
+        if (this.to  ) this.to  .invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.from) this.from.iterateLoop(parse);
+        if (this.to  ) this.to  .iterateLoop(parse);
+    }
+}
+
+
+
 class GNumberBias
 extends GOperator1
 {
@@ -27472,7 +27630,7 @@ async function evalAddInputs(inputs, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
-        const val = await evalNumberValue(inputs[i], parse);
+        const val = await evalValue(inputs[i], parse);
         
         if (   !val
             || !val.isValid())
@@ -27564,7 +27722,7 @@ async function evalSubtractInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = await evalNumberValue(inputs[0], parse);
+        const val0 = await evalValue(inputs[0], parse);
 
         if (   !val0
             || !val0.isValid())
@@ -27711,7 +27869,7 @@ async function evalMultiplyInputs(inputs, parse)
 
         for (let i = 0; i < inputs.length; i++)
         {
-            const val = await evalNumberValue(inputs[i], parse);
+            const val = await evalValue(inputs[i], parse);
 
             if (   !val
                 || !val.isValid())
@@ -27801,7 +27959,7 @@ async function evalDivideInputs(inputs, parse)
         
     if (!isEmpty(inputs))
     {
-        const val0 = await evalNumberValue(inputs[0], parse);
+        const val0 = await evalValue(inputs[0], parse);
 
         if (   !val0
             || !val0.isValid())
@@ -27968,7 +28126,7 @@ async function evalModuloInputs(inputs, parse)
         
     if (!isEmpty(inputs))
     {
-        const val0 = await evalNumberValue(inputs[0], parse);
+        const val0 = await evalValue(inputs[0], parse);
 
         if (   !val0
             || !val0.isValid())
@@ -28128,7 +28286,7 @@ async function evalExponentInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = await evalNumberValue(inputs[0], parse);
+        const val0 = await evalValue(inputs[0], parse);
 
         if (   !val0
             || !val0.isValid())
@@ -51365,6 +51523,53 @@ function genParseNumberCurve(parse)
 
 
 
+function genParseNumberMap(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const map = new GNumberMap(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(map, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, map);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        map.input = genParse(parse);
+
+    map.from = genParse(parse);
+    map.to   = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, map);
+    return map;
+}
+
+
+
 function genParseNumberBias(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -56112,6 +56317,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_SIMPLE_MINMAX   ) result = genParseSimpleMinMax      (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits            (parse);
     else if (parse.next == NUMBER_CURVE           ) result = genParseNumberCurve       (parse);
+    else if (parse.next == NUMBER_MAP             ) result = genParseNumberMap         (parse);
     else if (parse.next == NUMBER_BIAS            ) result = genParseNumberBias        (parse);
     else if (parse.next == NUMBER_NAN             ) result = genParseNaNisNumber       (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant          (parse);

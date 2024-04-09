@@ -535,6 +535,7 @@ function initGeneratorMenus()
                            new MenuItem('Limits',        null, {icon: iconLimits,      createType: NUMBER_LIMITS,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,        btnNumber.div, getCreateOptions(e)))}), 
                            new MenuItem('Quantize',      null, {icon: iconQuantize,    createType: NUMBER_QUANTIZE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_QUANTIZE,      btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('Curve',         null, {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,         btnNumber.div, getCreateOptions(e)))}), 
+                           new MenuItem('Map',           null, {icon: iconNumberMap,   createType: NUMBER_MAP,           callback: e => actionManager.do(getCreateNodeAction(NUMBER_MAP,           btnNumber.div, getCreateOptions(e)))}), 
                            new MenuItem('Bias',          null, {icon: iconNumberBias,  createType: NUMBER_BIAS,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_BIAS,          btnNumber.div, getCreateOptions(e)))}), 
                            new MenuItem('',              null, {separator: true}),
                            new MenuItem('Trigonometric', null, {icon: iconSine,        createType: NUMBER_TRIG,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,          btnNumber.div, getCreateOptions(e)))}),

@@ -53,7 +53,7 @@ async function evalModuloInputs(inputs, parse)
         
     if (!isEmpty(inputs))
     {
-        const val0 = await evalNumberValue(inputs[0], parse);
+        const val0 = await evalValue(inputs[0], parse);
 
         if (   !val0
             || !val0.isValid())

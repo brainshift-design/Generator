@@ -11,7 +11,9 @@ extends OperatorBase
     {
         super(NUMBER_CURVE, 'curve', 'curve', iconNumberCurve);
 
+
         this.canDisable  = true;
+        this.iconOffsetY = 1;
 
 
         this.addInput (new Input (NUMBER_TYPES));
