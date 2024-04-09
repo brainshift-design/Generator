@@ -69,18 +69,22 @@ extends GOperator1
 
         if (input)
         {
-            if (this.options.enabled)
+            if (isListValueType(input.type))
             {
-                let f = (input.value - min.value) / (max.value - min.value);
+                this.value = new ListValue();
 
-                f = getSpreadBias(f, bias.value, spread.value);
-                
-                f = min.value + f * (max.value - min.value);
-                
-                this.value = new NumberValue(f);
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getNumberBiasValue(item, min, max, bias, spread, this.options.enabled)
+                        : NumberValue.NaN.copy());   
+                }
             }
             else
-                this.value = input.copy();
+                this.value = getNumberBiasValue(input, min, max, bias, spread, this.options.enabled);
         }
         else
             this.value = NumberValue.NaN.copy();
@@ -88,10 +92,11 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['min',    min   ],
-            ['max',    max   ],
-            ['bias',   bias  ],
-            ['spread', spread]
+            ['type',   this.outputType()],
+            ['min',    min              ],
+            ['max',    max              ],
+            ['bias',   bias             ],
+            ['spread', spread           ]
         ]);
 
 
@@ -168,4 +173,25 @@ function getSpreadBias(f, bias, spread)
 
 
     return f;
+}
+
+
+
+function getNumberBiasValue(input, min, max, bias, spread, enabled)
+{
+    consoleAssert(
+        input.type == NUMBER_VALUE, 
+       'input.type must be NUMBER_VALUE');
+
+
+    if (!enabled)
+        return input;
+
+
+    let f = (input.value - min.value) / (max.value - min.value);
+
+    f = getSpreadBias(f, bias.value, spread.value);
+    f = min.value + f * (max.value - min.value);
+
+    return new NumberValue(f);
 }
