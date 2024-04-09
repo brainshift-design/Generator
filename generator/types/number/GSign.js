@@ -30,23 +30,30 @@ extends GOperator1
 
         if (input)
         {
-            this.value = input;
-            
-            consoleAssert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must be NUMBER_VALUE');
+            if (isListValueType(input.type))
+            {
+                this.value = new ListValue();
 
-            if (this.options.enabled)
-                this.value.value = Math.sign(this.value.value);
-        }
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getSignValue(item)
+                        : NumberValue.NaN.copy());   
+                }
+            }
+            else
+                this.value = getSignValue(input);
+}
         else
             this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse, 
         [
-            //['value', this.value]
-            ['', new NullValue()]
+            ['type', this.outputType()]
         ]);
 
 
@@ -54,4 +61,15 @@ extends GOperator1
 
         return this;
     }
+}
+
+
+
+function getSignValue(input)
+{
+    consoleAssert(
+         input.type == NUMBER_VALUE, 
+        'input.type must be NUMBER_VALUE');
+
+    return new NumberValue(Math.sign(input.value));
 }
