@@ -23368,22 +23368,36 @@ extends GOperator1
             return this;
 
 
-        if (this.input)
+        const input = await evalNumberValue(this.input, parse);
+
+
+        if (input)
         {
-            this.value = await evalNumberValue(this.input, parse);
+            if (isListValueType(input.type))
+            {
+                this.value = new ListValue();
 
-            consoleAssert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must be NUMBER_VALUE');
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
 
-            if (this.options.enabled)
-                this.value.value = Math.abs(this.value.value);
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getAbsoluteValue(item, this.options.enabled)
+                        : NumberValue.NaN.copy());   
+                }
+            }
+            else
+                this.value = getAbsoluteValue(input, this.options.enabled);
         }
         else
             this.value = NumberValue.NaN.copy();
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['type', this.outputType()]
+        ]);
 
 
         this.validate();
@@ -23392,6 +23406,18 @@ extends GOperator1
     }
 }
 
+
+
+function getAbsoluteValue(input, enabled)
+{
+    consoleAssert(
+         input.type == NUMBER_VALUE, 
+        'input.type must be NUMBER_VALUE');
+
+    return enabled
+        ? new NumberValue(Math.abs(input.value), input.decimals)
+        : input;
+}
 
 
 class GNegative
@@ -23530,33 +23556,32 @@ extends GOperator1
             && type
             && dec)
         {
-            this.value = input;
-
-            consoleAssert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must be NUMBER_VALUE');
-
-            
-            if (this.options.enabled)
+            if (isListValueType(input.type))
             {
-                switch (type.value)
-                {
-                    case 0: this.value.value = floorTo(this.value.value, dec.value); break;
-                    case 1: this.value.value = roundTo(this.value.value, dec.value); break;
-                    case 2: this.value.value =  ceilTo(this.value.value, dec.value); break;
-                }
+                this.value = new ListValue();
 
-                this.value.decimals = dec.value;
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getRoundValue(item, type, dec, this.options.enabled)
+                        : NumberValue.NaN.copy());   
+                }
             }
-        }
+            else
+                this.value = getRoundValue(input, type, dec, this.options.enabled);
+}
         else
             this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
         [
-            ['type',     type],
-            ['decimals', dec ]
+            ['_type',    this.outputType()],
+            ['type',     type             ],
+            ['decimals', dec              ]
         ]);
 
 
@@ -23605,6 +23630,25 @@ extends GOperator1
     }
 }
 
+
+
+function getRoundValue(input, type, dec, enabled)
+{
+    consoleAssert(
+        input.type == NUMBER_VALUE, 
+       'input.type must be NUMBER_VALUE');
+
+
+    if (!enabled)
+        return input;
+
+    switch (type.value)
+    {
+        case 0: return new NumberValue(floorTo(input.value, dec.value), dec.value);
+        case 1: return new NumberValue(roundTo(input.value, dec.value), dec.value);
+        case 2: return new NumberValue( ceilTo(input.value, dec.value), dec.value);
+    }
+}
 
 
 class GQuantize
@@ -24539,6 +24583,11 @@ extends GOperator1
 
 function getNumberMapValue(input, from, to)
 {
+    consoleAssert(
+        input.type == NUMBER_VALUE, 
+       'input.type must be NUMBER_VALUE');
+
+
     const maxDec = Math.max(
         from.items.reduce((max, val) => Math.max(max, val.decimals), 0),
         to  .items.reduce((max, val) => Math.max(max, val.decimals), 0));

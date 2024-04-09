@@ -55,33 +55,32 @@ extends GOperator1
             && type
             && dec)
         {
-            this.value = input;
-
-            consoleAssert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must be NUMBER_VALUE');
-
-            
-            if (this.options.enabled)
+            if (isListValueType(input.type))
             {
-                switch (type.value)
-                {
-                    case 0: this.value.value = floorTo(this.value.value, dec.value); break;
-                    case 1: this.value.value = roundTo(this.value.value, dec.value); break;
-                    case 2: this.value.value =  ceilTo(this.value.value, dec.value); break;
-                }
+                this.value = new ListValue();
 
-                this.value.decimals = dec.value;
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getRoundValue(item, type, dec, this.options.enabled)
+                        : NumberValue.NaN.copy());   
+                }
             }
-        }
+            else
+                this.value = getRoundValue(input, type, dec, this.options.enabled);
+}
         else
             this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
         [
-            ['type',     type],
-            ['decimals', dec ]
+            ['_type',    this.outputType()],
+            ['type',     type             ],
+            ['decimals', dec              ]
         ]);
 
 
@@ -127,5 +126,25 @@ extends GOperator1
 
         if (this.type    ) this.type    .iterateLoop(parse);
         if (this.decimals) this.decimals.iterateLoop(parse);
+    }
+}
+
+
+
+function getRoundValue(input, type, dec, enabled)
+{
+    consoleAssert(
+        input.type == NUMBER_VALUE, 
+       'input.type must be NUMBER_VALUE');
+
+
+    if (!enabled)
+        return input;
+
+    switch (type.value)
+    {
+        case 0: return new NumberValue(floorTo(input.value, dec.value), dec.value);
+        case 1: return new NumberValue(roundTo(input.value, dec.value), dec.value);
+        case 2: return new NumberValue( ceilTo(input.value, dec.value), dec.value);
     }
 }

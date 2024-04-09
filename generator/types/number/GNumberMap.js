@@ -149,6 +149,11 @@ extends GOperator1
 
 function getNumberMapValue(input, from, to)
 {
+    consoleAssert(
+        input.type == NUMBER_VALUE, 
+       'input.type must be NUMBER_VALUE');
+
+
     const maxDec = Math.max(
         from.items.reduce((max, val) => Math.max(max, val.decimals), 0),
         to  .items.reduce((max, val) => Math.max(max, val.decimals), 0));

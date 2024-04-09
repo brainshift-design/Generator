@@ -10,6 +10,7 @@ extends OperatorBase
     {
         super(NUMBER_MAP, 'map', 'map', iconNumberMap);
 
+        
         this.canDisable  = true;
 
 

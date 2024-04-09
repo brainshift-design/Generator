@@ -25,26 +25,53 @@ extends GOperator1
             return this;
 
 
-        if (this.input)
+        const input = await evalNumberValue(this.input, parse);
+
+
+        if (input)
         {
-            this.value = await evalNumberValue(this.input, parse);
+            if (isListValueType(input.type))
+            {
+                this.value = new ListValue();
 
-            consoleAssert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must be NUMBER_VALUE');
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
 
-            if (this.options.enabled)
-                this.value.value = Math.abs(this.value.value);
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getAbsoluteValue(item, this.options.enabled)
+                        : NumberValue.NaN.copy());   
+                }
+            }
+            else
+                this.value = getAbsoluteValue(input, this.options.enabled);
         }
         else
             this.value = NumberValue.NaN.copy();
 
 
-        this.setUpdateValues(parse, [['value', this.value]]);
+        this.setUpdateValues(parse, 
+        [
+            ['type', this.outputType()]
+        ]);
 
 
         this.validate();
 
         return this;
     }
+}
+
+
+
+function getAbsoluteValue(input, enabled)
+{
+    consoleAssert(
+         input.type == NUMBER_VALUE, 
+        'input.type must be NUMBER_VALUE');
+
+    return enabled
+        ? new NumberValue(Math.abs(input.value), input.decimals)
+        : input;
 }
