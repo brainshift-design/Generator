@@ -13,7 +13,7 @@ extends OperatorBase
         this.iconOffsetY = -2;
         
 
-        this.addInput (new Input (NUMBER_TYPES));
+        this.addInput (new Input ([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramFrom = new SelectParam('from', '', false, true,  true, ['deg ⟶ rad', 'rad ⟶ deg'], 0));
@@ -53,11 +53,42 @@ extends OperatorBase
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const type = values[paramIds.findIndex(id => id == 'type')];
+
+        if (type)
+            this.headerOutputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
     updateParams()
     {
         this.paramFrom.enableControlText(true, this.paramFrom.isUnknown());
 
         this.updateParamControls();
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+        const type   = this.outputs[0].types[0];
+
+        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        const gray =
+               this.active
+            && this.outputs[0].types[0] == LIST_VALUE;
+
+        colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.outWire = rgbFromType(type, true);
+
+        return colors;
     }
 
 

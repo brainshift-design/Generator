@@ -29908,23 +29908,22 @@ extends GOperator1
 
         if (input)
         {
-            this.value = input;
-
-            consoleAssert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must be NUMBER_VALUE');
-
-            
-            if (this.options.enabled)
+            if (isListValueType(input.type))
             {
-                switch (from.value)
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
                 {
-                    case 0: this.value.value = this.value.value/360 * Tau; break;
-                    case 1: this.value.value = this.value.value/Tau * 360; break;
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getConvertAngleValue(item, from, this.options.enabled)
+                        : NumberValue.NaN.copy());   
                 }
             }
-
-            this.value.decimals = decDigits(this.value.value);
+            else
+                this.value = getConvertAngleValue(input, from, this.options.enabled);
         }
         else
             this.value = NumberValue.NaN.copy();
@@ -29932,8 +29931,9 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
-            ['from',  from      ]
+            ['type',  this.outputType()],
+            ['value', this.value       ],
+            ['from',  from             ]
         ]);
 
 
@@ -29978,6 +29978,31 @@ extends GOperator1
     }
 }
 
+
+
+function getConvertAngleValue(input, from, enabled)
+{
+    consoleAssert(
+         input == NUMBER_VALUE, 
+        'input must be NUMBER_VALUE');
+        
+
+    const value = input;
+    
+    if (enabled)
+    {
+        switch (from.value)
+        {
+            case 0: value.value = value.value/360 * Tau; break;
+            case 1: value.value = value.value/Tau * 360; break;
+        }
+
+        value.decimals = decDigits(value.value);
+    }
+
+
+    return value;
+}
 
 
 class GText
