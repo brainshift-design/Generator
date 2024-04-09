@@ -70,9 +70,7 @@ extends GOperator1
                 }
             }
             else
-            {
                 this.value = getTextToNumberValue(input, base, decimals, thousands);
-            }
         }
 
         else

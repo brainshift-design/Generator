@@ -24391,58 +24391,22 @@ extends GOperator1
                 if (   from && from.isValid() && from.items.length > 0
                     && to   && to  .isValid() && to  .items.length > 0)
                 {
-                    const maxDec = Math.max(
-                        from.items.reduce((max, val) => Math.max(max, val.decimals), 0),
-                        to  .items.reduce((max, val) => Math.max(max, val.decimals), 0));
-
-
-                    // from
-
-                    const nFromSegments = Math.floor(from.items.length-1);
-                    let   fromIndex     = 0;
-
-                    while (fromIndex < nFromSegments-1)
+                    if (isListValueType(input.type))
                     {
-                        if (   input.value >= from.items[fromIndex  ]
-                            && input.value <  from.items[fromIndex+1])
-                            break;
-
-                        fromIndex++;
-                    }
-                    
-                    
-                    const fromLocal = 
-                          (input.value - from.items[fromIndex].value) 
-                        / (from.items[fromIndex+1].value - from.items[fromIndex].value);
-
-                    const f = fromIndex/nFromSegments + fromLocal * ((fromIndex+1)/nFromSegments - fromIndex/nFromSegments);
-                    
-
-                    // to
-
-                    const nToSegments = Math.floor(to.items.length-1);
-                    const toIndex     = Math.min(Math.max(0, Math.floor((to.items.length-1) * f)), nToSegments-1);
-            
-            
-                    if (to.items.length == 1)
-                        this.value = to.items[0];
-            
-                    else if (to.items.length > 0
-                          && toIndex < to.items.length-1)
-                    {
-                        const toLocal = 
-                            nToSegments > 1
-                            ? (f - toIndex/nToSegments) * nToSegments
-                            : f;
-            
-            
-                        const val0 = to.items[toIndex  ];
-                        const val1 = to.items[toIndex+1];
+                        this.value = new ListValue();
         
-                        this.value = new NumberValue(
-                            lerp(val0.value, val1.value, toLocal),
-                            maxDec);
+                        for (let i = 0; i < input.items.length; i++)
+                        {
+                            const item = input.items[i];
+        
+                            this.value.items.push(
+                                item.type == NUMBER_VALUE
+                                ? getNumberMapValue(item, from, to)
+                                : NumberValue.NaN.copy());   
+                        }
                     }
+                    else
+                        this.value = getNumberMapValue(input, from, to);
                 }
                 else
                     this.value = NumberValue.NaN.copy();
@@ -24507,6 +24471,67 @@ extends GOperator1
     }
 }
 
+
+
+function getNumberMapValue(input, from, to)
+{
+    const maxDec = Math.max(
+        from.items.reduce((max, val) => Math.max(max, val.decimals), 0),
+        to  .items.reduce((max, val) => Math.max(max, val.decimals), 0));
+
+
+    if (from.items.length == 1)
+        return input;
+
+
+    // from
+
+    const nFromSegments = Math.floor(from.items.length-1);
+    let   fromIndex     = 0;
+
+    while (fromIndex < nFromSegments-1)
+    {
+        if (   input.value >= from.items[fromIndex  ]
+            && input.value <  from.items[fromIndex+1])
+            break;
+
+        fromIndex++;
+    }
+    
+    
+    const fromLocal = 
+            (input.value - from.items[fromIndex].value) 
+        / (from.items[fromIndex+1].value - from.items[fromIndex].value);
+
+    const f = fromIndex/nFromSegments + fromLocal * ((fromIndex+1)/nFromSegments - fromIndex/nFromSegments);
+    
+
+    // to
+
+    const nToSegments = Math.floor(to.items.length-1);
+    const toIndex     = Math.min(Math.max(0, Math.floor((to.items.length-1) * f)), nToSegments-1);
+
+
+    if (to.items.length == 1)
+        return to.items[0];
+
+    else if (to.items.length > 0
+            && toIndex < to.items.length-1)
+    {
+        const toLocal = 
+            nToSegments > 1
+            ? (f - toIndex/nToSegments) * nToSegments
+            : f;
+
+
+        const val0 = to.items[toIndex  ];
+        const val1 = to.items[toIndex+1];
+
+        return new NumberValue(
+            lerp(val0.value, val1.value, toLocal),
+            maxDec);
+    }
+}
 
 
 class GNumberBias
@@ -31020,9 +31045,7 @@ extends GOperator1
                 }
             }
             else
-            {
                 this.value = getTextToNumberValue(input, base, decimals, thousands);
-            }
         }
 
         else
