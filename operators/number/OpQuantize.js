@@ -15,7 +15,7 @@ extends OperatorBase
         this.canDisable = true;
         
 
-        this.addInput (new Input (NUMBER_TYPES));
+        this.addInput (new Input ([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramType   = new SelectParam('type',   'type',   false, true, true, ['floor', 'round', 'ceiling'], 1));
@@ -69,6 +69,18 @@ extends OperatorBase
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const type = values[paramIds.findIndex(id => id == '_type')];
+
+        if (type)
+            this.headerOutputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
     updateParams()
     {
         this.paramType  .enableControlText(true, this.paramType.isUnknown());
@@ -77,5 +89,24 @@ extends OperatorBase
         this.paramAmount.enableControlText(true, this.paramStep.isUnknown());
 
         this.updateParamControls();
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+        const type   = this.outputs[0].types[0];
+
+        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        const gray =
+               this.active
+            && this.outputs[0].types[0] == LIST_VALUE;
+
+        colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.outWire = rgbFromType(type, true);
+
+        return colors;
     }
 }

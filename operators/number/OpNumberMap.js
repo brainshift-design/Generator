@@ -8,9 +8,9 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_MAP, 'map', 'map', iconNumberMap);
+        super(NUMBER_MAP, 'remap', 'remap', iconNumberMap);
 
-        
+
         this.canDisable  = true;
 
 

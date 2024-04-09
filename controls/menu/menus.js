@@ -528,14 +528,15 @@ function initGeneratorMenus()
                            new MenuItem('Sign',          null, {icon: iconSign,        createType: NUMBER_SIGN,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,          btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('Negative',      null, {icon: iconNegative,    createType: NUMBER_NEGATIVE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_NEGATIVE,      btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('Absolute',      null, {icon: iconAbsolute,    createType: NUMBER_ABSOLUTE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,      btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('',              null, {separator: true}),
                            new MenuItem('Precision',     null, {icon: iconNumberPrecision, createType: NUMBER_PRECISION, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PRECISION, btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('Round',         null, {icon: iconRound,       createType: NUMBER_ROUND,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,         btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('Min / max',     null, {icon: iconMinMax,      childMenu: menuMinMax, createType: NUMBER_SIMPLE_MINMAX, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MINMAX, btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('',              null, {separator: true}),
-                           new MenuItem('Limits',        null, {icon: iconLimits,      createType: NUMBER_LIMITS,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,        btnNumber.div, getCreateOptions(e)))}), 
                            new MenuItem('Quantize',      null, {icon: iconQuantize,    createType: NUMBER_QUANTIZE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_QUANTIZE,      btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('',              null, {separator: true}),
+                           new MenuItem('Min / max',     null, {icon: iconMinMax,      childMenu: menuMinMax, createType: NUMBER_SIMPLE_MINMAX, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MINMAX, btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Limits',        null, {icon: iconLimits,      createType: NUMBER_LIMITS,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,        btnNumber.div, getCreateOptions(e)))}), 
+                           new MenuItem('',              null, {separator: true}),
                            new MenuItem('Curve',         null, {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,         btnNumber.div, getCreateOptions(e)))}), 
-                           new MenuItem('Map',           null, {icon: iconNumberMap,   createType: NUMBER_MAP,           callback: e => actionManager.do(getCreateNodeAction(NUMBER_MAP,           btnNumber.div, getCreateOptions(e)))}), 
                            new MenuItem('Bias',          null, {icon: iconNumberBias,  createType: NUMBER_BIAS,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_BIAS,          btnNumber.div, getCreateOptions(e)))}), 
                            new MenuItem('',              null, {separator: true}),
                            new MenuItem('Trigonometric', null, {icon: iconSine,        createType: NUMBER_TRIG,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,          btnNumber.div, getCreateOptions(e)))}),
@@ -582,7 +583,8 @@ function initGeneratorMenus()
                           new MenuItem('',              null,                 {separator: true}),
                           new MenuItem('Convert',       null,                 {icon: iconConvert,     childMenu: menuConvertNumber}),
                           new MenuItem('',              null,                 {separator: true}),
-                          new MenuItem('Interpolate',   'Interpolate number', {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))})]);
+                          new MenuItem('Interpolate',   'Interpolate number', {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
+                          new MenuItem('Remap',         null,                 {icon: iconNumberMap,   createType: NUMBER_MAP,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_MAP,         btnNumber.div, getCreateOptions(e)))})]); 
         
     
     menuTextFunctions = new Menu('Text functions', true, false);

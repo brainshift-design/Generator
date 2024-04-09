@@ -32,8 +32,8 @@ const presetSequence = '\
             "params":\
             [\
                     ["NUM#", "start", "1,0"],\
-                    ["NUM#", "multiply", "1.12,2"],\
-                    ["NUM#", "add", "3,0"],\
+                    ["NUM#", "multiply", "1.07,2"],\
+                    ["NUM#", "add", "1,0"],\
                     ["NUM#", "end", "?,0"]\
             ]\
             },\

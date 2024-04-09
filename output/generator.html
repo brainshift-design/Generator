@@ -23714,38 +23714,34 @@ extends GOperator1
 
         if (input)
         {
-            this.value = input;
-
-            consoleAssert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must be NUMBER_VALUE');
-
-            
-            if (this.options.enabled)
+            if (isListValueType(input.type))
             {
-                let qval;
+                this.value = new ListValue();
 
-                switch (type.value)
+                for (let i = 0; i < input.items.length; i++)
                 {
-                    case 0: qval = base.value + step.value * Math.floor((this.value.value - base.value) / step.value); break;
-                    case 1: qval = base.value + step.value * Math.round((this.value.value - base.value) / step.value); break;
-                    case 2: qval = base.value + step.value * Math. ceil((this.value.value - base.value) / step.value); break;
-                }
+                    const item = input.items[i];
 
-                this.value.value    = this.value.value + (qval - this.value.value) * amount.value/100;
-                this.value.decimals = Math.max(base.decimals, step.decimals);
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getQuantizeValue(item, type, base, step, amount, this.options.enabled)
+                        : NumberValue.NaN.copy());   
+                }
             }
-        }
+            else
+                this.value = getQuantizeValue(input, type, base, step, amount, this.options.enabled);
+}
         else
             this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
         [
-            ['type',   type  ],
-            ['base',   base  ],
-            ['step',   step  ],
-            ['amount', amount]
+            ['_type',  this.outputType()],
+            ['type',   type             ],
+            ['base',   base             ],
+            ['step',   step             ],
+            ['amount', amount           ]
         ]);
 
 
@@ -23802,6 +23798,32 @@ extends GOperator1
     }
 }
 
+
+
+function getQuantizeValue(input, type, base, step, amount, enabled)
+{
+    consoleAssert(
+         input.type == NUMBER_VALUE, 
+        'input.type must be NUMBER_VALUE');
+
+    
+    if (!enabled)
+        return input;
+
+
+    let qval;
+
+    switch (type.value)
+    {
+        case 0: qval = base.value + step.value * Math.floor((input.value - base.value) / step.value); break;
+        case 1: qval = base.value + step.value * Math.round((input.value - base.value) / step.value); break;
+        case 2: qval = base.value + step.value * Math. ceil((input.value - base.value) / step.value); break;
+    }
+
+    return new NumberValue(
+        input.value + (qval - input.value) * amount.value/100,
+        Math.max(base.decimals, step.decimals));
+}
 
 
 class GSimpleMinMax
