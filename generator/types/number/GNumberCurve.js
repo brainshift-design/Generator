@@ -64,18 +64,22 @@ extends GOperator1
 
         if (input)
         {
-            if (this.options.enabled)
+            if (isListValueType(input.type))
             {
-                let f = (input.value - min.value) / (max.value - min.value);
+                this.value = new ListValue();
 
-                f = Math.pow(f, power.value);
-                
-                f = min.value + f * (max.value - min.value);
-                
-                this.value = new NumberValue(f);
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getNumberCurveValue(item, min, max, power, this.options.enabled)
+                        : NumberValue.NaN.copy());   
+                }
             }
             else
-                this.value = input.copy();
+                this.value = getNumberCurveValue(input, min, max, power, this.options.enabled);
         }
         else
             this.value = NumberValue.NaN.copy();
@@ -83,9 +87,10 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['min',   min  ],
-            ['max',   max  ],
-            ['power', power]
+            ['type',  this.outputType()],
+            ['min',   min              ],
+            ['max',   max              ],
+            ['power', power            ]
         ]);
 
 
@@ -136,4 +141,25 @@ extends GOperator1
         if (this.max  ) this.max  .iterateLoop(parse);
         if (this.power) this.power.iterateLoop(parse);
     }
+}
+
+
+
+function getNumberCurveValue(input, min, max, power, enabled)
+{
+    consoleAssert(
+        input.type == NUMBER_VALUE, 
+       'input.type must be NUMBER_VALUE');
+
+
+    if (!enabled)
+        return input;
+
+
+    let f = (input.value - min.value) / (max.value - min.value);
+
+    f = Math.pow(f, power.value);
+    f = min.value + f * (max.value - min.value);
+    
+    return new NumberValue(f);
 }
