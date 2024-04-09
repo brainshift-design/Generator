@@ -24378,48 +24378,77 @@ extends GOperator1
             return this;
 
             
-        const input = await evalNumberValue(this.input, parse);
-        const from  = await evalNumberValue(this.from,  parse);
-        const to    = await evalNumberValue(this.to,    parse);
+        const input = await evalValue    (this.input, parse);
+        const from  = await evalListValue(this.from,  parse);
+        const to    = await evalListValue(this.to,    parse);
 
 
-        if (input)
+        if (   input 
+            && input.isValid())
         {
             if (this.options.enabled)
             {
-                const f = 0;
-
-                // TODO get f from input
-
-
-                const maxDec    = to.items.reduce((max, v) => Math.max(max, v.decimals), 0);
-
-                const nSegments = Math.floor(to.items.length-1);
-                const index     = Math.min(Math.floor((to.items.length-1) * f), nSegments-1);
-        
-        
-                if (to.items.length == 1)
-                    this.value = to.items[0];
-        
-                else if (to.items.length > 0
-                      && index < to.items.length - deg)
+                if (   from && from.isValid() && from.items.length > 0
+                    && to   && to  .isValid() && to  .items.length > 0)
                 {
-                    const localAmount = 
-                        nSegments > 1
-                        ? (f - index/nSegments) * nSegments
-                        : f;
+                    const maxDec = Math.max(
+                        from.items.reduce((max, val) => Math.max(max, val.decimals), 0),
+                        to  .items.reduce((max, val) => Math.max(max, val.decimals), 0));
+
+
+                    // from
+
+                    const nFromSegments = Math.floor(from.items.length-1);
+                    let   fromIndex     = 0;
+
+                    while (fromIndex < nFromSegments-1)
+                    {
+                        if (   input.value >= from.items[fromIndex  ]
+                            && input.value <  from.items[fromIndex+1])
+                            break;
+
+                        fromIndex++;
+                    }
+                    
+                    
+                    const fromLocal = 
+                          (input.value - from.items[fromIndex].value) 
+                        / (from.items[fromIndex+1].value - from.items[fromIndex].value);
+
+                    const f = fromIndex/nFromSegments + fromLocal * ((fromIndex+1)/nFromSegments - fromIndex/nFromSegments);
+                    
+
+                    // to
+
+                    const nToSegments = Math.floor(to.items.length-1);
+                    const toIndex     = Math.min(Math.max(0, Math.floor((to.items.length-1) * f)), nToSegments-1);
+            
+            
+                    if (to.items.length == 1)
+                        this.value = to.items[0];
+            
+                    else if (to.items.length > 0
+                          && toIndex < to.items.length-1)
+                    {
+                        const toLocal = 
+                            nToSegments > 1
+                            ? (f - toIndex/nToSegments) * nToSegments
+                            : f;
+            
+            
+                        const val0 = to.items[toIndex  ];
+                        const val1 = to.items[toIndex+1];
         
-        
-                    const val0 = to.items[index*deg  ];
-                    const val1 = to.items[index*deg+1];
-    
-                    this.value = new NumberValue(
-                        lerp(val0.value, val1.value, localAmount),
-                        maxDec);
+                        this.value = new NumberValue(
+                            lerp(val0.value, val1.value, toLocal),
+                            maxDec);
+                    }
                 }
+                else
+                    this.value = NumberValue.NaN.copy();
             }
             else
-                this.value = input//.copy();
+                this.value = input;
         }
         else
             this.value = NumberValue.NaN.copy();

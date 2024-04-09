@@ -54,7 +54,6 @@ extends NumberParamBase
 
         this.controls[0].addEventListener('finishedit', e =>
         { 
-            console.log('e.detail =', e.detail);
             if (!e.detail.success)
                 return;
             
@@ -62,10 +61,7 @@ extends NumberParamBase
             let dec = this.value.decimals;
 
             if (this.controls[0].allowEditDecimals)
-            {
                 dec = decCount(e.detail.valueString);
-                console.log('dec =', dec);
-            }
 
             this.setValue(new NumberValue(e.detail.value, dec), true);
             e.preventSetValue = true;

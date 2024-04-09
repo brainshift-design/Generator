@@ -18,6 +18,15 @@ extends OperatorBase
 
         this.addParam(this.paramFrom = new ListParam('from', 'from', true, true, true));
         this.addParam(this.paramTo   = new ListParam('to',   'to',   true, true, true));
+
+        this.paramFrom.showValue = false;
+        this.paramTo  .showValue = false;
+
+        this.paramFrom.input.types = [NUMBER_LIST_VALUE];
+        this.paramTo  .input.types = [NUMBER_LIST_VALUE];
+
+        this.paramFrom.output.types = [NUMBER_LIST_VALUE];
+        this.paramTo  .output.types = [NUMBER_LIST_VALUE];
     }
 
 
@@ -59,7 +68,10 @@ extends OperatorBase
         const type = values[paramIds.findIndex(id => id == 'type')];
 
         if (type)
+        {
+            console.log('type.value =', type.value);
             this.headerOutputs[0].types = [type.value];
+        }
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
