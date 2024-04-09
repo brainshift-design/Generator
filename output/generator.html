@@ -23177,15 +23177,27 @@ extends GOperator1
 
         if (input)
         {
-            consoleAssert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must be NUMBER_VALUE');
-
-
             if (this.options.enabled)
-                this.value = new NumberValue(input.value, decimals.value);
+            {
+                if (isListValueType(input.type))
+                {
+                    this.value = new ListValue();
+
+                    for (let i = 0; i < input.items.length; i++)
+                    {
+                        const item = input.items[i];
+
+                        this.value.items.push(
+                            item.type == NUMBER_VALUE
+                            ? getSetPrecisionValue(item, decimals)
+                            : NumberValue.NaN.copy());   
+                    }
+                }
+                else
+                    this.value = getSetPrecisionValue(input, decimals);
+            }
             else
-                this.value = input.copy();
+                this.value = input;
         }
         else
             this.value = NumberValue.NaN.copy();
@@ -23193,8 +23205,9 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value',    this.value],
-            ['decimals', decimals  ]
+            ['type',     this.outputType()],
+            ['value',    this.value       ],
+            ['decimals', decimals         ]
         ]);
 
 
@@ -23239,6 +23252,16 @@ extends GOperator1
     }
 }
 
+
+
+function getSetPrecisionValue(input, decimals)
+{
+    consoleAssert(
+         input == NUMBER_VALUE, 
+        'input must be NUMBER_VALUE');
+
+    return new NumberValue(input.value, decimals.value);
+}
 
 
 class GSign
