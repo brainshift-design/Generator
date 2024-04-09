@@ -29678,26 +29678,33 @@ extends GOperator1
         func.value = Math.min(Math.max(0, func.value), TRIG_OPS.length-1);
 
         
-        if (this.options.enabled)
+        if (input)
         {
-            switch (func.value)
+            if (isListValueType(input.type))
             {
-                case TRIG_SIN:  this.value = await evalSine   (input, false);  break;
-                case TRIG_COS:  this.value = await evalCosine (input, false);  break;
-                case TRIG_TAN:  this.value = await evalTangent(input, false);  break;
-                case TRIG_ASIN: this.value = await evalSine   (input, true );  break;
-                case TRIG_ACOS: this.value = await evalCosine (input, true );  break;
-                case TRIG_ATAN: this.value = await evalTangent(input, true );  break;
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? await getTrigValue(item, func, this.options.enabled)
+                        : NumberValue.NaN.copy());   
+                }
             }
-        }
+            else
+                this.value = await getTrigValue(input, func, this.options.enabled);
+}
         else
-            this.value = input.copy();
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
         [
-            //['value',    this.value],
-            ['function', func      ]
+            ['type',     this.outputType()],
+            ['function', func             ]
         ]);
 
 
@@ -29739,6 +29746,30 @@ extends GOperator1
         super.iterateLoop(parse);
 
         if (this.function) this.function.iterateLoop(parse);
+    }
+}
+
+
+
+async function getTrigValue(input, func, enabled)
+{
+    consoleAssert(
+        input.type == NUMBER_VALUE, 
+       'input.type must be NUMBER_VALUE');
+
+
+    if (!enabled)
+        return input;
+
+
+    switch (func.value)
+    {
+        case TRIG_SIN:  return await evalSine   (input, false);
+        case TRIG_COS:  return await evalCosine (input, false);
+        case TRIG_TAN:  return await evalTangent(input, false);
+        case TRIG_ASIN: return await evalSine   (input, true );
+        case TRIG_ACOS: return await evalCosine (input, true );
+        case TRIG_ATAN: return await evalTangent(input, true );
     }
 }
 

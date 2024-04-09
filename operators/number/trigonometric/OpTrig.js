@@ -13,7 +13,7 @@ extends OperatorBase
         this.alwaysLoadParams = true;
 
         
-        this.addInput(new Input([NUMBER_VALUE]));
+        this.addInput(new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramFunction = new SelectParam('function', '', false, true, true, TRIG_OPS.map(s => s[1]), 0));
@@ -53,6 +53,18 @@ extends OperatorBase
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const type = values[paramIds.findIndex(id => id == 'type')];
+
+        if (type)
+            this.headerOutputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
     updateParams()
     {
         this.paramFunction.enableControlText(true, this.paramFunction.isUnknown());
@@ -72,5 +84,24 @@ extends OperatorBase
 
 
         this.updateParamControls();
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+        const type   = this.outputs[0].types[0];
+
+        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        const gray =
+               this.active
+            && this.outputs[0].types[0] == LIST_VALUE;
+
+        colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.outWire = rgbFromType(type, true);
+
+        return colors;
     }
 }
