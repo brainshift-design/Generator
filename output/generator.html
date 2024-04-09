@@ -29151,8 +29151,8 @@ async function evalConditionInputs(input0, input1, op, parse)
     const val0 = await evalNumberValue(input0, parse);
     const val1 = await evalNumberValue(input1, parse);
 
-    if (   val0.isValid() 
-        && val1.isValid())
+    if (   val0 && val0.isValid() 
+        && val1 && val1.isValid())
         return new NumberValue(op(val0.toNumber(), val1.toNumber()) ? 1 : 0);
     else                  
         return NumberValue.NaN.copy();
