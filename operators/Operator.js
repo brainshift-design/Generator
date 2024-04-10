@@ -8,6 +8,7 @@ const defHeaderHeight = 32;
 class Operator
 {
     subscription = false;
+    beta         = false;
 
 
     #type; // used in the code, not for generation

@@ -7,6 +7,7 @@ extends OpShape
 
         //this.canDisable   = true;
         this.subscription   = true;
+        this.beta           = true;
         this.iconOffsetY    = -3;
         this.variableInputs = true;
 

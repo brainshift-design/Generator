@@ -11,6 +11,7 @@ extends OpShape
         super(SHAPE_BOOLEAN, 'boolean', 'boolean', iconBoolUnion);
 
 
+        this.beta        = true;
         this.canDisable  = true;
         this.iconOffsetY = -1;
 

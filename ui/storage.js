@@ -76,7 +76,7 @@ async function uiReturnFigGetLocalData(msg)
         case 'showTooltipColorContrast':
         case 'showTooltipAscii':
 
-        //case 'enableBetaFeatures':       
+        case 'enableBetaFeatures':       
 
         case 'logThreadMessages':      
         case 'logDataMessages':      
@@ -177,7 +177,7 @@ async function uiReturnFigGetLocalData(msg)
     if (!settings.debugMode)
     {
         // if (msg.key == 'enableBetaFeatures')
-            //enableFeatures(true, settings.enableBetaFeatures); 
+            //enableFeatures(true); 
 
         if (msg.key == 'showDebugMenu')
             updateMenuItemShowDebugMenu();

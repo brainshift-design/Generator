@@ -5432,7 +5432,7 @@ const settings =
     showTooltipColorContrast:      true,
     showTooltipAscii:              true,
 
-  //enableBetaFeatures:            false,
+    enableBetaFeatures:            false,
             
     logThreadMessages:             false,
     logDataMessages:               false,
@@ -5499,7 +5499,7 @@ function updateSetting(settingName, value)
         case 'showTooltipColorContrast':      settings.showTooltipColorContrast      = value;  break;
         case 'showTooltipAscii':              settings.showTooltipAscii              = value;  break;
 
-      //case 'enableBetaFeatures':            settings.enableBetaFeatures            = value;  break;
+        case 'enableBetaFeatures':            settings.enableBetaFeatures            = value;  break;
                    
         case 'logThreadMessages':             settings.logThreadMessages             = value;  break;
         case 'logDataMessages':               settings.logDataMessages               = value;  break;
@@ -5575,7 +5575,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showTooltipColorContrast':      updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorContrast     ); break;
         case 'showTooltipAscii':              updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorBlindness    ); break;
 
-      //case 'enableBetaFeatures':          //updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures           ); break;
+        case 'enableBetaFeatures':            updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures           ); break;
                       
         case 'logThreadMessages':             updateSettingAndMenu_(valid, settingName, value, menuItemLogThreadMessages            ); break;
         case 'logDataMessages':               updateSettingAndMenu_(valid, settingName, value, menuItemLogDataMessages              ); break;
@@ -5764,48 +5764,55 @@ function updateMenuItemShowColorLegendInMenus()
 
 
 
-function enableFeatures(sub, beta = false)
+function enableFeatures(sub)
 {
-    enableMenuItem(menuItemSetValueNames,   true, sub);
- // enableMenuItem(menuItemShowSnapshots,   true, sub);
-    enableMenuItem(menuItemValueName,       true, sub);
-    enableMenuItem(menuItemObjectName,      true, sub);
-    enableMenuItem(menuItemTimer,           true, sub);
- // enableMenuItem(menuItemSort,            true, sub);
- // enableMenuItem(menuItemFilter,          true, sub);
- // enableMenuItem(menuItemReorderList,     true, sub);
-    enableMenuItem(menuItemAnimate,         true, sub);
-    enableMenuItem(menuItemSaveToFile,      true, sub);
-    enableMenuItem(menuItemSaveSelected,    true, sub);
-    enableMenuItem(menuItemFetch,           true, sub);
- // enableMenuItem(menuItemIndexToName,     true, sub);
-    enableMenuItem(menuItemDateTime,        true, sub);
-    enableMenuItem(menuItemSolve,           true, sub);
-    enableMenuItem(menuItemTextJson,        true, sub);
-    enableMenuItem(menuItemValidColor,      true, sub);
-    enableMenuItem(menuItemCorrectColor,    true, sub);
-    enableMenuItem(menuItemConvertToP3,     true, sub);
-    enableMenuItem(menuItemColorblind,      true, sub);
-    enableMenuItem(menuItemShapeRender,     true, sub);
- // enableMenuItem(menuItemShapeExport,     true, sub);
-    enableMenuItem(menuItemVectorVertex,    true, sub);
-    enableMenuItem(menuItemVectorEdge,      true, sub);
-    enableMenuItem(menuItemVectorRegion,    true, sub);
-    enableMenuItem(menuItemVectorNetwork,   true, sub);
-    enableMenuItem(menuItemSaveTemplate,    true, sub);
-    enableMenuItem(menuItemManageTemplates, true, sub);
+    enableMenuItem(menuItemSetValueNames,      true, sub);
+    enableMenuItem(menuItemEnableBetaFeatures, true, sub);
+ // enableMenuItem(menuItemShowSnapshots,      true, sub);
+    enableMenuItem(menuItemValueName,          true, sub);
+    enableMenuItem(menuItemObjectName,         true, sub);
+    enableMenuItem(menuItemTimer,              true, sub);
+ // enableMenuItem(menuItemSort,               true, sub);
+ // enableMenuItem(menuItemFilter,             true, sub);
+ // enableMenuItem(menuItemReorderList,        true, sub);
+    enableMenuItem(menuItemAnimate,            true, sub);
+    enableMenuItem(menuItemSaveToFile,         true, sub);
+    enableMenuItem(menuItemSaveSelected,       true, sub);
+    enableMenuItem(menuItemFetch,              true, sub);
+ // enableMenuItem(menuItemIndexToName,        true, sub);
+    enableMenuItem(menuItemDateTime,           true, sub);
+    enableMenuItem(menuItemSolve,              true, sub);
+    enableMenuItem(menuItemTextJson,           true, sub);
+    enableMenuItem(menuItemValidColor,         true, sub);
+    enableMenuItem(menuItemCorrectColor,       true, sub);
+    enableMenuItem(menuItemConvertToP3,        true, sub);
+    enableMenuItem(menuItemColorblind,         true, sub);
+    enableMenuItem(menuItemShapeRender,        true, sub);
+ // enableMenuItem(menuItemShapeExport,        true, sub);
+    enableMenuItem(menuItemVectorSep1,         true, sub, true);
+    enableMenuItem(menuItemVectorVertex,       true, sub, true);
+    enableMenuItem(menuItemVectorEdge,         true, sub, true);
+    enableMenuItem(menuItemVectorRegion,       true, sub, true);
+    enableMenuItem(menuItemVectorNetwork,      true, sub, true);
+    enableMenuItem(menuItemBooleanShape,       true, sub, true);
+    enableMenuItem(menuItemSaveTemplate,       true, sub);
+    enableMenuItem(menuItemManageTemplates,    true, sub);
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
 
 
 
-function enableMenuItem(menuItem, enable, sub)
+function enableMenuItem(menuItem, enable, sub, beta = false)
 {
     if (!menuItem) return;
 
     menuItem.enabled = enable;
     menuItem.sub     = sub;
+
+    menuItem.setVisible(
+          !beta
+        || beta && settings.enableBetaFeatures);
 
     menuItem.update();
 }
@@ -5865,7 +5872,7 @@ function loadLocalSettings()
     uiGetLocalData('showTooltipColorContrast'     );
     uiGetLocalData('showTooltipAscii'             );
 
-  //uiGetLocalData('enableBetaFeatures'           );
+    uiGetLocalData('enableBetaFeatures'           );
             
     uiGetLocalData('logThreadMessages'            );
     uiGetLocalData('logDataMessages'              );

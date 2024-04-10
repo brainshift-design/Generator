@@ -12,6 +12,7 @@ extends OpShapeBase
 
         //this.canDisable  = true;
         this.subscription = true;
+        this.beta         = true;
         this.iconOffsetY  = -1;
 
 

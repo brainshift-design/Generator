@@ -184,7 +184,7 @@ var menuItemRestartSep;
 var menuItemRestart;
 
 
-//var menuItemEnableBetaFeatures;
+var menuItemEnableBetaFeatures;
 
 
 var menuItemCombine;  
@@ -248,6 +248,7 @@ var menuItemLayerBackBlur;
 var menuItemStyleSep2;
 
 
+var menuItemBooleanShape;
 var menuItemShapeSep1;
 var menuItemShapeSelected;
 var menuItemShapeRender;
@@ -323,6 +324,7 @@ var menuItemNodeRandomizeSeeds;
 var menuItemPointAlongPath;
 var menuItemClosestPointOnPath;
 var menuItemPathLength;
+var menuItemVectorSep1;
 var menuItemVectorVertex;
 var menuItemVectorEdge;
 var menuItemVectorRegion;
@@ -720,7 +722,7 @@ function initGeneratorMenus()
     menuVectorPath.addItems([
                                      new MenuItem('Point',     null,          {childMenu: menuPoint, icon: iconPoint, createType: POINT,          callback: e => actionManager.do(getCreateNodeAction(POINT,          btnShape.div, getCreateOptions(e)))}),
                                      new MenuItem('Path',      'Vector path', {icon: iconVectorPath,                  createType: VECTOR_PATH,    callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH,    btnShape.div, getCreateOptions(e)))}),
-                                     new MenuItem('',          null,          {separator: true}),           
+        menuItemVectorSep1         = new MenuItem('',          null,          {separator: true}),           
         menuItemVectorVertex       = new MenuItem('Vertex',    null,          {icon: iconVectorVertex,                createType: VECTOR_VERTEX,  callback: e => actionManager.do(getCreateNodeAction(VECTOR_VERTEX,  btnShape.div, getCreateOptions(e)))}),
         menuItemVectorEdge         = new MenuItem('Edge',      null,          {icon: iconVectorEdge,                  createType: VECTOR_EDGE,    callback: e => actionManager.do(getCreateNodeAction(VECTOR_EDGE,    btnShape.div, getCreateOptions(e)))}),
         menuItemVectorRegion       = new MenuItem('Region',    null,          {icon: iconVectorRegion,                createType: VECTOR_REGION,  callback: e => actionManager.do(getCreateNodeAction(VECTOR_REGION,  btnShape.div, getCreateOptions(e)))}),
@@ -770,7 +772,7 @@ function initGeneratorMenus()
                                 new MenuItem('',            null, {separator: true}),
                                 new MenuItem('Frame',       null, {icon: iconFrame,      createType: FRAME,         callback: e => actionManager.do(getCreateNodeAction(FRAME,         btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('Group',       null, {icon: iconShapeGroup, createType: SHAPE_GROUP,   callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP,   btnShape.div, getCreateOptions(e)))}),
-                              //new MenuItem('Boolean',     null, {icon: iconBoolUnion,  createType: SHAPE_BOOLEAN, callback: e => actionManager.do(getCreateNodeAction(SHAPE_BOOLEAN, btnShape.div, getCreateOptions(e)))}),
+        menuItemBooleanShape  = new MenuItem('Boolean',     null, {icon: iconBoolUnion,  createType: SHAPE_BOOLEAN, callback: e => actionManager.do(getCreateNodeAction(SHAPE_BOOLEAN, btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',            null, {separator: true}),
                                 new MenuItem('Transform',   null, {icon: iconMove, childMenu: menuTransform}),
                                 new MenuItem('',            null, {separator: true}),
@@ -1214,17 +1216,18 @@ function initPreferenceMenus()
         //menuItemShowColorLegendInMenus   = new MenuItem('Show color legend in menus',               null, {checkCallback: () => settings.showColorLegendInMenus,     callback: () => { updateSettingAndMenu('showColorLegendInMenus',     true, !settings.showColorLegendInMenus);     updateMenuItemShowColorLegendInMenus();     }}),
                                              new MenuItem('',                                         null, {separator: true}),    
         menuItemShowTooltips               = new MenuItem('Show tooltips',                            null, {childMenu: menuShowTooltips}),
-        menuItemShowClearUndoWarning       = new MenuItem('Show clear undo warning',                  null, {checkCallback: () => settings.showClearUndoWarning,       callback: () => { updateSettingAndMenu('showClearUndoWarning',       true, !settings.showClearUndoWarning);                                                   }}),
-        menuItemShowObjectCount            = new MenuItem('Show object count',                        null, {checkCallback: () => settings.showObjectCount,            callback: () => { updateSettingAndMenu('showObjectCount',            true, !settings.showObjectCount);            updateObjectCountDisplay();                 }}),
+        menuItemShowClearUndoWarning       = new MenuItem('Show clear undo warning',                  null, {checkCallback: () => settings.showClearUndoWarning,       callback: () => { updateSettingAndMenu('showClearUndoWarning',       true, !settings.showClearUndoWarning);                                                  }}),
+         menuItemShowObjectCount            = new MenuItem('Show object count',                        null, {checkCallback: () => settings.showObjectCount,            callback: () => { updateSettingAndMenu('showObjectCount',            true, !settings.showObjectCount);            updateObjectCountDisplay();                 }}),
         menuItemShowDebugMenu              = new MenuItem('Show debug menu',                          null, {checkCallback: () => settings.showDebugMenu,              callback: () => { uiGetLocalData('debugWarning'); }}),
                                              new MenuItem('',                                         null, {separator: true}),
-        menuItemShareUsageMetrics          = new MenuItem('Share anonymous metrics',                  null, {checkCallback: () => settings.shareUsageMetrics,      callback: () => { updateSettingAndMenu('shareUsageMetrics',      true, !settings.shareUsageMetrics);                                              }}),
+        menuItemShareUsageMetrics          = new MenuItem('Share anonymous metrics',                  null, {checkCallback: () => settings.shareUsageMetrics,          callback: () => { updateSettingAndMenu('shareUsageMetrics',          true, !settings.shareUsageMetrics);                                              }}),
+                                             new MenuItem('',                                         null, {separator: true}),    
+        menuItemEnableBetaFeatures         = new MenuItem('Enable beta features',                     null, {checkCallback: () => settings.enableBetaFeatures,         callback: () => { updateSettingAndMenu('enableBetaFeatures',         true, !settings.enableBetaFeatures);         enableFeatures(subscribed()); }}),
                                              new MenuItem('',                                         null, {separator: true}),    
         menuItemMinZoomForParams           = new MenuItem('Zoom level for values . . .',              null, {callback: () => showMinZoomDialog()}),
         //menuPrefSep2                       = new MenuItem('',                                       null, {separator: true}),    
         // menuItemEnableMultiplayer       = new MenuItem('Enable multiplayer on this canvas',        null, {checkCallback: () => multiplayerEnabled,                  callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  enableMultiplayer(!multiplayerEnabled);     }}),
         //                                   new MenuItem('',                                         null, {separator: true}),    
-        // menuItemEnableBetaFeatures      = new MenuItem('Enable beta features',                     null, {checkCallback: () => settings.enableBetaFeatures,         callback: () => { updateSettingAndMenu('enableBetaFeatures',         true, !settings.enableBetaFeatures);         enableFeatures(true, settings.enableBetaFeatures); }}),
         menuItemObjectCenterSize           = new MenuItem('Object center size . . .',                 null, {callback: () => showObjectCenterSizeDialog()}),
         menuItemObjectBatchSize            = new MenuItem('Update batch size . . .',                  null, {callback: () => showObjectBatchDialog()})]);
         
