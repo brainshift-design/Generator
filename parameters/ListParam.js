@@ -189,6 +189,16 @@ extends Parameter
 
         this.controls[0].textbox.value = value;
 
+
+        if (this.input)
+        {
+            this.input.types = 
+                isEmpty(this.listTypes)
+                ? [LIST_VALUE]
+                : [...this.listTypes];
+        }
+
+
         if (this.output)
         {
             this.output.types = 

@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 396;
+const generatorVersion = 397;
 
 
 const MAX_INT32        = 2147483647;
@@ -19888,8 +19888,8 @@ extends GOperator1
             return this;
 
 
-        const input   = await evalListInput(this.input,   parse);
-        const indices = await evalListInput(this.indices, parse);
+        const input   = await evalListValue(this.input,   parse);
+        const indices = await evalListValue(this.indices, parse);
 
 
         this.value = new ListValue();

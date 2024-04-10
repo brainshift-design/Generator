@@ -274,6 +274,7 @@ function makeSearchable(name)
 {
     return name
         .toLowerCase()
+        .replaceAll(' ', '')
         .replaceAll('&hairsp;', ' ')
         .replaceAll('&thinsp;', ' ')
         .replaceAll('&nbsp;',   ' ');

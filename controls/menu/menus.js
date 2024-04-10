@@ -529,7 +529,7 @@ function initGeneratorMenus()
                            new MenuItem('Negative',      null, {icon: iconNegative,    createType: NUMBER_NEGATIVE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_NEGATIVE,      btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('Absolute',      null, {icon: iconAbsolute,    createType: NUMBER_ABSOLUTE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,      btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('',              null, {separator: true}),
-                           new MenuItem('Precision',     null, {icon: iconNumberPrecision, createType: NUMBER_PRECISION, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PRECISION, btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Precision',     null, {icon: iconNumberPrecision, createType: NUMBER_PRECISION, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PRECISION,     btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('Round',         null, {icon: iconRound,       createType: NUMBER_ROUND,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,         btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('Quantize',      null, {icon: iconQuantize,    createType: NUMBER_QUANTIZE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_QUANTIZE,      btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('',              null, {separator: true}),
@@ -538,7 +538,7 @@ function initGeneratorMenus()
                            new MenuItem('',              null, {separator: true}),
                            new MenuItem('Curve',         null, {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,         btnNumber.div, getCreateOptions(e)))}), 
                            new MenuItem('Bias',          null, {icon: iconNumberBias,  createType: NUMBER_BIAS,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_BIAS,          btnNumber.div, getCreateOptions(e)))}), 
-                           new MenuItem('',              null, {separator: true}),
+                           new MenuItem('Remap',         null, {icon: iconNumberMap,   createType: NUMBER_MAP,           callback: e => actionManager.do(getCreateNodeAction(NUMBER_MAP,           btnNumber.div, getCreateOptions(e)))}),                            new MenuItem('',              null, {separator: true}),
                            new MenuItem('Trigonometric', null, {icon: iconSine,        createType: NUMBER_TRIG,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,          btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('Arctangent',    null, {icon: iconAtan2,       createType: NUMBER_ATAN2,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_ATAN2,         btnNumber.div, getCreateOptions(e)))})]);
         
@@ -583,14 +583,13 @@ function initGeneratorMenus()
                           new MenuItem('',              null,                 {separator: true}),
                           new MenuItem('Convert',       null,                 {icon: iconConvert,     childMenu: menuConvertNumber}),
                           new MenuItem('',              null,                 {separator: true}),
-                          new MenuItem('Interpolate',   'Interpolate number', {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
-                          new MenuItem('Remap',         null,                 {icon: iconNumberMap,   createType: NUMBER_MAP,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_MAP,         btnNumber.div, getCreateOptions(e)))})]); 
+                          new MenuItem('Interpolate',   'Interpolate number', {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))})]);
         
     
     menuTextFunctions = new Menu('Text functions', true, false);
     menuTextFunctions.addItems([
                            new MenuItem('Trim',       null,            {icon: iconTextTrim,      createType: TEXT_TRIM,      callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
-                           new MenuItem('Spl it',     null,            {icon: iconTextSplit,     createType: TEXT_SPLIT,     callback: e => actionManager.do(getCreateNodeAction(TEXT_SPLIT,     btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Split',     null,            {icon: iconTextSplit,     createType: TEXT_SPLIT,     callback: e => actionManager.do(getCreateNodeAction(TEXT_SPLIT,     btnText.div, getCreateOptions(e)))}),
                            new MenuItem('Join',       null,            {icon: iconTextJoin,      createType: TEXT_JOIN,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))}),
                            new MenuItem('Substring',  null,            {icon: iconTextSubstring, createType: TEXT_SUBSTRING, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
                            new MenuItem('Case',       null,            {icon: iconTextCase,      createType: TEXT_CASE,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CASE,      btnText.div, getCreateOptions(e)))}),
@@ -771,7 +770,7 @@ function initGeneratorMenus()
                                 new MenuItem('',            null, {separator: true}),
                                 new MenuItem('Frame',       null, {icon: iconFrame,      createType: FRAME,         callback: e => actionManager.do(getCreateNodeAction(FRAME,         btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('Group',       null, {icon: iconShapeGroup, createType: SHAPE_GROUP,   callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP,   btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Boolean',     null, {icon: iconBoolUnion,  createType: SHAPE_BOOLEAN, callback: e => actionManager.do(getCreateNodeAction(SHAPE_BOOLEAN, btnShape.div, getCreateOptions(e)))}),
+                              //new MenuItem('Boolean',     null, {icon: iconBoolUnion,  createType: SHAPE_BOOLEAN, callback: e => actionManager.do(getCreateNodeAction(SHAPE_BOOLEAN, btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',            null, {separator: true}),
                                 new MenuItem('Transform',   null, {icon: iconMove, childMenu: menuTransform}),
                                 new MenuItem('',            null, {separator: true}),

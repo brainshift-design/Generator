@@ -276,14 +276,25 @@ extends EventTarget
                  && (  !this.canConnectFrom(tc.output)
                      || tc.output.node.isOrFollows(this.node)));
 
-        const color = 
-               this.param
-            && this.param.type != COLOR_VALUE
-            && this.param.type !=  FILL_VALUE
-            ? rgb_a(rgbFromType(this.param.type, true), 0.5)
-            : (darkMode
-               ? this.colorDark
-               : this.colorLight);
+        let color;
+        
+        if (   this.param
+            && this.types.length > 0)
+        {
+            color = rgb_a(rgbFromType(finalTypeFromTypes(this.types)));
+        }
+        else 
+        {
+            color = 
+                   this.param
+                && this.param.type != COLOR_VALUE
+                && this.param.type !=  FILL_VALUE
+                ? rgb_a(rgbFromType(this.param.type, true), 0.5)
+                : (darkMode
+                    ? this.colorDark
+                    : this.colorLight);
+        }
+
 
         const colorStyle = 
             rgba2style(rgb_a(
@@ -326,6 +337,9 @@ extends EventTarget
         this.hitbox.style.height       = 12 + Math.max(0, (1 - 1*zoom) * 20);
        
        
+        if (this.param)
+            this.wireColor = rgb_a(rgbFromType(finalTypeFromTypes(this.types), true));
+        
         this.wireBall.style.left       = '1px';
         this.wireBall.style.top        = 'calc(50% - 3px)';
        

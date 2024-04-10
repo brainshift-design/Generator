@@ -23,11 +23,11 @@ extends OperatorBase
         this.paramFrom.showValue = false;
         this.paramTo  .showValue = false;
 
-        this.paramFrom.input.types = [NUMBER_LIST_VALUE];
-        this.paramTo  .input.types = [NUMBER_LIST_VALUE];
+        this.paramFrom.listTypes   = [NUMBER_LIST_VALUE];
+        this.paramTo  .listTypes   = [NUMBER_LIST_VALUE];
 
-        this.paramFrom.output.types = [NUMBER_LIST_VALUE];
-        this.paramTo  .output.types = [NUMBER_LIST_VALUE];
+        this.paramFrom.outputTypes = [NUMBER_LIST_VALUE];
+        this.paramTo  .outputTypes = [NUMBER_LIST_VALUE];
     }
 
 

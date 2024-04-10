@@ -44,8 +44,8 @@ extends GOperator1
             return this;
 
 
-        const input   = await evalListInput(this.input,   parse);
-        const indices = await evalListInput(this.indices, parse);
+        const input   = await evalListValue(this.input,   parse);
+        const indices = await evalListValue(this.indices, parse);
 
 
         this.value = new ListValue();

@@ -134,11 +134,13 @@ class Wire
         {
             if (   graphView.overOutput
                 && input.canConnectFrom(graphView.overOutput)) 
+            {
                 types.push(...graphView.overOutput.types);
-            else
+            }
+            else if (input)
             {
                      if (!isEmpty(input.types)) types.push(...input.types);
-                else if (input)                 types.push(input.node.type);
+                else                            types.push(input.node.type);
             }
         }
 
