@@ -56,29 +56,37 @@ extends GOperator2
             return this;
 
         
-        let input0       = await this.evalPointValue (this.input0      );
-        let input1       = await this.evalPointValue (this.input1      );
-        let startTangent = await this.evalNumberValue(this.startTangent, parse);
-        let   endTangent = await this.evalNumberValue(this.  endTangent);
+        let input0       = await evalVectorVertexValue(this.input0,       parse);
+        let input1       = await evalVectorVertexValue(this.input1,       parse);
+        let startTangent = await evalNumberValue      (this.startTangent, parse);
+        let   endTangent = await evalNumberValue      (this.  endTangent, parse);
 
-        if (input0.type == POINT_VALUE) input0 = new VectorVertexValue(input0.nodeId, input0.x, input0.y);
-        if (input1.type == POINT_VALUE) input1 = new VectorVertexValue(input1.nodeId, input1.x, input1.y);
+        if (   input0
+            && input1
+            && startTangent
+            && endTangent)
+        {
+            if (input0.type == POINT_VALUE) input0 = new VectorVertexValue(input0.nodeId, input0.x, input0.y);
+            if (input1.type == POINT_VALUE) input1 = new VectorVertexValue(input1.nodeId, input1.x, input1.y);
 
-        if (startTangent.type == VECTOR_VERTEX_VALUE) startTangent = new PointValue(startTangent.nodeId, startTangent.x, startTangent.y);
-        if (  endTangent.type == VECTOR_VERTEX_VALUE)   endTangent = new PointValue(  endTangent.nodeId,   endTangent.x,   endTangent.y);
-
-
-        this.value = new VectorEdgeValue(
-            this.nodeId,
-            input0,
-            input1,
-            startTangent,
-              endTangent);
+            if (startTangent.type == VECTOR_VERTEX_VALUE) startTangent = new PointValue(startTangent.nodeId, startTangent.x, startTangent.y);
+            if (  endTangent.type == VECTOR_VERTEX_VALUE)   endTangent = new PointValue(  endTangent.nodeId,   endTangent.x,   endTangent.y);
 
 
-        this.value.uniqueId = this.uniqueId;
+            this.value = new VectorEdgeValue(
+                this.nodeId,
+                input0,
+                input1,
+                startTangent,
+                endTangent);
 
 
+            this.value.uniqueId = this.uniqueId;
+        }
+        else
+            this.value = VectorEdgeValue.NaN.copy();
+        
+        
         await this.evalObjects(parse);
 
 
