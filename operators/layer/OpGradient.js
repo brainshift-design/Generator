@@ -216,6 +216,9 @@ extends OpColorBase
         const stops = [...this.value.stops.items];
 
 
+        const outlineColor = darkMode ? '#000' : '#fff';
+
+
         // single-stop gradient
 
         if (stops.length == 1)
@@ -297,10 +300,8 @@ extends OpColorBase
         }
 
 
-        const outlineColor = darkMode ? '#000' : '#fff';
-
-        this.divIcon  .style.filter = 'drop-shadow(0 1px 0px '+outlineColor+') drop-shadow(0 -1px 0px '+outlineColor+') drop-shadow(1px 0 0px '+outlineColor+') drop-shadow(-1px 0 0px '+outlineColor+')';
-        this.labelText.style.filter = 'drop-shadow(0 1px 0px '+outlineColor+') drop-shadow(0 -1px 0px '+outlineColor+') drop-shadow(1px 0 0px '+outlineColor+') drop-shadow(-1px 0 0px '+outlineColor+')';
+        this.divIcon  .style.filter = 'drop-shadow(0 0 1px '+outlineColor+')';
+        this.labelText.style.filter = 'drop-shadow(0 0 1px '+outlineColor+')';
     }
 
 
@@ -327,10 +328,10 @@ extends OpColorBase
 
             const gray = this.value.stops.items.length == 0;
 
-            colors.text = 
-                gray
-                ? (darkMode ? [1, 1, 1, 1] : [0, 0, 0, 1]) 
-                : getTextColorFromBackColor(getStripeBackColor(rgbaBack));
+            colors.text = darkMode ? [1, 1, 1, 1] : [0, 0, 0, 1];
+                // gray
+                // ? (darkMode ? [1, 1, 1, 1] : [0, 0, 0, 1]) 
+                // : getTextColorFromBackColor(getStripeBackColor(rgbaBack));
 
             if (gray)
             {
