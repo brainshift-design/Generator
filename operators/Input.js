@@ -355,7 +355,10 @@ extends EventTarget
     {
         return this.types.includes(ANY_VALUE)
              ? true
-             : arraysIntersect(this.types, types);
+             : (   arraysIntersect(this.types, types)
+                ||    this.param
+                   && this.param.listTypes
+                   && arraysIntersect(this.param.listTypes, types));
     }
 
 

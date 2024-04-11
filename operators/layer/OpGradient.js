@@ -16,6 +16,7 @@ extends OpColorBase
     checkers;
     colorBack;
 
+    
     value = new GradientValue();
 
 
@@ -73,14 +74,14 @@ extends OpColorBase
 
         input.addEventListener('connect', e => 
         { 
-            onVariableListConnectInput(e.detail.input); 
+            onVariableConnectInput(e.detail.input); 
             input.isNew = false; 
         });
         
 
         input.addEventListener('disconnect', e => 
         {
-            onVariableListDisconnectInput(e.detail.input);
+            onVariableDisconnectInput(e.detail.input);
         });
 
 
@@ -135,6 +136,7 @@ extends OpColorBase
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         this.value = values[paramIds.findIndex(id => id == 'value')];
+        console.log('this.value =', this.value);
 
         // const gradType = values[paramIds.findIndex(id => id == 'gradType')];
         // const position = values[paramIds.findIndex(id => id == 'position')];
@@ -162,6 +164,7 @@ extends OpColorBase
     updateParams()
     {
         super.updateParams();
+
 
         this.paramX   .controls[0].resetRanges();
         this.paramY   .controls[0].resetRanges();
@@ -352,3 +355,4 @@ extends OpColorBase
         return colors;
     }
 }
+

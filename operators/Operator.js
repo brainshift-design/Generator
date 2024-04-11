@@ -1448,24 +1448,29 @@ function onVariableDisconnectInput(input)
 
 
 
-function onVariableListConnectInput(input)
+function onVariableListConnectInput(input, updateOutput = true)
 {
     onVariableConnectInput(input);
-    updateOutputListTypeFromConnectedInputs(input.node);
+
+    if (updateOutput)
+        updateOutputListTypeFromConnectedInputs(input.node);
 }
 
 
 
-function onVariableListDisconnectInput(input)
+function onVariableListDisconnectInput(input, updateOutput = true)
 {
     onVariableDisconnectInput(input);
-    updateOutputListTypeFromConnectedInputs(input.node);
+
+    if (updateOutput)
+        updateOutputListTypeFromConnectedInputs(input.node);
 }
 
 
 
 function updateOutputListTypeFromConnectedInputs(node)
 {
+    console.trace();
     const types = [];
 
     for (const input of node.connectedInputs)
