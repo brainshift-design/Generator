@@ -7408,18 +7408,17 @@ function addGradientProp(obj, prop, target = obj.fills)
 
     if (pos > 0)
     {
-        //const aspect = bounds.width / nozero(bounds.height);
-
         if (   pos == 1
             || pos == 2) 
         {
-            x = x / 100 * bounds.width; // * aspect;
-            y = y / 100 * bounds.height;// * aspect;
+            x = x / 100 * bounds.width;
+            y = y / 100 * bounds.height;
         }
         
 
         x = x * 100 / nozero(bounds.width );
         y = y * 100 / nozero(bounds.height);
+
 
         if (pos == 3)
         {
@@ -7435,7 +7434,7 @@ function addGradientProp(obj, prop, target = obj.fills)
     let p1 = addv(p0, vector(a, s));
     
     let p2 = addv(
-        addv(p0, vector(a + Tau/4, s * asp)),
+        addv(p0, vector(a + Tau/4, s / nozero(asp))),
         mulvs(unitv(subv(p1, p0)), distv(p0, p1) * sk));
 
 

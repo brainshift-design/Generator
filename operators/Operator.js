@@ -1470,7 +1470,6 @@ function onVariableListDisconnectInput(input, updateOutput = true)
 
 function updateOutputListTypeFromConnectedInputs(node)
 {
-    console.trace();
     const types = [];
 
     for (const input of node.connectedInputs)
