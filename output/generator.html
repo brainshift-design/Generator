@@ -7482,6 +7482,9 @@ function addGradientProp(obj, prop, target = obj.fills)
             maxPos = Math.max(maxPos, stop.position.value);
         }
 
+        if (!isLinear)
+            minPos = Math.max(0, minPos);
+
 
         const dpos  = Math.min(0, minPos) / 100;
         const dsize = Math.max(100, maxPos - Math.min(minPos, 0)) / 100;
@@ -7494,6 +7497,7 @@ function addGradientProp(obj, prop, target = obj.fills)
 
         p1 = subv(p0, mulvs(dv, dsize));
         p2 = addv(p0, mulvs(subv(p2, p0), dsize));
+
 
         for (const stop of prop.stops.items)
             stop.position.value = stop.position.value * 100 / maxPos;

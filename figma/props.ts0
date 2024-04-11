@@ -343,7 +343,7 @@ function setEmptyObjectStroke(obj)
         if (back)
         {
             const l =
-                back.color.r * 0.2126
+                  back.color.r * 0.2126
                 + back.color.g * 0.7152 
                 + back.color.b * 0.0722; 
                 
@@ -356,19 +356,18 @@ function setEmptyObjectStroke(obj)
             phantomColor = {r: 1, g: 0, b: 1};
 
 
-
         setObjectStroke_(
             obj,
-            [{ type:   'SOLID', 
-            color:   phantomColor,
-            opacity: 0.5 }],
+            [{ type:  'SOLID', 
+              color:   phantomColor,
+              opacity: 0.5 }],
             1 / curZoom,
             'CENTER',
             'MITER',
             1,
             'NONE',
             [ 1 / curZoom, 
-            2 / curZoom ]);
+              2 / curZoom ]);
     });
 }
 
