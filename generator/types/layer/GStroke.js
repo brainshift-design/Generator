@@ -41,14 +41,14 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.fills ) copy.fills  = this.fills .copy();
-        if (this._fills) copy._fills = this._fills.copy();
-        if (this.weight) copy.weight = this.weight.copy();
-        if (this.fit   ) copy.fit    = this.fit   .copy();
-        if (this.join  ) copy.join   = this.join  .copy();
-        if (this.miter ) copy.miter  = this.miter .copy();
-        if (this.cap   ) copy.cap    = this.cap   .copy();
-        if (this.dashes) copy.dashes = this.dashes.copy();
+        if (this.fills ) copy. fills  = this.fills .copy();
+        if (this._fills) copy._fills  = this._fills.copy();
+        if (this.weight) copy. weight = this.weight.copy();
+        if (this.fit   ) copy. fit    = this.fit   .copy();
+        if (this.join  ) copy. join   = this.join  .copy();
+        if (this.miter ) copy. miter  = this.miter .copy();
+        if (this.cap   ) copy. cap    = this.cap   .copy();
+        if (this.dashes) copy. dashes = this.dashes.copy();
 
         return copy;
     }

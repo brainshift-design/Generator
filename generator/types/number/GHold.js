@@ -56,7 +56,6 @@ extends GOperator1
             if (this.options.enabled)
             {
                 this.value   = this.current ? this.current : first;
-
                 this.current = input;
             }
             else

@@ -116,8 +116,9 @@ extends GOperator1
             : new NumberValue(0);
 
 
-      //if (this.iterate && this.iterate.type != NUMBER_VALUE) assertVolatile(this.iterate, this);
-        if (this.loop    && this.loop   .type != NUMBER_VALUE) assertVolatile(this.loop,    this);
+        if (   this.loop 
+            && this.loop.type != NUMBER_VALUE) 
+            assertVolatile(this.loop, this);
 
 
         this.value = new ListValue();
@@ -158,7 +159,7 @@ extends GOperator1
 
 
                 if (   this.loop
-                    && this.loop.initLoop)//type != NUMBER_VALUE) 
+                    && this.loop.initLoop)
                     this.loop.initLoop(parse, this.nodeId);
 
 
@@ -172,13 +173,6 @@ extends GOperator1
 
                 for (let i = 0, o = 0; i < Math.max(1, nRepeats); i++)
                 {
-                    _while = await evalNumberValue(this._while, parse);
-                    
-                    if (   _while 
-                        && _while.value == 0)
-                        break;
-                
-
                     if (  !showProgress
                         && Date.now() - startTime > 50)
                     {
@@ -193,11 +187,14 @@ extends GOperator1
                     this.input.invalidateInputs(parse, this, false);
 
                     
-                    const input = await evalValue(this.input, parse);
+                    const input = await evalValue      (this.input, parse);
+                         _while = await evalNumberValue(this._while, parse);
 
 
                     if (   input
-                        && nRepeats > 0)
+                        && nRepeats > 0
+                        && (  !_while 
+                            || _while.value > 0))
                     {
                         // lists are automatically expanded unless explicitly kept as item
                         
@@ -275,16 +272,8 @@ extends GOperator1
 
 
                 if (   this.loop
-                    && this.loop.resetLoop)//;type != NUMBER_VALUE)
+                    && this.loop.resetLoop)
                     this.loop.resetLoop(parse, this.nodeId);
-
-
-                // if (this.loop)
-                // {
-                //     parse.evalFeedback = false;
-                //     await this.loop.eval(parse); // it needs to be evaluated at least once, better do it at the end
-                //     parse.evalFeedback = true;
-                // }
 
 
                 if (this.startTimer > -1)
@@ -301,10 +290,10 @@ extends GOperator1
                 parse.repeats.pop();
             }
             else if (this.input)
-                await this.input.eval(parse);
+                await evalValue(this.input, parse);
         }
         else if (this.input)
-            await this.input.eval(parse);
+            await evalValue(this.input, parse);
 
 
         const type = this.outputListType();
@@ -336,7 +325,7 @@ extends GOperator1
         return super.isValid()
             && this. count     && this. count    .isValid()
             && this. iteration && this. iteration.isValid()
-            && this._while     && this._while    .isValid();
+            && (!this._while   || this._while    .isValid());
     }
 
 
@@ -348,7 +337,6 @@ extends GOperator1
         if (this. count    ) this. count    .pushValueUpdates(parse);
         if (this. iteration) this. iteration.pushValueUpdates(parse);
         if (this._while    ) this._while    .pushValueUpdates(parse);
-      //if (this. iterate  ) this. iterate  .pushValueUpdates(parse);
         if (this. loop     ) this. loop     .pushValueUpdates(parse);
     }
 
@@ -361,7 +349,6 @@ extends GOperator1
         if (this. count    ) this. count    .invalidateInputs(parse, from, force);
         if (this. iteration) this. iteration.invalidateInputs(parse, from, force);
         if (this._while    ) this._while    .invalidateInputs(parse, from, force);
-      //if (this. iterate  ) this. iterate  .invalidateInputs(parse, from, force);
         if (this. loop     ) this. loop     .invalidateInputs(parse, from, force);
     }
 
@@ -374,7 +361,6 @@ extends GOperator1
         if (this. count    ) this. count    .iterateLoop(parse);
         if (this. iteration) this. iteration.iterateLoop(parse);
         if (this._while    ) this._while    .iterateLoop(parse);
-      //if (this. iterate  ) this. iterate  .iterateLoop(parse);
         if (this. loop     ) this. loop     .iterateLoop(parse);
     }
 }
