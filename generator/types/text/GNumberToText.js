@@ -140,10 +140,12 @@ extends GOperator1
 
 function getNumberToTextValue(input, base, decimals, thousands)
 {
-    return new TextValue(numToString(
-         input.value, 
-        -input.decimals, 
-         base.value == 1, 
-         decimals.value, 
-         thousands.value));
+    return input.isValid()
+         ? new TextValue(numToString(
+               input.value, 
+              -input.decimals, 
+               base.value == 1, 
+               decimals.value, 
+               thousands.value))
+         : new TextValue('?');
 }

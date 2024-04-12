@@ -17,10 +17,13 @@ extends OperatorBase
         this.addInput (new Input ([ANY_VALUE]));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramFirst = new NumberParam('first', 'first', true, true, true, 0));
+        this.addParam(this.paramFirst = new NumberParam('first', 'first', true, true, true, Number.NaN));
 
 
         this.paramFirst.showValue = false;
+
+        this.paramFirst.input .types = [ANY_VALUE];
+        this.paramFirst.output.types = [ANY_VALUE];
     }
 
 

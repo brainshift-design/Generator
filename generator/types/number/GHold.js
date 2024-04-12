@@ -10,7 +10,7 @@ extends GOperator1
     {
         super(HOLD, nodeId, options);
 
-        this.current = new NullValue();
+        this.current = null;
     }
 
 
@@ -46,8 +46,8 @@ extends GOperator1
             return this;
 
 
-        const input = await evalNumberValue(this.input, parse);
-        const first = await evalNumberValue(this.first, parse);
+        const input = await evalValue(this.input, parse);
+        const first = await evalValue(this.first, parse);
             
 
         if (   input
@@ -55,10 +55,10 @@ extends GOperator1
         {
             if (this.options.enabled)
             {
-                if (input)
-                    this.current = this.current ? input : first;
+                console.log('first =', first);
+                this.value   = this.current ? this.current : first;
 
-                this.value = this.current;
+                this.current = input;
             }
             else
                 this.value = input;
@@ -69,7 +69,7 @@ extends GOperator1
 
         this.setUpdateValues(parse, 
         [
-            ['first', first]
+            ['type', this.outputType()]
         ]);
         
 
@@ -128,6 +128,6 @@ extends GOperator1
     {
         super.resetLoop(parse, nodeId);
 
-        this.current = this.first ? this.first : new NullValue();
+        this.current = null;
     }
 }
