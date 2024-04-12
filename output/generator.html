@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 398;
+const generatorVersion = 399;
 
 
 const MAX_INT32        = 2147483647;
@@ -7497,8 +7497,11 @@ function addGradientProp(obj, prop, target = obj.fills)
         p1 = addv(p1, mulvs(dv, Math.max(0, -dpos)));
         p2 = addv(p2, mulvs(dv, Math.max(0, -dpos)));
 
-        p1 = subv(p0, mulvs(dv, dsize));
-        p2 = addv(p0, mulvs(subv(p2, p0), dsize));
+        if (prop.gradType.value != 2) // not angular
+        {
+            p1 = subv(p0, mulvs(dv, dsize));
+            p2 = addv(p0, mulvs(subv(p2, p0), dsize));
+        }
 
 
         for (const stop of prop.stops.items)
@@ -26919,8 +26922,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (    this.isCached())
-            //|| !parse.evalAccumulate)
+        if (    this.isCached()
+            || !parse.evalAccumulate)
             return this;
 
 
@@ -26933,7 +26936,6 @@ extends GOperator1
         {
             if (this.options.enabled)
             {
-                console.log('first =', first);
                 this.value   = this.current ? this.current : first;
 
                 this.current = input;
@@ -36123,7 +36125,10 @@ extends GOperator1
         if (input)
         {
             this.value = new ColorStopValue(
-                fill     ?? input.fill,
+                   fill 
+                && fill.type != FILL_VALUE 
+                    ? fill 
+                    : input.fill,
                 position ?? input.position);
         }
         else

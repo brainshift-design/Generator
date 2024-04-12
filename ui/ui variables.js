@@ -116,7 +116,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
         name += variable.name;
 
 
-        const item = new MenuItem(name.replaceAll('/', ' / '), null, options);
+        const item = new MenuItem(name.replaceAll('/', ' / '), null, false, options);
 
         item.setChecked(variable.id == node.linkedVariableId);
 
@@ -267,7 +267,7 @@ function updateMenuLocalVariables()
 
 
     if (!isEmpty(items))
-        menuLocalVariables.addItems([new MenuItem('', null, {separator: true})]);
+        menuLocalVariables.addItems([new MenuItem('', null, false, {separator: true})]);
 
     menuLocalVariables.addItems(
     [

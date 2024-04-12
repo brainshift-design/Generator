@@ -652,7 +652,7 @@ function handleLegacyNode(_node, genVersion)
             if (paramAspect) 
             {
                 const value = parseNumberValue(paramAspect[2]);
-                value.value = 100/(value.value/100)
+                value.value = 100/(value.value/100);
                 paramAspect[2] = value.toString();
             }
         }

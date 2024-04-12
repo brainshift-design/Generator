@@ -42,7 +42,7 @@ function initTemplateMenu(e)
 {
     menuTemplate.clearItems();
 
-    menuItemSaveTemplate = new MenuItem('Save as template...', null, {icon: iconManageTemplates,        callback: () => showSaveAsTemplateDialog()});    //menuItemManageTemplates = new MenuItem('Manage templates...', null, {icon: iconManageTemplates});
+    menuItemSaveTemplate = new MenuItem('Save as template...', null, false, {icon: iconManageTemplates,        callback: () => showSaveAsTemplateDialog()});    //menuItemManageTemplates = new MenuItem('Manage templates...', null, false, {icon: iconManageTemplates});
 
     const sub = subscribed();
 
@@ -51,7 +51,7 @@ function initTemplateMenu(e)
 
     menuTemplate.addItems([
         menuItemSaveTemplate]);//,
-        //new MenuItem('', null, {separator: true}),
+        //new MenuItem('', null, false, {separator: true}),
         //menuItemManageTemplates]);
 
     initTemplateMenuTemplates(presetTemplates, true,  false);
@@ -63,7 +63,7 @@ function initTemplateMenu(e)
 function initTemplateMenuTemplates(templates, showNames, modifiers)
 {
     if (templates.length > 0)
-        menuTemplate.addItems([new MenuItem('', null, {separator: true})]);
+        menuTemplate.addItems([new MenuItem('', null, false, {separator: true})]);
 
 
     for (let i = 0; i < templates.length; i++)
@@ -82,7 +82,7 @@ function initTemplateMenuTemplates(templates, showNames, modifiers)
                     if (curMenu.items.at(-1).name != nameParts[j])
                     {
                         const newMenu  = new Menu(nameParts[j], true, false);
-                        const menuItem = new MenuItem(nameParts[j], null, {childMenu: newMenu});
+                        const menuItem = new MenuItem(nameParts[j], null, false, {childMenu: newMenu});
 
                         curMenu.addItems([menuItem]);
                         curMenu = newMenu;
@@ -98,7 +98,7 @@ function initTemplateMenuTemplates(templates, showNames, modifiers)
                     modMenu.forceMinWidth = true;
                     modMenu.addItems([new AdjustMenuItem(i, {callback: adjustTemplateMenu})]);
                     
-                    const item = new MenuItem(nameParts[j], null, 
+                    const item = new MenuItem(nameParts[j], null, false,
                     {
                         icon:      iconTemplate,
                         callback:  () => loadTemplate(template.graph, showNames ? template.name : ''),
@@ -119,7 +119,7 @@ function initTemplateMenuTemplates(templates, showNames, modifiers)
             modMenu.forceMinWidth = true;
             modMenu.addItems([new AdjustMenuItem(i, {callback: adjustTemplateMenu})]);
             
-            const item = new MenuItem(template.name, null,
+            const item = new MenuItem(template.name, null, false,
             {
                 icon:      iconTemplate,
                 callback:  () => loadTemplate(template.graph, showNames ? template.name : ''),

@@ -548,7 +548,7 @@ function initGeneratorMenus()
 
     menuConvertNumber = new Menu('Convert number', true, false);
     menuConvertNumber.addItems([
-        new MenuItem('Degrees ⟷ Radians', null, true, {icon: iconConvertAngle,  createType: CONVERT_ANGLE, callback: e => actionManager.do(getCreateNodeAction(CONVERT_ANGLE, btnNumber.div, getCreateOptions(e)))})]);
+        new MenuItem('Degrees ⟷ Radians', 'Degrees to Radians', false, {icon: iconConvertAngle,  createType: CONVERT_ANGLE, callback: e => actionManager.do(getCreateNodeAction(CONVERT_ANGLE, btnNumber.div, getCreateOptions(e)))})]);
     
 
     menuConvertText = new Menu('Convert text', true, false);
@@ -591,13 +591,13 @@ function initGeneratorMenus()
     
     menuTextFunctions = new Menu('Text functions', true, false);
     menuTextFunctions.addItems([
-                           new MenuItem('Trim',       null, true, {icon: iconTextTrim,      createType: TEXT_TRIM,      callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
-                           new MenuItem('Split',      null, true, {icon: iconTextSplit,     createType: TEXT_SPLIT,     callback: e => actionManager.do(getCreateNodeAction(TEXT_SPLIT,     btnText.div, getCreateOptions(e)))}),
-                           new MenuItem('Join',       null, true, {icon: iconTextJoin,      createType: TEXT_JOIN,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))}),
-                           new MenuItem('Substring',  null, true, {icon: iconTextSubstring, createType: TEXT_SUBSTRING, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
-                           new MenuItem('Case',       null, true, {icon: iconTextCase,      createType: TEXT_CASE,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CASE,      btnText.div, getCreateOptions(e)))}),
-                           new MenuItem('Replace',    null, true, {icon: iconTextReplace,   createType: TEXT_REPLACE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
-                           new MenuItem('Pad',        null, true, {icon: iconTextPad,       createType: TEXT_PAD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_PAD,       btnText.div, getCreateOptions(e)))})]);
+                           new MenuItem('Trim',       null, false, {icon: iconTextTrim,      createType: TEXT_TRIM,      callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Split',      null, false, {icon: iconTextSplit,     createType: TEXT_SPLIT,     callback: e => actionManager.do(getCreateNodeAction(TEXT_SPLIT,     btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Join',       null, false, {icon: iconTextJoin,      createType: TEXT_JOIN,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Substring',  null, false, {icon: iconTextSubstring, createType: TEXT_SUBSTRING, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Case',       null, false, {icon: iconTextCase,      createType: TEXT_CASE,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CASE,      btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Replace',    null, false, {icon: iconTextReplace,   createType: TEXT_REPLACE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
+                           new MenuItem('Pad',        null, false, {icon: iconTextPad,       createType: TEXT_PAD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_PAD,       btnText.div, getCreateOptions(e)))})]);
 
 
     menuString = new Menu('Text', true, false);
@@ -616,7 +616,7 @@ function initGeneratorMenus()
 
     menuColorStyle = new Menu('Color style', true, false);
     menuColorStyle.addItems([
-        new MenuItem('Link existing. . .', null, true, {icon: iconColorStyleReplace, createType: COLOR_STYLE, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e, {existing: true})))})]);
+        new MenuItem('Link existing. . .', null, false, {icon: iconColorStyleReplace, createType: COLOR_STYLE, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e, {existing: true})))})]);
 
         
     menuCreateColor = new Menu('Create color menu', false, false);
@@ -640,8 +640,8 @@ function initGeneratorMenus()
         menuItemLayerFill    = new MenuItem('Fill',          null,                false, {icon: iconFill,             callback: e => actionManager.do(getCreateNodeAction(FILL,              btnColor.div, getCreateOptions(e)))}),
         menuItemLayerStroke  = new MenuItem('Stroke',        null,                false, {icon: iconStroke,           callback: e => actionManager.do(getCreateNodeAction(STROKE,            btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('',              null,                false, {separator: true}),
-                               new MenuItem('Gradient',      null,                false, {icon: iconGradient,         callback: e => actionManager.do(getCreateNodeAction(GRADIENT,          btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('Color stop',    null,                false, {icon: iconColorStop,        callback: e => actionManager.do(getCreateNodeAction(COLOR_STOP,        btnColor.div, getCreateOptions(e)))}),
+                               new MenuItem('Gradient',      null,                false, {icon: iconGradient,         callback: e => actionManager.do(getCreateNodeAction(GRADIENT,          btnColor.div, getCreateOptions(e)))}),
         menuItemLayerSep1    = new MenuItem('',              null,                false, {separator: true}),
         menuItemValidColor   = new MenuItem('Valid sRGB',    null,                false, {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
         menuItemCorrectColor = new MenuItem('Correct color', null,                false, {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
@@ -678,14 +678,14 @@ function initGeneratorMenus()
     
     // menuLayer = new Menu('Style', true, false);
     // menuLayer.addItems([
-    //     new MenuItem('Apply style', null, true, {icon: iconApply, createType: SHAPE_APPLY, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnLayer.div, getCreateOptions(e)))}),
-    //     new MenuItem('',            null, true, {separator: true}),
-    //     new MenuItem('Effects',     null, true, {icon: iconEffects, childMenu: menuEffects}),
-    //     new MenuItem('Styles',      null, true, {icon: iconStyle, childMenu: menuStyles}),
-    //     new MenuItem('',            null, true, {separator: true}),
-    //     new MenuItem('Blend',       null, true, {icon: iconColorBlend,  callback: e => actionManager.do(getCreateNodeAction(LAYER_BLEND, btnLayer.div, getCreateOptions(e)))}),
-    //     new MenuItem('',            null, true, {separator: true}),
-    //     new MenuItem('Mask',        null, true, {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,  btnLayer.div, getCreateOptions(e)))})]);
+    //     new MenuItem('Apply style', null, false, {icon: iconApply, createType: SHAPE_APPLY, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnLayer.div, getCreateOptions(e)))}),
+    //     new MenuItem('',            null, false, {separator: true}),
+    //     new MenuItem('Effects',     null, false, {icon: iconEffects, childMenu: menuEffects}),
+    //     new MenuItem('Styles',      null, false, {icon: iconStyle, childMenu: menuStyles}),
+    //     new MenuItem('',            null, false, {separator: true}),
+    //     new MenuItem('Blend',       null, false, {icon: iconColorBlend,  callback: e => actionManager.do(getCreateNodeAction(LAYER_BLEND, btnLayer.div, getCreateOptions(e)))}),
+    //     new MenuItem('',            null, false, {separator: true}),
+    //     new MenuItem('Mask',        null, false, {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,  btnLayer.div, getCreateOptions(e)))})]);
     
     
     menuPoint = new Menu('Point', true, false);
@@ -1204,33 +1204,33 @@ function initPreferenceMenus()
 {
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
-        // menuItemShowPages               = new MenuItem('Show pages',                               null, {checkCallback: () => settings.showAllColorSpaces,         callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  updateMenuItemShowPages();                  }}),
-        // menuPrefSep1                    = new MenuItem('',                                         null, {separator: true}),    
-        // menuItemShowSnapshots              = new MenuItem('Show snapshots',                           null, {checkCallback: () => settings.showSnapshots,              callback: () => { updateSettingAndMenu('showSnapshots',              true, !settings.showSnapshots);              updateMenuItemShowSnapshots();              }}),
-        //                                      new MenuItem('',                                         null, {separator: true}),    
-        menuItemShowAllColorSpaces         = new MenuItem('Show all color spaces',                    null, {checkCallback: () => settings.showAllColorSpaces,         callback: () => { updateSettingAndMenu('showAllColorSpaces',         true, !settings.showAllColorSpaces);         updateMenuItemShowAllColorSpaces();         }}),
-        menuItemShowNodeIcons              = new MenuItem('Show node icons',                          null, {checkCallback: () => settings.showNodeIcons,              callback: () => { updateSettingAndMenu('showNodeIcons',              true, !settings.showNodeIcons);              updateMenuItemShowNodeIcons();              }}),
-        menuItemShowBoolValues             = new MenuItem('Show boolean values as   ✓ ✗',            null, {checkCallback: () => settings.showBoolValues,             callback: () => { updateSettingAndMenu('showBoolValues',             true, !settings.showBoolValues);             updateMenuItemShowBoolValues();             }}),
-        menuItemSeparateThousands          = new MenuItem('Separate thousands in numbers',            null, {checkCallback: () => settings.separateThousands,          callback: () => { updateSettingAndMenu('separateThousands',          true, !settings.separateThousands);          updateMenuItemSeparateThousands();          }}),
-        menuItemInvertSimpleMathParamOrder = new MenuItem('Invert simple math parameters',            null, {checkCallback: () => settings.invertSimpleMathParamOrder, callback: () => { updateSettingAndMenu('invertSimpleMathParamOrder', true, !settings.invertSimpleMathParamOrder); updateMenuItemInvertSimpleMathParamOrder(); }}),
-                                             new MenuItem( osShift(true) + 'R randomizes mixed. . .', null, {childMenu: menuShiftR}),
-        //menuItemShowColorLegendInMenus   = new MenuItem('Show color legend in menus',               null, {checkCallback: () => settings.showColorLegendInMenus,     callback: () => { updateSettingAndMenu('showColorLegendInMenus',     true, !settings.showColorLegendInMenus);     updateMenuItemShowColorLegendInMenus();     }}),
-                                             new MenuItem('',                                         null, {separator: true}),    
-        menuItemShowTooltips               = new MenuItem('Show tooltips',                            null, {childMenu: menuShowTooltips}),
-        menuItemShowClearUndoWarning       = new MenuItem('Show clear undo warning',                  null, {checkCallback: () => settings.showClearUndoWarning,       callback: () => { updateSettingAndMenu('showClearUndoWarning',       true, !settings.showClearUndoWarning);                                                  }}),
-         menuItemShowObjectCount            = new MenuItem('Show object count',                        null, {checkCallback: () => settings.showObjectCount,            callback: () => { updateSettingAndMenu('showObjectCount',            true, !settings.showObjectCount);            updateObjectCountDisplay();                 }}),
-        menuItemShowDebugMenu              = new MenuItem('Show debug menu',                          null, {checkCallback: () => settings.showDebugMenu,              callback: () => { uiGetLocalData('debugWarning'); }}),
-                                             new MenuItem('',                                         null, {separator: true}),
-        menuItemShareUsageMetrics          = new MenuItem('Share anonymous metrics',                  null, {checkCallback: () => settings.shareUsageMetrics,          callback: () => { updateSettingAndMenu('shareUsageMetrics',          true, !settings.shareUsageMetrics);                                              }}),
-                                             new MenuItem('',                                         null, {separator: true}),    
-        menuItemEnableBetaFeatures         = new MenuItem('Enable beta features',                     null, {checkCallback: () => settings.enableBetaFeatures,         callback: () => { updateSettingAndMenu('enableBetaFeatures',         true, !settings.enableBetaFeatures);         enableFeatures(subscribed()); }}),
-                                             new MenuItem('',                                         null, {separator: true}),    
-        menuItemMinZoomForParams           = new MenuItem('Zoom level for values . . .',              null, {callback: () => showMinZoomDialog()}),
-        //menuPrefSep2                       = new MenuItem('',                                       null, {separator: true}),    
-        // menuItemEnableMultiplayer       = new MenuItem('Enable multiplayer on this canvas',        null, {checkCallback: () => multiplayerEnabled,                  callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  enableMultiplayer(!multiplayerEnabled);     }}),
-        //                                   new MenuItem('',                                         null, {separator: true}),    
-        menuItemObjectCenterSize           = new MenuItem('Object center size . . .',                 null, {callback: () => showObjectCenterSizeDialog()}),
-        menuItemObjectBatchSize            = new MenuItem('Update batch size . . .',                  null, {callback: () => showObjectBatchDialog()})]);
+     // menuItemShowPages                  = new MenuItem('Show pages',                               null, false, {checkCallback: () => settings.showAllColorSpaces,         callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  updateMenuItemShowPages();                  }}),
+     // menuPrefSep1                       = new MenuItem('',                                         null, false, {separator: true}),    
+     // menuItemShowSnapshots              = new MenuItem('Show snapshots',                           null, false, {checkCallback: () => settings.showSnapshots,              callback: () => { updateSettingAndMenu('showSnapshots',              true, !settings.showSnapshots);              updateMenuItemShowSnapshots();              }}),
+     //                                      new MenuItem('',                                         null, false, {separator: true}),    
+        menuItemShowAllColorSpaces         = new MenuItem('Show all color spaces',                    null, false, {checkCallback: () => settings.showAllColorSpaces,         callback: () => { updateSettingAndMenu('showAllColorSpaces',         true, !settings.showAllColorSpaces);         updateMenuItemShowAllColorSpaces();         }}),
+        menuItemShowNodeIcons              = new MenuItem('Show node icons',                          null, false, {checkCallback: () => settings.showNodeIcons,              callback: () => { updateSettingAndMenu('showNodeIcons',              true, !settings.showNodeIcons);              updateMenuItemShowNodeIcons();              }}),
+        menuItemShowBoolValues             = new MenuItem('Show boolean values as   ✓ ✗',            null, false, {checkCallback: () => settings.showBoolValues,             callback: () => { updateSettingAndMenu('showBoolValues',             true, !settings.showBoolValues);             updateMenuItemShowBoolValues();             }}),
+        menuItemSeparateThousands          = new MenuItem('Separate thousands in numbers',            null, false, {checkCallback: () => settings.separateThousands,          callback: () => { updateSettingAndMenu('separateThousands',          true, !settings.separateThousands);          updateMenuItemSeparateThousands();          }}),
+        menuItemInvertSimpleMathParamOrder = new MenuItem('Invert simple math parameters',            null, false, {checkCallback: () => settings.invertSimpleMathParamOrder, callback: () => { updateSettingAndMenu('invertSimpleMathParamOrder', true, !settings.invertSimpleMathParamOrder); updateMenuItemInvertSimpleMathParamOrder(); }}),
+                                             new MenuItem( osShift(true) + 'R randomizes mixed. . .', null, false, {childMenu: menuShiftR}),
+        //menuItemShowColorLegendInMenus   = new MenuItem('Show color legend in menus',               null, false, {checkCallback: () => settings.showColorLegendInMenus,     callback: () => { updateSettingAndMenu('showColorLegendInMenus',     true, !settings.showColorLegendInMenus);     updateMenuItemShowColorLegendInMenus();     }}),
+                                             new MenuItem('',                                         null, false, {separator: true}),    
+        menuItemShowTooltips               = new MenuItem('Show tooltips',                            null, false, {childMenu: menuShowTooltips}),
+        menuItemShowClearUndoWarning       = new MenuItem('Show clear undo warning',                  null, false, {checkCallback: () => settings.showClearUndoWarning,       callback: () => { updateSettingAndMenu('showClearUndoWarning',       true, !settings.showClearUndoWarning);                                                  }}),
+         menuItemShowObjectCount           = new MenuItem('Show object count',                        null, false, {checkCallback: () => settings.showObjectCount,            callback: () => { updateSettingAndMenu('showObjectCount',            true, !settings.showObjectCount);            updateObjectCountDisplay();                 }}),
+        menuItemShowDebugMenu              = new MenuItem('Show debug menu',                          null, false, {checkCallback: () => settings.showDebugMenu,              callback: () => { uiGetLocalData('debugWarning'); }}),
+                                             new MenuItem('',                                         null, false, {separator: true}),
+        menuItemShareUsageMetrics          = new MenuItem('Share anonymous metrics',                  null, false, {checkCallback: () => settings.shareUsageMetrics,          callback: () => { updateSettingAndMenu('shareUsageMetrics',          true, !settings.shareUsageMetrics);                                              }}),
+                                             new MenuItem('',                                         null, false, {separator: true}),    
+        menuItemEnableBetaFeatures         = new MenuItem('Enable beta features',                     null, false, {checkCallback: () => settings.enableBetaFeatures,         callback: () => { updateSettingAndMenu('enableBetaFeatures',         true, !settings.enableBetaFeatures);         enableFeatures(subscribed()); }}),
+                                             new MenuItem('',                                         null, false, {separator: true}),    
+        menuItemMinZoomForParams           = new MenuItem('Zoom level for values . . .',              null, false, {callback: () => showMinZoomDialog()}),
+      //menuPrefSep2                       = new MenuItem('',                                         null, false, {separator: true}),    
+     // menuItemEnableMultiplayer          = new MenuItem('Enable multiplayer on this canvas',        null, false, {checkCallback: () => multiplayerEnabled,                  callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  enableMultiplayer(!multiplayerEnabled);     }}),
+      //                                     new MenuItem('',                                         null, false, {separator: true}),    
+        menuItemObjectCenterSize           = new MenuItem('Object center size . . .',                 null, false, {callback: () => showObjectCenterSizeDialog()}),
+        menuItemObjectBatchSize            = new MenuItem('Update batch size . . .',                  null, false, {callback: () => showObjectBatchDialog()})]);
         
 
     menuItemShowBoolValues.divName.innerHTML = 'Show boolean values as   <span style="position: relative; top: 1px;">' + TRUE_DISPLAY_MENU + '</span>  <span>' + FALSE_DISPLAY_MENU + '</span>';
@@ -1238,63 +1238,63 @@ function initPreferenceMenus()
 
     menuLogGenerator = new Menu('Log generator', false);
     menuLogGenerator.addItems([
-        menuItemLogRequests       = new MenuItem('Requests',          null, {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
-        menuItemLogValueUpdates   = new MenuItem('Values',            null, {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
-        menuItemLogObjectUpdates  = new MenuItem('Objects',           null, {checkCallback: () => settings.logObjectUpdates,      callback: () => updateSettingAndMenu('logObjectUpdates',      true, !settings.logObjectUpdates     ), setting: true}),
-        menuItemLogStyleUpdates   = new MenuItem('Styles',            null, {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
-                                    new MenuItem('',                  null, {separator: true}),                   
-        menuItemLogRawRequests    = new MenuItem('Raw\u2008requests', null, {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
-        menuItemLogRawValues      = new MenuItem('Raw\u2008values',   null, {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true})]);
+        menuItemLogRequests       = new MenuItem('Requests',          null, false, {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
+        menuItemLogValueUpdates   = new MenuItem('Values',            null, false, {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
+        menuItemLogObjectUpdates  = new MenuItem('Objects',           null, false, {checkCallback: () => settings.logObjectUpdates,      callback: () => updateSettingAndMenu('logObjectUpdates',      true, !settings.logObjectUpdates     ), setting: true}),
+        menuItemLogStyleUpdates   = new MenuItem('Styles',            null, false, {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
+                                    new MenuItem('',                  null, false, {separator: true}),                   
+        menuItemLogRawRequests    = new MenuItem('Raw\u2008requests', null, false, {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
+        menuItemLogRawValues      = new MenuItem('Raw\u2008values',   null, false, {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true})]);
                      
 
 
     menuLogStorage = new Menu('Log storage', false);
     menuLogStorage.addItems([
-        menuItemLogLoading            = new MenuItem('Load\u2008at start',  null, {checkCallback: () => settings.logLoading      ,      callback: () => updateSettingAndMenu('logLoading',            true, !settings.logLoading           ), setting: true}),
-                                        new MenuItem('',                    null, {separator: true}),                   
-        menuItemLogRawLoadPages       = new MenuItem('Load pages',          null, {checkCallback: () => settings.logRawLoadPages ,      callback: () => updateSettingAndMenu('logRawLoadPages',       true, !settings.logRawLoadPages      ), setting: true}),
-        menuItemLogRawSavePages       = new MenuItem('Save pages',          null, {checkCallback: () => settings.logRawSavePages ,      callback: () => updateSettingAndMenu('logRawSavePages',       true, !settings.logRawSavePages      ), setting: true}),
-                                        new MenuItem('',                    null, {separator: true}),                   
-        menuItemLogRawLoadNodes       = new MenuItem('Load nodes',          null, {checkCallback: () => settings.logRawLoadNodes ,      callback: () => updateSettingAndMenu('logRawLoadNodes',       true, !settings.logRawLoadNodes      ), setting: true}),
-        menuItemLogRawSaveNodes       = new MenuItem('Save nodes',          null, {checkCallback: () => settings.logRawSaveNodes ,      callback: () => updateSettingAndMenu('logRawSaveNodes',       true, !settings.logRawSaveNodes      ), setting: true}),
-                                        new MenuItem('',                    null, {separator: true}),                   
-        menuItemLogRawLoadConnections = new MenuItem('Load connections',    null, {checkCallback: () => settings.logRawLoadConnections, callback: () => updateSettingAndMenu('logRawLoadConnections', true, !settings.logRawLoadConnections), setting: true}),
-        menuItemLogRawSaveConnections = new MenuItem('Save connections',    null, {checkCallback: () => settings.logRawSaveConnections, callback: () => updateSettingAndMenu('logRawSaveConnections', true, !settings.logRawSaveConnections), setting: true}),
-                                        new MenuItem('',                    null, {separator: true}),
-                                        new MenuItem('All page keys',       null, {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedPageKeys', darkMode: darkMode}); }}),
-                                        new MenuItem('All connection keys', null, {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
-                                        new MenuItem('',                    null, {separator: true}),   
-                                        new MenuItem('All pages',           null, {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedPages',    darkMode: darkMode}); }}),
-                                        new MenuItem('',                    null, {separator: true}),   
-                                        new MenuItem('All local data',      null, {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData',     darkMode: darkMode}); }}),
-                                        new MenuItem('',                    null, {separator: true}),   
-                                        new MenuItem('Undo stack',          null, {callback:      () => { hideAllMenus(); logUndoStack(); }}),
-                                        new MenuItem('Redo stack',          null, {callback:      () => { hideAllMenus(); logRedoStack(); }})]);
+        menuItemLogLoading            = new MenuItem('Load\u2008at start',  null, false, {checkCallback: () => settings.logLoading      ,      callback: () => updateSettingAndMenu('logLoading',            true, !settings.logLoading           ), setting: true}),
+                                        new MenuItem('',                    null, false, {separator: true}),                   
+        menuItemLogRawLoadPages       = new MenuItem('Load pages',          null, false, {checkCallback: () => settings.logRawLoadPages ,      callback: () => updateSettingAndMenu('logRawLoadPages',       true, !settings.logRawLoadPages      ), setting: true}),
+        menuItemLogRawSavePages       = new MenuItem('Save pages',          null, false, {checkCallback: () => settings.logRawSavePages ,      callback: () => updateSettingAndMenu('logRawSavePages',       true, !settings.logRawSavePages      ), setting: true}),
+                                        new MenuItem('',                    null, false, {separator: true}),                   
+        menuItemLogRawLoadNodes       = new MenuItem('Load nodes',          null, false, {checkCallback: () => settings.logRawLoadNodes ,      callback: () => updateSettingAndMenu('logRawLoadNodes',       true, !settings.logRawLoadNodes      ), setting: true}),
+        menuItemLogRawSaveNodes       = new MenuItem('Save nodes',          null, false, {checkCallback: () => settings.logRawSaveNodes ,      callback: () => updateSettingAndMenu('logRawSaveNodes',       true, !settings.logRawSaveNodes      ), setting: true}),
+                                        new MenuItem('',                    null, false, {separator: true}),                   
+        menuItemLogRawLoadConnections = new MenuItem('Load connections',    null, false, {checkCallback: () => settings.logRawLoadConnections, callback: () => updateSettingAndMenu('logRawLoadConnections', true, !settings.logRawLoadConnections), setting: true}),
+        menuItemLogRawSaveConnections = new MenuItem('Save connections',    null, false, {checkCallback: () => settings.logRawSaveConnections, callback: () => updateSettingAndMenu('logRawSaveConnections', true, !settings.logRawSaveConnections), setting: true}),
+                                        new MenuItem('',                    null, false, {separator: true}),
+                                        new MenuItem('All page keys',       null, false, {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedPageKeys', darkMode: darkMode}); }}),
+                                        new MenuItem('All connection keys', null, false, {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
+                                        new MenuItem('',                    null, false, {separator: true}),   
+                                        new MenuItem('All pages',           null, false, {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedPages',    darkMode: darkMode}); }}),
+                                        new MenuItem('',                    null, false, {separator: true}),   
+                                        new MenuItem('All local data',      null, false, {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData',     darkMode: darkMode}); }}),
+                                        new MenuItem('',                    null, false, {separator: true}),   
+                                        new MenuItem('Undo stack',          null, false, {callback:      () => { hideAllMenus(); logUndoStack(); }}),
+                                        new MenuItem('Redo stack',          null, false, {callback:      () => { hideAllMenus(); logRedoStack(); }})]);
                      
 
     menuLogMessages = new Menu('Log messages', false);
     menuLogMessages.addItems([
-        menuItemLogThreadMessages = new MenuItem('Thread messages', null, {checkCallback: () => settings.logThreadMessages,     callback: () => updateSettingAndMenu('logThreadMessages',     true, !settings.logThreadMessages    ), setting: true}),
-        menuItemLogDataMessages   = new MenuItem('Data messages',   null, {checkCallback: () => settings.logDataMessages  ,     callback: () => updateSettingAndMenu('logDataMessages',       true, !settings.logDataMessages      ), setting: true}),
-        menuItemLogMessages       = new MenuItem('Other messages',  null, {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true})]);
+        menuItemLogThreadMessages = new MenuItem('Thread messages', null, false, {checkCallback: () => settings.logThreadMessages,     callback: () => updateSettingAndMenu('logThreadMessages',     true, !settings.logThreadMessages    ), setting: true}),
+        menuItemLogDataMessages   = new MenuItem('Data messages',   null, false, {checkCallback: () => settings.logDataMessages  ,     callback: () => updateSettingAndMenu('logDataMessages',       true, !settings.logDataMessages      ), setting: true}),
+        menuItemLogMessages       = new MenuItem('Other messages',  null, false, {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true})]);
                      
 
 
     menuDebugDelete = new Menu('Debug generator', false);
     menuDebugDelete.addItems([
-        new MenuItem('All saved pages',       null, {callback: () => { hideAllMenus(); uiRemoveAllSavedPages(); }}),
-        new MenuItem('',                      null, {separator: true}),                   
-        new MenuItem('Connections to . . .',     null, {callback: () => showDeleteConnectionsDialog()}),                        
-        new MenuItem('All saved connections', null, {callback: () => { hideAllMenus(); uiRemoveAllSavedConnections(); }}),
-        new MenuItem('',                      null, {separator: true}),                   
-        new MenuItem('All style links',       null, {callback: () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
-        new MenuItem('',                      null, {separator: true}),                   
-        new MenuItem('All local data',        null, {callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }})]);
+        new MenuItem('All saved pages',       null, false, {callback: () => { hideAllMenus(); uiRemoveAllSavedPages(); }}),
+        new MenuItem('',                      null, false, {separator: true}),                   
+        new MenuItem('Connections to . . .',  null, false, {callback: () => showDeleteConnectionsDialog()}),                        
+        new MenuItem('All saved connections', null, false, {callback: () => { hideAllMenus(); uiRemoveAllSavedConnections(); }}),
+        new MenuItem('',                      null, false, {separator: true}),                   
+        new MenuItem('All style links',       null, false, {callback: () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
+        new MenuItem('',                      null, false, {separator: true}),                   
+        new MenuItem('All local data',        null, false, {callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }})]);
                      
 
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
-    menuItemShowNodeId = new MenuItem('Show node IDs', null,
+    menuItemShowNodeId = new MenuItem('Show node IDs', null, false,
                         {
                             checkCallback: () => settings.showNodeId, 
                             callback:      () => 
@@ -1319,22 +1319,22 @@ function initPreferenceMenus()
     //                             pushUpdate(null, graph.nodes.filter(n => n.active));
     //                         }
     //                     }),
-    menuItemEnableAsserts = new MenuItem('Enable asserts', null,
+    menuItemEnableAsserts = new MenuItem('Enable asserts', null, false,
                          {
                              checkCallback: () => settings.enableAsserts, 
                              callback:      () => updateSettingAndMenu('enableAsserts', true, !settings.enableAsserts)
                          }),
-                         new MenuItem('',                      null, {separator: true}),
-    menuItemLogActions = new MenuItem('Log actions',           null, {checkCallback: () => settings.logActions, callback: () => updateSettingAndMenu('logActions', true, !settings.logActions), setting: true}),
-                         new MenuItem('Log generator',         null, {childMenu: menuLogGenerator}),
-                         new MenuItem('Log messages',          null, {childMenu: menuLogMessages}),
-                         new MenuItem('Log storage',           null, {childMenu: menuLogStorage}),
-                         new MenuItem('',                      null, {separator: true}),   
-                         new MenuItem('Delete',                null, {childMenu: menuDebugDelete}),
-                         new MenuItem('',                      null, {separator: true}),   
-                         new MenuItem('Update legacy nodes',   null, {callback: () => uiUpdateLegacyNodes()}),
-                         new MenuItem('',                      null, {separator: true}),   
-    menuItemDebugMode  = new MenuItem('Restart in debug mode', null, {callback: () => uiRestartGenerator(true)})]);
+                         new MenuItem('',                      null, false, {separator: true}),
+    menuItemLogActions = new MenuItem('Log actions',           null, false, {checkCallback: () => settings.logActions, callback: () => updateSettingAndMenu('logActions', true, !settings.logActions), setting: true}),
+                         new MenuItem('Log generator',         null, false, {childMenu: menuLogGenerator}),
+                         new MenuItem('Log messages',          null, false, {childMenu: menuLogMessages}),
+                         new MenuItem('Log storage',           null, false, {childMenu: menuLogStorage}),
+                         new MenuItem('',                      null, false, {separator: true}),   
+                         new MenuItem('Delete',                null, false, {childMenu: menuDebugDelete}),
+                         new MenuItem('',                      null, false, {separator: true}),   
+                         new MenuItem('Update legacy nodes',   null, false, {callback: () => uiUpdateLegacyNodes()}),
+                         new MenuItem('',                      null, false, {separator: true}),   
+    menuItemDebugMode  = new MenuItem('Restart in debug mode', null, false, {callback: () => uiRestartGenerator(true)})]);
 }
 
 
@@ -1346,53 +1346,53 @@ function initDebugModeMenus()
 
     menuDebugMain = new Menu('Debug main menu', true, false, true);
     menuDebugMain.addItems([
-        new MenuItem('Preferences', null, {childMenu: menuMainPreferences}),
-        new MenuItem('Debug',       null, {childMenu: menuMainDebug      })]);
+        new MenuItem('Preferences', null, false, {childMenu: menuMainPreferences}),
+        new MenuItem('Debug',       null, false, {childMenu: menuMainDebug      })]);
 
 
     menuPageData = new Menu('Pages menu', false, false);
     menuPageData.addItems([
-        // new MenuItem('Delete all pages',  null, { enabled: false, callback: () => { hideAllMenus(); debugModeDeleteAllPages(); }}),
-        // new MenuItem('',                  null, { enabled: false, separator: true }),
-        new MenuItem('Delete page',       null, { callback: () => { hideAllMenus(); debugModeDeletePage(menuPageData._div.page); }})]);
+     // new MenuItem('Delete all pages',  null, false, { enabled: false, callback: () => { hideAllMenus(); debugModeDeleteAllPages(); }}),
+     // new MenuItem('',                  null, false, { enabled: false, separator: true }),
+        new MenuItem('Delete page',       null, false, { callback: () => { hideAllMenus(); debugModeDeletePage(menuPageData._div.page); }})]);
 
 
     menuPageDataPages = new Menu('Pages menu', false, false);
     menuPageDataPages.addItems([
-        new MenuItem('Expand all',       null, { callback: () => { hideAllMenus(); expandAllPageData();   }}),
-        new MenuItem('Collapse all',     null, { callback: () => { hideAllMenus(); collapseAllPageData(); }}),
-        new MenuItem('',                 null, { separator: true }),
-        new MenuItem('Delete all pages', null, { callback: () => { hideAllMenus(); debugModeDeleteAllPages(); }})]);
+        new MenuItem('Expand all',       null, false, { callback: () => { hideAllMenus(); expandAllPageData();   }}),
+        new MenuItem('Collapse all',     null, false, { callback: () => { hideAllMenus(); collapseAllPageData(); }}),
+        new MenuItem('',                 null, false, { separator: true }),
+        new MenuItem('Delete all pages', null, false, { callback: () => { hideAllMenus(); debugModeDeleteAllPages(); }})]);
 
 
     menuNodeData = new Menu('Node menu', false, false);
     menuNodeData.addItems([
-        new MenuItem('Remove path from ID',     null, { callback: () => { hideAllMenus(); debugModeDeletePathFromNodeId(menuNodeData._div.node); }}),
-        new MenuItem('',                        null, { separator: true }),
-        new MenuItem('Delete connections from', null, { callback: () => { hideAllMenus(); debugModeDeleteConnectionsFromNode     (menuNodeData._div.node); }}),
-        new MenuItem('Delete connections to'  , null, { callback: () => { hideAllMenus(); debugModeDeleteConnectionsToNode       (menuNodeData._div.node); }}),
-        new MenuItem('Delete all connections',  null, { callback: () => { hideAllMenus(); debugModeDeleteConnectionsToAndFromNode(menuNodeData._div.node); }}),
-        new MenuItem('',                        null, { separator: true }),
-        new MenuItem('Delete node',             null, { callback: () => { hideAllMenus(); debugModeDeleteNode(menuNodeData._div.node); }})]);
+        new MenuItem('Remove path from ID',     null, false, { callback: () => { hideAllMenus(); debugModeDeletePathFromNodeId(menuNodeData._div.node); }}),
+        new MenuItem('',                        null, false, { separator: true }),
+        new MenuItem('Delete connections from', null, false, { callback: () => { hideAllMenus(); debugModeDeleteConnectionsFromNode     (menuNodeData._div.node); }}),
+        new MenuItem('Delete connections to'  , null, false, { callback: () => { hideAllMenus(); debugModeDeleteConnectionsToNode       (menuNodeData._div.node); }}),
+        new MenuItem('Delete all connections',  null, false, { callback: () => { hideAllMenus(); debugModeDeleteConnectionsToAndFromNode(menuNodeData._div.node); }}),
+        new MenuItem('',                        null, false, { separator: true }),
+        new MenuItem('Delete node',             null, false, { callback: () => { hideAllMenus(); debugModeDeleteNode(menuNodeData._div.node); }})]);
 
 
     menuNodeDataSort = new Menu('Sort nodes menu', false);
     menuNodeDataSort.addItems([
-        menuItemSortNodesType    = new MenuItem('Type',             null, { checkCallback: () => nodeSortOrder == 'type',    callback: () => { hideAllMenus(); sortNodeDivs('type'); }}),
-        menuItemSortNodesId      = new MenuItem('ID',               null, { checkCallback: () => nodeSortOrder == 'id',      callback: () => { hideAllMenus(); sortNodeDivs('id');   }}),
-        menuItemSortNodesName    = new MenuItem('Name',             null, { checkCallback: () => nodeSortOrder == 'name',    callback: () => { hideAllMenus(); sortNodeDivs('name'); }}),
-                                   new MenuItem('',                 null, { separator: true }),
-        menuItemSortNodesCreated = new MenuItem('Creation time',    null, { checkCallback: () => nodeSortOrder == 'created', callback: () => { hideAllMenus(); sortNodeDivs('created'); }}),
-        menuItemSortNodesUpdated = new MenuItem('Last update time', null, { checkCallback: () => nodeSortOrder == 'updated', callback: () => { hideAllMenus(); sortNodeDivs('updated'); }})]);
+        menuItemSortNodesType    = new MenuItem('Type',             null, false, { checkCallback: () => nodeSortOrder == 'type',    callback: () => { hideAllMenus(); sortNodeDivs('type'); }}),
+        menuItemSortNodesId      = new MenuItem('ID',               null, false, { checkCallback: () => nodeSortOrder == 'id',      callback: () => { hideAllMenus(); sortNodeDivs('id');   }}),
+        menuItemSortNodesName    = new MenuItem('Name',             null, false, { checkCallback: () => nodeSortOrder == 'name',    callback: () => { hideAllMenus(); sortNodeDivs('name'); }}),
+                                   new MenuItem('',                 null, false, { separator: true }),
+        menuItemSortNodesCreated = new MenuItem('Creation time',    null, false, { checkCallback: () => nodeSortOrder == 'created', callback: () => { hideAllMenus(); sortNodeDivs('created'); }}),
+        menuItemSortNodesUpdated = new MenuItem('Last update time', null, false, { checkCallback: () => nodeSortOrder == 'updated', callback: () => { hideAllMenus(); sortNodeDivs('updated'); }})]);
 
     menuNodeDataNodes = new Menu('Nodes menu', false, false);
     menuNodeDataNodes.addItems([
-        new MenuItem('Sort nodes by...', null, { childMenu: menuNodeDataSort }),
-        new MenuItem('',                 null, { separator: true }),
-        new MenuItem('Expand all',       null, { callback: () => { hideAllMenus(); expandAllNodeData();   }}),
-        new MenuItem('Collapse all',     null, { callback: () => { hideAllMenus(); collapseAllNodeData(); }}),
-        new MenuItem('',                 null, { separator: true }),
-        new MenuItem('Delete all nodes', null, { callback: () => { hideAllMenus(); debugModeDeleteAllNodes(); }})]);
+        new MenuItem('Sort nodes by...', null, false, { childMenu: menuNodeDataSort }),
+        new MenuItem('',                 null, false, { separator: true }),
+        new MenuItem('Expand all',       null, false, { callback: () => { hideAllMenus(); expandAllNodeData();   }}),
+        new MenuItem('Collapse all',     null, false, { callback: () => { hideAllMenus(); collapseAllNodeData(); }}),
+        new MenuItem('',                 null, false, { separator: true }),
+        new MenuItem('Delete all nodes', null, false, { callback: () => { hideAllMenus(); debugModeDeleteAllNodes(); }})]);
 
 
     menuConnData = new Menu('Connection menu', false, false);
@@ -1402,26 +1402,26 @@ function initDebugModeMenus()
 
     menuConnDataSort = new Menu('Sort connections menu', false);
     menuConnDataSort.addItems([
-        menuItemSortConnsOutputNodeId   = new MenuItem('Output node ID',   null, { checkCallback: () => connSortOrderOut == 'outputNodeId',   callback: () => { hideAllMenus(); sortConnDivs('outputNodeId'  ); }}),
-        menuItemSortConnsOutputNodeName = new MenuItem('Output node name', null, { checkCallback: () => connSortOrderOut == 'outputNodeName', callback: () => { hideAllMenus(); sortConnDivs('outputNodeName'); }}),
-        menuItemSortConnsOutputId       = new MenuItem('Output ID',        null, { checkCallback: () => connSortOrderOut == 'outputId',       callback: () => { hideAllMenus(); sortConnDivs('outputId'      ); }}),
-                                          new MenuItem('',                 null, { separator: true }),
-        menuItemSortConnsInputNodeId    = new MenuItem('Input node ID',    null, { checkCallback: () => connSortOrderIn == 'inputNodeId',    callback: () => { hideAllMenus(); sortConnDivs('inputNodeId'  ); }}),
-        menuItemSortConnsInputNodeName  = new MenuItem('Input node name',  null, { checkCallback: () => connSortOrderIn == 'inputNodeName',  callback: () => { hideAllMenus(); sortConnDivs('inputNodeName'); }}),
-        menuItemSortConnsInputId        = new MenuItem('Input ID',         null, { checkCallback: () => connSortOrderIn == 'inputId',        callback: () => { hideAllMenus(); sortConnDivs('inputId'      ); }}),
-                                          new MenuItem('',                 null, { separator: true }),
-        menuItemSortConnsCreated        = new MenuItem('Creation time',    null, { checkCallback: () => connSortOrderOut == 'created',        callback: () => { hideAllMenus(); sortConnDivs('created'); }})]);
+        menuItemSortConnsOutputNodeId   = new MenuItem('Output node ID',   null, false, { checkCallback: () => connSortOrderOut == 'outputNodeId',   callback: () => { hideAllMenus(); sortConnDivs('outputNodeId'  ); }}),
+        menuItemSortConnsOutputNodeName = new MenuItem('Output node name', null, false, { checkCallback: () => connSortOrderOut == 'outputNodeName', callback: () => { hideAllMenus(); sortConnDivs('outputNodeName'); }}),
+        menuItemSortConnsOutputId       = new MenuItem('Output ID',        null, false, { checkCallback: () => connSortOrderOut == 'outputId',       callback: () => { hideAllMenus(); sortConnDivs('outputId'      ); }}),
+                                          new MenuItem('',                 null, false, { separator: true }),
+        menuItemSortConnsInputNodeId    = new MenuItem('Input node ID',    null, false, { checkCallback: () => connSortOrderIn == 'inputNodeId',    callback: () => { hideAllMenus(); sortConnDivs('inputNodeId'  ); }}),
+        menuItemSortConnsInputNodeName  = new MenuItem('Input node name',  null, false, { checkCallback: () => connSortOrderIn == 'inputNodeName',  callback: () => { hideAllMenus(); sortConnDivs('inputNodeName'); }}),
+        menuItemSortConnsInputId        = new MenuItem('Input ID',         null, false, { checkCallback: () => connSortOrderIn == 'inputId',        callback: () => { hideAllMenus(); sortConnDivs('inputId'      ); }}),
+                                          new MenuItem('',                 null, false, { separator: true }),
+        menuItemSortConnsCreated        = new MenuItem('Creation time',    null, false, { checkCallback: () => connSortOrderOut == 'created',        callback: () => { hideAllMenus(); sortConnDivs('created'); }})]);
 
     menuConnDataConns = new Menu('Connections menu', false, false);
     menuConnDataConns.addItems([
-        new MenuItem('Sort connections by...',   null, { childMenu: menuConnDataSort }),
-        new MenuItem('',                         null, { separator: true }),
-        new MenuItem('Expand all',               null, { callback: () => { hideAllMenus(); expandAllConnData();   }}),
-        new MenuItem('Collapse all',             null, { callback: () => { hideAllMenus(); collapseAllConnData(); }}),
-        new MenuItem('',                         null, { separator: true }),
-        // new MenuItem('List all connection keys', null, { callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
-        // new MenuItem('',                         null, { separator: true }),
-        new MenuItem('Delete all connections',   null, { callback: e => { hideAllMenus(); debugModeDeleteAllConnections(); }})]);
+        new MenuItem('Sort connections by...',   null, false, { childMenu: menuConnDataSort }),
+        new MenuItem('',                         null, false, { separator: true }),
+        new MenuItem('Expand all',               null, false, { callback: () => { hideAllMenus(); expandAllConnData();   }}),
+        new MenuItem('Collapse all',             null, false, { callback: () => { hideAllMenus(); collapseAllConnData(); }}),
+        new MenuItem('',                         null, false, { separator: true }),
+     // new MenuItem('List all connection keys', null, false, { callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
+     // new MenuItem('',                         null, false, { separator: true }),
+        new MenuItem('Delete all connections',   null, false, { callback: e => { hideAllMenus(); debugModeDeleteAllConnections(); }})]);
 }
 
 
@@ -1431,9 +1431,9 @@ function initTextMenu(textbox)
     menuText.clearItems();
 
     menuText.addItems([
-        new MenuItem('Cut',   null, {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
-        new MenuItem('Copy',  null, {                                                        callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
-        new MenuItem('Paste', null, {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
+        new MenuItem('Cut',   null, false, {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
+        new MenuItem('Copy',  null, false, {                                                        callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+        new MenuItem('Paste', null, false, {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
 }
 
 
@@ -1443,9 +1443,9 @@ function initCopyMenu()
     menuCopy.clearItems();
 
     menuCopy.addItems([
-        new MenuItem('Copy',       null, {enabled: elementHasSelectedText(crashDialogBody), callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
-        new MenuItem('',           null, {separator: true }),
-        new MenuItem('Select all', null, {callback: () => { hideAllMenus(); selectDivText(crashDetails); }})]);
+        new MenuItem('Copy',       null, false, {enabled: elementHasSelectedText(crashDialogBody), callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+        new MenuItem('',           null, false, {separator: true }),
+        new MenuItem('Select all', null, false, {callback: () => { hideAllMenus(); selectDivText(crashDetails); }})]);
 }
 
 
@@ -1464,14 +1464,14 @@ function initTextboxMenu(textbox)
     const param = textbox.control.param;
 
     menuTextbox.addItems([
-                          new MenuItem('Cut',          null, { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
-                          new MenuItem('Copy',         null, {                                     callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
-                          new MenuItem('Paste',        null, { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
-                          new MenuItem('',             null, { separator: true }),
-        menuItemLeft    = new MenuItem('Align left',   null, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'left'   )); }}),
-        menuItemCenter  = new MenuItem('Align center', null, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'center' )); }}),
-        menuItemRight   = new MenuItem('Align right',  null, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'right'  )); }}),
-        menuItemJustify = new MenuItem('Justify',      null, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'justify')); }})]);
+                          new MenuItem('Cut',          null, false, { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
+                          new MenuItem('Copy',         null, false, {                                     callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+                          new MenuItem('Paste',        null, false, { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
+                          new MenuItem('',             null, false, { separator: true }),
+        menuItemLeft    = new MenuItem('Align left',   null, false, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'left'   )); }}),
+        menuItemCenter  = new MenuItem('Align center', null, false, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'center' )); }}),
+        menuItemRight   = new MenuItem('Align right',  null, false, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'right'  )); }}),
+        menuItemJustify = new MenuItem('Justify',      null, false, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'justify')); }})]);
 
 
     const align = textbox.control.getTextAlignment();

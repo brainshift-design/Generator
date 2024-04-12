@@ -71,21 +71,21 @@ extends OpColorBase
 
         this.menuL = new Menu('L', false, true);
         this.menuL.addItems([
-            new MenuItem('L',       null, {callback: () => { hideAllMenus(); this.paramL.setValue(new NumberValue(2), true); }}),
-            new MenuItem('L weak',  null, {callback: () => { hideAllMenus(); this.paramL.setValue(new NumberValue(1), true); }}),
-            new MenuItem('L blind', null, {callback: () => { hideAllMenus(); this.paramL.setValue(new NumberValue(0), true); }})]);
+            new MenuItem('L',       null, false, {callback: () => { hideAllMenus(); this.paramL.setValue(new NumberValue(2), true); }}),
+            new MenuItem('L weak',  null, false, {callback: () => { hideAllMenus(); this.paramL.setValue(new NumberValue(1), true); }}),
+            new MenuItem('L blind', null, false, {callback: () => { hideAllMenus(); this.paramL.setValue(new NumberValue(0), true); }})]);
 
         this.menuM = new Menu('M', false, true);
         this.menuM.addItems([
-            new MenuItem('M',       null, {callback: () => { hideAllMenus(); this.paramM.setValue(new NumberValue(2), true); }}),
-            new MenuItem('M weak',  null, {callback: () => { hideAllMenus(); this.paramM.setValue(new NumberValue(1), true); }}),
-            new MenuItem('M blind', null, {callback: () => { hideAllMenus(); this.paramM.setValue(new NumberValue(0), true); }})]);
+            new MenuItem('M',       null, false, {callback: () => { hideAllMenus(); this.paramM.setValue(new NumberValue(2), true); }}),
+            new MenuItem('M weak',  null, false, {callback: () => { hideAllMenus(); this.paramM.setValue(new NumberValue(1), true); }}),
+            new MenuItem('M blind', null, false, {callback: () => { hideAllMenus(); this.paramM.setValue(new NumberValue(0), true); }})]);
 
         this.menuS = new Menu('S', false, true);
         this.menuS.addItems([
-            new MenuItem('S',       null, {callback: () => { hideAllMenus(); this.paramS.setValue(new NumberValue(2), true); }}),
-            new MenuItem('S weak',  null, {callback: () => { hideAllMenus(); this.paramS.setValue(new NumberValue(1), true); }}),
-            new MenuItem('S blind', null, {callback: () => { hideAllMenus(); this.paramS.setValue(new NumberValue(0), true); }})]);
+            new MenuItem('S',       null, false, {callback: () => { hideAllMenus(); this.paramS.setValue(new NumberValue(2), true); }}),
+            new MenuItem('S weak',  null, false, {callback: () => { hideAllMenus(); this.paramS.setValue(new NumberValue(1), true); }}),
+            new MenuItem('S blind', null, false, {callback: () => { hideAllMenus(); this.paramS.setValue(new NumberValue(0), true); }})]);
 
 
         this.menuL.minWidth = 120;

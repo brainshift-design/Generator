@@ -184,8 +184,11 @@ function addGradientProp(obj, prop, target = obj.fills)
         p1 = addv(p1, mulvs(dv, Math.max(0, -dpos)));
         p2 = addv(p2, mulvs(dv, Math.max(0, -dpos)));
 
-        p1 = subv(p0, mulvs(dv, dsize));
-        p2 = addv(p0, mulvs(subv(p2, p0), dsize));
+        if (prop.gradType.value != 2) // not angular
+        {
+            p1 = subv(p0, mulvs(dv, dsize));
+            p2 = addv(p0, mulvs(subv(p2, p0), dsize));
+        }
 
 
         for (const stop of prop.stops.items)

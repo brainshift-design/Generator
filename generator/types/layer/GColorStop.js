@@ -68,7 +68,10 @@ extends GOperator1
         if (input)
         {
             this.value = new ColorStopValue(
-                fill     ?? input.fill,
+                   fill 
+                && fill.type != FILL_VALUE 
+                    ? fill 
+                    : input.fill,
                 position ?? input.position);
         }
         else

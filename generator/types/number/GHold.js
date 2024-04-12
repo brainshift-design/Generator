@@ -41,8 +41,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (    this.isCached())
-            //|| !parse.evalAccumulate)
+        if (    this.isCached()
+            || !parse.evalAccumulate)
             return this;
 
 
@@ -55,7 +55,6 @@ extends GOperator1
         {
             if (this.options.enabled)
             {
-                console.log('first =', first);
                 this.value   = this.current ? this.current : first;
 
                 this.current = input;

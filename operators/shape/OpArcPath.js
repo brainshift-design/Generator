@@ -146,8 +146,8 @@ function createArcPathParamMenu(param, valueId)
     menu.minWidth = 130;
     
     menu.addItems([
-        new MenuItem('relative', null, {checkCallback: () => !param.node[valueId], callback: () => { hideAllMenus(); actionManager.do(new SetNodeParamAction(param.node.nodeId, valueId, false)); }}),
-        new MenuItem('absolute', null, {checkCallback: () =>  param.node[valueId], callback: () => { hideAllMenus(); actionManager.do(new SetNodeParamAction(param.node.nodeId, valueId, true )); }})]);
+        new MenuItem('relative', null, false, {checkCallback: () => !param.node[valueId], callback: () => { hideAllMenus(); actionManager.do(new SetNodeParamAction(param.node.nodeId, valueId, false)); }}),
+        new MenuItem('absolute', null, false, {checkCallback: () =>  param.node[valueId], callback: () => { hideAllMenus(); actionManager.do(new SetNodeParamAction(param.node.nodeId, valueId, true )); }})]);
 
     param.div.addEventListener('pointerdown', e => param.node.showParamMenu(e, param, menu));
 

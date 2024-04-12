@@ -209,7 +209,7 @@ function initSelectParamMenu(param)
 
 
         if (param.separatorsBefore.includes(i))
-            menuSelectParam.addItems([new MenuItem(option, null, {separator: true})]);
+            menuSelectParam.addItems([new MenuItem(option, null, false, {separator: true})]);
         
 
         const options = { callback: () => param.setValue(new NumberValue(i), true) };
@@ -222,6 +222,7 @@ function initSelectParamMenu(param)
               i + '  ·  '
             + option.replaceAll('/', ' / '), 
             null,
+            false,
             options);
 
         item.divName.style.fontVariantNumeric = 'tabular-nums';
