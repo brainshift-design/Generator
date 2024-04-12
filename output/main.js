@@ -616,6 +616,7 @@ const LIST_VALUES = [
 ];
 const ITERATE = 'ITER';
 const PROBABILITY = 'PROB';
+const HOLD = 'HOLD';
 const NUMBER_VALUE = 'NUM#';
 const NUMBER = 'NUM';
 const NUMBER_PRECISION = 'NPREC';
@@ -695,6 +696,7 @@ const FLOW_TYPES = [
     //FOREACH,
     ITERATE,
     PROBABILITY,
+    HOLD,
     CACHE,
     FREEZE,
     TIMER,

@@ -109,8 +109,6 @@ class Action
             return 0;
         });
 
-        console.log('this.newConnectionData =', this.newConnectionData);
-
 
         for (let i = this.newConnectionData.length-1; i >= 0; i--)
         {
@@ -141,8 +139,6 @@ class Action
 
     restoreOldConnections()
     {
-        console.log('this.oldConnectionData =', this.oldConnectionData);
-
         for (const _conn of this.oldConnectionData)
         {
             const outputNode = nodeFromId(_conn.outputNodeId);

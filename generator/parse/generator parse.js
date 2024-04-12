@@ -182,6 +182,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_NOISE           ) result = genParseNoise             (parse);
     else if (parse.next == PROBABILITY            ) result = genParseProbability       (parse);
     else if (parse.next == NUMBER_ACCUMULATE      ) result = genParseAccumulate        (parse);
+    else if (parse.next == HOLD                   ) result = genParseHold              (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate       (parse);
     else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve             (parse);
     else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate           (parse);

@@ -156,7 +156,8 @@ function initSearchBox(query)
 
 
         result.innerHTML = 
-            search.nodes 
+                search.nodes
+            || !item.showSearchName
             ? item.name 
             : item.searchName;
 

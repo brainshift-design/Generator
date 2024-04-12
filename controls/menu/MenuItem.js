@@ -13,6 +13,7 @@ class MenuItem
     icon               = ''; // svg
     name               = '';
     searchName         = '';
+    showSearchName     = false;
     shortcut           = '';
     sub                = true;
      
@@ -58,10 +59,11 @@ class MenuItem
 
 
 
-    constructor(name, searchName, options = {})
+    constructor(name, searchName = null, showSearchName = false, options = {})
     {
-        this.name       = name;
-        this.searchName = searchName ?? name;
+        this.name           = name;
+        this.searchName     = searchName ?? name;
+        this.showSearchName = showSearchName;
 
         this.initOptions(options);
         this.createControls();

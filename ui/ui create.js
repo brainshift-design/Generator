@@ -47,6 +47,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_NOISE:            node = new OpNoise();              break;
         case PROBABILITY:             node = new OpProbability();        break;
         case NUMBER_ACCUMULATE:       node = new OpAccumulate();         break;
+        case HOLD:                    node = new OpHold();               break;
  
         case NUMBER:                  node = new OpNumber();             break;
         case NUMBER_PRECISION:        node = new OpSetPrecision();       break;
