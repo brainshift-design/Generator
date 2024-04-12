@@ -109,6 +109,9 @@ class Action
             return 0;
         });
 
+        console.log('this.newConnectionData =', this.newConnectionData);
+
+
         for (let i = this.newConnectionData.length-1; i >= 0; i--)
         {
             const _conn = this.newConnectionData[i];
@@ -130,6 +133,7 @@ class Action
                 uiDisconnect(input);
         }
 
+        
         this.newConnectionData = [];
     }
 
@@ -137,6 +141,8 @@ class Action
 
     restoreOldConnections()
     {
+        console.log('this.oldConnectionData =', this.oldConnectionData);
+
         for (const _conn of this.oldConnectionData)
         {
             const outputNode = nodeFromId(_conn.outputNodeId);
@@ -162,13 +168,21 @@ class Action
             //output.updateSavedConnectionOrder(_conn.outputOrder, +1);
 
 
-            const oldConn = uiVariableConnectFromOutput(
-                output,
-                nodeFromId(_conn.inputNodeId), _conn.inputId,
-                _conn.outputOrder);
+            // create connection if the connection doesn't already exist
 
- 
-            uiSaveConn(oldConn);
+            if (!graph.connections.find(c =>
+                       c.output.node.id == _conn.outputNodeId
+                    && c.output.id      == _conn.outputId
+                    && c.input.node.id  == _conn.inputNodeId
+                    && c.input.id       == _conn.inputId))
+            {
+                const oldConn = uiVariableConnectFromOutput(
+                    output,
+                    nodeFromId(_conn.inputNodeId), _conn.inputId,
+                    _conn.outputOrder);
+
+                uiSaveConn(oldConn);
+            }
         }
 
 
