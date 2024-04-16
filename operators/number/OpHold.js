@@ -10,7 +10,7 @@ extends OperatorBase
         super(HOLD, 'hold', 'hold', iconHold);
 
         this.cached      = false;
-        //this.iconOffsetY = 1;
+        this.iconOffsetY = 2;
         this.canDisable  = true;
         
 

@@ -140,7 +140,8 @@
 
 #chkHideWhatsNew
 {
-    display:  inline-block;
+    display:     inline-block;
+    user-select: none;
 }
 
 

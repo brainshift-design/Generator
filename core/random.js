@@ -19,7 +19,7 @@ class Random
 
     copy()
     {
-        return new Random(this.seed, this.last);
+        return new Random(this.seed);
     }
 
 
@@ -27,12 +27,11 @@ class Random
     updateCache(size)
     {
         this.cache = new Int32Array(size);
-
+        
         let seed = this.seed;
-        let last = seed;
 
         for (let i = 0; i < size; i++)
-            this.cache[i] = seed = this.generate(seed, last);
+            this.cache[i] = seed = this.generate(seed);
     }
 
 
@@ -57,10 +56,8 @@ class Random
 
 
 
-    generate(seed, last)
+    generate(seed)
     {
-        last = seed;
-        
         seed = (seed + 0x7ed55d16) + (seed << 12);
         seed = (seed ^ 0xc761c23c) ^ (seed >> 19);
         seed = (seed + 0x165667b1) + (seed <<  5);

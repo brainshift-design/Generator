@@ -1125,6 +1125,7 @@ function genParseNoise(parse)
     noise.max         = genParse(parse);
     noise.scale       = genParse(parse);
     noise.offset      = genParse(parse);
+    noise.evolve      = genParse(parse);
     noise.interpolate = genParse(parse);
     noise.detail      = genParse(parse);
 

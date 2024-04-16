@@ -7,6 +7,7 @@ extends OperatorBase
     paramMax;
     paramScale;
     paramOffset;
+    paramEvolve;
     paramInterpolate;
     paramDetail;
 
@@ -27,8 +28,9 @@ extends OperatorBase
         this.addParam(this.paramIteration   = new NumberParam('iteration',   'iteration', true,  true, true, Number.NaN, 0));
         this.addParam(this.paramMin         = new NumberParam('min',         'min',       true,  true, true,   0));
         this.addParam(this.paramMax         = new NumberParam('max',         'max',       true,  true, true, 100));
-        this.addParam(this.paramScale       = new NumberParam('scale',       'scale',     true,  true, true, 1, 0));
+        this.addParam(this.paramScale       = new NumberParam('scale',       'scale',     true,  true, true, 1, 1));
         this.addParam(this.paramOffset      = new NumberParam('offset',      'offset',    true,  true, true, 0, 0));
+        this.addParam(this.paramEvolve      = new NumberParam('evolve',      'evolve',    true,  true, true, 0, 0));
         this.addParam(this.paramInterpolate = new SelectParam('interpolate', 'blend',     true,  true, true, ['step', 'linear', 'cosine'], 2));
         this.addParam(this.paramDetail      = new NumberParam('detail',      'detail',    true,  true, true, 1, 1));
 
@@ -40,6 +42,7 @@ extends OperatorBase
 
         this.paramScale .controls[0].setDecimals(1);
         this.paramOffset.controls[0].setDecimals(1);
+        this.paramEvolve.controls[0].setDecimals(1);
         this.paramDetail.controls[0].allowEditDecimals = false;
 
         this.setAllParamDividers(0.47);
@@ -65,6 +68,7 @@ extends OperatorBase
         request.push(...this.node.paramMax        .genRequest(gen));
         request.push(...this.node.paramScale      .genRequest(gen));
         request.push(...this.node.paramOffset     .genRequest(gen));
+        request.push(...this.node.paramEvolve     .genRequest(gen));
         request.push(...this.node.paramInterpolate.genRequest(gen));
         request.push(...this.node.paramDetail     .genRequest(gen));
 

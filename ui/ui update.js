@@ -285,7 +285,7 @@ function uiUpdateGlobalProgress(progress)
     commonProgressBar.style.width   = (progress * 100) + '%';
     commonProgressBar.style.display = 'block';
 
-    restartLoadingTimer();
+    //restartLoadingTimer();
 }
 
 

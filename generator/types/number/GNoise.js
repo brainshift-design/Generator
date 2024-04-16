@@ -8,9 +8,11 @@ extends GOperator
     scale       = null;
     interpolate = null;
     offset      = null;
+    evolve      = null;
     detail      = null;
     
-    random = null;
+    randoms     = [];
+    offsets     = [];
     
     
     
@@ -25,14 +27,15 @@ extends GOperator
     {
         super.reset();
         
-        this.seed        = null;
-        this.iteration   = null;
-        this.min         = null;
-        this.max         = null;
-        this.scale       = null;
-        this.interpolate = null;
-        this.offset      = null;
-        this.detail      = null;
+        this.seed          = null;
+        this.iteration     = null;
+        this.min           = null;
+        this.max           = null;
+        this.scale         = null;
+        this.interpolate   = null;
+        this.offset        = null;
+        this.evolve        = null;
+        this.detail        = null;
     }
 
 
@@ -49,10 +52,12 @@ extends GOperator
         if (this.max        ) copy.max         = this.max        .copy();
         if (this.scale      ) copy.scale       = this.scale      .copy();
         if (this.offset     ) copy.offset      = this.offset     .copy();
+        if (this.evolve     ) copy.evolve      = this.evolve     .copy();
         if (this.interpolate) copy.interpolate = this.interpolate.copy();
         if (this.detail     ) copy.detail      = this.detail     .copy();
 
-        if (this.random     ) copy.random      = this.random     .copy();
+        if (this.randoms    ) copy.randoms     = this.randoms.map(r => r.copy());
+        if (this.offsets    ) copy.offsets     = this.offsets.slice();
 
         return copy;
     }
@@ -61,10 +66,6 @@ extends GOperator
 
     async eval(parse)
     {
-        // const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
-        // const iteration = repeat ? repeat.currentIteration : 0;
-
-
         if (this.isCached())
             return this;
 
@@ -75,6 +76,7 @@ extends GOperator
         const max         = await evalNumberValue(this.max,         parse);
         const scale       = await evalNumberValue(this.scale,       parse);
         const offset      = await evalNumberValue(this.offset,      parse);
+        const evolve      = await evalNumberValue(this.evolve,      parse);
         const interpolate = await evalNumberValue(this.interpolate, parse);
         const detail      = await evalNumberValue(this.detail,      parse);
     
@@ -86,28 +88,54 @@ extends GOperator
             && max
             && scale
             && offset
+            && evolve
             && interpolate
             && detail)
         {
-            if (  !this.random
-                || this.random.seed != seed.value)
-                this.random = new Random(seed.value);
+            if (  !this.randoms
+                || this.randoms.length < detail.value)
+            {
+                const randoms = new Array(detail.value);
+
+                for (let c = 0; c < this.randoms.length; c++)
+                    randoms[c] = this.randoms[c];
+                
+
+                let _seed = seed.value;
+
+                for (let c = this.randoms.length; c < detail.value; c++)
+                {
+                    randoms[c] = new Random2(_seed);
+                    _seed = seed.value;
+                }
 
 
-            let size  = 1;
-            let power = 1;
+                this.randoms = randoms;
+
+
+                this.offsets = new Array(this.randoms[0].width * detail.value);
+                const offsetRandom = new Random(0);
+
+                for (let c = 0; c < this.randoms[0].width * detail.value; c++)
+                    this.offsets[c] = offsetRandom.get(c);
+            }
+
+
+            let   size  = 1;
+            let   power = 1;
             
-            const avg = (min.value + max.value) / 2;
+            const avg   = (min.value + max.value) / 2;
             let   r;
 
             
             if (iteration.isValid())
                 this.currentIteration = Math.round(iteration.value);
-
                 
+
             if (   this.options.enabled
                 && scale
-                && offset)
+                && offset
+                && evolve)
             {
                 r = avg;
                 
@@ -115,27 +143,59 @@ extends GOperator
                 {
                     for (let c = 0; c < detail.value; c++)
                     {
-                        const i  = this.currentIteration / (Math.max(0.000001, scale.value) * size) + offset.value;
-                        
-                        const i0 = Math.floor(i);
-                        const i1 = Math.ceil (i);
-
-                        const r0 = this.random.get(i0);
-                        const r1 = this.random.get(i1);
+                        const i   = this.currentIteration / (Math.max(0.000001, scale.value) * size) + offset.value;
+                        const i0  = Math.floor(i);
+                        const i1  = Math.ceil (i);
 
 
-                        let _r;
+                        const o0 = this.offsets[i0];
+                        const o1 = this.offsets[i1];
+                        let   _o;
+
+                        switch (interpolate.value)
+                        {
+                            case 0: _o = o0;                                                 break;
+                            case 1: _o = lerp(o0, o1, i-i0);                                 break;
+                            case 2: _o = (o0 + (o1 - o0) * (-Math.cos((i-i0)*Tau/2) + 1)/2); break;
+                        }
+
+
+                        const j   = evolve.value + _o;
+                        const j0  = Math.floor(j);
+                        const j1  = Math.ceil (j);
+
+
+                        const r00 = this.randoms[c].get(i0, j0);
+                        const r10 = this.randoms[c].get(i1, j0);
+                        const r01 = this.randoms[c].get(i0, j1);
+                        const r11 = this.randoms[c].get(i1, j1);
+
+
+                        let _r, _r0, _r1;
                         
                         switch (interpolate.value)
                         {
-                            case 0: _r = power * r0;                                                 break;
-                            case 1: _r = power * lerp(r0, r1, i-i0);                                 break;
-                            case 2: _r = power * (r0 + (r1 - r0) * (-Math.cos((i-i0)*Tau/2) + 1)/2); break;
+                            case 0: 
+                                _r = r00;
+                                break;
+
+                            case 1: 
+                                _r0 = lerp(r00, r10, i-i0);
+                                _r1 = lerp(r01, r11, i-i0);
+                                _r  = lerp(_r0, _r1, j-j0);
+                                break;
+
+                            case 2: 
+                                _r0 = (r00 + (r10 - r00) * (-Math.cos((i-i0)*Tau/2) + 1)/2); 
+                                _r1 = (r01 + (r11 - r01) * (-Math.cos((i-i0)*Tau/2) + 1)/2); 
+                                _r  = (_r0 + (_r1 - _r0) * (-Math.cos((j-j0)*Tau/2) + 1)/2); 
+                                break;
                         }
 
+
                         r += 
-                            - power * (avg       - min.value)
-                            + _r    * (max.value - min.value);
+                            - power *      (avg       - min.value)
+                            + power * _r * (max.value - min.value);
 
 
                         size  /= 2;
@@ -163,6 +223,7 @@ extends GOperator
             ['max',         max        ],
             ['scale',       scale      ],
             ['offset',      offset     ],
+            ['evolve',      evolve     ],
             ['interpolate', interpolate],
             ['detail',      detail     ]
         ]);
@@ -192,6 +253,7 @@ extends GOperator
             && this.max         && this.max        .isValid()
             && this.scale       && this.scale      .isValid()
             && this.offset      && this.offset     .isValid()
+            && this.evolve      && this.evolve     .isValid()
             && this.interpolate && this.interpolate.isValid()
             && this.detail      && this.detail     .isValid();
     }
@@ -208,6 +270,7 @@ extends GOperator
         if (this.max        ) this.max        .pushValueUpdates(parse);
         if (this.scale      ) this.scale      .pushValueUpdates(parse);
         if (this.offset     ) this.offset     .pushValueUpdates(parse);
+        if (this.evolve     ) this.evolve     .pushValueUpdates(parse);
         if (this.interpolate) this.interpolate.pushValueUpdates(parse);
         if (this.detail     ) this.detail     .pushValueUpdates(parse);
     }
@@ -224,6 +287,7 @@ extends GOperator
         if (this.max        ) this.max        .invalidateInputs(parse, from, force);
         if (this.scale      ) this.scale      .invalidateInputs(parse, from, force);
         if (this.offset     ) this.offset     .invalidateInputs(parse, from, force);
+        if (this.evolve     ) this.evolve     .invalidateInputs(parse, from, force);
         if (this.interpolate) this.interpolate.invalidateInputs(parse, from, force);
         if (this.detail     ) this.detail     .invalidateInputs(parse, from, force);
     }
@@ -240,6 +304,7 @@ extends GOperator
         if (this.max        ) this.max        .iterateLoop(parse);
         if (this.scale      ) this.scale      .iterateLoop(parse);
         if (this.offset     ) this.offset     .iterateLoop(parse);
+        if (this.evolve     ) this.evolve     .iterateLoop(parse);
         if (this.interpolate) this.interpolate.iterateLoop(parse);
         if (this.detail     ) this.detail     .iterateLoop(parse);
     }

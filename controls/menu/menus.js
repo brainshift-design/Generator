@@ -1397,7 +1397,7 @@ function initDebugModeMenus()
 
     menuConnData = new Menu('Connection menu', false, false);
     menuConnData.addItems([
-        new MenuItem('Delete connection', null, { callback: () => { hideAllMenus(); debugModeDeleteConnection(menuConnData._div.conn); }})]);
+        new MenuItem('Delete connection', null, false, { callback: () => { hideAllMenus(); debugModeDeleteConnection(menuConnData._div.conn); }})]);
 
 
     menuConnDataSort = new Menu('Sort connections menu', false);
