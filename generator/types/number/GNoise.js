@@ -116,8 +116,8 @@ extends GOperator
                 this.offsets = new Array(this.randoms[0].width * detail.value);
                 const offsetRandom = new Random(0);
 
-                for (let c = 0; c < this.randoms[0].width * detail.value; c++)
-                    this.offsets[c] = offsetRandom.get(c);
+                for (let o = 0; o < this.randoms[0].width * detail.value; o++)
+                    this.offsets[o] = offsetRandom.get(o);
             }
 
 
@@ -143,10 +143,10 @@ extends GOperator
                 {
                     for (let c = 0; c < detail.value; c++)
                     {
-                        const i   = this.currentIteration / (Math.max(0.000001, scale.value) * size) + offset.value;
+                        const i   = Math.min(Math.max(0, this.currentIteration / (Math.max(0.000001, scale.value) * size) + offset.value), this.randoms[0].width * detail.value-1);
                         const i0  = Math.floor(i);
                         const i1  = Math.ceil (i);
-
+                        
 
                         const o0 = this.offsets[i0];
                         const o1 = this.offsets[i1];
@@ -159,7 +159,7 @@ extends GOperator
                             case 2: _o = (o0 + (o1 - o0) * (-Math.cos((i-i0)*Tau/2) + 1)/2); break;
                         }
 
-
+                        
                         const j   = evolve.value + _o;
                         const j0  = Math.floor(j);
                         const j1  = Math.ceil (j);
@@ -212,7 +212,9 @@ extends GOperator
             this.value = new NumberValue(r, Math.max(min.decimals, max.decimals));
         }
         else
+        {
             this.value = NumberValue.NaN.copy();
+        }
 
 
         this.setUpdateValues(parse,

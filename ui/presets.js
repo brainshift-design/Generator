@@ -184,6 +184,7 @@ function getPresetGraph(graphId)
         case 'linesOfFire':          return presetLinesOfFire;
         case 'clouds':               return presetClouds;
         case 'twistedTower':         return presetTwistedTower;
+        case 'dustySunset':          return presetDustySunset;
         case 'brushStrokes':         return presetBrushStrokes;
         case 'gradientCircles':      return presetGradientCircles;
         case 'hotSpring':            return presetHotSpring;
