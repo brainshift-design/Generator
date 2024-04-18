@@ -34,12 +34,13 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case REORDER_LIST:            node = new OpReorderList();        break;
         case SHIFT_LIST:              node = new OpShiftList();          break;
         case REVERSE_LIST:            node = new OpReverseList();        break;
+        case BUCKLE_LIST:             node = new OpBuckleList();         break;
         case SORT:                    node = new OpSort();               break;
         case FILTER:                  node = new OpFilter();             break;
         case COLUMN:                  node = new OpColumn();             break;
         case CELL:                    node = new OpCell();               break;
          
-        case ITERATE:                 node = new OpIterate();             break;
+        case ITERATE:                 node = new OpIterate();            break;
         case NUMBER_SEQUENCE:         node = new OpSequence();           break;
         case NUMBER_RANGE:            node = new OpRange();              break;
         case NUMBER_WAVE:             node = new OpWave();               break;

@@ -435,14 +435,18 @@ function initGeneratorMenus()
 
     menuItems = new Menu('Data', true, false);
     menuItems.addItems([
-                              new MenuItem('Sublist',           null,            false, {icon: iconSublist,      createType: SUBLIST,       callback: e => actionManager.do(getCreateNodeAction(SUBLIST,       btnData.div, getCreateOptions(e)))}),
-                              new MenuItem('Extract items',     null,            false, {icon: iconExtract,      createType: EXTRACT,       callback: e => actionManager.do(getCreateNodeAction(EXTRACT,       btnData.div, getCreateOptions(e)))}),
-        menuItemUniqueList  = new MenuItem('Unique',            null,            false, {icon: iconUnique,       createType: UNIQUE,        callback: e => actionManager.do(getCreateNodeAction(UNIQUE,        btnData.div, getCreateOptions(e)))}),
-        menuItemFilter      = new MenuItem('Filter',            null,            false, {icon: iconFilter,       createType: FILTER,        callback: e => actionManager.do(getCreateNodeAction(FILTER,        btnData.div, getCreateOptions(e)))}),
-        menuItemSort        = new MenuItem('Sort',              null,            false, {icon: iconSort,         createType: SORT,          callback: e => actionManager.do(getCreateNodeAction(SORT,          btnData.div, getCreateOptions(e)))}),
-        menuItemReorderList = new MenuItem('Reorder',           null,            false, {icon: iconReorderList,  createType: REORDER_LIST,  callback: e => actionManager.do(getCreateNodeAction(REORDER_LIST,  btnData.div, getCreateOptions(e)))}),
-        menuItemShiftList   = new MenuItem('Shift',             'Shift list',    true,  {icon: iconShiftList,    createType: SHIFT_LIST,    callback: e => actionManager.do(getCreateNodeAction(SHIFT_LIST,    btnData.div, getCreateOptions(e)))}),
-        menuItemReverseList = new MenuItem('Reverse',           null,            false, {icon: iconReverseList,  createType: REVERSE_LIST,  callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,  btnData.div, getCreateOptions(e)))})]);
+                              new MenuItem('Sublist',           null,            false, {icon: iconSublist,        createType: SUBLIST,          callback: e => actionManager.do(getCreateNodeAction(SUBLIST,          btnData.div, getCreateOptions(e)))}),
+                              new MenuItem('Extract items',     null,            false, {icon: iconExtract,        createType: EXTRACT,          callback: e => actionManager.do(getCreateNodeAction(EXTRACT,          btnData.div, getCreateOptions(e)))}),
+                              new MenuItem('',                  null, false, {separator: true}),
+        menuItemUniqueList  = new MenuItem('Unique',            null,            false, {icon: iconUnique,         createType: UNIQUE,           callback: e => actionManager.do(getCreateNodeAction(UNIQUE,           btnData.div, getCreateOptions(e)))}),
+        menuItemFilter      = new MenuItem('Filter',            null,            false, {icon: iconFilter,         createType: FILTER,           callback: e => actionManager.do(getCreateNodeAction(FILTER,           btnData.div, getCreateOptions(e)))}),
+        menuItemSort        = new MenuItem('Sort',              null,            false, {icon: iconSort,           createType: SORT,             callback: e => actionManager.do(getCreateNodeAction(SORT,             btnData.div, getCreateOptions(e)))}),
+                              new MenuItem('',                  null, false, {separator: true}),
+        menuItemReorderList = new MenuItem('Reorder',           null,            false, {icon: iconReorderList,    createType: REORDER_LIST,     callback: e => actionManager.do(getCreateNodeAction(REORDER_LIST,     btnData.div, getCreateOptions(e)))}),
+        menuItemShiftList   = new MenuItem('Shift',             'Shift list',    true,  {icon: iconShiftList,      createType: SHIFT_LIST,       callback: e => actionManager.do(getCreateNodeAction(SHIFT_LIST,       btnData.div, getCreateOptions(e)))}),
+        menuItemReverseList = new MenuItem('Reverse',           null,            false, {icon: iconReverseList,    createType: REVERSE_LIST,     callback: e => actionManager.do(getCreateNodeAction(REVERSE_LIST,     btnData.div, getCreateOptions(e)))}),
+                              new MenuItem('',                  null, false, {separator: true}),
+                              new MenuItem('Blend edges',       null,            false, {icon: iconBuckleList,     createType: BUCKLE_LIST,      callback: e => actionManager.do(getCreateNodeAction(BUCKLE_LIST,      btnData.div, getCreateOptions(e)))})]);
     
 
     menuData = new Menu('Data', true, false);
@@ -511,13 +515,6 @@ function initGeneratorMenus()
         new MenuItem('Less',             null, false, {icon: iconLess,           createType: NUMBER_LESS,             callback: e => actionManager.do(getCreateNodeAction(NUMBER_LESS,             btnNumber.div, getCreateOptions(e)))})]);
         
     
-    // menuTrig = new Menu('Trigonometric', true, false);
-    // menuTrig.addItems([
-        // new MenuItem('Sine',       null, false, {icon: iconSine,    createType: NUMBER_SIN,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIN,   btnNumber.div, getCreateOptions(e)))}),
-        // new MenuItem('Cosine',     null, false, {icon: iconCosine,  createType: NUMBER_COS,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_COS,   btnNumber.div, getCreateOptions(e)))}),
-        // new MenuItem('Tangent',    null, false, {icon: iconTangent, createType: NUMBER_TAN,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_TAN,   btnNumber.div, getCreateOptions(e)))})]);
-        
-    
     menuNumberBase = new Menu('Numbers', true, false);
     menuNumberBase.addItems([
                            new MenuItem('Constant',       null,           false, {icon: iconConstant,        createType: NUMBER_CONSTANT,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONSTANT,  btnNumber.div, getCreateOptions(e)))}),
@@ -541,10 +538,13 @@ function initGeneratorMenus()
                            new MenuItem('',              null, false, {separator: true}),
                            new MenuItem('Curve',         null, false, {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,         btnNumber.div, getCreateOptions(e)))}), 
                            new MenuItem('Bias',          null, false, {icon: iconNumberBias,  createType: NUMBER_BIAS,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_BIAS,          btnNumber.div, getCreateOptions(e)))}), 
-                           new MenuItem('Remap',         null, false, {icon: iconNumberMap,   createType: NUMBER_MAP,           callback: e => actionManager.do(getCreateNodeAction(NUMBER_MAP,           btnNumber.div, getCreateOptions(e)))}),                            new MenuItem('',              null, {separator: true}),
-                           new MenuItem('Trigonometric', null, false, {icon: iconSine,        createType: NUMBER_TRIG,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,          btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('Arctangent',    null, false, {icon: iconAtan2,       createType: NUMBER_ATAN2,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_ATAN2,         btnNumber.div, getCreateOptions(e)))})]);
+                           new MenuItem('Remap',         null, false, {icon: iconNumberMap,   createType: NUMBER_MAP,           callback: e => actionManager.do(getCreateNodeAction(NUMBER_MAP,           btnNumber.div, getCreateOptions(e)))})]);
         
+
+    menuTrig = new Menu('Trigonometric', true, false);
+    menuTrig.addItems([
+        new MenuItem('Arctangent', null, false, {icon: iconAtan2, createType: NUMBER_ATAN2, callback: e => actionManager.do(getCreateNodeAction(NUMBER_ATAN2, btnNumber.div, getCreateOptions(e)))})]);
+
 
     menuConvertNumber = new Menu('Convert number', true, false);
     menuConvertNumber.addItems([
@@ -562,7 +562,7 @@ function initGeneratorMenus()
                               new MenuItem('Code ⟶ Character', 'Code to Character', false, {icon: iconCodeToCharacter, createType: TEXT_CHAR,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))}),
                               new MenuItem('Character ⟶ Code', 'Character to Code', false, {icon: iconCharacterToCode, createType: TEXT_UNICODE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_UNICODE,   btnText.div, getCreateOptions(e)))}),
                               new MenuItem('',                   null,               true,  {separator: true}),
-        menuItemIndexToName = new MenuItem('Index ⟶ Name',     'Index to Name',     false, {icon: iconIndexToName,     createType: INDEX_TO_NAME,  callback: e => actionManager.do(getCreateNodeAction(INDEX_TO_NAME,      btnText.div, getCreateOptions(e)))})]);
+        menuItemIndexToName = new MenuItem('Index ⟶ Name',     'Index to Name',     false, {icon: iconIndexToName,     createType: INDEX_TO_NAME,  callback: e => actionManager.do(getCreateNodeAction(INDEX_TO_NAME,  btnText.div, getCreateOptions(e)))})]);
     
 
     menuTextData = new Menu('Data', true, false);
@@ -584,11 +584,12 @@ function initGeneratorMenus()
                           new MenuItem('',              null,                 false, {separator: true}),
                           new MenuItem('Functions',     null,                 false, {icon: iconRound,       childMenu: menuFunctions}),
                           new MenuItem('',              null,                 false, {separator: true}),
+                          new MenuItem('Trigonometric', null,                 false, {icon: iconSine,        childMenu: menuTrig,          createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('Convert',       null,                 false, {icon: iconConvert,     childMenu: menuConvertNumber}),
                           new MenuItem('',              null,                 false, {separator: true}),
-                          new MenuItem('Interpolate',   'Interpolate number', true,  {icon: iconInterpolate, createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))})]);
-        
-    
+                          new MenuItem('Interpolate',   'Interpolate number', true,  {icon: iconInterpolate,                               createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))})]);
+
+
     menuTextFunctions = new Menu('Text functions', true, false);
     menuTextFunctions.addItems([
                            new MenuItem('Trim',       null, false, {icon: iconTextTrim,      createType: TEXT_TRIM,      callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
@@ -760,7 +761,6 @@ function initGeneratorMenus()
         new MenuItem('Place',           null, false, {icon: iconPlace,      createType: PLACE,       callback: e => actionManager.do(getCreateNodeAction(PLACE,       btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',                null, false, {separator: true}),
         new MenuItem('Set center',      null, false, {icon: iconCenter,     createType: SET_CENTER,  callback: e => actionManager.do(getCreateNodeAction(SET_CENTER,  btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('',                null, false, {separator: true}),
         new MenuItem('Reset center',    null, false, {icon: iconResetXform, createType: RESET_XFORM, callback: e => actionManager.do(getCreateNodeAction(RESET_XFORM, btnShape.div, getCreateOptions(e)))})]);
 
 
@@ -1156,7 +1156,7 @@ function initGeneratorMenus()
         menuFunctions,
         menuMath,
         menuMinMax,
-        //menuTrig,
+        menuTrig,
         menuConvertNumber,
         menuConvertText,
         menuString,

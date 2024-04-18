@@ -28,6 +28,7 @@ const UNIQUE               = 'UNIQ';
 const REORDER_LIST         = 'RORD';
 const SHIFT_LIST           = 'SHFTLST';
 const REVERSE_LIST         = 'REVLST';
+const BUCKLE_LIST          = 'BUKLST';
 const SORT                 = 'SORT';
 const COLUMN               = 'CLMN';
 const CELL                 = 'CELL';
@@ -150,6 +151,7 @@ const FLOW_TYPES =
     REORDER_LIST,
     SHIFT_LIST,
     REVERSE_LIST,
+    BUCKLE_LIST,
     COLUMN,
     SORT,
     CELL,
@@ -281,7 +283,8 @@ const NUMBER_TYPES =
     ...CONDITION_TYPES,
     ...TRIG_TYPES,
 
-    CONVERT_ANGLE
+    CONVERT_ANGLE,
+    BUCKLE_LIST
 ];
 
 
