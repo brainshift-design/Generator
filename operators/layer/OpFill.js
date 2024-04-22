@@ -218,7 +218,7 @@ extends OpColorBase
         const colors = this.getHeaderColors();
 
 
-        updateFillHeader(this, colors);
+        updateFillHeader(this, colors, this.paramOpacity.value.isValid());
     }
 
 
@@ -317,7 +317,7 @@ extends OpColorBase
 
 
 
-function updateFillHeader(node, colors)
+function updateFillHeader(node, colors, opacityIsValid)
 {
     const unknownBackStyle = darkMode ? '#444' : '#ccc';
 
@@ -328,7 +328,7 @@ function updateFillHeader(node, colors)
         node.isUnknown()
         ? unknownBackStyle
         : (  !rgbIsNaN(colors.stripeBack)
-           && node.paramOpacity.value.isValid()
+           && opacityIsValid
            ? rgba2style(colors.stripeBack)
            : rgba2style(rgb_a(rgbDocumentBody, 0.95)));
 
@@ -344,7 +344,7 @@ function updateFillHeader(node, colors)
 
 
     if (    node.isUnknown()
-        || !node.paramOpacity.value.isValid())
+        || !opacityIsValid)
         node.checkers.style.display = 'none';
 
     else
@@ -372,7 +372,7 @@ function updateFillHeader(node, colors)
 
         node.warningStyle = 
                rgbIsValid(colors.back) 
-            && node.paramOpacity.value.isValid()
+            && opacityIsValid
             ? 'transparent' 
             :  rgba2style(colWarning);
 

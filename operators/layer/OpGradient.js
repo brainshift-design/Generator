@@ -196,10 +196,13 @@ extends OpColorBase
 
 
         const colors = this.getHeaderColors();
+        const stops  = [...this.value.stops.items];
 
-        if (this.isUnknown())
+
+        if (   this.isUnknown()
+            || stops.length == 0)
         {
-            updateFillHeader(this, colors);
+            updateFillHeader(this, colors, stops.length > 0);
             return;
         }
 
@@ -213,9 +216,6 @@ extends OpColorBase
 
 
         let gradient = '';
-
-
-        const stops = [...this.value.stops.items];
 
 
         const outlineColor = darkMode ? '#000' : '#fff';
