@@ -331,7 +331,8 @@ function uiReturnFigLoadNodesAndConns(msg)
 
         loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress).then(result =>
         {
-            if (graph.nodes.length == 0)
+            if (   graph.nodes.length == 0
+                && graph.currentPage)
                 graph.currentPage.zoom = 1;
         });
     }
