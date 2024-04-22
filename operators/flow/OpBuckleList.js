@@ -63,35 +63,22 @@ extends OperatorBase
         
         const length = values[paramIds.findIndex(id => id == 'length')];
 
-        this.length = length.value;
+        this.length = Math.floor(length.value / 2);
 
 
-        if (this.length > 0) this.paramAmount.controls[0].setMax(this.length, this.length);
-        else                 this.paramAmount.controls[0].setMax();
-
-
-        // const type = values[paramIds.findIndex(id => id == 'type')];
-
-        // if (type)
-        //     this.headerOutputs[0].types = [type.value];
+        if (    this.length > 0
+            && !this.isUnknown())
+            this.paramAmount.controls[0].setMax(this.length, this.length);
+        else   
+            this.paramAmount.controls[0].setMax();
     }
 
 
 
-    // getHeaderColors(options = {})
-    // {
-    //     const colors = super.getHeaderColors(options);
-    //     const type   = this.outputs[0].types[0];
+    updateParams()
+    {
+        this.paramAmount.enableControlText(true, this.paramAmount.isUnknown());
 
-    //     colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
-
-    //     const gray =
-    //            this.active
-    //         && this.outputs[0].types[0] == LIST_VALUE;
-
-    //     colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-    //     colors.outWire = rgbFromType(type, true);
-
-    //     return colors;
-    // }
+        this.updateParamControls();
+    }
 }

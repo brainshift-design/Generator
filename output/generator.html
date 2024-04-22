@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 404;
+const generatorVersion = 406;
 
 
 const MAX_INT32        = 2147483647;
@@ -5514,6 +5514,7 @@ const settings =
     colorShiftR:                   true,
 
     showSnapshots:                 false,
+    showRestartInfo:               true,
     showColorLegendInMenus:        false,
     showClearUndoWarning:          true,
     shareUsageMetrics:             true,
@@ -5581,6 +5582,7 @@ function updateSetting(settingName, value)
         case 'colorShiftR':                   settings.colorShiftR                   = value;  break;
         
         case 'showSnapshots':                 settings.showSnapshots                 = value;  break;
+        case 'showRestartInfo':               settings.showRestartInfo               = value;  break;
         case 'showColorLegendInMenus':        settings.showColorLegendInMenus        = value;  break;
         case 'showClearUndoWarning':          settings.showClearUndoWarning          = value;  break;
         case 'shareUsageMetrics':             settings.shareUsageMetrics             = value;  break;
@@ -5657,6 +5659,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'colorShiftR':                   updateSettingAndMenu_(valid, settingName, value, menuItemColorShiftR                  ); break;
 
         case 'showSnapshots':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowSnapshots                ); break;
+        case 'showRestartInfo':               updateSettingAndMenu_(valid, settingName, value, menuItemShowRestartInfo              ); break;
         case 'showColorLegendInMenus':        updateSettingAndMenu_(valid, settingName, value, menuItemShowColorLegendInMenus       ); break;
         case 'showClearUndoWarning':          updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning         ); break;
         case 'shareUsageMetrics':             updateSettingAndMenu_(valid, settingName, value, menuItemShareUsageMetrics            ); break;
@@ -5745,7 +5748,8 @@ function updateSettingsMenus()
     menuItemRandomShiftR                 .setChecked(settings.randomShiftR                 );
     menuItemColorShiftR                  .setChecked(settings. colorShiftR                 );
 
-    menuItemShowSnapshots                .setChecked(settings.showSnapshots       );
+    menuItemShowSnapshots                .setChecked(settings.showSnapshots                );
+    menuItemShowRestartInfo              .setChecked(settings.showRestartInfo              );
     menuItemShowColorLegendInMenus       .setChecked(settings.showColorLegendInMenus       );
     menuItemShowClearUndoWarning         .setChecked(settings.showClearUndoWarning         );
     menuItemShareUsageMetrics            .setChecked(settings.shareUsageMetrics            );
@@ -5868,6 +5872,7 @@ function enableFeatures(sub)
     enableMenuItem(menuItemSetValueNames,      true, sub);
     enableMenuItem(menuItemEnableBetaFeatures, true, sub);
  // enableMenuItem(menuItemShowSnapshots,      true, sub);
+    enableMenuItem(menuItemShowRestartInfo,    true, sub);
     enableMenuItem(menuItemValueName,          true, sub);
     enableMenuItem(menuItemObjectName,         true, sub);
     enableMenuItem(menuItemTimer,              true, sub);
@@ -5953,6 +5958,7 @@ function loadLocalSettings()
     uiGetLocalData('colorShiftR'                  );
 
     uiGetLocalData('showSnapshots'                );
+    uiGetLocalData('showRestartInfo'              );
     uiGetLocalData('showColorLegendInMenus'       );
     uiGetLocalData('showPages'                    );
     uiGetLocalData('showClearUndoWarning'         );
@@ -21111,10 +21117,6 @@ extends GOperator1
 class GReverseList
 extends GOperator1
 {
-    // cachedValue = null;
-
-
-
     constructor(nodeId, options)
     {
         super(REVERSE_LIST, nodeId, options);
@@ -21125,8 +21127,6 @@ extends GOperator1
     reset()
     {
         super.reset();
-
-        // this.cachedValue = null;
     }
 
 
@@ -21144,47 +21144,34 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (   this.isCached())
-            //&& this.cachedValue)
+        if (this.isCached())
             return this;
 
 
         const input = await evalValue(this.input, parse);
 
 
-        this.counts = new ListValue();
-
-
-        // if (this.cachedValue)
-        //     this.value = this.cachedValue.copy();
-
-        // else
-        // {
-            if (input)
+        if (input)
+        {
+            if (this.options.enabled)
             {
-                if (this.options.enabled)
+                this.value = new ListValue();
+                this.value.objects = [];
+
+                for (let i = input.items.length-1; i >= 0; i--)
+                    this.value.items.push(input.items[i]);//.copy());
+
+                if (input.objects)
                 {
-                    this.value = new ListValue();
-                    this.value.objects = [];
-
-                    for (let i = input.items.length-1; i >= 0; i--)
-                        this.value.items.push(input.items[i]);//.copy());
-
-                    if (input.objects)
-                    {
-                        for (let i = input.objects.length-1; i >= 0; i--)
-                            this.value.objects.push(input.objects[i]);
-                    }
+                    for (let i = input.objects.length-1; i >= 0; i--)
+                        this.value.objects.push(input.objects[i]);
                 }
-                else
-                    this.value = input.copy();//.copy();
             }
             else
-                this.value = ListValue.NaN.copy();
-
-
-            // this.cachedValue = this.value.copy();
-        // }
+                this.value = input.copy();//.copy();
+        }
+        else
+            this.value = ListValue.NaN.copy();
     
 
         this.updateValueObjects();
@@ -21260,25 +21247,49 @@ extends GOperator1
         const input  = await evalListValue  (this.input,  parse);
         const amount = await evalNumberValue(this.amount, parse);
 
-
-        this.counts = new ListValue();
-
-
-        if (input)
+        amount.value = Math.round(amount.value);
+        
+        
+        if (   input
+            && input.isValid())
         {
+            const _amount = Math.min(amount.value + 1, Math.floor(input.items.length/2));
+
             if (this.options.enabled)
             {
-                this.value = new ListValue();
-                this.value.objects = [];
+                const temp1 = 
+                [
+                    ...input.items.slice(input.items.length - _amount).map(i => i.value),
+                    ...input.items.slice(0, _amount)                  .map(i => i.value).map(i => i - input.items[0].value + input.items.at(-1).value)
+                ];
 
-                for (let i = input.items.length-1; i >= 0; i--)
+                const temp2 = 
+                [
+                    ...input.items.slice(input.items.length - _amount).map(i => i.value).map(i => i - input.items.at(-1).value + input.items[0].value),
+                    ...input.items.slice(0, _amount)                  .map(i => i.value)
+                ];
+
+                consoleAssert(
+                    temp1.length == temp2.length,
+                    'error building list edge blend');
+
+                
+                const temp = [];
+
+                for (let i = 0; i < _amount*2; i++)
+                    temp.push(new NumberValue(lerp(temp1[i], temp2[i], i/(_amount*2-1))));
+
+
+                this.value = new ListValue();
+
+                for (let i = 0; i < _amount; i++)
+                    this.value.items.push(temp[_amount + i]);
+
+                for (let i = _amount; i < input.items.length - _amount; i++)
                     this.value.items.push(input.items[i]);
 
-                if (input.objects)
-                {
-                    for (let i = input.objects.length-1; i >= 0; i--)
-                        this.value.objects.push(input.objects[i]);
-                }
+                for (let i = 0; i < _amount; i++)
+                    this.value.items.push(temp[i]);
             }
             else
                 this.value = input;
@@ -21287,13 +21298,10 @@ extends GOperator1
             this.value = ListValue.NaN.copy();
     
 
-        // this.updateValueObjects();
-
-
         this.setUpdateValues(parse, 
         [
-            //['type',   this.outputListType()                   ],
-            ['length', new NumberValue(this.value.items.length)]
+            ['length', new NumberValue(this.value.items.length)],
+            ['amount', amount                                  ]
         ]); 
                
 

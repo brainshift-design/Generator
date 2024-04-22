@@ -127,9 +127,16 @@ function removeNodesAction_makeNewConnections(act)
     {
         const _conn = act.newConnectionData[i];
         
+        const outNode = nodeFromId(_conn.outputNodeId);
+        const  inNode = nodeFromId(_conn. inputNodeId);
+        
+        if (!outNode || !inNode)
+            continue;
+
+            
         const conn = uiVariableConnect(
-             nodeFromId(_conn.outputNodeId), _conn.outputId, 
-             nodeFromId(_conn. inputNodeId), _conn. inputId,
+             outNode, _conn.outputId, 
+              inNode, _conn. inputId,
             _conn.outputOrder);
 
         uiSaveConn(conn);

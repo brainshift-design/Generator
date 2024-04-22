@@ -79,6 +79,7 @@ initWhatsNewDialog();
 initAboutDialog();
 
 // initSnapshots();
+initRestartDialog();
 
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});

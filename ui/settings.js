@@ -16,6 +16,7 @@ const settings =
     colorShiftR:                   true,
 
     showSnapshots:                 false,
+    showRestartInfo:               true,
     showColorLegendInMenus:        false,
     showClearUndoWarning:          true,
     shareUsageMetrics:             true,
@@ -83,6 +84,7 @@ function updateSetting(settingName, value)
         case 'colorShiftR':                   settings.colorShiftR                   = value;  break;
         
         case 'showSnapshots':                 settings.showSnapshots                 = value;  break;
+        case 'showRestartInfo':               settings.showRestartInfo               = value;  break;
         case 'showColorLegendInMenus':        settings.showColorLegendInMenus        = value;  break;
         case 'showClearUndoWarning':          settings.showClearUndoWarning          = value;  break;
         case 'shareUsageMetrics':             settings.shareUsageMetrics             = value;  break;
@@ -159,6 +161,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'colorShiftR':                   updateSettingAndMenu_(valid, settingName, value, menuItemColorShiftR                  ); break;
 
         case 'showSnapshots':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowSnapshots                ); break;
+        case 'showRestartInfo':               updateSettingAndMenu_(valid, settingName, value, menuItemShowRestartInfo              ); break;
         case 'showColorLegendInMenus':        updateSettingAndMenu_(valid, settingName, value, menuItemShowColorLegendInMenus       ); break;
         case 'showClearUndoWarning':          updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning         ); break;
         case 'shareUsageMetrics':             updateSettingAndMenu_(valid, settingName, value, menuItemShareUsageMetrics            ); break;
@@ -247,7 +250,8 @@ function updateSettingsMenus()
     menuItemRandomShiftR                 .setChecked(settings.randomShiftR                 );
     menuItemColorShiftR                  .setChecked(settings. colorShiftR                 );
 
-    menuItemShowSnapshots                .setChecked(settings.showSnapshots       );
+    menuItemShowSnapshots                .setChecked(settings.showSnapshots                );
+    menuItemShowRestartInfo              .setChecked(settings.showRestartInfo              );
     menuItemShowColorLegendInMenus       .setChecked(settings.showColorLegendInMenus       );
     menuItemShowClearUndoWarning         .setChecked(settings.showClearUndoWarning         );
     menuItemShareUsageMetrics            .setChecked(settings.shareUsageMetrics            );
@@ -370,6 +374,7 @@ function enableFeatures(sub)
     enableMenuItem(menuItemSetValueNames,      true, sub);
     enableMenuItem(menuItemEnableBetaFeatures, true, sub);
  // enableMenuItem(menuItemShowSnapshots,      true, sub);
+    enableMenuItem(menuItemShowRestartInfo,    true, sub);
     enableMenuItem(menuItemValueName,          true, sub);
     enableMenuItem(menuItemObjectName,         true, sub);
     enableMenuItem(menuItemTimer,              true, sub);
@@ -455,6 +460,7 @@ function loadLocalSettings()
     uiGetLocalData('colorShiftR'                  );
 
     uiGetLocalData('showSnapshots'                );
+    uiGetLocalData('showRestartInfo'              );
     uiGetLocalData('showColorLegendInMenus'       );
     uiGetLocalData('showPages'                    );
     uiGetLocalData('showClearUndoWarning'         );

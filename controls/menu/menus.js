@@ -34,6 +34,7 @@ var menuMainDebug;
 var menuMainHelp;
 
 var menuShowTooltips;
+var menuShowWarnings;
 
 var menuLogGenerator;
 var menuLogStorage;
@@ -160,8 +161,10 @@ var menuItemInvertSimpleMathParamOrder;
 var menuItemRandomShiftR;
 var menuItemColorShiftR;
 var menuItemShowClearUndoWarning;
+var menuItemShowRestartInfo;
 var menuItemShareUsageMetrics;
 var menuItemShowTooltips;
+var menuItemShowWarnings;
 var menuItemShowObjectCount;
 var menuItemShowDebugMenu;
 var menuItemEnableMultiplayer;
@@ -350,6 +353,12 @@ function initGeneratorMenus()
         menuItemShowTooltipColorBlindness     = new MenuItem('Color blindness',     null, false, {checkCallback: () => settings.showTooltipColorBlindness,     callback: () => { updateSettingAndMenu('showTooltipColorBlindness',     true, !settings.showTooltipColorBlindness    ); }})]);
 
 
+    menuShowWarnings = new Menu('Show warnings', false);
+    menuShowWarnings.addItems([
+        menuItemShowClearUndoWarning       = new MenuItem('Show clear undo warning',                  null, false, {checkCallback: () => settings.showClearUndoWarning, callback: () => { updateSettingAndMenu('showClearUndoWarning',       true, !settings.showClearUndoWarning); }}),
+        menuItemShowRestartInfo            = new MenuItem('Show restart warning',                     null, false, {checkCallback: () => settings.showRestartInfo,      callback: () => { updateSettingAndMenu('showRestartInfo',            true, !settings.showRestartInfo);      }})]);
+
+
     menuMainFile = new Menu('File', false);
     menuMainFile.addItems([
                                new MenuItem('Open file . . .',          null, false, {callback: () => { hideAllMenus(); checkDeleteNodesWarning(() => uiOpenLocalFile()); }}),
@@ -392,7 +401,7 @@ function initGeneratorMenus()
       //menuItemHelp       = new MenuItem('Help and subscription',  null, false, {childMenu: menuMainHelp }),
         menuItemHelp       = new MenuItem('Help',                   null, false, {childMenu: menuMainHelp }),
         menuItemRestartSep = new MenuItem('',                       null, false, {separator: true}),
-        menuItemRestart    = new MenuItem('Restart to update. . .', null, false, {icon: iconUpdate, callback: () => uiRestartGenerator()})]);
+        menuItemRestart    = new MenuItem('Restart to update. . .', null, false, {icon: iconUpdate, callback: () => settings.showRestartInfo ? showRestartDialog() : uiRestartGenerator()})]);
 
     updateElementDisplay(menuItemRestartSep.div, false);
     updateElementDisplay(menuItemRestart   .div, false);
@@ -1213,11 +1222,11 @@ function initPreferenceMenus()
         menuItemShowBoolValues             = new MenuItem('Show boolean values as   ✓ ✗',            null, false, {checkCallback: () => settings.showBoolValues,             callback: () => { updateSettingAndMenu('showBoolValues',             true, !settings.showBoolValues);             updateMenuItemShowBoolValues();             }}),
         menuItemSeparateThousands          = new MenuItem('Separate thousands in numbers',            null, false, {checkCallback: () => settings.separateThousands,          callback: () => { updateSettingAndMenu('separateThousands',          true, !settings.separateThousands);          updateMenuItemSeparateThousands();          }}),
         menuItemInvertSimpleMathParamOrder = new MenuItem('Invert simple math parameters',            null, false, {checkCallback: () => settings.invertSimpleMathParamOrder, callback: () => { updateSettingAndMenu('invertSimpleMathParamOrder', true, !settings.invertSimpleMathParamOrder); updateMenuItemInvertSimpleMathParamOrder(); }}),
-                                             new MenuItem( osShift(true) + 'R randomizes mixed. . .', null, false, {childMenu: menuShiftR}),
+        new MenuItem( osShift(true) + 'R randomizes mixed. . .', null, false, {childMenu: menuShiftR}),
         //menuItemShowColorLegendInMenus   = new MenuItem('Show color legend in menus',               null, false, {checkCallback: () => settings.showColorLegendInMenus,     callback: () => { updateSettingAndMenu('showColorLegendInMenus',     true, !settings.showColorLegendInMenus);     updateMenuItemShowColorLegendInMenus();     }}),
-                                             new MenuItem('',                                         null, false, {separator: true}),    
+        new MenuItem('',                                         null, false, {separator: true}),    
         menuItemShowTooltips               = new MenuItem('Show tooltips',                            null, false, {childMenu: menuShowTooltips}),
-        menuItemShowClearUndoWarning       = new MenuItem('Show clear undo warning',                  null, false, {checkCallback: () => settings.showClearUndoWarning,       callback: () => { updateSettingAndMenu('showClearUndoWarning',       true, !settings.showClearUndoWarning);                                                  }}),
+        menuItemShowWarnings               = new MenuItem('Show warnings',                            null, false, {childMenu: menuShowWarnings}),
          menuItemShowObjectCount           = new MenuItem('Show object count',                        null, false, {checkCallback: () => settings.showObjectCount,            callback: () => { updateSettingAndMenu('showObjectCount',            true, !settings.showObjectCount);            updateObjectCountDisplay();                 }}),
         menuItemShowDebugMenu              = new MenuItem('Show debug menu',                          null, false, {checkCallback: () => settings.showDebugMenu,              callback: () => { uiGetLocalData('debugWarning'); }}),
                                              new MenuItem('',                                         null, false, {separator: true}),

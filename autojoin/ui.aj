@@ -25,6 +25,7 @@
 ../html/crash.html
 ../html/multiplayer.html
 ../html/about.html
+../html/restartWarning.html
 ../html/deleteConnections.html
 ../html/deleteNodesWarning.html
 ../html/saveAsTemplate.html

@@ -43,25 +43,49 @@ extends GOperator1
         const input  = await evalListValue  (this.input,  parse);
         const amount = await evalNumberValue(this.amount, parse);
 
-
-        this.counts = new ListValue();
-
-
-        if (input)
+        amount.value = Math.round(amount.value);
+        
+        
+        if (   input
+            && input.isValid())
         {
+            const _amount = Math.min(amount.value + 1, Math.floor(input.items.length/2));
+
             if (this.options.enabled)
             {
-                this.value = new ListValue();
-                this.value.objects = [];
+                const temp1 = 
+                [
+                    ...input.items.slice(input.items.length - _amount).map(i => i.value),
+                    ...input.items.slice(0, _amount)                  .map(i => i.value).map(i => i - input.items[0].value + input.items.at(-1).value)
+                ];
 
-                for (let i = input.items.length-1; i >= 0; i--)
+                const temp2 = 
+                [
+                    ...input.items.slice(input.items.length - _amount).map(i => i.value).map(i => i - input.items.at(-1).value + input.items[0].value),
+                    ...input.items.slice(0, _amount)                  .map(i => i.value)
+                ];
+
+                consoleAssert(
+                    temp1.length == temp2.length,
+                    'error building list edge blend');
+
+                
+                const temp = [];
+
+                for (let i = 0; i < _amount*2; i++)
+                    temp.push(new NumberValue(lerp(temp1[i], temp2[i], i/(_amount*2-1))));
+
+
+                this.value = new ListValue();
+
+                for (let i = 0; i < _amount; i++)
+                    this.value.items.push(temp[_amount + i]);
+
+                for (let i = _amount; i < input.items.length - _amount; i++)
                     this.value.items.push(input.items[i]);
 
-                if (input.objects)
-                {
-                    for (let i = input.objects.length-1; i >= 0; i--)
-                        this.value.objects.push(input.objects[i]);
-                }
+                for (let i = 0; i < _amount; i++)
+                    this.value.items.push(temp[i]);
             }
             else
                 this.value = input;
@@ -70,13 +94,10 @@ extends GOperator1
             this.value = ListValue.NaN.copy();
     
 
-        // this.updateValueObjects();
-
-
         this.setUpdateValues(parse, 
         [
-            //['type',   this.outputListType()                   ],
-            ['length', new NumberValue(this.value.items.length)]
+            ['length', new NumberValue(this.value.items.length)],
+            ['amount', amount                                  ]
         ]); 
                
 
