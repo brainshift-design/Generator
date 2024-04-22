@@ -202,7 +202,7 @@ extends OpColorBase
         if (   this.isUnknown()
             || stops.length == 0)
         {
-            updateFillHeader(this, colors, stops.length > 0);
+            updateFillHeader(this, colors, false);
             return;
         }
 

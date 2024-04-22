@@ -389,10 +389,10 @@ function enableFeatures(sub)
     enableMenuItem(menuItemDateTime,           true, sub);
     enableMenuItem(menuItemSolve,              true, sub);
     enableMenuItem(menuItemTextJson,           true, sub);
-    enableMenuItem(menuItemValidColor,         true, sub);
+    // enableMenuItem(menuItemValidColor,         true, sub);
     enableMenuItem(menuItemCorrectColor,       true, sub);
     enableMenuItem(menuItemConvertToP3,        true, sub);
-    enableMenuItem(menuItemColorblind,         true, sub);
+    // enableMenuItem(menuItemColorblind,         true, sub);
     enableMenuItem(menuItemShapeRender,        true, sub);
  // enableMenuItem(menuItemShapeExport,        true, sub);
     enableMenuItem(menuItemVectorSep1,         true, sub, true);

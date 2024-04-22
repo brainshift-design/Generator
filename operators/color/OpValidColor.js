@@ -14,7 +14,7 @@ extends OpColorBase
     {
         super(VALID_COLOR, 'valid', 'valid', iconValidColor, true);
 
-        this.subscription = true;
+        // this.subscription = true;
         this.canDisable   = true;
         this.slow         = true;
         this.iconOffsetY  = -1;
