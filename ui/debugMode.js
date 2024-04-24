@@ -22,7 +22,10 @@ debugModeView.addEventListener('pointerdown', e =>
 {
     if (   e.button == 0
         || e.button == 2)
+    {
         hideAllMenus();
+        window.getSelection().removeAllRanges();
+    }
 });
 
 

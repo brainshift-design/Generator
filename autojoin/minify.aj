@@ -375,6 +375,7 @@ iconProbability
 iconAccumulate
 iconInterpolate
 iconSolve
+Random2
 iconAnimate
 iconMath
 iconAdd

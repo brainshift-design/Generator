@@ -133,9 +133,9 @@ extends GOperator
                 
 
             if (   this.options.enabled
-                && scale
-                && offset
-                && evolve)
+                && scale  && scale .isValid()
+                && offset && offset.isValid()
+                && evolve && evolve.isValid())
             {
                 r = avg;
                 
@@ -143,7 +143,7 @@ extends GOperator
                 {
                     for (let c = 0; c < detail.value; c++)
                     {
-                        const i   = Math.min(Math.max(0, this.currentIteration / (Math.max(0.000001, scale.value) * size) + offset.value), this.randoms[0].width * detail.value-1);
+                        const i   = Math.min(Math.max(0, this.currentIteration / (Math.max(0.000001, scale.value) * size) + offset.value), this.randoms[0].width * detail.value - 1);
                         const i0  = Math.floor(i);
                         const i1  = Math.ceil (i);
                         
