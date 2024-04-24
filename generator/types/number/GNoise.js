@@ -92,10 +92,12 @@ extends GOperator
             && interpolate
             && detail)
         {
+            const _detail = Math.max(1, Math.ceil(detail.value));
+
             if (  !this.randoms
-                || this.randoms.length < detail.value)
+                || this.randoms.length < _detail)
             {
-                const randoms = new Array(detail.value);
+                const randoms = new Array(_detail);
 
                 for (let c = 0; c < this.randoms.length; c++)
                     randoms[c] = this.randoms[c];
@@ -103,7 +105,7 @@ extends GOperator
 
                 let _seed = seed.value;
 
-                for (let c = this.randoms.length; c < detail.value; c++)
+                for (let c = this.randoms.length; c < _detail; c++)
                 {
                     randoms[c] = new Random2(_seed);
                     _seed = seed.value;
@@ -113,10 +115,10 @@ extends GOperator
                 this.randoms = randoms;
 
 
-                this.offsets = new Array(this.randoms[0].width * detail.value);
+                this.offsets = new Array(this.randoms[0].width * _detail);
                 const offsetRandom = new Random(0);
 
-                for (let o = 0; o < this.randoms[0].width * detail.value; o++)
+                for (let o = 0; o < this.randoms[0].width * _detail; o++)
                     this.offsets[o] = offsetRandom.get(o);
             }
 
@@ -141,9 +143,9 @@ extends GOperator
                 
                 if (this.currentIteration >= 0)
                 {
-                    for (let c = 0; c < detail.value; c++)
+                    for (let c = 0; c < _detail; c++)
                     {
-                        const i   = Math.min(Math.max(0, this.currentIteration / (Math.max(0.000001, scale.value) * size) + offset.value), this.randoms[0].width * detail.value - 1);
+                        const i   = Math.min(Math.max(0, this.currentIteration / (Math.max(0.000001, scale.value) * size) + offset.value), this.randoms[0].width * _detail - 1);
                         const i0  = Math.floor(i);
                         const i1  = Math.ceil (i);
                         
@@ -193,9 +195,14 @@ extends GOperator
                         }
 
 
+                        const clamp = 
+                            detail.value - c < 1 
+                            ? detail.value - c 
+                            : 1;
+
                         r += 
-                            - power *      (avg       - min.value)
-                            + power * _r * (max.value - min.value);
+                            - power *      (avg       - min.value) * clamp
+                            + power * _r * (max.value - min.value) * clamp;
 
 
                         size  /= 2;

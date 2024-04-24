@@ -162,7 +162,10 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder
     //console.log('uiVariableConnect()');
 
     const output = outputNode.outputFromId(outputId);
-    return uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder, createTime);
+
+    return output
+         ? uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder, createTime)
+         : null;
 }
 
 

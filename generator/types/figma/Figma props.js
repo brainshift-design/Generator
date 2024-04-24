@@ -53,7 +53,7 @@ function addFillProp(obj, prop, target = obj.fills)
             rgb[0], 
             rgb[1], 
             rgb[2], 
-            prop.opacity.toValue().toNumber(),
+            prop.opacity.toValue().value,//.toNumber(),
             BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2]]);
     }
 }
@@ -81,12 +81,12 @@ function addGradientProp(obj, prop, target = obj.fills)
 
 
     
-    let   x   =        prop.x     .toNumber() / 100;
-    let   y   =        prop.y     .toNumber() / 100;
-    const a   =        prop.angle .toNumber()/360*Tau;
-    let   s   = nozero(prop.size  .toNumber() / 100);
-    let   asp = nozero(prop.aspect.toNumber() / 100);
-    let   sk  =        prop.skew  .toNumber() / 100;
+    let   x   =        prop.x     .value /*toNumber()*/  / 100;
+    let   y   =        prop.y     .value /*toNumber()*/  / 100;
+    const a   =        prop.angle .value /*toNumber()*/  / 360*Tau;
+    let   s   = nozero(prop.size  .value /*toNumber()*/  / 100);
+    let   asp = nozero(prop.aspect.value /*toNumber()*/  / 100);
+    let   sk  =        prop.skew  .value /*toNumber()*/  / 100;
     
 
     const pos      = prop.position.value;
@@ -228,7 +228,7 @@ function addGradientProp(obj, prop, target = obj.fills)
             rgba[1], 
             rgba[2], 
             rgba[3],
-            Math.min(Math.max(0, stop.position.toNumber() / 100), 1)]);
+            Math.min(Math.max(0, stop.position.value /*toNumber()*/ / 100), 1)]);
     }
 
 
@@ -304,8 +304,8 @@ function setColorStopPositions(stops)
                     && !stops[nextValid].position.isValid()) 
                     nextValid++;
                         
-                const pv = stops[prevValid].position.toNumber();
-                const nv = stops[nextValid].position.toNumber();
+                const pv = stops[prevValid].position.value;//toNumber();
+                const nv = stops[nextValid].position.value;//toNumber();
 
                 stop.position = new NumberValue((pv + (nv - pv) * ((i - prevValid) / (nextValid - prevValid)))); 
             }
@@ -331,7 +331,7 @@ function addStrokeProp(obj, prop)
     }
     else
     {
-        obj.strokeWeight = prop.weight.toValue().toNumber();
+        obj.strokeWeight = prop.weight.toValue().value;//.toNumber();
 
         switch (prop.fit.toValue().value)
         {
@@ -373,10 +373,10 @@ function addRoundCornersProp(obj, prop)
     {
         obj.effects.push([
             'ROUND_CORNERS', 
-            prop.tl.toNumber(),
-            prop.tr.toNumber(),
-            prop.bl.toNumber(),
-            prop.br.toNumber(),
+            prop.tl.value, //toNumber(),
+            prop.tr.value, //toNumber(),
+            prop.bl.value, //toNumber(),
+            prop.br.value, //toNumber(),
             prop.visible ]);
     }
 }
@@ -393,10 +393,10 @@ function addDropShadowProp(obj, prop)
         rgba[1],
         rgba[2],
         rgba[3],
-        prop.x     .toNumber(),
-        prop.y     .toNumber(),
-        prop.blur  .toNumber(),
-        prop.spread.toNumber(),
+        prop.x     .value, //toNumber(),
+        prop.y     .value, //toNumber(),
+        prop.blur  .value, //toNumber(),
+        prop.spread.value, //toNumber(),
         BlendModes[prop.blend.value][2],
         prop.behind.value > 0,
         prop.visible ]);
@@ -414,10 +414,10 @@ function addInnerShadowProp(obj, prop)
         rgba[1],
         rgba[2],
         rgba[3],
-        prop.x     .toNumber(),
-        prop.y     .toNumber(),
-        prop.blur  .toNumber(),
-        prop.spread.toNumber(),
+        prop.x     .value, //toNumber(),
+        prop.y     .value, //toNumber(),
+        prop.blur  .value, //toNumber(),
+        prop.spread.value, //toNumber(),
         BlendModes[prop.blend.value][2],
         prop.visible ]);
 }
@@ -428,7 +428,7 @@ function addLayerBlurProp(obj, prop)
 {
     obj.effects.push([
         'LAYER_BLUR', 
-        prop.radius.toNumber(),
+        prop.radius.value, //toNumber(),
         prop.visible ]);
 }
 
@@ -438,7 +438,7 @@ function addBackBlurProp(obj, prop)
 {
     obj.effects.push([
         'BACKGROUND_BLUR', 
-        prop.radius.toNumber(),
+        prop.radius.value, //toNumber(),
         prop.visible ]);
 }
 
@@ -446,7 +446,7 @@ function addBackBlurProp(obj, prop)
 
 function addLayerBlendProp(obj, prop)
 {
-    obj.opacity = Math.min(Math.max(0, prop.opacity.toNumber() / 100), 1);
+    obj.opacity = Math.min(Math.max(0, prop.opacity.value /*toNumber()*/ / 100), 1);
     obj.blend   = BlendModes[prop.blend.value][2];
 }
 
