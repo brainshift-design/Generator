@@ -94,6 +94,7 @@ extends GOperator
         {
             const _detail = Math.max(1, Math.ceil(detail.value));
 
+
             if (  !this.randoms
                 || this.randoms.length < _detail)
             {
@@ -115,11 +116,7 @@ extends GOperator
                 this.randoms = randoms;
 
 
-                this.offsets = new Array(this.randoms[0].width * _detail);
-                const offsetRandom = new Random(0);
-
-                for (let o = 0; o < this.randoms[0].width * _detail; o++)
-                    this.offsets[o] = offsetRandom.get(o);
+                this.updateOffsets(_detail);
             }
 
 
@@ -145,7 +142,7 @@ extends GOperator
                 {
                     for (let c = 0; c < _detail; c++)
                     {
-                        const i   = Math.min(Math.max(0, this.currentIteration / (Math.max(0.000001, scale.value) * size) + offset.value), this.randoms[0].width * _detail - 1);
+                        const i   = Math.max(0, this.currentIteration / (Math.max(0.000001, scale.value) * size) + offset.value);
                         const i0  = Math.floor(i);
                         const i1  = Math.ceil (i);
                         
@@ -171,7 +168,7 @@ extends GOperator
                         const r10 = this.randoms[c].get(i1, j0);
                         const r01 = this.randoms[c].get(i0, j1);
                         const r11 = this.randoms[c].get(i1, j1);
-
+            
 
                         let _r, _r0, _r1;
                         
@@ -207,6 +204,9 @@ extends GOperator
 
                         size  /= 2;
                         power /= 2;
+
+                        
+                        this.updateOffsets(_detail);
                     }
                 }
             }
@@ -241,6 +241,20 @@ extends GOperator
         this.validate();
 
         return this;
+    }
+
+
+
+    updateOffsets(_detail)
+    {
+        const newSize = this.randoms[0].width * _detail;
+        if (this.offsets.length >= newSize) return;
+
+        this.offsets = new Array(newSize);
+        const offsetRandom = new Random(0);
+
+        for (let o = 0; o < newSize; o++)
+            this.offsets[o] = offsetRandom.get(o);
     }
 
 
