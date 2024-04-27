@@ -16,7 +16,7 @@ extends ResizableBase
         this.addInput (new Input ([NUMBER_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, false));
+        this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, false, 1));
 
         this.alwaysLoadParams = true;
     }

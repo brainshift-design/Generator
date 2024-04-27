@@ -700,7 +700,7 @@ function initGeneratorMenus()
     
     menuPoint = new Menu('Point', true, false);
     menuPoint.addItems([
-        new MenuItem('Corner', null, {icon: iconPointCorner, createType: POINT_CORNER,      callback: e => actionManager.do(getCreateNodeAction(POINT_CORNER, btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Corner', 'Point corner', false, {icon: iconPointCorner, createType: POINT_CORNER,      callback: e => actionManager.do(getCreateNodeAction(POINT_CORNER, btnShape.div, getCreateOptions(e)))})]);
 
 
     menuVectorFunctions = new Menu('Vector functions', true, false);
