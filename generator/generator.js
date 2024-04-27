@@ -1,9 +1,9 @@
-var lastRequestId      = -1;
-var lastUpdateNodeId   =  NULL;
-var lastUpdateParamId  =  NULL;
-var lastUpdateValues   =  [];
-var lastUpdateObjects  =  [];
-var lastUpdateStyles   =  [];
+var lastRequestId     = -1;
+var lastUpdateNodeId  =  NULL;
+var lastUpdateParamId =  NULL;
+var lastUpdateValues  =  [];
+var lastUpdateObjects =  [];
+var lastUpdateStyles  =  [];
 
 
 

@@ -470,7 +470,7 @@ function initGeneratorMenus()
                               new MenuItem('',                  null,            false, {separator: true}),     
                               new MenuItem('Functions',         null,            false, {icon: iconListFunctions, childMenu: menuItems}),
                               new MenuItem('',                  null,            false, {separator: true}),     
-        menuItemIfElse      = new MenuItem('I&hairsp;f / else', null,            false, {icon: iconIfElse,        createType: IF_ELSE,       callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,          btnData.div, getCreateOptions(e))), disambiguate: true}),
+        menuItemIfElse      = new MenuItem('I&hairsp;f / else', 'If else',       false, {icon: iconIfElse,        createType: IF_ELSE,       callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,          btnData.div, getCreateOptions(e))), disambiguate: true}),
         menuItemSelect      = new MenuItem('Select',            null,            false, {icon: iconSelect,        createType: SELECT,        callback: e => actionManager.do(getCreateNodeAction(SELECT,           btnData.div, getCreateOptions(e)))}),
                               new MenuItem('Select from list',  null,            false, {icon: iconSelectFromList, createType: SELECT_FROM_LIST,        callback: e => actionManager.do(getCreateNodeAction(SELECT_FROM_LIST, btnData.div, getCreateOptions(e)))}),
                               new MenuItem('',                  null,            false, {separator: true}),     
