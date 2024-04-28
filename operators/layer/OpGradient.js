@@ -11,6 +11,10 @@ extends OpColorBase
     paramSkew;
     paramBlend;
 
+    diagonalAspect;
+
+    menuAspect;
+
 
     checkersHolder;
     checkers;
@@ -28,6 +32,9 @@ extends OpColorBase
         this.iconOffsetY    = 1;
         this.canDisable     = true;
         this.variableInputs = true;
+
+
+        this.diagonalAspect = false;
 
 
         this.colorBack      = createDiv('colorBack');
@@ -62,6 +69,9 @@ extends OpColorBase
         this.paramAngle .controls[0].suffixOffsetY = -4;
         this.paramAspect.controls[0].suffix        = '%';
         this.paramSkew  .controls[0].suffix        = '%';
+
+
+        this.menuAspect = createGradientParamMenu(this.paramAspect, 'diagonalAspect');
     }
     
     
@@ -183,6 +193,9 @@ extends OpColorBase
 
         this.paramY   .controls[0].displayMin = pos < 3 ?   0 : Number.MIN_SAFE_INTEGER;
         this.paramY   .controls[0].displayMax = pos < 3 ? 100 : Number.MAX_SAFE_INTEGER;
+
+
+        this.paramAspect.setName('<span style="font-size: 6px; position: relative; top: -1px;">' + (this.diagonalAspect ? '□' : '◇') + '</span> aspect', true);
 
 
         this.updateParamControls();
@@ -353,5 +366,46 @@ extends OpColorBase
 
         return colors;
     }
+
+
+    
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = HTAB;
+
+        let json = super.toJsonBase(nTab);
+
+        json += 
+              ',\n' + pos + tab + '"diagonalAspect": "'  + this.diagonalAspect  + '"';
+
+        return json;
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        super.loadParams(_node, pasting);
+
+        if (_node.diagonalAspect)
+            this.diagonalAspect  = parseBool(_node.diagonalAspect);
+    }
 }
 
+
+
+function createGradientParamMenu(param, valueId)
+{
+    const menu = new Menu('Aspect', false, true);
+
+    menu.minWidth = 130;
+    
+    menu.addItems([
+        new MenuItem('◆ diamond',  null, false, {checkCallback: () => !param.node[valueId], callback: () => { hideAllMenus(); actionManager.do(new SetNodeParamAction(param.node.nodeId, valueId, false)); }}),
+        new MenuItem('■ rectangle', null, false, {checkCallback: () =>  param.node[valueId], callback: () => { hideAllMenus(); actionManager.do(new SetNodeParamAction(param.node.nodeId, valueId, true )); }})]);
+
+    param.div.addEventListener('pointerdown', e => param.node.showParamMenu(e, param, menu));
+
+    return menu;
+}

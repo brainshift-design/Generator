@@ -81,12 +81,12 @@ function addGradientProp(obj, prop, target = obj.fills)
 
 
     
-    let   x   =        prop.x     .value /*toNumber()*/  / 100;
-    let   y   =        prop.y     .value /*toNumber()*/  / 100;
-    const a   =        prop.angle .value /*toNumber()*/  / 360*Tau;
-    let   s   = nozero(prop.size  .value /*toNumber()*/  / 100);
-    let   asp = nozero(prop.aspect.value /*toNumber()*/  / 100);
-    let   sk  =        prop.skew  .value /*toNumber()*/  / 100;
+    let   x   =        prop.x     .value / 100;
+    let   y   =        prop.y     .value / 100;
+    const a   =        prop.angle .value / 360*Tau;
+    let   s   = nozero(prop.size  .value / 100);
+    let   asp = nozero(prop.aspect.value / 100);
+    let   sk  =        prop.skew  .value / 100;
     
 
     const pos      = prop.position.value;
