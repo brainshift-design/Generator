@@ -195,7 +195,14 @@ extends OpColorBase
         this.paramY   .controls[0].displayMax = pos < 3 ? 100 : Number.MAX_SAFE_INTEGER;
 
 
-        this.paramAspect.setName('<span style="font-size: 6px; position: relative; top: -1px;">' + (this.diagonalAspect ? '□' : '◇') + '</span> aspect', true);
+        const pre = 
+            this.paramType.value.value == 3
+            ?   '<span style="font-size: 6px; position: relative; top: -1px;">' 
+              + (this.diagonalAspect ? '□' : '◇') 
+              + '</span> '
+            : '';
+
+        this.paramAspect.setName(pre + 'aspect', true);
 
 
         this.updateParamControls();
@@ -405,7 +412,7 @@ function createGradientParamMenu(param, valueId)
         new MenuItem('◆ diamond',  null, false, {checkCallback: () => !param.node[valueId], callback: () => { hideAllMenus(); actionManager.do(new SetNodeParamAction(param.node.nodeId, valueId, false)); }}),
         new MenuItem('■ rectangle', null, false, {checkCallback: () =>  param.node[valueId], callback: () => { hideAllMenus(); actionManager.do(new SetNodeParamAction(param.node.nodeId, valueId, true )); }})]);
 
-    param.div.addEventListener('pointerdown', e => param.node.showParamMenu(e, param, menu));
+    param.div.addEventListener('pointerdown', e => { if (param.node.paramType.value.value == 3) param.node.showParamMenu(e, param, menu); });
 
     return menu;
 }
