@@ -12,33 +12,38 @@ extends GValue
     skew;
     blend;
 
+    diagAspect;
 
 
-    constructor(stops    = new ListValue(),
-                gradType = new NumberValue(0),
-                position = new NumberValue(0),
-                x        = new NumberValue(0),
-                y        = new NumberValue(0),
-                size     = new NumberValue(0),
-                angle    = new NumberValue(0),
-                aspect   = new NumberValue(0),
-                skew     = new NumberValue(0),
-                blend    = new NumberValue(0))
+
+    constructor(stops      = new ListValue(),
+                gradType   = new NumberValue(0),
+                position   = new NumberValue(0),
+                x          = new NumberValue(0),
+                y          = new NumberValue(0),
+                size       = new NumberValue(0),
+                angle      = new NumberValue(0),
+                aspect     = new NumberValue(0),
+                diagAspect = false,
+                skew       = new NumberValue(0),
+                blend      = new NumberValue(0))
     {
         super(GRADIENT_VALUE);
 
-        this.stops    = stops   .copy();
-        this.gradType = gradType.copy();
-        this.position = position.copy();
-        this.x        = x       .copy();
-        this.y        = y       .copy();
-        this.size     = size    .copy();
-        this.angle    = angle   .copy();
-        this.aspect   = aspect  .copy();
-        this.skew     = skew    .copy();
-        this.blend    = blend   .copy();
+        this.stops      = stops   .copy();
+        this.gradType   = gradType.copy();
+        this.position   = position.copy();
+        this.x          = x       .copy();
+        this.y          = y       .copy();
+        this.size       = size    .copy();
+        this.angle      = angle   .copy();
+        this.aspect     = aspect  .copy();
+        this.skew       = skew    .copy();
+        this.blend      = blend   .copy();
 
-        this.valid = true;
+        this.diagAspect = diagAspect;
+
+        this.valid      = true;
     }
 
 
@@ -54,6 +59,7 @@ extends GValue
             this.size,
             this.angle,
             this.aspect,
+            this.diagAspect,
             this.skew,
             this.blend);
 
@@ -91,6 +97,7 @@ extends GValue
             && this.size    .equals(grad.size    )
             && this.angle   .equals(grad.angle   )
             && this.aspect  .equals(grad.aspect  )
+            && this.diagAspect == grad.diagAspect
             && this.skew    .equals(grad.skew    )
             && this.blend   .equals(grad.blend   );
     }
@@ -121,6 +128,7 @@ extends GValue
             + ' ' + this.size    .toString()
             + ' ' + this.angle   .toString()
             + ' ' + this.aspect  .toString()
+            + ' ' + (this.diagAspect ? '1' : '0')
             + ' ' + this.skew    .toString()
             + ' ' + this.blend   .toString();
     }
@@ -146,6 +154,7 @@ extends GValue
             + ' ' + this.size    .toPreviewString()
             + ' ' + this.angle   .toPreviewString()
             + ' ' + this.aspect  .toPreviewString()
+            + ' ' + (this.diagAspect ? '1' : '0')
             + ' ' + this.skew    .toPreviewString()
             + ' ' + this.blend   .toPreviewString();
     }
@@ -162,6 +171,7 @@ extends GValue
             + ' ' + this.size    .toDisplayString()
             + ' ' + this.angle   .toDisplayString()
             + ' ' + this.aspect  .toDisplayString()
+            + ' ' + (this.diagAspect ? '1' : '0')
             + ' ' + this.skew    .toDisplayString()
             + ' ' + this.blend   .toDisplayString();
     }
@@ -184,6 +194,7 @@ extends GValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
+        false,
         NumberValue.NaN,
         NumberValue.NaN));
 }
@@ -206,16 +217,17 @@ function parseGradientValue(str, i = -1)
 
     const iStart = i;
 
-    const stops    = parseListValue  (str, i); i += stops   [1];
-    const gradType = parseNumberValue(str[i]); i += gradType[1];
-    const position = parseNumberValue(str[i]); i += position[1];
-    const x        = parseNumberValue(str[i]); i += x       [1];
-    const y        = parseNumberValue(str[i]); i += y       [1];
-    const size     = parseNumberValue(str[i]); i += size    [1];
-    const angle    = parseNumberValue(str[i]); i += angle   [1];
-    const aspect   = parseNumberValue(str[i]); i += aspect  [1];
-    const skew     = parseNumberValue(str[i]); i += skew    [1];
-    const blend    = parseNumberValue(str[i]); i += blend   [1];
+    const stops      = parseListValue  (str, i); i += stops   [1];
+    const gradType   = parseNumberValue(str[i]); i += gradType[1];
+    const position   = parseNumberValue(str[i]); i += position[1];
+    const x          = parseNumberValue(str[i]); i += x       [1];
+    const y          = parseNumberValue(str[i]); i += y       [1];
+    const size       = parseNumberValue(str[i]); i += size    [1];
+    const angle      = parseNumberValue(str[i]); i += angle   [1];
+    const aspect     = parseNumberValue(str[i]); i += aspect  [1];
+    const diagAspect = parseInt(str[i]) == 1;    i ++;
+    const skew       = parseNumberValue(str[i]); i += skew    [1];
+    const blend      = parseNumberValue(str[i]); i += blend   [1];
 
 
     return [
@@ -228,6 +240,7 @@ function parseGradientValue(str, i = -1)
             size    [0], 
             angle   [0], 
             aspect  [0], 
+            diagAspect,
             skew    [0], 
             blend   [0]),
         i - iStart ];

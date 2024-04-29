@@ -7500,15 +7500,50 @@ function addGradientProp(obj, prop, target = obj.fills)
         case 3: gradient[0] = 'GRADIENT_DIAMOND'; break;
     }
 
+    
+    let   x    =        prop.x     .value / 100;
+    let   y    =        prop.y     .value / 100;
+    let   s    = nozero(prop.size  .value / 100);
+    let   a    =        prop.angle .value / 360*Tau;
+    let   asp  = nozero(prop.aspect.value / 100);
+    const diag =        prop.diagAspect;
+    let   sk   =        prop.skew  .value / 100;
 
     
-    let   x   =        prop.x     .value / 100;
-    let   y   =        prop.y     .value / 100;
-    const a   =        prop.angle .value / 360*Tau;
-    let   s   = nozero(prop.size  .value / 100);
-    let   asp = nozero(prop.aspect.value / 100);
-    let   sk  =        prop.skew  .value / 100;
-    
+    if (diag === true)
+    {
+        const s_  = ((Math.PI/2)**(asp-1)) / 2;
+        const a_  = ((7*Math.PI/9)**(1-asp) - 1)/Math.PI;
+
+        const _p1 = 3.44;
+        const _s2 = 0.23;
+
+        const asp_ = 
+            asp < 1
+            ? Math.PI * Math.sign(asp) * (Math.abs(asp-1)**_p1) + 1
+            : _s2 * ((asp-1)**(Math.PI/2)) + 1;
+
+        const _a =  1.38;
+        const _b = -2.67;
+
+        const sk_ = _a ** (_b * (asp - 1)) - 1;
+
+        console.log('a =', a);
+        console.log('s =', s);
+        console.log('asp =', asp);
+        console.log('sk =', sk);
+
+        console.log('a_ =', a_);
+        console.log('s_ =', s_);
+        console.log('asp_ =', asp_);
+        console.log('sk_ =', sk_);
+
+        a   = a_;
+        s   = s_;
+        asp = asp_;
+        sk  = sk_;
+    }
+
 
     const pos      = prop.position.value;
     const isLinear = prop.gradType.value == 0;
@@ -12834,33 +12869,38 @@ extends GValue
     skew;
     blend;
 
+    diagAspect;
 
 
-    constructor(stops    = new ListValue(),
-                gradType = new NumberValue(0),
-                position = new NumberValue(0),
-                x        = new NumberValue(0),
-                y        = new NumberValue(0),
-                size     = new NumberValue(0),
-                angle    = new NumberValue(0),
-                aspect   = new NumberValue(0),
-                skew     = new NumberValue(0),
-                blend    = new NumberValue(0))
+
+    constructor(stops      = new ListValue(),
+                gradType   = new NumberValue(0),
+                position   = new NumberValue(0),
+                x          = new NumberValue(0),
+                y          = new NumberValue(0),
+                size       = new NumberValue(0),
+                angle      = new NumberValue(0),
+                aspect     = new NumberValue(0),
+                diagAspect = false,
+                skew       = new NumberValue(0),
+                blend      = new NumberValue(0))
     {
         super(GRADIENT_VALUE);
 
-        this.stops    = stops   .copy();
-        this.gradType = gradType.copy();
-        this.position = position.copy();
-        this.x        = x       .copy();
-        this.y        = y       .copy();
-        this.size     = size    .copy();
-        this.angle    = angle   .copy();
-        this.aspect   = aspect  .copy();
-        this.skew     = skew    .copy();
-        this.blend    = blend   .copy();
+        this.stops      = stops   .copy();
+        this.gradType   = gradType.copy();
+        this.position   = position.copy();
+        this.x          = x       .copy();
+        this.y          = y       .copy();
+        this.size       = size    .copy();
+        this.angle      = angle   .copy();
+        this.aspect     = aspect  .copy();
+        this.skew       = skew    .copy();
+        this.blend      = blend   .copy();
 
-        this.valid = true;
+        this.diagAspect = diagAspect;
+
+        this.valid      = true;
     }
 
 
@@ -12876,6 +12916,7 @@ extends GValue
             this.size,
             this.angle,
             this.aspect,
+            this.diagAspect,
             this.skew,
             this.blend);
 
@@ -12913,6 +12954,7 @@ extends GValue
             && this.size    .equals(grad.size    )
             && this.angle   .equals(grad.angle   )
             && this.aspect  .equals(grad.aspect  )
+            && this.diagAspect == grad.diagAspect
             && this.skew    .equals(grad.skew    )
             && this.blend   .equals(grad.blend   );
     }
@@ -12943,6 +12985,7 @@ extends GValue
             + ' ' + this.size    .toString()
             + ' ' + this.angle   .toString()
             + ' ' + this.aspect  .toString()
+            + ' ' + (this.diagAspect ? '1' : '0')
             + ' ' + this.skew    .toString()
             + ' ' + this.blend   .toString();
     }
@@ -12968,6 +13011,7 @@ extends GValue
             + ' ' + this.size    .toPreviewString()
             + ' ' + this.angle   .toPreviewString()
             + ' ' + this.aspect  .toPreviewString()
+            + ' ' + (this.diagAspect ? '1' : '0')
             + ' ' + this.skew    .toPreviewString()
             + ' ' + this.blend   .toPreviewString();
     }
@@ -12984,6 +13028,7 @@ extends GValue
             + ' ' + this.size    .toDisplayString()
             + ' ' + this.angle   .toDisplayString()
             + ' ' + this.aspect  .toDisplayString()
+            + ' ' + (this.diagAspect ? '1' : '0')
             + ' ' + this.skew    .toDisplayString()
             + ' ' + this.blend   .toDisplayString();
     }
@@ -13006,6 +13051,7 @@ extends GValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
+        false,
         NumberValue.NaN,
         NumberValue.NaN));
 }
@@ -13028,16 +13074,17 @@ function parseGradientValue(str, i = -1)
 
     const iStart = i;
 
-    const stops    = parseListValue  (str, i); i += stops   [1];
-    const gradType = parseNumberValue(str[i]); i += gradType[1];
-    const position = parseNumberValue(str[i]); i += position[1];
-    const x        = parseNumberValue(str[i]); i += x       [1];
-    const y        = parseNumberValue(str[i]); i += y       [1];
-    const size     = parseNumberValue(str[i]); i += size    [1];
-    const angle    = parseNumberValue(str[i]); i += angle   [1];
-    const aspect   = parseNumberValue(str[i]); i += aspect  [1];
-    const skew     = parseNumberValue(str[i]); i += skew    [1];
-    const blend    = parseNumberValue(str[i]); i += blend   [1];
+    const stops      = parseListValue  (str, i); i += stops   [1];
+    const gradType   = parseNumberValue(str[i]); i += gradType[1];
+    const position   = parseNumberValue(str[i]); i += position[1];
+    const x          = parseNumberValue(str[i]); i += x       [1];
+    const y          = parseNumberValue(str[i]); i += y       [1];
+    const size       = parseNumberValue(str[i]); i += size    [1];
+    const angle      = parseNumberValue(str[i]); i += angle   [1];
+    const aspect     = parseNumberValue(str[i]); i += aspect  [1];
+    const diagAspect = parseInt(str[i]) == 1;    i ++;
+    const skew       = parseNumberValue(str[i]); i += skew    [1];
+    const blend      = parseNumberValue(str[i]); i += blend   [1];
 
 
     return [
@@ -13050,6 +13097,7 @@ function parseGradientValue(str, i = -1)
             size    [0], 
             angle   [0], 
             aspect  [0], 
+            diagAspect,
             skew    [0], 
             blend   [0]),
         i - iStart ];
@@ -36518,7 +36566,9 @@ extends GOperator
     skew     = null;
     blend    = null;
     
+    diagAspect;
     
+
     
     constructor(nodeId, options)
     {
@@ -36648,6 +36698,7 @@ extends GOperator
             size, 
             angle, 
             aspect,
+            this.diagAspect,
             skew,
             blend);
 
@@ -38906,7 +38957,7 @@ extends GShape
             if (   w != 0 
                 && h != 0)
             {
-                if (this.innerAbsolute ) i = i / Math.max(w, h) * 200;
+                if (this.innerAbsolute ) i  /= Math.max(w, h) / 200;
                 if (this.sweepInDegrees) sw /= 3.6;
 
                 const ellipse = new FigmaEllipse(
@@ -49169,17 +49220,20 @@ function genParseGradient(parse)
         grad.inputs.push(genParse(parse));
 
 
-    grad.gradType = genParse(parse); 
-    grad.position = genParse(parse); 
-    grad.x        = genParse(parse); 
-    grad.y        = genParse(parse); 
-    grad.size     = genParse(parse); 
-    grad.angle    = genParse(parse); 
-    grad.aspect   = genParse(parse); 
-    grad.skew     = genParse(parse); 
-    grad.blend    = genParse(parse);
+    grad.gradType   = genParse(parse); 
+    grad.position   = genParse(parse); 
+    grad.x          = genParse(parse); 
+    grad.y          = genParse(parse); 
+    grad.size       = genParse(parse); 
+    grad.angle      = genParse(parse); 
+    grad.aspect     = genParse(parse); 
+    grad.skew       = genParse(parse); 
+    grad.blend      = genParse(parse);
 
     
+    grad.diagAspect = parseInt(parse.move()) > 0;
+
+
     parse.nTab--;
 
 

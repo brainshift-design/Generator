@@ -11,7 +11,7 @@ extends OpColorBase
     paramSkew;
     paramBlend;
 
-    diagonalAspect;
+    diagAspect;
 
     menuAspect;
 
@@ -34,7 +34,7 @@ extends OpColorBase
         this.variableInputs = true;
 
 
-        this.diagonalAspect = false;
+        this.diagAspect     = false;
 
 
         this.colorBack      = createDiv('colorBack');
@@ -71,7 +71,7 @@ extends OpColorBase
         this.paramSkew  .controls[0].suffix        = '%';
 
 
-        this.menuAspect = createGradientParamMenu(this.paramAspect, 'diagonalAspect');
+        this.menuAspect = createGradientParamMenu(this.paramAspect, 'diagAspect');
     }
     
     
@@ -133,6 +133,9 @@ extends OpColorBase
         request.push(...this.node.paramAspect  .genRequest(gen));
         request.push(...this.node.paramSkew    .genRequest(gen));
         request.push(...this.node.paramBlend   .genRequest(gen));
+
+
+        request.push(this.node.diagAspect ? 1 : 0);
 
         
         gen.scope.pop();
@@ -198,7 +201,7 @@ extends OpColorBase
         const pre = 
             this.paramType.value.value == 3
             ?   '<span style="font-size: 6px; position: relative; top: -1px;">' 
-              + (this.diagonalAspect ? '□' : '◇') 
+              + (this.diagAspect ? '□' : '◇') 
               + '</span> '
             : '';
 
@@ -384,7 +387,7 @@ extends OpColorBase
         let json = super.toJsonBase(nTab);
 
         json += 
-              ',\n' + pos + tab + '"diagonalAspect": "'  + this.diagonalAspect  + '"';
+              ',\n' + pos + tab + '"diagAspect": "'  + this.diagAspect  + '"';
 
         return json;
     }
@@ -395,8 +398,8 @@ extends OpColorBase
     {
         super.loadParams(_node, pasting);
 
-        if (_node.diagonalAspect)
-            this.diagonalAspect  = parseBool(_node.diagonalAspect);
+        if (_node.diagAspect)
+            this.diagAspect  = parseBool(_node.diagAspect);
     }
 }
 

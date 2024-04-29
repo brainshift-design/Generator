@@ -13,7 +13,9 @@ extends GOperator
     skew     = null;
     blend    = null;
     
+    diagAspect;
     
+
     
     constructor(nodeId, options)
     {
@@ -143,6 +145,7 @@ extends GOperator
             size, 
             angle, 
             aspect,
+            this.diagAspect,
             skew,
             blend);
 

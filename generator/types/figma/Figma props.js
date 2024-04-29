@@ -79,15 +79,50 @@ function addGradientProp(obj, prop, target = obj.fills)
         case 3: gradient[0] = 'GRADIENT_DIAMOND'; break;
     }
 
+    
+    let   x    =        prop.x     .value / 100;
+    let   y    =        prop.y     .value / 100;
+    let   s    = nozero(prop.size  .value / 100);
+    let   a    =        prop.angle .value / 360*Tau;
+    let   asp  = nozero(prop.aspect.value / 100);
+    const diag =        prop.diagAspect;
+    let   sk   =        prop.skew  .value / 100;
 
     
-    let   x   =        prop.x     .value / 100;
-    let   y   =        prop.y     .value / 100;
-    const a   =        prop.angle .value / 360*Tau;
-    let   s   = nozero(prop.size  .value / 100);
-    let   asp = nozero(prop.aspect.value / 100);
-    let   sk  =        prop.skew  .value / 100;
-    
+    if (diag === true)
+    {
+        const s_  = ((Math.PI/2)**(asp-1)) / 2;
+        const a_  = ((7*Math.PI/9)**(1-asp) - 1)/Math.PI;
+
+        const _p1 = 3.44;
+        const _s2 = 0.23;
+
+        const asp_ = 
+            asp < 1
+            ? Math.PI * Math.sign(asp) * (Math.abs(asp-1)**_p1) + 1
+            : _s2 * ((asp-1)**(Math.PI/2)) + 1;
+
+        const _a =  1.38;
+        const _b = -2.67;
+
+        const sk_ = _a ** (_b * (asp - 1)) - 1;
+
+        console.log('a =', a);
+        console.log('s =', s);
+        console.log('asp =', asp);
+        console.log('sk =', sk);
+
+        console.log('a_ =', a_);
+        console.log('s_ =', s_);
+        console.log('asp_ =', asp_);
+        console.log('sk_ =', sk_);
+
+        a   = a_;
+        s   = s_;
+        asp = asp_;
+        sk  = sk_;
+    }
+
 
     const pos      = prop.position.value;
     const isLinear = prop.gradType.value == 0;
