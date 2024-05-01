@@ -648,11 +648,12 @@ function handleLegacyNode(_node, genVersion)
         const paramTo = _node.params.find(p => p[1] == 'to');
         if (paramTo) paramTo[1] = 'sweep';
 
-        if (genVersion < 398)
-        {
-            const paramAspect = _node.params.find(p => p[1] == 'aspect');
+        const paramAspect = _node.params.find(p => p[1] == 'aspect');
 
-            if (paramAspect) 
+        if (paramAspect) 
+        {
+            if (   genVersion >= 398
+                && genVersion <  413)
             {
                 const value = parseNumberValue(paramAspect[2]);
                 value.value = 100/(value.value/100);
