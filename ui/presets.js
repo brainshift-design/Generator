@@ -125,6 +125,7 @@ function getPresetGraph(graphId)
         case 'noiseBlur':            return presetNoiseBlur;
 
         case 'arcLetters':           return presetArcLetters;
+        case 'doctorsHandwriting':   return presetDoctorsHandwriting;
         
         case 'twoMathNodes':         return presetTwoMathNodes;
         case 'quadraticFormula':     return presetQuadraticFormula;
