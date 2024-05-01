@@ -89,41 +89,6 @@ function addGradientProp(obj, prop, target = obj.fills)
     let   sk   =        prop.skew  .value / 100;
 
     
-    if (diag === true)
-    {
-        const s_  = ((Math.PI/2)**(asp-1)) / 2;
-        const a_  = ((7*Math.PI/9)**(1-asp) - 1)/Math.PI;
-
-        const _p1 = 3.44;
-        const _s2 = 0.23;
-
-        const asp_ = 
-            asp < 1
-            ? Math.PI * Math.sign(asp) * (Math.abs(asp-1)**_p1) + 1
-            : _s2 * ((asp-1)**(Math.PI/2)) + 1;
-
-        const _a =  1.38;
-        const _b = -2.67;
-
-        const sk_ = _a ** (_b * (asp - 1)) - 1;
-
-        console.log('a =', a);
-        console.log('s =', s);
-        console.log('asp =', asp);
-        console.log('sk =', sk);
-
-        console.log('a_ =', a_);
-        console.log('s_ =', s_);
-        console.log('asp_ =', asp_);
-        console.log('sk_ =', sk_);
-
-        a   = a_;
-        s   = s_;
-        asp = asp_;
-        sk  = sk_;
-    }
-
-
     const pos      = prop.position.value;
     const isLinear = prop.gradType.value == 0;
     
@@ -156,10 +121,29 @@ function addGradientProp(obj, prop, target = obj.fills)
 
     let p0 = point(x, y);
     let p1 = addv(p0, vector(a, s));
-    
+
     let p2 = addv(
         addv(p0, vector(a + Tau/4, s / nozero(asp))),
         mulvs(unitv(subv(p1, p0)), distv(p0, p1) * sk));
+
+
+    if (diag === true)
+    {
+        const d1 = vector(-Tau/8, (asp-1) * Math.sqrt(sqr(distv(p0, p1))/2));
+        const d2 = vector( Tau/8, (asp-1) * Math.sqrt(sqr(distv(p0, p2))/2));
+        
+        p1 = addv(p1, d1);
+        p2 = addv(p2, d2);
+        
+        const sko = (1.075*(asp-0.156))/2.718**(asp-0.156) + 1.61;
+            // asp < 1
+            // ? -0.6972*x**2 + 1.2591*x + 1.4318  //-0.58 * Math.abs(asp - 1)**2.42
+            // :  0.0105*x**2 - 0.1504*x + 2.1517; //-0.1 * asp + 2.1;
+
+        const _d2 = vector(Tau/4 + Tau/8,  sko * (asp-1) * Math.sqrt(sqr(distv(p0, p2))/2));
+        
+        p2 = addv(p2, _d2);
+    }
 
 
     if (pos > 0)
