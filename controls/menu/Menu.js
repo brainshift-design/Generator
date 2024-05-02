@@ -243,7 +243,7 @@ class Menu
 
         let srcRect = srcDiv.getBoundingClientRect();
 
-        srcRect.y -= this.parentMenu ? 5 : 10;
+        srcRect.y -= subMenu ? 5 : 9;
 
 
         const margin = 8;
