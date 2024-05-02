@@ -238,9 +238,6 @@ extends OpColorBase
             updateHeaderCheckers(this, colors);
 
 
-        let gradient = '';
-
-
         const outlineColor = darkMode ? '#000' : '#fff';
 
 
@@ -254,79 +251,13 @@ extends OpColorBase
 
         else if (stops.length > 1)
         {
-            switch (this.value.gradType.value)
-            {
-                case 0: gradient += 'linear-gradient'; break;
-                case 1: gradient += 'radial-gradient'; break;
-                case 2: gradient += 'conic-gradient';  break;
-                case 3: gradient += 'radial-gradient'; break;
-            }
-
-
-            gradient += '(';
-
-
-            const aspect = this.measureData.headerOffset.width / nozero(this.measureData.headerOffset.height);
-
-            switch (this.value.gradType.value)
-            {
-                case 0: 
-                    gradient += (this.value.angle.value + 90) + 'deg'; 
-                    break;
-
-                case 1: 
-                case 3:
-                    gradient += 'circle ' + (aspect >= 1 ? 'closest' : 'farthest') + '-side at center';
-                    // switch (this.value.position.value)
-                    // {
-                    //     case 0: gradient += 'ellipse closest-side at center '; break;
-                    //     case 1: gradient += 'circle ' + (aspect >= 1 ? 'farthest' : 'closest') + '-side at center';  break;
-                    //     case 2: gradient += 'circle ' + (aspect >= 1 ? 'closest' : 'farthest') + '-side at center';   break;
-                    //     case 3: gradient += 'circle closest-side at center';   break;
-                    // }
-                    break;
-
-                case 2: 
-                    gradient += 'from ' + (this.value.angle.value + 90) + 'deg';
-                    break;
-            }
-
-
-            let minPos = Number.MAX_SAFE_INTEGER;
-            let maxPos = Number.MIN_SAFE_INTEGER;
-
-            for (const stop of stops)
-            {
-                minPos = Math.min(minPos, stop.position.value);
-                maxPos = Math.max(maxPos, stop.position.value);
-            }
-
-            for (const stop of stops)
-                stop.position.value = (stop.position.value - minPos) / nozero(maxPos - minPos) * 100;
-
-
-            for (let i = 0; i < stops.length; i++)
-            {
-                const stop = stops[i];
-                gradient += ', ' + rgba2style(stop.fill.toRgba()) + ' ' + (stop.position.value) + '%';
-            }
-
-
-            gradient += ')';
-
-
-            this.header.style.background         = gradient;
-            this.header.style.backgroundPosition = '50% 50%';
-    
-            if (this.value.gradType.value > 0)
-                this.header.style.backgroundSize = '150% 150%';
-            else
-                this.header.style.backgroundSize = '100% 100%';
+            if (this.value.gradType.value == 3) this.createDiamondGradient(stops);
+            else                                this.createNormalGradient(stops);
         }
 
 
-        this.divIcon  .style.filter = 'drop-shadow(0 0 1px '+outlineColor+')';
-        this.labelText.style.filter = 'drop-shadow(0 0 1px '+outlineColor+')';
+        this.divIcon  .style.filter = 'drop-shadow(0 0 1px ' + outlineColor + ')';
+        this.labelText.style.filter = 'drop-shadow(0 0 1px ' + outlineColor + ')';
     }
 
 
@@ -378,7 +309,149 @@ extends OpColorBase
     }
 
 
-    
+
+    createNormalGradient(stops)
+    {
+        let gradient = '';
+
+
+        switch (this.value.gradType.value)
+        {
+            case 0: gradient += 'linear-gradient'; break;
+            case 1: gradient += 'radial-gradient'; break;
+            case 2: gradient += 'conic-gradient';  break;
+            // case 3: gradient += 'radial-gradient'; break;
+        }
+
+
+        gradient += '(';
+
+
+        const aspect = this.measureData.headerOffset.width / nozero(this.measureData.headerOffset.height);
+
+        switch (this.value.gradType.value)
+        {
+            case 0: 
+                gradient += (this.value.angle.value + 90) + 'deg'; 
+                break;
+
+            case 1: 
+            // case 3:
+                gradient += 'circle ' + (aspect >= 1 ? 'closest' : 'farthest') + '-side at center';
+                // switch (this.value.position.value)
+                // {
+                //     case 0: gradient += 'ellipse closest-side at center '; break;
+                //     case 1: gradient += 'circle ' + (aspect >= 1 ? 'farthest' : 'closest') + '-side at center';  break;
+                //     case 2: gradient += 'circle ' + (aspect >= 1 ? 'closest' : 'farthest') + '-side at center';   break;
+                //     case 3: gradient += 'circle closest-side at center';   break;
+                // }
+                break;
+
+            case 2: 
+                gradient += 'from ' + (this.value.angle.value + 90) + 'deg';
+                break;
+        }
+
+
+        let minPos = Number.MAX_SAFE_INTEGER;
+        let maxPos = Number.MIN_SAFE_INTEGER;
+
+        for (const stop of stops)
+        {
+            minPos = Math.min(minPos, stop.position.value);
+            maxPos = Math.max(maxPos, stop.position.value);
+        }
+
+        for (const stop of stops)
+            stop.position.value = (stop.position.value - minPos) / nozero(maxPos - minPos) * 100;
+
+
+        for (let i = 0; i < stops.length; i++)
+        {
+            const stop = stops[i];
+            gradient += ', ' + rgba2style(stop.fill.toRgba()) + ' ' + (stop.position.value) + '%';
+        }
+
+
+        gradient += ')';
+
+
+        this.header.style.background = gradient;
+
+        this.header
+            .querySelectorAll('.gradient-part')
+            .forEach(e => this.header.removeChild(e));
+
+
+        this.header.style.backgroundPosition = '50% 50%';
+
+        if (this.value.gradType.value > 0)
+            this.header.style.backgroundSize = '150% 150%';
+        else
+            this.header.style.backgroundSize = '100% 100%';
+    }
+
+
+
+    createDiamondGradient(stops)
+    {
+        const strStops = this.getGradientStops(stops);
+
+        const parts = 
+        [
+            { direction: 'to top left',     clip: 'polygon(50% 0%, 0% 100%, 50% 50%)'   },
+            { direction: 'to top right',    clip: 'polygon(50% 0%, 100% 100%, 50% 50%)' },
+            { direction: 'to bottom left',  clip: 'polygon(50% 100%, 0% 0%, 50% 50%)'   },
+            { direction: 'to bottom right', clip: 'polygon(50% 100%, 100% 0%, 50% 50%)' }
+        ];
+
+        
+        parts.forEach(part =>
+        {
+            const div = createDiv();
+            
+            div.className = 'gradient-part';
+
+            div.style.background = `linear-gradient(${part.direction} ${strStops})`;
+            div.style.clipPath   =  part.clip;
+            
+            this.header.insertBefore(div, this.labelWrapper);
+        });
+    }
+
+
+
+    getGradientStops(stops)
+    {
+        let gradient = '';
+
+        
+        let minPos = Number.MAX_SAFE_INTEGER;
+        let maxPos = Number.MIN_SAFE_INTEGER;
+
+        for (const stop of stops)
+        {
+            minPos = Math.min(minPos, stop.position.value);
+            maxPos = Math.max(maxPos, stop.position.value);
+        }
+
+
+        for (const stop of stops)
+            stop.position.value = (stop.position.value - minPos) / nozero(maxPos - minPos) * 100;
+
+
+        for (let i = 0; i < stops.length; i++)
+        {
+            const stop = stops[i];
+            gradient += ', ' + rgba2style(stop.fill.toRgba()) + ' ' + (stop.position.value) + '%';
+        }
+
+
+        return gradient;
+    }
+
+
+
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
