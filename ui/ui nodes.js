@@ -294,20 +294,29 @@ function uiUpdateSavedConnectionsFromNodeId(nodeId, saveOld)
 
 function makeSelectedNodesActive()
 {
-    if (graphView.selectedNodes.some(n => !n.active))
-        actionManager.do(new MakeActiveNodesAction(graphView.selectedNodes.map(n => n.id), false));
+    actionManager.do(new MakeActiveNodesAction(
+        graph.currentPage.nodes.filter(n => graphView.selectedNodes.includes(n)).map(n => n.nodeId),
+        true,
+        false));
 }
 
 
 
-function makeSelectedNodesInactive()
+// function makeSelectedNodesInactive()
+// {
+//     if (graphView.selectedNodes.some(n => n.active))
+//     {
+//         actionManager.do(new MakeActiveNodesAction(
+//             graph.currentPage.nodes.filter(n => n.active && !graphView.selectedNodes.includes(n)).map(n => n.nodeId),
+//             false));
+//     }
+// }
+
+
+
+function makeAllNodesInactive()
 {
-    if (graphView.selectedNodes.some(n => n.active))
-    {
-        actionManager.do(new MakeActiveNodesAction(
-            graph.currentPage.nodes.filter(n => n.active && !graphView.selectedNodes.includes(n)).map(n => n.nodeId),
-            false));
-    }
+    actionManager.do(new MakeActiveNodesAction([], false, true));
 }
 
 

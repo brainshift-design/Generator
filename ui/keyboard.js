@@ -189,8 +189,9 @@ document.addEventListener('keydown', e =>
     }
 
     // select all
-    else if (e.code == 'KeyA'
-          && getCtrlKey(e))
+    else if ( e.code == 'KeyA'
+          &&  getCtrlKey(e)
+          && !e.altKey)
     {
         e.preventDefault();
         graphView.selectAllNodes(e.shiftKey);
@@ -209,7 +210,7 @@ document.addEventListener('keydown', e =>
           && e.altKey)
     {
         e.preventDefault();
-        makeSelectedNodesInactive();
+        makeAllNodesInactive();
     }
 
     // group selected
@@ -324,7 +325,7 @@ document.addEventListener('keydown', e =>
             graphView.deselectAllNodes(e.shiftKey);
 
         else
-            actionManager.do(new MakeActiveNodesAction([], false));
+            actionManager.do(new MakeActiveNodesAction([], false, true));
     }
 
     //
@@ -381,6 +382,7 @@ document.addEventListener('keydown', e =>
     {
         actionManager.do(new MakeActiveNodesAction(
             graph.nodes.filter(n => n.active).map(n => n.nodeId), 
+            false,
             false));
     }
 

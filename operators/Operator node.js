@@ -469,7 +469,7 @@ Operator.prototype.createHeader = function()
 
         else
         {
-            actionManager.do(new MakeActiveNodesAction([this.id], e.shiftKey));
+            makeSelectedNodesActive();
 
             if (this.deselectTimer > -1)
             {
