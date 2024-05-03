@@ -251,9 +251,15 @@ extends OpColorBase
 
         else if (stops.length > 1)
         {
-            if (this.value.gradType.value == 3) this.createDiamondGradient(stops);
+            if (this.value.gradType.value == 3) this.createDiamondGradient(stops, this.value.gradType.value);
             else                                this.createNormalGradient(stops);
         }
+
+
+        this.header.style.backgroundColor =
+            stops.length > 0 
+            ?  rgba2style(stops.at(-1).fill.toRgba())
+            : 'transparent';
 
 
         this.divIcon  .style.filter = 'drop-shadow(0 0 1px ' + outlineColor + ')';
@@ -336,15 +342,7 @@ extends OpColorBase
                 break;
 
             case 1: 
-            // case 3:
                 gradient += 'circle ' + (aspect >= 1 ? 'closest' : 'farthest') + '-side at center';
-                // switch (this.value.position.value)
-                // {
-                //     case 0: gradient += 'ellipse closest-side at center '; break;
-                //     case 1: gradient += 'circle ' + (aspect >= 1 ? 'farthest' : 'closest') + '-side at center';  break;
-                //     case 2: gradient += 'circle ' + (aspect >= 1 ? 'closest' : 'farthest') + '-side at center';   break;
-                //     case 3: gradient += 'circle closest-side at center';   break;
-                // }
                 break;
 
             case 2: 
@@ -383,26 +381,42 @@ extends OpColorBase
             .forEach(e => this.header.removeChild(e));
 
 
-        this.header.style.backgroundPosition = '50% 50%';
+        if (this.value.gradType.value == 1)
+        {
+            const ha = 
+                this.measureData.headerOffset.width 
+                / this.measureData.headerOffset.height;
 
-        if (this.value.gradType.value > 0)
-            this.header.style.backgroundSize = '150% 150%';
-        else
-            this.header.style.backgroundSize = '100% 100%';
+
+            this.header.style.backgroundPosition = '50% 50%';
+            this.header.style.backgroundRepeat   = 'no-repeat';
+
+            if (this.value.gradType.value > 0)
+                this.header.style.backgroundSize = Math.max(50, 70*ha)+'% ' + Math.max(50, 70*ha)+'%';
+            else
+                this.header.style.backgroundSize = '100% 100%';
+        }
     }
 
 
 
-    createDiamondGradient(stops)
+    createDiamondGradient(stops, type)
     {
-        const strStops = this.getGradientStops(stops);
+        const strStops = this.getGradientStops(stops, type);
+
+        const ha = 
+              this.measureData.headerOffset.width 
+            / this.measureData.headerOffset.height;
+
+
+        let angle = trimAngle(this.value.angle.value);
 
         const parts = 
         [
-            { direction: 'to top left',     clip: 'polygon(50% 0%, 0% 100%, 50% 50%)'   },
-            { direction: 'to top right',    clip: 'polygon(50% 0%, 100% 100%, 50% 50%)' },
-            { direction: 'to bottom left',  clip: 'polygon(50% 100%, 0% 0%, 50% 50%)'   },
-            { direction: 'to bottom right', clip: 'polygon(50% 100%, 100% 0%, 50% 50%)' }
+            { direction: 'to top left',     clip: 'polygon(50% 0%, 0% 50%, 50% 50%)',     rotation: trimAngle(angle)},
+            { direction: 'to top right',    clip: 'polygon(50% 0%, 50% 50%, 100% 50%)',   rotation: trimAngle(angle)},
+            { direction: 'to bottom left',  clip: 'polygon(0% 50%, 50% 100%, 50% 50%)',   rotation: trimAngle(angle)},
+            { direction: 'to bottom right', clip: 'polygon(50% 50%, 50% 100%, 100% 50%)', rotation: trimAngle(angle)}
         ];
 
         
@@ -412,20 +426,20 @@ extends OpColorBase
             
             div.className = 'gradient-part';
 
+            div.style.top        = (-100*(ha-1)/2) + '%';
+            div.style.height     = (100*ha) + '%';
             div.style.background = `linear-gradient(${part.direction} ${strStops})`;
             div.style.clipPath   =  part.clip;
-            
+            div.style.transform  = `rotate(${part.rotation}deg)`;
+
             this.header.insertBefore(div, this.labelWrapper);
         });
     }
 
 
 
-    getGradientStops(stops)
+    getGradientExtremes(stops)
     {
-        let gradient = '';
-
-        
         let minPos = Number.MAX_SAFE_INTEGER;
         let maxPos = Number.MIN_SAFE_INTEGER;
 
@@ -435,15 +449,38 @@ extends OpColorBase
             maxPos = Math.max(maxPos, stop.position.value);
         }
 
+        return {minPos, maxPos};
+    }
+
+
+
+    getGradientStops(stops, type)
+    {
+        let gradient = '';
+
+        
+        const {minPos, maxPos} = this.getGradientExtremes(stops);
 
         for (const stop of stops)
             stop.position.value = (stop.position.value - minPos) / nozero(maxPos - minPos) * 100;
 
 
-        for (let i = 0; i < stops.length; i++)
+        const _stops = stops.slice();
+
+        if (type == 3)
         {
-            const stop = stops[i];
-            gradient += ', ' + rgba2style(stop.fill.toRgba()) + ' ' + (stop.position.value) + '%';
+            _stops.forEach(s => s.position.value = 100 - (100 - s.position.value) / 2);
+            _stops.forEach(s => s.position.value =  50 + (s.position.value - 50) / 2 * (Math.sqrt(2)/2));
+        }
+
+
+        for (let i = 0; i < _stops.length; i++)
+        {
+            const stop = _stops[i];
+
+            gradient += 
+                  ', ' + rgba2style(stop.fill.toRgba()) 
+                + ' '  + (stop.position.value) + '%';
         }
 
 

@@ -1468,6 +1468,16 @@ function crossv(v)
 
 
 
+function trimAngle(angle, min = 0, max = 360)
+{
+    while (angle <  min) angle += max - min;
+    while (angle >= max) angle -= max - min;
+
+    return angle;
+}
+
+
+
 function anglev(v)
 {
     let angle = Math.atan2(v.y, v.x);

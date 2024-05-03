@@ -13,6 +13,7 @@ Operator.prototype.createLabel = function()
     this.labelText.node       = this;
     this.labelText.clickTimer = -1; 
     
+
     this.label       .appendChild(this.divIcon);
     this.label       .appendChild(this.labelText);
 
@@ -20,7 +21,6 @@ Operator.prototype.createLabel = function()
     this.header      .appendChild(this.labelWrapper);
 
     
-
 
     this.labelWrapper.addEventListener('pointerdown', e =>
     {
@@ -47,7 +47,7 @@ Operator.prototype.createLabel = function()
     });
 };
 
-
+ 
 
 Operator.prototype.updateHeaderLabel = function()
 {
@@ -83,10 +83,10 @@ Operator.prototype.updateHeaderLabel = function()
 
     const mask =
         'linear-gradient(90deg, '
-        + '#0000 ' + s0 + 'px, '
-        + '#000f ' + s1 + 'px, '
-        + '#000f ' + s2 + 'px, '
-        + '#0000 ' + s3 + 'px)';
+            + '#0000 ' + s0 + 'px, '
+            + '#000f ' + s1 + 'px, '
+            + '#000f ' + s2 + 'px, '
+            + '#0000 ' + s3 + 'px)';
 
     this.labelWrapper.style.width = '100%';
 
