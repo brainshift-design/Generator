@@ -76,6 +76,8 @@ extends GOperator1
                     xform, 
                     options.affectSpace ? options.affectSpace.value > 0 : false);
 
+                obj.checkFlipped();
+                    
                 obj.scaleCorners *= Math.abs(scaleCorners);
                 obj.scaleStyle   *= Math.abs(scaleStyle  );
                 

@@ -108,8 +108,7 @@ class Graph
     connect(output, input, inputId = '', outputOrder = -1, createTime = -1)
     {
         //console.log('graph.connect()');
-
-
+        
         if (input.connectedOutput == output)
             return input.connection;
             
