@@ -74,6 +74,40 @@ extends FigmaObject
 
 
 
+    checkFlipped()
+    {
+        const [cx, cy, nx, ny] = this.getFlipFactors();
+
+
+        for (const fill of this.fills)
+        {
+            if (   fill[0] != 'GRADIENT_LINEAR'
+                && fill[0] != 'GRADIENT_RADIAL'
+                && fill[0] != 'GRADIENT_ANGULAR'
+                && fill[0] != 'GRADIENT_DIAMOND')
+                continue;
+
+
+            const angle = anglev(subv(this.xp1, this.xp0));
+            
+            const vertical = 
+                   angle >= Tau*1/8 && angle < Tau*3/8
+                || angle >= Tau*5/8 && angle > Tau*7/8;
+                
+            if (    vertical && cy > 0
+                || !vertical && cx < 0)
+            {
+                for (const stop of fill[2])
+                    stop[4] = 1 - stop[4];
+            }
+        }
+
+
+        super.checkFlipped();
+    }
+
+
+
     toData()
     {
         const weight = this.strokeWeight * Math.abs(this.scaleStyle);

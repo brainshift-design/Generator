@@ -270,22 +270,7 @@ class FigmaObject
 
     checkFlipped()
     {
-        // const vx = subv(this.xp2, this.xp0);
-        // const nx = subv(this.xp1, this.xp0);
-        
-        const vy = subv(this.xp1, this.xp0);
-        const ny = subv(this.xp2, this.xp0);
-
-        // const cx = crossv2(vx, nx);
-        const cy = crossv2(vy, ny);
-
-
-        // if (cx > 0)
-        // {
-        //     this.xp0 = addv(this.xp0, nx);
-        //     this.xp1 = addv(this.xp1, nx);
-        //     this.xp2 = subv(this.xp2, nx);
-        // }
+        const [cx, cy, nx, ny] = this.getFlipFactors();
 
         if (cy < 0)
         {
@@ -293,6 +278,22 @@ class FigmaObject
             this.xp1 = addv(this.xp1, ny);
             this.xp2 = subv(this.xp2, ny);
         }
+    }
+
+
+
+    getFlipFactors()
+    {
+        const vx = subv(this.xp2, this.xp0);
+        const nx = subv(this.xp1, this.xp0);
+        
+        const vy = subv(this.xp1, this.xp0);
+        const ny = subv(this.xp2, this.xp0);
+
+        return [ crossv2(vx, nx),
+                 crossv2(vy, ny),
+                 nx,
+                 ny ];
     }
 
 
