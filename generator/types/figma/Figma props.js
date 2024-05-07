@@ -65,9 +65,11 @@ function addGradientProp(obj, prop, target = obj.fills)
     const gradient = 
     [
         '', // type
-        [], // transform
+        [], // transform points
         [], // stops
-        ''  // blend mode
+        '', // blend mode
+        0   // flags 0 = flipX
+            //       1 = flipY
     ];
 
 
@@ -210,25 +212,8 @@ function addGradientProp(obj, prop, target = obj.fills)
     }
 
 
-    const identityHandles = 
-        [[0,   1,   0],
-         [0.5, 0.5, 1],
-         [1,   1,   1]];
+    gradient[1] = [p0, p1, p2];    
 
-
-    let xform = [
-        [p0.x, p1.x, p2.x],
-        [p0.y, p1.y, p2.y],
-        [1,    1,    1   ]];
-
-
-    xform = mulm3m3(identityHandles, inversem3(xform));
-
-
-    gradient[1] = [
-        xform[0],
-        xform[1] ];
-        
 
     const stops = prop.stops.items;
 
@@ -242,7 +227,7 @@ function addGradientProp(obj, prop, target = obj.fills)
             rgba[1], 
             rgba[2], 
             rgba[3],
-            Math.min(Math.max(0, stop.position.value /*toNumber()*/ / 100), 1)]);
+            Math.min(Math.max(0, stop.position.value / 100), 1)]);
     }
 
 

@@ -74,9 +74,12 @@ extends FigmaObject
 
 
 
-    checkFlipped()
+    checkFlipped(flipX, flipY)
     {
         const [cx, cy, nx, ny] = this.getFlipFactors();
+        
+        
+        super.checkFlipped(flipX, flipY);
 
 
         for (const fill of this.fills)
@@ -88,22 +91,94 @@ extends FigmaObject
                 continue;
 
 
-            const angle = anglev(subv(this.xp1, this.xp0));
+            //console.log('fill =', fill);
+
+            const objAngle  = anglev(subv(this.xp1, this.xp0));
+            const gradAngle = anglev(subv(fill[1][1], fill[1][0]));
+            
+            const angle     = trimAngle(objAngle + gradAngle);
+
             
             const vertical = 
                    angle >= Tau*1/8 && angle < Tau*3/8
-                || angle >= Tau*5/8 && angle > Tau*7/8;
-                
-            if (    vertical && cy > 0
-                || !vertical && cx < 0)
+                || angle >= Tau*5/8 && angle < Tau*7/8;
+
+            const _flipX = ((fill[4] >> 0) & 1) != 0;
+            const _flipY = ((fill[4] >> 1) & 1) != 0;
+
+
+            //console.log('fill =', fill);
+            console.clear();
+            console.log('objAngle =', objAngle);
+            console.log('gradAngle =', gradAngle);
+            console.log('angle =', Math.round(angle/Tau*360));
+            console.log('vertical =', vertical);
+            // console.log('cx =', cx);
+            // console.log('cy =', cy);
+            console.log('flipX =', flipX);
+            console.log('flipY =', flipY);
+            console.log('_flipX =', _flipX);
+            console.log('_flipY =', _flipY);
+            console.log('');
+
+
+            if (   fill[0] == 'GRADIENT_LINEAR')
+                //|| fill[0] == 'GRADIENT_ANGULAR')
             {
-                for (const stop of fill[2])
-                    stop[4] = 1 - stop[4];
+                // if (    _flipX && _flipY)
+                // {
+                //     console.log('reverse 1');
+                //     fill[2].reverse();
+                    
+                //     for (const stop of fill[2])
+                //         stop[4] = 1 - stop[4];
+                // }
+                // else if (   !vertical && flipX && _flipX && (angle < Tau*1/8 || angle > Tau*7/8))
+                // {
+                //     console.log('reverse 2');
+                //     fill[2].reverse();
+                    
+                //     for (const stop of fill[2])
+                //         stop[4] = 1 - stop[4];
+                // }
+                // else if (    vertical && flipX && _flipX && angle > Tau/2)
+                // {
+                //     console.log('reverse 3');
+                //     fill[2].reverse();
+                    
+                //     for (const stop of fill[2])
+                //         stop[4] = 1 - stop[4];
+                // }
+                // else if (    vertical && _flipY && angle > Tau*1/4 && angle < Tau*3/4)
+                // {
+                //     console.log('reverse 4');
+                //     fill[2].reverse();
+                    
+                //     for (const stop of fill[2])
+                //         stop[4] = 1 - stop[4];
+                // }
             }
+
+
+            // if (   fill[0] == 'GRADIENT_LINEAR'
+            //     || fill[0] == 'GRADIENT_ANGULAR'
+            //     || fill[0] == 'GRADIENT_RADIAL'
+            //     || fill[0] == 'GRADIENT_DIAMOND')
+            // {
+            //     if (!vertical && cx < 0)
+            //     {
+            //         fill[1][1][0][2]  = 1 - fill[1][1][0][2];
+            //         fill[1][1][0][0] *= -1;
+            //     }
+                
+            //     if (vertical && cy > 0)
+            //     {
+            //         console.log('vertical');
+            //         fill[1][1][1][2] = 1 - fill[1][1][1][2];
+            //         fill[1][1][1][1] *= -1;
+            //     }
+            // }
         }
-
-
-        super.checkFlipped();
     }
 
 

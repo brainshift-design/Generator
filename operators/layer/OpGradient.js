@@ -413,10 +413,10 @@ extends OpColorBase
 
         const parts = 
         [
-            { direction: 'to top left',     clip: 'polygon(50% 0%, 0% 50%, 50% 50%)',     rotation: trimAngle(angle)},
-            { direction: 'to top right',    clip: 'polygon(50% 0%, 50% 50%, 100% 50%)',   rotation: trimAngle(angle)},
-            { direction: 'to bottom left',  clip: 'polygon(0% 50%, 50% 100%, 50% 50%)',   rotation: trimAngle(angle)},
-            { direction: 'to bottom right', clip: 'polygon(50% 50%, 50% 100%, 100% 50%)', rotation: trimAngle(angle)}
+            { direction: 'to top left',     clip: 'polygon(50% 0%, 0% 50%, 50% 50%)',     rotation: trimAngle(angle, 0, 360)},
+            { direction: 'to top right',    clip: 'polygon(50% 0%, 50% 50%, 100% 50%)',   rotation: trimAngle(angle, 0, 360)},
+            { direction: 'to bottom left',  clip: 'polygon(0% 50%, 50% 100%, 50% 50%)',   rotation: trimAngle(angle, 0, 360)},
+            { direction: 'to bottom right', clip: 'polygon(50% 50%, 50% 100%, 100% 50%)', rotation: trimAngle(angle, 0, 360)}
         ];
 
         

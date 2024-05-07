@@ -968,7 +968,20 @@ function getObjectFills(genObjFills)
             case 'GRADIENT_ANGULAR':
             case 'GRADIENT_DIAMOND':
             {
-                const xform = fill[1];
+                const [p0, p1, p2] = fill[1];
+
+                const identityHandles = 
+                    [[0,   1,   0],
+                     [0.5, 0.5, 1],
+                     [1,   1,   1]];
+
+                let xform = [
+                    [p0.x, p1.x, p2.x],
+                    [p0.y, p1.y, p2.y],
+                    [1,    1,    1   ]];
+
+                xform = mulm3m3(identityHandles, inversem3(xform));
+                xform = [xform[0], xform[1]];
 
 
                 const stops = [];
@@ -1468,7 +1481,7 @@ function crossv(v)
 
 
 
-function trimAngle(angle, min = 0, max = 360)
+function trimAngle(angle, min = 0, max = Tau)
 {
     while (angle <  min) angle += max - min;
     while (angle >= max) angle -= max - min;
@@ -3791,6 +3804,17 @@ function swap(a, b)
 
 
 
+function flipBit(value, index)
+{
+    const bit = ((value >> index) & 1) != 0;
+
+    return value
+        & ~(1 << index)
+        | (!bit ? 1 : 0) << index;
+}
+
+
+
 function indexOfChild(parent, child)
 {
     return Array.prototype.indexOf.call(parent.children, child);
@@ -4403,6 +4427,7 @@ function measureHtmlText(text, font, fontSize)
         
     return boundingRect(divTextMeasure);
 }
+
 
 
 "use strict";
@@ -6988,14 +7013,13 @@ class FigmaObject
 
     xform;
 
-    xp0 = null; //  xp0 ------- xp1 
-    xp1 = null; //   |     
-    xp2 = null; //  xp2
+    xp0   = null; //  xp0 ------- xp1 
+    xp1   = null; //   |     
+    xp2   = null; //  xp2
 
-    sp0 = null; //  sp0 ------- sp1 
-    sp1 = null; //   |
-    sp2 = null; //  sp2
-
+    sp0   = null; //  sp0 ------- sp1 
+    sp1   = null; //   |
+    sp2   = null; //  sp2
 
     scaleCorners;
     scaleStyle;
@@ -7240,15 +7264,37 @@ class FigmaObject
 
 
 
-    checkFlipped()
+    checkFlipped(flipX, flipY)
     {
         const [cx, cy, nx, ny] = this.getFlipFactors();
 
-        if (cy < 0)
+
+        for (const fill of this.fills)
         {
-            this.xp0 = addv(this.xp0, ny);
-            this.xp1 = addv(this.xp1, ny);
-            this.xp2 = subv(this.xp2, ny);
+            if (   fill[0] != 'GRADIENT_LINEAR'
+                && fill[0] != 'GRADIENT_RADIAL'
+                && fill[0] != 'GRADIENT_ANGULAR'
+                && fill[0] != 'GRADIENT_DIAMOND')
+                continue;
+                
+            
+            if (flipX)//cx > 0) 
+            {
+                this.xp0 = addv(this.xp0, nx);
+                this.xp2 = addv(this.xp2, nx);
+                this.xp1 = subv(this.xp1, nx);
+
+                fill[4] = flipBit(fill[4], 0);
+            }
+
+            if (flipY)//cy < 0)
+            {
+                this.xp0 = addv(this.xp0, ny);
+                this.xp1 = addv(this.xp1, ny);
+                this.xp2 = subv(this.xp2, ny);
+
+                fill[4] = flipBit(fill[4], 1);
+            }
         }
     }
 
@@ -7256,8 +7302,11 @@ class FigmaObject
 
     getFlipFactors()
     {
-        const vx = subv(this.xp2, this.xp0);
-        const nx = subv(this.xp1, this.xp0);
+        let vx = subv(this.xp2, this.xp0);
+        let nx = subv(this.xp1, this.xp0);
+
+
+            //   vx = vector(anglev(vx), lengthv(vx));
         
         const vy = subv(this.xp1, this.xp0);
         const ny = subv(this.xp2, this.xp0);
@@ -7281,9 +7330,9 @@ class FigmaObject
             
             feedback:   this.feedback,
 
-            xp0:        this.xp0 ? this.xp0/*.toPoint()*/ : null,
-            xp1:        this.xp1 ? this.xp1/*.toPoint()*/ : null,
-            xp2:        this.xp2 ? this.xp2/*.toPoint()*/ : null
+            xp0:        this.xp0 ? this.xp0 : null,
+            xp1:        this.xp1 ? this.xp1 : null,
+            xp2:        this.xp2 ? this.xp2 : null
         };
     }
 
@@ -7526,9 +7575,11 @@ function addGradientProp(obj, prop, target = obj.fills)
     const gradient = 
     [
         '', // type
-        [], // transform
+        [], // transform points
         [], // stops
-        ''  // blend mode
+        '', // blend mode
+        0   // flags 0 = flipX
+            //       1 = flipY
     ];
 
 
@@ -7671,25 +7722,8 @@ function addGradientProp(obj, prop, target = obj.fills)
     }
 
 
-    const identityHandles = 
-        [[0,   1,   0],
-         [0.5, 0.5, 1],
-         [1,   1,   1]];
+    gradient[1] = [p0, p1, p2];    
 
-
-    let xform = [
-        [p0.x, p1.x, p2.x],
-        [p0.y, p1.y, p2.y],
-        [1,    1,    1   ]];
-
-
-    xform = mulm3m3(identityHandles, inversem3(xform));
-
-
-    gradient[1] = [
-        xform[0],
-        xform[1] ];
-        
 
     const stops = prop.stops.items;
 
@@ -7703,7 +7737,7 @@ function addGradientProp(obj, prop, target = obj.fills)
             rgba[1], 
             rgba[2], 
             rgba[3],
-            Math.min(Math.max(0, stop.position.value /*toNumber()*/ / 100), 1)]);
+            Math.min(Math.max(0, stop.position.value / 100), 1)]);
     }
 
 
@@ -8010,9 +8044,12 @@ extends FigmaObject
 
 
 
-    checkFlipped()
+    checkFlipped(flipX, flipY)
     {
         const [cx, cy, nx, ny] = this.getFlipFactors();
+        
+        
+        super.checkFlipped(flipX, flipY);
 
 
         for (const fill of this.fills)
@@ -8024,22 +8061,94 @@ extends FigmaObject
                 continue;
 
 
-            const angle = anglev(subv(this.xp1, this.xp0));
+            //console.log('fill =', fill);
+
+            const objAngle  = anglev(subv(this.xp1, this.xp0));
+            const gradAngle = anglev(subv(fill[1][1], fill[1][0]));
+            
+            const angle     = trimAngle(objAngle + gradAngle);
+
             
             const vertical = 
                    angle >= Tau*1/8 && angle < Tau*3/8
-                || angle >= Tau*5/8 && angle > Tau*7/8;
-                
-            if (    vertical && cy > 0
-                || !vertical && cx < 0)
+                || angle >= Tau*5/8 && angle < Tau*7/8;
+
+            const _flipX = ((fill[4] >> 0) & 1) != 0;
+            const _flipY = ((fill[4] >> 1) & 1) != 0;
+
+
+            //console.log('fill =', fill);
+            console.clear();
+            console.log('objAngle =', objAngle);
+            console.log('gradAngle =', gradAngle);
+            console.log('angle =', Math.round(angle/Tau*360));
+            console.log('vertical =', vertical);
+            // console.log('cx =', cx);
+            // console.log('cy =', cy);
+            console.log('flipX =', flipX);
+            console.log('flipY =', flipY);
+            console.log('_flipX =', _flipX);
+            console.log('_flipY =', _flipY);
+            console.log('');
+
+
+            if (   fill[0] == 'GRADIENT_LINEAR')
+                //|| fill[0] == 'GRADIENT_ANGULAR')
             {
-                for (const stop of fill[2])
-                    stop[4] = 1 - stop[4];
+                // if (    _flipX && _flipY)
+                // {
+                //     console.log('reverse 1');
+                //     fill[2].reverse();
+                    
+                //     for (const stop of fill[2])
+                //         stop[4] = 1 - stop[4];
+                // }
+                // else if (   !vertical && flipX && _flipX && (angle < Tau*1/8 || angle > Tau*7/8))
+                // {
+                //     console.log('reverse 2');
+                //     fill[2].reverse();
+                    
+                //     for (const stop of fill[2])
+                //         stop[4] = 1 - stop[4];
+                // }
+                // else if (    vertical && flipX && _flipX && angle > Tau/2)
+                // {
+                //     console.log('reverse 3');
+                //     fill[2].reverse();
+                    
+                //     for (const stop of fill[2])
+                //         stop[4] = 1 - stop[4];
+                // }
+                // else if (    vertical && _flipY && angle > Tau*1/4 && angle < Tau*3/4)
+                // {
+                //     console.log('reverse 4');
+                //     fill[2].reverse();
+                    
+                //     for (const stop of fill[2])
+                //         stop[4] = 1 - stop[4];
+                // }
             }
+
+
+            // if (   fill[0] == 'GRADIENT_LINEAR'
+            //     || fill[0] == 'GRADIENT_ANGULAR'
+            //     || fill[0] == 'GRADIENT_RADIAL'
+            //     || fill[0] == 'GRADIENT_DIAMOND')
+            // {
+            //     if (!vertical && cx < 0)
+            //     {
+            //         fill[1][1][0][2]  = 1 - fill[1][1][0][2];
+            //         fill[1][1][0][0] *= -1;
+            //     }
+                
+            //     if (vertical && cy > 0)
+            //     {
+            //         console.log('vertical');
+            //         fill[1][1][1][2] = 1 - fill[1][1][1][2];
+            //         fill[1][1][1][1] *= -1;
+            //     }
+            // }
         }
-
-
-        super.checkFlipped();
     }
 
 
@@ -44027,7 +44136,9 @@ extends GOperator1
                     xform, 
                     options.affectSpace ? options.affectSpace.value > 0 : false);
 
-                obj.checkFlipped();
+                obj.checkFlipped(
+                    xform[0][0] < 0, 
+                    xform[1][1] < 0);
                     
                 obj.scaleCorners *= Math.abs(scaleCorners);
                 obj.scaleStyle   *= Math.abs(scaleStyle  );

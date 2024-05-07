@@ -16,14 +16,13 @@ class FigmaObject
 
     xform;
 
-    xp0 = null; //  xp0 ------- xp1 
-    xp1 = null; //   |     
-    xp2 = null; //  xp2
+    xp0   = null; //  xp0 ------- xp1 
+    xp1   = null; //   |     
+    xp2   = null; //  xp2
 
-    sp0 = null; //  sp0 ------- sp1 
-    sp1 = null; //   |
-    sp2 = null; //  sp2
-
+    sp0   = null; //  sp0 ------- sp1 
+    sp1   = null; //   |
+    sp2   = null; //  sp2
 
     scaleCorners;
     scaleStyle;
@@ -268,15 +267,37 @@ class FigmaObject
 
 
 
-    checkFlipped()
+    checkFlipped(flipX, flipY)
     {
         const [cx, cy, nx, ny] = this.getFlipFactors();
 
-        if (cy < 0)
+
+        for (const fill of this.fills)
         {
-            this.xp0 = addv(this.xp0, ny);
-            this.xp1 = addv(this.xp1, ny);
-            this.xp2 = subv(this.xp2, ny);
+            if (   fill[0] != 'GRADIENT_LINEAR'
+                && fill[0] != 'GRADIENT_RADIAL'
+                && fill[0] != 'GRADIENT_ANGULAR'
+                && fill[0] != 'GRADIENT_DIAMOND')
+                continue;
+                
+            
+            if (flipX)//cx > 0) 
+            {
+                this.xp0 = addv(this.xp0, nx);
+                this.xp2 = addv(this.xp2, nx);
+                this.xp1 = subv(this.xp1, nx);
+
+                fill[4] = flipBit(fill[4], 0);
+            }
+
+            if (flipY)//cy < 0)
+            {
+                this.xp0 = addv(this.xp0, ny);
+                this.xp1 = addv(this.xp1, ny);
+                this.xp2 = subv(this.xp2, ny);
+
+                fill[4] = flipBit(fill[4], 1);
+            }
         }
     }
 
@@ -284,8 +305,11 @@ class FigmaObject
 
     getFlipFactors()
     {
-        const vx = subv(this.xp2, this.xp0);
-        const nx = subv(this.xp1, this.xp0);
+        let vx = subv(this.xp2, this.xp0);
+        let nx = subv(this.xp1, this.xp0);
+
+
+            //   vx = vector(anglev(vx), lengthv(vx));
         
         const vy = subv(this.xp1, this.xp0);
         const ny = subv(this.xp2, this.xp0);
@@ -309,9 +333,9 @@ class FigmaObject
             
             feedback:   this.feedback,
 
-            xp0:        this.xp0 ? this.xp0/*.toPoint()*/ : null,
-            xp1:        this.xp1 ? this.xp1/*.toPoint()*/ : null,
-            xp2:        this.xp2 ? this.xp2/*.toPoint()*/ : null
+            xp0:        this.xp0 ? this.xp0 : null,
+            xp1:        this.xp1 ? this.xp1 : null,
+            xp2:        this.xp2 ? this.xp2 : null
         };
     }
 

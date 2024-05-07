@@ -79,7 +79,7 @@ function crossv(v)
 
 
 
-function trimAngle(angle, min = 0, max = 360)
+function trimAngle(angle, min = 0, max = Tau)
 {
     while (angle <  min) angle += max - min;
     while (angle >= max) angle -= max - min;

@@ -35,6 +35,17 @@ function swap(a, b)
 
 
 
+function flipBit(value, index)
+{
+    const bit = ((value >> index) & 1) != 0;
+
+    return value
+        & ~(1 << index)
+        | (!bit ? 1 : 0) << index;
+}
+
+
+
 function indexOfChild(parent, child)
 {
     return Array.prototype.indexOf.call(parent.children, child);

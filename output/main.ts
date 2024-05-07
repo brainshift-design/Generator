@@ -987,7 +987,20 @@ function getObjectFills(genObjFills)
             case 'GRADIENT_ANGULAR':
             case 'GRADIENT_DIAMOND':
             {
-                const xform = fill[1];
+                const [p0, p1, p2] = fill[1];
+
+                const identityHandles = 
+                    [[0,   1,   0],
+                     [0.5, 0.5, 1],
+                     [1,   1,   1]];
+
+                let xform = [
+                    [p0.x, p1.x, p2.x],
+                    [p0.y, p1.y, p2.y],
+                    [1,    1,    1   ]];
+
+                xform = mulm3m3(identityHandles, inversem3(xform));
+                xform = [xform[0], xform[1]];
 
 
                 const stops = [];
