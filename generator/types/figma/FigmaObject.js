@@ -269,38 +269,52 @@ class FigmaObject
 
     checkFlipped(flipX, flipY)
     {
-        for (const fill of this.fills)
-        {
-            if (   fill[0] || 'GRADIENT_LINEAR'
-                || fill[0] || 'GRADIENT_RADIAL'
-                || fill[0] || 'GRADIENT_ANGULAR'
-                || fill[0] || 'GRADIENT_DIAMOND')
-            {
-                if (flipX) fill[4] = flipBit(fill[4], 0);
-                if (flipY) fill[4] = flipBit(fill[4], 1);
-            }
-        }
+        // for (const fill of this.fills)
+        // {
+        //     if (   fill[0] || 'GRADIENT_LINEAR'
+        //         || fill[0] || 'GRADIENT_RADIAL'
+        //         || fill[0] || 'GRADIENT_ANGULAR'
+        //         || fill[0] || 'GRADIENT_DIAMOND')
+        //     {
+        //         if (flipX) fill[4] = flipBit(fill[4], 0);
+        //         if (flipY) fill[4] = flipBit(fill[4], 1);
+        //     }
+        // }
 
 
         if (flipX)
         {
-            const min = Math.min(this.xp0.x, this.xp1.x, this.xp2.x);
-            const max = Math.max(this.xp0.x, this.xp1.x, this.xp2.x);
+            const xmin = Math.min(this.xp0.x, this.xp1.x, this.xp2.x);
+            const xmax = Math.max(this.xp0.x, this.xp1.x, this.xp2.x);
 
-            this.xp0.x = max - (this.xp0.x - min);
-            this.xp1.x = max - (this.xp1.x - min);
-            this.xp2.x = max - (this.xp2.x - min);
+            this.xp0.x = xmax - (this.xp0.x - xmin);
+            this.xp1.x = xmax - (this.xp1.x - xmin);
+            this.xp2.x = xmax - (this.xp2.x - xmin);
+            
+            const smin = Math.min(this.sp0.x, this.sp1.x, this.sp2.x);
+            const smax = Math.max(this.sp0.x, this.sp1.x, this.sp2.x);
+
+            this.sp0.x = smax - (this.sp0.x - smin);
+            this.sp1.x = smax - (this.sp1.x - smin);
+            this.sp2.x = smax - (this.sp2.x - smin);
         }
 
         
         if (flipY)
         {
-            const min = Math.min(this.xp0.y, this.xp1.y, this.xp2.y);
-            const max = Math.max(this.xp0.y, this.xp1.y, this.xp2.y);
+            const xmin = Math.min(this.xp0.y, this.xp1.y, this.xp2.y);
+            const xmax = Math.max(this.xp0.y, this.xp1.y, this.xp2.y);
 
-            this.xp0.y = max - (this.xp0.y - min);
-            this.xp1.y = max - (this.xp1.y - min);
-            this.xp2.y = max - (this.xp2.y - min);
+            this.xp0.y = xmax - (this.xp0.y - xmin);
+            this.xp1.y = xmax - (this.xp1.y - xmin);
+            this.xp2.y = xmax - (this.xp2.y - xmin);
+            
+            const smin = Math.min(this.sp0.y, this.sp1.y, this.sp2.y);
+            const smax = Math.max(this.sp0.y, this.sp1.y, this.sp2.y);
+
+            this.sp0.y = smax - (this.sp0.y - smin);
+            this.sp1.y = smax - (this.sp1.y - smin);
+            this.sp2.y = smax - (this.sp2.y - smin);
         }
     }
 

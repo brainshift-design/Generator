@@ -69,6 +69,32 @@ extends FigmaShape
 
 
     
+    checkFlipped(flipX, flipY)
+    {
+        super.checkFlipped(flipX, flipY);
+
+        for (const obj of this.children)
+        {
+            obj.checkFlipped(flipX, flipY);
+
+            if (flipX)
+            {
+                obj.xp0.x = this.width - obj.xp0.x;
+                obj.xp1.x = this.width - obj.xp1.x;
+                obj.xp2.x = this.width - obj.xp2.x;
+            }
+
+            if (flipY)
+            {
+                obj.xp0.y = this.height - obj.xp0.y;
+                obj.xp1.y = this.height - obj.xp1.y;
+                obj.xp2.y = this.height - obj.xp2.y;
+            }
+        }
+    }
+
+
+
     toJsonObject()
     {
         return {
