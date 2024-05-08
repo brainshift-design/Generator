@@ -202,7 +202,7 @@ document.addEventListener('keydown', e =>
           && e.altKey)
     {
         e.preventDefault();
-        makeSelectedNodesActive();
+        makeSelectedNodesActive(e.shiftKey);
     }
 
     // deactivate selected

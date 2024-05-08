@@ -469,7 +469,7 @@ Operator.prototype.createHeader = function()
 
         else
         {
-            makeSelectedNodesActive();
+            makeSelectedNodesActive(e.shiftKey);
 
             if (this.deselectTimer > -1)
             {

@@ -292,12 +292,13 @@ function uiUpdateSavedConnectionsFromNodeId(nodeId, saveOld)
 
 
 
-function makeSelectedNodesActive()
+function makeSelectedNodesActive(shift)
 {
     actionManager.do(new MakeActiveNodesAction(
         graph.currentPage.nodes.filter(n => graphView.selectedNodes.includes(n)).map(n => n.nodeId),
-        true,
-        false));
+           !settings.activateDeactiatesOthers
+        && !shift,
+        settings.activateDeactiatesOthers));
 }
 
 
