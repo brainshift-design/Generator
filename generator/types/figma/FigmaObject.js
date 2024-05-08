@@ -284,37 +284,51 @@ class FigmaObject
 
         if (flipX)
         {
-            const xmin = Math.min(this.xp0.x, this.xp1.x, this.xp2.x);
-            const xmax = Math.max(this.xp0.x, this.xp1.x, this.xp2.x);
+            const d1 = subv(this.xp1, this.xp0);
+            //const d2 = subv(this.xp2, this.xp0);
 
-            this.xp0.x = xmax - (this.xp0.x - xmin);
-            this.xp1.x = xmax - (this.xp1.x - xmin);
-            this.xp2.x = xmax - (this.xp2.x - xmin);
+            this.xp0 = addv(this.xp0, d1);
+            this.xp2 = addv(this.xp2, d1);
+            this.xp1 = subv(this.xp1, d1);
+
+            // const xmin = Math.min(this.xp0.x, this.xp1.x, this.xp2.x);
+            // const xmax = Math.max(this.xp0.x, this.xp1.x, this.xp2.x);
+
+            // this.xp0.x = -this.xp0.x;//xmax - (this.xp0.x - xmin);
+            // this.xp1.x = -this.xp1.x;//xmax - (this.xp1.x - xmin);
+            // this.xp2.x = -this.xp2.x;//xmax - (this.xp2.x - xmin);
             
-            const smin = Math.min(this.sp0.x, this.sp1.x, this.sp2.x);
-            const smax = Math.max(this.sp0.x, this.sp1.x, this.sp2.x);
+            // const smin = Math.min(this.sp0.x, this.sp1.x, this.sp2.x);
+            // const smax = Math.max(this.sp0.x, this.sp1.x, this.sp2.x);
 
-            this.sp0.x = smax - (this.sp0.x - smin);
-            this.sp1.x = smax - (this.sp1.x - smin);
-            this.sp2.x = smax - (this.sp2.x - smin);
+            // this.sp0.x = smax - (this.sp0.x - smin);
+            // this.sp1.x = smax - (this.sp1.x - smin);
+            // this.sp2.x = smax - (this.sp2.x - smin);
         }
 
         
         if (flipY)
         {
-            const xmin = Math.min(this.xp0.y, this.xp1.y, this.xp2.y);
-            const xmax = Math.max(this.xp0.y, this.xp1.y, this.xp2.y);
+            //const d1 = subv(this.xp1, this.xp0);
+            const d2 = subv(this.xp2, this.xp0);
 
-            this.xp0.y = xmax - (this.xp0.y - xmin);
-            this.xp1.y = xmax - (this.xp1.y - xmin);
-            this.xp2.y = xmax - (this.xp2.y - xmin);
+            this.xp0 = addv(this.xp0, d2);
+            this.xp1 = addv(this.xp1, d2);
+            this.xp2 = subv(this.xp2, d2);
             
-            const smin = Math.min(this.sp0.y, this.sp1.y, this.sp2.y);
-            const smax = Math.max(this.sp0.y, this.sp1.y, this.sp2.y);
+            // const xmin = Math.min(this.xp0.y, this.xp1.y, this.xp2.y);
+            // const xmax = Math.max(this.xp0.y, this.xp1.y, this.xp2.y);
 
-            this.sp0.y = smax - (this.sp0.y - smin);
-            this.sp1.y = smax - (this.sp1.y - smin);
-            this.sp2.y = smax - (this.sp2.y - smin);
+            // this.xp0.y = -this.xp0.y;//xmax - (this.xp0.y - xmin);
+            // this.xp1.y = -this.xp1.y;//xmax - (this.xp1.y - xmin);
+            // this.xp2.y = -this.xp2.y;//xmax - (this.xp2.y - xmin);
+            
+            // const smin = Math.min(this.sp0.y, this.sp1.y, this.sp2.y);
+            // const smax = Math.max(this.sp0.y, this.sp1.y, this.sp2.y);
+
+            // this.sp0.y = smax - (this.sp0.y - smin);
+            // this.sp1.y = smax - (this.sp1.y - smin);
+            // this.sp2.y = smax - (this.sp2.y - smin);
         }
     }
 

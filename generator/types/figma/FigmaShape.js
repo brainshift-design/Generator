@@ -78,33 +78,11 @@ extends FigmaObject
     {
         super.checkFlipped(flipX, flipY);
 
-
         for (const fill of this.fills)
-        {
-            if (   fill[0] == 'GRADIENT_LINEAR'
-                || fill[0] == 'GRADIENT_RADIAL'
-                || fill[0] == 'GRADIENT_ANGULAR'
-                || fill[0] == 'GRADIENT_DIAMOND')
-            {
-                const p0 = fill[1][0];
-                const p1 = fill[1][1];
-                const p2 = fill[1][2];
+            flipIfGradient(fill, flipX, flipY);
 
-                if (flipX)
-                {
-                    p0.x = 1 - p0.x;
-                    p1.x = 1 - p1.x;
-                    p2.x = 1 - p2.x;
-                }
-
-                if (flipY)
-                {
-                    p0.y = 1 - p0.y;
-                    p1.y = 1 - p1.y;
-                    p2.y = 1 - p2.y;
-                }
-            }
-        }
+        for (const stroke of this.strokes)
+            flipIfGradient(stroke, flipX, flipY);
     }
 
 
@@ -144,5 +122,34 @@ extends FigmaObject
             /* 22 */ this.blend,
             /* 23 */ this.maskType
         ];
+    }
+}
+
+
+
+function flipIfGradient(fill, flipX, flipY)
+{
+    if (   fill[0] == 'GRADIENT_LINEAR'
+        || fill[0] == 'GRADIENT_RADIAL'
+        || fill[0] == 'GRADIENT_ANGULAR'
+        || fill[0] == 'GRADIENT_DIAMOND')
+    {
+        const p0 = fill[1][0];
+        const p1 = fill[1][1];
+        const p2 = fill[1][2];
+
+        if (flipX)
+        {
+            p0.x = 1 - p0.x;
+            p1.x = 1 - p1.x;
+            p2.x = 1 - p2.x;
+        }
+
+        if (flipY)
+        {
+            p0.y = 1 - p0.y;
+            p1.y = 1 - p1.y;
+            p2.y = 1 - p2.y;
+        }
     }
 }
