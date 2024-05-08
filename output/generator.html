@@ -7271,55 +7271,39 @@ class FigmaObject
 
     checkFlipped(flipX, flipY)
     {
-        const [cx, cy, nx, ny] = this.getFlipFactors();
-
-
         for (const fill of this.fills)
         {
-            if (   fill[0] != 'GRADIENT_LINEAR'
-                && fill[0] != 'GRADIENT_RADIAL'
-                && fill[0] != 'GRADIENT_ANGULAR'
-                && fill[0] != 'GRADIENT_DIAMOND')
-                continue;
-                
-            
-            if (flipX)//cx > 0) 
+            if (   fill[0] || 'GRADIENT_LINEAR'
+                || fill[0] || 'GRADIENT_RADIAL'
+                || fill[0] || 'GRADIENT_ANGULAR'
+                || fill[0] || 'GRADIENT_DIAMOND')
             {
-                this.xp0 = addv(this.xp0, nx);
-                this.xp2 = addv(this.xp2, nx);
-                this.xp1 = subv(this.xp1, nx);
-
-                fill[4] = flipBit(fill[4], 0);
-            }
-
-            if (flipY)//cy < 0)
-            {
-                this.xp0 = addv(this.xp0, ny);
-                this.xp1 = addv(this.xp1, ny);
-                this.xp2 = subv(this.xp2, ny);
-
-                fill[4] = flipBit(fill[4], 1);
+                if (flipX) fill[4] = flipBit(fill[4], 0);
+                if (flipY) fill[4] = flipBit(fill[4], 1);
             }
         }
-    }
 
 
+        if (flipX)
+        {
+            const min = Math.min(this.xp0.x, this.xp1.x, this.xp2.x);
+            const max = Math.max(this.xp0.x, this.xp1.x, this.xp2.x);
 
-    getFlipFactors()
-    {
-        let vx = subv(this.xp2, this.xp0);
-        let nx = subv(this.xp1, this.xp0);
+            this.xp0.x = max - (this.xp0.x - min);
+            this.xp1.x = max - (this.xp1.x - min);
+            this.xp2.x = max - (this.xp2.x - min);
+        }
 
-
-            //   vx = vector(anglev(vx), lengthv(vx));
         
-        const vy = subv(this.xp1, this.xp0);
-        const ny = subv(this.xp2, this.xp0);
+        if (flipY)
+        {
+            const min = Math.min(this.xp0.y, this.xp1.y, this.xp2.y);
+            const max = Math.max(this.xp0.y, this.xp1.y, this.xp2.y);
 
-        return [ crossv2(vx, nx),
-                 crossv2(vy, ny),
-                 nx,
-                 ny ];
+            this.xp0.y = max - (this.xp0.y - min);
+            this.xp1.y = max - (this.xp1.y - min);
+            this.xp2.y = max - (this.xp2.y - min);
+        }
     }
 
 

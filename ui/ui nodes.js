@@ -296,9 +296,8 @@ function makeSelectedNodesActive(shift)
 {
     actionManager.do(new MakeActiveNodesAction(
         graph.currentPage.nodes.filter(n => graphView.selectedNodes.includes(n)).map(n => n.nodeId),
-           !settings.activateDeactiatesOthers
-        && !shift,
-        settings.activateDeactiatesOthers));
+        !settings.activateDeactiatesOthers && !shift,
+         settings.activateDeactiatesOthers && !shift));
 }
 
 
