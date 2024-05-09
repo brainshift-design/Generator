@@ -372,7 +372,7 @@ function addStrokeSidesProp(obj, prop)
     else
     {
         obj.effects.push([
-            'STROKE_SIDES', 
+           'STROKE_SIDES', 
             prop.top   .value,
             prop.left  .value,
             prop.right .value,
@@ -393,7 +393,7 @@ function addRoundCornersProp(obj, prop)
     else
     {
         obj.effects.push([
-            'ROUND_CORNERS', 
+           'ROUND_CORNERS', 
             prop.tl.value,
             prop.tr.value,
             prop.bl.value,

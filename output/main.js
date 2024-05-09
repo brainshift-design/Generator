@@ -3907,17 +3907,18 @@ function figUpdateRect(figRect, genRect, addProps, transform, isValid = false) {
     }
     else
         figRect.cornerRadius = genRect[FO_RECT_ROUND];
+    if (transform)
+        setObjectTransform(figRect, genRect);
+    setObjectProps(figRect, genRect, addProps);
     const foundSides = genRect[FO_EFFECTS].findIndex(e => e[0] == 'STROKE_SIDES');
     if (foundSides > -1) {
         const sides = genRect[FO_EFFECTS][foundSides];
+        figRect.strokeWeight = 0;
         figRect.strokeTopWeight = sides[1];
         figRect.strokeLeftWeight = sides[2];
         figRect.strokeRightWeight = sides[3];
         figRect.strokeBottomWeight = sides[4];
     }
-    if (transform)
-        setObjectTransform(figRect, genRect);
-    setObjectProps(figRect, genRect, addProps);
 }
 function genStarIsValid(genStar) {
     return genStar[FO_X] != null && !isNaN(genStar[FO_X])
