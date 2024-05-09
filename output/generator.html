@@ -23401,8 +23401,6 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.nodeId == 'math')
-            console.log('this.inputs =', this.inputs);
         this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 
@@ -25900,17 +25898,21 @@ extends GOperator
         const end   = await evalNumberValue(this.end,      parse);
     
 
+        if (this.nodeId == 'sequence')
+            console.log('sequence 1');
+
         if (   start
             && mult
-            && add
-            && end)
+            && add)
         {
             const value = start.value + (this.options.enabled ? add.value * this.currentIteration : 0);
 
-            if (!end.isValid())
+            if (   !end 
+                || !end.isValid())
                 this.value = getSequenceValue(start, mult, add, this.currentIteration, this.options.enabled);
 
-            else if (   end.isValid()   
+            else if (   end
+                     && end.isValid()   
                      && (   add.value == 0
                          || add.value >  0 && start.value < end.value
                                            &&       value < end.value
@@ -25924,6 +25926,12 @@ extends GOperator
         else
             this.value = NumberValue.NaN.copy();
 
+
+        if (this.nodeId == 'sequence')
+        {
+            console.log('sequence 2');
+            console.log('');
+        }
 
         this.setUpdateValues(parse,
         [
@@ -28135,12 +28143,12 @@ extends GArithmetic
         {
             switch (op.value)
             {
-                case 0: this.value = await evalModuloInputs  (this.inputs, parse); break;
-                case 1: this.value = await evalDivideInputs  (this.inputs, parse); break;
-                case 2: this.value = await evalSubtractInputs(this.inputs, parse); break;
-                case 3: this.value = await evalAddInputs     (this.inputs, parse); break;
-                case 4: this.value = await evalMultiplyInputs(this.inputs, parse); break;
-                case 5: this.value = await evalExponentInputs(this.inputs, parse); break;
+                case 0: this.value = await evalModuloInputs  (this, this.inputs, parse); break;
+                case 1: this.value = await evalDivideInputs  (this, this.inputs, parse); break;
+                case 2: this.value = await evalSubtractInputs(this, this.inputs, parse); break;
+                case 3: this.value = await evalAddInputs     (this, this.inputs, parse); break;
+                case 4: this.value = await evalMultiplyInputs(this, this.inputs, parse); break;
+                case 5: this.value = await evalExponentInputs(this, this.inputs, parse); break;
             }
         }
 
@@ -28203,6 +28211,605 @@ extends GArithmetic
     }
 }
 
+
+
+async function evalAddInputs(node, inputs, parse)
+{
+    if (isEmpty(inputs))
+        return NumberValue.NaN.copy();
+
+
+    const value = new NumberValue(0);
+
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = await evalValue(inputs[i], parse);
+        
+        if (node.nodeId == 'math')
+            console.log('val =', val);
+        
+
+        if (   !val
+            || !val.isValid())
+        {
+            for (let j = i+1; j < inputs.length; j++)
+                await evalValue(inputs[j], parse);
+            
+            return NumberValue.NaN.copy();
+        }
+
+
+        if (isListValueType(val.type))
+        {
+            if (   isEmpty(val.items)
+                || val.items[0].type != NUMBER_VALUE)
+                return NumberValue.NaN.copy();
+
+            for (const item of val.items)
+            {
+                if (item.type == NUMBER_VALUE)
+                {
+                    value.value   += item.value;
+                    value.decimals = Math.max(value.decimals, item.decimals);
+                }
+            }
+        }
+        else
+        {
+            consoleAssert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            value.value   += val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+
+async function evalSubtractInputs(node, inputs, parse)
+{
+    if (isEmpty(inputs))
+        return NumberValue.NaN.copy();
+
+
+    let value = new NumberValue(0);
+
+
+    if (!isEmpty(inputs))
+    {
+        const val0 = await evalValue(inputs[0], parse);
+
+        if (   !val0
+            || !val0.isValid())
+        {
+            for (let j = 1; j < inputs.length; j++)
+                await evalValue(inputs[j], parse);
+            
+            return NumberValue.NaN.copy();
+        }
+
+
+        // if (   inputs.length == 1
+        //     && val0.type == NUMBER_VALUE)
+        // {
+        //     value = new NumberValue(-val0.value, val0.decimals);
+        // }
+        //else 
+        if (     isListValueType(val0.type)
+             && !isEmpty(val0.items))
+        {
+            const item0 = val0.items[0];
+
+            if (   !item0
+                || !item0.isValid())
+                return NumberValue.NaN.copy();
+
+
+            value.value    = item0.value;
+            value.decimals = item0.decimals;
+
+            for (let i = 1; i < val0.items.length; i++)
+            {
+                const item = val0.items[i];
+
+                if (   !item
+                    || !item.isValid())
+                    return NumberValue.NaN.copy();
+
+                if (item.type == NUMBER_VALUE)
+                {
+                    value.value   -= item.value;
+                    value.decimals = Math.max(value.decimals, item.decimals);
+                }                    
+            }
+        }
+        else
+        {
+            if (val0.type != NUMBER_VALUE)
+                return NumberValue.NaN.copy();
+
+            value.value    = val0.value;
+            value.decimals = val0.decimals;
+        }
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            const val = await evalNumberValue(inputs[i], parse);
+
+            if (   !val
+                || !val.isValid())
+            {
+                for (let j = i+1; j < inputs.length; j++)
+                    await evalValue(inputs[j], parse);
+                
+                return NumberValue.NaN.copy();
+            }
+
+
+            if (isListValueType(val.type))
+            {
+                for (const item of val.items)
+                {
+                    if (item.type == NUMBER_VALUE)
+                    {
+                        value.value   -= item.value;
+                        value.decimals = Math.max(value.decimals, item.decimals);
+                    }                    
+                }
+            }
+            else
+            {
+                consoleAssert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
+                    
+                value.value   -= val.value;
+                value.decimals = Math.max(value.decimals, val.decimals);
+            }
+        }
+    }
+
+
+    return value;
+}
+
+
+
+async function evalMultiplyInputs(node, inputs, parse)
+{
+    if (isEmpty(inputs))
+        return NumberValue.NaN.copy();
+
+
+    const value = new NumberValue(0);
+
+
+    if (!isEmpty(inputs))
+    {
+        value.value = 1;
+
+        for (let i = 0; i < inputs.length; i++)
+        {
+            const val = await evalValue(inputs[i], parse);
+
+            if (   !val
+                || !val.isValid())
+            {
+                for (let j = i+1; j < inputs.length; j++)
+                    await evalValue(inputs[j], parse);
+                
+                return NumberValue.NaN.copy();
+            }
+
+
+            if (isListValueType(val.type))
+            {
+                if (   isEmpty(val.items)
+                    || val.items[0].type != NUMBER_VALUE)
+                    return NumberValue.NaN.copy();
+
+                for (const item of val.items)
+                {
+                    value.value   *= item.value;
+                    value.decimals = Math.max(value.decimals, item.decimals);
+                }
+            }
+            else
+            {
+                consoleAssert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
+
+                value.value   *= val.value;
+                value.decimals = Math.max(value.decimals, val.decimals);
+            }
+        }
+    }
+
+
+    return value;
+}
+
+
+
+async function evalDivideInputs(node, inputs, parse)
+{
+    if (isEmpty(inputs))
+        return NumberValue.NaN.copy();
+
+        
+    let value = new NumberValue(0);
+
+        
+    if (!isEmpty(inputs))
+    {
+        const val0 = await evalValue(inputs[0], parse);
+
+        if (   !val0
+            || !val0.isValid())
+        {
+            for (let j = 1; j < inputs.length; j++)
+                await evalValue(inputs[j], parse);
+            
+            return NumberValue.NaN.copy();
+        }
+
+
+        if (    isListValueType(val0.type)
+            && !isEmpty(val0.items))
+        {
+            const item0 = val0.items[0];
+
+            if (   !item0
+                || !item0.isValid())
+                return NumberValue.NaN.copy();
+
+
+            value.value    = item0.value;
+            value.decimals = item0.decimals;
+
+            for (let i = 1; i < val0.items.length; i++)
+            {
+                const item = val0.items[i];
+
+                if (   !item
+                    || !item.isValid())
+                    return NumberValue.NaN.copy();
+
+                    
+                if (item.type == NUMBER_VALUE)
+                {
+                    if (item.value == 0) 
+                    { 
+                        value.value    = Number.NaN; 
+                        value.decimals = 0;
+                        break; 
+                    }
+
+                    value.value    = value.value / item.value;
+                    value.decimals = Math.max(value.decimals, item.decimals);
+                }                    
+            }
+        }
+        else
+        {
+            if (val0.type != NUMBER_VALUE)
+                return NumberValue.NaN.copy();
+
+            value.value    = val0.value;
+            value.decimals = val0.decimals;
+        }
+
+        
+        for (let i = 1; i < inputs.length; i++)
+        {
+            const val = await evalNumberValue(inputs[i], parse);
+
+            if (   !val
+                || !val.isValid())
+            {
+                for (let j = i+1; j < inputs.length; j++)
+                    await evalValue(inputs[j], parse);
+                
+                return NumberValue.NaN.copy();
+            }
+
+
+            if (isListValueType(val.type))
+            {
+                for (const item of val.items)
+                {
+                    if (   !item
+                        || !item.isValid())
+                        return NumberValue.NaN.copy();
+
+
+                    if (item.type == NUMBER_VALUE)
+                    {
+                        if (item.value == 0) 
+                        { 
+                            value.value    = Number.NaN; 
+                            value.decimals = 0;
+                            break; 
+                        }
+
+                        //value = new NumberValue(value.toNumber() / item.toNumber());
+                        value.value    = value.value / item.value;
+                        value.decimals = Math.max(value.decimals, item.decimals);
+                    }                    
+                }
+            }
+            else
+            {
+                consoleAssert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
+
+                if (val.value == 0) 
+                { 
+                    value.value    = Number.NaN; 
+                    value.decimals = 0;
+                    break; 
+                }
+    
+                //value = new NumberValue(value.toNumber() / val.toNumber());
+                
+                value.value    = value.value / val.value;
+                value.decimals = Math.max(value.decimals, val.decimals);
+            }
+        }
+    }
+
+
+    return value;
+}
+
+
+
+async function evalModuloInputs(node, inputs, parse)
+{
+    if (isEmpty(inputs))
+        return NumberValue.NaN.copy();
+
+        
+    const value = new NumberValue(0);
+
+        
+    if (!isEmpty(inputs))
+    {
+        const val0 = await evalValue(inputs[0], parse);
+
+        if (   !val0
+            || !val0.isValid())
+        {
+            for (let j = 1; j < inputs.length; j++)
+                await evalValue(inputs[j], parse);
+            
+            return NumberValue.NaN.copy();
+        }
+
+
+        if (    isListValueType(val0.type)
+            && !isEmpty(val0.items))
+        {
+            const item0 = val0.items[0];
+
+            if (   !item0
+                || !item0.isValid())
+                return NumberValue.NaN.copy();
+
+
+            value.value    = item0.value;
+            value.decimals = item0.decimals;
+
+            for (let i = 1; i < val0.items.length; i++)
+            {
+                const item = val0.items[i];
+                
+                if (   !item
+                    || !item.isValid())
+                    return NumberValue.NaN.copy();
+
+
+                if (item.type == NUMBER_VALUE)
+                {
+                    if (item.value == 0) 
+                    { 
+                        value.value    = Number.NaN; 
+                        value.decimals = 0;
+                        break; 
+                    }
+
+                    value.decimals = Math.max(value.decimals, item.decimals);
+                    value.value    = value.value % item.value;
+                }                    
+            }
+        }
+        else
+        {
+            if (val0.type != NUMBER_VALUE)
+                return NumberValue.NaN.copy();
+
+            value.value    = val0.value;
+            value.decimals = val0.decimals;
+        }
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            const val = await evalNumberValue(inputs[i], parse);
+
+            if (   !val
+                || !val.isValid())
+            {
+                for (let j = i+1; j < inputs.length; j++)
+                    await evalValue(inputs[j], parse);
+                
+                return NumberValue.NaN.copy();
+            }
+
+
+            if (isListValueType(val.type))
+            {
+                for (const item of val.items)
+                {
+                    if (   !item
+                        || !item.isValid())
+                        return NumberValue.NaN.copy();
+
+
+                    if (item.type == NUMBER_VALUE)
+                    {
+                        if (item.value == 0) 
+                        { 
+                            value.value    = Number.NaN; 
+                            value.decimals = 0;
+                            break; 
+                        }
+
+                        value.decimals = Math.max(value.decimals, item.decimals);
+                        value.value    = floorTo(value.value % item.value, value.decimals);
+                    }                    
+                }
+            }
+            else
+            {
+                consoleAssert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
+
+                if (val.value == 0) 
+                { 
+                    value.value    = Number.NaN; 
+                    value.decimals = 0;
+                    break; 
+                }
+
+                value.decimals = Math.max(value.decimals, val.decimals);
+                value.value    = floorTo(value.value % val.value, value.decimals);
+            }
+        }
+    }
+
+
+    return value;
+}
+
+
+
+async function evalExponentInputs(node, inputs, parse)
+{
+    if (isEmpty(inputs))
+        return NumberValue.NaN.copy();
+
+
+    const value = new NumberValue(0);
+
+
+    if (!isEmpty(inputs))
+    {
+        const val0 = await evalValue(inputs[0], parse);
+
+        if (   !val0
+            || !val0.isValid())
+        {
+            for (let j = 1; j < inputs.length; j++)
+                await evalValue(inputs[j], parse);
+            
+            return NumberValue.NaN.copy();
+        }
+
+
+        if (    isListValueType(val0.type)
+            && !isEmpty(val0.items))
+        {
+            const item0 = val0.items[0];
+
+            if (   !item0
+                || !item0.isValid())
+                return NumberValue.NaN.copy();
+
+
+            value.value    = item0.value;
+            value.decimals = item0.decimals;
+
+            for (let i = 1; i < val0.items.length; i++)
+            {
+                const item = val0.items[i];
+                
+                if (   !item
+                    || !item.isValid())
+                    return NumberValue.NaN.copy();
+
+
+                if (item.type == NUMBER_VALUE)
+                {
+                    value.value    = Math.pow(value.value,    item.value);
+                    value.decimals = Math.max(value.decimals, item.decimals);
+                }                    
+            }
+        }
+        else
+        {
+            if (val0.type != NUMBER_VALUE)
+                return NumberValue.NaN.copy();
+
+            value.value    = val0.value;
+            value.decimals = val0.decimals;
+        }
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            const val = await evalNumberValue(inputs[i], parse);
+
+            if (   !val
+                || !val.isValid())
+            {
+                for (let j = i+1; j < inputs.length; j++)
+                    await evalValue(inputs[j], parse);
+                
+                return NumberValue.NaN.copy();
+            }
+
+
+            if (isListValueType(val.type))
+            {
+                for (const item of val.items)
+                {
+                    if (   !item
+                        || !item.isValid())
+                        return NumberValue.NaN.copy();
+
+                    if (item.type == NUMBER_VALUE)
+                    {
+                        value.value    = Math.pow(value.value,    item.value);
+                        value.decimals = Math.max(value.decimals, item.decimals);
+                    }                    
+                }
+            }
+            else
+            {
+                consoleAssert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
+
+                value.value    = Math.pow(value.value,    val.value);
+                value.decimals = Math.max(value.decimals, val.decimals);
+            }
+        }
+    }
+
+
+    return value;
+}
 
 
 class GSimpleMath
@@ -28419,801 +29026,6 @@ function getSimpleMathValue(input, operand, op, invert, enabled)
     }
     else
         return input;
-}
-
-
-class GAdd
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_ADD, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GAdd(this.nodeId, this.options);
-        copy.copyBase(this);
-        copy.inputs = this.inputs.map(i => i.copy());
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        this.value = await evalAddInputs(this.inputs, parse);
-        
-        this.setUpdateValues(parse, 
-        [
-            ['', new NullValue()]
-            //['value', this.value]
-        ]);
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-async function evalAddInputs(inputs, parse)
-{
-    if (isEmpty(inputs))
-        return NumberValue.NaN.copy();
-
-
-    const value = new NumberValue(0);
-
-
-    for (let i = 0; i < inputs.length; i++)
-    {
-        const val = await evalValue(inputs[i], parse);
-        
-        if (   !val
-            || !val.isValid())
-            return NumberValue.NaN.copy();
-
-        if (isListValueType(val.type))
-        {
-            if (   isEmpty(val.items)
-                || val.items[0].type != NUMBER_VALUE)
-                return NumberValue.NaN.copy();
-
-            for (const item of val.items)
-            {
-                if (item.type == NUMBER_VALUE)
-                {
-                    value.value   += item.value;
-                    value.decimals = Math.max(value.decimals, item.decimals);
-                }
-            }
-        }
-        else
-        {
-            consoleAssert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-
-            value.value   += val.value;
-            value.decimals = Math.max(value.decimals, val.decimals);
-        }
-    }
-
-
-    return value;
-}
-
-
-class GSubtract
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_SUBTRACT, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GSubtract(this.nodeId, this.options);
-        copy.copyBase(this);
-        copy.inputs = this.inputs.map(i => i.copy());
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        this.value = await evalSubtractInputs(this.inputs, parse);
-
-
-        this.setUpdateValues(parse, 
-        [
-            ['', new NullValue()]
-            //['value', this.value]
-        ]);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-async function evalSubtractInputs(inputs, parse)
-{
-    if (isEmpty(inputs))
-        return NumberValue.NaN.copy();
-
-
-    let value = new NumberValue(0);
-
-
-    if (!isEmpty(inputs))
-    {
-        const val0 = await evalValue(inputs[0], parse);
-
-        if (   !val0
-            || !val0.isValid())
-            return NumberValue.NaN.copy();
-
-
-        // if (   inputs.length == 1
-        //     && val0.type == NUMBER_VALUE)
-        // {
-        //     value = new NumberValue(-val0.value, val0.decimals);
-        // }
-        //else 
-        if (     isListValueType(val0.type)
-             && !isEmpty(val0.items))
-        {
-            const item0 = val0.items[0];
-
-            if (   !item0
-                || !item0.isValid())
-                return NumberValue.NaN.copy();
-
-
-            value.value    = item0.value;
-            value.decimals = item0.decimals;
-
-            for (let i = 1; i < val0.items.length; i++)
-            {
-                const item = val0.items[i];
-
-                if (   !item
-                    || !item.isValid())
-                    return NumberValue.NaN.copy();
-
-                if (item.type == NUMBER_VALUE)
-                {
-                    value.value   -= item.value;
-                    value.decimals = Math.max(value.decimals, item.decimals);
-                }                    
-            }
-        }
-        else
-        {
-            if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN.copy();
-
-            value.value    = val0.value;
-            value.decimals = val0.decimals;
-        }
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            const val = await evalNumberValue(inputs[i], parse);
-
-            if (   !val
-                || !val.isValid())
-                return NumberValue.NaN.copy();
-
-
-            if (isListValueType(val.type))
-            {
-                for (const item of val.items)
-                {
-                    if (item.type == NUMBER_VALUE)
-                    {
-                        value.value   -= item.value;
-                        value.decimals = Math.max(value.decimals, item.decimals);
-                    }                    
-                }
-            }
-            else
-            {
-                consoleAssert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-                    
-                value.value   -= val.value;
-                value.decimals = Math.max(value.decimals, val.decimals);
-            }
-        }
-    }
-
-
-    return value;
-}
-
-
-class GMultiply
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_MULTIPLY, nodeId, options);
-    }
-
-
-
-    copy()
-    {
-        const copy = new GMultiply(this.nodeId, this.options);
-        copy.copyBase(this);
-        copy.inputs = this.inputs.map(i => i.copy());
-        return copy;
-    }
-
-    
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        this.value = await evalMultiplyInputs(this.inputs, parse);
-
-
-        this.setUpdateValues(parse, 
-        [
-            ['', new NullValue()]
-            //['value', this.value]
-        ]);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-async function evalMultiplyInputs(inputs, parse)
-{
-    if (isEmpty(inputs))
-        return NumberValue.NaN.copy();
-
-
-    const value = new NumberValue(0);
-
-
-    if (!isEmpty(inputs))
-    {
-        value.value = 1;
-
-        for (let i = 0; i < inputs.length; i++)
-        {
-            const val = await evalValue(inputs[i], parse);
-
-            if (   !val
-                || !val.isValid())
-                return NumberValue.NaN.copy();
-
-
-            if (isListValueType(val.type))
-            {
-                if (   isEmpty(val.items)
-                    || val.items[0].type != NUMBER_VALUE)
-                    return NumberValue.NaN.copy();
-
-                for (const item of val.items)
-                {
-                    value.value   *= item.value;
-                    value.decimals = Math.max(value.decimals, item.decimals);
-                }
-            }
-            else
-            {
-                consoleAssert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-
-                value.value   *= val.value;
-                value.decimals = Math.max(value.decimals, val.decimals);
-            }
-        }
-    }
-
-
-    return value;
-}
-
-
-class GDivide
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_DIVIDE, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GDivide(this.nodeId, this.options);
-        copy.copyBase(this);
-        copy.inputs = this.inputs.map(i => i.copy());
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-            
-        this.value = await evalDivideInputs(this.inputs, parse);
-    
-        
-        this.setUpdateValues(parse, 
-        [
-            ['', new NullValue()]
-        ]);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-async function evalDivideInputs(inputs, parse)
-{
-    if (isEmpty(inputs))
-        return NumberValue.NaN.copy();
-
-        
-    let value = new NumberValue(0);
-
-        
-    if (!isEmpty(inputs))
-    {
-        const val0 = await evalValue(inputs[0], parse);
-
-        if (   !val0
-            || !val0.isValid())
-            return NumberValue.NaN.copy();
-
-
-        if (    isListValueType(val0.type)
-            && !isEmpty(val0.items))
-        {
-            const item0 = val0.items[0];
-
-            if (   !item0
-                || !item0.isValid())
-                return NumberValue.NaN.copy();
-
-
-            value.value    = item0.value;
-            value.decimals = item0.decimals;
-
-            for (let i = 1; i < val0.items.length; i++)
-            {
-                const item = val0.items[i];
-
-                if (   !item
-                    || !item.isValid())
-                    return NumberValue.NaN.copy();
-
-                    
-                if (item.type == NUMBER_VALUE)
-                {
-                    if (item.value == 0) 
-                    { 
-                        value.value    = Number.NaN; 
-                        value.decimals = 0;
-                        break; 
-                    }
-
-                    value.value    = value.value / item.value;
-                    value.decimals = Math.max(value.decimals, item.decimals);
-                }                    
-            }
-        }
-        else
-        {
-            if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN.copy();
-
-            value.value    = val0.value;
-            value.decimals = val0.decimals;
-        }
-
-        
-        for (let i = 1; i < inputs.length; i++)
-        {
-            const val = await evalNumberValue(inputs[i], parse);
-
-            if (   !val
-                || !val.isValid())
-                return NumberValue.NaN.copy();
-
-
-            if (isListValueType(val.type))
-            {
-                for (const item of val.items)
-                {
-                    if (   !item
-                        || !item.isValid())
-                        return NumberValue.NaN.copy();
-
-
-                    if (item.type == NUMBER_VALUE)
-                    {
-                        if (item.value == 0) 
-                        { 
-                            value.value    = Number.NaN; 
-                            value.decimals = 0;
-                            break; 
-                        }
-
-                        //value = new NumberValue(value.toNumber() / item.toNumber());
-                        value.value    = value.value / item.value;
-                        value.decimals = Math.max(value.decimals, item.decimals);
-                    }                    
-                }
-            }
-            else
-            {
-                consoleAssert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-
-                if (val.value == 0) 
-                { 
-                    value.value    = Number.NaN; 
-                    value.decimals = 0;
-                    break; 
-                }
-    
-                //value = new NumberValue(value.toNumber() / val.toNumber());
-                
-                value.value    = value.value / val.value;
-                value.decimals = Math.max(value.decimals, val.decimals);
-            }
-        }
-    }
-
-
-    return value;
-}
-
-
-class GModulo
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_MODULO, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GModulo(this.nodeId, this.options);
-        copy.copyBase(this);
-        copy.inputs = this.inputs.map(i => i.copy());
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        this.value = await evalModuloInputs(this.inputs, parse);
-
-
-        this.setUpdateValues(parse, 
-        [
-            ['', new NullValue()]
-            //['value', this.value]
-        ]);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-async function evalModuloInputs(inputs, parse)
-{
-    if (isEmpty(inputs))
-        return NumberValue.NaN.copy();
-
-        
-    const value = new NumberValue(0);
-
-        
-    if (!isEmpty(inputs))
-    {
-        const val0 = await evalValue(inputs[0], parse);
-
-        if (   !val0
-            || !val0.isValid())
-            return NumberValue.NaN.copy();
-
-
-        if (    isListValueType(val0.type)
-            && !isEmpty(val0.items))
-        {
-            const item0 = val0.items[0];
-
-            if (   !item0
-                || !item0.isValid())
-                return NumberValue.NaN.copy();
-
-
-            value.value    = item0.value;
-            value.decimals = item0.decimals;
-
-            for (let i = 1; i < val0.items.length; i++)
-            {
-                const item = val0.items[i];
-                
-                if (   !item
-                    || !item.isValid())
-                    return NumberValue.NaN.copy();
-
-
-                if (item.type == NUMBER_VALUE)
-                {
-                    if (item.value == 0) 
-                    { 
-                        value.value    = Number.NaN; 
-                        value.decimals = 0;
-                        break; 
-                    }
-
-                    value.decimals = Math.max(value.decimals, item.decimals);
-                    value.value    = value.value % item.value;
-                }                    
-            }
-        }
-        else
-        {
-            if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN.copy();
-
-            value.value    = val0.value;
-            value.decimals = val0.decimals;
-        }
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            const val = await evalNumberValue(inputs[i], parse);
-
-            if (   !val
-                || !val.isValid())
-                return NumberValue.NaN.copy();
-
-
-            if (isListValueType(val.type))
-            {
-                for (const item of val.items)
-                {
-                    if (   !item
-                        || !item.isValid())
-                        return NumberValue.NaN.copy();
-
-
-                    if (item.type == NUMBER_VALUE)
-                    {
-                        if (item.value == 0) 
-                        { 
-                            value.value    = Number.NaN; 
-                            value.decimals = 0;
-                            break; 
-                        }
-
-                        value.decimals = Math.max(value.decimals, item.decimals);
-                        value.value    = floorTo(value.value % item.value, value.decimals);
-                    }                    
-                }
-            }
-            else
-            {
-                consoleAssert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-
-                if (val.value == 0) 
-                { 
-                    value.value    = Number.NaN; 
-                    value.decimals = 0;
-                    break; 
-                }
-
-                value.decimals = Math.max(value.decimals, val.decimals);
-                value.value    = floorTo(value.value % val.value, value.decimals);
-            }
-        }
-    }
-
-
-    return value;
-}
-
-
-class GExponent
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_EXPONENT, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GExponent(this.nodeId, this.options);
-        copy.copyBase(this);
-        copy.inputs = this.inputs.map(i => i.copy());
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        this.value = await evalExponentInputs(this.inputs, parse);
-
-
-        this.setUpdateValues(parse, [['value', this.value]]);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-async function evalExponentInputs(inputs, parse)
-{
-    if (isEmpty(inputs))
-        return NumberValue.NaN.copy();
-
-
-    const value = new NumberValue(0);
-
-
-    if (!isEmpty(inputs))
-    {
-        const val0 = await evalValue(inputs[0], parse);
-
-        if (   !val0
-            || !val0.isValid())
-            return NumberValue.NaN.copy();
-
-
-        if (    isListValueType(val0.type)
-            && !isEmpty(val0.items))
-        {
-            const item0 = val0.items[0];
-
-            if (   !item0
-                || !item0.isValid())
-                return NumberValue.NaN.copy();
-
-
-            value.value    = item0.value;
-            value.decimals = item0.decimals;
-
-            for (let i = 1; i < val0.items.length; i++)
-            {
-                const item = val0.items[i];
-                
-                if (   !item
-                    || !item.isValid())
-                    return NumberValue.NaN.copy();
-
-
-                if (item.type == NUMBER_VALUE)
-                {
-                    value.value    = Math.pow(value.value,    item.value);
-                    value.decimals = Math.max(value.decimals, item.decimals);
-                }                    
-            }
-        }
-        else
-        {
-            if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN.copy();
-
-            value.value    = val0.value;
-            value.decimals = val0.decimals;
-        }
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            const val = await evalNumberValue(inputs[i], parse);
-
-            if (   !val
-                || !val.isValid())
-                return NumberValue.NaN.copy();
-
-
-            if (isListValueType(val.type))
-            {
-                for (const item of val.items)
-                {
-                    if (   !item
-                        || !item.isValid())
-                        return NumberValue.NaN.copy();
-
-                    if (item.type == NUMBER_VALUE)
-                    {
-                        value.value    = Math.pow(value.value,    item.value);
-                        value.decimals = Math.max(value.decimals, item.decimals);
-                    }                    
-                }
-            }
-            else
-            {
-                consoleAssert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-
-                value.value    = Math.pow(value.value,    val.value);
-                value.decimals = Math.max(value.decimals, val.decimals);
-            }
-        }
-    }
-
-
-    return value;
 }
 
 

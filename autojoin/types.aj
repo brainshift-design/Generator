@@ -145,12 +145,6 @@
 
 ../generator/types/number/arithmetic/GMath.js
 ../generator/types/number/arithmetic/GSimpleMath.js
-../generator/types/number/arithmetic/GAdd.js
-../generator/types/number/arithmetic/GSubtract.js
-../generator/types/number/arithmetic/GMultiply.js
-../generator/types/number/arithmetic/GDivide.js
-../generator/types/number/arithmetic/GModulo.js
-../generator/types/number/arithmetic/GExponent.js
 
 ../generator/types/number/boolean/GBoolean.js
 ../generator/types/number/boolean/GNot.js

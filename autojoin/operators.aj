@@ -114,12 +114,6 @@
 ../operators/number/arithmetic/OpMath.js
 ../operators/number/arithmetic/OpSimpleMath.js
 ../operators/number/arithmetic/OpArithmetic.js
-../operators/number/arithmetic/OpAdd.js
-../operators/number/arithmetic/OpSubtract.js
-../operators/number/arithmetic/OpMultiply.js
-../operators/number/arithmetic/OpDivide.js
-../operators/number/arithmetic/OpModulo.js
-../operators/number/arithmetic/OpExponent.js
 
 ../operators/number/boolean/OpBoolean.js
 ../operators/number/boolean/OpBooleanBase.js

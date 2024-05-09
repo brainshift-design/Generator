@@ -61,17 +61,21 @@ extends GOperator
         const end   = await evalNumberValue(this.end,      parse);
     
 
+        if (this.nodeId == 'sequence')
+            console.log('sequence 1');
+
         if (   start
             && mult
-            && add
-            && end)
+            && add)
         {
             const value = start.value + (this.options.enabled ? add.value * this.currentIteration : 0);
 
-            if (!end.isValid())
+            if (   !end 
+                || !end.isValid())
                 this.value = getSequenceValue(start, mult, add, this.currentIteration, this.options.enabled);
 
-            else if (   end.isValid()   
+            else if (   end
+                     && end.isValid()   
                      && (   add.value == 0
                          || add.value >  0 && start.value < end.value
                                            &&       value < end.value
@@ -85,6 +89,12 @@ extends GOperator
         else
             this.value = NumberValue.NaN.copy();
 
+
+        if (this.nodeId == 'sequence')
+        {
+            console.log('sequence 2');
+            console.log('');
+        }
 
         this.setUpdateValues(parse,
         [
