@@ -31,11 +31,11 @@ function figUpdateRect(figRect, genRect, addProps, transform, isValid = false)
         return;
 
 
-    const found = genRect[FO_EFFECTS].findIndex(e => e[0] == 'ROUND_CORNERS');
+    const foundCorners = genRect[FO_EFFECTS].findIndex(e => e[0] == 'ROUND_CORNERS');
 
-    if (found > -1)
+    if (foundCorners > -1)
     {
-        const corners = genRect[FO_EFFECTS][found];
+        const corners = genRect[FO_EFFECTS][foundCorners];
 
         figRect.topLeftRadius     = corners[1];
         figRect.topRightRadius    = corners[2];
@@ -44,6 +44,19 @@ function figUpdateRect(figRect, genRect, addProps, transform, isValid = false)
     }
     else
         figRect.cornerRadius = genRect[FO_RECT_ROUND];
+
+
+    const foundSides = genRect[FO_EFFECTS].findIndex(e => e[0] == 'STROKE_SIDES');
+
+    if (foundSides > -1)
+    {
+        const sides = genRect[FO_EFFECTS][foundSides];
+
+        figRect.strokeTopWeight    = sides[1];
+        figRect.strokeLeftWeight   = sides[2];
+        figRect.strokeRightWeight  = sides[3];
+        figRect.strokeBottomWeight = sides[4];
+    }
 
 
     if (transform)

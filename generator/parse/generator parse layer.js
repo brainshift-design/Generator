@@ -187,6 +187,87 @@ function genParseStrokeParam(parse)
 
 
 
+function genParseStrokeSidesValue(parse)
+{
+    parse.pos++; // STROKE_SIDES_VALUE
+
+    const sides = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(STROKE_SIDES_VALUE, sides, parse);
+
+    return parseStrokeSidesValue(sides)[0];
+}
+
+
+
+function genParseStrokeSides(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const sides = new GStrokeSides(nodeId, options);
+
+    sides.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(sides, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, sides);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+    {
+        sides.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['top', 'left', 'right', 'bottom'];
+
+
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'top':    sides.top    = genParse(parse); break;
+        case 'left':   sides.left   = genParse(parse); break;
+        case 'right':  sides.right  = genParse(parse); break;
+        case 'bottom': sides.bottom = genParse(parse); break;
+        }
+    }
+    
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, sides);
+    return sides;
+}
+
+
+
 function genParseRoundCornersValue(parse)
 {
     parse.pos++; // ROUND_CORNERS_VALUE

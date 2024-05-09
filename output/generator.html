@@ -6392,6 +6392,10 @@ const STROKE_VALUE        = 'STRK#';
 const STROKE              = 'STRK';
 const STROKE_TYPES        = [STROKE_VALUE, STROKE];
   
+const STROKE_SIDES_VALUE  = 'STRKSD#';
+const STROKE_SIDES        = 'STRKSD';
+const STROKE_SIDES_TYPES  = [STROKE_SIDES_VALUE, STROKE_SIDES];
+
 const COLOR_STOP_VALUE    = 'CSTOP#';
 const COLOR_STOP          = 'CSTOP';
 const COLOR_STOP_TYPES    = [COLOR_STOP_VALUE, COLOR_STOP];
@@ -6432,6 +6436,7 @@ const LAYER_BLEND_TYPES   = [LAYER_BLEND_VALUE, LAYER_BLEND];
 
 const EFFECT_TYPES =
 [
+    ...STROKE_SIDES_TYPES,
     ...ROUND_CORNERS_TYPES,
     ...DROP_SHADOW_TYPES,
     ...INNER_SHADOW_TYPES,
@@ -6448,6 +6453,7 @@ const STYLE_VALUES =
             FILL_VALUE, 
         GRADIENT_VALUE, 
           STROKE_VALUE,
+    STROKE_SIDES_VALUE,
      DROP_SHADOW_VALUE,
     INNER_SHADOW_VALUE,
       LAYER_BLUR_VALUE,
@@ -7488,6 +7494,7 @@ function addProp(obj, prop)
     else if (prop.type ==          FILL_VALUE)  addFillProp        (obj, prop);
     else if (prop.type ==      GRADIENT_VALUE)  addGradientProp    (obj, prop);
     else if (prop.type ==        STROKE_VALUE)  addStrokeProp      (obj, prop);
+    else if (prop.type ==  STROKE_SIDES_VALUE)  addStrokeSidesProp (obj, prop);
     else if (prop.type == ROUND_CORNERS_VALUE)  addRoundCornersProp(obj, prop);
     else if (prop.type ==   DROP_SHADOW_VALUE)  addDropShadowProp  (obj, prop);
     else if (prop.type ==  INNER_SHADOW_VALUE)  addInnerShadowProp (obj, prop);
@@ -7845,6 +7852,27 @@ function addStrokeProp(obj, prop)
 
 
 
+function addStrokeSidesProp(obj, prop)
+{
+    if (obj.type == SHAPE_GROUP)
+    {
+        for (const _obj of obj.children)
+            addProp(_obj, prop);
+    }
+    else
+    {
+        obj.effects.push([
+            'STROKE_SIDES', 
+            prop.top   .value,
+            prop.left  .value,
+            prop.right .value,
+            prop.bottom.value,
+            prop.visible ]);
+    }
+}
+
+
+
 function addRoundCornersProp(obj, prop)
 {
     if (obj.type == SHAPE_GROUP)
@@ -7856,10 +7884,10 @@ function addRoundCornersProp(obj, prop)
     {
         obj.effects.push([
             'ROUND_CORNERS', 
-            prop.tl.value, //toNumber(),
-            prop.tr.value, //toNumber(),
-            prop.bl.value, //toNumber(),
-            prop.br.value, //toNumber(),
+            prop.tl.value,
+            prop.tr.value,
+            prop.bl.value,
+            prop.br.value,
             prop.visible ]);
     }
 }
@@ -10893,6 +10921,7 @@ async function evalFrameValue         (_value, parse) { return await evalValue(_
 
 async function evalInnerShadowValue   (_value, parse) { return await evalValue(_value, parse, () => InnerShadowValue   .NaN.copy()); }
 async function evalLayerBlurValue     (_value, parse) { return await evalValue(_value, parse, () => LayerBlurValue     .NaN.copy()); }
+async function evalStrokeSidesValue   (_value, parse) { return await evalValue(_value, parse, () => StrokeSidesValue   .NaN.copy()); }
 async function evalRoundedCornersValue(_value, parse) { return await evalValue(_value, parse, () => RoundedCornersValue.NaN.copy()); }
 
 
@@ -13421,6 +13450,159 @@ function parseStrokeValue(str, i = -1)
             dashes[0]),
         
         i - iStart ];
+}
+
+
+
+class StrokeSidesValue
+extends GValue
+{
+    top;
+    left;
+    right;
+    bottom;
+    visible;
+
+
+
+    constructor(top     = new NumberValue(0), 
+                left    = new NumberValue(0), 
+                right   = new NumberValue(0), 
+                bottom  = new NumberValue(0), 
+                visible = true)
+    {
+        super(STROKE_SIDES_VALUE);
+
+        this.top     = top;
+        this.left    = left;
+        this.right   = right;
+        this.bottom  = bottom;
+        this.visible = visible;
+    }
+
+
+    
+    copy()
+    {
+        const copy = new StrokeSidesValue(
+            this.top   .copy(),
+            this.left  .copy(),
+            this.right .copy(),
+            this.bottom.copy(),
+            this.visible);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(sides)
+    {
+        return this.top   .equals(sides.tl)
+            && this.left  .equals(sides.tr)
+            && this.right .equals(sides.bl)
+            && this.bottom.equals(sides.br)
+            && this.visible === sides.visible;
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return      this.top   .toString()
+            + ' ' + this.left  .toString()
+            + ' ' + this.right .toString()
+            + ' ' + this.bottom.toString();
+    }
+
+
+
+    toPreviewString()
+    {
+        return      this.top   .toPreviewString()
+            + ' ' + this.left  .toPreviewString()
+            + ' ' + this.right .toPreviewString()
+            + ' ' + this.bottom.toPreviewString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.top   .toDisplayString()
+            + ' ' + this.left  .toDisplayString()
+            + ' ' + this.right .toDisplayString()
+            + ' ' + this.bottom.toDisplayString();
+    }
+
+
+
+    isValid()
+    {
+        return this.top   .isValid()
+            && this.left  .isValid()
+            && this.right .isValid()
+            && this.bottom.isValid();
+    }
+
+
+
+    getNaN()
+    {
+        return StrokeSidesValue.NaN.copy();
+    }
+
+
+
+    static NaN = Object.freeze(new StrokeSidesValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        false));
+}
+
+
+
+function parseStrokeSidesValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [StrokeSidesValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const top    = parseNumberValue(str[i]); i += top   [1];
+    const left   = parseNumberValue(str[i]); i += left  [1];
+    const right  = parseNumberValue(str[i]); i += right [1];
+    const bottom = parseNumberValue(str[i]); i += bottom[1];
+
+
+    const sides = new StrokeSidesValue(
+        top   [0],
+        left  [0],
+        right [0],
+        bottom[0]);
+
+
+    return [sides, i - iStart];
 }
 
 
@@ -36955,6 +37137,162 @@ extends GOperator1
 }
 
 
+class GStrokeSides
+extends GOperator1
+{
+    top    = null;
+    left   = null;
+    right  = null;
+    bottom = null;
+    
+    
+
+    constructor(nodeId, options)
+    {
+        super(STROKE_SIDES, nodeId, options);
+    }
+
+    
+    
+    reset()
+    {
+        super.reset();
+        
+        this.top    = null;
+        this.left   = null;
+        this.right  = null;
+        this.bottom = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GStrokeSides(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.top   ) copy.top    = this.top   .copy();
+        if (this.left  ) copy.left   = this.left  .copy();
+        if (this.right ) copy.right  = this.right .copy();
+        if (this.bottom) copy.bottom = this.bottom.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input  = await evalStrokeSidesValue(this.input,  parse);
+        const top    = await evalNumberValue     (this.top,    parse);
+        const left   = await evalNumberValue     (this.left,   parse);
+        const right  = await evalNumberValue     (this.right,  parse);
+        const bottom = await evalNumberValue     (this.bottom, parse);
+
+
+        if (input)
+        {
+            this.value = new StrokeSidesValue(
+                top    ?? input.top,
+                left   ?? input.left,
+                right  ?? input.right,
+                bottom ?? input.bottom,
+                this.options.enabled);
+        }
+        else
+        {
+            this.value = new StrokeSidesValue(
+                top, 
+                left, 
+                right, 
+                bottom,
+                this.options.enabled);
+        }
+
+
+        this.setUpdateValues(parse,
+        [
+            ['top',    this.value.top   ],
+            ['left',   this.value.left  ],
+            ['right',  this.value.right ],
+            ['bottom', this.value.bottom]
+        ]);
+        
+
+        if (!this.top   ) this.top    = this.value.top   .copy();
+        if (!this.left  ) this.left   = this.value.left  .copy();
+        if (!this.right ) this.right  = this.value.right .copy();
+        if (!this.bottom) this.bottom = this.value.bottom.copy();
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.top    && this.top   .isValid()
+            && this.left   && this.left  .isValid()
+            && this.right  && this.right .isValid()
+            && this.bottom && this.bottom.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.top   ) this.top   .pushValueUpdates(parse);
+        if (this.left  ) this.left  .pushValueUpdates(parse);
+        if (this.right ) this.right .pushValueUpdates(parse);
+        if (this.bottom) this.bottom.pushValueUpdates(parse);
+    }
+    
+    
+    
+   invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.top   ) this.top   .invalidateInputs(parse, from, force);
+        if (this.left  ) this.left  .invalidateInputs(parse, from, force);
+        if (this.right ) this.right .invalidateInputs(parse, from, force);
+        if (this.bottom) this.bottom.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.top   ) this.top   .iterateLoop(parse);
+        if (this.left  ) this.left  .iterateLoop(parse);
+        if (this.right ) this.right .iterateLoop(parse);
+        if (this.bottom) this.bottom.iterateLoop(parse);
+    }
+}
+
+
 class GRoundCorners
 extends GOperator1
 {
@@ -51219,6 +51557,87 @@ function genParseStrokeParam(parse)
 
 
 
+function genParseStrokeSidesValue(parse)
+{
+    parse.pos++; // STROKE_SIDES_VALUE
+
+    const sides = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(STROKE_SIDES_VALUE, sides, parse);
+
+    return parseStrokeSidesValue(sides)[0];
+}
+
+
+
+function genParseStrokeSides(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const sides = new GStrokeSides(nodeId, options);
+
+    sides.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(sides, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, sides);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+    {
+        sides.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['top', 'left', 'right', 'bottom'];
+
+
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'top':    sides.top    = genParse(parse); break;
+        case 'left':   sides.left   = genParse(parse); break;
+        case 'right':  sides.right  = genParse(parse); break;
+        case 'bottom': sides.bottom = genParse(parse); break;
+        }
+    }
+    
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, sides);
+    return sides;
+}
+
+
+
 function genParseRoundCornersValue(parse)
 {
     parse.pos++; // ROUND_CORNERS_VALUE
@@ -57227,6 +57646,9 @@ function genParse(parse, inParam = true)
       
     else if (parse.next == STROKE_VALUE           ) result = genParseStrokeValue       (parse);
     else if (parse.next == STROKE                 ) result = genParseStroke            (parse);
+      
+    else if (parse.next == STROKE_SIDES_VALUE     ) result = genParseStrokeSidesValue  (parse);
+    else if (parse.next == STROKE_SIDES           ) result = genParseStrokeSides       (parse);
       
     else if (parse.next == ROUND_CORNERS_VALUE    ) result = genParseRoundCornersValue (parse);
     else if (parse.next == ROUND_CORNERS          ) result = genParseRoundCorners      (parse);

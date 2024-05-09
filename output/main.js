@@ -858,6 +858,9 @@ const FILL_TYPES = [FILL_VALUE, FILL];
 const STROKE_VALUE = 'STRK#';
 const STROKE = 'STRK';
 const STROKE_TYPES = [STROKE_VALUE, STROKE];
+const STROKE_SIDES_VALUE = 'STRKSD#';
+const STROKE_SIDES = 'STRKSD';
+const STROKE_SIDES_TYPES = [STROKE_SIDES_VALUE, STROKE_SIDES];
 const COLOR_STOP_VALUE = 'CSTOP#';
 const COLOR_STOP = 'CSTOP';
 const COLOR_STOP_TYPES = [COLOR_STOP_VALUE, COLOR_STOP];
@@ -886,6 +889,7 @@ const LAYER_BLEND_VALUE = 'BLEND#';
 const LAYER_BLEND = 'BLEND';
 const LAYER_BLEND_TYPES = [LAYER_BLEND_VALUE, LAYER_BLEND];
 const EFFECT_TYPES = [
+    ...STROKE_SIDES_TYPES,
     ...ROUND_CORNERS_TYPES,
     ...DROP_SHADOW_TYPES,
     ...INNER_SHADOW_TYPES,
@@ -899,6 +903,7 @@ const STYLE_VALUES = [
     FILL_VALUE,
     GRADIENT_VALUE,
     STROKE_VALUE,
+    STROKE_SIDES_VALUE,
     DROP_SHADOW_VALUE,
     INNER_SHADOW_VALUE,
     LAYER_BLUR_VALUE,
@@ -3892,9 +3897,9 @@ function figUpdateRect(figRect, genRect, addProps, transform, isValid = false) {
     if (!isValid
         && !genRectIsValid(genRect))
         return;
-    const found = genRect[FO_EFFECTS].findIndex(e => e[0] == 'ROUND_CORNERS');
-    if (found > -1) {
-        const corners = genRect[FO_EFFECTS][found];
+    const foundCorners = genRect[FO_EFFECTS].findIndex(e => e[0] == 'ROUND_CORNERS');
+    if (foundCorners > -1) {
+        const corners = genRect[FO_EFFECTS][foundCorners];
         figRect.topLeftRadius = corners[1];
         figRect.topRightRadius = corners[2];
         figRect.bottomLeftRadius = corners[3];
@@ -3902,6 +3907,14 @@ function figUpdateRect(figRect, genRect, addProps, transform, isValid = false) {
     }
     else
         figRect.cornerRadius = genRect[FO_RECT_ROUND];
+    const foundSides = genRect[FO_EFFECTS].findIndex(e => e[0] == 'STROKE_SIDES');
+    if (foundSides > -1) {
+        const sides = genRect[FO_EFFECTS][foundSides];
+        figRect.strokeTopWeight = sides[1];
+        figRect.strokeLeftWeight = sides[2];
+        figRect.strokeRightWeight = sides[3];
+        figRect.strokeBottomWeight = sides[4];
+    }
     if (transform)
         setObjectTransform(figRect, genRect);
     setObjectProps(figRect, genRect, addProps);

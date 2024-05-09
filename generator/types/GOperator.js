@@ -321,4 +321,5 @@ async function evalFrameValue         (_value, parse) { return await evalValue(_
 
 async function evalInnerShadowValue   (_value, parse) { return await evalValue(_value, parse, () => InnerShadowValue   .NaN.copy()); }
 async function evalLayerBlurValue     (_value, parse) { return await evalValue(_value, parse, () => LayerBlurValue     .NaN.copy()); }
+async function evalStrokeSidesValue   (_value, parse) { return await evalValue(_value, parse, () => StrokeSidesValue   .NaN.copy()); }
 async function evalRoundedCornersValue(_value, parse) { return await evalValue(_value, parse, () => RoundedCornersValue.NaN.copy()); }

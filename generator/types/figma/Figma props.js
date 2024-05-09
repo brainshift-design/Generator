@@ -4,6 +4,7 @@ function addProp(obj, prop)
     else if (prop.type ==          FILL_VALUE)  addFillProp        (obj, prop);
     else if (prop.type ==      GRADIENT_VALUE)  addGradientProp    (obj, prop);
     else if (prop.type ==        STROKE_VALUE)  addStrokeProp      (obj, prop);
+    else if (prop.type ==  STROKE_SIDES_VALUE)  addStrokeSidesProp (obj, prop);
     else if (prop.type == ROUND_CORNERS_VALUE)  addRoundCornersProp(obj, prop);
     else if (prop.type ==   DROP_SHADOW_VALUE)  addDropShadowProp  (obj, prop);
     else if (prop.type ==  INNER_SHADOW_VALUE)  addInnerShadowProp (obj, prop);
@@ -361,6 +362,27 @@ function addStrokeProp(obj, prop)
 
 
 
+function addStrokeSidesProp(obj, prop)
+{
+    if (obj.type == SHAPE_GROUP)
+    {
+        for (const _obj of obj.children)
+            addProp(_obj, prop);
+    }
+    else
+    {
+        obj.effects.push([
+            'STROKE_SIDES', 
+            prop.top   .value,
+            prop.left  .value,
+            prop.right .value,
+            prop.bottom.value,
+            prop.visible ]);
+    }
+}
+
+
+
 function addRoundCornersProp(obj, prop)
 {
     if (obj.type == SHAPE_GROUP)
@@ -372,10 +394,10 @@ function addRoundCornersProp(obj, prop)
     {
         obj.effects.push([
             'ROUND_CORNERS', 
-            prop.tl.value, //toNumber(),
-            prop.tr.value, //toNumber(),
-            prop.bl.value, //toNumber(),
-            prop.br.value, //toNumber(),
+            prop.tl.value,
+            prop.tr.value,
+            prop.bl.value,
+            prop.br.value,
             prop.visible ]);
     }
 }

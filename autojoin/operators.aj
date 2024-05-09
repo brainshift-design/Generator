@@ -184,6 +184,7 @@
 ../operators/layer/OpColorStop.js
 ../operators/layer/OpGradient.js
 ../operators/layer/OpStroke.js
+../operators/layer/OpStrokeSides.js
 ../operators/layer/OpRoundCorners.js
 ../operators/layer/OpDropShadow.js
 ../operators/layer/OpInnerShadow.js

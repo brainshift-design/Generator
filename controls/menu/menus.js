@@ -52,6 +52,7 @@ var menuTextFunctions;
 var menuConvertNumber;
 var menuConvertText;
 var menuTextData;
+var menuStroke;
 var menuColor;
 var menuCreateColor;
 var menuColorStyle;
@@ -644,12 +645,17 @@ function initGeneratorMenus()
         })]);
 
 
+    menuStroke = new Menu('Stroke', true, false);
+    menuStroke.addItems([
+        new MenuItem('Stroke sides', null, true, {icon: iconStrokeSides, createType: STROKE_SIDES, callback: e => actionManager.do(getCreateNodeAction(STROKE_SIDES, btnShape.div, getCreateOptions(e)))})]);
+
+
     menuColor = new Menu('Colors', true, false);
     menuColor.addItems([
         menuItemColor        = new MenuItem('Color',         null,                false, {icon: iconColor,            childMenu: menuCreateColor,  callback: e => actionManager.do(getCreateNodeAction(COLOR, btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
                                new MenuItem('',              null,                false, {separator: true}),
         menuItemLayerFill    = new MenuItem('Fill',          null,                false, {icon: iconFill,             callback: e => actionManager.do(getCreateNodeAction(FILL,              btnColor.div, getCreateOptions(e)))}),
-        menuItemLayerStroke  = new MenuItem('Stroke',        null,                false, {icon: iconStroke,           callback: e => actionManager.do(getCreateNodeAction(STROKE,            btnColor.div, getCreateOptions(e)))}),
+        menuItemLayerStroke  = new MenuItem('Stroke',        null,                false, {icon: iconStroke,           childMenu: menuStroke, callback: e => actionManager.do(getCreateNodeAction(STROKE,            btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('',              null,                false, {separator: true}),
                                new MenuItem('Color stop',    null,                false, {icon: iconColorStop,        callback: e => actionManager.do(getCreateNodeAction(COLOR_STOP,        btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('Gradient',      null,                false, {icon: iconGradient,         callback: e => actionManager.do(getCreateNodeAction(GRADIENT,          btnColor.div, getCreateOptions(e)))}),
@@ -1177,6 +1183,7 @@ function initGeneratorMenus()
         menuStyles,
         menuShape,
         menuShapes,
+        menuStroke,
         menuRectangle,
         menuVectorPath,
         menuVectorFunctions,

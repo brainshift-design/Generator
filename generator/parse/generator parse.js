@@ -265,6 +265,9 @@ function genParse(parse, inParam = true)
     else if (parse.next == STROKE_VALUE           ) result = genParseStrokeValue       (parse);
     else if (parse.next == STROKE                 ) result = genParseStroke            (parse);
       
+    else if (parse.next == STROKE_SIDES_VALUE     ) result = genParseStrokeSidesValue  (parse);
+    else if (parse.next == STROKE_SIDES           ) result = genParseStrokeSides       (parse);
+      
     else if (parse.next == ROUND_CORNERS_VALUE    ) result = genParseRoundCornersValue (parse);
     else if (parse.next == ROUND_CORNERS          ) result = genParseRoundCorners      (parse);
       

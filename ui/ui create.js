@@ -140,6 +140,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case COLOR_STOP:              node = new OpColorStop();          break;
  
         case STROKE:                  node = new OpStroke();             break;
+        case STROKE_SIDES:            node = new OpStrokeSides();        break;
  
         case ROUND_CORNERS:           node = new OpRoundCorners();       break;
         case DROP_SHADOW:             node = new OpDropShadow();         break;

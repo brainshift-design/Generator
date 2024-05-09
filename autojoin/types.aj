@@ -46,6 +46,7 @@
 ../generator/types/values/ColorStopValue.js
 ../generator/types/values/GradientValue.js
 ../generator/types/values/StrokeValue.js
+../generator/types/values/StrokeSidesValue.js
 ../generator/types/values/RoundCornersValue.js
 ../generator/types/values/DropShadowValue.js
 ../generator/types/values/InnerShadowValue.js
@@ -211,6 +212,7 @@
 ../generator/types/layer/GColorStop.js
 ../generator/types/layer/GGradient.js
 ../generator/types/layer/GStroke.js
+../generator/types/layer/GStrokeSides.js
 ../generator/types/layer/GRoundCorners.js
 ../generator/types/layer/GDropShadow.js
 ../generator/types/layer/GInnerShadow.js
