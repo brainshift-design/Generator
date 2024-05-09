@@ -629,11 +629,11 @@ const presetGradientCircles = '\
             "enabled": "true",\
             "highlight": "0",\
             "x": "3982",\
-            "y": "5958",\
+            "y": "5908",\
             "z": "37",\
             "params":\
             [\
-                ["NUM#", "seed", "2278,0"],\
+                ["NUM#", "seed", "2401,0"],\
                 ["NUM#", "max", "10000,0"]\
             ]\
         },\
@@ -855,7 +855,7 @@ const presetGradientCircles = '\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "grad",\
-            "inputId": "type",\
+            "inputId": "gradType",\
             "list": "false"\
         },\
         {\
