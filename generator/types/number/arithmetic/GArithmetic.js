@@ -56,6 +56,8 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
+        if (this.nodeId == 'math')
+            console.log('this.inputs =', this.inputs);
         this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 

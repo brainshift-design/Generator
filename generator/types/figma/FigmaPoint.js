@@ -54,6 +54,13 @@ extends FigmaShape
 
 
 
+    checkFlipped(flipX, flipY)
+    {
+
+    }
+
+
+
     toPoint()
     {
         return point(this.x, this.y);

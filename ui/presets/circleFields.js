@@ -60,7 +60,7 @@ const presetCircleFields = '\
       "z": "2",\
       "params":\
       [\
-            ["NUM#", "seed", "7360,0"],\
+            ["NUM#", "seed", "2512,0"],\
             ["NUM#", "iteration", "?,0"],\
             ["NUM#", "max", "10000,0"]\
       ]\

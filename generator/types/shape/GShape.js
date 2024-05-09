@@ -91,7 +91,7 @@ extends GShapeBase
             {
                 this.setUpdateValues(parse, 
                 [
-                    ['props', props]
+                    //['props', props]
                 ], 
                 true);
 

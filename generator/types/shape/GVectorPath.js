@@ -137,7 +137,7 @@ extends GShape
         
         this.setUpdateValues(parse, 
         [
-            ['points',  points ],
+            //['points',  points ],
             ['closed',  closed ],
             ['degree',  degree ],
             ['winding', winding],

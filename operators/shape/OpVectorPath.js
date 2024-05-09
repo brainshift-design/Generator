@@ -47,13 +47,13 @@ extends OpShape
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const points  = values[paramIds.findIndex(id => id == 'points' )];
+        //const points  = values[paramIds.findIndex(id => id == 'points' )];
         const closed  = values[paramIds.findIndex(id => id == 'closed' )];
         const degree  = values[paramIds.findIndex(id => id == 'degree' )];
         const winding = values[paramIds.findIndex(id => id == 'winding')];
         const round   = values[paramIds.findIndex(id => id == 'round'  )];
 
-        this.paramPoints .setValue(points,  false, true, false);
+        //this.paramPoints .setValue(points,  false, true, false);
         this.paramClosed .setValue(closed,  false, true, false);
         this.paramDegree .setValue(degree,  false, true, false);
         this.paramWinding.setValue(winding, false, true, false);

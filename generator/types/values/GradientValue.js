@@ -38,10 +38,9 @@ extends GValue
         this.size       = size    .copy();
         this.angle      = angle   .copy();
         this.aspect     = aspect  .copy();
+        this.diagAspect = diagAspect;
         this.skew       = skew    .copy();
         this.blend      = blend   .copy();
-
-        this.diagAspect = diagAspect;
 
         this.valid      = true;
     }

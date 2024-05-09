@@ -32,7 +32,7 @@ const presetAfterTheStorm = '\
             [\
                 ["NUM#", "start", "220,0"],\
                 ["NUM#", "add", "-11,0"],\
-                ["NUM#", "end", "?,0"]\
+                ["NUM#", "end", "?,?"]\
             ]\
         },\
         {\
@@ -49,7 +49,7 @@ const presetAfterTheStorm = '\
             [\
                 ["NUM#", "start", "5,0"],\
                 ["NUM#", "add", "1,0"],\
-                ["NUM#", "end", "?,0"]\
+                ["NUM#", "end", "?,?"]\
             ]\
         },\
         {\
@@ -228,8 +228,8 @@ const presetAfterTheStorm = '\
         },\
         {\
             "type": "ITER",\
-            "id": "define",\
-            "name": "define",\
+            "id": "iterate",\
+            "name": "iterate",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
@@ -615,7 +615,7 @@ const presetAfterTheStorm = '\
             "outputNodeId": "color",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "define",\
+            "inputNodeId": "iterate",\
             "inputId": "h0",\
             "list": "false"\
         },\
@@ -623,7 +623,7 @@ const presetAfterTheStorm = '\
             "outputNodeId": "color2",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "define",\
+            "inputNodeId": "iterate",\
             "inputId": "h1",\
             "list": "false"\
         },\
@@ -631,7 +631,7 @@ const presetAfterTheStorm = '\
             "outputNodeId": "color5",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "define",\
+            "inputNodeId": "iterate",\
             "inputId": "h2",\
             "list": "false"\
         },\
@@ -639,7 +639,7 @@ const presetAfterTheStorm = '\
             "outputNodeId": "color3",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "define",\
+            "inputNodeId": "iterate",\
             "inputId": "h3",\
             "list": "false"\
         },\
@@ -684,7 +684,7 @@ const presetAfterTheStorm = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "define",\
+            "outputNodeId": "iterate",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "fill",\

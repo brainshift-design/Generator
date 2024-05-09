@@ -8,8 +8,8 @@
             <div class="presetTab" onclick="setCurrentPresetTab(3);">Loops</div>
             <div class="presetTab" onclick="setCurrentPresetTab(4);">Shapes</div>
             <div class="presetTab" onclick="setCurrentPresetTab(5);">Colors</div>
-            <div class="presetTab" onclick="setCurrentPresetTab(6);">Numbers & Text</div>
-            <div class="presetTab" onclick="setCurrentPresetTab(7);">Examples</div>
+            <div class="presetTab" onclick="setCurrentPresetTab(6);">Examples 1</div>
+            <div class="presetTab" onclick="setCurrentPresetTab(7);">Examples 2</div>
         </div>
         <div id="presetClose" onclick="hidePresets();"></div>
     </div>
@@ -21,9 +21,11 @@
             <div class="presetGroup">
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('basics'));">Node basics</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('organize'));">Organizing nodes</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('quadraticFormula'));">Quadratic formula</div>
             </div>
             <div class="presetGroup">
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('dataTypes'));">Data types</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('twoMathNodes'));">The two math nodes</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('basicVariables'));">Variables</div>
             </div>
             <div class="presetGroup">
@@ -71,21 +73,19 @@
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('loop2d'));">2D loop</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('loopLock'));">Complex loop</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('feedback'));">Loop feedback</div>
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('randomCircles'));">Random circles</div>
             </div>
             <div class="presetGroup">
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('targets'));">Targets</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('wavyDots'));">Wavy dots</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('rays'));">Sun rays</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('magicDots'));">Magic dots</div>
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('treeRings'));">Tree rings</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('randomCircles'));">Random circles</div>
             </div>
             <div class="presetGroup">
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('spiderWeb'));">Spider web icon</div>
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('brickWall'));">Brick wall</div>
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('cairoTiles'));">Cairo tiles</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('nightPalace'));">Flow fields</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('progressiveBlur'));">Progressive blur</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('noiseBlur'));">Looped noise</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('treeRings'));">Tree rings</div>
             </div>
         </div>
         
@@ -95,22 +95,19 @@
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('shapesStyles'));">Shapes & styles</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('basicTransform'));">Basic transform</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('combinedTransform'));">Combined transform</div>
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('blurryBackgrounds'));">Blurry backgrounds</div>
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('arcLetters'));">Arc letters</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('brickWall'));">Brick wall</div>
             </div>
             <div class="presetGroup">
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('wobblyCircle'));">Wavy circle</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('wobbles'));">Wobbles</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('snowflakes'));">Snowflakes</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('roughStar'));">Rough star</div>
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('doctorsHandwriting'));">Doctor's handwriting</div>
             </div>
             <div class="presetGroup">
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('namesLogos'));">Random logos</div>
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('avatars'));">Random avatars</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('falsePerspective'));">Fake perspective</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('twistedTower'));">Twisted tower</div>
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('dustySunset'));">Dusty sunset</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('spiderWeb'));">Spider web icon</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('cairoTiles'));">Cairo tiles</div>
             </div>
         </div>
         
@@ -120,11 +117,13 @@
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('colorSpaces'));">Converting colors</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('colorContrast'));">Color contrast</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('invalidColors'));">Invalid colors</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('opponentColor'));">Opponent process color</div>
             </div>
             <div class="presetGroup">
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('randomColors'));">Random colors</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('tintsAndShades'));">Tints & shades</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('paletteFromColor'));">Palette from base color</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('blurryBackgrounds'));">Blurry backgrounds</div>
             </div>
             <div class="presetGroup">
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('textFromBackground'));">Text color from background</div>
@@ -137,28 +136,31 @@
         
         <div class="presetPage" id="presetPageMathText">
             <div class="presetGroup">
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('twoMathNodes'));">The two math nodes</div>
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('quadraticFormula'));">Quadratic formula</div>
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('opponentColor'));">Opponent process color</div>
-            </div>
-            <div class="presetGroup">
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('numberLine'));">Number line</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('clock'));">Clock</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('randomNames'));">Random names</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('namesLogos'));">Random logos</div>
             </div>
             <div class="presetGroup">
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('randomNames'));">Random names</div>
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('alphabetSoup'));">Alphabet Soup</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('fontList'));">Font list</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('alphabetSoup'));">Alphabet Soup</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('arcLetters'));">Arc letters</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('doctorsHandwriting'));">Doctor's handwriting</div>
+            </div>
+            <div class="presetGroup">
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('circleFields'));">Circle fields</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('circleFields2'));">Circle fields 2</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('gradientCircles'));">Gradient circles</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('arcs'));">Arcs</div>
             </div>
         </div>
- 
-
+        
+        
         <div class="presetPage" id="presetPageExamples">
             <div class="presetGroup">
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('booksOnShelf'));">Books on shelf</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('avatars'));">Random avatars</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('nestedTorus'));">Nested torus</div>
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('circleFields'));">Circle fields</div>
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('circleFields2'));">Circle fields 2</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('hotSpring'));">Hot spring</div>
             </div>
             <div class="presetGroup">
@@ -166,14 +168,12 @@
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('afterTheStorm'));">After the storm</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('sunsetDreams'));">Sunset dreams</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('brushStrokes'));">Brush strokes</div>
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('arcs'));">Arcs</div>
             </div>
             <div class="presetGroup">
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('gradientCircles'));">Gradient circles</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('polarizedLights'));">Polarized lights</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('linesOfFire'));">Lines of fire</div>
                 <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('clouds'));">Clouds</div>
-                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('nightPalace'));">A night at the palace</div>
+                <div class="preset" onclick="checkDeleteNodesWarning(() => loadPresetGraph('dustySunset'));">Dusty sunset</div>
             </div>
         </div>
 

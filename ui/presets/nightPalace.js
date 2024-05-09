@@ -1,6 +1,6 @@
 const nightPalace = '\
 {\
-    "generatorVersion": "384",\
+    "generatorVersion": "415",\
     "nodes":\
     [\
         {\
@@ -13,8 +13,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13929",\
-        "y": "4843",\
+        "x": "14379",\
+        "y": "5293",\
         "z": "0"\
         },\
         {\
@@ -27,8 +27,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "14093",\
-        "y": "4725",\
+        "x": "14543",\
+        "y": "5175",\
         "z": "1",\
         "params":\
         [\
@@ -46,8 +46,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13234",\
-        "y": "4632",\
+        "x": "13684",\
+        "y": "5082",\
         "z": "2",\
         "params":\
         [\
@@ -64,8 +64,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13230",\
-        "y": "4507",\
+        "x": "13680",\
+        "y": "4957",\
         "z": "3",\
         "params":\
         [\
@@ -82,13 +82,13 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13848",\
-        "y": "4610",\
+        "x": "14298",\
+        "y": "5060",\
         "z": "4",\
         "params":\
         [\
-                ["NUM#", "x", "-517.6837915806141,10"],\
-                ["NUM#", "y", "104.1614870521843,9"]\
+                ["NUM#", "x", "129.56609023021127,10"],\
+                ["NUM#", "y", "-130.02420414332073,10"]\
         ]\
         },\
         {\
@@ -101,8 +101,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "14247",\
-        "y": "4615",\
+        "x": "14697",\
+        "y": "5065",\
         "z": "5"\
         },\
         {\
@@ -115,8 +115,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "14405",\
-        "y": "4699",\
+        "x": "14855",\
+        "y": "5149",\
         "z": "6",\
         "params":\
         [\
@@ -134,8 +134,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "12335",\
-        "y": "6082",\
+        "x": "12785",\
+        "y": "6532",\
         "z": "7",\
         "params":\
         [\
@@ -153,16 +153,17 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "11400",\
-        "y": "5000",\
+        "x": "11859",\
+        "y": "5435",\
         "z": "8",\
         "params":\
         [\
-                ["NUM#", "seed", "6105,0"],\
+                ["NUM#", "seed", "9625,0"],\
                 ["NUM#", "iteration", "?,?"],\
                 ["NUM#", "max", "400,0"],\
                 ["NUM#", "scale", "4,0"],\
-                ["NUM#", "offset", "0,1"]\
+                ["NUM#", "offset", "0,1"],\
+                ["NUM#", "evolve", "0,1"]\
         ]\
         },\
         {\
@@ -175,8 +176,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "12584",\
-        "y": "5115",\
+        "x": "13034",\
+        "y": "5565",\
         "z": "9",\
         "params":\
         [\
@@ -193,8 +194,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "14763",\
-        "y": "4970",\
+        "x": "15213",\
+        "y": "5420",\
         "z": "10",\
         "params":\
         [\
@@ -212,12 +213,12 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "15004",\
-        "y": "5299",\
+        "x": "15454",\
+        "y": "5749",\
         "z": "11",\
         "params":\
         [\
-                ["LIST#", "fills", "1 FILL# 194,0 255,0 51,0 100,0 0,0"],\
+                ["LIST#", "fills", "1 FILL# 255,0 185,0 51,0 100,0 0,0"],\
                 ["NUM#", "weight", "4,0"],\
                 ["NUM#", "join", "1,0"],\
                 ["NUM#", "cap", "2,0"],\
@@ -234,8 +235,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "15327",\
-        "y": "5137",\
+        "x": "15777",\
+        "y": "5587",\
         "z": "12",\
         "params":\
         [\
@@ -252,8 +253,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "15571",\
-        "y": "6023",\
+        "x": "16021",\
+        "y": "6473",\
         "z": "13",\
         "params":\
         [\
@@ -271,8 +272,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "12857",\
-        "y": "4986",\
+        "x": "13307",\
+        "y": "5436",\
         "z": "14",\
         "params":\
         [\
@@ -289,17 +290,18 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "14645",\
-        "y": "5235",\
+        "x": "15095",\
+        "y": "5685",\
         "z": "15",\
         "params":\
         [\
-                ["NUM#", "seed", "1888,0"],\
+                ["NUM#", "seed", "5327,0"],\
                 ["NUM#", "iteration", "?,?"],\
                 ["NUM#", "min", "-30,0"],\
                 ["NUM#", "max", "120,0"],\
                 ["NUM#", "scale", "5,0"],\
-                ["NUM#", "offset", "0,1"]\
+                ["NUM#", "offset", "0,1"],\
+                ["NUM#", "evolve", "0,1"]\
         ]\
         },\
         {\
@@ -312,14 +314,14 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "14842",\
-        "y": "5326",\
+        "x": "15292",\
+        "y": "5776",\
         "z": "16",\
         "prevSpace": "hsv",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\
-                ["NUM#", "c1", "77.93611862727049,0"],\
+                ["NUM#", "c1", "39.33730565930357,0"],\
                 ["NUM#", "c2", "80,0"],\
                 ["NUM#", "c3", "100,0"]\
         ]\
@@ -334,16 +336,17 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "11405",\
-        "y": "5241",\
+        "x": "11855",\
+        "y": "5691",\
         "z": "17",\
         "params":\
         [\
-                ["NUM#", "seed", "8994,0"],\
+                ["NUM#", "seed", "9832,0"],\
                 ["NUM#", "iteration", "?,?"],\
                 ["NUM#", "max", "400,0"],\
                 ["NUM#", "scale", "4,0"],\
-                ["NUM#", "offset", "0,1"]\
+                ["NUM#", "offset", "0,1"],\
+                ["NUM#", "evolve", "0,1"]\
         ]\
         },\
         {\
@@ -356,13 +359,13 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "11614",\
-        "y": "5122",\
+        "x": "12064",\
+        "y": "5572",\
         "z": "18",\
         "params":\
         [\
-                ["NUM#", "x", "62.635950860855644,0"],\
-                ["NUM#", "y", "291.4401925167904,0"]\
+                ["NUM#", "x", "249.0493530375763,0"],\
+                ["NUM#", "y", "205.59312081595888,0"]\
         ]\
         },\
         {\
@@ -375,8 +378,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "11774",\
-        "y": "5122",\
+        "x": "12224",\
+        "y": "5572",\
         "z": "19",\
         "params":\
         [\
@@ -394,14 +397,14 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "14550",\
-        "y": "4444",\
+        "x": "15000",\
+        "y": "4894",\
         "z": "20",\
         "params":\
         [\
                 ["NUM#", "moveType", "1,0"],\
                 ["NUM#", "x", "4,0"],\
-                ["NUM#", "y", "258.6235991234824,10"]\
+                ["NUM#", "y", "44.89888694978329,10"]\
         ]\
         },\
         {\
@@ -414,8 +417,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "12188",\
-        "y": "5115",\
+        "x": "12638",\
+        "y": "5565",\
         "z": "21"\
         },\
         {\
@@ -428,13 +431,13 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13013",\
-        "y": "4434",\
+        "x": "13463",\
+        "y": "4884",\
         "z": "22",\
         "params":\
         [\
-                ["NUM#", "x", "273.71074398809816,10"],\
-                ["NUM#", "y", "236.3366758509699,9"]\
+                ["NUM#", "x", "289.01873034145694,10"],\
+                ["NUM#", "y", "381.96647857724264,10"]\
         ]\
         },\
         {\
@@ -447,8 +450,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "14234",\
-        "y": "4843",\
+        "x": "14684",\
+        "y": "5293",\
         "z": "23",\
         "params":\
         [\
@@ -467,8 +470,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "12359",\
-        "y": "5216",\
+        "x": "12809",\
+        "y": "5666",\
         "z": "24",\
         "params":\
         [\
@@ -485,17 +488,18 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13432",\
-        "y": "4521",\
+        "x": "13889",\
+        "y": "4874",\
         "z": "25",\
         "params":\
         [\
-                ["NUM#", "seed", "2435,0"],\
-                ["NUM#", "iteration", "273.71074398809816,10"],\
+                ["NUM#", "seed", "9093,0"],\
+                ["NUM#", "iteration", "289.01873034145694,10"],\
                 ["NUM#", "min", "-10,0"],\
                 ["NUM#", "max", "10,0"],\
                 ["NUM#", "scale", "10,0"],\
-                ["NUM#", "offset", "0,1"]\
+                ["NUM#", "offset", "0,1"],\
+                ["NUM#", "evolve", "0,1"]\
         ]\
         },\
         {\
@@ -508,17 +512,18 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13434",\
-        "y": "4746",\
+        "x": "13890",\
+        "y": "5130",\
         "z": "26",\
         "params":\
         [\
-                ["NUM#", "seed", "2662,0"],\
-                ["NUM#", "iteration", "236.3366758509699,9"],\
+                ["NUM#", "seed", "4075,0"],\
+                ["NUM#", "iteration", "381.96647857724264,10"],\
                 ["NUM#", "min", "-10,0"],\
                 ["NUM#", "max", "10,0"],\
                 ["NUM#", "scale", "10,0"],\
-                ["NUM#", "offset", "0,1"]\
+                ["NUM#", "offset", "0,1"],\
+                ["NUM#", "evolve", "0,1"]\
         ]\
         },\
         {\
@@ -531,8 +536,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13638",\
-        "y": "4553",\
+        "x": "14088",\
+        "y": "5003",\
         "z": "27",\
         "params":\
         [\
@@ -549,8 +554,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "13638",\
-        "y": "4636",\
+        "x": "14088",\
+        "y": "5086",\
         "z": "28",\
         "params":\
         [\
@@ -560,15 +565,15 @@ const nightPalace = '\
         {\
         "type": "FRM",\
         "created": "1710924826939",\
-        "updated": "1710924882262",\
+        "updated": "1715234915484",\
         "id": "frame",\
         "name": "frame",\
         "renamed": "false",\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "15860",\
-        "y": "5998",\
+        "x": "16310",\
+        "y": "6448",\
         "z": "29",\
         "active": "true",\
         "params":\
@@ -590,8 +595,8 @@ const nightPalace = '\
         "enabled": "true",\
         "highlight": "0",\
         "notCondition": "false",\
-        "x": "15696",\
-        "y": "6187",\
+        "x": "16146",\
+        "y": "6637",\
         "z": "30",\
         "prevSpace": "hex",\
         "params":\
