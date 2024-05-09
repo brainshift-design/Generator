@@ -116,7 +116,7 @@ extends GOperator
                 this.randoms = randoms;
 
 
-                this.updateOffsets(_detail);
+                this.updateOffsets(this.randoms[0].width * _detail);
             }
 
 
@@ -142,10 +142,12 @@ extends GOperator
                 {
                     for (let c = 0; c < _detail; c++)
                     {
-                        const i   = Math.max(0, this.currentIteration / (Math.max(0.000001, scale.value) * size) + offset.value);
-                        const i0  = Math.floor(i);
-                        const i1  = Math.ceil (i);
+                        const i  = Math.max(0, this.currentIteration / (Math.max(0.000001, scale.value) * size) + offset.value);
+                        const i0 = Math.floor(i);
+                        const i1 = Math.ceil (i);
                         
+
+                        this.updateOffsets((i1 + 1) * _detail);//this.randoms[0].width * _detail
 
                         const o0 = this.offsets[i0];
                         const o1 = this.offsets[i1];
@@ -200,13 +202,13 @@ extends GOperator
                         r += 
                             - power *      (avg       - min.value) * clamp
                             + power * _r * (max.value - min.value) * clamp;
-
+                        
 
                         size  /= 2;
                         power /= 2;
 
                         
-                        this.updateOffsets(_detail);
+                        this.updateOffsets(this.randoms[0].width * _detail);
                     }
                 }
             }
@@ -245,10 +247,10 @@ extends GOperator
 
 
 
-    updateOffsets(_detail)
+    updateOffsets(newSize)
     {
-        const newSize = this.randoms[0].width * _detail;
-        if (this.offsets.length >= newSize) return;
+        if (newSize < this.offsets.length) 
+            return;
 
         this.offsets = new Array(newSize);
         const offsetRandom = new Random(0);

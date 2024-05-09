@@ -141,9 +141,6 @@ async function evalAddInputs(node, inputs, parse)
     {
         const val = await evalValue(inputs[i], parse);
         
-        if (node.nodeId == 'math')
-            console.log('val =', val);
-        
 
         if (   !val
             || !val.isValid())
@@ -173,7 +170,7 @@ async function evalAddInputs(node, inputs, parse)
         else
         {
             consoleAssert(
-                val.type == NUMBER_VALUE, 
+                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
 
             value.value   += val.value;
@@ -282,7 +279,7 @@ async function evalSubtractInputs(node, inputs, parse)
             else
             {
                 consoleAssert(
-                    val.type == NUMBER_VALUE, 
+                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
                     
                 value.value   -= val.value;
@@ -339,7 +336,7 @@ async function evalMultiplyInputs(node, inputs, parse)
             else
             {
                 consoleAssert(
-                    val.type == NUMBER_VALUE, 
+                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 
                 value.value   *= val.value;
@@ -464,7 +461,7 @@ async function evalDivideInputs(node, inputs, parse)
             else
             {
                 consoleAssert(
-                    val.type == NUMBER_VALUE, 
+                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 
                 if (val.value == 0) 
@@ -597,7 +594,7 @@ async function evalModuloInputs(node, inputs, parse)
             else
             {
                 consoleAssert(
-                    val.type == NUMBER_VALUE, 
+                     val.type == NUMBER_VALUE, 
                     'val.type must be NUMBER_VALUE');
 
                 if (val.value == 0) 
