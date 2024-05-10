@@ -33,6 +33,10 @@ var curZoom = figma.viewport.zoom;
 setInterval(figOnZoomInterval, 100);
 
 
+var strBackgrounds = '';
+setInterval(figCheckBackgrounds, 500);
+
+
 const clockMarker   = 'clock_';
 const clockInterval = 1000;
 
@@ -127,6 +131,17 @@ function figOnZoomInterval()
     updatePointObjects();
     updateEmptyObjects();
     updateDecoObjects();
+}
+
+
+
+function figCheckBackgrounds()
+{
+    if (strBackgrounds != JSON.stringify(figma.currentPage.backgrounds))
+    {
+        updateEmptyObjects();
+        strBackgrounds = JSON.stringify(figma.currentPage.backgrounds);
+    }
 }
 
 
