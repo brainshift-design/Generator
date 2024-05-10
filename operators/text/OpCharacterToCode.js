@@ -8,7 +8,7 @@ extends OperatorBase
         this.iconOffsetY = 1;
 
         this.addInput (new Input([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
-        this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
     }
 
 

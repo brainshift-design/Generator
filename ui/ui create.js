@@ -186,6 +186,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case JOIN_PATHS:              node = new OpJoinPaths();          break;
         case REORIENT_PATHS:          node = new OpReorientPaths();      break;
         case MEASURE_VECTOR:          node = new OpMeasureVector();      break;
+        case POINT_ANGLE:             node = new OpPointAngle();         break;
         case VECTOR:                  node = new OpVector();             break;
         case CIRCLE_CENTER:           node = new OpCircleCenter();       break;
         case ARC_FROM_POINTS:         node = new OpArcFromPoints();      break;

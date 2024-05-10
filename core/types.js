@@ -509,6 +509,7 @@ const REORIENT_PATHS        = 'REORPTH';
 const POINT_ALONG_PATH      = 'PTALPATH';
 const CLOSEST_POINT_ON_PATH = 'CPTONPATH';
 const MEASURE_VECTOR        = 'MESPT';
+const POINT_ANGLE           = 'PTANGLE';
 const VECTOR                = 'VECLEN';
 const CIRCLE_CENTER         = 'CIRCEN';
 const ARC_FROM_POINTS       = 'ARCPT';
@@ -637,6 +638,7 @@ const SHAPE_TYPES =
     CLOSEST_POINT_ON_PATH,
         
     MEASURE_VECTOR,
+    POINT_ANGLE,
     VECTOR,
     CIRCLE_CENTER,
     ARC_PATH,

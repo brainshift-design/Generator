@@ -1053,7 +1053,6 @@ INTER_COSINE
 INTER_CUBIC
 NoiseSeed
 normalizeSeed
-Point
 updateCache
 Rect
 isTagKey
@@ -1287,6 +1286,7 @@ RESET_XFORM
 PLACE
 SHAPE_APPLY
 MEASURE_VECTOR
+POINT_ANGLE
 VECTOR
 CIRCLE_CENTER
 INTERSECT_LINES
@@ -1747,6 +1747,7 @@ genParseSkew
 genParseCenter
 genParseResetTransform
 genParseMeasureVector
+genParsePointAngle
 genParseVector
 genParseCircleCenter
 genParseIntersectLines
