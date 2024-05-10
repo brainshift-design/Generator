@@ -20,10 +20,10 @@ extends OperatorBase
         this.addOutput(new Output([STROKE_SIDES_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
 
-        this.addParam(this.paramTop    = new NumberParam('top',    'top',    true,  true, true, 0, 0));
-        this.addParam(this.paramLeft   = new NumberParam('left',   'left',   true,  true, true, 0, 0));
-        this.addParam(this.paramRight  = new NumberParam('right',  'right',  true,  true, true, 0, 0));
-        this.addParam(this.paramBottom = new NumberParam('bottom', 'bottom', true,  true, true, 0, 0));
+        this.addParam(this.paramTop    = new NumberParam('top',    'top',    true,  true, true, 1, 0));
+        this.addParam(this.paramLeft   = new NumberParam('left',   'left',   true,  true, true, 1, 0));
+        this.addParam(this.paramRight  = new NumberParam('right',  'right',  true,  true, true, 1, 0));
+        this.addParam(this.paramBottom = new NumberParam('bottom', 'bottom', true,  true, true, 1, 0));
 
 
         this.setAllParamDividers(0.55);

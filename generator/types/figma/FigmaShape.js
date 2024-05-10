@@ -78,11 +78,23 @@ extends FigmaObject
     {
         super.checkFlipped(flipX, flipY);
 
+
         for (const fill of this.fills)
             flipIfGradient(fill, flipX, flipY);
 
         for (const stroke of this.strokes)
             flipIfGradient(stroke, flipX, flipY);
+
+
+        const foundSides = this.effects.findIndex(e => e[0] == 'STROKE_SIDES');
+
+        if (foundSides > -1)
+        {
+            const sides = this.effects[foundSides];
+            
+            if (flipX) [sides[2], sides[3]] = [sides[3], sides[2]];
+            if (flipY) [sides[1], sides[4]] = [sides[4], sides[1]];
+        }
     }
 
 
