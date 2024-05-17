@@ -80,6 +80,7 @@ var menuShapes;
 var menuRectangle;
 var menuTransform;
 
+var menuVariables;
 var menuParams;
 var menuNames;
 
@@ -408,6 +409,10 @@ function initGeneratorMenus()
     updateElementDisplay(menuItemRestart   .div, false);
 
 
+    menuVariables = new Menu('Variables', true, false);
+    menuVariables.addItems([
+        menuItemVarGroup   = new MenuItem('Variable group',    null, false, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))})]);
+
     menuParams = new Menu('Parameters', true, false);
     menuParams.addItems([
         new MenuItem('Set parameter', null, false, {icon: iconSetParam, createType: SET_PARAM, callback: e => actionManager.do(getCreateNodeAction(SET_PARAM, btnFlow.div, getCreateOptions(e)))}),
@@ -433,8 +438,7 @@ function initGeneratorMenus()
                              new MenuItem('',                  null, false, {separator: true}),
         menuItemNull       = new MenuItem('Null',              null, false, {icon: iconNull,          createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null, false, {separator: true}),
-                             new MenuItem('Variable',          null, false, {icon: iconVariable,      createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
-      //menuItemVarGroup   = new MenuItem('Variable group',    null, false, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
+                             new MenuItem('Variable',          null, false, {icon: iconVariable, /*childMenu: menuVariables,*/ createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null, false, {separator: true}),
                              new MenuItem('Parameters',        null, false, {icon: iconParameters, childMenu: menuParams}),
                              new MenuItem('Value names',       null, false, {icon: iconNames, childMenu: menuNames}),
@@ -1164,6 +1168,7 @@ function initGeneratorMenus()
         menuFlow,
         menuData,
         menuItems,
+        menuVariables,
         menuParams,
         menuNames,
         menuSets,

@@ -12,7 +12,7 @@ extends ResizableBase
 
 
 
-    constructor(options = {})
+    constructor()
     {
         super(VARIABLE, 'variable', 'variable', iconVariable);
 

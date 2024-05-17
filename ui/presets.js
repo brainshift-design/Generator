@@ -184,6 +184,8 @@ function getPresetGraph(graphId)
         case 'sunsetDreams':         return presetSunsetDreams;
         case 'polarizedLights':      return presetPolarizedLights;
         case 'linesOfFire':          return presetLinesOfFire;
+        case 'northernLights':       return presetNorthernLights;
+        case 'skyline':              return presetSkyline;
         case 'clouds':               return presetClouds;
         case 'twistedTower':         return presetTwistedTower;
         case 'dustySunset':          return presetDustySunset;

@@ -271,9 +271,13 @@ function updateMenuLocalVariables()
 
     menuLocalVariables.addItems(
     [
-        new MenuItem('None', null, 
+        new MenuItem('None', null, false,
         {
-            callback: e => actionManager.do(new LinkExistingVariableAction(menuLocalVariables.node.nodeId, NULL, NULL, '')),
+            callback: e => 
+            {
+                console.log('none');
+                actionManager.do(new LinkExistingVariableAction(menuLocalVariables.node.nodeId, NULL, NULL, ''));
+            },
             enabled:  menuLocalVariables.node.linkedVariableId != NULL
         })
     ]);

@@ -78,23 +78,14 @@ extends FigmaObject
     {
         super.checkFlipped(flipX, flipY);
 
-
-        for (const fill of this.fills)
-            flipIfGradient(fill, flipX, flipY);
-
-        for (const stroke of this.strokes)
-            flipIfGradient(stroke, flipX, flipY);
-
+        for (const fill   of this.fills  ) flipGradient(fill,   flipX, flipY);
+        for (const stroke of this.strokes) flipGradient(stroke, flipX, flipY);
 
         const foundSides = this.effects.findIndex(e => e[0] == 'STROKE_SIDES');
+        if (foundSides > -1) flipStrokeSides(this.effects[foundSides], flipX, flipX);
 
-        if (foundSides > -1)
-        {
-            const sides = this.effects[foundSides];
-            
-            if (flipX) [sides[2], sides[3]] = [sides[3], sides[2]];
-            if (flipY) [sides[1], sides[4]] = [sides[4], sides[1]];
-        }
+        const foundCorners = this.effects.findIndex(e => e[0] == 'ROUND_CORNERS');
+        if (foundCorners > -1) flipRoundCorners(this.effects[foundCorners], flipX, flipY);
     }
 
 
@@ -139,7 +130,7 @@ extends FigmaObject
 
 
 
-function flipIfGradient(fill, flipX, flipY)
+function flipGradient(fill, flipX, flipY)
 {
     if (   fill[0] == 'GRADIENT_LINEAR'
         || fill[0] == 'GRADIENT_RADIAL'
@@ -163,5 +154,30 @@ function flipIfGradient(fill, flipX, flipY)
             p1.y = 1 - p1.y;
             p2.y = 1 - p2.y;
         }
+    }
+}
+
+
+
+function flipStrokeSides(sides, flipX, flipY)
+{
+    if (flipX) [sides[2], sides[3]] = [sides[3], sides[2]];
+    if (flipY) [sides[1], sides[4]] = [sides[4], sides[1]];
+}
+
+
+
+function flipRoundCorners(corners, flipX, flipY)
+{
+    if (flipX)
+    {
+        [corners[1], corners[2]] = [corners[2], corners[1]];
+        [corners[3], corners[4]] = [corners[4], corners[3]];
+    }
+
+    if (flipY)
+    {
+        [corners[1], corners[3]] = [corners[3], corners[1]];
+        [corners[2], corners[4]] = [corners[4], corners[2]];
     }
 }

@@ -2,7 +2,7 @@ class   OpList
 extends ResizableBase
 {
     scrollbar;
-    scroll = 0;
+    scroll          = 0;
 
     oldScroll       = null;
     listScrollTimer = null;

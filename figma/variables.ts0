@@ -1,4 +1,4 @@
-async function figGetAllLocalVariablesAsync(nodeId, px, py)
+function figGetAllLocalVariablesAsync(nodeId, px, py)
 {
     figma.variables.getLocalVariablesAsync().then(async localVars =>
     {

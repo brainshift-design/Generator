@@ -2,16 +2,19 @@ class   OpVariableGroup
 extends ResizableBase
 {
     scrollbar;
-    scroll = 0;
+    scroll              = 0;
 
-    linkedGroupId      = NULL;
-    linkedGroupName    = '';
+    oldScroll           = null;
+    listScrollTimer     = null;
 
-    linkedVariableId   = [];
-    linkedVariableType = []; // this is resolvedType
-    linkedVariableName = [];
+    linkedGroupId       = NULL;
+    linkedGroupName     = '';
 
-    isBool             = [];
+    linkedVariableIds   = [];
+    linkedVariableTypes = []; // this is resolvedType
+    linkedVariableNames = [];
+
+    isBool              = [];
 
 
 
@@ -22,11 +25,11 @@ extends ResizableBase
 
         this.subscription = true;
         this.canRename    = false;
-        this.iconOffsetY  = -1;
+        this.iconOffsetY  = -2;
 
 
-        this.addInput(new Input(LIST_VALUES));
-        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+        // this.addInput(new Input(LIST_VALUES));
+        // this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
