@@ -8,6 +8,9 @@ extends OpShape
     paramWidth;
     paramHeight;
     paramRound;
+    paramClip;
+
+    menuClip;
 
 
 
@@ -31,6 +34,7 @@ extends OpShape
         this.addParam(this.paramWidth    = new NumberParam('width',    'width',    true,  true, true, 100, 0.01));
         this.addParam(this.paramHeight   = new NumberParam('height',   'height',   true,  true, true, 100, 0.01));
         this.addParam(this.paramRound    = new NumberParam('round',    'round',    true,  true, true, 0, 0));
+        this.addParam(this.paramClip     = new NumberParam('clip',     'clip',     true,  true, true, 1, 0, 1));
 
 
         this.paramWidth .addEventListener('change', () => this.updateRound());
@@ -44,6 +48,9 @@ extends OpShape
         this.paramChildren.getItemCount = () => 0;
 
         this.setAllParamDividers(0.47);
+
+        
+        this.menuClip = createBoolMenu(this.paramClip);
 
         
         this.addBaseParams();
@@ -74,6 +81,7 @@ extends OpShape
         const width     = values[paramIds.findIndex(id => id == 'width'   )];
         const height    = values[paramIds.findIndex(id => id == 'height'  )];
         const round     = values[paramIds.findIndex(id => id == 'round'   )];
+        const clip      = values[paramIds.findIndex(id => id == 'clip'    )];
 
         const childType = values[paramIds.findIndex(id => id == 'childType')];
 
@@ -85,5 +93,19 @@ extends OpShape
         this.paramWidth   .setValue(width,    false, true, false);
         this.paramHeight  .setValue(height,   false, true, false);
         this.paramRound   .setValue(round,    false, true, false);
+        this.paramClip    .setValue(clip,     false, true, false);
+    }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+        
+        this.paramClip.enableControlText(true);
+
+        updateParamConditionText(this.paramClip, this.paramClip.isUnknown(), false, 1);
+
+        super.updateParamControls();
     }
 }

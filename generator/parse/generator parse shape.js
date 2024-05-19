@@ -1387,6 +1387,7 @@ function genParseFrame(parse)
         case 'width':    frame.width    = genParse(parse); break;
         case 'height':   frame.height   = genParse(parse); break;
         case 'round':    frame.round    = genParse(parse); break;
+        case 'clip':     frame.clip     = genParse(parse); break;
         case 'props':    frame.props    = genParse(parse); break;
         }
     }

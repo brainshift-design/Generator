@@ -1996,8 +1996,8 @@ const FO_WIDTH          = 26;
 const FO_HEIGHT         = 27;                                    
 
 const FO_RECT_ROUND     = 28;   const FO_ELLIPSE_ROUND   = 28;   const FO_VECTOR_NETWORK_DATA = 28;   const FO_VECTOR_PATH_DATA    = 28;   const FO_POLY_ROUND   = 28;   const FO_STAR_ROUND  = 28;   const FO_FIG_WIDTH      = 28;   const FO_FRAME_ROUND    = 28;
-                                const FO_ELLIPSE_START   = 29;                                        const FO_VECTOR_PATH_WINDING = 29;   const FO_POLY_CORNERS = 29;   const FO_STAR_POINTS = 29;   const FO_FIG_HEIGHT     = 29;   const FO_FRAME_CHILDREN = 29;
-                                const FO_ELLIPSE_SWEEP   = 30;                                        const FO_VECTOR_PATH_ROUND   = 30;                                 const FO_STAR_CONVEX = 30;   const FO_TEXT           = 30; 
+                                const FO_ELLIPSE_START   = 29;                                        const FO_VECTOR_PATH_WINDING = 29;   const FO_POLY_CORNERS = 29;   const FO_STAR_POINTS = 29;   const FO_FIG_HEIGHT     = 29;   const FO_FRAME_CLIP     = 29;
+                                const FO_ELLIPSE_SWEEP   = 30;                                        const FO_VECTOR_PATH_ROUND   = 30;                                 const FO_STAR_CONVEX = 30;   const FO_TEXT           = 30;   const FO_FRAME_CHILDREN = 30;
                                                                                                                                  
                                 const FO_ELLIPSE_INNER   = 31;                                                                                                                                        const FO_FONT           = 31;
                                                                                                                                                                                                       const FO_FONT_SIZE      = 32;
@@ -5561,7 +5561,8 @@ function genFrameIsValid(genFrame)
         && genFrame[FO_Y          ] != null && !isNaN(genFrame[FO_Y          ])
         && genFrame[FO_WIDTH      ] != null && !isNaN(genFrame[FO_WIDTH      ])
         && genFrame[FO_HEIGHT     ] != null && !isNaN(genFrame[FO_HEIGHT     ])
-        && genFrame[FO_FRAME_ROUND] != null && !isNaN(genFrame[FO_FRAME_ROUND]);
+        && genFrame[FO_FRAME_ROUND] != null && !isNaN(genFrame[FO_FRAME_ROUND])
+        && genFrame[FO_FRAME_CLIP ] != null && !isNaN(genFrame[FO_FRAME_CLIP ]);
 }
 
 
@@ -5574,11 +5575,10 @@ async function figCreateFrame(genFrame, addProps, transform)
         
     const figFrame = figma.createFrame();
 
-    figFrame.expanded = false;
-
     
     if (figFrame)
     {
+        figFrame.expanded = false;
         figUpdateFrameData(figFrame, genFrame, addProps, transform);
 
 
@@ -5612,6 +5612,9 @@ function figUpdateFrame(figFrame, genFrame, addProps, transform)
 function figUpdateFrameData(figFrame, genFrame, addProps, transform)
 {
     figFrame.cornerRadius = genFrame[FO_FRAME_ROUND];
+    figFrame.clipsContent = genFrame[FO_FRAME_CLIP ] > 0;
+
+
 
     if (transform)
         setObjectTransform(figFrame, genFrame);

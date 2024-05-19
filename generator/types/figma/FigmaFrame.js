@@ -8,11 +8,13 @@ extends FigmaShape
 
     round;
     
+    clip;
+
     children;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, round, children = [])
+    constructor(nodeId, objectId, objectName, x, y, width, height, round, clip, children = [])
     {
         super(FRAME, nodeId, objectId, objectName);
         
@@ -22,6 +24,8 @@ extends FigmaShape
         this.height   = height;
     
         this.round    = round;
+
+        this.clip     = clip;
     
         this.children = children.map(c => c.copy());
 
@@ -45,6 +49,8 @@ extends FigmaShape
             this.height,
     
             this.round,
+  
+            this.clip,
     
             this.children);
 
@@ -106,6 +112,8 @@ extends FigmaShape
             height:   this.height,
         
             round:    this.round,
+
+            clip:     this.clip,
         
             children: this.children
         };
@@ -125,7 +133,9 @@ extends FigmaShape
 
             /* 28 */ this.round,
 
-            /* 29 */ this.children.map(o => o.toData())
+            /* 29 */ this.clip,
+
+            /* 30 */ this.children.map(o => o.toData())
         ];
     }
 }

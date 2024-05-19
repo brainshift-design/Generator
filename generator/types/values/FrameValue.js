@@ -8,10 +8,11 @@ extends ShapeValue
     width;
     height;
     round;
+    clip;
 
 
 
-    constructor(nodeId, children, position, x, y, width, height, round)
+    constructor(nodeId, children, position, x, y, width, height, round, clip)
     {
         super(FRAME_VALUE, nodeId);
 
@@ -22,6 +23,7 @@ extends ShapeValue
         this.width    = width;
         this.height   = height;
         this.round    = round;
+        this.clip     = clip;
 
         this.objects = 
                children
@@ -42,7 +44,8 @@ extends ShapeValue
             this.y       .copy(),
             this.width   .copy(),
             this.height  .copy(),
-            this.round   .copy());
+            this.round   .copy(),
+            this.clip    .copy());
 
         copy.copyBase(this);
 
@@ -60,7 +63,8 @@ extends ShapeValue
             && this.y       .equals(frame.y       )
             && this.width   .equals(frame.width   )
             && this.height  .equals(frame.height  )
-            && this.round   .equals(frame.round   );
+            && this.round   .equals(frame.round   )
+            && this.clip    .equals(frame.clip    );
     }
 
 
@@ -81,6 +85,7 @@ extends ShapeValue
              + ' ' + this.width   .toString()
              + ' ' + this.height  .toString()
              + ' ' + this.round   .toString()
+             + ' ' + this.clip    .toString()
              + ' ' + super.toString();
     }
 
@@ -95,7 +100,8 @@ extends ShapeValue
             //  + ' ' + this.y       .toPreviewString()
             //  + ' ' + this.width   .toPreviewString()
             //  + ' ' + this.height  .toPreviewString()
-            //  + ' ' + this.round   .toPreviewString();
+            //  + ' ' + this.round   .toPreviewString()
+            //  + ' ' + this.clip    .toPreviewString();
     }
 
 
@@ -108,6 +114,7 @@ extends ShapeValue
              + ' ' + this.y       .toDisplayString()
              + ' ' + this.width   .toDisplayString()
              + ' ' + this.height  .toDisplayString()
+             + ' ' + this.clip    .toDisplayString()
              + ' ' + this.round   .toDisplayString();
     }
 
@@ -129,7 +136,8 @@ extends ShapeValue
             && this.y       .isValid()
             && this.width   .isValid()
             && this.height  .isValid()
-            && this.round   .isValid();
+            && this.round   .isValid()
+            && this.clip    .isValid();
     }
 
 
@@ -137,6 +145,7 @@ extends ShapeValue
     static NaN = new FrameValue(
         '',
         ListValue  .NaN,
+        NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -170,6 +179,7 @@ function parseFrameValue(str, i = -1)
     const width    = parseNumberValue(str[i]); i += width   [1];
     const height   = parseNumberValue(str[i]); i += height  [1];
     const round    = parseNumberValue(str[i]); i += round   [1];
+    const clip     = parseNumberValue(str[i]); i += clip    [1];
 
     const frame = new FrameValue(
         '', // set node ID elsewhere
@@ -179,7 +189,8 @@ function parseFrameValue(str, i = -1)
         y       [0],
         width   [0],
         height  [0],
-        round   [0]);
+        round   [0],
+        clip    [0]);
 
 
     i = parseShapeBaseValue(str, i, frame);

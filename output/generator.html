@@ -6995,8 +6995,8 @@ const FO_WIDTH          = 26;
 const FO_HEIGHT         = 27;                                    
 
 const FO_RECT_ROUND     = 28;   const FO_ELLIPSE_ROUND   = 28;   const FO_VECTOR_NETWORK_DATA = 28;   const FO_VECTOR_PATH_DATA    = 28;   const FO_POLY_ROUND   = 28;   const FO_STAR_ROUND  = 28;   const FO_FIG_WIDTH      = 28;   const FO_FRAME_ROUND    = 28;
-                                const FO_ELLIPSE_START   = 29;                                        const FO_VECTOR_PATH_WINDING = 29;   const FO_POLY_CORNERS = 29;   const FO_STAR_POINTS = 29;   const FO_FIG_HEIGHT     = 29;   const FO_FRAME_CHILDREN = 29;
-                                const FO_ELLIPSE_SWEEP   = 30;                                        const FO_VECTOR_PATH_ROUND   = 30;                                 const FO_STAR_CONVEX = 30;   const FO_TEXT           = 30; 
+                                const FO_ELLIPSE_START   = 29;                                        const FO_VECTOR_PATH_WINDING = 29;   const FO_POLY_CORNERS = 29;   const FO_STAR_POINTS = 29;   const FO_FIG_HEIGHT     = 29;   const FO_FRAME_CLIP     = 29;
+                                const FO_ELLIPSE_SWEEP   = 30;                                        const FO_VECTOR_PATH_ROUND   = 30;                                 const FO_STAR_CONVEX = 30;   const FO_TEXT           = 30;   const FO_FRAME_CHILDREN = 30;
                                                                                                                                  
                                 const FO_ELLIPSE_INNER   = 31;                                                                                                                                        const FO_FONT           = 31;
                                                                                                                                                                                                       const FO_FONT_SIZE      = 32;
@@ -9997,11 +9997,13 @@ extends FigmaShape
 
     round;
     
+    clip;
+
     children;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, round, children = [])
+    constructor(nodeId, objectId, objectName, x, y, width, height, round, clip, children = [])
     {
         super(FRAME, nodeId, objectId, objectName);
         
@@ -10011,6 +10013,8 @@ extends FigmaShape
         this.height   = height;
     
         this.round    = round;
+
+        this.clip     = clip;
     
         this.children = children.map(c => c.copy());
 
@@ -10034,6 +10038,8 @@ extends FigmaShape
             this.height,
     
             this.round,
+  
+            this.clip,
     
             this.children);
 
@@ -10095,6 +10101,8 @@ extends FigmaShape
             height:   this.height,
         
             round:    this.round,
+
+            clip:     this.clip,
         
             children: this.children
         };
@@ -10114,7 +10122,9 @@ extends FigmaShape
 
             /* 28 */ this.round,
 
-            /* 29 */ this.children.map(o => o.toData())
+            /* 29 */ this.clip,
+
+            /* 30 */ this.children.map(o => o.toData())
         ];
     }
 }
@@ -18203,10 +18213,11 @@ extends ShapeValue
     width;
     height;
     round;
+    clip;
 
 
 
-    constructor(nodeId, children, position, x, y, width, height, round)
+    constructor(nodeId, children, position, x, y, width, height, round, clip)
     {
         super(FRAME_VALUE, nodeId);
 
@@ -18217,6 +18228,7 @@ extends ShapeValue
         this.width    = width;
         this.height   = height;
         this.round    = round;
+        this.clip     = clip;
 
         this.objects = 
                children
@@ -18237,7 +18249,8 @@ extends ShapeValue
             this.y       .copy(),
             this.width   .copy(),
             this.height  .copy(),
-            this.round   .copy());
+            this.round   .copy(),
+            this.clip    .copy());
 
         copy.copyBase(this);
 
@@ -18255,7 +18268,8 @@ extends ShapeValue
             && this.y       .equals(frame.y       )
             && this.width   .equals(frame.width   )
             && this.height  .equals(frame.height  )
-            && this.round   .equals(frame.round   );
+            && this.round   .equals(frame.round   )
+            && this.clip    .equals(frame.clip    );
     }
 
 
@@ -18276,6 +18290,7 @@ extends ShapeValue
              + ' ' + this.width   .toString()
              + ' ' + this.height  .toString()
              + ' ' + this.round   .toString()
+             + ' ' + this.clip    .toString()
              + ' ' + super.toString();
     }
 
@@ -18290,7 +18305,8 @@ extends ShapeValue
             //  + ' ' + this.y       .toPreviewString()
             //  + ' ' + this.width   .toPreviewString()
             //  + ' ' + this.height  .toPreviewString()
-            //  + ' ' + this.round   .toPreviewString();
+            //  + ' ' + this.round   .toPreviewString()
+            //  + ' ' + this.clip    .toPreviewString();
     }
 
 
@@ -18303,6 +18319,7 @@ extends ShapeValue
              + ' ' + this.y       .toDisplayString()
              + ' ' + this.width   .toDisplayString()
              + ' ' + this.height  .toDisplayString()
+             + ' ' + this.clip    .toDisplayString()
              + ' ' + this.round   .toDisplayString();
     }
 
@@ -18324,7 +18341,8 @@ extends ShapeValue
             && this.y       .isValid()
             && this.width   .isValid()
             && this.height  .isValid()
-            && this.round   .isValid();
+            && this.round   .isValid()
+            && this.clip    .isValid();
     }
 
 
@@ -18332,6 +18350,7 @@ extends ShapeValue
     static NaN = new FrameValue(
         '',
         ListValue  .NaN,
+        NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -18365,6 +18384,7 @@ function parseFrameValue(str, i = -1)
     const width    = parseNumberValue(str[i]); i += width   [1];
     const height   = parseNumberValue(str[i]); i += height  [1];
     const round    = parseNumberValue(str[i]); i += round   [1];
+    const clip     = parseNumberValue(str[i]); i += clip    [1];
 
     const frame = new FrameValue(
         '', // set node ID elsewhere
@@ -18374,7 +18394,8 @@ function parseFrameValue(str, i = -1)
         y       [0],
         width   [0],
         height  [0],
-        round   [0]);
+        round   [0],
+        clip    [0]);
 
 
     i = parseShapeBaseValue(str, i, frame);
@@ -42836,6 +42857,7 @@ extends GShape
     children = null;
     position = null;
     round    = null;
+    clip     = null;
 
 
 
@@ -42853,6 +42875,7 @@ extends GShape
         this.children = null;
         this.position = null;
         this.round    = null;
+        this.clip     = null;
     }
 
 
@@ -42866,6 +42889,7 @@ extends GShape
         if (this.children) copy.children = this.children.copy();
         if (this.position) copy.position = this.position.copy();
         if (this.round   ) copy.round    = this.round   .copy();
+        if (this.clip    ) copy.clip     = this.clip    .copy();
 
         return copy;
     }
@@ -42883,6 +42907,7 @@ extends GShape
             case 'width':    return this.input ? this.value.width    : this.width;
             case 'height':   return this.input ? this.value.height   : this.height;
             case 'round':    return this.input ? this.value.round    : this.round;
+            case 'clip':     return this.input ? this.value.clip     : this.clip;
         }
 
         return super.paramFromId(paramId);
@@ -42901,6 +42926,7 @@ extends GShape
         let children = await evalListValue  (this.children, parse);
         let position = await evalNumberValue(this.position, parse);
         let round    = await evalNumberValue(this.round,    parse);
+        let clip     = await evalNumberValue(this.clip,     parse);
 
 
         if (   children
@@ -42927,7 +42953,8 @@ extends GShape
                 y        ?? input.y,
                 width    ?? input.width,
                 height   ?? input.height,
-                round    ?? input.round);
+                round    ?? input.round,
+                clip     ?? input.clip);
         }
         else
         {
@@ -42939,7 +42966,8 @@ extends GShape
                 y, 
                 width,
                 height, 
-                round);
+                round,
+                clip);
         }
 
 
@@ -42953,7 +42981,8 @@ extends GShape
             ['y',         y        ],
             ['width',     width    ],
             ['height',    height   ],
-            ['round',     round    ]
+            ['round',     round    ],
+            ['clip',      clip     ]
         ]);
 
 
@@ -42970,6 +42999,7 @@ extends GShape
         if (!this.width   ) this.width    = this.value.width   .copy();
         if (!this.height  ) this.height   = this.value.height  .copy();
         if (!this.round   ) this.round    = this.value.round   .copy();
+        if (!this.clip    ) this.clip     = this.value.clip    .copy();
 
 
         this.validate();
@@ -42990,7 +43020,8 @@ extends GShape
             && this.value.y
             && this.value.width
             && this.value.height
-            && this.value.round)
+            && this.value.round
+            && this.value.clip)
         {
             let   pos = this.value.position.value;
             let   x   = this.value.x       .value;
@@ -42998,13 +43029,14 @@ extends GShape
             let   w   = this.value.width   .value;
             let   h   = this.value.height  .value;
             const r   = Math.max(0, this.value.round.value);
+            const c   = this.value.clip    .value;
 
 
             const frame = new FigmaFrame(
                 this.nodeId,
                 this.nodeId,
                 this.nodeName,
-                x, y, w, h, r);
+                x, y, w, h, r, c);
 
 
             const bounds = getObjBounds(this.value.objects);
@@ -55329,6 +55361,7 @@ function genParseFrame(parse)
         case 'width':    frame.width    = genParse(parse); break;
         case 'height':   frame.height   = genParse(parse); break;
         case 'round':    frame.round    = genParse(parse); break;
+        case 'clip':     frame.clip     = genParse(parse); break;
         case 'props':    frame.props    = genParse(parse); break;
         }
     }

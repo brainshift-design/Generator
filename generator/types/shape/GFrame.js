@@ -4,6 +4,7 @@ extends GShape
     children = null;
     position = null;
     round    = null;
+    clip     = null;
 
 
 
@@ -21,6 +22,7 @@ extends GShape
         this.children = null;
         this.position = null;
         this.round    = null;
+        this.clip     = null;
     }
 
 
@@ -34,6 +36,7 @@ extends GShape
         if (this.children) copy.children = this.children.copy();
         if (this.position) copy.position = this.position.copy();
         if (this.round   ) copy.round    = this.round   .copy();
+        if (this.clip    ) copy.clip     = this.clip    .copy();
 
         return copy;
     }
@@ -51,6 +54,7 @@ extends GShape
             case 'width':    return this.input ? this.value.width    : this.width;
             case 'height':   return this.input ? this.value.height   : this.height;
             case 'round':    return this.input ? this.value.round    : this.round;
+            case 'clip':     return this.input ? this.value.clip     : this.clip;
         }
 
         return super.paramFromId(paramId);
@@ -69,6 +73,7 @@ extends GShape
         let children = await evalListValue  (this.children, parse);
         let position = await evalNumberValue(this.position, parse);
         let round    = await evalNumberValue(this.round,    parse);
+        let clip     = await evalNumberValue(this.clip,     parse);
 
 
         if (   children
@@ -95,7 +100,8 @@ extends GShape
                 y        ?? input.y,
                 width    ?? input.width,
                 height   ?? input.height,
-                round    ?? input.round);
+                round    ?? input.round,
+                clip     ?? input.clip);
         }
         else
         {
@@ -107,7 +113,8 @@ extends GShape
                 y, 
                 width,
                 height, 
-                round);
+                round,
+                clip);
         }
 
 
@@ -121,7 +128,8 @@ extends GShape
             ['y',         y        ],
             ['width',     width    ],
             ['height',    height   ],
-            ['round',     round    ]
+            ['round',     round    ],
+            ['clip',      clip     ]
         ]);
 
 
@@ -138,6 +146,7 @@ extends GShape
         if (!this.width   ) this.width    = this.value.width   .copy();
         if (!this.height  ) this.height   = this.value.height  .copy();
         if (!this.round   ) this.round    = this.value.round   .copy();
+        if (!this.clip    ) this.clip     = this.value.clip    .copy();
 
 
         this.validate();
@@ -158,7 +167,8 @@ extends GShape
             && this.value.y
             && this.value.width
             && this.value.height
-            && this.value.round)
+            && this.value.round
+            && this.value.clip)
         {
             let   pos = this.value.position.value;
             let   x   = this.value.x       .value;
@@ -166,13 +176,14 @@ extends GShape
             let   w   = this.value.width   .value;
             let   h   = this.value.height  .value;
             const r   = Math.max(0, this.value.round.value);
+            const c   = this.value.clip    .value;
 
 
             const frame = new FigmaFrame(
                 this.nodeId,
                 this.nodeId,
                 this.nodeName,
-                x, y, w, h, r);
+                x, y, w, h, r, c);
 
 
             const bounds = getObjBounds(this.value.objects);

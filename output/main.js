@@ -1333,11 +1333,12 @@ const FO_VECTOR_PATH_WINDING = 29;
 const FO_POLY_CORNERS = 29;
 const FO_STAR_POINTS = 29;
 const FO_FIG_HEIGHT = 29;
-const FO_FRAME_CHILDREN = 29;
+const FO_FRAME_CLIP = 29;
 const FO_ELLIPSE_SWEEP = 30;
 const FO_VECTOR_PATH_ROUND = 30;
 const FO_STAR_CONVEX = 30;
 const FO_TEXT = 30;
+const FO_FRAME_CHILDREN = 30;
 const FO_ELLIPSE_INNER = 31;
 const FO_FONT = 31;
 const FO_FONT_SIZE = 32;
@@ -3729,15 +3730,16 @@ function genFrameIsValid(genFrame) {
         && genFrame[FO_Y] != null && !isNaN(genFrame[FO_Y])
         && genFrame[FO_WIDTH] != null && !isNaN(genFrame[FO_WIDTH])
         && genFrame[FO_HEIGHT] != null && !isNaN(genFrame[FO_HEIGHT])
-        && genFrame[FO_FRAME_ROUND] != null && !isNaN(genFrame[FO_FRAME_ROUND]);
+        && genFrame[FO_FRAME_ROUND] != null && !isNaN(genFrame[FO_FRAME_ROUND])
+        && genFrame[FO_FRAME_CLIP] != null && !isNaN(genFrame[FO_FRAME_CLIP]);
 }
 function figCreateFrame(genFrame, addProps, transform) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!genFrameIsValid(genFrame))
             return null;
         const figFrame = figma.createFrame();
-        figFrame.expanded = false;
         if (figFrame) {
+            figFrame.expanded = false;
             figUpdateFrameData(figFrame, genFrame, addProps, transform);
             let objects = [];
             for (const obj of genFrame[FO_FRAME_CHILDREN])
@@ -3754,6 +3756,7 @@ function figUpdateFrame(figFrame, genFrame, addProps, transform) {
 }
 function figUpdateFrameData(figFrame, genFrame, addProps, transform) {
     figFrame.cornerRadius = genFrame[FO_FRAME_ROUND];
+    figFrame.clipsContent = genFrame[FO_FRAME_CLIP] > 0;
     if (transform)
         setObjectTransform(figFrame, genFrame);
     setObjectProps(figFrame, genFrame, addProps && genFrame[FO_FRAME_CHILDREN].length == 0);
