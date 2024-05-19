@@ -106,6 +106,9 @@ extends GAffine
         const sx = -options.skewX.value / 100;
         const sy = -options.skewY.value / 100;
 
+        options.flipX = false;
+        options.flipY = false;
+
         return await this.evalAffineObjects(
             parse,
             options, 

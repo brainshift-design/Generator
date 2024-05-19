@@ -1611,7 +1611,7 @@ figNotifyMsg
 figNotify
 buttonText
 buttonAction
-figGetAllLocalVariablesAsync
+figGetAllLocalVariables
 getVariableValuesAsync
 figLinkNodeToVariable
 figUpdateVariable

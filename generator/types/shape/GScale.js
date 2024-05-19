@@ -118,6 +118,9 @@ extends GAffine
         let sx = hardZero(options.scaleX.value / 100);
         let sy = hardZero(options.scaleY.value / 100);
 
+        options.flipX = sx < 0;
+        options.flipY = sy < 0;
+        
         const scale = Math.min(sx, sy);
 
         return await this.evalAffineObjects(

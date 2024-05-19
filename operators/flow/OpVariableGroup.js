@@ -83,9 +83,9 @@ extends ResizableBase
     {
         this.scrollbar = createDiv('itemsScroll');
 
-        this.scrollbar.down = false;
-        this.scrollbar.sy   = Number.NaN;
-        this.scrollbar.spy  = Number.NaN;
+        this.scrollbar.down         = false;
+        this.scrollbar.sy           = Number.NaN;
+        this.scrollbar.spy          = Number.NaN;
         this.scrollbar.style.height = 0;
 
         this.div.appendChild(this.scrollbar);

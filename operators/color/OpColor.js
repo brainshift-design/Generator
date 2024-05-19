@@ -439,10 +439,21 @@ extends OpColorBase
 
         const enable = !this.inputs[0].connected;
 
+        const headerConnectedUnknown = 
+               this.inputs[0].connected 
+            && this.inputs[0].connectedOutput.node.isUnknown();
+
+        // if (this.id == 'color2')
+        //     console.log('unkonwn =', (this.param1.isUnknown() || headerConnectedUnknown) && !this.param1.input.connected);
+        // {
+        //     console.log('this.inputs[0].connectedOutput.node.isUnknown() =', this.inputs[0].connectedOutput.node.isUnknown());
+        //     console.log('headerConnectedUnknown =', headerConnectedUnknown);
+        // }
+
         this.paramSpace.enableControlText(!this.paramSpace.input.connected);
-        this.param1    .enableControlText(enable, this.param1.isUnknown() || (this.inputs[0].connected && this.inputs[0].connectedOutput.node.isUnknown()) && !this.param1.input.connected);
-        this.param2    .enableControlText(enable, this.param2.isUnknown() || (this.inputs[0].connected && this.inputs[0].connectedOutput.node.isUnknown()) && !this.param2.input.connected);
-        this.param3    .enableControlText(enable, this.param3.isUnknown() || (this.inputs[0].connected && this.inputs[0].connectedOutput.node.isUnknown()) && !this.param3.input.connected);
+        this.param1    .enableControlText(enable, (this.param1.isUnknown() || headerConnectedUnknown) && !this.param1.input.connected);
+        this.param2    .enableControlText(enable, (this.param2.isUnknown() || headerConnectedUnknown) && !this.param2.input.connected);
+        this.param3    .enableControlText(enable, (this.param3.isUnknown() || headerConnectedUnknown) && !this.param3.input.connected);
 
 
         enableElementText(this.paramColor.controls[0].div, !this.isConnected());

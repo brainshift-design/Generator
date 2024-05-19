@@ -100,6 +100,9 @@ extends GAffine
         const a     = options.angle ? options.angle.value/360*Tau : 0;
         const xform = createRotateTransform(a);
 
+        options.flipX = false;
+        options.flipY = false;
+
         return await this.evalAffineObjects(
             parse,
             options, 

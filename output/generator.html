@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 420;
+const generatorVersion = 421;
 
 
 const MAX_INT32        = 2147483647;
@@ -5914,7 +5914,7 @@ function enableFeatures(sub)
     enableMenuItem(menuItemShowRestartInfo,    true, sub);
     enableMenuItem(menuItemValueName,          true, sub);
     enableMenuItem(menuItemObjectName,         true, sub);
-    enableMenuItem(menuItemVarGroup,           true, sub);
+  //enableMenuItem(menuItemVarGroup,           true, sub);
     enableMenuItem(menuItemTimer,              true, sub);
  // enableMenuItem(menuItemSort,               true, sub);
  // enableMenuItem(menuItemFilter,             true, sub);
@@ -44247,8 +44247,8 @@ extends GOperator1
                     options.affectSpace ? options.affectSpace.value > 0 : false);
 
                 obj.checkFlipped(
-                    xform[0][0] < 0, 
-                    xform[1][1] < 0);
+                    options.flipX === true && xform[0][0] < 0, 
+                    options.flipY === true && xform[1][1] < 0);
                     
                 obj.scaleCorners *= Math.abs(scaleCorners);
                 obj.scaleStyle   *= Math.abs(scaleStyle  );
@@ -44432,6 +44432,9 @@ extends GAffine
         const a     = options.angle ? options.angle.value/360*Tau : 0;
         const xform = createRotateTransform(a);
 
+        options.flipX = false;
+        options.flipY = false;
+
         return await this.evalAffineObjects(
             parse,
             options, 
@@ -44606,6 +44609,9 @@ extends GAffine
         let sx = hardZero(options.scaleX.value / 100);
         let sy = hardZero(options.scaleY.value / 100);
 
+        options.flipX = sx < 0;
+        options.flipY = sy < 0;
+        
         const scale = Math.min(sx, sy);
 
         return await this.evalAffineObjects(
@@ -44783,6 +44789,9 @@ extends GAffine
     {
         const sx = -options.skewX.value / 100;
         const sy = -options.skewY.value / 100;
+
+        options.flipX = false;
+        options.flipY = false;
 
         return await this.evalAffineObjects(
             parse,

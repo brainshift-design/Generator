@@ -381,7 +381,7 @@ function enableFeatures(sub)
     enableMenuItem(menuItemShowRestartInfo,    true, sub);
     enableMenuItem(menuItemValueName,          true, sub);
     enableMenuItem(menuItemObjectName,         true, sub);
-    enableMenuItem(menuItemVarGroup,           true, sub);
+  //enableMenuItem(menuItemVarGroup,           true, sub);
     enableMenuItem(menuItemTimer,              true, sub);
  // enableMenuItem(menuItemSort,               true, sub);
  // enableMenuItem(menuItemFilter,             true, sub);

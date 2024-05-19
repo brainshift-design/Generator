@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 420;
+const generatorVersion = 421;
 
 
 const MAX_INT32        = 2147483647;
@@ -2828,7 +2828,7 @@ figma.ui.onmessage = function(msg)
         case 'figDeleteSavedConnectionsFromNode':     figDeleteSavedConnectionsFromNode    (msg.nodeId);                                  break;
         case 'figRemovePluginDataFromAllLocalStyles': figRemovePluginDataFromAllLocalStyles();                                            break;
 
-        case 'figGetAllLocalVariables':               figGetAllLocalVariablesAsync         (msg.nodeId, msg.px, msg.py);                  break;
+        case 'figGetAllLocalVariables':               figGetAllLocalVariables              (msg.nodeId, msg.px, msg.py);                  break;
         case 'figLinkNodeToVariable':                 figLinkNodeToVariable                (msg.nodeId, msg.variableId);                  break;
         case 'figUpdateVariable':                     figUpdateVariableAsync               (msg.variableId, msg.value);                   break;
 
@@ -5077,40 +5077,43 @@ function setStylePaints(figStyle, genStyle)
 
 
 
-function figGetAllLocalVariablesAsync(nodeId, px, py)
+function figGetAllLocalVariables(nodeId, px, py)
 {
     figma.variables.getLocalVariablesAsync().then(async localVars =>
     {
         const variables = new Array();
 
+
         for (const _var of localVars)
         {
+            console.log('_var =', _var);
+            console.log('_var.variableCollectionId =', _var.variableCollectionId);
             const collection = await figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
 
-            const variable = 
-            { 
-                id:             _var.id,
-                resolvedType:   _var.resolvedType,
-                name:           _var.name,
-                collectionName: collection.name
-            };
+            // const variable = 
+            // { 
+            //     id:             _var.id,
+            //     resolvedType:   _var.resolvedType,
+            //     name:           _var.name,
+            //     collectionName: collection.name
+            // };
 
-            variables.push(variable);
+            // variables.push(variable);
         }
 
 
-        figma.variables.getLocalVariableCollectionsAsync().then(async collections =>
-        {
-            figPostMessageToUi(
-            {
-                cmd:         'uiReturnFigGetAllLocalVariables',
-                nodeId:       nodeId,
-                px:           px,
-                py:           py,
-                variables:    JSON.stringify(variables),
-                nCollections: collections.length
-            });
-        });
+        // figma.variables.getLocalVariableCollectionsAsync().then(async collections =>
+        // {
+        //     figPostMessageToUi(
+        //     {
+        //         cmd:         'uiReturnFigGetAllLocalVariables',
+        //         nodeId:       nodeId,
+        //         px:           px,
+        //         py:           py,
+        //         variables:    JSON.stringify(variables),
+        //         nCollections: collections.length
+        //     });
+        // });
     });
 }
 
