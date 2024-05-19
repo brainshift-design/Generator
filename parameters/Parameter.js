@@ -270,6 +270,15 @@ extends EventTarget
 
 
 
+    isOnlyParamUnknown(stackOverflowProtect = 100)
+    {
+        return (      this.input
+                   && this.input.isUncached(stackOverflowProtect-1))
+            && this.node.hasMultipliedOutputs();
+    }
+
+
+
     isUnknown(stackOverflowProtect = 100)
     {
         return (      this.input

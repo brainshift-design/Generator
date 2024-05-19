@@ -916,6 +916,14 @@ class Operator
 
 
 
+    headerIsOrPrecededByUncached(stackOverflowProtect = 100)
+    {
+        return !this.cached
+             || this.hasUncachedHeaderInputs(stackOverflowProtect-1);
+    }
+
+
+
     isOrPrecededByMultiplier()
     {
         return this.isMultiplier
@@ -948,6 +956,22 @@ class Operator
             return false;
 
         for (const input of this.inputs)
+        {
+            if (input.isUncached(stackOverflowProtect-1))
+                return true;
+        }
+
+        return false;
+    }
+
+
+
+    hasUncachedHeaderInputs(stackOverflowProtect = 100)
+    {
+        if (stackOverflowProtect <= 0)
+            return false;
+
+        for (const input of this.headerInputs)
         {
             if (input.isUncached(stackOverflowProtect-1))
                 return true;
@@ -995,10 +1019,17 @@ class Operator
 
 
 
+    isHeaderUnknown(stackOverflowProtect = 100)
+    {
+        return this.headerIsOrPrecededByUncached(stackOverflowProtect-1)
+            && this.hasMultipliedOutputs();
+    }
+
+
+
     isUnknown(stackOverflowProtect = 100)
     {
         return this.isOrPrecededByUncached(stackOverflowProtect-1)
-               //   this.hasUncachedInputs()
             && this.hasMultipliedOutputs();
     }
 

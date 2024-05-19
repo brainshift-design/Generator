@@ -2982,6 +2982,7 @@ headerOnly
 isOrPrecededByMultiplier
 isOrFollowedByMultiplier
 hasUncachedInputs
+hasAnyUncachedInputs
 hasMultipliedInputs
 hasConditionsOutputs
 paramCanBeUnknown
