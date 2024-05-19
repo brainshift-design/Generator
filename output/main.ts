@@ -5617,6 +5617,9 @@ function figUpdateFrameData(figFrame, genFrame, addProps, transform)
         setObjectTransform(figFrame, genFrame);
     
     setObjectProps(figFrame, genFrame, addProps && genFrame[FO_FRAME_CHILDREN].length == 0);
+
+
+    figUpdateStrokeSides(figFrame, genFrame);
 }
 
 
@@ -5932,20 +5935,25 @@ function figUpdateRect(figRect, genRect, addProps, transform, isValid = false)
     setObjectProps(figRect, genRect, addProps);
 
 
-    const foundSides = genRect[FO_EFFECTS].findIndex(e => e[0] == 'STROKE_SIDES');
-
-    if (foundSides > -1)
-    {
-        const sides = genRect[FO_EFFECTS][foundSides];
-
-        figRect.strokeWeight       = 0;
-        figRect.strokeTopWeight    = sides[1];
-        figRect.strokeLeftWeight   = sides[2];
-        figRect.strokeRightWeight  = sides[3];
-        figRect.strokeBottomWeight = sides[4];
-    }
+    figUpdateStrokeSides(figRect, genRect);
 }
 
+
+
+function figUpdateStrokeSides(figObj, genObj)
+{
+    const foundSides = genObj[FO_EFFECTS].findIndex(e => e[0] == 'STROKE_SIDES');
+    if (foundSides < 0) return;
+
+    
+    const sides = genObj[FO_EFFECTS][foundSides];
+
+    figObj.strokeWeight       = 0;
+    figObj.strokeTopWeight    = sides[1];
+    figObj.strokeLeftWeight   = sides[2];
+    figObj.strokeRightWeight  = sides[3];
+    figObj.strokeBottomWeight = sides[4];
+}
 
 
 function genStarIsValid(genStar)

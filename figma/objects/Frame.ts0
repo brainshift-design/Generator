@@ -60,4 +60,7 @@ function figUpdateFrameData(figFrame, genFrame, addProps, transform)
         setObjectTransform(figFrame, genFrame);
     
     setObjectProps(figFrame, genFrame, addProps && genFrame[FO_FRAME_CHILDREN].length == 0);
+
+
+    figUpdateStrokeSides(figFrame, genFrame);
 }
