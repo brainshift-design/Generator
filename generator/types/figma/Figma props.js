@@ -112,7 +112,7 @@ function addGradientProp(obj, prop, target = obj.fills)
         y = y * 100 / nozero(bounds.height);
 
 
-        if (pos == 3)
+        if (pos == 4)
         {
             x = x - bounds.x / nozero(bounds.width );
             y = y - bounds.y / nozero(bounds.height);
@@ -147,7 +147,8 @@ function addGradientProp(obj, prop, target = obj.fills)
     if (pos > 0)
     {
         if (   pos == 1
-            || pos == 3)
+            || pos == 3
+            || pos == 4)
         {
             const aspect = bounds.width / nozero(bounds.height);
             

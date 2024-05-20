@@ -52,7 +52,7 @@ extends OpColorBase
         
 
         this.addParam(this.paramType     = new SelectParam('gradType', '',         false, true, true, ['linear', 'radial', 'angular', 'diamond'], 0));
-        this.addParam(this.paramPosition = new SelectParam('position', 'position', false, true, true, ['proportional', 'relative W', 'relative H', 'absolute'], 1));
+        this.addParam(this.paramPosition = new SelectParam('position', 'position', false, true, true, ['proportional', 'relative W', 'relative H', 'absolute', 'canvas'], 1));
         this.addParam(this.paramX        = new NumberParam('x',        'x',        true,  true, true,   0));
         this.addParam(this.paramY        = new NumberParam('y',        'y',        true,  true, true,  50));
         this.addParam(this.paramSize     = new NumberParam('size',     'size',     true,  true, true, 100));

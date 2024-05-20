@@ -11,7 +11,7 @@ extends OperatorBase
 
         this.cached      = false;
         this.iconOffsetY = 1;
-        this.canDisable  = true;
+        // this.canDisable  = true;
         
 
         this.addInput (new Input ([NUMBER_VALUE]));

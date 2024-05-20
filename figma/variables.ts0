@@ -7,34 +7,34 @@ function figGetAllLocalVariables(nodeId, px, py)
 
         for (const _var of localVars)
         {
-            console.log('_var =', _var);
-            console.log('_var.variableCollectionId =', _var.variableCollectionId);
+            // console.log('_var =', _var);
+            // console.log('_var.variableCollectionId =', _var.variableCollectionId);
             const collection = await figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
 
-            // const variable = 
-            // { 
-            //     id:             _var.id,
-            //     resolvedType:   _var.resolvedType,
-            //     name:           _var.name,
-            //     collectionName: collection.name
-            // };
+            const variable = 
+            { 
+                id:             _var.id,
+                resolvedType:   _var.resolvedType,
+                name:           _var.name,
+                collectionName: collection.name
+            };
 
-            // variables.push(variable);
+            variables.push(variable);
         }
 
 
-        // figma.variables.getLocalVariableCollectionsAsync().then(async collections =>
-        // {
-        //     figPostMessageToUi(
-        //     {
-        //         cmd:         'uiReturnFigGetAllLocalVariables',
-        //         nodeId:       nodeId,
-        //         px:           px,
-        //         py:           py,
-        //         variables:    JSON.stringify(variables),
-        //         nCollections: collections.length
-        //     });
-        // });
+        figma.variables.getLocalVariableCollectionsAsync().then(async collections =>
+        {
+            figPostMessageToUi(
+            {
+                cmd:         'uiReturnFigGetAllLocalVariables',
+                nodeId:       nodeId,
+                px:           px,
+                py:           py,
+                variables:    JSON.stringify(variables),
+                nCollections: collections.length
+            });
+        });
     });
 }
 

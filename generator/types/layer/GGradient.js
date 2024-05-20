@@ -103,7 +103,7 @@ extends GOperator
         const blend    = await evalNumberValue(this.blend,    parse);
 
 
-        if (position) position.value = Math.min(Math.max(0, Math.floor(position.value)), 3);
+        if (position) position.value = Math.min(Math.max(0, Math.floor(position.value)), 4);
         if (blend   ) blend   .value = Math.min(Math.max(0, Math.floor(blend   .value)), BlendModes.length-1);
 
 

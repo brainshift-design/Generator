@@ -12,7 +12,7 @@ extends OperatorBase
         super(NUMBER_RANGE, 'range', 'range', iconRange);
 
         this.cached      = false;
-        this.canDisable  = true;
+        // this.canDisable  = true;
         this.iconOffsetY = 2;
         
 

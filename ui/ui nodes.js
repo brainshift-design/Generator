@@ -632,7 +632,7 @@ function handleLegacyNode(_node, genVersion)
     {
         let parts = _node.params.find(p => p[1] == 'parts');
 
-        if (parts) 
+        if (parts)
             removeFromArray(_node.params, parts);
     }
 
@@ -653,6 +653,12 @@ function handleLegacyNode(_node, genVersion)
     {
         const paramType = _node.params.find(p => p[1] == 'type');
         if (paramType) paramType[1] = 'gradType';
+
+        const paramPosition = _node.params.find(p => p[1] == 'position');
+
+        if (   paramPosition
+            && paramPosition[2] == '3,0')
+            paramPosition[1] = '4,0';
 
         const paramTo = _node.params.find(p => p[1] == 'to');
         if (paramTo) paramTo[1] = 'sweep';
