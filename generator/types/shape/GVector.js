@@ -49,12 +49,12 @@ extends GOperator2
         const showCenter = await evalNumberValue(this.showCenter, parse);
 
 
-        if (   input0
-            && input1)
+        if (   input0 && input0.objects && input0.objects.length > 0 && input0.objects[0]
+            && input1 && input1.objects && input1.objects.length > 0 && input1.objects[0])
         {
             this.value = PointValue.fromPoint(
                 this.nodeId,
-                subv(input1.toPoint(), input0.toPoint()));
+                subv(input1.objects[0].toPoint(), input0.objects[0].toPoint()));
 
             await this.evalObjects(
                 parse, 

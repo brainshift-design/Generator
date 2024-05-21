@@ -31,8 +31,8 @@ function figUpdateVectorPath(figPath, genPath, addProps, transform, isValid = fa
     }];
 
 
-    console.log('genPath[FO_VECTOR_PATH_ROUND] =', genPath[FO_VECTOR_PATH_ROUND]);
-    figPath.cornerRadius = genPath[FO_VECTOR_PATH_ROUND];
+
+    figPath.cornerRadius = Number(genPath[FO_VECTOR_PATH_ROUND]);
     
 
     if (transform)
