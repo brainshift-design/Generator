@@ -248,6 +248,8 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
             e.preventDefault();
             menuLocalVariables.selectIndex(menuLocalVariables.itemIndex);
         }
+        else if (e.code == 'Escape')
+            hideAllMenus();
     });
 
 

@@ -53,10 +53,8 @@ extends GOperator2
         const showCenter = await evalNumberValue(this.showCenter, parse);
 
 
-        if (   input0
-            && input1
-            && input0.isValid()
-            && input1.isValid())
+        if (   input0 && input0.isValid() && input0.objects  && input0.objects.length > 0
+            && input1 && input1.isValid() && input1.objects  && input1.objects.length > 0)
         {
             const p0  = point(input0.objects[0].x, input0.objects[0].y);
             const p1  = point(input1.objects[0].x, input1.objects[0].y);

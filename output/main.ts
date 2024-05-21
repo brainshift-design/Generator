@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 423;
+const generatorVersion = 424;
 
 
 const MAX_INT32        = 2147483647;
@@ -6197,6 +6197,7 @@ function figUpdateVectorPath(figPath, genPath, addProps, transform, isValid = fa
     }];
 
 
+    console.log('genPath[FO_VECTOR_PATH_ROUND] =', genPath[FO_VECTOR_PATH_ROUND]);
     figPath.cornerRadius = genPath[FO_VECTOR_PATH_ROUND];
     
 

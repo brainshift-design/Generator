@@ -147,6 +147,18 @@ extends GShape
                 new NumberValue(2),
                 winding, 
                 round);
+
+
+            this.value.points.objects = this.value.points.items.map(p =>
+            {
+                return new FigmaPoint(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    p.x.value,
+                    p.y.value,
+                    p.smooth ? p.smooth.value/100 : 1);
+            });
         }
         else
         {

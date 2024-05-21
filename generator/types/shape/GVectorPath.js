@@ -137,7 +137,7 @@ extends GShape
         
         this.setUpdateValues(parse, 
         [
-            //['points',  points ],
+          //['points',  points ],
             ['closed',  closed ],
             ['degree',  degree ],
             ['winding', winding],
@@ -203,7 +203,7 @@ extends GShape
                 this.value.round  .value);
 
                 
-        const bounds = getObjBounds([path]);
+            const bounds = getObjBounds([path]);
 
             path.createDefaultSpace(
                 bounds.x + bounds.width /2,            

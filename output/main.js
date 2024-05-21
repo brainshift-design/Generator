@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 423;
+const generatorVersion = 424;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -4079,6 +4079,7 @@ function figUpdateVectorPath(figPath, genPath, addProps, transform, isValid = fa
             windingRule: genPath[FO_VECTOR_PATH_WINDING] == 1 ? 'NONZERO' : 'EVENODD',
             data: genPath[FO_VECTOR_PATH_DATA]
         }];
+    console.log('genPath[FO_VECTOR_PATH_ROUND] =', genPath[FO_VECTOR_PATH_ROUND]);
     figPath.cornerRadius = genPath[FO_VECTOR_PATH_ROUND];
     if (transform)
         setObjectTransform(figPath, genPath, false);

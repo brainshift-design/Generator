@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 423;
+const generatorVersion = 424;
 
 
 const MAX_INT32        = 2147483647;
@@ -40967,7 +40967,7 @@ extends GShape
         
         this.setUpdateValues(parse, 
         [
-            //['points',  points ],
+          //['points',  points ],
             ['closed',  closed ],
             ['degree',  degree ],
             ['winding', winding],
@@ -41033,7 +41033,7 @@ extends GShape
                 this.value.round  .value);
 
                 
-        const bounds = getObjBounds([path]);
+            const bounds = getObjBounds([path]);
 
             path.createDefaultSpace(
                 bounds.x + bounds.width /2,            
@@ -45401,6 +45401,18 @@ extends GShape
                 new NumberValue(2),
                 winding, 
                 round);
+
+
+            this.value.points.objects = this.value.points.items.map(p =>
+            {
+                return new FigmaPoint(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    p.x.value,
+                    p.y.value,
+                    p.smooth ? p.smooth.value/100 : 1);
+            });
         }
         else
         {
@@ -47344,10 +47356,8 @@ extends GOperator2
         const showCenter = await evalNumberValue(this.showCenter, parse);
 
 
-        if (   input0
-            && input1
-            && input0.isValid()
-            && input1.isValid())
+        if (   input0 && input0.isValid() && input0.objects  && input0.objects.length > 0
+            && input1 && input1.isValid() && input1.objects  && input1.objects.length > 0)
         {
             const p0  = point(input0.objects[0].x, input0.objects[0].y);
             const p1  = point(input1.objects[0].x, input1.objects[0].y);
