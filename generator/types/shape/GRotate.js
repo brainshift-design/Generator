@@ -44,7 +44,7 @@ extends GAffine
         const angle = await evalNumberValue(this.angle, parse);
 
 
-        const [showCenter, affectSpace] = await this.evalBaseParams(parse);
+        const [affectSpace] = await this.evalBaseParams(parse);
 
 
         if (input)
@@ -64,7 +64,6 @@ extends GAffine
             parse, 
             {
                 angle:       angle, 
-                showCenter:  showCenter,
                 affectSpace: affectSpace
             });
 
@@ -82,7 +81,6 @@ extends GAffine
         [
             ['type',        this.outputType()],
             ['angle',       angle            ],
-            ['showCenter',  showCenter       ],
             ['affectSpace', affectSpace      ],
             ['bounds',      bounds           ]
         ]);

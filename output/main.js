@@ -969,6 +969,7 @@ const MOVE = 'MOVE';
 const ROTATE = 'ROT';
 const SCALE = 'SCALE';
 const SKEW = 'SKEW';
+const SHOW_CENTER = 'SHOWCNTR';
 const SET_CENTER = 'SCENTR';
 const RESET_XFORM = 'RSTX';
 const PLACE = 'PLACE';
@@ -1071,6 +1072,7 @@ const SHAPE_TYPES = [
     ...BOOLEAN_TYPES,
     MOVE,
     ...AFFINE_TYPES,
+    SHOW_CENTER,
     SET_CENTER,
     RESET_XFORM,
     PLACE,

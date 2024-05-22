@@ -5,7 +5,6 @@ extends GOperator1
     x           = null;
     y           = null;
     affectSpace = null;
-    showCenter  = null;
     
     _a          = 0;
 
@@ -26,7 +25,6 @@ extends GOperator1
         this.x           = null;
         this.y           = null;
         this.affectSpace = null;
-        this.showCenter  = null;
 
         this._a          = 0;
     }
@@ -43,7 +41,6 @@ extends GOperator1
         if (this.x          ) copy.x           = this.x          .copy();
         if (this.y          ) copy.y           = this.y          .copy();
         if (this.affectSpace) copy.affectSpace = this.affectSpace.copy();
-        if (this.showCenter ) copy.showCenter  = this.showCenter .copy();
 
         return copy;
     }
@@ -61,7 +58,6 @@ extends GOperator1
         const x           = await evalNumberValue(this.x,           parse);
         const y           = await evalNumberValue(this.y,           parse);
         const affectSpace = await evalNumberValue(this.affectSpace, parse);
-        const showCenter  = await evalNumberValue(this.showCenter,  parse);
 
 
         if (input)
@@ -83,7 +79,6 @@ extends GOperator1
                 moveType:    moveType,
                 x:           x, 
                 y:           y,
-                showCenter:  showCenter,
                 affectSpace: affectSpace
             });
 
@@ -94,8 +89,7 @@ extends GOperator1
             ['moveType',    moveType         ],
             ['x',           x                ],
             ['y',           y                ],
-            ['affectSpace', affectSpace      ],
-            ['showCenter',  showCenter       ]
+            ['affectSpace', affectSpace      ]
         ]);
 
 
@@ -113,8 +107,7 @@ extends GOperator1
             && options.moveType
             && options.x
             && options.y
-            && options.affectSpace
-            && options.showCenter)
+            && options.affectSpace)
         {
             this.value.objects = getValidObjects(this.input.value);
 
@@ -130,7 +123,6 @@ extends GOperator1
             const x           = options.x          .value;
             const y           = options.y          .value;
             const affectSpace = options.affectSpace.value;
-            const showCenter  = options.showCenter .value;
 
 
             let _a = y/360*Tau;
@@ -176,13 +168,6 @@ extends GOperator1
                     this.value.points.objects[i].y = p.y;
                 }
             }
-
-
-            if (showCenter > 0)
-            {
-                const objects = [...this.value.objects]; // avoids infinite growth
-                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-            }
         }
         
         
@@ -206,8 +191,7 @@ extends GOperator1
             && this.moveType    && this.moveType   .isValid()
             && this.x           && this.x          .isValid()
             && this.y           && this.y          .isValid()
-            && this.affectSpace && this.affectSpace.isValid()
-            && this.showCenter  && this.showCenter .isValid();
+            && this.affectSpace && this.affectSpace.isValid();
     }
 
 
@@ -220,7 +204,6 @@ extends GOperator1
         if (this.x          ) this.x          .pushValueUpdates(parse);
         if (this.y          ) this.y          .pushValueUpdates(parse);
         if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
-        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
     }
 
 
@@ -233,7 +216,6 @@ extends GOperator1
         if (this.x          ) this.x          .invalidateInputs(parse, from, force);
         if (this.y          ) this.y          .invalidateInputs(parse, from, force);
         if (this.affectSpace) this.affectSpace.invalidateInputs(parse, from, force);
-        if (this.showCenter ) this.showCenter .invalidateInputs(parse, from, force);
     }
 
 
@@ -246,6 +228,5 @@ extends GOperator1
         if (this.x          ) this.x          .iterateLoop(parse);
         if (this.y          ) this.y          .iterateLoop(parse);
         if (this.affectSpace) this.affectSpace.iterateLoop(parse);
-        if (this.showCenter ) this.showCenter .iterateLoop(parse);
     }
 }

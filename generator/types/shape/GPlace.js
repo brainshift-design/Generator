@@ -1,9 +1,8 @@
 class GPlace
 extends GOperator1
 {
-    position   = null;
-    transform  = null;
-    showCenter = null;
+    position  = null;
+    transform = null;
     
     
 
@@ -18,9 +17,8 @@ extends GOperator1
     {
         super.reset();
         
-        this.position   = null;
-        this.transform  = null;
-        this.showCenter = null;
+        this.position  = null;
+        this.transform = null;
     }
 
 
@@ -31,9 +29,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.position  ) copy.position   = this.position  .copy();
-        if (this.transform ) copy.transform  = this.transform .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+        if (this.position ) copy.position  = this.position .copy();
+        if (this.transform) copy.transform = this.transform.copy();
 
         return copy;
     }
@@ -46,10 +43,9 @@ extends GOperator1
             return this;
 
             
-        const input      = await evalValue      (this.input,      parse);
-        const position   = await evalPointValue (this.position,   parse);
-        const transform  = await evalNumberValue(this.transform,  parse);
-        const showCenter = await evalNumberValue(this.showCenter, parse);
+        const input     = await evalValue      (this.input,     parse);
+        const position  = await evalPointValue (this.position,  parse);
+        const transform = await evalNumberValue(this.transform, parse);
 
         if (   input
             && position)
@@ -79,7 +75,6 @@ extends GOperator1
                 parse, 
                 {
                     transform:  transform,
-                    showCenter: showCenter,
                     sp0:        p0,
                     sp1:        p1,
                     sp2:        p2
@@ -89,9 +84,8 @@ extends GOperator1
         
         this.setUpdateValues(parse,
         [
-            ['position',   position  ],
-            ['transform',  transform ],
-            ['showCenter', showCenter]
+            ['position',  position ],
+            ['transform', transform]
         ]);
 
 
@@ -150,13 +144,6 @@ extends GOperator1
                     obj.applyTransform(xform, true);
                 }
             }
-
-
-            if (options.showCenter.value > 0)
-            {
-                const objects = [...this.value.objects]; // avoids infinite growth
-                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-            }
         }
         
         
@@ -177,9 +164,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.position   && this.position  .isValid()
-            && this.transform  && this.transform .isValid()
-            && this.showCenter && this.showCenter.isValid();
+            && this.position  && this.position .isValid()
+            && this.transform && this.transform.isValid();
     }
 
 
@@ -188,9 +174,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.position  ) this.position  .pushValueUpdates(parse);
-        if (this.transform ) this.transform .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.position ) this.position .pushValueUpdates(parse);
+        if (this.transform) this.transform.pushValueUpdates(parse);
     }
 
 
@@ -199,9 +184,8 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.position  ) this.position  .invalidateInputs(parse, from, force);
-        if (this.transform ) this.transform .invalidateInputs(parse, from, force);
-        if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
+        if (this.position ) this.position .invalidateInputs(parse, from, force);
+        if (this.transform) this.transform.invalidateInputs(parse, from, force);
     }
 
 
@@ -210,9 +194,8 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.position  ) this.position  .iterateLoop(parse);
-        if (this.transform ) this.transform .iterateLoop(parse);
-        if (this.showCenter) this.showCenter.iterateLoop(parse);
+        if (this.position ) this.position .iterateLoop(parse);
+        if (this.transform) this.transform.iterateLoop(parse);
     }
 }
 

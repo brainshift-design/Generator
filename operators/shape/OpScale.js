@@ -71,7 +71,6 @@ extends OpAffine
         request.push(...this.node.paramScaleY       .genRequest(gen));
         request.push(...this.node.paramAffectCorners.genRequest(gen));
         request.push(...this.node.paramAffectStyle  .genRequest(gen));
-        request.push(...this.node.paramShowCenter   .genRequest(gen));
         request.push(...this.node.paramAffectSpace  .genRequest(gen));
 
         
@@ -90,8 +89,6 @@ extends OpAffine
 
         updateParamConditionText(this.paramAffectCorners, this.paramAffectCorners.isUnknown(), false, 1);
         updateParamConditionText(this.paramAffectStyle,   this.paramAffectStyle  .isUnknown(), false, 1);
-        updateParamConditionText(this.paramShowCenter,    this.paramShowCenter   .isUnknown(), false, 1);
-        // updateParamConditionText(this.paramAffectSpace,   this.paramAffectSpace  .isUnknown(), true,  1);
 
         this.updateParamControls();
     }

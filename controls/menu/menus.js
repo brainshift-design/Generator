@@ -781,6 +781,7 @@ function initGeneratorMenus()
         new MenuItem('',                null, false, {separator: true}),
         new MenuItem('Place',           null, false, {icon: iconPlace,      createType: PLACE,       callback: e => actionManager.do(getCreateNodeAction(PLACE,       btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',                null, false, {separator: true}),
+        new MenuItem('Show center',     null, false, {icon: iconShowCenter, createType: SHOW_CENTER, callback: e => actionManager.do(getCreateNodeAction(SHOW_CENTER, btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Set center',      null, false, {icon: iconCenter,     createType: SET_CENTER,  callback: e => actionManager.do(getCreateNodeAction(SET_CENTER,  btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',                null, false, {separator: true}),
         new MenuItem('Reset transform', null, false, {icon: iconResetXform, createType: RESET_XFORM, callback: e => actionManager.do(getCreateNodeAction(RESET_XFORM, btnShape.div, getCreateOptions(e)))})]);

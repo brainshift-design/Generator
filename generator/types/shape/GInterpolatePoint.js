@@ -1,9 +1,8 @@
 class GInterpolatePoint
 extends GOperator2
 {
-    amount     = null;
-    transform  = null;
-    showCenter = null;
+    amount    = null;
+    transform = null;
 
 
     
@@ -18,9 +17,8 @@ extends GOperator2
     {
         super.reset();
 
-        this.amount     = null;
-        this.transform  = null;
-        this.showCenter = null;
+        this.amount    = null;
+        this.transform = null;
     }
 
 
@@ -31,9 +29,8 @@ extends GOperator2
 
         copy.copyBase(this);
 
-        if (this.amount    ) copy.amount     = this.amount    .copy();
-        if (this.transform ) copy.transform  = this.transform .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+        if (this.amount   ) copy.amount    = this.amount   .copy();
+        if (this.transform) copy.transform = this.transform.copy();
 
         return copy;
     }
@@ -46,11 +43,10 @@ extends GOperator2
             return this;
 
 
-        const input0     = await evalPointValue (this.input0,     parse);
-        const input1     = await evalPointValue (this.input1,     parse);
-        const amount     = await evalNumberValue(this.amount,     parse);
-        const transform  = await evalNumberValue(this.transform,  parse);
-        const showCenter = await evalNumberValue(this.showCenter, parse);
+        const input0    = await evalPointValue (this.input0,    parse);
+        const input1    = await evalPointValue (this.input1,    parse);
+        const amount    = await evalNumberValue(this.amount,    parse);
+        const transform = await evalNumberValue(this.transform, parse);
 
 
         if (   input0 && input0.isValid() && input0.objects  && input0.objects.length > 0
@@ -87,13 +83,6 @@ extends GOperator2
             this.value.objects[0].sp0 = sp0;
             this.value.objects[0].sp1 = sp1;
             this.value.objects[0].sp2 = sp2;
-
-
-            if (showCenter.value > 0)
-            {
-                const objects = [...this.value.objects]; // avoids infinite growth
-                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-            }
         }
         else
             this.value = PointValue.NaN.copy();
@@ -101,9 +90,8 @@ extends GOperator2
 
         this.setUpdateValues(parse,
         [
-            ['amount',     amount    ],
-            ['transform',  transform ],
-            ['showCenter', showCenter]
+            ['amount',    amount   ],
+            ['transform', transform]
         ]);
         
 
@@ -117,9 +105,8 @@ extends GOperator2
     isValid()
     {
         return super.isValid()
-            && this.amount     && this.amount    .isValid()
-            && this.transform  && this.transform .isValid()
-            && this.showCenter && this.showCenter.isValid();
+            && this.amount    && this.amount   .isValid()
+            && this.transform && this.transform.isValid();
     }
 
 
@@ -128,9 +115,8 @@ extends GOperator2
     {
         super.pushValueUpdates(parse);
 
-        if (this.amount    ) this.amount    .pushValueUpdates(parse);
-        if (this.transform ) this.transform .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.amount   ) this.amount   .pushValueUpdates(parse);
+        if (this.transform) this.transform.pushValueUpdates(parse);
     }
 
 
@@ -139,9 +125,8 @@ extends GOperator2
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.amount    ) this.amount    .invalidateInputs(parse, from, force);
-        if (this.transform ) this.transform .invalidateInputs(parse, from, force);
-        if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
+        if (this.amount   ) this.amount   .invalidateInputs(parse, from, force);
+        if (this.transform) this.transform.invalidateInputs(parse, from, force);
     }
 
 
@@ -150,8 +135,7 @@ extends GOperator2
     {
         super.iterateLoop(parse);
 
-        if (this.amount    ) this.amount    .iterateLoop(parse);
-        if (this.transform ) this.transform .iterateLoop(parse);
-        if (this.showCenter) this.showCenter.iterateLoop(parse);
+        if (this.amount   ) this.amount   .iterateLoop(parse);
+        if (this.transform) this.transform.iterateLoop(parse);
     }
 }

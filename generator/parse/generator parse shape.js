@@ -1441,7 +1441,6 @@ function genParseMove(parse)
     move.x           = genParse(parse);
     move.y           = genParse(parse);
     move.affectSpace = genParse(parse);
-    move.showCenter  = genParse(parse);
 
 
     parse.inParam = false;
@@ -1489,7 +1488,6 @@ function genParseRotate(parse)
         rotate.input = genParse(parse);
 
     rotate.angle       = genParse(parse);
-    rotate.showCenter  = genParse(parse);
     rotate.affectSpace = genParse(parse);
 
     
@@ -1541,7 +1539,6 @@ function genParseScale(parse)
     scale.scaleY        = genParse(parse);
     scale.affectCorners = genParse(parse);
     scale.affectStyle   = genParse(parse);
-    scale.showCenter    = genParse(parse);
     scale.affectSpace   = genParse(parse);
 
     
@@ -1591,7 +1588,6 @@ function genParseSkew(parse)
 
     skew.skewX       = genParse(parse);
     skew.skewY       = genParse(parse);
-    skew.showCenter  = genParse(parse);
     skew.affectSpace = genParse(parse);
 
 
@@ -1601,6 +1597,50 @@ function genParseSkew(parse)
 
     genParseNodeEnd(parse, skew);
     return skew;
+}
+
+
+
+function genParseShowCenter(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const showCenter = new GShowCenter(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(showCenter, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, showCenter);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        showCenter.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, showCenter);
+    return showCenter;
 }
 
 
@@ -1642,7 +1682,6 @@ function genParseCenter(parse)
     center.centerX    = genParse(parse);
     center.centerY    = genParse(parse);
     center.units      = genParse(parse);
-    center.showCenter = genParse(parse);
 
 
     parse.inParam = false;
@@ -1688,8 +1727,6 @@ function genParseResetTransform(parse)
 
     if (nInputs == 1)
         reset.input = genParse(parse);
-
-    reset.showCenter = genParse(parse);
 
 
     parse.nTab--;
@@ -1833,7 +1870,6 @@ function genParseVector(parse)
 
 
     vector.transform  = genParse(parse);
-    vector.showCenter = genParse(parse);
 
 
     parse.nTab--;
@@ -2086,7 +2122,6 @@ function genParseInterpolatePoint(parse)
 
     lerp.amount     = genParse(parse);
     lerp.transform  = genParse(parse);
-    lerp.showCenter = genParse(parse);
 
 
     parse.nTab--;
@@ -2137,7 +2172,6 @@ function genParsePointAlongPath(parse)
     pap.distance   = genParse(parse);
     pap.offset     = genParse(parse);
     pap.transform  = genParse(parse);
-    pap.showCenter = genParse(parse);
 
 
     parse.nTab--;
@@ -2193,7 +2227,6 @@ function genParseClosestPointOnPath(parse)
 
     cpop.constrain  = genParse(parse);
     cpop.transform  = genParse(parse);
-    cpop.showCenter = genParse(parse);
 
 
     parse.nTab--;
@@ -2330,7 +2363,6 @@ function genParsePlace(parse)
 
     place.position   = genParse(parse);
     place.transform  = genParse(parse);
-    place.showCenter = genParse(parse);
 
 
     parse.inParam = false;

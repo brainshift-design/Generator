@@ -598,6 +598,17 @@ function handleLegacyNode(_node, genVersion)
     else if (_node.type == 'START' ) _node.type = FEEDBACK;
 
 
+    // remove 'showCenter' param from everything
+
+    if (_node.params)
+    {
+        const foundIndex = _node.params.findIndex(p => p[1] == 'showCenter')
+
+        if (foundIndex > -1)
+            _node.params.splice(foundIndex, 1);
+    }
+
+
     // handle math order of operations switch in version 339
 
     if (   (   _node.type == NUMBER_MATH

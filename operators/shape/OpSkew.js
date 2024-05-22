@@ -46,7 +46,6 @@ extends OpAffine
 
         request.push(...this.node.paramSkewX      .genRequest(gen));
         request.push(...this.node.paramSkewY      .genRequest(gen));
-        request.push(...this.node.paramShowCenter .genRequest(gen));
         request.push(...this.node.paramAffectSpace.genRequest(gen));
 
         
@@ -55,17 +54,5 @@ extends OpAffine
 
 
         return request;
-    }
-
-
-
-    updateParams()
-    {
-        super.updateParams();
-
-        updateParamConditionText(this.paramShowCenter,  this.paramShowCenter .isUnknown(), false, 1);
-        // updateParamConditionText(this.paramAffectSpace, this.paramAffectSpace.isUnknown(), true,  1);
-
-        this.updateParamControls();
     }
 }

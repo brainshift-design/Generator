@@ -3314,9 +3314,7 @@ paramReplace
 menuReplace
 paramMoveType
 paramAffectSpace
-paramShowCenter
 menuBoolAffectSpace
-menuBoolShowCenter
 paramScaleX
 paramScaleY
 paramAffectCorners
@@ -4236,7 +4234,6 @@ labelOffsetFactor
 disconnectAllParams
 paramBase
 paramTransform
-menuShowCenter
 paramNodes
 prevSelectedIds
 oldInputActiveNodeIds

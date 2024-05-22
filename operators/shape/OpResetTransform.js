@@ -1,13 +1,6 @@
 class   OpResetTransform
 extends OperatorBase
 {
-    paramShowCenter;
-
-
-    menuBoolShowCenter;
-
-
-
     constructor()
     {
         super(RESET_XFORM, 'reset', 'reset transform', iconResetXform);
@@ -18,14 +11,6 @@ extends OperatorBase
 
         this.addInput (new Input([...SHAPE_VALUES, LIST_VALUE]));
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
-
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
-
-
-        this.paramShowCenter.controls[0].allowEditDecimals = false;
-        this.paramShowCenter.divider = 0.68;
-
-        this.menuBoolShowCenter = createBoolMenu(this.paramShowCenter);
     }
 
 
@@ -57,8 +42,6 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramShowCenter.genRequest(gen));
-
         
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
@@ -76,14 +59,5 @@ extends OperatorBase
 
         if (type)
             this.headerOutputs[0].types = [type.value];
-    }
-
-
-
-    updateParams()
-    {
-        updateParamConditionText(this.paramShowCenter,  this.paramShowCenter.isUnknown(), false, 1);
-
-        this.updateParamControls();
     }
 }

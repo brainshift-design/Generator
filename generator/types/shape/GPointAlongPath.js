@@ -1,11 +1,10 @@
 class GPointAlongPath
 extends GOperator1
 {
-    position   = null;
-    distance   = null;
-    offset     = null;
-    transform  = null;
-    showCenter = null;
+    position  = null;
+    distance  = null;
+    offset    = null;
+    transform = null;
     
     
     
@@ -20,11 +19,10 @@ extends GOperator1
     {
         super.reset();
 
-        this.position   = null;
-        this.distance   = null;
-        this.offset     = null;
-        this.transform  = null;
-        this.showCenter = null;
+        this.position  = null;
+        this.distance  = null;
+        this.offset    = null;
+        this.transform = null;
     }
 
 
@@ -35,11 +33,10 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.position  ) copy.position   = this.position  .copy();
-        if (this.distance  ) copy.distance   = this.distance  .copy();
-        if (this.offset    ) copy.offset     = this.offset    .copy();
-        if (this.transform ) copy.transform  = this.transform .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+        if (this.position ) copy.position  = this.position .copy();
+        if (this.distance ) copy.distance  = this.distance .copy();
+        if (this.offset   ) copy.offset    = this.offset   .copy();
+        if (this.transform) copy.transform = this.transform.copy();
 
         return copy;
     }
@@ -52,12 +49,11 @@ extends GOperator1
             return this;
 
 
-        const input      = await evalVectorPathValue(this.input,      parse);
-        const position   = await evalNumberValue    (this.position,   parse);
-        const distance   = await evalNumberValue    (this.distance,   parse);
-        const offset     = await evalNumberValue    (this.offset,     parse);
-        const transform  = await evalNumberValue    (this.transform,  parse);
-        const showCenter = await evalNumberValue    (this.showCenter, parse);
+        const input     = await evalVectorPathValue(this.input,     parse);
+        const position  = await evalNumberValue    (this.position,  parse);
+        const distance  = await evalNumberValue    (this.distance,  parse);
+        const offset    = await evalNumberValue    (this.offset,    parse);
+        const transform = await evalNumberValue    (this.transform, parse);
 
 
         let pt;
@@ -102,18 +98,16 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['position',   position  ],
-            ['distance',   distance  ],
-            ['offset',     offset    ],
-            ['transform',  transform ],
-            ['showCenter', showCenter]
+            ['position',  position ],
+            ['distance',  distance ],
+            ['offset',    offset   ],
+            ['transform', transform]
         ]);
         
 
         await this.evalObjects(parse,
         {
             transform:  transform,
-            showCenter: showCenter,
             tangent:    tangent,
             offset:     offset.value
         });
@@ -171,13 +165,6 @@ extends GOperator1
 
 
             this.value.objects = [point];
-
-
-            if (options.showCenter.value > 0)
-            {
-                const objects = [...this.value.objects]; // avoids infinite growth
-                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-            }
         }
 
 
@@ -189,11 +176,10 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.position   && this.position  .isValid()
-            && this.distance   && this.distance  .isValid()
-            && this.offset     && this.offset    .isValid()
-            && this.transform  && this.transform .isValid()
-            && this.showCenter && this.showCenter.isValid();
+            && this.position  && this.position .isValid()
+            && this.distance  && this.distance .isValid()
+            && this.offset    && this.offset   .isValid()
+            && this.transform && this.transform.isValid();
     }
 
 
@@ -202,11 +188,10 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.position  ) this.position  .pushValueUpdates(parse);
-        if (this.distance  ) this.distance  .pushValueUpdates(parse);
-        if (this.offset    ) this.offset    .pushValueUpdates(parse);
-        if (this.transform ) this.transform .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.position ) this.position .pushValueUpdates(parse);
+        if (this.distance ) this.distance .pushValueUpdates(parse);
+        if (this.offset   ) this.offset   .pushValueUpdates(parse);
+        if (this.transform) this.transform.pushValueUpdates(parse);
     }
 
 
@@ -215,11 +200,10 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.position  ) this.position  .invalidateInputs(parse, from, force);
-        if (this.distance  ) this.distance  .invalidateInputs(parse, from, force);
-        if (this.offset    ) this.offset    .invalidateInputs(parse, from, force);
-        if (this.transform ) this.transform .invalidateInputs(parse, from, force);
-        if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
+        if (this.position ) this.position .invalidateInputs(parse, from, force);
+        if (this.distance ) this.distance .invalidateInputs(parse, from, force);
+        if (this.offset   ) this.offset   .invalidateInputs(parse, from, force);
+        if (this.transform) this.transform.invalidateInputs(parse, from, force);
     }
 
 
@@ -228,10 +212,9 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.position  ) this.position  .iterateLoop(parse);
-        if (this.distance  ) this.distance  .iterateLoop(parse);
-        if (this.offset    ) this.offset    .iterateLoop(parse);
-        if (this.transform ) this.transform .iterateLoop(parse);
-        if (this.showCenter) this.showCenter.iterateLoop(parse);
+        if (this.position ) this.position .iterateLoop(parse);
+        if (this.distance ) this.distance .iterateLoop(parse);
+        if (this.offset   ) this.offset   .iterateLoop(parse);
+        if (this.transform) this.transform.iterateLoop(parse);
     }
 }

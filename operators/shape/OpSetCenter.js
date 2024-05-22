@@ -4,10 +4,6 @@ extends OperatorBase
     paramCenterX;
     paramCenterY;
     paramUnits;
-    paramShowCenter;
-
-
-    menuBoolShowCenter;
 
 
 
@@ -26,7 +22,6 @@ extends OperatorBase
         this.addParam(this.paramUnits      = new SelectParam('units',      'units',       false, true, true, ['object', 'relative', 'absolute'], 0));
         this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center X',    true,  true, true, 50, 0, 100));
         this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center Y',    true,  true, true, 50, 0, 100));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true,  true, true, 0,  0,   1));
 
 
         this.paramCenterX.controls[0].suffix = '%';
@@ -41,11 +36,6 @@ extends OperatorBase
 
         this.paramCenterX.divider = 0.55;
         this.paramCenterY.divider = 0.55;
-
-        this.paramShowCenter.controls[0].allowEditDecimals = false;
-        this.paramShowCenter.divider = 0.68;
-
-        this.menuBoolShowCenter = createBoolMenu(this.paramShowCenter);
 
 
         this.inputs[0].addEventListener('connect',    () => OpCenter_onConnectInput   (this));
@@ -90,10 +80,9 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramCenterX   .genRequest(gen));
-        request.push(...this.node.paramCenterY   .genRequest(gen));
-        request.push(...this.node.paramUnits     .genRequest(gen));
-        request.push(...this.node.paramShowCenter.genRequest(gen));
+        request.push(...this.node.paramCenterX.genRequest(gen));
+        request.push(...this.node.paramCenterY.genRequest(gen));
+        request.push(...this.node.paramUnits  .genRequest(gen));
 
         
         gen.scope.pop();
@@ -120,8 +109,6 @@ extends OperatorBase
     updateParams()
     {
         super.updateParams();
-
-        updateParamConditionText(this.paramShowCenter, this.paramShowCenter.isUnknown(), false, 1);
 
 
         this.paramCenterX.controls[0].resetRanges();

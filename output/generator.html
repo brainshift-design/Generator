@@ -6544,6 +6544,7 @@ const ROTATE                = 'ROT';
 const SCALE                 = 'SCALE';
 const SKEW                  = 'SKEW';
 
+const SHOW_CENTER           = 'SHOWCNTR';
 const SET_CENTER            = 'SCENTR';
 const RESET_XFORM           = 'RSTX';
 
@@ -6672,6 +6673,7 @@ const SHAPE_TYPES =
     
     MOVE,
     ...AFFINE_TYPES,
+    SHOW_CENTER,
     SET_CENTER,
     RESET_XFORM,
         
@@ -7025,6 +7027,8 @@ class FigmaObject
     feedback   = false;
 
 
+    showCenter = false;
+    
     xform;
 
     xp0   = null; //  xp0 ------- xp1 
@@ -7061,7 +7065,9 @@ class FigmaObject
         
         this.feedback     = base.feedback;
         this.retain       = base.retain;
-        
+
+        this.showCenter   = base.showCenter;
+
         this.xform        = clone(base.xform);
 
         this.xp0          = clone(base.xp0);
@@ -7423,7 +7429,7 @@ function getObjBounds(objects)
 
 
 
-function addObjectCenter(node, obj, zoom)
+function addObjectCenter(node, obj)
 {
     const sp0 = point(
         obj.sp0.x /*+ 0.5*/, 
@@ -7442,7 +7448,7 @@ function addObjectCenter(node, obj, zoom)
             CENTER_SUFFIX,
             true);
 
-    node.value.objects.push(center);
+    //node.value.objects.push(center);
 
     return center;
 }
@@ -43983,7 +43989,6 @@ extends GOperator1
     x           = null;
     y           = null;
     affectSpace = null;
-    showCenter  = null;
     
     _a          = 0;
 
@@ -44004,7 +44009,6 @@ extends GOperator1
         this.x           = null;
         this.y           = null;
         this.affectSpace = null;
-        this.showCenter  = null;
 
         this._a          = 0;
     }
@@ -44021,7 +44025,6 @@ extends GOperator1
         if (this.x          ) copy.x           = this.x          .copy();
         if (this.y          ) copy.y           = this.y          .copy();
         if (this.affectSpace) copy.affectSpace = this.affectSpace.copy();
-        if (this.showCenter ) copy.showCenter  = this.showCenter .copy();
 
         return copy;
     }
@@ -44039,7 +44042,6 @@ extends GOperator1
         const x           = await evalNumberValue(this.x,           parse);
         const y           = await evalNumberValue(this.y,           parse);
         const affectSpace = await evalNumberValue(this.affectSpace, parse);
-        const showCenter  = await evalNumberValue(this.showCenter,  parse);
 
 
         if (input)
@@ -44061,7 +44063,6 @@ extends GOperator1
                 moveType:    moveType,
                 x:           x, 
                 y:           y,
-                showCenter:  showCenter,
                 affectSpace: affectSpace
             });
 
@@ -44072,8 +44073,7 @@ extends GOperator1
             ['moveType',    moveType         ],
             ['x',           x                ],
             ['y',           y                ],
-            ['affectSpace', affectSpace      ],
-            ['showCenter',  showCenter       ]
+            ['affectSpace', affectSpace      ]
         ]);
 
 
@@ -44091,8 +44091,7 @@ extends GOperator1
             && options.moveType
             && options.x
             && options.y
-            && options.affectSpace
-            && options.showCenter)
+            && options.affectSpace)
         {
             this.value.objects = getValidObjects(this.input.value);
 
@@ -44108,7 +44107,6 @@ extends GOperator1
             const x           = options.x          .value;
             const y           = options.y          .value;
             const affectSpace = options.affectSpace.value;
-            const showCenter  = options.showCenter .value;
 
 
             let _a = y/360*Tau;
@@ -44154,13 +44152,6 @@ extends GOperator1
                     this.value.points.objects[i].y = p.y;
                 }
             }
-
-
-            if (showCenter > 0)
-            {
-                const objects = [...this.value.objects]; // avoids infinite growth
-                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-            }
         }
         
         
@@ -44184,8 +44175,7 @@ extends GOperator1
             && this.moveType    && this.moveType   .isValid()
             && this.x           && this.x          .isValid()
             && this.y           && this.y          .isValid()
-            && this.affectSpace && this.affectSpace.isValid()
-            && this.showCenter  && this.showCenter .isValid();
+            && this.affectSpace && this.affectSpace.isValid();
     }
 
 
@@ -44198,7 +44188,6 @@ extends GOperator1
         if (this.x          ) this.x          .pushValueUpdates(parse);
         if (this.y          ) this.y          .pushValueUpdates(parse);
         if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
-        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
     }
 
 
@@ -44211,7 +44200,6 @@ extends GOperator1
         if (this.x          ) this.x          .invalidateInputs(parse, from, force);
         if (this.y          ) this.y          .invalidateInputs(parse, from, force);
         if (this.affectSpace) this.affectSpace.invalidateInputs(parse, from, force);
-        if (this.showCenter ) this.showCenter .invalidateInputs(parse, from, force);
     }
 
 
@@ -44224,7 +44212,6 @@ extends GOperator1
         if (this.x          ) this.x          .iterateLoop(parse);
         if (this.y          ) this.y          .iterateLoop(parse);
         if (this.affectSpace) this.affectSpace.iterateLoop(parse);
-        if (this.showCenter ) this.showCenter .iterateLoop(parse);
     }
 }
 
@@ -44232,7 +44219,6 @@ extends GOperator1
 class GAffine
 extends GOperator1
 {
-    showCenter  = null;
     affectSpace = null;
 
 
@@ -44248,7 +44234,6 @@ extends GOperator1
     {
         super.reset();
 
-        this.showCenter  = null;
         this.affectSpace = null;
     }
 
@@ -44258,7 +44243,6 @@ extends GOperator1
     {
         super.copyBase(base);
 
-        if (base.showCenter ) this.showCenter  = base.showCenter .copy();
         if (base.affectSpace) this.affectSpace = base.affectSpace.copy();
     }
 
@@ -44266,10 +44250,9 @@ extends GOperator1
 
     async evalBaseParams(parse)
     {
-        const showCenter  = await evalNumberValue(this.showCenter,  parse);
         const affectSpace = await evalNumberValue(this.affectSpace, parse);
 
-        return [showCenter, affectSpace];
+        return [affectSpace];
     }
 
 
@@ -44340,13 +44323,6 @@ extends GOperator1
         }
 
 
-        if (options.showCenter ? options.showCenter.value > 0 : false)
-        {
-            const objects = [...this.value.objects]; // avoids infinite growth
-            objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-        }
-
-
         return bounds;
     }
 
@@ -44355,7 +44331,6 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.showCenter  && this.showCenter .isValid()
             && this.affectSpace && this.affectSpace.isValid();
     }
 
@@ -44365,7 +44340,6 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
         if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
     }
 
@@ -44375,7 +44349,6 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.showCenter ) this.showCenter .invalidateInputs(parse, from, force);
         if (this.affectSpace) this.affectSpace.invalidateInputs(parse, from, force);
     }
 
@@ -44385,7 +44358,6 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.showCenter ) this.showCenter .iterateLoop(parse);
         if (this.affectSpace) this.affectSpace.iterateLoop(parse);
     }
 }
@@ -44437,7 +44409,7 @@ extends GAffine
         const angle = await evalNumberValue(this.angle, parse);
 
 
-        const [showCenter, affectSpace] = await this.evalBaseParams(parse);
+        const [affectSpace] = await this.evalBaseParams(parse);
 
 
         if (input)
@@ -44457,7 +44429,6 @@ extends GAffine
             parse, 
             {
                 angle:       angle, 
-                showCenter:  showCenter,
                 affectSpace: affectSpace
             });
 
@@ -44475,7 +44446,6 @@ extends GAffine
         [
             ['type',        this.outputType()],
             ['angle',       angle            ],
-            ['showCenter',  showCenter       ],
             ['affectSpace', affectSpace      ],
             ['bounds',      bounds           ]
         ]);
@@ -44608,7 +44578,7 @@ extends GAffine
         let   affectStyle   = await evalNumberValue(this.affectStyle,   parse);
 
 
-        const [showCenter, affectSpace] = await this.evalBaseParams(parse);
+        const [affectSpace] = await this.evalBaseParams(parse);
 
 
         if (input)
@@ -44629,7 +44599,6 @@ extends GAffine
             {
                 scaleX:        scaleX, 
                 scaleY:        scaleY, 
-                showCenter:    showCenter,
                 affectSpace:   affectSpace,
                 affectCorners: affectCorners,
                 affectStyle:   affectStyle
@@ -44650,7 +44619,6 @@ extends GAffine
             ['type',          this.outputType()],
             ['scaleX',        scaleX           ],
             ['scaleY',        scaleY           ],
-            ['showCenter',    showCenter       ],
             ['affectSpace',   affectSpace      ],
             ['affectCorners', affectCorners    ],
             ['affectStyle',   affectStyle      ],
@@ -44793,7 +44761,7 @@ extends GAffine
         let   skewY = await evalNumberValue(this.skewY, parse);
 
 
-        const [showCenter, affectSpace] = await this.evalBaseParams(parse);
+        const [affectSpace] = await this.evalBaseParams(parse);
 
 
         if (input)
@@ -44814,7 +44782,6 @@ extends GAffine
             {
                 skewX:       skewX, 
                 skewY:       skewY, 
-                showCenter:  showCenter,
                 affectSpace: affectSpace
             });
 
@@ -44833,7 +44800,6 @@ extends GAffine
             ['type',        this.outputType()],
             ['skewX',       skewX            ],
             ['skewY',       skewY            ],
-            ['showCenter',  showCenter       ],
             ['affectSpace', affectSpace      ],
             ['bounds',      bounds           ]
         ]);
@@ -44913,13 +44879,114 @@ extends GAffine
 }
 
 
+class GShowCenter
+extends GOperator1
+{
+    constructor(nodeId, options)
+    {
+        super(SHOW_CENTER, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GShowCenter(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input = await evalValue(this.input, parse);
+
+
+        if (input)
+        {
+            this.value = input;
+
+            this.value.nodeId = this.nodeId;
+        }
+        else
+            this.value = new NullValue();
+
+        
+        await this.evalObjects(parse);
+
+
+        const type = this.outputType();
+
+        this.setUpdateValues(parse,
+        [
+            ['type', type]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (   this.value
+            && this.value.isValid())
+        {
+            this.value.objects = getValidObjects(this.input.value);
+
+
+            const bounds = getObjBounds(this.value.objects);
+
+            const singlePoint =
+                   this.value.objects.length  == 1 
+                && this.value.objects[0].type == POINT;
+
+
+            for (const obj of this.value.objects)
+            {
+                obj.nodeId     = this.nodeId;
+                obj.objectId   = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+                
+                if (this.options.enabled)
+                    obj.showCenter = true;
+            }
+
+
+            // const objects = [...this.value.objects]; // avoids infinite growth
+            // objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
+        }
+        
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+        ? this.value.copy()
+        : null;
+    }
+}
+
+
 class GSetCenter
 extends GOperator1
 {
-    centerX    = null;
-    centerY    = null;
-    units      = null;
-    showCenter = null;
+    centerX = null;
+    centerY = null;
+    units   = null;
 
 
 
@@ -44934,10 +45001,9 @@ extends GOperator1
     {
         super.reset();
 
-        this.centerX    = null;
-        this.centerY    = null;
-        this.units      = null;
-        this.showCenter = null;
+        this.centerX = null;
+        this.centerY = null;
+        this.units   = null;
     }
 
 
@@ -44948,10 +45014,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.centerX   ) copy.centerX    = this.centerX   .copy();
-        if (this.centerY   ) copy.centerY    = this.centerY   .copy();
-        if (this.units     ) copy.units      = this.units     .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+        if (this.centerX) copy.centerX = this.centerX.copy();
+        if (this.centerY) copy.centerY = this.centerY.copy();
+        if (this.units  ) copy.units   = this.units  .copy();
 
         return copy;
     }
@@ -44964,11 +45029,10 @@ extends GOperator1
             return this;
 
             
-        const input      = await evalValue      (this.input,      parse);
-        const centerX    = await evalNumberValue(this.centerX,    parse);
-        const centerY    = await evalNumberValue(this.centerY,    parse);
-        const units      = await evalNumberValue(this.units,      parse);
-        const showCenter = await evalNumberValue(this.showCenter, parse);
+        const input   = await evalValue      (this.input,   parse);
+        const centerX = await evalNumberValue(this.centerX, parse);
+        const centerY = await evalNumberValue(this.centerY, parse);
+        const units   = await evalNumberValue(this.units,   parse);
 
 
         if (this.input)
@@ -44989,8 +45053,7 @@ extends GOperator1
             {
                 centerX:    centerX, 
                 centerY:    centerY,
-                units:      units,
-                showCenter: showCenter
+                units:      units
             });
 
 
@@ -44998,11 +45061,10 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type',       type      ],
-            ['centerX',    centerX   ],
-            ['centerY',    centerY   ],
-            ['units',      units     ],
-            ['showCenter', showCenter]
+            ['type',    type   ],
+            ['centerX', centerX],
+            ['centerY', centerY],
+            ['units',   units  ]
         ]);
 
 
@@ -45021,16 +45083,16 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input.value);
 
             
-            const centerX     = options.centerX    ? options.centerX   .value : 0;
-            const centerY     = options.centerY    ? options.centerY   .value : 0;
-            const units       = options.units      ? options.units     .value : 0;
-            const showCenter  = options.showCenter ? options.showCenter.value : 0;
+            const centerX = options.centerX    ? options.centerX   .value : 0;
+            const centerY = options.centerY    ? options.centerY   .value : 0;
+            const units   = options.units      ? options.units     .value : 0;
      
-            const cx          = units == 0 ? centerX/100 : centerX;
-            const cy          = units == 0 ? centerY/100 : centerY;
+            const cx      = units == 0 ? centerX/100 : centerX;
+            const cy      = units == 0 ? centerY/100 : centerY;
 
 
-            const bounds      = getObjBounds(this.value.objects);
+            const bounds  = getObjBounds(this.value.objects);
+
 
             const singlePoint =  
                    this.value.objects.length  == 1 
@@ -45044,13 +45106,6 @@ extends GOperator1
 
                 if (this.options.enabled)
                     obj.resetSpace(bounds, singlePoint, cx, cy, units);
-            }
-
-
-            if (showCenter > 0)
-            {
-                const objects = [...this.value.objects]; // avoids infinite growth
-                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
             }
         }
         
@@ -45072,10 +45127,9 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.centerX    && this.centerX   .isValid()
-            && this.centerY    && this.centerY   .isValid()
-            && this.units      && this.units     .isValid()
-            && this.showCenter && this.showCenter.isValid();
+            && this.centerX && this.centerX.isValid()
+            && this.centerY && this.centerY.isValid()
+            && this.units   && this.units  .isValid();
     }
 
 
@@ -45084,10 +45138,9 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
-        if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
-        if (this.units     ) this.units     .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.centerX) this.centerX.pushValueUpdates(parse);
+        if (this.centerY) this.centerY.pushValueUpdates(parse);
+        if (this.units  ) this.units  .pushValueUpdates(parse);
     }
 
 
@@ -45096,10 +45149,9 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.centerX   ) this.centerX   .invalidateInputs(parse, from, force);
-        if (this.centerY   ) this.centerY   .invalidateInputs(parse, from, force);
-        if (this.units     ) this.units     .invalidateInputs(parse, from, force);
-        if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
+        if (this.centerX) this.centerX.invalidateInputs(parse, from, force);
+        if (this.centerY) this.centerY.invalidateInputs(parse, from, force);
+        if (this.units  ) this.units  .invalidateInputs(parse, from, force);
     }
 
 
@@ -45108,10 +45160,9 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.centerX   ) this.centerX   .iterateLoop(parse);
-        if (this.centerY   ) this.centerY   .iterateLoop(parse);
-        if (this.units     ) this.units     .iterateLoop(parse);
-        if (this.showCenter) this.showCenter.iterateLoop(parse);
+        if (this.centerX) this.centerX.iterateLoop(parse);
+        if (this.centerY) this.centerY.iterateLoop(parse);
+        if (this.units  ) this.units  .iterateLoop(parse);
     }
 }
 
@@ -45119,22 +45170,9 @@ extends GOperator1
 class GResetTransform
 extends GOperator1
 {
-    showCenter = null;
-
-
-
     constructor(nodeId, options)
     {
         super(RESET_XFORM, nodeId, options);
-    }
-
-
-
-    reset()
-    {
-        super.reset();
-
-        this.showCenter = null;
     }
 
 
@@ -45144,8 +45182,6 @@ extends GOperator1
         const copy = new GResetTransform(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
 
         return copy;
     }
@@ -45158,30 +45194,27 @@ extends GOperator1
             return this;
 
 
-        const input      = await evalValue      (this.input,      parse);
-        const showCenter = await evalNumberValue(this.showCenter, parse);
+        const input = await evalValue(this.input, parse);
 
 
         if (input)
         {
             this.value = input;
 
-            // if (this.value)
-                this.value.nodeId = this.nodeId;
+            this.value.nodeId = this.nodeId;
         }
         else
             this.value = new NullValue();
 
         
-        await this.evalObjects(parse, {showCenter: showCenter});
+        await this.evalObjects(parse);
 
 
         const type = this.outputType();
 
         this.setUpdateValues(parse,
         [
-            ['type',       type      ],
-            ['showCenter', showCenter]
+            ['type', type]
         ]);
 
 
@@ -45198,9 +45231,6 @@ extends GOperator1
             && this.value.isValid())
         {
             this.value.objects = getValidObjects(this.input.value);
-
-
-            const showCenter = options.showCenter ? options.showCenter.value : 0;
 
 
             const bounds = getObjBounds(this.value.objects);
@@ -45221,13 +45251,6 @@ extends GOperator1
                     obj.resetSpace(bounds, singlePoint);
                 }
             }
-
-
-            if (showCenter)
-            {
-                const objects = [...this.value.objects]; // avoids infinite growth
-                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-            }
         }
         
         
@@ -45241,41 +45264,6 @@ extends GOperator1
         return this.value
         ? this.value.copy()
         : null;
-    }
-    
-    
-    
-    isValid()
-    {
-        return super.isValid()
-            && this.showCenter && this.showCenter.isValid();
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
-    }
-
-
-
-   invalidateInputs(parse, from, force)
-    {
-        super.invalidateInputs(parse, from, force);
-
-        if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
-    }
-
-
-
-    iterateLoop(parse)
-    {
-        super.iterateLoop(parse);
-
-        if (this.showCenter) this.showCenter.iterateLoop(parse);
     }
 }
 
@@ -46157,8 +46145,7 @@ extends GOperator1
 class GVector
 extends GOperator2
 {
-    transform  = null;
-    showCenter = null;
+    transform = null;
 
 
 
@@ -46173,8 +46160,7 @@ extends GOperator2
     {
         super.reset();
         
-        this.transform  = null;
-        this.showCenter = null;
+        this.transform = null;
     }
 
 
@@ -46185,8 +46171,7 @@ extends GOperator2
 
         copy.copyBase(this);
 
-        if (this.transform ) copy.transform  = this.transform .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+        if (this.transform) copy.transform = this.transform .copy();
 
         return copy;
     }
@@ -46199,10 +46184,9 @@ extends GOperator2
             return this;
 
 
-        const input0     = await evalPointValue (this.input0,     parse);
-        const input1     = await evalPointValue (this.input1,     parse);
-        const transform  = await evalNumberValue(this.transform,  parse);
-        const showCenter = await evalNumberValue(this.showCenter, parse);
+        const input0    = await evalPointValue (this.input0,    parse);
+        const input1    = await evalPointValue (this.input1,    parse);
+        const transform = await evalNumberValue(this.transform, parse);
 
 
         if (   input0 && input0.objects && input0.objects.length > 0 && input0.objects[0]
@@ -46215,8 +46199,7 @@ extends GOperator2
             await this.evalObjects(
                 parse, 
                 {
-                    transform:  transform,
-                    showCenter: showCenter
+                    transform: transform,
                 });
         }
         else
@@ -46227,8 +46210,7 @@ extends GOperator2
 
         this.setUpdateValues(parse,
         [
-            ['transform',  transform ],
-            ['showCenter', showCenter]
+            ['transform', transform]
         ]);
         
 
@@ -46278,16 +46260,6 @@ extends GOperator2
     
     
             this.value.objects = [point];
-
-
-            if (lengthv_(x, y) > 0)
-            {
-                if (options.showCenter.value > 0)
-                {
-                    const objects = [...this.value.objects]; // avoids infinite growth
-                    objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-                }
-            }
         }
 
 
@@ -46299,8 +46271,7 @@ extends GOperator2
     isValid()
     {
         return super.isValid()
-            && this.transform  && this.transform .isValid()
-            && this.showCenter && this.showCenter.isValid();
+            && this.transform && this.transform.isValid();
 }
 
 
@@ -46309,8 +46280,7 @@ extends GOperator2
     {
         super.pushValueUpdates(parse);
 
-        if (this.transform ) this.transform .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.transform) this.transform.pushValueUpdates(parse);
     }
 
 
@@ -46319,8 +46289,7 @@ extends GOperator2
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.transform ) this.transform .invalidateInputs(parse, from, force);
-        if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
+        if (this.transform) this.transform.invalidateInputs(parse, from, force);
     }
 
 
@@ -46329,8 +46298,7 @@ extends GOperator2
     {
         super.iterateLoop(parse);
 
-        if (this.transform ) this.transform .iterateLoop(parse);
-        if (this.showCenter) this.showCenter.iterateLoop(parse);
+        if (this.transform) this.transform.iterateLoop(parse);
     }
 }
 
@@ -46743,11 +46711,10 @@ extends GOperator1
 class GPointAlongPath
 extends GOperator1
 {
-    position   = null;
-    distance   = null;
-    offset     = null;
-    transform  = null;
-    showCenter = null;
+    position  = null;
+    distance  = null;
+    offset    = null;
+    transform = null;
     
     
     
@@ -46762,11 +46729,10 @@ extends GOperator1
     {
         super.reset();
 
-        this.position   = null;
-        this.distance   = null;
-        this.offset     = null;
-        this.transform  = null;
-        this.showCenter = null;
+        this.position  = null;
+        this.distance  = null;
+        this.offset    = null;
+        this.transform = null;
     }
 
 
@@ -46777,11 +46743,10 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.position  ) copy.position   = this.position  .copy();
-        if (this.distance  ) copy.distance   = this.distance  .copy();
-        if (this.offset    ) copy.offset     = this.offset    .copy();
-        if (this.transform ) copy.transform  = this.transform .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+        if (this.position ) copy.position  = this.position .copy();
+        if (this.distance ) copy.distance  = this.distance .copy();
+        if (this.offset   ) copy.offset    = this.offset   .copy();
+        if (this.transform) copy.transform = this.transform.copy();
 
         return copy;
     }
@@ -46794,12 +46759,11 @@ extends GOperator1
             return this;
 
 
-        const input      = await evalVectorPathValue(this.input,      parse);
-        const position   = await evalNumberValue    (this.position,   parse);
-        const distance   = await evalNumberValue    (this.distance,   parse);
-        const offset     = await evalNumberValue    (this.offset,     parse);
-        const transform  = await evalNumberValue    (this.transform,  parse);
-        const showCenter = await evalNumberValue    (this.showCenter, parse);
+        const input     = await evalVectorPathValue(this.input,     parse);
+        const position  = await evalNumberValue    (this.position,  parse);
+        const distance  = await evalNumberValue    (this.distance,  parse);
+        const offset    = await evalNumberValue    (this.offset,    parse);
+        const transform = await evalNumberValue    (this.transform, parse);
 
 
         let pt;
@@ -46844,18 +46808,16 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['position',   position  ],
-            ['distance',   distance  ],
-            ['offset',     offset    ],
-            ['transform',  transform ],
-            ['showCenter', showCenter]
+            ['position',  position ],
+            ['distance',  distance ],
+            ['offset',    offset   ],
+            ['transform', transform]
         ]);
         
 
         await this.evalObjects(parse,
         {
             transform:  transform,
-            showCenter: showCenter,
             tangent:    tangent,
             offset:     offset.value
         });
@@ -46913,13 +46875,6 @@ extends GOperator1
 
 
             this.value.objects = [point];
-
-
-            if (options.showCenter.value > 0)
-            {
-                const objects = [...this.value.objects]; // avoids infinite growth
-                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-            }
         }
 
 
@@ -46931,11 +46886,10 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.position   && this.position  .isValid()
-            && this.distance   && this.distance  .isValid()
-            && this.offset     && this.offset    .isValid()
-            && this.transform  && this.transform .isValid()
-            && this.showCenter && this.showCenter.isValid();
+            && this.position  && this.position .isValid()
+            && this.distance  && this.distance .isValid()
+            && this.offset    && this.offset   .isValid()
+            && this.transform && this.transform.isValid();
     }
 
 
@@ -46944,11 +46898,10 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.position  ) this.position  .pushValueUpdates(parse);
-        if (this.distance  ) this.distance  .pushValueUpdates(parse);
-        if (this.offset    ) this.offset    .pushValueUpdates(parse);
-        if (this.transform ) this.transform .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.position ) this.position .pushValueUpdates(parse);
+        if (this.distance ) this.distance .pushValueUpdates(parse);
+        if (this.offset   ) this.offset   .pushValueUpdates(parse);
+        if (this.transform) this.transform.pushValueUpdates(parse);
     }
 
 
@@ -46957,11 +46910,10 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.position  ) this.position  .invalidateInputs(parse, from, force);
-        if (this.distance  ) this.distance  .invalidateInputs(parse, from, force);
-        if (this.offset    ) this.offset    .invalidateInputs(parse, from, force);
-        if (this.transform ) this.transform .invalidateInputs(parse, from, force);
-        if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
+        if (this.position ) this.position .invalidateInputs(parse, from, force);
+        if (this.distance ) this.distance .invalidateInputs(parse, from, force);
+        if (this.offset   ) this.offset   .invalidateInputs(parse, from, force);
+        if (this.transform) this.transform.invalidateInputs(parse, from, force);
     }
 
 
@@ -46970,11 +46922,10 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.position  ) this.position  .iterateLoop(parse);
-        if (this.distance  ) this.distance  .iterateLoop(parse);
-        if (this.offset    ) this.offset    .iterateLoop(parse);
-        if (this.transform ) this.transform .iterateLoop(parse);
-        if (this.showCenter) this.showCenter.iterateLoop(parse);
+        if (this.position ) this.position .iterateLoop(parse);
+        if (this.distance ) this.distance .iterateLoop(parse);
+        if (this.offset   ) this.offset   .iterateLoop(parse);
+        if (this.transform) this.transform.iterateLoop(parse);
     }
 }
 
@@ -46982,9 +46933,8 @@ extends GOperator1
 class GClosestPointOnPath
 extends GOperator2
 {
-    constrain  = null;
-    transform  = null;
-    showCenter = null;
+    constrain = null;
+    transform = null;
     
     
     
@@ -46999,9 +46949,8 @@ extends GOperator2
     {
         super.reset();
 
-        this.constrain  = null;
-        this.transform  = null;
-        this.showCenter = null;
+        this.constrain = null;
+        this.transform = null;
     }
 
 
@@ -47012,9 +46961,8 @@ extends GOperator2
 
         copy.copyBase(this);
 
-        if (this.constrain ) copy.constrain  = this.constrain .copy();
-        if (this.transform ) copy.transform  = this.transform .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+        if (this.constrain) copy.constrain  = this.constrain.copy();
+        if (this.transform) copy.transform  = this.transform.copy();
 
         return copy;
     }
@@ -47027,12 +46975,11 @@ extends GOperator2
             return this;
 
 
-        const input0     = await evalVectorPathValue(this.input0,     parse);
-        const input1     = await evalPointValue     (this.input1,     parse);
+        const input0    = await evalVectorPathValue(this.input0,     parse);
+        const input1    = await evalPointValue     (this.input1,     parse);
 
-        const constrain  = await evalNumberValue    (this.constrain,  parse);
-        const transform  = await evalNumberValue    (this.transform,  parse);
-        const showCenter = await evalNumberValue    (this.showCenter, parse);
+        const constrain = await evalNumberValue    (this.constrain,  parse);
+        const transform = await evalNumberValue    (this.transform,  parse);
 
 
         let tangent = point_NaN;
@@ -47066,16 +47013,14 @@ extends GOperator2
         this.setUpdateValues(parse,
         [
             ['constrain',  constrain ],
-            ['transform',  transform ],
-            ['showCenter', showCenter]
+            ['transform',  transform ]
         ]);
         
 
         await this.evalObjects(parse,
         {
-            transform:  transform,
-            showCenter: showCenter,
-            tangent:    tangent
+            transform: transform,
+            tangent:   tangent
         });
 
 
@@ -47126,13 +47071,6 @@ extends GOperator2
             
             
             this.value.objects = [point];
-
-
-            if (options.showCenter.value > 0)
-            {
-                const objects = [...this.value.objects]; // avoids infinite growth
-                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-            }
         }
 
 
@@ -47144,8 +47082,7 @@ extends GOperator2
     isValid()
     {
         return super.isValid()
-            && this.transform  && this.transform .isValid()
-            && this.showCenter && this.showCenter.isValid();
+            && this.transform && this.transform.isValid();
     }
 
 
@@ -47154,8 +47091,7 @@ extends GOperator2
     {
         super.pushValueUpdates(parse);
 
-        if (this.transform ) this.transform .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.transform) this.transform.pushValueUpdates(parse);
     }
 
 
@@ -47164,8 +47100,7 @@ extends GOperator2
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.transform ) this.transform .invalidateInputs(parse, from, force);
-        if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
+        if (this.transform) this.transform.invalidateInputs(parse, from, force);
     }
 
 
@@ -47174,8 +47109,7 @@ extends GOperator2
     {
         super.iterateLoop(parse);
 
-        if (this.transform ) this.transform .iterateLoop(parse);
-        if (this.showCenter) this.showCenter.iterateLoop(parse);
+        if (this.transform) this.transform.iterateLoop(parse);
     }
 }
 
@@ -47332,9 +47266,8 @@ extends GOperator4
 class GInterpolatePoint
 extends GOperator2
 {
-    amount     = null;
-    transform  = null;
-    showCenter = null;
+    amount    = null;
+    transform = null;
 
 
     
@@ -47349,9 +47282,8 @@ extends GOperator2
     {
         super.reset();
 
-        this.amount     = null;
-        this.transform  = null;
-        this.showCenter = null;
+        this.amount    = null;
+        this.transform = null;
     }
 
 
@@ -47362,9 +47294,8 @@ extends GOperator2
 
         copy.copyBase(this);
 
-        if (this.amount    ) copy.amount     = this.amount    .copy();
-        if (this.transform ) copy.transform  = this.transform .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+        if (this.amount   ) copy.amount    = this.amount   .copy();
+        if (this.transform) copy.transform = this.transform.copy();
 
         return copy;
     }
@@ -47377,11 +47308,10 @@ extends GOperator2
             return this;
 
 
-        const input0     = await evalPointValue (this.input0,     parse);
-        const input1     = await evalPointValue (this.input1,     parse);
-        const amount     = await evalNumberValue(this.amount,     parse);
-        const transform  = await evalNumberValue(this.transform,  parse);
-        const showCenter = await evalNumberValue(this.showCenter, parse);
+        const input0    = await evalPointValue (this.input0,    parse);
+        const input1    = await evalPointValue (this.input1,    parse);
+        const amount    = await evalNumberValue(this.amount,    parse);
+        const transform = await evalNumberValue(this.transform, parse);
 
 
         if (   input0 && input0.isValid() && input0.objects  && input0.objects.length > 0
@@ -47418,13 +47348,6 @@ extends GOperator2
             this.value.objects[0].sp0 = sp0;
             this.value.objects[0].sp1 = sp1;
             this.value.objects[0].sp2 = sp2;
-
-
-            if (showCenter.value > 0)
-            {
-                const objects = [...this.value.objects]; // avoids infinite growth
-                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-            }
         }
         else
             this.value = PointValue.NaN.copy();
@@ -47432,9 +47355,8 @@ extends GOperator2
 
         this.setUpdateValues(parse,
         [
-            ['amount',     amount    ],
-            ['transform',  transform ],
-            ['showCenter', showCenter]
+            ['amount',    amount   ],
+            ['transform', transform]
         ]);
         
 
@@ -47448,9 +47370,8 @@ extends GOperator2
     isValid()
     {
         return super.isValid()
-            && this.amount     && this.amount    .isValid()
-            && this.transform  && this.transform .isValid()
-            && this.showCenter && this.showCenter.isValid();
+            && this.amount    && this.amount   .isValid()
+            && this.transform && this.transform.isValid();
     }
 
 
@@ -47459,9 +47380,8 @@ extends GOperator2
     {
         super.pushValueUpdates(parse);
 
-        if (this.amount    ) this.amount    .pushValueUpdates(parse);
-        if (this.transform ) this.transform .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.amount   ) this.amount   .pushValueUpdates(parse);
+        if (this.transform) this.transform.pushValueUpdates(parse);
     }
 
 
@@ -47470,9 +47390,8 @@ extends GOperator2
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.amount    ) this.amount    .invalidateInputs(parse, from, force);
-        if (this.transform ) this.transform .invalidateInputs(parse, from, force);
-        if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
+        if (this.amount   ) this.amount   .invalidateInputs(parse, from, force);
+        if (this.transform) this.transform.invalidateInputs(parse, from, force);
     }
 
 
@@ -47481,9 +47400,8 @@ extends GOperator2
     {
         super.iterateLoop(parse);
 
-        if (this.amount    ) this.amount    .iterateLoop(parse);
-        if (this.transform ) this.transform .iterateLoop(parse);
-        if (this.showCenter) this.showCenter.iterateLoop(parse);
+        if (this.amount   ) this.amount   .iterateLoop(parse);
+        if (this.transform) this.transform.iterateLoop(parse);
     }
 }
 
@@ -47804,9 +47722,8 @@ extends GShape
 class GPlace
 extends GOperator1
 {
-    position   = null;
-    transform  = null;
-    showCenter = null;
+    position  = null;
+    transform = null;
     
     
 
@@ -47821,9 +47738,8 @@ extends GOperator1
     {
         super.reset();
         
-        this.position   = null;
-        this.transform  = null;
-        this.showCenter = null;
+        this.position  = null;
+        this.transform = null;
     }
 
 
@@ -47834,9 +47750,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.position  ) copy.position   = this.position  .copy();
-        if (this.transform ) copy.transform  = this.transform .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+        if (this.position ) copy.position  = this.position .copy();
+        if (this.transform) copy.transform = this.transform.copy();
 
         return copy;
     }
@@ -47849,10 +47764,9 @@ extends GOperator1
             return this;
 
             
-        const input      = await evalValue      (this.input,      parse);
-        const position   = await evalPointValue (this.position,   parse);
-        const transform  = await evalNumberValue(this.transform,  parse);
-        const showCenter = await evalNumberValue(this.showCenter, parse);
+        const input     = await evalValue      (this.input,     parse);
+        const position  = await evalPointValue (this.position,  parse);
+        const transform = await evalNumberValue(this.transform, parse);
 
         if (   input
             && position)
@@ -47882,7 +47796,6 @@ extends GOperator1
                 parse, 
                 {
                     transform:  transform,
-                    showCenter: showCenter,
                     sp0:        p0,
                     sp1:        p1,
                     sp2:        p2
@@ -47892,9 +47805,8 @@ extends GOperator1
         
         this.setUpdateValues(parse,
         [
-            ['position',   position  ],
-            ['transform',  transform ],
-            ['showCenter', showCenter]
+            ['position',  position ],
+            ['transform', transform]
         ]);
 
 
@@ -47953,13 +47865,6 @@ extends GOperator1
                     obj.applyTransform(xform, true);
                 }
             }
-
-
-            if (options.showCenter.value > 0)
-            {
-                const objects = [...this.value.objects]; // avoids infinite growth
-                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-            }
         }
         
         
@@ -47980,9 +47885,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.position   && this.position  .isValid()
-            && this.transform  && this.transform .isValid()
-            && this.showCenter && this.showCenter.isValid();
+            && this.position  && this.position .isValid()
+            && this.transform && this.transform.isValid();
     }
 
 
@@ -47991,9 +47895,8 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.position  ) this.position  .pushValueUpdates(parse);
-        if (this.transform ) this.transform .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.position ) this.position .pushValueUpdates(parse);
+        if (this.transform) this.transform.pushValueUpdates(parse);
     }
 
 
@@ -48002,9 +47905,8 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.position  ) this.position  .invalidateInputs(parse, from, force);
-        if (this.transform ) this.transform .invalidateInputs(parse, from, force);
-        if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
+        if (this.position ) this.position .invalidateInputs(parse, from, force);
+        if (this.transform) this.transform.invalidateInputs(parse, from, force);
     }
 
 
@@ -48013,9 +47915,8 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.position  ) this.position  .iterateLoop(parse);
-        if (this.transform ) this.transform .iterateLoop(parse);
-        if (this.showCenter) this.showCenter.iterateLoop(parse);
+        if (this.position ) this.position .iterateLoop(parse);
+        if (this.transform) this.transform.iterateLoop(parse);
     }
 }
 
@@ -48689,37 +48590,43 @@ function genRequest(request, save)
         }
 
 
-        if (parse.settings.showTransformPoints)
+        for (const node of parse.parsedNodes)
         {
-            for (const node of parse.parsedNodes)
+            if (   node.options.active === true
+                && node.value)
             {
-                if (   node.options.active === true
-                    && node.value)
+                for (const obj of node.value.objects)
                 {
-                    for (const obj of node.value.objects)
+                    if (obj.showCenter)
                     {
-                        if (  !obj.isDeco
-                            && obj.xp0
-                            && obj.xp1
-                            && obj.xp2)
-                        {
-                            const xp0 = clone(obj.xp0);
-                            const xp1 = clone(obj.xp1);
-                            const xp2 = clone(obj.xp2);
-                            const xp3 = addv(xp2, subv(xp1, xp0));
+                        genPushUpdateObject(
+                            parse, 
+                            addObjectCenter(node, obj));
+                    }
 
-                            genPushUpdateObject(
-                                parse, 
-                                createDecoPoly(
-                                    node,
-                                    obj.sp0,
-                                    [xp0, xp2, xp3, xp1],
-                                    true,
-                                    '1, 2',
-                                    [12, 140, 233],
-                                    XFORM_SUFFIX,
-                                    false));
-                        }
+
+                    if (    parse.settings.showTransformPoints
+                        && !obj.isDeco
+                        &&  obj.xp0
+                        &&  obj.xp1
+                        &&  obj.xp2)
+                    {
+                        const xp0 = clone(obj.xp0);
+                        const xp1 = clone(obj.xp1);
+                        const xp2 = clone(obj.xp2);
+                        const xp3 = addv(xp2, subv(xp1, xp0));
+
+                        genPushUpdateObject(
+                            parse, 
+                            createDecoPoly(
+                                node,
+                                obj.sp0,
+                                [xp0, xp2, xp3, xp1],
+                                true,
+                                '1, 2',
+                                [12, 140, 233],
+                                XFORM_SUFFIX,
+                                false));
                     }
                 }
             }
@@ -55454,7 +55361,6 @@ function genParseMove(parse)
     move.x           = genParse(parse);
     move.y           = genParse(parse);
     move.affectSpace = genParse(parse);
-    move.showCenter  = genParse(parse);
 
 
     parse.inParam = false;
@@ -55502,7 +55408,6 @@ function genParseRotate(parse)
         rotate.input = genParse(parse);
 
     rotate.angle       = genParse(parse);
-    rotate.showCenter  = genParse(parse);
     rotate.affectSpace = genParse(parse);
 
     
@@ -55554,7 +55459,6 @@ function genParseScale(parse)
     scale.scaleY        = genParse(parse);
     scale.affectCorners = genParse(parse);
     scale.affectStyle   = genParse(parse);
-    scale.showCenter    = genParse(parse);
     scale.affectSpace   = genParse(parse);
 
     
@@ -55604,7 +55508,6 @@ function genParseSkew(parse)
 
     skew.skewX       = genParse(parse);
     skew.skewY       = genParse(parse);
-    skew.showCenter  = genParse(parse);
     skew.affectSpace = genParse(parse);
 
 
@@ -55614,6 +55517,50 @@ function genParseSkew(parse)
 
     genParseNodeEnd(parse, skew);
     return skew;
+}
+
+
+
+function genParseShowCenter(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const showCenter = new GShowCenter(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(showCenter, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, showCenter);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        showCenter.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, showCenter);
+    return showCenter;
 }
 
 
@@ -55655,7 +55602,6 @@ function genParseCenter(parse)
     center.centerX    = genParse(parse);
     center.centerY    = genParse(parse);
     center.units      = genParse(parse);
-    center.showCenter = genParse(parse);
 
 
     parse.inParam = false;
@@ -55701,8 +55647,6 @@ function genParseResetTransform(parse)
 
     if (nInputs == 1)
         reset.input = genParse(parse);
-
-    reset.showCenter = genParse(parse);
 
 
     parse.nTab--;
@@ -55846,7 +55790,6 @@ function genParseVector(parse)
 
 
     vector.transform  = genParse(parse);
-    vector.showCenter = genParse(parse);
 
 
     parse.nTab--;
@@ -56099,7 +56042,6 @@ function genParseInterpolatePoint(parse)
 
     lerp.amount     = genParse(parse);
     lerp.transform  = genParse(parse);
-    lerp.showCenter = genParse(parse);
 
 
     parse.nTab--;
@@ -56150,7 +56092,6 @@ function genParsePointAlongPath(parse)
     pap.distance   = genParse(parse);
     pap.offset     = genParse(parse);
     pap.transform  = genParse(parse);
-    pap.showCenter = genParse(parse);
 
 
     parse.nTab--;
@@ -56206,7 +56147,6 @@ function genParseClosestPointOnPath(parse)
 
     cpop.constrain  = genParse(parse);
     cpop.transform  = genParse(parse);
-    cpop.showCenter = genParse(parse);
 
 
     parse.nTab--;
@@ -56343,7 +56283,6 @@ function genParsePlace(parse)
 
     place.position   = genParse(parse);
     place.transform  = genParse(parse);
-    place.showCenter = genParse(parse);
 
 
     parse.inParam = false;
@@ -57955,6 +57894,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SCALE                  ) result = genParseScale             (parse);
     else if (parse.next == SKEW                   ) result = genParseSkew              (parse);
 
+    else if (parse.next == SHOW_CENTER            ) result = genParseShowCenter        (parse);
     else if (parse.next == SET_CENTER             ) result = genParseCenter            (parse);
     else if (parse.next == RESET_XFORM            ) result = genParseResetTransform    (parse);
 

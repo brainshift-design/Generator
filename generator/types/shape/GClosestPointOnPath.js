@@ -1,9 +1,8 @@
 class GClosestPointOnPath
 extends GOperator2
 {
-    constrain  = null;
-    transform  = null;
-    showCenter = null;
+    constrain = null;
+    transform = null;
     
     
     
@@ -18,9 +17,8 @@ extends GOperator2
     {
         super.reset();
 
-        this.constrain  = null;
-        this.transform  = null;
-        this.showCenter = null;
+        this.constrain = null;
+        this.transform = null;
     }
 
 
@@ -31,9 +29,8 @@ extends GOperator2
 
         copy.copyBase(this);
 
-        if (this.constrain ) copy.constrain  = this.constrain .copy();
-        if (this.transform ) copy.transform  = this.transform .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+        if (this.constrain) copy.constrain  = this.constrain.copy();
+        if (this.transform) copy.transform  = this.transform.copy();
 
         return copy;
     }
@@ -46,12 +43,11 @@ extends GOperator2
             return this;
 
 
-        const input0     = await evalVectorPathValue(this.input0,     parse);
-        const input1     = await evalPointValue     (this.input1,     parse);
+        const input0    = await evalVectorPathValue(this.input0,     parse);
+        const input1    = await evalPointValue     (this.input1,     parse);
 
-        const constrain  = await evalNumberValue    (this.constrain,  parse);
-        const transform  = await evalNumberValue    (this.transform,  parse);
-        const showCenter = await evalNumberValue    (this.showCenter, parse);
+        const constrain = await evalNumberValue    (this.constrain,  parse);
+        const transform = await evalNumberValue    (this.transform,  parse);
 
 
         let tangent = point_NaN;
@@ -85,16 +81,14 @@ extends GOperator2
         this.setUpdateValues(parse,
         [
             ['constrain',  constrain ],
-            ['transform',  transform ],
-            ['showCenter', showCenter]
+            ['transform',  transform ]
         ]);
         
 
         await this.evalObjects(parse,
         {
-            transform:  transform,
-            showCenter: showCenter,
-            tangent:    tangent
+            transform: transform,
+            tangent:   tangent
         });
 
 
@@ -145,13 +139,6 @@ extends GOperator2
             
             
             this.value.objects = [point];
-
-
-            if (options.showCenter.value > 0)
-            {
-                const objects = [...this.value.objects]; // avoids infinite growth
-                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-            }
         }
 
 
@@ -163,8 +150,7 @@ extends GOperator2
     isValid()
     {
         return super.isValid()
-            && this.transform  && this.transform .isValid()
-            && this.showCenter && this.showCenter.isValid();
+            && this.transform && this.transform.isValid();
     }
 
 
@@ -173,8 +159,7 @@ extends GOperator2
     {
         super.pushValueUpdates(parse);
 
-        if (this.transform ) this.transform .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.transform) this.transform.pushValueUpdates(parse);
     }
 
 
@@ -183,8 +168,7 @@ extends GOperator2
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.transform ) this.transform .invalidateInputs(parse, from, force);
-        if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
+        if (this.transform) this.transform.invalidateInputs(parse, from, force);
     }
 
 
@@ -193,7 +177,6 @@ extends GOperator2
     {
         super.iterateLoop(parse);
 
-        if (this.transform ) this.transform .iterateLoop(parse);
-        if (this.showCenter) this.showCenter.iterateLoop(parse);
+        if (this.transform) this.transform.iterateLoop(parse);
     }
 }

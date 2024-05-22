@@ -3,11 +3,9 @@ extends OperatorBase
 {
     paramPosition;
     paramTransform;
-    paramShowCenter;
 
 
     menuTransform;
-    menuShowCenter;
 
 
 
@@ -25,15 +23,12 @@ extends OperatorBase
 
         this.addParam(this.paramPosition   = new  PointParam('position',   'position',    true,  true, true));
         this.addParam(this.paramTransform  = new NumberParam('transform',  'transform',   true,  true, true, 1, 0, 1));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true,  true, true, 0, 0, 1));
 
         this.paramPosition.showValue = false;
 
         this.paramTransform .divider = 0.67;
-        this.paramShowCenter.divider = 0.67;
 
         this.menuTransform  = createBoolMenu(this.paramTransform );
-        this.menuShowCenter = createBoolMenu(this.paramShowCenter);
 
 
         this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
@@ -64,7 +59,6 @@ extends OperatorBase
 
         request.push(...this.node.paramPosition  .genRequest(gen));
         request.push(...this.node.paramTransform .genRequest(gen));
-        request.push(...this.node.paramShowCenter.genRequest(gen));
 
         
         gen.scope.pop();
@@ -80,10 +74,8 @@ extends OperatorBase
     {
         this.paramPosition  .enableControlText(true);
         this.paramTransform .enableControlText(true);
-        this.paramShowCenter.enableControlText(true);
 
         updateParamConditionText(this.paramTransform,  this.paramTransform.isUnknown(),  true,  1);
-        updateParamConditionText(this.paramShowCenter, this.paramShowCenter.isUnknown(), false, 1);
 
         this.updateParamControls();
     }

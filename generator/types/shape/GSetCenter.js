@@ -1,10 +1,9 @@
 class GSetCenter
 extends GOperator1
 {
-    centerX    = null;
-    centerY    = null;
-    units      = null;
-    showCenter = null;
+    centerX = null;
+    centerY = null;
+    units   = null;
 
 
 
@@ -19,10 +18,9 @@ extends GOperator1
     {
         super.reset();
 
-        this.centerX    = null;
-        this.centerY    = null;
-        this.units      = null;
-        this.showCenter = null;
+        this.centerX = null;
+        this.centerY = null;
+        this.units   = null;
     }
 
 
@@ -33,10 +31,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.centerX   ) copy.centerX    = this.centerX   .copy();
-        if (this.centerY   ) copy.centerY    = this.centerY   .copy();
-        if (this.units     ) copy.units      = this.units     .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+        if (this.centerX) copy.centerX = this.centerX.copy();
+        if (this.centerY) copy.centerY = this.centerY.copy();
+        if (this.units  ) copy.units   = this.units  .copy();
 
         return copy;
     }
@@ -49,11 +46,10 @@ extends GOperator1
             return this;
 
             
-        const input      = await evalValue      (this.input,      parse);
-        const centerX    = await evalNumberValue(this.centerX,    parse);
-        const centerY    = await evalNumberValue(this.centerY,    parse);
-        const units      = await evalNumberValue(this.units,      parse);
-        const showCenter = await evalNumberValue(this.showCenter, parse);
+        const input   = await evalValue      (this.input,   parse);
+        const centerX = await evalNumberValue(this.centerX, parse);
+        const centerY = await evalNumberValue(this.centerY, parse);
+        const units   = await evalNumberValue(this.units,   parse);
 
 
         if (this.input)
@@ -74,8 +70,7 @@ extends GOperator1
             {
                 centerX:    centerX, 
                 centerY:    centerY,
-                units:      units,
-                showCenter: showCenter
+                units:      units
             });
 
 
@@ -83,11 +78,10 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type',       type      ],
-            ['centerX',    centerX   ],
-            ['centerY',    centerY   ],
-            ['units',      units     ],
-            ['showCenter', showCenter]
+            ['type',    type   ],
+            ['centerX', centerX],
+            ['centerY', centerY],
+            ['units',   units  ]
         ]);
 
 
@@ -106,16 +100,16 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input.value);
 
             
-            const centerX     = options.centerX    ? options.centerX   .value : 0;
-            const centerY     = options.centerY    ? options.centerY   .value : 0;
-            const units       = options.units      ? options.units     .value : 0;
-            const showCenter  = options.showCenter ? options.showCenter.value : 0;
+            const centerX = options.centerX    ? options.centerX   .value : 0;
+            const centerY = options.centerY    ? options.centerY   .value : 0;
+            const units   = options.units      ? options.units     .value : 0;
      
-            const cx          = units == 0 ? centerX/100 : centerX;
-            const cy          = units == 0 ? centerY/100 : centerY;
+            const cx      = units == 0 ? centerX/100 : centerX;
+            const cy      = units == 0 ? centerY/100 : centerY;
 
 
-            const bounds      = getObjBounds(this.value.objects);
+            const bounds  = getObjBounds(this.value.objects);
+
 
             const singlePoint =  
                    this.value.objects.length  == 1 
@@ -129,13 +123,6 @@ extends GOperator1
 
                 if (this.options.enabled)
                     obj.resetSpace(bounds, singlePoint, cx, cy, units);
-            }
-
-
-            if (showCenter > 0)
-            {
-                const objects = [...this.value.objects]; // avoids infinite growth
-                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
             }
         }
         
@@ -157,10 +144,9 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.centerX    && this.centerX   .isValid()
-            && this.centerY    && this.centerY   .isValid()
-            && this.units      && this.units     .isValid()
-            && this.showCenter && this.showCenter.isValid();
+            && this.centerX && this.centerX.isValid()
+            && this.centerY && this.centerY.isValid()
+            && this.units   && this.units  .isValid();
     }
 
 
@@ -169,10 +155,9 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
-        if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
-        if (this.units     ) this.units     .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.centerX) this.centerX.pushValueUpdates(parse);
+        if (this.centerY) this.centerY.pushValueUpdates(parse);
+        if (this.units  ) this.units  .pushValueUpdates(parse);
     }
 
 
@@ -181,10 +166,9 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.centerX   ) this.centerX   .invalidateInputs(parse, from, force);
-        if (this.centerY   ) this.centerY   .invalidateInputs(parse, from, force);
-        if (this.units     ) this.units     .invalidateInputs(parse, from, force);
-        if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
+        if (this.centerX) this.centerX.invalidateInputs(parse, from, force);
+        if (this.centerY) this.centerY.invalidateInputs(parse, from, force);
+        if (this.units  ) this.units  .invalidateInputs(parse, from, force);
     }
 
 
@@ -193,9 +177,8 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.centerX   ) this.centerX   .iterateLoop(parse);
-        if (this.centerY   ) this.centerY   .iterateLoop(parse);
-        if (this.units     ) this.units     .iterateLoop(parse);
-        if (this.showCenter) this.showCenter.iterateLoop(parse);
+        if (this.centerX) this.centerX.iterateLoop(parse);
+        if (this.centerY) this.centerY.iterateLoop(parse);
+        if (this.units  ) this.units  .iterateLoop(parse);
     }
 }

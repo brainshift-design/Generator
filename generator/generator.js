@@ -119,37 +119,43 @@ function genRequest(request, save)
         }
 
 
-        if (parse.settings.showTransformPoints)
+        for (const node of parse.parsedNodes)
         {
-            for (const node of parse.parsedNodes)
+            if (   node.options.active === true
+                && node.value)
             {
-                if (   node.options.active === true
-                    && node.value)
+                for (const obj of node.value.objects)
                 {
-                    for (const obj of node.value.objects)
+                    if (obj.showCenter)
                     {
-                        if (  !obj.isDeco
-                            && obj.xp0
-                            && obj.xp1
-                            && obj.xp2)
-                        {
-                            const xp0 = clone(obj.xp0);
-                            const xp1 = clone(obj.xp1);
-                            const xp2 = clone(obj.xp2);
-                            const xp3 = addv(xp2, subv(xp1, xp0));
+                        genPushUpdateObject(
+                            parse, 
+                            addObjectCenter(node, obj));
+                    }
 
-                            genPushUpdateObject(
-                                parse, 
-                                createDecoPoly(
-                                    node,
-                                    obj.sp0,
-                                    [xp0, xp2, xp3, xp1],
-                                    true,
-                                    '1, 2',
-                                    [12, 140, 233],
-                                    XFORM_SUFFIX,
-                                    false));
-                        }
+
+                    if (    parse.settings.showTransformPoints
+                        && !obj.isDeco
+                        &&  obj.xp0
+                        &&  obj.xp1
+                        &&  obj.xp2)
+                    {
+                        const xp0 = clone(obj.xp0);
+                        const xp1 = clone(obj.xp1);
+                        const xp2 = clone(obj.xp2);
+                        const xp3 = addv(xp2, subv(xp1, xp0));
+
+                        genPushUpdateObject(
+                            parse, 
+                            createDecoPoly(
+                                node,
+                                obj.sp0,
+                                [xp0, xp2, xp3, xp1],
+                                true,
+                                '1, 2',
+                                [12, 140, 233],
+                                XFORM_SUFFIX,
+                                false));
                     }
                 }
             }

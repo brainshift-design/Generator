@@ -1,22 +1,9 @@
 class GResetTransform
 extends GOperator1
 {
-    showCenter = null;
-
-
-
     constructor(nodeId, options)
     {
         super(RESET_XFORM, nodeId, options);
-    }
-
-
-
-    reset()
-    {
-        super.reset();
-
-        this.showCenter = null;
     }
 
 
@@ -26,8 +13,6 @@ extends GOperator1
         const copy = new GResetTransform(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
 
         return copy;
     }
@@ -40,30 +25,27 @@ extends GOperator1
             return this;
 
 
-        const input      = await evalValue      (this.input,      parse);
-        const showCenter = await evalNumberValue(this.showCenter, parse);
+        const input = await evalValue(this.input, parse);
 
 
         if (input)
         {
             this.value = input;
 
-            // if (this.value)
-                this.value.nodeId = this.nodeId;
+            this.value.nodeId = this.nodeId;
         }
         else
             this.value = new NullValue();
 
         
-        await this.evalObjects(parse, {showCenter: showCenter});
+        await this.evalObjects(parse);
 
 
         const type = this.outputType();
 
         this.setUpdateValues(parse,
         [
-            ['type',       type      ],
-            ['showCenter', showCenter]
+            ['type', type]
         ]);
 
 
@@ -80,9 +62,6 @@ extends GOperator1
             && this.value.isValid())
         {
             this.value.objects = getValidObjects(this.input.value);
-
-
-            const showCenter = options.showCenter ? options.showCenter.value : 0;
 
 
             const bounds = getObjBounds(this.value.objects);
@@ -103,13 +82,6 @@ extends GOperator1
                     obj.resetSpace(bounds, singlePoint);
                 }
             }
-
-
-            if (showCenter)
-            {
-                const objects = [...this.value.objects]; // avoids infinite growth
-                objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-            }
         }
         
         
@@ -123,40 +95,5 @@ extends GOperator1
         return this.value
         ? this.value.copy()
         : null;
-    }
-    
-    
-    
-    isValid()
-    {
-        return super.isValid()
-            && this.showCenter && this.showCenter.isValid();
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
-    }
-
-
-
-   invalidateInputs(parse, from, force)
-    {
-        super.invalidateInputs(parse, from, force);
-
-        if (this.showCenter) this.showCenter.invalidateInputs(parse, from, force);
-    }
-
-
-
-    iterateLoop(parse)
-    {
-        super.iterateLoop(parse);
-
-        if (this.showCenter) this.showCenter.iterateLoop(parse);
     }
 }

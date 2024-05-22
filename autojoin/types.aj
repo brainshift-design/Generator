@@ -259,6 +259,7 @@
 ../generator/types/shape/GRotate.js
 ../generator/types/shape/GScale.js
 ../generator/types/shape/GSkew.js
+../generator/types/shape/GShowCenter.js
 ../generator/types/shape/GSetCenter.js
 ../generator/types/shape/GResetTransform.js
 

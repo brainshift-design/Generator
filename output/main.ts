@@ -1545,6 +1545,7 @@ const ROTATE                = 'ROT';
 const SCALE                 = 'SCALE';
 const SKEW                  = 'SKEW';
 
+const SHOW_CENTER           = 'SHOWCNTR';
 const SET_CENTER            = 'SCENTR';
 const RESET_XFORM           = 'RSTX';
 
@@ -1673,6 +1674,7 @@ const SHAPE_TYPES =
     
     MOVE,
     ...AFFINE_TYPES,
+    SHOW_CENTER,
     SET_CENTER,
     RESET_XFORM,
         

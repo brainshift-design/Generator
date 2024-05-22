@@ -46,7 +46,6 @@ extends OpAffine
             request.push(...pushInputOrParam(input, gen));
 
         request.push(...this.node.paramAngle      .genRequest(gen));
-        request.push(...this.node.paramShowCenter .genRequest(gen));
         request.push(...this.node.paramAffectSpace.genRequest(gen));
 
         
@@ -55,17 +54,5 @@ extends OpAffine
 
 
         return request;
-    }
-
-
-
-    updateParams()
-    {
-        super.updateParams();
-
-        // updateParamConditionText(this.paramAffectSpace, this.paramAffectSpace.isUnknown(), true,  1);
-        updateParamConditionText(this.paramShowCenter,  this.paramShowCenter .isUnknown(), false, 1);
-
-        this.updateParamControls();
     }
 }

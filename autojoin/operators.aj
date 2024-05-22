@@ -221,6 +221,7 @@
 ../operators/shape/OpRotate.js
 ../operators/shape/OpScale.js
 ../operators/shape/OpSkew.js
+../operators/shape/OpShowCenter.js
 ../operators/shape/OpSetCenter.js
 ../operators/shape/OpResetTransform.js
 

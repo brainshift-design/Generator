@@ -5,11 +5,9 @@ extends OpShapeBase
     paramDistance;
     paramOffset;
     paramTransform;
-    paramShowCenter;
 
 
     menuTransform;
-    menuShowCenter;
 
 
 
@@ -26,17 +24,14 @@ extends OpShapeBase
         this.addParam(this.paramDistance   = new NumberParam('distance',   'distance',    true, true, true, 0, 0));
         this.addParam(this.paramOffset     = new NumberParam('offset',     'offset',      true, true, true, 0));
         this.addParam(this.paramTransform  = new NumberParam('transform',  'transform',   true, true, true, 1, 0, 1));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
 
 
         this.paramPosition  .divider = 0.47;
         this.paramDistance  .divider = 0.53;
         this.paramOffset    .divider = 0.53;
         this.paramTransform .divider = 0.675;
-        this.paramShowCenter.divider = 0.675;
 
         this.menuTransform  = createBoolMenu(this.paramTransform );
-        this.menuShowCenter = createBoolMenu(this.paramShowCenter);
     }
 
 
@@ -64,7 +59,6 @@ extends OpShapeBase
         request.push(...this.node.paramDistance  .genRequest(gen));
         request.push(...this.node.paramOffset    .genRequest(gen));
         request.push(...this.node.paramTransform .genRequest(gen));
-        request.push(...this.node.paramShowCenter.genRequest(gen));
 
 
         gen.scope.pop();
@@ -81,7 +75,6 @@ extends OpShapeBase
         this.paramDistance  .enableControlText(true, this.paramDistance  .isUnknown());
         this.paramOffset    .enableControlText(true, this.paramOffset    .isUnknown());
         this.paramTransform .enableControlText(true, this.paramTransform .isUnknown());
-        this.paramShowCenter.enableControlText(true, this.paramShowCenter.isUnknown());
 
 
         if (this.paramPosition.value.value == 0)
@@ -99,7 +92,6 @@ extends OpShapeBase
 
         
         updateParamConditionText(this.paramTransform,  this.paramTransform.isUnknown(),  true,  1);
-        updateParamConditionText(this.paramShowCenter, this.paramShowCenter.isUnknown(), false, 1);
 
 
         this.updateParamControls();

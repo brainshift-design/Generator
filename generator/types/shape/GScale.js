@@ -56,7 +56,7 @@ extends GAffine
         let   affectStyle   = await evalNumberValue(this.affectStyle,   parse);
 
 
-        const [showCenter, affectSpace] = await this.evalBaseParams(parse);
+        const [affectSpace] = await this.evalBaseParams(parse);
 
 
         if (input)
@@ -77,7 +77,6 @@ extends GAffine
             {
                 scaleX:        scaleX, 
                 scaleY:        scaleY, 
-                showCenter:    showCenter,
                 affectSpace:   affectSpace,
                 affectCorners: affectCorners,
                 affectStyle:   affectStyle
@@ -98,7 +97,6 @@ extends GAffine
             ['type',          this.outputType()],
             ['scaleX',        scaleX           ],
             ['scaleY',        scaleY           ],
-            ['showCenter',    showCenter       ],
             ['affectSpace',   affectSpace      ],
             ['affectCorners', affectCorners    ],
             ['affectStyle',   affectStyle      ],

@@ -48,7 +48,7 @@ extends GAffine
         let   skewY = await evalNumberValue(this.skewY, parse);
 
 
-        const [showCenter, affectSpace] = await this.evalBaseParams(parse);
+        const [affectSpace] = await this.evalBaseParams(parse);
 
 
         if (input)
@@ -69,7 +69,6 @@ extends GAffine
             {
                 skewX:       skewX, 
                 skewY:       skewY, 
-                showCenter:  showCenter,
                 affectSpace: affectSpace
             });
 
@@ -88,7 +87,6 @@ extends GAffine
             ['type',        this.outputType()],
             ['skewX',       skewX            ],
             ['skewY',       skewY            ],
-            ['showCenter',  showCenter       ],
             ['affectSpace', affectSpace      ],
             ['bounds',      bounds           ]
         ]);

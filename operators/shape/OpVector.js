@@ -2,11 +2,9 @@ class   OpVector
 extends OpShapeBase
 {
     paramTransform;
-    paramShowCenter;
 
 
     menuTransform;
-    menuShowCenter;
 
 
 
@@ -22,8 +20,7 @@ extends OpShapeBase
 
         this.addOutput(new Output([POINT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramTransform  = new NumberParam('transform',  'transform',   true,  true, true, 1, 0, 1));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true,  true, true, 0, 0, 1));
+        this.addParam(this.paramTransform = new NumberParam('transform',  'transform',   true,  true, true, 1, 0, 1));
 
         
         this.setAllParamDividers(0.66);
@@ -60,7 +57,6 @@ extends OpShapeBase
 
 
         request.push(...this.node.paramTransform .genRequest(gen));
-        request.push(...this.node.paramShowCenter.genRequest(gen));
 
         
         gen.scope.pop();
@@ -73,11 +69,9 @@ extends OpShapeBase
 
     updateParams()
     {
-        this.paramTransform .enableControlText(true);
-        this.paramShowCenter.enableControlText(true);
+        this.paramTransform.enableControlText(true);
 
-        updateParamConditionText(this.paramTransform,  this.paramTransform.isUnknown(),  true,  1);
-        updateParamConditionText(this.paramShowCenter, this.paramShowCenter.isUnknown(), false, 1);
+        updateParamConditionText(this.paramTransform, this.paramTransform.isUnknown(), true, 1);
 
         this.updateParamControls();
     }

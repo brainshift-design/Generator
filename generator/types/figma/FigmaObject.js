@@ -14,6 +14,8 @@ class FigmaObject
     feedback   = false;
 
 
+    showCenter = false;
+    
     xform;
 
     xp0   = null; //  xp0 ------- xp1 
@@ -50,7 +52,9 @@ class FigmaObject
         
         this.feedback     = base.feedback;
         this.retain       = base.retain;
-        
+
+        this.showCenter   = base.showCenter;
+
         this.xform        = clone(base.xform);
 
         this.xp0          = clone(base.xp0);
@@ -412,7 +416,7 @@ function getObjBounds(objects)
 
 
 
-function addObjectCenter(node, obj, zoom)
+function addObjectCenter(node, obj)
 {
     const sp0 = point(
         obj.sp0.x /*+ 0.5*/, 
@@ -431,7 +435,7 @@ function addObjectCenter(node, obj, zoom)
             CENTER_SUFFIX,
             true);
 
-    node.value.objects.push(center);
+    //node.value.objects.push(center);
 
     return center;
 }

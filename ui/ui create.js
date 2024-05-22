@@ -179,6 +179,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case SCALE:                   node = new OpScale();              break;
         case SKEW:                    node = new OpSkew();               break;
 
+        case SHOW_CENTER:             node = new OpShowCenter();         break;
         case SET_CENTER:              node = new OpSetCenter();          break;
         case RESET_XFORM:             node = new OpResetTransform();     break;
         

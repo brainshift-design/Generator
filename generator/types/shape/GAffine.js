@@ -1,7 +1,6 @@
 class GAffine
 extends GOperator1
 {
-    showCenter  = null;
     affectSpace = null;
 
 
@@ -17,7 +16,6 @@ extends GOperator1
     {
         super.reset();
 
-        this.showCenter  = null;
         this.affectSpace = null;
     }
 
@@ -27,7 +25,6 @@ extends GOperator1
     {
         super.copyBase(base);
 
-        if (base.showCenter ) this.showCenter  = base.showCenter .copy();
         if (base.affectSpace) this.affectSpace = base.affectSpace.copy();
     }
 
@@ -35,10 +32,9 @@ extends GOperator1
 
     async evalBaseParams(parse)
     {
-        const showCenter  = await evalNumberValue(this.showCenter,  parse);
         const affectSpace = await evalNumberValue(this.affectSpace, parse);
 
-        return [showCenter, affectSpace];
+        return [affectSpace];
     }
 
 
@@ -109,13 +105,6 @@ extends GOperator1
         }
 
 
-        if (options.showCenter ? options.showCenter.value > 0 : false)
-        {
-            const objects = [...this.value.objects]; // avoids infinite growth
-            objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
-        }
-
-
         return bounds;
     }
 
@@ -124,7 +113,6 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.showCenter  && this.showCenter .isValid()
             && this.affectSpace && this.affectSpace.isValid();
     }
 
@@ -134,7 +122,6 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
         if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
     }
 
@@ -144,7 +131,6 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.showCenter ) this.showCenter .invalidateInputs(parse, from, force);
         if (this.affectSpace) this.affectSpace.invalidateInputs(parse, from, force);
     }
 
@@ -154,7 +140,6 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.showCenter ) this.showCenter .iterateLoop(parse);
         if (this.affectSpace) this.affectSpace.iterateLoop(parse);
     }
 }
