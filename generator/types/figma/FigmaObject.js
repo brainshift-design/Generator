@@ -416,7 +416,7 @@ function getObjBounds(objects)
 
 
 
-function addObjectCenter(node, obj)
+function createObjectCenter(node, obj)
 {
     const sp0 = point(
         obj.sp0.x /*+ 0.5*/, 
@@ -426,29 +426,29 @@ function addObjectCenter(node, obj)
     const sp2 = addv(sp0, mulvs(mulvs(subv(obj.sp2, obj.sp0), -1), settings.objectCenterSize));    
 
     const center = createDecoPoly(
-            node, 
-            sp0, 
-            [sp2, sp0, sp1],
-            false,
-            '',
-            [242, 72, 34], 
-            CENTER_SUFFIX,
-            true);
-
-    //node.value.objects.push(center);
+        node.nodeId,
+        obj.objectId,
+        obj.objectName, 
+        sp0, 
+        [sp2, sp0, sp1],
+        false,
+        '',
+        [242, 72, 34], 
+        CENTER_SUFFIX,
+        true);
 
     return center;
 }
 
 
 
-function createDecoPoly(node, center, points, closed, dashes, color, suffix, isCenter)
+function createDecoPoly(nodeId, objectId, objectName, center, points, closed, dashes, color, suffix, isCenter)
 {
     const path = new FigmaVectorPath(
-        node.nodeId,
-        node.nodeId   + suffix,
-        node.nodeName + suffix,
-        points.map(p => PointValue.fromPoint(node.nodeId, p)),
+        nodeId,
+        objectId   + suffix,
+        objectName + suffix,
+        points.map(p => PointValue.fromPoint(objectId, p)),
         closed ? 1 : 0, 
         0, 
         0, 

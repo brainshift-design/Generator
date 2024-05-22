@@ -1635,7 +1635,10 @@ function genParseShowCenter(parse)
     if (nInputs == 1)
         showCenter.input = genParse(parse);
 
+    showCenter.show = genParse(parse);
 
+
+    parse.inParam = false;
     parse.nTab--;
 
 

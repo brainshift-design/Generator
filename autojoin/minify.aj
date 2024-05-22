@@ -2582,7 +2582,7 @@ initTextTooltip
 createNode
 importZoomToNodes
 deactivateAllNodes
-addObjectCenter
+createObjectCenter
 idFromNode
 nodesToJson
 connOutputMustBeInNodes

@@ -1,6 +1,10 @@
 class GShowCenter
 extends GOperator1
 {
+    show = null;
+
+
+
     constructor(nodeId, options)
     {
         super(SHOW_CENTER, nodeId, options);
@@ -14,6 +18,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
+        if (this.show) copy.show = this.show.copy();
+        
         return copy;
     }
 
@@ -25,10 +31,12 @@ extends GOperator1
             return this;
 
 
-        const input = await evalValue(this.input, parse);
+        const input = await evalValue      (this.input, parse);
+        const show  = await evalNumberValue(this.show,  parse);
 
 
-        if (input)
+        if (   input
+            && show)
         {
             this.value = input;
 
@@ -38,14 +46,15 @@ extends GOperator1
             this.value = new NullValue();
 
         
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {show: show && show.value > 0});
 
 
         const type = this.outputType();
 
         this.setUpdateValues(parse,
         [
-            ['type', type]
+            ['type', type],
+            ['show', show]
         ]);
 
 
@@ -64,25 +73,15 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input.value);
 
 
-            const bounds = getObjBounds(this.value.objects);
-
-            const singlePoint =
-                   this.value.objects.length  == 1 
-                && this.value.objects[0].type == POINT;
-
-
             for (const obj of this.value.objects)
             {
-                obj.nodeId     = this.nodeId;
-                obj.objectId   = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+                obj.nodeId   = this.nodeId;
+                obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                 
-                if (this.options.enabled)
-                    obj.showCenter = true;
+                if (   this.options.enabled
+                    && options.show)
+                    obj.showCenter = options.show;
             }
-
-
-            // const objects = [...this.value.objects]; // avoids infinite growth
-            // objects.forEach(o => addObjectCenter(this, o, parse.viewportZoom));
         }
         
         
@@ -96,5 +95,40 @@ extends GOperator1
         return this.value
         ? this.value.copy()
         : null;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.show && this.show.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.show) this.show.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.show) this.show.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.show) this.show.iterateLoop(parse);
     }
 }

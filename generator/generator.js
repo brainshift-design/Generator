@@ -130,7 +130,7 @@ function genRequest(request, save)
                     {
                         genPushUpdateObject(
                             parse, 
-                            addObjectCenter(node, obj));
+                            createObjectCenter(node, obj));
                     }
 
 
@@ -148,7 +148,9 @@ function genRequest(request, save)
                         genPushUpdateObject(
                             parse, 
                             createDecoPoly(
-                                node,
+                                node.nodeId,
+                                obj.objectId,
+                                obj.objectName,
                                 obj.sp0,
                                 [xp0, xp2, xp3, xp1],
                                 true,

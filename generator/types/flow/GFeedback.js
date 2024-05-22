@@ -81,8 +81,8 @@ extends GOperator1
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
 
-        //if (repeat)
-        //    console.log('repeat.currentIteration =', repeat.currentIteration);
+        if (repeat)
+           console.log('repeat.currentIteration =', repeat.currentIteration);
         //console.log('this.from =', this.from);
         // console.log('');
         const objects =
