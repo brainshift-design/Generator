@@ -27,6 +27,19 @@ extends ShapeValue
 
 
 
+    static fromObject(obj)
+    {
+        return new VectorPathValue(
+            obj.nodeId,
+            new ListValue(obj.points.map(p => PointValue.fromPoint(obj.nodeId, p))), 
+            new NumberValue(obj.closed ), 
+            new NumberValue(obj.degree ), 
+            new NumberValue(obj.winding), 
+            new NumberValue(obj.round  ));
+    }
+
+
+
     copy()
     {
         const copy = new VectorPathValue(

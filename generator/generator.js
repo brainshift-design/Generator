@@ -122,7 +122,8 @@ function genRequest(request, save)
         for (const node of parse.parsedNodes)
         {
             if (   node.options.active === true
-                && node.value)
+                && node.value
+                && node.value.objects)
             {
                 for (const obj of node.value.objects)
                 {

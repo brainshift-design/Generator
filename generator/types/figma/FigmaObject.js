@@ -343,6 +343,13 @@ class FigmaObject
         /* 9 */ 0 // for future use
         ];
     }
+
+
+
+    toValue()
+    {
+        return new NullValue();
+    }
 }
 
 

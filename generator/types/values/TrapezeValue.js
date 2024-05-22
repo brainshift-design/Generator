@@ -30,6 +30,20 @@ extends ShapeValue
 
 
 
+    static fromObject(obj)
+    {
+        return new TrapezeValue(
+            obj.nodeId,
+            new NumberValue(obj.x     ), 
+            new NumberValue(obj.y     ), 
+            new NumberValue(obj.width ), 
+            new NumberValue(obj.height), 
+            new NumberValue(obj.round ),
+            new NumberValue(obj.bias  ));
+    }
+
+
+
     copy()
     {
         const copy = new TrapezeValue(

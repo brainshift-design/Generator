@@ -54,16 +54,16 @@ extends GOperator1
 
         const input = await evalValue(this.input, parse);
 
-        this.value = input ? input : new NullValue();
+        // this.value = input ? new ListValue([input]) : new ListValue();//NullValue();
 
 
         this.setUpdateValues(parse, 
         [
-            ['type', this.outputType()]
+            ['type', this.outputListType()]
         ]);
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {input});
 
         
         this.validate();
@@ -75,45 +75,44 @@ extends GOperator1
 
     async evalObjects(parse, options = {})
     {
-        // console.log('parse.repeats =', parse.repeats);
-        // console.log('this.loopId =', this.loopId);
-
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
 
-        if (repeat)
-           console.log('repeat.currentIteration =', repeat.currentIteration);
-        //console.log('this.from =', this.from);
-        // console.log('');
-        const objects =
+        const feedback = 
                repeat
             && repeat.currentIteration > 0
-            && this.from
-            ? this.from.iterationObjects
-            : (   this.input 
-               && this.input.value.objects 
-               ? this.input.value.objects 
-               : []);
+            && this.from;
 
-        // if (   repeat
-        //     && repeat.currentIteration > 0
-        //     && this.from)
-        //     console.log('this.from.iterationObjects == objects =', this.from.iterationObjects == objects);
-
-        //console.log('objects =', objects);
-        //console.log('');
         
-        if (this.value.isValid())
-        {
-            //console.log('objects =', objects);
-            this.value.objects = objects.map(o => o.copy());
+        this.value = new ListValue();
 
-            for (const obj of this.value.objects)
-            {
-                obj.nodeId   = this.nodeId;
-                obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-            }
+        if (feedback)
+        {
+            for (const obj of this.from.iterationObjects)
+                this.value.items.push(obj.toValue());
+
+            if (this.from.iterationObjects)
+                this.value.objects = this.from.iterationObjects.map(o => o.copy());
         }
+        else if (options.input
+              && options.input.isValid())
+        {
+            this.value.items.push(options.input);
+
+            if (options.input.objects)
+                this.value.objects = options.input.objects.map(o => o.copy());
+        }
+
+
+        for (const item of this.value.items)
+            item.nodeId = this.nodeId;
+
+        for (const obj of this.value.objects)
+        {
+            obj.nodeId   = this.nodeId;
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+        }
+        console.log('this.value =', this.value);
 
 
         await super.evalObjects(parse);

@@ -79,4 +79,11 @@ extends FigmaVectorPath
         
         return copy;
     }
+
+
+
+    toValue()
+    {
+        return TrapezeValue.fromObject(this);
+    }
 }

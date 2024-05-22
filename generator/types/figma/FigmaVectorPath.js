@@ -236,6 +236,13 @@ extends FigmaShape
             /* 30 */ this.round * Math.abs(this.scaleCorners)
         ];
     }
+
+
+
+    toValue()
+    {
+        return VectorPathValue.fromObject(this);
+    }
 }
 
 
