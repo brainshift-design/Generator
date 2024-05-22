@@ -159,7 +159,7 @@ extends GOperator1
                 obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
                 if (this.options.enabled)
-                    obj.applyTransform(xform, affectSpace > 0);
+                    obj.applyTransform(xform, affectSpace);
             }
 
 

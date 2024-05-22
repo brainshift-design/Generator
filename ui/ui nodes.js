@@ -636,6 +636,23 @@ function handleLegacyNode(_node, genVersion)
             removeFromArray(_node.params, parts);
     }
 
+    else if (   (   _node.type == MOVE
+                 || _node.type == ROTATE
+                 || _node.type == SCALE
+                 || _node.type == SKEW)
+             && genVersion < 425) 
+    {
+        if (!_node.params)
+            _node.params = [];
+
+        const paramAffectSpace = _node.params.find(p => p[1] == 'affectSpace');
+
+        if (!paramAffectSpace)
+            _node.params.push(["NUM#", "affectSpace", "2,0"]);
+        else
+            paramAffectSpace[2] = paramAffectSpace[2] == '1,0' ? '2,0' : '1,0';
+    }
+
     else if (_node.type == ELLIPSE
           && _node.params
           && _node.params.length > 0)

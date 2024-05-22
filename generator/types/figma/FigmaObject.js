@@ -198,43 +198,53 @@ class FigmaObject
 
         if (this.type == POINT)
         {
-            const p = transformPoint(point(this.x, this.y), xform, space);
+            if (affectSpace > 0)
+            {
+                const p = transformPoint(point(this.x, this.y), xform, space);
 
-            this.x = p.x;
-            this.y = p.y;
+                this.x = p.x;
+                this.y = p.y;
+            }
 
-            if (affectSpace)
+            if (affectSpace != 1)
                 this.applySpaceTransform(xform, space);
         }
         else if (PATH_TYPES.includes(this.type))
         {
-            this.applyObjectTransform(xform, space);
+            if (affectSpace > 0)
+            {
+                this.applyObjectTransform(xform, space);
 
-            this.updatePoints(xform, space);
-            this.updatePathPoints();
-            //this.updatePathData();
+                this.updatePoints(xform, space);
+                this.updatePathPoints();
+                //this.updatePathData();
+            }
 
-            if (affectSpace)
+            if (affectSpace != 1)
                 this.applySpaceTransform(xform, space);
         }
         else if (this.type == SHAPE_GROUP)
         {
             for (const obj of this.children)
             {
-                obj.applyObjectTransform(xform, space);
+                if (affectSpace > 0)
+                {
+                    obj.applyObjectTransform(xform, space);
 
-                if (obj.type == VECTOR_PATH)
-                    obj.updatePoints(xform, space);
+                    if (obj.type == VECTOR_PATH)
+                        obj.updatePoints(xform, space);
+                }
 
-                if (affectSpace)
+                if (affectSpace != 1)
                     obj.applySpaceTransform(xform, space);
             }                
         }
         else
         {
-            this.applyObjectTransform(xform, space);
+            if (affectSpace > 0)
+                this.applyObjectTransform(xform, space);
 
-            if (affectSpace)
+            if (affectSpace != 1)
                 this.applySpaceTransform(xform, space);
         }
     }

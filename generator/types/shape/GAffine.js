@@ -74,7 +74,7 @@ extends GOperator1
             {
                 obj.applyTransform(
                     xform, 
-                    options.affectSpace ? options.affectSpace.value > 0 : false);
+                    options.affectSpace ? options.affectSpace.value : 2);
 
                 obj.checkFlipped(
                     options.flipX === true && xform[0][0] < 0, 
