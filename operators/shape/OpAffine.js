@@ -1,12 +1,12 @@
 class   OpAffine
 extends OperatorBase
 {
-    paramShowCenter;
     paramAffectSpace;
+    paramShowCenter;
 
 
+    // menuBoolAffectSpace;
     menuBoolShowCenter;
-    menuBoolAffectSpace;
 
 
 
@@ -29,18 +29,20 @@ extends OperatorBase
 
     addBaseParams(affect)
     {
-        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', affect + ' space', true, true, true, 1, 0, 1));
-        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',       'show center', true, true, true, 0, 0, 1));
+        // this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', affect + ' space', true, true, true, 1, 0, 1));
+        this.addParam(this.paramAffectSpace = new SelectParam('affectSpace', affect + ' space',  false, true, true, ['space', 'object', 'object & space'], 2));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter', 'show center',       true,  true, true, 0, 0, 1));
 
+        this.paramAffectSpace.reverseMenu = true;
 
+        // this.paramAffectSpace.controls[0].allowEditDecimals = false;
         this.paramShowCenter .controls[0].allowEditDecimals = false;
-        this.paramAffectSpace.controls[0].allowEditDecimals = false;
 
+        // this.paramAffectSpace.divider = 0.68;
         this.paramShowCenter .divider = 0.68;
-        this.paramAffectSpace.divider = 0.68;
-
+        
+        // this.menuBoolAffectSpace = createBoolMenu(this.paramAffectSpace);
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );
-        this.menuBoolAffectSpace = createBoolMenu(this.paramAffectSpace);
     }
 
 

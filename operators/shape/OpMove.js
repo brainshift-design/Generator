@@ -8,7 +8,7 @@ extends OperatorBase
     paramShowCenter;
 
 
-    menuBoolAffectSpace;
+    // menuBoolAffectSpace;
     menuBoolShowCenter;
 
 
@@ -28,7 +28,7 @@ extends OperatorBase
         this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',        false, true, true, ['position', 'vector'], 0));
         this.addParam(this.paramX           = new NumberParam('x',           'X',           true,  true, true));
         this.addParam(this.paramY           = new NumberParam('y',           'Y',           true,  true, true));
-        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'move space',  true,  true, true, 1, 0, 1));
+        this.addParam(this.paramAffectSpace = new SelectParam('affectSpace', 'move space',  false, true, true, ['space', 'object', 'object & space'], 2));
         this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center', true,  true, true, 0, 0, 1));
 
 
@@ -36,12 +36,14 @@ extends OperatorBase
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
         
         this.paramMoveType   .divider = 0.4;
+        // this.paramAffectSpace.divider = 0.68;
         this.paramShowCenter .divider = 0.68;
-        this.paramAffectSpace.divider = 0.68;
 
 
-        this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );
-        this.menuBoolAffectSpace = createBoolMenu(this.paramAffectSpace);
+        this.paramAffectSpace.reverseMenu = true;
+
+        // this.menuBoolAffectSpace = createBoolMenu(this.paramAffectSpace);
+        this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter);
     }
     
     
@@ -96,8 +98,8 @@ extends OperatorBase
     {
         super.updateParams();
 
+        // updateParamConditionText(this.paramAffectSpace, this.paramAffectSpace.isUnknown(), true,  1);
         updateParamConditionText(this.paramShowCenter,  this.paramShowCenter .isUnknown(), false, 1);
-        updateParamConditionText(this.paramAffectSpace, this.paramAffectSpace.isUnknown(), true,  1);
 
 
         const isVector = this.paramMoveType.value.value == 1;

@@ -81,6 +81,9 @@ extends GShape
 
         if (input)
         {
+            // if (this.nodeId == 'path2')
+            //     console.log('input =', input);
+            
             if (   input.points
                 && input.points.items
                 && input.points.objects)

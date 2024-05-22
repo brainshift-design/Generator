@@ -52,10 +52,9 @@ extends GOperator1
             return this;
 
 
-        this.value = 
-            this.input 
-            ? (await this.input.eval(parse)).toValue() 
-            : new NullValue();
+        const input = await evalValue(this.input, parse);
+
+        this.value = input ? input : new NullValue();
 
 
         this.setUpdateValues(parse, 
@@ -76,9 +75,16 @@ extends GOperator1
 
     async evalObjects(parse, options = {})
     {
+        // console.log('parse.repeats =', parse.repeats);
+        // console.log('this.loopId =', this.loopId);
+
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
 
 
+        //if (repeat)
+        //    console.log('repeat.currentIteration =', repeat.currentIteration);
+        //console.log('this.from =', this.from);
+        // console.log('');
         const objects =
                repeat
             && repeat.currentIteration > 0
@@ -89,9 +95,17 @@ extends GOperator1
                ? this.input.value.objects 
                : []);
 
+        // if (   repeat
+        //     && repeat.currentIteration > 0
+        //     && this.from)
+        //     console.log('this.from.iterationObjects == objects =', this.from.iterationObjects == objects);
+
+        //console.log('objects =', objects);
+        //console.log('');
         
         if (this.value.isValid())
         {
+            //console.log('objects =', objects);
             this.value.objects = objects.map(o => o.copy());
 
             for (const obj of this.value.objects)

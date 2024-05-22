@@ -181,6 +181,7 @@ extends GOperator1
                     }
 
 
+                    //console.log('i =', i);
                     repeat.currentIteration = i;
 
 
