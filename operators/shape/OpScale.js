@@ -35,14 +35,15 @@ extends OpAffine
         this.addParam(this.paramAffectCorners = new NumberParam('affectCorners', 'corners', true, true, true, 1, 0, 1));
         this.addParam(this.paramAffectStyle   = new NumberParam('affectStyle',   'style',   true, true, true, 1, 0, 1));
 
-        this.addBaseParams('scale');
+        
+        this.addBaseParamsAfter('scale');
 
 
         this.paramAffectCorners.divider = 0.55;
         this.paramAffectStyle  .divider = 0.55;
     
-        this.menuBoolAffectCorners = createBoolMenu(this.paramAffectCorners);
-        this.menuBoolAffectStyle   = createBoolMenu(this.paramAffectStyle  );
+        this.menuBoolAffectCorners      = createBoolMenu(this.paramAffectCorners);
+        this.menuBoolAffectStyle        = createBoolMenu(this.paramAffectStyle  );
     }
     
     

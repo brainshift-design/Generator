@@ -19,7 +19,7 @@ extends OperatorBase
     
     
 
-    addBaseParams(affect)
+    addBaseParamsAfter(affect)
     {
         this.addParam(this.paramAffectSpace = new SelectParam('affectSpace', affect + ' space',  false, true, true, ['space', 'object', 'object & space'], 2));
 

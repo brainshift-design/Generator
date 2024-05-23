@@ -36,6 +36,8 @@ extends FigmaVectorPath
             0, // even-odd winding
             round);
 
+        this.type   = TRAPEZE;
+
         this.x      = x;
         this.y      = y;
         this.width  = width;
@@ -68,10 +70,10 @@ extends FigmaVectorPath
             this.bias);
 
 
-        copy.x      = this.x;
-        copy.y      = this.y;
-        copy.width  = this.width;
-        copy.height = this.height;
+        // copy.x      = this.x;
+        // copy.y      = this.y;
+        // copy.width  = this.width;
+        // copy.height = this.height;
 
 
         copy.copyBase(this);

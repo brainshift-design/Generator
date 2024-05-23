@@ -20,7 +20,7 @@ extends OperatorBase//Shape
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
         
         
-        this.addBaseParams();
+        this.addBaseParamsAfter();
         this.addParam(this.paramProps   = new ListParam  ('props',   'styles',  false, true, true));
         this.addParam(this.paramReplace = new NumberParam('replace', 'replace', true,  true, true, 0, 0, 1));
 

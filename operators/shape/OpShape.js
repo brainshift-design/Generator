@@ -11,7 +11,7 @@ extends OpShapeBase
 
 
 
-    addBaseParams()
+    addBaseParamsAfter()
     {
         this.addParam(this.paramProps = new ListParam('props', 'styles', false, true, true));
 

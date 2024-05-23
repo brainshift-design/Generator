@@ -32,7 +32,7 @@ extends OpShape
         this.paramHeight.addEventListener('change', () => this.updateRound());
 
 
-        this.addBaseParams();
+        this.addBaseParamsAfter();
         this.setAllParamDividers(0.5);
     }
 

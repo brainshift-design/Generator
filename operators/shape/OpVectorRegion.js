@@ -20,7 +20,7 @@ extends OpShape
 
         this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
 
-        this.addBaseParams();
+        this.addBaseParamsAfter();
 
 
         this.setAllParamDividers(0.45);

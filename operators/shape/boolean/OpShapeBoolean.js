@@ -31,7 +31,7 @@ extends OpShape
         this.paramChildren.getItemCount = () => 0;
 
 
-        this.addBaseParams();
+        this.addBaseParamsAfter();
     }
 
 

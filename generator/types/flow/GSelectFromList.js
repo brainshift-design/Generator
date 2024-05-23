@@ -57,6 +57,7 @@ extends GOperator1
         let  length = 0;
         
         
+        //console.log('SFL input =', input);
         if (   input
             && input.isValid()
             && isListValueType(input.type)
@@ -79,6 +80,11 @@ extends GOperator1
                 && index.value <   input.items.length)
             {
                 this.value = input.items.at(index.value);
+                
+                if (   input.objects
+                    && input.objects.at(index.value))
+                    this.value.objects = [input.objects.at(index.value)];
+
 
                 if (this.value.objects)
                 {
@@ -108,6 +114,8 @@ extends GOperator1
             this.value = new NullValue();
         }
 
+
+        //console.log('SFL this.value =', this.value);
 
         const type = this.outputType();
 

@@ -86,6 +86,7 @@ extends GOperator
             {
                 this.value = inputs.at(index.value);
 
+                
                 if (this.value.objects)
                 {
                     for (let i = 0; i < this.value.objects.length; i++)

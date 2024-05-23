@@ -19,7 +19,7 @@ extends OpShape
         this.addParam(this.paramY     = new NumberParam('y',     'Y',     true, true, true,   0));
         this.addParam(this.paramWidth = new NumberParam('width', 'width', true, true, true, 100));
 
-        this.addBaseParams();
+        this.addBaseParamsAfter();
     }
 
 

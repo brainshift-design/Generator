@@ -35,7 +35,7 @@ extends OpShape
         this.paramBias.controls[0].suffix = '%';
 
 
-        this.addBaseParams();
+        this.addBaseParamsAfter();
         this.setAllParamDividers(0.5);
     }
 

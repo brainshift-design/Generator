@@ -219,13 +219,20 @@ extends GOperator1
                         {
                             this.iterationObjects = [];
                         
+                            console.log('this.input =', this.input);
                             if (this.input.value.objects)
                             {
                                 for (let j = 0; j < this.input.value.objects.length; j++, o++)
                                 {
                                     const obj = copyFigmaObject(this.input.value.objects[j]);
 
-                                    this.iterationObjects.push(obj.copy());
+
+                                    const copy = obj.copy();
+                                    //copy.objectId += OBJECT_SEPARATOR + repeat.currentIteration;
+                                    //copy.objectId += OBJECT_SEPARATOR + repeat.currentIteration;
+
+                                    this.iterationObjects.push(copy);
+
 
                                     if (  !iteration.isValid()
                                         || iterations.includes(i))
@@ -233,7 +240,7 @@ extends GOperator1
                                         obj.nodeId      = this.nodeId;
                                         obj.listId      = i;
 
-                                        obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
+                                        obj.objectId   += OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
                                         obj.objectName += ' ' + (o+1).toString();
 
                                         obj.itemIndex   = repeat.currentIteration;
@@ -243,6 +250,8 @@ extends GOperator1
                                     }
                                 }
                             }
+
+                            //console.log('this.iterationObjects =', [...this.iterationObjects]);
                         }
                     }
 

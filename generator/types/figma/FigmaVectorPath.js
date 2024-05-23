@@ -126,7 +126,6 @@ extends FigmaShape
             case 4:
             case 5:
                 {
-                    // console.log('1 bounds =', clone(bounds));
                     let i;
                     for (i = 0; i < this.pathPoints.length-3; i += 3)
                     {
@@ -136,7 +135,6 @@ extends FigmaShape
                             this.pathPoints[i+2],
                             this.pathPoints[i+3]);
 
-                        // console.log('b3 =', b3);
                         bounds = expandRect(
                             bounds, 
                             b3);
@@ -151,14 +149,11 @@ extends FigmaShape
                             this.pathPoints.at(-1),
                             this.pathPoints.at( 0));
 
-                        // console.log('b3 =', b3);
                         bounds = expandRect(
                             bounds, 
                             b3);
                     }
 
-                    // console.log('2 bounds =', clone(bounds));
-                    // console.log('');
                     break;
                 }
             default:
@@ -223,7 +218,12 @@ extends FigmaShape
         // this.updatePathPoints();
         this.updatePathData();
 
-        return [
+
+        const oldType = this.type;
+        this.type = VECTOR_PATH;
+
+        const data = 
+        [
             ...super.toData(),
    
             /* 24 */ this.x,
@@ -235,6 +235,11 @@ extends FigmaShape
             /* 29 */ this.winding,
             /* 30 */ this.round * Math.abs(this.scaleCorners)
         ];
+
+        this.type = oldType;
+
+
+        return data;
     }
 
 

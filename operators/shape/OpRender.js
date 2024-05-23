@@ -28,7 +28,7 @@ extends OpShapeBase
         this.paramRetain.divider = 0.62;
 
 
-        this.addBaseParams();
+        this.addBaseParamsAfter();
 
 
         this.btnFinal      = createDiv('btnRenderFinal');

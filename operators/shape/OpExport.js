@@ -39,7 +39,7 @@ extends OpShapeBase
      // this.paramCrop    .divider = 0.7;
 
 
-        this.addBaseParams();
+        this.addBaseParamsAfter();
 
 
         this.btnExport      = createDiv('btnExport');

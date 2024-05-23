@@ -14,7 +14,7 @@ extends OpShapeBase
         this.addOutput(new Output([SHAPE_GROUP_VALUE], this.output_genRequest));
 
 
-        this.addBaseParams();
+        this.addBaseParamsAfter();
     }
 
 

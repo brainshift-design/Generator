@@ -53,7 +53,7 @@ extends OpShape
         this.menuClip = createBoolMenu(this.paramClip);
 
         
-        this.addBaseParams();
+        this.addBaseParamsAfter();
     }
     
     

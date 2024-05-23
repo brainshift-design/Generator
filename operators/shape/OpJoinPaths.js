@@ -32,7 +32,7 @@ extends OpShape
         this.paramRound  .divider = 0.565;
 
 
-        this.addBaseParams();
+        this.addBaseParamsAfter();
     }
 
 

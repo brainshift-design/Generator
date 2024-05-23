@@ -54,7 +54,7 @@ extends OpShape
 
         this.paramFont.divider = 0.3;
         
-        this.addBaseParams();
+        this.addBaseParamsAfter();
     }
 
 

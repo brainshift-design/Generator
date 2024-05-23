@@ -408,7 +408,14 @@ class Operator
 
 
 
-    addBaseParams()
+    addBaseParamsBefore()
+    {
+
+    }
+
+
+
+    addBaseParamsAfter()
     {
 
     }

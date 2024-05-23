@@ -8520,7 +8520,6 @@ extends FigmaShape
             case 4:
             case 5:
                 {
-                    // console.log('1 bounds =', clone(bounds));
                     let i;
                     for (i = 0; i < this.pathPoints.length-3; i += 3)
                     {
@@ -8530,7 +8529,6 @@ extends FigmaShape
                             this.pathPoints[i+2],
                             this.pathPoints[i+3]);
 
-                        // console.log('b3 =', b3);
                         bounds = expandRect(
                             bounds, 
                             b3);
@@ -8545,14 +8543,11 @@ extends FigmaShape
                             this.pathPoints.at(-1),
                             this.pathPoints.at( 0));
 
-                        // console.log('b3 =', b3);
                         bounds = expandRect(
                             bounds, 
                             b3);
                     }
 
-                    // console.log('2 bounds =', clone(bounds));
-                    // console.log('');
                     break;
                 }
             default:
@@ -8617,7 +8612,12 @@ extends FigmaShape
         // this.updatePathPoints();
         this.updatePathData();
 
-        return [
+
+        const oldType = this.type;
+        this.type = VECTOR_PATH;
+
+        const data = 
+        [
             ...super.toData(),
    
             /* 24 */ this.x,
@@ -8629,6 +8629,11 @@ extends FigmaShape
             /* 29 */ this.winding,
             /* 30 */ this.round * Math.abs(this.scaleCorners)
         ];
+
+        this.type = oldType;
+
+
+        return data;
     }
 
 
@@ -9215,6 +9220,8 @@ extends FigmaVectorPath
             0, // even-odd winding
             round);
 
+        this.type   = TRAPEZE;
+
         this.x      = x;
         this.y      = y;
         this.width  = width;
@@ -9247,10 +9254,10 @@ extends FigmaVectorPath
             this.bias);
 
 
-        copy.x      = this.x;
-        copy.y      = this.y;
-        copy.width  = this.width;
-        copy.height = this.height;
+        // copy.x      = this.x;
+        // copy.y      = this.y;
+        // copy.width  = this.width;
+        // copy.height = this.height;
 
 
         copy.copyBase(this);
@@ -18692,13 +18699,20 @@ extends GOperator1
                         {
                             this.iterationObjects = [];
                         
+                            console.log('this.input =', this.input);
                             if (this.input.value.objects)
                             {
                                 for (let j = 0; j < this.input.value.objects.length; j++, o++)
                                 {
                                     const obj = copyFigmaObject(this.input.value.objects[j]);
 
-                                    this.iterationObjects.push(obj.copy());
+
+                                    const copy = obj.copy();
+                                    //copy.objectId += OBJECT_SEPARATOR + repeat.currentIteration;
+                                    //copy.objectId += OBJECT_SEPARATOR + repeat.currentIteration;
+
+                                    this.iterationObjects.push(copy);
+
 
                                     if (  !iteration.isValid()
                                         || iterations.includes(i))
@@ -18706,7 +18720,7 @@ extends GOperator1
                                         obj.nodeId      = this.nodeId;
                                         obj.listId      = i;
 
-                                        obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
+                                        obj.objectId   += OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
                                         obj.objectName += ' ' + (o+1).toString();
 
                                         obj.itemIndex   = repeat.currentIteration;
@@ -18716,6 +18730,8 @@ extends GOperator1
                                     }
                                 }
                             }
+
+                            //console.log('this.iterationObjects =', [...this.iterationObjects]);
                         }
                     }
 
@@ -18911,6 +18927,7 @@ extends GOperator1
             || !parse.evalFeedback)
             return this;
 
+        //console.trace();
 
         const input = await evalValue(this.input, parse);
 
@@ -18944,6 +18961,9 @@ extends GOperator1
             && this.from;
 
         
+        // if (repeat)
+        //     console.log('repeat.currentIteration =', repeat.currentIteration);
+        
         this.value = new ListValue();
 
         if (feedback)
@@ -18951,6 +18971,7 @@ extends GOperator1
             for (const obj of this.from.iterationObjects)
                 this.value.items.push(obj.toValue());
 
+            //console.log('this.from.iterationObjects =', [...this.from.iterationObjects]);
             if (this.from.iterationObjects)
                 this.value.objects = this.from.iterationObjects.map(o => o.copy());
         }
@@ -18963,16 +18984,29 @@ extends GOperator1
                 this.value.objects = options.input.objects.map(o => o.copy());
         }
 
+        //console.log('this.value.objects =', this.value.objects);
+
+        //console.log('repeat =', repeat);
+        const iter =
+            repeat 
+            ? NAME_SEPARATOR + repeat.currentIteration 
+            : '';
+        //console.log('iter =', iter);
 
         for (const item of this.value.items)
             item.nodeId = this.nodeId;
 
-        for (const obj of this.value.objects)
+        for (let i = 0; i < this.value.objects.length; i++)
         {
+            const obj = this.value.objects[i];
+
             obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            obj.objectId = this.nodeId + OBJECT_SEPARATOR + i + iter;
+            console.log('obj.objectId =', obj.objectId);
         }
-        console.log('this.value =', this.value);
+        // console.log('this.value =', this.value);
+
+        //console.log('');
 
 
         await super.evalObjects(parse);
@@ -18984,6 +19018,14 @@ extends GOperator1
     {
         return this.value.copy();
     }
+
+
+
+    // invalidateInputs(parse, from, force)
+    // {
+    //     super.invalidateInputs(parse, from, force);
+
+    // }
 
 
 
@@ -20205,8 +20247,8 @@ extends GOperator
         }
         
 
-        const length  = new NumberValue(this.value.items.length);
-        const type    = new TextValue(finalListTypeFromItems(this.value.items));
+        const length = new NumberValue(this.value.items.length);
+        const type   = new TextValue(finalListTypeFromItems(this.value.items));
 
 
         this.setUpdateValues(parse,
@@ -22858,6 +22900,7 @@ extends GOperator
             {
                 this.value = inputs.at(index.value);
 
+                
                 if (this.value.objects)
                 {
                     for (let i = 0; i < this.value.objects.length; i++)
@@ -23032,6 +23075,7 @@ extends GOperator1
         let  length = 0;
         
         
+        //console.log('SFL input =', input);
         if (   input
             && input.isValid()
             && isListValueType(input.type)
@@ -23054,6 +23098,11 @@ extends GOperator1
                 && index.value <   input.items.length)
             {
                 this.value = input.items.at(index.value);
+                
+                if (   input.objects
+                    && input.objects.at(index.value))
+                    this.value.objects = [input.objects.at(index.value)];
+
 
                 if (this.value.objects)
                 {
@@ -23083,6 +23132,8 @@ extends GOperator1
             this.value = new NullValue();
         }
 
+
+        //console.log('SFL this.value =', this.value);
 
         const type = this.outputType();
 

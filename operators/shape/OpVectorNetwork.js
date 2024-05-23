@@ -16,7 +16,7 @@ extends OpShape
         this.addOutput(new Output([VECTOR_NETWORK_VALUE], this.output_genRequest));
 
 
-        this.addBaseParams();
+        this.addBaseParamsAfter();
     }
 
 

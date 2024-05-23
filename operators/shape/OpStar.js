@@ -38,7 +38,7 @@ extends OpShape
         this.paramConvex.controls[0].setSuffix('%', true);
 
 
-        this.addBaseParams();
+        this.addBaseParamsAfter();
     }
 
 

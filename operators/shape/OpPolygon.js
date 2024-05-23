@@ -34,7 +34,7 @@ extends OpShape
         this.paramPosition.divider = 0.4;
 
 
-        this.addBaseParams();
+        this.addBaseParamsAfter();
     }
 
 

@@ -46,7 +46,7 @@ extends OpShape
         this.paramStart.controls[0].suffixOffsetY = -4;
 
 
-        this.addBaseParams();
+        this.addBaseParamsAfter();
 
 
         this.menuSweep = createArcPathParamMenu(this.paramSweep, 'sweepInDegrees');

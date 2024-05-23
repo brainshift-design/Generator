@@ -49,7 +49,7 @@ extends OpShape
         this.paramAlignY.divider = 0.5;
 
 
-        this.addBaseParams();
+        this.addBaseParamsAfter();
 
 
         this.menuWavelength = createWavelengthParamMenu(this.paramFrequency, 'useWavelength');

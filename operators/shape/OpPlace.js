@@ -75,7 +75,7 @@ extends OperatorBase
         this.paramPosition  .enableControlText(true);
         this.paramTransform .enableControlText(true);
 
-        updateParamConditionText(this.paramTransform,  this.paramTransform.isUnknown(),  true,  1);
+        updateParamConditionText(this.paramTransform,  this.paramTransform.isUnknown(),  false,  1);
 
         this.updateParamControls();
     }
