@@ -199,7 +199,14 @@ extends GShape
             {
                 const obj = this.value.objects[i];
 
+                // const angle1 = anglev_(obj.sp0, obj.sp1);
+                // const angle2 = anglev_(obj.sp0, obj.sp2);
+
                 obj.createDefaultSpace();
+                
+                // obj.sp1 = addv(obj.sp0, vector(angle1, 1));
+                // obj.sp2 = addv(obj.sp0, vector(angle2, 1));
+
                 obj.resetSpace(bounds, singlePoint);
 
                 if (pos > 0)

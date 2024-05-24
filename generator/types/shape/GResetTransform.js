@@ -73,8 +73,8 @@ extends GOperator1
 
             for (const obj of this.value.objects)
             {
-                obj.nodeId   = this.nodeId;
-                obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+                obj.nodeId    = this.nodeId;
+                obj.objectId += OBJECT_SEPARATOR + this.nodeId;
 
                 if (this.options.enabled)
                 {

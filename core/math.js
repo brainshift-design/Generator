@@ -99,6 +99,18 @@ function anglev(v)
 
 
 
+function anglev_(p0, p1)
+{
+    const v = subv(p1, p0);
+    
+    let angle = Math.atan2(v.y, v.x);
+    if (angle < 0) angle += Tau;
+
+    return angle;
+}
+
+
+
 function angle_(x, y)
 {
     let angle = Math.atan2(y, x);

@@ -85,9 +85,6 @@ extends GOperator1
             && this.from;
 
         
-        // if (repeat)
-        //     console.log('repeat.currentIteration =', repeat.currentIteration);
-        
         this.value = new ListValue();
 
         if (feedback)
@@ -95,7 +92,6 @@ extends GOperator1
             for (const obj of this.from.iterationObjects)
                 this.value.items.push(obj.toValue());
 
-            //console.log('this.from.iterationObjects =', [...this.from.iterationObjects]);
             if (this.from.iterationObjects)
                 this.value.objects = this.from.iterationObjects.map(o => o.copy());
         }
@@ -108,29 +104,25 @@ extends GOperator1
                 this.value.objects = options.input.objects.map(o => o.copy());
         }
 
-        //console.log('this.value.objects =', this.value.objects);
 
-        //console.log('repeat =', repeat);
         const iter =
             repeat 
             ? NAME_SEPARATOR + repeat.currentIteration 
             : '';
-        //console.log('iter =', iter);
 
         for (const item of this.value.items)
             item.nodeId = this.nodeId;
 
-        for (let i = 0; i < this.value.objects.length; i++)
+        if (this.value.objects)
         {
-            const obj = this.value.objects[i];
+            for (let i = 0; i < this.value.objects.length; i++)
+            {
+                const obj = this.value.objects[i];
 
-            obj.nodeId   = this.nodeId;
-            obj.objectId = this.nodeId + OBJECT_SEPARATOR + i + iter;
-            //console.log('obj.objectId =', obj.objectId);
+                obj.nodeId   = this.nodeId;
+                obj.objectId = this.nodeId + OBJECT_SEPARATOR + i + iter;
+            }
         }
-        // console.log('this.value =', this.value);
-
-        //console.log('');
 
 
         await super.evalObjects(parse);

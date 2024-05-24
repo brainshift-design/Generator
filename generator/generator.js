@@ -164,7 +164,7 @@ function genRequest(request, save)
             }
         }
 
-        console.log('parse.parsedNodes =', parse.parsedNodes);
+        //console.log('parse.parsedNodes =', parse.parsedNodes);
 
         await genUpdateValuesAndObjects(
             parse.requestId,

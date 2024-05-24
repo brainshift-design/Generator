@@ -1501,6 +1501,18 @@ function anglev(v)
 
 
 
+function anglev_(p0, p1)
+{
+    const v = subv(p1, p0);
+    
+    let angle = Math.atan2(v.y, v.x);
+    if (angle < 0) angle += Tau;
+
+    return angle;
+}
+
+
+
 function angle_(x, y)
 {
     let angle = Math.atan2(y, x);
@@ -18664,7 +18676,6 @@ extends GOperator1
                     }
 
 
-                    //console.log('i =', i);
                     repeat.currentIteration = i;
 
 
@@ -18675,12 +18686,6 @@ extends GOperator1
                          _while = await evalNumberValue(this._while, parse);
 
 
-                    if (this.nodeId == 'repeat2') 
-                    {
-                        console.log('RPT input =', input);
-                        console.log('RPT input.objects =', input.objects);
-                        console.log('RPT nRepeats =', nRepeats);
-                    }
                     if (   input
                         && nRepeats > 0
                         && (  !_while 
@@ -18708,22 +18713,12 @@ extends GOperator1
                         {
                             this.iterationObjects = [];
                         
-                            if (this.nodeId == 'repeat')
-                            {
-                                console.log('RPT repeat.currentIteration =', repeat.currentIteration);
-                                // console.log('RPT this.input =', this.input);
-                            }
+
                             if (input.objects)
                             {
                                 for (let j = 0; j < input.objects.length; j++, o++)
                                 {
                                     const obj = copyFigmaObject(input.objects[j]);
-
-                                    if (this.nodeId == 'repeat2') 
-                                    {
-                                        //console.log('RPT input.objects[j] =', input.objects[j]);
-                                        console.log('1 RPT obj =', obj.copy());
-                                    }
 
 
                                     this.iterationObjects.push(obj.copy());
@@ -18741,20 +18736,10 @@ extends GOperator1
                                         obj.itemIndex   = repeat.currentIteration;
 
                                         if (this.value.objects)
-                                        {
-                                            if (this.nodeId == 'repeat2') 
-                                                console.log('2 RPT obj =', obj.copy());
-
-                                            this.value.objects.push(obj);//.copy());
-                                            
-                                            // if (this.nodeId == 'repeat2')
-                                            //     console.log('RPT this.value.objects =', this.value.objects.map(o => o.copy()));
-                                        }
+                                            this.value.objects.push(obj);
                                     }
                                 }
                             }
-
-                            //console.log('this.iterationObjects =', [...this.iterationObjects]);
                         }
                     }
 
@@ -18810,9 +18795,6 @@ extends GOperator1
             await evalValue(this.input, parse);
 
         
-        if (this.nodeId == 'repeat2')
-            console.log('--RPT this.value.objects =', this.value.objects);//.map(o => o.copy()));
-
         const type = this.outputListType();
 
         this.setUpdateValues(parse,
@@ -18988,9 +18970,6 @@ extends GOperator1
             && this.from;
 
         
-        // if (repeat)
-        //     console.log('repeat.currentIteration =', repeat.currentIteration);
-        
         this.value = new ListValue();
 
         if (feedback)
@@ -18998,7 +18977,6 @@ extends GOperator1
             for (const obj of this.from.iterationObjects)
                 this.value.items.push(obj.toValue());
 
-            //console.log('this.from.iterationObjects =', [...this.from.iterationObjects]);
             if (this.from.iterationObjects)
                 this.value.objects = this.from.iterationObjects.map(o => o.copy());
         }
@@ -19011,29 +18989,25 @@ extends GOperator1
                 this.value.objects = options.input.objects.map(o => o.copy());
         }
 
-        //console.log('this.value.objects =', this.value.objects);
 
-        //console.log('repeat =', repeat);
         const iter =
             repeat 
             ? NAME_SEPARATOR + repeat.currentIteration 
             : '';
-        //console.log('iter =', iter);
 
         for (const item of this.value.items)
             item.nodeId = this.nodeId;
 
-        for (let i = 0; i < this.value.objects.length; i++)
+        if (this.value.objects)
         {
-            const obj = this.value.objects[i];
+            for (let i = 0; i < this.value.objects.length; i++)
+            {
+                const obj = this.value.objects[i];
 
-            obj.nodeId   = this.nodeId;
-            obj.objectId = this.nodeId + OBJECT_SEPARATOR + i + iter;
-            //console.log('obj.objectId =', obj.objectId);
+                obj.nodeId   = this.nodeId;
+                obj.objectId = this.nodeId + OBJECT_SEPARATOR + i + iter;
+            }
         }
-        // console.log('this.value =', this.value);
-
-        //console.log('');
 
 
         await super.evalObjects(parse);
@@ -20269,7 +20243,14 @@ extends GOperator
 
         for (const obj of this.value.objects)
         {
+            // const angle1 = anglev_(obj.sp0, obj.sp1);
+            // const angle2 = anglev_(obj.sp0, obj.sp2);
+
             obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
+            
+            // obj.sp1 = addv(obj.sp0, vector(angle1, 1));
+            // obj.sp2 = addv(obj.sp0, vector(angle2, 1));
+
             obj.resetSpace(bounds, singlePoint);
         }
         
@@ -42919,7 +42900,14 @@ extends GShapeBase
 
             for (const obj of group.children)
             {
+                // const angle1 = anglev_(obj.sp0, obj.sp1);
+                // const angle2 = anglev_(obj.sp0, obj.sp2);
+    
                 obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
+                
+                // obj.sp1 = addv(obj.sp0, vector(angle1, 1));
+                // obj.sp2 = addv(obj.sp0, vector(angle2, 1));
+
                 obj.resetSpace(bounds, singlePoint);
             }
 
@@ -43212,7 +43200,14 @@ extends GShape
             {
                 const obj = this.value.objects[i];
 
+                // const angle1 = anglev_(obj.sp0, obj.sp1);
+                // const angle2 = anglev_(obj.sp0, obj.sp2);
+
                 obj.createDefaultSpace();
+                
+                // obj.sp1 = addv(obj.sp0, vector(angle1, 1));
+                // obj.sp2 = addv(obj.sp0, vector(angle2, 1));
+
                 obj.resetSpace(bounds, singlePoint);
 
                 if (pos > 0)
@@ -43652,7 +43647,14 @@ extends GShape
             {
                 const obj = this.value.objects[i];
 
+                // const angle1 = anglev_(obj.sp0, obj.sp1);
+                // const angle2 = anglev_(obj.sp0, obj.sp2);
+
                 obj.createDefaultSpace();
+                
+                // obj.sp1 = addv(obj.sp0, vector(angle1, 1));
+                // obj.sp2 = addv(obj.sp0, vector(angle2, 1));
+
                 obj.resetSpace(bounds, false);
 
                 this.addChildObject(bool.children, obj);
@@ -45403,8 +45405,8 @@ extends GOperator1
 
             for (const obj of this.value.objects)
             {
-                obj.nodeId   = this.nodeId;
-                obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+                obj.nodeId    = this.nodeId;
+                obj.objectId += OBJECT_SEPARATOR + this.nodeId;
 
                 if (this.options.enabled)
                 {
@@ -48796,7 +48798,7 @@ function genRequest(request, save)
             }
         }
 
-        console.log('parse.parsedNodes =', parse.parsedNodes);
+        //console.log('parse.parsedNodes =', parse.parsedNodes);
 
         await genUpdateValuesAndObjects(
             parse.requestId,

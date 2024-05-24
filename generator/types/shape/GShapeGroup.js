@@ -134,7 +134,14 @@ extends GShapeBase
 
             for (const obj of group.children)
             {
+                // const angle1 = anglev_(obj.sp0, obj.sp1);
+                // const angle2 = anglev_(obj.sp0, obj.sp2);
+    
                 obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
+                
+                // obj.sp1 = addv(obj.sp0, vector(angle1, 1));
+                // obj.sp2 = addv(obj.sp0, vector(angle2, 1));
+
                 obj.resetSpace(bounds, singlePoint);
             }
 
