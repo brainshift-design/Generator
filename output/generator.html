@@ -8593,15 +8593,18 @@ extends FigmaShape
 
     updatePathData()
     {
-        const bounds = this.getBounds();
+        if (this.type == VECTOR_PATH)
+        {
+            const bounds = this.getBounds();
 
-        this.x      = bounds.x;
-        this.y      = bounds.y;
-        this.width  = bounds.width;
-        this.height = bounds.height;
+            this.x      = bounds.x;
+            this.y      = bounds.y;
+            this.width  = bounds.width;
+            this.height = bounds.height;
 
-        this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
-
+            this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
+        }
+        
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
     }
 
@@ -18672,6 +18675,12 @@ extends GOperator1
                          _while = await evalNumberValue(this._while, parse);
 
 
+                    if (this.nodeId == 'repeat2') 
+                    {
+                        console.log('RPT input =', input);
+                        console.log('RPT input.objects =', input.objects);
+                        console.log('RPT nRepeats =', nRepeats);
+                    }
                     if (   input
                         && nRepeats > 0
                         && (  !_while 
@@ -18699,19 +18708,25 @@ extends GOperator1
                         {
                             this.iterationObjects = [];
                         
-                            console.log('this.input =', this.input);
-                            if (this.input.value.objects)
+                            if (this.nodeId == 'repeat')
                             {
-                                for (let j = 0; j < this.input.value.objects.length; j++, o++)
+                                console.log('RPT repeat.currentIteration =', repeat.currentIteration);
+                                // console.log('RPT this.input =', this.input);
+                            }
+                            if (input.objects)
+                            {
+                                for (let j = 0; j < input.objects.length; j++, o++)
                                 {
-                                    const obj = copyFigmaObject(this.input.value.objects[j]);
+                                    const obj = copyFigmaObject(input.objects[j]);
+
+                                    if (this.nodeId == 'repeat2') 
+                                    {
+                                        //console.log('RPT input.objects[j] =', input.objects[j]);
+                                        console.log('1 RPT obj =', obj.copy());
+                                    }
 
 
-                                    const copy = obj.copy();
-                                    //copy.objectId += OBJECT_SEPARATOR + repeat.currentIteration;
-                                    //copy.objectId += OBJECT_SEPARATOR + repeat.currentIteration;
-
-                                    this.iterationObjects.push(copy);
+                                    this.iterationObjects.push(obj.copy());
 
 
                                     if (  !iteration.isValid()
@@ -18726,7 +18741,15 @@ extends GOperator1
                                         obj.itemIndex   = repeat.currentIteration;
 
                                         if (this.value.objects)
-                                            this.value.objects.push(obj);
+                                        {
+                                            if (this.nodeId == 'repeat2') 
+                                                console.log('2 RPT obj =', obj.copy());
+
+                                            this.value.objects.push(obj);//.copy());
+                                            
+                                            // if (this.nodeId == 'repeat2')
+                                            //     console.log('RPT this.value.objects =', this.value.objects.map(o => o.copy()));
+                                        }
                                     }
                                 }
                             }
@@ -18760,6 +18783,7 @@ extends GOperator1
                         genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
                 }
 
+                console.log('');
 
                 if (   this.loop
                     && this.loop.resetLoop)
@@ -18785,6 +18809,9 @@ extends GOperator1
         else if (this.input)
             await evalValue(this.input, parse);
 
+        
+        if (this.nodeId == 'repeat2')
+            console.log('--RPT this.value.objects =', this.value.objects);//.map(o => o.copy()));
 
         const type = this.outputListType();
 
@@ -18923,8 +18950,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (    this.isCached()
-            || !parse.evalFeedback)
+        if (    /*this.isCached()
+            ||*/ !parse.evalFeedback)
             return this;
 
         //console.trace();
@@ -19002,7 +19029,7 @@ extends GOperator1
 
             obj.nodeId   = this.nodeId;
             obj.objectId = this.nodeId + OBJECT_SEPARATOR + i + iter;
-            console.log('obj.objectId =', obj.objectId);
+            //console.log('obj.objectId =', obj.objectId);
         }
         // console.log('this.value =', this.value);
 
@@ -44210,7 +44237,7 @@ extends GOperator1
             let _a = y/360*Tau;
 
             while (_a <  0  ) _a += Tau;
-            while (_a >= Tau) _a -= Tau;
+            while (_a >= Tau) _a -= Tau;    
 
 
             const _v = vector(_a, x);
@@ -44229,11 +44256,13 @@ extends GOperator1
                     
             for (const obj of this.value.objects)
             {
-                obj.nodeId   = this.nodeId;
-                obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+                if (this.nodeId == 'move2') console.log('1 MOV obj =', obj.copy());
+                obj.nodeId    = this.nodeId;
+                obj.objectId += OBJECT_SEPARATOR + this.nodeId;
 
                 if (this.options.enabled)
                     obj.applyTransform(xform, affectSpace);
+                if (this.nodeId == 'move2') console.log('2 MOV obj =', obj.copy());
             }
 
 
@@ -48767,6 +48796,7 @@ function genRequest(request, save)
             }
         }
 
+        console.log('parse.parsedNodes =', parse.parsedNodes);
 
         await genUpdateValuesAndObjects(
             parse.requestId,

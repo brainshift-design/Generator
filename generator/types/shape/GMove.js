@@ -128,7 +128,7 @@ extends GOperator1
             let _a = y/360*Tau;
 
             while (_a <  0  ) _a += Tau;
-            while (_a >= Tau) _a -= Tau;
+            while (_a >= Tau) _a -= Tau;    
 
 
             const _v = vector(_a, x);
@@ -147,11 +147,13 @@ extends GOperator1
                     
             for (const obj of this.value.objects)
             {
-                obj.nodeId   = this.nodeId;
-                obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+                if (this.nodeId == 'move2') console.log('1 MOV obj =', obj.copy());
+                obj.nodeId    = this.nodeId;
+                obj.objectId += OBJECT_SEPARATOR + this.nodeId;
 
                 if (this.options.enabled)
                     obj.applyTransform(xform, affectSpace);
+                if (this.nodeId == 'move2') console.log('2 MOV obj =', obj.copy());
             }
 
 

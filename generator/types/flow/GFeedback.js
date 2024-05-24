@@ -47,8 +47,8 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (    this.isCached()
-            || !parse.evalFeedback)
+        if (    /*this.isCached()
+            ||*/ !parse.evalFeedback)
             return this;
 
         //console.trace();
@@ -126,7 +126,7 @@ extends GOperator1
 
             obj.nodeId   = this.nodeId;
             obj.objectId = this.nodeId + OBJECT_SEPARATOR + i + iter;
-            console.log('obj.objectId =', obj.objectId);
+            //console.log('obj.objectId =', obj.objectId);
         }
         // console.log('this.value =', this.value);
 

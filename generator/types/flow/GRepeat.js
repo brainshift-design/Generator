@@ -192,6 +192,12 @@ extends GOperator1
                          _while = await evalNumberValue(this._while, parse);
 
 
+                    if (this.nodeId == 'repeat2') 
+                    {
+                        console.log('RPT input =', input);
+                        console.log('RPT input.objects =', input.objects);
+                        console.log('RPT nRepeats =', nRepeats);
+                    }
                     if (   input
                         && nRepeats > 0
                         && (  !_while 
@@ -219,19 +225,25 @@ extends GOperator1
                         {
                             this.iterationObjects = [];
                         
-                            console.log('this.input =', this.input);
-                            if (this.input.value.objects)
+                            if (this.nodeId == 'repeat')
                             {
-                                for (let j = 0; j < this.input.value.objects.length; j++, o++)
+                                console.log('RPT repeat.currentIteration =', repeat.currentIteration);
+                                // console.log('RPT this.input =', this.input);
+                            }
+                            if (input.objects)
+                            {
+                                for (let j = 0; j < input.objects.length; j++, o++)
                                 {
-                                    const obj = copyFigmaObject(this.input.value.objects[j]);
+                                    const obj = copyFigmaObject(input.objects[j]);
+
+                                    if (this.nodeId == 'repeat2') 
+                                    {
+                                        //console.log('RPT input.objects[j] =', input.objects[j]);
+                                        console.log('1 RPT obj =', obj.copy());
+                                    }
 
 
-                                    const copy = obj.copy();
-                                    //copy.objectId += OBJECT_SEPARATOR + repeat.currentIteration;
-                                    //copy.objectId += OBJECT_SEPARATOR + repeat.currentIteration;
-
-                                    this.iterationObjects.push(copy);
+                                    this.iterationObjects.push(obj.copy());
 
 
                                     if (  !iteration.isValid()
@@ -246,7 +258,15 @@ extends GOperator1
                                         obj.itemIndex   = repeat.currentIteration;
 
                                         if (this.value.objects)
-                                            this.value.objects.push(obj);
+                                        {
+                                            if (this.nodeId == 'repeat2') 
+                                                console.log('2 RPT obj =', obj.copy());
+
+                                            this.value.objects.push(obj);//.copy());
+                                            
+                                            // if (this.nodeId == 'repeat2')
+                                            //     console.log('RPT this.value.objects =', this.value.objects.map(o => o.copy()));
+                                        }
                                     }
                                 }
                             }
@@ -280,6 +300,7 @@ extends GOperator1
                         genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
                 }
 
+                console.log('');
 
                 if (   this.loop
                     && this.loop.resetLoop)
@@ -305,6 +326,9 @@ extends GOperator1
         else if (this.input)
             await evalValue(this.input, parse);
 
+        
+        if (this.nodeId == 'repeat2')
+            console.log('--RPT this.value.objects =', this.value.objects);//.map(o => o.copy()));
 
         const type = this.outputListType();
 

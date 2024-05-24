@@ -199,15 +199,18 @@ extends FigmaShape
 
     updatePathData()
     {
-        const bounds = this.getBounds();
+        if (this.type == VECTOR_PATH)
+        {
+            const bounds = this.getBounds();
 
-        this.x      = bounds.x;
-        this.y      = bounds.y;
-        this.width  = bounds.width;
-        this.height = bounds.height;
+            this.x      = bounds.x;
+            this.y      = bounds.y;
+            this.width  = bounds.width;
+            this.height = bounds.height;
 
-        this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
-
+            this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
+        }
+        
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
     }
 
