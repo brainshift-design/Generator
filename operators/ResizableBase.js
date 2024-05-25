@@ -137,6 +137,13 @@ extends OperatorBase
             setRect(sizer, dx, dy);
                 
             
+            if (!dragCreatingNode)
+            {
+                const dOffset = getScrollOffset(e.clientX, e.clientY);
+                setAutoScrollTimer(dOffset, e, sizer);
+            }
+
+
             e.preventDefault();
             e.stopImmediatePropagation();
 

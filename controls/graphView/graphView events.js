@@ -499,7 +499,7 @@ function getScrollOffset(px, py)
 
 
 
-function setAutoScrollTimer(dScroll, e)
+function setAutoScrollTimer(dScroll, e, sizer = null)
 {
     const px = graphView.p.x;
     const py = graphView.p.y;
@@ -518,6 +518,13 @@ function setAutoScrollTimer(dScroll, e)
     graph.currentPage.pan = point(
         graph.currentPage.pan.x + dScroll.x, 
         graph.currentPage.pan.y + dScroll.y);
+
+
+    if (sizer)
+    {       
+        sizer.sx += dScroll.x, 
+        sizer.sy += dScroll.y;
+    }
 
         
     if (graphView.selecting)
@@ -541,5 +548,5 @@ function setAutoScrollTimer(dScroll, e)
 
     if (   dScroll.x != 0
         || dScroll.y != 0)
-        autoScrollTimer = setTimeout(() => setAutoScrollTimer(dScroll, e), 20);
+        autoScrollTimer = setTimeout(() => setAutoScrollTimer(dScroll, e, sizer), 20);
 }

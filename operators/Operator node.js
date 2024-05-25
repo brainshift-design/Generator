@@ -240,7 +240,7 @@ Operator.prototype.createHeader = function()
             if (!dragCreatingNode)
             {
                 const dOffset = getScrollOffset(e.clientX, e.clientY);
-                setAutoScrollTimer(dOffset, e.clientX, e.clientY);
+                setAutoScrollTimer(dOffset, e);
             }
 
             this.div.moved = true;
