@@ -27,7 +27,7 @@
 ../html/about.html
 ../html/restartWarning.html
 ../html/deleteConnections.html
-../html/deleteNodesWarning.html
+../html/warningDialog.html
 ../html/saveAsTemplate.html
 ../html/manageTemplates.html
 ../html/subscription.html

@@ -94,6 +94,7 @@ function initTemplateMenuTemplates(templates, showNames, modifiers)
                 if (j == nameParts.length-1)
                 {
                     const modMenu = new Menu('Modify template', false, false);
+
                     modMenu.minWidth      = 104;
                     modMenu.forceMinWidth = true;
                     modMenu.addItems([new AdjustMenuItem(i, {callback: adjustTemplateMenu})]);
@@ -115,6 +116,7 @@ function initTemplateMenuTemplates(templates, showNames, modifiers)
         else
         {
             const modMenu = new Menu('Modify template', false, false);
+
             modMenu.minWidth      = 104;
             modMenu.forceMinWidth = true;
             modMenu.addItems([new AdjustMenuItem(i, {callback: adjustTemplateMenu})]);
@@ -140,6 +142,7 @@ function adjustTemplateMenu(e, thisMenu, action, template)
 {
     const curMenu = thisMenu.parentItem.parentMenu;
     
+    
     if (action == 0) // up
     {
         const index = userTemplates.indexOf(template);
@@ -150,6 +153,7 @@ function adjustTemplateMenu(e, thisMenu, action, template)
 
         updateTemplateOrderOnServer();
     }
+    
     else if (action == 1) // down
     {
         const index = userTemplates.indexOf(template);
@@ -160,6 +164,7 @@ function adjustTemplateMenu(e, thisMenu, action, template)
 
         updateTemplateOrderOnServer();
     }
+    
     else if (action == 2) // rename
     {
         hideAllMenus();
@@ -174,26 +179,34 @@ function adjustTemplateMenu(e, thisMenu, action, template)
 
         saveAsTemplateTitleText.innerHTML = 'Rename template';
     }
+    
     else if (action == 3) // delete
     {
         if (userTemplates.find(t => t.name == template.name))
         {
-            return postToServer(
-            {
-                action: 'deleteTemplate',
-                userId:  currentUser.id,
-                name:    template.name
-            })
-            .then(response =>
-            {
-                hideAllMenus();
-                updateUserTemplatesFromDB();
-            })
-            .catch(e =>
-            {
-                console.error(e);
-                throw e;
-            });
+            hideAllMenus();
+
+            showWarningDialog(
+                'Warning',
+                'Deleting \'' + template.name + '\'.&ensp;Are you sure?',
+                'Delete',
+                'No',
+                () => postToServer(
+                {
+                    action: 'deleteTemplate',
+                    userId:  currentUser.id,
+                    name:    template.name
+                })
+                .then(response =>
+                {
+                    hideAllMenus();
+                    updateUserTemplatesFromDB();
+                })
+                .catch(e =>
+                {
+                    console.error(e);
+                    throw e;
+                }));
         }
     }
 }
