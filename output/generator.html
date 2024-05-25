@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 425;
+const generatorVersion = 426;
 
 
 const MAX_INT32        = 2147483647;
@@ -8616,8 +8616,31 @@ extends FigmaShape
 
             this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
         }
-        
+
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
+    }
+
+
+
+    checkFlipped(flipX, flipY)
+    {
+        super.checkFlipped(flipX, flipY);
+
+
+        const bounds = this.getBounds();
+
+
+        // for (const point of this.points)
+        // {
+        //     if (flipX) point.x.value = bounds.width  - point.x.value;
+        //     if (flipY) point.y.value = bounds.height - point.y.value;
+        // }
+
+        for (const point of this.pathPoints)
+        {
+            if (flipX) point.x = bounds.width  - point.x;
+            if (flipY) point.y = bounds.height - point.y;
+        }
     }
 
 
@@ -18768,7 +18791,6 @@ extends GOperator1
                         genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
                 }
 
-                console.log('');
 
                 if (   this.loop
                     && this.loop.resetLoop)
@@ -20243,13 +20265,13 @@ extends GOperator
 
         for (const obj of this.value.objects)
         {
-            // const angle1 = anglev_(obj.sp0, obj.sp1);
-            // const angle2 = anglev_(obj.sp0, obj.sp2);
+            const angle1 = anglev_(obj.sp0, obj.sp1);
+            const angle2 = anglev_(obj.sp0, obj.sp2);
 
             obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
             
-            // obj.sp1 = addv(obj.sp0, vector(angle1, 1));
-            // obj.sp2 = addv(obj.sp0, vector(angle2, 1));
+            obj.sp1 = addv(obj.sp0, vector(angle1, 1));
+            obj.sp2 = addv(obj.sp0, vector(angle2, 1));
 
             obj.resetSpace(bounds, singlePoint);
         }
@@ -44258,13 +44280,11 @@ extends GOperator1
                     
             for (const obj of this.value.objects)
             {
-                if (this.nodeId == 'move2') console.log('1 MOV obj =', obj.copy());
                 obj.nodeId    = this.nodeId;
                 obj.objectId += OBJECT_SEPARATOR + this.nodeId;
 
                 if (this.options.enabled)
                     obj.applyTransform(xform, affectSpace);
-                if (this.nodeId == 'move2') console.log('2 MOV obj =', obj.copy());
             }
 
 

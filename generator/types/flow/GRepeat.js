@@ -273,7 +273,6 @@ extends GOperator1
                         genUpdateNodeProgress(parse, this.nodeId, i / nRepeats);
                 }
 
-                console.log('');
 
                 if (   this.loop
                     && this.loop.resetLoop)

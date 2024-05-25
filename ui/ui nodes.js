@@ -602,7 +602,7 @@ function handleLegacyNode(_node, genVersion)
 
     if (_node.params)
     {
-        const foundIndex = _node.params.findIndex(p => p[1] == 'showCenter')
+        const foundIndex = _node.params.findIndex(p => p[1] == 'showCenter');
 
         if (foundIndex > -1)
             _node.params.splice(foundIndex, 1);
@@ -684,7 +684,8 @@ function handleLegacyNode(_node, genVersion)
 
         const paramPosition = _node.params.find(p => p[1] == 'position');
 
-        if (   paramPosition
+        if (   genVersion < 423
+            && paramPosition
             && paramPosition[2] == '3,0')
             paramPosition[1] = '4,0';
 

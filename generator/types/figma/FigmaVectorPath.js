@@ -210,8 +210,31 @@ extends FigmaShape
 
             this.createDefaultTransformPoints(this.x, this.y, this.width, this.height);
         }
-        
+
         this.pathData = getPathDataFromPoints(this.pathPoints, this.closed, this.degree);
+    }
+
+
+
+    checkFlipped(flipX, flipY)
+    {
+        super.checkFlipped(flipX, flipY);
+
+
+        const bounds = this.getBounds();
+
+
+        // for (const point of this.points)
+        // {
+        //     if (flipX) point.x.value = bounds.width  - point.x.value;
+        //     if (flipY) point.y.value = bounds.height - point.y.value;
+        // }
+
+        for (const point of this.pathPoints)
+        {
+            if (flipX) point.x = bounds.width  - point.x;
+            if (flipY) point.y = bounds.height - point.y;
+        }
     }
 
 
