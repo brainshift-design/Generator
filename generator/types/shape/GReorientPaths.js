@@ -62,29 +62,33 @@ extends GShape
             }
 
 
-            const reorientedPaths = reorientPaths(paths, reverse.value > 0);
-
-            
             this.value = new ListValue();
 
-            
+
+            const reorientedPaths = 
+                this.options.enabled
+                ? reorientPaths(paths, reverse.value > 0)
+                : paths
+                      .filter(path => path.objects && path.objects.length > 0)
+                      .map   (path => path.objects[0].pathPoints);
+        ;
+
             consoleAssert(paths.length == reorientedPaths.length, 'original path count must match reoriented path count');
+            
             
             for (let i = 0; i < reorientedPaths.length; i++)
             {
                 const points = 
-                       this.options.enabled
-                    && reorientedPaths[i]
+                    reorientedPaths[i]
                     ? reorientedPaths[i].map(p => PointValue.fromPoint(this.nodeId, p))
                     :    paths[i]
-                      && paths[i].points
-                      ? paths[i].points.items
-                      : [];
+                    && paths[i].points
+                    ? paths[i].points.items
+                    : [];
 
                 if (points.length == 0)
                     continue;
-
-
+                
                 const path = new VectorPathValue(
                     this.nodeId,
                     new ListValue(points),
@@ -92,9 +96,9 @@ extends GShape
                     paths[i].degree,
                     paths[i].winding,
                     paths[i].round);
-
+                    
                 path.copyBase(paths[i]);
-
+                
                 this.value.items.push(path);
             }
         }
