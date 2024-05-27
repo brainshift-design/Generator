@@ -424,7 +424,8 @@ const SHAPE_VALUE           = 'SHP#'; // abstract placeholder
  
 const RECTANGLE_VALUE       = 'RECT#';
 const RECTANGLE             = 'RECT'; 
-const RECTANGLE_TYPES       = [RECTANGLE_VALUE, RECTANGLE];
+//const RECTANGLE_EXT         = 'RECTEXT'; 
+const RECTANGLE_TYPES       = [RECTANGLE_VALUE, RECTANGLE];//, RECTANGLE_EXT];
  
 const LINE_VALUE            = 'LINE#';
 const LINE                  = 'LINE'; 

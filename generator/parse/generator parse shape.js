@@ -63,6 +63,71 @@ function genParseRectangle(parse)
 
 
 
+// function genParseRectangleExt(parse)
+// {
+//     const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+//     const rect = new GRectangleExt(nodeId, options);
+
+
+//     let nInputs = -1;
+
+//     if (!ignore)
+//     {
+//         nInputs = parseInt(parse.move());
+//         consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+//     }
+
+
+//     if (parse.settings.logRequests) 
+//         logReq(rect, parse, ignore);
+
+
+//     if (ignore) 
+//     {
+//         genParseNodeEnd(parse, rect);
+//         return parse.parsedNodes.find(n => n.nodeId == nodeId);
+//     }
+
+
+//     parse.nTab++;
+
+
+//     if (nInputs == 1)
+//         rect.input = genParse(parse);
+
+
+//     const nParamIds = genParseParamCount(parse);
+
+//     for (let i = 0; i < nParamIds; i++)
+//     {
+//         const paramId = genParseParamId(parse);
+
+//         parse.inParam = true;
+
+//         switch (paramId)
+//         {
+//         case 'top':    rect.top    = genParse(parse); break;
+//         case 'left':   rect.left   = genParse(parse); break;
+//         case 'right':  rect.right  = genParse(parse); break;
+//         case 'bottom': rect.bottom = genParse(parse); break;
+//         case 'round':  rect.round  = genParse(parse); break;
+//         case 'props':  rect.props  = genParse(parse); break;
+//         }
+//     }
+
+
+//     parse.inParam = false;
+//     parse.nTab--;
+
+
+//     genParseNodeEnd(parse, rect);
+//     return rect;
+// }
+
+
+
 function genParseLine(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

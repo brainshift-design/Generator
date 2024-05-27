@@ -210,7 +210,7 @@ extends GShape
                 obj.resetSpace(bounds, singlePoint);
 
                 if (pos > 0)
-                    obj.applyTransform(xoff);
+                    obj.applyTransform(xoff, 2);
 
                 this.addChildObject(frame.children, obj);
             }

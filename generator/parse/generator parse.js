@@ -292,6 +292,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == COLOR_STYLE            ) result = genParseColorStyle        (parse);
       
     else if (parse.next == RECTANGLE              ) result = genParseRectangle         (parse);
+    //else if (parse.next == RECTANGLE_EXT          ) result = genParseRectangleExt      (parse);
     else if (parse.next == LINE                   ) result = genParseLine              (parse);
     else if (parse.next == ELLIPSE                ) result = genParseEllipse           (parse);
     else if (parse.next == TRAPEZE                ) result = genParseTrapeze           (parse);

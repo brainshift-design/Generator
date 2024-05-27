@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 427;
+const generatorVersion = 429;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -915,7 +915,8 @@ const COLOR_STYLE = 'CSTL';
 const SHAPE_VALUE = 'SHP#'; // abstract placeholder
 const RECTANGLE_VALUE = 'RECT#';
 const RECTANGLE = 'RECT';
-const RECTANGLE_TYPES = [RECTANGLE_VALUE, RECTANGLE];
+//const RECTANGLE_EXT         = 'RECTEXT'; 
+const RECTANGLE_TYPES = [RECTANGLE_VALUE, RECTANGLE]; //, RECTANGLE_EXT];
 const LINE_VALUE = 'LINE#';
 const LINE = 'LINE';
 const LINE_TYPES = [LINE_VALUE, LINE];

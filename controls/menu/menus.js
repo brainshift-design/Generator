@@ -758,7 +758,9 @@ function initGeneratorMenus()
 
     menuRectangle = new Menu('Rectangle', true, false);
     menuRectangle.addItems([
-        new MenuItem('Round corners',  null, true, {icon: iconRoundCorners, createType: ROUND_CORNERS, callback: e => actionManager.do(getCreateNodeAction(ROUND_CORNERS, btnShape.div, getCreateOptions(e)))})]);
+        // new MenuItem('Extents',        null, true,  {icon: iconRectangleExt, createType: RECTANGLE_EXT, callback: e => actionManager.do(getCreateNodeAction(RECTANGLE_EXT, btnShape.div, getCreateOptions(e)))}),
+        // new MenuItem('',               null, false, {separator: true}),
+        new MenuItem('Round corners',  null, true,  {icon: iconRoundCorners, createType: ROUND_CORNERS, callback: e => actionManager.do(getCreateNodeAction(ROUND_CORNERS, btnShape.div, getCreateOptions(e)))})]);
 
 
     menuShapes = new Menu('Shapes', true, false);

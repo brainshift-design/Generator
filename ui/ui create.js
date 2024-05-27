@@ -154,6 +154,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case COLOR_STYLE:             node = new OpColorStyle(options);  break;
  
         case RECTANGLE:               node = new OpRectangle();          break;
+        // case RECTANGLE_EXT:           node = new OpRectangleExt();       break;
         case LINE:                    node = new OpLine();               break;
         case ELLIPSE:                 node = new OpEllipse();            break;
         case TRAPEZE:                 node = new OpTrapeze();            break;

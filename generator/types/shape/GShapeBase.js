@@ -41,9 +41,9 @@ extends GOperator
 
     async evalBaseParams(parse, evalHeight = true)
     {
-        let x      = await evalNumberValue(this.x,     parse);
-        let y      = await evalNumberValue(this.y,     parse);
-        let width  = await evalNumberValue(this.width, parse);
+        let x      =              await evalNumberValue(this.x,     parse);
+        let y      =              await evalNumberValue(this.y,     parse);
+        let width  =              await evalNumberValue(this.width, parse);
         let height = evalHeight ? await evalNumberValue(this.height, parse) : null;
 
         return [x, y, width, height];

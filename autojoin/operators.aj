@@ -197,6 +197,7 @@
 ../operators/shape/OpShapeBase.js
 ../operators/shape/OpShape.js
 ../operators/shape/OpRectangle.js
+//../operators/shape/OpRectangleExt.js
 ../operators/shape/OpLine.js
 ../operators/shape/OpEllipse.js
 ../operators/shape/OpTrapeze.js

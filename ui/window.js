@@ -75,6 +75,13 @@ function uiResizeWindow(width, height)
 
     updateObjectCountDisplay();
 
+
+    btnSolo.div.style.display = 
+        window.innerWidth >= 646 
+        ? 'inline-block' 
+        : 'none';
+
+        
     uiQueueMessageToFigma({ 
         cmd:   'figResizeWindow', 
         width:  width,
@@ -100,12 +107,6 @@ function updateObjectCountDisplay()
     objectCountWrapper.style.display = 
            settings.showObjectCount
         && window.innerWidth >= 698 
-        ? 'inline-block' 
-        : 'none';
-
-    btnSolo.div.style.display = 
-           settings.showObjectCount
-        && window.innerWidth >= 646 
         ? 'inline-block' 
         : 'none';
 }
