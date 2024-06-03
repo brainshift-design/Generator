@@ -251,8 +251,8 @@ extends OpColorBase
 
         else if (stops.length > 1)
         {
-            if (this.value.gradType.value == 3) this.createDiamondGradient(stops, this.value.gradType.value);
-            else                                this.createNormalGradient(stops);
+            if (this.value.gradType.value == 3) this.createDiamondGradient(stops.map(s => s.copy()), this.value.gradType.value);
+            else                                this.createNormalGradient(stops.map(s => s.copy()));
         }
 
 
@@ -323,10 +323,10 @@ extends OpColorBase
 
         switch (this.value.gradType.value)
         {
-            case 0: gradient += 'linear-gradient'; break;
-            case 1: gradient += 'radial-gradient'; break;
-            case 2: gradient += 'conic-gradient';  break;
-            // case 3: gradient += 'radial-gradient'; break;
+            case 0: gradient += 'linear-gradient';  break;
+            case 1: gradient += 'radial-gradient';  break;
+            case 2: gradient += 'conic-gradient';   break;
+         // case 3: gradient += 'diamond-gradient'; break;
         }
 
 
@@ -362,6 +362,9 @@ extends OpColorBase
 
         for (const stop of stops)
             stop.position.value = (stop.position.value - minPos) / nozero(maxPos - minPos) * 100;
+
+
+        this.antialiasGradientStops(stops);
 
 
         for (let i = 0; i < stops.length; i++)
@@ -402,6 +405,9 @@ extends OpColorBase
 
     createDiamondGradient(stops, type)
     {
+        this.antialiasGradientStops(stops);
+
+        
         const strStops = this.getGradientStops(stops, type);
 
         const ha = 
@@ -485,6 +491,38 @@ extends OpColorBase
 
 
         return gradient;
+    }
+
+
+
+    antialiasGradientStops(stops)
+    {
+        const th = 1;// / graph.currentPage.zoom;
+        const c  = Math.floor(stops.length/2);
+
+        
+        for (let i = c; i > 0; i--)
+        {
+            const di = stops[i].position.value - stops[i-1].position.value;
+
+            if (di < th)
+            {
+                for (let k = i; k <= c; k++)
+                    stops[k].position.value += th;
+            }
+        }
+
+
+        for (let i = c-1; i < stops.length-1; i++)
+        {
+            const dj = stops[i+1].position.value - stops[i].position.value;
+
+            if (dj < th)
+            {
+                for (let k = i; k >= c; k--)
+                    stops[k].position.value -= th;
+            }
+        }
     }
 
 

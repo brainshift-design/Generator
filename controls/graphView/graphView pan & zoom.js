@@ -19,7 +19,7 @@ GraphView.prototype.updatePanAndZoom = function(updateNodes)
 {
     this.updateNodes(graph.pageNodes, updateNodes);
 
-    
+        
     setTimeout(() =>
     {
         updateZoomTooltip();

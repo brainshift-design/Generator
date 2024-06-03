@@ -5,8 +5,8 @@ function updateZoomTooltip()
         ttMinValueZoom.innerHTML =
               '<p style="margin-top: 5px; width: 100%; text-align: center; position: relative; left: -2px;">Zoom/view options</p>'
             + '<p style="margin-top: 1.25em">'
-            + '    A filled node behind the zoom means<br/>'
-            + '    that values are too small to adjust<br/>'
+            + '    Solid white behind the zoom value<br/>'
+            + '    means values are too small to adjust<br/>'
             + '    and nodes can only be moved.'
             + '</p>'
             + '<p style="margin-top: 1.25em">The threshold can be changed in the preferences menu.</p>';
