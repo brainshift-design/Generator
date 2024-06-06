@@ -7751,14 +7751,18 @@ function addGradientProp(obj, prop, target = obj.fills)
     for (let j = 0; j < stops.length; j++)
     {
         const stop = stops[j];
-        const rgba = stop.fill.toRgba();
 
-        gradient[2].push([
-            rgba[0], 
-            rgba[1], 
-            rgba[2], 
-            rgba[3],
-            Math.min(Math.max(0, stop.position.value / 100), 1)]);
+        if (stop.fill)
+        {
+            const rgba = stop.fill.toRgba();
+
+            gradient[2].push([
+                rgba[0], 
+                rgba[1], 
+                rgba[2], 
+                rgba[3],
+                Math.min(Math.max(0, stop.position.value / 100), 1)]);
+        }
     }
 
 
@@ -10781,8 +10785,7 @@ extends GNode
         this.valid    = base.valid;
         this.topLevel = base.topLevel;
 
-        if (base.value) 
-            this.value = base.value.copy();
+        if (base.value) this.value = base.value.copy();
     }
 
 
@@ -19257,8 +19260,7 @@ extends GOperator
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
+        if (this.input) copy.input = this.input.copy();
         
         for (const key of this.keys())
         {
@@ -20193,7 +20195,8 @@ extends GOperator
         copy.copyBase(this);
 
         copy.inputs = this.inputs.map(i => i.copy());
-        copy.value  = this.value.copy();
+
+        if (this.value) copy.value = this.value.copy();
 
         return copy;
     }
@@ -22733,8 +22736,7 @@ extends GOperator1
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
+        if (this.input) copy.input = this.input.copy();
         
         for (const key of this.keys())
         {
@@ -23912,7 +23914,7 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.decimals = this.decimals.copy();
+        if (this.decimals) copy.decimals = this.decimals.copy();
 
         return copy;
     }
@@ -24287,8 +24289,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.type     = this.type    .copy();
-        copy.decimals = this.decimals.copy();
+        if (this.type    ) copy.type     = this.type    .copy();
+        if (this.decimals) copy.decimals = this.decimals.copy();
 
         return copy;
     }
@@ -24443,10 +24445,10 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.type   = this.type  .copy();
-        copy.base   = this.base  .copy();
-        copy.step   = this.step  .copy();
-        copy.amount = this.amount.copy();
+        if (this.type  ) copy.type   = this.type  .copy();
+        if (this.base  ) copy.base   = this.base  .copy();
+        if (this.step  ) copy.step   = this.step  .copy();
+        if (this.amount) copy.amount = this.amount.copy();
 
         return copy;
     }
@@ -24614,8 +24616,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.operand   = this.operand  .copy();
-        copy.operation = this.operation.copy();
+        if (this.operand  ) copy.operand   = this.operand  .copy();
+        if (this.operation) copy.operation = this.operation.copy();
 
         return copy;
     }
@@ -24771,8 +24773,9 @@ extends GArithmetic
 
         copy.copyBase(this);
 
-        copy.inputs    = this.inputs.map(i => i.copy());
-        copy.operation = this.operation.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
+
+        if (this.operation) copy.operation = this.operation.copy();
 
         return copy;
     }
@@ -24962,8 +24965,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.min = this.min.copy();
-        copy.max = this.max.copy();
+        if (this.min) copy.min = this.min.copy();
+        if (this.max) copy.max = this.max.copy();
 
         return copy;
     }
@@ -25122,9 +25125,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.min   = this.min  .copy();
-        copy.max   = this.max  .copy();
-        copy.power = this.power.copy();
+        if (this.min  ) copy.min   = this.min  .copy();
+        if (this.max  ) copy.max   = this.max  .copy();
+        if (this.power) copy.power = this.power.copy();
 
         return copy;
     }
@@ -25287,8 +25290,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.from = this.from.copy();
-        copy.to   = this.to  .copy();
+        if (from) copy.from = this.from.copy();
+        if (to  ) copy.to   = this.to  .copy();
 
         return copy;
     }
@@ -25506,10 +25509,10 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.min    = this.min   .copy();
-        copy.max    = this.max   .copy();
-        copy.bias   = this.bias  .copy();
-        copy.spread = this.spread.copy();
+        if (this.min   ) copy.min    = this.min   .copy();
+        if (this.max   ) copy.max    = this.max   .copy();
+        if (this.bias  ) copy.bias   = this.bias  .copy();
+        if (this.spread) copy.spread = this.spread.copy();
 
         return copy;
     }
@@ -25699,7 +25702,7 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy._value = this._value.copy();
+        if (this._value) copy._value = this._value.copy();
 
         return copy;
     }
@@ -25956,13 +25959,13 @@ extends GOperator
         
         copy.copyBase(this);
         
-        copy.seconds   = this.seconds  .copy();
-        copy.minutes   = this.minutes  .copy();
-        copy.hours     = this.hours    .copy();
-        copy.dayOfWeek = this.dayOfWeek.copy();
-        copy.date      = this.date     .copy();
-        copy.month     = this.month    .copy();
-        copy.year      = this.year     .copy();
+        if (this.seconds  ) copy.seconds   = this.seconds  .copy();
+        if (this.minutes  ) copy.minutes   = this.minutes  .copy();
+        if (this.hours    ) copy.hours     = this.hours    .copy();
+        if (this.dayOfWeek) copy.dayOfWeek = this.dayOfWeek.copy();
+        if (this.date     ) copy.date      = this.date     .copy();
+        if (this.month    ) copy.month     = this.month    .copy();
+        if (this.year     ) copy.year      = this.year     .copy();
 
         return copy;
     }    
@@ -27881,8 +27884,8 @@ extends GOperator2
 
         copy.inputs = this.inputs.map(i => i.copy());
 
-        copy.amount = this.amount.copy();
-        copy.degree = this.degree.copy();
+        if (this.amount) copy.amount = this.amount.copy();
+        if (this.degree) copy.degree = this.degree.copy();
 
         return copy;
     }
@@ -28092,8 +28095,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.current = this.current.copy();
-        copy.target  = this.target .copy();
+        if (this.current) copy.current = this.current.copy();
+        if (this.target ) copy.target  = this.target .copy();
 
         return copy;
     }
@@ -29231,9 +29234,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.operation = this.operation.copy();
-        copy.operand   = this.operand  .copy();
-        copy.invert    = this.invert   .copy();
+        if (this.operation) copy.operation = this.operation.copy();
+        if (this.operand  ) copy.operand   = this.operand  .copy();
+        if (this.invert   ) copy.invert    = this.invert   .copy();
 
         return copy;
     }
@@ -29445,7 +29448,8 @@ extends GArithmetic
         copy.copyBase(this);
 
         copy.inputs    = this.inputs.map(i => i.copy());
-        copy.operation = this.operation.copy();
+
+        if (this.operation) copy.operation = this.operation.copy();
 
         return copy;
     }
@@ -30025,8 +30029,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.operation = this.operation.copy();
-        copy.operand   = this.operand  .copy();
+        if (this.operation) copy.operation = this.operation.copy();
+        if (this.operand  ) copy.operand   = this.operand  .copy();
 
         return copy;
     }
@@ -30441,7 +30445,7 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.function = this.function.copy();
+        if (this.function) copy.function = this.function.copy();
 
         return copy;
     }
@@ -30777,8 +30781,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        copy.x = this.x.copy();
-        copy.y = this.x.copy();
+        if (this.x) copy.x = this.x.copy();
+        if (this.y) copy.y = this.y.copy();
 
         return copy;
     }
@@ -30882,7 +30886,7 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.from = this.from.copy();
+        if (this.from) copy.from = this.from.copy();
 
         return copy;
     }
@@ -31160,8 +31164,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.start = this.start.copy();
-        copy.end   = this.end  .copy();
+        if (this.start) copy.start = this.start.copy();
+        if (this.end  ) copy.end   = this.end  .copy();
 
         return copy;
     }
@@ -31308,8 +31312,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.start = this.start.copy();
-        copy.end   = this.end  .copy();
+        if (this.start) copy.start = this.start.copy();
+        if (this.end  ) copy.end   = this.end  .copy();
 
         return copy;
     }
@@ -31572,7 +31576,7 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.case = this.case.copy();
+        if (this.case) copy.case = this.case.copy();
 
         return copy;
     }
@@ -32476,8 +32480,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        copy.name  = this.name .copy();
-        copy.index = this.index.copy();
+        if (this.name ) copy.name  = this.name .copy();
+        if (this.index) copy.index = this.index.copy();
 
         return copy;
     }
@@ -32624,11 +32628,11 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.what  = this.what .copy();
-        copy.with  = this.with .copy();
-        copy.regex = this.regex.copy();
+        if (this.what ) copy.what  = this.what .copy();
+        if (this.with ) copy.with  = this.with .copy();
+        if (this.regex) copy.regex = this.regex.copy();
 
-        copy.value = this.value.copy();
+        if (this.value) copy.value = this.value.copy();
 
         return copy;
     }
@@ -32969,10 +32973,10 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.startPad   = this.startPad  .copy();
-        copy.startCount = this.startCount.copy();
-        copy.endPad     = this.endPad    .copy();
-        copy.endCount   = this.endCount  .copy();
+        if (this.startPad  ) copy.startPad   = this.startPad  .copy();
+        if (this.startCount) copy.startCount = this.startCount.copy();
+        if (this.endPad    ) copy.endPad     = this.endPad    .copy();
+        if (this.endCount  ) copy.endCount   = this.endCount  .copy();
 
         return copy;
     }
@@ -33255,7 +33259,7 @@ extends GOperator2
 
         copy.copyBase(this);
 
-        copy.operation = this.operation.copy();
+        if (this.operation) copy.operation = this.operation.copy();
 
         return copy;
     }
@@ -33662,8 +33666,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        copy.request     = this.request    .copy();
-        copy.cachedValue = this.cachedValue.copy();
+        if (this.request    ) copy.request     = this.request    .copy();
+        if (this.cachedValue) copy.cachedValue = this.cachedValue.copy();
 
         return copy;
     }
@@ -33799,7 +33803,7 @@ extends GOperator
 
         copy.copyBase(this);
 
-        copy.cachedValue = this.cachedValue.copy();
+        if (this.cachedValue) copy.cachedValue = this.cachedValue.copy();
 
         return copy;
     }
@@ -35208,8 +35212,8 @@ extends GOperator2
 
         copy.copyBase(this);
 
-        copy.standard = this.standard.copy();
-        copy.contrast = this.contrast.copy();
+        if (this.standard) copy.standard = this.standard.copy();
+        if (this.contrast) copy.contrast = this.contrast.copy();
 
         return copy;
     }
@@ -35527,9 +35531,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.l = this.l.copy();
-        copy.m = this.m.copy();
-        copy.s = this.s.copy();
+        if (this.l) copy.l = this.l.copy();
+        if (this.m) copy.m = this.m.copy();
+        if (this.s) copy.s = this.s.copy();
 
         return copy;
     }
@@ -35688,9 +35692,9 @@ extends GOperator2
 
         copy.copyBase(this);
 
-        copy.space  = this.space .copy();
-        copy.amount = this.amount.copy();
-        copy.gamma  = this.gamma .copy();
+        if (this.space ) copy.space  = this.space .copy();
+        if (this.amount) copy.amount = this.amount.copy();
+        if (this.gamma ) copy.gamma  = this.gamma .copy();
 
         return copy;
     }
@@ -35882,8 +35886,8 @@ extends GOperator2
 
         copy.copyBase(this);
 
-        copy.mode    = this.mode   .copy();
-        copy.opacity = this.opacity.copy();
+        if (this.mode   ) copy.mode    = this.mode   .copy();
+        if (this.opacity) copy.opacity = this.opacity.copy();
 
         return copy;
     }
@@ -36415,12 +36419,13 @@ extends GOperator
     {
         const copy = new GColorStyle(this.nodeId, this.options);
 
-        copy.id         = this.id;
-        copy.colorStyle = this.colorStyle.copy();
-        copy.genValue   = this.genValue  .copy();
+        copy.id = this.id;
+
+        if (this.colorStyle) copy.colorStyle = this.colorStyle.copy();
+        if (this.genValue  ) copy.genValue   = this.genValue  .copy();
         
-        //copy.existing   = this.existing;
-        copy.linked     = this.linked;
+      //copy.existing = this.existing;
+        copy.linked   = this.linked;
 
         return copy;
     }
@@ -36962,9 +36967,12 @@ extends GOperator
 
         let stops = new ListValue();
 
-        for (let i = 0, o = 0; i < this.inputs.length; i++)
+        const inputs = this.inputs.map(async i => await evalValue(i, parse));
+
+
+        for (let i = 0, o = 0; i < inputs.length; i++)
         {
-            const input = await evalColorStopValue(this.inputs[i], parse);
+            const input = this.inputs[i];
 
             if (   input
                 && this.options.enabled)
@@ -37018,15 +37026,19 @@ extends GOperator
         ]);
         
 
-        // if (!this.gradType) this.gradType = this.value.gradType.copy();
-        // if (!this.position) this.position = this.value.position.copy();
-        // if (!this.x       ) this.x        = this.value.x       .copy();
-        // if (!this.y       ) this.y        = this.value.y       .copy();
-        // if (!this.size    ) this.size     = this.value.size    .copy();
-        // if (!this.angle   ) this.angle    = this.value.angle   .copy();
-        // if (!this.aspect  ) this.aspect   = this.value.aspect  .copy();
-        // if (!this.skew    ) this.skew     = this.value.skew    .copy();
-        // if (!this.blend   ) this.blend    = this.value.blend   .copy();
+        if (   inputs.length == 1
+            && inputs[0].type == GRADIENT_VALUE)
+        {
+            //if (!this.gradType) this.gradType = this.value.gradType.copy();
+            // if (!this.position) this.position = this.value.position.copy();
+            // if (!this.x       ) this.x        = this.value.x       .copy();
+            // if (!this.y       ) this.y        = this.value.y       .copy();
+            // if (!this.size    ) this.size     = this.value.size    .copy();
+            // if (!this.angle   ) this.angle    = this.value.angle   .copy();
+            // if (!this.aspect  ) this.aspect   = this.value.aspect  .copy();
+            // if (!this.skew    ) this.skew     = this.value.skew    .copy();
+            // if (!this.blend   ) this.blend    = this.value.blend   .copy();
+        }
 
 
         this.validate();
@@ -47726,8 +47738,8 @@ extends GShape
 
         copy.inputs = this.inputs.map(i => i.copy());
 
-        copy.amount = this.amount.copy();
-        copy.degree = this.degree.copy();
+        if (this.amount) copy.amount = this.amount.copy();
+        if (this.degree) copy.degree = this.degree.copy();
 
         return copy;
     }
@@ -48240,7 +48252,7 @@ extends GOperator
 class GGroupParam
 extends GOperator
 {
-    input = null;
+    input    = null;
     
     dataType = NULL;
 
@@ -48269,8 +48281,7 @@ extends GOperator
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
+        if (this.input) copy.input = this.input.copy();
         
         copy.dataType = this.dataType;
       

@@ -39,13 +39,13 @@ extends GOperator
         
         copy.copyBase(this);
         
-        copy.seconds   = this.seconds  .copy();
-        copy.minutes   = this.minutes  .copy();
-        copy.hours     = this.hours    .copy();
-        copy.dayOfWeek = this.dayOfWeek.copy();
-        copy.date      = this.date     .copy();
-        copy.month     = this.month    .copy();
-        copy.year      = this.year     .copy();
+        if (this.seconds  ) copy.seconds   = this.seconds  .copy();
+        if (this.minutes  ) copy.minutes   = this.minutes  .copy();
+        if (this.hours    ) copy.hours     = this.hours    .copy();
+        if (this.dayOfWeek) copy.dayOfWeek = this.dayOfWeek.copy();
+        if (this.date     ) copy.date      = this.date     .copy();
+        if (this.month    ) copy.month     = this.month    .copy();
+        if (this.year     ) copy.year      = this.year     .copy();
 
         return copy;
     }    

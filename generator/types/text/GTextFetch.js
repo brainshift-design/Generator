@@ -29,8 +29,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        copy.request     = this.request    .copy();
-        copy.cachedValue = this.cachedValue.copy();
+        if (this.request    ) copy.request     = this.request    .copy();
+        if (this.cachedValue) copy.cachedValue = this.cachedValue.copy();
 
         return copy;
     }

@@ -33,10 +33,10 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.startPad   = this.startPad  .copy();
-        copy.startCount = this.startCount.copy();
-        copy.endPad     = this.endPad    .copy();
-        copy.endCount   = this.endCount  .copy();
+        if (this.startPad  ) copy.startPad   = this.startPad  .copy();
+        if (this.startCount) copy.startCount = this.startCount.copy();
+        if (this.endPad    ) copy.endPad     = this.endPad    .copy();
+        if (this.endCount  ) copy.endCount   = this.endCount  .copy();
 
         return copy;
     }

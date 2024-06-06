@@ -29,8 +29,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.min = this.min.copy();
-        copy.max = this.max.copy();
+        if (this.min) copy.min = this.min.copy();
+        if (this.max) copy.max = this.max.copy();
 
         return copy;
     }

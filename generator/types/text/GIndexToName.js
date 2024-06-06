@@ -28,8 +28,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        copy.name  = this.name .copy();
-        copy.index = this.index.copy();
+        if (this.name ) copy.name  = this.name .copy();
+        if (this.index) copy.index = this.index.copy();
 
         return copy;
     }

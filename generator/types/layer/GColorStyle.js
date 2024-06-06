@@ -24,12 +24,13 @@ extends GOperator
     {
         const copy = new GColorStyle(this.nodeId, this.options);
 
-        copy.id         = this.id;
-        copy.colorStyle = this.colorStyle.copy();
-        copy.genValue   = this.genValue  .copy();
+        copy.id = this.id;
+
+        if (this.colorStyle) copy.colorStyle = this.colorStyle.copy();
+        if (this.genValue  ) copy.genValue   = this.genValue  .copy();
         
-        //copy.existing   = this.existing;
-        copy.linked     = this.linked;
+      //copy.existing = this.existing;
+        copy.linked   = this.linked;
 
         return copy;
     }

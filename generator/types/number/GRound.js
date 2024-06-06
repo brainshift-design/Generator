@@ -29,8 +29,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.type     = this.type    .copy();
-        copy.decimals = this.decimals.copy();
+        if (this.type    ) copy.type     = this.type    .copy();
+        if (this.decimals) copy.decimals = this.decimals.copy();
 
         return copy;
     }

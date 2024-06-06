@@ -31,9 +31,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.min   = this.min  .copy();
-        copy.max   = this.max  .copy();
-        copy.power = this.power.copy();
+        if (this.min  ) copy.min   = this.min  .copy();
+        if (this.max  ) copy.max   = this.max  .copy();
+        if (this.power) copy.power = this.power.copy();
 
         return copy;
     }

@@ -33,10 +33,10 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.type   = this.type  .copy();
-        copy.base   = this.base  .copy();
-        copy.step   = this.step  .copy();
-        copy.amount = this.amount.copy();
+        if (this.type  ) copy.type   = this.type  .copy();
+        if (this.base  ) copy.base   = this.base  .copy();
+        if (this.step  ) copy.step   = this.step  .copy();
+        if (this.amount) copy.amount = this.amount.copy();
 
         return copy;
     }

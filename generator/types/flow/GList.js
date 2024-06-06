@@ -27,8 +27,7 @@ extends GOperator1
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
+        if (this.input) copy.input = this.input.copy();
         
         for (const key of this.keys())
         {

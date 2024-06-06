@@ -33,10 +33,10 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.min    = this.min   .copy();
-        copy.max    = this.max   .copy();
-        copy.bias   = this.bias  .copy();
-        copy.spread = this.spread.copy();
+        if (this.min   ) copy.min    = this.min   .copy();
+        if (this.max   ) copy.max    = this.max   .copy();
+        if (this.bias  ) copy.bias   = this.bias  .copy();
+        if (this.spread) copy.spread = this.spread.copy();
 
         return copy;
     }

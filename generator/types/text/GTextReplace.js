@@ -31,11 +31,11 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.what  = this.what .copy();
-        copy.with  = this.with .copy();
-        copy.regex = this.regex.copy();
+        if (this.what ) copy.what  = this.what .copy();
+        if (this.with ) copy.with  = this.with .copy();
+        if (this.regex) copy.regex = this.regex.copy();
 
-        copy.value = this.value.copy();
+        if (this.value) copy.value = this.value.copy();
 
         return copy;
     }

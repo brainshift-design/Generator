@@ -28,8 +28,8 @@ extends GOperator2
 
         copy.copyBase(this);
 
-        copy.standard = this.standard.copy();
-        copy.contrast = this.contrast.copy();
+        if (this.standard) copy.standard = this.standard.copy();
+        if (this.contrast) copy.contrast = this.contrast.copy();
 
         return copy;
     }

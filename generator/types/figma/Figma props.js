@@ -222,14 +222,18 @@ function addGradientProp(obj, prop, target = obj.fills)
     for (let j = 0; j < stops.length; j++)
     {
         const stop = stops[j];
-        const rgba = stop.fill.toRgba();
 
-        gradient[2].push([
-            rgba[0], 
-            rgba[1], 
-            rgba[2], 
-            rgba[3],
-            Math.min(Math.max(0, stop.position.value / 100), 1)]);
+        if (stop.fill)
+        {
+            const rgba = stop.fill.toRgba();
+
+            gradient[2].push([
+                rgba[0], 
+                rgba[1], 
+                rgba[2], 
+                rgba[3],
+                Math.min(Math.max(0, stop.position.value / 100), 1)]);
+        }
     }
 
 

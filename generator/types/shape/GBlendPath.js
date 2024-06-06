@@ -35,8 +35,8 @@ extends GShape
 
         copy.inputs = this.inputs.map(i => i.copy());
 
-        copy.amount = this.amount.copy();
-        copy.degree = this.degree.copy();
+        if (this.amount) copy.amount = this.amount.copy();
+        if (this.degree) copy.degree = this.degree.copy();
 
         return copy;
     }

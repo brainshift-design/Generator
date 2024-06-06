@@ -30,9 +30,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.l = this.l.copy();
-        copy.m = this.m.copy();
-        copy.s = this.s.copy();
+        if (this.l) copy.l = this.l.copy();
+        if (this.m) copy.m = this.m.copy();
+        if (this.s) copy.s = this.s.copy();
 
         return copy;
     }

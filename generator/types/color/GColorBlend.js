@@ -28,8 +28,8 @@ extends GOperator2
 
         copy.copyBase(this);
 
-        copy.mode    = this.mode   .copy();
-        copy.opacity = this.opacity.copy();
+        if (this.mode   ) copy.mode    = this.mode   .copy();
+        if (this.opacity) copy.opacity = this.opacity.copy();
 
         return copy;
     }

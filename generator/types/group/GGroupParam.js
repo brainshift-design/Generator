@@ -1,7 +1,7 @@
 class GGroupParam
 extends GOperator
 {
-    input = null;
+    input    = null;
     
     dataType = NULL;
 
@@ -30,8 +30,7 @@ extends GOperator
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
+        if (this.input) copy.input = this.input.copy();
         
         copy.dataType = this.dataType;
       

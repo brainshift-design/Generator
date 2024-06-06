@@ -109,9 +109,12 @@ extends GOperator
 
         let stops = new ListValue();
 
-        for (let i = 0, o = 0; i < this.inputs.length; i++)
+        const inputs = this.inputs.map(async i => await evalValue(i, parse));
+
+
+        for (let i = 0, o = 0; i < inputs.length; i++)
         {
-            const input = await evalColorStopValue(this.inputs[i], parse);
+            const input = this.inputs[i];
 
             if (   input
                 && this.options.enabled)
@@ -165,15 +168,19 @@ extends GOperator
         ]);
         
 
-        // if (!this.gradType) this.gradType = this.value.gradType.copy();
-        // if (!this.position) this.position = this.value.position.copy();
-        // if (!this.x       ) this.x        = this.value.x       .copy();
-        // if (!this.y       ) this.y        = this.value.y       .copy();
-        // if (!this.size    ) this.size     = this.value.size    .copy();
-        // if (!this.angle   ) this.angle    = this.value.angle   .copy();
-        // if (!this.aspect  ) this.aspect   = this.value.aspect  .copy();
-        // if (!this.skew    ) this.skew     = this.value.skew    .copy();
-        // if (!this.blend   ) this.blend    = this.value.blend   .copy();
+        if (   inputs.length == 1
+            && inputs[0].type == GRADIENT_VALUE)
+        {
+            //if (!this.gradType) this.gradType = this.value.gradType.copy();
+            // if (!this.position) this.position = this.value.position.copy();
+            // if (!this.x       ) this.x        = this.value.x       .copy();
+            // if (!this.y       ) this.y        = this.value.y       .copy();
+            // if (!this.size    ) this.size     = this.value.size    .copy();
+            // if (!this.angle   ) this.angle    = this.value.angle   .copy();
+            // if (!this.aspect  ) this.aspect   = this.value.aspect  .copy();
+            // if (!this.skew    ) this.skew     = this.value.skew    .copy();
+            // if (!this.blend   ) this.blend    = this.value.blend   .copy();
+        }
 
 
         this.validate();

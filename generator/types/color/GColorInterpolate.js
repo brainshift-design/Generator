@@ -30,9 +30,9 @@ extends GOperator2
 
         copy.copyBase(this);
 
-        copy.space  = this.space .copy();
-        copy.amount = this.amount.copy();
-        copy.gamma  = this.gamma .copy();
+        if (this.space ) copy.space  = this.space .copy();
+        if (this.amount) copy.amount = this.amount.copy();
+        if (this.gamma ) copy.gamma  = this.gamma .copy();
 
         return copy;
     }

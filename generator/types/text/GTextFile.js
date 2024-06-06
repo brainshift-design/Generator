@@ -29,7 +29,7 @@ extends GOperator
 
         copy.copyBase(this);
 
-        copy.cachedValue = this.cachedValue.copy();
+        if (this.cachedValue) copy.cachedValue = this.cachedValue.copy();
 
         return copy;
     }

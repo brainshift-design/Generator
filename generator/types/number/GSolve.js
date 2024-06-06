@@ -32,8 +32,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.current = this.current.copy();
-        copy.target  = this.target .copy();
+        if (this.current) copy.current = this.current.copy();
+        if (this.target ) copy.target  = this.target .copy();
 
         return copy;
     }

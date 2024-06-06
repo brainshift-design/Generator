@@ -27,7 +27,7 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        copy.case = this.case.copy();
+        if (this.case) copy.case = this.case.copy();
 
         return copy;
     }

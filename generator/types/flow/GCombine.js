@@ -30,7 +30,8 @@ extends GOperator
         copy.copyBase(this);
 
         copy.inputs = this.inputs.map(i => i.copy());
-        copy.value  = this.value.copy();
+
+        if (this.value) copy.value = this.value.copy();
 
         return copy;
     }
