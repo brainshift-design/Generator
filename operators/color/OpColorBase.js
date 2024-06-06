@@ -159,9 +159,10 @@ extends Operator
     updateWarningOverlayStyle(colBack, height = -1)
     {
         this._warningOverlay.style.height = 
-            height < 0
-            ? this.measureData.headerOffset.height
-            : height;
+            (height < 0
+             ? this.measureData.headerOffset.height
+             : height)
+            + 'px';
 
             
         const [warnStyle1, warnStyle2] = getWarningStyles(colBack);

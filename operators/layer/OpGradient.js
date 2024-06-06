@@ -150,25 +150,25 @@ extends OpColorBase
     {
         this.value = values[paramIds.findIndex(id => id == 'value')];
 
-        // const gradType = values[paramIds.findIndex(id => id == 'gradType')];
-        // const position = values[paramIds.findIndex(id => id == 'position')];
-        // const x        = values[paramIds.findIndex(id => id == 'x'       )];
-        // const y        = values[paramIds.findIndex(id => id == 'y'       )];
-        // const size     = values[paramIds.findIndex(id => id == 'size'    )];
-        // const angle    = values[paramIds.findIndex(id => id == 'angle'   )];
-        // const aspect   = values[paramIds.findIndex(id => id == 'aspect'  )];
-        // const skew     = values[paramIds.findIndex(id => id == 'skew'    )];
-        // const blend    = values[paramIds.findIndex(id => id == 'blend'   )];
+        const gradType = values[paramIds.findIndex(id => id == 'gradType')];
+        const position = values[paramIds.findIndex(id => id == 'position')];
+        const x        = values[paramIds.findIndex(id => id == 'x'       )];
+        const y        = values[paramIds.findIndex(id => id == 'y'       )];
+        const size     = values[paramIds.findIndex(id => id == 'size'    )];
+        const angle    = values[paramIds.findIndex(id => id == 'angle'   )];
+        const aspect   = values[paramIds.findIndex(id => id == 'aspect'  )];
+        const skew     = values[paramIds.findIndex(id => id == 'skew'    )];
+        const blend    = values[paramIds.findIndex(id => id == 'blend'   )];
 
-        this.paramType    .setValue(this.value.gradType, false, true, false);
-        this.paramPosition.setValue(this.value.position, false, true, false);
-        this.paramX       .setValue(this.value.x,        false, true, false);
-        this.paramY       .setValue(this.value.y,        false, true, false);
-        this.paramSize    .setValue(this.value.size,     false, true, false);
-        this.paramAngle   .setValue(this.value.angle,    false, true, false);
-        this.paramAspect  .setValue(this.value.aspect,   false, true, false);
-        this.paramSkew    .setValue(this.value.skew,     false, true, false);
-        this.paramBlend   .setValue(this.value.blend,    false, true, false);
+        this.paramType    .setValue(/*this.value.*/gradType, false, true, false);
+        this.paramPosition.setValue(/*this.value.*/position, false, true, false);
+        this.paramX       .setValue(/*this.value.*/x,        false, true, false);
+        this.paramY       .setValue(/*this.value.*/y,        false, true, false);
+        this.paramSize    .setValue(/*this.value.*/size,     false, true, false);
+        this.paramAngle   .setValue(/*this.value.*/angle,    false, true, false);
+        this.paramAspect  .setValue(/*this.value.*/aspect,   false, true, false);
+        this.paramSkew    .setValue(/*this.value.*/skew,     false, true, false);
+        this.paramBlend   .setValue(/*this.value.*/blend,    false, true, false);
     }
 
 
@@ -226,6 +226,9 @@ extends OpColorBase
             || stops.length == 0)
         {
             updateFillHeader(this, colors, false);
+
+            this._warningOverlay.style.height = this.measureData.headerOffset.height;
+
             return;
         }
 

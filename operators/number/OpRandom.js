@@ -68,4 +68,43 @@ extends OperatorBase
 
         return request;
     }
+
+
+
+    toPrompt()
+    {
+        /* each parameter will need a description,
+           and a toPrompt() */
+        return `
+
+        RANDOM node
+
+        Generates a series of random number values based on the "seed" parameter.
+
+        Can be connected to a REPEAT node's "loop" parameter to only generate a new value 
+        when the loop iterates.
+
+        Parameters:
+
+        seed      : the starting seed for random number value generation
+                  : min = 0
+                  : max = MAX_SAFE_INTEGER
+                  : default = random
+
+        iteration : forces a given iteration of the RNG 
+                  : 
+
+        min       : the smallest possible value
+
+        max       : the largest possible value
+
+        bias      : determines if the results are closer to min or to max
+
+        spread    :
+
+        unique    :
+
+
+        `.trim();
+    }
 }
