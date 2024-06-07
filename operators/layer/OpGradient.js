@@ -227,10 +227,13 @@ extends OpColorBase
         {
             updateFillHeader(this, colors, false);
 
-            this._warningOverlay.style.height = this.measureData.headerOffset.height;
+            this._warningOverlay.style.height  = this.measureData.headerOffset.height;
+            this._warningOverlay.style.display = 'block';
 
             return;
         }
+        else
+            this._warningOverlay.style.display = 'none';
 
         
         if (    this.isUnknown()
@@ -238,7 +241,7 @@ extends OpColorBase
             this.checkers.style.display = 'none';
 
         else
-            updateHeaderCheckers(this, colors);
+            updateHeaderCheckers(this, colors, true);
 
 
         const outlineColor = darkMode ? '#000' : '#fff';

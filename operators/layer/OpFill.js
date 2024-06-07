@@ -384,7 +384,7 @@ function updateFillHeader(node, colors, opacityIsValid)
 
 
 
-function updateHeaderCheckers(node, colors)
+function updateHeaderCheckers(node, colors, forceShow = false)
 {
     node.checkers.style.height = node.header.offsetHeight;
 
@@ -395,7 +395,7 @@ function updateHeaderCheckers(node, colors)
         :     'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
             + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-    node.checkers.style.display            = !rgbIsNaN(colors.stripeBack) ? 'inline-block' : 'none';
+    node.checkers.style.display            = !rgbIsNaN(colors.stripeBack) || forceShow ? 'inline-block' : 'none';
     node.checkers.style.backgroundColor    =  darkMode ? '#444' : '#fff';
 
     node.checkers.style.backgroundSize     = '22px 22px';
