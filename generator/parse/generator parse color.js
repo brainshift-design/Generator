@@ -512,20 +512,44 @@ function genParseGradient(parse)
         grad.inputs.push(genParse(parse));
 
 
-    grad.gradType   = genParse(parse); 
-    grad.position   = genParse(parse); 
-    grad.x          = genParse(parse); 
-    grad.y          = genParse(parse); 
-    grad.size       = genParse(parse); 
-    grad.angle      = genParse(parse); 
-    grad.aspect     = genParse(parse); 
-    grad.skew       = genParse(parse); 
-    grad.blend      = genParse(parse);
+    const nParamIds = genParseParamCount(parse);
+
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'gradType': grad.gradType = genParse(parse); break;
+        case 'position': grad.position = genParse(parse); break;
+        case 'x':        grad.x        = genParse(parse); break;
+        case 'y':        grad.y        = genParse(parse); break;
+        case 'size':     grad.size     = genParse(parse); break;
+        case 'angle':    grad.angle    = genParse(parse); break;
+        case 'aspect':   grad.aspect   = genParse(parse); break;
+        case 'skew':     grad.skew     = genParse(parse); break;
+        case 'blend':    grad.blend    = genParse(parse); break;
+        }
+    }
+
+    // grad.gradType   = genParse(parse); 
+    // grad.position   = genParse(parse); 
+    // grad.x          = genParse(parse); 
+    // grad.y          = genParse(parse); 
+    // grad.size       = genParse(parse); 
+    // grad.angle      = genParse(parse); 
+    // grad.aspect     = genParse(parse); 
+    // grad.skew       = genParse(parse); 
+    // grad.blend      = genParse(parse);
 
     
     grad.diagAspect = parseInt(parse.move()) > 0;
 
 
+    parse.inParam = false;
     parse.nTab--;
 
 

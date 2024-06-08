@@ -1,3 +1,7 @@
+var debugFlag1 = false;
+
+
+
 function nodeIdArrayToString(nodeIds)
 {
     let str = '';

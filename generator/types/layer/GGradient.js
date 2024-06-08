@@ -92,15 +92,15 @@ extends GOperator
             return this;
 
             
-        const gradType = await evalNumberValue(this.gradType, parse);
-        const position = await evalNumberValue(this.position, parse);
-        const x        = await evalNumberValue(this.x,        parse);
-        const y        = await evalNumberValue(this.y,        parse);
-        const size     = await evalNumberValue(this.size,     parse);
-        const angle    = await evalNumberValue(this.angle,    parse);
-        const aspect   = await evalNumberValue(this.aspect,   parse);
-        const skew     = await evalNumberValue(this.skew,     parse);
-        const blend    = await evalNumberValue(this.blend,    parse);
+        let gradType = await evalNumberValue(this.gradType, parse);
+        let position = await evalNumberValue(this.position, parse);
+        let x        = await evalNumberValue(this.x,        parse);
+        let y        = await evalNumberValue(this.y,        parse);
+        let size     = await evalNumberValue(this.size,     parse);
+        let angle    = await evalNumberValue(this.angle,    parse);
+        let aspect   = await evalNumberValue(this.aspect,   parse);
+        let skew     = await evalNumberValue(this.skew,     parse);
+        let blend    = await evalNumberValue(this.blend,    parse);
 
 
         if (position) position.value = Math.min(Math.max(0, Math.floor(position.value)), 4);
@@ -116,59 +116,79 @@ extends GOperator
             inputs.push(await evalValue(input, parse));
 
 
-        for (let i = 0, o = 0; i < inputs.length; i++)
+        if (   inputs.length == 1
+            && inputs[0].type == GRADIENT_VALUE)
         {
-            const input = inputs[i];
+            this.value        = inputs[0].toValue();
+            this.value.nodeId = this.nodeId;
+            this.value.copyCustomParams(inputs[0]);
 
-            if (   input
-                && this.options.enabled)
+            if (gradType)  this.value.gradType = gradType;  else  gradType = this.value.gradType;      
+            if (position)  this.value.position = position;  else  position = this.value.position;      
+            if (x       )  this.value.x        = x;         else  x        = this.value.x;      
+            if (y       )  this.value.y        = y;         else  y        = this.value.y;      
+            if (size    )  this.value.size     = size;      else  size     = this.value.size;      
+            if (angle   )  this.value.angle    = angle;     else  angle    = this.value.angle;      
+            if (aspect  )  this.value.aspect   = aspect;    else  aspect   = this.value.aspect;      
+            if (skew    )  this.value.skew     = skew;      else  skew     = this.value.skew;      
+            if (blend   )  this.value.blend    = blend;     else  blend    = this.value.blend;      
+        }
+        else
+        {
+            for (let i = 0, o = 0; i < inputs.length; i++)
             {
-                if (isListValueType(input.type))
+                const input = inputs[i];
+
+                if (   input
+                    && this.options.enabled)
                 {
-                    for (const item of input.items)
-                        stops.items.push(item);
+                    if (isListValueType(input.type))
+                    {
+                        for (const item of input.items)
+                            stops.items.push(item);
+                    }
+                    else if (input.type == GRADIENT_VALUE)
+                    {
+                        for (const item of input.stops.items)
+                            stops.items.push(item);
+                    }
+                    else
+                        stops.items.push(input);
                 }
-                else if (input.type == GRADIENT_VALUE)
-                {
-                    for (const item of input.stops.items)
-                        stops.items.push(item);
-                }
-                else
-                    stops.items.push(input);
             }
+
+
+            stops.items = validateColorStops(stops.items);
+            setColorStopPositions(stops.items);
+
+
+            this.value = new GradientValue(
+                stops,
+                gradType,
+                position,
+                x, 
+                y, 
+                size, 
+                angle, 
+                aspect,
+                this.diagAspect,
+                skew,
+                blend);
         }
 
-
-        stops.items = validateColorStops(stops.items);
-        setColorStopPositions(stops.items);
-
-
-        this.value = new GradientValue(
-            stops,
-            gradType,
-            position,
-            x, 
-            y, 
-            size, 
-            angle, 
-            aspect,
-            this.diagAspect,
-            skew,
-            blend);
-
-            
+        
         this.setUpdateValues(parse,
         [
-            ['value',    this.value   ],
-            ['gradType', this.gradType],
-            ['position', this.position],
-            ['x',        this.x       ],
-            ['y',        this.y       ],
-            ['size',     this.size    ],
-            ['angle',    this.angle   ],
-            ['aspect',   this.aspect  ],
-            ['skew',     this.skew    ],
-            ['blend',    this.blend   ]
+            ['value',    this.value],
+            ['gradType', gradType  ],
+            ['position', position  ],
+            ['x',        x         ],
+            ['y',        y         ],
+            ['size',     size      ],
+            ['angle',    angle     ],
+            ['aspect',   aspect    ],
+            ['skew',     skew      ],
+            ['blend',    blend     ]
         ]);
         
 

@@ -6,7 +6,7 @@ class GValue
 
     customParams = []; // [[name, GValue]]
 
-    objects = null;
+    objects      = null;
 
 
 
@@ -14,7 +14,7 @@ class GValue
     {
         //super(type, options);
 
-        this.type = type;
+        this.type    = type;
 
         this.valueId = '';
     }

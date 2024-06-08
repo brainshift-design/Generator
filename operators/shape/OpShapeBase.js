@@ -30,16 +30,15 @@ extends OperatorBase
         if (ignore) return request;
                 
         
+        const input = this.node.inputs[0];
+        
+        if (input)
+            request.push(input.connected ? 1 : 0);
+        
+        
         const paramIds = [];
         
         
-        const input = this.node.inputs[0];
-
-
-        if (input)
-            request.push(input.connected ? 1 : 0);
-
-
         if (   input
             && input.connected)
         {

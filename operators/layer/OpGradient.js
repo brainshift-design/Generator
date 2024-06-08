@@ -123,16 +123,47 @@ extends OpColorBase
         for (const input of connectedInputs)
             request.push(...pushInputOrParam(input, gen));
 
-        
-        request.push(...this.node.paramType    .genRequest(gen));
-        request.push(...this.node.paramPosition.genRequest(gen));
-        request.push(...this.node.paramX       .genRequest(gen));
-        request.push(...this.node.paramY       .genRequest(gen));
-        request.push(...this.node.paramSize    .genRequest(gen));
-        request.push(...this.node.paramAngle   .genRequest(gen));
-        request.push(...this.node.paramAspect  .genRequest(gen));
-        request.push(...this.node.paramSkew    .genRequest(gen));
-        request.push(...this.node.paramBlend   .genRequest(gen));
+
+        const inputIsGradient =
+               connectedInputs.length == 1
+            && connectedInputs[0].connected
+            && connectedInputs[0].connectedOutput.types.includes(GRADIENT_VALUE);
+
+            
+        const paramIds = [];
+
+        if (inputIsGradient)
+        {
+            for (const param of this.node.params)
+                if (   param.input 
+                    && (   param.input.connected
+                        || param.alwaysRequest)
+                    && param.canShow())
+                    paramIds.push(param.id);
+        }
+        else
+        {
+            for (const param of this.node.params)
+                if (param.canShow())
+                    paramIds.push(param.id);
+        }
+
+
+        request.push(paramIds.length);
+
+        for (const paramId of paramIds)
+            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));
+
+
+        // request.push(...this.node.paramType    .genRequest(gen));
+        // request.push(...this.node.paramPosition.genRequest(gen));
+        // request.push(...this.node.paramX       .genRequest(gen));
+        // request.push(...this.node.paramY       .genRequest(gen));
+        // request.push(...this.node.paramSize    .genRequest(gen));
+        // request.push(...this.node.paramAngle   .genRequest(gen));
+        // request.push(...this.node.paramAspect  .genRequest(gen));
+        // request.push(...this.node.paramSkew    .genRequest(gen));
+        // request.push(...this.node.paramBlend   .genRequest(gen));
 
 
         request.push(this.node.diagAspect ? 1 : 0);
@@ -176,6 +207,23 @@ extends OpColorBase
     updateParams()
     {
         super.updateParams();
+
+
+        const inputIsGradient =
+               this.headerInputs.length == 2
+            && this.headerInputs.at(-1).isNew
+            && this.headerInputs[0].connected
+            && this.headerInputs[0].connectedOutput.types.includes(GRADIENT_VALUE);
+
+        this.paramType    .enableControlText(!inputIsGradient, this.paramType    .isUnknown());
+        this.paramPosition.enableControlText(!inputIsGradient, this.paramPosition.isUnknown());
+        this.paramX       .enableControlText(!inputIsGradient, this.paramX       .isUnknown());
+        this.paramY       .enableControlText(!inputIsGradient, this.paramY       .isUnknown());
+        this.paramSize    .enableControlText(!inputIsGradient, this.paramSize    .isUnknown());
+        this.paramAngle   .enableControlText(!inputIsGradient, this.paramAngle   .isUnknown());
+        this.paramAspect  .enableControlText(!inputIsGradient, this.paramAspect  .isUnknown());
+        this.paramSkew    .enableControlText(!inputIsGradient, this.paramSkew    .isUnknown());
+        this.paramBlend   .enableControlText(!inputIsGradient, this.paramBlend   .isUnknown());
 
 
         this.paramX   .controls[0].resetRanges();
