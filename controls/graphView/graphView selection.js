@@ -29,6 +29,8 @@ GraphView.prototype.startSelection = function(pointerId, x, y, shiftKey, ctrlKey
         selectBox.style.visibility = 'visible';
 
         this.updateSelectBox(shiftKey, ctrlKey);
+
+        this.selectionTimeout = setTimeout(() => this.selectionTimeout = null, 500);
     }
     catch {}
 };

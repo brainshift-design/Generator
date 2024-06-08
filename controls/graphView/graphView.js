@@ -43,6 +43,7 @@ class GraphView
     _soloNode          = null;
 
     selecting          = false;
+    selectionTimeout   = null;
     selectionRect      = Rect.NaN;
 
     startedInPanel     = false;
