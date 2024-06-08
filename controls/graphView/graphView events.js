@@ -277,8 +277,8 @@ GraphView.prototype.createEvents = function()
             ||     panMode
                && !touchpad)
         {
-            if (!dragging)
-            {
+            // if (!dragging)
+            // {
                 let pos = point(
                     e.clientX, 
                     e.clientY - getTopHeight());
@@ -287,6 +287,28 @@ GraphView.prototype.createEvents = function()
                 const pan  = subv(graph.currentPage.pan, mulvs(subv(pos, graph.currentPage.pan), zoom / graph.currentPage.zoom - 1));
 
                 graph.currentPage.setPanAndZoom(pan, zoom);
+            // }
+
+
+            if (dragging)
+            {
+                dragging.header.dispatchEvent(new MouseEvent('pointermove', 
+                {
+                    bubbles:    true,
+                    cancelable: true,
+                    view:       window,
+                    detail:     0,
+                    screenX:    e.screenX,
+                    screenY:    e.screenY,
+                    clientX:    e.clientX,
+                    clientY:    e.clientY,
+                    ctrlKey:    e.ctrlKey,
+                    altKey:     e.altKey,
+                    shiftKey:   e.shiftKey,
+                    metaKey:    e.metaKey,
+                    button:     e.button,
+                    buttons:    e.buttons
+                }));
             }
 
 
