@@ -7,19 +7,24 @@ function figGetAllLocalVariables(nodeId, px, py)
 
         for (const _var of localVars)
         {
-            // console.log('_var =', _var);
-            // console.log('_var.variableCollectionId =', _var.variableCollectionId);
-            const collection = await figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
+            try
+            {
+                const collection = await figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
 
-            const variable = 
-            { 
-                id:             _var.id,
-                resolvedType:   _var.resolvedType,
-                name:           _var.name,
-                collectionName: collection.name
-            };
+                const variable = 
+                { 
+                    id:             _var.id,
+                    resolvedType:   _var.resolvedType,
+                    name:           _var.name,
+                    collectionName: collection.name
+                };
 
-            variables.push(variable);
+                variables.push(variable);
+            }
+            catch (ex)
+            {
+
+            }
         }
 
 

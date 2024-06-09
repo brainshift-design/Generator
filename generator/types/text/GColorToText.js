@@ -145,6 +145,10 @@ function getColorToTextValue(input, format)
                 + Math.round(rgb[1] * 255) + ', '
                 + Math.round(rgb[2] * 255);
             break;
+
+        case 3: // name
+            str = getColorName(rgb);
+            break;
     }
 
     return new TextValue(str);

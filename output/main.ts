@@ -23,7 +23,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 429;
+const generatorVersion = 431;
 
 
 const MAX_INT32        = 2147483647;
@@ -5089,19 +5089,24 @@ function figGetAllLocalVariables(nodeId, px, py)
 
         for (const _var of localVars)
         {
-            // console.log('_var =', _var);
-            // console.log('_var.variableCollectionId =', _var.variableCollectionId);
-            const collection = await figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
+            try
+            {
+                const collection = await figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
 
-            const variable = 
-            { 
-                id:             _var.id,
-                resolvedType:   _var.resolvedType,
-                name:           _var.name,
-                collectionName: collection.name
-            };
+                const variable = 
+                { 
+                    id:             _var.id,
+                    resolvedType:   _var.resolvedType,
+                    name:           _var.name,
+                    collectionName: collection.name
+                };
 
-            variables.push(variable);
+                variables.push(variable);
+            }
+            catch (ex)
+            {
+
+            }
         }
 
 

@@ -73,13 +73,17 @@ extends GOperator1
                 opacity ?? input.opacity,
                 blend   ?? input.blend);
         }
-        else
+        else if ((!color   || color  .type == COLOR_VALUE )
+              && (!opacity || opacity.type == NUMBER_VALUE)
+              && (!blend   || blend  .type == NUMBER_VALUE))
         {
             this.value = new FillValue(
                 color, 
                 opacity,
                 blend);
         }
+        else
+            this.value = FillValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

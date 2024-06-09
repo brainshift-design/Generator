@@ -28,6 +28,13 @@ function initUtilContext()
 
 
 
+function avg(a, b)
+{
+    return (a + b) / 2;
+}
+
+
+
 function swap(a, b)
 {
     return [b, a];

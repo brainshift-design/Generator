@@ -569,3 +569,77 @@ function noColorStyle(rgba)
             : 'rgba(255, 255, 255, 0.95)';
     }
 }
+
+
+
+function getColorName(rgb)
+{
+    if (rgb.length > 3 && rgba[3] == 0)
+        return 'transparent';
+
+
+    const hsl = rgb2hsl(rgb);
+
+    const hue = hsl[0] * 360;
+    const sat = hsl[1];
+    const lit = hsl[2];
+
+
+         if (lit >= avg(7, 8)/8) return 'white';
+    else if (lit <  avg(0, 1)/8) return 'black';
+
+
+    let strHue = '';
+    let strSat = '';
+    let strLit = '';
+
+
+         if (lit >= avg(6, 7)/8 && lit < avg(7, 8)/8) strLit = 'pale ';
+    else if (lit >= avg(5, 6)/8 && lit < avg(6, 7)/8) strLit = 'bright ';
+    else if (lit >= avg(4, 5)/8 && lit < avg(5, 6)/8) strLit = 'light ';
+
+    else if (lit >= avg(2, 3)/8 && lit < avg(3, 4)/8) strLit = 'deep ';
+    else if (lit >= avg(1, 2)/8 && lit < avg(2, 3)/8) strLit = 'dim ';
+    else if (lit >= avg(0, 1)/8 && lit < avg(1, 2)/8) strLit = 'dark ';
+
+
+    if (   sat >= 0.25
+        && lit > 0.25 && lit < 0.75)
+    {
+             if (sat >= avg(4, 6)/8 && sat < avg(6, 8)/8) strSat = 'calm ';
+        else if (sat >= avg(2, 4)/8 && sat < avg(4, 6)/8) strSat = 'dull ';
+        else if (sat >= avg(0, 2)/8 && sat < avg(2, 4)/8) strSat = 'dirty ';
+    }
+
+
+    if (sat >= 0.25)
+    {
+             if (hue < avg(300,   285  ) && hue >= avg(285,   270  )) strHue = 'purple';
+        else if (hue < avg(285,   270  ) && hue >= avg(270,   255  )) strHue = 'violet';
+        else if (hue < avg(270,   255  ) && hue >= avg(255,   240  )) strHue = 'indigo';
+        else if (hue < avg(255,   240  ) && hue >= avg(240,   226  )) strHue = 'blue';
+        else if (hue < avg(240,   226  ) && hue >= avg(226,   213  )) strHue = 'cobalt';
+        else if (hue < avg(226,   213  ) && hue >= avg(213,   199  )) strHue = 'ocean';
+        else if (hue < avg(213,   199  ) && hue >= avg(199,   189  )) strHue = 'sky';
+        else if (hue < avg(199,   189  ) && hue >= avg(189,   180  )) strHue = 'aqua';
+        else if (hue < avg(189,   180  ) && hue >= avg(180,   157.5)) strHue = 'cyan';
+        else if (hue < avg(180,   157.5) && hue >= avg(157.5, 120  )) strHue = 'jade';
+        else if (hue < avg(157.5, 120  ) && hue >= avg(120,    85  )) strHue = 'green';
+        else if (hue < avg(120,    85  ) && hue >= avg( 85,    60  )) strHue = 'lime';
+        else if (hue < avg( 85,    60  ) && hue >= avg( 60,    50  )) strHue = 'yellow';
+        else if (hue < avg( 60,    50  ) && hue >= avg( 50,    40  )) strHue = 'gold';
+        else if (hue < avg( 50,    40  ) && hue >= avg( 40,    30  )) strHue = 'mango';
+        else if (hue < avg( 40,    30  ) && hue >= avg( 30,    22  )) strHue = 'orange';
+        else if (hue < avg( 30,    22  ) && hue >= avg( 22,    13  )) strHue = 'amber';
+        else if (hue < avg( 22,    13  ) && hue >= avg( 13,     0  )) strHue = 'salmon';
+        else if (hue < avg( 13,     0  ) || hue >= avg(360,   327.5)) strHue = 'red';
+        else if (hue < avg(360,   327.5) && hue >= avg(327.5, 300  )) strHue = 'rose';
+        else if (hue < avg(327.5, 300  ) && hue >= avg(300,   285  )) strHue = 'magenta';
+        else assert(false);
+    }
+    else 
+        strHue = 'gray';
+
+
+    return strLit + strSat + strHue;
+}

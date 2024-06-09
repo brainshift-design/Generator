@@ -40,6 +40,10 @@ function addColorProp(obj, prop)
 
 function addFillProp(obj, prop, target = obj.fills)
 {
+    if (prop.color.type != COLOR_VALUE)
+        return;
+
+
     const rgb = scaleRgb(prop.color.toRgb());
 
     if (obj.type == SHAPE_GROUP)

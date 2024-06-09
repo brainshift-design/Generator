@@ -19,7 +19,7 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 429;
+const generatorVersion = 431;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -3443,16 +3443,18 @@ function figGetAllLocalVariables(nodeId, px, py) {
     figma.variables.getLocalVariablesAsync().then((localVars) => __awaiter(this, void 0, void 0, function* () {
         const variables = new Array();
         for (const _var of localVars) {
-            // console.log('_var =', _var);
-            // console.log('_var.variableCollectionId =', _var.variableCollectionId);
-            const collection = yield figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
-            const variable = {
-                id: _var.id,
-                resolvedType: _var.resolvedType,
-                name: _var.name,
-                collectionName: collection.name
-            };
-            variables.push(variable);
+            try {
+                const collection = yield figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
+                const variable = {
+                    id: _var.id,
+                    resolvedType: _var.resolvedType,
+                    name: _var.name,
+                    collectionName: collection.name
+                };
+                variables.push(variable);
+            }
+            catch (ex) {
+            }
         }
         figma.variables.getLocalVariableCollectionsAsync().then((collections) => __awaiter(this, void 0, void 0, function* () {
             figPostMessageToUi({
