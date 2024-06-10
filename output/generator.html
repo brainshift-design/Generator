@@ -60298,8 +60298,8 @@ function getColorName(rgb)
     const lit = hsl[2];
 
 
-         if (lit >= avg(7, 8)/8) return 'white';
-    else if (lit <  avg(0, 1)/8) return 'black';
+         if (lit >= 0.94) return 'white';
+    else if (lit <  0.06) return 'black';
 
 
     let strHue = '';
@@ -60307,47 +60307,45 @@ function getColorName(rgb)
     let strLit = '';
 
 
-         if (lit >= avg(6, 7)/8 && lit < avg(7, 8)/8) strLit = 'pale ';
-    else if (lit >= avg(5, 6)/8 && lit < avg(6, 7)/8) strLit = 'bright ';
-    else if (lit >= avg(4, 5)/8 && lit < avg(5, 6)/8) strLit = 'light ';
+         if (lit >= 0.81 && lit < 0.94) strLit = 'pale ';
+    else if (lit >= 0.69 && lit < 0.81) strLit = 'light ';
+    else if (lit >= 0.56 && lit < 0.69) strLit = 'bright ';
+    else if (lit >= 0.31 && lit < 0.44) strLit = 'deep ';
+    else if (lit >= 0.19 && lit < 0.31) strLit = 'dim ';
+    else if (lit >= 0.06 && lit < 0.19) strLit = 'dark ';
+    
 
-    else if (lit >= avg(2, 3)/8 && lit < avg(3, 4)/8) strLit = 'deep ';
-    else if (lit >= avg(1, 2)/8 && lit < avg(2, 3)/8) strLit = 'dim ';
-    else if (lit >= avg(0, 1)/8 && lit < avg(1, 2)/8) strLit = 'dark ';
-
-
-    if (   sat >= 0.25
-        && lit > 0.25 && lit < 0.75)
+    if (lit > 0.25 && lit < 0.75) 
     {
-             if (sat >= avg(4, 6)/8 && sat < avg(6, 8)/8) strSat = 'calm ';
-        else if (sat >= avg(2, 4)/8 && sat < avg(4, 6)/8) strSat = 'dull ';
-        else if (sat >= avg(0, 2)/8 && sat < avg(2, 4)/8) strSat = 'dirty ';
+             if (sat >= 0.62 && sat < 0.88) strSat = 'calm ';
+        else if (sat >= 0.31 && sat < 0.62) strSat = 'dull ';
+        else if (sat >= 0.12 && sat < 0.31) strSat = 'dirty ';
     }
 
 
-    if (sat >= 0.25)
+    if (sat >= 0.12)
     {
-             if (hue < avg(300,   285  ) && hue >= avg(285,   270  )) strHue = 'purple';
-        else if (hue < avg(285,   270  ) && hue >= avg(270,   255  )) strHue = 'violet';
-        else if (hue < avg(270,   255  ) && hue >= avg(255,   240  )) strHue = 'indigo';
-        else if (hue < avg(255,   240  ) && hue >= avg(240,   226  )) strHue = 'blue';
-        else if (hue < avg(240,   226  ) && hue >= avg(226,   213  )) strHue = 'cobalt';
-        else if (hue < avg(226,   213  ) && hue >= avg(213,   199  )) strHue = 'ocean';
-        else if (hue < avg(213,   199  ) && hue >= avg(199,   189  )) strHue = 'sky';
-        else if (hue < avg(199,   189  ) && hue >= avg(189,   180  )) strHue = 'aqua';
-        else if (hue < avg(189,   180  ) && hue >= avg(180,   157.5)) strHue = 'cyan';
-        else if (hue < avg(180,   157.5) && hue >= avg(157.5, 120  )) strHue = 'jade';
-        else if (hue < avg(157.5, 120  ) && hue >= avg(120,    85  )) strHue = 'green';
-        else if (hue < avg(120,    85  ) && hue >= avg( 85,    60  )) strHue = 'lime';
-        else if (hue < avg( 85,    60  ) && hue >= avg( 60,    50  )) strHue = 'yellow';
-        else if (hue < avg( 60,    50  ) && hue >= avg( 50,    40  )) strHue = 'gold';
-        else if (hue < avg( 50,    40  ) && hue >= avg( 40,    30  )) strHue = 'mango';
-        else if (hue < avg( 40,    30  ) && hue >= avg( 30,    22  )) strHue = 'orange';
-        else if (hue < avg( 30,    22  ) && hue >= avg( 22,    13  )) strHue = 'amber';
-        else if (hue < avg( 22,    13  ) && hue >= avg( 13,     0  )) strHue = 'salmon';
-        else if (hue < avg( 13,     0  ) || hue >= avg(360,   327.5)) strHue = 'red';
-        else if (hue < avg(360,   327.5) && hue >= avg(327.5, 300  )) strHue = 'rose';
-        else if (hue < avg(327.5, 300  ) && hue >= avg(300,   285  )) strHue = 'magenta';
+             if (hue < 293 && hue >= 278) strHue = 'violet';
+        else if (hue < 278 && hue >= 259) strHue = 'purple';
+        else if (hue < 259 && hue >= 248) strHue = 'indigo';
+        else if (hue < 248 && hue >= 233) strHue = 'blue';
+        else if (hue < 233 && hue >= 214) strHue = 'cobalt';
+        else if (hue < 214 && hue >= 206) strHue = 'ocean';
+        else if (hue < 206 && hue >= 194) strHue = 'sky';
+        else if (hue < 194 && hue >= 185) strHue = 'aqua';
+        else if (hue < 185 && hue >= 169) strHue = 'cyan';
+        else if (hue < 169 && hue >= 139) strHue = 'jade';
+        else if (hue < 139 && hue >=  86) strHue = 'green';
+        else if (hue <  86 && hue >=  63) strHue = 'lime';
+        else if (hue <  63 && hue >=  48) strHue = 'yellow';
+        else if (hue <  48 && hue >=  45) strHue = 'gold';
+        else if (hue <  45 && hue >=  35) strHue = 'mango';
+        else if (hue <  35 && hue >=  26) strHue = 'orange';
+        else if (hue <  26 && hue >=  18) strHue = 'amber';
+        else if (hue <  18 && hue >=   7) strHue = 'salmon';
+        else if (hue <   7 || hue >= 344) strHue = 'red';
+        else if (hue < 344 && hue >= 328) strHue = 'rose';
+        else if (hue < 328 && hue >= 293) strHue = 'magenta';
         else assert(false);
     }
     else 
