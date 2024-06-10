@@ -135,6 +135,9 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     menuLocalVariables.divSearchText = createTextbox('variableSearchText');
 
     menuLocalVariables.divIcon.innerHTML = iconSearchMenu2;
+
+    menuLocalVariables.divSearchText.spellcheck  = false;
+    menuLocalVariables.divSearchText.style.color = '#fff';
     
     menuLocalVariables.divSearch.appendChild(menuLocalVariables.divIcon);
     menuLocalVariables.divSearch.appendChild(menuLocalVariables.divSearchText);

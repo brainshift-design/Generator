@@ -60289,7 +60289,11 @@ function getColorName(rgb)
 
     const hsl = rgb2hsl(rgb);
 
-    const hue = hsl[0] * 360;
+    let   hue = hsl[0] * 360;
+
+    while (hue >= 360) hue -= 360;
+    while (hue <    0) hue += 360;
+    
     const sat = hsl[1];
     const lit = hsl[2];
 

@@ -123,6 +123,8 @@
     margin-top:       10px;
     margin-left:      65px;
     width:            calc(100% - 65px);
+    color:            #fff;
+    caret-color:      #fff;
 }
 
 
