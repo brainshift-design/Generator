@@ -56,6 +56,7 @@ async function uiReturnFigGetLocalData(msg)
         case 'separateThousands':
         case 'invertSimpleMathParamOrder':
         case 'activateDeactiatesOthers':
+        case 'preferHtmlColorNames':
         case 'randomShiftR':
         case 'colorShiftR':
 

@@ -143,7 +143,7 @@ extends Parameter
                 }
                 else
                 {
-                    const webColor = webColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
+                    const webColor = htmlColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
                     if (webColor) e.detail.value = webColor.color;
 
                     rgb = validHex2rgb(e.detail.value);

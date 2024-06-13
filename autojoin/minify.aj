@@ -1507,7 +1507,7 @@ createRandomString
 rectToString
 replaceLast
 getPanelHeaderUnder
-webColors
+htmlColors
 getStyleValue
 getCtrlKey
 dispatchNewEvent

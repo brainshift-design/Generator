@@ -13,6 +13,7 @@ const settings =
     separateThousands:             true,
     invertSimpleMathParamOrder:    true,
     activateDeactiatesOthers:      true,
+    preferHtmlColorNames:          false,
     randomShiftR:                  true,
     colorShiftR:                   true,
 
@@ -82,6 +83,7 @@ function updateSetting(settingName, value)
         case 'separateThousands':             settings.separateThousands             = value;  break;
         case 'invertSimpleMathParamOrder':    settings.invertSimpleMathParamOrder    = value;  break;
         case 'activateDeactiatesOthers':      settings.activateDeactiatesOthers      = value;  break;
+        case 'preferHtmlColorNames':          settings.preferHtmlColorNames          = value;  break;
         case 'randomShiftR':                  settings.randomShiftR                  = value;  break;
         case 'colorShiftR':                   settings.colorShiftR                   = value;  break;
         
@@ -160,6 +162,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'separateThousands':             updateSettingAndMenu_(valid, settingName, value, menuItemSeparateThousands            ); break;
         case 'invertSimpleMathParamOrder':    updateSettingAndMenu_(valid, settingName, value, menuItemInvertSimpleMathParamOrder   ); break;
         case 'activateDeactiatesOthers':      updateSettingAndMenu_(valid, settingName, value, menuItemActivateDeactiatesOthers     ); break;
+        case 'preferHtmlColorNames':          updateSettingAndMenu_(valid, settingName, value, menuItemPreferHtmlColorNames         ); break;
         case 'randomShiftR':                  updateSettingAndMenu_(valid, settingName, value, menuItemRandomShiftR                 ); break;
         case 'colorShiftR':                   updateSettingAndMenu_(valid, settingName, value, menuItemColorShiftR                  ); break;
 
@@ -251,6 +254,7 @@ function updateSettingsMenus()
     menuItemSeparateThousands            .setChecked(settings.separateThousands            );
     menuItemInvertSimpleMathParamOrder   .setChecked(settings.invertSimpleMathParamOrder   );
     menuItemActivateDeactiatesOthers     .setChecked(settings.activateDeactiatesOthers     );
+    menuItemPreferHtmlColorNames         .setChecked(settings.preferHtmlColorNames         );
     menuItemRandomShiftR                 .setChecked(settings.randomShiftR                 );
     menuItemColorShiftR                  .setChecked(settings. colorShiftR                 );
 
@@ -462,6 +466,7 @@ function loadLocalSettings()
     uiGetLocalData('separateThousands'            );
     uiGetLocalData('invertSimpleMathParamOrder'   );
     uiGetLocalData('activateDeactiatesOthers'     );
+    uiGetLocalData('preferHtmlColorNames'         );
     uiGetLocalData('randomShiftR'                 );
     uiGetLocalData('colorShiftR'                  );
 

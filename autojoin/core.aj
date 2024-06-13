@@ -11,7 +11,7 @@
 ../core/util.js
 ../core/base64.js
 ../core/web.js
-../core/web colors.js
+../core/color names.js
 ../core/clipboard.js
 ../core/tags.js
 ../core/def.js

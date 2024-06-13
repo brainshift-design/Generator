@@ -1,8 +1,10 @@
 ColorControl.prototype.initTextbox = function()
 {
-    this.textbox         = createTextbox('colorControlTextbox');
-    this.textbox.control = this;
-    this.textbox.shown   = false;
+    this.textbox            = createTextbox('colorControlTextbox');
+    
+    this.textbox.control    = this;
+    this.textbox.shown      = false;
+    this.textbox.spellcheck = false;
 
 
 
@@ -301,7 +303,7 @@ ColorControl.prototype.initTextbox = function()
         this.dispatchEvent(e);
             
         
-        // const webColor = webColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
+        // const webColor = htmlColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
 
         // const rgb = validHex2rgb(webColor ? webColor.color : e.detail.value);
         // const val = ColorValue.fromRgb(scaleRgb(rgb));

@@ -117,12 +117,21 @@ extends Parameter
                 }
                 else
                 {
-                               let webColor = webColors.find(wc => wc.name.toLowerCase() == colorName);
-                    if (!webColor) webColor = webColors.find(wc => getEditDistance(wc.name.toLowerCase(), colorName) <= 1);
-                    
-                    if (webColor) e.detail.value = webColor.color;
+                    if (settings.preferHtmlColorNames)
+                    {
+                                   let webColor = htmlColors.find(wc => wc.name.toLowerCase() == colorName);
+                        if (!webColor) webColor = htmlColors.find(wc => getEditDistance(wc.name.toLowerCase(), colorName) <= 1);
+                        
+                        if (webColor) e.detail.value = webColor.color;
 
-                    rgb = validHex2rgb(e.detail.value);
+                        rgb = validHex2rgb(e.detail.value);
+                    }
+                    else
+                    {
+                        const hsl = parseColorName(colorName);
+
+                        rgb = hsl ? hsl2rgb(hsl) : rgb_NaN;
+                    }
                 }
 
 

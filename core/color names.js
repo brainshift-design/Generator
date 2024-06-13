@@ -1,4 +1,5 @@
-const webColors = [
+const htmlColors = 
+[
     {name: 'AliceBlue',            color: 'f0f8ff'},
     {name: 'AntiqueWhite',         color: 'faebd7'},
     {name: 'Aqua',                 color: '00ffff'},
@@ -148,3 +149,275 @@ const webColors = [
     {name: 'Yellow',               color: 'ffff00'},
     {name: 'YellowGreen',          color: '9acd32'}
 ];
+
+
+
+const genColorNameLightness =
+[
+    {name: 'pale',   value: 0.87},
+    {name: 'light',  value: 0.75},
+    {name: 'bright', value: 0.62},
+    {name: 'deep',   value: 0.37},
+    {name: 'dim',    value: 0.25},
+    {name: 'dark',   value: 0.12}
+];
+
+
+
+const genColorNameSaturation =
+[
+    {name: 'calm',  value: 0.75},
+    {name: 'dull',  value: 0.46},
+    {name: 'dirty', value: 0.21}
+];
+
+
+
+const genColorNameHue =
+[
+    {name: 'violet',  value: 285},
+    {name: 'purple',  value: 269},
+    {name: 'indigo',  value: 254},
+    {name: 'blue',    value: 241},
+    {name: 'cobalt',  value: 227},
+    {name: 'sky',     value: 211},
+    {name: 'aqua',    value: 193},
+    {name: 'cyan',    value: 177},
+    {name: 'jade',    value: 154},
+    {name: 'green',   value: 112},
+    {name: 'lime',    value:  74},
+    {name: 'yellow',  value:  54},
+    {name: 'mango',   value:  42},
+    {name: 'orange',  value:  30},
+    {name: 'amber',   value:  17},
+    {name: 'salmon',  value:  11},
+    {name: 'red',     value:   0},
+    {name: 'crimson', value: 347},
+    {name: 'rose',    value: 335},
+    {name: 'magenta', value: 310}
+];
+
+
+
+function parseColorNameLightness(name) 
+{
+    for (const item of genColorNameLightness) 
+    {
+        if (   name.startsWith(item.name) 
+            || getEditDistance(name.slice(0, item.name.length), item.name) <= 1) 
+        {
+            return { value:     item.value, 
+                     remaining: name.slice(item.name.length) };
+        }
+    }
+
+    return { value:     null, 
+             remaining: name };
+}
+
+
+
+function parseColorNameSaturation(name) 
+{
+    for (const item of genColorNameSaturation) 
+    {
+        console.log(getEditDistance(name.slice(0, item.name.length), item.name));
+        if (   name.startsWith(item.name) 
+            || getEditDistance(name.slice(0, item.name.length), item.name) <= 1) 
+        {
+            return { value:     item.value, 
+                     remaining: name.slice(item.name.length) };
+        }
+    }
+
+    return { value:     null, 
+             remaining: name };
+}
+
+
+
+function parseColorNameHue(name) 
+{
+    for (const item of genColorNameHue) 
+    {
+        if (   name === item.name 
+            || getEditDistance(name.slice(0, item.name.length), item.name) <= 1) 
+        {
+            return item.value;
+        }
+    }
+
+    return null;
+}
+
+
+
+function parseColorName(_colorName) 
+{
+    let colorName = _colorName.replace(/\s+/g, '');
+
+
+    if (   colorName === 'black' 
+        || getEditDistance(colorName, 'black') <= 1)
+        return [0, 0, 0];
+
+    if (   colorName === 'white' 
+        || getEditDistance(colorName, 'white') <= 1)
+        return [0, 0, 1];
+
+        
+    const grayVariants = ['gray', 'grey'];
+
+    let isGray = false;
+    let gl     = 0.5;
+
+    for (const grayVariant of grayVariants) 
+    {
+        if (   colorName.endsWith(grayVariant) 
+            || getEditDistance(colorName.slice(-grayVariant.length), grayVariant) <= 1) 
+        {
+            isGray = true;
+        
+            const grayPrefix = colorName.slice(0, -grayVariant.length);
+            
+            if (grayPrefix) 
+            {
+                const { value } = parseColorNameLightness(grayPrefix);
+                
+                if (value !== null) 
+                    gl = value;
+            }
+
+            break;
+        }
+    }
+
+
+    if (isGray)
+        return [0, 0, gl];
+
+
+    let h = null;
+    let s = null;
+    let l = null;
+
+    
+    // try lightness first
+    
+    let result  = parseColorNameLightness(colorName);
+        l       = result.value;
+    let remName = result.remaining;
+
+        result  = parseColorNameSaturation(remName);
+        s       = result.value;
+        remName = result.remaining;
+
+        h       = parseColorNameHue(remName);
+
+
+    // reset if the first check fails
+    // and try saturation first
+    
+    if (   h === null 
+        || s === null 
+        || l === null) 
+    {
+        h = null;
+        s = null;
+        l = null;
+
+        result  = parseColorNameSaturation(colorName);
+        s       = result.value;
+        remName = result.remaining;
+
+        result  = parseColorNameLightness(remName);
+        l       = result.value;
+        remName = result.remaining;
+
+        h       = parseColorNameHue(remName);
+    }
+
+
+    if (h === null) return null; // hue is mandatory
+    if (l === null) l = 0.5;
+    if (s === null) s = 1.0;
+
+    
+    return [h / 360, s, l];
+}
+
+
+
+function createColorName(rgb)
+{
+    if (rgb.length > 3 && rgba[3] == 0)
+        return 'transparent';
+
+
+    const hsl = rgb2hsl(rgb);
+
+    let   h = hsl[0] * 360;
+
+    while (h >= 360) h -= 360;
+    while (h <    0) h += 360;
+    
+    const s = hsl[1];
+    const l = hsl[2];
+
+
+         if (l >= 0.94) return 'white';
+    else if (l <  0.06) return 'black';
+
+
+    let strH = '';
+    let strS = '';
+    let strL = '';
+
+
+         if (l >= 0.81 && l < 0.94) strL = 'pale ';
+    else if (l >= 0.69 && l < 0.81) strL = 'light ';
+    else if (l >= 0.56 && l < 0.69) strL = 'bright ';
+    else if (l >= 0.31 && l < 0.44) strL = 'deep ';
+    else if (l >= 0.19 && l < 0.31) strL = 'dim ';
+    else if (l >= 0.06 && l < 0.19) strL = 'dark ';
+    
+
+    if (l > 0.25 && l < 0.75) 
+    {
+             if (s >= 0.62 && s < 0.88) strS = 'calm ';
+        else if (s >= 0.31 && s < 0.62) strS = 'dull ';
+        else if (s >= 0.12 && s < 0.31) strS = 'dirty ';
+    }
+
+
+    if (s >= 0.12)
+    {
+             if (h < 293 && h >= 278) strH = 'violet';
+        else if (h < 278 && h >= 259) strH = 'purple';
+        else if (h < 259 && h >= 248) strH = 'indigo';
+        else if (h < 248 && h >= 233) strH = 'blue';
+        else if (h < 233 && h >= 221) strH = 'cobalt';
+        else if (h < 221 && h >= 201) strH = 'sky';
+        else if (h < 201 && h >= 185) strH = 'aqua';
+        else if (h < 185 && h >= 169) strH = 'cyan';
+        else if (h < 169 && h >= 139) strH = 'jade';
+        else if (h < 139 && h >=  86) strH = 'green';
+        else if (h <  86 && h >=  63) strH = 'lime';
+        else if (h <  63 && h >=  45) strH = 'yellow';
+        else if (h <  45 && h >=  40) strH = 'mango';
+        else if (h <  40 && h >=  21) strH = 'orange';
+        else if (h <  21 && h >=  13) strH = 'amber';
+        else if (h <  13 && h >=   8) strH = 'salmon';
+        else if (h <   8 || h >= 352) strH = 'red';
+        else if (h < 352 && h >= 343) strH = 'crimson';
+        else if (h < 343 && h >= 328) strH = 'rose';
+        else if (h < 328 && h >= 293) strH = 'magenta';
+        else 
+            console.error('error parsing hue name');
+    }
+    else 
+        strH = 'gray';
+
+
+    return strL + strS + strH;
+}

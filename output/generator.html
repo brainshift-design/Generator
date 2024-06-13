@@ -4218,102 +4218,146 @@ function unescapeRegexReplacement(str)
 
 
 
-function getEditDistance(str1, str2)
-{
-    // calculate the Levenshtein distance between two strings
-    // implementation taken from http://blog.softwx.net/2014/12/optimizing-levenshtein-algorithm-in-c.html
+// function getEditDistance(str1, str2)
+// {
+//     // calculate the Levenshtein distance between two strings
+//     // implementation taken from http://blog.softwx.net/2014/12/optimizing-levenshtein-algorithm-in-c.html
 
-    // TODO replace with Damerau-Levenshtein
+//     // TODO replace with Damerau-Levenshtein
 
-    if (str1.length == 0) return str2.length;
-    if (str2.length == 0) return str1.length;
+//     if (str1.length == 0) return str2.length;
+//     if (str2.length == 0) return str1.length;
 
-    // make sure str1 is the shorter string
+//     // make sure str1 is the shorter string
 
-    if (str1.length > str2.length)
-    {
-        const _str = str1;
-        str1 = str2;
-        str2 = _str;
-    } 
+//     if (str1.length > str2.length)
+//     {
+//         const _str = str1;
+//         str1 = str2;
+//         str2 = _str;
+//     } 
 
-    let len1 = str1.length; // min length of the two strings
-    let len2 = str2.length;
+//     let len1 = str1.length; // min length of the two strings
+//     let len2 = str2.length;
 
-    // suffix common to both strings can be ignored
+//     // suffix common to both strings can be ignored
 
-    while (len1 > 0 
-        && str1[len1 - 1] == str2[len2 - 1])
-    {
-        len1--; 
-        len2--; 
-    }
+//     while (len1 > 0 
+//         && str1[len1 - 1] == str2[len2 - 1])
+//     {
+//         len1--; 
+//         len2--; 
+//     }
 
-    let start = 0;
+//     let start = 0;
 
-    // if there's a shared prefix or str1 == str2's suffix
+//     // if there's a shared prefix or str1 == str2's suffix
 
-    if (str1[0] == str2[0])
-    {
-        while (start < len1 
-            && str1[start] == str2[start]) 
-            start++;
+//     if (str1[0] == str2[0])
+//     {
+//         while (start < len1 
+//             && str1[start] == str2[start]) 
+//             start++;
 
-        len1 -= start; // length of the part excluding common prefix and suffix
-        len2 -= start;
+//         len1 -= start; // length of the part excluding common prefix and suffix
+//         len2 -= start;
 
-        // if str1 == prefix and/or suffix of str2, 
-        // edit distance is just the number of additional characters in str2
+//         // if str1 == prefix and/or suffix of str2, 
+//         // edit distance is just the number of additional characters in str2
 
-        if (len1 == 0) return len2;
+//         if (len1 == 0) return len2;
 
-        str2 = str2.substring(start, len2); // faster than str2[start + j] in inner loop below
-    }
+//         str2 = str2.substring(start, len2); // faster than str2[start + j] in inner loop below
+//     }
 
-    //
+//     //
 
-    let v0 = [];
+//     let v0 = [];
     
-    for (let j = 0; j < len2; j++) 
-        v0.push(j + 1);
+//     for (let j = 0; j < len2; j++) 
+//         v0.push(j + 1);
 
-    //
+//     //
 
-    let current = 0;
+//     let current = 0;
 
-    for (let i = 0; i < len1; i++)
-    {
-        const c = str1[start + i];
+//     for (let i = 0; i < len1; i++)
+//     {
+//         const c = str1[start + i];
 
-        let left = current = i;
+//         let left = current = i;
 
-        for (let j = 0; j < len2; j++)
-        {
-            const above = current;
+//         for (let j = 0; j < len2; j++)
+//         {
+//             const above = current;
            
-            current = left; // cost on diagonal (substitution)
-            left = v0[j];
+//             current = left; // cost on diagonal (substitution)
+//             left = v0[j];
 
-            if (c != str2[j])
-            {
-                current++; // substitution
+//             if (c != str2[j])
+//             {
+//                 current++; // substitution
 
-                let insDel = above + 1; // deletion
+//                 let insDel = above + 1; // deletion
 
-                if (insDel < current) 
-                    current = insDel;
+//                 if (insDel < current) 
+//                     current = insDel;
 
-                insDel = left + 1; // insertion
+//                 insDel = left + 1; // insertion
 
-                if (insDel < current) 
-                    current = insDel;
-            }
+//                 if (insDel < current) 
+//                     current = insDel;
+//             }
 
-            v0[j] = current;
+//             v0[j] = current;
+//         }
+//     }
+    
+//     return current;
+// }
+
+
+
+function getEditDistance(str1, str2) 
+{
+    // using Damerau-Levenshtein
+    
+    const len1 = str1.length;
+    const len2 = str2.length;
+    const dist = [];
+
+
+    // initialize the distance matrix
+    
+    for (let i = 0; i <= len1; i++) dist[i]    = [i];
+    for (let j = 1; j <= len2; j++) dist[0][j] =  j;
+
+    
+    // populate the distance matrix
+    
+    for (let i = 1; i <= len1; i++) 
+    {
+        for (let j = 1; j <= len2; j++) 
+        {
+            const cost = str1[i-1] === str2[j-1] ? 0 : 1;
+
+            dist[i][j] = Math.min(
+                dist[i-1][j  ] + 1,     // deletion
+                dist[i  ][j-1] + 1,     // insertion
+                dist[i-1][j-1] + cost); // substitution
+
+            // check for transpositions
+ 
+            if (   i > 1 
+                && j > 1 
+                && str1[i-1] === str2[j-2] 
+                && str1[i-2] === str2[j-1])
+                dist[i][j] = Math.min(dist[i][j], dist[i-2][j-2] + cost); // transposition
         }
     }
+
     
-    return current;
+    return dist[len1][len2];
 }
 
 
@@ -5045,7 +5089,8 @@ async function saveToLocalFile(content, filename, contentType)
 }
 
 
-const webColors = [
+const htmlColors = 
+[
     {name: 'AliceBlue',            color: 'f0f8ff'},
     {name: 'AntiqueWhite',         color: 'faebd7'},
     {name: 'Aqua',                 color: '00ffff'},
@@ -5195,6 +5240,279 @@ const webColors = [
     {name: 'Yellow',               color: 'ffff00'},
     {name: 'YellowGreen',          color: '9acd32'}
 ];
+
+
+
+const genColorNameLightness =
+[
+    {name: 'pale',   value: 0.87},
+    {name: 'light',  value: 0.75},
+    {name: 'bright', value: 0.62},
+    {name: 'deep',   value: 0.37},
+    {name: 'dim',    value: 0.25},
+    {name: 'dark',   value: 0.12}
+];
+
+
+
+const genColorNameSaturation =
+[
+    {name: 'calm',  value: 0.75},
+    {name: 'dull',  value: 0.46},
+    {name: 'dirty', value: 0.21}
+];
+
+
+
+const genColorNameHue =
+[
+    {name: 'violet',  value: 285},
+    {name: 'purple',  value: 269},
+    {name: 'indigo',  value: 254},
+    {name: 'blue',    value: 241},
+    {name: 'cobalt',  value: 227},
+    {name: 'sky',     value: 211},
+    {name: 'aqua',    value: 193},
+    {name: 'cyan',    value: 177},
+    {name: 'jade',    value: 154},
+    {name: 'green',   value: 112},
+    {name: 'lime',    value:  74},
+    {name: 'yellow',  value:  54},
+    {name: 'mango',   value:  42},
+    {name: 'orange',  value:  30},
+    {name: 'amber',   value:  17},
+    {name: 'salmon',  value:  11},
+    {name: 'red',     value:   0},
+    {name: 'crimson', value: 347},
+    {name: 'rose',    value: 335},
+    {name: 'magenta', value: 310}
+];
+
+
+
+function parseColorNameLightness(name) 
+{
+    for (const item of genColorNameLightness) 
+    {
+        if (   name.startsWith(item.name) 
+            || getEditDistance(name.slice(0, item.name.length), item.name) <= 1) 
+        {
+            return { value:     item.value, 
+                     remaining: name.slice(item.name.length) };
+        }
+    }
+
+    return { value:     null, 
+             remaining: name };
+}
+
+
+
+function parseColorNameSaturation(name) 
+{
+    for (const item of genColorNameSaturation) 
+    {
+        console.log(getEditDistance(name.slice(0, item.name.length), item.name));
+        if (   name.startsWith(item.name) 
+            || getEditDistance(name.slice(0, item.name.length), item.name) <= 1) 
+        {
+            return { value:     item.value, 
+                     remaining: name.slice(item.name.length) };
+        }
+    }
+
+    return { value:     null, 
+             remaining: name };
+}
+
+
+
+function parseColorNameHue(name) 
+{
+    for (const item of genColorNameHue) 
+    {
+        if (   name === item.name 
+            || getEditDistance(name.slice(0, item.name.length), item.name) <= 1) 
+        {
+            return item.value;
+        }
+    }
+
+    return null;
+}
+
+
+
+function parseColorName(_colorName) 
+{
+    let colorName = _colorName.replace(/\s+/g, '');
+
+
+    if (   colorName === 'black' 
+        || getEditDistance(colorName, 'black') <= 1)
+        return [0, 0, 0];
+
+    if (   colorName === 'white' 
+        || getEditDistance(colorName, 'white') <= 1)
+        return [0, 0, 1];
+
+        
+    const grayVariants = ['gray', 'grey'];
+
+    let isGray = false;
+    let gl     = 0.5;
+
+    for (const grayVariant of grayVariants) 
+    {
+        if (   colorName.endsWith(grayVariant) 
+            || getEditDistance(colorName.slice(-grayVariant.length), grayVariant) <= 1) 
+        {
+            isGray = true;
+        
+            const grayPrefix = colorName.slice(0, -grayVariant.length);
+            
+            if (grayPrefix) 
+            {
+                const { value } = parseColorNameLightness(grayPrefix);
+                
+                if (value !== null) 
+                    gl = value;
+            }
+
+            break;
+        }
+    }
+
+
+    if (isGray)
+        return [0, 0, gl];
+
+
+    let h = null;
+    let s = null;
+    let l = null;
+
+    
+    // try lightness first
+    
+    let result  = parseColorNameLightness(colorName);
+        l       = result.value;
+    let remName = result.remaining;
+
+        result  = parseColorNameSaturation(remName);
+        s       = result.value;
+        remName = result.remaining;
+
+        h       = parseColorNameHue(remName);
+
+
+    // reset if the first check fails
+    // and try saturation first
+    
+    if (   h === null 
+        || s === null 
+        || l === null) 
+    {
+        h = null;
+        s = null;
+        l = null;
+
+        result  = parseColorNameSaturation(colorName);
+        s       = result.value;
+        remName = result.remaining;
+
+        result  = parseColorNameLightness(remName);
+        l       = result.value;
+        remName = result.remaining;
+
+        h       = parseColorNameHue(remName);
+    }
+
+
+    if (h === null) return null; // hue is mandatory
+    if (l === null) l = 0.5;
+    if (s === null) s = 1.0;
+
+    
+    return [h / 360, s, l];
+}
+
+
+
+function createColorName(rgb)
+{
+    if (rgb.length > 3 && rgba[3] == 0)
+        return 'transparent';
+
+
+    const hsl = rgb2hsl(rgb);
+
+    let   h = hsl[0] * 360;
+
+    while (h >= 360) h -= 360;
+    while (h <    0) h += 360;
+    
+    const s = hsl[1];
+    const l = hsl[2];
+
+
+         if (l >= 0.94) return 'white';
+    else if (l <  0.06) return 'black';
+
+
+    let strH = '';
+    let strS = '';
+    let strL = '';
+
+
+         if (l >= 0.81 && l < 0.94) strL = 'pale ';
+    else if (l >= 0.69 && l < 0.81) strL = 'light ';
+    else if (l >= 0.56 && l < 0.69) strL = 'bright ';
+    else if (l >= 0.31 && l < 0.44) strL = 'deep ';
+    else if (l >= 0.19 && l < 0.31) strL = 'dim ';
+    else if (l >= 0.06 && l < 0.19) strL = 'dark ';
+    
+
+    if (l > 0.25 && l < 0.75) 
+    {
+             if (s >= 0.62 && s < 0.88) strS = 'calm ';
+        else if (s >= 0.31 && s < 0.62) strS = 'dull ';
+        else if (s >= 0.12 && s < 0.31) strS = 'dirty ';
+    }
+
+
+    if (s >= 0.12)
+    {
+             if (h < 293 && h >= 278) strH = 'violet';
+        else if (h < 278 && h >= 259) strH = 'purple';
+        else if (h < 259 && h >= 248) strH = 'indigo';
+        else if (h < 248 && h >= 233) strH = 'blue';
+        else if (h < 233 && h >= 221) strH = 'cobalt';
+        else if (h < 221 && h >= 201) strH = 'sky';
+        else if (h < 201 && h >= 185) strH = 'aqua';
+        else if (h < 185 && h >= 169) strH = 'cyan';
+        else if (h < 169 && h >= 139) strH = 'jade';
+        else if (h < 139 && h >=  86) strH = 'green';
+        else if (h <  86 && h >=  63) strH = 'lime';
+        else if (h <  63 && h >=  45) strH = 'yellow';
+        else if (h <  45 && h >=  40) strH = 'mango';
+        else if (h <  40 && h >=  21) strH = 'orange';
+        else if (h <  21 && h >=  13) strH = 'amber';
+        else if (h <  13 && h >=   8) strH = 'salmon';
+        else if (h <   8 || h >= 352) strH = 'red';
+        else if (h < 352 && h >= 343) strH = 'crimson';
+        else if (h < 343 && h >= 328) strH = 'rose';
+        else if (h < 328 && h >= 293) strH = 'magenta';
+        else 
+            console.error('error parsing hue name');
+    }
+    else 
+        strH = 'gray';
+
+
+    return strL + strS + strH;
+}
+
 
 
 var _clipboard = '';
@@ -5569,6 +5887,7 @@ const settings =
     separateThousands:             true,
     invertSimpleMathParamOrder:    true,
     activateDeactiatesOthers:      true,
+    preferHtmlColorNames:          false,
     randomShiftR:                  true,
     colorShiftR:                   true,
 
@@ -5638,6 +5957,7 @@ function updateSetting(settingName, value)
         case 'separateThousands':             settings.separateThousands             = value;  break;
         case 'invertSimpleMathParamOrder':    settings.invertSimpleMathParamOrder    = value;  break;
         case 'activateDeactiatesOthers':      settings.activateDeactiatesOthers      = value;  break;
+        case 'preferHtmlColorNames':          settings.preferHtmlColorNames          = value;  break;
         case 'randomShiftR':                  settings.randomShiftR                  = value;  break;
         case 'colorShiftR':                   settings.colorShiftR                   = value;  break;
         
@@ -5716,6 +6036,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'separateThousands':             updateSettingAndMenu_(valid, settingName, value, menuItemSeparateThousands            ); break;
         case 'invertSimpleMathParamOrder':    updateSettingAndMenu_(valid, settingName, value, menuItemInvertSimpleMathParamOrder   ); break;
         case 'activateDeactiatesOthers':      updateSettingAndMenu_(valid, settingName, value, menuItemActivateDeactiatesOthers     ); break;
+        case 'preferHtmlColorNames':          updateSettingAndMenu_(valid, settingName, value, menuItemPreferHtmlColorNames         ); break;
         case 'randomShiftR':                  updateSettingAndMenu_(valid, settingName, value, menuItemRandomShiftR                 ); break;
         case 'colorShiftR':                   updateSettingAndMenu_(valid, settingName, value, menuItemColorShiftR                  ); break;
 
@@ -5807,6 +6128,7 @@ function updateSettingsMenus()
     menuItemSeparateThousands            .setChecked(settings.separateThousands            );
     menuItemInvertSimpleMathParamOrder   .setChecked(settings.invertSimpleMathParamOrder   );
     menuItemActivateDeactiatesOthers     .setChecked(settings.activateDeactiatesOthers     );
+    menuItemPreferHtmlColorNames         .setChecked(settings.preferHtmlColorNames         );
     menuItemRandomShiftR                 .setChecked(settings.randomShiftR                 );
     menuItemColorShiftR                  .setChecked(settings. colorShiftR                 );
 
@@ -6018,6 +6340,7 @@ function loadLocalSettings()
     uiGetLocalData('separateThousands'            );
     uiGetLocalData('invertSimpleMathParamOrder'   );
     uiGetLocalData('activateDeactiatesOthers'     );
+    uiGetLocalData('preferHtmlColorNames'         );
     uiGetLocalData('randomShiftR'                 );
     uiGetLocalData('colorShiftR'                  );
 
@@ -32034,7 +32357,7 @@ function getColorToTextValue(input, format)
             break;
 
         case 3: // name
-            str = getColorName(rgb);
+            str = createColorName(rgb);
             break;
     }
 
@@ -60278,82 +60601,6 @@ function noColorStyle(rgba)
             : 'rgba(255, 255, 255, 0.95)';
     }
 }
-
-
-
-function getColorName(rgb)
-{
-    if (rgb.length > 3 && rgba[3] == 0)
-        return 'transparent';
-
-
-    const hsl = rgb2hsl(rgb);
-
-    let   hue = hsl[0] * 360;
-
-    while (hue >= 360) hue -= 360;
-    while (hue <    0) hue += 360;
-    
-    const sat = hsl[1];
-    const lit = hsl[2];
-
-
-         if (lit >= 0.94) return 'white';
-    else if (lit <  0.06) return 'black';
-
-
-    let strHue = '';
-    let strSat = '';
-    let strLit = '';
-
-
-         if (lit >= 0.81 && lit < 0.94) strLit = 'pale ';
-    else if (lit >= 0.69 && lit < 0.81) strLit = 'light ';
-    else if (lit >= 0.56 && lit < 0.69) strLit = 'bright ';
-    else if (lit >= 0.31 && lit < 0.44) strLit = 'deep ';
-    else if (lit >= 0.19 && lit < 0.31) strLit = 'dim ';
-    else if (lit >= 0.06 && lit < 0.19) strLit = 'dark ';
-    
-
-    if (lit > 0.25 && lit < 0.75) 
-    {
-             if (sat >= 0.62 && sat < 0.88) strSat = 'calm ';
-        else if (sat >= 0.31 && sat < 0.62) strSat = 'dull ';
-        else if (sat >= 0.12 && sat < 0.31) strSat = 'dirty ';
-    }
-
-
-    if (sat >= 0.12)
-    {
-             if (hue < 293 && hue >= 278) strHue = 'violet';
-        else if (hue < 278 && hue >= 259) strHue = 'purple';
-        else if (hue < 259 && hue >= 248) strHue = 'indigo';
-        else if (hue < 248 && hue >= 233) strHue = 'blue';
-        else if (hue < 233 && hue >= 221) strHue = 'cobalt';
-        else if (hue < 221 && hue >= 201) strHue = 'sky';
-        else if (hue < 201 && hue >= 185) strHue = 'aqua';
-        else if (hue < 185 && hue >= 169) strHue = 'cyan';
-        else if (hue < 169 && hue >= 139) strHue = 'jade';
-        else if (hue < 139 && hue >=  86) strHue = 'green';
-        else if (hue <  86 && hue >=  63) strHue = 'lime';
-        else if (hue <  63 && hue >=  45) strHue = 'yellow';
-        else if (hue <  45 && hue >=  40) strHue = 'mango';
-        else if (hue <  40 && hue >=  21) strHue = 'orange';
-        else if (hue <  21 && hue >=  13) strHue = 'amber';
-        else if (hue <  13 && hue >=   8) strHue = 'salmon';
-        else if (hue <   8 || hue >= 352) strHue = 'red';
-        else if (hue < 352 && hue >= 343) strHue = 'crimson';
-        else if (hue < 343 && hue >= 328) strHue = 'rose';
-        else if (hue < 328 && hue >= 293) strHue = 'magenta';
-        else assert(false);
-    }
-    else 
-        strHue = 'gray';
-
-
-    return strLit + strSat + strHue;
-}
-
 
 
 // https://ixora.io/projects/colorblindness/color-blindness-simulation-research/

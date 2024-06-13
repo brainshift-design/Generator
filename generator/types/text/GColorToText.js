@@ -147,7 +147,7 @@ function getColorToTextValue(input, format)
             break;
 
         case 3: // name
-            str = getColorName(rgb);
+            str = createColorName(rgb);
             break;
     }
 

@@ -39,6 +39,10 @@ extends Control
         const textbox    = createTextarea('textControlTextarea');
 
 
+        // textbox   .spellcheck = false;
+        // textBehind.spellcheck = false;
+
+
         super(textbox, param, id, name);
 
 
