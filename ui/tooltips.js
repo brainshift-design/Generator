@@ -60,10 +60,12 @@ createTooltip(ttWcag2);
 createTooltip(ttWcag3);
 createTooltip(ttInterpolationSpace);
 createTooltip(ttColorblind);
+createTooltip(ttColorNames);
 
 //createTooltipPointerTrap(ttText);
 createTooltipPointerTrap(ttWcag2);
 createTooltipPointerTrap(ttWcag3);
 createTooltipPointerTrap(ttInterpolationSpace);
 createTooltipPointerTrap(ttColorblind);
+createTooltipPointerTrap(ttColorNames);
 createTooltipPointerTrap(ttAscii);

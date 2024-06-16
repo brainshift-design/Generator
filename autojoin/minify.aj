@@ -648,6 +648,7 @@ menuItemShowTooltipLongText
 menuItemShowTooltipLists
 menuItemShowTooltipColorInterpolation
 menuItemShowTooltipColorContrast
+menuItemShowTooltipColorNames
 menuItemShowTooltipColorBlindness
 menuItemEnableZoomedOutParams
 menuItemMinZoomForParams
@@ -3981,6 +3982,7 @@ presetPageExamples
 ttInterpolationSpaces
 ignoreColorBlindness
 ignoreColorInterpolation
+ignoreColorNames
 ignoreColorContrast2
 ignoreColorContrast3
 

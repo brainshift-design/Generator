@@ -186,3 +186,47 @@
     bottom:    32px;
     opacity:   35%;
 }
+
+
+#ttColorNames
+{
+    width: 600px;
+    height: 300px;
+}
+
+
+.ttColorNameTable
+{
+    table-layout: fixed;
+    width:        400px;
+    height:       auto;
+    color:        white;
+}
+
+
+.ttColorNameColumn
+{
+    width:      30px;
+    overflow:   hidden;
+    text-align: center;
+}
+
+
+.ttColorNameRow
+{
+    height:   20px;
+    position: relative;
+}
+
+
+.ttColorNameCellText
+{
+    font-family: Inter;
+    font-size:   11px;
+    white-space: nowrap;
+    transform:   scaleX(0.7);
+    position:    absolute;
+    left:        50%;
+    transform:   translateX(-50%);
+    box-shadow:  0 0 0 1px black inset;
+}

@@ -221,7 +221,6 @@ function parseColorNameSaturation(name)
 {
     for (const item of genColorNameSaturation) 
     {
-        console.log(getEditDistance(name.slice(0, item.name.length), item.name));
         if (   name.startsWith(item.name) 
             || getEditDistance(name.slice(0, item.name.length), item.name) <= 1) 
         {

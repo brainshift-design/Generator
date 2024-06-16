@@ -82,6 +82,28 @@ extends Parameter
         this.divControls.appendChild(this.controls[0].div);
 
        
+        this.getTooltip = () => 
+            settings.showTooltipColorNames
+            ? ttColorNames
+            : null;
+
+
+        createTooltipSrc(this.controls[0].div, this.controls[0].div, () => 
+        {
+            const tooltip = this.getTooltip();
+
+            if (tooltip)
+                this.initColorNamesTooltip();
+
+            this.controls[0].addEventListener('change', () => 
+            {
+                if (tooltip) hideTooltip(tooltip);
+            });
+
+            return this.getTooltip();
+        });
+
+
         if (hasInput)  this.initInput ([COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
@@ -430,5 +452,82 @@ extends Parameter
     loadParam(_param)
     {
         this.setValue(parseColorValue(_param[2])[0], true, false, false);
+    }
+
+
+    
+    initColorNamesTooltip()
+    {
+        ttColorNamesLightnessTable .innerHTML = '';
+        ttColorNamesSaturationTable.innerHTML = '';
+
+        
+        this.addTableRow(ttColorNamesLightnessTable, genColorNameLightness[0].name, genColorNameLightness[0].value, false);
+        this.addTableRow(ttColorNamesLightnessTable, genColorNameLightness[1].name, genColorNameLightness[1].value, false);
+        this.addTableRow(ttColorNamesLightnessTable, genColorNameLightness[2].name, genColorNameLightness[2].value, false);
+        this.addTableRow(ttColorNamesLightnessTable, '',                            0.5,                           false);
+        this.addTableRow(ttColorNamesLightnessTable, genColorNameLightness[3].name, genColorNameLightness[3].value, false);
+        this.addTableRow(ttColorNamesLightnessTable, genColorNameLightness[4].name, genColorNameLightness[4].value, false);
+        this.addTableRow(ttColorNamesLightnessTable, genColorNameLightness[5].name, genColorNameLightness[5].value, false);
+
+        
+        this.addTableRow(ttColorNamesSaturationTable, '',                             1,                               true);
+        this.addTableRow(ttColorNamesSaturationTable, genColorNameSaturation[0].name, genColorNameSaturation[0].value, true);
+        this.addTableRow(ttColorNamesSaturationTable, genColorNameSaturation[1].name, genColorNameSaturation[1].value, true);
+        this.addTableRow(ttColorNamesSaturationTable, genColorNameSaturation[2].name, genColorNameSaturation[2].value, true);
+    }
+
+
+
+    addTableRow(tbody, cname, cvalue, isSat)
+    {
+        const row = document.createElement('tr');
+        row.className = 'ttColorNameRow';
+
+
+        let cell       = document.createElement('td');
+        let text       = createDiv('ttColorNameCellText');
+        cell.className = 'ttColorNameColumn';
+        text.innerHTML = cname;
+
+        cell.appendChild(text);
+        row.appendChild(cell);
+
+
+        cell           = document.createElement('td');
+        text           = createDiv('ttColorNameCellText');
+        cell.className = 'ttColorNameColumn';
+        
+        if (!isSat && cvalue == 0.5)
+            text.innerHTML = 'gray';
+
+        if (!isSat)
+            cell.style.backgroundColor = rgb2style(hsl2rgb_(0, 0, cvalue));
+                
+        cell.appendChild(text);
+        row.appendChild(cell);
+
+
+        for (let i = genColorNameHue.length-1; i >= 0; i--) 
+        {
+            cell           = document.createElement('td');
+            text           = createDiv('ttColorNameCellText');
+            cell.className = 'ttColorNameColumn';
+            
+            if (    isSat && cvalue == 1
+                || !isSat && cvalue == 0.5)
+                text.innerHTML = genColorNameHue[i].name;
+
+            cell.style.backgroundColor = rgb2style(hsl2rgb_(
+                genColorNameHue[i].value/360, 
+                 isSat ? cvalue : 1,
+                !isSat ? cvalue : 0.5));
+
+            cell.appendChild(text);
+            row.appendChild(cell);
+        }
+
+
+        tbody.appendChild(row);
     }
 }

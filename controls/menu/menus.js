@@ -143,6 +143,7 @@ var menuItemShowTooltipLists;
 var menuItemShowTooltipColorInterpolation;
 var menuItemShowTooltipColorBlindness;
 var menuItemShowTooltipColorContrast;
+var menuItemShowTooltipColorNames;
 var menuItemShowTooltipAscii;
 
 
@@ -351,6 +352,7 @@ function initGeneratorMenus()
         menuItemShowTooltipLists              = new MenuItem('List items',          null, false, {checkCallback: () => settings.showTooltipLists,              callback: () => { updateSettingAndMenu('showTooltipLists',              true, !settings.showTooltipLists             ); }}),
         menuItemShowTooltipLongText           = new MenuItem('Long text',           null, false, {checkCallback: () => settings.showTooltipLongText,           callback: () => { updateSettingAndMenu('showTooltipLongText',           true, !settings.showTooltipLongText          ); }}),
         menuItemShowTooltipAscii              = new MenuItem('ASCII',               null, false, {checkCallback: () => settings.showTooltipAscii,              callback: () => { updateSettingAndMenu('showTooltipAscii',              true, !settings.showTooltipAscii             ); }}),        
+        menuItemShowTooltipColorNames         = new MenuItem('Color names',         null, false, {checkCallback: () => settings.showTooltipColorNames,         callback: () => { updateSettingAndMenu('showTooltipColorNames',         true, !settings.showTooltipColorNames        ); }}),
         menuItemShowTooltipColorContrast      = new MenuItem('Color contrast',      null, false, {checkCallback: () => settings.showTooltipColorContrast,      callback: () => { updateSettingAndMenu('showTooltipColorContrast',      true, !settings.showTooltipColorContrast     ); }}),
         menuItemShowTooltipColorInterpolation = new MenuItem('Color interpolation', null, false, {checkCallback: () => settings.showTooltipColorInterpolation, callback: () => { updateSettingAndMenu('showTooltipColorInterpolation', true, !settings.showTooltipColorInterpolation); }}),
         menuItemShowTooltipColorBlindness     = new MenuItem('Color blindness',     null, false, {checkCallback: () => settings.showTooltipColorBlindness,     callback: () => { updateSettingAndMenu('showTooltipColorBlindness',     true, !settings.showTooltipColorBlindness    ); }})]);
