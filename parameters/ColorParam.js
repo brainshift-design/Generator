@@ -516,7 +516,16 @@ extends Parameter
             
             if (    isSat && cvalue == 1
                 || !isSat && cvalue == 0.5)
+            {
                 text.innerHTML = genColorNameHue[i].name;
+
+                const isLight = rgb2hclok(hsl2rgb_(genColorNameHue[i].value/360, 1, 0.5))[2] > 0.75;
+                const scale   = genColorNameHue[i].name == 'magenta' ? 0.6 : 0.7;
+
+                text.style.color      = isLight ? '#000' : '#fff';
+                text.style.fontWeight = isLight ?  500   :  400;
+                text.style.transform = 'translate(-50%, -50%) scaleX(' + scale + ')';
+            }
 
             cell.style.backgroundColor = rgb2style(hsl2rgb_(
                 genColorNameHue[i].value/360, 

@@ -155,10 +155,10 @@ const htmlColors =
 const genColorNameLightness =
 [
     {name: 'pale',   value: 0.87},
-    {name: 'light',  value: 0.75},
-    {name: 'bright', value: 0.62},
-    {name: 'deep',   value: 0.37},
-    {name: 'dim',    value: 0.25},
+    {name: 'light',  value: 0.76},
+    {name: 'bright', value: 0.63},
+    {name: 'deep',   value: 0.35},
+    {name: 'dim',    value: 0.22},
     {name: 'dark',   value: 0.12}
 ];
 
@@ -179,7 +179,7 @@ const genColorNameHue =
     {name: 'purple',  value: 269},
     {name: 'indigo',  value: 254},
     {name: 'blue',    value: 241},
-    {name: 'cobalt',  value: 227},
+    {name: 'cobalt',  value: 223},
     {name: 'sky',     value: 211},
     {name: 'aqua',    value: 193},
     {name: 'cyan',    value: 177},
@@ -192,7 +192,6 @@ const genColorNameHue =
     {name: 'amber',   value:  17},
     {name: 'salmon',  value:  11},
     {name: 'red',     value:   0},
-    {name: 'crimson', value: 347},
     {name: 'rose',    value: 335},
     {name: 'magenta', value: 310}
 ];
@@ -204,7 +203,8 @@ function parseColorNameLightness(name)
     for (const item of genColorNameLightness) 
     {
         if (   name.startsWith(item.name) 
-            || getEditDistance(name.slice(0, item.name.length), item.name) <= 1) 
+            ||     getEditDistance(name.slice(0, item.name.length), item.name) <= 1
+               && !genColorNameHue.find(h => h.name.startsWith(name))) 
         {
             return { value:     item.value, 
                      remaining: name.slice(item.name.length) };
@@ -222,7 +222,8 @@ function parseColorNameSaturation(name)
     for (const item of genColorNameSaturation) 
     {
         if (   name.startsWith(item.name) 
-            || getEditDistance(name.slice(0, item.name.length), item.name) <= 1) 
+            ||     getEditDistance(name.slice(0, item.name.length), item.name) <= 1
+               && !genColorNameHue.find(h => h.name.startsWith(name))) 
         {
             return { value:     item.value, 
                      remaining: name.slice(item.name.length) };
@@ -408,8 +409,7 @@ function createColorName(rgb)
         else if (h <  21 && h >=  13) strH = 'amber';
         else if (h <  13 && h >=   8) strH = 'salmon';
         else if (h <   8 || h >= 352) strH = 'red';
-        else if (h < 352 && h >= 343) strH = 'crimson';
-        else if (h < 343 && h >= 328) strH = 'rose';
+        else if (h < 352 && h >= 328) strH = 'rose';
         else if (h < 328 && h >= 293) strH = 'magenta';
         else 
             console.error('error parsing hue name');

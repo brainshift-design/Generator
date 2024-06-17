@@ -81,6 +81,16 @@ class GraphPage
             this._zoom = zoom;
             this._pan  = pan;
     
+
+            if (tooltipTimer >= 0) 
+            {
+                clearTimeout(tooltipTimer);
+                tooltipTimer = -1;
+            }
+
+            if (currentTooltip)
+                hideTooltip(currentTooltip);
+
             
             graphView.panZoomTimer = setTimeout(() => 
             {
