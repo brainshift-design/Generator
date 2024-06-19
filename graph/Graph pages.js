@@ -52,7 +52,7 @@ Graph.prototype.removePage = function(page)
 
 Graph.prototype.updatePages = function()
 {
-    // console.log('1 update this.pageIndex =', this.pageIndex);        
+    // console.log('Graph.updatePages()');        
 
     pagesBar.style.background = document.hasFocus() ? '#202020' : '#383838';
     pagesBar.style.display    = settings.showPages ? 'inline-block' : 'none';

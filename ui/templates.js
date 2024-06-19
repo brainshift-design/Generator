@@ -19,7 +19,7 @@ function updateUserTemplatesFromDB()
     postToServer(
     {
         action: 'getAllUserTemplates',
-        userId:  currentUser.id
+        figmaId: currentUser.id
     })
     .then(response =>
     {
@@ -194,7 +194,7 @@ function adjustTemplateMenu(e, thisMenu, action, template)
                 () => postToServer(
                 {
                     action: 'deleteTemplate',
-                    userId:  currentUser.id,
+                    figmaId: currentUser.id,
                     name:    template.name
                 })
                 .then(response =>
@@ -243,7 +243,7 @@ function updateTemplateOrderOnServer()
     postToServer(
     {
         action: 'updateTemplateOrder',
-        userId:  currentUser.id,
+        figmaId: currentUser.id,
         names:   JSON.stringify(userTemplates.map(t => t.name))
     })
     .then(response =>

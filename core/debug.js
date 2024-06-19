@@ -1,4 +1,6 @@
-var debugFlag1 = false;
+var showDebugInfo = false;
+
+var debugFlag1    = false;
 
 
 
@@ -30,4 +32,20 @@ function nodeArrayToString(nodes)
     // }
 
     return str;
+}
+
+
+
+function updateDebugInfo()
+{
+    if (showDebugInfo)
+    {
+        debugInfoText.style.display = 'inline-block';
+
+        debugInfoText.innerHTML =
+                        'pan = '  + graph.currentPage.pan.x.toFixed(2) + ', ' + graph.currentPage.pan.y.toFixed(2)
+            + '<br/>' + 'zoom = ' + graph.currentPage.zoom.toFixed(4);
+    }
+    else
+        debugInfoText.style.display = 'none';
 }

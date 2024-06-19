@@ -91,7 +91,7 @@ NumberControl.prototype.initTextbox = function()
                 this.textbox.keyBlur = true;
                 this.textbox.finish(true, false);
 
-                if (   e.shiftKey 
+                if (   e.shiftKey
                     && index > 0)
                 {
                     while (index > 0
@@ -104,8 +104,8 @@ NumberControl.prototype.initTextbox = function()
                     else
                         findParamAbove(this.param.node);
                 }
-                else if (   e.shiftKey 
-                    && index == 0)
+                else if (e.shiftKey 
+                      && index == 0)
                 {
                     findParamAbove(this.param.node);
                 }
@@ -469,14 +469,14 @@ NumberControl.prototype.showTextbox = function()
     this.divValue.style.display = 'none';
 
     this.inFocus = 
-           hasFocus(this.param.div)
+            hasFocus(this.param.div)
         && !this.clicked;
 
 
     this.param.formatControlTextbox(this);
 
-
     this.updateTextbox();
+
     
     this.param.div.parentNode.appendChild(this.textbox);
     

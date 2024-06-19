@@ -88,9 +88,12 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
 async function uiReturnFigStartGenerator(msg)
 {
+    sessionId       = createRandomString(16);
+
     currentUser     = msg.currentUser;
     tutorialsShown  = msg.tutorials;
 
+    
     loadLocalSettings();
 
 
@@ -137,10 +140,8 @@ async function uiReturnFigStartGenerator(msg)
 
 function initGenerator(activate)
 {
-    sessionId = createRandomString(16);
-
-
     window.focus();
+
     pingMetrics();
     
 
@@ -186,6 +187,7 @@ function validateInit(eulaAgreed)
         {
             subscriptionActive = response.value == 'PAID';
 
+
             if (!subscriptionActive)
             {
                 checkActiveSubscription(currentUser.id).then(result =>
@@ -195,17 +197,23 @@ function validateInit(eulaAgreed)
         
                     uiSetLocalData('pro', subscriptionActive);
                     finalizeInit(eulaAgreed, result == 1);
+
+                    startUserSession();
                 })
                 .catch(error =>
                 {
                     uiError('Error while checking for subscription.');
                     finalizeInit(eulaAgreed, false);
+
+                    startUserSession();
                 });
             }
             else
             {
                 uiSetLocalData('pro', subscriptionActive);
                 finalizeInit(eulaAgreed, subscriptionActive);
+
+                startUserSession();
             }
         })
         .catch(error =>

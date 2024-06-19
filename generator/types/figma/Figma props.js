@@ -181,8 +181,10 @@ function addGradientProp(obj, prop, target = obj.fills)
     // handles outside range
 
     if (prop.stops.items.some(i => 
-               i.position.value < 0 
-            || i.position.value > 100))
+               i
+            && i.position 
+            && (   i.position.value < 0 
+                || i.position.value > 100)))
     {
         let minPos = Number.MAX_SAFE_INTEGER;
         let maxPos = Number.MIN_SAFE_INTEGER;
@@ -286,11 +288,15 @@ function validateColorStops(_stops)
 function setColorStopPositions(stops)
 {
     if (    stops.length > 0
+        && !stops[0]
+        && !stops[0].position
         && !stops[0].position.isValid()) 
         stops[0].position = new NumberValue(0);
 
     if (    stops.length > 1
-        && !stops.at(-1).position.isValid()) 
+        && (   !stops.at(-1)
+            || !stops.at(-1).position
+            || !stops.at(-1).position.isValid())) 
         stops.at(-1).position = new NumberValue(100);
     
 
@@ -300,7 +306,9 @@ function setColorStopPositions(stops)
         {
             const stop = stops[i];
 
-            if (!stop.position.isValid())
+            if (   !stop
+                || !stop.position
+                || !stop.position.isValid())
             {
                 let prevValid = i-1;
                 let nextValid = i+1;

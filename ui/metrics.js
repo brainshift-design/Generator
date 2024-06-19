@@ -1,6 +1,10 @@
 let metricsEvents = [];
 
-const ignoreUsers = ['673258279043070642'];
+
+const ignoreUsers = 
+[
+    '673258279043070642'
+];
 
 
 
@@ -37,7 +41,7 @@ function createMetricsEvent(_event, data = '')
     
     const event =
     {
-        userId:    currentUser.id,
+        figmaId:   currentUser.id,
         sessionId: sessionId,
         version:   generatorVersion,
         dateTime:  new Date(),

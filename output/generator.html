@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 431;
+const generatorVersion = 432;
 
 
 const MAX_INT32        = 2147483647;
@@ -5247,7 +5247,7 @@ const genColorNameLightness =
 [
     {name: 'pale',   value: 0.87},
     {name: 'light',  value: 0.76},
-    {name: 'bright', value: 0.63},
+    {name: 'bright', value: 0.65},
     {name: 'deep',   value: 0.35},
     {name: 'dim',    value: 0.22},
     {name: 'dark',   value: 0.12}
@@ -5268,9 +5268,9 @@ const genColorNameHue =
 [
     {name: 'violet',  value: 285},
     {name: 'purple',  value: 269},
-    {name: 'indigo',  value: 254},
+    {name: 'indigo',  value: 252},
     {name: 'blue',    value: 241},
-    {name: 'cobalt',  value: 223},
+    {name: 'cobalt',  value: 222},
     {name: 'sky',     value: 211},
     {name: 'aqua',    value: 193},
     {name: 'cyan',    value: 177},
@@ -5664,7 +5664,9 @@ function getFalseDisplay(color = true)
 }
 
 
-var debugFlag1 = false;
+var showDebugInfo = false;
+
+var debugFlag1    = false;
 
 
 
@@ -5696,6 +5698,22 @@ function nodeArrayToString(nodes)
     // }
 
     return str;
+}
+
+
+
+function updateDebugInfo()
+{
+    if (showDebugInfo)
+    {
+        debugInfoText.style.display = 'inline-block';
+
+        debugInfoText.innerHTML =
+                        'pan = '  + graph.currentPage.pan.x.toFixed(2) + ', ' + graph.currentPage.pan.y.toFixed(2)
+            + '<br/>' + 'zoom = ' + graph.currentPage.zoom.toFixed(4);
+    }
+    else
+        debugInfoText.style.display = 'none';
 }
 
 
@@ -8048,8 +8066,10 @@ function addGradientProp(obj, prop, target = obj.fills)
     // handles outside range
 
     if (prop.stops.items.some(i => 
-               i.position.value < 0 
-            || i.position.value > 100))
+               i
+            && i.position 
+            && (   i.position.value < 0 
+                || i.position.value > 100)))
     {
         let minPos = Number.MAX_SAFE_INTEGER;
         let maxPos = Number.MIN_SAFE_INTEGER;
@@ -8153,11 +8173,15 @@ function validateColorStops(_stops)
 function setColorStopPositions(stops)
 {
     if (    stops.length > 0
+        && !stops[0]
+        && !stops[0].position
         && !stops[0].position.isValid()) 
         stops[0].position = new NumberValue(0);
 
     if (    stops.length > 1
-        && !stops.at(-1).position.isValid()) 
+        && (   !stops.at(-1)
+            || !stops.at(-1).position
+            || !stops.at(-1).position.isValid())) 
         stops.at(-1).position = new NumberValue(100);
     
 
@@ -8167,7 +8191,9 @@ function setColorStopPositions(stops)
         {
             const stop = stops[i];
 
-            if (!stop.position.isValid())
+            if (   !stop
+                || !stop.position
+                || !stop.position.isValid())
             {
                 let prevValid = i-1;
                 let nextValid = i+1;

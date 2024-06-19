@@ -88,7 +88,9 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
                 && rectsIntersect(
                        node.measureData.divBounds,
                        selection))
+            {
                 selected.push(node);
+            }
         }
 
 

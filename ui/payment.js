@@ -2,12 +2,28 @@ var subscriptionActive = false;
 
 
 
+function startUserSession()
+{
+    if (ignoreUsers.includes(currentUser.id))
+        return;
+
+    postToServer(
+    {
+        action:   'startUserSession',
+        figmaId:   currentUser.id,
+        sessionId: sessionId,
+        paid:      subscriptionActive ? 'true' : 'false'
+    });
+}
+
+
+
 function checkActiveSubscription(userId)
 {
     return postToServer(
     {
         action: 'checkActiveSubscription',
-        userId:  userId
+        figmaId: userId
     })
     .then(response =>
     {

@@ -19,7 +19,9 @@ GraphView.prototype.updatePanAndZoom = function(updateNodes)
 {
     this.updateNodes(graph.pageNodes, updateNodes);
 
-        
+    updateDebugInfo();
+
+    
     setTimeout(() =>
     {
         updateZoomTooltip();
@@ -28,9 +30,6 @@ GraphView.prototype.updatePanAndZoom = function(updateNodes)
         if (menuItemZoomTo100)
             menuItemZoomTo100.setChecked(equal(graph.currentPage.zoom, 1, 0.0001));
     });
-
-
-    //console.log('pan = %s, zoom = %s', graph.currentPage.pan.x + ', ' + graph.currentPage.pan.y, graph.currentPage.zoom);
 };
 
 

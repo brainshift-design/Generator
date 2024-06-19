@@ -52,56 +52,56 @@ function onValidateClick()
     //     30), licenseKeys.private));
 
 
-    const userId        = currentUser.id;
-    const email         = subEmail.value.trim();
-    const activationKey = subLicenseKey.value.trim();
+    // const userId        = currentUser.id;
+    // const email         = subEmail.value.trim();
+    // const activationKey = subLicenseKey.value.trim();
 
     
-    if (   email         == '' 
-        || activationKey == '')
-        return;
+    // if (   email         == '' 
+    //     || activationKey == '')
+    //     return;
 
 
-    postToServer(
-    {
-        action:       'activateSubscription',
-        userId:        userId,
-        email:         email,
-        activationKey: activationKey
-    })
-    .then(response =>
-    {    
-        if (response)
-        {
-            if (   response.result == 0  // ok
-                || response.result == 3) // user with ID found, also ok
-            {
-                subscriptionActive = true;
+    // postToServer(
+    // {
+    //     action:       'activateSubscription',
+    //     figmaId:       userId,
+    //     email:         email,
+    //     activationKey: activationKey
+    // })
+    // .then(response =>
+    // {    
+    //     if (response)
+    //     {
+    //         if (   response.result == 0  // ok
+    //             || response.result == 3) // user with ID found, also ok
+    //         {
+    //             subscriptionActive = true;
 
-                updateSubscriptionDialog();
+    //             updateSubscriptionDialog();
 
-                enableFeatures(subscribed());
+    //             enableFeatures(subscribed());
 
-                uiNotify('✨   Thanks for subscribing to Generator !   ✨', {delay: 6000});
+    //             uiNotify('✨   Thanks for subscribing to Generator !   ✨', {delay: 6000});
 
-                addMetricsEvent(METRICS_CLICK_LINK, 'subscribe');                
-            }
-            else if (response.result == 1)
-            {
-                uiError('Error: No subscription found for ' + email + '.');
-            }
-            else if (response.result == 2)
-            {
-                uiError('Error: This activation key has already been used.');
-            }
-        }
-        else
-            uiError('Error: Could not activate subscription.')
-    })
-    .catch(error =>
-    {
-        uiError('Error: Could not activate subscription.')
-    });
+    //             addMetricsEvent(METRICS_CLICK_LINK, 'subscribe');                
+    //         }
+    //         else if (response.result == 1)
+    //         {
+    //             uiError('Error: No subscription found for ' + email + '.');
+    //         }
+    //         else if (response.result == 2)
+    //         {
+    //             uiError('Error: This activation key has already been used.');
+    //         }
+    //     }
+    //     else
+    //         uiError('Error: Could not activate subscription.')
+    // })
+    // .catch(error =>
+    // {
+    //     uiError('Error: Could not activate subscription.')
+    // });
 }
 
 
@@ -160,7 +160,7 @@ function updateSubscriptionDialog()
         licenseInfo             .style.display = 'block';
         subEmail                .style.display = 'none';
         subLicenseKey           .style.display = 'none';
-        validateProductKeyButton.style.display = 'none';
+        //validateProductKeyButton.style.display = 'none';
         subscribeWebsite        .style.display = 'none';
 
         checkRemainingSubscriptionDays().then(result =>
@@ -175,7 +175,7 @@ function updateSubscriptionDialog()
         licenseInfo             .style.display = 'none';
         subEmail                .style.display = 'block';
         subLicenseKey           .style.display = 'block';
-        validateProductKeyButton.style.display = 'block';
+        //validateProductKeyButton.style.display = 'block';
         subscribeWebsite        .style.display = 'inline-block';
     }
 }
@@ -263,7 +263,7 @@ subLicenseKey.addEventListener('keydown', e =>
         e.preventDefault();
 
         if (e.shiftKey) subEmail.focus();
-        else            validateProductKeyButton.focus();
+        //else            validateProductKeyButton.focus();
     }
 
     e.stopImmediatePropagation();
@@ -271,22 +271,22 @@ subLicenseKey.addEventListener('keydown', e =>
 
 
 
-validateProductKeyButton.addEventListener('keydown', e =>
-{
-    if (   e.code == 'Tab'
-        && e.shiftKey)
-    {
-        e.preventDefault();
-        subLicenseKey.focus();
-    }
-    else if (e.code == 'Enter')
-    {
-        e.preventDefault();
-        validateProductKeyButton.click();
-    }
+// validateProductKeyButton.addEventListener('keydown', e =>
+// {
+//     if (   e.code == 'Tab'
+//         && e.shiftKey)
+//     {
+//         e.preventDefault();
+//         subLicenseKey.focus();
+//     }
+//     else if (e.code == 'Enter')
+//     {
+//         e.preventDefault();
+//         validateProductKeyButton.click();
+//     }
 
-    e.stopImmediatePropagation();
-});
+//     e.stopImmediatePropagation();
+// });
 
 
 

@@ -3,7 +3,7 @@
 //     return postToServer(
 //         {
 //             action: 'getTrialExists',
-//             userId:  currentUser.id
+//             figmaId: currentUser.id
 //         })
 //         .then(response =>
 //         { 
@@ -24,7 +24,7 @@
 //     return postToServer(
 //         {
 //             action: 'getSubActive',
-//             userId:  currentUser.id
+//             figmaId: currentUser.id
 //         })
 //         .then(response => 
 //         {
@@ -45,7 +45,7 @@
 //     return postToServer(
 //         {
 //             action: 'getSubOrTrialActive',
-//             userId:  currentUser.id
+//             figmaId: currentUser.id
 //         })
 //         .then(response => 
 //         {
@@ -66,7 +66,7 @@ function checkRemainingSubscriptionDays()
     return postToServer(
         {
             action: 'getRemainingSubscriptionDays',
-            userId:  currentUser.id
+            figmaId: currentUser.id
         })
         .then(response => 
         {
@@ -87,7 +87,7 @@ function checkRemainingSubscriptionDays()
 //     return postToServer(
 //         {
 //             action: 'getLastSub',
-//             userId:  currentUser.id
+//             figmaId: currentUser.id
 //         })
 //         .then(response =>
 //         {
@@ -106,12 +106,12 @@ function checkRemainingSubscriptionDays()
 
 
 
-// function manageLastSub(userId, enable)
+// function manageLastSub(figmaId, enable)
 // {
 //     return postToServer(
 //         {
 //             action: 'manageLastSub',
-//             userId:  userId,
+//             figmaId: figmaId,
 //             state:   enable ? 1 : 0
 //         })
 //         .then(response =>
@@ -135,7 +135,7 @@ function checkRemainingSubscriptionDays()
 //     // postToServer(
 //     // {
 //     //     action: 'createTrial',
-//     //     userId:  currentUser.id
+//     //     figmaId: currentUser.id
 //     // })
 //     // .then(response =>
 //     // {

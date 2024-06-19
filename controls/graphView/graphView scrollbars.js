@@ -25,7 +25,7 @@ GraphView.prototype.updateScroll = function(x, w, h, bounds, yOffset)
 
 GraphView.prototype.updateScrollX = function(w, h, bounds)
 {
-    if (   bounds.l < 0
+    if (   bounds.l <  0
         && bounds.r >= w)
     {
         const width = sqr(w) / bounds.width - (smallScrollGap + largeScrollGap);

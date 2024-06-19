@@ -1,5 +1,8 @@
 GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
 {
+    //console.log('GraphView.updateNodes()');
+    
+
     if (!nodes)
         nodes = graph.pageNodes;
         

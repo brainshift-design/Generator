@@ -531,7 +531,7 @@ extends Parameter
             : this.divControls.offsetLeft + this.controls[0].div.offsetWidth;
      
         
-        control.textbox.style.top       = this.div        .offsetTop;
+        control.textbox.style.top       = this.div.offsetTop;
 
         control.textbox.style.width     = control.div.offsetWidth;
         control.textbox.style.height    = defParamHeight;

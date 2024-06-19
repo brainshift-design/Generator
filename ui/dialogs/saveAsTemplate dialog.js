@@ -153,7 +153,7 @@ function saveSelectedAsTemplate(templateName)
     postToServer(
     {
         action:   'saveTemplate',
-        userId:    currentUser.id,
+        figmaId:   currentUser.id,
         name:      templateName,
         graph:     encodeURIComponent(saveAsTemplateDialog.copiedJson),
         sortOrder: userTemplates.length.toString()
@@ -166,7 +166,7 @@ function saveSelectedAsTemplate(templateName)
             postToServer(
             {
                 action: 'deleteTemplate',
-                userId:  currentUser.id,
+                figmaId: currentUser.id,
                 name:    saveAsTemplateDialog.nameToDelete
             })
             .then(response =>

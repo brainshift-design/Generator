@@ -156,7 +156,7 @@ const genColorNameLightness =
 [
     {name: 'pale',   value: 0.87},
     {name: 'light',  value: 0.76},
-    {name: 'bright', value: 0.63},
+    {name: 'bright', value: 0.65},
     {name: 'deep',   value: 0.35},
     {name: 'dim',    value: 0.22},
     {name: 'dark',   value: 0.12}
@@ -177,9 +177,9 @@ const genColorNameHue =
 [
     {name: 'violet',  value: 285},
     {name: 'purple',  value: 269},
-    {name: 'indigo',  value: 254},
+    {name: 'indigo',  value: 252},
     {name: 'blue',    value: 241},
-    {name: 'cobalt',  value: 223},
+    {name: 'cobalt',  value: 222},
     {name: 'sky',     value: 211},
     {name: 'aqua',    value: 193},
     {name: 'cyan',    value: 177},
