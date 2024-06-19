@@ -896,10 +896,6 @@ divm3s
 inversem3
 createRotateTransform
 createTransform
-scaleX
-scaleY
-skewX
-skewY
 crossv2
 addv
 mulv
