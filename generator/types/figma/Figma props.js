@@ -87,13 +87,13 @@ function addGradientProp(obj, prop, target = obj.fills)
     }
 
     
-    let   x    =        prop.x     .value / 100;
-    let   y    =        prop.y     .value / 100;
-    let   s    = nozero(prop.size  .value / 100);
-    let   a    =        prop.angle .value / 360*Tau;
-    let   asp  = nozero(prop.aspect.value / 100);
-    const diag =        prop.diagAspect;
-    let   sk   =        prop.skew  .value / 100;
+    let   x        =        prop.x     .value / 100;
+    let   y        =        prop.y     .value / 100;
+    let   s        = nozero(prop.size  .value / 100);
+    let   a        =        prop.angle .value / 360*Tau;
+    let   asp      = nozero(prop.aspect.value / 100);
+    const diag     =        prop.diagAspect;
+    let   sk       =        prop.skew  .value / 100;
 
     
     const pos      = prop.position.value;
@@ -182,7 +182,6 @@ function addGradientProp(obj, prop, target = obj.fills)
 
     if (prop.stops.items.some(i => 
                i
-            && i.position 
             && (   i.position.value < 0 
                 || i.position.value > 100)))
     {
@@ -288,15 +287,11 @@ function validateColorStops(_stops)
 function setColorStopPositions(stops)
 {
     if (    stops.length > 0
-        && !stops[0]
-        && !stops[0].position
         && !stops[0].position.isValid()) 
         stops[0].position = new NumberValue(0);
 
     if (    stops.length > 1
-        && (   !stops.at(-1)
-            || !stops.at(-1).position
-            || !stops.at(-1).position.isValid())) 
+        && (!stops.at(-1).position.isValid())) 
         stops.at(-1).position = new NumberValue(100);
     
 

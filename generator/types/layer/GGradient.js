@@ -145,7 +145,8 @@ extends GOperator
                     if (isListValueType(input.type))
                     {
                         for (const item of input.items)
-                            stops.items.push(item);
+                            if (item.isValid())
+                                stops.items.push(item);
                     }
                     else if (input.type == GRADIENT_VALUE)
                     {
@@ -153,12 +154,14 @@ extends GOperator
                             stops.items.push(item);
                     }
                     else
-                        stops.items.push(input);
+                        if (input.isValid())
+                            stops.items.push(input);
                 }
             }
 
 
             stops.items = validateColorStops(stops.items);
+
             setColorStopPositions(stops.items);
 
 

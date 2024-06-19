@@ -5257,7 +5257,7 @@ const genColorNameLightness =
 
 const genColorNameSaturation =
 [
-    {name: 'calm',  value: 0.75},
+    {name: 'calm',  value: 0.72},
     {name: 'dull',  value: 0.46},
     {name: 'dirty', value: 0.21}
 ];
@@ -7972,13 +7972,13 @@ function addGradientProp(obj, prop, target = obj.fills)
     }
 
     
-    let   x    =        prop.x     .value / 100;
-    let   y    =        prop.y     .value / 100;
-    let   s    = nozero(prop.size  .value / 100);
-    let   a    =        prop.angle .value / 360*Tau;
-    let   asp  = nozero(prop.aspect.value / 100);
-    const diag =        prop.diagAspect;
-    let   sk   =        prop.skew  .value / 100;
+    let   x        =        prop.x     .value / 100;
+    let   y        =        prop.y     .value / 100;
+    let   s        = nozero(prop.size  .value / 100);
+    let   a        =        prop.angle .value / 360*Tau;
+    let   asp      = nozero(prop.aspect.value / 100);
+    const diag     =        prop.diagAspect;
+    let   sk       =        prop.skew  .value / 100;
 
     
     const pos      = prop.position.value;
@@ -8067,7 +8067,6 @@ function addGradientProp(obj, prop, target = obj.fills)
 
     if (prop.stops.items.some(i => 
                i
-            && i.position 
             && (   i.position.value < 0 
                 || i.position.value > 100)))
     {
@@ -8173,15 +8172,11 @@ function validateColorStops(_stops)
 function setColorStopPositions(stops)
 {
     if (    stops.length > 0
-        && !stops[0]
-        && !stops[0].position
         && !stops[0].position.isValid()) 
         stops[0].position = new NumberValue(0);
 
     if (    stops.length > 1
-        && (   !stops.at(-1)
-            || !stops.at(-1).position
-            || !stops.at(-1).position.isValid())) 
+        && (!stops.at(-1).position.isValid())) 
         stops.at(-1).position = new NumberValue(100);
     
 
@@ -12658,7 +12653,9 @@ extends GValue
 
     toString()
     {
-        return printNum(this.value) + ',' + printNum(this.decimals);
+        return printNum(this.value) 
+             + ',' 
+             + printNum(this.decimals);
     }
 
 
@@ -12707,8 +12704,8 @@ function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)
     {
-        console.trace();
         consoleError('number value \'' + str + '\' missing \',\'');
+        console.trace();
     }
 
     
@@ -12727,7 +12724,7 @@ function parseSimpleNumberValue(str)
 {
     const num = 
         str == NAN_DISPLAY
-        ? NumberValue.NaN
+        ? NumberValue.NaN.copy()
         : NumberValue.fromString(str);
 
     return [num, 1];
@@ -37379,7 +37376,8 @@ extends GOperator
                     if (isListValueType(input.type))
                     {
                         for (const item of input.items)
-                            stops.items.push(item);
+                            if (item.isValid())
+                                stops.items.push(item);
                     }
                     else if (input.type == GRADIENT_VALUE)
                     {
@@ -37387,12 +37385,14 @@ extends GOperator
                             stops.items.push(item);
                     }
                     else
-                        stops.items.push(input);
+                        if (input.isValid())
+                            stops.items.push(input);
                 }
             }
 
 
             stops.items = validateColorStops(stops.items);
+
             setColorStopPositions(stops.items);
 
 

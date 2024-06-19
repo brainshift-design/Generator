@@ -98,7 +98,9 @@ extends GValue
 
     toString()
     {
-        return printNum(this.value) + ',' + printNum(this.decimals);
+        return printNum(this.value) 
+             + ',' 
+             + printNum(this.decimals);
     }
 
 
@@ -147,8 +149,8 @@ function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)
     {
-        console.trace();
         consoleError('number value \'' + str + '\' missing \',\'');
+        console.trace();
     }
 
     
@@ -167,7 +169,7 @@ function parseSimpleNumberValue(str)
 {
     const num = 
         str == NAN_DISPLAY
-        ? NumberValue.NaN
+        ? NumberValue.NaN.copy()
         : NumberValue.fromString(str);
 
     return [num, 1];

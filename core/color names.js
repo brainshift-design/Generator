@@ -166,7 +166,7 @@ const genColorNameLightness =
 
 const genColorNameSaturation =
 [
-    {name: 'calm',  value: 0.75},
+    {name: 'calm',  value: 0.72},
     {name: 'dull',  value: 0.46},
     {name: 'dirty', value: 0.21}
 ];
