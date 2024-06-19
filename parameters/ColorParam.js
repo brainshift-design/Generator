@@ -152,7 +152,10 @@ extends Parameter
                     {
                         const hsl = parseColorName(colorName);
 
-                        rgb = hsl ? hsl2rgb(hsl) : rgb_NaN;
+                        rgb = 
+                            hsl 
+                            ? hsl2rgb(hsl) 
+                            : validHex2rgb(colorName);
                     }
                 }
 
