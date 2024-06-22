@@ -134,7 +134,7 @@ extends GOperator2
                 const a     = -anglev(options.tangent);
                 const xform =  createRotateTransform(a);
 
-                point.applyTransform(xform, options.transform.value > 0);
+                point.applyTransform(xform, options.transform.value > 0 ? 2 : 0);
             }
             
             

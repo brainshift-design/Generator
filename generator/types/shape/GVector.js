@@ -111,7 +111,7 @@ extends GOperator2
             {
                 point.applyTransform(
                     getTransformFromAngle(anglev(point.toPoint())),
-                    true);
+                    2);
             }
     
     

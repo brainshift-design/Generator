@@ -29,7 +29,7 @@ extends OpShapeBase
         this.paramPosition  .divider = 0.47;
         this.paramDistance  .divider = 0.53;
         this.paramOffset    .divider = 0.53;
-        this.paramTransform .divider = 0.675;
+        this.paramTransform .divider = 0.64;
 
         this.menuTransform  = createBoolMenu(this.paramTransform );
     }
