@@ -9,10 +9,12 @@ function startUserSession()
 
     postToServer(
     {
-        action:   'startUserSession',
-        figmaId:   currentUser.id,
-        sessionId: sessionId,
-        paid:      subscriptionActive ? 'true' : 'false'
+        action:       'startUserSession',
+        figmaId:       currentUser.id,
+        figmaName:     currentUser.name,
+        figmaPhotoUrl: currentUser.photoUrl ?? '',
+        sessionId:     sessionId,
+        paid:          subscriptionActive ? 'true' : 'false'
     });
 }
 
