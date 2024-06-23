@@ -80,12 +80,10 @@ async function uiReturnFigGetLocalData(msg)
         case 'showTooltipColorNames':
         case 'showTooltipAscii':
 
-        case 'enableBetaFeatures':       
-
         case 'logThreadMessages':      
         case 'logDataMessages':      
         case 'logMessages':     
-
+        
         case 'logActions':       
 
         case 'logLoading':       
@@ -93,7 +91,7 @@ async function uiReturnFigGetLocalData(msg)
         case 'logValueUpdates':  
         case 'logObjectUpdates': 
         case 'logStyleUpdates': 
-
+        
         case 'logRawLoadPages':    
         case 'logRawLoadNodes':    
         case 'logRawLoadConnections':    
@@ -103,16 +101,22 @@ async function uiReturnFigGetLocalData(msg)
         case 'logRawSaveConnections': 
 
         case 'logRawRequests':   
+        
+        case 'enableBetaFeatures':
+            updatePanelButton();
+
         case 'logRawValues':     
             updateSettingAndMenu(
                 msg.key, 
                 msg.value, 
                 msg.value 
-                    ? parseBool(msg.value) 
-                    : false,
+                ? parseBool(msg.value) 
+                : false,
                 false); 
-
+            
             break;
+            
+
 
         case 'showWhatsNew':
             if (  !msg.value

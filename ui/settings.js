@@ -417,7 +417,19 @@ function enableFeatures(sub)
     enableMenuItem(menuItemSaveTemplate,       true, sub);
     enableMenuItem(menuItemManageTemplates,    true, sub);
 
+
+    updatePanelButton();
+
+
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
+}
+
+
+
+function updatePanelButton()
+{
+    if (btnPanel     ) btnPanel     .div.style.display = !(settings.enableBetaFeatures && subscribed()) ? 'inline-block' : 'none';
+    if (btnDecoration) btnDecoration.div.style.display =  (settings.enableBetaFeatures && subscribed()) ? 'inline-block' : 'none';
 }
 
 

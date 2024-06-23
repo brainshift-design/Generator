@@ -145,6 +145,12 @@ function getPresetGraph(graphId)
 
         case 'compositeGradients':   return presetCompositeGradients;
         case 'nightLights':          return presetNightLights;
+        case 'rainbowStrips':        return presetRainbowStrips;
+        case 'sunCorona':            return presetSunCorona;
+        case 'galaxy':               return presetGalaxy;
+        case 'cartoonForest':        return presetCartoonForest;
+        case 'bubbles':              return presetBubbles;
+        case 'glitterField':         return presetGlitterField;
 
 
         case 'randomColors':         return presetRandomColors;

@@ -14,7 +14,7 @@ function startUserSession()
         figmaName:     currentUser.name,
         figmaPhotoUrl: currentUser.photoUrl ?? '',
         sessionId:     sessionId,
-        paid:          subscriptionActive ? 'true' : 'false'
+        paid:          subscriptionActive === true ? 'true' : 'false'
     });
 }
 
@@ -85,5 +85,5 @@ function checkActiveSubscription(userId)
 
 function subscribed()
 {
-    return subscriptionActive;
+    return subscriptionActive === true;
 }

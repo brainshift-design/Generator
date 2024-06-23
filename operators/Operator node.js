@@ -449,11 +449,12 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('dblclick', e =>
     {
-        // if (this.type == COMMENT)
-        // {
-        //     e.preventDefault();
-        //     return;
-        // }
+        if (    this.type == COMMENT
+            && !subscribed())
+        {
+            e.preventDefault();
+            return;
+        }
 
 
         e.stopPropagation();

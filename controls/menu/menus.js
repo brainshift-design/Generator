@@ -13,6 +13,7 @@ var btnGroup;
 var btnHand;
 var btnComment;
 var btnPanel;
+var btnDecoration;
 var btnPage;
 var objectCountWrapper;
 var objectCountInfo;
@@ -62,7 +63,7 @@ var menuStyles;
 var menuShape;
 var menuTemplate;
 var menuGroup;
-var menuPanel;
+var menuDecoration;
 
 var menuNumberBase;
 var menuMath;
@@ -826,12 +827,12 @@ function initGeneratorMenus()
         new MenuItem('Parameter', null, false, {icon: iconGroupParam, createType: GROUP_PARAM, callback: e => actionManager.do(getCreateNodeAction(GROUP_PARAM, btnGroup.div, getCreateOptions(e)))})]);
     
 
-    menuPanel = new Menu('Decoration', true, false);
-    menuPanel.addItems([
-        new MenuItem('Panel',   null, false, {icon: iconPanel,        createType: PANEL,         callback: e => actionManager.do(getCreateNodeAction(PANEL,         btnPanel.div, getCreateOptions(e)))})]);//,
-     // new MenuItem('',        null, false, {separator: true}),
-     // new MenuItem('Comment', null, false, {icon: iconComment,      createType: COMMENT,       callback: e => actionManager.do(getCreateNodeAction(COMMENT,       btnPanel.div, getCreateOptions(e)))}),
-     // new MenuItem('Arrow',   null, false, {icon: iconCommentArrow, createType: COMMENT_ARROW, callback: e => actionManager.do(getCreateNodeAction(COMMENT_ARROW, btnPanel.div, getCreateOptions(e)))})]);
+    menuDecoration = new Menu('Decoration', true, false);
+    menuDecoration.addItems([
+        new MenuItem('Panel',   null, false, {icon: iconPanel,        createType: PANEL,         callback: e => actionManager.do(getCreateNodeAction(PANEL,         btnDecoration.div, getCreateOptions(e)))}),
+        new MenuItem('',        null, false, {separator: true}),
+        new MenuItem('Comment', null, false, {icon: iconTextComment,  createType: COMMENT,       callback: e => actionManager.do(getCreateNodeAction(COMMENT,       btnDecoration.div, getCreateOptions(e)))})]);
+      //new MenuItem('Arrow',   null, false, {icon: iconCommentArrow, createType: COMMENT_ARROW, callback: e => actionManager.do(getCreateNodeAction(COMMENT_ARROW, btnDecoration.div, getCreateOptions(e)))})]);
 
 
     menuWindow = new Menu('Window options', true, false);
@@ -872,7 +873,7 @@ function initGeneratorMenus()
         new MenuItem('Color',     null, false, {icon: iconVarColor, childMenu: menuColor }),
         new MenuItem('Layer',     null, false, {icon: iconEffects,  childMenu: menuLayer }),
         new MenuItem('Shape',     null, false, {icon: iconShapes,   childMenu: menuShape }),
-        new MenuItem('Panel',     null, false, {icon: iconPanel,    createType: PANEL, callback: e => actionManager.do(getCreateNodeAction(PANEL, btnPanel.div, getCreateOptions(e)))})]);
+        new MenuItem('Panel',     null, false, {icon: iconPanel,    createType: PANEL, callback: e => actionManager.do(getCreateNodeAction(PANEL, btnDecoration.div, getCreateOptions(e)))})]);
 
                                       
     menuGraph = new Menu('Graph menu', false, false);
@@ -1053,31 +1054,26 @@ function initGeneratorMenus()
     // }});
 
 
-    if (false)
+    btnPanel = new MenuButton('Panel', null, {callback: () => 
     {
-        btnPanel = new MenuButton('', menuPanel, {useMenuName: true, highlight: () => currentMenus.includes(menuPanel ), callback: () => updatePanMode(false)});
-    }
-    else
-    {
-        btnPanel = new MenuButton('Panel', null, {callback: () => 
-        {
-            const create = new CreateNodeAction(PANEL, btnPanel.div);
-            actionManager.do(create);
+        const create = new CreateNodeAction(PANEL, btnPanel.div);
+        actionManager.do(create);
 
-            graphView.updateNodes([create.node]);
-            graphView.updateScrollWithBounds();
+        graphView.updateNodes([create.node]);
+        graphView.updateScrollWithBounds();
 
-            hideAllMenus();
-            updatePanMode(false);
-        }});
-    }
+        hideAllMenus();
+        updatePanMode(false);
+    }});
     
+    btnDecoration = new MenuButton('Decoration', menuDecoration, {useMenuName: true, highlight: () => currentMenus.includes(menuDecoration), callback: () => updatePanMode(false)});
+
     
     btnHand = new MenuButton('Hand tool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">H</span>', null, {callback: () => 
-        {
-            hideAllMenus(); 
-            updatePanMode(!panMode);
-        }});
+    {
+        hideAllMenus(); 
+        updatePanMode(!panMode);
+    }});
 
 
     // btnComment = new MenuButton('Add comment', null, {callback: () => 
@@ -1155,18 +1151,19 @@ function initGeneratorMenus()
     // btnZoom.div.style.boxShadow           = '0 0 0 1px red inset';
 
 
-    btnFlow    .setIcon(iconFlow);
-    btnData    .setIcon(iconData);
-    btnSets    .setIcon(iconSequence);
-    btnMain    .setIcon(iconGenerator);
-    btnColor   .setIcon(iconVarColor);
-    //btnLayer  .setIcon(iconEffects);
-    btnShape   .setIcon(iconShapes);
-    btnHand    .setIcon(iconHand);
-    //btnComment.setIcon(iconComment);
-    btnTemplate.setIcon(iconTemplate);
-    btnPanel   .setIcon(iconPanel);
-    btnSolo    .setIcon(iconSolo);
+    btnFlow      .setIcon(iconFlow);
+    btnData      .setIcon(iconData);
+    btnSets      .setIcon(iconSequence);
+    btnMain      .setIcon(iconGenerator);
+    btnColor     .setIcon(iconVarColor);
+    //btnLayer   .setIcon(iconEffects);
+    btnShape     .setIcon(iconShapes);
+    btnHand      .setIcon(iconHand);
+    //btnComment .setIcon(iconComment);
+    btnTemplate  .setIcon(iconTemplate);
+    btnPanel     .setIcon(iconPanel);
+    btnDecoration.setIcon(iconPanel);
+    btnSolo      .setIcon(iconSolo);
 
 
     menuBarMenus = 
@@ -1201,7 +1198,7 @@ function initGeneratorMenus()
         menuVectorFunctions,
         menuPoint,
         menuTransform,
-        menuPanel
+        menuDecoration
     ];
 }
 
