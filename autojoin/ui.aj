@@ -59,7 +59,10 @@
     [../autojoin/types.aj]
 
     ../ui/payment.js
+    ../ui/ai.js
+    
     ../ui/settings.js
+
     ../ui/dialogs/crashDialog.js
 
     [../autojoin/controls.aj]

@@ -542,4 +542,17 @@ extends Parameter
 
         tbody.appendChild(row);
     }
+
+
+
+    toPrompt()
+    {
+        let prompt = '';
+
+        prompt += super.toPrompt();
+        
+        prompt += strline(2, `Default: ${this.defaultValue}`)
+
+        return prompt;
+    }
 }

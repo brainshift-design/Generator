@@ -709,3 +709,12 @@ function measureHtmlText(text, font, fontSize)
         
     return boundingRect(divTextMeasure);
 }
+
+
+
+function strline(tab, string = '', firstLine = false)
+{
+    return (firstLine ? '' : '\n')
+         + '\t'.repeat(tab) 
+         + string;
+}

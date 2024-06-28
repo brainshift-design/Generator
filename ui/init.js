@@ -175,6 +175,9 @@ function initGenerator(activate)
 
 
     updateUserTemplatesFromDB();
+
+
+    console.log(createSystemPrompt());
 }
 
 
@@ -185,7 +188,7 @@ function validateInit(eulaAgreed)
     {
         uiGetValueFromFigma('getPaidStatus').then(response =>
         {
-            subscriptionActive = response.value == 'PAID';
+            subscriptionActive = response.value === 'PAID';
 
 
             if (!subscriptionActive)

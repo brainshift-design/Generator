@@ -1605,7 +1605,8 @@ function makeNodePath(node)
         path = group.id + '/' + path;
 
 
-    if (graph.currentPage.id != NULL)
+    if (   graph.currentPage
+        && graph.currentPage.id != NULL)
         path = graph.currentPage.id + '/' + path;
 
         

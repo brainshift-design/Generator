@@ -1,6 +1,6 @@
 {
   "name": "Generator",
-  "version": "434",
+  "version": "435",
   "description": "Generative design for Figma",
   "author": "Brainshift",
   "license": "Proprietary",
@@ -11,7 +11,7 @@
     "lint": "eslint ./"
   },
   "devDependencies": {
-    "@figma/plugin-typings": "^1.96.0",
+    "@figma/plugin-typings": "^1.97.0",
     "eslint": "^8.14.0"
   }
 }

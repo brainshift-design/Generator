@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 434;
+const generatorVersion = 435;
 
 
 const MAX_INT32        = 2147483647;
@@ -4489,6 +4489,15 @@ function measureHtmlText(text, font, fontSize)
     divTextMeasure.innerHTML = text;
         
     return boundingRect(divTextMeasure);
+}
+
+
+
+function strline(tab, string = '', firstLine = false)
+{
+    return (firstLine ? '' : '\n')
+         + '\t'.repeat(tab) 
+         + string;
 }
 
 

@@ -26,7 +26,7 @@ extends EventTarget
 
     controls        = [];
 
-    // proxy          = null;
+ // proxy           = null;
 
 
     backStyleLight  = 'rgba(255, 255, 255, 0.95)';
@@ -568,6 +568,15 @@ extends EventTarget
     toJsCode(gen)
     {
         return '';
+    }
+
+
+
+    toPrompt()
+    {
+        let prompt = '';
+
+        return prompt;
     }
 }
 

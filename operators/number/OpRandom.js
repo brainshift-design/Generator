@@ -73,38 +73,19 @@ extends OperatorBase
 
     toPrompt()
     {
-        /* each parameter will need a description,
-           and a toPrompt() */
-        return `
-
-        RANDOM node
-
-        Generates a series of random number values based on the "seed" parameter.
-
-        Can be connected to a REPEAT node's "loop" parameter to only generate a new value 
-        when the loop iterates.
-
-        Parameters:
-
-        seed      : the starting seed for random number value generation
-                  : min = 0
-                  : max = MAX_SAFE_INTEGER
-                  : default = random
-
-        iteration : forces a given iteration of the RNG 
-                  : 
-
-        min       : the smallest possible value
-
-        max       : the largest possible value
-
-        bias      : determines if the results are closer to min or to max
-
-        spread    :
-
-        unique    :
-
-
-        `.trim();
+        return createNodePrompt
+        (
+            this,
+            `Generates a series of random number values.`,
+            [
+                [this.paramSeed,      `The starting seed for the random number generator.`],
+                [this.paramIteration, `Forces a given iteration of the random number generator.`],
+                [this.paramMin,       `The smallest possible generated value.`],
+                [this.paramMax,       `The largest possible generated value.`],
+                [this.paramBias,      `Negative values bias the generated random values closer to "${this.paramMin.name}", positive values bias the generated random values closer to ${this.paramMax.name}".`],
+                [this.paramSpread,    `Negative values pinch the generated random values closer to the average of "${this.paramMin.name}" and "${this.paramMax.name}", positive values spread the generated random values away from the average of ${this.paramMin.name}" and ${this.paramMax.name}" and closer to the extremes.`],
+                [this.paramUnique,    `When the spread between ${this.paramMin.name}" and ${this.paramMax.name} is smaller than around 5, generated random numbers will sometimes repeat, which doesn't look random. "${this.paramUnique.name}" prevents this by forcing an alternation of generated values. Increasing it to 100% alternates every other value, increasing it to 200% will cycle three repeating values.`]
+            ]
+        );
     }
 }
