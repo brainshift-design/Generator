@@ -133,7 +133,7 @@ async function uiReturnFigStartGenerator(msg)
     if (msg.isLocked)
         showMultiplayerDialog();
     else
-        validateInit(msg.eula);
+        validateInit(); //msg.eula);
 }
 
 
@@ -169,7 +169,12 @@ function initGenerator(activate)
         updateObjectCountDisplay();
 
         if (!settings.debugMode)
+        {
             enableFeatures(subscribed());
+         
+            // if (!tutorialsShown)
+            //     uiGetLocalData('canvasEmpty');
+        }       
     }, 
     100);
 
@@ -182,7 +187,7 @@ function initGenerator(activate)
 
 
 
-function validateInit(eulaAgreed)
+function validateInit(/*eulaAgreed*/)
 {
     try
     {
@@ -256,11 +261,6 @@ function finalizeInit(/*eulaAgreed,*/ activate)
     // else
     // {
         initGenerator(activate);
-
-        if (!tutorialsShown)
-        {
-            uiGetLocalData('canvasEmpty');
-        }
     // }
     
     

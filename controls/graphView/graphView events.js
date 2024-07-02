@@ -260,6 +260,9 @@ GraphView.prototype.createEvents = function()
 
         e.preventDefault();
 
+        
+        hideTutorialsArrow();
+
 
         const dZoom = Math.log(graph.currentPage.zoom) / Math.log(2);
 

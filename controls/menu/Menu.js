@@ -431,11 +431,7 @@ function hideAllMenus()
     for (let i = currentMenus.length-1; i >= 0; i--)
         currentMenus[i].hide();
 
-    if (tutorialsShown)
-    {
-        findTutorials.style.display = 'none';
-        uiSetLocalData('tutorials', 'true');
-    }
+    hideTutorialsArrow();
 }
 
 

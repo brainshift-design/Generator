@@ -183,5 +183,5 @@ function btnStartTrial_onclick()
     uiSetLocalData('eula', 'true');
     hideEulaDialog();
 
-    validateInit(true);
+    validateInit(); //true);
 }

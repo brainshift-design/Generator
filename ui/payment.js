@@ -1,11 +1,14 @@
+var sessionStartPosted = false;
 var subscriptionActive = false;
 
 
 
 function startUserSession()
 {
-    if (ignoreUsers.includes(currentUser.id))
+    if (   ignoreUsers.includes(currentUser.id)
+        || sessionStartPosted)
         return;
+
 
     postToServer(
     {
@@ -16,6 +19,9 @@ function startUserSession()
         sessionId:     sessionId,
         paid:          subscriptionActive === true ? 'true' : 'false'
     });
+
+
+    sessionStartPosted = true;
 }
 
 

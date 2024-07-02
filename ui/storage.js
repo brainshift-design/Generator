@@ -336,6 +336,9 @@ function uiReturnFigLoadNodesAndConns(msg)
             if (   graph.nodes.length == 0
                 && graph.currentPage)
                 graph.currentPage.zoom = 1;
+
+            if (!tutorialsShown)
+                uiGetLocalData('canvasEmpty');
         });
     }
 }

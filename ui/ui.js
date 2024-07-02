@@ -134,3 +134,14 @@ function getMenuColorFromIndex(index)
         case 7: return [1, 0,   1];
     }
 }
+
+
+
+function hideTutorialsArrow()
+{
+    if (!tutorialsShown)
+        return;
+
+    findTutorials.style.display = 'none';
+    uiSetLocalData('tutorials', 'true');
+}
