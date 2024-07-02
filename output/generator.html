@@ -32677,11 +32677,29 @@ function getTextToColorValue(input)
 {
     const str = input.value.trim();
 
-    let rgb = 
-        str != ''
-        ? validHex2rgb(str)
-        : rgb_NaN;
+
+    let rgb; 
+
+
+    if (settings.preferHtmlColorNames)
+    {
+                   let webColor = htmlColors.find(wc => wc.name.toLowerCase() == str);
+        if (!webColor) webColor = htmlColors.find(wc => getEditDistance(wc.name.toLowerCase(), str) <= 1);
         
+        if (webColor) 
+            rgb = validHex2rgb(webColor.color);
+    }
+    else
+    {
+        const hsl = parseColorName(str);
+
+        rgb = 
+            hsl 
+            ? hsl2rgb(hsl) 
+            : validHex2rgb(str);
+    }
+
+    
     return ColorValue.fromRgb(scaleRgb(rgb));
 }
 
