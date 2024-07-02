@@ -72,21 +72,18 @@ extends OperatorBase
 
 
 
-    isUnknown()
-    {
-        return super.isUnknown()
-            || isListValueType(this.outputs[0].types[0]);
-    }
-
-
-
     getHeaderColors()
     {
         const colors = super.getHeaderColors();
 
+
         if (this.isUnknown())
+            colors.text = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+
+
+        if (   this.isUnknown()
+            || isListValueType(this.outputs[0].types[0]))
         {
-            colors.text    = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
             colors.outWire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
         }
         else
