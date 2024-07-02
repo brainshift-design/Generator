@@ -392,6 +392,7 @@ function initGeneratorMenus()
         // new MenuItem('Help page',         null, false, {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
         new MenuItem('',                     null, false, {separator: true}),
         //new MenuItem('Subscription',       null, false, {callback:  () => showSubscriptionDialog(false)}),
+        new MenuItem('EULA',                 null, false, {callback:  () => showEulaDialog()}),
         new MenuItem('About',                null, false, {callback:  () => showAboutDialog()})]);
 
 
@@ -1245,12 +1246,11 @@ function initPreferenceMenus()
                                              new MenuItem('',                                         null, false, {separator: true}),    
         menuItemShowTooltips               = new MenuItem('Show tooltips',                            null, false, {childMenu: menuShowTooltips}),
         menuItemShowWarnings               = new MenuItem('Show warnings',                            null, false, {childMenu: menuShowWarnings}),
-         menuItemShowObjectCount           = new MenuItem('Show canvas object count',                 null, false, {checkCallback: () => settings.showObjectCount,            callback: () => { updateSettingAndMenu('showObjectCount',            true, !settings.showObjectCount);            updateObjectCountDisplay();                 }}),
-        menuItemShowDebugMenu              = new MenuItem('Show debug menu',                          null, false, {checkCallback: () => settings.showDebugMenu,              callback: () => { uiGetLocalData('debugWarning'); }}),
+        menuItemShowObjectCount            = new MenuItem('Show canvas object count',                 null, false, {checkCallback: () => settings.showObjectCount,            callback: () => { updateSettingAndMenu('showObjectCount',            true, !settings.showObjectCount);            updateObjectCountDisplay();                 }}),
                                              new MenuItem('',                                         null, false, {separator: true}),
         menuItemShareUsageMetrics          = new MenuItem('Share usage metrics',                      null, false, {checkCallback: () => settings.shareUsageMetrics,          callback: () => { updateSettingAndMenu('shareUsageMetrics',          true, !settings.shareUsageMetrics);                                              }}),
-                                             new MenuItem('',                                         null, false, {separator: true}),    
         menuItemEnableBetaFeatures         = new MenuItem('Enable beta features',                     null, false, {checkCallback: () => settings.enableBetaFeatures,         callback: () => { updateSettingAndMenu('enableBetaFeatures',         true, !settings.enableBetaFeatures);         enableFeatures(subscribed()); }}),
+        menuItemShowDebugMenu              = new MenuItem('Show debug menu',                          null, false, {checkCallback: () => settings.showDebugMenu,              callback: () => { uiGetLocalData('debugWarning'); }}),
                                              new MenuItem('',                                         null, false, {separator: true}),    
         menuItemMinZoomForParams           = new MenuItem('Zoom level for values . . .',              null, false, {callback: () => showMinZoomDialog()}),
       //menuPrefSep2                       = new MenuItem('',                                         null, false, {separator: true}),    
@@ -1310,9 +1310,10 @@ function initPreferenceMenus()
     menuDebugDelete = new Menu('Debug generator', false);
     menuDebugDelete.addItems([
         new MenuItem('All saved pages',       null, false, {callback: () => { hideAllMenus(); uiRemoveAllSavedPages(); }}),
+        new MenuItem('All saved nodes',       null, false, {callback: () => { hideAllMenus(); debugModeDeleteAllNodes(); }}),
+        new MenuItem('All saved connections', null, false, {callback: () => { hideAllMenus(); uiRemoveAllSavedConnections(); }}),
         new MenuItem('',                      null, false, {separator: true}),                   
         new MenuItem('Connections to . . .',  null, false, {callback: () => showDeleteConnectionsDialog()}),                        
-        new MenuItem('All saved connections', null, false, {callback: () => { hideAllMenus(); uiRemoveAllSavedConnections(); }}),
         new MenuItem('',                      null, false, {separator: true}),                   
         new MenuItem('All style links',       null, false, {callback: () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
         new MenuItem('',                      null, false, {separator: true}),                   

@@ -199,6 +199,10 @@ class Operator
     }
 
     
+    getDescription       = () => '';
+    getDescriptionPrompt = () => this.getDescription();
+
+
 
     constructor(type, id, name, icon, defWidth = defNodeWidth, progressBar = false, createTooltip = true)
     {

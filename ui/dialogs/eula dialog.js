@@ -1,6 +1,13 @@
 function initEulaDialog()
 {
-    //eulaBack.addEventListener('pointerdown', e => { e.preventDefault(); });
+    eulaBack.addEventListener('pointerdown', e => 
+    {
+        e.preventDefault();
+        hideEulaDialog();
+    });
+
+        
+    window.getSelection().removeAllRanges();
 
 
     eulaDialog.mouseOver = false;

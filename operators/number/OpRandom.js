@@ -30,6 +30,7 @@ extends OperatorBase
         this.addParam(this.paramSpread    = new NumberParam('spread',    'spread',    true, true, true, 0, -100, 100));
         this.addParam(this.paramUnique    = new NumberParam('unique',    'unique',    true, true, true, 0, 0, 100));
 
+
         this.paramSeed.controls[0].allowEditDecimals = false;
         this.paramSeed.isDefault = () => false;
 
@@ -38,6 +39,17 @@ extends OperatorBase
 
         this.paramUnique.controls[0].suffix = '%';
         this.paramUnique.controls[0].max    = 200;
+
+
+        this.getDescription = () => `Generates a series of random number values.`;
+
+        this.paramSeed     .getDescription = () => `The starting seed for the random number generator.`;
+        this.paramIteration.getDescription = () => `Forces a given iteration of the random number generator.`;
+        this.paramMin      .getDescription = () => `The smallest possible generated value.`;
+        this.paramMax      .getDescription = () => `The largest possible generated value.`;
+        this.paramBias     .getDescription = () => `Negative values bias the generated random values closer to "${this.paramMin.name}", positive values bias the generated random values closer to "${this.paramMax.name}".`;
+        this.paramSpread   .getDescription = () => `Negative values pinch the generated random values closer to the average of "${this.paramMin.name}" and "${this.paramMax.name}", positive values spread the generated random values away from the average of "${this.paramMin.name}" and "${this.paramMax.name}" and closer to the extremes.`;
+        this.paramUnique   .getDescription = () => `When the spread between "${this.paramMin.name}" and "${this.paramMax.name}" is smaller than around 5, generated random numbers will sometimes repeat, which doesn't look random. "${this.paramUnique.name}" prevents this by forcing an alternation of generated values. Increasing it to 100% alternates every other value, increasing it to 200% will cycle three repeating values.`;
     }
 
 
@@ -73,19 +85,6 @@ extends OperatorBase
 
     toPrompt()
     {
-        return createNodePrompt
-        (
-            this,
-            `Generates a series of random number values.`,
-            [
-                [this.paramSeed,      `The starting seed for the random number generator.`],
-                [this.paramIteration, `Forces a given iteration of the random number generator.`],
-                [this.paramMin,       `The smallest possible generated value.`],
-                [this.paramMax,       `The largest possible generated value.`],
-                [this.paramBias,      `Negative values bias the generated random values closer to "${this.paramMin.name}", positive values bias the generated random values closer to ${this.paramMax.name}".`],
-                [this.paramSpread,    `Negative values pinch the generated random values closer to the average of "${this.paramMin.name}" and "${this.paramMax.name}", positive values spread the generated random values away from the average of ${this.paramMin.name}" and ${this.paramMax.name}" and closer to the extremes.`],
-                [this.paramUnique,    `When the spread between ${this.paramMin.name}" and ${this.paramMax.name} is smaller than around 5, generated random numbers will sometimes repeat, which doesn't look random. "${this.paramUnique.name}" prevents this by forcing an alternation of generated values. Increasing it to 100% alternates every other value, increasing it to 200% will cycle three repeating values.`]
-            ]
-        );
+        return createNodePrompt(this);
     }
 }

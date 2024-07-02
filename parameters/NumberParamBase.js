@@ -225,17 +225,11 @@ extends Parameter
 
     toPrompt()
     {
-        let prompt = '';
-
-        prompt += super.toPrompt();
-
-        prompt +=
-              strline(2, `Default: ${this.defaultValue.value}`)
+        return super.toPrompt()
+            + strline(2, `Default Value: ${this.defaultValue.value}`)
             + strline(2, `Min: ${this.controls[0].min}`)
             + strline(2, `Max: ${this.controls[0].max}`)
             + strline(2, `Display Min: ${this.controls[0].displayMin}`)
             + strline(2, `Display Max: ${this.controls[0].displayMax}`);
-
-        return prompt;
     }
 }

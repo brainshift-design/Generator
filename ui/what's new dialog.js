@@ -110,10 +110,6 @@ function hideWhatsNewDialog()
     whatsNewDialog.style.display = 'none';
 
     dialogShown = false;
-
-
-    if (!tutorialsShown)
-        uiGetLocalData('canvasEmpty')
 }
 
 

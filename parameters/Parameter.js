@@ -69,6 +69,10 @@ extends EventTarget
     showIndexName  = false;
 
 
+    getDescription       = () => '';
+    getDescriptionPrompt = () => this.getDescription();
+
+
 
     constructor(type, id, name, showName)
     {
@@ -574,9 +578,7 @@ extends EventTarget
 
     toPrompt()
     {
-        let prompt = '';
-
-        return prompt;
+        return '';
     }
 }
 

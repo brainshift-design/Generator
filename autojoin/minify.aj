@@ -4363,3 +4363,7 @@ ScrollListNodeAction
 SetListDividerAction
 SetMultipleValuesAction
 SetNodeParamAction
+
+getDescription
+getDescriptionPrompt
+toPrompt

@@ -262,4 +262,12 @@ extends Parameter
             }
         }
     }
+
+
+
+    toPrompt()
+    {
+        return super.toPrompt()
+            + strline(2, `Default Value: "${this.defaultValue}"`)
+    }
 }

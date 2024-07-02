@@ -3,8 +3,12 @@ function initAboutDialog()
     // initCheckbox(chkAboutHideWhatsNew, 'Show what\'s new at startup', settings.showWhatsNew);
     // chkAboutHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', chkAboutHideWhatsNew.checked ? (generatorVersion-1) : (generatorVersion)));
 
-    aboutBack .addEventListener('pointerdown', e  => e.preventDefault());
-    aboutBack .addEventListener('pointerdown', () => hideAboutDialog());
+    aboutBack.addEventListener('pointerdown', e => 
+    {
+        e.preventDefault();
+        hideAboutDialog();
+    });
+
     aboutClose.addEventListener('pointerdown', e  => e.stopPropagation());
 
     aboutVersion.innerHTML = 'Generator&nbsp;&hairsp;version&nbsp;&thinsp;' + generatorVersion;

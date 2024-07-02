@@ -116,11 +116,9 @@ async function uiReturnFigGetLocalData(msg)
             
             break;
             
-
-
         case 'showWhatsNew':
-            if (  !msg.value
-                || parseInt(msg.value) < generatorVersion)
+            if (   msg.value
+                && parseInt(msg.value) < generatorVersion)
                 showWhatsNewDialog();
 
             break;
@@ -129,11 +127,8 @@ async function uiReturnFigGetLocalData(msg)
             if (msg.value)
                 loadPresetGraph('targets');
             
-            if (!tutorialsShown)
-            {
-                findTutorials.style.display = 'block';
-                tutorialsShown = true;
-            }
+            findTutorials.style.display = 'block';
+            tutorialsShown = true;
                 
             break;
     }

@@ -177,7 +177,7 @@ function initGenerator(activate)
     updateUserTemplatesFromDB();
 
 
-    console.log(createSystemPrompt());
+    //console.log(createSystemPrompt());
 }
 
 
@@ -199,14 +199,14 @@ function validateInit(eulaAgreed)
                         subscriptionActive = true;
         
                     uiSetLocalData('pro', subscriptionActive);
-                    finalizeInit(eulaAgreed, result == 1);
+                    finalizeInit(/*eulaAgreed,*/ result == 1);
 
                     startUserSession();
                 })
                 .catch(error =>
                 {
                     uiError('Error while checking for subscription.');
-                    finalizeInit(eulaAgreed, false);
+                    finalizeInit(/*eulaAgreed,*/ false);
 
                     startUserSession();
                 });
@@ -214,7 +214,7 @@ function validateInit(eulaAgreed)
             else
             {
                 uiSetLocalData('pro', subscriptionActive);
-                finalizeInit(eulaAgreed, subscriptionActive);
+                finalizeInit(/*eulaAgreed,*/ subscriptionActive);
 
                 startUserSession();
             }
@@ -222,7 +222,7 @@ function validateInit(eulaAgreed)
         .catch(error =>
         {
             uiError('Error while checking for subscription.');
-            finalizeInit(eulaAgreed, false);
+            finalizeInit(/*eulaAgreed,*/ false);
         });
     }
     catch (e)
@@ -249,14 +249,21 @@ function validateInit(eulaAgreed)
 
 
 
-function finalizeInit(eulaAgreed, activate)
+function finalizeInit(/*eulaAgreed,*/ activate)
 {
-    if (!eulaAgreed)
-        showEulaDialog();
-    else
+    // if (!eulaAgreed)
+    //     showEulaDialog();
+    // else
+    // {
         initGenerator(activate);
 
-
+        if (!tutorialsShown)
+        {
+            uiGetLocalData('canvasEmpty');
+        }
+    // }
+    
+    
     if (settings.debugMode)
         addMetricsEvent(METRICS_DEBUG_MODE, NULL);
 }
