@@ -134,7 +134,7 @@ async function uiReturnFigStartGenerator(msg)
     if (msg.isLocked)
         showMultiplayerDialog();
     else
-        validateInit(); //msg.eula);
+        validateInit(msg.showQuestionnaire);
 }
 
 
@@ -170,12 +170,7 @@ function initGenerator(activate)
         updateObjectCountDisplay();
 
         if (!settings.debugMode)
-        {
             enableFeatures(subscribed());
-         
-            // if (!tutorialsShown)
-            //     uiGetLocalData('canvasEmpty');
-        }       
     }, 
     100);
 
@@ -183,13 +178,12 @@ function initGenerator(activate)
     updateUserTemplatesFromDB();
 
 
-    showQuestionDialog();
     //console.log(createSystemPrompt());
 }
 
 
 
-function validateInit(/*eulaAgreed*/)
+function validateInit()
 {
     try
     {
@@ -206,14 +200,14 @@ function validateInit(/*eulaAgreed*/)
                         subscriptionActive = true;
         
                     uiSetLocalData('pro', subscriptionActive);
-                    finalizeInit(/*eulaAgreed,*/ result == 1);
+                    finalizeInit(result == 1);
 
                     startUserSession();
                 })
                 .catch(error =>
                 {
                     uiError('Error while checking for subscription.');
-                    finalizeInit(/*eulaAgreed,*/ false);
+                    finalizeInit(false);
 
                     startUserSession();
                 });
@@ -221,7 +215,7 @@ function validateInit(/*eulaAgreed*/)
             else
             {
                 uiSetLocalData('pro', subscriptionActive);
-                finalizeInit(/*eulaAgreed,*/ subscriptionActive);
+                finalizeInit(subscriptionActive);
 
                 startUserSession();
             }
@@ -229,7 +223,7 @@ function validateInit(/*eulaAgreed*/)
         .catch(error =>
         {
             uiError('Error while checking for subscription.');
-            finalizeInit(/*eulaAgreed,*/ false);
+            finalizeInit(false);
         });
     }
     catch (e)
@@ -256,18 +250,33 @@ function validateInit(/*eulaAgreed*/)
 
 
 
-function finalizeInit(/*eulaAgreed,*/ activate)
+function finalizeInit(activate)
 {
-    // if (!eulaAgreed)
-    //     showEulaDialog();
-    // else
-    // {
-        initGenerator(activate);
-    // }
-    
-    
+    initGenerator(activate);
+
     if (settings.debugMode)
         addMetricsEvent(METRICS_DEBUG_MODE, NULL);
+
+    else
+    {
+        postToServer(
+        {
+            action:   'hasQuestionnaire',
+            figmaId:   currentUser.id,
+            question: 'found'
+        })
+        .then(response =>
+        {
+            if (   !response.result
+                && !ignoreUsers.includes(currentUser.id))
+                showQuestionDialog();
+        })
+        .catch(e =>
+        {
+            console.error(e);
+            throw e;
+        });
+    }
 }
 
 

@@ -9,11 +9,11 @@ function initQuestionDialog()
         e.stopImmediatePropagation();
     });
 
-    qdoFigmaStore    .addEventListener('pointerdown', e  => {});
-    qdoRecommendation.addEventListener('pointerdown', e  => {});
-    qdoSocialMedia   .addEventListener('pointerdown', e  => {});
-    qdoChatOrForum   .addEventListener('pointerdown', e  => {});
-    qdoWebSearch     .addEventListener('pointerdown', e  => {});
+    qdoFigmaStore    .addEventListener('pointerdown', e  => submitQuestionAndAnswer('found', 'figma store',    hideQuestionDialog));
+    qdoRecommendation.addEventListener('pointerdown', e  => submitQuestionAndAnswer('found', 'recommendation', hideQuestionDialog));
+    qdoSocialMedia   .addEventListener('pointerdown', e  => submitQuestionAndAnswer('found', 'social media',   hideQuestionDialog));
+    qdoChatOrForum   .addEventListener('pointerdown', e  => submitQuestionAndAnswer('found', 'chat or forum',  hideQuestionDialog));
+    qdoWebSearch     .addEventListener('pointerdown', e  => submitQuestionAndAnswer('found', 'web search',     hideQuestionDialog));
 
     qdoOther.addEventListener('pointerdown', e  => 
     {
@@ -27,6 +27,17 @@ function initQuestionDialog()
     {
         questionDialogOptions.style.display = 'block';
         questionOtherOption  .style.display = 'none';
+    });
+
+
+    questionOtherReason.addEventListener('keydown', e =>
+    {
+        e.stopPropagation();
+        
+        if (e.code == 'Enter')
+        {
+            submitQuestionAndAnswer('found', questionOtherReason.value, hideQuestionDialog);
+        }
     });
 }
 
@@ -63,7 +74,22 @@ function copyUserId()
 
 
 
-questionBack.addEventListener('pointerdown', () =>
+function submitQuestionAndAnswer(question, answer, successFunc = null)
 {
-    hideQuestionDialog();
-});
+    postToServer(
+    {
+        action:   'submitQuestionAndAnswer',
+        figmaId:   currentUser.id,
+        question:  question,
+        answer:    answer
+    })
+    .then(response =>
+    {   
+        if (successFunc)
+            successFunc();
+    })
+    .catch(error =>
+    {
+        consoleError(error);
+    });
+}
