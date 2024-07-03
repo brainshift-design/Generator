@@ -38,6 +38,7 @@
 ../html/objectCenterSize.html
 ../html/whatsNew.html
 ../html/search.html
+../html/questionnaire.html
 
 
 ../html/keyboardPanel.html

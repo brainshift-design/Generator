@@ -77,9 +77,10 @@ initLoadingOverlay();
 initEulaDialog();
 initWhatsNewDialog();
 initAboutDialog();
-
-// initSnapshots();
+initQuestionDialog();
 initRestartDialog();
+    
+// initSnapshots();
 
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});
@@ -182,6 +183,7 @@ function initGenerator(activate)
     updateUserTemplatesFromDB();
 
 
+    showQuestionDialog();
     //console.log(createSystemPrompt());
 }
 
