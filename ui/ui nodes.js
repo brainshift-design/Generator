@@ -536,6 +536,8 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes, zoo
         initCrashDialog(e);
         showCrashDialog();
 
+        addMetricsEvent(METRICS_CRASH, e);
+
         return [[], []];
     }
 }

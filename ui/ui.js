@@ -52,7 +52,7 @@ function uiError(text, options = {}, delay = 6000)
             ...options
         });
 
-    addMetricsEvent(METRICS_ERROR, 'text');                
+    addMetricsEvent(METRICS_ERROR, 'text');
 }
 
 

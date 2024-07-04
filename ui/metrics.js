@@ -3,7 +3,7 @@ let metricsEvents = [];
 
 const ignoreUsers = 
 [
-    '673258279043070642'
+    // '673258279043070642'
 ];
 
 
@@ -31,6 +31,7 @@ const METRICS_ACTION_UNDO     = 'ACTION_UNDO';
 const METRICS_ACTION_REDO     = 'ACTION_REDO';
 const METRICS_CLICK_LINK      = 'CLICK_LINK';
 const METRICS_ERROR           = 'ERROR';
+const METRICS_CRASH           = 'CRASH';
 
 
 
