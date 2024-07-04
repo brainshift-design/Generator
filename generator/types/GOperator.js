@@ -257,13 +257,28 @@ extends GNode
 
         for (let i = 0; i < this.value.objects.length; i++)
         {
-            const obj    = this.value.objects[i];
+            const obj     = this.value.objects[i];
 
-            obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-            obj.listId   = -1;
+            obj.nodeId    = this.nodeId;
+            obj.objectId += OBJECT_SEPARATOR + this.nodeId;
+            obj.listId    = -1;
         }
     }
+
+
+
+    // updateValueObjectsFromInput(input)
+    // {
+    //     const inputObjects = this.copyObjects(input);
+            
+    //     for (const obj of inputObjects)
+    //     {
+    //         obj.objectId += OBJECT_SEPARATOR + i;
+    //         obj.itemIndex = i;
+    //     }
+
+    //     this.value.objects.push(...inputObjects);
+    // }
 
 
 

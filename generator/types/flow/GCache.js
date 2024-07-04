@@ -46,15 +46,20 @@ extends GOperator1
 
 
         if (this.cachedValue)
+        {
             this.value = this.cachedValue.copy();
-
+        }
         else
         {
-            this.value = await evalValue(this.input, parse);
+            const input = await evalValue(this.input, parse);
+
+            this.value = input;
 
             if (   this.options.enabled
                 && this.value)
                 this.cachedValue = this.value.copy();
+
+            // this.updateValueObjects();//FromInput(input);
         }
 
 

@@ -35,7 +35,6 @@ extends FigmaShape
         
 
         this.updatePathPoints();
-        //this.updatePathData();
     }
 
 

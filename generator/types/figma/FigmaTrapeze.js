@@ -70,15 +70,11 @@ extends FigmaVectorPath
             this.bias);
 
 
-        // copy.x      = this.x;
-        // copy.y      = this.y;
-        // copy.width  = this.width;
-        // copy.height = this.height;
-
-
         copy.copyBase(this);
 
-        
+        copy.updatePathPoints();
+
+
         return copy;
     }
 

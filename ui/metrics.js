@@ -3,7 +3,7 @@ let metricsEvents = [];
 
 const ignoreUsers = 
 [
-    // '673258279043070642'
+    '673258279043070642'
 ];
 
 
