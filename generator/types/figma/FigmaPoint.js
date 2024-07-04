@@ -68,6 +68,13 @@ extends FigmaShape
 
 
 
+    toValue()
+    {
+        return PointValue.fromObject(this);
+    }
+
+
+
     toData()
     {
         return [

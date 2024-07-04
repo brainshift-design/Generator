@@ -51,6 +51,13 @@ extends FigmaShape
 
 
 
+    toValue()
+    {
+        return RectangleValue.fromObject(this);
+    }
+
+
+
     toData()
     {
         return [

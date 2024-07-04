@@ -132,6 +132,13 @@ extends FigmaShape
 
 
 
+    toValue()
+    {
+        return FigmaVectorNetwork.fromObject(this);
+    }
+
+
+
     toData()
     {
         return [

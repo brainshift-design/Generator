@@ -61,6 +61,13 @@ extends FigmaShape
 
 
 
+    toValue()
+    {
+        return EllipseValue.fromObject(this);
+    }
+
+
+
     toData()
     {
         return [

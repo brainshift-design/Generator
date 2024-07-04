@@ -20,6 +20,16 @@ extends ShapeValue
 
 
 
+    static fromObject(obj)
+    {
+        return new VectorRegionValue(
+            obj.nodeId,
+            new ListValue(),  //obj.regions.map(r => VectorRegionValue.fromPoint(obj.nodeId, p))), 
+            new ListValue()); //obj.regions.map(r => VectorRegionValue.fromPoint(obj.nodeId, p))));
+    }
+
+
+
     copy()
     {
         const copy = new VectorRegionValue(

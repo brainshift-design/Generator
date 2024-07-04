@@ -27,6 +27,19 @@ extends ShapeValue
 
 
 
+    static fromObject(obj)
+    {
+        return new RectangleValue(
+            obj.nodeId,
+            new NumberValue(obj.x     ), 
+            new NumberValue(obj.y     ), 
+            new NumberValue(obj.width ), 
+            new NumberValue(obj.height), 
+            new NumberValue(obj.round ));
+    }
+
+
+
     copy()
     {
         const copy = new RectangleValue(

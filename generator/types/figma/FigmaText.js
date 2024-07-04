@@ -92,6 +92,13 @@ extends FigmaShape
 
 
 
+    toValue()
+    {
+        return TextShapeValue.fromObject(this);
+    }
+
+
+
     toJsonObject()
     {
         return {

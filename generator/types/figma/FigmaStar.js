@@ -55,6 +55,14 @@ extends FigmaShape
     }
 
 
+
+    toValue()
+    {
+        return StarValue.fromObject(this);
+    }
+
+
+
     toData()
     {
         return [

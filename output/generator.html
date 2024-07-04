@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 436;
+const generatorVersion = 437;
 
 
 const MAX_INT32        = 2147483647;
@@ -8636,6 +8636,13 @@ extends FigmaShape
 
 
 
+    toValue()
+    {
+        return RectangleValue.fromObject(this);
+    }
+
+
+
     toData()
     {
         return [
@@ -8694,6 +8701,13 @@ extends FigmaShape
 
 
         return copy;
+    }
+
+
+
+    toValue()
+    {
+        return LineValue.fromObject(this);
     }
 
 
@@ -8770,6 +8784,13 @@ extends FigmaShape
 
 
         return copy;
+    }
+
+
+
+    toValue()
+    {
+        return EllipseValue.fromObject(this);
     }
 
 
@@ -9510,6 +9531,13 @@ extends FigmaShape
 
 
 
+    toValue()
+    {
+        return FigmaVectorNetwork.fromObject(this);
+    }
+
+
+
     toData()
     {
         return [
@@ -9756,6 +9784,13 @@ extends FigmaShape
 
 
 
+    toValue()
+    {
+        return PolygonValue.fromObject(this);
+    }
+
+
+
     toData()
     {
         return [
@@ -9829,6 +9864,14 @@ extends FigmaShape
 
         return copy;
     }
+
+
+
+    toValue()
+    {
+        return StarValue.fromObject(this);
+    }
+
 
 
     toData()
@@ -9940,6 +9983,13 @@ extends FigmaShape
 
 
         return copy;
+    }
+
+
+
+    toValue()
+    {
+        return TextShapeValue.fromObject(this);
     }
 
 
@@ -10069,6 +10119,13 @@ extends FigmaShape
     toPoint()
     {
         return point(this.x, this.y);
+    }
+
+
+
+    toValue()
+    {
+        return PointValue.fromObject(this);
     }
 
 
@@ -15301,6 +15358,19 @@ extends ShapeValue
 
 
 
+    static fromObject(obj)
+    {
+        return new RectangleValue(
+            obj.nodeId,
+            new NumberValue(obj.x     ), 
+            new NumberValue(obj.y     ), 
+            new NumberValue(obj.width ), 
+            new NumberValue(obj.height), 
+            new NumberValue(obj.round ));
+    }
+
+
+
     copy()
     {
         const copy = new RectangleValue(
@@ -15477,6 +15547,17 @@ extends ShapeValue
 
 
 
+    static fromObject(obj)
+    {
+        return new LineValue(
+            obj.nodeId,
+            new NumberValue(obj.x    ), 
+            new NumberValue(obj.y    ), 
+            new NumberValue(obj.width));
+    }
+
+
+
     copy()
     {
         const copy = new LineValue(
@@ -15646,6 +15727,23 @@ extends ShapeValue
         this.start    = start;
         this.sweep    = sweep;
         this.inner    = inner;
+    }
+
+
+
+    static fromObject(obj)
+    {
+        return new EllipseValue(
+            obj.nodeId,
+            new NumberValue(obj.position), 
+            new NumberValue(obj.x       ), 
+            new NumberValue(obj.y       ), 
+            new NumberValue(obj.width   ), 
+            new NumberValue(obj.height  ), 
+            new NumberValue(obj.round   ),
+            new NumberValue(obj.start   ),
+            new NumberValue(obj.sweep   ),
+            new NumberValue(obj.inner   ));
     }
 
 
@@ -16087,6 +16185,21 @@ extends ShapeValue
 
 
 
+    static fromObject(obj)
+    {
+        return new PolygonValue(
+            obj.nodeId,
+            new NumberValue(obj.position), 
+            new NumberValue(obj.x       ), 
+            new NumberValue(obj.y       ), 
+            new NumberValue(obj.width   ), 
+            new NumberValue(obj.height  ), 
+            new NumberValue(obj.round   ),
+            new NumberValue(obj.corners ));
+    }
+
+
+
     copy()
     {
         const copy = new PolygonValue(
@@ -16293,6 +16406,22 @@ extends ShapeValue
         this.round    = round;
         this.points   = points;
         this.convex   = convex;
+    }
+
+
+
+    static fromObject(obj)
+    {
+        return new StarValue(
+            obj.nodeId,
+            new NumberValue(obj.position), 
+            new NumberValue(obj.x       ), 
+            new NumberValue(obj.y       ), 
+            new NumberValue(obj.width   ), 
+            new NumberValue(obj.height  ), 
+            new NumberValue(obj.round   ),
+            new NumberValue(obj.points  ),
+            new NumberValue(obj.convex  ));
     }
 
 
@@ -16527,6 +16656,26 @@ extends ShapeValue
         this.letterSpacing = letterSpacing;
 
         this.objects       = [];
+    }
+
+
+
+    static fromObject(obj)
+    {
+        return new TextShapeValue(
+            obj.nodeId,
+            new NumberValue(obj.text         ), 
+            new NumberValue(obj.x            ), 
+            new NumberValue(obj.y            ), 
+            new NumberValue(obj.width        ), 
+            new NumberValue(obj.height       ), 
+            new NumberValue(obj.font         ),
+            new NumberValue(obj.style        ),
+            new NumberValue(obj.size         ),
+            new NumberValue(obj.alignX       ),
+            new NumberValue(obj.alignY       ),
+            new NumberValue(obj.lineHeight   ),
+            new NumberValue(obj.letterSpacing));
     }
 
 
@@ -16801,6 +16950,17 @@ extends GValue
 
 
         this.createDefaultSpace();
+    }
+
+
+
+    static fromObject(obj)
+    {
+        return new PointValue(
+            obj.nodeId,
+            new NumberValue(obj.x     ), 
+            new NumberValue(obj.y     ), 
+            new NumberValue(obj.smooth));
     }
 
 
@@ -17637,6 +17797,16 @@ extends ShapeValue
 
 
 
+    static fromObject(obj)
+    {
+        return new VectorRegionValue(
+            obj.nodeId,
+            new ListValue(),  //obj.regions.map(r => VectorRegionValue.fromPoint(obj.nodeId, p))), 
+            new ListValue()); //obj.regions.map(r => VectorRegionValue.fromPoint(obj.nodeId, p))));
+    }
+
+
+
     copy()
     {
         const copy = new VectorRegionValue(
@@ -17799,6 +17969,15 @@ extends GValue
         this.nodeId  = nodeId;
 
         this.regions = regions; 
+    }
+
+
+
+    static fromObject(obj)
+    {
+        return new VectorNetworkValue(
+            obj.nodeId,
+            new ListValue(obj.regions.map(r => VectorRegionValue.fromObject(obj.nodeId, r))));
     }
 
 

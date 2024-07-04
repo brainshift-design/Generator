@@ -50,6 +50,26 @@ extends ShapeValue
 
 
 
+    static fromObject(obj)
+    {
+        return new TextShapeValue(
+            obj.nodeId,
+            new NumberValue(obj.text         ), 
+            new NumberValue(obj.x            ), 
+            new NumberValue(obj.y            ), 
+            new NumberValue(obj.width        ), 
+            new NumberValue(obj.height       ), 
+            new NumberValue(obj.font         ),
+            new NumberValue(obj.style        ),
+            new NumberValue(obj.size         ),
+            new NumberValue(obj.alignX       ),
+            new NumberValue(obj.alignY       ),
+            new NumberValue(obj.lineHeight   ),
+            new NumberValue(obj.letterSpacing));
+    }
+
+
+
     copy()
     {
         const copy = new TextShapeValue(

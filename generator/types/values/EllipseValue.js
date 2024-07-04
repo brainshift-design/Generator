@@ -39,6 +39,23 @@ extends ShapeValue
 
 
 
+    static fromObject(obj)
+    {
+        return new EllipseValue(
+            obj.nodeId,
+            new NumberValue(obj.position), 
+            new NumberValue(obj.x       ), 
+            new NumberValue(obj.y       ), 
+            new NumberValue(obj.width   ), 
+            new NumberValue(obj.height  ), 
+            new NumberValue(obj.round   ),
+            new NumberValue(obj.start   ),
+            new NumberValue(obj.sweep   ),
+            new NumberValue(obj.inner   ));
+    }
+
+
+
     copy()
     {
         const copy = new EllipseValue(

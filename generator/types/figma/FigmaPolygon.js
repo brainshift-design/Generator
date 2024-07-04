@@ -54,6 +54,13 @@ extends FigmaShape
 
 
 
+    toValue()
+    {
+        return PolygonValue.fromObject(this);
+    }
+
+
+
     toData()
     {
         return [

@@ -33,6 +33,17 @@ extends GValue
 
 
 
+    static fromObject(obj)
+    {
+        return new PointValue(
+            obj.nodeId,
+            new NumberValue(obj.x     ), 
+            new NumberValue(obj.y     ), 
+            new NumberValue(obj.smooth));
+    }
+
+
+
     copy()
     {
         const copy = new PointValue(

@@ -19,6 +19,15 @@ extends GValue
 
 
 
+    static fromObject(obj)
+    {
+        return new VectorNetworkValue(
+            obj.nodeId,
+            new ListValue(obj.regions.map(r => VectorRegionValue.fromObject(obj.nodeId, r))));
+    }
+
+
+
     copy()
     {
         const copy = new VectorNetworkValue(

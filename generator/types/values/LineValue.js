@@ -21,6 +21,17 @@ extends ShapeValue
 
 
 
+    static fromObject(obj)
+    {
+        return new LineValue(
+            obj.nodeId,
+            new NumberValue(obj.x    ), 
+            new NumberValue(obj.y    ), 
+            new NumberValue(obj.width));
+    }
+
+
+
     copy()
     {
         const copy = new LineValue(

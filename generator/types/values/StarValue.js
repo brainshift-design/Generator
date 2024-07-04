@@ -36,6 +36,22 @@ extends ShapeValue
 
 
 
+    static fromObject(obj)
+    {
+        return new StarValue(
+            obj.nodeId,
+            new NumberValue(obj.position), 
+            new NumberValue(obj.x       ), 
+            new NumberValue(obj.y       ), 
+            new NumberValue(obj.width   ), 
+            new NumberValue(obj.height  ), 
+            new NumberValue(obj.round   ),
+            new NumberValue(obj.points  ),
+            new NumberValue(obj.convex  ));
+    }
+
+
+
     copy()
     {
         const copy = new StarValue(
