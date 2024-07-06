@@ -69,10 +69,10 @@
     [../autojoin/controls.aj]
     [../autojoin/operators.aj]
 
+    ../ui/presets/*.js
     ../actions/*.js
     ../ui/templates/*.js
     ../ui/*!(payment,settings).js
-    ../ui/presets/*.js
     ../ui/dialogs/*!(crashDialog).js
 
 ../html/ui_3.html

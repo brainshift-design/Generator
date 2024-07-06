@@ -10,14 +10,16 @@ function initQuestionDialog()
     });
 
     qdoFigmaStore    .addEventListener('pointerdown', e => submitQuestionAndAnswer('found', 'figma store',    hideQuestionDialog));
-    qdoRecommendation.addEventListener('pointerdown', e => submitQuestionAndAnswer('found', 'recommendation', hideQuestionDialog));
+    qdoYoutube       .addEventListener('pointerdown', e => submitQuestionAndAnswer('found', 'youtube',        hideQuestionDialog));
     qdoSocialMedia   .addEventListener('pointerdown', e => submitQuestionAndAnswer('found', 'social media',   hideQuestionDialog));
+    qdoRecommendation.addEventListener('pointerdown', e => submitQuestionAndAnswer('found', 'recommendation', hideQuestionDialog));
     qdoChatOrForum   .addEventListener('pointerdown', e => submitQuestionAndAnswer('found', 'chat or forum',  hideQuestionDialog));
     
     qdoWebSearch.addEventListener('pointerdown', e => 
     {
         questionDialogOptions  .style.display = 'none';
         questionWebSearchOption.style.display = 'block';
+        questionWebSearchOption.style.width   = '420px';
 
         setTimeout(() => questionWebSearchReason.focus(), 100);
     });
@@ -26,6 +28,7 @@ function initQuestionDialog()
     {
         questionDialogOptions.style.display = 'none';
         questionOtherOption  .style.display = 'block';
+        questionOtherOption  .style.width   = '420px';
 
         setTimeout(() => questionOtherReason.focus(), 100);
     });
@@ -35,6 +38,7 @@ function initQuestionDialog()
     {
         questionDialogOptions  .style.display = 'block';
         questionWebSearchOption.style.display = 'none';
+        questionWebSearchOption.style.width   = '100%';
     });
 
     questionWebSearchReason.addEventListener('keydown', e =>
@@ -52,6 +56,7 @@ function initQuestionDialog()
     {
         questionDialogOptions.style.display = 'block';
         questionOtherOption  .style.display = 'none';
+        questionOtherOption  .style.width   = '100%';
     });
 
     questionOtherReason.addEventListener('keydown', e =>

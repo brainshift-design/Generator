@@ -261,13 +261,13 @@ function finalizeInit(activate)
     {
         postToServer(
         {
-            action:   'hasQuestionnaire',
+            action:   'getUserStartupInfo',
             figmaId:   currentUser.id,
             question: 'found'
         })
         .then(response =>
         {
-            if (   !response.result
+            if (   !response.hasQuestionnaire
                 && !ignoreUsers.includes(currentUser.id))
                 showQuestionDialog();
         })

@@ -77,127 +77,127 @@ function loadPresetGraph(graphId)
 
 
 
+const presetGraphs = 
+[
+    { id: 'default',              graph: presetDefault            },
+
+    { id: 'basics',               graph: presetNodeBasics         },
+    { id: 'dataTypes',            graph: presetDataTypes          },
+    { id: 'organize',             graph: presetOrganize           },
+    { id: 'active',               graph: presetActive             },
+    { id: 'render',               graph: presetRender             },
+
+    { id: 'ifElse',               graph: presetIfElse             },
+    { id: 'select',               graph: presetSelect             },
+    { id: 'sorting',              graph: presetSorting            },
+    { id: 'encodingValues',       graph: presetEncodingValues     },
+    { id: 'tableBasics',          graph: presetTableBasics        },
+    { id: 'countryData',          graph: presetCountryData        },
+    { id: 'pieChart',             graph: presetPieChart           },
+    { id: 'lineGraph',            graph: presetLineGraph          },
+
+    { id: 'sequence',             graph: presetSequence           },
+    { id: 'range',                graph: presetRange              },
+    { id: 'wave',                 graph: presetWave               },
+    { id: 'iterate',              graph: presetIterate            },
+    { id: 'random',               graph: presetRandom             },
+    { id: 'noise',                graph: presetNoise              },
+    { id: 'probability',          graph: presetProbability        },
+
+    { id: 'randomSeeds',          graph: presetRandomSeeds        },
+
+    { id: 'loop1d',               graph: presetLoop1d             },
+    { id: 'loop2d',               graph: presetLoop2d             },
+    { id: 'loopLock',             graph: presetLoopLock           },
+
+    { id: 'numberLine',           graph: presetNumberLine         },
+    { id: 'wavyDots',             graph: presetWavyDots           },
+    { id: 'falsePerspective',     graph: presetFalsePerspective   },
+    { id: 'rays',                 graph: presetRays               },
+    { id: 'magicDots',            graph: presetMagicDots          },
+    { id: 'arcs',                 graph: presetArcs               },
+    { id: 'randomCircles',        graph: presetRandomCircles      },
+    { id: 'treeRings',            graph: presetTreeRings          },
+    { id: 'arcSunset',            graph: presetArcSunset          },
+    { id: 'progressiveBlur',      graph: presetProgressiveBlur    },
+    { id: 'noiseBlur',            graph: presetNoiseBlur          },
+
+    { id: 'arcLetters',           graph: presetArcLetters         },
+    { id: 'doctorsHandwriting',   graph: presetDoctorsHandwriting },
+
+    { id: 'twoMathNodes',         graph: presetTwoMathNodes       },
+    { id: 'quadraticFormula',     graph: presetQuadraticFormula   },
+    { id: 'opponentColor',        graph: presetOpponentColor      },
+
+    { id: 'randomNames',          graph: presetRandomNames        },
+    { id: 'alphabetSoup',         graph: presetAlphabetSoup       },
+    { id: 'fontList',             graph: presetFontList           },
+
+    { id: 'clock',                graph: presetClock              },
+
+    { id: 'colorContrast',        graph: presetColorContrast      },
+    { id: 'colorSpaces',          graph: presetColorSpaces        },
+    { id: 'invalidColors',        graph: presetInvalidColors      },
+    { id: 'textFromBackground',   graph: presetTextFromBackground },
+
+    { id: 'compositeGradients',   graph: presetCompositeGradients },
+    { id: 'nightLights',          graph: presetNightLights        },
+    { id: 'rainbowStrips',        graph: presetRainbowStrips      },
+    { id: 'sunCorona',            graph: presetSunCorona          },
+    { id: 'galaxy',               graph: presetGalaxy             },
+    { id: 'cartoonForest',        graph: presetCartoonForest      },
+    { id: 'bubbles',              graph: presetBubbles            },
+    { id: 'glitterField',         graph: presetGlitterField       },
+
+    { id: 'randomColors',         graph: presetRandomColors       },
+    { id: 'tintsAndShades',       graph: presetTintsAndShades     },
+    { id: 'paletteFromColor',     graph: presetPaletteFromColor   },
+    { id: 'colorSwatches',        graph: presetColorSwatches      },
+    { id: 'blurryBackgrounds',    graph: presetBlurryBackgrounds  },
+    { id: 'brickWall',            graph: presetBrickWall          },
+    { id: 'cairoTiles',           graph: presetCairoTiles         },
+
+    { id: 'shapesStyles',         graph: presetShapesStyles       },
+    { id: 'basicTransform',       graph: presetBasicTransform     },
+    { id: 'combinedTransform',    graph: presetCombinedTransform  },
+    { id: 'feedback',             graph: presetFeedback           },
+
+    { id: 'wobblyCircle',         graph: presetWobblyCircle       },
+    { id: 'snowflakes',           graph: presetSnowflakes         },
+    { id: 'roughStar',            graph: presetRoughStar          },
+    { id: 'nestedTorus',          graph: presetNestedTorus        },
+    { id: 'targets',              graph: presetTargets            },
+    { id: 'spiderWeb',            graph: presetSpiderWeb          },
+
+    { id: 'basicVariables',       graph: presetBasicVariables     },
+
+
+    { id: 'namesLogos',           graph: presetNamesLogos         },
+    { id: 'avatars',              graph: presetAvatars            },
+
+    { id: 'booksOnShelf',         graph: presetBooksOnShelf       },
+    { id: 'circleFields',         graph: presetCircleFields       },
+    { id: 'circleFields2',        graph: presetCircleFields2      },
+    { id: 'wobbles',              graph: presetWobbles            },
+    { id: 'randomAbstract',       graph: presetRandomAbstract     },
+    { id: 'afterTheStorm',        graph: presetAfterTheStorm      },
+    { id: 'sunsetDreams',         graph: presetSunsetDreams       },
+    { id: 'polarizedLights',      graph: presetPolarizedLights    },
+    { id: 'linesOfFire',          graph: presetLinesOfFire        },
+    { id: 'northernLights',       graph: presetNorthernLights     },
+    { id: 'skyline',              graph: presetSkyline            },
+    { id: 'clouds',               graph: presetClouds             },
+    { id: 'twistedTower',         graph: presetTwistedTower       },
+    { id: 'dustySunset',          graph: presetDustySunset        },
+    { id: 'brushStrokes',         graph: presetBrushStrokes       },
+    { id: 'gradientCircles',      graph: presetGradientCircles    },
+    { id: 'hotSpring',            graph: presetHotSpring          },
+    { id: 'nightPalace',          graph: nightPalace              },
+];
+
+
+
 function getPresetGraph(graphId)
 {
-    switch (graphId)
-    {
-        case 'default':              return presetDefault;
-
-        case 'basics':               return presetNodeBasics;
-        case 'dataTypes':            return presetDataTypes;
-        case 'organize':             return presetOrganize;
-        case 'active':               return presetActive;
-        case 'render':               return presetRender;
-
-        case 'ifElse':               return presetIfElse;
-        case 'select':               return presetSelect;
-        case 'sorting':              return presetSorting;
-        case 'encodingValues':       return presetEncodingValues;
-        case 'tableBasics':          return presetTableBasics;
-        case 'countryData':          return presetCountryData;
-        case 'pieChart':             return presetPieChart;
-        case 'lineGraph':            return presetLineGraph;
-
-
-        case 'sequence':             return presetSequence;
-        case 'range':                return presetRange;
-        case 'wave':                 return presetWave;
-        case 'iterate':              return presetIterate;
-        case 'random':               return presetRandom;
-        case 'noise':                return presetNoise;
-        case 'probability':          return presetProbability;
-
-        case 'randomSeeds':          return presetRandomSeeds;
-
-        case 'loop1d':               return presetLoop1d;
-        case 'loop2d':               return presetLoop2d;
-        case 'loopLock':             return presetLoopLock;
-
-        case 'numberLine':           return presetNumberLine;
-        case 'wavyDots':             return presetWavyDots;
-        case 'falsePerspective':     return presetFalsePerspective;
-        case 'rays':                 return presetRays;
-        case 'magicDots':            return presetMagicDots;
-        case 'arcs':                 return presetArcs;
-        case 'randomCircles':        return presetRandomCircles;
-        case 'treeRings':            return presetTreeRings;
-        case 'progressiveBlur':      return presetProgressiveBlur;
-        case 'noiseBlur':            return presetNoiseBlur;
-
-        case 'arcLetters':           return presetArcLetters;
-        case 'doctorsHandwriting':   return presetDoctorsHandwriting;
-        
-        case 'twoMathNodes':         return presetTwoMathNodes;
-        case 'quadraticFormula':     return presetQuadraticFormula;
-        case 'opponentColor':        return presetOpponentColor;
-
-        
-        case 'randomNames':          return presetRandomNames;
-        case 'alphabetSoup':         return presetAlphabetSoup;
-        case 'fontList':             return presetFontList;
-
-        case 'clock':                return presetClock;
-
-        case 'colorContrast':        return presetColorContrast;
-        case 'colorSpaces':          return presetColorSpaces;
-        case 'invalidColors':        return presetInvalidColors;
-        case 'textFromBackground':   return presetTextFromBackground;
-
-        case 'compositeGradients':   return presetCompositeGradients;
-        case 'nightLights':          return presetNightLights;
-        case 'rainbowStrips':        return presetRainbowStrips;
-        case 'sunCorona':            return presetSunCorona;
-        case 'galaxy':               return presetGalaxy;
-        case 'cartoonForest':        return presetCartoonForest;
-        case 'bubbles':              return presetBubbles;
-        case 'glitterField':         return presetGlitterField;
-
-
-        case 'randomColors':         return presetRandomColors;
-        case 'tintsAndShades':       return presetTintsAndShades;
-        case 'paletteFromColor':     return presetPaletteFromColor;
-        case 'colorSwatches':        return presetColorSwatches;
-        case 'blurryBackgrounds':    return presetBlurryBackgrounds;
-        case 'brickWall':            return presetBrickWall;
-        case 'cairoTiles':           return presetCairoTiles;
-
-        
-        case 'shapesStyles':         return presetShapesStyles;
-        case 'basicTransform':       return presetBasicTransform;
-        case 'combinedTransform':    return presetCombinedTransform;
-        case 'feedback':             return presetFeedback;
-        
-        case 'wobblyCircle':         return presetWobblyCircle;
-        case 'snowflakes':           return presetSnowflakes;
-        case 'roughStar':            return presetRoughStar;
-        case 'nestedTorus':          return presetNestedTorus;
-        case 'targets':              return presetTargets;
-        case 'spiderWeb':            return presetSpiderWeb;
-
-        
-        case 'basicVariables':       return presetBasicVariables;
-
-
-        case 'namesLogos':           return presetNamesLogos;
-        case 'avatars':              return presetAvatars;
-
-        case 'booksOnShelf':         return presetBooksOnShelf;
-        case 'circleFields':         return presetCircleFields;
-        case 'circleFields2':        return presetCircleFields2;
-        case 'wobbles':              return presetWobbles;
-        case 'randomAbstract':       return presetRandomAbstract;
-        case 'afterTheStorm':        return presetAfterTheStorm;
-        case 'sunsetDreams':         return presetSunsetDreams;
-        case 'polarizedLights':      return presetPolarizedLights;
-        case 'linesOfFire':          return presetLinesOfFire;
-        case 'northernLights':       return presetNorthernLights;
-        case 'skyline':              return presetSkyline;
-        case 'clouds':               return presetClouds;
-        case 'twistedTower':         return presetTwistedTower;
-        case 'dustySunset':          return presetDustySunset;
-        case 'brushStrokes':         return presetBrushStrokes;
-        case 'gradientCircles':      return presetGradientCircles;
-        case 'hotSpring':            return presetHotSpring;
-        case 'nightPalace':          return nightPalace;
-    }
+    return presetGraphs.find(g => g.id == graphId).graph;
 }
