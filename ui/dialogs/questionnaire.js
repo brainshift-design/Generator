@@ -1,8 +1,5 @@
 function initQuestionDialog()
 {
-    // initCheckbox(chkQuestionHideWhatsNew, 'Show what\'s new at startup', settings.showWhatsNew);
-    // chkQuestionHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', chkQuestionHideWhatsNew.checked ? (generatorVersion-1) : (generatorVersion)));
-
     questionBack.addEventListener('pointerdown', e => 
     {
         e.preventDefault();
@@ -123,15 +120,6 @@ function hideQuestionDialog()
     questionDialog.style.display = 'none';
 
     dialogShown = false;
-}
-
-
-
-function copyUserId()
-{
-    writeTextToClipboard(currentUser.id);
-    selectElementText("debugUserId");
-    uiNotify('Copied user ID');
 }
 
 

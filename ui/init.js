@@ -78,6 +78,7 @@ initEulaDialog();
 initWhatsNewDialog();
 initAboutDialog();
 initQuestionDialog();
+initQuestion2Dialog();
 initRestartDialog();
     
 // initSnapshots();
@@ -267,9 +268,12 @@ function finalizeInit(activate)
         })
         .then(response =>
         {
-            if (   !response.hasQuestionnaire
-                && !ignoreUsers.includes(currentUser.id))
-                showQuestionDialog();
+            // if (   !response.hasQuestionnaire
+            //     && !ignoreUsers.includes(currentUser.id))
+            //     showQuestionDialog();
+            // else if (response.nSessions == 5
+            //     && !ignoreUsers.includes(currentUser.id))
+                showQuestion2Dialog();
         })
         .catch(e =>
         {

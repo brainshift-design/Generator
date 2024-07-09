@@ -12,6 +12,9 @@
     box-shadow:     0 0 0 1px var(--figma-color-text) inset;
 }
 
+.figma-light .button { font-weight: 500; }
+.figma-dark  .button { font-weight: 400; }
+
 
 .button:active, .button:focus-visible
 {

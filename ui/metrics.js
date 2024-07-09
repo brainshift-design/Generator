@@ -32,6 +32,7 @@ const METRICS_ACTION_REDO     = 'ACTION_REDO';
 const METRICS_CLICK_LINK      = 'CLICK_LINK';
 const METRICS_ERROR           = 'ERROR';
 const METRICS_CRASH           = 'CRASH';
+const METRICS_SHARE_ON_X      = 'SHARE_ON_X';
 
 
 
