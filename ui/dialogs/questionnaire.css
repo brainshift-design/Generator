@@ -176,14 +176,13 @@
 #questionOtherOption
 {
     display:     none;
-    box-shadow:  0 0 0 1px red inset;
+    /* box-shadow:  0 0 0 1px red inset; */
     width:       100%;
     height:      100%;
     text-align:  center;
     user-select: none;
     margin-top:  30px;
-    left: 50%;
-    /* transform: translateX(-50%); */
+    margin-left: 60px;
 }
 
 #questionOtherOptionBack
@@ -235,12 +234,13 @@
 #questionWebSearchOption
 {
     display:     none;
-    /* box-shadow:  0 0 0 1px red inset; */
+    /* box-shadow:  0 0 0 1px orange inset; */
     width:       100%;
     height:      100%;
     text-align:  center;
     user-select: none;
     margin-top:  30px;
+    margin-left: 60px;
 }
 
 #questionWebSearchOptionBack

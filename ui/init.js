@@ -269,15 +269,17 @@ function finalizeInit(activate)
         })
         .then(response =>
         {
-            // if (   !response.hasQuestionnaire
-            //     && !ignoreUsers.includes(currentUser.id))
-                showQuestionDialog();
-            // else if (response.nSessions == 5
-            //     && !ignoreUsers.includes(currentUser.id))
-            //     showQuestion2Dialog();
-            // else if (response.nSessions == 13
-            //     && !ignoreUsers.includes(currentUser.id))
-                //  showQuestion3Dialog();
+            if (!ignoreUsers.includes(currentUser.id))
+            {
+                if (!response.hasQuestionnaire)
+                    showQuestionDialog();
+
+                else if (response.nSessions == 5)
+                    showQuestion2Dialog();
+
+                else if (response.nSessions == 13)
+                    showQuestion3Dialog();
+            }
         })
         .catch(e =>
         {
