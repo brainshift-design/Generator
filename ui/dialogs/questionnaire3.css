@@ -29,7 +29,7 @@
     transform:     translateX(-50%)
                    translateY(-50%);
     width:         540px;
-    height:        360px;
+    height:        240px;
 
     overflow:      hidden;
     
@@ -58,9 +58,12 @@
     margin:         0;
     padding:        1px 0 5px 0;
     position:       absolute;
+    left:           50%;
+    transform:      translateX(-50%);
     pointer-events: all;
-    user-select:    text;
+    user-select:    none;
     text-align:     center;
+    width:          360px;
     /* box-shadow: 0 0 0 1px blue inset; */
 }
 
@@ -119,4 +122,29 @@
     position: absolute;
     left:     18px;
     top:      117px;
+}
+
+
+#questionEmail
+{
+    position:   absolute;
+    top:        65px;
+    left:       50%;
+    transform:  translateX(-50%);
+    width:      360px;
+    padding:    13px 6px 13px 6px;
+    box-shadow: 0 1px 0 0 var(--figma-color-bg-tertiary);
+    margin:     0;
+    text-align: center;
+}
+
+
+#submitEmail
+{
+    position:    absolute;
+    width:       90px;
+    margin-top:  10px;
+    left:        50%;
+    transform:   translateX(-50%);
+    top:         100px;
 }

@@ -38,11 +38,14 @@ function initQuestionDialog()
         questionWebSearchOption.style.width   = '100%';
     });
 
+    questionWebSearchReason.addEventListener('input', e =>
+    {
+        updateEmailValidate();
+    });
+
     questionWebSearchReason.addEventListener('keydown', e =>
     {
         e.stopPropagation();
-
-        updateQuestionValidate();
 
         if (e.code == 'Enter')
             submitWebSearchAnswer();
@@ -56,11 +59,14 @@ function initQuestionDialog()
         questionOtherOption  .style.width   = '100%';
     });
 
+    questionOtherReason.addEventListener('input', e =>
+    {
+        updateEmailValidate();
+    });
+
     questionOtherReason.addEventListener('keydown', e =>
     {
         e.stopPropagation();
-
-        updateQuestionValidate();
 
         if (   e.code == 'Enter'
             && questionOtherReason.value.length > 0)

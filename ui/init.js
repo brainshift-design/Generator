@@ -79,6 +79,7 @@ initWhatsNewDialog();
 initAboutDialog();
 initQuestionDialog();
 initQuestion2Dialog();
+initQuestion3Dialog();
 initRestartDialog();
     
 // initSnapshots();
@@ -270,10 +271,13 @@ function finalizeInit(activate)
         {
             // if (   !response.hasQuestionnaire
             //     && !ignoreUsers.includes(currentUser.id))
-            //     showQuestionDialog();
+                showQuestionDialog();
             // else if (response.nSessions == 5
             //     && !ignoreUsers.includes(currentUser.id))
-                showQuestion2Dialog();
+            //     showQuestion2Dialog();
+            // else if (response.nSessions == 13
+            //     && !ignoreUsers.includes(currentUser.id))
+                //  showQuestion3Dialog();
         })
         .catch(e =>
         {

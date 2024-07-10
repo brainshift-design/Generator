@@ -61,7 +61,7 @@
     left:           50%;
     transform:      translateX(-50%);
     pointer-events: all;
-    user-select:    text;
+    user-select:    none;
     width:          450px;
     text-align:     center;
     /* box-shadow: 0 0 0 1px blue inset; */
@@ -124,14 +124,6 @@
     top:      117px;
 }
 
-
-#btnShareX
-{
-    /* display:     inline-block;
-    width:       90px;
-    margin-top:  10px;
-    padding-top: 5px; */
-}
 
 #iconShareX_black, #iconShareX_white
 {
