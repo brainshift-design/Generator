@@ -301,3 +301,27 @@ function getCurrentDateString()
 
     return `${year}-${month}-${day}`;
 }
+
+
+
+function startUserSession()
+{
+    if (   ignoreUsers.includes(currentUser.id)
+        || sessionStartPosted)
+        return;
+
+
+    postToServer(
+    {
+        action:          'startUserSession',
+        figmaId:          currentUser.id,
+        figmaName:        currentUser.name,
+        figmaPhotoUrl:    currentUser.photoUrl ?? '',
+        sessionId:        sessionId,
+        generatorVersion: generatorVersion,
+        paid:             subscriptionActive === true ? 'true' : 'false'
+    });
+
+
+    sessionStartPosted = true;
+}

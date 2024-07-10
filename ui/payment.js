@@ -3,29 +3,6 @@ var subscriptionActive = false;
 
 
 
-function startUserSession()
-{
-    if (   ignoreUsers.includes(currentUser.id)
-        || sessionStartPosted)
-        return;
-
-
-    postToServer(
-    {
-        action:       'startUserSession',
-        figmaId:       currentUser.id,
-        figmaName:     currentUser.name,
-        figmaPhotoUrl: currentUser.photoUrl ?? '',
-        sessionId:     sessionId,
-        paid:          subscriptionActive === true ? 'true' : 'false'
-    });
-
-
-    sessionStartPosted = true;
-}
-
-
-
 function checkActiveSubscription(userId)
 {
     return postToServer(
