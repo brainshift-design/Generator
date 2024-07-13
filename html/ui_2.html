@@ -10,5 +10,5 @@ onerror = (event, source, line, pos, error) =>
     initCrashDialog(event, error);
     showCrashDialog();
 
-    addMetricsEvent(METRICS_CRASH, error);
+    addMetricsEvent('CRASH', error);
 };

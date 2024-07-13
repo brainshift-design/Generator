@@ -9,6 +9,7 @@
 ../core/random.js
 ../core/random2.js
 ../core/util.js
+../core/yaml.js
 ../core/base64.js
 ../core/web.js
 ../core/color names.js

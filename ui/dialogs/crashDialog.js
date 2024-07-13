@@ -5,7 +5,7 @@ function crashAssert(condition, error, showDebugButton = true)
     initCrashDialog(error, null, showDebugButton);
     showCrashDialog();
 
-    addMetricsEvent(METRICS_CRASH, error);
+    addMetricsEvent('CRASH', error);
 
     consoleError(error);
 }

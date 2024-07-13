@@ -223,13 +223,19 @@ extends Parameter
     }
 
 
+    static getPromptFormat()
+    {
+        return `${Parameter.getPromptFormat()} | default | min | max`;
+    }
+
+
+
     toPrompt()
     {
-        return super.toPrompt()
-            + strline(2, `Default Value: ${this.defaultValue.value}`)
-            + strline(2, `Min: ${this.controls[0].min}`)
-            + strline(2, `Max: ${this.controls[0].max}`)
-            + strline(2, `Display Min: ${this.controls[0].displayMin}`)
-            + strline(2, `Display Max: ${this.controls[0].displayMax}`);
+        const def = this.defaultValue.toString();
+        const min = this.controls[0].min;
+        const max = this.controls[0].max;
+
+        return `${super.toPrompt()} | ${def} | ${min} | ${max}`;
     }
 }

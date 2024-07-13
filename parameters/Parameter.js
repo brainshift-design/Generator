@@ -576,9 +576,24 @@ extends EventTarget
 
 
 
+    static getPromptFormat()
+    {
+        return `id | type | description | IO`;
+    }
+
+
+
     toPrompt()
     {
-        return '';
+        const id   = this.id;
+        const type = this.type;
+        const desc = this.getDescriptionPrompt();
+        const io   = (this.input || this.output ? '' : '-')
+                   + (this.input  ? 'I' : '')
+                   + (this.output ? 'O' : '');
+
+
+        return `${id} | ${type} | ${desc} | ${io}`;
     }
 }
 

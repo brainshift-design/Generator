@@ -265,9 +265,17 @@ extends Parameter
 
 
 
+    static getPromptFormat()
+    {
+        return `${Parameter.getPromptFormat()} | default`;
+    }
+
+
+
     toPrompt()
     {
-        return super.toPrompt()
-            + strline(2, `Default Value: "${this.defaultValue}"`)
+        const def = this.defaultValue.toString();
+
+        return `${super.toPrompt()} | ${def}`;
     }
 }

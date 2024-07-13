@@ -135,6 +135,14 @@ extends OpColorBase
 
 
         this.setAllParamDividers(0.45);
+
+
+        this.getDescription = () => `defines a color value`;
+
+        this.paramSpace .getDescription = () => `color space`;
+        this.param1     .getDescription = () => `channel 1`;
+        this.param2     .getDescription = () => `channel 2`;
+        this.param3     .getDescription = () => `channel 3`;
     }
 
 

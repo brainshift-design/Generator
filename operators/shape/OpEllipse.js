@@ -57,6 +57,21 @@ extends OpShape
 
         this.menuInner = createEllipseParamMenu(this.paramInner, 'innerAbsolute' );
         this.menuSweep = createEllipseParamMenu(this.paramSweep, 'sweepInDegrees');
+
+
+        this.getDescription = () => `defines an ellipse value & object`;
+
+        here add a way to define additional properties of the node itself, like innerAbsolute and this.sweepInDegrees
+        
+        this.paramPosition.getDescription = () => `determines if X,Y are top-left or center`;
+        this.paramX       .getDescription = () => `X coord (depends on position)`;
+        this.paramY       .getDescription = () => `Y coord (depends on position)`;
+        this.paramWidth   .getDescription = () => `width`;
+        this.paramHeight  .getDescription = () => `height`;
+        this.paramRound   .getDescription = () => `radius of round corners when an arc`;
+        this.paramInner   .getDescription = () => `inner radius of ellipse (turns it into donut, depends on innerAbsolute)`;
+        this.paramStart   .getDescription = () => `starting angle of segment (depends on sweepInDegrees)`;
+        this.paramSweep   .getDescription = () => `sweeping arc length of segment (depends on sweepInDegrees)`;
     }
 
 

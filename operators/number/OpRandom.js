@@ -41,15 +41,15 @@ extends OperatorBase
         this.paramUnique.controls[0].max    = 200;
 
 
-        this.getDescription = () => `Generates a series of random number values.`;
+        this.getDescription = () => `generates random number values`;
 
-        this.paramSeed     .getDescription = () => `The starting seed for the random number generator.`;
-        this.paramIteration.getDescription = () => `Forces a given iteration of the random number generator.`;
-        this.paramMin      .getDescription = () => `The smallest possible generated value.`;
-        this.paramMax      .getDescription = () => `The largest possible generated value.`;
-        this.paramBias     .getDescription = () => `Negative values bias the generated random values closer to "${this.paramMin.name}", positive values bias the generated random values closer to "${this.paramMax.name}".`;
-        this.paramSpread   .getDescription = () => `Negative values pinch the generated random values closer to the average of "${this.paramMin.name}" and "${this.paramMax.name}", positive values spread the generated random values away from the average of "${this.paramMin.name}" and "${this.paramMax.name}" and closer to the extremes.`;
-        this.paramUnique   .getDescription = () => `When the spread between "${this.paramMin.name}" and "${this.paramMax.name}" is smaller than around 5, generated random numbers will sometimes repeat, which doesn't look random. "${this.paramUnique.name}" prevents this by forcing an alternation of generated values. Increasing it to 100% alternates every other value, increasing it to 200% will cycle three repeating values.`;
+        this.paramSeed     .getDescription = () => `RNG seed`;
+        this.paramIteration.getDescription = () => `forces RNG iteration`;
+        this.paramMin      .getDescription = () => `min generated value`;
+        this.paramMax      .getDescription = () => `max generated value`;
+        this.paramBias     .getDescription = () => `bias values towards min/max`;
+        this.paramSpread   .getDescription = () => `pinch/spread values around average`;
+        this.paramUnique   .getDescription = () => `prevents repetition in narrow range.`;
     }
 
 
@@ -79,12 +79,5 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
-    }
-
-
-
-    toPrompt()
-    {
-        return createNodePrompt(this);
     }
 }

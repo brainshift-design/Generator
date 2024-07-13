@@ -31,6 +31,15 @@ extends OperatorBase
         this.paramInvert.divider = 0.55;
 
         this.menuInvert = createBoolMenu(this.paramInvert);
+
+
+        this.promptName = 'simple math';
+        
+        this.getDescription = () => `performs arithmetic on input and operand`;
+
+        this.paramOperation.getDescription = () => `the operation to perform (${this.paramOperation.options.map((o, i) => `${i}:${o}`).join(', ')})`;
+        this.paramOperand  .getDescription = () => `second value`;
+        this.paramInvert   .getDescription = () => `inverts param order in UI for cases like 1/input`;
     }
 
 

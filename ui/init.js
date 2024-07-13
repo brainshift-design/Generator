@@ -180,7 +180,7 @@ function initGenerator(activate)
     updateUserTemplatesFromDB();
 
 
-    //console.log(createSystemPrompt());
+    console.log(createSystemPrompt());
 }
 
 

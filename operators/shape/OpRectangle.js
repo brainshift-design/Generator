@@ -34,6 +34,15 @@ extends OpShape
 
         this.addBaseParamsAfter();
         this.setAllParamDividers(0.5);
+
+
+        this.getDescription = () => `defines a rectangle value & object`;
+
+        this.paramX     .getDescription = () => `X of left edge`;
+        this.paramY     .getDescription = () => `Y of top edge`;
+        this.paramWidth .getDescription = () => `width`;
+        this.paramHeight.getDescription = () => `height`;
+        this.paramRound .getDescription = () => `radius of round corners`;
     }
 
 

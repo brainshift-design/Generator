@@ -40,6 +40,8 @@ class Operator
     defId;
     defName;
 
+    promptName;
+
 
     icon;
     iconOffsetY = 0;
@@ -216,6 +218,9 @@ class Operator
         
         this.defId             = id;
         this.defName           = name;
+
+        this.promptName        = name;
+
 
         this.icon              = icon;
 
@@ -1426,6 +1431,26 @@ class Operator
     toJsCode(gen)
     {
         return '';
+    }
+
+
+
+    static getPromptFormat()
+    {
+        return `Node: name, type, default ID, description`;
+    }
+
+
+
+    toPrompt()
+    {
+        let prompt = `Node: ${this.promptName} | ${this.type} | ${this.defId} | ${this.getDescriptionPrompt()}`;
+
+        this.params.forEach(p => prompt += '\n\t' + p.toPrompt());
+
+        prompt += '\n\n';
+
+        return prompt;
     }
 }
 

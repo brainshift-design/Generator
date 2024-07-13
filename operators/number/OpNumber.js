@@ -19,6 +19,11 @@ extends ResizableBase
         this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, false, 1));
 
         this.alwaysLoadParams = true;
+
+
+        this.getDescription = () => `defines a number value`;
+
+        this.paramValue.getDescription = () => `node value`;
     }
 
 
