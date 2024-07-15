@@ -49,7 +49,7 @@ extends OperatorBase
         this.paramMax      .getDescription = () => `max generated value`;
         this.paramBias     .getDescription = () => `bias values towards min/max`;
         this.paramSpread   .getDescription = () => `pinch/spread values around average`;
-        this.paramUnique   .getDescription = () => `prevents repetition in narrow range.`;
+        this.paramUnique   .getDescription = () => `prevents repetition in narrow range`;
     }
 
 

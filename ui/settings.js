@@ -385,29 +385,23 @@ function enableFeatures(sub)
 {
     enableMenuItem(menuItemSetValueNames,      true, sub);
     enableMenuItem(menuItemEnableBetaFeatures, true, sub);
+    enableMenuItem(menuItemCopyLLMPrompt,      true, sub, true, currentUserIsDev());
  // enableMenuItem(menuItemShowSnapshots,      true, sub);
     enableMenuItem(menuItemShowRestartInfo,    true, sub);
     enableMenuItem(menuItemValueName,          true, sub);
     enableMenuItem(menuItemObjectName,         true, sub);
-  //enableMenuItem(menuItemVarGroup,           true, sub);
+    enableMenuItem(menuItemVarGroup,           true, sub, true);
     enableMenuItem(menuItemTimer,              true, sub);
- // enableMenuItem(menuItemSort,               true, sub);
- // enableMenuItem(menuItemFilter,             true, sub);
- // enableMenuItem(menuItemReorderList,        true, sub);
-    enableMenuItem(menuItemAnimate,            true, sub);
+    enableMenuItem(menuItemAnimate,            true, sub, true);
     enableMenuItem(menuItemSaveToFile,         true, sub);
     enableMenuItem(menuItemSaveSelected,       true, sub);
     enableMenuItem(menuItemFetch,              true, sub);
- // enableMenuItem(menuItemIndexToName,        true, sub);
     enableMenuItem(menuItemDateTime,           true, sub);
     enableMenuItem(menuItemSolve,              true, sub);
     enableMenuItem(menuItemTextJson,           true, sub);
-    // enableMenuItem(menuItemValidColor,         true, sub);
     enableMenuItem(menuItemCorrectColor,       true, sub);
     enableMenuItem(menuItemConvertToP3,        true, sub);
-    // enableMenuItem(menuItemColorblind,         true, sub);
     enableMenuItem(menuItemShapeRender,        true, sub);
- // enableMenuItem(menuItemShapeExport,        true, sub);
     enableMenuItem(menuItemVectorSep1,         true, sub, true);
     enableMenuItem(menuItemVectorVertex,       true, sub, true);
     enableMenuItem(menuItemVectorEdge,         true, sub, true);
@@ -434,7 +428,7 @@ function updatePanelButton()
 
 
 
-function enableMenuItem(menuItem, enable, sub, beta = false)
+function enableMenuItem(menuItem, enable, sub, beta = false, show = true)
 {
     if (!menuItem) return;
 
@@ -442,8 +436,10 @@ function enableMenuItem(menuItem, enable, sub, beta = false)
     menuItem.sub     = sub;
 
     menuItem.setVisible(
-          !beta
-        || beta && settings.enableBetaFeatures);
+           show 
+        && (
+              !beta
+            || beta && sub && settings.enableBetaFeatures));
 
     menuItem.update();
 }

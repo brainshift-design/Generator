@@ -42,6 +42,7 @@ class Operator
 
     promptName;
 
+    promptAttributes = [];
 
     icon;
     iconOffsetY = 0;
@@ -1437,16 +1438,42 @@ class Operator
 
     static getPromptFormat()
     {
-        return `Node: name, type, default ID, description`;
+        return `NODE: name | type | default ID | description
+| node-specific attributes (name: description)`;
+    }
+
+
+
+    static getJSONformat()
+    {
+        return `
+- type
+- created
+- updated
+- id
+- name
+- renamed
+- enabled
+- highlight
+- notCondition
+- x
+- y
+- z
+- active
+- width
+- height
+- node-specific attributes (name: description)
+`;
     }
 
 
 
     toPrompt()
     {
-        let prompt = `Node: ${this.promptName} | ${this.type} | ${this.defId} | ${this.getDescriptionPrompt()}`;
+        let prompt = `NODE: ${this.promptName} | ${this.type} | ${this.defId} | ${this.getDescriptionPrompt()}`;
 
-        this.params.forEach(p => prompt += '\n\t' + p.toPrompt());
+        this.promptAttributes.forEach(a => prompt += '\n| ' + a[0] + ': ' + a[1]);
+        this.params          .forEach(p => prompt += '\n\t' + p.toPrompt());
 
         prompt += '\n\n';
 

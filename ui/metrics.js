@@ -1,9 +1,14 @@
 let metricsEvents = [];
 
 
-const ignoreUsers = 
+const devUsers =
 [
     '673258279043070642'
+]
+
+const ignoreUsers = 
+[
+    ...devUsers
 ];
 
 

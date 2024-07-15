@@ -174,13 +174,10 @@ function initGenerator(activate)
         if (!settings.debugMode)
             enableFeatures(subscribed());
     }, 
-    100);
+    500);
 
 
     updateUserTemplatesFromDB();
-
-
-    console.log(createSystemPrompt());
 }
 
 

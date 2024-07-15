@@ -285,6 +285,8 @@ var menuItemLogRawSaveConnections;
 var menuItemLogRawRequests;
 var menuItemLogRawValues;
 
+var menuItemCopyLLMPrompt;
+
 var menuItemZoomTo100;
 
 var menuItemWindowNormal;
@@ -435,21 +437,22 @@ function initGeneratorMenus()
 
     menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
-        menuItemRepeat     = new MenuItem('. . . Repeat',   null, false, {icon: iconRepeat,        createType: REPEAT,           callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
-        menuItemStart      = new MenuItem('Feedback . . .', null, false, {icon: iconFeedback,      createType: FEEDBACK,         callback: e => actionManager.do(getCreateNodeAction(FEEDBACK,        btnFlow.div, getCreateOptions(e)))}),
+        menuItemRepeat     = new MenuItem('. . . Repeat',   null, false, {icon: iconRepeat,        createType: REPEAT,         callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
+        menuItemStart      = new MenuItem('Feedback . . .', null, false, {icon: iconFeedback,      createType: FEEDBACK,       callback: e => actionManager.do(getCreateNodeAction(FEEDBACK,        btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',               null, false, {separator: true}),
-        menuItemNull       = new MenuItem('Null',           null, false, {icon: iconNull,          createType: NULL_NODE,        callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
+        menuItemNull       = new MenuItem('Null',           null, false, {icon: iconNull,          createType: NULL_NODE,      callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',               null, false, {separator: true}),
-        menuItemCache      = new MenuItem('Cache. . .',     null, false, {icon: iconCache,         createType: CACHE,            callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
-        menuItemFreeze     = new MenuItem('Freeze',         null, false, {icon: iconFreeze,        createType: FREEZE,           callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
+        menuItemCache      = new MenuItem('Cache. . .',     null, false, {icon: iconCache,         createType: CACHE,          callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemFreeze     = new MenuItem('Freeze',         null, false, {icon: iconFreeze,        createType: FREEZE,         callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',               null, false, {separator: true}),
                              new MenuItem('Variable',       null, false, {icon: iconVariable, /*childMenu: menuVariables,*/ createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
+        menuItemVarGroup   = new MenuItem('Variable group', null, false, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',               null, false, {separator: true}),
                              new MenuItem('Parameters',     null, false, {icon: iconParameters, childMenu: menuParams}),
                              new MenuItem('Value names',    null, false, {icon: iconNames, childMenu: menuNames}),
                              new MenuItem('',               null, false, {separator: true}),
-        menuItemTimer      = new MenuItem('Timer ',         null, false, {icon: iconTimer,         createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))})]);
-      //menuItemAnimate    = new MenuItem('Animate',        null, false, {icon: iconAnimate,       createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))})]);
+        menuItemTimer      = new MenuItem('Timer ',         null, false, {icon: iconTimer,         createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemAnimate    = new MenuItem('Animate',        null, false, {icon: iconAnimate,       createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))})]);
     
 
     menuItems = new Menu('Data', true, false);
@@ -1230,31 +1233,31 @@ function initPreferenceMenus()
 {
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
-     // menuItemShowPages                  = new MenuItem('Show pages',                               null, false, {checkCallback: () => settings.showAllColorSpaces,         callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  updateMenuItemShowPages();                  }}),
+     // menuItemShowPages                  = new MenuItem('Show pages',                               null, false, {checkCallback: () => settings.showAllColorSpaces,                        callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  updateMenuItemShowPages();                  }}),
      // menuPrefSep1                       = new MenuItem('',                                         null, false, {separator: true}),    
-     // menuItemShowSnapshots              = new MenuItem('Show snapshots',                           null, false, {checkCallback: () => settings.showSnapshots,              callback: () => { updateSettingAndMenu('showSnapshots',              true, !settings.showSnapshots);              updateMenuItemShowSnapshots();              }}),
+     // menuItemShowSnapshots              = new MenuItem('Show snapshots',                           null, false, {checkCallback: () => settings.showSnapshots,                             callback: () => { updateSettingAndMenu('showSnapshots',              true, !settings.showSnapshots);              updateMenuItemShowSnapshots();              }}),
      //                                      new MenuItem('',                                         null, false, {separator: true}),    
-        menuItemShowNodeIcons              = new MenuItem('Show node icons',                          null, false, {checkCallback: () => settings.showNodeIcons,              callback: () => { updateSettingAndMenu('showNodeIcons',              true, !settings.showNodeIcons);              updateMenuItemShowNodeIcons();              }}),
-        menuItemShowBoolValues             = new MenuItem('Show boolean values as   ✓ ✗',            null, false, {checkCallback: () => settings.showBoolValues,             callback: () => { updateSettingAndMenu('showBoolValues',             true, !settings.showBoolValues);             updateMenuItemShowBoolValues();             }}),
-        menuItemSeparateThousands          = new MenuItem('Separate thousands in numbers',            null, false, {checkCallback: () => settings.separateThousands,          callback: () => { updateSettingAndMenu('separateThousands',          true, !settings.separateThousands);          updateMenuItemSeparateThousands();          }}),
-        menuItemInvertSimpleMathParamOrder = new MenuItem('Invert simple math parameters',            null, false, {checkCallback: () => settings.invertSimpleMathParamOrder, callback: () => { updateSettingAndMenu('invertSimpleMathParamOrder', true, !settings.invertSimpleMathParamOrder); updateMenuItemInvertSimpleMathParamOrder(); }}),
-        menuItemActivateDeactiatesOthers   = new MenuItem('Activate deactivates others',              null, false, {checkCallback: () => settings.activateDeactiatesOthers,   callback: () => { updateSettingAndMenu('activateDeactiatesOthers',   true, !settings.activateDeactiatesOthers);                                               }}),
-        menuItemShowAllColorSpaces         = new MenuItem('Show all color spaces',                    null, false, {checkCallback: () => settings.showAllColorSpaces,         callback: () => { updateSettingAndMenu('showAllColorSpaces',         true, !settings.showAllColorSpaces);         updateMenuItemShowAllColorSpaces();         }}),
-        menuItemPreferHtmlColorNames       = new MenuItem('Prefer HTML color names',                  null, false, {checkCallback: () => settings.preferHtmlColorNames,       callback: () => { updateSettingAndMenu('preferHtmlColorNames',       true, !settings.preferHtmlColorNames);                                                   }}),
+        menuItemShowNodeIcons              = new MenuItem('Show node icons',                          null, false, {checkCallback: () => settings.showNodeIcons,                             callback: () => { updateSettingAndMenu('showNodeIcons',              true, !settings.showNodeIcons);              updateMenuItemShowNodeIcons();              }}),
+        menuItemShowBoolValues             = new MenuItem('Show boolean values as   ✓ ✗',            null, false, {checkCallback: () => settings.showBoolValues,                            callback: () => { updateSettingAndMenu('showBoolValues',             true, !settings.showBoolValues);             updateMenuItemShowBoolValues();             }}),
+        menuItemSeparateThousands          = new MenuItem('Separate thousands in numbers',            null, false, {checkCallback: () => settings.separateThousands,                         callback: () => { updateSettingAndMenu('separateThousands',          true, !settings.separateThousands);          updateMenuItemSeparateThousands();          }}),
+        menuItemInvertSimpleMathParamOrder = new MenuItem('Invert simple math parameters',            null, false, {checkCallback: () => settings.invertSimpleMathParamOrder,                callback: () => { updateSettingAndMenu('invertSimpleMathParamOrder', true, !settings.invertSimpleMathParamOrder); updateMenuItemInvertSimpleMathParamOrder(); }}),
+        menuItemActivateDeactiatesOthers   = new MenuItem('Activate deactivates others',              null, false, {checkCallback: () => settings.activateDeactiatesOthers,                  callback: () => { updateSettingAndMenu('activateDeactiatesOthers',   true, !settings.activateDeactiatesOthers);                                               }}),
+        menuItemShowAllColorSpaces         = new MenuItem('Show all color spaces',                    null, false, {checkCallback: () => settings.showAllColorSpaces,                        callback: () => { updateSettingAndMenu('showAllColorSpaces',         true, !settings.showAllColorSpaces);         updateMenuItemShowAllColorSpaces();         }}),
+        menuItemPreferHtmlColorNames       = new MenuItem('Prefer HTML color names',                  null, false, {checkCallback: () => settings.preferHtmlColorNames,                      callback: () => { updateSettingAndMenu('preferHtmlColorNames',       true, !settings.preferHtmlColorNames);                                                   }}),
                                              new MenuItem( osShift(true) + 'R randomizes mixed. . .', null, false, {childMenu: menuShiftR}),
-        //menuItemShowColorLegendInMenus   = new MenuItem('Show color legend in menus',               null, false, {checkCallback: () => settings.showColorLegendInMenus,     callback: () => { updateSettingAndMenu('showColorLegendInMenus',     true, !settings.showColorLegendInMenus);     updateMenuItemShowColorLegendInMenus();     }}),
+        //menuItemShowColorLegendInMenus   = new MenuItem('Show color legend in menus',               null, false, {checkCallback: () => settings.showColorLegendInMenus,                    callback: () => { updateSettingAndMenu('showColorLegendInMenus',     true, !settings.showColorLegendInMenus);     updateMenuItemShowColorLegendInMenus();     }}),
                                              new MenuItem('',                                         null, false, {separator: true}),    
         menuItemShowTooltips               = new MenuItem('Show tooltips',                            null, false, {childMenu: menuShowTooltips}),
         menuItemShowWarnings               = new MenuItem('Show warnings',                            null, false, {childMenu: menuShowWarnings}),
-        menuItemShowObjectCount            = new MenuItem('Show canvas object count',                 null, false, {checkCallback: () => settings.showObjectCount,            callback: () => { updateSettingAndMenu('showObjectCount',            true, !settings.showObjectCount);            updateObjectCountDisplay();                 }}),
+        menuItemShowObjectCount            = new MenuItem('Show canvas object count',                 null, false, {checkCallback: () => settings.showObjectCount,                           callback: () => { updateSettingAndMenu('showObjectCount',            true, !settings.showObjectCount);            updateObjectCountDisplay();                 }}),
                                              new MenuItem('',                                         null, false, {separator: true}),
-        menuItemShareUsageMetrics          = new MenuItem('Share usage metrics',                      null, false, {checkCallback: () => settings.shareUsageMetrics,          callback: () => { updateSettingAndMenu('shareUsageMetrics',          true, !settings.shareUsageMetrics);                                              }}),
-        menuItemEnableBetaFeatures         = new MenuItem('Enable beta features',                     null, false, {checkCallback: () => settings.enableBetaFeatures,         callback: () => { updateSettingAndMenu('enableBetaFeatures',         true, !settings.enableBetaFeatures);         enableFeatures(subscribed()); }}),
-        menuItemShowDebugMenu              = new MenuItem('Show debug menu',                          null, false, {checkCallback: () => settings.showDebugMenu,              callback: () => { uiGetLocalData('debugWarning'); }}),
+        menuItemShareUsageMetrics          = new MenuItem('Share usage metrics',                      null, false, {checkCallback: () => settings.shareUsageMetrics,                         callback: () => { updateSettingAndMenu('shareUsageMetrics',          true, !settings.shareUsageMetrics);                                              }}),
+        menuItemEnableBetaFeatures         = new MenuItem('Enable beta features',                     null, false, {checkCallback: () => subscribed() ? settings.enableBetaFeatures : false, callback: () => { updateSettingAndMenu('enableBetaFeatures',         true, !settings.enableBetaFeatures);         enableFeatures(subscribed()); }}),
+        menuItemShowDebugMenu              = new MenuItem('Show debug menu',                          null, false, {checkCallback: () => settings.showDebugMenu,                             callback: () => { uiGetLocalData('debugWarning'); }}),
                                              new MenuItem('',                                         null, false, {separator: true}),    
         menuItemMinZoomForParams           = new MenuItem('Zoom level for values . . .',              null, false, {callback: () => showMinZoomDialog()}),
       //menuPrefSep2                       = new MenuItem('',                                         null, false, {separator: true}),    
-     // menuItemEnableMultiplayer          = new MenuItem('Enable multiplayer on this canvas',        null, false, {checkCallback: () => multiplayerEnabled,                  callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  enableMultiplayer(!multiplayerEnabled);     }}),
+     // menuItemEnableMultiplayer          = new MenuItem('Enable multiplayer on this canvas',        null, false, {checkCallback: () => multiplayerEnabled,                                 callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  enableMultiplayer(!multiplayerEnabled);     }}),
       //                                     new MenuItem('',                                         null, false, {separator: true}),    
         menuItemObjectCenterSize           = new MenuItem('Object center size . . .',                 null, false, {callback: () => showObjectCenterSizeDialog()}),
         menuItemObjectBatchSize            = new MenuItem('Update batch size . . .',                  null, false, {callback: () => showObjectBatchDialog()})]);
@@ -1322,47 +1325,58 @@ function initPreferenceMenus()
 
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
-    menuItemShowNodeId = new MenuItem('Show node IDs', null, false,
-                        {
-                            checkCallback: () => settings.showNodeId, 
-                            callback:      () => 
-                            {
-                                updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
-                                    
-                                graph.nodes.forEach(n => n.updateNode());
-                                graph.nodes.forEach(n => n.updateMeasureData());
-                                graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
+        menuItemShowNodeId       = new MenuItem('Show node IDs', null, false,
+                                   {
+                                       checkCallback: () => settings.showNodeId, 
+                                       callback:      () => 
+                                       {
+                                           updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
+                                               
+                                           graph.nodes.forEach(n => n.updateNode());
+                                           graph.nodes.forEach(n => n.updateMeasureData());
+                                           graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
+           
+                                           graph.updatePages();
+           
+                                           pushUpdate(null, graph.nodes.filter(n => n.active));
+                                       }
+                                   }),
+    //  menuItemShowTransformPoints = new MenuItem('Show transforms', null,
+    //                             {
+    //                                 checkCallback: () => settings.showTransformPoints, 
+    //                                 callback:      () => 
+    //                                 {
+    //                                     updateSettingAndMenu('showTransformPoints', true, !settings.showTransformPoints);
+    //                                     pushUpdate(null, graph.nodes.filter(n => n.active));
+    //                                 }
+    //                             }),
+        menuItemEnableAsserts    = new MenuItem('Enable asserts', null, false,
+                                   {
+                                       checkCallback: () => settings.enableAsserts, 
+                                       callback:      () => updateSettingAndMenu('enableAsserts', true, !settings.enableAsserts)
+                                   }),
+                                   new MenuItem('',                       null, false, {separator: true}),
+        menuItemLogActions       = new MenuItem('Log actions',            null, false, {checkCallback: () => settings.logActions, callback: () => updateSettingAndMenu('logActions', true, !settings.logActions), setting: true}),
+                                   new MenuItem('Log generator',          null, false, {childMenu: menuLogGenerator}),
+                                   new MenuItem('Log messages',           null, false, {childMenu: menuLogMessages}),
+                                   new MenuItem('Log storage',            null, false, {childMenu: menuLogStorage}),
+                                   new MenuItem('',                       null, false, {separator: true}),   
+                                   new MenuItem('Delete',                 null, false, {childMenu: menuDebugDelete}),
+                                   new MenuItem('',                       null, false, {separator: true}),   
+                                   new MenuItem('Update legacy nodes',    null, false, {callback: () => uiUpdateLegacyNodes()}),
+        menuItemCopyLLMPrompt    = new MenuItem('Copy LLM system prompt', null, false, {callback: () => uiCopySystemPrompt()}),
+                                   new MenuItem('',                       null, false, {separator: true}),   
+        menuItemDebugMode        = new MenuItem('Restart in debug mode',  null, false, {callback: () => uiRestartGenerator(true)})]);
 
-                                graph.updatePages();
 
-                                pushUpdate(null, graph.nodes.filter(n => n.active));
-                            }
-                        }),
-    // menuItemShowTransformPoints = new MenuItem('Show transforms', null,
-    //                     {
-    //                         checkCallback: () => settings.showTransformPoints, 
-    //                         callback:      () => 
-    //                         {
-    //                             updateSettingAndMenu('showTransformPoints', true, !settings.showTransformPoints);
-    //                             pushUpdate(null, graph.nodes.filter(n => n.active));
-    //                         }
-    //                     }),
-    menuItemEnableAsserts = new MenuItem('Enable asserts', null, false,
-                         {
-                             checkCallback: () => settings.enableAsserts, 
-                             callback:      () => updateSettingAndMenu('enableAsserts', true, !settings.enableAsserts)
-                         }),
-                         new MenuItem('',                      null, false, {separator: true}),
-    menuItemLogActions = new MenuItem('Log actions',           null, false, {checkCallback: () => settings.logActions, callback: () => updateSettingAndMenu('logActions', true, !settings.logActions), setting: true}),
-                         new MenuItem('Log generator',         null, false, {childMenu: menuLogGenerator}),
-                         new MenuItem('Log messages',          null, false, {childMenu: menuLogMessages}),
-                         new MenuItem('Log storage',           null, false, {childMenu: menuLogStorage}),
-                         new MenuItem('',                      null, false, {separator: true}),   
-                         new MenuItem('Delete',                null, false, {childMenu: menuDebugDelete}),
-                         new MenuItem('',                      null, false, {separator: true}),   
-                         new MenuItem('Update legacy nodes',   null, false, {callback: () => uiUpdateLegacyNodes()}),
-                         new MenuItem('',                      null, false, {separator: true}),   
-    menuItemDebugMode  = new MenuItem('Restart in debug mode', null, false, {callback: () => uiRestartGenerator(true)})]);
+    // menuMainDebug.init = () => 
+    // {
+    //     menuMainDebug.minWidth = 
+    //            subscribed() 
+    //         //|| currentUserIsDev()
+    //         ? 200 
+    //         : 240;        
+    // };
 }
 
 

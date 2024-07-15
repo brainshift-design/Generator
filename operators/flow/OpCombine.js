@@ -16,6 +16,9 @@ extends ResizableBase
 
         this.addNewInput();
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+
+
+        this.getDescription = () => `combines all inputs into a list, including for closing many nodes into one loop`;
     }
     
     

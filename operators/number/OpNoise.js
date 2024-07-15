@@ -45,6 +45,19 @@ extends OperatorBase
         this.paramEvolve.controls[0].setDecimals(1);
 
         this.setAllParamDividers(0.47);
+
+
+        this.getDescription = () => `a 1D Perlin noise, generates random number values that can change gradually, like a "slow random"`;
+
+        this.paramSeed       .getDescription = () => `RNG seed`;
+        this.paramIteration  .getDescription = () => `forces RNG iteration`;
+        this.paramMin        .getDescription = () => `min generated value`;
+        this.paramMax        .getDescription = () => `max generated value`;
+        this.paramScale      .getDescription = () => `the scale of the noise`;
+        this.paramOffset     .getDescription = () => `the offset of the noise`;
+        this.paramEvolve     .getDescription = () => `orthogonal mutation of the noise`;
+        this.paramInterpolate.getDescription = () => `method for interpolating between RNG samples`;
+        this.paramDetail     .getDescription = () => `number of detail levels`;
     }
 
 

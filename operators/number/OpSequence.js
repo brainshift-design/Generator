@@ -25,6 +25,14 @@ extends OperatorBase
         this.addParam(this.paramEnd      = new NumberParam('end',      '] end',   true,  true, true, Number.NaN));
 
         this.paramMultiply.reverseMenu = true;
+
+
+        this.getDescription = () => `generates a number sequence`;
+
+        this.paramStart   .getDescription = () => `starting value`;
+        this.paramMultiply.getDescription = () => `multiply by this on each iteration`;
+        this.paramAdd     .getDescription = () => `add this on each iteration`;
+        this.paramEnd     .getDescription = () => `the limit/last value of the sequence, default is ?`;
     }
 
 

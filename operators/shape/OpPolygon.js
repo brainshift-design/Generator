@@ -35,6 +35,17 @@ extends OpShape
 
 
         this.addBaseParamsAfter();
+
+
+        this.getDescription = () => `defines a polygon value & object`;
+
+        this.paramPosition.getDescription = () => `determines if X,Y are top-left or center`;
+        this.paramX       .getDescription = () => `X coord (depends on position)`;
+        this.paramY       .getDescription = () => `Y coord (depends on position)`;
+        this.paramWidth   .getDescription = () => `width`;
+        this.paramHeight  .getDescription = () => `height`;
+        this.paramRound   .getDescription = () => `radius of round corners`;
+        this.paramCorners .getDescription = () => `number of polygon corners`;
     }
 
 

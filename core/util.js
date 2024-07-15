@@ -718,3 +718,9 @@ function strline(tab, string = '', firstLine = false)
          + '\t'.repeat(tab) 
          + string;
 }
+
+
+function currentUserIsDev()
+{
+    return devUsers.includes(currentUser.id);
+}

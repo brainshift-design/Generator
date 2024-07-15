@@ -1484,6 +1484,7 @@ osCtrl
 osAlt
 osShift
 osCtrlShift
+createSystemPrompt
 
 
 getCreateNodeAction

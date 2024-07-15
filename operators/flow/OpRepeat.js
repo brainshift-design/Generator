@@ -4,7 +4,6 @@ extends OperatorBase
     paramCount;
     paramIteration;
     paramWhile;
-    //paramIterate;
     paramLoop;
 
 
@@ -25,7 +24,6 @@ extends OperatorBase
         this.addParam(this.paramCount     = new NumberParam('count',     'count',     true,  true, true, 5, 0, Number.MAX_SAFE_INTEGER, 0));
         this.addParam(this.paramIteration = new NumberParam('iteration', 'iteration', true,  true, true, Number.NaN, 0));
         this.addParam(this.paramWhile     = new NumberParam('while',     'while',     true,  true, true, 1, 0, 1));
-      //this.addParam(this.paramIterate   = new NumberParam('iterate',   '',          false, true, false));
         this.addParam(this.paramLoop      = new NumberParam('loop',      '',          false, true, false));
 
 
@@ -37,7 +35,6 @@ extends OperatorBase
         this.paramWhile    .divider                   = 0.6;
 
         this.paramIteration.input.types.push(TEXT_VALUE);
-      //this.paramIterate  .input.types.push(ANY_VALUE);
         this.paramLoop     .input.types.push(ANY_VALUE);
 
 
@@ -49,6 +46,14 @@ extends OperatorBase
             ttParam.innerHTML = 'Close loop';
             return ttParam;
         }
+
+
+        this.getDescription = () => `"repeats" the input, creating a list of values/objects`;
+
+        this.paramCount    .getDescription = () => `number of times to repeat`;
+        this.paramIteration.getDescription = () => `makes possible to force a certain iteration, default is ?`;
+        this.paramWhile    .getDescription = () => `if connected, only repeat while this condition is true`;
+        this.paramLoop     .getDescription = () => `used to define closed loops`;
     }
     
     

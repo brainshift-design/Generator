@@ -61,8 +61,11 @@ extends OpShape
 
         this.getDescription = () => `defines an ellipse value & object`;
 
-        here add a way to define additional properties of the node itself, like innerAbsolute and this.sweepInDegrees
-        
+        this.promptAttributes.push(
+            ['innerAbsolute',  '0/1, determines whether "inner" is in percent or pixels'], 
+            ['sweepInDegrees', '0/1, determines whether "start" and "sweep" are in percent or degrees'] 
+        )
+
         this.paramPosition.getDescription = () => `determines if X,Y are top-left or center`;
         this.paramX       .getDescription = () => `X coord (depends on position)`;
         this.paramY       .getDescription = () => `Y coord (depends on position)`;
