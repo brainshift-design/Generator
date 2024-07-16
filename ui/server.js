@@ -155,6 +155,8 @@ function checkRemainingSubscriptionDays()
 
 function postToServer(cmd)
 {
+    //console.log('postToServer():', cmd);
+
     return fetch(
         "https://brainshift.design/license/",
         {

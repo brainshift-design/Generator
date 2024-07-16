@@ -958,6 +958,7 @@ function initGeneratorMenus()
     {
         const single      =  graphView.selectedNodes.length == 1;
         const canDisable  = !graphView.selectedNodes.find(n => !n.canDisable);
+        const canRename   = !graphView.selectedNodes.find(n => !n.canRename);
         const isCondition =  graphView.selectedNodes.some(n => n.hasConditionOutputs());
         const someActive  =  graphView.selectedNodes.some (n => n.active);
         const allActive   =  graphView.selectedNodes.every(n => n.active);
@@ -994,7 +995,7 @@ function initGeneratorMenus()
         //updateElementDisplay(menuItemNodeSepGroup     .div, hasGroups && single);
         //updateElementDisplay(menuItemNodeUngroup      .div, hasGroups);
         //updateElementDisplay(menuItemNodeSep2         .div, single);
-        updateElementDisplay(menuItemNodeRename         .div, single);
+        updateElementDisplay(menuItemNodeRename         .div, single && canRename);
         updateElementDisplay(menuItemNodeLayoutSep      .div, !single);
         updateElementDisplay(menuItemNodeLayout         .div, !single);
         //updateElementDisplay(menuItemNodeEdit         .div, single);
