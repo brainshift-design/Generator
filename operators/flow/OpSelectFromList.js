@@ -27,7 +27,7 @@ extends OperatorBase
 
 
         this.value  = new NullValue();
-        this.length = new NumberValue(0);
+        this.length = 0;
     }
 
 
@@ -77,10 +77,9 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        
-        this.value  = values[paramIds.findIndex(id => id == 'value' )];
-        this.length = values[paramIds.findIndex(id => id == 'length')];
         const type  = values[paramIds.findIndex(id => id == 'type'  )];
+        this.value  = values[paramIds.findIndex(id => id == 'value' )];
+        this.length = values[paramIds.findIndex(id => id == 'length')].value;
 
         if (type)
             this.headerOutputs[0].types = [type.value];

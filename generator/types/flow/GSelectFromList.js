@@ -115,8 +115,6 @@ extends GOperator1
         }
 
 
-        //console.log('SFL this.value =', this.value);
-
         const type = this.outputType();
 
         this.setUpdateValues(parse,
