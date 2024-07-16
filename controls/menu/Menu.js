@@ -47,6 +47,11 @@ class Menu
     showCallback          = null;
 
 
+    disableFirstClick     = false;
+    firstClickDisabled    = false;
+    disableClickTimer     = null;
+
+
 
     constructor(name, showIcons = true, showChecks = true, condense = false)
     {
@@ -301,6 +306,8 @@ class Menu
         document.body.appendChild(this.div);
 
 
+        this.disableFirstClick = true;
+
         this.update(x, y, subMenu);
 
 
@@ -309,7 +316,18 @@ class Menu
 
         if (this.showCallback)
             this.showCallback();
+
         
+        if (!this.disableClickTimer)
+        {
+            this.disableClickTimer = setTimeout(() => 
+            {
+                this.firstClickDisabled = false;
+                this.disableClickTimer  = null;
+            }, 
+            250);
+        }
+
             
         this.visible = true;
     }
@@ -348,7 +366,15 @@ class Menu
         else
         {
             if (left + this.div.offsetWidth > graphView.div.offsetWidth - margin)
+            {
                 left = graphView.div.offsetWidth - this.div.offsetWidth - 28;
+
+                if (this.disableFirstClick)
+                {
+                    this.firstClickDisabled = true;
+                    this.disableFirstClick  = false;
+                }
+            }
         }
 
 

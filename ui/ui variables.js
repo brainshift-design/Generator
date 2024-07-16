@@ -268,11 +268,7 @@ function updateMenuLocalVariables()
         || item.name == 'None');
         
     menuLocalVariables.clearItems();
-    menuLocalVariables.addItems(items);
-
-
-    if (!isEmpty(items))
-        menuLocalVariables.addItems([new MenuItem('', null, false, {separator: true})]);
+    
 
     menuLocalVariables.addItems(
     [
@@ -282,6 +278,11 @@ function updateMenuLocalVariables()
             enabled:  menuLocalVariables.node.linkedVariableId != NULL
         })
     ]);
+
+    // if (!isEmpty(items))
+    //     menuLocalVariables.addItems([new MenuItem('', null, false, {separator: true})]);
+
+    menuLocalVariables.addItems(items);
 
 
     menuLocalVariables.showAt(

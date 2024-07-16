@@ -182,19 +182,22 @@ class MenuItem
 
             if (e.button == 0)
             {
-                const rect = boundingRect(this.div);
-
-                if (   this.callback
-                    && this.childMenu)
+                if (!this.parentMenu.firstClickDisabled)
                 {
-                    if (e.clientX - rect.x < rect.width - this.arrowWidth)
-                        this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
-                }
-                else if (this.callback)
-                    this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
+                    const rect = boundingRect(this.div);
 
-                    
-                this.button0 = false;
+                    if (   this.callback
+                        && this.childMenu)
+                    {
+                        if (e.clientX - rect.x < rect.width - this.arrowWidth)
+                            this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
+                    }
+                    else if (this.callback)
+                        this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
+
+                        
+                    this.button0 = false;
+                }
 
                 this.div.releasePointerCapture(e.pointerId);
             }

@@ -17,7 +17,6 @@ extends ResizableBase
         super(VARIABLE, 'variable', 'variable', iconVariable);
 
 
-        this.canRename      = false;
         this.iconOffsetY    = 1;
         this.alwaysShowIcon = true;
 
