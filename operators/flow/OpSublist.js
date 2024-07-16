@@ -68,19 +68,24 @@ extends OperatorBase
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const fullLength = values[paramIds.findIndex(id => id == 'fullLength')];
+        const end        = values[paramIds.findIndex(id => id == 'end'       )];
         
         if (fullLength.value > 0)
         {
             this.paramStart.controls[0].setMax(fullLength.value);
 
-            const min = fullLength.value > 0 ? Math.min(0, -fullLength.value) : Number.MIN_SAFE_INTEGER;
             const max = fullLength.value > 0 ? Math.max(0,  fullLength.value) : Number.MAX_SAFE_INTEGER;
 
             this.paramStart.controls[0].setMin(0, 0);
             this.paramStart.controls[0].setMax(max, max);
+            
+            const reverse = end.value < 0;
 
-            this.paramEnd.controls[0].setMin(0);
-            this.paramEnd.controls[0].setMax(max, max);
+            const _min = reverse ? -max : 0;
+            const _max = reverse ? 0 : max;
+            
+            this.paramEnd.controls[0].setMin(_min);
+            this.paramEnd.controls[0].setMax(_max, max);
         }
         else
         {

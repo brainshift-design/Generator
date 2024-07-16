@@ -61,28 +61,42 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-
-        const length = values[paramIds.findIndex(id => id == 'length')];
-
-        if (length.value > 0)
+        const fullLength = values[paramIds.findIndex(id => id == 'fullLength')];
+        const end        = values[paramIds.findIndex(id => id == 'end'       )];
+        
+        if (fullLength.value > 0)
         {
-            this.paramStart.controls[0].setMax(length.value);
-            
-            const min = length.value > 0 ? Math.min(0, -length.value) : Number.MIN_SAFE_INTEGER;
-            const max = length.value > 0 ? Math.max(0,  length.value) : Number.MAX_SAFE_INTEGER;
+            this.paramStart.controls[0].setMax(fullLength.value);
 
-            this.paramEnd.controls[0].setMin(0,   min);
-            this.paramEnd.controls[0].setMax(max, max);
+            const max = fullLength.value > 0 ? Math.max(0,  fullLength.value) : Number.MAX_SAFE_INTEGER;
+
+            this.paramStart.controls[0].setMin(0, 0);
+            this.paramStart.controls[0].setMax(max, max);
+            
+            const reverse = end.value < 0;
+
+            const _min = reverse ? -max : 0;
+            const _max = reverse ? 0 : max;
+            
+            this.paramEnd.controls[0].setMin(_min);
+            this.paramEnd.controls[0].setMax(_max, max);
         }
         else
         {
+            this.paramStart.controls[0].setMin(0, 0);
             this.paramStart.controls[0].setMax();
 
             this.paramEnd  .controls[0].setMin();
             this.paramEnd  .controls[0].setMax();
         }
+
+
+        const length = values[paramIds.findIndex(id => id == 'length')];
+
+        this.length = length.value;
+        
+        
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 

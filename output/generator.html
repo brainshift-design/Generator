@@ -32039,9 +32039,10 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['length', new NumberValue(length)], // used to set start and end limits
-            ['start',  start                  ],
-            ['end',    end                    ]
+            ['length',     new NumberValue(length)                        ], // used to set start and end limits
+            ['fullLength', new NumberValue(input ? input.value.length : 0)], // used to set start and end maxima
+            ['start',      start                                          ],
+            ['end',        end                                            ]
         ]);
         
 
