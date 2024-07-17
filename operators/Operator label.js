@@ -130,7 +130,8 @@ Operator.prototype.updateHeaderLabelText = function()
     const ellipsis = settings.showNodeId ? '...' : ' . . .';
 
     const isListUnknown = 
-           this.inputs[0].connected 
+           this.inputs[0]
+        && this.inputs[0].connected 
         && this.inputs[0].connectedOutput.node.isUnknown();
 
     //     if (this.type == COMBINE     ) suffix = sep + '[ ' + this.length        + ' ]';
