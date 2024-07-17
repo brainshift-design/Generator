@@ -45,7 +45,7 @@ extends OperatorBase
 
             ttParam.innerHTML = 'Close loop';
             return ttParam;
-        }
+        };
 
 
         this.getDescription = () => `"repeats" the input, creating a list of values/objects`;

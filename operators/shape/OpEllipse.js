@@ -64,7 +64,7 @@ extends OpShape
         this.promptAttributes.push(
             ['innerAbsolute',  '0/1, determines whether "inner" is in percent or pixels'], 
             ['sweepInDegrees', '0/1, determines whether "start" and "sweep" are in percent or degrees'] 
-        )
+        );
 
         this.paramPosition.getDescription = () => `determines if X,Y are top-left or center`;
         this.paramX       .getDescription = () => `X coord (depends on position)`;
