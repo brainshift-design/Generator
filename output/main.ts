@@ -5169,7 +5169,7 @@ async function getVariableValuesAsync(varIds)
             {
                 id:           varIds[i],
                 name:         variable.name, 
-                resolvedType: variable.resolvedType, 
+                resolvedType: variable.resolvedType,
                 value:        vals[0]
             });
         }

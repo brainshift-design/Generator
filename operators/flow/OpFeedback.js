@@ -20,8 +20,8 @@ extends OperatorBase
         this.addParam(this.paramFrom = new NumberParam('from',  '',     false, false, true));
 
         
-        this.inputs[0].addEventListener('connect',    () => OpStart_onConnectInput   (this));
-        this.inputs[0].addEventListener('disconnect', () => OpStart_onDisconnectInput(this));
+        this.inputs[0].addEventListener('connect',    () => OpFeedback_onConnectInput   (this));
+        this.inputs[0].addEventListener('disconnect', () => OpFeedback_onDisconnectInput(this));
 
 
         this.paramFrom.getTooltip = () => 
@@ -139,7 +139,7 @@ extends OperatorBase
 
 
 
-function OpStart_onConnectInput(node)
+function OpFeedback_onConnectInput(node)
 {
     node. inputs[0].types = [...node.inputs[0].connectedOutput.types];
     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
@@ -147,7 +147,7 @@ function OpStart_onConnectInput(node)
 
 
 
-function OpStart_onDisconnectInput(node)
+function OpFeedback_onDisconnectInput(node)
 {
     node. inputs[0].types = ALL_VALUES;
     node.outputs[0].types = [ANY_VALUE];

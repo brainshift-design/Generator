@@ -5,7 +5,7 @@ extends GOperator
 
 
 
-    constructor(nodeId, options, styleId)
+    constructor(nodeId, options)
     {
         super(VARIABLE, nodeId, options);
     }

@@ -13,17 +13,19 @@ extends Action
     variableId;
     variableType;
     variableName;
+    variableTemp;
 
     prevVariableId;
     prevVariableType;
     prevVariableName;
+    prevVariableTemp;
 
     outputValues = []; // in id,value pairs, to be restored on undo
     inputValues  = []; // in id,value pairs, to be restored on undo
 
 
 
-    constructor(nodeId, variableId, resolvedType, variableName)
+    constructor(nodeId, variableId, resolvedType, variableName, variableTemp)
     {
         super(
             LINK_VARIABLE_ACTION, 
@@ -33,6 +35,7 @@ extends Action
         this.variableId   = variableId;
         this.variableType = resolvedType;
         this.variableName = variableName;
+        this.variableTemp = variableTemp;
         this.selfUpdate   = true;
     }
 
@@ -43,40 +46,16 @@ extends Action
         this.prevVariableId   = this.node.linkedVariableId;
         this.prevVariableType = this.node.linkedVariableType;
         this.prevVariableName = this.node.linkedVariableName;
-        
-
-        // connectAction_saveOutputValues(this);
-        // connectAction_saveInputValues(this);
-
-        // if (   this.prevVariableId != NULL
-        //     && this.node.linkedVariableId == NULL
-        //     && this.node.paramValue)
-        // {
-        //     if (this.node.paramValue.input.connected)
-        //     {
-        //         uiDeleteSavedConn(this.node.paramValue.input.connection);
-        //         uiDisconnect(this.node.paramValue.input);
-        //     }    
-
-        //     if (this.node.paramValue.output.connected)
-        //     {
-        //         for (const input of this.node.paramValue.output.connectedInputs)
-        //         {
-        //             uiDeleteSavedConn(input.connection);
-        //             uiDisconnect(input);
-        //         }    
-        //     }
-        // }
-
-        
+        this.prevVariableTemp = this.node.linkedVariableTemp;
+ 
+       
         uiLinkNodeToVariable(
             this.node,
             this.variableId,
             this.variableType,
-            this.variableName);
+            this.variableName,
+            this.variableTemp);
 
-
-        //pushUnique(updateNodes, this.node);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -89,10 +68,8 @@ extends Action
             this.node,
             this.prevVariableId,
             this.prevVariableType,
-            this.prevVariableName);
-
-        // connectAction_restoreInputValues(this);
-        // connectAction_restoreOutputValues(this);
+            this.prevVariableName,
+            this.prevVariableTemp);
 
         this.node.updateNode();
 

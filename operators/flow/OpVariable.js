@@ -7,6 +7,7 @@ extends ResizableBase
     linkedVariableId   = NULL;
     linkedVariableType = NULL; // this is resolvedType
     linkedVariableName = '';
+    linkedVariableTemp = false;
 
     isBool             = false;
 
@@ -173,6 +174,7 @@ extends ResizableBase
                 this.linkedVariableId   = NULL;
                 this.linkedVariableType = NULL;
                 this.linkedVariableName = '';
+                this.linkedVariableTemp = false;
 
                 pushUpdate(null, [this]);
 
@@ -222,9 +224,31 @@ extends ResizableBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
+
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        uiUpdateVariable(this.linkedVariableId, getVariableValue(value));
+        uiUpdateVariable(
+            this.linkedVariableId, 
+            this.linkedVariableTemp, 
+            getVariableValue(value));
+
+
+        if (    this.linkedVariableId != NULL
+            && !this.linkedVariableTemp)
+        {
+            while (this.headerInputs.length > 0)
+                this.removeInput(this.headerInputs[0]);
+        }
+        else
+        {
+            if (this.headerInputs.length == 0)
+            {
+                this.addInput(new Input([NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE]));
+
+                this.inputs[0].addEventListener('connect',    () => OpVariable_onConnectInput   (this));
+                this.inputs[0].addEventListener('disconnect', () => OpVariable_onDisconnectInput(this));
+            }
+        }
     }
 
     
@@ -257,8 +281,9 @@ extends ResizableBase
             return this.linkedVariableName;
     
         
-        return parts.slice(0, -1).map(p => '<b>' + p + '</b>').join('/') 
-             + '/' + parts.at(-1);
+        return parts.join('/');
+        // return parts.slice(0, -1).map(p => '<b>' + p + '</b>').join('/') 
+        //      + '/' + parts.at(-1);
     }
 
 
@@ -287,7 +312,8 @@ extends ResizableBase
         return super.toJsonBase(nTab)
              + ',\n' + pos + tab + '"linkedVariableId": "'   + this.linkedVariableId   + '"'
              + ',\n' + pos + tab + '"linkedVariableType": "' + this.linkedVariableType + '"'
-             + ',\n' + pos + tab + '"linkedVariableName": "' + this.linkedVariableName + '"';
+             + ',\n' + pos + tab + '"linkedVariableName": "' + this.linkedVariableName + '"'
+             + ',\n' + pos + tab + '"linkedVariableTemp": "' + boolToString(this.linkedVariableTemp) + '"';
     }
 
 
@@ -303,6 +329,7 @@ extends ResizableBase
             this.linkedVariableId   = _node.linkedVariableId;
             this.linkedVariableType = _node.linkedVariableType;
             this.linkedVariableName = _node.linkedVariableName;
+            this.linkedVariableTemp = _node.linkedVariableTemp;
         }
         else
         {
@@ -310,6 +337,35 @@ extends ResizableBase
             this.linkedVariableId   = NULL;
             this.linkedVariableType = NULL;
             this.linkedVariableName = '';
+            this.linkedVariableTemp = false;
         }
     }
+}
+
+
+
+function OpVariable_onConnectInput(node)
+{
+    TODO figure out new variable type and send it over without an ID
+    then create the variable, use the node's name, then get the next
+    available numbered name, then assign the new info on return
+
+    actionManager.do(new LinkExistingVariableAction(
+        node.id,
+        node.linkedVariableId,
+        node.linkedVariableType,
+        node.linkedVariableName,
+        true));
+}
+
+
+
+function OpVariable_onDisconnectInput(node)
+{
+    actionManager.do(new LinkExistingVariableAction(
+        node.id,
+        NULL,
+        NULL,
+        '',
+        false));
 }

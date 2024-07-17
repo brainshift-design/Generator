@@ -44,7 +44,12 @@ function uiReturnFigGetVariableUpdates(values)
             if (node.paramValue)
             {
                 if (node.paramValue.input.connected)
-                    uiUpdateVariable(value.id, getVariableValue(node.paramValue.value));
+                {
+                    uiUpdateVariable(
+                        value.id, 
+                        node.linkedVariableTemp, 
+                        getVariableValue(node.paramValue.value));
+                }
                 else
                     node.updateValueParamValues(value.resolvedType, value.name, [value.value], true);
             }
@@ -94,7 +99,8 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
                 nodeId,
                 variable.id,
                 variable.resolvedType,
-                variable.name));
+                variable.name,
+                false));
 
         options.enabled = !linkedNodes.find(n => n.linkedVariableId == variable.id);
 
@@ -274,7 +280,7 @@ function updateMenuLocalVariables()
     [
         new MenuItem('None', null, false,
         {
-            callback: e => actionManager.do(new LinkExistingVariableAction(menuLocalVariables.node.nodeId, NULL, NULL, '')),
+            callback: e => actionManager.do(new LinkExistingVariableAction(menuLocalVariables.node.nodeId, NULL, NULL, '', false)),
             enabled:  menuLocalVariables.node.linkedVariableId != NULL
         })
     ]);
@@ -293,7 +299,7 @@ function updateMenuLocalVariables()
 
 
 
-function uiLinkNodeToVariable(node, varId, varType, varName)
+function uiLinkNodeToVariable(node, varId, varType, varName, varTemp)
 {
     if (   node.linkedVariableType != NULL
         && varType == NULL
@@ -313,6 +319,7 @@ function uiLinkNodeToVariable(node, varId, varType, varName)
     node.linkedVariableId   = varId;
     node.linkedVariableType = varType;
     node.linkedVariableName = varName;
+    node.linkedVariableTemp = varTemp;
     
     if (varName != NULL)
         node.name = varName;
@@ -331,12 +338,13 @@ function uiLinkNodeToVariable(node, varId, varType, varName)
 
 
 
-function uiUpdateVariable(variableId, value)
+function uiUpdateVariable(variableId, variableTemp, value)
 {
     uiQueueMessageToFigma({
-        cmd:       'figUpdateVariable',
-        variableId: variableId,
-        value:      value});
+        cmd:         'figUpdateVariable',
+        variableId:   variableId,
+        variableTemp: variableTemp,
+        value:        value});
 }
 
 
