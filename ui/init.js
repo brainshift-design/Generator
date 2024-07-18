@@ -149,6 +149,7 @@ function initGenerator(activate)
     
 
     uiGetLocalData('showWhatsNew');
+    //showWhatsNewDialog(); // uncomment to edit the dialog
 
 
     setTimeout(() => loadingGraphic.style.display = 'block', 300);
@@ -242,9 +243,9 @@ function validateInit()
     //     ? result == 1
     //     : false);
         
-    // uiSetLocalData(
-    //     'pro', 
-    //     subscriptionActive);
+    uiSetLocalData(
+        'pro', 
+        subscriptionActive);
 }
 
 

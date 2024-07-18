@@ -1491,7 +1491,7 @@ function logSavedConn(conn, darkMode) {
     }
 }
 console.clear();
-figma.payments.setPaymentStatusInDevelopment({ type: 'PAID' });
+figma.payments.setPaymentStatusInDevelopment({ type: 'UNPAID' });
 figma.loadAllPagesAsync().then(() => {
     //figma.on('selectionchange', figOnSelectionChange);
     figma.on('documentchange', figOnDocumentChange);
@@ -1503,7 +1503,7 @@ figma.clientStorage.getAsync('pro').then(data => {
     figma.showUI(__html__, {
         visible: false,
         themeColors: true,
-        title: 'Generator' //+ (data === true ? ' Pro' : '')
+        title: 'Generator' + (data === false ? ' (Free version)' : '')
     });
 });
 var curZoom = figma.viewport.zoom;

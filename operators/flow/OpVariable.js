@@ -233,22 +233,22 @@ extends ResizableBase
             getVariableValue(value));
 
 
-        if (    this.linkedVariableId != NULL
-            && !this.linkedVariableTemp)
-        {
-            while (this.headerInputs.length > 0)
-                this.removeInput(this.headerInputs[0]);
-        }
-        else
-        {
-            if (this.headerInputs.length == 0)
-            {
-                this.addInput(new Input([NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE]));
+        // if (    this.linkedVariableId != NULL
+        //     && !this.linkedVariableTemp)
+        // {
+        //     while (this.headerInputs.length > 0)
+        //         this.removeInput(this.headerInputs[0]);
+        // }
+        // else
+        // {
+        //     if (this.headerInputs.length == 0)
+        //     {
+        //         this.addInput(new Input([NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE]));
 
-                this.inputs[0].addEventListener('connect',    () => OpVariable_onConnectInput   (this));
-                this.inputs[0].addEventListener('disconnect', () => OpVariable_onDisconnectInput(this));
-            }
-        }
+        //         this.inputs[0].addEventListener('connect',    () => OpVariable_onConnectInput   (this));
+        //         this.inputs[0].addEventListener('disconnect', () => OpVariable_onDisconnectInput(this));
+        //     }
+        // }
     }
 
     
@@ -346,13 +346,9 @@ extends ResizableBase
 
 function OpVariable_onConnectInput(node)
 {
-    TODO figure out new variable type and send it over without an ID
-    then create the variable, use the node's name, then get the next
-    available numbered name, then assign the new info on return
-
     actionManager.do(new LinkExistingVariableAction(
         node.id,
-        node.linkedVariableId,
+        NULL,
         node.linkedVariableType,
         node.linkedVariableName,
         true));

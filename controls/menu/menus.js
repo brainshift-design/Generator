@@ -187,6 +187,7 @@ var menuItemSaveSelected;
 var menuDebug;
 var menuItemDebugLog;
 
+var menuItemUpgrade;
 var menuItemHelp;
 
 var menuItemRestartSep;
@@ -408,6 +409,7 @@ function initGeneratorMenus()
         menuDebug          = new MenuItem('Debug',                  null, false, {childMenu: menuMainDebug}),
                              new MenuItem('',                       null, false, {separator: true}),
       //menuItemHelp       = new MenuItem('Help and subscription',  null, false, {childMenu: menuMainHelp }),
+        menuItemUpgrade    = new MenuItem('Upgrade to Pro',         null, false, { }),
         menuItemHelp       = new MenuItem('Help',                   null, false, {childMenu: menuMainHelp }),
         menuItemRestartSep = new MenuItem('',                       null, false, {separator: true}),
         menuItemRestart    = new MenuItem('Restart to update. . .', null, false, {icon: iconUpdate, callback: () => settings.showRestartInfo ? showRestartDialog() : uiRestartGenerator()})]);
@@ -455,7 +457,7 @@ function initGeneratorMenus()
         menuItemNull       = new MenuItem('Null',           null, false, {icon: iconNull,          createType: NULL_NODE,      callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',               null, false, {separator: true}),
                              new MenuItem('Variable',       null, false, {icon: iconVariable, /*childMenu: menuVariables,*/ createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
-        menuItemVarGroup   = new MenuItem('Variable group', null, false, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
+        //menuItemVarGroup   = new MenuItem('Variable group', null, false, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',               null, false, {separator: true}),
                              new MenuItem('Parameters',     null, false, {icon: iconParameters, childMenu: menuParams}),
                              new MenuItem('Value names',    null, false, {icon: iconNames, childMenu: menuNames}),

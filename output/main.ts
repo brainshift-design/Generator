@@ -2279,7 +2279,7 @@ function logSavedConn(conn, darkMode)
 console.clear();
 
 
-figma.payments.setPaymentStatusInDevelopment({type: 'PAID'});
+figma.payments.setPaymentStatusInDevelopment({type: 'UNPAID'});
 
 
 figma.loadAllPagesAsync().then(() =>
@@ -2302,7 +2302,7 @@ figma.clientStorage.getAsync('pro').then(data =>
         {
             visible:     false,
             themeColors: true,
-            title:       'Generator' //+ (data === true ? ' Pro' : '')
+            title:       'Generator' + (data === false ? ' (Free version)' : '')
         });
 });
 
