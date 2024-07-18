@@ -598,6 +598,7 @@ function handleLegacyNode(_node, genVersion)
     else if (_node.type == 'CENTR' ) _node.type = SET_CENTER;
     else if (_node.type == 'DEFINE') _node.type = ITERATE;
     else if (_node.type == 'START' ) _node.type = FEEDBACK;
+    else if (_node.type == 'RENDER') _node.type = PERSIST;
 
 
     // remove 'showCenter' param from everything

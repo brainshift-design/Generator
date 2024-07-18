@@ -54,6 +54,7 @@
 ../generator/types/values/BackBlurValue.js
 ../generator/types/values/LayerBlendValue.js
 ../generator/types/values/LayerMaskValue.js
+../generator/types/values/VariableValue.js
 
 ../generator/types/values/ShapeValue.js
 ../generator/types/values/RectangleValue.js
@@ -251,7 +252,7 @@
 ../generator/types/shape/boolean/GShapeIntersect.js
 ../generator/types/shape/boolean/GShapeExclude.js
 
-../generator/types/shape/GRender.js
+../generator/types/shape/GPersist.js
 ../generator/types/shape/GExport.js
 
 

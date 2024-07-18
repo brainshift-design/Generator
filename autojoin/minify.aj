@@ -505,8 +505,8 @@ iconCircleCenter
 iconIntersectLines
 iconInterpolatePoint
 iconPointOnPath
-iconRender
-iconRenderDown
+iconPersist
+iconPersistDown
 iconGroup
 iconGroupNode
 iconGroupParam
@@ -722,7 +722,7 @@ menuItemLayerBackBlur
 menuItemStyleSep2
 menuItemShapeSep1
 menuItemShapeSelected
-menuItemShapeRender
+menuItemShapePersist
 menuItemManageTemplates
 menuItemDebugMode
 menuItemLogThreadMessages
@@ -1297,7 +1297,7 @@ BOOL_SUBTRACT
 BOOL_INTERSECT
 BOOL_EXCLUDE
 BOOLEAN_TYPES
-RENDER
+PERSIST
 SHAPE_VALUES
 AFFINE_TYPES
 SHAPE_TYPES
@@ -1768,7 +1768,7 @@ genParseInterpolatePoint
 genParsePointOnPath
 genParsePlace
 genParseShapeApply
-genParseRender
+genParsePersist
 genParseColorStyle
 genParseTextValue
 genParseText
@@ -1976,7 +1976,7 @@ GPointAlongPath
 GClosestPointOnPath
 GPolygon
 GRectangle
-GRender
+GPersist
 GResetTransform
 GRotate
 GScale
@@ -2279,7 +2279,7 @@ OpPointAlongPath
 OpClosestPointOnPath
 OpPolygon
 OpRectangle
-OpRender
+OpPersist
 OpResetTransform
 OpRotate
 OpRow

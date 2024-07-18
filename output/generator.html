@@ -6395,7 +6395,7 @@ function enableFeatures(sub)
     enableMenuItem(menuItemParseJson,           true, sub);
     enableMenuItem(menuItemCorrectColor,       true, sub);
     enableMenuItem(menuItemConvertToP3,        true, sub);
-    enableMenuItem(menuItemShapeRender,        true, sub);
+    enableMenuItem(menuItemShapePersist,        true, sub);
     enableMenuItem(menuItemVectorSep1,         true, sub, true);
     enableMenuItem(menuItemVectorVertex,       true, sub, true);
     enableMenuItem(menuItemVectorEdge,         true, sub, true);
@@ -6533,6 +6533,7 @@ const  SHAPE_LIST_VALUE    = 'SLIST#';
 
 const NULL_NODE            = 'NULL';
 const VARIABLE             = 'VAR';
+const VARIABLE_VALUE       = 'VAR#';
 const VARIABLE_GROUP       = 'VARGRP';
 const FEEDBACK             = 'FEEDBK';
 const REPEAT               = 'REPT';
@@ -7084,7 +7085,7 @@ const BOOLEAN_TYPES =
 ];
 
 
-const RENDER               = 'RENDER';
+const PERSIST              = 'PERSIST';
 const EXPORT               = 'EXPORT';
 
 
@@ -7178,7 +7179,7 @@ const SHAPE_TYPES =
     REVERSE_PATH,
     BLEND_PATH,
 
-    RENDER,
+    PERSIST,
     EXPORT
 ];
 
@@ -15352,6 +15353,200 @@ function parseLayerMaskValue(str)
         : new LayerMaskValue(new NumberValue(parseInt(str)), true);
 
     return [mask, 1];
+}
+
+
+
+class VariableValue
+extends GValue
+{
+    nodeId;
+
+    variableId;
+    variableType;
+    variableName;
+    variableValue;
+
+
+
+    constructor(nodeId,
+                variableId    = NULL, 
+                variableType  = NULL, 
+                variableName  = '', 
+                variableValue = new NullValue())
+    {
+        super(VARIABLE_VALUE, nodeId);
+
+        this.variableId    = variableId;
+        this.variableType  = variableType;
+        this.variableName  = variableName;
+        this.variableValue = variableValue;
+    }
+
+
+
+    static fromObject(obj)
+    {
+        return new VariableValue(
+            obj.nodeId,
+            new NumberValue(obj.x     ), 
+            new NumberValue(obj.y     ), 
+            new NumberValue(obj.width ), 
+            new NumberValue(obj.height), 
+            new NumberValue(obj.round ));
+    }
+
+
+
+    copy()
+    {
+        const copy = new VariableValue(
+            this.nodeId,
+            this.x     .copy(), 
+            this.y     .copy(), 
+            this.width .copy(), 
+            this.height.copy(), 
+            this.round .copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(rect)
+    {
+        return rect
+            && this.x     .equals(rect.x     )
+            && this.y     .equals(rect.y     )
+            && this.width .equals(rect.width )
+            && this.height.equals(rect.height)
+            && this.round .equals(rect.round );
+    }
+
+
+
+    async eval(parse)
+    {
+        return this.copy();
+    }
+
+
+
+    toString()
+    {
+        return      this.x     .toString()
+            + ' ' + this.y     .toString()
+            + ' ' + this.width .toString()
+            + ' ' + this.height.toString()
+            + ' ' + this.round .toString()
+            + ' ' + super.toString();
+    }
+
+
+
+    toPreviewString()
+    {
+        return 'variable';
+            // + ' ' + this.x     .toPreviewString()
+            // + ' ' + this.y     .toPreviewString()
+            // + ' ' + this.width .toPreviewString()
+            // + ' ' + this.height.toPreviewString()
+            // + ' ' + this.round .toPreviewString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.width .toDisplayString()
+            + ' ' + this.height.toDisplayString()
+            + ' ' + this.round .toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    hasInitValue()
+    {
+        return super.hasInitValue()
+            && this.x     .hasInitValue()
+            && this.y     .hasInitValue()
+            && this.width .hasInitValue()
+            && this.height.hasInitValue()
+            && this.round .hasInitValue();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.round .isValid();
+    }
+
+
+    
+    static NaN = new VariableValue(
+        '',
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
+}
+
+
+
+function parseVariableValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [VariableValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x      = parseNumberValue(str[i]); i += x     [1];
+    const y      = parseNumberValue(str[i]); i += y     [1];
+    const width  = parseNumberValue(str[i]); i += width [1];
+    const height = parseNumberValue(str[i]); i += height[1];
+    const round  = parseNumberValue(str[i]); i += round [1];
+
+
+    const rect = new VariableValue(
+        '', // set node ID elsewhere
+        x     [0],
+        y     [0],
+        width [0],
+        height[0],
+        round [0]);
+
+
+    i = parseShapeBaseValue(str, i, rect);
+
+    
+    return [rect, i - iStart];
 }
 
 
@@ -44538,7 +44733,7 @@ extends GShape
 
 
 
-class GRender
+class GPersist
 extends GShapeBase
 {
     inputs = [];
@@ -44551,7 +44746,7 @@ extends GShapeBase
 
     constructor(nodeId, options)
     {
-        super(RENDER, nodeId, options);
+        super(PERSIST, nodeId, options);
     }
 
 
@@ -44568,7 +44763,7 @@ extends GShapeBase
 
     copy()
     {
-        const copy = new GRender(this.nodeId, this.options);
+        const copy = new GPersist(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -57362,12 +57557,12 @@ function genParseShapeApply(parse)
 
 
 
-function genParseRender(parse)
+function genParsePersist(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const render = new GRender(nodeId, options);
+    const persist = new GPersist(nodeId, options);
 
 
     let nInputs = 0;
@@ -57377,12 +57572,12 @@ function genParseRender(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(render, parse, ignore, nInputs);
+        logReq(persist, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, render);
+        genParseNodeEnd(parse, persist);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -57391,17 +57586,17 @@ function genParseRender(parse)
 
 
     for (let i = 0; i < nInputs; i++)
-        render.inputs.push(genParse(parse));
+        persist.inputs.push(genParse(parse));
 
-    render.retain   = genParse(parse);
-    render.finalize = genParse(parse);
+    persist.retain   = genParse(parse);
+    persist.finalize = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, render);
-    return render;
+    genParseNodeEnd(parse, persist);
+    return persist;
 }
 
 
@@ -58936,7 +59131,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == PLACE                  ) result = genParsePlace             (parse);
     else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply        (parse);
     
-    else if (parse.next == RENDER                 ) result = genParseRender            (parse);
+    else if (parse.next == PERSIST                 ) result = genParsePersist            (parse);
     else if (parse.next == EXPORT                 ) result = genParseExport            (parse);
  
     else if (parse.next == GROUP_NODE             ) result = genParseGroupNode         (parse);

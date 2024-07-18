@@ -2491,12 +2491,12 @@ function genParseShapeApply(parse)
 
 
 
-function genParseRender(parse)
+function genParsePersist(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const render = new GRender(nodeId, options);
+    const persist = new GPersist(nodeId, options);
 
 
     let nInputs = 0;
@@ -2506,12 +2506,12 @@ function genParseRender(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(render, parse, ignore, nInputs);
+        logReq(persist, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, render);
+        genParseNodeEnd(parse, persist);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -2520,17 +2520,17 @@ function genParseRender(parse)
 
 
     for (let i = 0; i < nInputs; i++)
-        render.inputs.push(genParse(parse));
+        persist.inputs.push(genParse(parse));
 
-    render.retain   = genParse(parse);
-    render.finalize = genParse(parse);
+    persist.retain   = genParse(parse);
+    persist.finalize = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, render);
-    return render;
+    genParseNodeEnd(parse, persist);
+    return persist;
 }
 
 

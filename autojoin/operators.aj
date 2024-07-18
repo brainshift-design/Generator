@@ -250,7 +250,7 @@
 
 ../operators/shape/OpPlace.js
 
-../operators/shape/OpRender.js
+../operators/shape/OpPersist.js
 ../operators/shape/OpExport.js
 
 

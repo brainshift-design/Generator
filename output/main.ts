@@ -1055,6 +1055,7 @@ const  SHAPE_LIST_VALUE    = 'SLIST#';
 
 const NULL_NODE            = 'NULL';
 const VARIABLE             = 'VAR';
+const VARIABLE_VALUE       = 'VAR#';
 const VARIABLE_GROUP       = 'VARGRP';
 const FEEDBACK             = 'FEEDBK';
 const REPEAT               = 'REPT';
@@ -1606,7 +1607,7 @@ const BOOLEAN_TYPES =
 ];
 
 
-const RENDER               = 'RENDER';
+const PERSIST              = 'PERSIST';
 const EXPORT               = 'EXPORT';
 
 
@@ -1700,7 +1701,7 @@ const SHAPE_TYPES =
     REVERSE_PATH,
     BLEND_PATH,
 
-    RENDER,
+    PERSIST,
     EXPORT
 ];
 

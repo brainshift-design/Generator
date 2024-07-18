@@ -85,7 +85,7 @@ const presetGraphs =
     { id: 'dataTypes',            graph: presetDataTypes          },
     { id: 'organize',             graph: presetOrganize           },
     { id: 'active',               graph: presetActive             },
-    { id: 'render',               graph: presetRender             },
+    { id: 'persist',               graph: presetPersist             },
 
     { id: 'ifElse',               graph: presetIfElse             },
     { id: 'select',               graph: presetSelect             },

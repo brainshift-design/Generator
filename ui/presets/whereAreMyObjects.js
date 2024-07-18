@@ -186,7 +186,7 @@ const presetActive = `
         {
         "type": "CMNT",
         "id": "comment22",
-        "name": "Pro%20subscribers%20can%20use%20the%20Render%20node%20to%20keep%20their",
+        "name": "Pro%20subscribers%20can%20use%20the%20Persist%20node%20to%20keep%20their",
         "renamed": "true",
         "enabled": "true",
         "highlight": "0",

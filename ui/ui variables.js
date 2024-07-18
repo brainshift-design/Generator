@@ -43,15 +43,15 @@ function uiReturnFigGetVariableUpdates(values)
 
             if (node.paramValue)
             {
-                if (node.paramValue.input.connected)
-                {
-                    uiUpdateVariable(
-                        value.id, 
-                        node.linkedVariableTemp, 
-                        getVariableValue(node.paramValue.value));
-                }
-                else
-                    node.updateValueParamValues(value.resolvedType, value.name, [value.value], true);
+                // if (node.paramValue.input.connected)
+                // {
+                //     uiUpdateVariable(
+                //         value.id, 
+                //         node.linkedVariableTemp, 
+                //         getVariableValue(node.paramValue.value));
+                // }
+                // else
+                //     node.updateValueParamValues(value.resolvedType, value.name, [value.value], true);
             }
         }
     }
@@ -94,13 +94,14 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     {
         const options = {};
 
-        options.callback = () => actionManager.do(
-            new LinkExistingVariableAction(
-                nodeId,
-                variable.id,
-                variable.resolvedType,
-                variable.name,
-                false));
+        options.callback = () => {};
+        // () => actionManager.do(
+        //     new LinkExistingVariableAction(
+        //         nodeId,
+        //         variable.id,
+        //         variable.resolvedType,
+        //         variable.name,
+        //         false));
 
         options.enabled = !linkedNodes.find(n => n.linkedVariableId == variable.id);
 

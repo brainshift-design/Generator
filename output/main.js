@@ -571,6 +571,7 @@ const TEXT_LIST_VALUE = 'TLIST#';
 const SHAPE_LIST_VALUE = 'SLIST#';
 const NULL_NODE = 'NULL';
 const VARIABLE = 'VAR';
+const VARIABLE_VALUE = 'VAR#';
 const VARIABLE_GROUP = 'VARGRP';
 const FEEDBACK = 'FEEDBK';
 const REPEAT = 'REPT';
@@ -1015,7 +1016,7 @@ const BOOLEAN_TYPES = [
     BOOL_INTERSECT,
     BOOL_EXCLUDE
 ];
-const RENDER = 'RENDER';
+const PERSIST = 'PERSIST';
 const EXPORT = 'EXPORT';
 const SHAPE_VALUES = [
     SHAPE_VALUE,
@@ -1094,7 +1095,7 @@ const SHAPE_TYPES = [
     INTERPOLATE_POINT,
     REVERSE_PATH,
     BLEND_PATH,
-    RENDER,
+    PERSIST,
     EXPORT
 ];
 const ALL_VALUES = [
