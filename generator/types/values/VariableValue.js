@@ -28,13 +28,13 @@ extends GValue
 
     static fromObject(obj)
     {
-        return new VariableValue(
-            obj.nodeId,
-            new NumberValue(obj.x     ), 
-            new NumberValue(obj.y     ), 
-            new NumberValue(obj.width ), 
-            new NumberValue(obj.height), 
-            new NumberValue(obj.round ));
+        return null;
+        // return new VariableValue(
+        //     obj.nodeId,
+        //     obj.variableId, 
+        //     obj.variableType, 
+        //     obj.variableName, 
+        //     new NumberValue(obj.variableValue));
     }
 
 
@@ -43,11 +43,10 @@ extends GValue
     {
         const copy = new VariableValue(
             this.nodeId,
-            this.x     .copy(), 
-            this.y     .copy(), 
-            this.width .copy(), 
-            this.height.copy(), 
-            this.round .copy());
+            this.variableId, 
+            this.variableType, 
+            this.variableName, 
+            this.variableValue.copy());
 
         copy.copyBase(this);
 
@@ -59,11 +58,10 @@ extends GValue
     equals(rect)
     {
         return rect
-            && this.x     .equals(rect.x     )
-            && this.y     .equals(rect.y     )
-            && this.width .equals(rect.width )
-            && this.height.equals(rect.height)
-            && this.round .equals(rect.round );
+            && this.variableId   == rect.variableId  
+            && this.variableType == rect.variableType
+            && this.variableName == rect.variableName
+            && this.variableValue.equals(rect.variableValue);
     }
 
 
@@ -77,11 +75,10 @@ extends GValue
 
     toString()
     {
-        return      this.x     .toString()
-            + ' ' + this.y     .toString()
-            + ' ' + this.width .toString()
-            + ' ' + this.height.toString()
-            + ' ' + this.round .toString()
+        return      this.variableId
+            + ' ' + this.variableType
+            + ' ' + encodeURIComponent(this.variableName)
+            + ' ' + this.variableValue.toString()
             + ' ' + super.toString();
     }
 
@@ -90,22 +87,20 @@ extends GValue
     toPreviewString()
     {
         return 'variable';
-            // + ' ' + this.x     .toPreviewString()
-            // + ' ' + this.y     .toPreviewString()
-            // + ' ' + this.width .toPreviewString()
-            // + ' ' + this.height.toPreviewString()
-            // + ' ' + this.round .toPreviewString();
+            // + ' ' + this.variableId   .toPreviewString()
+            // + ' ' + this.variableType .toPreviewString()
+            // + ' ' + this.variableName .toPreviewString()
+            // + ' ' + this.variableValue.toPreviewString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.x     .toDisplayString()
-            + ' ' + this.y     .toDisplayString()
-            + ' ' + this.width .toDisplayString()
-            + ' ' + this.height.toDisplayString()
-            + ' ' + this.round .toDisplayString();
+        return      this.variableId   .toDisplayString()
+            + ' ' + this.variableType .toDisplayString()
+            + ' ' + this.variableName .toDisplayString()
+            + ' ' + this.variableValue.toDisplayString();
     }
 
 
@@ -120,11 +115,7 @@ extends GValue
     hasInitValue()
     {
         return super.hasInitValue()
-            && this.x     .hasInitValue()
-            && this.y     .hasInitValue()
-            && this.width .hasInitValue()
-            && this.height.hasInitValue()
-            && this.round .hasInitValue();
+            && this.variableValue.hasInitValue();
     }
 
 
@@ -132,22 +123,20 @@ extends GValue
     isValid()
     {
         return super.isValid()
-            && this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.round .isValid();
+            && this.variableId   != NULL
+            && this.variableType != NULL
+            && this.variableName != ''
+            && this.variableValue.isValid();
     }
 
 
     
     static NaN = new VariableValue(
         '',
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN);
+        NULL,
+        NULL,
+        '',
+        new NullValue());
 }
 
 
@@ -168,24 +157,19 @@ function parseVariableValue(str, i = -1)
 
     const iStart = i;
 
-    const x      = parseNumberValue(str[i]); i += x     [1];
-    const y      = parseNumberValue(str[i]); i += y     [1];
-    const width  = parseNumberValue(str[i]); i += width [1];
-    const height = parseNumberValue(str[i]); i += height[1];
-    const round  = parseNumberValue(str[i]); i += round [1];
+    const variableId    = str[i];                     i++;
+    const variableType  = str[i];                     i++;
+    const variableName  = decodeURIComponent(str[i]); i++;
+    const variableValue = parseValue(str[i]);         i += variableValue[1];
 
 
-    const rect = new VariableValue(
+    const _var = new VariableValue(
         '', // set node ID elsewhere
-        x     [0],
-        y     [0],
-        width [0],
-        height[0],
-        round [0]);
+        variableId,
+        variableType,
+        variableName,
+        variableValue[0]);
 
 
-    i = parseShapeBaseValue(str, i, rect);
-
-    
-    return [rect, i - iStart];
+    return [_var, i - iStart];
 }

@@ -466,9 +466,6 @@ Operator.prototype.createHeader = function()
 
 
         if (getCtrlKey(e))
-            this.showLabelTextbox();
-
-        else
         {
             makeSelectedNodesActive(e.shiftKey);
 
@@ -478,6 +475,8 @@ Operator.prototype.createHeader = function()
                 this.deselectTimer = -1;
             }
         }
+        else
+            this.showLabelTextbox();
     });
 
 
