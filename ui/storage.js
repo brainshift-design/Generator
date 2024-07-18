@@ -117,8 +117,8 @@ async function uiReturnFigGetLocalData(msg)
             break;
             
         case 'showWhatsNew':
-            if (   msg.value
-                && parseInt(msg.value) < generatorVersion)
+            if (  !msg.value
+                || parseInt(msg.value) < generatorVersion)
                 showWhatsNewDialog();
 
             break;

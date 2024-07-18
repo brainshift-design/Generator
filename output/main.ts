@@ -5243,7 +5243,17 @@ async function figUpdateVariableAsync(varId, value)
 async function figLinkVariableAsync(localVars, nodeId, varId)
 {
     let variable = localVars.find(v => v.id == varId);
-    if (!variable) return null;
+
+    if (!variable) 
+    {
+        if (varId != NULL)
+            return null;
+
+        else
+        {
+
+        }
+    }
 
 
     const [resolvedVar, values] = await figGetResolvedVariableValuesAsync(variable);
