@@ -136,6 +136,31 @@ const NUMBER_ATAN2            = 'ATAN2';
 const CONVERT_ANGLE           = 'CNVANG';
 
 
+const TEXT_VALUE              = 'TEXT#';
+const TEXT                    = 'TEXT';
+const TEXT_LENGTH             = 'TLEN';
+const TEXT_TRIM               = 'TTRIM';
+const TEXT_SUBSTRING          = 'TSUB';
+const TEXT_CONTAINS           = 'TCONT';
+const TEXT_CASE               = 'TCASE';
+const TEXT_REPLACE            = 'TREPL';
+const TEXT_JOIN               = 'TJOIN';
+const TEXT_PAD                = 'TPAD';
+const TEXT_COMPARE            = 'TCMP';
+const TEXT_CHAR               = 'TCHAR';
+const TEXT_UNICODE            = 'TUNI';
+const INDEX_TO_NAME           = 'INDEX';
+const NUMBER_TO_TEXT          = 'N2T';
+const COLOR_TO_TEXT           = 'C2T';
+const TEXT_TO_NUMBER          = 'T2N';
+const TEXT_TO_COLOR           = 'T2C';
+const TEXT_SPLIT              = 'TSPLT';
+const PARSE_JSON              = 'TJSON';
+const PARSE_CSV               = 'TCSV';
+const TEXT_FETCH              = 'FETCH';
+const TEXT_FILE               = 'TFILE';
+
+
 const FLOW_TYPES =
 [
     NULL_NODE,
@@ -168,6 +193,8 @@ const FLOW_TYPES =
     HOLD,
     CACHE,
     FREEZE,
+    PARSE_JSON,
+    PARSE_CSV,
     TIMER,
     VALUE_NAME,
     GET_LIST_VALUE_NAMES,
@@ -219,31 +246,6 @@ const TRIG_TYPES =
     NUMBER_TAN,
     NUMBER_ATAN2
 ];
-
-
-const TEXT_VALUE     = 'TEXT#';
-const TEXT           = 'TEXT';
-const TEXT_LENGTH    = 'TLEN';
-const TEXT_TRIM      = 'TTRIM';
-const TEXT_SUBSTRING = 'TSUB';
-const TEXT_CONTAINS  = 'TCONT';
-const TEXT_CASE      = 'TCASE';
-const TEXT_REPLACE   = 'TREPL';
-const TEXT_JOIN      = 'TJOIN';
-const TEXT_PAD       = 'TPAD';
-const TEXT_COMPARE   = 'TCMP';
-const TEXT_CHAR      = 'TCHAR';
-const TEXT_UNICODE   = 'TUNI';
-const INDEX_TO_NAME  = 'INDEX';
-const NUMBER_TO_TEXT = 'N2T';
-const COLOR_TO_TEXT  = 'C2T';
-const TEXT_TO_NUMBER = 'T2N';
-const TEXT_TO_COLOR  = 'T2C';
-const TEXT_SPLIT     = 'TSPLT';
-const TEXT_JSON      = 'TJSON';
-const TEXT_CSV       = 'TCSV';
-const TEXT_FETCH     = 'FETCH';
-const TEXT_FILE      = 'TFILE';
 
 
 const NUMBER_TYPES =
@@ -307,8 +309,6 @@ const TEXT_TYPES =
     TEXT_TO_NUMBER,
     TEXT_TO_COLOR,
     TEXT_SPLIT,
-    TEXT_JSON,
-    TEXT_CSV,
     TEXT_FETCH,
     TEXT_FILE
 ];

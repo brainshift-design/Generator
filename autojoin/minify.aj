@@ -432,7 +432,7 @@ iconTextToNumber
 iconTextToColor
 iconTextSplit
 iconTextCompare
-iconTextCSV
+iconParseCSV
 iconTexon
 iconTextFetch
 iconTextFile
@@ -1167,7 +1167,7 @@ TEXT_TO_NUMBER
 TEXT_TO_COLOR
 TEXT_SPLIT
 TEXTON
-TEXT_CSV
+PARSE_CSV
 TEXT_FETCH
 TEXT_FILE
 NUMBER_TYPES
@@ -1789,7 +1789,7 @@ genParseColorToText
 genParseTextToNumber
 genParseTextToColor
 genParseTextSplit
-genParseTextCSV
+genParseParseCSV
 genParseTextFetch
 genParseTextFile
 Parse
@@ -2002,7 +2002,7 @@ GText
 GTextCase
 GTextCompare
 GTextContains
-GTextCSV
+GParseCSV
 GTextFetch
 GTextFile
 GTextJoin
@@ -2306,11 +2306,11 @@ OpText
 OpTextCase
 OpTextCompare
 OpTextContains
-OpTextCSV
+OpParseCSV
 OpTextFetch
 OpTextFile
 OpTextJoin
-OpTextJson
+OpParseJson
 OpTextLength
 OpTextPad
 OpTextReplace
@@ -3461,7 +3461,7 @@ formatControlTextbox
 dragStart
 enteredDiv
 enteredExpand
-iconTextJson
+iconParseJson
 checksAndIcons
 mesName
 mesShortcut
@@ -3486,7 +3486,7 @@ divPro
 divSeparator
 searchName
 showChildMenu
-menuItemTextJson
+menuItemParseJson
 menuItemNodeCopyAsJsCode
 menuItemNodeCopyAsJsFunction
 preSetValue
@@ -3516,7 +3516,7 @@ ttRect
 tooltipArrow
 graphHeight
 ttMinValueZoom
-TEXT_JSON
+PARSE_JSON
 selNode
 saveOld
 makePassive
@@ -3715,7 +3715,7 @@ evalDivideInputs
 evalModuloInputs
 evalExponentInputs
 toNumber
-genParseTextJson
+genParseParseJson
 toPreviewString
 toDisplayString
 parseBackBlurValue

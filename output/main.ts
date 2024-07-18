@@ -1,82 +1,6216 @@
-function c1048(key, tag)  {     return key.substring(0, tag.length+1) == tag + ' '; }    function x1049(key, tag) {     return key.substring(tag.length+1); }    function l1050(key) { return c1048(key, c877); } function v1051(key) { return c1048(key, z875); } function m1052(key) { return c1048(key, t876); }    function m1053(key) { return x1049(key, c877); } function z1054(key) { return x1049(key, z875); } function e1055(key) { return x1049(key, t876); }
+function isTagKey(key, tag) 
+{
+    return key.substring(0, tag.length+1) == tag + ' ';
+}
 
 
-const generatorVersion = 440;   const p869        = 2147483647;    const NULL             = '';    const z870             = '  ';  const w871              = '    '; const e872               = '\n';    const a873   = '◦ G •'; const k874    = a873 + ' ';  const z875          = 'G_NODE'; const t876          = 'G_CONN'; const c877          = 'G_PAGE'; const q878          = 'G_TEMP';  const minWindowWidth   = 602; const minWindowHeight  =  39;   const identity = Object.freeze(     [[1, 0, 0],      [0, 1, 0],      [0, 0, 1]]);    const Epsilon = 0.0000001; const Tau     = Math.PI * 2;    var enableAsserts = false;    function a879(x, eps = 0.000000001)  {      return Math.abs(x) < eps ? 0 : x; }    function nozero(x, eps = 0.000000001)  {      return x != 0           ? x           : (x < 0 ? -eps : eps); }    function p880(v, eps = 0.000000001)  {      return point(         nozero(v.x, eps),          nozero(v.y, eps));  }    function equal(a, b, eps = 0.000000001) {     return Math.abs(b - a) < eps; }    function sqr (x) { return x*x;   }; function cube(x) { return x*x*x; };    function p881(f) { return Math.floor(f) | 0; }    function r882(x) {     x = p881(x);      x--;      x |= x >>  1;     x |= x >>  2;     x |= x >>  4;     x |= x >>  8;     x |= x >> 16;     x |= x >> 32;      return ++x; }    function gcd(a, b) {     let temp;     while (1)     {         temp = a % b;          if (temp == 0)           return b;          a = b;         b = temp;     } }    function distv(p1, p2) {     const dx = p2.x - p1.x;     const dy = p2.y - p1.y;      return Math.sqrt(dx*dx + dy*dy); }    function v883(v) {     let angle = Math.atan2(v.y, v.x);     if (angle < 0) angle += Tau;      return angle; }    function anglev2(v1, v2) {     return anglev2_(v1.x, v1.y, v2.x, v2.y); }    function anglev2_(x1, y1, x2, y2) {     const dx = x2 - x1;     const dy = y2 - y1;      let angle = Math.atan2(dy, dx);     if (angle < 0) angle += Tau;      return angle; }    function j885(v) {     return Math.sqrt(v.x*v.x + v.y*v.y); }    function lengthv_(x, y) {     return Math.sqrt(x*x + y*y); }    function a886(v) {     return point(         v.x == 0 ? 0 : v.x / j885(v),         v.y == 0 ? 0 : v.y / j885(v)); }    function dotv(v1, v2) {     return v1.x * v2.x + v1.y * v2.y; }    function x887(a1, a2) {     let diff = a2 - a1;      while (diff <= -Tau/2) diff += Tau;     while (diff >   Tau/2) diff -= Tau;      return diff;  }    function z888(v, m) {     let v3 = [v.x, v.y, 1];     let r  = i948(v3, m);      return point(r[0], r[1]); }    function e889(...mm) {     x952(mm.length > 0, 'mulm3m3() must take at least one argument');      let result = clone(mm[0]);      for (let a = 1; a < mm.length; a++)     {         const m1 = result;         const m2 = mm[a];          const m = [[0, 0, 0],                    [0, 0, 0],                    [0, 0, 0]];          for (let i = 0; i < 3; i++)         {             for (let j = 0; j < 3; j++)             {                                  for (let k = 0; k < 3; k++)                     m[i][j] += m1[i][k] * m2[k][j];             }         }          result = m;     }      return result; }    function x890(m, s) {     for (let i = 0; i < 3; i++)         for (let j = 0; j < 3; j++)             m[i][j] /= s;      return m; }    function adjugate(m) {     return cofactor(transpose(m)); }    function transpose(m) {     return [[m[0][0], m[1][0], m[2][0]],             [m[0][1], m[1][1], m[2][1]],             [m[0][2], m[1][2], m[2][2]]]; }    function cofactor(m) {     return [[  m[1][1] * m[2][2] - m[2][1] * m[1][2], -(m[1][0] * m[2][2] - m[2][0] * m[1][2]),  m[1][0] * m[2][1] - m[2][0] * m[1][1] ],             [-(m[0][1] * m[2][2] - m[2][1] * m[0][2]),  m[0][0] * m[2][2] - m[2][0] * m[0][2], -(m[0][0] * m[2][1] - m[2][0] * m[0][1])],             [  m[0][1] * m[1][2] - m[1][1] * m[0][2], -(m[0][0] * m[1][2] - m[1][0] * m[0][2]),  m[0][0] * m[1][1] - m[1][0] * m[0][1] ]];  }    function determinant(m) {     return   m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])            - m[0][1] * (m[1][0] * m[2][2] - m[2][0] * m[1][2])            + m[0][2] * (m[1][0] * m[2][1] - m[2][0] * m[1][1]); }    function z891(m) {     return x890(adjugate(m), determinant(m)); }    function u892(angle) {     const cosA = a879(Math.cos(angle));     const sinA = a879(Math.sin(angle));      return [[ cosA, sinA, 0],             [-sinA, cosA, 0],             [ 0,    0,    1]]; }    function a893(x = 0, y = 0, scaleX = 1, scaleY = 1, angle = 0, skewX = 0, skewY = 0) {     const cosA = Math.cos(angle);     const sinA = Math.sin(angle);      return [[scaleX*cosA -  skewY*sinA, -skewX*cosA + scaleY*sinA, x],             [ skewY*cosA + scaleX*sinA, scaleY*cosA +  skewX*sinA, y],             [0,                         0,                         1]]; }    function d894(v1, v2) {                               return v1.x * v2.y - v1.y * v2.x; }	    function f895(v1, v2) {     return point(         v1.x + v2.x,         v1.y + v2.y); }	    function sqrv(v) {     return j896(v, v); }    function j896(v1, v2) {     return point(         v1.x * v2.x,         v1.y * v2.y); }	    function l897(v, s) {     return point(         v.x * s,         v.y * s); }	    function s898(v1, v2) {     return point(         v1.x / v2.x,         v1.y / v2.y); }	    function b899(v, s) {     return point(         v.x / s,         v.y / s); }	    function x900(v1, v2) {     return point(         v1.x - v2.x,         v1.y - v2.y); }	    function z901(str)  {     return decodeURI(encodeURIComponent(str)); }    function a902(str)  {     return decodeURIComponent(encodeURI(str)); }    function f903(bytes)  {     let str = '';      for (let i = 0; i < bytes.length; i++)         str += String.fromCharCode(bytes[i]);      return str; }    function h904(str) {     return Array.from(a902(str), c => c.charCodeAt(0)); }    function h905(array, size)  {     const newArray = new Uint8Array(size);     a906(array, newArray);     return newArray; }    function a906(src, dst) {     u907(         src, 0, src.length,         dst, 0, dst.length); }    function u907(src, u908, p909, dst, t910, n911) {     const size = Math.min(p909, n911);      for (let i = 0; i < size; i++)         dst[t910 + i] = src[u908 + i]; }    function a912(y913, r914) {     if (y913.length != r914.length)         return false;      for (let i = 0; i < y913.length; i++)     {         if (y913[i] != r914[i])             return false;     }      return true; }    function p915(n916, v917) {     return n916.findIndex(i => v917.includes(i)) > -1; }    function  o918(list) { return list ? '<==' : '<--'; };  function k919(list) { return list ? '==>' : '-->'; };   function b920(nodeId) { return z875 + ' ' + nodeId; } function p921(name)   { return t876 + ' ' + name;   } function d922(name)   { return c877 + ' ' + name;   }    function m923(str)  {      return str.toLowerCase() == 'true'         || str == '1'; }    function s924(a925, b926 = false) {     return i931(         a925.outputNodeId,         a925.outputId,         a925.outputOrder,         a925.inputNodeId,         a925.inputId,         a925.list,         b926); }    function e927(outputNodeId, outputId, outputOrder, inputNodeId, inputId) {     return p921(           outputNodeId + ' '         + outputId     + ' '         + outputOrder  + ' '         + inputNodeId  + ' '         + inputId); }    function x928(h243) {     return e927(         h243.outputNodeId,         h243.outputId,         h243.outputOrder,         h243.inputNodeId,         h243.inputId); }    function e929(h243) {     return e927(         h243.output.node.id,         h243.output.id,         h243.outputOrder,         h243.input.node.id,         h243.input.id); }    function p930(h243, b926 = false) {     return i931(         h243.output.node.id,         h243.output.id,         h243.outputOrder,         h243.input.node.id,         h243.input.id,         h243.list,         b926); }    function i931(outputNodeId, outputId, outputOrder, inputNodeId, inputId, list, b926 = false) {     const  sp   = b926 ? ' ' : '  ';      const jsp   = b926 ? ''  : ' ';       const arrow =            sp          + p935(typeof outputOrder == 'string' ? parseInt(outputOrder) : outputOrder)          + k919(typeof list == 'string' ? m923(list) : list)          + sp;      const join  = jsp + '.' + jsp;      return  outputNodeId + join + outputId          + arrow          + inputNodeId  + join + inputId;           }    function j932(pageId) {     return d922(pageId); }    function p933(num) {     const str = num.toString();      let sup = '';      for (const c of str)         sup += d934(c);      return sup; }    function d934(c) {     switch (c)     {         case '0': return '⁰';         case '1': return '¹';         case '2': return '²';         case '3': return '³';         case '4': return '⁴';         case '5': return '⁵';         case '6': return '⁶';         case '7': return '⁷';         case '8': return '⁸';         case '9': return '⁹';         case '.': return '·';     } }    function p935(num) {     const str = num.toString();      let sup = '';      for (const c of str)         sup += p936(c);      return sup; }    function p936(c) {     switch (c)     {         case '0': return '₀';         case '1': return '₁';         case '2': return '₂';         case '3': return '₃';         case '4': return '₄';         case '5': return '₅';         case '6': return '₆';         case '7': return '₇';         case '8': return '₈';         case '9': return '₉';         case '.': return ' ';     } }    function l937(bool) {     return bool ? 'true' : 'false'; }    function isValid(val) {     return val != undefined         && val != null; }    function isEmpty(array) {     return array.length == 0; }    function n938(array, item) {     d939(array, array.indexOf(item)); }    function d939(array, index) {     if (   index > -1          && index < array.length)         array.splice(index, 1); }    function j940(array) {     if (isEmpty(array))         return null;      let last = array.at(-1);     array.splice(array.length-1, 1);      return last; }    function g941(array) {     return array[array.length-1]; }    function d942(array, from, to)  {     const item = array[from];     array.splice(from, 1);     array.splice(to, 0, item); }    function j943(array, item) {     const index = array.indexOf(item);          if (index > -1)         array.splice(index, 1); }    function l944(w2796, array) {     for (const item of array)     {         const index = w2796.indexOf(item);                  if (index > -1)             w2796.splice(index, 1);     } }    function k945(array, where) {     const index = array.findIndex(where);          if (index > -1)         array.splice(index, 1); }    function y946(styleId) {     return styleId.split(',')[0] + ','; }    function w947(points) {     let t4032 = '';       if (points.length < 2)         return t4032;       t4032 += 'M';     t4032 += ' ' + a879(points[0].x);     t4032 += ' ' + a879(points[0].y);      for (let i = 1; i < points.length; i++)     {         t4032 +=                ' L'             + ' ' + a879(points[i].x)             + ' ' + a879(points[i].y);     }       return t4032; }    function point(x, y) { return {x: x, y: y}; }    function i948(v, m) {     let r = [0, 0, 0];      for (let i = 0; i < 3; i++)         for (let j = 0; j < 3; j++)             r[i] += v[j] * m[i][j];      return r; }    function clone(val)  {     const type = typeof val;          if (val === null)        return null;      else if (type === 'undefined'            || type === 'number'            || type === 'string'            || type === 'boolean')          return val;      else if (type === 'object')      {         if (val instanceof Array)              return val.map(x => clone(x));          else if (val instanceof Uint8Array)              return new Uint8Array(val);          else          {             let v111 = {};              for (const key in val)                  v111[key] = clone(val[key]);              return v111;         }     }      throw 'unknown'; }    function n949(array, item, equal = null) {     if (equal)     {         if (Array.isArray(item))             item.forEach(i => n949(array, i, equal));         else if (!array.find(i => equal(i, item)))             array.push(item);     }     else     {         if (Array.isArray(item))             item.forEach(i => n949(array, i));         else if (!array.includes(item))             array.push(item);     } }    function s950(array, item, equal) {     if (Array.isArray(item))         item.forEach(i => s950(array, i, equal));     else if (!array.find(equal))         array.push(item); }    function n951(array, item, except) {     if (Array.isArray(item))         item.forEach(i => n951(array, i, except));     else if (!array.find(except))         array.push(item); }    function x952(...args) {               if (enableAsserts)     {         console.assert(...args);              } }    function h953(...args) {               if (enableAsserts)         console.error(...args); }    function z954(str, trim)  {     while (str.length >= trim.length         && str.substring(0, trim.length) == trim)          str = str.substring(trim.length);      return str; }    function h955(str, trim)  {     while (str.length >= trim.length         && str.substring(str.length - trim.length) == trim)          str = str.substring(0, str.length - trim.length);      return str; }    function v956(p4092) {     const fills = [];       for (const fill of p4092)     {         switch (fill[0])         {             case 'SOLID':             {                 const color = {                     r: Math.min(Math.max(0, fill[1] / 0xff), 1),                      g: Math.min(Math.max(0, fill[2] / 0xff), 1),                      b: Math.min(Math.max(0, fill[3] / 0xff), 1) };                  const opacity = Math.min(Math.max(0, fill[4] / 100), 1);                   if (   !isNaN(color.r)                     && !isNaN(color.g)                     && !isNaN(color.b)                     && !isNaN(opacity))                     fills.push(                     {                         type:      fill[0],                          color:     color,                         opacity:   opacity,                         blendMode: fill[5]                     });                   break;             }              case 'GRADIENT_LINEAR':             case 'GRADIENT_RADIAL':             case 'GRADIENT_ANGULAR':             case 'GRADIENT_DIAMOND':             {                 const [p0, p1, p2] = fill[1];                  const m4207 =                      [[0,   1,   0],                      [0.5, 0.5, 1],                      [1,   1,   1]];                  let b4208 = [                     [p0.x, p1.x, p2.x],                     [p0.y, p1.y, p2.y],                     [1,    1,    1   ]];                  b4208 = e889(m4207, z891(b4208));                 b4208 = [b4208[0], b4208[1]];                   const stops = [];                  for (const stop of fill[2])                 {                     stops.push({                         color:                          {                             r: Math.min(Math.max(0, stop[0]), 1),                             g: Math.min(Math.max(0, stop[1]), 1),                             b: Math.min(Math.max(0, stop[2]), 1),                             a: Math.min(Math.max(0, stop[3]), 1)                         },                         position: stop[4]                     });                   }                   fills.push(                 {                     type:              fill[0],                     gradientTransform: b4208,                     gradientStops:     stops,                     blendMode:         fill[3]                 });                   break;             }         }     }       return fills; }    function n957(type) {     return w1089.includes(type); }
+
+function noTag(key, tag)
+{
+    return key.substring(tag.length+1);
+}
 
 
-const q1056           = 'LIST#';  const b1057    = 'NLIST#'; const   b1058    = 'TLIST#'; const  o1059    = 'SLIST#';   const n1060            = 'NULL'; const f1061             = 'VAR'; const b1062       = 'VARGRP'; const q1063             = 'FEEDBK'; const r1064               = 'REPT'; const y1065                = 'CACHE'; const q1066               = 'FRZ'; const k1067                = 'TIMER'; const e1068           = 'VNAME'; const x1352 = 'GVNAMES'; const x1353     = 'VNAMES'; const a1354          = 'ONAME';  const p1069              = 'CMB'; const w1070         = 'LSASIT'; const n1071              = 'EXTR'; const r1072            = 'SETP'; const f1073            = 'GETP'; const b1074              = 'SUBLST'; const c1075               = 'UNIQ'; const q1349         = 'RORD'; const m1350           = 'SHFTLST'; const g1076         = 'REVLST'; const a1351          = 'BUKLST'; const k1077                 = 'SORT'; const a1078               = 'CLMN'; const n1079                 = 'CELL'; const j1080                 = 'LIST'; const k1081           = 'COUNT'; const OBJECT_COUNT         = 'OBJCOUNT'; const y1082             = 'LCONT'; const o1083               = 'SELECT'; const b1360     = 'LSTSEL'; const d1084              = 'IF'; const q1085               = 'LSTFLT';   const x1087            = 'ANY#';   const c1088 = [     q1056,     b1057,     b1058,     o1059,     p1069,     n1071,     r1072,     f1073,     b1074,     j1080,     k1081,     y1082,     r1064 ];   const w1089 = [            q1056,     b1057,       b1058,      o1059 ];   const k1086                 = 'ITER';   const k1108             = 'PROB';   const HOLD                    = 'HOLD';   const c1091            = 'NUM#';   const m1092                  = 'NUM';    const s1355        = 'NPREC';    const h1093             = 'NSIGN';    const j1094         = 'ABS';    const a1356         = 'NEG';    const q1095            = 'ROUND';    const l1357         = 'QUANT';    const w1096    = 'SMINMAX';    const e1097           = 'MINMAX';    const u1098           = 'LIM';    const a1099            = 'NCURVE';    const c1358              = 'NMAP';    const d1359             = 'NBIAS';    const c1100              = 'NANISNUM'; const f1101         = 'CONST';   const o1102         = 'DATE';   const n1103         = 'SEQ';   const a1104            = 'RANGE';   const y1105             = 'WAVE';   const e1106           = 'RAND';   const g1107            = 'NOISE';   const w1109       = 'ACCUM';   const x1110      = 'LERP';  const g1111            = 'SOLVE'; const a1112          = 'NANIM';  const o1113      = 'SMATH';   const f1114             = 'MATH';   const c1115              = 'ADD';    const h1116         = 'SUB';    const m1117         = 'MUL';    const n1118           = 'DIV';    const b1119           = 'MOD';    const n1120         = 'EXP';  const s1121          = 'NBOOL';   const h1122              = 'NOT'; const h1123              = 'AND'; const r1124               = 'OR'; const u1125              = 'XOR';  const a1126        = 'COND'; const k1127            = 'EQ'; const w1128        = 'NE'; const k1129             = 'LT'; const g1130    = 'LE'; const b1131          = 'GT'; const q1132 = 'GE';  const a1133             = 'TRIG';   const k1134              = 'SIN';    const e1135              = 'COS';    const w1136              = 'TAN'; const l1137            = 'ATAN2';  const o1138           = 'CNVANG';   const y1090 = [     n1060,     f1061,     b1062,     ...c1088,     w1070,     n1071,     r1072,     f1073,     b1074,     c1075,     q1349,     m1350,     g1076,     a1351,     a1078,     k1077,     n1079,     j1080,     o1083,     b1360,     d1084,     q1085,     q1063,     r1064,          k1086,     k1108,     HOLD,     y1065,     q1066,     k1067,     e1068,     x1352,     x1353,     a1354 ];   const e1139 = [     f1114,     o1113,     c1115,     h1116,     m1117,     n1118,     b1119,     n1120 ];   const l1140 = [     s1121,     h1122,     h1123,     r1124,     u1125 ];   const e1141 = [     a1126,     k1127,     w1128,     k1129,     g1130,     b1131,     q1132 ];   const n1142 = [     a1133,     k1134,     e1135,     w1136,     l1137 ];   const g1143     = 'TEXT#'; const y1144           = 'TEXT'; const r1145    = 'TLEN'; const b1146      = 'TTRIM'; const y1147 = 'TSUB'; const b1148  = 'TCONT'; const h1149      = 'TCASE'; const j1150   = 'TREPL'; const k1151      = 'TJOIN'; const r1152       = 'TPAD'; const s1153   = 'TCMP'; const m1154      = 'TCHAR'; const j1155   = 'TUNI'; const y1156  = 'INDEX'; const g1157 = 'N2T'; const w1158  = 'C2T'; const g1159 = 'T2N'; const x1160  = 'T2C'; const t1161     = 'TSPLT'; const v3505      = 'TJSON'; const z1163       = 'TCSV'; const p1164     = 'FETCH'; const w1165      = 'TFILE';   const q1166 = [     c1091,     b1057,     m1092,     s1355,     h1093,     j1094,     a1356,     q1095,     l1357,     w1096,     e1097,     u1098,     a1099,     c1358,     d1359,     c1100,     f1101,     o1102,     n1103,     a1104,     y1105,     e1106,     g1107,     w1109,     x1110,     g1111,     a1112,     g1157,     m1154,      ...e1139,     ...l1140,     ...e1141,     ...n1142,      o1138,     a1351 ];   const a1167 = [     g1143,     b1058,     y1144,     r1145,     b1146,     y1147,     b1148,     h1149,     k1151,     r1152,     j1150,     s1153,     j1155,     y1156,     g1159,     x1160,     t1161,     v3505,     z1163,     p1164,     w1165 ];   const d1168        = 'COL#';   const a1169              = 'COL';    const f1170        = 'CVAL';   const w1171      = 'CCOR';   const x1172   = 'COLP3'; const i1173     = 'CCNT';   const p1174         = 'BLND';   const j1175  = 'CLERP';  const f1176        = 'CBLND';   const a1177 = [     d1168,     a1169,     w1171,     x1172,     p1174,     j1175,     f1176,     w1158 ];   const i1178          = 'FILL#'; const z1179                = 'FILL'; const s1180          = [i1178, z1179];    const c1181        = 'STRK#'; const i1182              = 'STRK'; const p1183        = [c1181, i1182];    const g1190  = 'STRKSD#'; const q1191        = 'STRKSD'; const p1192  = [g1190, q1191];  const b1184    = 'CSTOP#'; const v1185          = 'CSTOP'; const k1186    = [b1184, v1185];    const x1187      = 'GRAD#'; const n1188            = 'GRAD'; const a1189      = [x1187, n1188];    const h1193 = 'RCRN#'; const h1194       = 'RCRN'; const s1195 = [h1193, h1194];  const u1196   = 'DRSH#'; const n1197         = 'DRSH'; const q1198   = [u1196, n1197];   const c1199  = 'INSH#'; const b1200        = 'INSH'; const b1201  = [c1199, b1200];   const u1202    = 'LBLR#'; const a1203          = 'LBLR'; const b1204    = [u1202, a1203];   const n1205     = 'BBLR#'; const m1206           = 'BBLR'; const j1207     = [n1205, m1206];   const d1208    = 'MASK#'; const c1209          = 'MASK'; const e1210    = [d1208, c1209];   const x1211   = 'BLEND#'; const x1212         = 'BLEND'; const w1213   = [x1211, x1212];   const o1214 = [     ...p1192,     ...s1195,     ...q1198,     ...b1201,     ...b1204,     ...j1207,     ...w1213,     ...e1210 ];   const u1215 = [            d1168,              i1178,          x1187,            c1181,     g1190,      u1196,     c1199,       u1202,        n1205,      x1211,       d1208 ];   const l1216           = 'CSTL';     const u1217           = 'SHP#';    const y1218       = 'RECT#'; const u1219             = 'RECT';   const l1220       = [y1218, u1219];   const t1221            = 'LINE#'; const m1222                  = 'LINE';  const c1223            = [t1221, m1222];     const u1224         = 'ELPS#'; const p1225               = 'ELPS';  const h1226         = [u1224, p1225];   const q1227         = 'TRPZ#'; const b1228               = 'TRPZ'; const x1229         = [q1227, b1228];   const i1236         = 'POLY#'; const h1237               = 'POLY';  const o1238         = [i1236, h1237];     const o1239            = 'STAR#'; const j1240                  = 'STAR';  const b1241            = [o1239, j1240];     const t1242      = 'TXTS#'; const k1243            = 'TXTS';  const w1244      = [t1242, k1243];    const i1245           = 'PT#'; const t1246                 = 'PT'; const s1247           = [i1245, t1246];  const t1248          = 'PCORN';  const m1249     = 'VPATH#'; const g1250           = 'VPATH';  const a1251     = [m1249, g1250];   const p1252   = 'VPT#'; const w1253         = 'VPT';  const q1254   = [p1252, w1253];  const h1255     = 'VEDGE#'; const o1256           = 'VEDGE';  const r1257     = [h1255, o1256];  const g1258   = 'VREG#'; const m1259         = 'VREG';  const g1260   = [g1258, m1259];  const w1261  = 'VNET#'; const h1262        = 'VNET';  const g1263  = [w1261, h1262];  const n1264     = 'SGRP#'; const m1265           = 'SGRP'; const o1266     = [n1264, m1265];  const r1267           = 'FRM#'; const y1268                 = 'FRM'; const w1269           = [r1267, y1268];   const r1231        = 'ARC#'; const o1230              = 'ARC'; const j1232        = [r1231, o1230];  const y1234       = 'WAVEP#'; const g1233             = 'WAVEP'; const r1235       = [y1234, g1233];  const m1270                  = 'MOVE'; const d1271                = 'ROT'; const g1272                 = 'SCALE'; const j1273                  = 'SKEW';  const SHOW_CENTER           = 'SHOWCNTR'; const k1274            = 'SCENTR'; const k1275           = 'RSTX';  const z1276                 = 'PLACE'; const c1277           = 'APPLY';    const PATH_LENGTH           = 'PTHLEN'; const JOIN_PATHS            = 'JOINPTH'; const REORIENT_PATHS        = 'REORPTH'; const q1284      = 'PTALPATH'; const o1285 = 'CPTONPATH'; const g1278        = 'MESPT'; const m1279           = 'PTANGLE'; const w1280                = 'VECLEN'; const o1281         = 'CIRCEN'; const ARC_FROM_POINTS       = 'ARCPT'; const w1282       = 'INTLIN'; const o1283     = 'PTLERP'; const REVERSE_PATH          = 'REVPTH'; const BLEND_PATH            = 'BLENDPTH';   const PATH_TYPES = [     g1250,      b1228,     o1230,     g1233 ];  const PATH_VALUES = [     m1249,      q1227,     r1231,     y1234 ];   const c1286         = 'SBOOL'; const m1287   = 'SBOOL#';  const p1288            = 'SBOOLU'; const q1289         = 'SBOOLS'; const c1290        = 'SBOOLI'; const q1291          = 'SBOOLE';   const b1292 = [     c1286,     m1287,     p1288,     q1289,     c1290,     q1291 ];   const b1293               = 'RENDER'; const EXPORT               = 'EXPORT';   const i1294 = [     u1217,     o1059,     y1218,     t1221,     u1224,     q1227,     i1236,     o1239,     t1242,     i1245,     m1249,     p1252,     h1255,     g1258,     w1261,     r1231,     y1234,     n1264,     r1267,     m1287,     u1196,     c1199,     u1202,     n1205,     x1211,     d1208 ];   const m1295 = [     d1271,     g1272,     j1273 ];   const t1296 = [     ...i1294,      ...l1220,     ...c1223,     ...h1226,     ...x1229,     ...o1238,     ...b1241,     ...w1244,     ...s1247,        t1248,     ...a1251,     ...q1254,     ...r1257,     ...g1260,     ...g1263,     ...j1232,     ...r1235,     ...o1266,     ...w1269,     ...b1292,          m1270,     ...m1295,     SHOW_CENTER,     k1274,     k1275,              z1276,     c1277,          PATH_LENGTH,     JOIN_PATHS,     REORIENT_PATHS,     q1284,     o1285,              g1278,     m1279,     w1280,     o1281,     o1230,     g1233,     ARC_FROM_POINTS,     w1282,     o1283,     REVERSE_PATH,     BLEND_PATH,      b1293,     EXPORT ];   const n1297 = [             q1056,      b1057,        b1058,       o1059,                 c1091,             g1143,            d1168,               i1178,       b1184,         x1187,           c1181,         b1184,         x1187,              u1217,        y1218,             t1221,          u1224,          q1227,          i1236,             o1239,       t1242,            i1245,      m1249,    p1252,      h1255,    g1258,   w1261,      n1264,            r1267,     h1193,      u1196,     c1199,       u1202,        n1205,       x1211,       d1208 ];   const w1298    = 'GROUP'; const k1299   = 'GPARAM';   const u1300 = [     w1298,     k1299 ];   const c1301       = 'CMNT'; const t1302 = 'CMNTARR'; const w1303         = 'PANEL';   const z1304        = 'ACT'; const d1305 = 'BFACT'; const u1306   = 'BFLST'; const f1307      = 'DIS'; const l1308       = 'NOC';   const PARAM         = 'PARAM';     const g1309           = 'LOG';   const i1310         = 'GRAPH';   const m1311 =  [        [b1119,   '%' ],     [n1118,   '/' ],      [h1116, '−' ],     [c1115,      '+' ],     [m1117, '×' ],     [n1120, 'e<sup>x']  ];   const l1312 =  [        [n1118,   '/' ],      [h1116, '−' ],     [c1115,      '+'],     [m1117, '×'] ];    const u1313 = 0; const q1314 = 1; const r1315  = 2; const a1316 = 3;   const t1317 =  [        [u1313, 'not'],     [q1314, 'xor'],      [r1315,  'or' ],     [a1316, 'and'] ];    const p1318             = 0; const z1319    = 1; const k1320        = 2; const b1321            = 3; const b1322 = 4; const i1323          = 5;   const u1324 =  [        [p1318,             '<'],     [z1319,    '≤'],     [k1320,        '≠'],     [b1321,            '='],     [b1322, '≥'],     [i1323,          '>'] ];    const v1325  = 0; const b1326  = 1; const e1327  = 2; const b1328 = 3; const y1329 = 4; const r1330 = 5;   const m1331 =  [        [v1325,  'sin' ],     [b1326,  'cos' ],     [e1327,  'tan' ],     [b1328, 'asin'],     [y1329, 'acos'],     [r1330, 'atan'] ];    const f1332               = 'EMPTY'; const v1333             = 'CONNECT'; const r1334              = 'CREATE'; const u1335       = 'CREATE_INSERT'; const u1336              = 'DELETE'; const z1337          = 'DISCONNECT'; const p1338          = 'LINK_STYLE'; const m1339       = 'LINK_VARIABLE'; const u1340 = 'LINK_VARIABLE_GROUP'; const w1341         = 'MAKE_ACTIVE'; const MAKE_NOT_CONDITION_ACTION  = 'MAKE_NOT_CONDITION'; const a1342        = 'MAKE_PASSIVE'; const j1343               = 'PASTE'; const i1344           = 'RECONNECT'; const q1345              = 'REMOVE'; const f1346              = 'RENAME'; const h1347      = 'REORDER_INPUTS'; const l1348 = 'REORDER_CONNECTIONS'; const p1361              = 'SELECT'; const e1362         = 'SELECT_MOVE'; const n1363          = 'MOVE_NODES'; const o1364     = 'SET_PARAM_VALUE'; const SET_MULTIPLE_VALUES_ACTION = 'SET_MULTIPLE_VALUES'; const w1365   = 'SET_PARAM_SETTING'; const g1366       = 'SET_NODE_RECT'; const p1367      = 'TOGGLE_DISABLE'; const c1368 = 'TOGGLE_PARAM_HEADER'; const v1369   = 'SET_CURRENT_GRAPH'; const w1370         = 'CREATE_PAGE'; const a1371         = 'DELETE_PAGE'; const d1372         = 'GROUP_NODES'; const d1373       = 'UNGROUP_NODES'; const e1374     = 'HIGHLIGHT_NODES'; const SCROLL_LIST_NODE_ACTION    = 'SCROLL_LIST_NODE'; const SET_LIST_DIVIDER_ACTION    = 'SET_LIST_DIVIDER'; const SET_NODE_PARAM_ACTION      = 'SET_NODE_PARAM';   const n1375               = 'BNORM'; const a1376               = 'BDARK'; const s1377             = 'BMULT'; const a1378          = 'BPDRK'; const d1379           = 'BBURN'; const q1380              = 'BLITE'; const u1381               = 'BSCRN'; const s1382         = 'BPLGT'; const k1383          = 'BDODG'; const l1384              = 'BOVER'; const r1385           = 'BSOFT'; const o1386           = 'BHARD'; const h1387           = 'BDIFF'; const v1388            = 'BEXCL'; const z1389                  = 'BHUE'; const t1390           = 'BSAT'; const j1391                = 'BCOL'; const w1392           = 'BLUM';   const l1393 = [     [n1375,       'normal',       'NORMAL'      ],     [a1376,       'darken',       'DARKEN'      ],     [s1377,     'multiply',     'MULTIPLY'    ],     [a1378,  'plus darker',  'LINEAR_BURN' ],     [d1379,   'color burn',   'COLOR_BURN'  ],     [q1380,      'lighten',      'LIGHTEN'     ],     [u1381,       'screen',       'SCREEN'      ],     [s1382, 'plus lighter', 'LINEAR_DODGE'],     [k1383,  'color dodge',  'COLOR_DODGE' ],     [l1384,      'overlay',      'OVERLAY'     ],     [r1385,   'soft light',   'SOFT_LIGHT'  ],     [o1386,   'hard light',   'HARD_LIGHT'  ],     [h1387,   'difference',   'DIFFERENCE'  ],     [v1388,    'exclusion',    'EXCLUSION'   ],     [z1389,          'hue',          'HUE'         ],     [t1390,   'saturation',   'SATURATION'  ],     [j1391,        'color',        'COLOR'       ],     [w1392,   'luminosity',   'LUMINOSITY'  ] ];    const k1394 = [     ['thin',        100],     ['extra light', 200],     ['light',       300],     ['regular',     400],     ['medium',      500],     ['semi bold',   600],     ['bold',        700],     ['extra bold',  800],     ['black',       900] ];    const e1395           =  0; const r1396        =  1;  const n1397      =  2;   const u1398     = 2; const l1399    =  3;   const j1400   = 3;  const q1401       =  4;   const f1402 = 4; const p1403         =  5;   const t1404            =  6; const l1405            =  7; const w1406            =  8;  const u1407          =  9;  const t1408          = 10; const m1409        = 11;   const r1410  = 12; const h1411   = 13; const l1412    = 14;                                     const z1413   = 15; const n1414     = 16; const h1415  = 17;  const x1416        = 18;  const t1417           = 19; const b1418      = 20;     const x1419        = 21; const h1420          = 22; const z1421           = 23;  const u1422              = 24;                                                                         const w1453    = 24;                                                                                              const c1423 = 24; const c1424              = 25;                                                                         const d1454   = 25; const n1425          = 26;    const d1426         = 27;                                      const s1427     = 28;   const s1428   = 28;   const z1429 = 28;   const v1430    = 28;   const n1431   = 28;   const y1432  = 28;   const o1433      = 28;   const t1434    = 28;                                 const a1435   = 29;                                        const p1436 = 29;   const c1437 = 29;   const r1438 = 29;   const z1439     = 29;   const k1455     = 29;                                 const u1441   = 30;                                        const o1442   = 30;                                 const i1443 = 30;   const h1444           = 30;   const v1440 = 30;                                                                                                                                                                   const l1445   = 31;                                                                                                                                        const x1446           = 31;                                                                                                                                                                                                       const x1447      = 32;                                                                                                                                                                                                       const y1448     = 33;                                                                                                                                                                                                                                                                                                                                                                                                                                            const d1449        = 34;                                                                                                                                                                                                       const h1450        = 35;                                                                                                                                                                                                                                                                                                                                                                                                                                            const y1451    = 36;                                                                                                                                                                                                       const l1452 = 37;
+
+function isPageKey(key) { return isTagKey(key, pageTag); }
+function isNodeKey(key) { return isTagKey(key, nodeTag); }
+function isConnKey(key) { return isTagKey(key, connTag); }
 
 
-const i2797 = '12345679ABCDEFGHJKLMNPQRSTUVWXYZ';    function s847(array, chars = i2797) {     let h849 = '';           let len = array.length;     let i   = 0;      while (len > 0)     {         if (len >= 5)         {             const a0 = array[i  ],                   a1 = array[i+1],                   a2 = array[i+2],                   a3 = array[i+3],                   a4 = array[i+4];                          h849 += chars[ (a0 & 0xF8) >>> 3];             h849 += chars[((a0 & 0x07) <<  2) | ((a1 & 0xC0) >>> 6)];             h849 += chars[ (a1 & 0x3E) >>> 1];             h849 += chars[((a1 & 0x01) <<  4) | ((a2 & 0xF0) >>> 4)];             h849 += chars[((a2 & 0x0F) <<  1) | ((a3 & 0x80) >>> 7)];             h849 += chars[ (a3 & 0x7C) >>> 2];             h849 += chars[((a3 & 0x03) <<  3) | ((a4 & 0xE0) >>> 5)];             h849 += chars[ (a4 & 0x1F)];         }         else if (len == 4)         {             const a0 = array[i  ],                   a1 = array[i+1],                   a2 = array[i+2],                   a3 = array[i+3];                          h849 += chars[ (a0 & 0xF8) >>> 3];             h849 += chars[((a0 & 0x07) <<  2) | ((a1 & 0xC0) >>> 6)];             h849 += chars[ (a1 & 0x3E) >>> 1];             h849 += chars[((a1 & 0x01) <<  4) | ((a2 & 0xF0) >>> 4)];             h849 += chars[((a2 & 0x0F) <<  1) | ((a3 & 0x80) >>> 7)];             h849 += chars[ (a3 & 0x7C) >>> 2];             h849 += chars[((a3 & 0x03) <<  3)];         }         else if (len == 3)         {             const a0 = array[i  ],                   a1 = array[i+1],                   a2 = array[i+2];                          h849 += chars[ (a0 & 0xF8) >>> 3];             h849 += chars[((a0 & 0x07) <<  2) | ((a1 & 0xC0) >>> 6)];             h849 += chars[ (a1 & 0x3E) >>> 1];             h849 += chars[((a1 & 0x01) <<  4) | ((a2 & 0xF0) >>> 4)];             h849 += chars[((a2 & 0x0F) <<  1)];         }         else if (len == 2)         {             const a0 = array[i  ],                   a1 = array[i+1];                          h849 += chars[ (a0 & 0xF8) >>> 3];             h849 += chars[((a0 & 0x07) <<  2) | ((a1 & 0xC0) >>> 6)];             h849 += chars[ (a1 & 0x3E) >>> 1];             h849 += chars[((a1 & 0x01) <<  4)];         }         else if (len == 1)         {             const a0 = array[i];                          h849 += chars[ (a0 & 0xF8) >>> 3];             h849 += chars[((a0 & 0x07) <<  2)];         }           i   += 5;         len -= 5;     }       return h849; }    function v848(h849, chars = i2797) {     const array = [];       let len = h849.length;     let c   = 0;      while (len > 0)     {         if (len >= 8)         {             const c0 = chars.indexOf(h849[c  ]),                   c1 = chars.indexOf(h849[c+1]),                   c2 = chars.indexOf(h849[c+2]),                   c3 = chars.indexOf(h849[c+3]),                   c4 = chars.indexOf(h849[c+4]),                   c5 = chars.indexOf(h849[c+5]),                   c6 = chars.indexOf(h849[c+6]),                   c7 = chars.indexOf(h849[c+7]);              array.push( (c0         << 3) | ((c1 & 0x1C) >>> 2));             array.push(((c1 & 0x03) << 6) | (c2 << 1) | ((c3 & 0x10) >>> 4));             array.push(((c3 & 0x0F) << 4) | ((c4 & 0x1E) >>> 1));             array.push(((c4 & 0x01) << 7) | (c5 << 2) | ((c6 & 0x18) >>> 3));             array.push(((c6 & 0x07) << 5) | c7);         }         else if (len == 7)         {             const c0 = chars.indexOf(h849[c  ]),                   c1 = chars.indexOf(h849[c+1]),                   c2 = chars.indexOf(h849[c+2]),                   c3 = chars.indexOf(h849[c+3]),                   c4 = chars.indexOf(h849[c+4]),                   c5 = chars.indexOf(h849[c+5]),                   c6 = chars.indexOf(h849[c+6]);              array.push(( c0         << 3) | ((c1 & 0x1C) >>> 2));             array.push(((c1 & 0x03) << 6) | (c2 << 1) | ((c3 & 0x10) >>> 4));             array.push(((c3 & 0x0F) << 4) | ((c4 & 0x1E) >>> 1));             array.push(((c4 & 0x01) << 7) | (c5 << 2) | ((c6 & 0x18) >>> 3));         }         else if (len == 5)         {             const c0 = chars.indexOf(h849[c  ]),                   c1 = chars.indexOf(h849[c+1]),                   c2 = chars.indexOf(h849[c+2]),                   c3 = chars.indexOf(h849[c+3]),                   c4 = chars.indexOf(h849[c+4]);              array.push( (c0         << 3) | ((c1 & 0x1C) >>> 2));             array.push(((c1 & 0x03) << 6) | (c2 << 1) | ((c3 & 0x10) >>> 4));             array.push(((c3 & 0x0F) << 4) | ((c4 & 0x1E) >>> 1));         }         else if (len == 4)         {             const c0 = chars.indexOf(h849[c  ]),                   c1 = chars.indexOf(h849[c+1]),                   c2 = chars.indexOf(h849[c+2]),                   c3 = chars.indexOf(h849[c+3]);              array.push( (c0         << 3) | ((c1 & 0x1C) >>> 2));             array.push(((c1 & 0x03) << 6) | (c2 << 1) | ((c3 & 0x10) >>> 4));         }         else if (len == 2)         {             const c0 = chars.indexOf(h849[c  ]),                   c1 = chars.indexOf(h849[c+1]);              array.push((c0 << 3) | ((c1 & 0x1C) >>> 2));         }           c   += 8;         len -= 8;     }       return array; }
+
+function noPageTag(key) { return noTag(key, pageTag); }
+function noNodeTag(key) { return noTag(key, nodeTag); }
+function noConnTag(key) { return noTag(key, connTag); }
 
 
-async function logSavedNode(nodeKey, p4007) {     const log  = t2120(await v1564(nodeKey, false));      if (p4007)     {         console.log(             '%c%s\n%c%s',              'background: #fa24; color: white;',              z1054(nodeKey),              'background: #fa44; color: #edc;',             log);     }     else     {         console.log(             '%c%s\n%c%s',              'background: #fdb; color: black;',              z1054(nodeKey),              'background: #fed; color: black;',             log);     } }    function t2120(json) {     let c4033 = json         .replace('{\n', '')         .replace('\n}', '')          .replace('[\n' + z870, '')         .replace('\n' + z870 + ']', '')          .split(z870 + '"params":\n').join('')           .split('": "').join(': ')         .split('", "').join(': ')          .split(z870 + '"').join(z870)         .split(z870 + z870 + '["').join(z870 + z870)                  .split('",\n').join('\n')         .split('"\n').join('\n')                  .split('"],\n').join('\n');       if (c4033[c4033.length-1] == '"')         c4033 = c4033.substring(0, c4033.length - 1);      if (c4033.substring(c4033.length-2) == '"]')             c4033 = c4033.substring(0, c4033.length - 2);      return c4033; }    function t2121(json) {     let c4033 = json         .replace('{\n', '')         .replace('\n}', '')         .replace('[\n' + z870, '')         .replace('\n' + z870 + ']', '');      return c4033; }    function u2122(h243, p4007) {     const d4211 = s924(h243, true);      if (p4007)     {         console.log(             '%c%s',              'background: #4f44; color: #ded',              d4211);      }     else     {         console.log(             '%c%s',              'background: #cfc; color: black;',              d4211);      } }
+const generatorVersion = 441;
 
 
-console.clear();   figma.payments.setPaymentStatusInDevelopment({type: 'PAID'});   figma.loadAllPagesAsync().then(() => {           figma.on('documentchange',  p1535);     figma.on('selectionchange', u1543);     figma.on('close',           o1536); });   f1525(true);   figma.clientStorage.getAsync('pro').then(data => {     figma.showUI(         __html__,         {             visible:     false,             themeColors: true,             title:       'Generator' + (data !== true ? ' (Free version)' : '')         }); });   var w2709 = figma.viewport.zoom; setInterval(b1540, 100);   var strBackgrounds = ''; setInterval(figCheckBackgrounds, 500);   const o2798   = 'clock_'; const k2799 = 1000;   var r2800          = false; var objectCenterSize = 15;         function h1537() {     (async function()     {         figma.currentPage.loadAsync().then(async () =>         {             let e2801  = await figma.currentPage.getPluginData(figma.currentUser.id+',windowWidth');             let j2802 = await figma.currentPage.getPluginData(figma.currentUser.id+',windowHeight');              let x2803;             let u2804;              if (e2801  === NULL) { x2803  = 800; figma.currentPage.setPluginData(figma.currentUser.id+',windowWidth',  e2801 .toString()); } else x2803  = parseInt(e2801 );             if (j2802 === NULL) { u2804 = 600; figma.currentPage.setPluginData(figma.currentUser.id+',windowHeight', j2802.toString()); } else u2804 = parseInt(j2802);                           figma.ui.resize(                 Math.max(minWindowWidth,  x2803 ),                 Math.max(minWindowHeight, u2804));              figma.ui.show();                           const fonts = await figma.listAvailableFontsAsync();                  const eula      = (await figma.clientStorage.getAsync('eula'     )) === 'true';             const tutorials = (await figma.clientStorage.getAsync('tutorials')) === 'true';             const isLocked  = await g1542();                       j1544(             {                 cmd:          'uiReturnFigStartGenerator',                 currentUser:   figma.currentUser,                 viewportRect:  figma.viewport.bounds,                 viewportZoom:  figma.viewport.zoom,                 fonts:         fonts,                 eula:          eula,                 tutorials:     tutorials,                 isLocked:      isLocked,                 windowWidth:   x2803,                 windowHeight:  u2804             });         });     })(); }    function d1538() {     f1525();      figma.showUI(         __html__,         {             visible:     false,             themeColors: true         }); }    function g1539() {     setInterval(s1541, k2799); }    function b1540() {     if (figma.viewport.zoom == w2709)         return;      w2709 = figma.viewport.zoom;      s2697();     d1558();     f1560(); }    function figCheckBackgrounds() {     if (strBackgrounds != JSON.stringify(figma.currentPage.backgrounds))     {         d1558();         strBackgrounds = JSON.stringify(figma.currentPage.backgrounds);     } }    function s1541() {     j1565(o2798 + figma.currentUser.sessionId.toString(), Date.now().toString()) }    async function g1542() {     await figma.currentPage.loadAsync();       const clocks = figma.currentPage.getPluginDataKeys()         .filter(k =>                 k.length > o2798.length             && k.substring(0, o2798.length) == o2798             && k.substring(   o2798.length) != figma.currentUser.sessionId.toString())         .map(async k => parseInt(await v1564(k)));       clocks.sort();      const now = Date.now();      const locked = clocks.length > 0         && now - (await clocks[clocks.length-1]) < k2799*2;       return locked; }    function u1543() {     s2697(); }
+const MAX_INT32        = 2147483647;
+  
+const NULL             = '';
+  
+const HTAB             = '  '; // half-tab
+const TAB              = '    ';
+const NL               = '\n';
+  
+const GENERATOR_LOGO   = '◦ G •';
+const OBJECT_PREFIX    = GENERATOR_LOGO + ' ';
+
+const nodeTag          = 'G_NODE';
+const connTag          = 'G_CONN';
+const pageTag          = 'G_PAGE';
+const tempTag          = 'G_TEMP';
+
+const minWindowWidth   = 602;
+const minWindowHeight  =  39;
 
 
-var p2730 = new Array();  var c2732  = new Array();     async function figGetObjectsFromIds(objectIds) {     for (let i = e2766.length-1; i >= 0; i--)         if (  !e2766[i].removed             && objectIds.includes(e2766[i].getPluginData('objectId')))             e2766.splice(i, 1);      for (let i = a2782.length-1; i >= 0; i--)         if (   a2782[i].removed             || objectIds.includes(a2782[i].getPluginData('objectId')))             a2782.splice(i, 1);      await figma.currentPage.loadAsync();      return figma.currentPage.findAll(o => objectIds.includes(o.getPluginData('objectId'))); }    async function i1524(nodeIds) {     for (let i = e2766.length-1; i >= 0; i--)         if (  !e2766[i].removed             && nodeIds.includes(e2766[i].getPluginData('nodeId')))             e2766.splice(i, 1);      for (let i = a2782.length-1; i >= 0; i--)         if (   a2782[i].removed             || nodeIds.includes(a2782[i].getPluginData('nodeId')))             a2782.splice(i, 1);      await figma.currentPage.loadAsync();      figma.currentPage         .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))         .forEach(o => { if (!o.removed) o.remove(); });       p2730 = p2730.filter(a => !nodeIds.includes(a.nodeId)); }    function f1525(g1526 = false) {     for (const p1531 of figma.currentPage.children)     {         if (p1531.removed)             continue;          if (    p1531.getPluginData('objectId') != ''             &&  p1531.getPluginData('userId'  ) == figma.currentUser.id             && (   parseInt(p1531.getPluginData('retain')) == 0                 || g1526))              p1531.remove();     } }    function r1527(nodeIds, k1528) {     for (let i = p2730.length-1; i >= 0; i--)     {         const y2731 = p2730[i];          if (!nodeIds.includes(y2731.nodeId))             continue;           for (let j = y2731.objects.length-1; j >= 0; j--)         {             const p1531 = y2731.objects[j];                          if (    p1531.removed                 || !k1529(p1531, k1528))             {                 if (!p1531.removed)                     p1531.remove();                  j943(y2731.objects, p1531);                  if (e2766.includes(p1531))                     j943(e2766, p1531);                  if (a2782.includes(p1531))                     j943(a2782, p1531);             }                           if (  !p1531.removed)             {                 if (parseInt(p1531.getPluginData('retain')) == 2)                     g1550(p1531);             }         }           if (isEmpty(y2731.objects))             j943(p2730, y2731);      } }    function k1529(p1531, k1528) {     if (   p1531.type == m1265         || p1531.type == y1268)     {         for (const child of p1531.children)         {             const found = k1529(child, k1528);             if (found) return found;         }     }     else     {         const found = k1528.find(o =>                    p1531.getPluginData('objectId' ) == o[n1397]                 && p1531.getPluginData('userId'   ) == figma.currentUser.id                             ||    o[p1403] == 2                && o[p1403] == p1531.getPluginData('retain'));          if (found)              return found;     }           return null; }    function t1532(nodeIds, r1533) {           figma.getLocalPaintStylesAsync().then(paintStyles =>     {         paintStyles             .filter(s =>                      nodeIds.includes(s.getPluginData('nodeId')))                  .forEach(s =>              {                 const nodeId   = s.getPluginData('nodeId');                 const existing = m923(s.getPluginData('existing'));                                  if (!existing)                  {                     s.remove();                 }                 else if (r1533)                 {                     k945(c2732, a => a.nodeId == nodeId);                      s.setPluginData('type',     NULL);                     s.setPluginData('nodeId',   NULL);                     s.setPluginData('existing', NULL);                 }             });     });       if (r1533)         c2732 = c2732.filter(a => !nodeIds.includes(a.nodeId)); } 
+const identity = Object.freeze(
+    [[1, 0, 0],
+     [0, 1, 0],
+     [0, 0, 1]]);
 
 
-var o1534 = false;                                                                                                                                        function p1535(e) {     for (const change of e.documentChanges)     {         switch (change.type)         {             case 'STYLE_CREATE':                                                     if (!change.style)                     break;                  if (!o1534)                 {                     change.style.setPluginData('type',     NULL);                     change.style.setPluginData('nodeId',   NULL);                     change.style.setPluginData('existing', NULL);                 }                  break;               case 'STYLE_PROPERTY_CHANGE':              {                 if (!change.style)                     break;                  if (!o1534)                 {                     const msg = {                         cmd:       'uiStylePropertyChange',                         styleId:    y946(change.id),                         properties: change.properties,                         name:       '',                         paints:     [] };                           for (const prop of change.properties)                     {                         switch (prop)                         {                             case 'name':  msg.name   = change.style.name;   break;                             case 'paint': msg.paints = change.style.paints; break;                         }                     }                       j1544(msg);                 }                                  break;             }                           case 'STYLE_DELETE':                 j1544({                     cmd:    'uiStyleDelete',                     styleId: change.id });                  break;         }     }      o1534 = false; }    function o1536() {     f1525();     j1544({ cmd: 'updateMetrics' }); }
+
+const Epsilon = 0.0000001;
+const Tau     = Math.PI * 2;
 
 
-   figma.ui.onmessage = function(msg) {     msg = JSON.parse(msg);           if (msg.cmd == 'returnUiGetValueForFigma')          return;       switch (msg.cmd)     {         case 'figStartGenerator':                     h1537                    ();                                            break;         case 'figRestartGenerator':                   d1538                  ();                                            break;               case 'figFinishStart':                        g1539                       ();                                            break;                 case 'figDockWindowNormal':                   z2739                        ('normal');                                    break;         case 'figDockWindowMaximize':                 z2739                        ('maximize');                                  break;         case 'figDockWindowTop':                      z2739                        ('top');                                       break;         case 'figDockWindowLeft':                     z2739                        ('left');                                      break;         case 'figDockWindowRight':                    z2739                        ('right');                                     break;         case 'figDockWindowBottom':                   z2739                        ('bottom');                                    break;                  case 'figGetMousePosition':                   t1610                  (msg.clientPosition);                          break;                   case 'figResizeWindow':                       p1613                      (msg.width, msg.height);                       break;           case 'figSetWindowRect':                      v1611                     (msg.x, msg.y, msg.width, msg.height);         break;          case 'figNotify':                             g1614                         (msg);                                         break;               case 'figGetLocalData':                       y1562                      (msg.key);                                     break;         case 'figSetLocalData':                       j1563                      (msg.key, msg.value);                          break;               case 'figClearAllLocalData':                  y4028                 ();                                            break;               case 'figGetPageData':                        v1564                       (msg.key);                                     break;         case 'figSetPageData':                        j1565                       (msg.key, msg.value);                          break;                  case 'figSavePages':                          n1570                         (msg.pageIds, msg.pageJson, msg.currentPageId); break;                case 'figLoadNodesAndConns':                  q1567                 (msg.debugMode);                               break;         case 'figSaveNodes':                          c1571                         (msg.nodeIds, msg.nodeJson);                   break;               case 'figGetAllLocalTemplateNames':           z2736          ();                                            break;         case 'figSaveLocalTemplate':                  j1572                 (msg.z4029, msg.template);              break;          case 'figRemoveConnsToNodes':                 t1573                (msg.nodeIds);                                 break;         case 'figRemoveSavedNodesAndConns':           r1574          (msg.nodeIds);                                 break;         case 'figRemoveAllSavedNodesAndConns':        i1575       ();                                            break;                case 'figLogAllSavedNodesAndConns':           b1576          (msg.p4007);                                break;         case 'figLogAllSavedNodes':                   s1577                  (msg.p4007);                                break;         case 'figLogAllSavedConns':                   n1578                  (msg.p4007);                                break;               case 'figLogAllSavedPageKeys':                n1579               (msg.p4007);                                break;         case 'figLogAllSavedPages':                   z1580                  (msg.p4007);                                break;         case 'figLogAllSavedConnKeys':                o1581               (msg.p4007);                                break;          case 'figLogAllLocalData':                    w1582                   (msg.p4007);                                break;               case 'figGetValue':                           v1583                          (msg.key, msg.spec);                           break;          case 'figRemoveSavedPage':                    p1585                   (msg.pageId);                                  break;         case 'figRemoveAllSavedPages':                v1586               ();                                            break;           case 'figSaveConnection':                     v1587                    (msg.key, msg.json);                           break;         case 'figSaveConnections':                    o1588                   (msg.keys, msg.json);                          break;         case 'figUpdateSavedConnections':             t1589            (msg.curKeys, msg.newKeys, msg.json);          break;         case 'figDeleteSavedConnection':              b1590             (msg.key);                                     break;               case 'figRemoveAllSavedConnections':          u1591         ();                                            break;         case 'figDeleteSavedConnectionsToNode':       e1592      (msg.nodeId);                                  break;         case 'figDeleteSavedConnectionsFromNode':     x1593    (msg.nodeId);                                  break;         case 'figRemovePluginDataFromAllLocalStyles': b1594();                                            break;          case 'figGetAllLocalVariables':               f1618              (msg.nodeId, msg.px, msg.py);                  break;         case 'figLinkNodeToVariable':                 o1620                (msg.nodeId, msg.variableId);                  break;         case 'figUpdateVariable':                     figUpdateVariableAsync               (msg.variableId, msg.value);                   break;          case 'figGetAllLocalColorStyles':             w1595            (msg.nodeId, msg.px, msg.py);                  break;         case 'figLinkNodeToExistingColorStyle':       u1596      (msg.nodeId, msg.styleId);                     break;                           case 'figExport':                             figExport                            (msg.objectIds, msg.scale, msg.format, msg.suffix); break;          case 'figGetObjectSize':                      p1549                     (msg.object);                                  break;         case 'figGetVariableUpdates':                 e1584                (msg.linkedVarIds);                            break;          case 'figUpdateShowIds':                                   r2800 = msg.r2800;              break;               case 'figUpdateObjectCenterSize':                                   objectCenterSize = msg.objectCenterSize;              break;               case 'figDeleteAllObjects':                   f1525                  ();                                            break;          case 'figUpdateObjectsAndStyles':             w2745 = 0;             i2746  = 0;                          msg.objects.forEach(o => o.counted = false);                          v2733(                 null,                  msg.objects,                  msg.m4021,                  msg.j2068,                 msg.nodeIds,                  msg.h2762,                  msg.s2763,                  msg.k270);                          p1601(msg);                          break;               case 'figDeleteObjectsAndStyles':             i1524(msg.nodeIds);             t1532(msg.nodeIds, msg.r1533);             break;               case 'figDeleteObjectsExcept':                          r1527(msg.nodeIds, msg.ignoreObjects);             break;               case 'figTriggerUndo': figma.triggerUndo(); break;         case 'figCommitUndo':  figma.commitUndo();  break;          case 'figSaveSnapshot': figSaveSnapshot(msg.index, msg.objectIds); break     }       j1544({         cmd:    'uiEndFigMessage',         msgCmd:  msg.cmd }); };         function j1544(msg) {     figma.ui.postMessage(JSON.stringify(msg)); }  
+
+var enableAsserts = false;
 
 
-async function g2734(key) {     return await figma.clientStorage.getAsync(key);  }    function y1562(key) {     figma.currentPage.loadAsync().then(() =>     {         if (key == 'canvasEmpty')         {             j1544(             {                 cmd:  'uiReturnFigGetLocalData',                 key:   key,                 value: figma.currentPage.children.length == 0             });         }         else if (key == 'debugWarningCrash')         {             figma.clientStorage.getAsync('debugWarning').then(data =>             {                 j1544({                     cmd:  'uiReturnFigGetLocalData',                     key:   key,                     value: data                 });             });         }         else         {             figma.clientStorage.getAsync(key).then(data =>             {                 j1544({                     cmd:  'uiReturnFigGetLocalData',                     key:   key,                     value: data                 });             });         }     }); }    function j1563(key, value, postToUi = true) {     figma.clientStorage.setAsync(key, value);       if (postToUi)     {         j1544({             cmd:  'uiReturnFigSetLocalData',             key:   key,             value: value         });     } }    async function y4028() {     const keys = await figma.clientStorage.keysAsync();       for (const key of keys)         figma.clientStorage.deleteAsync(key); }    async function v1564(key, postToUi = true) {     await figma.currentPage.loadAsync();      const data = figma.currentPage.getPluginData(key);      if (postToUi)     {         j1544({             cmd:  'uiReturnFigGetPageData',             key:   key,             value: data         });     }      return data; }    function j1565(key, value) {     q1566(key);      figma.currentPage.setPluginData(key, value); }    function q1566(key) {     figma.currentPage.setPluginData(key, '');  }    function q1567(debugMode) {     figma.currentPage.loadAsync().then(() =>     {                    const pageKeys  = figma.currentPage.getPluginDataKeys().filter(k => l1050(k));         const nodeKeys  = figma.currentPage.getPluginDataKeys().filter(k => v1051(k));         const connKeys  = figma.currentPage.getPluginDataKeys().filter(k => m1052(k));           if (!debugMode)             a1569(nodeKeys, connKeys);          const pages     = pageKeys.map(k => figma.currentPage.getPluginData(k));         const nodes     = nodeKeys.map(k => figma.currentPage.getPluginData(k));         const w2139     = connKeys.map(k => figma.currentPage.getPluginData(k));           const pageOrder     = figma.currentPage.getPluginData('pageOrder').split(',');         const currentPageId = figma.currentPage.getPluginData('currentPageId');                   i1568(nodes);           const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');           j1544({             cmd:               'uiReturnFigLoadNodesAndConns',             showAllColorSpaces: showAllColorSpaces,             pageKeys:           pageKeys,             pageJson:           pages,             pageOrder:          pageOrder,             currentPageId:      currentPageId,             nodeKeys:           nodeKeys,             nodeJson:           nodes,             connKeys:           connKeys,             connJson:           w2139         });     }); }    function i1568(nodes) {     c2732 = [];       figma.getLocalPaintStylesAsync().then(paintStyles =>     {         for (const w3020 of nodes)         {             const node = JSON.parse(w3020);              if (node.type == l1216)             {                 const style = paintStyles.find(s =>                 {                     const nodeId = s.getPluginData('nodeId');                     return nodeId == node.id;                 });                  if (style)                 {                     c2732.push({                         nodeId:   node.id,                          existing: m923(node.existing),                          styles:   [style]});                 }             }         }     }); }    function a1569(nodeKeys, connKeys) {     figma.currentPage.loadAsync().then(() =>     {          const v2735 = '"loading": "true"';         const not         = '{\n';         const set         = '{\n' + z870 + v2735 + ',\n';          nodeKeys.forEach(k => figma.currentPage.setPluginData(k,              figma.currentPage.getPluginData(k)                 .replace(set, not)                 .replace(not, set)));                  connKeys.forEach(k => figma.currentPage.setPluginData(k,              figma.currentPage.getPluginData(k)                 .replace(set, not)                 .replace(not, set)));     }); }    function n1570(pageIds, pageJson, currentPageId) {     for (let i = 0; i < pageIds.length; i++)     {         j1565(             d922(pageIds[i]),              pageJson[i]);     }      j1565('pageOrder',     pageIds.join(','));     j1565('currentPageId', currentPageId); }    function c1571(nodeIds, nodeJson) {     for (let i = 0; i < nodeIds.length; i++)     {         j1565(             b920(nodeIds[i]),             nodeJson[i]);             } }    async function z2736() {     let keys = await figma.clientStorage.keysAsync();       keys = keys.filter(k =>             k.length >= q878.length         && k.substring(0, q878.length) == q878);              j1544({         cmd:          'uiReturnGetAllLocalTemplateNames',         templateNames: keys     }) }    function j1572(z4029, template) {     j1563(         q878 + ' ' + z4029,         template); }    function t1573(nodeIds) {     figma.currentPage.loadAsync().then(() =>     {         const connKeys = figma.currentPage.getPluginDataKeys().filter(k => m1052(k));          for (const key of connKeys)         {             const parts = e1055(key).split(' ');              if (   nodeIds.includes(parts[0])                 || nodeIds.includes(parts[2]))                 q1566(key);         }     }); }    function r1574(nodeIds) {     figma.currentPage.loadAsync().then(() =>     {         t1573(nodeIds);          const nodeKeys = figma.currentPage.getPluginDataKeys().filter(             k => v1051(k)             && nodeIds.includes(z1054(k)));          nodeKeys.forEach(k => q1566(k));     }); }    function i1575() {     figma.currentPage.loadAsync().then(() =>     {         const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => v1051(k));         const connKeys = figma.currentPage.getPluginDataKeys().filter(k => m1052(k));          for (const key of nodeKeys) q1566(key);         for (const key of connKeys) q1566(key);     }); }    async function b1576(p4007) {     await s1577(p4007);           n1578(p4007); }    async function s1577(p4007) {     await figma.currentPage.loadAsync();      figma.currentPage.getPluginDataKeys()         .filter (k => v1051(k))         .forEach(async k => await logSavedNode(k, p4007)); }    function n1578(p4007) {     figma.currentPage.loadAsync().then(() =>     {         const connKeys = figma.currentPage.getPluginDataKeys()             .filter(k => m1052(k));                      connKeys.sort((key1, key2) =>          {             const p1 = e1055(key1).split(' ');             const p2 = e1055(key2).split(' ');              if (p1[2] != p2[2]) return p1[2] < p2[2] ? -1 : 1;             if (p1[3] != p2[3]) return parseInt(p1[3]) - parseInt(p2[3]);                          if (p1[2] == p2[0]) return -1;             if (p2[2] == p1[0]) return  1;              return 0;         });          connKeys.forEach(k => u2122(JSON.parse(figma.currentPage.getPluginData(k)), p4007));     }); }    function n1579(p4007) {     figma.currentPage.loadAsync().then(() =>     {         const connKeys = figma.currentPage.getPluginDataKeys()             .filter(k => l1050(k));                      connKeys.forEach(k =>              console.log(                 '%c'+k,                  'background: #fff; color: ' + (p4007 ? 'black' : 'white')));          const pageOrder = figma.currentPage.getPluginData('pageOrder');                      console.log(             '%c'+pageOrder,              'background: #fff; color: ' + (p4007 ? 'black' : 'white'));     }); }    function z1580(p4007) {     figma.currentPage.loadAsync().then(() =>     {         const connKeys = figma.currentPage.getPluginDataKeys()             .filter(k => l1050(k));                      connKeys.forEach(k =>              console.log(                 '%c'+figma.currentPage.getPluginData(k),                  'background: #fff; color: ' + (p4007 ? 'black' : 'white')));          const pageOrder = figma.currentPage.getPluginData('pageOrder');                      console.log(             '%c'+pageOrder,              'background: #fff; color: ' + (p4007 ? 'black' : 'white'));     }); }    function o1581(p4007) {     figma.currentPage.loadAsync().then(() =>     {         const connKeys = figma.currentPage.getPluginDataKeys()             .filter(k => m1052(k));                      connKeys.forEach(k =>              console.log(                 '%c'+k,                  'background: #dff; color: ' + (p4007 ? 'black' : 'white')));     }); }    function w1582(p4007) {     figma.clientStorage.keysAsync().then(keys =>         keys.forEach(k =>              figma.clientStorage.getAsync(k).then(val => console.log(k + ': ' + val)))); }    async function v1583(key, spec) {     let result = null;       switch (key)     {         case 'getVariableData':             result = await f1619(spec);             break;          case 'getPaidStatus':             result = figma.payments.status.type;             break;          case 'figSubscribe':         {             await figma.payments.initiateCheckoutAsync({interstitial: 'PAID_FEATURE'});             result = figma.payments.status.type;             break;         }     }           j1544(     {         cmd:  'returnFigGetValue',         value: result     }); }    function e1584(varIds) {     f1619(varIds).then(values =>     {         j1544(         {             cmd:   'uiReturnFigGetVariableUpdates',             values: values         });     }); }    async function p1585(pageId) {     q1566(j932(pageId));      const pageOrder = (await v1564('pageOrder')).split(',');     k945(pageOrder, id => id == pageId);     j1565('pageOrder', pageOrder.join(',')); }    function v1586() {     figma.currentPage.loadAsync().then(() =>     {         const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => l1050(k));         pageKeys.forEach(k => q1566(k));          q1566('pageOrder');     }); }    function v1587(key, json) {     j1565(key, json);         }    function o1588(_keys, _json) {     const keys = JSON.parse(_keys);     const json = JSON.parse(_json);      for (let i = 0; i < keys.length; i++)         j1565(keys[i], json[i]); }    function t1589(_curKeys, _newKeys, _json) {     const curKeys = JSON.parse(_curKeys);     const newKeys = JSON.parse(_newKeys);     const json    = JSON.parse(_json);      for (let i = 0; i < curKeys.length; i++)     {         q1566(curKeys[i]);         j1565(newKeys[i], json[i]);     } }    function b1590(key) {     q1566(key);         }    function u1591() {     figma.currentPage.loadAsync().then(() =>     {         const connKeys = figma.currentPage.getPluginDataKeys().filter(k => m1052(k));         connKeys.forEach(k => q1566(k));     }); }    function e1592(nodeId) {     figma.currentPage.loadAsync().then(() =>     {         const connKeys = figma.currentPage.getPluginDataKeys().filter(k => m1052(k));          for (const key of connKeys)         {             const parts = key.split(' ');              if (parts[4] == nodeId)                 q1566(key);                 }     }); }    function x1593(nodeId) {     figma.currentPage.loadAsync().then(() =>     {         const connKeys = figma.currentPage.getPluginDataKeys().filter(k => m1052(k));          for (const key of connKeys)         {             const parts = key.split(' ');              if (parts[1] == nodeId)                 q1566(key);                 }     }); }    function b1594() {     figma.getLocalPaintStylesAsync().then(y1598 =>     {         for (const style of y1598)         {             style.setPluginData('type',     '');             style.setPluginData('nodeId',   '');             style.setPluginData('existing', '');         }     }); }    async function figSaveSnapshot(index, objectIds) {     const objects = await figGetObjectsFromIds(objectIds);     const group   = figma.group(objects, figma.currentPage);       const settings: ExportSettingsImage = { format: 'PNG' };      const icon = await group.exportAsync(settings);       figma.ungroup(group);       j1544(     {         cmd:       'uiReturnFigSaveSnapshot',         index:      index,         iconWidth:  group.width,         iconHeight: group.height,         icon:       icon     }); }
+
+function hardZero(x, eps = 0.000000001) 
+{ 
+    return Math.abs(x) < eps ? 0 : x;
+}
 
 
-var b2737 = null; var v4030 = () => b2737 = null;  var v2738 = 'normal';     function t1610(clientPosition) {                                            j1544({             cmd:           'uiReturnFigGetMousePosition',             position:       {x: 0, y: 0},             clientPosition: clientPosition,             viewportZoom:   figma.viewport.zoom,             viewportRect:   figma.viewport.bounds });           }    function v1611(x, y, width, height) {     return;                                                                                                                                                                     }    function g1612(dock, rect, bounds) {     switch (dock)     {         case 'normal':                                                                    break;                      case 'maximize':             rect.x      = bounds.x;             rect.y      = bounds.y;             rect.width  = bounds.width;             rect.height = bounds.height;                     break;          case 'top':                   rect.x      = bounds.x;             rect.y      = bounds.y;             rect.width  = bounds.width;             break;          case 'left':                  rect.x      = bounds.x;             rect.y      = bounds.y;             rect.height = bounds.height;                     break;          case 'right':                 rect.x      = bounds.x + bounds.width - rect.width;             rect.y      = bounds.y;             rect.height = bounds.height;                     break;          case 'bottom':                rect.x      = bounds.x;             rect.y      = bounds.y + bounds.height - rect.height;             rect.width  = bounds.width;             break;     } }                function p1613(width, height) {     (async function()     {                                         width  = Math.floor(Math.max(0, width ));         height = Math.floor(Math.max(0, height));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             figma.ui.resize(width, height);           await figma.currentPage.loadAsync();          figma.currentPage.setPluginData(figma.currentUser.id + ',windowWidth',  width .toString());         figma.currentPage.setPluginData(figma.currentUser.id + ',windowHeight', height.toString());                                                                    j1544(         {             cmd:   'uiReturnFigResizeWindow',             width:  width,             height: height         });     })(); }    async function z2739(dock)  {     if (   dock       != 'normal'         && v2738 == 'normal')     {         figma.clientStorage.setAsync('normalWindowX',      await figma.clientStorage.getAsync('normalWindowX'     ));         figma.clientStorage.setAsync('normalWindowY',      await figma.clientStorage.getAsync('normalWindowY'     ));         figma.clientStorage.setAsync('normalWindowWidth',  await figma.clientStorage.getAsync('normalWindowWidth' ));         figma.clientStorage.setAsync('normalWindowHeight', await figma.clientStorage.getAsync('normalWindowHeight'));     }       v2738 = dock;      figma.clientStorage.setAsync('windowDock', dock);      p1613(         await figma.clientStorage.getAsync('windowWidth' ),         await figma.clientStorage.getAsync('windowHeight')); }    function g1614(msg) {     q1615(         msg.text,          msg.prefix,          msg.delay,          msg.error,          msg.i1616,         msg.d1617); }    function q1615(text, prefix = 'Generator ', delay = 400, error = false, i1616 = '', d1617 = NULL) {     const options = {         timeout:   delay,         error:     error,         onDequeue: v4030     };       if (i1616 != '')     {         options['button'] = {text: i1616};          if (d1617.substring(0, 'removeConnection'.length) == 'removeConnection')         {             options['button']['action'] = () => b1590(d1617.split(',')[1]);         }         else         {             switch (d1617)             {                 case 'hideClearUndoWarning':                     options['button']['action'] = () => j1544({ cmd: 'uiHideClearUndoWarning' });                     break;             }         }     }       if (b2737)         b2737.cancel();       b2737 = figma.notify(prefix + text, options); }    async function g2740(key, params = null)  {     return await d2741(key, params); }    async function d2741(key, params = null)  {     return new Promise((resolve, reject) =>      {         const timeout = 60000;           j1544(         {             cmd: 'uiGetValueForFigma',             key:  key,             ...(params || {})         });          const b2742 = setTimeout(() =>              reject(new Error('Timeout: Result not received by Figma within the specified time')),             timeout);          function u4031(msg)          {             msg = JSON.parse(msg);              if (msg.cmd === 'returnUiGetValueForFigma')              {                 clearTimeout(b2742);                  resolve(                 {                      key:   msg.key,                      value: msg.value                 });                  figma.ui.off('message', u4031);             }         }          figma.ui.on('message', u4031);     }); }
+
+function nozero(x, eps = 0.000000001) 
+{ 
+    return x != 0 
+         ? x 
+         : (x < 0 ? -eps : eps);
+}
 
 
-var w2743   = []; var i2744   = [];  var  w2745 = 0; var  i2746  = 0;   function u1545(v111) {     return (v111[p1403] === 2 ? '' : k874)          + (r2800 ? v111[n1397] : v111[l1399]); }    async function f1546(v1530, addObject = null, addProps = true, transform = true) {     if (!u1548(v1530))         return null;       let p1531;      switch (v1530[e1395])     {         case u1219:      p1531 =       z2714         (v1530, addProps, transform);  break;         case m1222:           p1531 =       j2793         (v1530, addProps, transform);  break;         case p1225:        p1531 =       o2789      (v1530, addProps, transform);  break;         case h1237:        p1531 =       w2710      (v1530, addProps, transform);  break;         case j1240:           p1531 =       l2717         (v1530, addProps, transform);  break;         case k1243:     p1531 =       e2720         (v1530, addProps, transform);  break;         case t1246:          p1531 =       s2696        (v1530);                       break;         case g1250:    p1531 =       b2748   (v1530, addProps, transform);  break;         case h1262: p1531 =       l2749(v1530, addProps, transform);  break;         case c1286:  p1531 = await r2750 (v1530, addProps, transform);  break;         case m1265:    p1531 = await g2751   (v1530);                       break;         case y1268:          p1531 = await f2752        (v1530, addProps, transform);  break;     }        if (    addObject         &&  p1531 != undefined         &&  p1531 != null         && !p1531.removed)     {         p1531.name = u1545(v1530);          x952(                v1530[e1395] == m1265              || !!p1531,              'no Figma object created');           if (   p1531 != undefined             && p1531 != null)         {             p1531.setPluginData('retain', v1530[p1403].toString());              if (v1530[p1403] < 2)             {                 p1531.setPluginData('userId',    figma.currentUser.id);                 p1531.setPluginData('sessionId', figma.currentUser.sessionId.toString());                 p1531.setPluginData('type',      v1530[e1395     ]);                 p1531.setPluginData('nodeId',    v1530[r1396  ]);                 p1531.setPluginData('objectId',  v1530[n1397]);                 p1531.setPluginData('isCenter',  l937(v1530[b1418]));                                   if (v1530[e1395] == t1246)                     e2766.push(p1531);                              if (v1530[t1417])                     e1561(p1531);             }              addObject(p1531);         }     }           if (!v1530.counted)     {         i2746++;         v1530.counted = true;     }      return p1531; }    async function r1547(p1531, v1530, addProps, transform) {     if (  !u1548(v1530)         || p1531 == undefined         || p1531 == null         || p1531.removed)         return;               p1531.name = u1545(v1530);          p1531.setPluginData('retain', v1530[p1403].toString());       switch (v1530[e1395])     {         case u1219:      q2715         (p1531, v1530, addProps, transform);  break;         case m1222:           e2794         (p1531, v1530, addProps, transform);  break;         case p1225:        l2790      (p1531, v1530, addProps, transform);  break;         case h1237:        h2711      (p1531, v1530, addProps, transform);  break;         case j1240:           n2718         (p1531, v1530, addProps, transform);  break;         case k1243:     p2721         (p1531, v1530, addProps, transform);  break;         case t1246:          b2753        (p1531, v1530);                       break;         case g1250:    w2754   (p1531, v1530, addProps, transform);  break;         case h1262: r2755(p1531, v1530, addProps, transform);  break;         case c1286:  k2756      (p1531, v1530, addProps, transform);  break;         case m1265:    g2757   (p1531, v1530);                       break;         case y1268:          w2758        (p1531, v1530, addProps, transform);  break;     }       if (    p1531 != undefined         &&  p1531 != null         && !p1531.removed)     {         if (p1531.parent == figma.currentPage)             await figma.currentPage.loadAsync();          p1531.parent.appendChild(p1531);          if (v1530[t1417])             e1561(p1531);     }       if (!v1530.counted)     {         i2746++;         v1530.counted = true;     } }    async function v2733(m2759, v2760, p2761, j2068 = -1, nodeIds = [], h2762 = false, s2763 = false, k270 = false, addProps = true, transform = true) {     let h2764           = NULL;     let y2765          = null;              let abort               = false;      const u3643     = [];     let   b2747 = 0;       w2743.push(...nodeIds);       if (j2068 > -1)         w2745 = j2068;       for (const v1530 of v2760)     {         i2744.push(v1530);           if (v1530[r1396] != h2764)         {             h2764  = v1530[r1396];                          y2765 = p2730.find(a => a.nodeId == v1530[r1396]);              if (!y2765)             {                 p2730.push(y2765 =                  {                     nodeId:  v1530[r1396],                      objects: []                 });             }         }           const addObject = p1531 =>         {             if (    m2759 != undefined                 &&  m2759 != null                 && !m2759.removed)                  m2759.appendChild(p1531);             else                 y2765.objects.push(p1531);         };           let objects =                 m2759 != undefined             &&  m2759 != null             && !m2759.removed             ? m2759.children             : y2765.objects;          let p1531 = objects.find(o =>                 o.removed             ||    o.getPluginData('userId'  ) == figma.currentUser.id                && o.getPluginData('objectId') == v1530[n1397]);           if (   p1531 != undefined             && p1531 != null             && p1531.removed)         {             n938(objects, p1531);                      if (e2766.includes(p1531))                 j943(e2766, p1531);              if (a2782.includes(p1531))                 j943(a2782, p1531);         }           if (   p1531 == undefined             || p1531 == null             || p1531.removed)          {             const newObj = await f1546(v1530, addObject, addProps, transform);             u3643.push(newObj);         }          else if (  p1531 != undefined                &&  p1531 != null                && !p1531.removed                &&  p1531.getPluginData('type') == v1530[e1395].toString())          {             await r1547(p1531, v1530, addProps, transform);             if (    p1531 != undefined                 &&  p1531 != null                 && !p1531.removed)                  u3643.push(p1531);         }              else          {             p1531.remove();              if (e2766.includes(p1531))                 j943(e2766, p1531);              if (a2782.includes(p1531))                 j943(a2782, p1531);              await f1546(v1530, addObject, addProps, transform);         }           b2747++;                   if (b2747 >= p2761)         {             const result = await g2740(                 'returnObjectUpdate',                  {                      w2745: w2745,                     i2746:  i2746                  }                 ) as { key: string, value: boolean };              abort = result.value;              b2747 = 0;              if (abort) break;         }     }                 if (    m2759 != undefined         &&  m2759 != null         && !m2759.removed)     {         for (const p1531 of m2759.children)         {             if (      p1531 != undefined                    && p1531 != null                    && p1531.removed                 || !v2760.find(o =>                             o[n1397] == p1531.getPluginData('objectId')                         && p1531.getPluginData('userId') == figma.currentUser.id))                                          p1531.remove();         }     }                 for (const point of e2766)     {         if (point.parent == figma.currentPage)             await figma.currentPage.loadAsync();                  if (    point != undefined             &&  point != null             && !point.removed             && !point.parent.removed)             point.parent.appendChild(point);     }       if (    s2763         && !abort)     {                   r1527(             w2743,              i2744);          w2743 = [];         i2744 = [];                   if (   k270             && u3643.length > 0)         {             figma.viewport.scrollAndZoomIntoView(u3643);              const bounds = f1551(u3643);                              figma.viewport.zoom = Math.min(                 figma.viewport.bounds.width  * figma.viewport.zoom / bounds.width  - 0.05,                 figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);         }     }       await g2740(         'returnObjectUpdate',          {              w2745: w2745,             i2746:  i2746          }); }    function u1548(v1530) {     switch (v1530[e1395])     {         case u1219:      return y2713         (v1530);         case m1222:           return a2775         (v1530);         case p1225:        return n2776      (v1530);         case h1237:        return t4027      (v1530);         case j1240:           return g2716         (v1530);         case k1243:     return m2719         (v1530);         case t1246:          return o4026        (v1530);         case g1250:    return m2777   (v1530);         case h1262: return x2778(v1530);         case c1286:  return i2779      (v1530);         case m1265:    return t2780   (v1530);         case y1268:          return v2781        (v1530);     } }    async function p1549(v1530) {     (async () =>     {         const p1531 = await f1546(v1530);                  const width  = p1531.width;         const height = p1531.height;          p1531.remove();           j1544(         {             cmd: 'uiForwardToGenerator',             msg:              {                 cmd:     'returnFigGetObjectSize',                 objectId: v1530[n1397],                 width:    width,                 height:   height             }         });     })(); }    function g1550(p1531) {     p1531.setPluginData('type',      '');     p1531.setPluginData('nodeId',    '');     p1531.setPluginData('userId',    '');     p1531.setPluginData('sessionId', '');     p1531.setPluginData('objectId',  '');     p1531.setPluginData('isCenter',  '');     p1531.setPluginData('retain',    ''); }    function f1551(objects) {     const bounds =      {          left:   0,          top:    0,          right:  0,          bottom: 0      };      for (const v111 of objects)     {         if (v111.x < bounds.left                || bounds.left == bounds.right ) bounds.left   = v111.x;         if (v111.y < bounds.top                 || bounds.top  == bounds.bottom) bounds.top    = v111.y;         if (v111.x + v111.width  > bounds.right  || bounds.left == bounds.right ) bounds.right  = v111.x + v111.width;         if (v111.y + v111.height > bounds.bottom || bounds.top  == bounds.bottom) bounds.bottom = v111.y + v111.height;     }      return {         x:      bounds.left,         y:      bounds.top,         width:  bounds.right  - bounds.left,         height: bounds.bottom - bounds.top }; }    async function figExport(objectIds, scale, format, suffix) {     await figma.currentPage.loadAsync();           for (const objId of objectIds)     {         let p1531 = figma.currentPage.children.find(o =>                !o.removed             && o.getPluginData('userId'  ) == figma.currentUser.id             && o.getPluginData('objectId') == objId);              if (!p1531) continue;           const settings: ExportSettingsImage =          {             constraint:              {                 type: 'SCALE',                 value: scale             },             format: format == 0 ? 'PNG' : 'JPG',             suffix: suffix         };           await p1531.exportAsync(settings);     } }
+
+function nozerov(v, eps = 0.000000001) 
+{ 
+    return point(
+        nozero(v.x, eps), 
+        nozero(v.y, eps)); 
+}
 
 
-const a2782 = []; const l2783  = [];    function u1552(y1553, c1554) {     const effects = [];       for (const effect of y1553)     {         const type = effect[0];          switch (type)         {             case 'DROP_SHADOW':             {                 const color = {                     r: Math.min(Math.max(0, effect[1]), 1),                      g: Math.min(Math.max(0, effect[2]), 1),                      b: Math.min(Math.max(0, effect[3]), 1),                     a: Math.min(Math.max(0, effect[4]), 1) };                  const offset = {                     x: effect[5],                     y: effect[6] };                  const radius  = effect[ 7];                 const spread  = effect[ 8];                 const blend   = effect[ 9];                 const behind  = effect[10];                 const visible = effect[11];                     if (   !isNaN(color.r)                     && !isNaN(color.g)                     && !isNaN(color.b)                     && !isNaN(color.a)                     && !isNaN(offset.x)                     && !isNaN(offset.y)                     && !isNaN(radius))                 {                     effects.push(                     {                         type:                 type,                          color:                color,                         offset:               offset,                         radius:               radius,                         visible:              visible,                         blendMode:            blend,                         showShadowBehindNode: behind,                         boundVariables:       {}                     });                      if (    c1554                         && !isNaN(spread))                         effects[effects.length-1]['spread'] = spread;                 }                  break;             }              case 'INNER_SHADOW':             {                 const color = {                     r: Math.min(Math.max(0, effect[1]), 1),                      g: Math.min(Math.max(0, effect[2]), 1),                      b: Math.min(Math.max(0, effect[3]), 1),                     a: Math.min(Math.max(0, effect[4]), 1) };                  const offset = {                     x: effect[5],                     y: effect[6] };                  const radius  = effect[ 7];                 const spread  = effect[ 8];                 const blend   = effect[ 9];                 const visible = effect[10];                     if (   !isNaN(color.r)                     && !isNaN(color.g)                     && !isNaN(color.b)                     && !isNaN(color.a)                     && !isNaN(offset.x)                     && !isNaN(offset.y)                     && !isNaN(radius)                     && !isNaN(spread))                 {                     effects.push(                     {                         type:           type,                          color:          color,                         offset:         offset,                         radius:         radius,                         spread:         spread,                         visible:        visible,                         blendMode:      blend,                         boundVariables: {}                     });                 }                  break;             }              case 'LAYER_BLUR':             {                 const radius  = effect[1];                 const visible = effect[2];                  if (!isNaN(radius))                 {                     effects.push(                     {                         type:           type,                          visible:        visible,                         radius:         Math.max(0, radius),                         boundVariables: {}                     });                 }                  break;             }              case 'BACKGROUND_BLUR':             {                 const radius  = effect[1];                 const visible = effect[2];                  if (!isNaN(radius))                 {                     effects.push(                     {                         type:           type,                          visible:        visible,                         radius:         Math.max(0, radius),                         boundVariables: {}                     });                 }                  break;             }         }     }       return effects; }    function b2703(p1531, v1530, phantom = true) {                        u1557(p1531, v1530);     n2704(p1531, v1530, phantom);     s2705  (p1531, v1530);           p1531.opacity   = v1530[x1419];     p1531.blendMode = v1530[h1420  ];       const maskType = v1530[z1421];      p1531.isMask = maskType > 0;      if (p1531.isMask)     {         switch (maskType)         {             case 1: p1531.maskType = 'ALPHA';     break;             case 2: p1531.maskType = 'VECTOR';    break;             case 3: p1531.maskType = 'LUMINANCE'; break;         }     }       if (   p1531.isMask         && p1531.fills  .length == 0         && p1531.strokes.length == 0)         p1531.fills =              [{                 type:      'SOLID',                  color:     {r:0, g:0, b:0},                 opacity:   1,                  blendMode: 'NORMAL'             }]; }    function s2705(p1531, v1530) {     if (   !!v1530[t1408]         &&  !isEmpty(v1530[t1408]))     {         p1531.fills = v956(v1530[t1408]);          if (a2782.includes(p1531))             j943(a2782, p1531);     }     else         p1531.fills = []; }    function n2704(p1531, v1530, phantom = true) {     if (    v1530[m1409] != null         && !isEmpty(v1530[m1409]))     {         o1556(             p1531,             v956(v1530[m1409]),             v1530[r1410],             v1530[h1411 ],             v1530[l1412  ],             v1530[z1413 ],             v1530[n1414   ],             r2706(v1530[h1415]));          if (v1530[t1417])             p1531.setPluginData('dashes', v1530[h1415]);           if (a2782.includes(p1531))             j943(a2782, p1531);          if (v1530[t1417])             n949(l2783, p1531);     }      else if ( isEmpty(v1530[t1408  ])           &&  isEmpty(v1530[m1409])           && !v1530[z1421]           &&  phantom)     {         g1559(p1531);         n949(a2782, p1531);     }          else         p1531.strokes = []; }    function r2706(u1555) {     u1555 = <string><unknown>u1555;          u1555 = z954(u1555, ',');     u1555 = h955  (u1555, ',');     u1555 = u1555.trim();      return u1555 == ''           ? []           : u1555.split(',').map(s => Math.max(0, parseFloat(s))); }    function d2707(u1555) {     u1555 = <string><unknown>u1555;          u1555 = z954(u1555, ',');     u1555 = h955  (u1555, ',');     u1555 = u1555.trim();      return u1555 == ''           ? []           : u1555.split(',').map(s => Math.max(0, parseFloat(s) / w2709)); }    function o1556(p1531, fills, weight, align, join, miterLimit, cap, dashes = []) {     p1531.strokes          = fills;          p1531.strokeWeight     = Math.max(0, weight);     p1531.strokeAlign      = align;     p1531.strokeJoin       = join;           const  miterAngle       = miterLimit/360*Tau;     const a2784       = 1 / Math.sin(miterAngle/2);          p1531.strokeMiterLimit = Math.min(Math.max(0, a2784), 16);      p1531.strokeCap        = cap;      p1531.dashPattern      = dashes; }    function u1557(p1531, v1530) {     if (  !!v1530[x1416]         && !isEmpty(v1530[x1416]))     {         const c1554 =                v1530[e1395] == u1219             || v1530[e1395] == p1225             || v1530[e1395] == y1268;          p1531.effects = u1552(v1530[x1416], c1554);     }     else         p1531.effects = []; }    function d1558() {     for (const v111 of a2782)     {         if (v111.removed)             j943(a2782, v111);         else             g1559(v111);     } }    function g1559(v111) {     figma.currentPage.loadAsync().then(() =>     {         const back = figma.currentPage.backgrounds.find(b => b.type == 'SOLID') as SolidPaint;                   let phantomColor;          if (back)         {             const l =                   back.color.r * 0.2126                 + back.color.g * 0.7152                  + back.color.b * 0.0722;                               phantomColor =                 l > 0.5                 ? {r: 0, g: 0, b: 0}                 : {r: 1, g: 1, b: 1};         }         else             phantomColor = {r: 1, g: 0, b: 1};           o1556(             v111,             [{ type:  'SOLID',                color:   phantomColor,               opacity: 0.5 }],             1 / w2709,             'CENTER',             'MITER',             1,             'NONE',             [ 1 / w2709,                2 / w2709 ]);     }); }    function f1560() {     for (const p1531 of l2783)     {         if (p1531.removed)             j943(l2783, p1531);         else             e1561(p1531);     } }    function e1561(p1531) {     p1531.strokeWeight = Math.max(0, 1.5 / w2709);       if (m923(p1531.getPluginData('isCenter')))     {         const path  = p1531.vectorPaths[0];         const parts = path.data.split(' ');                  let t = { x: parseFloat(parts[1]), y: parseFloat(parts[2]) };         let c = { x: parseFloat(parts[4]), y: parseFloat(parts[5]) };         let r = { x: parseFloat(parts[7]), y: parseFloat(parts[8]) };          const a = 2;         const b = 0.05;         const f = 1 - Math.pow(1 - Math.min(w2709, 1), a) / Math.pow(a, b);              t = f895(c, l897(a886(x900(t, c)), objectCenterSize/f));         r = f895(c, l897(a886(x900(r, c)), objectCenterSize/f));           parts[1] = t.x; parts[2] = t.y;         parts[4] = c.x; parts[5] = c.y;         parts[7] = r.x; parts[8] = r.y;          const i2785 =          {             windingRule: path.windingRule,             data:        parts.join(' ')         };          p1531.vectorPaths = [i2785];     }       const dashes = p1531.getPluginData('dashes');      if (dashes != '')         p1531.dashPattern = d2707(dashes);         }
+
+function equal(a, b, eps = 0.000000001)
+{
+    return Math.abs(b - a) < eps;
+}
 
 
-function w1595(nodeId, px, py) {     figma.getLocalPaintStylesAsync().then(_styles =>     {         const styles = new Array();          for (const s168 of _styles)         {             const _nodeId   = s168.getPluginData('nodeId');             const _existing = s168.getPluginData('existing');              const existing = !!_existing;              const style = {                  id:       s168.id,                 nodeId:   _nodeId,                 name:     s168.name,                 existing: existing,                 paints:   new Array()             };                           let onlyPaint = true;              for (const b2787 of s168.paints)             {                 if (b2787.type == 'SOLID')                 {                     style.paints.push([                         b2787.color.r,                         b2787.color.g,                         b2787.color.b,                         b2787.opacity]);                 }                 else                 {                     onlyPaint = false;                     break;                 }             }               if (onlyPaint)                 styles.push(style);         }           j1544({             cmd:   'uiReturnFigGetAllLocalColorStyles',             nodeId: nodeId,             px:     px,             py:     py,             styles: JSON.stringify(styles)});     }); }    function u1596(nodeId, styleId) {     figma.getLocalPaintStylesAsync().then(y1598 =>     {         if (styleId != NULL) w1597(y1598, nodeId, styleId);         else                 z1599(y1598, nodeId);     }); }    function w1597(y1598, nodeId, styleId, clearExisting = true) {     const s2786 = c2732.find(a => a.nodeId == nodeId);          if (   s2786          && clearExisting)          z1599(y1598, nodeId);       const t1603 = y1598.find(s => s.id == styleId);     x952(!!t1603, 'figStyle should be found here');       t1603.setPluginData('type',     l1216);     t1603.setPluginData('nodeId',   nodeId);     t1603.setPluginData('existing', l937(true));       c2732.push({         nodeId:   nodeId,          existing: true,          styles:   [t1603]});       return t1603; }    function z1599(y1598, nodeId) {     const t1603 = y1598.find(s => s.getPluginData('nodeId') == nodeId);     x952(!!t1603, 'figStyle should be found here');      if (t1603)      {         t1603.setPluginData('type',     NULL);         t1603.setPluginData('nodeId',   NULL);         t1603.setPluginData('existing', NULL);          k945(c2732, a => a.nodeId == nodeId);     }      return t1603; }    function e1600(styles, b1604) {     const t1603 = figma.createPaintStyle();       t1603.setPluginData('type',     b1604[e1395   ]);     t1603.setPluginData('nodeId',   b1604[r1396]);           t1603.name = b1604[j1400];       setStylePaints(t1603, b1604);       styles.push(t1603);       j1544({         cmd:    'uiSetStyleId',         nodeId:  b1604[r1396],         styleId: t1603.id });           return t1603; }    function p1601(msg) {     let h2764 = NULL;     let s2786;       for (const b1604 of msg.styles)     {         if (b1604[r1396] != h2764)         {             h2764 = b1604[r1396];                          s2786 = c2732.find(a => a.nodeId == b1604[r1396]);              if (!s2786)              {                 s2786 = {                     nodeId:   b1604[r1396],                                           styles:   [] };                  c2732.push(s2786);             }         }         else             s2786 = null;           const t1603 = s2786.styles[0];                           figma.getLocalPaintStylesAsync().then(y1598 =>         {             const localStyle  = y1598.find(s => s.getPluginData('nodeId') == b1604[r1396]);               if (    isValid(t1603)                 && !isValid(localStyle))              {                 n938(s2786.styles, t1603);             }               const existing =                  isValid(t1603  )                 && isValid(localStyle)                 && t1603.getPluginData('existing');               if (   !isValid(t1603  )                 || !isValid(localStyle))              {                 if (!existing)                 {                     o1534 = true;                      u1596(                         b1604[r1396 ],                         b1604[u1398]);                                      }             }             else if (isValid(t1603)                  && t1603.getPluginData('type') == b1604[e1395])              {                 o1534 = true;                 j1602(localStyle, b1604);             }                                                                                                                              });     } }    function j1602(t1603, b1604) {     setStylePaints(t1603, b1604);      t1603.name = b1604[j1400]; }    function getStylePaints(stylePaints) {     const paints = new Array();      for (const b2787 of stylePaints)     {         const fill = b2787[1].split(' ');          switch (b2787[0])         {             case 'SOLID':                 paints.push(                 {                     type:  'SOLID',                      color: { r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1),                               g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1),                               b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1) },                     opacity: Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1)                 });                  break;         }     }      return paints; }    function setStylePaints(t1603, b1604) {     if (!isEmpty(b1604[f1402]))         t1603.paints = getStylePaints(b1604[f1402]);     else         t1603.paints = []; } 
+
+function sqr (x) { return x*x;   };
+function cube(x) { return x*x*x; };
+ 
+
+function toInt(f) { return Math.floor(f) | 0; }
 
 
-function f1618(nodeId, px, py) {     figma.variables.getLocalVariablesAsync().then(async y2788 =>     {         const variables = new Array();           for (const _var of y2788)         {             try             {                 const collection = await figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);                  const variable =                  {                      id:             _var.id,                     resolvedType:   _var.resolvedType,                     name:           _var.name,                     collectionName: collection.name                 };                  variables.push(variable);             }             catch (ex)             {              }         }           figma.variables.getLocalVariableCollectionsAsync().then(async collections =>         {             j1544(             {                 cmd:         'uiReturnFigGetAllLocalVariables',                 nodeId:       nodeId,                 px:           px,                 py:           py,                 variables:    JSON.stringify(variables),                 nCollections: collections.length             });         });     }); }    async function f1619(varIds) {     const y2788 = await figma.variables.getLocalVariablesAsync();      const variables = varIds.map(id => y2788.find(v => v.id == id));     let   values    = [];       for (let i = 0; i < varIds.length; i++)     {         const variable = variables[i];                  const collection =              variable != undefined              ? (await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId))             : null;                               if (collection)         {             const vals = [];               for (const mode of collection.modes)             {                 let _var  = variable;                 let value = _var.valuesByMode[mode.modeId];                                  while (value && value.type === 'VARIABLE_ALIAS')                 {                     _var  = await figma.variables.getVariableByIdAsync(value.id);                     value = _var.valuesByMode[mode.modeId];                 }                  vals.push(value);             }               values.push(             {                 id:           varIds[i],                 name:         variable.name,                  resolvedType: variable.resolvedType,                 value:        vals[0]             });         }         else         {             values.push(             {                 id:           varIds[i],                  resolvedType: NULL,                  value:        null             });         }     }       return values; }    function o1620(nodeId, varId) {     figma.variables.getLocalVariablesAsync().then(y2788 =>     {         figLinkVariableAsync(y2788, nodeId, varId);     }); }    async function figUpdateVariableAsync(varId, value) {     figma.variables.getLocalVariablesAsync().then(async y2788 =>     {         let variable = y2788.find(v => v.id == varId);         if (!variable) return;           let collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);         let mode       = collection.modes[0];                             let curValue = variable.valuesByMode[mode.modeId];                  while (curValue             && curValue.hasOwnProperty('type')             && curValue['type'] === 'VARIABLE_ALIAS')         {             variable = await figma.variables.getVariableByIdAsync(curValue['id']);             curValue = variable.valuesByMode[mode.modeId];                          collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);             mode       = collection.modes[0];         }           if (value !== null)         {             if (variable.resolvedType == 'BOOLEAN')                 value = value != 0;             else                 variable.setValueForMode(mode.modeId, value);         }     }); }    async function figLinkVariableAsync(y2788, nodeId, varId) {     let variable = y2788.find(v => v.id == varId);     if (!variable) return null;       const [resolvedVar, values] = await figGetResolvedVariableValuesAsync(variable);       j1544(     {         cmd:         'uiReturnFigLinkNodeToVariable',         nodeId:       nodeId,         variableId:   resolvedVar ? resolvedVar.id           : NULL,         variableName: resolvedVar ? resolvedVar.name         : '',         resolvedType: resolvedVar ? resolvedVar.resolvedType : NULL,         values:       values     });       return resolvedVar; }    async function figGetResolvedVariableValuesAsync(variable) {     const values = [];           if (!variable)         return values;       const collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);                  for (const mode of collection.modes)     {         let value = variable.valuesByMode[mode.modeId];                  while (   value                && value['type'] === 'VARIABLE_ALIAS')         {             variable = await figma.variables.getVariableByIdAsync(value.id);             value    = variable.valuesByMode[mode.modeId];         }                  values.push(value);     }       return [variable, values]; }
+
+function nextPow2(x)
+{
+    x = toInt(x);
+
+    x--;
+
+    x |= x >>  1;
+    x |= x >>  2;
+    x |= x >>  4;
+    x |= x >>  8;
+    x |= x >> 16;
+    x |= x >> 32;
+
+    return ++x;
+}
 
 
-function e1605(tl, tr, bl) {     let vr = point(tr.x - tl.x, tr.y - tl.y);     let vb = point(bl.x - tl.x, bl.y - tl.y);       let sx = vr.x;     let sy = vb.y;      let kx = -vr.y;     let ky = -vb.x;          let dx = -tl.x;     let dy = -tl.y;       const _sx = kx/nozero(sx);     const _sy = ky/nozero(sy);      let b4208 = e889(         [[ 1, _sy, 0],          [_sx, 1,  0],          [ 0,  0,  1]],         a893(dx, dy));       b4208 = z891(b4208);       const a = v883(vr);      if (   a > Tau/4           && a < Tau*3/4)         b4208 = e889(b4208, a893(0, 0, 1, 1, Tau/2));              if (determinant(b4208) < 0)         b4208 = e889(b4208, a893(0, 0, -1, 1, 0));       return b4208; }    function w1606(p1531, tl, tr, bl)  {     const b4208 = e1605(tl, tr, bl);      p1531.relativeTransform =      [         b4208[0],         b4208[1]     ]; }    function a1607(p1531, v1530, setSize = true, noHeight = 0.01) {     if (   !v1530[t1404]         || !v1530[l1405]         || !v1530[w1406])         return;       const xp0 = v1530[t1404];     const xp1 = v1530[l1405];     const xp2 = v1530[w1406];           w1606(p1531, xp0, xp1, xp2);           if (setSize)     {         const scaleX = distv(xp0, xp1);         const scaleY = distv(xp0, xp2);              const height =             v1530[e1395] == k1243             ? v1530[z1439]             : v1530[d1426];              if (!p1531.removed)         {             p1531.resizeWithoutConstraints(                          Math.max(0.01, scaleX),                 height ? Math.max(0.01, scaleY) : noHeight);         }     } }     function g1608(t2701, m2702) {     if (t2701.removed)         return;       t2701.resizeWithoutConstraints(0.01, 0.01);       t2701.setPluginData('actualX', m2702[u1422].toString());     t2701.setPluginData('actualY', m2702[c1424].toString());       t2701.x        = m2702[u1422];     t2701.y        = m2702[c1424];      t2701.rotation = m2702[b1418] ? 45 : 0; }    function t1609(t2701) {     if (!t2701.removed)         t2701.resizeWithoutConstraints(0.01, 0.01); }
+
+function gcd(a, b)
+{
+    let temp;
+    while (1)
+    {
+        temp = a % b;
+
+        if (temp == 0)
+          return b;
+
+        a = b;
+        b = temp;
+    }
+}
 
 
-function i2779(genBool) {     return true; }    async function r2750(genBool, addProps, transform) {     let objects = [];      for (const v111 of genBool[w1453])         await f1546(v111, o => objects = [...objects, o], false);       await figma.currentPage.loadAsync();           let figBool = null;      if (!isEmpty(objects))     {         switch (genBool[d1454])         {             case 0: figBool = figma.union    (objects, figma.currentPage); break;             case 1: figBool = figma.subtract (objects, figma.currentPage); break;             case 2: figBool = figma.intersect(objects, figma.currentPage); break;             case 3: figBool = figma.exclude  (objects, figma.currentPage); break;         }     }       if (figBool)     {         figBool.expanded = false;         k2756(figBool, genBool, addProps, transform);     }       return figBool; }    async function k2756(figBool, genBool, addProps, transform)  {     if (genBool[w1453].length == 0)     {         figBool.remove();         return;     }           await v2733(         figBool,          genBool[w1453],          genBool[w1453].length,         -1,         [],          false,         false,         false,         false,         true);                       const hasProps =            genBool[t1408  ].length > 0         || genBool[m1409].length > 0         || genBool[x1416].length > 0;      b2703(figBool, genBool, !hasProps && addProps); }
+
+function distv(p1, p2)
+{
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+
+    return Math.sqrt(dx*dx + dy*dy);
+}
 
 
-function n2776(d2767) {     return d2767[u1422            ] != null && !isNaN(d2767[u1422            ])         && d2767[c1424            ] != null && !isNaN(d2767[c1424            ])         && d2767[n1425        ] != null && !isNaN(d2767[n1425        ])         && d2767[d1426       ] != null && !isNaN(d2767[d1426       ])         && d2767[s1428] != null && !isNaN(d2767[s1428])         && d2767[a1435] != null && !isNaN(d2767[a1435])         && d2767[u1441] != null && !isNaN(d2767[u1441])         && d2767[l1445] != null && !isNaN(d2767[l1445]); }    function o2789(d2767, addProps, transform) {     if (!n2776(d2767))         return null;               const s2768 = figma.createEllipse();      l2790(s2768, d2767, addProps, transform, true);           return s2768; }    function l2790(s2768, d2767, addProps, transform, isValid = false) {     if (   !isValid         && !n2776(d2767))         return;       t2791(s2768, d2767, transform);       if (e2766.includes(s2768))         n2698(s2768);     else          b2703(s2768, d2767, addProps); }    function t2791(s2768, d2767, transform) {     s2768.cornerRadius = d2767[s1428];      const start = d2767[a1435] /360*(Math.PI*2);     const sweep = d2767[u1441] /100*(Math.PI*2);      s2768.arcData =     {         startingAngle: start,         endingAngle:   start + sweep,         innerRadius:   Math.min(Math.max(0, d2767[l1445]/100), 1)     };      if (transform)         a1607(s2768, d2767); }
+
+function anglev(v)
+{
+    let angle = Math.atan2(v.y, v.x);
+    if (angle < 0) angle += Tau;
+
+    return angle;
+}
 
 
-function v2781(d2769) {     return d2769[u1422          ] != null && !isNaN(d2769[u1422          ])         && d2769[c1424          ] != null && !isNaN(d2769[c1424          ])         && d2769[n1425      ] != null && !isNaN(d2769[n1425      ])         && d2769[d1426     ] != null && !isNaN(d2769[d1426     ])         && d2769[t1434] != null && !isNaN(d2769[t1434])         && d2769[k1455 ] != null && !isNaN(d2769[k1455 ]); }    async function f2752(d2769, addProps, transform) {     if (!v2781(d2769))         return null;                       const q2770 = figma.createFrame();           if (q2770)     {         q2770.expanded = false;         e2792(q2770, d2769, addProps, transform);           let objects = [];          for (const v111 of d2769[v1440])             await f1546(v111, o => objects = [...objects, o]);          for (const v111 of objects)             q2770.appendChild(v111);     }       return q2770; }    function w2758(q2770, d2769, addProps, transform) {     e2792(q2770, d2769, addProps, transform);      v2733(         q2770,          d2769[v1440],          d2769[v1440].length); }    function e2792(q2770, d2769, addProps, transform) {     q2770.cornerRadius = d2769[t1434];     q2770.clipsContent = d2769[k1455 ] > 0;        if (transform)         a1607(q2770, d2769);          b2703(q2770, d2769, addProps && d2769[v1440].length == 0);       figUpdateStrokeSides(q2770, d2769); }
+
+function anglev2(v1, v2)
+{
+    return anglev2_(v1.x, v1.y, v2.x, v2.y);
+}
 
 
-function t2780(e2771) {     return true; }    async function g2751(e2771) {     let objects = [];      for (const v111 of e2771[c1423])         await f1546(v111, o => objects = [...objects, o]);       await figma.currentPage.loadAsync();          const q2772 =          !isEmpty(objects)         ? figma.group(objects, figma.currentPage)         : null;       if (q2772)     {         q2772.expanded = false;         g2757(q2772, e2771);     }       return q2772; }    function g2757(q2772, e2771) {     if (e2771[c1423].length == 0)     {         q2772.remove();         return;     }       v2733(         q2772,          e2771[c1423],         e2771[c1423].length);               u1557(q2772, e2771); } 
+
+function anglev2_(x1, y1, x2, y2)
+{
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+
+    let angle = Math.atan2(dy, dx);
+    if (angle < 0) angle += Tau;
+
+    return angle;
+}
 
 
-function a2775(n2773) {     return n2773[u1422    ] != null && !isNaN(n2773[u1422    ])         && n2773[c1424    ] != null && !isNaN(n2773[c1424    ])         && n2773[n1425] != null && !isNaN(n2773[n1425]); }    function j2793(n2773, addProps, transform) {     if (!a2775(n2773))         return null;           const f2774 = figma.createLine();      e2794(f2774, n2773, addProps, transform, true);          return f2774; }    function e2794(f2774, n2773, addProps, transform, isValid = false) {     if (   !isValid         && !a2775(n2773))         return;      if (transform)         a1607(f2774, n2773, true, 0);          b2703(f2774, n2773, addProps); } 
+
+function lengthv(v)
+{
+    return Math.sqrt(v.x*v.x + v.y*v.y);
+}
 
 
-var e2766 = [];    function o4026(m2702) {     return m2702[u1422] != null && !isNaN(m2702[u1422])         && m2702[c1424] != null && !isNaN(m2702[c1424]); }    function s2696(m2702) {         const t2701 =          m2702[b1418]         ? figma.createRectangle()         : figma.createEllipse();              if (!o4026(m2702))         return t2701;                  if (e2766.includes(t2701))         g2700(t2701, m2702);     else         b2753(t2701, m2702);           return t2701; }    function b2753(t2701, m2702) {     g1608(t2701, m2702);     b2699(t2701); }    function s2697() {     j1544(     {         cmd: 'uiUpdateZoom',          zoom: figma.viewport.zoom      });          for (const point of e2766)         n2698(point); }    function n2698(t2701) {     t1609(t2701);     b2699(t2701); }    function g2700(t2701, m2702) {     g1608(t2701, m2702);     b2699(t2701); }    function b2699(t2701) {     if (t2701.removed)          return;      figma.currentPage.loadAsync().then(() =>     {         const isCenter   = m923(t2701.getPluginData('isCenter'));         const k2708 = figma.currentPage.selection.includes(t2701);          const color =             isCenter             ? [0xf2, 0x48, 0x22]             : k2708             ? [ 12, 140, 233]             : [255, 255, 255];          const border =             isCenter             ? [255, 255, 255]             : k2708             ? [255, 255, 255]             : [ 12, 140, 233];           t2701.fills = v956([['SOLID', color[0], color[1], color[2], 100]]);           const effects = [];                  effects.push(...u1552([['DROP_SHADOW', border[0]/255, border[1]/255, border[2]/255,  1, 0, 0, 0, (isCenter ? 3 : k2708 ? 5 : 3.6)/w2709, 'NORMAL', true, true]], true));         effects.push(...u1552([['DROP_SHADOW', color[0]/255, color[1]/255, color[2]/255, 1, 0, 0, 0, (k2708 ? 4 : 2.4)/w2709, 'NORMAL', true, true]], true));           t2701.effects = effects;     }); } 
+
+function lengthv_(x, y)
+{
+    return Math.sqrt(x*x + y*y);
+}
 
 
-function t4027(genPoly) {     return genPoly[u1422           ] != null && !isNaN(genPoly[u1422           ])         && genPoly[c1424           ] != null && !isNaN(genPoly[c1424           ])         && genPoly[n1425       ] != null && !isNaN(genPoly[n1425       ])         && genPoly[d1426      ] != null && !isNaN(genPoly[d1426      ])         && genPoly[n1431  ] != null && !isNaN(genPoly[n1431  ])         && genPoly[c1437] != null && !isNaN(genPoly[c1437]); }    function w2710(genPoly, addProps, transform) {     if (!t4027(genPoly))         return null;               const figPoly = figma.createPolygon();      h2711(figPoly, genPoly, addProps, transform, true);      return figPoly; }    function h2711(figPoly, genPoly, addProps, transform, isValid = false) {     if (   !isValid         && !t4027(genPoly))         return;               figPoly.cornerRadius = genPoly[n1431];     figPoly.pointCount   = Math.max(3, genPoly[c1437]);       if (transform)         a1607(figPoly, genPoly);          b2703(figPoly, genPoly, addProps); } 
+
+function unitv(v)
+{
+    return point(
+        v.x == 0 ? 0 : v.x / lengthv(v),
+        v.y == 0 ? 0 : v.y / lengthv(v));
+}
 
 
-function y2713(y2712) {     return y2712[u1422         ] != null && !isNaN(y2712[u1422         ])         && y2712[c1424         ] != null && !isNaN(y2712[c1424         ])         && y2712[n1425     ] != null && !isNaN(y2712[n1425     ])         && y2712[d1426    ] != null && !isNaN(y2712[d1426    ])         && y2712[s1427] != null && !isNaN(y2712[s1427]); }    function z2714(y2712, addProps, transform) {     if (!y2713(y2712))         return null;       const figRect = figma.createRectangle();      q2715(figRect, y2712, addProps, transform, true);      return figRect; }    function q2715(figRect, y2712, addProps, transform, isValid = false) {     if (   !isValid         && !y2713(y2712))         return;       const foundCorners = y2712[x1416].findIndex(e => e[0] == 'ROUND_CORNERS');      if (foundCorners > -1)     {         const corners = y2712[x1416][foundCorners];          figRect.topLeftRadius     = corners[1];         figRect.topRightRadius    = corners[2];         figRect.bottomLeftRadius  = corners[3];         figRect.bottomRightRadius = corners[4];     }     else         figRect.cornerRadius = y2712[s1427];       if (transform)         a1607(figRect, y2712);          b2703(figRect, y2712, addProps);       figUpdateStrokeSides(figRect, y2712); }    function figUpdateStrokeSides(p1531, v1530) {     const foundSides = v1530[x1416].findIndex(e => e[0] == 'STROKE_SIDES');     if (foundSides < 0) return;           const sides = v1530[x1416][foundSides];      p1531.strokeWeight       = 0;     p1531.strokeTopWeight    = sides[1];     p1531.strokeLeftWeight   = sides[2];     p1531.strokeRightWeight  = sides[3];     p1531.strokeBottomWeight = sides[4]; }
+
+function dotv(v1, v2)
+{
+    return v1.x * v2.x + v1.y * v2.y;
+}
 
 
-function g2716(x2726) {     return x2726[u1422          ] != null && !isNaN(x2726[u1422          ])         && x2726[c1424          ] != null && !isNaN(x2726[c1424          ])         && x2726[n1425      ] != null && !isNaN(x2726[n1425      ])         && x2726[d1426     ] != null && !isNaN(x2726[d1426     ])         && x2726[y1432 ] != null && !isNaN(x2726[y1432 ])         && x2726[r1438] != null && !isNaN(x2726[r1438])         && x2726[i1443] != null && !isNaN(x2726[i1443]); }    function l2717(x2726, addProps, transform) {     if (!g2716(x2726))         return null;               const c2727 = figma.createStar();      n2718(c2727, x2726, addProps, transform, true);      return c2727; }    function n2718(c2727, x2726, addProps, transform, isValid = false) {     if (   !isValid         && !g2716(x2726))         return;       c2727.cornerRadius = x2726[y1432 ];     c2727.pointCount   = x2726[r1438];     c2727.innerRadius  = Math.min(Math.max(0, x2726[i1443] / 100), 1);       if (transform)         a1607(c2727, x2726);          b2703(c2727, x2726, addProps); } 
+
+function angleDiff(a1, a2)
+{
+    let diff = a2 - a1;
+
+    while (diff <= -Tau/2) diff += Tau;
+    while (diff >   Tau/2) diff -= Tau;
+
+    return diff; // |-Tau/2, Tau/2]
+}
 
 
-const e4269 = [];    function m2719(f2723) {     return f2723[h1444     ] != null         && f2723[u1422        ] != null && !isNaN(f2723[u1422     ])         && f2723[c1424        ] != null && !isNaN(f2723[c1424     ])         && f2723[n1425    ] != null && !isNaN(f2723[n1425 ])         && f2723[d1426   ] != null && !isNaN(f2723[d1426])         && f2723[x1446     ] != null && f2723[x1446] != NULL         && f2723[x1447] != null && !isNaN(f2723[x1447]); }    function e2720(f2723, addProps, transform) {     if (!m2719(f2723))         return null;           const r2795 = figma.createText();      p2721(r2795, f2723, addProps, transform, true);           return r2795; }    function p2721(r2795, f2723, addProps, transform, isValid = false) {     if (   !isValid         && !m2719(f2723))         return null;       const fontName =      {          family: f2723[x1446      ],          style:  f2723[y1448]     };      try     {         if (!e4269.includes(fontName))         {             figma.loadFontAsync(fontName).then(() =>             {                 e4269.push(fontName);                 j2722(r2795, f2723, fontName, addProps, transform);             });         }         else         {             j2722(r2795, f2723, fontName, addProps, transform);         }     }     catch (e)      {         h953(e);     } }    function j2722(r2795, f2723, fontName, addProps, transform) {     r2795.fontName      = fontName;      r2795.fontSize      = Math.max(1, f2723[x1447]);      r2795.characters    = f2723[h1444];      r2795.lineHeight    = {unit: 'PERCENT', value: f2723[y1451   ]};     r2795.letterSpacing = {unit: 'PERCENT', value: f2723[l1452]};            if (f2723[d1449] == 0) r2795.textAlignHorizontal = 'LEFT';     else if (f2723[d1449] == 1) r2795.textAlignHorizontal = 'CENTER';     else if (f2723[d1449] == 2) r2795.textAlignHorizontal = 'RIGHT';     else if (f2723[d1449] == 3) r2795.textAlignHorizontal = 'JUSTIFIED';           if (f2723[h1450] == 0) r2795.textAlignVertical   = 'TOP';     else if (f2723[h1450] == 1) r2795.textAlignVertical   = 'CENTER';     else if (f2723[h1450] == 2) r2795.textAlignVertical   = 'BOTTOM';       if (transform)         a1607(r2795, f2723);          b2703(r2795, f2723, addProps);                                                       if (     f2723[o1433 ] == 0           && f2723[z1439] == 0) r2795.textAutoResize = 'WIDTH_AND_HEIGHT';     else if (f2723[o1433 ] == 0) r2795.textAutoResize = 'HEIGHT';     else                                  r2795.textAutoResize = 'NONE'; }
+
+function mulv2m3(v, m)
+{
+    let v3 = [v.x, v.y, 1];
+    let r  = mulv3m3(v3, m);
+
+    return point(r[0], r[1]);
+}
 
 
- function x2778(w2728) {     return true; }    function l2749(w2728, addProps, transform) {     if (!x2778(w2728))         return null;               const s2729 = figma.createVector();      r2755(s2729, w2728, addProps, transform, true);           return s2729; }    function r2755(s2729, w2728, addProps, transform, isValid = false) {     if (   !isValid         && !x2778(w2728))         return;       s2729.setVectorNetworkAsync(w2728[z1429]);           if (transform)         a1607(s2729, w2728, false);          b2703(s2729, w2728, addProps); }
+
+function mulm3m3(...mm)
+{
+    consoleAssert(mm.length > 0, 'mulm3m3() must take at least one argument');
+
+    let result = clone(mm[0]);
+
+    for (let a = 1; a < mm.length; a++)
+    {
+        const m1 = result;
+        const m2 = mm[a];
+
+        const m = [[0, 0, 0],
+                   [0, 0, 0],
+                   [0, 0, 0]];
+
+        for (let i = 0; i < 3; i++)
+        {
+            for (let j = 0; j < 3; j++)
+            {
+                /*	calculate the dot product of ith row 
+                    of this and jth column of m  */
+                for (let k = 0; k < 3; k++)
+                    m[i][j] += m1[i][k] * m2[k][j];
+            }
+        }
+
+        result = m;
+    }
+
+    return result;
+}
 
 
- function m2777(e2724) {     return e2724[p1436] != null && !isNaN(e2724[p1436])         && e2724[o1442  ] != null && !isNaN(e2724[o1442  ]); }    function b2748(e2724, addProps, transform) {     const b2725 = figma.createVector();      w2754(b2725, e2724, addProps, transform, true);      return b2725; }    function w2754(b2725, e2724, addProps, transform, isValid = false) {     if (   !isValid         && !m2777(e2724))         return;       b2725.vectorPaths = [{         windingRule: e2724[p1436] == 1 ? 'NONZERO' : 'EVENODD',         data:        e2724[v1430   ]     }];        b2725.cornerRadius = Number(e2724[o1442]);           if (transform)         a1607(b2725, e2724, false);          b2703(b2725, e2724, addProps); }
+
+function divm3s(m, s)
+{
+    for (let i = 0; i < 3; i++)
+        for (let j = 0; j < 3; j++)
+            m[i][j] /= s;
+
+    return m;
+}
+
+
+
+function adjugate(m)
+{
+    return cofactor(transpose(m));
+}
+
+
+
+function transpose(m)
+{
+    return [[m[0][0], m[1][0], m[2][0]],
+            [m[0][1], m[1][1], m[2][1]],
+            [m[0][2], m[1][2], m[2][2]]];
+}
+
+
+
+function cofactor(m)
+{
+    return [[  m[1][1] * m[2][2] - m[2][1] * m[1][2], -(m[1][0] * m[2][2] - m[2][0] * m[1][2]),  m[1][0] * m[2][1] - m[2][0] * m[1][1] ],
+            [-(m[0][1] * m[2][2] - m[2][1] * m[0][2]),  m[0][0] * m[2][2] - m[2][0] * m[0][2], -(m[0][0] * m[2][1] - m[2][0] * m[0][1])],
+            [  m[0][1] * m[1][2] - m[1][1] * m[0][2], -(m[0][0] * m[1][2] - m[1][0] * m[0][2]),  m[0][0] * m[1][1] - m[1][0] * m[0][1] ]]; 
+}
+
+
+
+function determinant(m)
+{
+    return   m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])
+           - m[0][1] * (m[1][0] * m[2][2] - m[2][0] * m[1][2])
+           + m[0][2] * (m[1][0] * m[2][1] - m[2][0] * m[1][1]);
+}
+
+
+
+function inversem3(m)
+{
+    return divm3s(adjugate(m), determinant(m));
+}
+
+
+
+function createRotateTransform(angle)
+{
+    const cosA = hardZero(Math.cos(angle));
+    const sinA = hardZero(Math.sin(angle));
+
+    return [[ cosA, sinA, 0],
+            [-sinA, cosA, 0],
+            [ 0,    0,    1]];
+}
+
+
+
+function createTransform(x = 0, y = 0, scaleX = 1, scaleY = 1, angle = 0, skewX = 0, skewY = 0)
+{
+    const cosA = Math.cos(angle);
+    const sinA = Math.sin(angle);
+
+    return [[scaleX*cosA -  skewY*sinA, -skewX*cosA + scaleY*sinA, x],
+            [ skewY*cosA + scaleX*sinA, scaleY*cosA +  skewX*sinA, y],
+            [0,                         0,                         1]];
+}
+
+
+
+function crossv2(v1, v2)
+{
+    // returns the magnitude of v1×v2 = ‖v1‖‖v2‖sinθ "perpendicular dot product",
+    // equivalent to dotv(v1, cross(v2)) (same as in 3D with a Z component of 0)
+    // also the area of the parallelogram between the two vectors
+    // also determinant of 2×2 matrix built from the two vectors
+    // positive if turn from v1 to v2 is clockwise
+
+    return v1.x * v2.y - v1.y * v2.x;
+}	
+
+
+
+function addv(v1, v2)
+{
+    return point(
+        v1.x + v2.x,
+        v1.y + v2.y);
+}	
+
+
+
+function sqrv(v)
+{
+    return mulv(v, v);
+}
+
+
+
+function mulv(v1, v2)
+{
+    return point(
+        v1.x * v2.x,
+        v1.y * v2.y);
+}	
+
+
+
+function mulvs(v, s)
+{
+    return point(
+        v.x * s,
+        v.y * s);
+}	
+
+
+
+function divv(v1, v2)
+{
+    return point(
+        v1.x / v2.x,
+        v1.y / v2.y);
+}	
+
+
+
+function divvs(v, s)
+{
+    return point(
+        v.x / s,
+        v.y / s);
+}	
+
+
+
+function subv(v1, v2)
+{
+    return point(
+        v1.x - v2.x,
+        v1.y - v2.y);
+}	
+
+
+
+function toUtf8(str) 
+{
+    return decodeURI(encodeURIComponent(str));
+}
+
+
+
+function fromUtf8(str) 
+{
+    return decodeURIComponent(encodeURI(str));
+}
+
+
+
+function charCodeArrayToString(bytes) 
+{
+    let str = '';
+
+    for (let i = 0; i < bytes.length; i++)
+        str += String.fromCharCode(bytes[i]);
+
+    return str;
+}
+
+
+
+function stringToCharCodeArray(str)
+{
+    return Array.from(fromUtf8(str), c => c.charCodeAt(0));
+}
+
+
+
+function newSizeArrayFrom(array, size) // resizes an array and returns a new array
+{
+    const newArray = new Uint8Array(size);
+    copyArray(array, newArray);
+    return newArray;
+}
+
+
+
+function copyArray(src, dst)
+{
+    copyArrayAt(
+        src, 0, src.length,
+        dst, 0, dst.length);
+}
+
+
+
+function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
+{
+    const size = Math.min(srcSize, dstSize);
+
+    for (let i = 0; i < size; i++)
+        dst[dstStart + i] = src[srcStart + i];
+}
+
+
+
+function arraysAreEqual(arr1, arr2)
+{
+    if (arr1.length != arr2.length)
+        return false;
+
+    for (let i = 0; i < arr1.length; i++)
+    {
+        if (arr1[i] != arr2[i])
+            return false;
+    }
+
+    return true;
+}
+
+
+
+function arraysIntersect(array1, array2)
+{
+    return array1.findIndex(i => array2.includes(i)) > -1;
+}
+
+
+
+function  leftArrowChar(list) { return list ? '<==' : '<--'; }; 
+function rightArrowChar(list) { return list ? '==>' : '-->'; }; 
+
+function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }
+function connNameForStorage(name)   { return connTag + ' ' + name;   }
+function pageNameForStorage(name)   { return pageTag + ' ' + name;   }
+
+
+
+function parseBool(str) 
+{ 
+    return str.toLowerCase() == 'true'
+        || str == '1';
+}
+
+
+
+function connToString(_conn, logSpace = false)
+{
+    return getConnectionString(
+        _conn.outputNodeId,
+        _conn.outputId,
+        _conn.outputOrder,
+        _conn.inputNodeId,
+        _conn.inputId,
+        _conn.list,
+        logSpace);
+}
+
+
+
+function getConnectionKey(outputNodeId, outputId, outputOrder, inputNodeId, inputId)
+{
+    return connNameForStorage(
+          outputNodeId + ' '
+        + outputId     + ' '
+        + outputOrder  + ' '
+        + inputNodeId  + ' '
+        + inputId);
+}
+
+
+
+function getStorageConnKey(conn)
+{
+    return getConnectionKey(
+        conn.outputNodeId,
+        conn.outputId,
+        conn.outputOrder,
+        conn.inputNodeId,
+        conn.inputId);
+}
+
+
+
+function getConnKey(conn)
+{
+    return getConnectionKey(
+        conn.output.node.id,
+        conn.output.id,
+        conn.outputOrder,
+        conn.input.node.id,
+        conn.input.id);
+}
+
+
+
+function getConnString(conn, logSpace = false)
+{
+    return getConnectionString(
+        conn.output.node.id,
+        conn.output.id,
+        conn.outputOrder,
+        conn.input.node.id,
+        conn.input.id,
+        conn.list,
+        logSpace);
+}
+
+
+
+function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, inputId, list, logSpace = false)
+{
+    const  sp   = logSpace ? ' ' : '  '; 
+    const jsp   = logSpace ? ''  : ' '; 
+
+    const arrow = 
+          sp 
+        + subscriptNumber(typeof outputOrder == 'string' ? parseInt(outputOrder) : outputOrder) 
+        + rightArrowChar(typeof list == 'string' ? parseBool(list) : list) 
+        + sp;
+
+    const join  = jsp + '.' + jsp;
+
+    return /*'( ' +*/ outputNodeId + join + outputId
+         + arrow
+         + inputNodeId  + join + inputId;
+         //+ ' )';
+}
+
+
+
+function getPageKey(pageId)
+{
+    return pageNameForStorage(pageId);
+}
+
+
+
+function superscriptNumber(num)
+{
+    const str = num.toString();
+
+    let sup = '';
+
+    for (const c of str)
+        sup += superscriptChar(c);
+
+    return sup;
+}
+
+
+
+function superscriptChar(c)
+{
+    switch (c)
+    {
+        case '0': return '⁰';
+        case '1': return '¹';
+        case '2': return '²';
+        case '3': return '³';
+        case '4': return '⁴';
+        case '5': return '⁵';
+        case '6': return '⁶';
+        case '7': return '⁷';
+        case '8': return '⁸';
+        case '9': return '⁹';
+        case '.': return '·';
+    }
+}
+
+
+
+function subscriptNumber(num)
+{
+    const str = num.toString();
+
+    let sup = '';
+
+    for (const c of str)
+        sup += subscriptChar(c);
+
+    return sup;
+}
+
+
+
+function subscriptChar(c)
+{
+    switch (c)
+    {
+        case '0': return '₀';
+        case '1': return '₁';
+        case '2': return '₂';
+        case '3': return '₃';
+        case '4': return '₄';
+        case '5': return '₅';
+        case '6': return '₆';
+        case '7': return '₇';
+        case '8': return '₈';
+        case '9': return '₉';
+        case '.': return ' ';
+    }
+}
+
+
+
+function boolToString(bool)
+{
+    return bool ? 'true' : 'false';
+}
+
+
+
+function isValid(val)
+{
+    return val != undefined
+        && val != null;
+}
+
+
+
+function isEmpty(array)
+{
+    return array.length == 0;
+}
+
+
+
+function removeFrom(array, item)
+{
+    removeAt(array, array.indexOf(item));
+}
+
+
+
+function removeAt(array, index)
+{
+    if (   index > -1 
+        && index < array.length)
+        array.splice(index, 1);
+}
+
+
+
+function removeLast(array)
+{
+    if (isEmpty(array))
+        return null;
+
+    let last = array.at(-1);
+    array.splice(array.length-1, 1);
+
+    return last;
+}
+
+
+
+function lastOf(array)
+{
+    return array[array.length-1];
+}
+
+
+
+function moveInArray(array, from, to) 
+{
+    const item = array[from];
+    array.splice(from, 1);
+    array.splice(to, 0, item);
+}
+
+
+
+function removeFromArray(array, item)
+{
+    const index = array.indexOf(item);
+    
+    if (index > -1)
+        array.splice(index, 1);
+}
+
+
+
+function removeArrayFromArray(fromArray, array)
+{
+    for (const item of array)
+    {
+        const index = fromArray.indexOf(item);
+        
+        if (index > -1)
+            fromArray.splice(index, 1);
+    }
+}
+
+
+
+function removeFromArrayWhere(array, where)
+{
+    const index = array.findIndex(where);
+    
+    if (index > -1)
+        array.splice(index, 1);
+}
+
+
+
+function cleanStyleId(styleId)
+{
+    return styleId.split(',')[0] + ',';
+}
+
+
+
+function getLinearPathData(points)
+{
+    let pathData = '';
+
+
+    if (points.length < 2)
+        return pathData;
+
+
+    pathData += 'M';
+    pathData += ' ' + hardZero(points[0].x);
+    pathData += ' ' + hardZero(points[0].y);
+
+    for (let i = 1; i < points.length; i++)
+    {
+        pathData += 
+              ' L'
+            + ' ' + hardZero(points[i].x)
+            + ' ' + hardZero(points[i].y);
+    }
+
+
+    return pathData;
+}
+
+
+
+function point(x, y) { return {x: x, y: y}; }
+
+
+
+function mulv3m3(v, m)
+{
+    let r = [0, 0, 0];
+
+    for (let i = 0; i < 3; i++)
+        for (let j = 0; j < 3; j++)
+            r[i] += v[j] * m[i][j];
+
+    return r;
+}
+
+
+
+function clone(val) 
+{
+    const type = typeof val;
+    
+    if (val === null) 
+      return null;
+
+    else if (type === 'undefined' 
+          || type === 'number' 
+          || type === 'string' 
+          || type === 'boolean') 
+        return val;
+
+    else if (type === 'object') 
+    {
+        if (val instanceof Array) 
+            return val.map(x => clone(x));
+
+        else if (val instanceof Uint8Array) 
+            return new Uint8Array(val);
+
+        else 
+        {
+            let obj = {};
+
+            for (const key in val) 
+                obj[key] = clone(val[key]);
+
+            return obj;
+        }
+    }
+
+    throw 'unknown';
+}
+
+
+
+function pushUnique(array, item, equal = null)
+{
+    if (equal)
+    {
+        if (Array.isArray(item))
+            item.forEach(i => pushUnique(array, i, equal));
+        else if (!array.find(i => equal(i, item)))
+            array.push(item);
+    }
+    else
+    {
+        if (Array.isArray(item))
+            item.forEach(i => pushUnique(array, i));
+        else if (!array.includes(item))
+            array.push(item);
+    }
+}
+
+
+
+function pushUniqueBy(array, item, equal)
+{
+    if (Array.isArray(item))
+        item.forEach(i => pushUniqueBy(array, i, equal));
+    else if (!array.find(equal))
+        array.push(item);
+}
+
+
+
+function pushUniqueExcept(array, item, except)
+{
+    if (Array.isArray(item))
+        item.forEach(i => pushUniqueExcept(array, i, except));
+    else if (!array.find(except))
+        array.push(item);
+}
+
+
+
+function consoleAssert(...args)
+{
+    // if (  !settings 
+    //     || settings.enableAsserts)
+    if (enableAsserts)
+    {
+        console.assert(...args);
+        //console.trace();
+    }
+}
+
+
+
+function consoleError(...args)
+{
+    // if (  !settings
+    //     || settings.enableAsserts)
+    if (enableAsserts)
+        console.error(...args);
+}
+
+
+
+function trimCharFromStart(str, trim) 
+{
+    while (str.length >= trim.length
+        && str.substring(0, trim.length) == trim) 
+        str = str.substring(trim.length);
+
+    return str;
+}
+
+
+
+function trimCharFromEnd(str, trim) 
+{
+    while (str.length >= trim.length
+        && str.substring(str.length - trim.length) == trim) 
+        str = str.substring(0, str.length - trim.length);
+
+    return str;
+}
+
+
+
+function getObjectFills(genObjFills)
+{
+    const fills = [];
+
+
+    for (const fill of genObjFills)
+    {
+        switch (fill[0])
+        {
+            case 'SOLID':
+            {
+                const color = {
+                    r: Math.min(Math.max(0, fill[1] / 0xff), 1), 
+                    g: Math.min(Math.max(0, fill[2] / 0xff), 1), 
+                    b: Math.min(Math.max(0, fill[3] / 0xff), 1) };
+
+                const opacity = Math.min(Math.max(0, fill[4] / 100), 1);
+
+
+                if (   !isNaN(color.r)
+                    && !isNaN(color.g)
+                    && !isNaN(color.b)
+                    && !isNaN(opacity))
+                    fills.push(
+                    {
+                        type:      fill[0], 
+                        color:     color,
+                        opacity:   opacity,
+                        blendMode: fill[5]
+                    });
+
+
+                break;
+            }
+
+            case 'GRADIENT_LINEAR':
+            case 'GRADIENT_RADIAL':
+            case 'GRADIENT_ANGULAR':
+            case 'GRADIENT_DIAMOND':
+            {
+                const [p0, p1, p2] = fill[1];
+
+                const identityHandles = 
+                    [[0,   1,   0],
+                     [0.5, 0.5, 1],
+                     [1,   1,   1]];
+
+                let xform = [
+                    [p0.x, p1.x, p2.x],
+                    [p0.y, p1.y, p2.y],
+                    [1,    1,    1   ]];
+
+                xform = mulm3m3(identityHandles, inversem3(xform));
+                xform = [xform[0], xform[1]];
+
+
+                const stops = [];
+
+                for (const stop of fill[2])
+                {
+                    stops.push({
+                        color: 
+                        {
+                            r: Math.min(Math.max(0, stop[0]), 1),
+                            g: Math.min(Math.max(0, stop[1]), 1),
+                            b: Math.min(Math.max(0, stop[2]), 1),
+                            a: Math.min(Math.max(0, stop[3]), 1)
+                        },
+                        position: stop[4]
+                    });  
+                }
+
+
+                fills.push(
+                {
+                    type:              fill[0],
+                    gradientTransform: xform,
+                    gradientStops:     stops,
+                    blendMode:         fill[3]
+                });
+
+
+                break;
+            }
+        }
+    }
+
+
+    return fills;
+}
+
+
+
+function isListValueType(type)
+{
+    return LIST_VALUES.includes(type);
+}
+
+
+const LIST_VALUE           = 'LIST#';
+
+const NUMBER_LIST_VALUE    = 'NLIST#';
+const   TEXT_LIST_VALUE    = 'TLIST#';
+const  SHAPE_LIST_VALUE    = 'SLIST#';
+
+
+const NULL_NODE            = 'NULL';
+const VARIABLE             = 'VAR';
+const VARIABLE_GROUP       = 'VARGRP';
+const FEEDBACK             = 'FEEDBK';
+const REPEAT               = 'REPT';
+const CACHE                = 'CACHE';
+const FREEZE               = 'FRZ';
+const TIMER                = 'TIMER';
+const VALUE_NAME           = 'VNAME';
+const GET_LIST_VALUE_NAMES = 'GVNAMES';
+const LIST_VALUE_NAMES     = 'VNAMES';
+const OBJECT_NAME          = 'ONAME';
+
+const COMBINE              = 'CMB';
+const LIST_AS_ITEM         = 'LSASIT';
+const EXTRACT              = 'EXTR';
+const SET_PARAM            = 'SETP';
+const GET_PARAM            = 'GETP';
+const SUBLIST              = 'SUBLST';
+const UNIQUE               = 'UNIQ';
+const REORDER_LIST         = 'RORD';
+const SHIFT_LIST           = 'SHFTLST';
+const REVERSE_LIST         = 'REVLST';
+const BUCKLE_LIST          = 'BUKLST';
+const SORT                 = 'SORT';
+const COLUMN               = 'CLMN';
+const CELL                 = 'CELL';
+const LIST                 = 'LIST';
+const LIST_COUNT           = 'COUNT';
+const OBJECT_COUNT         = 'OBJCOUNT';
+const CONTAINS             = 'LCONT';
+const SELECT               = 'SELECT';
+const SELECT_FROM_LIST     = 'LSTSEL';
+const IF_ELSE              = 'IF';
+const FILTER               = 'LSTFLT';
+
+
+const ANY_VALUE            = 'ANY#';
+
+
+const LIST_TYPES =
+[
+    LIST_VALUE,
+    NUMBER_LIST_VALUE,
+    TEXT_LIST_VALUE,
+    SHAPE_LIST_VALUE,
+    COMBINE,
+    EXTRACT,
+    SET_PARAM,
+    GET_PARAM,
+    SUBLIST,
+    LIST,
+    LIST_COUNT,
+    CONTAINS,
+    REPEAT
+];
+
+
+const LIST_VALUES =
+[
+           LIST_VALUE,
+    NUMBER_LIST_VALUE,
+      TEXT_LIST_VALUE,
+     SHAPE_LIST_VALUE
+];
+
+
+const ITERATE                 = 'ITER';  
+const PROBABILITY             = 'PROB';  
+const HOLD                    = 'HOLD';
+
+
+const NUMBER_VALUE            = 'NUM#';  
+const NUMBER                  = 'NUM';   
+const NUMBER_PRECISION        = 'NPREC';   
+const NUMBER_SIGN             = 'NSIGN';   
+const NUMBER_ABSOLUTE         = 'ABS';   
+const NUMBER_NEGATIVE         = 'NEG';   
+const NUMBER_ROUND            = 'ROUND';   
+const NUMBER_QUANTIZE         = 'QUANT';   
+const NUMBER_SIMPLE_MINMAX    = 'SMINMAX';   
+const NUMBER_MINMAX           = 'MINMAX';   
+const NUMBER_LIMITS           = 'LIM';   
+const NUMBER_CURVE            = 'NCURVE';   
+const NUMBER_MAP              = 'NMAP';   
+const NUMBER_BIAS             = 'NBIAS';   
+const NUMBER_NAN              = 'NANISNUM';
+const NUMBER_CONSTANT         = 'CONST';  
+const NUMBER_DATETIME         = 'DATE';  
+const NUMBER_SEQUENCE         = 'SEQ';  
+const NUMBER_RANGE            = 'RANGE';  
+const NUMBER_WAVE             = 'WAVE';  
+const NUMBER_RANDOM           = 'RAND';  
+const NUMBER_NOISE            = 'NOISE';  
+const NUMBER_ACCUMULATE       = 'ACCUM';  
+const NUMBER_INTERPOLATE      = 'LERP'; 
+const NUMBER_SOLVE            = 'SOLVE';
+const NUMBER_ANIMATE          = 'NANIM';
+
+const NUMBER_SIMPLE_MATH      = 'SMATH';  
+const NUMBER_MATH             = 'MATH';  
+const NUMBER_ADD              = 'ADD';   
+const NUMBER_SUBTRACT         = 'SUB';   
+const NUMBER_MULTIPLY         = 'MUL';   
+const NUMBER_DIVIDE           = 'DIV';   
+const NUMBER_MODULO           = 'MOD';   
+const NUMBER_EXPONENT         = 'EXP';
+
+const NUMBER_BOOLEAN          = 'NBOOL';  
+const NUMBER_NOT              = 'NOT';
+const NUMBER_AND              = 'AND';
+const NUMBER_OR               = 'OR';
+const NUMBER_XOR              = 'XOR';
+
+const NUMBER_CONDITION        = 'COND';
+const NUMBER_EQUAL            = 'EQ';
+const NUMBER_NOT_EQUAL        = 'NE';
+const NUMBER_LESS             = 'LT';
+const NUMBER_LESS_OR_EQUAL    = 'LE';
+const NUMBER_GREATER          = 'GT';
+const NUMBER_GREATER_OR_EQUAL = 'GE';
+
+const NUMBER_TRIG             = 'TRIG';  
+const NUMBER_SIN              = 'SIN';   
+const NUMBER_COS              = 'COS';   
+const NUMBER_TAN              = 'TAN';
+const NUMBER_ATAN2            = 'ATAN2';
+
+const CONVERT_ANGLE           = 'CNVANG';
+
+
+const TEXT_VALUE              = 'TEXT#';
+const TEXT                    = 'TEXT';
+const TEXT_LENGTH             = 'TLEN';
+const TEXT_TRIM               = 'TTRIM';
+const TEXT_SUBSTRING          = 'TSUB';
+const TEXT_CONTAINS           = 'TCONT';
+const TEXT_CASE               = 'TCASE';
+const TEXT_REPLACE            = 'TREPL';
+const TEXT_JOIN               = 'TJOIN';
+const TEXT_PAD                = 'TPAD';
+const TEXT_COMPARE            = 'TCMP';
+const TEXT_CHAR               = 'TCHAR';
+const TEXT_UNICODE            = 'TUNI';
+const INDEX_TO_NAME           = 'INDEX';
+const NUMBER_TO_TEXT          = 'N2T';
+const COLOR_TO_TEXT           = 'C2T';
+const TEXT_TO_NUMBER          = 'T2N';
+const TEXT_TO_COLOR           = 'T2C';
+const TEXT_SPLIT              = 'TSPLT';
+const PARSE_JSON              = 'TJSON';
+const PARSE_CSV               = 'TCSV';
+const TEXT_FETCH              = 'FETCH';
+const TEXT_FILE               = 'TFILE';
+
+
+const FLOW_TYPES =
+[
+    NULL_NODE,
+    VARIABLE,
+    VARIABLE_GROUP,
+    ...LIST_TYPES,
+    LIST_AS_ITEM,
+    EXTRACT,
+    SET_PARAM,
+    GET_PARAM,
+    SUBLIST,
+    UNIQUE,
+    REORDER_LIST,
+    SHIFT_LIST,
+    REVERSE_LIST,
+    BUCKLE_LIST,
+    COLUMN,
+    SORT,
+    CELL,
+    LIST,
+    SELECT,
+    SELECT_FROM_LIST,
+    IF_ELSE,
+    FILTER,
+    FEEDBACK,
+    REPEAT,
+    //FOREACH,
+    ITERATE,
+    PROBABILITY,
+    HOLD,
+    CACHE,
+    FREEZE,
+    PARSE_JSON,
+    PARSE_CSV,
+    TIMER,
+    VALUE_NAME,
+    GET_LIST_VALUE_NAMES,
+    LIST_VALUE_NAMES,
+    OBJECT_NAME
+];
+
+
+const MATH_TYPES =
+[
+    NUMBER_MATH,
+    NUMBER_SIMPLE_MATH,
+    NUMBER_ADD,
+    NUMBER_SUBTRACT,
+    NUMBER_MULTIPLY,
+    NUMBER_DIVIDE,
+    NUMBER_MODULO,
+    NUMBER_EXPONENT
+];
+
+
+const NUMBER_BOOLEAN_TYPES =
+[
+    NUMBER_BOOLEAN,
+    NUMBER_NOT,
+    NUMBER_AND,
+    NUMBER_OR,
+    NUMBER_XOR
+];
+
+
+const CONDITION_TYPES =
+[
+    NUMBER_CONDITION,
+    NUMBER_EQUAL,
+    NUMBER_NOT_EQUAL,
+    NUMBER_LESS,
+    NUMBER_LESS_OR_EQUAL,
+    NUMBER_GREATER,
+    NUMBER_GREATER_OR_EQUAL
+];
+
+
+const TRIG_TYPES =
+[
+    NUMBER_TRIG,
+    NUMBER_SIN,
+    NUMBER_COS,
+    NUMBER_TAN,
+    NUMBER_ATAN2
+];
+
+
+const NUMBER_TYPES =
+[
+    NUMBER_VALUE,
+    NUMBER_LIST_VALUE,
+    NUMBER,
+    NUMBER_PRECISION,
+    NUMBER_SIGN,
+    NUMBER_ABSOLUTE,
+    NUMBER_NEGATIVE,
+    NUMBER_ROUND,
+    NUMBER_QUANTIZE,
+    NUMBER_SIMPLE_MINMAX,
+    NUMBER_MINMAX,
+    NUMBER_LIMITS,
+    NUMBER_CURVE,
+    NUMBER_MAP,
+    NUMBER_BIAS,
+    NUMBER_NAN,
+    NUMBER_CONSTANT,
+    NUMBER_DATETIME,
+    NUMBER_SEQUENCE,
+    NUMBER_RANGE,
+    NUMBER_WAVE,
+    NUMBER_RANDOM,
+    NUMBER_NOISE,
+    NUMBER_ACCUMULATE,
+    NUMBER_INTERPOLATE,
+    NUMBER_SOLVE,
+    NUMBER_ANIMATE,
+    NUMBER_TO_TEXT,
+    TEXT_CHAR,
+
+    ...MATH_TYPES,
+    ...NUMBER_BOOLEAN_TYPES,
+    ...CONDITION_TYPES,
+    ...TRIG_TYPES,
+
+    CONVERT_ANGLE,
+    BUCKLE_LIST
+];
+
+
+const TEXT_TYPES =
+[
+    TEXT_VALUE,
+    TEXT_LIST_VALUE,
+    TEXT,
+    TEXT_LENGTH,
+    TEXT_TRIM,
+    TEXT_SUBSTRING,
+    TEXT_CONTAINS,
+    TEXT_CASE,
+    TEXT_JOIN,
+    TEXT_PAD,
+    TEXT_REPLACE,
+    TEXT_COMPARE,
+    TEXT_UNICODE,
+    INDEX_TO_NAME,
+    TEXT_TO_NUMBER,
+    TEXT_TO_COLOR,
+    TEXT_SPLIT,
+    TEXT_FETCH,
+    TEXT_FILE
+];
+
+
+const COLOR_VALUE        = 'COL#';  
+const COLOR              = 'COL';   
+const VALID_COLOR        = 'CVAL';  
+const CORRECT_COLOR      = 'CCOR';  
+const COLOR_CONVERT_P3   = 'COLP3';
+const COLOR_CONTRAST     = 'CCNT';  
+const COLORBLIND         = 'BLND';  
+const COLOR_INTERPOLATE  = 'CLERP'; 
+const COLOR_BLEND        = 'CBLND';
+
+
+const COLOR_TYPES =
+[
+    COLOR_VALUE,
+    COLOR,
+    CORRECT_COLOR,
+    COLOR_CONVERT_P3,
+    COLORBLIND,
+    COLOR_INTERPOLATE,
+    COLOR_BLEND,
+    COLOR_TO_TEXT
+];
+
+
+const FILL_VALUE          = 'FILL#';
+const FILL                = 'FILL';
+const FILL_TYPES          = [FILL_VALUE, FILL];
+  
+const STROKE_VALUE        = 'STRK#';
+const STROKE              = 'STRK';
+const STROKE_TYPES        = [STROKE_VALUE, STROKE];
+  
+const STROKE_SIDES_VALUE  = 'STRKSD#';
+const STROKE_SIDES        = 'STRKSD';
+const STROKE_SIDES_TYPES  = [STROKE_SIDES_VALUE, STROKE_SIDES];
+
+const COLOR_STOP_VALUE    = 'CSTOP#';
+const COLOR_STOP          = 'CSTOP';
+const COLOR_STOP_TYPES    = [COLOR_STOP_VALUE, COLOR_STOP];
+  
+const GRADIENT_VALUE      = 'GRAD#';
+const GRADIENT            = 'GRAD';
+const GRADIENT_TYPES      = [GRADIENT_VALUE, GRADIENT];
+ 
+
+const ROUND_CORNERS_VALUE = 'RCRN#';
+const ROUND_CORNERS       = 'RCRN';
+const ROUND_CORNERS_TYPES = [ROUND_CORNERS_VALUE, ROUND_CORNERS];
+
+const DROP_SHADOW_VALUE   = 'DRSH#';
+const DROP_SHADOW         = 'DRSH';
+const DROP_SHADOW_TYPES   = [DROP_SHADOW_VALUE, DROP_SHADOW];
+ 
+const INNER_SHADOW_VALUE  = 'INSH#';
+const INNER_SHADOW        = 'INSH';
+const INNER_SHADOW_TYPES  = [INNER_SHADOW_VALUE, INNER_SHADOW];
+ 
+const LAYER_BLUR_VALUE    = 'LBLR#';
+const LAYER_BLUR          = 'LBLR';
+const LAYER_BLUR_TYPES    = [LAYER_BLUR_VALUE, LAYER_BLUR];
+ 
+const BACK_BLUR_VALUE     = 'BBLR#';
+const BACK_BLUR           = 'BBLR';
+const BACK_BLUR_TYPES     = [BACK_BLUR_VALUE, BACK_BLUR];
+ 
+const LAYER_MASK_VALUE    = 'MASK#';
+const LAYER_MASK          = 'MASK';
+const LAYER_MASK_TYPES    = [LAYER_MASK_VALUE, LAYER_MASK];
+ 
+const LAYER_BLEND_VALUE   = 'BLEND#';
+const LAYER_BLEND         = 'BLEND';
+const LAYER_BLEND_TYPES   = [LAYER_BLEND_VALUE, LAYER_BLEND];
+
+
+const EFFECT_TYPES =
+[
+    ...STROKE_SIDES_TYPES,
+    ...ROUND_CORNERS_TYPES,
+    ...DROP_SHADOW_TYPES,
+    ...INNER_SHADOW_TYPES,
+    ...LAYER_BLUR_TYPES,
+    ...BACK_BLUR_TYPES,
+    ...LAYER_BLEND_TYPES,
+    ...LAYER_MASK_TYPES
+];
+
+
+const STYLE_VALUES =
+[
+           COLOR_VALUE, 
+            FILL_VALUE, 
+        GRADIENT_VALUE, 
+          STROKE_VALUE,
+    STROKE_SIDES_VALUE,
+     DROP_SHADOW_VALUE,
+    INNER_SHADOW_VALUE,
+      LAYER_BLUR_VALUE,
+       BACK_BLUR_VALUE,
+     LAYER_BLEND_VALUE,
+      LAYER_MASK_VALUE
+];
+
+
+const COLOR_STYLE           = 'CSTL';
+ 
+ 
+const SHAPE_VALUE           = 'SHP#'; // abstract placeholder
+ 
+const RECTANGLE_VALUE       = 'RECT#';
+const RECTANGLE             = 'RECT'; 
+//const RECTANGLE_EXT         = 'RECTEXT'; 
+const RECTANGLE_TYPES       = [RECTANGLE_VALUE, RECTANGLE];//, RECTANGLE_EXT];
+ 
+const LINE_VALUE            = 'LINE#';
+const LINE                  = 'LINE'; 
+const LINE_TYPES            = [LINE_VALUE, LINE];
+   
+const ELLIPSE_VALUE         = 'ELPS#';
+const ELLIPSE               = 'ELPS'; 
+const ELLIPSE_TYPES         = [ELLIPSE_VALUE, ELLIPSE];
+ 
+const TRAPEZE_VALUE         = 'TRPZ#';
+const TRAPEZE               = 'TRPZ';
+const TRAPEZE_TYPES         = [TRAPEZE_VALUE, TRAPEZE];
+ 
+const POLYGON_VALUE         = 'POLY#';
+const POLYGON               = 'POLY'; 
+const POLYGON_TYPES         = [POLYGON_VALUE, POLYGON];
+   
+const STAR_VALUE            = 'STAR#';
+const STAR                  = 'STAR'; 
+const STAR_TYPES            = [STAR_VALUE, STAR];
+   
+const TEXT_SHAPE_VALUE      = 'TXTS#';
+const TEXT_SHAPE            = 'TXTS'; 
+const TEXT_SHAPE_TYPES      = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
+  
+const POINT_VALUE           = 'PT#';
+const POINT                 = 'PT';
+const POINT_TYPES           = [POINT_VALUE, POINT];
+
+const POINT_CORNER          = 'PCORN';
+
+const VECTOR_PATH_VALUE     = 'VPATH#';
+const VECTOR_PATH           = 'VPATH'; 
+const VECTOR_PATH_TYPES     = [VECTOR_PATH_VALUE, VECTOR_PATH];
+ 
+const VECTOR_VERTEX_VALUE   = 'VPT#';
+const VECTOR_VERTEX         = 'VPT'; 
+const VECTOR_VERTEX_TYPES   = [VECTOR_VERTEX_VALUE, VECTOR_VERTEX];
+
+const VECTOR_EDGE_VALUE     = 'VEDGE#';
+const VECTOR_EDGE           = 'VEDGE'; 
+const VECTOR_EDGE_TYPES     = [VECTOR_EDGE_VALUE, VECTOR_EDGE];
+
+const VECTOR_REGION_VALUE   = 'VREG#';
+const VECTOR_REGION         = 'VREG'; 
+const VECTOR_REGION_TYPES   = [VECTOR_REGION_VALUE, VECTOR_REGION];
+
+const VECTOR_NETWORK_VALUE  = 'VNET#';
+const VECTOR_NETWORK        = 'VNET'; 
+const VECTOR_NETWORK_TYPES  = [VECTOR_NETWORK_VALUE, VECTOR_NETWORK];
+
+const SHAPE_GROUP_VALUE     = 'SGRP#';
+const SHAPE_GROUP           = 'SGRP';
+const SHAPE_GROUP_TYPES     = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+
+const FRAME_VALUE           = 'FRM#';
+const FRAME                 = 'FRM';
+const FRAME_TYPES           = [FRAME_VALUE, FRAME];
+ 
+const ARC_PATH_VALUE        = 'ARC#';
+const ARC_PATH              = 'ARC';
+const ARC_PATH_TYPES        = [ARC_PATH_VALUE, ARC_PATH];
+
+const WAVE_PATH_VALUE       = 'WAVEP#';
+const WAVE_PATH             = 'WAVEP';
+const WAVE_PATH_TYPES       = [WAVE_PATH_VALUE, WAVE_PATH];
+
+const MOVE                  = 'MOVE';
+const ROTATE                = 'ROT';
+const SCALE                 = 'SCALE';
+const SKEW                  = 'SKEW';
+
+const SHOW_CENTER           = 'SHOWCNTR';
+const SET_CENTER            = 'SCENTR';
+const RESET_XFORM           = 'RSTX';
+
+const PLACE                 = 'PLACE';
+const SHAPE_APPLY           = 'APPLY';
+  
+const PATH_LENGTH           = 'PTHLEN';
+const JOIN_PATHS            = 'JOINPTH';
+const REORIENT_PATHS        = 'REORPTH';
+const POINT_ALONG_PATH      = 'PTALPATH';
+const CLOSEST_POINT_ON_PATH = 'CPTONPATH';
+const MEASURE_VECTOR        = 'MESPT';
+const POINT_ANGLE           = 'PTANGLE';
+const VECTOR                = 'VECLEN';
+const CIRCLE_CENTER         = 'CIRCEN';
+const ARC_FROM_POINTS       = 'ARCPT';
+const INTERSECT_LINES       = 'INTLIN';
+const INTERPOLATE_POINT     = 'PTLERP';
+const REVERSE_PATH          = 'REVPTH';
+const BLEND_PATH            = 'BLENDPTH';
+
+
+const PATH_TYPES =
+[
+    VECTOR_PATH, 
+    TRAPEZE,
+    ARC_PATH,
+    WAVE_PATH
+];
+
+const PATH_VALUES =
+[
+    VECTOR_PATH_VALUE, 
+    TRAPEZE_VALUE,
+    ARC_PATH_VALUE,
+    WAVE_PATH_VALUE
+];
+
+
+const SHAPE_BOOLEAN         = 'SBOOL';
+const SHAPE_BOOLEAN_VALUE   = 'SBOOL#';
+
+const BOOL_UNION            = 'SBOOLU';
+const BOOL_SUBTRACT         = 'SBOOLS';
+const BOOL_INTERSECT        = 'SBOOLI';
+const BOOL_EXCLUDE          = 'SBOOLE';
+
+
+const BOOLEAN_TYPES =
+[
+    SHAPE_BOOLEAN,
+    SHAPE_BOOLEAN_VALUE,
+    BOOL_UNION,
+    BOOL_SUBTRACT,
+    BOOL_INTERSECT,
+    BOOL_EXCLUDE
+];
+
+
+const RENDER               = 'RENDER';
+const EXPORT               = 'EXPORT';
+
+
+const SHAPE_VALUES =
+[
+    SHAPE_VALUE,
+    SHAPE_LIST_VALUE,
+    RECTANGLE_VALUE,
+    LINE_VALUE,
+    ELLIPSE_VALUE,
+    TRAPEZE_VALUE,
+    POLYGON_VALUE,
+    STAR_VALUE,
+    TEXT_SHAPE_VALUE,
+    POINT_VALUE,
+    VECTOR_PATH_VALUE,
+    VECTOR_VERTEX_VALUE,
+    VECTOR_EDGE_VALUE,
+    VECTOR_REGION_VALUE,
+    VECTOR_NETWORK_VALUE,
+    ARC_PATH_VALUE,
+    WAVE_PATH_VALUE,
+    SHAPE_GROUP_VALUE,
+    FRAME_VALUE,
+    SHAPE_BOOLEAN_VALUE,
+    DROP_SHADOW_VALUE,
+    INNER_SHADOW_VALUE,
+    LAYER_BLUR_VALUE,
+    BACK_BLUR_VALUE,
+    LAYER_BLEND_VALUE,
+    LAYER_MASK_VALUE
+];
+
+
+const AFFINE_TYPES =
+[
+    ROTATE,
+    SCALE,
+    SKEW
+];
+
+
+const SHAPE_TYPES =
+[
+    ...SHAPE_VALUES,
+
+    ...RECTANGLE_TYPES,
+    ...LINE_TYPES,
+    ...ELLIPSE_TYPES,
+    ...TRAPEZE_TYPES,
+    ...POLYGON_TYPES,
+    ...STAR_TYPES,
+    ...TEXT_SHAPE_TYPES,
+    ...POINT_TYPES,
+       POINT_CORNER,
+    ...VECTOR_PATH_TYPES,
+    ...VECTOR_VERTEX_TYPES,
+    ...VECTOR_EDGE_TYPES,
+    ...VECTOR_REGION_TYPES,
+    ...VECTOR_NETWORK_TYPES,
+    ...ARC_PATH_TYPES,
+    ...WAVE_PATH_TYPES,
+    ...SHAPE_GROUP_TYPES,
+    ...FRAME_TYPES,
+    ...BOOLEAN_TYPES,
+    
+    MOVE,
+    ...AFFINE_TYPES,
+    SHOW_CENTER,
+    SET_CENTER,
+    RESET_XFORM,
+        
+    PLACE,
+    SHAPE_APPLY,
+    
+    PATH_LENGTH,
+    JOIN_PATHS,
+    REORIENT_PATHS,
+    POINT_ALONG_PATH,
+    CLOSEST_POINT_ON_PATH,
+        
+    MEASURE_VECTOR,
+    POINT_ANGLE,
+    VECTOR,
+    CIRCLE_CENTER,
+    ARC_PATH,
+    WAVE_PATH,
+    ARC_FROM_POINTS,
+    INTERSECT_LINES,
+    INTERPOLATE_POINT,
+    REVERSE_PATH,
+    BLEND_PATH,
+
+    RENDER,
+    EXPORT
+];
+
+
+const ALL_VALUES =
+[
+            LIST_VALUE,
+     NUMBER_LIST_VALUE,
+       TEXT_LIST_VALUE,
+      SHAPE_LIST_VALUE,
+     
+          NUMBER_VALUE,
+            TEXT_VALUE,
+           COLOR_VALUE,
+ 
+            FILL_VALUE,
+      COLOR_STOP_VALUE,
+        GRADIENT_VALUE,
+          STROKE_VALUE,
+ 
+      COLOR_STOP_VALUE,
+        GRADIENT_VALUE,
+ 
+           SHAPE_VALUE,
+       RECTANGLE_VALUE,
+            LINE_VALUE,
+         ELLIPSE_VALUE,
+         TRAPEZE_VALUE,
+         POLYGON_VALUE,
+            STAR_VALUE,
+      TEXT_SHAPE_VALUE,
+           POINT_VALUE,
+     VECTOR_PATH_VALUE,
+   VECTOR_VERTEX_VALUE,
+     VECTOR_EDGE_VALUE,
+   VECTOR_REGION_VALUE,
+  VECTOR_NETWORK_VALUE,
+     SHAPE_GROUP_VALUE,
+           FRAME_VALUE,
+
+   ROUND_CORNERS_VALUE,
+     DROP_SHADOW_VALUE,
+    INNER_SHADOW_VALUE,
+      LAYER_BLUR_VALUE,
+       BACK_BLUR_VALUE,
+
+     LAYER_BLEND_VALUE,
+      LAYER_MASK_VALUE
+];
+
+
+const GROUP_NODE    = 'GROUP';
+const GROUP_PARAM   = 'GPARAM';
+
+
+const GROUP_TYPES =
+[
+    GROUP_NODE,
+    GROUP_PARAM
+];
+
+
+const COMMENT       = 'CMNT';
+const COMMENT_ARROW = 'CMNTARR';
+const PANEL         = 'PANEL';
+
+
+const ACTIVE        = 'ACT';
+const BEFORE_ACTIVE = 'BFACT';
+const BEFORE_LIST   = 'BFLST';
+const DISABLED      = 'DIS';
+const NOCACHE       = 'NOC';
+ 
+const PARAM         = 'PARAM'; // nodeId paramId
+ 
+
+const LOG           = 'LOG';
+
+
+const GRAPH         = 'GRAPH';
+
+
+const MATH_OPS = 
+[   // the order is important for logical keyboard value changes
+    [NUMBER_MODULO,   '%' ],
+    [NUMBER_DIVIDE,   '/' ], //'÷' ],
+    [NUMBER_SUBTRACT, '−' ],
+    [NUMBER_ADD,      '+' ],
+    [NUMBER_MULTIPLY, '×' ],
+    [NUMBER_EXPONENT, 'e<sup>x'] 
+];
+
+
+const MATH_OPS_SHORT = 
+[   // the order is important for logical keyboard value changes
+    [NUMBER_DIVIDE,   '/' ], //'÷' ],
+    [NUMBER_SUBTRACT, '−' ],
+    [NUMBER_ADD,      '+'],
+    [NUMBER_MULTIPLY, '×']
+];
+
+
+
+const BOOLEAN_NOT = 0;
+const BOOLEAN_XOR = 1;
+const BOOLEAN_OR  = 2;
+const BOOLEAN_AND = 3;
+
+
+const BOOLEAN_OPS = 
+[   
+    [BOOLEAN_NOT, 'not'],
+    [BOOLEAN_XOR, 'xor'], 
+    [BOOLEAN_OR,  'or' ],
+    [BOOLEAN_AND, 'and']
+];
+
+
+
+const CONDITION_LESS             = 0;
+const CONDITION_LESS_OR_EQUAL    = 1;
+const CONDITION_NOT_EQUAL        = 2;
+const CONDITION_EQUAL            = 3;
+const CONDITION_GREATER_OR_EQUAL = 4;
+const CONDITION_GREATER          = 5;
+
+
+const CONDITION_OPS = 
+[   
+    [CONDITION_LESS,             '<'],
+    [CONDITION_LESS_OR_EQUAL,    '≤'],
+    [CONDITION_NOT_EQUAL,        '≠'],
+    [CONDITION_EQUAL,            '='],
+    [CONDITION_GREATER_OR_EQUAL, '≥'],
+    [CONDITION_GREATER,          '>']
+];
+
+
+
+const TRIG_SIN  = 0;
+const TRIG_COS  = 1;
+const TRIG_TAN  = 2;
+const TRIG_ASIN = 3;
+const TRIG_ACOS = 4;
+const TRIG_ATAN = 5;
+
+
+const TRIG_OPS = 
+[   
+    [TRIG_SIN,  'sin' ],
+    [TRIG_COS,  'cos' ],
+    [TRIG_TAN,  'tan' ],
+    [TRIG_ASIN, 'asin'],
+    [TRIG_ACOS, 'acos'],
+    [TRIG_ATAN, 'atan']
+];
+
+
+
+const EMPTY_ACTION               = 'EMPTY';
+const CONNECT_ACTION             = 'CONNECT';
+const CREATE_ACTION              = 'CREATE';
+const CREATE_INSERT_ACTION       = 'CREATE_INSERT';
+const DELETE_ACTION              = 'DELETE';
+const DISCONNECT_ACTION          = 'DISCONNECT';
+const LINK_STYLE_ACTION          = 'LINK_STYLE';
+const LINK_VARIABLE_ACTION       = 'LINK_VARIABLE';
+const LINK_VARIABLE_GROUP_ACTION = 'LINK_VARIABLE_GROUP';
+const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
+const MAKE_NOT_CONDITION_ACTION  = 'MAKE_NOT_CONDITION';
+const MAKE_PASSIVE_ACTION        = 'MAKE_PASSIVE';
+const PASTE_ACTION               = 'PASTE';
+const RECONNECT_ACTION           = 'RECONNECT';
+const REMOVE_ACTION              = 'REMOVE';
+const RENAME_ACTION              = 'RENAME';
+const REORDER_INPUTS_ACTION      = 'REORDER_INPUTS';
+const REORDER_CONNECTIONS_ACTION = 'REORDER_CONNECTIONS';
+const SELECT_ACTION              = 'SELECT';
+const SELECT_MOVE_ACTION         = 'SELECT_MOVE';
+const MOVE_NODES_ACTION          = 'MOVE_NODES';
+const SET_PARAM_VALUE_ACTION     = 'SET_PARAM_VALUE';
+const SET_MULTIPLE_VALUES_ACTION = 'SET_MULTIPLE_VALUES';
+const SET_PARAM_SETTING_ACTION   = 'SET_PARAM_SETTING';
+const SET_NODE_RECT_ACTION       = 'SET_NODE_RECT';
+const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
+const TOGGLE_PARAM_HEADER_ACTION = 'TOGGLE_PARAM_HEADER';
+const SET_CURRENT_GRAPH_ACTION   = 'SET_CURRENT_GRAPH';
+const CREATE_PAGE_ACTION         = 'CREATE_PAGE';
+const DELETE_PAGE_ACTION         = 'DELETE_PAGE';
+const GROUP_NODES_ACTION         = 'GROUP_NODES';
+const UNGROUP_NODES_ACTION       = 'UNGROUP_NODES';
+const HIGHLIGHT_NODES_ACTION     = 'HIGHLIGHT_NODES';
+const SCROLL_LIST_NODE_ACTION    = 'SCROLL_LIST_NODE';
+const SET_LIST_DIVIDER_ACTION    = 'SET_LIST_DIVIDER';
+const SET_NODE_PARAM_ACTION      = 'SET_NODE_PARAM';
+
+
+const BLEND_NORMAL               = 'BNORM';
+const BLEND_DARKEN               = 'BDARK';
+const BLEND_MULTIPLY             = 'BMULT';
+const BLEND_PLUS_DARKER          = 'BPDRK';
+const BLEND_COLOR_BURN           = 'BBURN';
+const BLEND_LIGNTEN              = 'BLITE';
+const BLEND_SCREEN               = 'BSCRN';
+const BLEND_PLUS_LIGHTER         = 'BPLGT';
+const BLEND_COLOR_DODGE          = 'BDODG';
+const BLEND_OVERLAY              = 'BOVER';
+const BLEND_SOFT_LIGHT           = 'BSOFT';
+const BLEND_HARD_LIGHT           = 'BHARD';
+const BLEND_DIFFERENCE           = 'BDIFF';
+const BLEND_EXCLUSION            = 'BEXCL';
+const BLEND_HUE                  = 'BHUE';
+const BLEND_SATURATION           = 'BSAT';
+const BLEND_COLOR                = 'BCOL';
+const BLEND_LUMINOSITY           = 'BLUM';
+
+
+const BlendModes =
+[
+    [BLEND_NORMAL,       'normal',       'NORMAL'      ],
+    [BLEND_DARKEN,       'darken',       'DARKEN'      ],
+    [BLEND_MULTIPLY,     'multiply',     'MULTIPLY'    ],
+    [BLEND_PLUS_DARKER,  'plus darker',  'LINEAR_BURN' ],
+    [BLEND_COLOR_BURN,   'color burn',   'COLOR_BURN'  ],
+    [BLEND_LIGNTEN,      'lighten',      'LIGHTEN'     ],
+    [BLEND_SCREEN,       'screen',       'SCREEN'      ],
+    [BLEND_PLUS_LIGHTER, 'plus lighter', 'LINEAR_DODGE'],
+    [BLEND_COLOR_DODGE,  'color dodge',  'COLOR_DODGE' ],
+    [BLEND_OVERLAY,      'overlay',      'OVERLAY'     ],
+    [BLEND_SOFT_LIGHT,   'soft light',   'SOFT_LIGHT'  ],
+    [BLEND_HARD_LIGHT,   'hard light',   'HARD_LIGHT'  ],
+    [BLEND_DIFFERENCE,   'difference',   'DIFFERENCE'  ],
+    [BLEND_EXCLUSION,    'exclusion',    'EXCLUSION'   ],
+    [BLEND_HUE,          'hue',          'HUE'         ],
+    [BLEND_SATURATION,   'saturation',   'SATURATION'  ],
+    [BLEND_COLOR,        'color',        'COLOR'       ],
+    [BLEND_LUMINOSITY,   'luminosity',   'LUMINOSITY'  ]
+];
+
+
+
+const FONT_WEIGHTS =
+[
+    ['thin',        100],
+    ['extra light', 200],
+    ['light',       300],
+    ['regular',     400],
+    ['medium',      500],
+    ['semi bold',   600],
+    ['bold',        700],
+    ['extra bold',  800],
+    ['black',       900]
+];
+
+
+
+const FO_TYPE           =  0;
+const FO_NODE_ID        =  1;
+
+const FO_OBJECT_ID      =  2;   const FO_STYLE_ID     = 2;
+const FO_OBJECT_NAME    =  3;   const FO_STYLE_NAME   = 3;
+
+const FO_FEEDBACK       =  4;   const FO_STYLE_PAINTS = 4;
+const FO_RETAIN         =  5;
+
+
+const FO_XP0            =  6;
+const FO_XP1            =  7;
+const FO_XP2            =  8;
+
+const FO_SCALE          =  9;
+
+const FO_FILLS          = 10;
+const FO_STROKES        = 11;
+
+
+const FO_STROKE_WEIGHT  = 12;
+const FO_STROKE_ALIGN   = 13;
+const FO_STROKE_JOIN    = 14;                                    
+const FO_STROKE_MITER   = 15;
+const FO_STROKE_CAP     = 16;
+const FO_STROKE_DASHES  = 17;
+
+const FO_EFFECTS        = 18;
+
+const FO_DECO           = 19;
+const FO_IS_CENTER      = 20;   
+
+const FO_OPACITY        = 21;
+const FO_BLEND          = 22;
+const FO_MASK           = 23;
+
+const FO_X              = 24;                                                                         const FO_BOOLEAN_CHILDREN    = 24;                                                                                              const FO_GROUP_CHILDREN = 24;
+const FO_Y              = 25;                                                                         const FO_BOOLEAN_OPERATION   = 25;
+const FO_WIDTH          = 26;   
+const FO_HEIGHT         = 27;                                    
+
+const FO_RECT_ROUND     = 28;   const FO_ELLIPSE_ROUND   = 28;   const FO_VECTOR_NETWORK_DATA = 28;   const FO_VECTOR_PATH_DATA    = 28;   const FO_POLY_ROUND   = 28;   const FO_STAR_ROUND  = 28;   const FO_FIG_WIDTH      = 28;   const FO_FRAME_ROUND    = 28;
+                                const FO_ELLIPSE_START   = 29;                                        const FO_VECTOR_PATH_WINDING = 29;   const FO_POLY_CORNERS = 29;   const FO_STAR_POINTS = 29;   const FO_FIG_HEIGHT     = 29;   const FO_FRAME_CLIP     = 29;
+                                const FO_ELLIPSE_SWEEP   = 30;                                        const FO_VECTOR_PATH_ROUND   = 30;                                 const FO_STAR_CONVEX = 30;   const FO_TEXT           = 30;   const FO_FRAME_CHILDREN = 30;
+                                                                                                                                 
+                                const FO_ELLIPSE_INNER   = 31;                                                                                                                                        const FO_FONT           = 31;
+                                                                                                                                                                                                      const FO_FONT_SIZE      = 32;
+                                                                                                                                                                                                      const FO_FONT_STYLE     = 33;
+                                                                                                                                                                                                                                    
+                                                                                                                                                                                                      const FO_ALIGN_H        = 34;
+                                                                                                                                                                                                      const FO_ALIGN_V        = 35;
+                                                                                                                                                                                                                                    
+                                                                                                                                                                                                      const FO_LINE_HEIGHT    = 36;
+                                                                                                                                                                                                      const FO_LETTER_SPACING = 37;
+
+
+const base32chars = '12345679ABCDEFGHJKLMNPQRSTUVWXYZ';
+
+
+
+function arrayToBase32(array, chars = base32chars)
+{
+    let base32 = '';
+
+    
+    let len = array.length;
+    let i   = 0;
+
+    while (len > 0)
+    {
+        if (len >= 5)
+        {
+            const a0 = array[i  ],
+                  a1 = array[i+1],
+                  a2 = array[i+2],
+                  a3 = array[i+3],
+                  a4 = array[i+4];
+            
+            base32 += chars[ (a0 & 0xF8) >>> 3];
+            base32 += chars[((a0 & 0x07) <<  2) | ((a1 & 0xC0) >>> 6)];
+            base32 += chars[ (a1 & 0x3E) >>> 1];
+            base32 += chars[((a1 & 0x01) <<  4) | ((a2 & 0xF0) >>> 4)];
+            base32 += chars[((a2 & 0x0F) <<  1) | ((a3 & 0x80) >>> 7)];
+            base32 += chars[ (a3 & 0x7C) >>> 2];
+            base32 += chars[((a3 & 0x03) <<  3) | ((a4 & 0xE0) >>> 5)];
+            base32 += chars[ (a4 & 0x1F)];
+        }
+        else if (len == 4)
+        {
+            const a0 = array[i  ],
+                  a1 = array[i+1],
+                  a2 = array[i+2],
+                  a3 = array[i+3];
+            
+            base32 += chars[ (a0 & 0xF8) >>> 3];
+            base32 += chars[((a0 & 0x07) <<  2) | ((a1 & 0xC0) >>> 6)];
+            base32 += chars[ (a1 & 0x3E) >>> 1];
+            base32 += chars[((a1 & 0x01) <<  4) | ((a2 & 0xF0) >>> 4)];
+            base32 += chars[((a2 & 0x0F) <<  1) | ((a3 & 0x80) >>> 7)];
+            base32 += chars[ (a3 & 0x7C) >>> 2];
+            base32 += chars[((a3 & 0x03) <<  3)];
+        }
+        else if (len == 3)
+        {
+            const a0 = array[i  ],
+                  a1 = array[i+1],
+                  a2 = array[i+2];
+            
+            base32 += chars[ (a0 & 0xF8) >>> 3];
+            base32 += chars[((a0 & 0x07) <<  2) | ((a1 & 0xC0) >>> 6)];
+            base32 += chars[ (a1 & 0x3E) >>> 1];
+            base32 += chars[((a1 & 0x01) <<  4) | ((a2 & 0xF0) >>> 4)];
+            base32 += chars[((a2 & 0x0F) <<  1)];
+        }
+        else if (len == 2)
+        {
+            const a0 = array[i  ],
+                  a1 = array[i+1];
+            
+            base32 += chars[ (a0 & 0xF8) >>> 3];
+            base32 += chars[((a0 & 0x07) <<  2) | ((a1 & 0xC0) >>> 6)];
+            base32 += chars[ (a1 & 0x3E) >>> 1];
+            base32 += chars[((a1 & 0x01) <<  4)];
+        }
+        else if (len == 1)
+        {
+            const a0 = array[i];
+            
+            base32 += chars[ (a0 & 0xF8) >>> 3];
+            base32 += chars[((a0 & 0x07) <<  2)];
+        }
+
+
+        i   += 5;
+        len -= 5;
+    }
+
+
+    return base32;
+}
+
+
+
+function base32toArray(base32, chars = base32chars)
+{
+    const array = [];
+
+
+    let len = base32.length;
+    let c   = 0;
+
+    while (len > 0)
+    {
+        if (len >= 8)
+        {
+            const c0 = chars.indexOf(base32[c  ]),
+                  c1 = chars.indexOf(base32[c+1]),
+                  c2 = chars.indexOf(base32[c+2]),
+                  c3 = chars.indexOf(base32[c+3]),
+                  c4 = chars.indexOf(base32[c+4]),
+                  c5 = chars.indexOf(base32[c+5]),
+                  c6 = chars.indexOf(base32[c+6]),
+                  c7 = chars.indexOf(base32[c+7]);
+
+            array.push( (c0         << 3) | ((c1 & 0x1C) >>> 2));
+            array.push(((c1 & 0x03) << 6) | (c2 << 1) | ((c3 & 0x10) >>> 4));
+            array.push(((c3 & 0x0F) << 4) | ((c4 & 0x1E) >>> 1));
+            array.push(((c4 & 0x01) << 7) | (c5 << 2) | ((c6 & 0x18) >>> 3));
+            array.push(((c6 & 0x07) << 5) | c7);
+        }
+        else if (len == 7)
+        {
+            const c0 = chars.indexOf(base32[c  ]),
+                  c1 = chars.indexOf(base32[c+1]),
+                  c2 = chars.indexOf(base32[c+2]),
+                  c3 = chars.indexOf(base32[c+3]),
+                  c4 = chars.indexOf(base32[c+4]),
+                  c5 = chars.indexOf(base32[c+5]),
+                  c6 = chars.indexOf(base32[c+6]);
+
+            array.push(( c0         << 3) | ((c1 & 0x1C) >>> 2));
+            array.push(((c1 & 0x03) << 6) | (c2 << 1) | ((c3 & 0x10) >>> 4));
+            array.push(((c3 & 0x0F) << 4) | ((c4 & 0x1E) >>> 1));
+            array.push(((c4 & 0x01) << 7) | (c5 << 2) | ((c6 & 0x18) >>> 3));
+        }
+        else if (len == 5)
+        {
+            const c0 = chars.indexOf(base32[c  ]),
+                  c1 = chars.indexOf(base32[c+1]),
+                  c2 = chars.indexOf(base32[c+2]),
+                  c3 = chars.indexOf(base32[c+3]),
+                  c4 = chars.indexOf(base32[c+4]);
+
+            array.push( (c0         << 3) | ((c1 & 0x1C) >>> 2));
+            array.push(((c1 & 0x03) << 6) | (c2 << 1) | ((c3 & 0x10) >>> 4));
+            array.push(((c3 & 0x0F) << 4) | ((c4 & 0x1E) >>> 1));
+        }
+        else if (len == 4)
+        {
+            const c0 = chars.indexOf(base32[c  ]),
+                  c1 = chars.indexOf(base32[c+1]),
+                  c2 = chars.indexOf(base32[c+2]),
+                  c3 = chars.indexOf(base32[c+3]);
+
+            array.push( (c0         << 3) | ((c1 & 0x1C) >>> 2));
+            array.push(((c1 & 0x03) << 6) | (c2 << 1) | ((c3 & 0x10) >>> 4));
+        }
+        else if (len == 2)
+        {
+            const c0 = chars.indexOf(base32[c  ]),
+                  c1 = chars.indexOf(base32[c+1]);
+
+            array.push((c0 << 3) | ((c1 & 0x1C) >>> 2));
+        }
+
+
+        c   += 8;
+        len -= 8;
+    }
+
+
+    return array;
+}
+
+
+async function logSavedNode(nodeKey, darkMode)
+{
+    const log  = formatSavedNodeJson(await figGetPageData(nodeKey, false));
+
+    if (darkMode)
+    {
+        console.log(
+            '%c%s\n%c%s', 
+            'background: #fa24; color: white;', 
+            noNodeTag(nodeKey), 
+            'background: #fa44; color: #edc;',
+            log);
+    }
+    else
+    {
+        console.log(
+            '%c%s\n%c%s', 
+            'background: #fdb; color: black;', 
+            noNodeTag(nodeKey), 
+            'background: #fed; color: black;',
+            log);
+    }
+}
+
+
+
+function formatSavedNodeJson(json)
+{
+    let formJson = json
+        .replace('{\n', '')
+        .replace('\n}', '')
+
+        .replace('[\n' + HTAB, '')
+        .replace('\n' + HTAB + ']', '')
+
+        .split(HTAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
+
+        .split('": "').join(': ')
+        .split('", "').join(': ')
+
+        .split(HTAB + '"').join(HTAB)
+        .split(HTAB + HTAB + '["').join(HTAB + HTAB)
+        
+        .split('",\n').join('\n')
+        .split('"\n').join('\n')
+        
+        .split('"],\n').join('\n');
+
+
+    if (formJson[formJson.length-1] == '"')
+        formJson = formJson.substring(0, formJson.length - 1);
+
+    if (formJson.substring(formJson.length-2) == '"]')    
+        formJson = formJson.substring(0, formJson.length - 2);
+
+    return formJson;
+}
+
+
+
+function formatSavedDataJson(json)
+{
+    let formJson = json
+        .replace('{\n', '')
+        .replace('\n}', '')
+        .replace('[\n' + HTAB, '')
+        .replace('\n' + HTAB + ']', '');
+
+    return formJson;
+}
+
+
+
+function logSavedConn(conn, darkMode)
+{
+    const strConn = connToString(conn, true);
+
+    if (darkMode)
+    {
+        console.log(
+            '%c%s', 
+            'background: #4f44; color: #ded', 
+            strConn); 
+    }
+    else
+    {
+        console.log(
+            '%c%s', 
+            'background: #cfc; color: black;', 
+            strConn); 
+    }
+}
+
+
+console.clear();
+
+
+figma.payments.setPaymentStatusInDevelopment({type: 'PAID'});
+
+
+figma.loadAllPagesAsync().then(() =>
+{
+    //figma.on('selectionchange', figOnSelectionChange);
+
+    figma.on('documentchange',  figOnDocumentChange);
+    figma.on('selectionchange', figOnSelectionChange);
+    figma.on('close',           figOnPluginClose);
+});
+
+
+figDeleteAllObjects(true);
+
+
+figma.clientStorage.getAsync('pro').then(data =>
+{
+    figma.showUI(
+        __html__,
+        {
+            visible:     false,
+            themeColors: true,
+            title:       'Generator' + (data !== true ? ' (Free version)' : '')
+        });
+});
+
+
+var curZoom = figma.viewport.zoom;
+setInterval(figOnZoomInterval, 100);
+
+
+var strBackgrounds = '';
+setInterval(figCheckBackgrounds, 500);
+
+
+const clockMarker   = 'clock_';
+const clockInterval = 1000;
+
+
+var showIds          = false;
+var objectCenterSize = 15;
+
+
+// figma.currentPage
+//     .getPluginDataKeys()
+//     .forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k).replace('\\', '\\\\')));
+
+
+
+function figStartGenerator()
+{
+    (async function()
+    {
+        figma.currentPage.loadAsync().then(async () =>
+        {
+            let _wndWidth  = await figma.currentPage.getPluginData(figma.currentUser.id+',windowWidth');
+            let _wndHeight = await figma.currentPage.getPluginData(figma.currentUser.id+',windowHeight');
+
+            let wndWidth;
+            let wndHeight;
+
+            if (_wndWidth  === NULL) { wndWidth  = 800; figma.currentPage.setPluginData(figma.currentUser.id+',windowWidth',  _wndWidth .toString()); } else wndWidth  = parseInt(_wndWidth );
+            if (_wndHeight === NULL) { wndHeight = 600; figma.currentPage.setPluginData(figma.currentUser.id+',windowHeight', _wndHeight.toString()); } else wndHeight = parseInt(_wndHeight);
+
+            
+            figma.ui.resize(
+                Math.max(minWindowWidth,  wndWidth ),
+                Math.max(minWindowHeight, wndHeight));
+
+            figma.ui.show();
+
+            
+            const fonts = await figma.listAvailableFontsAsync();
+    
+            const eula      = (await figma.clientStorage.getAsync('eula'     )) === 'true';
+            const tutorials = (await figma.clientStorage.getAsync('tutorials')) === 'true';
+            const isLocked  = await figPageIsLocked();
+
+        
+            figPostMessageToUi(
+            {
+                cmd:          'uiReturnFigStartGenerator',
+                currentUser:   figma.currentUser,
+                viewportRect:  figma.viewport.bounds,
+                viewportZoom:  figma.viewport.zoom,
+                fonts:         fonts,
+                eula:          eula,
+                tutorials:     tutorials,
+                isLocked:      isLocked,
+                windowWidth:   wndWidth,
+                windowHeight:  wndHeight
+            });
+        });
+    })();
+}
+
+
+
+function figRestartGenerator()
+{
+    figDeleteAllObjects();
+
+    figma.showUI(
+        __html__,
+        {
+            visible:     false,
+            themeColors: true
+        });
+}
+
+
+
+function figFinishStart()
+{
+    setInterval(figOnIdInterval, clockInterval);
+}
+
+
+
+function figOnZoomInterval()
+{
+    if (figma.viewport.zoom == curZoom)
+        return;
+
+    curZoom = figma.viewport.zoom;
+
+    updatePointObjects();
+    updateEmptyObjects();
+    updateDecoObjects();
+}
+
+
+
+function figCheckBackgrounds()
+{
+    if (strBackgrounds != JSON.stringify(figma.currentPage.backgrounds))
+    {
+        updateEmptyObjects();
+        strBackgrounds = JSON.stringify(figma.currentPage.backgrounds);
+    }
+}
+
+
+
+function figOnIdInterval()
+{
+    figSetPageData(clockMarker + figma.currentUser.sessionId.toString(), Date.now().toString())
+}
+
+
+
+async function figPageIsLocked()
+{
+    await figma.currentPage.loadAsync();
+
+
+    const clocks = figma.currentPage.getPluginDataKeys()
+        .filter(k => 
+               k.length > clockMarker.length
+            && k.substring(0, clockMarker.length) == clockMarker
+            && k.substring(   clockMarker.length) != figma.currentUser.sessionId.toString())
+        .map(async k => parseInt(await figGetPageData(k)));
+
+
+    clocks.sort();
+
+    const now = Date.now();
+
+    const locked = clocks.length > 0
+        && now - (await clocks[clocks.length-1]) < clockInterval*2;
+
+
+    return locked;
+}
+
+
+
+function figOnSelectionChange()
+{
+    updatePointObjects();
+}
+
+
+var figObjectArrays = new Array(); // [ {nodeId, [objects]} ]
+var figStyleArrays  = new Array(); // [ {nodeId, [styles]}  ]
+
+
+
+async function figGetObjectsFromIds(objectIds)
+{
+    for (let i = figPoints.length-1; i >= 0; i--)
+        if (  !figPoints[i].removed
+            && objectIds.includes(figPoints[i].getPluginData('objectId')))
+            figPoints.splice(i, 1);
+
+    for (let i = figEmptyObjects.length-1; i >= 0; i--)
+        if (   figEmptyObjects[i].removed
+            || objectIds.includes(figEmptyObjects[i].getPluginData('objectId')))
+            figEmptyObjects.splice(i, 1);
+
+    await figma.currentPage.loadAsync();
+
+    return figma.currentPage.findAll(o => objectIds.includes(o.getPluginData('objectId')));
+}
+
+
+
+async function figDeleteObjectsFromNodeIds(nodeIds)
+{
+    for (let i = figPoints.length-1; i >= 0; i--)
+        if (  !figPoints[i].removed
+            && nodeIds.includes(figPoints[i].getPluginData('nodeId')))
+            figPoints.splice(i, 1);
+
+    for (let i = figEmptyObjects.length-1; i >= 0; i--)
+        if (   figEmptyObjects[i].removed
+            || nodeIds.includes(figEmptyObjects[i].getPluginData('nodeId')))
+            figEmptyObjects.splice(i, 1);
+
+    await figma.currentPage.loadAsync();
+
+    figma.currentPage
+        .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
+        .forEach(o => { if (!o.removed) o.remove(); });
+
+
+    figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
+}
+
+
+
+function figDeleteAllObjects(forceDelete = false)
+{
+    for (const figObj of figma.currentPage.children)
+    {
+        if (figObj.removed)
+            continue;
+
+        if (    figObj.getPluginData('objectId') != ''
+            &&  figObj.getPluginData('userId'  ) == figma.currentUser.id
+            && (   parseInt(figObj.getPluginData('retain')) == 0
+                || forceDelete)) 
+            figObj.remove();
+    }
+}
+
+
+
+function figDeleteObjectsExcept(nodeIds, genIgnoreObjects)
+{
+    for (let i = figObjectArrays.length-1; i >= 0; i--)
+    {
+        const figObjArray = figObjectArrays[i];
+
+        if (!nodeIds.includes(figObjArray.nodeId))
+            continue;
+
+
+        for (let j = figObjArray.objects.length-1; j >= 0; j--)
+        {
+            const figObj = figObjArray.objects[j];
+            
+            if (    figObj.removed
+                || !findObject(figObj, genIgnoreObjects))
+            {
+                if (!figObj.removed)
+                    figObj.remove();
+
+                removeFromArray(figObjArray.objects, figObj);
+
+                if (figPoints.includes(figObj))
+                    removeFromArray(figPoints, figObj);
+
+                if (figEmptyObjects.includes(figObj))
+                    removeFromArray(figEmptyObjects, figObj);
+            }
+
+            
+            if (  !figObj.removed)
+            {
+                if (parseInt(figObj.getPluginData('retain')) == 2)
+                    clearObjectData(figObj);
+            }
+        }
+
+
+        if (isEmpty(figObjArray.objects))
+            removeFromArray(figObjectArrays, figObjArray);
+
+    }
+}
+
+
+
+function findObject(figObj, genIgnoreObjects)
+{
+    if (   figObj.type == SHAPE_GROUP
+        || figObj.type == FRAME)
+    {
+        for (const child of figObj.children)
+        {
+            const found = findObject(child, genIgnoreObjects);
+            if (found) return found;
+        }
+    }
+    else
+    {
+        const found = genIgnoreObjects.find(o => 
+                  figObj.getPluginData('objectId' ) == o[FO_OBJECT_ID] 
+               && figObj.getPluginData('userId'   ) == figma.currentUser.id
+               //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
+            ||    o[FO_RETAIN] == 2
+               && o[FO_RETAIN] == figObj.getPluginData('retain'));
+
+        if (found) 
+            return found;
+    }
+
+    
+    return null;
+}
+
+
+
+function figDeleteStylesFromNodeIds(nodeIds, mustDelete)
+{
+    // styles are deleted first
+
+    figma.getLocalPaintStylesAsync().then(paintStyles =>
+    {
+        paintStyles
+            .filter(s => 
+                    nodeIds.includes(s.getPluginData('nodeId')))
+    //            && !parseBool(s.getPluginData('existing')))
+            .forEach(s => 
+            {
+                const nodeId   = s.getPluginData('nodeId');
+                const existing = parseBool(s.getPluginData('existing'));
+                
+                if (!existing) 
+                {
+                    s.remove();
+                }
+                else if (mustDelete)
+                {
+                    removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
+
+                    s.setPluginData('type',     NULL);
+                    s.setPluginData('nodeId',   NULL);
+                    s.setPluginData('existing', NULL);
+                }
+            });
+    });
+
+
+    if (mustDelete)
+        figStyleArrays = figStyleArrays.filter(a => !nodeIds.includes(a.nodeId));
+}
+
+
+
+var styleChangingFromGenerator = false;
+
+
+
+//function figOnSelectionChange(e)
+//{
+    /*  Every time a selection changes, check that all objects in the object table
+        still exist in the canvas. If not, remove the pointer from the object table.  
+        
+        NOTE: at this point I don't know if objects are deleted by the API, but then again,
+        only one plugin runs at a time right now, so maybe it's not an issue.  */
+
+
+    // figma.currentPage.loadAsync().then(() =>
+    // {
+        // for (let i = 0; i < objNodes.length; i++)
+        // {
+        //     if (!objNodes[i]) continue;
+            
+        //     for (let j = 0; j < objNodes[i].length; j++)
+        //     {
+        //         if (!objNodes[i][j]) continue;
+
+        //         const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('objectId')) == i);
+        //         if (!exists) objNodes[i][j] = null;
+        //     }
+        // }
+    // });
+//}
+
+
+
+function figOnDocumentChange(e)
+{
+    for (const change of e.documentChanges)
+    {
+        switch (change.type)
+        {
+            case 'STYLE_CREATE': 
+                // this is for undoing style deletion in Figma,
+                // when the style comes back it shouldn't be like before
+
+                if (!change.style)
+                    break;
+
+                if (!styleChangingFromGenerator)
+                {
+                    change.style.setPluginData('type',     NULL);
+                    change.style.setPluginData('nodeId',   NULL);
+                    change.style.setPluginData('existing', NULL);
+                }
+
+                break;
+
+
+            case 'STYLE_PROPERTY_CHANGE': 
+            {
+                if (!change.style)
+                    break;
+
+                if (!styleChangingFromGenerator)
+                {
+                    const msg = {
+                        cmd:       'uiStylePropertyChange',
+                        styleId:    cleanStyleId(change.id),
+                        properties: change.properties,
+                        name:       '',
+                        paints:     [] };
+    
+
+                    for (const prop of change.properties)
+                    {
+                        switch (prop)
+                        {
+                            case 'name':  msg.name   = change.style.name;   break;
+                            case 'paint': msg.paints = change.style.paints; break;
+                        }
+                    }
+
+
+                    figPostMessageToUi(msg);
+                }
+                
+                break;
+            }
+
+            
+            case 'STYLE_DELETE':
+                figPostMessageToUi({
+                    cmd:    'uiStyleDelete',
+                    styleId: change.id });
+
+                break;
+        }
+    }
+
+    styleChangingFromGenerator = false;
+}
+
+
+
+function figOnPluginClose()
+{
+    figDeleteAllObjects();
+    figPostMessageToUi({ cmd: 'updateMetrics' });
+}
+
+
+// from UI <--
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+figma.ui.onmessage = function(msg)
+{
+    msg = JSON.parse(msg);
+    
+
+    if (msg.cmd == 'returnUiGetValueForFigma') // ignore this message in the queue
+        return;
+
+
+    switch (msg.cmd)
+    {
+        case 'figStartGenerator':                     figStartGenerator                    ();                                            break;
+        case 'figRestartGenerator':                   figRestartGenerator                  ();                                            break;
+     
+        case 'figFinishStart':                        figFinishStart                       ();                                            break;       
+
+        case 'figDockWindowNormal':                   figDockWindow                        ('normal');                                    break;
+        case 'figDockWindowMaximize':                 figDockWindow                        ('maximize');                                  break;
+        case 'figDockWindowTop':                      figDockWindow                        ('top');                                       break;
+        case 'figDockWindowLeft':                     figDockWindow                        ('left');                                      break;
+        case 'figDockWindowRight':                    figDockWindow                        ('right');                                     break;
+        case 'figDockWindowBottom':                   figDockWindow                        ('bottom');                                    break;        
+
+        case 'figGetMousePosition':                   figGetMousePosition                  (msg.clientPosition);                          break;
+
+        //case 'figPositionWindow':                   figPositionWindow                    (msg.x, msg.y);                                break; 
+        case 'figResizeWindow':                       figResizeWindow                      (msg.width, msg.height);                       break; 
+
+        case 'figSetWindowRect':                      figSetWindowRect                     (msg.x, msg.y, msg.width, msg.height);         break;
+
+        case 'figNotify':                             figNotifyMsg                         (msg);                                         break;
+     
+        case 'figGetLocalData':                       figGetLocalData                      (msg.key);                                     break;
+        case 'figSetLocalData':                       figSetLocalData                      (msg.key, msg.value);                          break;
+     
+        case 'figClearAllLocalData':                  figClearAllLocalData                 ();                                            break;
+     
+        case 'figGetPageData':                        figGetPageData                       (msg.key);                                     break;
+        case 'figSetPageData':                        figSetPageData                       (msg.key, msg.value);                          break;
+        
+        case 'figSavePages':                          figSavePages                         (msg.pageIds, msg.pageJson, msg.currentPageId); break; // underscore is for minification
+     
+        case 'figLoadNodesAndConns':                  figLoadNodesAndConns                 (msg.debugMode);                               break;
+        case 'figSaveNodes':                          figSaveNodes                         (msg.nodeIds, msg.nodeJson);                   break;
+     
+        case 'figGetAllLocalTemplateNames':           figGetAllLocalTemplateNames          ();                                            break;
+        case 'figSaveLocalTemplate':                  figSaveLocalTemplate                 (msg.templateName, msg.template);              break;
+
+        case 'figRemoveConnsToNodes':                 figRemoveConnsToNodes                (msg.nodeIds);                                 break;
+        case 'figRemoveSavedNodesAndConns':           figRemoveSavedNodesAndConns          (msg.nodeIds);                                 break;
+        case 'figRemoveAllSavedNodesAndConns':        figRemoveAllSavedNodesAndConns       ();                                            break;
+     
+
+        case 'figLogAllSavedNodesAndConns':           figLogAllSavedNodesAndConns          (msg.darkMode);                                break;
+        case 'figLogAllSavedNodes':                   figLogAllSavedNodes                  (msg.darkMode);                                break;
+        case 'figLogAllSavedConns':                   figLogAllSavedConns                  (msg.darkMode);                                break;
+     
+        case 'figLogAllSavedPageKeys':                figLogAllSavedPageKeys               (msg.darkMode);                                break;
+        case 'figLogAllSavedPages':                   figLogAllSavedPages                  (msg.darkMode);                                break;
+        case 'figLogAllSavedConnKeys':                figLogAllSavedConnKeys               (msg.darkMode);                                break;
+
+        case 'figLogAllLocalData':                    figLogAllLocalData                   (msg.darkMode);                                break;
+     
+        case 'figGetValue':                           figGetValue                          (msg.key, msg.spec);                           break;
+
+        case 'figRemoveSavedPage':                    figRemoveSavedPage                   (msg.pageId);                                  break;
+        case 'figRemoveAllSavedPages':                figRemoveAllSavedPages               ();                                            break;
+
+
+        case 'figSaveConnection':                     figSaveConnection                    (msg.key, msg.json);                           break;
+        case 'figSaveConnections':                    figSaveConnections                   (msg.keys, msg.json);                          break;
+        case 'figUpdateSavedConnections':             figUpdateSavedConnections            (msg.curKeys, msg.newKeys, msg.json);          break;
+        case 'figDeleteSavedConnection':              figDeleteSavedConnection             (msg.key);                                     break;
+     
+        case 'figRemoveAllSavedConnections':          figRemoveAllSavedConnections         ();                                            break;
+        case 'figDeleteSavedConnectionsToNode':       figDeleteSavedConnectionsToNode      (msg.nodeId);                                  break;
+        case 'figDeleteSavedConnectionsFromNode':     figDeleteSavedConnectionsFromNode    (msg.nodeId);                                  break;
+        case 'figRemovePluginDataFromAllLocalStyles': figRemovePluginDataFromAllLocalStyles();                                            break;
+
+        case 'figGetAllLocalVariables':               figGetAllLocalVariables              (msg.nodeId, msg.px, msg.py);                  break;
+        case 'figLinkNodeToVariable':                 figLinkNodeToVariable                (msg.nodeId, msg.variableId);                  break;
+        case 'figUpdateVariable':                     figUpdateVariableAsync               (msg.variableId, msg.value);                   break;
+
+        case 'figGetAllLocalColorStyles':             figGetAllLocalColorStyles            (msg.nodeId, msg.px, msg.py);                  break;
+        case 'figLinkNodeToExistingColorStyle':       figLinkNodeToExistingColorStyle      (msg.nodeId, msg.styleId);                     break;
+     
+     // case 'figUpdateViewportRect':                 figPostMessageToUi({cmd: 'uiReturnUpdateViewportRect', viewportRect: figma.viewport.bounds }); break;
+     
+        case 'figExport':                             figExport                            (msg.objectIds, msg.scale, msg.format, msg.suffix); break;
+
+        case 'figGetObjectSize':                      figGetObjectSize                     (msg.object);                                  break;
+        case 'figGetVariableUpdates':                 figGetVariableUpdates                (msg.linkedVarIds);                            break;
+
+        case 'figUpdateShowIds':                      
+            showIds = msg.showIds; 
+            break;
+     
+        case 'figUpdateObjectCenterSize':                      
+            objectCenterSize = msg.objectCenterSize; 
+            break;
+     
+        case 'figDeleteAllObjects':                   figDeleteAllObjects                  ();                                            break;
+
+        case 'figUpdateObjectsAndStyles':
+            nominalObjectCount = 0;
+            actualObjectCount  = 0;
+            
+            msg.objects.forEach(o => o.counted = false);
+            
+            figUpdateObjects(
+                null, 
+                msg.objects, 
+                msg.objectBatchSize, 
+                msg.totalObjects,
+                msg.nodeIds, 
+                msg.firstChunk, 
+                msg.lastChunk, 
+                msg.zoomToFit);
+            
+            figUpdateStyles(msg);
+            
+            break;
+     
+        case 'figDeleteObjectsAndStyles':
+            figDeleteObjectsFromNodeIds(msg.nodeIds);
+            figDeleteStylesFromNodeIds(msg.nodeIds, msg.mustDelete);
+            break; 
+    
+        case 'figDeleteObjectsExcept':             
+            figDeleteObjectsExcept(msg.nodeIds, msg.ignoreObjects);
+            break; 
+    
+        case 'figTriggerUndo': figma.triggerUndo(); break;
+        case 'figCommitUndo':  figma.commitUndo();  break;
+
+        case 'figSaveSnapshot': figSaveSnapshot(msg.index, msg.objectIds); break
+    }
+
+
+    figPostMessageToUi({
+        cmd:    'uiEndFigMessage',
+        msgCmd:  msg.cmd });
+};
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+// to UI -->
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+function figPostMessageToUi(msg)
+{
+    figma.ui.postMessage(JSON.stringify(msg));
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+async function figLoadLocal(key)
+{
+    return await figma.clientStorage.getAsync(key); 
+}
+
+
+
+function figGetLocalData(key)
+{
+    figma.currentPage.loadAsync().then(() =>
+    {
+        if (key == 'canvasEmpty')
+        {
+            figPostMessageToUi(
+            {
+                cmd:  'uiReturnFigGetLocalData',
+                key:   key,
+                value: figma.currentPage.children.length == 0
+            });
+        }
+        else if (key == 'debugWarningCrash')
+        {
+            figma.clientStorage.getAsync('debugWarning').then(data =>
+            {
+                figPostMessageToUi({
+                    cmd:  'uiReturnFigGetLocalData',
+                    key:   key,
+                    value: data
+                });
+            });
+        }
+        else
+        {
+            figma.clientStorage.getAsync(key).then(data =>
+            {
+                figPostMessageToUi({
+                    cmd:  'uiReturnFigGetLocalData',
+                    key:   key,
+                    value: data
+                });
+            });
+        }
+    });
+}
+
+
+
+function figSetLocalData(key, value, postToUi = true)
+{
+    figma.clientStorage.setAsync(key, value); 
+
+    if (postToUi)
+    {
+        figPostMessageToUi({
+            cmd:  'uiReturnFigSetLocalData',
+            key:   key,
+            value: value
+        });
+    }
+}
+
+
+
+async function figClearAllLocalData()
+{
+    const keys = await figma.clientStorage.keysAsync(); 
+
+    for (const key of keys)
+        figma.clientStorage.deleteAsync(key);
+}
+
+
+
+async function figGetPageData(key, postToUi = true)
+{
+    await figma.currentPage.loadAsync();
+
+    const data = figma.currentPage.getPluginData(key);
+
+    if (postToUi)
+    {
+        figPostMessageToUi({
+            cmd:  'uiReturnFigGetPageData',
+            key:   key,
+            value: data
+        });
+    }
+
+    return data;
+}
+
+
+
+function figSetPageData(key, value)
+{
+    figClearPageData(key); // remove possible existing values first
+    figma.currentPage.setPluginData(key, value);
+}
+
+
+
+function figClearPageData(key)
+{
+    figma.currentPage.setPluginData(key, ''); 
+}
+
+
+
+function figLoadNodesAndConns(debugMode)
+{
+    figma.currentPage.loadAsync().then(() =>
+    {
+        // const pageIds  = figma.currentPage.getPluginData('pages');
+
+
+        const pageKeys  = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
+        const nodeKeys  = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
+        const connKeys  = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+
+
+        if (!debugMode)
+            figMarkForLoading(nodeKeys, connKeys);
+
+        const pages     = pageKeys.map(k => figma.currentPage.getPluginData(k));
+        const nodes     = nodeKeys.map(k => figma.currentPage.getPluginData(k));
+        const conns     = connKeys.map(k => figma.currentPage.getPluginData(k));
+
+
+        const pageOrder     = figma.currentPage.getPluginData('pageOrder').split(',');
+        const currentPageId = figma.currentPage.getPluginData('currentPageId');
+        
+
+        initPageStyles(nodes);
+
+
+        const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');
+
+
+        figPostMessageToUi({
+            cmd:               'uiReturnFigLoadNodesAndConns',
+            showAllColorSpaces: showAllColorSpaces,
+            pageKeys:           pageKeys,
+            pageJson:           pages,
+            pageOrder:          pageOrder,
+            currentPageId:      currentPageId,
+            nodeKeys:           nodeKeys,
+            nodeJson:           nodes,
+            connKeys:           connKeys,
+            connJson:           conns
+        });
+    });
+}
+
+
+
+function initPageStyles(nodes)
+{
+    figStyleArrays = [];
+
+
+    figma.getLocalPaintStylesAsync().then(paintStyles =>
+    {
+        for (const _node of nodes)
+        {
+            const node = JSON.parse(_node);
+
+            if (node.type == COLOR_STYLE)
+            {
+                const style = paintStyles.find(s =>
+                {
+                    const nodeId = s.getPluginData('nodeId');
+                    return nodeId == node.id;
+                });
+
+                if (style)
+                {
+                    figStyleArrays.push({
+                        nodeId:   node.id, 
+                        existing: parseBool(node.existing), 
+                        styles:   [style]});
+                }
+            }
+        }
+    });
+}
+
+
+
+function figMarkForLoading(nodeKeys, connKeys)
+{
+    figma.currentPage.loadAsync().then(() =>
+    { 
+        const loadingFlag = '"loading": "true"';
+        const not         = '{\n';
+        const set         = '{\n' + HTAB + loadingFlag + ',\n';
+
+        nodeKeys.forEach(k => figma.currentPage.setPluginData(k, 
+            figma.currentPage.getPluginData(k)
+                .replace(set, not)
+                .replace(not, set)));
+        
+        connKeys.forEach(k => figma.currentPage.setPluginData(k, 
+            figma.currentPage.getPluginData(k)
+                .replace(set, not)
+                .replace(not, set)));
+    });
+}
+
+
+
+function figSavePages(pageIds, pageJson, currentPageId)
+{
+    for (let i = 0; i < pageIds.length; i++)
+    {
+        figSetPageData(
+            pageNameForStorage(pageIds[i]), 
+            pageJson[i]);
+    }
+
+    figSetPageData('pageOrder',     pageIds.join(','));
+    figSetPageData('currentPageId', currentPageId);
+}
+
+
+
+function figSaveNodes(nodeIds, nodeJson)
+{
+    for (let i = 0; i < nodeIds.length; i++)
+    {
+        figSetPageData(
+            nodeNameForStorage(nodeIds[i]),
+            nodeJson[i]);        
+    }
+}
+
+
+
+async function figGetAllLocalTemplateNames()
+{
+    let keys = await figma.clientStorage.keysAsync(); 
+
+    keys = keys.filter(k => 
+           k.length >= tempTag.length
+        && k.substring(0, tempTag.length) == tempTag);
+        
+    figPostMessageToUi({
+        cmd:          'uiReturnGetAllLocalTemplateNames',
+        templateNames: keys
+    })
+}
+
+
+
+function figSaveLocalTemplate(templateName, template)
+{
+    figSetLocalData(
+        tempTag + ' ' + templateName,
+        template);
+}
+
+
+
+function figRemoveConnsToNodes(nodeIds)
+{
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+
+        for (const key of connKeys)
+        {
+            const parts = noConnTag(key).split(' ');
+
+            if (   nodeIds.includes(parts[0])
+                || nodeIds.includes(parts[2]))
+                figClearPageData(key);
+        }
+    });
+}
+
+
+
+function figRemoveSavedNodesAndConns(nodeIds)
+{
+    figma.currentPage.loadAsync().then(() =>
+    {
+        figRemoveConnsToNodes(nodeIds);
+
+        const nodeKeys = figma.currentPage.getPluginDataKeys().filter(
+            k => isNodeKey(k)
+            && nodeIds.includes(noNodeTag(k)));
+
+        nodeKeys.forEach(k => figClearPageData(k));
+    });
+}
+
+
+
+function figRemoveAllSavedNodesAndConns()
+{
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
+        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+
+        for (const key of nodeKeys) figClearPageData(key);
+        for (const key of connKeys) figClearPageData(key);
+    });
+}
+
+
+
+async function figLogAllSavedNodesAndConns(darkMode)
+{
+    await figLogAllSavedNodes(darkMode);
+          figLogAllSavedConns(darkMode);
+}
+
+
+
+async function figLogAllSavedNodes(darkMode)
+{
+    await figma.currentPage.loadAsync();
+
+    figma.currentPage.getPluginDataKeys()
+        .filter (k => isNodeKey(k))
+        .forEach(async k => await logSavedNode(k, darkMode));
+}
+
+
+
+function figLogAllSavedConns(darkMode)
+{
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const connKeys = figma.currentPage.getPluginDataKeys()
+            .filter(k => isConnKey(k));
+            
+        connKeys.sort((key1, key2) => 
+        {
+            const p1 = noConnTag(key1).split(' ');
+            const p2 = noConnTag(key2).split(' ');
+
+            if (p1[2] != p2[2]) return p1[2] < p2[2] ? -1 : 1;
+            if (p1[3] != p2[3]) return parseInt(p1[3]) - parseInt(p2[3]);
+            
+            if (p1[2] == p2[0]) return -1;
+            if (p2[2] == p1[0]) return  1;
+
+            return 0;
+        });
+
+        connKeys.forEach(k => logSavedConn(JSON.parse(figma.currentPage.getPluginData(k)), darkMode));
+    });
+}
+
+
+
+function figLogAllSavedPageKeys(darkMode)
+{
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const connKeys = figma.currentPage.getPluginDataKeys()
+            .filter(k => isPageKey(k));
+            
+        connKeys.forEach(k => 
+            console.log(
+                '%c'+k, 
+                'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
+
+        const pageOrder = figma.currentPage.getPluginData('pageOrder');
+            
+        console.log(
+            '%c'+pageOrder, 
+            'background: #fff; color: ' + (darkMode ? 'black' : 'white'));
+    });
+}
+
+
+
+function figLogAllSavedPages(darkMode)
+{
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const connKeys = figma.currentPage.getPluginDataKeys()
+            .filter(k => isPageKey(k));
+            
+        connKeys.forEach(k => 
+            console.log(
+                '%c'+figma.currentPage.getPluginData(k), 
+                'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
+
+        const pageOrder = figma.currentPage.getPluginData('pageOrder');
+            
+        console.log(
+            '%c'+pageOrder, 
+            'background: #fff; color: ' + (darkMode ? 'black' : 'white'));
+    });
+}
+
+
+
+function figLogAllSavedConnKeys(darkMode)
+{
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const connKeys = figma.currentPage.getPluginDataKeys()
+            .filter(k => isConnKey(k));
+            
+        connKeys.forEach(k => 
+            console.log(
+                '%c'+k, 
+                'background: #dff; color: ' + (darkMode ? 'black' : 'white')));
+    });
+}
+
+
+
+function figLogAllLocalData(darkMode)
+{
+    figma.clientStorage.keysAsync().then(keys =>
+        keys.forEach(k => 
+            figma.clientStorage.getAsync(k).then(val => console.log(k + ': ' + val))));
+}
+
+
+
+async function figGetValue(key, spec)
+{
+    let result = null;
+
+
+    switch (key)
+    {
+        case 'getVariableData':
+            result = await getVariableValuesAsync(spec);
+            break;
+
+        case 'getPaidStatus':
+            result = figma.payments.status.type;
+            break;
+
+        case 'figSubscribe':
+        {
+            await figma.payments.initiateCheckoutAsync({interstitial: 'PAID_FEATURE'});
+            result = figma.payments.status.type;
+            break;
+        }
+    }
+    
+
+    figPostMessageToUi(
+    {
+        cmd:  'returnFigGetValue',
+        value: result
+    });
+}
+
+
+
+function figGetVariableUpdates(varIds)
+{
+    getVariableValuesAsync(varIds).then(values =>
+    {
+        figPostMessageToUi(
+        {
+            cmd:   'uiReturnFigGetVariableUpdates',
+            values: values
+        });
+    });
+}
+
+
+
+async function figRemoveSavedPage(pageId)
+{
+    figClearPageData(getPageKey(pageId));
+
+    const pageOrder = (await figGetPageData('pageOrder')).split(',');
+    removeFromArrayWhere(pageOrder, id => id == pageId);
+    figSetPageData('pageOrder', pageOrder.join(','));
+}
+
+
+
+function figRemoveAllSavedPages()
+{
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
+        pageKeys.forEach(k => figClearPageData(k));
+
+        figClearPageData('pageOrder');
+    });
+}
+
+
+
+function figSaveConnection(key, json)
+{
+    figSetPageData(key, json);        
+}
+
+
+
+function figSaveConnections(_keys, _json)
+{
+    const keys = JSON.parse(_keys);
+    const json = JSON.parse(_json);
+
+    for (let i = 0; i < keys.length; i++)
+        figSetPageData(keys[i], json[i]);
+}
+
+
+
+function figUpdateSavedConnections(_curKeys, _newKeys, _json)
+{
+    const curKeys = JSON.parse(_curKeys);
+    const newKeys = JSON.parse(_newKeys);
+    const json    = JSON.parse(_json);
+
+    for (let i = 0; i < curKeys.length; i++)
+    {
+        figClearPageData(curKeys[i]);
+        figSetPageData(newKeys[i], json[i]);
+    }
+}
+
+
+
+function figDeleteSavedConnection(key)
+{
+    figClearPageData(key);        
+}
+
+
+
+function figRemoveAllSavedConnections()
+{
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        connKeys.forEach(k => figClearPageData(k));
+    });
+}
+
+
+
+function figDeleteSavedConnectionsToNode(nodeId)
+{
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+
+        for (const key of connKeys)
+        {
+            const parts = key.split(' ');
+
+            if (parts[4] == nodeId)
+                figClearPageData(key);        
+        }
+    });
+}
+
+
+
+function figDeleteSavedConnectionsFromNode(nodeId)
+{
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+
+        for (const key of connKeys)
+        {
+            const parts = key.split(' ');
+
+            if (parts[1] == nodeId)
+                figClearPageData(key);        
+        }
+    });
+}
+
+
+
+function figRemovePluginDataFromAllLocalStyles()
+{
+    figma.getLocalPaintStylesAsync().then(localStyles =>
+    {
+        for (const style of localStyles)
+        {
+            style.setPluginData('type',     '');
+            style.setPluginData('nodeId',   '');
+            style.setPluginData('existing', '');
+        }
+    });
+}
+
+
+
+async function figSaveSnapshot(index, objectIds)
+{
+    const objects = await figGetObjectsFromIds(objectIds);
+    const group   = figma.group(objects, figma.currentPage);
+
+
+    const settings: ExportSettingsImage = { format: 'PNG' };
+
+    const icon = await group.exportAsync(settings);
+
+
+    figma.ungroup(group);
+
+
+    figPostMessageToUi(
+    {
+        cmd:       'uiReturnFigSaveSnapshot',
+        index:      index,
+        iconWidth:  group.width,
+        iconHeight: group.height,
+        icon:       icon
+    });
+}
+
+
+var notifyNotificationHandler = null;
+var notifyDequeueHandler = () => notifyNotificationHandler = null;
+
+var windowDock = 'normal'; // '', 'maximize', 'top', 'left', 'right', 'bottom'
+
+
+
+function figGetMousePosition(clientPosition)
+{
+    // (async () => 
+    // {
+    //     const relaunchData = await figma.ui.getRelaunchData();
+        
+    //     const x = relaunchData.x - window.pageXOffset;
+    //     const y = relaunchData.y - window.pageYOffset;
+
+        figPostMessageToUi({
+            cmd:           'uiReturnFigGetMousePosition',
+            position:       {x: 0, y: 0},
+            clientPosition: clientPosition,
+            viewportZoom:   figma.viewport.zoom,
+            viewportRect:   figma.viewport.bounds });
+    // })
+    // ();
+}
+
+
+
+function figSetWindowRect(x, y, width, height)
+{
+    return;
+    // (async function()
+    // {
+    //     //console.log('figma.viewport.bounds =', figma.viewport.bounds);
+    //     //console.log('_x =',      x);
+    //     //console.log('_y =',      y);
+    //     //console.log('_width =',  width);
+    //     //console.log('_height =', height);
+
+    //     const rect = {
+    //         x:      Math.round(x),
+    //         y:      Math.round(y),
+    //         width:  Math.floor(Math.max(0, width )),
+    //         height: Math.floor(Math.max(0, height))    
+    //     };
+
+        
+    //     // if (windowDock != 'normal')
+    //     //     position = true;
+
+    //     // if (isNaN(rect.x)) rect.x = await figma.clientStorage.getAsync('windowX');
+    //     // if (isNaN(rect.y)) rect.y = await figma.clientStorage.getAsync('windowY');
+
+
+    //     // dockWindow(
+    //     //     windowDock,
+    //     //     rect, 
+    //     //     figma.viewport.bounds);
+
+
+    //     figma.ui.reposition(rect.x,     rect.y     );
+    //     figma.ui.resize    (rect.width, rect.height);
+
+    //     figma.clientStorage.setAsync('windowX',      rect.x     );
+    //     figma.clientStorage.setAsync('windowY',      rect.y     );
+    //     figma.clientStorage.setAsync('windowWidth',  rect.width );
+    //     figma.clientStorage.setAsync('windowHeight', rect.height);
+
+
+    //     figPostMessageToUi({cmd: 'uiReturnFigSetWindowRect'});
+    // })();
+}
+
+
+
+function dockWindow(dock, rect, bounds)
+{
+    switch (dock)
+    {
+        case 'normal':   
+            // x      = windowX;
+            // y      = windowY;
+            // width  = windowWidth;
+            // height = windowHeight;
+            break;
+            
+        case 'maximize':
+            rect.x      = bounds.x;
+            rect.y      = bounds.y;
+            rect.width  = bounds.width;
+            rect.height = bounds.height;        
+            break;
+
+        case 'top':      
+            rect.x      = bounds.x;
+            rect.y      = bounds.y;
+            rect.width  = bounds.width;
+            break;
+
+        case 'left':     
+            rect.x      = bounds.x;
+            rect.y      = bounds.y;
+            rect.height = bounds.height;        
+            break;
+
+        case 'right':    
+            rect.x      = bounds.x + bounds.width - rect.width;
+            rect.y      = bounds.y;
+            rect.height = bounds.height;        
+            break;
+
+        case 'bottom':   
+            rect.x      = bounds.x;
+            rect.y      = bounds.y + bounds.height - rect.height;
+            rect.width  = bounds.width;
+            break;
+    }
+}
+
+
+
+// function figRepositionWindow(x, y)
+// {
+//     figma.ui.reposition(x, y);
+
+//     figma.clientStorage.setAsync('windowX', x);
+//     figma.clientStorage.setAsync('windowY', y);
+
+//     figPostMessageToUi({cmd: 'uiReturnFigRepositionWindow'});
+// }
+
+
+
+function figResizeWindow(width, height)
+{
+    (async function()
+    {
+        // let x, y;
+
+        //let position = false;
+
+
+        // const bounds = figma.viewport.bounds;
+
+
+        width  = Math.floor(Math.max(0, width ));
+        height = Math.floor(Math.max(0, height));
+
+        
+        // if (windowDock != 'normal')
+        // {
+        //     figma.clientStorage.setAsync('normalWindowX',      await figma.clientStorage.getAsync('normalWindowX'     ));
+        //     figma.clientStorage.setAsync('normalWindowY',      await figma.clientStorage.getAsync('normalWindowY'     ));
+        //     figma.clientStorage.setAsync('normalWindowWidth',  await figma.clientStorage.getAsync('normalWindowWidth' ));
+        //     figma.clientStorage.setAsync('normalWindowHeight', await figma.clientStorage.getAsync('normalWindowHeight'));
+
+        //     position = true;
+        // }
+
+
+        // const windowX = figma.clientStorage.getAsync('windowX');
+        // const windowY = figma.clientStorage.getAsync('windowY');
+
+
+        // switch (windowDock)
+        // {
+        //     case 'normal':   
+        //         // x      = windowX;
+        //         // y      = windowY;
+        //         // width  = windowWidth;
+        //         // height = windowHeight;
+        //         break;
+                
+        //     case 'maximize':
+        //         x      = bounds.x;
+        //         y      = bounds.y;
+        //         width  = bounds.width;
+        //         height = bounds.height;        
+        //         break;
+
+        //     case 'top':      
+        //         x      = bounds.x;
+        //         y      = bounds.y;
+        //         width  = bounds.width;
+        //         break;
+
+        //     case 'left':     
+        //         x      = bounds.x;
+        //         y      = bounds.y;
+        //         height = bounds.height;        
+        //         break;
+
+        //     case 'right':    
+        //         x      = bounds.x + bounds.width - width;
+        //         y      = bounds.y;
+        //         height = bounds.height;        
+        //         break;
+
+        //     case 'bottom':   
+        //         x      = bounds.x;
+        //         y      = bounds.y + bounds.height - height;
+        //         width  = bounds.width;
+        //         break;
+        // }
+
+
+        // x      = Math.round(x     );
+        // y      = Math.round(y     );
+        // width  = Math.round(width );
+        // height = Math.round(height);
+
+
+        // console.log('width =',  width);
+        // console.log('height =', height);
+
+        figma.ui.resize(width, height);
+
+
+        await figma.currentPage.loadAsync();
+
+        figma.currentPage.setPluginData(figma.currentUser.id + ',windowWidth',  width .toString());
+        figma.currentPage.setPluginData(figma.currentUser.id + ',windowHeight', height.toString());
+
+
+        // if (position)
+        // {
+        //     figma.ui.reposition(x, y);
+
+        //     figma.clientStorage.setAsync('windowX', x);
+        //     figma.clientStorage.setAsync('windowY', y);
+        // }
+
+
+        figPostMessageToUi(
+        {
+            cmd:   'uiReturnFigResizeWindow',
+            width:  width,
+            height: height
+        });
+    })();
+}
+
+
+
+async function figDockWindow(dock) 
+{
+    if (   dock       != 'normal'
+        && windowDock == 'normal')
+    {
+        figma.clientStorage.setAsync('normalWindowX',      await figma.clientStorage.getAsync('normalWindowX'     ));
+        figma.clientStorage.setAsync('normalWindowY',      await figma.clientStorage.getAsync('normalWindowY'     ));
+        figma.clientStorage.setAsync('normalWindowWidth',  await figma.clientStorage.getAsync('normalWindowWidth' ));
+        figma.clientStorage.setAsync('normalWindowHeight', await figma.clientStorage.getAsync('normalWindowHeight'));
+    }
+
+
+    windowDock = dock;
+
+    figma.clientStorage.setAsync('windowDock', dock);
+
+    figResizeWindow(
+        await figma.clientStorage.getAsync('windowWidth' ),
+        await figma.clientStorage.getAsync('windowHeight'));
+}
+
+
+
+function figNotifyMsg(msg)
+{
+    figNotify(
+        msg.text, 
+        msg.prefix, 
+        msg.delay, 
+        msg.error, 
+        msg.buttonText,
+        msg.buttonAction);
+}
+
+
+
+function figNotify(text, prefix = 'Generator ', delay = 400, error = false, buttonText = '', buttonAction = NULL)
+{
+    const options = {
+        timeout:   delay,
+        error:     error,
+        onDequeue: notifyDequeueHandler
+    };
+
+
+    if (buttonText != '')
+    {
+        options['button'] = {text: buttonText};
+
+        if (buttonAction.substring(0, 'removeConnection'.length) == 'removeConnection')
+        {
+            options['button']['action'] = () => figDeleteSavedConnection(buttonAction.split(',')[1]);
+        }
+        else
+        {
+            switch (buttonAction)
+            {
+                case 'hideClearUndoWarning':
+                    options['button']['action'] = () => figPostMessageToUi({ cmd: 'uiHideClearUndoWarning' });
+                    break;
+            }
+        }
+    }
+
+
+    if (notifyNotificationHandler)
+        notifyNotificationHandler.cancel();
+
+
+    notifyNotificationHandler = figma.notify(prefix + text, options);
+}
+
+
+
+async function figGetValueFromUiSync(key, params = null) 
+{
+    return await figGetValueFromUi(key, params);
+}
+
+
+
+async function figGetValueFromUi(key, params = null) 
+{
+    return new Promise((resolve, reject) => 
+    {
+        const timeout = 60000;
+
+
+        figPostMessageToUi(
+        {
+            cmd: 'uiGetValueForFigma',
+            key:  key,
+            ...(params || {})
+        });
+
+        const timeoutId = setTimeout(() => 
+            reject(new Error('Timeout: Result not received by Figma within the specified time')),
+            timeout);
+
+        function handleMessage(msg) 
+        {
+            msg = JSON.parse(msg);
+
+            if (msg.cmd === 'returnUiGetValueForFigma') 
+            {
+                clearTimeout(timeoutId);
+
+                resolve(
+                { 
+                    key:   msg.key, 
+                    value: msg.value
+                });
+
+                figma.ui.off('message', handleMessage);
+            }
+        }
+
+        figma.ui.on('message', handleMessage);
+    });
+}
+
+
+var _genIgnoreNodeIds   = [];
+var _genIgnoreObjects   = [];
+
+var  nominalObjectCount = 0;
+var  actualObjectCount  = 0;
+
+
+function makeObjectName(obj)
+{
+    return (obj[FO_RETAIN] === 2 ? '' : OBJECT_PREFIX)
+         + (showIds ? obj[FO_OBJECT_ID] : obj[FO_OBJECT_NAME]);
+}
+
+
+
+async function figCreateObject(genObj, addObject = null, addProps = true, transform = true)
+{
+    if (!genObjectIsValid(genObj))
+        return null;
+
+
+    let figObj;
+
+    switch (genObj[FO_TYPE])
+    {
+        case RECTANGLE:      figObj =       figCreateRect         (genObj, addProps, transform);  break;
+        case LINE:           figObj =       figCreateLine         (genObj, addProps, transform);  break;
+        case ELLIPSE:        figObj =       figCreateEllipse      (genObj, addProps, transform);  break;
+        case POLYGON:        figObj =       figCreatePolygon      (genObj, addProps, transform);  break;
+        case STAR:           figObj =       figCreateStar         (genObj, addProps, transform);  break;
+        case TEXT_SHAPE:     figObj =       figCreateText         (genObj, addProps, transform);  break;
+        case POINT:          figObj =       figCreatePoint        (genObj);                       break;
+        case VECTOR_PATH:    figObj =       figCreateVectorPath   (genObj, addProps, transform);  break;
+        case VECTOR_NETWORK: figObj =       figCreateVectorNetwork(genObj, addProps, transform);  break;
+        case SHAPE_BOOLEAN:  figObj = await figCreateShapeBoolean (genObj, addProps, transform);  break;
+        case SHAPE_GROUP:    figObj = await figCreateShapeGroup   (genObj);                       break;
+        case FRAME:          figObj = await figCreateFrame        (genObj, addProps, transform);  break;
+    }
+ 
+
+    if (    addObject
+        &&  figObj != undefined
+        &&  figObj != null
+        && !figObj.removed)
+    {
+        figObj.name = makeObjectName(genObj);
+
+        consoleAssert(
+               genObj[FO_TYPE] == SHAPE_GROUP // cannot exist without children
+            || !!figObj, 
+            'no Figma object created');
+
+
+        if (   figObj != undefined
+            && figObj != null)
+        {
+            figObj.setPluginData('retain', genObj[FO_RETAIN].toString());
+
+            if (genObj[FO_RETAIN] < 2)
+            {
+                figObj.setPluginData('userId',    figma.currentUser.id);
+                figObj.setPluginData('sessionId', figma.currentUser.sessionId.toString());
+                figObj.setPluginData('type',      genObj[FO_TYPE     ]);
+                figObj.setPluginData('nodeId',    genObj[FO_NODE_ID  ]);
+                figObj.setPluginData('objectId',  genObj[FO_OBJECT_ID]);
+                figObj.setPluginData('isCenter',  boolToString(genObj[FO_IS_CENTER]));
+                
+
+                if (genObj[FO_TYPE] == POINT)
+                    figPoints.push(figObj);
+            
+                if (genObj[FO_DECO])
+                    updateDecoObject(figObj);
+            }
+
+            addObject(figObj);
+        }
+    }
+
+    
+    if (!genObj.counted)
+    {
+        actualObjectCount++;
+        genObj.counted = true;
+    }
+
+    return figObj;
+}
+
+
+
+async function figUpdateObjectAsync(figObj, genObj, addProps, transform)
+{
+    if (  !genObjectIsValid(genObj)
+        || figObj == undefined
+        || figObj == null
+        || figObj.removed)
+        return;
+
+        
+    figObj.name = makeObjectName(genObj);
+    
+    figObj.setPluginData('retain', genObj[FO_RETAIN].toString());
+
+
+    switch (genObj[FO_TYPE])
+    {
+        case RECTANGLE:      figUpdateRect         (figObj, genObj, addProps, transform);  break;
+        case LINE:           figUpdateLine         (figObj, genObj, addProps, transform);  break;
+        case ELLIPSE:        figUpdateEllipse      (figObj, genObj, addProps, transform);  break;
+        case POLYGON:        figUpdatePolygon      (figObj, genObj, addProps, transform);  break;
+        case STAR:           figUpdateStar         (figObj, genObj, addProps, transform);  break;
+        case TEXT_SHAPE:     figUpdateText         (figObj, genObj, addProps, transform);  break;
+        case POINT:          figUpdatePoint        (figObj, genObj);                       break;
+        case VECTOR_PATH:    figUpdateVectorPath   (figObj, genObj, addProps, transform);  break;
+        case VECTOR_NETWORK: figUpdateVectorNetwork(figObj, genObj, addProps, transform);  break;
+        case SHAPE_BOOLEAN:  figUpdateBoolean      (figObj, genObj, addProps, transform);  break;
+        case SHAPE_GROUP:    figUpdateShapeGroup   (figObj, genObj);                       break;
+        case FRAME:          figUpdateFrame        (figObj, genObj, addProps, transform);  break;
+    }
+
+
+    if (    figObj != undefined
+        &&  figObj != null
+        && !figObj.removed)
+    {
+        if (figObj.parent == figma.currentPage)
+            await figma.currentPage.loadAsync();
+
+        figObj.parent.appendChild(figObj);
+
+        if (genObj[FO_DECO])
+            updateDecoObject(figObj);
+    }
+
+
+    if (!genObj.counted)
+    {
+        actualObjectCount++;
+        genObj.counted = true;
+    }
+}
+
+
+
+async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects = -1, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false, addProps = true, transform = true)
+{
+    let curNodeId           = NULL;
+    let figObjects          = null;
+        
+    let abort               = false;
+
+    const updateObjects     = [];
+    let   updateObjectCount = 0;
+
+
+    _genIgnoreNodeIds.push(...nodeIds);
+
+
+    if (totalObjects > -1)
+        nominalObjectCount = totalObjects;
+
+
+    for (const genObj of genObjects)
+    {
+        _genIgnoreObjects.push(genObj);
+
+
+        if (genObj[FO_NODE_ID] != curNodeId)
+        {
+            curNodeId  = genObj[FO_NODE_ID];
+            
+            figObjects = figObjectArrays.find(a => a.nodeId == genObj[FO_NODE_ID]);
+
+            if (!figObjects)
+            {
+                figObjectArrays.push(figObjects = 
+                {
+                    nodeId:  genObj[FO_NODE_ID], 
+                    objects: []
+                });
+            }
+        }
+
+
+        const addObject = figObj =>
+        {
+            if (    figParent != undefined
+                &&  figParent != null
+                && !figParent.removed) 
+                figParent.appendChild(figObj);
+            else
+                figObjects.objects.push(figObj);
+        };
+
+
+        let objects =
+                figParent != undefined
+            &&  figParent != null
+            && !figParent.removed
+            ? figParent.children
+            : figObjects.objects;
+
+        let figObj = objects.find(o => 
+               o.removed
+            ||    o.getPluginData('userId'  ) == figma.currentUser.id
+               && o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
+
+
+        if (   figObj != undefined
+            && figObj != null
+            && figObj.removed)
+        {
+            removeFrom(objects, figObj);
+        
+            if (figPoints.includes(figObj))
+                removeFromArray(figPoints, figObj);
+
+            if (figEmptyObjects.includes(figObj))
+                removeFromArray(figEmptyObjects, figObj);
+        }
+
+
+        if (   figObj == undefined
+            || figObj == null
+            || figObj.removed) // no existing object, create new one
+        {
+            const newObj = await figCreateObject(genObj, addObject, addProps, transform);
+            updateObjects.push(newObj);
+        }
+
+        else if (  figObj != undefined
+               &&  figObj != null
+               && !figObj.removed
+               &&  figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
+        {
+            await figUpdateObjectAsync(figObj, genObj, addProps, transform);
+            if (    figObj != undefined
+                &&  figObj != null
+                && !figObj.removed) 
+                updateObjects.push(figObj);
+        }
+    
+        else // delete existing object, create new one
+        {
+            figObj.remove();
+
+            if (figPoints.includes(figObj))
+                removeFromArray(figPoints, figObj);
+
+            if (figEmptyObjects.includes(figObj))
+                removeFromArray(figEmptyObjects, figObj);
+
+            await figCreateObject(genObj, addObject, addProps, transform);
+        }
+
+
+        updateObjectCount++;
+        
+
+        if (updateObjectCount >= batchSize)
+        {
+            const result = await figGetValueFromUiSync(
+                'returnObjectUpdate', 
+                { 
+                    nominalObjectCount: nominalObjectCount,
+                    actualObjectCount:  actualObjectCount 
+                }
+                ) as { key: string, value: boolean };
+
+            abort = result.value;
+
+            updateObjectCount = 0;
+
+            if (abort) break;
+        }
+    }
+
+
+    // delete removed objects from parent
+    
+    if (    figParent != undefined
+        &&  figParent != null
+        && !figParent.removed)
+    {
+        for (const figObj of figParent.children)
+        {
+            if (      figObj != undefined
+                   && figObj != null
+                   && figObj.removed
+                || !genObjects.find(o => 
+                           o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
+                        && figObj.getPluginData('userId') == figma.currentUser.id))
+                        //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()))
+                figObj.remove();
+        }
+    }
+
+
+    // put points on top
+    
+    for (const point of figPoints)
+    {
+        if (point.parent == figma.currentPage)
+            await figma.currentPage.loadAsync();
+        
+        if (    point != undefined
+            &&  point != null
+            && !point.removed
+            && !point.parent.removed)
+            point.parent.appendChild(point);
+    }
+
+
+    if (    lastChunk
+        && !abort)
+    {
+        // delete old content
+
+        figDeleteObjectsExcept(
+            _genIgnoreNodeIds, 
+            _genIgnoreObjects);
+
+        _genIgnoreNodeIds = [];
+        _genIgnoreObjects = [];
+
+        
+        if (   zoomToFit
+            && updateObjects.length > 0)
+        {
+            figma.viewport.scrollAndZoomIntoView(updateObjects);
+
+            const bounds = figGetObjectBounds(updateObjects);
+                
+            figma.viewport.zoom = Math.min(
+                figma.viewport.bounds.width  * figma.viewport.zoom / bounds.width  - 0.05,
+                figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
+        }
+    }
+
+
+    await figGetValueFromUiSync(
+        'returnObjectUpdate', 
+        { 
+            nominalObjectCount: nominalObjectCount,
+            actualObjectCount:  actualObjectCount 
+        });
+}
+
+
+
+function genObjectIsValid(genObj)
+{
+    switch (genObj[FO_TYPE])
+    {
+        case RECTANGLE:      return genRectIsValid         (genObj);
+        case LINE:           return genLineIsValid         (genObj);
+        case ELLIPSE:        return genEllipseIsValid      (genObj);
+        case POLYGON:        return genPolygonIsValid      (genObj);
+        case STAR:           return genStarIsValid         (genObj);
+        case TEXT_SHAPE:     return genTextIsValid         (genObj);
+        case POINT:          return genPointIsValid        (genObj);
+        case VECTOR_PATH:    return genVectorPathIsValid   (genObj);
+        case VECTOR_NETWORK: return genVectorNetworkIsValid(genObj);
+        case SHAPE_BOOLEAN:  return genBooleanIsValid      (genObj);
+        case SHAPE_GROUP:    return genShapeGroupIsValid   (genObj);
+        case FRAME:          return genFrameIsValid        (genObj);
+    }
+}
+
+
+
+async function figGetObjectSize(genObj)
+{
+    (async () =>
+    {
+        const figObj = await figCreateObject(genObj);
+        
+        const width  = figObj.width;
+        const height = figObj.height;
+
+        figObj.remove();
+
+
+        figPostMessageToUi(
+        {
+            cmd: 'uiForwardToGenerator',
+            msg: 
+            {
+                cmd:     'returnFigGetObjectSize',
+                objectId: genObj[FO_OBJECT_ID],
+                width:    width,
+                height:   height
+            }
+        });
+    })();
+}
+
+
+
+function clearObjectData(figObj)
+{
+    figObj.setPluginData('type',      '');
+    figObj.setPluginData('nodeId',    '');
+    figObj.setPluginData('userId',    '');
+    figObj.setPluginData('sessionId', '');
+    figObj.setPluginData('objectId',  '');
+    figObj.setPluginData('isCenter',  '');
+    figObj.setPluginData('retain',    '');
+}
+
+
+
+function figGetObjectBounds(objects)
+{
+    const bounds = 
+    { 
+        left:   0, 
+        top:    0, 
+        right:  0, 
+        bottom: 0 
+    };
+
+    for (const obj of objects)
+    {
+        if (obj.x < bounds.left                || bounds.left == bounds.right ) bounds.left   = obj.x;
+        if (obj.y < bounds.top                 || bounds.top  == bounds.bottom) bounds.top    = obj.y;
+        if (obj.x + obj.width  > bounds.right  || bounds.left == bounds.right ) bounds.right  = obj.x + obj.width;
+        if (obj.y + obj.height > bounds.bottom || bounds.top  == bounds.bottom) bounds.bottom = obj.y + obj.height;
+    }
+
+    return {
+        x:      bounds.left,
+        y:      bounds.top,
+        width:  bounds.right  - bounds.left,
+        height: bounds.bottom - bounds.top };
+}
+
+
+
+async function figExport(objectIds, scale, format, suffix)
+{
+    await figma.currentPage.loadAsync();
+    
+
+    for (const objId of objectIds)
+    {
+        let figObj = figma.currentPage.children.find(o => 
+              !o.removed
+            && o.getPluginData('userId'  ) == figma.currentUser.id
+            && o.getPluginData('objectId') == objId);
+    
+        if (!figObj) continue;
+
+
+        const settings: ExportSettingsImage = 
+        {
+            constraint: 
+            {
+                type: 'SCALE',
+                value: scale
+            },
+            format: format == 0 ? 'PNG' : 'JPG',
+            suffix: suffix
+        };
+
+
+        await figObj.exportAsync(settings);
+    }
+}
+
+
+const figEmptyObjects = [];
+const figDecoObjects  = [];
+
+
+
+function getObjectEffects(genObjEffects, canSpread)
+{
+    const effects = [];
+
+
+    for (const effect of genObjEffects)
+    {
+        const type = effect[0];
+
+        switch (type)
+        {
+            case 'DROP_SHADOW':
+            {
+                const color = {
+                    r: Math.min(Math.max(0, effect[1]), 1), 
+                    g: Math.min(Math.max(0, effect[2]), 1), 
+                    b: Math.min(Math.max(0, effect[3]), 1),
+                    a: Math.min(Math.max(0, effect[4]), 1) };
+
+                const offset = {
+                    x: effect[5],
+                    y: effect[6] };
+
+                const radius  = effect[ 7];
+                const spread  = effect[ 8];
+                const blend   = effect[ 9];
+                const behind  = effect[10];
+                const visible = effect[11];
+  
+
+                if (   !isNaN(color.r)
+                    && !isNaN(color.g)
+                    && !isNaN(color.b)
+                    && !isNaN(color.a)
+                    && !isNaN(offset.x)
+                    && !isNaN(offset.y)
+                    && !isNaN(radius))
+                {
+                    effects.push(
+                    {
+                        type:                 type, 
+                        color:                color,
+                        offset:               offset,
+                        radius:               radius,
+                        visible:              visible,
+                        blendMode:            blend,
+                        showShadowBehindNode: behind,
+                        boundVariables:       {}
+                    });
+
+                    if (    canSpread
+                        && !isNaN(spread))
+                        effects[effects.length-1]['spread'] = spread;
+                }
+
+                break;
+            }
+
+            case 'INNER_SHADOW':
+            {
+                const color = {
+                    r: Math.min(Math.max(0, effect[1]), 1), 
+                    g: Math.min(Math.max(0, effect[2]), 1), 
+                    b: Math.min(Math.max(0, effect[3]), 1),
+                    a: Math.min(Math.max(0, effect[4]), 1) };
+
+                const offset = {
+                    x: effect[5],
+                    y: effect[6] };
+
+                const radius  = effect[ 7];
+                const spread  = effect[ 8];
+                const blend   = effect[ 9];
+                const visible = effect[10];
+  
+
+                if (   !isNaN(color.r)
+                    && !isNaN(color.g)
+                    && !isNaN(color.b)
+                    && !isNaN(color.a)
+                    && !isNaN(offset.x)
+                    && !isNaN(offset.y)
+                    && !isNaN(radius)
+                    && !isNaN(spread))
+                {
+                    effects.push(
+                    {
+                        type:           type, 
+                        color:          color,
+                        offset:         offset,
+                        radius:         radius,
+                        spread:         spread,
+                        visible:        visible,
+                        blendMode:      blend,
+                        boundVariables: {}
+                    });
+                }
+
+                break;
+            }
+
+            case 'LAYER_BLUR':
+            {
+                const radius  = effect[1];
+                const visible = effect[2];
+
+                if (!isNaN(radius))
+                {
+                    effects.push(
+                    {
+                        type:           type, 
+                        visible:        visible,
+                        radius:         Math.max(0, radius),
+                        boundVariables: {}
+                    });
+                }
+
+                break;
+            }
+
+            case 'BACKGROUND_BLUR':
+            {
+                const radius  = effect[1];
+                const visible = effect[2];
+
+                if (!isNaN(radius))
+                {
+                    effects.push(
+                    {
+                        type:           type, 
+                        visible:        visible,
+                        radius:         Math.max(0, radius),
+                        boundVariables: {}
+                    });
+                }
+
+                break;
+            }
+        }
+    }
+
+
+    return effects;
+}
+
+
+
+function setObjectProps(figObj, genObj, phantom = true)
+{
+    // if (genObj.badTransform)
+    //     return;
+        
+    setObjectEffects(figObj, genObj);
+    setObjectStrokes(figObj, genObj, phantom);
+    setObjectFills  (figObj, genObj);
+
+    
+    figObj.opacity   = genObj[FO_OPACITY];
+    figObj.blendMode = genObj[FO_BLEND  ];
+
+
+    const maskType = genObj[FO_MASK];
+
+    figObj.isMask = maskType > 0;
+
+    if (figObj.isMask)
+    {
+        switch (maskType)
+        {
+            case 1: figObj.maskType = 'ALPHA';     break;
+            case 2: figObj.maskType = 'VECTOR';    break;
+            case 3: figObj.maskType = 'LUMINANCE'; break;
+        }
+    }
+
+
+    if (   figObj.isMask
+        && figObj.fills  .length == 0
+        && figObj.strokes.length == 0)
+        figObj.fills = 
+            [{
+                type:      'SOLID', 
+                color:     {r:0, g:0, b:0},
+                opacity:   1, 
+                blendMode: 'NORMAL'
+            }];
+}
+
+
+
+function setObjectFills(figObj, genObj)
+{
+    if (   !!genObj[FO_FILLS]
+        &&  !isEmpty(genObj[FO_FILLS]))
+    {
+        figObj.fills = getObjectFills(genObj[FO_FILLS]);
+
+        if (figEmptyObjects.includes(figObj))
+            removeFromArray(figEmptyObjects, figObj);
+    }
+    else
+        figObj.fills = [];
+}
+
+
+
+function setObjectStrokes(figObj, genObj, phantom = true)
+{
+    if (    genObj[FO_STROKES] != null
+        && !isEmpty(genObj[FO_STROKES]))
+    {
+        setObjectStroke_(
+            figObj,
+            getObjectFills(genObj[FO_STROKES]),
+            genObj[FO_STROKE_WEIGHT],
+            genObj[FO_STROKE_ALIGN ],
+            genObj[FO_STROKE_JOIN  ],
+            genObj[FO_STROKE_MITER ],
+            genObj[FO_STROKE_CAP   ],
+            parseStrokeDashes(genObj[FO_STROKE_DASHES]));
+
+        if (genObj[FO_DECO])
+            figObj.setPluginData('dashes', genObj[FO_STROKE_DASHES]); // for updating deco polys
+
+        if (figEmptyObjects.includes(figObj))
+            removeFromArray(figEmptyObjects, figObj);
+
+        if (genObj[FO_DECO])
+            pushUnique(figDecoObjects, figObj);
+    }
+
+    else if ( isEmpty(genObj[FO_FILLS  ])
+          &&  isEmpty(genObj[FO_STROKES])
+          && !genObj[FO_MASK]
+          &&  phantom)
+    {
+        setEmptyObjectStroke(figObj);
+        pushUnique(figEmptyObjects, figObj);
+    }
+    
+    else
+        figObj.strokes = [];
+}
+
+
+
+function parseStrokeDashes(_dashes)
+{
+    _dashes = <string><unknown>_dashes;
+    
+    _dashes = trimCharFromStart(_dashes, ',');
+    _dashes = trimCharFromEnd  (_dashes, ',');
+    _dashes = _dashes.trim();
+
+    return _dashes == '' 
+         ? [] 
+         : _dashes.split(',').map(s => Math.max(0, parseFloat(s)));
+}
+
+
+
+function parseDecoStrokeDashes(_dashes)
+{
+    _dashes = <string><unknown>_dashes;
+    
+    _dashes = trimCharFromStart(_dashes, ',');
+    _dashes = trimCharFromEnd  (_dashes, ',');
+    _dashes = _dashes.trim();
+
+    return _dashes == '' 
+         ? [] 
+         : _dashes.split(',').map(s => Math.max(0, parseFloat(s) / curZoom));
+}
+
+
+
+function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, cap, dashes = [])
+{
+    figObj.strokes          = fills;
+    
+    figObj.strokeWeight     = Math.max(0, weight);
+    figObj.strokeAlign      = align;
+    figObj.strokeJoin       = join;
+    
+
+    const  miterAngle       = miterLimit/360*Tau;
+    const _miterLimit       = 1 / Math.sin(miterAngle/2);
+    
+    figObj.strokeMiterLimit = Math.min(Math.max(0, _miterLimit), 16);
+
+    figObj.strokeCap        = cap;
+
+    figObj.dashPattern      = dashes;
+}
+
+
+
+function setObjectEffects(figObj, genObj)
+{
+    if (  !!genObj[FO_EFFECTS]
+        && !isEmpty(genObj[FO_EFFECTS]))
+    {
+        const canSpread =
+               genObj[FO_TYPE] == RECTANGLE
+            || genObj[FO_TYPE] == ELLIPSE
+            || genObj[FO_TYPE] == FRAME;
+
+        figObj.effects = getObjectEffects(genObj[FO_EFFECTS], canSpread);
+    }
+    else
+        figObj.effects = [];
+}
+
+
+
+function updateEmptyObjects()
+{
+    for (const obj of figEmptyObjects)
+    {
+        if (obj.removed)
+            removeFromArray(figEmptyObjects, obj);
+        else
+            setEmptyObjectStroke(obj);
+    }
+}
+
+
+
+function setEmptyObjectStroke(obj)
+{
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const back = figma.currentPage.backgrounds.find(b => b.type == 'SOLID') as SolidPaint;
+        
+
+        let phantomColor;
+
+        if (back)
+        {
+            const l =
+                  back.color.r * 0.2126
+                + back.color.g * 0.7152 
+                + back.color.b * 0.0722; 
+                
+            phantomColor =
+                l > 0.5
+                ? {r: 0, g: 0, b: 0}
+                : {r: 1, g: 1, b: 1};
+        }
+        else
+            phantomColor = {r: 1, g: 0, b: 1};
+
+
+        setObjectStroke_(
+            obj,
+            [{ type:  'SOLID', 
+              color:   phantomColor,
+              opacity: 0.5 }],
+            1 / curZoom,
+            'CENTER',
+            'MITER',
+            1,
+            'NONE',
+            [ 1 / curZoom, 
+              2 / curZoom ]);
+    });
+}
+
+
+
+function updateDecoObjects()
+{
+    for (const figObj of figDecoObjects)
+    {
+        if (figObj.removed)
+            removeFromArray(figDecoObjects, figObj);
+        else
+            updateDecoObject(figObj);
+    }
+}
+
+
+
+function updateDecoObject(figObj)
+{
+    figObj.strokeWeight = Math.max(0, 1.5 / curZoom);
+
+
+    if (parseBool(figObj.getPluginData('isCenter')))
+    {
+        const path  = figObj.vectorPaths[0];
+        const parts = path.data.split(' ');
+        
+        let t = { x: parseFloat(parts[1]), y: parseFloat(parts[2]) };
+        let c = { x: parseFloat(parts[4]), y: parseFloat(parts[5]) };
+        let r = { x: parseFloat(parts[7]), y: parseFloat(parts[8]) };
+
+        const a = 2;
+        const b = 0.05;
+        const f = 1 - Math.pow(1 - Math.min(curZoom, 1), a) / Math.pow(a, b);
+    
+        t = addv(c, mulvs(unitv(subv(t, c)), objectCenterSize/f));
+        r = addv(c, mulvs(unitv(subv(r, c)), objectCenterSize/f));
+ 
+        parts[1] = t.x; parts[2] = t.y;
+        parts[4] = c.x; parts[5] = c.y;
+        parts[7] = r.x; parts[8] = r.y;
+
+        const newPath = 
+        {
+            windingRule: path.windingRule,
+            data:        parts.join(' ')
+        };
+
+        figObj.vectorPaths = [newPath];
+    }
+
+
+    const dashes = figObj.getPluginData('dashes');
+
+    if (dashes != '')
+        figObj.dashPattern = parseDecoStrokeDashes(dashes);        
+}
+
+
+function figGetAllLocalColorStyles(nodeId, px, py)
+{
+    figma.getLocalPaintStylesAsync().then(_styles =>
+    {
+        const styles = new Array();
+
+        for (const _style of _styles)
+        {
+            const _nodeId   = _style.getPluginData('nodeId');
+            const _existing = _style.getPluginData('existing');
+
+            const existing = !!_existing;
+
+            const style = { 
+                id:       _style.id,
+                nodeId:   _nodeId,
+                name:     _style.name,
+                existing: existing,
+                paints:   new Array()
+            };
+
+            
+            let onlyPaint = true;
+
+            for (const _paint of _style.paints)
+            {
+                if (_paint.type == 'SOLID')
+                {
+                    style.paints.push([
+                        _paint.color.r,
+                        _paint.color.g,
+                        _paint.color.b,
+                        _paint.opacity]);
+                }
+                else
+                {
+                    onlyPaint = false;
+                    break;
+                }
+            }
+
+
+            if (onlyPaint)
+                styles.push(style);
+        }
+
+
+        figPostMessageToUi({
+            cmd:   'uiReturnFigGetAllLocalColorStyles',
+            nodeId: nodeId,
+            px:     px,
+            py:     py,
+            styles: JSON.stringify(styles)});
+    });
+}
+
+
+
+function figLinkNodeToExistingColorStyle(nodeId, styleId)
+{
+    figma.getLocalPaintStylesAsync().then(localStyles =>
+    {
+        if (styleId != NULL) figLinkColorStyle(localStyles, nodeId, styleId);
+        else                 figClearColorStyle(localStyles, nodeId);
+    });
+}
+
+
+
+function figLinkColorStyle(localStyles, nodeId, styleId, clearExisting = true)
+{
+    const figStyles = figStyleArrays.find(a => a.nodeId == nodeId);
+    
+    if (   figStyles 
+        && clearExisting) 
+        figClearColorStyle(localStyles, nodeId);
+
+
+    const figStyle = localStyles.find(s => s.id == styleId);
+    consoleAssert(!!figStyle, 'figStyle should be found here');
+
+
+    figStyle.setPluginData('type',     COLOR_STYLE);
+    figStyle.setPluginData('nodeId',   nodeId);
+    figStyle.setPluginData('existing', boolToString(true));
+
+
+    figStyleArrays.push({
+        nodeId:   nodeId, 
+        existing: true, 
+        styles:   [figStyle]});
+
+
+    return figStyle;
+}
+
+
+
+function figClearColorStyle(localStyles, nodeId)
+{
+    const figStyle = localStyles.find(s => s.getPluginData('nodeId') == nodeId);
+    consoleAssert(!!figStyle, 'figStyle should be found here');
+
+    if (figStyle) // could have been deleted
+    {
+        figStyle.setPluginData('type',     NULL);
+        figStyle.setPluginData('nodeId',   NULL);
+        figStyle.setPluginData('existing', NULL);
+
+        removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
+    }
+
+    return figStyle;
+}
+
+
+
+function figCreateColorStyle(styles, genStyle)
+{
+    const figStyle = figma.createPaintStyle();
+
+
+    figStyle.setPluginData('type',     genStyle[FO_TYPE   ]);
+    figStyle.setPluginData('nodeId',   genStyle[FO_NODE_ID]);
+    //figStyle.setPluginData('existing', boolToString(genStyle.existing));
+
+    figStyle.name = genStyle[FO_STYLE_NAME];
+
+
+    setStylePaints(figStyle, genStyle);
+
+
+    styles.push(figStyle);
+
+
+    figPostMessageToUi({
+        cmd:    'uiSetStyleId',
+        nodeId:  genStyle[FO_NODE_ID],
+        styleId: figStyle.id });
+
+    
+    return figStyle;
+}
+
+
+
+function figUpdateStyles(msg)
+{
+    let curNodeId = NULL;
+    let figStyles;
+
+
+    for (const genStyle of msg.styles)
+    {
+        if (genStyle[FO_NODE_ID] != curNodeId)
+        {
+            curNodeId = genStyle[FO_NODE_ID];
+            
+            figStyles = figStyleArrays.find(a => a.nodeId == genStyle[FO_NODE_ID]);
+
+            if (!figStyles) 
+            {
+                figStyles = {
+                    nodeId:   genStyle[FO_NODE_ID], 
+                    //existing: genStyle.existing, 
+                    styles:   [] };
+
+                figStyleArrays.push(figStyles);
+            }
+        }
+        else
+            figStyles = null;
+
+
+        const figStyle = figStyles.styles[0];
+        
+        
+        figma.getLocalPaintStylesAsync().then(localStyles =>
+        {
+            const localStyle  = localStyles.find(s => s.getPluginData('nodeId') == genStyle[FO_NODE_ID]);
+
+
+            if (    isValid(figStyle)
+                && !isValid(localStyle)) // removed
+            {
+                removeFrom(figStyles.styles, figStyle);
+            }
+
+
+            const existing = 
+                isValid(figStyle  )
+                && isValid(localStyle)
+                && figStyle.getPluginData('existing');
+
+
+            if (   !isValid(figStyle  )
+                || !isValid(localStyle)) // no existing style, create new style
+            {
+                if (!existing)
+                {
+                    styleChangingFromGenerator = true;
+
+                    figLinkNodeToExistingColorStyle(
+                        genStyle[FO_NODE_ID ],
+                        genStyle[FO_STYLE_ID]);
+                    //figCreateColorStyle(figStyles.styles, genStyle);
+                }
+            }
+            else if (isValid(figStyle) 
+                && figStyle.getPluginData('type') == genStyle[FO_TYPE]) // update existing style
+            {
+                styleChangingFromGenerator = true;
+                figUpdateColorStyle(localStyle, genStyle);
+            }
+            // else // delete existing style, create new style
+            // {
+            //     if (!existing)
+            //     {
+            //         localStyle.remove();
+            //         styleChangingFromGenerator = true;
+            //         figCreateColorStyle(figStyles.styles, genStyle);
+            //     }
+            // }
+        });
+    }
+}
+
+
+
+function figUpdateColorStyle(figStyle, genStyle)
+{
+    setStylePaints(figStyle, genStyle);
+
+    figStyle.name = genStyle[FO_STYLE_NAME];
+}
+
+
+
+function getStylePaints(stylePaints)
+{
+    const paints = new Array();
+
+    for (const _paint of stylePaints)
+    {
+        const fill = _paint[1].split(' ');
+
+        switch (_paint[0])
+        {
+            case 'SOLID':
+                paints.push(
+                {
+                    type:  'SOLID', 
+                    color: { r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1), 
+                             g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1), 
+                             b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1) },
+                    opacity: Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1)
+                });
+
+                break;
+        }
+    }
+
+    return paints;
+}
+
+
+
+function setStylePaints(figStyle, genStyle)
+{
+    if (!isEmpty(genStyle[FO_STYLE_PAINTS]))
+        figStyle.paints = getStylePaints(genStyle[FO_STYLE_PAINTS]);
+    else
+        figStyle.paints = [];
+}
+
+
+
+function figGetAllLocalVariables(nodeId, px, py)
+{
+    figma.variables.getLocalVariablesAsync().then(async localVars =>
+    {
+        const variables = new Array();
+
+
+        for (const _var of localVars)
+        {
+            try
+            {
+                const collection = await figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
+
+                const variable = 
+                { 
+                    id:             _var.id,
+                    resolvedType:   _var.resolvedType,
+                    name:           _var.name,
+                    collectionName: collection.name
+                };
+
+                variables.push(variable);
+            }
+            catch (ex)
+            {
+
+            }
+        }
+
+
+        figma.variables.getLocalVariableCollectionsAsync().then(async collections =>
+        {
+            figPostMessageToUi(
+            {
+                cmd:         'uiReturnFigGetAllLocalVariables',
+                nodeId:       nodeId,
+                px:           px,
+                py:           py,
+                variables:    JSON.stringify(variables),
+                nCollections: collections.length
+            });
+        });
+    });
+}
+
+
+
+async function getVariableValuesAsync(varIds)
+{
+    const localVars = await figma.variables.getLocalVariablesAsync();
+
+    const variables = varIds.map(id => localVars.find(v => v.id == id));
+    let   values    = [];
+
+
+    for (let i = 0; i < varIds.length; i++)
+    {
+        const variable = variables[i];
+        
+        const collection = 
+            variable != undefined // deleted
+            ? (await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId))
+            : null;
+        
+            
+        if (collection)
+        {
+            const vals = [];
+
+
+            for (const mode of collection.modes)
+            {
+                let _var  = variable;
+                let value = _var.valuesByMode[mode.modeId];
+                
+                while (value && value.type === 'VARIABLE_ALIAS')
+                {
+                    _var  = await figma.variables.getVariableByIdAsync(value.id);
+                    value = _var.valuesByMode[mode.modeId];
+                }
+
+                vals.push(value);
+            }
+
+
+            values.push(
+            {
+                id:           varIds[i],
+                name:         variable.name, 
+                resolvedType: variable.resolvedType,
+                value:        vals[0]
+            });
+        }
+        else
+        {
+            values.push(
+            {
+                id:           varIds[i], 
+                resolvedType: NULL, 
+                value:        null
+            });
+        }
+    }
+
+
+    return values;
+}
+
+
+
+function figLinkNodeToVariable(nodeId, varId)
+{
+    figma.variables.getLocalVariablesAsync().then(localVars =>
+    {
+        figLinkVariableAsync(localVars, nodeId, varId);
+    });
+}
+
+
+
+async function figUpdateVariableAsync(varId, value)
+{
+    figma.variables.getLocalVariablesAsync().then(async localVars =>
+    {
+        let variable = localVars.find(v => v.id == varId);
+        if (!variable) return;
+
+
+        let collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
+        let mode       = collection.modes[0];
+
+        
+        // resolve if alias
+
+        let curValue = variable.valuesByMode[mode.modeId];
+        
+        while (curValue
+            && curValue.hasOwnProperty('type')
+            && curValue['type'] === 'VARIABLE_ALIAS')
+        {
+            variable = await figma.variables.getVariableByIdAsync(curValue['id']);
+            curValue = variable.valuesByMode[mode.modeId];
+            
+            collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
+            mode       = collection.modes[0];
+        }
+
+
+        if (value !== null)
+        {
+            if (variable.resolvedType == 'BOOLEAN')
+                value = value != 0;
+            else
+                variable.setValueForMode(mode.modeId, value);
+        }
+    });
+}
+
+
+
+async function figLinkVariableAsync(localVars, nodeId, varId)
+{
+    let variable = localVars.find(v => v.id == varId);
+    if (!variable) return null;
+
+
+    const [resolvedVar, values] = await figGetResolvedVariableValuesAsync(variable);
+
+
+    figPostMessageToUi(
+    {
+        cmd:         'uiReturnFigLinkNodeToVariable',
+        nodeId:       nodeId,
+        variableId:   resolvedVar ? resolvedVar.id           : NULL,
+        variableName: resolvedVar ? resolvedVar.name         : '',
+        resolvedType: resolvedVar ? resolvedVar.resolvedType : NULL,
+        values:       values
+    });
+
+
+    return resolvedVar;
+}
+
+
+
+async function figGetResolvedVariableValuesAsync(variable)
+{
+    const values = [];
+
+    
+    if (!variable)
+        return values;
+
+
+    const collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
+            
+    for (const mode of collection.modes)
+    {
+        let value = variable.valuesByMode[mode.modeId];
+        
+        while (   value
+               && value['type'] === 'VARIABLE_ALIAS')
+        {
+            variable = await figma.variables.getVariableByIdAsync(value.id);
+            value    = variable.valuesByMode[mode.modeId];
+        }
+        
+        values.push(value);
+    }
+
+
+    return [variable, values];
+}
+
+
+function getFigmaTransform(tl, tr, bl)
+{
+    let vr = point(tr.x - tl.x, tr.y - tl.y);
+    let vb = point(bl.x - tl.x, bl.y - tl.y);
+
+
+    let sx = vr.x;
+    let sy = vb.y;
+
+    let kx = -vr.y;
+    let ky = -vb.x;
+    
+    let dx = -tl.x;
+    let dy = -tl.y;
+
+
+    const _sx = kx/nozero(sx);
+    const _sy = ky/nozero(sy);
+
+    let xform = mulm3m3(
+        [[ 1, _sy, 0],
+         [_sx, 1,  0],
+         [ 0,  0,  1]],
+        createTransform(dx, dy));
+
+
+    xform = inversem3(xform);
+
+
+    const a = anglev(vr);
+
+    if (   a > Tau/4  
+        && a < Tau*3/4)
+        xform = mulm3m3(xform, createTransform(0, 0, 1, 1, Tau/2));
+        
+    if (determinant(xform) < 0)
+        xform = mulm3m3(xform, createTransform(0, 0, -1, 1, 0));
+
+
+    return xform;
+}
+
+
+
+function applyFigmaTransform(figObj, tl, tr, bl) 
+{
+    const xform = getFigmaTransform(tl, tr, bl);
+
+    figObj.relativeTransform = 
+    [
+        xform[0],
+        xform[1]
+    ];
+}
+
+
+
+function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01)
+{
+    if (   !genObj[FO_XP0]
+        || !genObj[FO_XP1]
+        || !genObj[FO_XP2])
+        return;
+
+
+    const xp0 = genObj[FO_XP0];
+    const xp1 = genObj[FO_XP1];
+    const xp2 = genObj[FO_XP2];
+
+    
+    applyFigmaTransform(figObj, xp0, xp1, xp2);
+    
+
+    if (setSize)
+    {
+        const scaleX = distv(xp0, xp1);
+        const scaleY = distv(xp0, xp2);
+    
+        const height =
+            genObj[FO_TYPE] == TEXT_SHAPE
+            ? genObj[FO_FIG_HEIGHT]
+            : genObj[FO_HEIGHT];
+    
+        if (!figObj.removed)
+        {
+            figObj.resizeWithoutConstraints(
+                         Math.max(0.01, scaleX),
+                height ? Math.max(0.01, scaleY) : noHeight);
+        }
+    }
+}
+
+
+ 
+function setPointTransform(figPoint, genPoint)
+{
+    if (figPoint.removed)
+        return;
+
+
+    figPoint.resizeWithoutConstraints(0.01, 0.01);
+
+
+    figPoint.setPluginData('actualX', genPoint[FO_X].toString());
+    figPoint.setPluginData('actualY', genPoint[FO_Y].toString());
+
+
+    figPoint.x        = genPoint[FO_X];
+    figPoint.y        = genPoint[FO_Y];
+
+    figPoint.rotation = genPoint[FO_IS_CENTER] ? 45 : 0;
+}
+
+
+
+function updateExistingPointTransform(figPoint)
+{
+    if (!figPoint.removed)
+        figPoint.resizeWithoutConstraints(0.01, 0.01);
+}
+
+
+function genBooleanIsValid(genBool)
+{
+    return true;//genBool[FO_BOOLEAN_CHILDREN].length > 0;
+}
+
+
+
+async function figCreateShapeBoolean(genBool, addProps, transform)
+{
+    let objects = [];
+
+    for (const obj of genBool[FO_BOOLEAN_CHILDREN])
+        await figCreateObject(obj, o => objects = [...objects, o], false);
+
+
+    await figma.currentPage.loadAsync();
+
+    
+    let figBool = null;
+
+    if (!isEmpty(objects))
+    {
+        switch (genBool[FO_BOOLEAN_OPERATION])
+        {
+            case 0: figBool = figma.union    (objects, figma.currentPage); break;
+            case 1: figBool = figma.subtract (objects, figma.currentPage); break;
+            case 2: figBool = figma.intersect(objects, figma.currentPage); break;
+            case 3: figBool = figma.exclude  (objects, figma.currentPage); break;
+        }
+    }
+
+
+    if (figBool)
+    {
+        figBool.expanded = false;
+        figUpdateBoolean(figBool, genBool, addProps, transform);
+    }
+
+
+    return figBool;
+}
+
+
+
+async function figUpdateBoolean(figBool, genBool, addProps, transform) //, isValid = false)
+{
+    if (genBool[FO_BOOLEAN_CHILDREN].length == 0)
+    {
+        figBool.remove();
+        return;
+    }
+
+    
+    await figUpdateObjects(
+        figBool, 
+        genBool[FO_BOOLEAN_CHILDREN], 
+        genBool[FO_BOOLEAN_CHILDREN].length,
+        -1,
+        [], 
+        false,
+        false,
+        false,
+        false,
+        true);
+
+
+    // if (transform)
+    //     setObjectTransform(figBool, genBool, false);
+
+    
+    const hasProps =
+           genBool[FO_FILLS  ].length > 0
+        || genBool[FO_STROKES].length > 0
+        || genBool[FO_EFFECTS].length > 0;
+
+    setObjectProps(figBool, genBool, !hasProps && addProps);
+}
+
+
+function genEllipseIsValid(genEllipse)
+{
+    return genEllipse[FO_X            ] != null && !isNaN(genEllipse[FO_X            ])
+        && genEllipse[FO_Y            ] != null && !isNaN(genEllipse[FO_Y            ])
+        && genEllipse[FO_WIDTH        ] != null && !isNaN(genEllipse[FO_WIDTH        ])
+        && genEllipse[FO_HEIGHT       ] != null && !isNaN(genEllipse[FO_HEIGHT       ])
+        && genEllipse[FO_ELLIPSE_ROUND] != null && !isNaN(genEllipse[FO_ELLIPSE_ROUND])
+        && genEllipse[FO_ELLIPSE_START] != null && !isNaN(genEllipse[FO_ELLIPSE_START])
+        && genEllipse[FO_ELLIPSE_SWEEP] != null && !isNaN(genEllipse[FO_ELLIPSE_SWEEP])
+        && genEllipse[FO_ELLIPSE_INNER] != null && !isNaN(genEllipse[FO_ELLIPSE_INNER]);
+}
+
+
+
+function figCreateEllipse(genEllipse, addProps, transform)
+{
+    if (!genEllipseIsValid(genEllipse))
+        return null;
+    
+    
+    const figEllipse = figma.createEllipse();
+
+    figUpdateEllipse(figEllipse, genEllipse, addProps, transform, true);
+
+    
+    return figEllipse;
+}
+
+
+
+function figUpdateEllipse(figEllipse, genEllipse, addProps, transform, isValid = false)
+{
+    if (   !isValid
+        && !genEllipseIsValid(genEllipse))
+        return;
+
+
+    figUpdateEllipseData(figEllipse, genEllipse, transform);
+
+
+    if (figPoints.includes(figEllipse))
+        updatePointObject(figEllipse);
+    else 
+        setObjectProps(figEllipse, genEllipse, addProps);
+}
+
+
+
+function figUpdateEllipseData(figEllipse, genEllipse, transform)
+{
+    figEllipse.cornerRadius = genEllipse[FO_ELLIPSE_ROUND];
+
+    const start = genEllipse[FO_ELLIPSE_START] /360*(Math.PI*2);
+    const sweep = genEllipse[FO_ELLIPSE_SWEEP] /100*(Math.PI*2);
+
+    figEllipse.arcData =
+    {
+        startingAngle: start,
+        endingAngle:   start + sweep,
+        innerRadius:   Math.min(Math.max(0, genEllipse[FO_ELLIPSE_INNER]/100), 1)
+    };
+
+    if (transform)
+        setObjectTransform(figEllipse, genEllipse);
+}
+
+
+function genFrameIsValid(genFrame)
+{
+    return genFrame[FO_X          ] != null && !isNaN(genFrame[FO_X          ])
+        && genFrame[FO_Y          ] != null && !isNaN(genFrame[FO_Y          ])
+        && genFrame[FO_WIDTH      ] != null && !isNaN(genFrame[FO_WIDTH      ])
+        && genFrame[FO_HEIGHT     ] != null && !isNaN(genFrame[FO_HEIGHT     ])
+        && genFrame[FO_FRAME_ROUND] != null && !isNaN(genFrame[FO_FRAME_ROUND])
+        && genFrame[FO_FRAME_CLIP ] != null && !isNaN(genFrame[FO_FRAME_CLIP ]);
+}
+
+
+
+async function figCreateFrame(genFrame, addProps, transform)
+{
+    if (!genFrameIsValid(genFrame))
+        return null;
+        
+        
+    const figFrame = figma.createFrame();
+
+    
+    if (figFrame)
+    {
+        figFrame.expanded = false;
+        figUpdateFrameData(figFrame, genFrame, addProps, transform);
+
+
+        let objects = [];
+
+        for (const obj of genFrame[FO_FRAME_CHILDREN])
+            await figCreateObject(obj, o => objects = [...objects, o]);
+
+        for (const obj of objects)
+            figFrame.appendChild(obj);
+    }
+
+
+    return figFrame;
+}
+
+
+
+function figUpdateFrame(figFrame, genFrame, addProps, transform)
+{
+    figUpdateFrameData(figFrame, genFrame, addProps, transform);
+
+    figUpdateObjects(
+        figFrame, 
+        genFrame[FO_FRAME_CHILDREN], 
+        genFrame[FO_FRAME_CHILDREN].length);
+}
+
+
+
+function figUpdateFrameData(figFrame, genFrame, addProps, transform)
+{
+    figFrame.cornerRadius = genFrame[FO_FRAME_ROUND];
+    figFrame.clipsContent = genFrame[FO_FRAME_CLIP ] > 0;
+
+
+
+    if (transform)
+        setObjectTransform(figFrame, genFrame);
+    
+    setObjectProps(figFrame, genFrame, addProps && genFrame[FO_FRAME_CHILDREN].length == 0);
+
+
+    figUpdateStrokeSides(figFrame, genFrame);
+}
+
+
+function genShapeGroupIsValid(genGroup)
+{
+    return true;//genGroup[FO_GROUP_CHILDREN].length > 0;
+}
+
+
+
+async function figCreateShapeGroup(genGroup)
+{
+    let objects = [];
+
+    for (const obj of genGroup[FO_GROUP_CHILDREN])
+        await figCreateObject(obj, o => objects = [...objects, o]);
+
+
+    await figma.currentPage.loadAsync();
+    
+    const figGroup = 
+        !isEmpty(objects)
+        ? figma.group(objects, figma.currentPage)
+        : null;
+
+
+    if (figGroup)
+    {
+        figGroup.expanded = false;
+        figUpdateShapeGroup(figGroup, genGroup);
+    }
+
+
+    return figGroup;
+}
+
+
+
+function figUpdateShapeGroup(figGroup, genGroup)
+{
+    if (genGroup[FO_GROUP_CHILDREN].length == 0)
+    {
+        figGroup.remove();
+        return;
+    }
+
+
+    figUpdateObjects(
+        figGroup, 
+        genGroup[FO_GROUP_CHILDREN],
+        genGroup[FO_GROUP_CHILDREN].length);
+
+        
+    setObjectEffects(figGroup, genGroup);
+}
+
+
+
+function genLineIsValid(genLine)
+{
+    return genLine[FO_X    ] != null && !isNaN(genLine[FO_X    ])
+        && genLine[FO_Y    ] != null && !isNaN(genLine[FO_Y    ])
+        && genLine[FO_WIDTH] != null && !isNaN(genLine[FO_WIDTH]);
+}
+
+
+
+function figCreateLine(genLine, addProps, transform)
+{
+    if (!genLineIsValid(genLine))
+        return null;
+    
+
+    const figLine = figma.createLine();
+
+    figUpdateLine(figLine, genLine, addProps, transform, true);
+    
+    return figLine;
+}
+
+
+
+function figUpdateLine(figLine, genLine, addProps, transform, isValid = false)
+{
+    if (   !isValid
+        && !genLineIsValid(genLine))
+        return;
+
+    if (transform)
+        setObjectTransform(figLine, genLine, true, 0);
+    
+    setObjectProps(figLine, genLine, addProps);
+}
+
+
+
+var figPoints = [];
+
+
+
+function genPointIsValid(genPoint)
+{
+    return genPoint[FO_X] != null && !isNaN(genPoint[FO_X])
+        && genPoint[FO_Y] != null && !isNaN(genPoint[FO_Y]);
+}
+
+
+
+function figCreatePoint(genPoint)
+{    
+    const figPoint = 
+        genPoint[FO_IS_CENTER]
+        ? figma.createRectangle()
+        : figma.createEllipse();
+
+
+    // figPoint.setPluginData('isCenter', boolToString(genPoint[FO_IS_CENTER]));
+
+
+    if (!genPointIsValid(genPoint))
+        return figPoint;
+
+
+    //figPoint.rotation = 0;
+
+    
+    if (figPoints.includes(figPoint))
+        updatePointObject_(figPoint, genPoint);
+    else
+        figUpdatePoint(figPoint, genPoint);
+
+    
+    return figPoint;
+}
+
+
+
+function figUpdatePoint(figPoint, genPoint)
+{
+    setPointTransform(figPoint, genPoint);
+    updatePointStyles(figPoint);
+}
+
+
+
+function updatePointObjects()
+{
+    figPostMessageToUi(
+    {
+        cmd: 'uiUpdateZoom', 
+        zoom: figma.viewport.zoom 
+    });
+    
+    for (const point of figPoints)
+        updatePointObject(point);
+}
+
+
+
+function updatePointObject(figPoint)
+{
+    updateExistingPointTransform(figPoint);
+    updatePointStyles(figPoint);
+}
+
+
+
+function updatePointObject_(figPoint, genPoint)
+{
+    setPointTransform(figPoint, genPoint);
+    updatePointStyles(figPoint);
+}
+
+
+
+function updatePointStyles(figPoint)
+{
+    if (figPoint.removed) 
+        return;
+
+    figma.currentPage.loadAsync().then(() =>
+    {
+        const isCenter   = parseBool(figPoint.getPluginData('isCenter'));
+        const isSelected = figma.currentPage.selection.includes(figPoint);
+
+        const color =
+            isCenter
+            ? [0xf2, 0x48, 0x22]
+            : isSelected
+            ? [ 12, 140, 233]
+            : [255, 255, 255];
+
+        const border =
+            isCenter
+            ? [255, 255, 255]
+            : isSelected
+            ? [255, 255, 255]
+            : [ 12, 140, 233];
+
+
+        figPoint.fills = getObjectFills([['SOLID', color[0], color[1], color[2], 100]]);
+
+
+        const effects = [];
+        
+        effects.push(...getObjectEffects([['DROP_SHADOW', border[0]/255, border[1]/255, border[2]/255,  1, 0, 0, 0, (isCenter ? 3 : isSelected ? 5 : 3.6)/curZoom, 'NORMAL', true, true]], true));
+        effects.push(...getObjectEffects([['DROP_SHADOW', color[0]/255, color[1]/255, color[2]/255, 1, 0, 0, 0, (isSelected ? 4 : 2.4)/curZoom, 'NORMAL', true, true]], true));
+
+
+        figPoint.effects = effects;
+    });
+}
+
+
+
+function genPolygonIsValid(genPoly)
+{
+    return genPoly[FO_X           ] != null && !isNaN(genPoly[FO_X           ])
+        && genPoly[FO_Y           ] != null && !isNaN(genPoly[FO_Y           ])
+        && genPoly[FO_WIDTH       ] != null && !isNaN(genPoly[FO_WIDTH       ])
+        && genPoly[FO_HEIGHT      ] != null && !isNaN(genPoly[FO_HEIGHT      ])
+        && genPoly[FO_POLY_ROUND  ] != null && !isNaN(genPoly[FO_POLY_ROUND  ])
+        && genPoly[FO_POLY_CORNERS] != null && !isNaN(genPoly[FO_POLY_CORNERS]);
+}
+
+
+
+function figCreatePolygon(genPoly, addProps, transform)
+{
+    if (!genPolygonIsValid(genPoly))
+        return null;
+
+        
+    const figPoly = figma.createPolygon();
+
+    figUpdatePolygon(figPoly, genPoly, addProps, transform, true);
+
+    return figPoly;
+}
+
+
+
+function figUpdatePolygon(figPoly, genPoly, addProps, transform, isValid = false)
+{
+    if (   !isValid
+        && !genPolygonIsValid(genPoly))
+        return;
+
+        
+    figPoly.cornerRadius = genPoly[FO_POLY_ROUND];
+    figPoly.pointCount   = Math.max(3, genPoly[FO_POLY_CORNERS]);
+
+
+    if (transform)
+        setObjectTransform(figPoly, genPoly);
+    
+    setObjectProps(figPoly, genPoly, addProps);
+}
+
+
+
+function genRectIsValid(genRect)
+{
+    return genRect[FO_X         ] != null && !isNaN(genRect[FO_X         ])
+        && genRect[FO_Y         ] != null && !isNaN(genRect[FO_Y         ])
+        && genRect[FO_WIDTH     ] != null && !isNaN(genRect[FO_WIDTH     ])
+        && genRect[FO_HEIGHT    ] != null && !isNaN(genRect[FO_HEIGHT    ])
+        && genRect[FO_RECT_ROUND] != null && !isNaN(genRect[FO_RECT_ROUND]);
+}
+
+
+
+function figCreateRect(genRect, addProps, transform)
+{
+    if (!genRectIsValid(genRect))
+        return null;
+
+
+    const figRect = figma.createRectangle();
+
+    figUpdateRect(figRect, genRect, addProps, transform, true);
+
+    return figRect;
+}
+
+
+
+function figUpdateRect(figRect, genRect, addProps, transform, isValid = false)
+{
+    if (   !isValid
+        && !genRectIsValid(genRect))
+        return;
+
+
+    const foundCorners = genRect[FO_EFFECTS].findIndex(e => e[0] == 'ROUND_CORNERS');
+
+    if (foundCorners > -1)
+    {
+        const corners = genRect[FO_EFFECTS][foundCorners];
+
+        figRect.topLeftRadius     = corners[1];
+        figRect.topRightRadius    = corners[2];
+        figRect.bottomLeftRadius  = corners[3];
+        figRect.bottomRightRadius = corners[4];
+    }
+    else
+        figRect.cornerRadius = genRect[FO_RECT_ROUND];
+
+
+    if (transform)
+        setObjectTransform(figRect, genRect);
+    
+    setObjectProps(figRect, genRect, addProps);
+
+
+    figUpdateStrokeSides(figRect, genRect);
+}
+
+
+
+function figUpdateStrokeSides(figObj, genObj)
+{
+    const foundSides = genObj[FO_EFFECTS].findIndex(e => e[0] == 'STROKE_SIDES');
+    if (foundSides < 0) return;
+
+    
+    const sides = genObj[FO_EFFECTS][foundSides];
+
+    figObj.strokeWeight       = 0;
+    figObj.strokeTopWeight    = sides[1];
+    figObj.strokeLeftWeight   = sides[2];
+    figObj.strokeRightWeight  = sides[3];
+    figObj.strokeBottomWeight = sides[4];
+}
+
+
+function genStarIsValid(genStar)
+{
+    return genStar[FO_X          ] != null && !isNaN(genStar[FO_X          ])
+        && genStar[FO_Y          ] != null && !isNaN(genStar[FO_Y          ])
+        && genStar[FO_WIDTH      ] != null && !isNaN(genStar[FO_WIDTH      ])
+        && genStar[FO_HEIGHT     ] != null && !isNaN(genStar[FO_HEIGHT     ])
+        && genStar[FO_STAR_ROUND ] != null && !isNaN(genStar[FO_STAR_ROUND ])
+        && genStar[FO_STAR_POINTS] != null && !isNaN(genStar[FO_STAR_POINTS])
+        && genStar[FO_STAR_CONVEX] != null && !isNaN(genStar[FO_STAR_CONVEX]);
+}
+
+
+
+function figCreateStar(genStar, addProps, transform)
+{
+    if (!genStarIsValid(genStar))
+        return null;
+    
+    
+    const figStar = figma.createStar();
+
+    figUpdateStar(figStar, genStar, addProps, transform, true);
+
+    return figStar;
+}
+
+
+
+function figUpdateStar(figStar, genStar, addProps, transform, isValid = false)
+{
+    if (   !isValid
+        && !genStarIsValid(genStar))
+        return;
+
+
+    figStar.cornerRadius = genStar[FO_STAR_ROUND ];
+    figStar.pointCount   = genStar[FO_STAR_POINTS];
+    figStar.innerRadius  = Math.min(Math.max(0, genStar[FO_STAR_CONVEX] / 100), 1);
+
+
+    if (transform)
+        setObjectTransform(figStar, genStar);
+    
+    setObjectProps(figStar, genStar, addProps);
+}
+
+
+
+const loadedFonts = [];
+
+
+
+function genTextIsValid(genText)
+{
+    return genText[FO_TEXT     ] != null
+        && genText[FO_X        ] != null && !isNaN(genText[FO_X     ])
+        && genText[FO_Y        ] != null && !isNaN(genText[FO_Y     ])
+        && genText[FO_WIDTH    ] != null && !isNaN(genText[FO_WIDTH ])
+        && genText[FO_HEIGHT   ] != null && !isNaN(genText[FO_HEIGHT])
+        && genText[FO_FONT     ] != null && genText[FO_FONT] != NULL
+        && genText[FO_FONT_SIZE] != null && !isNaN(genText[FO_FONT_SIZE]);
+}
+
+
+
+function figCreateText(genText, addProps, transform)
+{
+    if (!genTextIsValid(genText))
+        return null;
+    
+
+    const figText = figma.createText();
+
+    figUpdateText(figText, genText, addProps, transform, true);
+
+    
+    return figText;
+}
+
+
+
+function figUpdateText(figText, genText, addProps, transform, isValid = false)
+{
+    if (   !isValid
+        && !genTextIsValid(genText))
+        return null;
+
+
+    const fontName = 
+    { 
+        family: genText[FO_FONT      ], 
+        style:  genText[FO_FONT_STYLE]
+    };
+
+    try
+    {
+        if (!loadedFonts.includes(fontName))
+        {
+            figma.loadFontAsync(fontName).then(() =>
+            {
+                loadedFonts.push(fontName);
+                figUpdateText_(figText, genText, fontName, addProps, transform);
+            });
+        }
+        else
+        {
+            figUpdateText_(figText, genText, fontName, addProps, transform);
+        }
+    }
+    catch (e) 
+    {
+        consoleError(e);
+    }
+}
+
+
+
+function figUpdateText_(figText, genText, fontName, addProps, transform)
+{
+    figText.fontName      = fontName;
+
+    figText.fontSize      = Math.max(1, genText[FO_FONT_SIZE]);
+
+    figText.characters    = genText[FO_TEXT];
+
+    figText.lineHeight    = {unit: 'PERCENT', value: genText[FO_LINE_HEIGHT   ]};
+    figText.letterSpacing = {unit: 'PERCENT', value: genText[FO_LETTER_SPACING]};
+
+
+         if (genText[FO_ALIGN_H] == 0) figText.textAlignHorizontal = 'LEFT';
+    else if (genText[FO_ALIGN_H] == 1) figText.textAlignHorizontal = 'CENTER';
+    else if (genText[FO_ALIGN_H] == 2) figText.textAlignHorizontal = 'RIGHT';
+    else if (genText[FO_ALIGN_H] == 3) figText.textAlignHorizontal = 'JUSTIFIED';
+
+         if (genText[FO_ALIGN_V] == 0) figText.textAlignVertical   = 'TOP';
+    else if (genText[FO_ALIGN_V] == 1) figText.textAlignVertical   = 'CENTER';
+    else if (genText[FO_ALIGN_V] == 2) figText.textAlignVertical   = 'BOTTOM';
+
+
+    if (transform)
+        setObjectTransform(figText, genText);
+    
+    setObjectProps(figText, genText, addProps);
+
+
+    // const xp0 = genText[FO_XP0];
+    // const xp1 = genText[FO_XP1];
+    // const xp2 = genText[FO_XP2];
+
+    // const scaleY = distv(xp0, xp2);
+    // console.log('scaleY =', scaleY);
+    
+    // figText.fontSize = 
+    //       Math.max(1, genText[FO_FONT_SIZE])
+    //     * scaleY / 100;
+
+
+    if (     genText[FO_FIG_WIDTH ] == 0
+          && genText[FO_FIG_HEIGHT] == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
+    else if (genText[FO_FIG_WIDTH ] == 0) figText.textAutoResize = 'HEIGHT';
+    else                                  figText.textAutoResize = 'NONE';
+}
+
+
+
+function genVectorNetworkIsValid(genNetwork)
+{
+    return true;//genNetwork[FO_VECTOR_NETWORK_DATA] != null && !isNaN(genNetwork[FO_VECTOR_NETWORK_DATA]);
+}
+
+
+
+function figCreateVectorNetwork(genNetwork, addProps, transform)
+{
+    if (!genVectorNetworkIsValid(genNetwork))
+        return null;
+
+        
+    const figNetwork = figma.createVector();
+
+    figUpdateVectorNetwork(figNetwork, genNetwork, addProps, transform, true);
+
+    
+    return figNetwork;
+}
+
+
+
+function figUpdateVectorNetwork(figNetwork, genNetwork, addProps, transform, isValid = false)
+{
+    if (   !isValid
+        && !genVectorNetworkIsValid(genNetwork))
+        return;
+
+
+    figNetwork.setVectorNetworkAsync(genNetwork[FO_VECTOR_NETWORK_DATA]);
+    
+
+    if (transform)
+        setObjectTransform(figNetwork, genNetwork, false);
+    
+    setObjectProps(figNetwork, genNetwork, addProps);
+}
+
+
+
+function genVectorPathIsValid(genPath)
+{
+    return genPath[FO_VECTOR_PATH_WINDING] != null && !isNaN(genPath[FO_VECTOR_PATH_WINDING])
+        && genPath[FO_VECTOR_PATH_ROUND  ] != null && !isNaN(genPath[FO_VECTOR_PATH_ROUND  ]);
+}
+
+
+
+function figCreateVectorPath(genPath, addProps, transform)
+{
+    const figPath = figma.createVector();
+
+    figUpdateVectorPath(figPath, genPath, addProps, transform, true);
+
+    return figPath;
+}
+
+
+
+function figUpdateVectorPath(figPath, genPath, addProps, transform, isValid = false)
+{
+    if (   !isValid
+        && !genVectorPathIsValid(genPath))
+        return;
+
+
+    figPath.vectorPaths = [{
+        windingRule: genPath[FO_VECTOR_PATH_WINDING] == 1 ? 'NONZERO' : 'EVENODD',
+        data:        genPath[FO_VECTOR_PATH_DATA   ]
+    }];
+
+
+
+    figPath.cornerRadius = Number(genPath[FO_VECTOR_PATH_ROUND]);
+    
+
+    if (transform)
+        setObjectTransform(figPath, genPath, false);
+    
+    setObjectProps(figPath, genPath, addProps);
+}

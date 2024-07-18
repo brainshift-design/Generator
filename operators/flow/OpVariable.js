@@ -233,22 +233,22 @@ extends ResizableBase
             getVariableValue(value));
 
 
-        // if (    this.linkedVariableId != NULL
-        //     && !this.linkedVariableTemp)
-        // {
-        //     while (this.headerInputs.length > 0)
-        //         this.removeInput(this.headerInputs[0]);
-        // }
-        // else
-        // {
-        //     if (this.headerInputs.length == 0)
-        //     {
-        //         this.addInput(new Input([NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE]));
+        if (    this.linkedVariableId != NULL
+            && !this.linkedVariableTemp)
+        {
+            while (this.headerInputs.length > 0)
+                this.removeInput(this.headerInputs[0]);
+        }
+        else
+        {
+            if (this.headerInputs.length == 0)
+            {
+                this.addInput(new Input([NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE]));
 
-        //         this.inputs[0].addEventListener('connect',    () => OpVariable_onConnectInput   (this));
-        //         this.inputs[0].addEventListener('disconnect', () => OpVariable_onDisconnectInput(this));
-        //     }
-        // }
+                this.inputs[0].addEventListener('connect',    () => OpVariable_onConnectInput   (this));
+                this.inputs[0].addEventListener('disconnect', () => OpVariable_onDisconnectInput(this));
+            }
+        }
     }
 
     
@@ -349,8 +349,8 @@ function OpVariable_onConnectInput(node)
     actionManager.do(new LinkExistingVariableAction(
         node.id,
         NULL,
-        node.linkedVariableType,
-        node.linkedVariableName,
+        NULL,
+        '',
         true));
 }
 

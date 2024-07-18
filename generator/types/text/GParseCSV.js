@@ -1,4 +1,4 @@
-class GTextCSV
+class GParseCSV
 extends GOperator1
 {
     rowSeparator;
@@ -8,7 +8,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(TEXT_CSV, nodeId, options);
+        super(PARSE_CSV, nodeId, options);
     }
 
 
@@ -25,7 +25,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GTextCSV(this.nodeId, this.options);
+        const copy = new GParseCSV(this.nodeId, this.options);
 
         copy.copyBase(this);
 

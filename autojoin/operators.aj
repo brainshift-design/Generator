@@ -158,8 +158,8 @@
 ../operators/text/OpTextPad.js
 ../operators/text/OpTextSplit.js
 ../operators/text/OpTextCompare.js
-../operators/text/OpTextCSV.js
-../operators/text/OpTextJson.js
+../operators/text/OpParseCSV.js
+../operators/text/OpParseJson.js
 ../operators/text/OpTextFetch.js
 ../operators/text/OpTextFile.js
 ../operators/text/OpTextToNumber.js

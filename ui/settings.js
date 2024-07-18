@@ -399,7 +399,7 @@ function enableFeatures(sub)
     enableMenuItem(menuItemFetch,              true, sub);
     enableMenuItem(menuItemDateTime,           true, sub);
     enableMenuItem(menuItemSolve,              true, sub);
-    enableMenuItem(menuItemTextJson,           true, sub);
+    enableMenuItem(menuItemParseJson,           true, sub);
     enableMenuItem(menuItemCorrectColor,       true, sub);
     enableMenuItem(menuItemConvertToP3,        true, sub);
     enableMenuItem(menuItemShapeRender,        true, sub);

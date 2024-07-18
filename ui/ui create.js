@@ -120,8 +120,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_TO_NUMBER:          node = new OpTextToNumber();       break;
         case TEXT_TO_COLOR:           node = new OpTextToColor();        break;
         case TEXT_SPLIT:              node = new OpTextSplit();          break;
-        case TEXT_CSV:                node = new OpTextCSV();            break;
-        case TEXT_JSON:               node = new OpTextJson();           break;
+        case PARSE_CSV:                node = new OpParseCSV();            break;
+        case PARSE_JSON:               node = new OpParseJson();           break;
         case TEXT_FETCH:              node = new OpTextFetch();          break;
         case TEXT_FILE:               node = new OpTextFile();           break;
  

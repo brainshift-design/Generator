@@ -893,12 +893,12 @@ function genParseTextSplit(parse)
 
 
 
-function genParseTextCSV(parse)
+function genParseParseCSV(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const csv = new GTextCSV(nodeId, options);
+    const csv = new GParseCSV(nodeId, options);
    
 
     let nInputs = -1;
@@ -940,12 +940,12 @@ function genParseTextCSV(parse)
 
 
 
-function genParseTextJson(parse)
+function genParseParseJson(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const json = new GTextJson(nodeId, options);
+    const json = new GParseJson(nodeId, options);
    
 
     let nInputs = -1;

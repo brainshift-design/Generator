@@ -1,16 +1,16 @@
-class GTextJson
+class GParseJson
 extends GOperator1
 {
     constructor(nodeId, options)
     {
-        super(TEXT_JSON, nodeId, options);
+        super(PARSE_JSON, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GTextJson(this.nodeId, this.options);
+        const copy = new GParseJson(this.nodeId, this.options);
 
         copy.copyBase(this);
 

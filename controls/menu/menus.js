@@ -237,7 +237,7 @@ var menuItemIndexToName;
 
 var menuItemSolve;  
 
-var menuItemTextJson;
+var menuItemParseJson;
 
 var menuItemColor;
 var menuItemValidColor;
@@ -442,8 +442,8 @@ function initGeneratorMenus()
         menuItemFetch    = new MenuItem('Fetch',      null, false, {icon: iconTextFetch, createType: TEXT_FETCH,       callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,      btnFlow.div, getCreateOptions(e)))}),
         menuItemTextFile = new MenuItem('Text file',  null, false, {icon: iconTextFile,  createType: TEXT_FILE,        callback: e => actionManager.do(getCreateNodeAction(TEXT_FILE,       btnFlow.div, getCreateOptions(e)))}),
         menuTextDataSep1 = new MenuItem('',           null, false, {separator: true}),
-        menuItemTextJson = new MenuItem('Parse JSON', null, false, {icon: iconTextJson,      createType: TEXT_JSON,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JSON,     btnFlow.div, getCreateOptions(e)))}),
-                           new MenuItem('Parse CSV',  null, false, {icon: iconTextCSV,       createType: TEXT_CSV,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CSV,      btnFlow.div, getCreateOptions(e)))})]);
+        menuItemParseJson = new MenuItem('Parse JSON', null, false, {icon: iconParseJson,      createType: PARSE_JSON,      callback: e => actionManager.do(getCreateNodeAction(PARSE_JSON,     btnFlow.div, getCreateOptions(e)))}),
+                           new MenuItem('Parse CSV',  null, false, {icon: iconParseCSV,       createType: PARSE_CSV,       callback: e => actionManager.do(getCreateNodeAction(PARSE_CSV,      btnFlow.div, getCreateOptions(e)))})]);
     
     
     menuFlow = new Menu('Data flow', true, false);
@@ -457,7 +457,7 @@ function initGeneratorMenus()
         menuItemNull       = new MenuItem('Null',           null, false, {icon: iconNull,          createType: NULL_NODE,      callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',               null, false, {separator: true}),
                              new MenuItem('Variable',       null, false, {icon: iconVariable, /*childMenu: menuVariables,*/ createType: VARIABLE,         callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
-        //menuItemVarGroup   = new MenuItem('Variable group', null, false, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
+        menuItemVarGroup   = new MenuItem('Variable group', null, false, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',               null, false, {separator: true}),
                              new MenuItem('Parameters',     null, false, {icon: iconParameters, childMenu: menuParams}),
                              new MenuItem('Value names',    null, false, {icon: iconNames, childMenu: menuNames}),

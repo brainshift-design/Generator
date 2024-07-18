@@ -1,4 +1,4 @@
-class   OpTextJson
+class   OpParseJson
 extends OperatorBase
 {
     paramValue;
@@ -9,7 +9,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(TEXT_JSON, 'json', 'json', iconTextJson);
+        super(PARSE_JSON, 'json', 'json', iconParseJson);
 
         this.subscription      = true;
         this.iconOffsetY       = 1;
@@ -71,5 +71,23 @@ extends OperatorBase
         this.paramValue.enableControlText(false);
 
         this.updateParamControls();
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
+
+        
+        colors.input  =
+            this.active 
+            ? rgb_a(rgbFromType(this.inputs[0].types[0], false), 0.4) 
+            : rgb_a(rgbLightenHsv(rgbSaturateHsv(rgbFromType(this.inputs[0].types[0], true), 0.5), 0.9), 1);
+        
+        colors.inWire = rgbFromType(this.inputs[0].types[0], true);
+        
+        
+        return colors;
     }
 }

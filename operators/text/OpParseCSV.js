@@ -1,4 +1,4 @@
-class   OpTextCSV
+class   OpParseCSV
 extends OperatorBase
 {
     paramValue;
@@ -9,7 +9,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(TEXT_CSV, 'csv', 'csv', iconTextCSV);
+        super(PARSE_CSV, 'csv', 'csv', iconParseCSV);
 
         this.iconOffsetY       = 1;
         this.showHeaderTooltip = true;
@@ -82,5 +82,23 @@ extends OperatorBase
         this.paramColumnSeparator.enableControlText(true);
 
         this.updateParamControls();
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
+
+        
+        colors.input  =
+            this.active 
+            ? rgb_a(rgbFromType(this.inputs[0].types[0], false), 0.4) 
+            : rgb_a(rgbLightenHsv(rgbSaturateHsv(rgbFromType(this.inputs[0].types[0], true), 0.5), 0.9), 1);
+        
+        colors.inWire = rgbFromType(this.inputs[0].types[0], true);
+        
+        
+        return colors;
     }
 }
