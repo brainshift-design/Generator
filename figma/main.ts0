@@ -1,7 +1,7 @@
 console.clear();
 
 
-figma.payments.setPaymentStatusInDevelopment({type: 'UNPAID'});
+figma.payments.setPaymentStatusInDevelopment({type: 'PAID'});
 
 
 figma.loadAllPagesAsync().then(() =>
@@ -24,7 +24,7 @@ figma.clientStorage.getAsync('pro').then(data =>
         {
             visible:     false,
             themeColors: true,
-            title:       'Generator' + (data === false ? ' (Free version)' : '')
+            title:       'Generator' + (data !== true ? ' (Free version)' : '')
         });
 });
 

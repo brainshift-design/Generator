@@ -219,6 +219,11 @@ function validateInit()
 
                 startUserSession();
             }
+
+            
+            uiSetLocalData(
+                'pro', 
+                subscriptionActive);
         })
         .catch(error =>
         {
@@ -242,10 +247,6 @@ function validateInit()
     //     result > 0
     //     ? result == 1
     //     : false);
-        
-    uiSetLocalData(
-        'pro', 
-        subscriptionActive);
 }
 
 

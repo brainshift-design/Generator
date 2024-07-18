@@ -409,7 +409,7 @@ function initGeneratorMenus()
         menuDebug          = new MenuItem('Debug',                  null, false, {childMenu: menuMainDebug}),
                              new MenuItem('',                       null, false, {separator: true}),
       //menuItemHelp       = new MenuItem('Help and subscription',  null, false, {childMenu: menuMainHelp }),
-        menuItemUpgrade    = new MenuItem('Upgrade to Pro',         null, false, { }),
+        menuItemUpgrade    = new MenuItem('Upgrade to Pro',         null, false, {callback: () => uiFigmaManageSubscription()}),
         menuItemHelp       = new MenuItem('Help',                   null, false, {childMenu: menuMainHelp }),
         menuItemRestartSep = new MenuItem('',                       null, false, {separator: true}),
         menuItemRestart    = new MenuItem('Restart to update. . .', null, false, {icon: iconUpdate, callback: () => settings.showRestartInfo ? showRestartDialog() : uiRestartGenerator()})]);
