@@ -24,6 +24,7 @@ extends OperatorBase
 
 
         this.paramCondition.divider = 0.62;
+        this.paramCondition.controls[0].allowEditDecimals = false;
 
         this.menuCondition = createBoolMenu(this.paramCondition);
     }

@@ -330,13 +330,15 @@ extends Control
 
         const cx = -this.displayMin / (this.displayMax - this.displayMin) * sw;
 
-        const v = 
+        let v = 
             this.displayAbsolute
             ?   Math.abs(this.value) 
               / (this.value < 0 
                  ? (-this.displayMin - Math.max(0, this.displayMin))
                  : ( this.displayMax - Math.max(0, this.displayMin)))
             : this.value / (this.displayMax - this.displayMin);
+
+        v = roundTo(v, this.decimals);
 
 
         this.updateBar(sx, cx, v, sw, sh);

@@ -8,6 +8,8 @@ extends OpShapeBase
 
     paramRetain;
 
+    menuRetain;
+
 
 
     constructor()
@@ -23,9 +25,12 @@ extends OpShapeBase
         this.addNewInput();
 
 
-        this.addParam(this.paramRetain = new NumberParam('retain', 'preserve', true, true, true, 1, 0, 1));
+        this.addParam(this.paramRetain = new NumberParam('retain', 'retain', false, true, true, 1, 0, 1));
 
         this.paramRetain.divider = 0.62;
+        this.paramRetain.controls[0].allowEditDecimals = false;
+
+        this.menuRetain = createBoolMenu(this.paramRetain);
 
 
         this.addBaseParamsAfter();

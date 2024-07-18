@@ -43,15 +43,31 @@ extends Operator
 
 function createBoolMenu(param)
 {
-    const menu = new Menu('L', true, false);
+    const menu = new Menu('L', true, true);
 
     menu.minWidth = 130;
-    
-    menu.addItems([
-        new MenuItem('true',  null, false, {icon:  TRUE_DISPLAY_MENU, callback: () => { hideAllMenus(); param.setValue(new NumberValue(1), true); }}),
-        new MenuItem('false', null, false, {icon: FALSE_DISPLAY_MENU, callback: () => { hideAllMenus(); param.setValue(new NumberValue(0), true); }})]);
 
-    param.div.addEventListener('pointerdown', e => param.node.showParamMenu(e, param, menu));
+    param.div.addEventListener('pointerdown', e => 
+    {
+        initBoolMenu(param, menu);
+        param.node.showParamMenu(e, param, menu);
+    });
 
     return menu;
+}
+
+
+
+function initBoolMenu(param, menu)
+{
+    menu.showIcons = settings.showBoolValues;
+    
+    menu.clearItems();
+
+    menu.addItems([
+        new MenuItem('1  ·  true',  null, false, {icon:  TRUE_DISPLAY_MENU, callback: () => { hideAllMenus(); param.setValue(new NumberValue(1), true); }}),
+        new MenuItem('0  ·  false', null, false, {icon: FALSE_DISPLAY_MENU, callback: () => { hideAllMenus(); param.setValue(new NumberValue(0), true); }})]);
+
+    menu.items[0].setChecked(param.value.toNumber() >  0);
+    menu.items[1].setChecked(param.value.toNumber() == 0);
 }
