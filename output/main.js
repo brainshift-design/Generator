@@ -571,7 +571,7 @@ const TEXT_LIST_VALUE = 'TLIST#';
 const SHAPE_LIST_VALUE = 'SLIST#';
 const NULL_NODE = 'NULL';
 const VARIABLE = 'VAR';
-const VARIABLE_VALUE = 'VAR#';
+//const VARIABLE_VALUE       = 'VAR#';
 const VARIABLE_GROUP = 'VARGRP';
 const FEEDBACK = 'FEEDBK';
 const REPEAT = 'REPT';
@@ -1939,7 +1939,7 @@ figma.ui.onmessage = function (msg) {
             figGetAllLocalVariables(msg.nodeId, msg.px, msg.py);
             break;
         case 'figLinkNodeToVariable':
-            figLinkNodeToVariable(msg.nodeId, msg.variableId);
+            figLinkNodeToVariable(msg.nodeId, msg.variableId, msg.variableType, msg.variableName);
             break;
         case 'figUpdateVariable':
             figUpdateVariableAsync(msg.variableId, msg.value);
@@ -3508,9 +3508,9 @@ function getVariableValuesAsync(varIds) {
         return values;
     });
 }
-function figLinkNodeToVariable(nodeId, varId) {
+function figLinkNodeToVariable(nodeId, varId, varType, varName) {
     figma.variables.getLocalVariablesAsync().then(localVars => {
-        figLinkVariableAsync(localVars, nodeId, varId);
+        figLinkVariableAsync(localVars, nodeId, varId, varType, varName);
     });
 }
 function figUpdateVariableAsync(varId, value) {
@@ -3540,13 +3540,17 @@ function figUpdateVariableAsync(varId, value) {
         }));
     });
 }
-function figLinkVariableAsync(localVars, nodeId, varId) {
+function figLinkVariableAsync(localVars, nodeId, varId, varType, varName) {
     return __awaiter(this, void 0, void 0, function* () {
         let variable = localVars.find(v => v.id == varId);
         if (!variable) {
             if (varId != NULL)
                 return null;
             else {
+                const collections = yield figma.variables.getLocalVariableCollectionsAsync();
+                if (collections.length > 0) {
+                    variable = figma.variables.createVariable(varName, collections[0], varType);
+                }
             }
         }
         const [resolvedVar, values] = yield figGetResolvedVariableValuesAsync(variable);

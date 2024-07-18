@@ -51,8 +51,8 @@ extends EventTarget
 
         if (this._connectedOutput)
         {
-            this  .dispatchEvent(new CustomEvent('connect', { detail: { output: output, input: this }}));
-            output.dispatchEvent(new CustomEvent('connect', { detail: { output: output, input: this }}));
+            this                 .dispatchEvent(new CustomEvent('connect', { detail: { output: output, input: this }}));
+            this._connectedOutput.dispatchEvent(new CustomEvent('connect', { detail: { output: output, input: this }}));
         }
     }
 

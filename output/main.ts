@@ -1055,7 +1055,7 @@ const  SHAPE_LIST_VALUE    = 'SLIST#';
 
 const NULL_NODE            = 'NULL';
 const VARIABLE             = 'VAR';
-const VARIABLE_VALUE       = 'VAR#';
+//const VARIABLE_VALUE       = 'VAR#';
 const VARIABLE_GROUP       = 'VARGRP';
 const FEEDBACK             = 'FEEDBK';
 const REPEAT               = 'REPT';
@@ -2833,7 +2833,7 @@ figma.ui.onmessage = function(msg)
         case 'figRemovePluginDataFromAllLocalStyles': figRemovePluginDataFromAllLocalStyles();                                            break;
 
         case 'figGetAllLocalVariables':               figGetAllLocalVariables              (msg.nodeId, msg.px, msg.py);                  break;
-        case 'figLinkNodeToVariable':                 figLinkNodeToVariable                (msg.nodeId, msg.variableId);                  break;
+        case 'figLinkNodeToVariable':                 figLinkNodeToVariable                (msg.nodeId, msg.variableId, msg.variableType, msg.variableName); break;
         case 'figUpdateVariable':                     figUpdateVariableAsync               (msg.variableId, msg.value);                   break;
 
         case 'figGetAllLocalColorStyles':             figGetAllLocalColorStyles            (msg.nodeId, msg.px, msg.py);                  break;
@@ -5191,11 +5191,11 @@ async function getVariableValuesAsync(varIds)
 
 
 
-function figLinkNodeToVariable(nodeId, varId)
+function figLinkNodeToVariable(nodeId, varId, varType, varName)
 {
     figma.variables.getLocalVariablesAsync().then(localVars =>
     {
-        figLinkVariableAsync(localVars, nodeId, varId);
+        figLinkVariableAsync(localVars, nodeId, varId, varType, varName);
     });
 }
 
@@ -5241,7 +5241,7 @@ async function figUpdateVariableAsync(varId, value)
 
 
 
-async function figLinkVariableAsync(localVars, nodeId, varId)
+async function figLinkVariableAsync(localVars, nodeId, varId, varType, varName)
 {
     let variable = localVars.find(v => v.id == varId);
 
@@ -5252,7 +5252,15 @@ async function figLinkVariableAsync(localVars, nodeId, varId)
 
         else
         {
+            const collections = await figma.variables.getLocalVariableCollectionsAsync();
 
+            if (collections.length > 0)
+            {
+                variable = figma.variables.createVariable(
+                    varName,
+                    collections[0],
+                    varType);
+            }
         }
     }
 

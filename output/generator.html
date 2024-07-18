@@ -6533,7 +6533,7 @@ const  SHAPE_LIST_VALUE    = 'SLIST#';
 
 const NULL_NODE            = 'NULL';
 const VARIABLE             = 'VAR';
-const VARIABLE_VALUE       = 'VAR#';
+//const VARIABLE_VALUE       = 'VAR#';
 const VARIABLE_GROUP       = 'VARGRP';
 const FEEDBACK             = 'FEEDBK';
 const REPEAT               = 'REPT';
@@ -15357,181 +15357,181 @@ function parseLayerMaskValue(str)
 
 
 
-class VariableValue
-extends GValue
-{
-    nodeId;
+// class VariableValue
+// extends GValue
+// {
+//     nodeId;
 
-    variableId;
-    variableType;
-    variableName;
-    variableValue;
-
-
-
-    constructor(nodeId,
-                variableId    = NULL, 
-                variableType  = NULL, 
-                variableName  = '', 
-                variableValue = new NullValue())
-    {
-        super(VARIABLE_VALUE, nodeId);
-
-        this.variableId    = variableId;
-        this.variableType  = variableType;
-        this.variableName  = variableName;
-        this.variableValue = variableValue;
-    }
+//     variableId;
+//     variableType;
+//     variableName;
+//     variableValue;
 
 
 
-    static fromObject(obj)
-    {
-        return null;
-        // return new VariableValue(
-        //     obj.nodeId,
-        //     obj.variableId, 
-        //     obj.variableType, 
-        //     obj.variableName, 
-        //     new NumberValue(obj.variableValue));
-    }
+//     constructor(nodeId,
+//                 variableId    = NULL, 
+//                 variableType  = NULL, 
+//                 variableName  = '', 
+//                 variableValue = new NullValue())
+//     {
+//         super(VARIABLE_VALUE, nodeId);
+
+//         this.variableId    = variableId;
+//         this.variableType  = variableType;
+//         this.variableName  = variableName;
+//         this.variableValue = variableValue;
+//     }
 
 
 
-    copy()
-    {
-        const copy = new VariableValue(
-            this.nodeId,
-            this.variableId, 
-            this.variableType, 
-            this.variableName, 
-            this.variableValue.copy());
-
-        copy.copyBase(this);
-
-        return copy;
-    }
+//     static fromObject(obj)
+//     {
+//         return null;
+//         // return new VariableValue(
+//         //     obj.nodeId,
+//         //     obj.variableId, 
+//         //     obj.variableType, 
+//         //     obj.variableName, 
+//         //     new NumberValue(obj.variableValue));
+//     }
 
 
 
-    equals(rect)
-    {
-        return rect
-            && this.variableId   == rect.variableId  
-            && this.variableType == rect.variableType
-            && this.variableName == rect.variableName
-            && this.variableValue.equals(rect.variableValue);
-    }
+//     copy()
+//     {
+//         const copy = new VariableValue(
+//             this.nodeId,
+//             this.variableId, 
+//             this.variableType, 
+//             this.variableName, 
+//             this.variableValue.copy());
+
+//         copy.copyBase(this);
+
+//         return copy;
+//     }
 
 
 
-    async eval(parse)
-    {
-        return this.copy();
-    }
+//     equals(rect)
+//     {
+//         return rect
+//             && this.variableId   == rect.variableId  
+//             && this.variableType == rect.variableType
+//             && this.variableName == rect.variableName
+//             && this.variableValue.equals(rect.variableValue);
+//     }
 
 
 
-    toString()
-    {
-        return      this.variableId
-            + ' ' + this.variableType
-            + ' ' + encodeURIComponent(this.variableName)
-            + ' ' + this.variableValue.toString()
-            + ' ' + super.toString();
-    }
+//     async eval(parse)
+//     {
+//         return this.copy();
+//     }
 
 
 
-    toPreviewString()
-    {
-        return 'variable';
-            // + ' ' + this.variableId   .toPreviewString()
-            // + ' ' + this.variableType .toPreviewString()
-            // + ' ' + this.variableName .toPreviewString()
-            // + ' ' + this.variableValue.toPreviewString();
-    }
+//     toString()
+//     {
+//         return      this.variableId
+//             + ' ' + this.variableType
+//             + ' ' + encodeURIComponent(this.variableName)
+//             + ' ' + this.variableValue.toString()
+//             + ' ' + super.toString();
+//     }
 
 
 
-    toDisplayString()
-    {
-        return      this.variableId   .toDisplayString()
-            + ' ' + this.variableType .toDisplayString()
-            + ' ' + this.variableName .toDisplayString()
-            + ' ' + this.variableValue.toDisplayString();
-    }
+//     toPreviewString()
+//     {
+//         return 'variable';
+//             // + ' ' + this.variableId   .toPreviewString()
+//             // + ' ' + this.variableType .toPreviewString()
+//             // + ' ' + this.variableName .toPreviewString()
+//             // + ' ' + this.variableValue.toPreviewString();
+//     }
 
 
 
-    toValue()
-    {
-        return this.copy();
-    }
+//     toDisplayString()
+//     {
+//         return      this.variableId   .toDisplayString()
+//             + ' ' + this.variableType .toDisplayString()
+//             + ' ' + this.variableName .toDisplayString()
+//             + ' ' + this.variableValue.toDisplayString();
+//     }
 
 
 
-    hasInitValue()
-    {
-        return super.hasInitValue()
-            && this.variableValue.hasInitValue();
-    }
+//     toValue()
+//     {
+//         return this.copy();
+//     }
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.variableId   != NULL
-            && this.variableType != NULL
-            && this.variableName != ''
-            && this.variableValue.isValid();
-    }
+//     hasInitValue()
+//     {
+//         return super.hasInitValue()
+//             && this.variableValue.hasInitValue();
+//     }
+
+
+
+//     isValid()
+//     {
+//         return super.isValid()
+//             && this.variableId   != NULL
+//             && this.variableType != NULL
+//             && this.variableName != ''
+//             && this.variableValue.isValid();
+//     }
 
 
     
-    static NaN = new VariableValue(
-        '',
-        NULL,
-        NULL,
-        '',
-        new NullValue());
-}
+//     static NaN = new VariableValue(
+//         '',
+//         NULL,
+//         NULL,
+//         '',
+//         new NullValue());
+// }
 
 
 
-function parseVariableValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [VariableValue.NaN, 1];
+// function parseVariableValue(str, i = -1)
+// {
+//     if (   i <  0 && str    == NAN_DISPLAY
+//         || i >= 0 && str[i] == NAN_DISPLAY)
+//         return [VariableValue.NaN, 1];
 
 
-    if (i < 0)
-    {
-        str = str.split(' ');
-        i   = 0;
-    }
+//     if (i < 0)
+//     {
+//         str = str.split(' ');
+//         i   = 0;
+//     }
 
 
-    const iStart = i;
+//     const iStart = i;
 
-    const variableId    = str[i];                     i++;
-    const variableType  = str[i];                     i++;
-    const variableName  = decodeURIComponent(str[i]); i++;
-    const variableValue = parseValue(str[i]);         i += variableValue[1];
-
-
-    const _var = new VariableValue(
-        '', // set node ID elsewhere
-        variableId,
-        variableType,
-        variableName,
-        variableValue[0]);
+//     const variableId    = str[i];                     i++;
+//     const variableType  = str[i];                     i++;
+//     const variableName  = decodeURIComponent(str[i]); i++;
+//     const variableValue = parseValue(str[i]);         i += variableValue[1];
 
 
-    return [_var, i - iStart];
-}
+//     const _var = new VariableValue(
+//         '', // set node ID elsewhere
+//         variableId,
+//         variableType,
+//         variableName,
+//         variableValue[0]);
+
+
+//     return [_var, i - iStart];
+// }
 
 
 

@@ -151,13 +151,6 @@
 }
 
 
-#btnCrashSaveRestart
-{
-    position: absolute;
-    right:    180px;
-    bottom:   21px;
-}
-
 #btnCrashClearRestart
 {
     position: absolute;
@@ -166,7 +159,23 @@
 }
 
 
+#btnCrashSaveRestart
+{
+    position: absolute;
+    left:     133px;
+    bottom:   21px;
+}
+
+
 #btnCrashRestart
+{
+    position: absolute;
+    right:    136px;
+    bottom:   21px;
+}
+
+
+#btnCrashDebugMode
 {
     position: absolute;
     right:    24px;

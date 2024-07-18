@@ -43,8 +43,11 @@ function initCrashDialog(event, error = event, showDebugButton = true)
         btnCrashClearRestart.addEventListener('click', () => { clearGraph(); uiRestartGenerator(false); });
         btnCrashClearRestart.style.display = showDebugButton ? 'block' : 'none';
 
-        btnCrashRestart.addEventListener('click', () => uiGetLocalData('debugWarningCrash'));
+        btnCrashRestart.addEventListener('click', () => uiRestartGenerator(false));
         btnCrashRestart.style.display = showDebugButton ? 'block' : 'none';
+
+        btnCrashDebugMode.addEventListener('click', () => uiGetLocalData('debugWarningCrash'));
+        btnCrashDebugMode.style.display = showDebugButton ? 'block' : 'none';
 
         crashDetails.addEventListener('pointerup', e =>
         {

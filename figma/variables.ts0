@@ -108,11 +108,11 @@ async function getVariableValuesAsync(varIds)
 
 
 
-function figLinkNodeToVariable(nodeId, varId)
+function figLinkNodeToVariable(nodeId, varId, varType, varName)
 {
     figma.variables.getLocalVariablesAsync().then(localVars =>
     {
-        figLinkVariableAsync(localVars, nodeId, varId);
+        figLinkVariableAsync(localVars, nodeId, varId, varType, varName);
     });
 }
 
@@ -158,7 +158,7 @@ async function figUpdateVariableAsync(varId, value)
 
 
 
-async function figLinkVariableAsync(localVars, nodeId, varId)
+async function figLinkVariableAsync(localVars, nodeId, varId, varType, varName)
 {
     let variable = localVars.find(v => v.id == varId);
 
@@ -169,7 +169,15 @@ async function figLinkVariableAsync(localVars, nodeId, varId)
 
         else
         {
+            const collections = await figma.variables.getLocalVariableCollectionsAsync();
 
+            if (collections.length > 0)
+            {
+                variable = figma.variables.createVariable(
+                    varName,
+                    collections[0],
+                    varType);
+            }
         }
     }
 

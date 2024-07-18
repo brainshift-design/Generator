@@ -1,74 +1,74 @@
-class FigmaVariable
-extends FigmaShape
-{
-    x;
-    y;
-    width;
-    height;
+// class FigmaVariable
+// extends FigmaShape
+// {
+//     x;
+//     y;
+//     width;
+//     height;
 
-    round;
+//     round;
 
     
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, round)
-    {
-        super(VARIABLE, nodeId, objectId, objectName);
+//     constructor(nodeId, objectId, objectName, x, y, width, height, round)
+//     {
+//         super(VARIABLE, nodeId, objectId, objectName);
         
-        this.x      = x;
-        this.y      = y;
-        this.width  = width;
-        this.height = height;
+//         this.x      = x;
+//         this.y      = y;
+//         this.width  = width;
+//         this.height = height;
 
-        this.round  = round;
+//         this.round  = round;
 
-        this.createDefaultSpace(
-            x + width /2, 
-            y + height/2);
-    }
+//         this.createDefaultSpace(
+//             x + width /2, 
+//             y + height/2);
+//     }
 
 
 
-    copy()
-    {
-        const copy = new FigmaVariable(
-            this.nodeId,
-            this.objectId,
-            this.objectName,
+//     copy()
+//     {
+//         const copy = new FigmaVariable(
+//             this.nodeId,
+//             this.objectId,
+//             this.objectName,
 
-            this.x,
-            this.y,
-            this.width,
-            this.height,
+//             this.x,
+//             this.y,
+//             this.width,
+//             this.height,
             
-            this.round);
+//             this.round);
 
 
-        copy.copyBase(this);
+//         copy.copyBase(this);
 
 
-        return copy;
-    }
-
-
-
-    toValue()
-    {
-        return VariableValue.fromObject(this);
-    }
+//         return copy;
+//     }
 
 
 
-    toData()
-    {
-        return [
-            ...super.toData(),
+//     toValue()
+//     {
+//         return VariableValue.fromObject(this);
+//     }
+
+
+
+//     toData()
+//     {
+//         return [
+//             ...super.toData(),
    
-            /* 25 */ this.x,
-            /* 26 */ this.y,
-            /* 27 */ this.width,
-            /* 28 */ this.height,
+//             /* 25 */ this.x,
+//             /* 26 */ this.y,
+//             /* 27 */ this.width,
+//             /* 28 */ this.height,
 
-            /* 29 */ this.round * Math.abs(this.scaleCorners)
-        ];
-    }
-}
+//             /* 29 */ this.round * Math.abs(this.scaleCorners)
+//         ];
+//     }
+// }

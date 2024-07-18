@@ -225,12 +225,12 @@ extends ResizableBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        // const value = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
 
-        // uiUpdateVariable(
-        //     this.linkedVariableId, 
-        //     this.linkedVariableTemp, 
-        //     getVariableValue(value));
+        uiUpdateVariable(
+            this.linkedVariableId, 
+            this.linkedVariableTemp, 
+            getVariableValue(value));
 
 
         if (    this.linkedVariableId != NULL
