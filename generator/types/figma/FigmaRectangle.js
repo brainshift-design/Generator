@@ -63,12 +63,12 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 25 */ this.x,
-            /* 26 */ this.y,
-            /* 27 */ this.width,
-            /* 28 */ this.height,
+            /* 24 */ this.x,
+            /* 25 */ this.y,
+            /* 26 */ this.width,
+            /* 27 */ this.height,
 
-            /* 29 */ this.round * Math.abs(this.scaleCorners)
+            /* 28 */ this.round * Math.abs(this.scaleCorners)
         ];
     }
 }

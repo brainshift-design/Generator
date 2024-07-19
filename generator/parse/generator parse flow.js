@@ -52,6 +52,15 @@ function genParseVariable(parse)
     variable.existing = options.existing;
 
 
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(variable, parse, ignore);
 
@@ -67,10 +76,20 @@ function genParseVariable(parse)
     parse.inParam = false;
 
 
+    if (nInputs == 1)
+        variable.input = genParse(parse);
+
+    
+    variable.linkedVariableId   = parse.move();
+    variable.linkedVariableType = parse.move();
+    variable.linkedVariableName = parse.move();
+    variable.linkedVariableTemp = parseBool(parse.move());
+
+
     const nParams = parseInt(parse.move());
 
     if (nParams == 1)
-        variable.varValue = genParse(parse);
+        variable.variableValue = genParse(parse);
 
     
     parse.nTab--;

@@ -1,74 +1,54 @@
-// class FigmaVariable
-// extends FigmaShape
-// {
-//     x;
-//     y;
-//     width;
-//     height;
-
-//     round;
+class FigmaVariable
+extends FigmaObject
+{
+    variableType;
+    variableValue;
 
     
 
-//     constructor(nodeId, objectId, objectName, x, y, width, height, round)
-//     {
-//         super(VARIABLE, nodeId, objectId, objectName);
+    constructor(nodeId, variableId, variableName, variableType, variableValue)
+    {
+        super(VARIABLE, nodeId, variableId, variableName);
         
-//         this.x      = x;
-//         this.y      = y;
-//         this.width  = width;
-//         this.height = height;
-
-//         this.round  = round;
-
-//         this.createDefaultSpace(
-//             x + width /2, 
-//             y + height/2);
-//     }
+        this.variableType  = variableType;
+        this.variableValue = variableValue;
+    }
 
 
 
-//     copy()
-//     {
-//         const copy = new FigmaVariable(
-//             this.nodeId,
-//             this.objectId,
-//             this.objectName,
+    copy()
+    {
+        const copy = new FigmaVariable(
+            this.nodeId,
+            this.objectId,
+            this.objectName,
 
-//             this.x,
-//             this.y,
-//             this.width,
-//             this.height,
-            
-//             this.round);
+            this.variableType,
+            this.variableValue);
 
 
-//         copy.copyBase(this);
+        copy.copyBase(this);
 
 
-//         return copy;
-//     }
+        return copy;
+    }
 
 
 
-//     toValue()
-//     {
-//         return VariableValue.fromObject(this);
-//     }
+    toValue()
+    {
+        return VariableValue.fromObject(this);
+    }
 
 
 
-//     toData()
-//     {
-//         return [
-//             ...super.toData(),
+    toData()
+    {
+        return [
+            ...super.toData(),
    
-//             /* 25 */ this.x,
-//             /* 26 */ this.y,
-//             /* 27 */ this.width,
-//             /* 28 */ this.height,
-
-//             /* 29 */ this.round * Math.abs(this.scaleCorners)
-//         ];
-//     }
-// }
+            /* 24 */ this.variableType,
+            /* 25 */ this.variableValue
+        ];
+    }
+}

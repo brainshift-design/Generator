@@ -104,13 +104,35 @@ extends ResizableBase
             paramId: NULL });
 
 
-        const options = (this.existing ? 1 : 0) << 21;
+        const options = 0;//(this.existing ? 1 : 0) << 21;
 
 
         const [request, ignore] = this.genRequestStart(gen, options);
         if (ignore) return request;
 
                 
+        const input = 
+            this.inputs.length > 0
+            ? this.inputs[0]
+            : null;
+
+        const hasInput = 
+               input 
+            && input.connected;
+
+
+        request.push(hasInput ? 1 : 0);
+
+        if (hasInput)
+            request.push(...pushInputOrParam(input, gen));
+
+
+        request.push(this.linkedVariableId);
+        request.push(this.linkedVariableType);
+        request.push(this.linkedVariableName);
+        request.push(boolToString(this.linkedVariableTemp));
+
+
         request.push(this.paramValue ? 1 : 0);
         
         if (this.paramValue)
@@ -225,12 +247,12 @@ extends ResizableBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        // const value = values[paramIds.findIndex(id => id == 'value')];
 
-        uiUpdateVariable(
-            this.linkedVariableId, 
-            this.linkedVariableTemp, 
-            getVariableValue(value));
+        // uiUpdateVariable(
+        //     this.linkedVariableId, 
+        //     this.linkedVariableTemp, 
+        //     getVariableValue(value));
 
 
         if (    this.linkedVariableId != NULL

@@ -20,6 +20,7 @@
 ../generator/types/figma/FigmaWavePath.js
 ../generator/types/figma/FigmaShapeGroup.js
 ../generator/types/figma/FigmaFrame.js
+../generator/types/figma/FigmaVariable.js
 
 ../generator/types/figma/FigmaColorStyle.js
 

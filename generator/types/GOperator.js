@@ -105,7 +105,7 @@ extends GNode
         const objects = getValidObjects(value);
         const copies  = [];
                         
-        for (let i = 0; i < objects.length; i++)//, o++)
+        for (let i = 0; i < objects.length; i++)
         {
             const obj = copyFigmaObject(objects[i]);
     

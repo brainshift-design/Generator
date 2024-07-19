@@ -6533,7 +6533,7 @@ const  SHAPE_LIST_VALUE    = 'SLIST#';
 
 const NULL_NODE            = 'NULL';
 const VARIABLE             = 'VAR';
-//const VARIABLE_VALUE       = 'VAR#';
+const VARIABLE_VALUE       = 'VAR#';
 const VARIABLE_GROUP       = 'VARGRP';
 const FEEDBACK             = 'FEEDBK';
 const REPEAT               = 'REPT';
@@ -7472,8 +7472,8 @@ const FO_OPACITY        = 21;
 const FO_BLEND          = 22;
 const FO_MASK           = 23;
 
-const FO_X              = 24;                                                                         const FO_BOOLEAN_CHILDREN    = 24;                                                                                              const FO_GROUP_CHILDREN = 24;
-const FO_Y              = 25;                                                                         const FO_BOOLEAN_OPERATION   = 25;
+const FO_X              = 24;   const FO_VARIABLE_TYPE   = 24;                                        const FO_BOOLEAN_CHILDREN    = 24;                                                                                              const FO_GROUP_CHILDREN = 24;
+const FO_Y              = 25;   const FO_VARIABLE_VALUE  = 25;                                        const FO_BOOLEAN_OPERATION   = 25;
 const FO_WIDTH          = 26;   
 const FO_HEIGHT         = 27;                                    
 
@@ -8739,12 +8739,12 @@ extends FigmaShape
         return [
             ...super.toData(),
    
-            /* 25 */ this.x,
-            /* 26 */ this.y,
-            /* 27 */ this.width,
-            /* 28 */ this.height,
+            /* 24 */ this.x,
+            /* 25 */ this.y,
+            /* 26 */ this.width,
+            /* 27 */ this.height,
 
-            /* 29 */ this.round * Math.abs(this.scaleCorners)
+            /* 28 */ this.round * Math.abs(this.scaleCorners)
         ];
     }
 }
@@ -10751,6 +10751,63 @@ extends FigmaShape
 
 
 
+class FigmaVariable
+extends FigmaObject
+{
+    variableType;
+    variableValue;
+
+    
+
+    constructor(nodeId, variableId, variableName, variableType, variableValue)
+    {
+        super(VARIABLE, nodeId, variableId, variableName);
+        
+        this.variableType  = variableType;
+        this.variableValue = variableValue;
+    }
+
+
+
+    copy()
+    {
+        const copy = new FigmaVariable(
+            this.nodeId,
+            this.objectId,
+            this.objectName,
+
+            this.variableType,
+            this.variableValue);
+
+
+        copy.copyBase(this);
+
+
+        return copy;
+    }
+
+
+
+    toValue()
+    {
+        return VariableValue.fromObject(this);
+    }
+
+
+
+    toData()
+    {
+        return [
+            ...super.toData(),
+   
+            /* 24 */ this.variableType,
+            /* 25 */ this.variableValue
+        ];
+    }
+}
+
+
+
 class FigmaColorStyle
 {
     type;
@@ -11155,6 +11212,8 @@ function parseValueFromType(type, value)
         case       ARC_PATH_VALUE: return parseArcPathValue      (value)[0];
         case      WAVE_PATH_VALUE: return parseWavePathValue     (value)[0];
         case          FRAME_VALUE: return parseFrameValue        (value)[0];
+
+        case       VARIABLE_VALUE: return parseVariableValue     (value)[0];
         
         default: 
             console.error('unknown type \'' + type + '\'');
@@ -11363,7 +11422,7 @@ extends GNode
         const objects = getValidObjects(value);
         const copies  = [];
                         
-        for (let i = 0; i < objects.length; i++)//, o++)
+        for (let i = 0; i < objects.length; i++)
         {
             const obj = copyFigmaObject(objects[i]);
     
@@ -15357,181 +15416,180 @@ function parseLayerMaskValue(str)
 
 
 
-// class VariableValue
-// extends GValue
-// {
-//     nodeId;
+class VariableValue
+extends GValue
+{
+    nodeId;
 
-//     variableId;
-//     variableType;
-//     variableName;
-//     variableValue;
-
-
-
-//     constructor(nodeId,
-//                 variableId    = NULL, 
-//                 variableType  = NULL, 
-//                 variableName  = '', 
-//                 variableValue = new NullValue())
-//     {
-//         super(VARIABLE_VALUE, nodeId);
-
-//         this.variableId    = variableId;
-//         this.variableType  = variableType;
-//         this.variableName  = variableName;
-//         this.variableValue = variableValue;
-//     }
+    variableId;
+    variableType;
+    variableName;
+    variableValue;
 
 
 
-//     static fromObject(obj)
-//     {
-//         return null;
-//         // return new VariableValue(
-//         //     obj.nodeId,
-//         //     obj.variableId, 
-//         //     obj.variableType, 
-//         //     obj.variableName, 
-//         //     new NumberValue(obj.variableValue));
-//     }
+    constructor(nodeId,
+                variableId    = NULL, 
+                variableType  = NULL, 
+                variableName  = '', 
+                variableValue = new NullValue())
+    {
+        super(VARIABLE_VALUE, nodeId);
+
+        this.variableId    = variableId;
+        this.variableType  = variableType;
+        this.variableName  = variableName;
+        this.variableValue = variableValue;
+    }
 
 
 
-//     copy()
-//     {
-//         const copy = new VariableValue(
-//             this.nodeId,
-//             this.variableId, 
-//             this.variableType, 
-//             this.variableName, 
-//             this.variableValue.copy());
-
-//         copy.copyBase(this);
-
-//         return copy;
-//     }
+    static fromObject(obj)
+    {
+        return new VariableValue(
+            obj.nodeId,
+            obj.objectId, 
+            obj.variableType, 
+            obj.objectName, 
+            new NullValue()); //NumberValue(obj.variableValue));
+    }
 
 
 
-//     equals(rect)
-//     {
-//         return rect
-//             && this.variableId   == rect.variableId  
-//             && this.variableType == rect.variableType
-//             && this.variableName == rect.variableName
-//             && this.variableValue.equals(rect.variableValue);
-//     }
+    copy()
+    {
+        const copy = new VariableValue(
+            this.nodeId,
+            this.variableId, 
+            this.variableType, 
+            this.variableName, 
+            this.variableValue.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
 
 
 
-//     async eval(parse)
-//     {
-//         return this.copy();
-//     }
+    equals(rect)
+    {
+        return rect
+            && this.variableId   == rect.variableId  
+            && this.variableType == rect.variableType
+            && this.variableName == rect.variableName
+            && this.variableValue.equals(rect.variableValue);
+    }
 
 
 
-//     toString()
-//     {
-//         return      this.variableId
-//             + ' ' + this.variableType
-//             + ' ' + encodeURIComponent(this.variableName)
-//             + ' ' + this.variableValue.toString()
-//             + ' ' + super.toString();
-//     }
+    async eval(parse)
+    {
+        return this.copy();
+    }
 
 
 
-//     toPreviewString()
-//     {
-//         return 'variable';
-//             // + ' ' + this.variableId   .toPreviewString()
-//             // + ' ' + this.variableType .toPreviewString()
-//             // + ' ' + this.variableName .toPreviewString()
-//             // + ' ' + this.variableValue.toPreviewString();
-//     }
+    toString()
+    {
+        return      this.variableId
+            + ' ' + this.variableType
+            + ' ' + encodeURIComponent(this.variableName)
+            + ' ' + this.variableValue.toString()
+            + ' ' + super.toString();
+    }
 
 
 
-//     toDisplayString()
-//     {
-//         return      this.variableId   .toDisplayString()
-//             + ' ' + this.variableType .toDisplayString()
-//             + ' ' + this.variableName .toDisplayString()
-//             + ' ' + this.variableValue.toDisplayString();
-//     }
+    toPreviewString()
+    {
+        return 'variable';
+            // + ' ' + this.variableId   .toPreviewString()
+            // + ' ' + this.variableType .toPreviewString()
+            // + ' ' + this.variableName .toPreviewString()
+            // + ' ' + this.variableValue.toPreviewString();
+    }
 
 
 
-//     toValue()
-//     {
-//         return this.copy();
-//     }
+    toDisplayString()
+    {
+        return      this.variableId   .toDisplayString()
+            + ' ' + this.variableType .toDisplayString()
+            + ' ' + this.variableName .toDisplayString()
+            + ' ' + this.variableValue.toDisplayString();
+    }
 
 
 
-//     hasInitValue()
-//     {
-//         return super.hasInitValue()
-//             && this.variableValue.hasInitValue();
-//     }
+    toValue()
+    {
+        return this.copy();
+    }
 
 
 
-//     isValid()
-//     {
-//         return super.isValid()
-//             && this.variableId   != NULL
-//             && this.variableType != NULL
-//             && this.variableName != ''
-//             && this.variableValue.isValid();
-//     }
+    hasInitValue()
+    {
+        return super.hasInitValue()
+            && this.variableValue.hasInitValue();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.variableId   != NULL
+            && this.variableType != NULL
+            && this.variableName != ''
+            && this.variableValue.isValid();
+    }
 
 
     
-//     static NaN = new VariableValue(
-//         '',
-//         NULL,
-//         NULL,
-//         '',
-//         new NullValue());
-// }
+    static NaN = new VariableValue(
+        '',
+        NULL,
+        NULL,
+        '',
+        new NullValue());
+}
 
 
 
-// function parseVariableValue(str, i = -1)
-// {
-//     if (   i <  0 && str    == NAN_DISPLAY
-//         || i >= 0 && str[i] == NAN_DISPLAY)
-//         return [VariableValue.NaN, 1];
+function parseVariableValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [VariableValue.NaN, 1];
 
 
-//     if (i < 0)
-//     {
-//         str = str.split(' ');
-//         i   = 0;
-//     }
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
 
 
-//     const iStart = i;
+    const iStart = i;
 
-//     const variableId    = str[i];                     i++;
-//     const variableType  = str[i];                     i++;
-//     const variableName  = decodeURIComponent(str[i]); i++;
-//     const variableValue = parseValue(str[i]);         i += variableValue[1];
-
-
-//     const _var = new VariableValue(
-//         '', // set node ID elsewhere
-//         variableId,
-//         variableType,
-//         variableName,
-//         variableValue[0]);
+    const variableId    = str[i];                     i++;
+    const variableType  = str[i];                     i++;
+    const variableName  = decodeURIComponent(str[i]); i++;
+    const variableValue = parseValueFromType(variableType, str[i]); i += variableValue[1];
 
 
-//     return [_var, i - iStart];
-// }
+    const _var = new VariableValue(
+        '', // set node ID elsewhere
+        variableId,
+        variableType,
+        variableName,
+        variableValue[0]);
+
+
+    return [_var, i - iStart];
+}
 
 
 
@@ -19984,9 +20042,14 @@ extends GOperator1
 
 
 class GVariable
-extends GOperator
+extends GOperator1
 {
-    varValue = null;
+    linkedVariableId    = NULL;
+    linkedVariableType  = NULL;
+    linkedVariableName  = '';
+    linkedVariableTemp  = false;
+
+    linkedVariableValue = null;
 
 
 
@@ -20001,16 +20064,16 @@ extends GOperator
     {
         super.reset();
 
-        this.varValue = null;
+        this.variableValue = null;
     }
 
 
 
     copy()
     {
-        const copy = new GColorStyle(this.nodeId, this.options);
+        const copy = new GVariable(this.nodeId, this.options);
 
-        if (this.varValue) copy.varValue = this.varValue.copy();
+        if (this.variableValue) copy.variableValue = this.variableValue.copy();
         
         return copy;
     }
@@ -20023,16 +20086,24 @@ extends GOperator
             return this;
 
         
-        this.value = 
-            this.varValue
-            ? (await this.varValue.eval(parse)).toValue()
-            : new NullValue();
+        const variableValue = await evalValue(this.variableValue, parse);
+
+
+        this.value = new VariableValue(
+            this.nodeId, 
+            this.linkedVariableId,
+            this.linkedVariableType,
+            this.linkedVariableName,
+            variableValue);
 
 
         this.setUpdateValues(parse,
         [
             ['value', this.value]
         ]);
+
+
+        await this.evalVariable(parse);
 
 
         this.validate();
@@ -20042,17 +20113,39 @@ extends GOperator
 
 
 
-    evalVariable(options = {})
+    async evalVariable(parse, options = {})
     {
         if (!this.options.enabled)
             return;
+     
+        
+        this.value.objects = [];
+
+
+        if (   this.value.variableId   != NULL
+            && this.value.variableType != NULL
+            && this.value.variableName != ''
+            && this.value.variableValue.isValid())
+        {
+            const _var = new FigmaVariable(
+                this.nodeId,
+                this.variableId,
+                this.variableType,
+                this.variableName,
+                this.variableValue);
+
+            this.value.objects.push(_var);
+        }
+
+        
+        await super.evalObjects(parse);
     }
 
 
 
     isValid()
     {
-        return this.varValue && this.varValue.isValid();
+        return this.variableValue && this.variableValue.isValid();
     }
 
 
@@ -20061,7 +20154,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.varValue) this.varValue.pushValueUpdates(parse);
+        if (this.variableValue) this.variableValue.pushValueUpdates(parse);
     }
 
 
@@ -20070,7 +20163,7 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.varValue) this.varValue.invalidateInputs(parse, from, force);
+        if (this.variableValue) this.variableValue.invalidateInputs(parse, from, force);
     }
 
 
@@ -20079,7 +20172,7 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.varValue) this.varValue.iterateLoop(parse);
+        if (this.variableValue) this.variableValue.iterateLoop(parse);
     }
 }
 
@@ -50863,6 +50956,15 @@ function genParseVariable(parse)
     variable.existing = options.existing;
 
 
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(variable, parse, ignore);
 
@@ -50878,10 +50980,20 @@ function genParseVariable(parse)
     parse.inParam = false;
 
 
+    if (nInputs == 1)
+        variable.input = genParse(parse);
+
+    
+    variable.linkedVariableId   = parse.move();
+    variable.linkedVariableType = parse.move();
+    variable.linkedVariableName = parse.move();
+    variable.linkedVariableTemp = parseBool(parse.move());
+
+
     const nParams = parseInt(parse.move());
 
     if (nParams == 1)
-        variable.varValue = genParse(parse);
+        variable.variableValue = genParse(parse);
 
     
     parse.nTab--;

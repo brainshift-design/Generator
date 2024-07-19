@@ -1,7 +1,12 @@
 class GVariable
-extends GOperator
+extends GOperator1
 {
-    varValue = null;
+    linkedVariableId    = NULL;
+    linkedVariableType  = NULL;
+    linkedVariableName  = '';
+    linkedVariableTemp  = false;
+
+    linkedVariableValue = null;
 
 
 
@@ -16,16 +21,16 @@ extends GOperator
     {
         super.reset();
 
-        this.varValue = null;
+        this.variableValue = null;
     }
 
 
 
     copy()
     {
-        const copy = new GColorStyle(this.nodeId, this.options);
+        const copy = new GVariable(this.nodeId, this.options);
 
-        if (this.varValue) copy.varValue = this.varValue.copy();
+        if (this.variableValue) copy.variableValue = this.variableValue.copy();
         
         return copy;
     }
@@ -38,16 +43,24 @@ extends GOperator
             return this;
 
         
-        this.value = 
-            this.varValue
-            ? (await this.varValue.eval(parse)).toValue()
-            : new NullValue();
+        const variableValue = await evalValue(this.variableValue, parse);
+
+
+        this.value = new VariableValue(
+            this.nodeId, 
+            this.linkedVariableId,
+            this.linkedVariableType,
+            this.linkedVariableName,
+            variableValue);
 
 
         this.setUpdateValues(parse,
         [
             ['value', this.value]
         ]);
+
+
+        await this.evalVariable(parse);
 
 
         this.validate();
@@ -57,17 +70,39 @@ extends GOperator
 
 
 
-    evalVariable(options = {})
+    async evalVariable(parse, options = {})
     {
         if (!this.options.enabled)
             return;
+     
+        
+        this.value.objects = [];
+
+
+        if (   this.value.variableId   != NULL
+            && this.value.variableType != NULL
+            && this.value.variableName != ''
+            && this.value.variableValue.isValid())
+        {
+            const _var = new FigmaVariable(
+                this.nodeId,
+                this.variableId,
+                this.variableType,
+                this.variableName,
+                this.variableValue);
+
+            this.value.objects.push(_var);
+        }
+
+        
+        await super.evalObjects(parse);
     }
 
 
 
     isValid()
     {
-        return this.varValue && this.varValue.isValid();
+        return this.variableValue && this.variableValue.isValid();
     }
 
 
@@ -76,7 +111,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.varValue) this.varValue.pushValueUpdates(parse);
+        if (this.variableValue) this.variableValue.pushValueUpdates(parse);
     }
 
 
@@ -85,7 +120,7 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.varValue) this.varValue.invalidateInputs(parse, from, force);
+        if (this.variableValue) this.variableValue.invalidateInputs(parse, from, force);
     }
 
 
@@ -94,6 +129,6 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.varValue) this.varValue.iterateLoop(parse);
+        if (this.variableValue) this.variableValue.iterateLoop(parse);
     }
 }
