@@ -40235,6 +40235,7 @@ extends GShape
     inner    = null;
 
     innerAbsolute;
+    startInDegrees;
     sweepInDegrees;
 
 
@@ -40408,7 +40409,7 @@ extends GShape
             let   w  = _w.value;
             let   h  = _h.value;
             let   r  = this.value.round .value;
-            const st = this.value.start .value;
+            let   st = this.value.start .value;
             let   sw = this.value.sweep .value;
             let   i  = this.value.inner .value;
 
@@ -40419,8 +40420,9 @@ extends GShape
             if (   w != 0 
                 && h != 0)
             {
-                if (this.innerAbsolute ) i  /= Math.max(w, h) / 200;
-                if (this.sweepInDegrees) sw /= 3.6;
+                if ( this.innerAbsolute ) i  /= Math.max(w, h) / 200;
+                if (!this.startInDegrees) st *= 3.6;
+                if ( this.sweepInDegrees) sw /= 3.6;
 
                 const ellipse = new FigmaEllipse(
                     this.nodeId,
@@ -43275,6 +43277,7 @@ extends GShape
     start    = null;
     sweep    = null;
 
+    startInDegrees;
     sweepInDegrees;
 
 
@@ -43427,7 +43430,7 @@ extends GShape
             let   y    = _y.value;
             let   w    = _w.value;
             let   h    = _h.value;
-            const st   = this.value.start.value/360 * Tau;
+            let   st   = this.value.start.value/360 * Tau;
             let   sw   = this.value.sweep.value/100 * Tau;
 
 
@@ -43437,7 +43440,8 @@ extends GShape
             // if (   w != 0 
             //     && h != 0)
             // {
-                if (this.sweepInDegrees) sw /= 3.6;
+                if (!this.startInDegrees) st *= 3.6;
+                if ( this.sweepInDegrees) sw /= 3.6;
 
                 const arc = new FigmaArcPath(
                     this.nodeId,
@@ -55413,6 +55417,7 @@ function genParseEllipse(parse)
     
     
     ellipse.innerAbsolute  = parseInt(parse.move()) > 0;
+    ellipse.startInDegrees = parseInt(parse.move()) > 0;
     ellipse.sweepInDegrees = parseInt(parse.move()) > 0;
 
 
@@ -56435,6 +56440,7 @@ function genParseArcPath(parse)
     }
     
     
+    arc.startInDegrees = parseInt(parse.move()) > 0;
     arc.sweepInDegrees = parseInt(parse.move()) > 0;
 
 

@@ -251,6 +251,7 @@ function genParseEllipse(parse)
     
     
     ellipse.innerAbsolute  = parseInt(parse.move()) > 0;
+    ellipse.startInDegrees = parseInt(parse.move()) > 0;
     ellipse.sweepInDegrees = parseInt(parse.move()) > 0;
 
 
@@ -1273,6 +1274,7 @@ function genParseArcPath(parse)
     }
     
     
+    arc.startInDegrees = parseInt(parse.move()) > 0;
     arc.sweepInDegrees = parseInt(parse.move()) > 0;
 
 

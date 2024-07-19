@@ -9,8 +9,10 @@ extends OpShape
     paramStart;
     paramSweep;
 
+    startInDegrees;
     sweepInDegrees;
 
+    menuStart;
     menuSweep;
     
 
@@ -23,6 +25,7 @@ extends OpShape
         this.iconOffsetY = -1;
         
 
+        this.startInDegrees = true;
         this.sweepInDegrees = false;
 
 
@@ -49,6 +52,7 @@ extends OpShape
         this.addBaseParamsAfter();
 
 
+        this.menuStart = createArcPathParamMenu(this.paramStart, 'startInDegrees');
         this.menuSweep = createArcPathParamMenu(this.paramSweep, 'sweepInDegrees');
     }
 
@@ -56,6 +60,7 @@ extends OpShape
 
     genRequestInherited(gen, request)
     {
+        request.push(this.startInDegrees ? 1 : 0);
         request.push(this.sweepInDegrees ? 1 : 0);
     }
 
@@ -90,20 +95,8 @@ extends OpShape
         this.paramHeight.setName(center ? 'radius H' : 'height');
 
         
-        if (this.sweepInDegrees)
-        {
-            this.paramSweep.controls[0].setSuffix('°', true);
-            this.paramSweep.controls[0].setMin(  0);
-            this.paramSweep.controls[0].setMax(360);
-            this.paramSweep.controls[0].suffixOffsetY = -4;
-        }
-        else
-        {
-            this.paramSweep.controls[0].setSuffix('%', true);
-            this.paramSweep.controls[0].setMin(  0);
-            this.paramSweep.controls[0].setMax(100);
-            this.paramSweep.controls[0].suffixOffsetY = 0;
-        }
+        setAngleParam(this.paramStart, this.startInDegrees);
+        setAngleParam(this.paramSweep, this.sweepInDegrees);
 
 
         super.updateParams();
@@ -118,6 +111,7 @@ extends OpShape
 
         let json = super.toJsonBase(nTab);
 
+        json += ',\n' + pos + tab + '"startInDegrees": "' + this.startInDegrees + '"';
         json += ',\n' + pos + tab + '"sweepInDegrees": "' + this.sweepInDegrees + '"';
 
         return json;
@@ -129,9 +123,10 @@ extends OpShape
     {
         super.loadParams(_node, pasting);
 
-        if (   _node.innerAbsolute
+        if (   _node.startInDegrees
             && _node.sweepInDegrees)
         {
+            this.startInDegrees = parseBool(_node.startInDegrees);
             this.sweepInDegrees = parseBool(_node.sweepInDegrees);
         }
     }

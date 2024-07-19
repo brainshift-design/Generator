@@ -8,6 +8,7 @@ extends GShape
     inner    = null;
 
     innerAbsolute;
+    startInDegrees;
     sweepInDegrees;
 
 
@@ -181,7 +182,7 @@ extends GShape
             let   w  = _w.value;
             let   h  = _h.value;
             let   r  = this.value.round .value;
-            const st = this.value.start .value;
+            let   st = this.value.start .value;
             let   sw = this.value.sweep .value;
             let   i  = this.value.inner .value;
 
@@ -192,8 +193,9 @@ extends GShape
             if (   w != 0 
                 && h != 0)
             {
-                if (this.innerAbsolute ) i  /= Math.max(w, h) / 200;
-                if (this.sweepInDegrees) sw /= 3.6;
+                if ( this.innerAbsolute ) i  /= Math.max(w, h) / 200;
+                if (!this.startInDegrees) st *= 3.6;
+                if ( this.sweepInDegrees) sw /= 3.6;
 
                 const ellipse = new FigmaEllipse(
                     this.nodeId,

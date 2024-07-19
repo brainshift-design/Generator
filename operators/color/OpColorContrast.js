@@ -75,6 +75,7 @@ extends OpColorBase
             : null;
 
         this.paramStandard.getTooltip = () => null;
+        this.paramStandard.reverseMenu = true;
 
         
         this.header.connectionPadding = 12.5;

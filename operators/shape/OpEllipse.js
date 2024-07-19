@@ -12,9 +12,11 @@ extends OpShape
     paramInner;
 
     innerAbsolute;
+    startInDegrees;
     sweepInDegrees;
 
     menuInner;
+    menuStart;
     menuSweep;
     
     
@@ -27,6 +29,7 @@ extends OpShape
         
 
         this.innerAbsolute  = false;
+        this.startInDegrees = true;
         this.sweepInDegrees = false;
 
 
@@ -56,6 +59,7 @@ extends OpShape
 
 
         this.menuInner = createEllipseParamMenu(this.paramInner, 'innerAbsolute' );
+        this.menuStart = createEllipseParamMenu(this.paramStart, 'startInDegrees');
         this.menuSweep = createEllipseParamMenu(this.paramSweep, 'sweepInDegrees');
 
 
@@ -63,7 +67,8 @@ extends OpShape
 
         this.promptAttributes.push(
             ['innerAbsolute',  '0/1, determines whether "inner" is in percent or pixels'], 
-            ['sweepInDegrees', '0/1, determines whether "start" and "sweep" are in percent or degrees'] 
+            ['startInDegrees', '0/1, determines whether "start" is in percent or degrees'] 
+            ['sweepInDegrees', '0/1, determines whether "sweep" is in percent or degrees'] 
         );
 
         this.paramPosition.getDescription = () => `determines if X,Y are top-left or center`;
@@ -82,6 +87,7 @@ extends OpShape
     genRequestInherited(gen, request)
     {
         request.push(this.innerAbsolute  ? 1 : 0);
+        request.push(this.startInDegrees ? 1 : 0);
         request.push(this.sweepInDegrees ? 1 : 0);
     }
 
@@ -135,20 +141,8 @@ extends OpShape
         }
 
 
-        if (this.sweepInDegrees)
-        {
-            this.paramSweep.controls[0].setSuffix('°', true);
-            this.paramSweep.controls[0].setMin(  0);
-            this.paramSweep.controls[0].setMax(360);
-            this.paramSweep.controls[0].suffixOffsetY = -4;
-        }
-        else
-        {
-            this.paramSweep.controls[0].setSuffix('%', true);
-            this.paramSweep.controls[0].setMin(  0);
-            this.paramSweep.controls[0].setMax(100);
-            this.paramSweep.controls[0].suffixOffsetY = 0;
-        }
+        setAngleParam(this.paramStart, this.startInDegrees);
+        setAngleParam(this.paramSweep, this.sweepInDegrees);
 
 
         // this.params.forEach(p => p.isNodeValue = this.headerInputs[0].connected);
@@ -169,6 +163,7 @@ extends OpShape
 
         json += 
               ',\n' + pos + tab + '"innerAbsolute": "'  + this.innerAbsolute  + '"'
+            + ',\n' + pos + tab + '"startInDegrees": "' + this.startInDegrees + '"';
             + ',\n' + pos + tab + '"sweepInDegrees": "' + this.sweepInDegrees + '"';
 
         return json;
@@ -181,11 +176,33 @@ extends OpShape
         super.loadParams(_node, pasting);
 
         if (   _node.innerAbsolute
+            && _node.startInDegrees
             && _node.sweepInDegrees)
         {
             this.innerAbsolute  = parseBool(_node.innerAbsolute);
+            this.startInDegrees = parseBool(_node.startInDegrees);
             this.sweepInDegrees = parseBool(_node.sweepInDegrees);
         }
+    }
+}
+
+
+
+function setAngleParam(param, paramSetting)
+{
+    if (paramSetting)
+    {
+        param.controls[0].setSuffix('°', true);
+        param.controls[0].setMin(  0);
+        param.controls[0].setMax(360);
+        param.controls[0].suffixOffsetY = -4;
+    }
+    else
+    {
+        param.controls[0].setSuffix('%', true);
+        param.controls[0].setMin(  0);
+        param.controls[0].setMax(100);
+        param.controls[0].suffixOffsetY = 0;
     }
 }
 

@@ -5,6 +5,7 @@ extends GShape
     start    = null;
     sweep    = null;
 
+    startInDegrees;
     sweepInDegrees;
 
 
@@ -157,7 +158,7 @@ extends GShape
             let   y    = _y.value;
             let   w    = _w.value;
             let   h    = _h.value;
-            const st   = this.value.start.value/360 * Tau;
+            let   st   = this.value.start.value/360 * Tau;
             let   sw   = this.value.sweep.value/100 * Tau;
 
 
@@ -167,7 +168,8 @@ extends GShape
             // if (   w != 0 
             //     && h != 0)
             // {
-                if (this.sweepInDegrees) sw /= 3.6;
+                if (!this.startInDegrees) st *= 3.6;
+                if ( this.sweepInDegrees) sw /= 3.6;
 
                 const arc = new FigmaArcPath(
                     this.nodeId,
