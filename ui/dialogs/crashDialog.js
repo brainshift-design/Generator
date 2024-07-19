@@ -14,25 +14,46 @@ function crashAssert(condition, error, showDebugButton = true)
 
 function initCrashDialog(event, error = event, showDebugButton = true)
 {
-    if (error)
-    {
-        let stack = error.stack
+    const errorText =
+        error
+        ? error.stack
             .replaceAll('<anonymous>', '')
             .replaceAll('.<', '<')
             .replaceAll(/\(?data[a-zA-Z0-9/,;:=]*\)?/g, '')
             .replaceAll('at \n', '')
             .replaceAll('at ', '<br/>&nbsp;&nbsp;&nbsp;&nbsp;at ')
             .replaceAll(/\(:[^\)]*\)/g, '')
-            .replaceAll(/at :[0-9]+:[0-9]+/g, '');
+            .replaceAll(/at :[0-9]+:[0-9]+/g, '')
+        : event;
 
-        crashDetails.innerHTML += stack + '<br/>';
-    }
-    else
-        crashDetails.innerHTML += event + '<br/>';
+
+    crashDetails.innerHTML += errorText + '<br/>';
         
 
     if (!crashed)
     {
+        if (settings.shareUsageMetrics)
+            //&& !ignoreUsers.includes(currentUser.id))
+        {
+            postToServer(
+            {
+                action:          'submitUserError',
+                figmaId:          currentUser.id,
+                generatorVersion: generatorVersion,
+                sessionId:        sessionId,
+                errorDetails:     errorText
+            })
+            .then(response =>
+            {   
+
+            })
+            .catch(error =>
+            {
+                consoleError(error);
+            });
+        }
+
+
         crashDialog.addEventListener('pointerdown', e => {                     hideAllMenus(); });
         crashBack  .addEventListener('pointerdown', e => { e.preventDefault(); hideAllMenus(); });
 

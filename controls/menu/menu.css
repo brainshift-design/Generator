@@ -272,11 +272,12 @@
 
 .menuItemName
 {
-    display:     inline-block;
-    position:    relative;
-    font-weight: 500;
-    top:        -5px;
-    filter:      grayscale(); /* disables cleartype to match Figma */
+    display:              inline-block;
+    position:             relative;
+    font-weight:          500;
+    top:                 -5px;
+    filter:               grayscale(); /* disables cleartype to match Figma */
+    font-variant-numeric: tabular-nums;
 }
 
 
