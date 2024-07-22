@@ -49677,6 +49677,31 @@ var lastUpdateStyles  =  [];
 
 
 
+onerror = (event, source, line, pos, error) =>
+{
+    self.postMessage({
+        type:    'error',
+        message:  event.message,
+        filename: event.filename,
+        lineno:   event.lineno,
+        colno:    event.colno
+    });
+
+    return true;
+};
+
+
+addEventListener('unhandledrejection', event => 
+{
+    self.postMessage(
+    {
+        type:  'unhandledrejection',
+        reason: event.reason
+    });
+});
+
+
+
 function initFonts(fonts, uniqueFontNames)
 {
     figFonts           = fonts;

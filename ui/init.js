@@ -52,11 +52,6 @@ var currentUser     = null;
 
 
 
-const generator = new Worker(
-    window.URL.createObjectURL(
-        new Blob([generatorScript.textContent])));
-
-
 var panMode             = false;
 
 var     copiedNodesJson = '';
@@ -64,6 +59,34 @@ var duplicatedNodesJson = '';
 
 var pasteOffset         = point(0,  0);
 var pasteOffsetDelta    = point(50, 50);
+
+
+
+const generator = new Worker(
+    window.URL.createObjectURL(
+        new Blob([generatorScript.textContent])));
+
+generator.onmessage = event =>
+{
+    if (!event.data) 
+        return;
+
+
+    if (event.data.type === 'error') 
+    {
+        initCrashDialog(event, error);
+        showCrashDialog();
+    
+        addMetricsEvent('CRASH', error);
+    } 
+    else if (event.data.type === 'unhandledrejection') 
+    {
+        initCrashDialog(event, event.reason);
+        showCrashDialog();
+    
+        addMetricsEvent('CRASH', event.reason);
+    }
+};
 
 
 

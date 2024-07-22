@@ -5,10 +5,19 @@
 
 
 
-onerror = (event, source, line, pos, error) =>
+window.onerror = (event, source, line, pos, error) =>
 {
     initCrashDialog(event, error);
     showCrashDialog();
 
     addMetricsEvent('CRASH', error);
 };
+
+
+window.addEventListener('unhandledrejection', e => 
+{
+    initCrashDialog(e, e.reason);
+    showCrashDialog();
+
+    addMetricsEvent('CRASH', e.reason);
+});
