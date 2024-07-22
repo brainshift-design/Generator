@@ -26,6 +26,14 @@ extends ResizableBase
         this.divIcon.style.pointerEvents = 'all';
 
 
+        this.addInput(new Input([NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE]));
+        this.addOutput(new Output([VARIABLE_VALUE], this.output_genRequest));
+
+        // this.inputs[0].addEventListener('connect',    () => OpVariable_onConnectInput   (this));
+        // this.inputs[0].addEventListener('disconnect', () => OpVariable_onDisconnectInput(this));
+
+
+
         this.divIcon.addEventListener('pointerenter', e => 
         { 
             this.divIcon.style.opacity = 1;  
@@ -95,25 +103,25 @@ extends ResizableBase
 
 
 
-    genRequest(gen)
+    output_genRequest(gen)
     {
-        // 'this' is the node
+        // 'this' is the output
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
 
         const options = 0;//(this.existing ? 1 : 0) << 21;
 
 
-        const [request, ignore] = this.genRequestStart(gen, options);
+        const [request, ignore] = this.node.genRequestStart(gen, options);
         if (ignore) return request;
 
                 
         const input = 
-            this.inputs.length > 0
-            ? this.inputs[0]
+            this.node.inputs.length > 0
+            ? this.node.inputs[0]
             : null;
 
         const hasInput = 
@@ -127,20 +135,20 @@ extends ResizableBase
             request.push(...pushInputOrParam(input, gen));
 
 
-        request.push(this.linkedVariableId);
-        request.push(this.linkedVariableType);
-        request.push(this.linkedVariableName);
-        request.push(boolToString(this.linkedVariableTemp));
+        request.push(this.node.linkedVariableId);
+        request.push(this.node.linkedVariableType);
+        request.push(this.node.linkedVariableName);
+        request.push(this.node.linkedVariableTemp ? 1 : 0);
 
 
-        request.push(this.paramValue ? 1 : 0);
+        request.push(this.node.paramValue ? 1 : 0);
         
-        if (this.paramValue)
-            request.push(...this.paramValue.genRequest(gen));
+        if (this.node.paramValue)
+            request.push(...this.node.paramValue.genRequest(gen));
 
 
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
 
         return request;
     }
@@ -255,22 +263,22 @@ extends ResizableBase
         //     getVariableValue(value));
 
 
-        if (    this.linkedVariableId != NULL
-            && !this.linkedVariableTemp)
-        {
-            while (this.headerInputs.length > 0)
-                this.removeInput(this.headerInputs[0]);
-        }
-        else
-        {
-            if (this.headerInputs.length == 0)
-            {
-                this.addInput(new Input([NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE]));
+        // if (    this.linkedVariableId != NULL
+        //     && !this.linkedVariableTemp)
+        // {
+        //     while (this.headerInputs.length > 0)
+        //         this.removeInput(this.headerInputs[0]);
+        // }
+        // else
+        // {
+        //     if (this.headerInputs.length == 0)
+        //     {
+        //         this.addInput(new Input([NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE]));
 
-                this.inputs[0].addEventListener('connect',    () => OpVariable_onConnectInput   (this));
-                this.inputs[0].addEventListener('disconnect', () => OpVariable_onDisconnectInput(this));
-            }
-        }
+        //         this.inputs[0].addEventListener('connect',    () => OpVariable_onConnectInput   (this));
+        //         this.inputs[0].addEventListener('disconnect', () => OpVariable_onDisconnectInput(this));
+        //     }
+        // }
     }
 
     

@@ -6532,8 +6532,6 @@ const  SHAPE_LIST_VALUE    = 'SLIST#';
 
 
 const NULL_NODE            = 'NULL';
-const VARIABLE             = 'VAR';
-const VARIABLE_VALUE       = 'VAR#';
 const VARIABLE_GROUP       = 'VARGRP';
 const FEEDBACK             = 'FEEDBK';
 const REPEAT               = 'REPT';
@@ -6544,6 +6542,12 @@ const VALUE_NAME           = 'VNAME';
 const GET_LIST_VALUE_NAMES = 'GVNAMES';
 const LIST_VALUE_NAMES     = 'VNAMES';
 const OBJECT_NAME          = 'ONAME';
+
+
+const VARIABLE             = 'VAR';
+const VARIABLE_VALUE       = 'VAR#';
+const VARIABLE_TYPES       = [VARIABLE_VALUE, VARIABLE];
+
 
 const COMBINE              = 'CMB';
 const LIST_AS_ITEM         = 'LSASIT';
@@ -7191,6 +7195,8 @@ const ALL_VALUES =
        TEXT_LIST_VALUE,
       SHAPE_LIST_VALUE,
      
+        VARIABLE_VALUE,
+        
           NUMBER_VALUE,
             TEXT_VALUE,
            COLOR_VALUE,
@@ -15495,8 +15501,7 @@ extends GValue
         return      this.variableId
             + ' ' + this.variableType
             + ' ' + encodeURIComponent(this.variableName)
-            + ' ' + this.variableValue.toString()
-            + ' ' + super.toString();
+            + ' ' + this.variableValue.toString();
     }
 
 
@@ -20049,7 +20054,7 @@ extends GOperator1
     linkedVariableName  = '';
     linkedVariableTemp  = false;
 
-    linkedVariableValue = null;
+    linkedVariableValue = new NullValue();
 
 
 
@@ -20064,7 +20069,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.variableValue = null;
+        this.variableValue = new NullValue();
     }
 
 
@@ -50982,7 +50987,7 @@ function genParseVariable(parse)
 
     const variable = new GVariable(nodeId, options);
 
-    variable.existing = options.existing;
+    //variable.existing = options.existing;
 
 
     let nInputs = -1;
@@ -51016,19 +51021,19 @@ function genParseVariable(parse)
     variable.linkedVariableId   = parse.move();
     variable.linkedVariableType = parse.move();
     variable.linkedVariableName = parse.move();
-    variable.linkedVariableTemp = parseBool(parse.move());
+    variable.linkedVariableTemp = parseInt(parse.move()) == 1;
 
 
     const nParams = parseInt(parse.move());
 
     if (nParams == 1)
-        variable.variableValue = genParse(parse);
+        variable.linkedVariableValue = genParse(parse);
 
     
     parse.nTab--;
 
     
-    variable.linked = variable.id != NULL;
+    //variable.linked = variable.id != NULL;
 
 
     genParseNodeEnd(parse, variable);

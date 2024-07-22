@@ -6,8 +6,6 @@ const  SHAPE_LIST_VALUE    = 'SLIST#';
 
 
 const NULL_NODE            = 'NULL';
-const VARIABLE             = 'VAR';
-const VARIABLE_VALUE       = 'VAR#';
 const VARIABLE_GROUP       = 'VARGRP';
 const FEEDBACK             = 'FEEDBK';
 const REPEAT               = 'REPT';
@@ -18,6 +16,12 @@ const VALUE_NAME           = 'VNAME';
 const GET_LIST_VALUE_NAMES = 'GVNAMES';
 const LIST_VALUE_NAMES     = 'VNAMES';
 const OBJECT_NAME          = 'ONAME';
+
+
+const VARIABLE             = 'VAR';
+const VARIABLE_VALUE       = 'VAR#';
+const VARIABLE_TYPES       = [VARIABLE_VALUE, VARIABLE];
+
 
 const COMBINE              = 'CMB';
 const LIST_AS_ITEM         = 'LSASIT';
@@ -665,6 +669,8 @@ const ALL_VALUES =
        TEXT_LIST_VALUE,
       SHAPE_LIST_VALUE,
      
+        VARIABLE_VALUE,
+        
           NUMBER_VALUE,
             TEXT_VALUE,
            COLOR_VALUE,

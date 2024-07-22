@@ -77,8 +77,7 @@ extends GValue
         return      this.variableId
             + ' ' + this.variableType
             + ' ' + encodeURIComponent(this.variableName)
-            + ' ' + this.variableValue.toString()
-            + ' ' + super.toString();
+            + ' ' + this.variableValue.toString();
     }
 
 

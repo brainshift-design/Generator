@@ -49,7 +49,7 @@ function genParseVariable(parse)
 
     const variable = new GVariable(nodeId, options);
 
-    variable.existing = options.existing;
+    //variable.existing = options.existing;
 
 
     let nInputs = -1;
@@ -83,19 +83,19 @@ function genParseVariable(parse)
     variable.linkedVariableId   = parse.move();
     variable.linkedVariableType = parse.move();
     variable.linkedVariableName = parse.move();
-    variable.linkedVariableTemp = parseBool(parse.move());
+    variable.linkedVariableTemp = parseInt(parse.move()) == 1;
 
 
     const nParams = parseInt(parse.move());
 
     if (nParams == 1)
-        variable.variableValue = genParse(parse);
+        variable.linkedVariableValue = genParse(parse);
 
     
     parse.nTab--;
 
     
-    variable.linked = variable.id != NULL;
+    //variable.linked = variable.id != NULL;
 
 
     genParseNodeEnd(parse, variable);

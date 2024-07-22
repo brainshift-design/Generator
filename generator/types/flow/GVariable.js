@@ -6,7 +6,7 @@ extends GOperator1
     linkedVariableName  = '';
     linkedVariableTemp  = false;
 
-    linkedVariableValue = null;
+    linkedVariableValue = new NullValue();
 
 
 
@@ -21,7 +21,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.variableValue = null;
+        this.variableValue = new NullValue();
     }
 
 
