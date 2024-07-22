@@ -676,13 +676,14 @@ function initGeneratorMenus()
         menuItemLayerSep1    = new MenuItem('',              null,                false, {separator: true}),
         menuItemValidColor   = new MenuItem('Valid sRGB',    null,                false, {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
         menuItemCorrectColor = new MenuItem('Correct color', null,                false, {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
+        menuItemLayerSep1    = new MenuItem('',              null,                false, {separator: true}),
         menuItemConvertToP3  = new MenuItem('sRGB ⟷ P3',    null,                false, {icon: iconConvertP3,        callback: e => actionManager.do(getCreateNodeAction(COLOR_CONVERT_P3,  btnColor.div, getCreateOptions(e)))}),
+                               new MenuItem('',              null,                false, {separator: true}),
         menuItemColorblind   = new MenuItem('Color vision',  null,                false, {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
+                               new MenuItem('Web contrast',  null,                false, {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('',              null,                false, {separator: true}),
                                new MenuItem('Interpolate',   'Interpolate color', true,  {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))}),
-        menuItemColorBlend   = new MenuItem('Blend',         null,                false, {icon: iconColorBlend,       callback: e => actionManager.do(getCreateNodeAction(COLOR_BLEND,       btnColor.div, getCreateOptions(e)))}),
-        menuItemColorSep1    = new MenuItem('',              null,                false, {separator: true}),
-                               new MenuItem('Web contrast',  null,                false, {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))})]);
+        menuItemColorBlend   = new MenuItem('Blend',         null,                false, {icon: iconColorBlend,       callback: e => actionManager.do(getCreateNodeAction(COLOR_BLEND,       btnColor.div, getCreateOptions(e)))})]);
 
     menuColor.init = () => 
     {

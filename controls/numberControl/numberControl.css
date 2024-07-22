@@ -120,3 +120,25 @@
     pointer-events: none;
     z-index:        1000;
 }
+
+
+.rangeShadowLeft
+{
+    position:   absolute;
+    top:        18px;
+    left:       5px;
+    width:      34px;
+    height:     4px;
+    background: linear-gradient(to right, #0000, #0004);
+}
+
+
+.rangeShadowRight
+{
+    position:   absolute;
+    top:        18px;
+    left:       57px;
+    width:      34px;
+    height:     4px;
+    background: linear-gradient(to right, #0004, #0000);
+}

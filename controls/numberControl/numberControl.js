@@ -165,7 +165,7 @@ extends Control
         this.initEvents ();
 
 
-        this.div.style.position  = 'relative';
+        this.div.style.position = 'relative';
         // this.div.style.boxShadow = '0 0 0 2px blue inset';
     }
 
@@ -297,7 +297,7 @@ extends Control
 
     setDecimals(dec, dspDec = dec)
     {
-        this.decimals        = dec;
+        this.decimals   = dec;
         this.displayDec = dspDec;
     }
 
@@ -327,18 +327,17 @@ extends Control
         const [sx, sw] = this.formatValue();
 
         const sh =  this.measureData.clientRect.height;
-
         const cx = -this.displayMin / (this.displayMax - this.displayMin) * sw;
 
-        let v = 
+        const value = roundTo(this.value, this.decimals);
+
+        const v = 
             this.displayAbsolute
-            ?   Math.abs(this.value) 
-              / (this.value < 0 
+            ?   Math.abs(value) 
+              / (value < 0 
                  ? (-this.displayMin - Math.max(0, this.displayMin))
                  : ( this.displayMax - Math.max(0, this.displayMin)))
-            : this.value / (this.displayMax - this.displayMin);
-
-        v = roundTo(v, this.decimals);
+            : value / (this.displayMax - this.displayMin);
 
 
         this.updateBar(sx, cx, v, sw, sh);

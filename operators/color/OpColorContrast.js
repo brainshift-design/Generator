@@ -16,9 +16,9 @@ const rgb3dark6  = [  0/255, 164/255, 255/255];
 const rgb3dark7  = [230/255, 230/255, 230/255];
 
 const rgb3light1 = [255/255,   0/255,  64/255];
-const rgb3light2 = [255/255, 112/255,   0/255];
-const rgb3light3 = [220/255, 150/255,   0/255];
-const rgb3light4 = [210/255, 205/255,   0/255];
+const rgb3light2 = [255/255, 128/255,   0/255];
+const rgb3light3 = [250/255, 170/255,   0/255];
+const rgb3light4 = [205/255, 175/255,   0/255];
 const rgb3light5 = [ 30/255, 220/255,  30/255];
 const rgb3light6 = [128/255, 128/255, 255/255];
 const rgb3light7 = [255/255, 255/255, 255/255];
@@ -39,6 +39,10 @@ extends OpColorBase
 
     _rgbText   = [0, 0, 0];
     _rgbBack   = [0, 0, 0];
+
+
+    divShadowLeft;
+    divShadowRight;
 
 
     constructor()
@@ -79,6 +83,13 @@ extends OpColorBase
 
         
         this.header.connectionPadding = 12.5;
+
+
+        this.divShadowLeft  = createDiv('rangeShadowLeft');
+        this.divShadowRight = createDiv('rangeShadowRight');
+
+        this.paramContrast.controls[0].div.appendChild(this.divShadowLeft);
+        this.paramContrast.controls[0].div.appendChild(this.divShadowRight);
 
 
         // this.inputs[0].addEventListener('connect',    () => OpColorContrast_onConnectInput(this));
@@ -322,7 +333,7 @@ extends OpColorBase
 
     setRanges(standard)
     {
-        if (standard.value == 0)
+        if (standard.value == 0) // WCAG 2
         {
             const contrast = Math.abs(this.paramContrast.value.value) / 21;
 
@@ -347,39 +358,42 @@ extends OpColorBase
                     new NumberControlRange(7  /21, 21  /21, 'transparent') ];
             }
         }
-        else
+        else // APCA
         {
             const contrast = Math.abs(this.paramContrast.value.value) / 100;
 
-            const is1 = !this.isUnknown() && contrast >=  0/100 && contrast <=  15/100;
-            const is2 = !this.isUnknown() && contrast >  15/100 && contrast <=  30/100;
-            const is3 = !this.isUnknown() && contrast >  30/100 && contrast <=  45/100;
-            const is4 = !this.isUnknown() && contrast >  45/100 && contrast <=  60/100;
-            const is5 = !this.isUnknown() && contrast >  60/100 && contrast <=  75/100;
-            const is6 = !this.isUnknown() && contrast >  75/100 && contrast <=  90/100;
-            const is7 = !this.isUnknown() && contrast >  90/100;
+            const is1 = !this.isUnknown() && contrast >=  0/100 && contrast <=  15/100; // red
+            const is2 = !this.isUnknown() && contrast >  15/100 && contrast <=  30/100; // amber
+            const is3 = !this.isUnknown() && contrast >  30/100 && contrast <=  45/100; // orange
+            const is4 = !this.isUnknown() && contrast >  45/100 && contrast <=  60/100; // yellow
+            const is5 = !this.isUnknown() && contrast >  60/100 && contrast <=  75/100; // green
+            const is6 = !this.isUnknown() && contrast >  75/100 && contrast <=  90/100; // blue
+            const is7 = !this.isUnknown() && contrast >  90/100;                        // white
 
             if (darkMode)
             {
                 this.paramContrast.controls[0].ranges = [ 
-                    new NumberControlRange( 0/105,  15/105, rgb2style_a(rgb3dark1, is1 ? 1 : 0.2), 0.8),
-                    new NumberControlRange(15/105,  30/105, rgb2style_a(rgb3dark2, is2 ? 1 : 0.2), 0.8),
-                    new NumberControlRange(30/105,  45/105, rgb2style_a(rgb3dark3, is3 ? 1 : 0.2), 0.8),
-                    new NumberControlRange(45/105,  60/105, rgb2style_a(rgb3dark4, is4 ? 1 : 0.2), 0.8),
-                    new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3dark5, is5 ? 1 : 0.2), 0.8),
-                    new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3dark6, is6 ? 1 : 0.4), 0.8),
-                    new NumberControlRange(90/105, 105/105, rgb2style_a(rgb3dark7, is7 ? 1 : 0  ), 0.8) ];
+                    new NumberControlRange( 0/105,  15/105, rgb2style_a(rgb3dark1, is1 ? 1 : 0.2), 0.8),   // red
+                    new NumberControlRange(15/105,  30/105, rgb2style_a(rgb3dark2, is2 ? 1 : 0.2), 0.8),   // amber
+                    new NumberControlRange(30/105,  45/105, rgb2style_a(rgb3dark3, is3 ? 1 : 0.2), 0.8),   // orange
+                    new NumberControlRange(45/105,  60/105, rgb2style_a(rgb3dark4, is4 ? 1 : 0.2), 0.8),   // yellow
+                    new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3dark5, is5 ? 1 : 0.2), 0.8),   // green
+                    new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3dark6, is6 ? 1 : 0.4), 0.8),   // blue
+                    new NumberControlRange(90/105, 105/105, rgb2style_a(rgb3dark7, is7 ? 1 : 0  ), 0.8) ]; // white
             }
             else
             {
                 this.paramContrast.controls[0].ranges = [
-                    new NumberControlRange( 0/105,  15/105, rgb2style_a(rgb3light1, is1 ? 1 : 0.2), 0.8),
-                    new NumberControlRange(15/105,  30/105, rgb2style_a(rgb3light2, is2 ? 1 : 0.2), 0.8),
-                    new NumberControlRange(30/105,  45/105, rgb2style_a(rgb3light3, is3 ? 1 : 0.2), 0.8),
-                    new NumberControlRange(45/105,  60/105, rgb2style_a(rgb3light4, is4 ? 1 : 0.2), 0.8),
-                    new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3light5, is5 ? 1 : 0.2), 0.8),
-                    new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3light6, is6 ? 1 : 0.1), 0.8),
-                    new NumberControlRange(90/105, 105/105, 'transparent') ];
+                    new NumberControlRange( 0/105,  15/105, rgb2style_a(rgb3light1, is1 ? 1 : 0.2), 0.8),   // red
+                    new NumberControlRange(15/105,  30/105, rgb2style_a(rgb3light2, is2 ? 1 : 0.2), 0.8),   // amber
+                    new NumberControlRange(30/105,  45/105, rgb2style_a(rgb3light3, is3 ? 1 : 0.2), 0.8),   // orange
+                    new NumberControlRange(45/105,  60/105, rgb2style_a(rgb3light4, is4 ? 1 : 0.2), 0.8),   // yellow
+                    new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3light5, is5 ? 1 : 0.2), 0.8),   // green
+                    new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3light6, is6 ? 1 : 0.1), 0.8),   // blue
+                    new NumberControlRange(90/105, 105/105, rgb2style_a(rgb3light7, is7 ? 1 : 0  ), 0.8) ]; // white
+
+                this.divShadowLeft .style.display = 'none';//is4 ? 'block' : 'none';
+                this.divShadowRight.style.display = 'none';//is4 ? 'block' : 'none';
             }
         }
     }
