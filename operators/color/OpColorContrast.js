@@ -41,8 +41,8 @@ extends OpColorBase
     _rgbBack   = [0, 0, 0];
 
 
-    divShadowLeft;
-    divShadowRight;
+    // divShadowLeft;
+    // divShadowRight;
 
 
     constructor()
@@ -85,11 +85,11 @@ extends OpColorBase
         this.header.connectionPadding = 12.5;
 
 
-        this.divShadowLeft  = createDiv('rangeShadowLeft');
-        this.divShadowRight = createDiv('rangeShadowRight');
+        // this.divShadowLeft  = createDiv('rangeShadowLeft');
+        // this.divShadowRight = createDiv('rangeShadowRight');
 
-        this.paramContrast.controls[0].div.appendChild(this.divShadowLeft);
-        this.paramContrast.controls[0].div.appendChild(this.divShadowRight);
+        // this.paramContrast.controls[0].div.appendChild(this.divShadowLeft);
+        // this.paramContrast.controls[0].div.appendChild(this.divShadowRight);
 
 
         // this.inputs[0].addEventListener('connect',    () => OpColorContrast_onConnectInput(this));
@@ -392,8 +392,8 @@ extends OpColorBase
                     new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3light6, is6 ? 1 : 0.1), 0.8),   // blue
                     new NumberControlRange(90/105, 105/105, rgb2style_a(rgb3light7, is7 ? 1 : 0  ), 0.8) ]; // white
 
-                this.divShadowLeft .style.display = 'none'; //is4 ? 'block' : 'none';
-                this.divShadowRight.style.display = 'none'; //is4 ? 'block' : 'none';
+                // this.divShadowLeft .style.display = 'none'; //is4 ? 'block' : 'none';
+                // this.divShadowRight.style.display = 'none'; //is4 ? 'block' : 'none';
             }
         }
     }

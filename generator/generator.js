@@ -9,7 +9,7 @@ var lastUpdateStyles  =  [];
 
 onerror = (event, source, line, pos, error) =>
 {
-    self.postMessage({
+    postMessage({
         type:    'error',
         message:  event.message,
         filename: event.filename,
@@ -23,7 +23,7 @@ onerror = (event, source, line, pos, error) =>
 
 addEventListener('unhandledrejection', event => 
 {
-    self.postMessage(
+    postMessage(
     {
         type:  'unhandledrejection',
         reason: event.reason

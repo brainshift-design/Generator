@@ -66,6 +66,7 @@ const generator = new Worker(
     window.URL.createObjectURL(
         new Blob([generatorScript.textContent])));
 
+        
 generator.onmessage = event =>
 {
     if (!event.data) 
