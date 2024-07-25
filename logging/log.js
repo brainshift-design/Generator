@@ -197,3 +197,10 @@ function logRedoStack()
 
     console.log('%c%s', 'background: #fff4e8; color: #c64;', log);
 }
+
+
+
+// function clog(...args)
+// {
+//     setTimeout(console.log.bind(console, ...args));
+// }

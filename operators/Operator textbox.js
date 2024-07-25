@@ -105,6 +105,25 @@ Operator.prototype.initLabelTextbox = function()
     this.textbox.addEventListener('dblclick', e =>
     {
         e.stopPropagation();
+
+
+        // if (    this.type == PANEL
+        //     || !this.canRename)
+        //     return;
+
+
+        if (getCtrlKey(e))
+        {
+            this.textbox.finish(true);
+
+            makeSelectedNodesActive(e.shiftKey);
+
+            if (this.deselectTimer > -1)
+            {
+                clearTimeout(this.deselectTimer);
+                this.deselectTimer = -1;
+            }
+        }
     });
     
 

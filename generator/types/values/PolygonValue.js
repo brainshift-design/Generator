@@ -202,7 +202,7 @@ function parsePolygonValue(str, i = -1)
 
 
     const poly = new PolygonValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         pos    [0],
         x      [0],
         y      [0],

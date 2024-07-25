@@ -178,7 +178,7 @@ function parseVectorEdgeValue(str, i = -1)
 
 
     const edge = new VectorEdgeValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         start       [0],
         end         [0],
         startTangent[0],

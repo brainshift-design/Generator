@@ -150,7 +150,7 @@ function parseLineValue(str, i = -1)
 
 
     const line = new LineValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         x    [0],
         y    [0],
         width[0]);

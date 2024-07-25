@@ -10,6 +10,7 @@ const generatorVersion = 441;
 const MAX_INT32        = 2147483647;
   
 const NULL             = '';
+const NULL_VALUE       = 'NULL';
   
 const HTAB             = '  '; // half-tab
 const TAB              = '    ';
@@ -11222,8 +11223,7 @@ function parseValueFromType(type, value)
         case       VARIABLE_VALUE: return parseVariableValue     (value)[0];
         
         default: 
-            console.error('unknown type \'' + type + '\'');
-            console.log('value =', value);
+            console.error('cannot parse unknown type \'' + type + '\'');
             return null;
     }
 }
@@ -11620,8 +11620,8 @@ async function evalValue(_value, parse, nan = () => new NullValue())
         ? (await _value.eval(parse)).toValue() 
         : null;
 
-    if (    value 
-        && !value.isValid()
+    if (   (    value 
+            && !value.isValid())
         && nan) 
         value = nan();
 
@@ -12391,7 +12391,7 @@ extends GValue
 
     toString()
     {
-        return '';
+        return 'NULL';
     }
 
 
@@ -15427,25 +15427,25 @@ extends GValue
 {
     nodeId;
 
-    variableId;
-    variableType;
-    variableName;
-    variableValue;
+    linkedId;
+    linkedType;
+    linkedName;
+    linkedValue;
 
 
 
     constructor(nodeId,
-                variableId    = NULL, 
-                variableType  = NULL, 
-                variableName  = '', 
-                variableValue = new NullValue())
+                linkedId    = NULL, 
+                linkedType  = NULL, 
+                linkedName  = '', 
+                linkedValue = NULL)
     {
         super(VARIABLE_VALUE, nodeId);
 
-        this.variableId    = variableId;
-        this.variableType  = variableType;
-        this.variableName  = variableName;
-        this.variableValue = variableValue;
+        this.linkedId    = linkedId;
+        this.linkedType  = linkedType;
+        this.linkedName  = linkedName;
+        this.linkedValue = linkedValue;
     }
 
 
@@ -15457,7 +15457,7 @@ extends GValue
             obj.objectId, 
             obj.variableType, 
             obj.objectName, 
-            new NullValue()); //NumberValue(obj.variableValue));
+            NULL); //NumberValue(obj.variableValue));
     }
 
 
@@ -15466,10 +15466,10 @@ extends GValue
     {
         const copy = new VariableValue(
             this.nodeId,
-            this.variableId, 
-            this.variableType, 
-            this.variableName, 
-            this.variableValue.copy());
+            this.linkedId, 
+            this.linkedType, 
+            this.linkedName, 
+            this.linkedValue);
 
         copy.copyBase(this);
 
@@ -15478,13 +15478,13 @@ extends GValue
 
 
 
-    equals(rect)
+    equals(_var)
     {
-        return rect
-            && this.variableId   == rect.variableId  
-            && this.variableType == rect.variableType
-            && this.variableName == rect.variableName
-            && this.variableValue.equals(rect.variableValue);
+        return _var
+            && this.linkedId    == _var.linkedId  
+            && this.linkedType  == _var.linkedType
+            && this.linkedName  == _var.linkedName
+            && this.linkedValue == _var.linkedValue;
     }
 
 
@@ -15498,10 +15498,10 @@ extends GValue
 
     toString()
     {
-        return      this.variableId
-            + ' ' + this.variableType
-            + ' ' + encodeURIComponent(this.variableName)
-            + ' ' + this.variableValue.toString();
+        return      (this.linkedId    != NULL ? this.linkedId                        : NULL_VALUE)
+            + ' ' + (this.linkedType  != NULL ? this.linkedType                      : NULL_VALUE)
+            + ' ' + (this.linkedName  != ''   ? encodeURIComponent(this.linkedName)  : NULL_VALUE)
+            + ' ' + (this.linkedValue != NULL ? encodeURIComponent(this.linkedValue) : NULL_VALUE);
     }
 
 
@@ -15509,20 +15509,20 @@ extends GValue
     toPreviewString()
     {
         return 'variable';
-            // + ' ' + this.variableId   .toPreviewString()
-            // + ' ' + this.variableType .toPreviewString()
-            // + ' ' + this.variableName .toPreviewString()
-            // + ' ' + this.variableValue.toPreviewString();
+            // + ' ' + this.linkedId   .toPreviewString()
+            // + ' ' + this.linkedType .toPreviewString()
+            // + ' ' + this.linkedName .toPreviewString()
+            // + ' ' + this.linkedValue.toPreviewString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.variableId   .toDisplayString()
-            + ' ' + this.variableType .toDisplayString()
-            + ' ' + this.variableName .toDisplayString()
-            + ' ' + this.variableValue.toDisplayString();
+        return      (this.linkedId    ? this.linkedId   .toDisplayString() : NULL_VALUE)
+            + ' ' + (this.linkedType  ? this.linkedType .toDisplayString() : NULL_VALUE)
+            + ' ' + (this.linkedName  ? this.linkedName .toDisplayString() : NULL_VALUE)
+            + ' ' + (this.linkedValue ? this.linkedValue.toDisplayString() : NULL_VALUE);
     }
 
 
@@ -15537,7 +15537,7 @@ extends GValue
     hasInitValue()
     {
         return super.hasInitValue()
-            && this.variableValue.hasInitValue();
+            && this.linkedValue.hasInitValue();
     }
 
 
@@ -15545,20 +15545,20 @@ extends GValue
     isValid()
     {
         return super.isValid()
-            && this.variableId   != NULL
-            && this.variableType != NULL
-            && this.variableName != ''
-            && this.variableValue.isValid();
+            && this.linkedId    != NULL
+            && this.linkedType  != NULL
+            && this.linkedName  != ''
+            && this.linkedValue != NULL;
     }
 
 
     
     static NaN = new VariableValue(
-        '',
         NULL,
         NULL,
+        NULL,
         '',
-        new NullValue());
+        NULL);
 }
 
 
@@ -15579,18 +15579,18 @@ function parseVariableValue(str, i = -1)
 
     const iStart = i;
 
-    const variableId    = str[i];                     i++;
-    const variableType  = str[i];                     i++;
-    const variableName  = decodeURIComponent(str[i]); i++;
-    const variableValue = parseValueFromType(variableType, str[i]); i += variableValue[1];
+    const linkedId    = str[i];                     i++;
+    const linkedType  = str[i];                     i++;
+    const linkedName  = decodeURIComponent(str[i]); i++;
+    const linkedValue = decodeURIComponent(str[i]); i++;
 
 
     const _var = new VariableValue(
-        '', // set node ID elsewhere
-        variableId,
-        variableType,
-        variableName,
-        variableValue[0]);
+        NULL, // set node ID elsewhere
+        linkedId,
+        linkedType,
+        linkedName,
+        linkedValue);
 
 
     return [_var, i - iStart];
@@ -15840,7 +15840,7 @@ function parseRectangleValue(str, i = -1)
 
 
     const rect = new RectangleValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         x     [0],
         y     [0],
         width [0],
@@ -16008,7 +16008,7 @@ function parseLineValue(str, i = -1)
 
 
     const line = new LineValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         x    [0],
         y    [0],
         width[0]);
@@ -16253,7 +16253,7 @@ function parseEllipseValue(str, i = -1)
 
 
     const ellipse = new EllipseValue(
-        '', // set node ID elsewhere,
+        NULL, // set node ID elsewhere,
         pos   [0],
         x     [0],
         y     [0],
@@ -16465,7 +16465,7 @@ function parseTrapezeValue(str, i = -1)
 
 
     const rect = new TrapezeValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         x     [0],
         y     [0],
         width [0],
@@ -16686,7 +16686,7 @@ function parsePolygonValue(str, i = -1)
 
 
     const poly = new PolygonValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         pos    [0],
         x      [0],
         y      [0],
@@ -16921,7 +16921,7 @@ function parseStarValue(str, i = -1)
 
 
     const star = new StarValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         pos   [0],
         x     [0],
         y     [0],
@@ -17228,7 +17228,7 @@ function parseTextShapeValue(str, i = -1)
 
 
     const txts = new TextShapeValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         text         [0],
         x            [0],
         y            [0],
@@ -17484,7 +17484,7 @@ function parsePointValue(str, i = -1)
 
 
     const point = new PointValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         x[0],
         y[0]);
 
@@ -17671,7 +17671,7 @@ function parseVectorPathValue(str, i = -1)
     const round   = parseNumberValue(str[i]); i += round  [1];
 
     const path = new VectorPathValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         points [0],
         closed [0],
         degree [0],
@@ -17902,7 +17902,7 @@ function parseVectorVertexValue(str, i = -1)
 
 
     const point = new VectorVertexValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         x    [0],
         y    [0],
         join [0],
@@ -18095,7 +18095,7 @@ function parseVectorEdgeValue(str, i = -1)
 
 
     const edge = new VectorEdgeValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         start       [0],
         end         [0],
         startTangent[0],
@@ -18271,7 +18271,7 @@ function parseVectorRegionValue(str, i = -1)
 
 
     const region = new VectorRegionValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         loops  [0],
         winding[0]);
 
@@ -18434,7 +18434,7 @@ function parseVectorNetworkValue(str, i = -1)
 
 
     const net = new VectorNetworkValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         regions[0]);
 
 
@@ -18564,7 +18564,7 @@ function parseShapeBooleanValue(str, i = -1)
     const operation = parseNumberValue(str[i]); i += operation[1];
 
     const bool = new ShapeBooleanValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         children [0],
         operation[0]);
 
@@ -18795,7 +18795,7 @@ function parseWavePathValue(str, i = -1)
 
 
     const wave = new WavePathValue(
-        '', // set node ID elsewhere,
+        NULL, // set node ID elsewhere,
         shape    [0],
         x        [0],
         y        [0],
@@ -19009,7 +19009,7 @@ function parseArcPathValue(str, i = -1)
 
 
     const arc = new ArcPathValue(
-        '', // set node ID elsewhere,
+        NULL, // set node ID elsewhere,
         pos   [0],
         x     [0],
         y     [0],
@@ -19410,7 +19410,7 @@ function parseFrameValue(str, i = -1)
     const clip     = parseNumberValue(str[i]); i += clip    [1];
 
     const frame = new FrameValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         children[0],
         position[0],
         x       [0],
@@ -20049,12 +20049,14 @@ extends GOperator1
 class GVariable
 extends GOperator1
 {
-    linkedVariableId    = NULL;
-    linkedVariableType  = NULL;
-    linkedVariableName  = '';
-    linkedVariableTemp  = false;
+    linkedId    = NULL;
+    linkedType  = NULL;
+    linkedName  = '';
+    //linkedValue = NULL;
+   
+    paramValue  = null;
 
-    linkedVariableValue = new NullValue();
+    //linkedVariableTemp  = false;
 
 
 
@@ -20069,7 +20071,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.variableValue = new NullValue();
+        this.paramValue = new NullValue();
     }
 
 
@@ -20078,7 +20080,7 @@ extends GOperator1
     {
         const copy = new GVariable(this.nodeId, this.options);
 
-        if (this.variableValue) copy.variableValue = this.variableValue.copy();
+        if (this.paramValue) copy.paramValue = this.paramValue.copy();
         
         return copy;
     }
@@ -20091,15 +20093,17 @@ extends GOperator1
             return this;
 
         
-        const variableValue = await evalValue(this.variableValue, parse);
+        const input      = await evalValue(this.input,      parse);
+        const paramValue = await evalValue(this.paramValue, parse);
 
+        const varValue   = input; // TODO figure out whether to send input or paramValue
 
         this.value = new VariableValue(
             this.nodeId, 
-            this.linkedVariableId,
-            this.linkedVariableType,
-            this.linkedVariableName,
-            variableValue);
+            this.linkedId,
+            this.linkedType,
+            this.linkedName,
+            varValue);
 
 
         this.setUpdateValues(parse,
@@ -20127,17 +20131,17 @@ extends GOperator1
         this.value.objects = [];
 
 
-        if (   this.value.variableId   != NULL
-            && this.value.variableType != NULL
-            && this.value.variableName != ''
-            && this.value.variableValue.isValid())
+        if (   this.value.linkedId   != NULL
+            && this.value.linkedType != NULL
+            && this.value.linkedName != ''
+            && this.value.paramValue.isValid())
         {
             const _var = new FigmaVariable(
                 this.nodeId,
                 this.variableId,
                 this.variableType,
                 this.variableName,
-                this.variableValue);
+                this.paramValue);
 
             this.value.objects.push(_var);
         }
@@ -20150,7 +20154,8 @@ extends GOperator1
 
     isValid()
     {
-        return this.variableValue && this.variableValue.isValid();
+        return this.paramValue 
+            && this.paramValue != NULL;
     }
 
 
@@ -20159,7 +20164,7 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.variableValue) this.variableValue.pushValueUpdates(parse);
+        if (this.paramValue) this.paramValue.pushValueUpdates(parse);
     }
 
 
@@ -20168,7 +20173,7 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.variableValue) this.variableValue.invalidateInputs(parse, from, force);
+        if (this.paramValue) this.paramValue.invalidateInputs(parse, from, force);
     }
 
 
@@ -20177,7 +20182,7 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.variableValue) this.variableValue.iterateLoop(parse);
+        if (this.paramValue) this.paramValue.iterateLoop(parse);
     }
 }
 
@@ -21226,7 +21231,7 @@ extends GOperator
             obj.sp1 = addv(obj.sp0, vector(angle1, 1));
             obj.sp2 = addv(obj.sp0, vector(angle2, 1));
 
-            obj.resetSpace(bounds, singlePoint);
+            //obj.resetSpace(bounds, singlePoint);
         }
         
 
@@ -49908,7 +49913,7 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
         && v.paramId    == paramId
         && v.value.type == value.type);
 
-        
+    
     parse.updateValues.push(
     {
         nodeId:  nodeId,
@@ -50992,6 +50997,7 @@ function genParseVariable(parse)
 
     let nInputs = -1;
     
+
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
@@ -51018,16 +51024,16 @@ function genParseVariable(parse)
         variable.input = genParse(parse);
 
     
-    variable.linkedVariableId   = parse.move();
-    variable.linkedVariableType = parse.move();
-    variable.linkedVariableName = parse.move();
-    variable.linkedVariableTemp = parseInt(parse.move()) == 1;
+    variable.linkedId   = parse.move();
+    variable.linkedType = parse.move();
+    variable.linkedName = parse.move();
+    //variable.linkedVariableTemp = parseInt(parse.move()) == 1;
 
 
     const nParams = parseInt(parse.move());
 
     if (nParams == 1)
-        variable.linkedVariableValue = genParse(parse);
+        variable.paramValue = genParse(parse);
 
     
     parse.nTab--;
@@ -59600,6 +59606,13 @@ function logRedoStack()
 
     console.log('%c%s', 'background: #fff4e8; color: #c64;', log);
 }
+
+
+
+// function clog(...args)
+// {
+//     setTimeout(console.log.bind(console, ...args));
+// }
 
 
 function logRequest(parse)

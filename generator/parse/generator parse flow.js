@@ -54,6 +54,7 @@ function genParseVariable(parse)
 
     let nInputs = -1;
     
+
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
@@ -80,16 +81,16 @@ function genParseVariable(parse)
         variable.input = genParse(parse);
 
     
-    variable.linkedVariableId   = parse.move();
-    variable.linkedVariableType = parse.move();
-    variable.linkedVariableName = parse.move();
-    variable.linkedVariableTemp = parseInt(parse.move()) == 1;
+    variable.linkedId   = parse.move();
+    variable.linkedType = parse.move();
+    variable.linkedName = parse.move();
+    //variable.linkedVariableTemp = parseInt(parse.move()) == 1;
 
 
     const nParams = parseInt(parse.move());
 
     if (nParams == 1)
-        variable.linkedVariableValue = genParse(parse);
+        variable.paramValue = genParse(parse);
 
     
     parse.nTab--;

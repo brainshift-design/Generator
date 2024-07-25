@@ -1,12 +1,14 @@
 class GVariable
 extends GOperator1
 {
-    linkedVariableId    = NULL;
-    linkedVariableType  = NULL;
-    linkedVariableName  = '';
-    linkedVariableTemp  = false;
+    linkedId    = NULL;
+    linkedType  = NULL;
+    linkedName  = '';
+    //linkedValue = NULL;
+   
+    paramValue  = null;
 
-    linkedVariableValue = new NullValue();
+    //linkedVariableTemp  = false;
 
 
 
@@ -21,7 +23,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.variableValue = new NullValue();
+        this.paramValue = new NullValue();
     }
 
 
@@ -30,7 +32,7 @@ extends GOperator1
     {
         const copy = new GVariable(this.nodeId, this.options);
 
-        if (this.variableValue) copy.variableValue = this.variableValue.copy();
+        if (this.paramValue) copy.paramValue = this.paramValue.copy();
         
         return copy;
     }
@@ -43,15 +45,17 @@ extends GOperator1
             return this;
 
         
-        const variableValue = await evalValue(this.variableValue, parse);
+        const input      = await evalValue(this.input,      parse);
+        const paramValue = await evalValue(this.paramValue, parse);
 
+        const varValue   = input; // TODO figure out whether to send input or paramValue
 
         this.value = new VariableValue(
             this.nodeId, 
-            this.linkedVariableId,
-            this.linkedVariableType,
-            this.linkedVariableName,
-            variableValue);
+            this.linkedId,
+            this.linkedType,
+            this.linkedName,
+            varValue);
 
 
         this.setUpdateValues(parse,
@@ -79,17 +83,17 @@ extends GOperator1
         this.value.objects = [];
 
 
-        if (   this.value.variableId   != NULL
-            && this.value.variableType != NULL
-            && this.value.variableName != ''
-            && this.value.variableValue.isValid())
+        if (   this.value.linkedId   != NULL
+            && this.value.linkedType != NULL
+            && this.value.linkedName != ''
+            && this.value.paramValue.isValid())
         {
             const _var = new FigmaVariable(
                 this.nodeId,
                 this.variableId,
                 this.variableType,
                 this.variableName,
-                this.variableValue);
+                this.paramValue);
 
             this.value.objects.push(_var);
         }
@@ -102,7 +106,8 @@ extends GOperator1
 
     isValid()
     {
-        return this.variableValue && this.variableValue.isValid();
+        return this.paramValue 
+            && this.paramValue != NULL;
     }
 
 
@@ -111,7 +116,7 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.variableValue) this.variableValue.pushValueUpdates(parse);
+        if (this.paramValue) this.paramValue.pushValueUpdates(parse);
     }
 
 
@@ -120,7 +125,7 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.variableValue) this.variableValue.invalidateInputs(parse, from, force);
+        if (this.paramValue) this.paramValue.invalidateInputs(parse, from, force);
     }
 
 
@@ -129,6 +134,6 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.variableValue) this.variableValue.iterateLoop(parse);
+        if (this.paramValue) this.paramValue.iterateLoop(parse);
     }
 }

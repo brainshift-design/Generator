@@ -286,7 +286,7 @@ function parseTextShapeValue(str, i = -1)
 
 
     const txts = new TextShapeValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         text         [0],
         x            [0],
         y            [0],

@@ -13,19 +13,19 @@ extends Action
     variableId;
     variableType;
     variableName;
-    variableTemp;
+    //variableTemp;
 
     prevVariableId;
     prevVariableType;
     prevVariableName;
-    prevVariableTemp;
+    //prevVariableTemp;
 
     outputValues = []; // in id,value pairs, to be restored on undo
     inputValues  = []; // in id,value pairs, to be restored on undo
 
 
 
-    constructor(nodeId, variableId, resolvedType, variableName, variableTemp)
+    constructor(nodeId, variableId, resolvedType, variableName)//, variableTemp)
     {
         super(
             LINK_VARIABLE_ACTION, 
@@ -35,7 +35,7 @@ extends Action
         this.variableId   = variableId;
         this.variableType = resolvedType;
         this.variableName = variableName;
-        this.variableTemp = variableTemp;
+        //this.variableTemp = variableTemp;
         this.selfUpdate   = true;
     }
 
@@ -43,18 +43,18 @@ extends Action
 
     do(updateNodes)
     {
-        this.prevVariableId   = this.node.linkedVariableId;
-        this.prevVariableType = this.node.linkedVariableType;
-        this.prevVariableName = this.node.linkedVariableName;
-        this.prevVariableTemp = this.node.linkedVariableTemp;
+        this.prevVariableId   = this.node.linkedId;
+        this.prevVariableType = this.node.linkedType;
+        this.prevVariableName = this.node.linkedName;
+        //this.prevVariableTemp = this.node.linkedTemp;
  
        
         uiLinkNodeToVariable(
             this.node,
             this.variableId,
             this.variableType,
-            this.variableName,
-            this.variableTemp);
+            this.variableName);//,
+            //this.variableTemp);
 
 
         uiSaveNodes([this.nodeId]);
@@ -68,8 +68,8 @@ extends Action
             this.node,
             this.prevVariableId,
             this.prevVariableType,
-            this.prevVariableName,
-            this.prevVariableTemp);
+            this.prevVariableName);//,
+            //this.prevVariableTemp);
 
         this.node.updateNode();
 

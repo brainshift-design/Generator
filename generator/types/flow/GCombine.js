@@ -114,7 +114,7 @@ extends GOperator
             obj.sp1 = addv(obj.sp0, vector(angle1, 1));
             obj.sp2 = addv(obj.sp0, vector(angle2, 1));
 
-            obj.resetSpace(bounds, singlePoint);
+            //obj.resetSpace(bounds, singlePoint);
         }
         
 

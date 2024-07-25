@@ -464,7 +464,7 @@ Operator.prototype.createHeader = function()
             || !this.canRename)
             return;
 
-
+        
         if (getCtrlKey(e))
         {
             makeSelectedNodesActive(e.shiftKey);
@@ -475,7 +475,7 @@ Operator.prototype.createHeader = function()
                 this.deselectTimer = -1;
             }
         }
-        else
+        else //if (this.canRename)
             this.showLabelTextbox();
     });
 

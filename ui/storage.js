@@ -399,15 +399,15 @@ async function loadNodesAndConnsAsync(_nodes, _conns, setProgress, pasting = fal
 
 
             const varNodes = nodes.filter(n => 
-                    n.type             == VARIABLE 
-                    && n.linkedVariableId != NULL);
+                       n.type     == VARIABLE 
+                    && n.linkedId != NULL);
                     
-            uiGetValueFromFigma('getVariableData', varNodes.map(n => n.linkedVariableId))
+            uiGetValueFromFigma('getVariableData', varNodes.map(n => n.linkedId))
                 .then(response =>
                 {
                     for (const value of response.value)
                     {
-                        const node = varNodes.find(n => n.linkedVariableId == value.id);
+                        const node = varNodes.find(n => n.linkedId == value.id);
 
                         node.updateValueParamType  (value.resolvedType);
                         node.updateValueParamValues(value.resolvedType, value.name, [value.value]);

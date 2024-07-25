@@ -47,9 +47,6 @@ extends ResizableBase
                 return;
 
             if (getCtrlKey(e))
-                this.showLabelTextbox();
-    
-            else
             {
                 const nodes = [];
 
@@ -67,6 +64,8 @@ extends ResizableBase
                     nodes.map(n => n.id), 
                     graphView.selectedNodes.map(n => n.id)));
             }
+            else
+                this.showLabelTextbox();
         });
     }
 

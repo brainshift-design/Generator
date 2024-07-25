@@ -297,8 +297,8 @@ async function evalValue(_value, parse, nan = () => new NullValue())
         ? (await _value.eval(parse)).toValue() 
         : null;
 
-    if (    value 
-        && !value.isValid()
+    if (   (    value 
+            && !value.isValid())
         && nan) 
         value = nan();
 

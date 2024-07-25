@@ -231,7 +231,7 @@ function parsePointValue(str, i = -1)
 
 
     const point = new PointValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         x[0],
         y[0]);
 

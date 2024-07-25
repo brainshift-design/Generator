@@ -216,7 +216,7 @@ function parseWavePathValue(str, i = -1)
 
 
     const wave = new WavePathValue(
-        '', // set node ID elsewhere,
+        NULL, // set node ID elsewhere,
         shape    [0],
         x        [0],
         y        [0],

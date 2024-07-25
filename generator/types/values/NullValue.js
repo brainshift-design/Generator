@@ -71,7 +71,7 @@ extends GValue
 
     toString()
     {
-        return '';
+        return 'NULL';
     }
 
 

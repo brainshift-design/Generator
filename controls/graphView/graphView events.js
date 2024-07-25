@@ -243,7 +243,8 @@ GraphView.prototype.createEvents = function()
     this.div.addEventListener('dblclick', e =>
     {
         if (    e.button == 0
-            && !e.shiftKey)
+            && !e.shiftKey
+            &&  getCtrlKey(e))
             makeAllNodesInactive();
     });
 

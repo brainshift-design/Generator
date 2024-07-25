@@ -22,6 +22,7 @@ function noConnTag(key) { return noTag(key, connTag); }
 const generatorVersion = 441;
 const MAX_INT32 = 2147483647;
 const NULL = '';
+const NULL_VALUE = 'NULL';
 const HTAB = '  '; // half-tab
 const TAB = '    ';
 const NL = '\n';

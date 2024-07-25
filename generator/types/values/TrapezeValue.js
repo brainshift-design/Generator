@@ -190,7 +190,7 @@ function parseTrapezeValue(str, i = -1)
 
 
     const rect = new TrapezeValue(
-        '', // set node ID elsewhere
+        NULL, // set node ID elsewhere
         x     [0],
         y     [0],
         width [0],

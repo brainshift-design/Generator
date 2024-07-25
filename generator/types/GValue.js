@@ -183,8 +183,7 @@ function parseValueFromType(type, value)
         case       VARIABLE_VALUE: return parseVariableValue     (value)[0];
         
         default: 
-            console.error('unknown type \'' + type + '\'');
-            console.log('value =', value);
+            console.error('cannot parse unknown type \'' + type + '\'');
             return null;
     }
 }

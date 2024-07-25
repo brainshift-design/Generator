@@ -1,15 +1,15 @@
 class   OpVariable
 extends ResizableBase
 {
-    paramValue         = null;
+    paramValue = null;
 
 
-    linkedVariableId   = NULL;
-    linkedVariableType = NULL; // this is resolvedType
-    linkedVariableName = '';
-    linkedVariableTemp = false;
+    linkedId   = NULL;
+    linkedType = NULL; // this is resolvedType
+    linkedName = '';
+    linkedTemp = false;
 
-    isBool             = false;
+    isBool     = false;
 
 
 
@@ -135,10 +135,10 @@ extends ResizableBase
             request.push(...pushInputOrParam(input, gen));
 
 
-        request.push(this.node.linkedVariableId);
-        request.push(this.node.linkedVariableType);
-        request.push(this.node.linkedVariableName);
-        request.push(this.node.linkedVariableTemp ? 1 : 0);
+        request.push(this.node.linkedId);
+        request.push(this.node.linkedType);
+        request.push(this.node.linkedName);
+        //request.push(this.node.linkedTemp ? 1 : 0);
 
 
         request.push(this.node.paramValue ? 1 : 0);
@@ -201,10 +201,10 @@ extends ResizableBase
                 this.paramValue = null;
                 this.name = 'variable';
 
-                this.linkedVariableId   = NULL;
-                this.linkedVariableType = NULL;
-                this.linkedVariableName = '';
-                this.linkedVariableTemp = false;
+                this.linkedId   = NULL;
+                this.linkedType = NULL;
+                this.linkedName = '';
+                this.linkedTemp = false;
 
                 pushUpdate(null, [this]);
 
@@ -222,9 +222,9 @@ extends ResizableBase
 
     updateValueParamValues(resolvedType, varName, values, update = false)
     {
-        if (this.linkedVariableName != varName)
+        if (this.linkedName != varName)
         {
-            this.linkedVariableName = varName;
+            this.linkedName = varName;
             this.updateNode();
         }
 
@@ -301,14 +301,14 @@ extends ResizableBase
 
     getLabelText()
     {
-        if (this.linkedVariableId == NULL)
+        if (this.linkedId == NULL)
             return 'variable';
         
 
-        const parts = this.linkedVariableName.split('/');
+        const parts = this.linkedName.split('/');
         
         if (parts.length == 1)
-            return this.linkedVariableName;
+            return this.linkedName;
     
         
         return parts.join('/');
@@ -340,34 +340,34 @@ extends ResizableBase
         const tab = HTAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"linkedVariableId": "'   + this.linkedVariableId   + '"'
-             + ',\n' + pos + tab + '"linkedVariableType": "' + this.linkedVariableType + '"'
-             + ',\n' + pos + tab + '"linkedVariableName": "' + this.linkedVariableName + '"'
-             + ',\n' + pos + tab + '"linkedVariableTemp": "' + boolToString(this.linkedVariableTemp) + '"';
+             + ',\n' + pos + tab + '"linkedId": "'   + this.linkedId   + '"'
+             + ',\n' + pos + tab + '"linkedType": "' + this.linkedType + '"'
+             + ',\n' + pos + tab + '"linkedName": "' + this.linkedName + '"';
+            // + ',\n' + pos + tab + '"linkedVariableTemp": "' + boolToString(this.linkedTemp) + '"';
     }
 
 
 
     loadParams(_node, pasting)
     {
-        const found = graph.currentPage.nodes.find(n => n.linkedVariableId == _node.linkedVariableId);
+        const found = graph.currentPage.nodes.find(n => n.linkedId == _node.linkedId);
 
         if (!found)
         {
             super.loadParams(_node, pasting);
             
-            this.linkedVariableId   = _node.linkedVariableId;
-            this.linkedVariableType = _node.linkedVariableType;
-            this.linkedVariableName = _node.linkedVariableName;
-            this.linkedVariableTemp = _node.linkedVariableTemp;
+            this.linkedId   = _node.linkedId;
+            this.linkedType = _node.linkedType;
+            this.linkedName = _node.linkedName;
+            //this.linkedTemp = _node.linkedTemp;
         }
         else
         {
-            this.name               = this.defName;
-            this.linkedVariableId   = NULL;
-            this.linkedVariableType = NULL;
-            this.linkedVariableName = '';
-            this.linkedVariableTemp = false;
+            this.name       = this.defName;
+            this.linkedId   = NULL;
+            this.linkedType = NULL;
+            this.linkedName = '';
+            //this.linkedTemp = false;
         }
     }
 }

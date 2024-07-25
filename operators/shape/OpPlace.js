@@ -21,14 +21,14 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramPosition   = new  PointParam('position',   'position',    true,  true, true));
-        this.addParam(this.paramTransform  = new NumberParam('transform',  'transform',   true,  true, true, 1, 0, 1));
+        this.addParam(this.paramPosition  = new  PointParam('position',   'position',    true,  true, true));
+        this.addParam(this.paramTransform = new NumberParam('transform',  'transform',   true,  true, true, 1, 0, 1));
 
         this.paramPosition.showValue = false;
 
-        this.paramTransform .divider = 0.67;
+        this.paramTransform.divider = 0.67;
 
-        this.menuTransform  = createBoolMenu(this.paramTransform );
+        this.menuTransform = createBoolMenu(this.paramTransform );
 
 
         this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);

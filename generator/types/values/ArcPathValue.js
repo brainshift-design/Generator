@@ -192,7 +192,7 @@ function parseArcPathValue(str, i = -1)
 
 
     const arc = new ArcPathValue(
-        '', // set node ID elsewhere,
+        NULL, // set node ID elsewhere,
         pos   [0],
         x     [0],
         y     [0],

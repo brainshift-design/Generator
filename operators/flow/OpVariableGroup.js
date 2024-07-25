@@ -2,19 +2,19 @@ class   OpVariableGroup
 extends ResizableBase
 {
     scrollbar;
-    scroll              = 0;
+    scroll          = 0;
 
-    oldScroll           = null;
-    listScrollTimer     = null;
+    oldScroll       = null;
+    listScrollTimer = null;
 
-    linkedGroupId       = NULL;
-    linkedGroupName     = '';
+    linkedGroupId   = NULL;
+    linkedGroupName = '';
 
-    linkedVariableIds   = [];
-    linkedVariableTypes = []; // this is resolvedType
-    linkedVariableNames = [];
+    linkedIds       = [];
+    linkedTypes     = []; // this is resolvedType
+    linkedNames     = [];
 
-    isBool              = [];
+    isBool          = [];
 
 
 

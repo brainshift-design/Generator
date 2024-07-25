@@ -229,7 +229,7 @@ function parseEllipseValue(str, i = -1)
 
 
     const ellipse = new EllipseValue(
-        '', // set node ID elsewhere,
+        NULL, // set node ID elsewhere,
         pos   [0],
         x     [0],
         y     [0],
