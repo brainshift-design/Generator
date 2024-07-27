@@ -198,7 +198,8 @@ extends FigmaShape
 
     updatePathData()
     {
-        if (this.type == VECTOR_PATH)
+        if (   this.type == VECTOR_PATH
+            || this.type == TRAPEZE)
         {
             const bounds = this.getBounds();
 
