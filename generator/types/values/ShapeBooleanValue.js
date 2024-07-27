@@ -119,7 +119,7 @@ function parseShapeBooleanValue(str, i = -1)
     const operation = parseNumberValue(str[i]); i += operation[1];
 
     const bool = new ShapeBooleanValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         children [0],
         operation[0]);
 

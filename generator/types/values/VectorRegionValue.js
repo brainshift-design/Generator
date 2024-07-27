@@ -162,7 +162,7 @@ function parseVectorRegionValue(str, i = -1)
 
 
     const region = new VectorRegionValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         loops  [0],
         winding[0]);
 

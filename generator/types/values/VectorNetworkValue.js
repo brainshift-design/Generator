@@ -148,7 +148,7 @@ function parseVectorNetworkValue(str, i = -1)
 
 
     const net = new VectorNetworkValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         regions[0]);
 
 

@@ -175,7 +175,7 @@ function parseVectorPathValue(str, i = -1)
     const round   = parseNumberValue(str[i]); i += round  [1];
 
     const path = new VectorPathValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         points [0],
         closed [0],
         degree [0],

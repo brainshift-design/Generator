@@ -182,7 +182,7 @@ function parseFrameValue(str, i = -1)
     const clip     = parseNumberValue(str[i]); i += clip    [1];
 
     const frame = new FrameValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         children[0],
         position[0],
         x       [0],

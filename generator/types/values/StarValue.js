@@ -215,7 +215,7 @@ function parseStarValue(str, i = -1)
 
 
     const star = new StarValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         pos   [0],
         x     [0],
         y     [0],

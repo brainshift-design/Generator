@@ -221,7 +221,6 @@ class FigmaObject
 
                 this.updatePoints(xform, space);
                 this.updatePathPoints();
-                //this.updatePathData();
             }
 
             if (affectSpace != 1)

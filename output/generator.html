@@ -7722,7 +7722,6 @@ class FigmaObject
 
                 this.updatePoints(xform, space);
                 this.updatePathPoints();
-                //this.updatePathData();
             }
 
             if (affectSpace != 1)
@@ -9807,10 +9806,13 @@ extends FigmaVectorPath
             this.round,
             this.bias);
 
-
+            
+        copy.pathPoints = [...this.pathPoints];
+        copy.pathData   = this.pathData;
+    
         copy.copyBase(this);
 
-        copy.updatePathPoints();
+        //copy.updatePathPoints();
 
 
         return copy;
@@ -15840,7 +15842,7 @@ function parseRectangleValue(str, i = -1)
 
 
     const rect = new RectangleValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         x     [0],
         y     [0],
         width [0],
@@ -16008,7 +16010,7 @@ function parseLineValue(str, i = -1)
 
 
     const line = new LineValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         x    [0],
         y    [0],
         width[0]);
@@ -16253,7 +16255,7 @@ function parseEllipseValue(str, i = -1)
 
 
     const ellipse = new EllipseValue(
-        NULL, // set node ID elsewhere,
+        '', // set node ID elsewhere,
         pos   [0],
         x     [0],
         y     [0],
@@ -16465,7 +16467,7 @@ function parseTrapezeValue(str, i = -1)
 
 
     const rect = new TrapezeValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         x     [0],
         y     [0],
         width [0],
@@ -16686,7 +16688,7 @@ function parsePolygonValue(str, i = -1)
 
 
     const poly = new PolygonValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         pos    [0],
         x      [0],
         y      [0],
@@ -16921,7 +16923,7 @@ function parseStarValue(str, i = -1)
 
 
     const star = new StarValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         pos   [0],
         x     [0],
         y     [0],
@@ -17228,7 +17230,7 @@ function parseTextShapeValue(str, i = -1)
 
 
     const txts = new TextShapeValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         text         [0],
         x            [0],
         y            [0],
@@ -17484,7 +17486,7 @@ function parsePointValue(str, i = -1)
 
 
     const point = new PointValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         x[0],
         y[0]);
 
@@ -17671,7 +17673,7 @@ function parseVectorPathValue(str, i = -1)
     const round   = parseNumberValue(str[i]); i += round  [1];
 
     const path = new VectorPathValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         points [0],
         closed [0],
         degree [0],
@@ -17902,7 +17904,7 @@ function parseVectorVertexValue(str, i = -1)
 
 
     const point = new VectorVertexValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         x    [0],
         y    [0],
         join [0],
@@ -18095,7 +18097,7 @@ function parseVectorEdgeValue(str, i = -1)
 
 
     const edge = new VectorEdgeValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         start       [0],
         end         [0],
         startTangent[0],
@@ -18271,7 +18273,7 @@ function parseVectorRegionValue(str, i = -1)
 
 
     const region = new VectorRegionValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         loops  [0],
         winding[0]);
 
@@ -18434,7 +18436,7 @@ function parseVectorNetworkValue(str, i = -1)
 
 
     const net = new VectorNetworkValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         regions[0]);
 
 
@@ -18564,7 +18566,7 @@ function parseShapeBooleanValue(str, i = -1)
     const operation = parseNumberValue(str[i]); i += operation[1];
 
     const bool = new ShapeBooleanValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         children [0],
         operation[0]);
 
@@ -18795,7 +18797,7 @@ function parseWavePathValue(str, i = -1)
 
 
     const wave = new WavePathValue(
-        NULL, // set node ID elsewhere,
+        '', // set node ID elsewhere,
         shape    [0],
         x        [0],
         y        [0],
@@ -19009,7 +19011,7 @@ function parseArcPathValue(str, i = -1)
 
 
     const arc = new ArcPathValue(
-        NULL, // set node ID elsewhere,
+        '', // set node ID elsewhere,
         pos   [0],
         x     [0],
         y     [0],
@@ -19410,7 +19412,7 @@ function parseFrameValue(str, i = -1)
     const clip     = parseNumberValue(str[i]); i += clip    [1];
 
     const frame = new FrameValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         children[0],
         position[0],
         x       [0],
@@ -39904,6 +39906,7 @@ extends GShape
         {
             this.value        = input.toValue();
             this.value.nodeId = this.nodeId;
+            
             this.value.copyCustomParams(input);
             
             if (x     )  this.value.x      = x;       else  x      = this.value.x;      
@@ -42220,8 +42223,7 @@ extends GShape
 
             path.createDefaultSpace(
                 bounds.x + bounds.width /2,            
-                bounds.y + bounds.height/2            
-            );
+                bounds.y + bounds.height/2);
 
 
             let x = bounds.x;

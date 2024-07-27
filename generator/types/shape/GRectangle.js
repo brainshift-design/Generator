@@ -69,6 +69,7 @@ extends GShape
         {
             this.value        = input.toValue();
             this.value.nodeId = this.nodeId;
+            
             this.value.copyCustomParams(input);
             
             if (x     )  this.value.x      = x;       else  x      = this.value.x;      

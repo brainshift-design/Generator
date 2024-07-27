@@ -177,7 +177,7 @@ function parseRectangleValue(str, i = -1)
 
 
     const rect = new RectangleValue(
-        NULL, // set node ID elsewhere
+        '', // set node ID elsewhere
         x     [0],
         y     [0],
         width [0],

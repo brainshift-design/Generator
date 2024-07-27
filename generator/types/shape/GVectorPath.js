@@ -210,8 +210,7 @@ extends GShape
 
             path.createDefaultSpace(
                 bounds.x + bounds.width /2,            
-                bounds.y + bounds.height/2            
-            );
+                bounds.y + bounds.height/2);
 
 
             let x = bounds.x;

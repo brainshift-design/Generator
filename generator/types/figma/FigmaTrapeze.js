@@ -69,10 +69,13 @@ extends FigmaVectorPath
             this.round,
             this.bias);
 
-
+            
+        copy.pathPoints = [...this.pathPoints];
+        copy.pathData   = this.pathData;
+    
         copy.copyBase(this);
 
-        copy.updatePathPoints();
+        //copy.updatePathPoints();
 
 
         return copy;
