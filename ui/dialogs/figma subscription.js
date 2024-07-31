@@ -14,6 +14,6 @@ function uiFigmaManageSubscription()
     .catch(error =>
     {
         uiError('Error while checking for subscription.');
-        finalizeInit(eulaAgreed, false);
+        //finalizeInit(eulaAgreed, false);
     });
 }

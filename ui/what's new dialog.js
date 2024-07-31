@@ -9,6 +9,13 @@ function initWhatsNewDialog()
 
     whatsNewBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 
+    whatsNewUpgradeLink.addEventListener('click', e => 
+    { 
+        e.preventDefault();
+        uiFigmaManageSubscription(); 
+    });
+
+
 
     whatsNewDialog.mouseOver = false;
 
@@ -96,6 +103,8 @@ function showWhatsNewDialog()
     whatsNewBack  .style.display = 'block';
     whatsNewDialog.style.display = 'block';
     //whatsNewClose .style.display = 'block';
+
+    whatsNewSuggestUpgrade.style.display = subscribed() ? 'none' : 'inline';
 
     updateWhatsNewScroll();
 

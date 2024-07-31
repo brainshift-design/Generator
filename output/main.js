@@ -1158,14 +1158,14 @@ const LOG = 'LOG';
 const GRAPH = 'GRAPH';
 const MATH_OPS = [
     [NUMBER_MODULO, '%'],
-    [NUMBER_DIVIDE, '/'],
+    [NUMBER_DIVIDE, '/'], //'÷' ],
     [NUMBER_SUBTRACT, '−'],
     [NUMBER_ADD, '+'],
     [NUMBER_MULTIPLY, '×'],
     [NUMBER_EXPONENT, 'e<sup>x']
 ];
 const MATH_OPS_SHORT = [
-    [NUMBER_DIVIDE, '/'],
+    [NUMBER_DIVIDE, '/'], //'÷' ],
     [NUMBER_SUBTRACT, '−'],
     [NUMBER_ADD, '+'],
     [NUMBER_MULTIPLY, '×']
@@ -2061,8 +2061,8 @@ function figClearAllLocalData() {
             figma.clientStorage.deleteAsync(key);
     });
 }
-function figGetPageData(key, postToUi = true) {
-    return __awaiter(this, void 0, void 0, function* () {
+function figGetPageData(key_1) {
+    return __awaiter(this, arguments, void 0, function* (key, postToUi = true) {
         yield figma.currentPage.loadAsync();
         const data = figma.currentPage.getPluginData(key);
         if (postToUi) {
@@ -2591,13 +2591,13 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
         notifyNotificationHandler.cancel();
     notifyNotificationHandler = figma.notify(prefix + text, options);
 }
-function figGetValueFromUiSync(key, params = null) {
-    return __awaiter(this, void 0, void 0, function* () {
+function figGetValueFromUiSync(key_1) {
+    return __awaiter(this, arguments, void 0, function* (key, params = null) {
         return yield figGetValueFromUi(key, params);
     });
 }
-function figGetValueFromUi(key, params = null) {
-    return __awaiter(this, void 0, void 0, function* () {
+function figGetValueFromUi(key_1) {
+    return __awaiter(this, arguments, void 0, function* (key, params = null) {
         return new Promise((resolve, reject) => {
             const timeout = 60000;
             figPostMessageToUi(Object.assign({ cmd: 'uiGetValueForFigma', key: key }, (params || {})));
@@ -2625,8 +2625,8 @@ function makeObjectName(obj) {
     return (obj[FO_RETAIN] === 2 ? '' : OBJECT_PREFIX)
         + (showIds ? obj[FO_OBJECT_ID] : obj[FO_OBJECT_NAME]);
 }
-function figCreateObject(genObj, addObject = null, addProps = true, transform = true) {
-    return __awaiter(this, void 0, void 0, function* () {
+function figCreateObject(genObj_1) {
+    return __awaiter(this, arguments, void 0, function* (genObj, addObject = null, addProps = true, transform = true) {
         if (!genObjectIsValid(genObj))
             return null;
         let figObj;
@@ -2762,8 +2762,8 @@ function figUpdateObjectAsync(figObj, genObj, addProps, transform) {
         }
     });
 }
-function figUpdateObjects(figParent, genObjects, batchSize, totalObjects = -1, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false, addProps = true, transform = true) {
-    return __awaiter(this, void 0, void 0, function* () {
+function figUpdateObjects(figParent_1, genObjects_1, batchSize_1) {
+    return __awaiter(this, arguments, void 0, function* (figParent, genObjects, batchSize, totalObjects = -1, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false, addProps = true, transform = true) {
         let curNodeId = NULL;
         let figObjects = null;
         let abort = false;

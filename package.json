@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "@figma/plugin-typings": "^1.97.0",
-    "eslint": "^8.14.0"
+    "eslint": "^8.14.0",
+    "typescript": "^5.5.4"
   }
 }
