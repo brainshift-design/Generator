@@ -181,6 +181,8 @@ function parseValueFromType(type, value)
         case          FRAME_VALUE: return parseFrameValue        (value)[0];
 
         case       VARIABLE_VALUE: return parseVariableValue     (value)[0];
+
+        case           NULL_VALUE: return null;
         
         default: 
             console.error('cannot parse unknown type \'' + type + '\'');
@@ -232,6 +234,10 @@ function displayValue(type, value)
         case  SHAPE_BOOLEAN_VALUE: return parseShapeBooleanValue (value)[0].toDisplayString();
         case    SHAPE_GROUP_VALUE: return parseShapeGroupValue   (value)[0].toDisplayString();
         case          FRAME_VALUE: return parseFrameValue        (value)[0].toDisplayString();
+        
+        case       VARIABLE_VALUE: return parseVariableValue     (value)[0].toDisplayString();
+
+        case           NULL_VALUE: return NULL_VALUE;
     }
 
 
@@ -275,6 +281,10 @@ function nanFromType(type)
         case   SHAPE_BOOLEAN_VALUE: return  ShapeBooleanValue.NaN;
         case     SHAPE_GROUP_VALUE: return    ShapeGroupValue.NaN;
         case           FRAME_VALUE: return         FrameValue.NaN;
+
+        case        VARIABLE_VALUE: return      VariableValue.NaN;
+
+        case            NULL_VALUE: return        new NullValue();
     }
 
     consoleError('cannot determine null value from type \'' + type + '\'');

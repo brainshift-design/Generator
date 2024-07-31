@@ -7,11 +7,10 @@ extends ResizableBase
     linkedId   = NULL;
     linkedType = NULL; // this is resolvedType
     linkedName = '';
-    linkedTemp = false;
 
     isBool     = false;
 
-
+    
 
     constructor()
     {
@@ -138,7 +137,6 @@ extends ResizableBase
         request.push(this.node.linkedId);
         request.push(this.node.linkedType);
         request.push(this.node.linkedName);
-        //request.push(this.node.linkedTemp ? 1 : 0);
 
 
         request.push(this.node.paramValue ? 1 : 0);
@@ -204,7 +202,6 @@ extends ResizableBase
                 this.linkedId   = NULL;
                 this.linkedType = NULL;
                 this.linkedName = '';
-                this.linkedTemp = false;
 
                 pushUpdate(null, [this]);
 
@@ -343,7 +340,6 @@ extends ResizableBase
              + ',\n' + pos + tab + '"linkedId": "'   + this.linkedId   + '"'
              + ',\n' + pos + tab + '"linkedType": "' + this.linkedType + '"'
              + ',\n' + pos + tab + '"linkedName": "' + this.linkedName + '"';
-            // + ',\n' + pos + tab + '"linkedVariableTemp": "' + boolToString(this.linkedTemp) + '"';
     }
 
 
@@ -359,39 +355,38 @@ extends ResizableBase
             this.linkedId   = _node.linkedId;
             this.linkedType = _node.linkedType;
             this.linkedName = _node.linkedName;
-            //this.linkedTemp = _node.linkedTemp;
         }
         else
         {
             this.name       = this.defName;
+
             this.linkedId   = NULL;
             this.linkedType = NULL;
             this.linkedName = '';
-            //this.linkedTemp = false;
         }
     }
 }
 
 
 
-function OpVariable_onConnectInput(node)
-{
-    actionManager.do(new LinkExistingVariableAction(
-        node.id,
-        NULL,
-        NULL,
-        '',
-        true));
-}
+// function OpVariable_onConnectInput(node)
+// {
+//     actionManager.do(new LinkExistingVariableAction(
+//         node.id,
+//         NULL,
+//         NULL,
+//         '',
+//         true));
+// }
 
 
 
-function OpVariable_onDisconnectInput(node)
-{
-    actionManager.do(new LinkExistingVariableAction(
-        node.id,
-        NULL,
-        NULL,
-        '',
-        false));
-}
+// function OpVariable_onDisconnectInput(node)
+// {
+//     actionManager.do(new LinkExistingVariableAction(
+//         node.id,
+//         NULL,
+//         NULL,
+//         '',
+//         false));
+// }

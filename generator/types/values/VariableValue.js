@@ -3,25 +3,22 @@ extends GValue
 {
     nodeId;
 
-    linkedId;
-    linkedType;
-    linkedName;
-    linkedValue;
+    variableId;
+    variableName;
+    variableValue;
 
 
 
     constructor(nodeId,
-                linkedId    = NULL, 
-                linkedType  = NULL, 
-                linkedName  = '', 
-                linkedValue = NULL)
+                variableId    = NULL, 
+                variableName  = '', 
+                variableValue = new NullValue())
     {
         super(VARIABLE_VALUE, nodeId);
 
-        this.linkedId    = linkedId;
-        this.linkedType  = linkedType;
-        this.linkedName  = linkedName;
-        this.linkedValue = linkedValue;
+        this.variableId    = variableId;
+        this.variableName  = variableName;
+        this.variableValue = variableValue ? variableValue.copy() : new NullValue();
     }
 
 
@@ -31,9 +28,8 @@ extends GValue
         return new VariableValue(
             obj.nodeId,
             obj.objectId, 
-            obj.variableType, 
             obj.objectName, 
-            NULL); //NumberValue(obj.variableValue));
+            new NullValue()); //NumberValue(obj.variableValue));
     }
 
 
@@ -42,10 +38,9 @@ extends GValue
     {
         const copy = new VariableValue(
             this.nodeId,
-            this.linkedId, 
-            this.linkedType, 
-            this.linkedName, 
-            this.linkedValue);
+            this.variableId, 
+            this.variableName, 
+            this.variableValue ? this.variableValue.copy() : new NullValue());
 
         copy.copyBase(this);
 
@@ -57,10 +52,11 @@ extends GValue
     equals(_var)
     {
         return _var
-            && this.linkedId    == _var.linkedId  
-            && this.linkedType  == _var.linkedType
-            && this.linkedName  == _var.linkedName
-            && this.linkedValue == _var.linkedValue;
+            && this.variableId   == _var.variableId  
+            && this.variableName == _var.variableName
+            &&    this.variableValue
+               && _var.variableValue
+               && this.variableValue.equals(_var.variableValue);
     }
 
 
@@ -74,10 +70,10 @@ extends GValue
 
     toString()
     {
-        return      (this.linkedId    != NULL ? this.linkedId                        : NULL_VALUE)
-            + ' ' + (this.linkedType  != NULL ? this.linkedType                      : NULL_VALUE)
-            + ' ' + (this.linkedName  != ''   ? encodeURIComponent(this.linkedName)  : NULL_VALUE)
-            + ' ' + (this.linkedValue != NULL ? encodeURIComponent(this.linkedValue) : NULL_VALUE);
+        return      (this.variableId   != NULL ? this.variableId  : NULL_VALUE)
+            + ' ' + (this.variableName != ''   ? encodeURIComponent(this.variableName)  : NULL_VALUE)
+            + ' ' + (this.variableValue ? this.variableValue.type : NULL_VALUE)
+            + ' ' + (this.variableValue ? this.variableValue.toString() : NULL_VALUE);
     }
 
 
@@ -85,20 +81,20 @@ extends GValue
     toPreviewString()
     {
         return 'variable';
-            // + ' ' + this.linkedId   .toPreviewString()
-            // + ' ' + this.linkedType .toPreviewString()
-            // + ' ' + this.linkedName .toPreviewString()
-            // + ' ' + this.linkedValue.toPreviewString();
+            // + ' ' + this.variableId   .toPreviewString()
+            // + ' ' + this.variableName .toPreviewString()
+            // + ' ' + (this.variableValue ? this.variableValue.type : NULL_VALUE)
+            // + ' ' + this.variableValue.toPreviewString();
     }
 
 
 
     toDisplayString()
     {
-        return      (this.linkedId    ? this.linkedId   .toDisplayString() : NULL_VALUE)
-            + ' ' + (this.linkedType  ? this.linkedType .toDisplayString() : NULL_VALUE)
-            + ' ' + (this.linkedName  ? this.linkedName .toDisplayString() : NULL_VALUE)
-            + ' ' + (this.linkedValue ? this.linkedValue.toDisplayString() : NULL_VALUE);
+        return      (this.variableId   != NULL ? this.variableId   : NULL_VALUE)
+            + ' ' + (this.variableName != ''   ? this.variableName : NULL_VALUE)
+            + ' ' + (this.variableValue ? this.variableValue.type : NULL_VALUE)
+            + ' ' + (this.variableValue ? this.variableValue.toDisplayString() : NULL_VALUE);
     }
 
 
@@ -113,7 +109,7 @@ extends GValue
     hasInitValue()
     {
         return super.hasInitValue()
-            && this.linkedValue.hasInitValue();
+            && this.variableValue.hasInitValue();
     }
 
 
@@ -121,10 +117,9 @@ extends GValue
     isValid()
     {
         return super.isValid()
-            && this.linkedId    != NULL
-            && this.linkedType  != NULL
-            && this.linkedName  != ''
-            && this.linkedValue != NULL;
+            && this.variableId   != NULL
+            && this.variableName != ''
+            && this.variableValue && this.variableValue.isValid();
     }
 
 
@@ -132,9 +127,8 @@ extends GValue
     static NaN = new VariableValue(
         NULL,
         NULL,
-        NULL,
         '',
-        NULL);
+        null);
 }
 
 
@@ -155,18 +149,17 @@ function parseVariableValue(str, i = -1)
 
     const iStart = i;
 
-    const linkedId    = str[i];                     i++;
-    const linkedType  = str[i];                     i++;
-    const linkedName  = decodeURIComponent(str[i]); i++;
-    const linkedValue = decodeURIComponent(str[i]); i++;
+    const variableId    = str[i];                                    i++;
+    const variableName  = decodeURIComponent(str[i]);                i++;
+    const variableType  = str[i];                                    i++;
+    const variableValue = parseValueFromType(variableType, str[i]);  i += variableValue ? variableValue[1] : 1;
 
 
     const _var = new VariableValue(
         NULL, // set node ID elsewhere
-        linkedId,
-        linkedType,
-        linkedName,
-        linkedValue);
+        variableId,
+        variableName,
+        variableValue ? variableValue[0] : null);
 
 
     return [_var, i - iStart];

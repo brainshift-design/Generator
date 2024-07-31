@@ -460,7 +460,7 @@ function initGeneratorMenus()
                              new MenuItem('Value names',    null, false, {icon: iconNames, childMenu: menuNames}),
                              new MenuItem('',               null, false, {separator: true}),
                              new MenuItem('Variable',       null, false, {icon: iconVariable,      createType: VARIABLE,       callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
-        menuItemVarGroup   = new MenuItem('Variable group', null, false, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
+        //menuItemVarGroup   = new MenuItem('Variable group', null, false, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',               null, false, {separator: true}),
                              new MenuItem('Data',           null, false, {icon: iconTextFile,     childMenu: menuComplexData}),
                              new MenuItem('',               null, false, {separator: true}),
