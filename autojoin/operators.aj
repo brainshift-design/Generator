@@ -81,6 +81,7 @@
 ../operators/flow/OpIfElse.js
 
 ../operators/number/OpNumber.js
+../operators/number/OpBooleanNumber.js
 ../operators/number/OpSetPrecision.js
 ../operators/number/OpSign.js
 ../operators/number/OpAbsolute.js

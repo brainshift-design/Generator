@@ -82,6 +82,8 @@ const PROBABILITY             = 'PROB';
 const HOLD                    = 'HOLD';
 
 
+const BOOLEAN_NUMBER          = 'BOOL';
+
 const NUMBER_VALUE            = 'NUM#';  
 const NUMBER                  = 'NUM';   
 const NUMBER_PRECISION        = 'NPREC';   
@@ -258,6 +260,7 @@ const NUMBER_TYPES =
     NUMBER_VALUE,
     NUMBER_LIST_VALUE,
     NUMBER,
+    BOOLEAN_NUMBER,
     NUMBER_PRECISION,
     NUMBER_SIGN,
     NUMBER_ABSOLUTE,

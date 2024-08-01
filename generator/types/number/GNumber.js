@@ -31,7 +31,7 @@ extends GOperator1
 
 
         if (input)
-            this.value = input;//.copy();
+            this.value = input;
         else if (this.value)
             await this.value.eval(parse);
         else
@@ -40,7 +40,7 @@ extends GOperator1
 
         this.setUpdateValues(parse, 
         [
-            ['value', this.value]//.copy()]
+            ['value', this.value]
         ]);
 
 

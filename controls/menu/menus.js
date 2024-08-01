@@ -553,10 +553,11 @@ function initGeneratorMenus()
     menuNumberBase = new Menu('Numbers', true, false);
     menuNumberBase.addItems([
                            new MenuItem('Constant',       null,           false, {icon: iconConstant,        createType: NUMBER_CONSTANT,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONSTANT,  btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Boolean',       null,                 false, {icon: iconBooleanValue,                               createType: BOOLEAN_NUMBER,            callback: e => actionManager.do(getCreateNodeAction(BOOLEAN_NUMBER,            btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('',               null,           false, {separator: true}),
-                           new MenuItem('NaN ⟶ Number', 'NaN to Number', false, {icon: iconNaNisNumber,     createType: NUMBER_NAN,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NAN,       btnNumber.div, getCreateOptions(e)))}),
+        menuItemDateTime = new MenuItem('Date & time',    null,           false, {icon: iconDateTime,    createType: NUMBER_DATETIME,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME,      btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('',               null,           false, {separator: true}),
-        menuItemDateTime = new MenuItem('Date & time',    null,           false, {icon: iconDateTime,    createType: NUMBER_DATETIME,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME,      btnNumber.div, getCreateOptions(e)))})]);
+                           new MenuItem('NaN ⟶ Number', 'NaN to Number', false, {icon: iconNaNisNumber,     createType: NUMBER_NAN,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NAN,       btnNumber.div, getCreateOptions(e)))})]);
 
     menuFunctions = new Menu('Functions', true, false);
     menuFunctions.addItems([
@@ -603,18 +604,18 @@ function initGeneratorMenus()
 
     menuNumber = new Menu('Numbers', true, false);
     menuNumber.addItems([
-                          new MenuItem('Number',        null,                 false, {icon: iconNumber,      childMenu: menuNumberBase, createType: NUMBER, callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
+                          new MenuItem('Number',        null,                 false, {icon: iconNumber,       childMenu: menuNumberBase,    createType: NUMBER,             callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('',              null,                 false, {separator: true}),
-                          new MenuItem('Math',          null,                 false, {icon: iconMath,        childMenu: menuMath,          createType: NUMBER_SIMPLE_MATH, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MATH, btnNumber.div, getCreateOptions(e)))}),
-                          new MenuItem('Logic',         null,                 false, {icon: iconBoolean,     /*childMenu: menuBoolean,  */ createType: NUMBER_BOOLEAN,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
-                          new MenuItem('Compare',       null,                 false, {icon: iconCondition,   /*childMenu: menuCondition,*/ createType: NUMBER_CONDITION,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
+                          new MenuItem('Math',          null,                 false, {icon: iconMath,         childMenu: menuMath,          createType: NUMBER_SIMPLE_MATH, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MATH, btnNumber.div, getCreateOptions(e)))}),
+                          new MenuItem('Logic',         null,                 false, {icon: iconBoolean,      /*childMenu: menuBoolean,  */ createType: NUMBER_BOOLEAN,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
+                          new MenuItem('Compare',       null,                 false, {icon: iconCondition,    /*childMenu: menuCondition,*/ createType: NUMBER_CONDITION,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('',              null,                 false, {separator: true}),
-                          new MenuItem('Trigonometric', null,                 false, {icon: iconSine,        childMenu: menuTrig,          createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
+                          new MenuItem('Trigonometric', null,                 false, {icon: iconSine,         childMenu: menuTrig,          createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('',              null,                 false, {separator: true}),
-                          new MenuItem('Functions',     null,                 false, {icon: iconRound,       childMenu: menuFunctions}),
-                          new MenuItem('Convert',       null,                 false, {icon: iconConvert,     childMenu: menuConvertNumber}),
+                          new MenuItem('Functions',     null,                 false, {icon: iconRound,        childMenu: menuFunctions}),
+                          new MenuItem('Convert',       null,                 false, {icon: iconConvert,      childMenu: menuConvertNumber}),
                           new MenuItem('',              null,                 false, {separator: true}),
-                          new MenuItem('Interpolate',   'Interpolate number', true,  {icon: iconInterpolate,                               createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))})]);
+                          new MenuItem('Interpolate',   'Interpolate number', true,  {icon: iconInterpolate,                                createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))})]);
 
 
     menuTextFunctions = new Menu('Text functions', true, false);

@@ -140,19 +140,24 @@ function parseVariableValue(str, i = -1)
         return [VariableValue.NaN, 1];
 
 
+    let _str;
+
     if (i < 0)
     {
-        str = str.split(' ');
+       _str = str.split(' ');
         i   = 0;
     }
+    else
+        _str = str;
 
 
     const iStart = i;
+    let   length = 0;
 
-    const variableId    = str[i];                                    i++;
-    const variableName  = decodeURIComponent(str[i]);                i++;
-    const variableType  = str[i];                                    i++;
-    const variableValue = parseValueFromType(variableType, str[i]);  i += variableValue ? variableValue[1] : 1;
+    const variableId    = _str[i];                                              length += _str[i].length + 1;  i++;
+    const variableName  = decodeURIComponent(_str[i]);                          length += _str[i].length + 1;  i++;
+    const variableType  = _str[i];                                              length += _str[i].length + 1;  i++;
+    const variableValue = parseValueFromType(variableType, str.slice(length));                                 i += variableValue ? variableValue[1] : 1;
 
 
     const _var = new VariableValue(

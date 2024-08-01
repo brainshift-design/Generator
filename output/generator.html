@@ -6609,6 +6609,8 @@ const PROBABILITY             = 'PROB';
 const HOLD                    = 'HOLD';
 
 
+const BOOLEAN_NUMBER          = 'BOOL';
+
 const NUMBER_VALUE            = 'NUM#';  
 const NUMBER                  = 'NUM';   
 const NUMBER_PRECISION        = 'NPREC';   
@@ -6785,6 +6787,7 @@ const NUMBER_TYPES =
     NUMBER_VALUE,
     NUMBER_LIST_VALUE,
     NUMBER,
+    BOOLEAN_NUMBER,
     NUMBER_PRECISION,
     NUMBER_SIGN,
     NUMBER_ABSOLUTE,
@@ -15577,19 +15580,24 @@ function parseVariableValue(str, i = -1)
         return [VariableValue.NaN, 1];
 
 
+    let _str;
+
     if (i < 0)
     {
-        str = str.split(' ');
+       _str = str.split(' ');
         i   = 0;
     }
+    else
+        _str = str;
 
 
     const iStart = i;
+    let   length = 0;
 
-    const variableId    = str[i];                                    i++;
-    const variableName  = decodeURIComponent(str[i]);                i++;
-    const variableType  = str[i];                                    i++;
-    const variableValue = parseValueFromType(variableType, str[i]);  i += variableValue ? variableValue[1] : 1;
+    const variableId    = _str[i];                                              length += _str[i].length + 1;  i++;
+    const variableName  = decodeURIComponent(_str[i]);                          length += _str[i].length + 1;  i++;
+    const variableType  = _str[i];                                              length += _str[i].length + 1;  i++;
+    const variableValue = parseValueFromType(variableType, str.slice(length));                                 i += variableValue ? variableValue[1] : 1;
 
 
     const _var = new VariableValue(
@@ -24808,7 +24816,7 @@ extends GOperator1
 
 
         if (input)
-            this.value = input;//.copy();
+            this.value = input;
         else if (this.value)
             await this.value.eval(parse);
         else
@@ -24817,7 +24825,73 @@ extends GOperator1
 
         this.setUpdateValues(parse, 
         [
-            ['value', this.value]//.copy()]
+            ['value', this.value]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return !this.input 
+             || this.input.isValid();
+    }
+}
+
+
+class GBooleanNumber
+extends GOperator1
+{
+    constructor(nodeId, options)
+    {
+        super(BOOLEAN_NUMBER, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GBooleanNumber(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        copy.value = this.value;
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input = await evalNumberValue(this.input, parse);
+
+
+        if (input)
+            this.value = input;
+        else if (this.value)
+            await this.value.eval(parse);
+        else
+            this.value = NumberValue.NaN.copy();
+
+
+        // force 0 or 1
+        if (this.value.isValid())
+            this.value = new NumberValue(Math.round(Math.min(Math.max(0, this.value.value), 1)), 0);
+
+
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value]
         ]);
 
 
@@ -53562,6 +53636,42 @@ function genParseNumber(parse)
 
 
 
+function genParseBooleanNumber(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const bool = new GBooleanNumber(nodeId, options);
+
+    
+    if (parse.settings.logRequests) 
+        logReq(bool, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, bool);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+    parse.inParam = false;
+
+
+    if (parse.next == NUMBER_VALUE) bool.value = genParse(parse);
+    else                            bool.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, bool);
+    return bool;
+}
+
+
+
 function genParseSetPrecision(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -59074,6 +59184,7 @@ function genParse(parse, inParam = true)
      
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue          (parse);
     else if (parse.next == NUMBER                 ) result = genParseNumber            (parse);
+    else if (parse.next == BOOLEAN_NUMBER         ) result = genParseBooleanNumber     (parse);
     else if (parse.next == NUMBER_PRECISION       ) result = genParseSetPrecision      (parse);
     else if (parse.next == NUMBER_SIGN            ) result = genParseSign              (parse);
     else if (parse.next == NUMBER_ABSOLUTE        ) result = genParseAbsolute          (parse);

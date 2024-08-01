@@ -161,6 +161,7 @@ function genParse(parse, inParam = true)
      
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue          (parse);
     else if (parse.next == NUMBER                 ) result = genParseNumber            (parse);
+    else if (parse.next == BOOLEAN_NUMBER         ) result = genParseBooleanNumber     (parse);
     else if (parse.next == NUMBER_PRECISION       ) result = genParseSetPrecision      (parse);
     else if (parse.next == NUMBER_SIGN            ) result = genParseSign              (parse);
     else if (parse.next == NUMBER_ABSOLUTE        ) result = genParseAbsolute          (parse);

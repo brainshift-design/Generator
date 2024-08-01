@@ -51,6 +51,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case HOLD:                    node = new OpHold();               break;
  
         case NUMBER:                  node = new OpNumber();             break;
+        case BOOLEAN_NUMBER:          node = new OpBooleanNumber();      break;
         case NUMBER_PRECISION:        node = new OpSetPrecision();       break;
         case NUMBER_SIGN:             node = new OpSign();               break;
         case NUMBER_ABSOLUTE:         node = new OpAbsolute();           break;
