@@ -159,7 +159,7 @@ function parseVariableValue(str, i = -1)
         NULL, // set node ID elsewhere
         variableId,
         variableName,
-        variableValue ? variableValue[0] : null);
+        variableValue);
 
 
     return [_var, i - iStart];
