@@ -935,8 +935,8 @@ const FO_XP2            =  8;
 
 const FO_SCALE          =  9;
 
-const FO_FILLS          = 10;
-const FO_STROKES        = 11;
+const FO_FILLS          = 10;   const FO_VARIABLE_TYPE   = 10;
+const FO_STROKES        = 11;   const FO_VARIABLE_VALUE  = 11;
 
 
 const FO_STROKE_WEIGHT  = 12;
@@ -955,8 +955,8 @@ const FO_OPACITY        = 21;
 const FO_BLEND          = 22;
 const FO_MASK           = 23;
 
-const FO_X              = 24;   const FO_VARIABLE_TYPE   = 24;                                        const FO_BOOLEAN_CHILDREN    = 24;                                                                                              const FO_GROUP_CHILDREN = 24;
-const FO_Y              = 25;   const FO_VARIABLE_VALUE  = 25;                                        const FO_BOOLEAN_OPERATION   = 25;
+const FO_X              = 24;                                                                         const FO_BOOLEAN_CHILDREN    = 24;                                                                                              const FO_GROUP_CHILDREN = 24;
+const FO_Y              = 25;                                                                         const FO_BOOLEAN_OPERATION   = 25;
 const FO_WIDTH          = 26;   
 const FO_HEIGHT         = 27;                                    
 

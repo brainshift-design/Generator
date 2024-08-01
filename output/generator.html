@@ -7462,8 +7462,8 @@ const FO_XP2            =  8;
 
 const FO_SCALE          =  9;
 
-const FO_FILLS          = 10;
-const FO_STROKES        = 11;
+const FO_FILLS          = 10;   const FO_VARIABLE_TYPE   = 10;
+const FO_STROKES        = 11;   const FO_VARIABLE_VALUE  = 11;
 
 
 const FO_STROKE_WEIGHT  = 12;
@@ -7482,8 +7482,8 @@ const FO_OPACITY        = 21;
 const FO_BLEND          = 22;
 const FO_MASK           = 23;
 
-const FO_X              = 24;   const FO_VARIABLE_TYPE   = 24;                                        const FO_BOOLEAN_CHILDREN    = 24;                                                                                              const FO_GROUP_CHILDREN = 24;
-const FO_Y              = 25;   const FO_VARIABLE_VALUE  = 25;                                        const FO_BOOLEAN_OPERATION   = 25;
+const FO_X              = 24;                                                                         const FO_BOOLEAN_CHILDREN    = 24;                                                                                              const FO_GROUP_CHILDREN = 24;
+const FO_Y              = 25;                                                                         const FO_BOOLEAN_OPERATION   = 25;
 const FO_WIDTH          = 26;   
 const FO_HEIGHT         = 27;                                    
 
@@ -10772,12 +10772,46 @@ extends FigmaObject
 
     
 
-    constructor(nodeId, variableId, variableName, variableType, variableValue)
+    constructor(nodeId, variableId, variableName, variableValue)
     {
         super(VARIABLE, nodeId, variableId, variableName);
         
-        this.variableType  = variableType;
-        this.variableValue = variableValue;
+
+        if (variableValue)
+        {
+            switch (variableValue.type)
+            {
+                case NUMBER_VALUE: 
+                    this.variableType = 
+                        variableValue.isBoolean 
+                        ? 'BOOLEAN' 
+                        : 'FLOAT'; 
+
+                    this.variableValue = variableValue.toPreviewString();
+                    
+                    break;
+
+
+                case TEXT_VALUE: 
+                    this.variableType  = 'STRING';
+                    this.variableValue = variableValue.toJson();
+                    break;
+
+
+                case COLOR_VALUE: 
+                    this.variableType = 'COLOR';
+
+                    this.variableValue = 
+                    {
+                        type:      'SOLID',
+                        color:      variableValue.toRgb(),
+                        opacity:    variableValue.toRgba()[3],
+                        blendMode: 'PASS_THROUGH'
+                    };
+
+                    break;
+            }
+        }
     }
 
 
@@ -10786,11 +10820,13 @@ extends FigmaObject
     {
         const copy = new FigmaVariable(
             this.nodeId,
-            this.objectId,
-            this.objectName,
+            this.variableId,
+            this.variableName,
+            null);
 
-            this.variableType,
-            this.variableValue);
+
+        copy.variableType  = this.variableType;
+        copy.variableValue = this.variableValue;
 
 
         copy.copyBase(this);
@@ -10813,8 +10849,8 @@ extends FigmaObject
         return [
             ...super.toData(),
    
-            /* 24 */ this.variableType,
-            /* 25 */ this.variableValue
+            /* 10 */ this.variableType,
+            /* 11 */ this.variableValue
         ];
     }
 }
@@ -12819,10 +12855,11 @@ extends GValue
     value;
     initValue;
     decimals;
+    isBoolean;
 
 
 
-    constructor(val = Number.NaN, dec = -1)
+    constructor(val = Number.NaN, dec = -1, isBoolean = false)
     {
         super(NUMBER_VALUE);
 
@@ -12838,15 +12875,21 @@ extends GValue
             && dec == -1 
             ? decDigits(this.value) 
             : dec;
+
+        this.isBoolean = isBoolean;
     }
 
 
 
     static fromString(str)
     {
-        return new NumberValue(
-            parseFloat(str),
-            decCount(str));
+             if (str === 'true' ) return new NumberValue(1, 0, true);
+        else if (str === 'false') return new NumberValue(0, 0, true);
+
+        else
+            return new NumberValue(
+                parseFloat(str),
+                decCount(str));
     }
 
 
@@ -12855,7 +12898,8 @@ extends GValue
     {
         const copy = new NumberValue(
             this.value, 
-            this.decimals);
+            this.decimals,
+            this.isBoolean);
 
         copy.initValue = this.initValue;
 
@@ -12913,28 +12957,40 @@ extends GValue
 
     toString()
     {
-        return printNum(this.value) 
-             + ',' 
-             + printNum(this.decimals);
+        if (this.isBoolean)
+            return this.value == 1 ? 'true' : 'false';
+    
+        else
+            return printNum(this.value) 
+                 + ',' 
+                 + printNum(this.decimals);
     }
 
 
 
     toPreviewString()
     {
-        return this.isValid()
-             ? numToString(this.value, this.decimals)
-             : NAN_DISPLAY;
+        if (this.isBoolean)
+            return this.value == 1 ? 'true' : 'false';
+    
+        else
+            return this.isValid()
+                ? numToString(this.value, this.decimals)
+                : NAN_DISPLAY;
     }
 
 
 
     toDisplayString()
     {
-        return printNum(this.value) 
-             + (!isNaN(this.decimals)
-                ? '_' + this.decimals //subscriptNumber(this.decimals)
-                : '');
+        if (this.isBoolean)
+            return this.value == 1 ? 'true' : 'false';
+    
+        else
+            return printNum(this.value) 
+                + (!isNaN(this.decimals)
+                    ? '_' + this.decimals //subscriptNumber(this.decimals)
+                    : '');
     }
 
 
@@ -12962,20 +13018,26 @@ extends GValue
 
 function parseNumberValue(str)
 {
-    if (str.indexOf(',') < 0)
+         if (str === 'true' ) return [new NumberValue(1, 0, true), 1];
+    else if (str === 'false') return [new NumberValue(0, 0, true), 1];
+
+    else
     {
-        consoleError('number value \'' + str + '\' missing \',\'');
-        console.trace();
+        if (str.indexOf(',') < 0)
+        {
+            consoleError('number value \'' + str + '\' missing \',\'');
+            console.trace();
+        }
+
+
+        const parts = str.split(',');
+
+        const num = new NumberValue(
+            parseNum(parts[0]),
+            parseNum(parts[1]));
+
+        return [num, 1];
     }
-
-    
-    const parts = str.split(',');
-
-    const num = new NumberValue(
-        parseNum(parts[0]),
-        parseNum(parts[1]));
-
-    return [num, 1];
 }
 
 
@@ -20141,16 +20203,17 @@ extends GOperator1
         this.value.objects = [];
 
 
-        if (   this.value.variableId   != NULL
-            && this.value.variableName != ''
-            &&    this.value.variableValue 
+        if (//   this.value.variableId   != NULL
+            //&& this.value.variableName != ''
+            //&&  
+                  this.value.variableValue 
                && this.value.variableValue.isValid())
         {
             const _var = new FigmaVariable(
                 this.nodeId,
-                this.variableId,
-                this.variableName,
-                this.variableValue);
+                this.value.variableId,
+                this.value.variableName,
+                this.value.variableValue);
 
             this.value.objects.push(_var);
         }
@@ -24886,8 +24949,12 @@ extends GOperator1
 
         // force 0 or 1
         if (this.value.isValid())
-            this.value = new NumberValue(Math.round(Math.min(Math.max(0, this.value.value), 1)), 0);
-
+        {
+            this.value = new NumberValue(
+                Math.round(Math.min(Math.max(0, this.value.value), 1)), 
+                0,
+                true);
+        }
 
         this.setUpdateValues(parse, 
         [
@@ -31147,7 +31214,12 @@ async function evalConditionInputs(input0, input1, op, parse)
 
     if (   val0 && val0.isValid() 
         && val1 && val1.isValid())
-        return new NumberValue(op(val0.toNumber(), val1.toNumber()) ? 1 : 0);
+    {
+        return new NumberValue(
+            op(val0.toNumber(), val1.toNumber()) ? 1 : 0,
+            0,
+            true);
+    }
     else                  
         return NumberValue.NaN.copy();
 }

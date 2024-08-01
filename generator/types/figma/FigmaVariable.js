@@ -6,12 +6,46 @@ extends FigmaObject
 
     
 
-    constructor(nodeId, variableId, variableName, variableType, variableValue)
+    constructor(nodeId, variableId, variableName, variableValue)
     {
         super(VARIABLE, nodeId, variableId, variableName);
         
-        this.variableType  = variableType;
-        this.variableValue = variableValue;
+
+        if (variableValue)
+        {
+            switch (variableValue.type)
+            {
+                case NUMBER_VALUE: 
+                    this.variableType = 
+                        variableValue.isBoolean 
+                        ? 'BOOLEAN' 
+                        : 'FLOAT'; 
+
+                    this.variableValue = variableValue.toPreviewString();
+                    
+                    break;
+
+
+                case TEXT_VALUE: 
+                    this.variableType  = 'STRING';
+                    this.variableValue = variableValue.toJson();
+                    break;
+
+
+                case COLOR_VALUE: 
+                    this.variableType = 'COLOR';
+
+                    this.variableValue = 
+                    {
+                        type:      'SOLID',
+                        color:      variableValue.toRgb(),
+                        opacity:    variableValue.toRgba()[3],
+                        blendMode: 'PASS_THROUGH'
+                    };
+
+                    break;
+            }
+        }
     }
 
 
@@ -20,11 +54,13 @@ extends FigmaObject
     {
         const copy = new FigmaVariable(
             this.nodeId,
-            this.objectId,
-            this.objectName,
+            this.variableId,
+            this.variableName,
+            null);
 
-            this.variableType,
-            this.variableValue);
+
+        copy.variableType  = this.variableType;
+        copy.variableValue = this.variableValue;
 
 
         copy.copyBase(this);
@@ -47,8 +83,8 @@ extends FigmaObject
         return [
             ...super.toData(),
    
-            /* 24 */ this.variableType,
-            /* 25 */ this.variableValue
+            /* 10 */ this.variableType,
+            /* 11 */ this.variableValue
         ];
     }
 }

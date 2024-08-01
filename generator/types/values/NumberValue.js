@@ -4,10 +4,11 @@ extends GValue
     value;
     initValue;
     decimals;
+    isBoolean;
 
 
 
-    constructor(val = Number.NaN, dec = -1)
+    constructor(val = Number.NaN, dec = -1, isBoolean = false)
     {
         super(NUMBER_VALUE);
 
@@ -23,15 +24,21 @@ extends GValue
             && dec == -1 
             ? decDigits(this.value) 
             : dec;
+
+        this.isBoolean = isBoolean;
     }
 
 
 
     static fromString(str)
     {
-        return new NumberValue(
-            parseFloat(str),
-            decCount(str));
+             if (str === 'true' ) return new NumberValue(1, 0, true);
+        else if (str === 'false') return new NumberValue(0, 0, true);
+
+        else
+            return new NumberValue(
+                parseFloat(str),
+                decCount(str));
     }
 
 
@@ -40,7 +47,8 @@ extends GValue
     {
         const copy = new NumberValue(
             this.value, 
-            this.decimals);
+            this.decimals,
+            this.isBoolean);
 
         copy.initValue = this.initValue;
 
@@ -98,28 +106,40 @@ extends GValue
 
     toString()
     {
-        return printNum(this.value) 
-             + ',' 
-             + printNum(this.decimals);
+        if (this.isBoolean)
+            return this.value == 1 ? 'true' : 'false';
+    
+        else
+            return printNum(this.value) 
+                 + ',' 
+                 + printNum(this.decimals);
     }
 
 
 
     toPreviewString()
     {
-        return this.isValid()
-             ? numToString(this.value, this.decimals)
-             : NAN_DISPLAY;
+        if (this.isBoolean)
+            return this.value == 1 ? 'true' : 'false';
+    
+        else
+            return this.isValid()
+                ? numToString(this.value, this.decimals)
+                : NAN_DISPLAY;
     }
 
 
 
     toDisplayString()
     {
-        return printNum(this.value) 
-             + (!isNaN(this.decimals)
-                ? '_' + this.decimals //subscriptNumber(this.decimals)
-                : '');
+        if (this.isBoolean)
+            return this.value == 1 ? 'true' : 'false';
+    
+        else
+            return printNum(this.value) 
+                + (!isNaN(this.decimals)
+                    ? '_' + this.decimals //subscriptNumber(this.decimals)
+                    : '');
     }
 
 
@@ -147,20 +167,26 @@ extends GValue
 
 function parseNumberValue(str)
 {
-    if (str.indexOf(',') < 0)
+         if (str === 'true' ) return [new NumberValue(1, 0, true), 1];
+    else if (str === 'false') return [new NumberValue(0, 0, true), 1];
+
+    else
     {
-        consoleError('number value \'' + str + '\' missing \',\'');
-        console.trace();
+        if (str.indexOf(',') < 0)
+        {
+            consoleError('number value \'' + str + '\' missing \',\'');
+            console.trace();
+        }
+
+
+        const parts = str.split(',');
+
+        const num = new NumberValue(
+            parseNum(parts[0]),
+            parseNum(parts[1]));
+
+        return [num, 1];
     }
-
-    
-    const parts = str.split(',');
-
-    const num = new NumberValue(
-        parseNum(parts[0]),
-        parseNum(parts[1]));
-
-    return [num, 1];
 }
 
 

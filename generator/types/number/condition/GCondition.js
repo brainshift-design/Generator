@@ -122,7 +122,12 @@ async function evalConditionInputs(input0, input1, op, parse)
 
     if (   val0 && val0.isValid() 
         && val1 && val1.isValid())
-        return new NumberValue(op(val0.toNumber(), val1.toNumber()) ? 1 : 0);
+    {
+        return new NumberValue(
+            op(val0.toNumber(), val1.toNumber()) ? 1 : 0,
+            0,
+            true);
+    }
     else                  
         return NumberValue.NaN.copy();
 }

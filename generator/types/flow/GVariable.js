@@ -79,16 +79,17 @@ extends GOperator1
         this.value.objects = [];
 
 
-        if (   this.value.variableId   != NULL
-            && this.value.variableName != ''
-            &&    this.value.variableValue 
+        if (//   this.value.variableId   != NULL
+            //&& this.value.variableName != ''
+            //&&  
+                  this.value.variableValue 
                && this.value.variableValue.isValid())
         {
             const _var = new FigmaVariable(
                 this.nodeId,
-                this.variableId,
-                this.variableName,
-                this.variableValue);
+                this.value.variableId,
+                this.value.variableName,
+                this.value.variableValue);
 
             this.value.objects.push(_var);
         }

@@ -40,8 +40,12 @@ extends GOperator1
 
         // force 0 or 1
         if (this.value.isValid())
-            this.value = new NumberValue(Math.round(Math.min(Math.max(0, this.value.value), 1)), 0);
-
+        {
+            this.value = new NumberValue(
+                Math.round(Math.min(Math.max(0, this.value.value), 1)), 
+                0,
+                true);
+        }
 
         this.setUpdateValues(parse, 
         [
