@@ -4,6 +4,7 @@ extends GValue
     value;
     initValue;
     decimals;
+
     isBoolean;
 
 

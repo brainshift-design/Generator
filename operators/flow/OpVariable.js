@@ -10,6 +10,8 @@ extends ResizableBase
 
     isBool     = false;
 
+    menuBoolValue;
+    
     
 
     constructor()
@@ -153,24 +155,40 @@ extends ResizableBase
 
 
 
-    updateValueParamType(resolvedType)
+    updateValueParamFromResolved(resolvedType)
     {
-        let type = NULL;
-
-        let icon;
-        let iconOffsetY = 0;
-
-
-        const prevIsBool = this.isBool;
+        let type   = NULL;
+        let isBool = false;
 
         switch (resolvedType)
         {
-            case 'FLOAT':   type = NUMBER_VALUE; icon = iconVarNumber;  iconOffsetY = -1; this.isBool = false; break;
-            case 'BOOLEAN': type = NUMBER_VALUE; icon = iconVarBoolean; iconOffsetY =  0; this.isBool = true;  break;
-            case 'STRING':  type = TEXT_VALUE;   icon = iconVarText;    iconOffsetY =  1; this.isBool = false; break;
-            case 'COLOR':   type = COLOR_VALUE;  icon = iconVarColor;   iconOffsetY = -2; this.isBool = false; break;
-            default:                             icon = iconVariable;   iconOffsetY =  0;                      break;
+            case 'FLOAT':   type = NUMBER_VALUE; isBool = false; break;
+            case 'BOOLEAN': type = NUMBER_VALUE; isBool = true;  break;
+            case 'STRING':  type = TEXT_VALUE;   isBool = false; break;
+            case 'COLOR':   type = COLOR_VALUE;  isBool = false; break;
+            default:                                             break;
         }
+
+        this.updateValueParamFromType(type, isBool, this.isBool);
+    }
+
+
+
+    updateValueParamFromType(type, isBool, prevIsBool)
+    {
+        let icon;
+        let iconOffsetY = 0;
+
+        switch (type)
+        {
+            case NUMBER_VALUE:  icon = isBool ? iconVarBoolean : iconVarNumber;  iconOffsetY =  isBool ? 0 : -1;  break;
+            case TEXT_VALUE:    icon = iconVarText;                              iconOffsetY =  1;                break;
+            case COLOR_VALUE:   icon = iconVarColor;                             iconOffsetY = -2;                break;
+            default:            icon = iconVariable;                             iconOffsetY =  0;                break;
+        }
+
+
+        this.isBool = isBool;
 
 
         if (  !this.paramValue
@@ -188,16 +206,21 @@ extends ResizableBase
                 this.paramValue = this.createAndAddParamByType(type, 'value', false, true, true);
                 this.paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
 
-                if (type == NUMBER_VALUE)
+                if (this.isBool)
                 {
-                    this.paramValue.controls[0].setMin(this.isBool ? 0 : Number.MIN_SAFE_INTEGER);
-                    this.paramValue.controls[0].setMax(this.isBool ? 1 : Number.MAX_SAFE_INTEGER);
+                    this.paramValue.controls[0].setMin(0);
+                    this.paramValue.controls[0].setMax(1);
+
+                    this.paramValue.divider = 0.62;
+                    this.paramValue.controls[0].allowEditDecimals = false;
+
+                    this.menuBoolValue = createBoolMenu(this.paramValue);
                 }
             }
             else
             {
                 this.paramValue = null;
-                this.name = 'variable';
+                this.name       = 'variable';
 
                 this.linkedId   = NULL;
                 this.linkedType = NULL;
@@ -217,7 +240,7 @@ extends ResizableBase
 
 
 
-    updateValueParamValues(resolvedType, varName, values, update = false)
+    updateValueParamValuesFromResolved(resolvedType, varName, values, update = false)
     {
         if (this.linkedName != varName)
         {
@@ -255,8 +278,15 @@ extends ResizableBase
         const value = values[paramIds.findIndex(id => id == 'value')];
 
 
-        //this.updateValueParamType(value.resolvedType);
-        //this.updateValueParamValues(value.resolvedType, value.name, [value.value]);
+        this.updateValueParamFromType(
+            value.variableValue.type, 
+            value.variableValue.type == NUMBER_VALUE 
+                ? value.variableValue.isBoolean 
+                : false, 
+            this.isBool);
+
+        //this.updateValueParamFromResolved(value.resolvedType);
+        //this.updateValueParamValuesFromResolved(value.resolvedType, value.name, [value.value]);
 
 
         // uiUpdateVariable(

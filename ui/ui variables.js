@@ -39,7 +39,7 @@ function uiReturnFigGetVariableUpdates(values)
 
         if (node)
         {
-            node.updateValueParamType(value.resolvedType);
+            node.updateValueParamTypeFromResolved(value.resolvedType);
 
             if (node.paramValue)
             {
@@ -51,7 +51,7 @@ function uiReturnFigGetVariableUpdates(values)
                     //     getVariableValue(node.paramValue.value));
                 }
                 else
-                    node.updateValueParamValues(value.resolvedType, value.name, [value.value], true);
+                    node.updateValueParamValuesFromResolved(value.resolvedType, value.name, [value.value], true);
             }
         }
     }
@@ -63,7 +63,7 @@ function uiReturnFigLinkNodeToVariable(msg)
 {
     const node = nodeFromId(msg.nodeId);
 
-    node.updateValueParamValues(
+    node.updateValueParamValuesFromResolved(
         msg.resolvedType, 
         msg.variableName,
         msg.values);
@@ -325,7 +325,7 @@ function uiLinkNodeToVariable(node, varId, varType, varName)//, varTemp)
         node.name = varName;
 
 
-    node.updateValueParamType(varType);
+    node.updateValueParamTypeFromResolved(varType);
 
 
     uiQueueMessageToFigma(
