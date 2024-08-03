@@ -55,7 +55,7 @@ extends FigmaObject
         const copy = new FigmaVariable(
             this.nodeId,
             this.variableId,
-            this.variableName,
+            this.objectName,
             null);
 
 
@@ -83,8 +83,9 @@ extends FigmaObject
         return [
             ...super.toData(),
    
-            /* 10 */ this.variableType,
-            /* 11 */ this.variableValue
+            /* 10 */ this.objectName,
+            /* 11 */ this.variableType,
+            /* 12 */ this.variableValue
         ];
     }
 }

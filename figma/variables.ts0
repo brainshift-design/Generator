@@ -21,8 +21,8 @@ async function figCreateVariableAsync(genVariable)
 
 
 
-async function figUpdateVariableAsync(figVariable, genVariable, isValid = false)
-{
+//async function figUpdateVariableAsync(figVariable, genVariable, isValid = false)
+//{
 //     if (   !isValid
 //         && !genVariableIsValid(genVariable))
 //         return;
@@ -50,7 +50,7 @@ async function figUpdateVariableAsync(figVariable, genVariable, isValid = false)
 
 
 //     figUpdateStrokeSides(figVariable, genVariable);
-}
+//}
 
 
 
@@ -62,6 +62,44 @@ async function figGetVariableCollectionByNameAsync(name)
     {
         if (collection.name == name)
             return collection;
+    }
+
+    return null;
+}
+
+
+
+async function figUpdateTempVariableCollection()
+{
+    const tempCollectionName = PLUGIN_LOGO + ' ' + PLUGIN_NAME;
+
+    tempVariableCollection = await figGetVariableCollectionByNameAsync(tempCollectionName);
+
+    if (!tempVariableCollection)
+    {
+        tempVariableCollection = await figma.variables.createVariableCollection(tempCollectionName);
+
+        tempVariableCollection.setPluginData('userId',    figma.currentUser.id);
+        tempVariableCollection.setPluginData('sessionId', figma.currentUser.sessionId.toString());
+    }
+}
+
+
+
+async function figGetVariableFromData(nodeId, varName)
+{
+    const collections = await figma.variables.getLocalVariableCollectionsAsync();
+
+    for (const collection of collections)
+    {
+        for (const varId of collection.variableIds)
+        {        
+            const variable = await figma.variables.getVariableByIdAsync(varId);
+
+            if (   variable.getPluginData('nodeId') == nodeId
+                && variable.name == varName)
+                return variable;
+        }
     }
 
     return null;
@@ -181,15 +219,18 @@ async function getVariableValuesAsync(varIds)
 
 function figLinkNodeToVariable(nodeId, varId, varType, varName)
 {
-    figma.variables.getLocalVariablesAsync().then(localVars =>
+    figma.variables.getLocalVariablesAsync().then(async (localVars) =>
     {
-        figLinkVariableAsync(localVars, nodeId, varId, varType, varName);
+        const collections = await figma.variables.getLocalVariableCollectionsAsync();
+
+        if (collections.length > 0)
+            figLinkVariableAsync(localVars, nodeId, varId, varType, varName, collections[0]);
     });
 }
 
 
 
-async function _figUpdateVariableAsync(varId, value)
+async function figUpdateVariableAsync(varId, value)
 {
     figma.variables.getLocalVariablesAsync().then(async localVars =>
     {
@@ -229,7 +270,7 @@ async function _figUpdateVariableAsync(varId, value)
 
 
 
-async function figLinkVariableAsync(localVars, nodeId, varId, varType, varName)
+async function figLinkVariableAsync(localVars, nodeId, varId, varType, varName, collection)
 {
     let variable = localVars.find(v => v.id == varId);
 
@@ -240,15 +281,15 @@ async function figLinkVariableAsync(localVars, nodeId, varId, varType, varName)
 
         else
         {
-            const collections = await figma.variables.getLocalVariableCollectionsAsync();
+            // const collections = await figma.variables.getLocalVariableCollectionsAsync();
 
-            if (collections.length > 0)
-            {
+            // if (collections.length > 0)
+            // {
                 variable = figma.variables.createVariable(
                     varName,
-                    collections[0],
+                    collection,
                     varType);
-            }
+            // }
         }
     }
 
@@ -256,15 +297,15 @@ async function figLinkVariableAsync(localVars, nodeId, varId, varType, varName)
     const [resolvedVar, values] = await figGetResolvedVariableValuesAsync(variable);
 
 
-    figPostMessageToUi(
-    {
-        cmd:         'uiReturnFigLinkNodeToVariable',
-        nodeId:       nodeId,
-        variableId:   resolvedVar ? resolvedVar.id           : NULL,
-        variableName: resolvedVar ? resolvedVar.name         : '',
-        resolvedType: resolvedVar ? resolvedVar.resolvedType : NULL,
-        values:       values
-    });
+    // figPostMessageToUi(
+    // {
+    //     cmd:         'uiReturnFigLinkNodeToVariable',
+    //     nodeId:       nodeId,
+    //     variableId:   resolvedVar ? resolvedVar.id           : NULL,
+    //     variableName: resolvedVar ? resolvedVar.name         : '',
+    //     resolvedType: resolvedVar ? resolvedVar.resolvedType : NULL,
+    //     values:       values
+    // });
 
 
     return resolvedVar;

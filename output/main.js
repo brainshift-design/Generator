@@ -1310,10 +1310,11 @@ const FO_XP1 = 7;
 const FO_XP2 = 8;
 const FO_SCALE = 9;
 const FO_FILLS = 10;
-const FO_VARIABLE_TYPE = 10;
+const FO_VARIABLE_NAME = 10;
 const FO_STROKES = 11;
-const FO_VARIABLE_VALUE = 11;
+const FO_VARIABLE_TYPE = 11;
 const FO_STROKE_WEIGHT = 12;
+const FO_VARIABLE_VALUE = 12;
 const FO_STROKE_ALIGN = 13;
 const FO_STROKE_JOIN = 14;
 const FO_STROKE_MITER = 15;
@@ -2644,7 +2645,16 @@ function figUpdateObjects(figParent_1, genObjects_1, batchSize_1) {
         if (totalObjects > -1)
             nominalObjectCount = totalObjects;
         for (const genObj of genObjects) {
-            if (genObj[FO_TYPE] != VARIABLE) // geometric objects
+            if (genObj[FO_TYPE] == VARIABLE) // variable objects
+             {
+                const genVar = genObj;
+                yield figUpdateTempVariableCollection();
+                const localVars = yield figma.variables.getLocalVariablesAsync();
+                let figVar = figLinkVariableAsync(localVars, genVar[FO_NODE_ID], NULL, genVar[FO_VARIABLE_TYPE], genVar[FO_VARIABLE_NAME], tempVariableCollection);
+                consoleAssert(figVar, 'variable must have been created');
+                yield figUpdateVariableAsync(figVar.id, genVar[FO_VARIABLE_VALUE]);
+            }
+            else // geometric objects
              {
                 _genIgnoreObjects.push(genObj);
                 if (genObj[FO_NODE_ID] != curNodeId) {
@@ -2720,16 +2730,6 @@ function figUpdateObjects(figParent_1, genObjects_1, batchSize_1) {
                     updateObjectCount = 0;
                     if (abort)
                         break;
-                }
-            }
-            else // variable objects
-             {
-                const tempCollectionName = PLUGIN_LOGO + ' ' + PLUGIN_NAME;
-                tempVariableCollection = yield figGetVariableCollectionByNameAsync(tempCollectionName);
-                if (!tempVariableCollection) {
-                    tempVariableCollection = yield figma.variables.createVariableCollection(tempCollectionName);
-                    tempVariableCollection.setPluginData('userId', figma.currentUser.id);
-                    tempVariableCollection.setPluginData('sessionId', figma.currentUser.sessionId.toString());
                 }
             }
         }
@@ -3489,34 +3489,58 @@ function figCreateVariableAsync(genVariable) {
         //     return figVariable;
     });
 }
-function figUpdateVariableAsync(figVariable_1, genVariable_1) {
-    return __awaiter(this, arguments, void 0, function* (figVariable, genVariable, isValid = false) {
-        //     if (   !isValid
-        //         && !genVariableIsValid(genVariable))
-        //         return;
-        //     const foundCorners = genVariable[FO_EFFECTS].findIndex(e => e[0] == 'ROUND_CORNERS');
-        //     if (foundCorners > -1)
-        //     {
-        //         const corners = genVariable[FO_EFFECTS][foundCorners];
-        //         figVariable.topLeftRadius     = corners[1];
-        //         figVariable.topRightRadius    = corners[2];
-        //         figVariable.bottomLeftRadius  = corners[3];
-        //         figVariable.bottomRightRadius = corners[4];
-        //     }
-        //     else
-        //         figVariable.cornerRadius = genVariable[FO_RECT_ROUND];
-        //     if (transform)
-        //         setObjectTransform(figVariable, genVariable);
-        //     setObjectProps(figVariable, genVariable, addProps);
-        //     figUpdateStrokeSides(figVariable, genVariable);
-    });
-}
+//async function figUpdateVariableAsync(figVariable, genVariable, isValid = false)
+//{
+//     if (   !isValid
+//         && !genVariableIsValid(genVariable))
+//         return;
+//     const foundCorners = genVariable[FO_EFFECTS].findIndex(e => e[0] == 'ROUND_CORNERS');
+//     if (foundCorners > -1)
+//     {
+//         const corners = genVariable[FO_EFFECTS][foundCorners];
+//         figVariable.topLeftRadius     = corners[1];
+//         figVariable.topRightRadius    = corners[2];
+//         figVariable.bottomLeftRadius  = corners[3];
+//         figVariable.bottomRightRadius = corners[4];
+//     }
+//     else
+//         figVariable.cornerRadius = genVariable[FO_RECT_ROUND];
+//     if (transform)
+//         setObjectTransform(figVariable, genVariable);
+//     setObjectProps(figVariable, genVariable, addProps);
+//     figUpdateStrokeSides(figVariable, genVariable);
+//}
 function figGetVariableCollectionByNameAsync(name) {
     return __awaiter(this, void 0, void 0, function* () {
         const collections = yield figma.variables.getLocalVariableCollectionsAsync();
         for (const collection of collections) {
             if (collection.name == name)
                 return collection;
+        }
+        return null;
+    });
+}
+function figUpdateTempVariableCollection() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const tempCollectionName = PLUGIN_LOGO + ' ' + PLUGIN_NAME;
+        tempVariableCollection = yield figGetVariableCollectionByNameAsync(tempCollectionName);
+        if (!tempVariableCollection) {
+            tempVariableCollection = yield figma.variables.createVariableCollection(tempCollectionName);
+            tempVariableCollection.setPluginData('userId', figma.currentUser.id);
+            tempVariableCollection.setPluginData('sessionId', figma.currentUser.sessionId.toString());
+        }
+    });
+}
+function figGetVariableFromData(nodeId, varName) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const collections = yield figma.variables.getLocalVariableCollectionsAsync();
+        for (const collection of collections) {
+            for (const varId of collection.variableIds) {
+                const variable = yield figma.variables.getVariableByIdAsync(varId);
+                if (variable.getPluginData('nodeId') == nodeId
+                    && variable.name == varName)
+                    return variable;
+            }
         }
         return null;
     });
@@ -3590,11 +3614,13 @@ function getVariableValuesAsync(varIds) {
     });
 }
 function figLinkNodeToVariable(nodeId, varId, varType, varName) {
-    figma.variables.getLocalVariablesAsync().then(localVars => {
-        figLinkVariableAsync(localVars, nodeId, varId, varType, varName);
-    });
+    figma.variables.getLocalVariablesAsync().then((localVars) => __awaiter(this, void 0, void 0, function* () {
+        const collections = yield figma.variables.getLocalVariableCollectionsAsync();
+        if (collections.length > 0)
+            figLinkVariableAsync(localVars, nodeId, varId, varType, varName, collections[0]);
+    }));
 }
-function _figUpdateVariableAsync(varId, value) {
+function figUpdateVariableAsync(varId, value) {
     return __awaiter(this, void 0, void 0, function* () {
         figma.variables.getLocalVariablesAsync().then((localVars) => __awaiter(this, void 0, void 0, function* () {
             let variable = localVars.find(v => v.id == varId);
@@ -3621,28 +3647,30 @@ function _figUpdateVariableAsync(varId, value) {
         }));
     });
 }
-function figLinkVariableAsync(localVars, nodeId, varId, varType, varName) {
+function figLinkVariableAsync(localVars, nodeId, varId, varType, varName, collection) {
     return __awaiter(this, void 0, void 0, function* () {
         let variable = localVars.find(v => v.id == varId);
         if (!variable) {
             if (varId != NULL)
                 return null;
             else {
-                const collections = yield figma.variables.getLocalVariableCollectionsAsync();
-                if (collections.length > 0) {
-                    variable = figma.variables.createVariable(varName, collections[0], varType);
-                }
+                // const collections = await figma.variables.getLocalVariableCollectionsAsync();
+                // if (collections.length > 0)
+                // {
+                variable = figma.variables.createVariable(varName, collection, varType);
+                // }
             }
         }
         const [resolvedVar, values] = yield figGetResolvedVariableValuesAsync(variable);
-        figPostMessageToUi({
-            cmd: 'uiReturnFigLinkNodeToVariable',
-            nodeId: nodeId,
-            variableId: resolvedVar ? resolvedVar.id : NULL,
-            variableName: resolvedVar ? resolvedVar.name : '',
-            resolvedType: resolvedVar ? resolvedVar.resolvedType : NULL,
-            values: values
-        });
+        // figPostMessageToUi(
+        // {
+        //     cmd:         'uiReturnFigLinkNodeToVariable',
+        //     nodeId:       nodeId,
+        //     variableId:   resolvedVar ? resolvedVar.id           : NULL,
+        //     variableName: resolvedVar ? resolvedVar.name         : '',
+        //     resolvedType: resolvedVar ? resolvedVar.resolvedType : NULL,
+        //     values:       values
+        // });
         return resolvedVar;
     });
 }

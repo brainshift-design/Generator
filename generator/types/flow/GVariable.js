@@ -2,7 +2,7 @@ class GVariable
 extends GOperator1
 {
     variableId    = NULL;
-    variableName  = '';
+    //variableName  = '';
     variableValue = null;
 
     //variableVariableTemp  = false;
@@ -50,7 +50,7 @@ extends GOperator1
         this.value = new VariableValue(
             this.nodeId, 
             this.variableId,
-            this.variableName,
+            nodeFromId(this.nodeId).nodeName, //this.variableName,
             varValue);
 
 

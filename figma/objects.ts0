@@ -25,7 +25,32 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
 
     for (const genObj of genObjects)
     {
-        if (genObj[FO_TYPE] != VARIABLE) // geometric objects
+        if (genObj[FO_TYPE] == VARIABLE) // variable objects
+        {
+            const genVar = genObj;
+
+
+            await figUpdateTempVariableCollection();
+        
+            const localVars = await figma.variables.getLocalVariablesAsync();
+
+
+            let figVar = figLinkVariableAsync(
+                localVars, 
+                genVar[FO_NODE_ID], 
+                NULL, 
+                genVar[FO_VARIABLE_TYPE], 
+                genVar[FO_VARIABLE_NAME], 
+                tempVariableCollection);
+
+
+            consoleAssert(figVar, 'variable must have been created');
+
+
+            await figUpdateVariableAsync(figVar.id, genVar[FO_VARIABLE_VALUE]);
+        }
+        
+        else // geometric objects
         {
             _genIgnoreObjects.push(genObj);
 
@@ -69,7 +94,7 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
             let figObj = objects.find(o => 
                 o.removed
                 ||    o.getPluginData('userId'  ) == figma.currentUser.id
-                && o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
+                   && o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
 
 
             if (   figObj != undefined
@@ -139,21 +164,6 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
                 updateObjectCount = 0;
 
                 if (abort) break;
-            }
-        }
-
-        else // variable objects
-        {
-            const tempCollectionName = PLUGIN_LOGO + ' ' + PLUGIN_NAME;
-
-            tempVariableCollection = await figGetVariableCollectionByNameAsync(tempCollectionName);
-
-            if (!tempVariableCollection)
-            {
-                tempVariableCollection = await figma.variables.createVariableCollection(tempCollectionName);
-
-                tempVariableCollection.setPluginData('userId',    figma.currentUser.id);
-                tempVariableCollection.setPluginData('sessionId', figma.currentUser.sessionId.toString());
             }
         }
     }
