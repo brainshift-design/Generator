@@ -6398,7 +6398,7 @@ function enableFeatures(sub)
     enableMenuItem(menuItemParseJson,           true, sub);
     enableMenuItem(menuItemCorrectColor,       true, sub);
     enableMenuItem(menuItemConvertToP3,        true, sub);
-    enableMenuItem(menuItemShapePersist,        true, sub);
+    enableMenuItem(menuItemPersist,        true, sub);
     enableMenuItem(menuItemVectorSep1,         true, sub, true);
     enableMenuItem(menuItemVectorVertex,       true, sub, true);
     enableMenuItem(menuItemVectorEdge,         true, sub, true);
@@ -7455,7 +7455,7 @@ const FO_OBJECT_ID      =  2;   const FO_STYLE_ID     = 2;
 const FO_OBJECT_NAME    =  3;   const FO_STYLE_NAME   = 3;
 
 const FO_FEEDBACK       =  4;   const FO_STYLE_PAINTS = 4;
-const FO_RETAIN         =  5;
+const FO_PERSIST        =  5;
 
 
 const FO_XP0            =  6;
@@ -7515,7 +7515,7 @@ class FigmaObject
 
     itemIndex  = -1; // for linking objects to list items
 
-    retain     = 0;
+    persist    = 0;
     feedback   = false;
 
 
@@ -7556,7 +7556,7 @@ class FigmaObject
         this.itemIndex    = base.itemIndex;
         
         this.feedback     = base.feedback;
-        this.retain       = base.retain;
+        this.persist      = base.persist;
 
         this.showCenter   = base.showCenter;
 
@@ -7838,7 +7838,7 @@ class FigmaObject
         /* 3 */ this.objectName,
             
         /* 4 */ this.feedback,
-        /* 5 */ this.retain,
+        /* 5 */ this.persist,
         
         /* 6 */ this.xp0 ? this.xp0 : null,
         /* 7 */ this.xp1 ? this.xp1 : null,
@@ -20177,7 +20177,9 @@ extends GOperator1
         this.value = new VariableValue(
             this.nodeId, 
             this.variableId,
-            nodeFromId(this.nodeId).nodeName, //this.variableName,
+            getNewNumberId(
+                parse.parsedNodes.find(n => n.nodeId == this.nodeId).nodeName,
+                newId => parse.parsedNodes.find(n => n.nodeId == newId) != null),
             varValue);
 
 
@@ -44977,9 +44979,9 @@ extends GShape
 class GPersist
 extends GShapeBase
 {
-    inputs = [];
+    inputs  = [];
 
-    retain = null;
+    persist = null;
 
     finalize;
 
@@ -44996,8 +44998,8 @@ extends GShapeBase
     {
         super.reset();
 
-        this.inputs = [];
-        this.retain = null;
+        this.inputs  = [];
+        this.persist = null;
     }
 
 
@@ -45020,7 +45022,7 @@ extends GShapeBase
         if (this.isCached())
             return this;
 
-        const retain   = await evalNumberValue(this.retain, parse);
+        const persist  = await evalNumberValue(this.persist, parse);
         const finalize = this.finalize.value > 0;
 
 
@@ -45038,7 +45040,7 @@ extends GShapeBase
             
             if (   this.options.enabled
                 && (   finalize
-                    || retain.value == 1))
+                    || persist.value == 1))
             {
                 for (let j = 0; j < objects.length; j++, o++)
                 {
@@ -45053,7 +45055,7 @@ extends GShapeBase
                     if (  (   !isEmpty(obj.fills  )
                            || !isEmpty(obj.strokes))
                         && !obj.isDeco)
-                            obj.retain = finalize ? 2 : 1;
+                            obj.persist = finalize ? 2 : 1;
                             
                     this.value.objects.push(obj);
                 }
@@ -45084,7 +45086,7 @@ extends GShapeBase
     {
         return super.isValid()
             && !this.inputs.find(i => !i.isValid())
-            && this.retain && this.retain.isValid();
+            && this.persist && this.persist.isValid();
     }
 
 
@@ -45095,7 +45097,7 @@ extends GShapeBase
 
         this.inputs.forEach(i => i.pushValueUpdates(parse));
 
-        if (this.retain) this.retain.pushValueUpdates(parse);
+        if (this.persist) this.persist.pushValueUpdates(parse);
     }
 
 
@@ -45106,7 +45108,7 @@ extends GShapeBase
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
 
-        if (this.retain) this.retain.invalidateInputs(parse, from, force);
+        if (this.persist) this.persist.invalidateInputs(parse, from, force);
     }
 
 
@@ -45117,7 +45119,7 @@ extends GShapeBase
 
         this.inputs.forEach(i => i.iterateLoop(parse));
 
-        if (this.retain) this.retain.iterateLoop(parse);
+        if (this.persist) this.persist.iterateLoop(parse);
     }
 }
 
@@ -57912,7 +57914,7 @@ function genParsePersist(parse)
     for (let i = 0; i < nInputs; i++)
         persist.inputs.push(genParse(parse));
 
-    persist.retain   = genParse(parse);
+    persist.persist  = genParse(parse);
     persist.finalize = genParse(parse);
 
 

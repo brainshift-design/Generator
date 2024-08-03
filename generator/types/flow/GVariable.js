@@ -50,7 +50,9 @@ extends GOperator1
         this.value = new VariableValue(
             this.nodeId, 
             this.variableId,
-            nodeFromId(this.nodeId).nodeName, //this.variableName,
+            getNewNumberId(
+                parse.parsedNodes.find(n => n.nodeId == this.nodeId).nodeName,
+                newId => parse.parsedNodes.find(n => n.nodeId == newId) != null),
             varValue);
 
 

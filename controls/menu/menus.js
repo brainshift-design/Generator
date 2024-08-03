@@ -43,6 +43,7 @@ var menuLogMessages;
 
 var menuDebugDelete;
 
+var menuRepeat;
 var menuFlow;
 var menuData;
 var menuItems;
@@ -261,7 +262,7 @@ var menuItemStyleSep2;
 var menuItemBooleanShape;
 var menuItemShapeSep1;
 var menuItemShapeSelected;
-var menuItemShapePersist;
+var menuItemPersist;
 var menuItemShapeExport;
 
 var menuItemManageTemplates;
@@ -446,26 +447,29 @@ function initGeneratorMenus()
                             new MenuItem('Parse CSV',  null, false, {icon: iconParseCSV,       createType: PARSE_CSV,       callback: e => actionManager.do(getCreateNodeAction(PARSE_CSV,      btnFlow.div, getCreateOptions(e)))})]);
     
     
+    menuRepeat = new Menu('Repeat', true, false);
+    menuRepeat.addItems([
+        menuItemTimer   = new MenuItem('Timer ',         null, false, {icon: iconTimer,         createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemAnimate = new MenuItem('Animate',        null, false, {icon: iconAnimate,       createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))})]);
+
     menuFlow = new Menu('Data flow', true, false);
     menuFlow.addItems([
-        menuItemRepeat     = new MenuItem('. . . Repeat',   null, false, {icon: iconRepeat,        createType: REPEAT,         callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
+        menuItemRepeat     = new MenuItem('. . . Repeat',   null, false, {icon: iconRepeat, childMenu: menuRepeat, createType: REPEAT,         callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
         menuItemStart      = new MenuItem('Feedback . . .', null, false, {icon: iconFeedback,      createType: FEEDBACK,       callback: e => actionManager.do(getCreateNodeAction(FEEDBACK,        btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',               null, false, {separator: true}),
         menuItemCache      = new MenuItem('Cache. . .',     null, false, {icon: iconCache,         createType: CACHE,          callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
         menuItemFreeze     = new MenuItem('Freeze',         null, false, {icon: iconFreeze,        createType: FREEZE,         callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
-                             new MenuItem('',               null, false, {separator: true}),
-        menuItemNull       = new MenuItem('Null',           null, false, {icon: iconNull,          createType: NULL_NODE,      callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
-                             new MenuItem('',               null, false, {separator: true}),
-                             new MenuItem('Parameters',     null, false, {icon: iconParameters, childMenu: menuParams}),
-                             new MenuItem('Value names',    null, false, {icon: iconNames, childMenu: menuNames}),
+        menuItemPersist    = new MenuItem('Persist',        null, false, {icon: iconPersist,   createType: PERSIST,        callback: e => actionManager.do(getCreateNodeAction(PERSIST,         btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',               null, false, {separator: true}),
                              new MenuItem('Variable',       null, false, {icon: iconVariable,      createType: VARIABLE,       callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
         //menuItemVarGroup   = new MenuItem('Variable group', null, false, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',               null, false, {separator: true}),
+        menuItemNull       = new MenuItem('Null',           null, false, {icon: iconNull,          createType: NULL_NODE,      callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
+                             new MenuItem('',               null, false, {separator: true}),
                              new MenuItem('Data',           null, false, {icon: iconTextFile,     childMenu: menuComplexData}),
                              new MenuItem('',               null, false, {separator: true}),
-        menuItemTimer      = new MenuItem('Timer ',         null, false, {icon: iconTimer,         createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
-        menuItemAnimate    = new MenuItem('Animate',        null, false, {icon: iconAnimate,       createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))})]);
+                             new MenuItem('Parameters',     null, false, {icon: iconParameters, childMenu: menuParams}),
+                             new MenuItem('Value names',    null, false, {icon: iconNames, childMenu: menuNames})]);
     
 
     menuItems = new Menu('List functions', true, false);
@@ -680,7 +684,7 @@ function initGeneratorMenus()
         menuItemLayerSep1    = new MenuItem('',              null,                false, {separator: true}),
         menuItemConvertToP3  = new MenuItem('sRGB ⟷ P3',    null,                false, {icon: iconConvertP3,        callback: e => actionManager.do(getCreateNodeAction(COLOR_CONVERT_P3,  btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('',              null,                false, {separator: true}),
-        menuItemColorblind   = new MenuItem('Color vision',  null,                false, {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
+        menuItemColorblind   = new MenuItem('Colorblind',    null,                false, {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('Web contrast',  null,                false, {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('',              null,                false, {separator: true}),
                                new MenuItem('Interpolate',   'Interpolate color', true,  {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))}),
@@ -817,9 +821,7 @@ function initGeneratorMenus()
                                 new MenuItem('Apply style', null, false, {icon: iconApply, createType: SHAPE_APPLY, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',            null, false, {separator: true}),
                                 new MenuItem('Effects',     null, false, {icon: iconEffects, childMenu: menuEffects}),
-                                new MenuItem('Styles',      null, false, {icon: iconStyle, childMenu: menuStyles}),
-                                new MenuItem('',            null, false, {separator: true}),
-        menuItemShapePersist   = new MenuItem('Persist',      null, false, {icon: iconPersistDown, createType: PERSIST, callback: e => actionManager.do(getCreateNodeAction(PERSIST, btnShape.div, getCreateOptions(e)))})]);
+                                new MenuItem('Styles',      null, false, {icon: iconStyle, childMenu: menuStyles})]);
      //                         new MenuItem('',            null, false, {separator: true}),
      // menuItemShapeExport   = new MenuItem('Export',      null, false, {icon: iconExport,     createType: EXPORT, callback: e => actionManager.do(getCreateNodeAction(EXPORT, btnShape.div, getCreateOptions(e)))})]);
 

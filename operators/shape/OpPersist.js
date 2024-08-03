@@ -6,9 +6,9 @@ extends OpShapeBase
     finalize = false;
     
 
-    paramRetain;
+    paramPersist;
 
-    menuRetain;
+    menuPersist;
 
 
 
@@ -25,12 +25,12 @@ extends OpShapeBase
         this.addNewInput();
 
 
-        this.addParam(this.paramRetain = new NumberParam('retain', 'retain', false, true, true, 1, 0, 1));
+        this.addParam(this.paramPersist = new NumberParam('persist', 'persist', false, true, true, 1, 0, 1));
 
-        this.paramRetain.divider = 0.62;
-        this.paramRetain.controls[0].allowEditDecimals = false;
+        this.paramPersist.divider = 0.62;
+        this.paramPersist.controls[0].allowEditDecimals = false;
 
-        this.menuRetain = createBoolMenu(this.paramRetain);
+        this.menuPersist = createBoolMenu(this.paramPersist);
 
 
         this.addBaseParamsAfter();
@@ -134,7 +134,7 @@ extends OpShapeBase
         for (const input of connectedInputs)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.paramRetain.genRequest(gen));
+        request.push(...this.paramPersist.genRequest(gen));
 
         
         request.push(
@@ -163,9 +163,9 @@ extends OpShapeBase
 
     updateParams()
     {
-        this.paramRetain.enableControlText(true);
+        this.paramPersist.enableControlText(true);
 
-        updateParamConditionText(this.paramRetain, this.paramRetain.isUnknown(), true, 1);
+        updateParamConditionText(this.paramPersist, this.paramPersist.isUnknown(), true, 1);
 
         this.updateParamControls();
     }

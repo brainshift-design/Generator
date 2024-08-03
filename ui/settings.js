@@ -402,7 +402,7 @@ function enableFeatures(sub)
     enableMenuItem(menuItemParseJson,           true, sub);
     enableMenuItem(menuItemCorrectColor,       true, sub);
     enableMenuItem(menuItemConvertToP3,        true, sub);
-    enableMenuItem(menuItemShapePersist,        true, sub);
+    enableMenuItem(menuItemPersist,        true, sub);
     enableMenuItem(menuItemVectorSep1,         true, sub, true);
     enableMenuItem(menuItemVectorVertex,       true, sub, true);
     enableMenuItem(menuItemVectorEdge,         true, sub, true);

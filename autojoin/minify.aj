@@ -722,7 +722,7 @@ menuItemLayerBackBlur
 menuItemStyleSep2
 menuItemShapeSep1
 menuItemShapeSelected
-menuItemShapePersist
+menuItemPersist
 menuItemManageTemplates
 menuItemDebugMode
 menuItemLogThreadMessages
@@ -1407,7 +1407,7 @@ FO_OBJECT_NAME
 FO_STYLE_NAME
 FO_FEEDBACK
 FO_STYLE_PAINTS
-FO_RETAIN
+FO_PERSIST
 FO_XP0
 FO_XP1
 FO_XP2
@@ -3347,7 +3347,7 @@ paramMeasure
 getItemCount
 nObjects
 btnFinal
-paramRetain
+paramPersist
 updateFinalIcon
 groupParam
 groupInput

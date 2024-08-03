@@ -926,7 +926,7 @@ const FO_OBJECT_ID      =  2;   const FO_STYLE_ID     = 2;
 const FO_OBJECT_NAME    =  3;   const FO_STYLE_NAME   = 3;
 
 const FO_FEEDBACK       =  4;   const FO_STYLE_PAINTS = 4;
-const FO_RETAIN         =  5;
+const FO_PERSIST        =  5;
 
 
 const FO_XP0            =  6;

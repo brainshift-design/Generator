@@ -1304,7 +1304,7 @@ const FO_OBJECT_NAME = 3;
 const FO_STYLE_NAME = 3;
 const FO_FEEDBACK = 4;
 const FO_STYLE_PAINTS = 4;
-const FO_RETAIN = 5;
+const FO_PERSIST = 5;
 const FO_XP0 = 6;
 const FO_XP1 = 7;
 const FO_XP2 = 8;
@@ -1659,7 +1659,7 @@ function figDeleteAllObjects(forceDelete = false) {
             continue;
         if (figObj.getPluginData('objectId') != ''
             && figObj.getPluginData('userId') == figma.currentUser.id
-            && (parseInt(figObj.getPluginData('retain')) == 0
+            && (parseInt(figObj.getPluginData('persist')) == 0
                 || forceDelete))
             figObj.remove();
     }
@@ -1682,7 +1682,7 @@ function figDeleteObjectsExcept(nodeIds, genIgnoreObjects) {
                     removeFromArray(figEmptyObjects, figObj);
             }
             if (!figObj.removed) {
-                if (parseInt(figObj.getPluginData('retain')) == 2)
+                if (parseInt(figObj.getPluginData('persist')) == 2)
                     clearObjectData(figObj);
             }
         }
@@ -1703,8 +1703,8 @@ function findObject(figObj, genIgnoreObjects) {
         const found = genIgnoreObjects.find(o => figObj.getPluginData('objectId') == o[FO_OBJECT_ID]
             && figObj.getPluginData('userId') == figma.currentUser.id
             //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
-            || o[FO_RETAIN] == 2
-                && o[FO_RETAIN] == figObj.getPluginData('retain'));
+            || o[FO_PERSIST] == 2
+                && o[FO_PERSIST] == figObj.getPluginData('persist'));
         if (found)
             return found;
     }
@@ -2650,7 +2650,7 @@ function figUpdateObjects(figParent_1, genObjects_1, batchSize_1) {
                 const genVar = genObj;
                 yield figUpdateTempVariableCollection();
                 const localVars = yield figma.variables.getLocalVariablesAsync();
-                let figVar = figLinkVariableAsync(localVars, genVar[FO_NODE_ID], NULL, genVar[FO_VARIABLE_TYPE], genVar[FO_VARIABLE_NAME], tempVariableCollection);
+                let figVar = yield figLinkVariableAsync(localVars, genVar[FO_NODE_ID], NULL, genVar[FO_VARIABLE_TYPE], genVar[FO_VARIABLE_NAME], tempVariableCollection);
                 consoleAssert(figVar, 'variable must have been created');
                 yield figUpdateVariableAsync(figVar.id, genVar[FO_VARIABLE_VALUE]);
             }
@@ -2777,7 +2777,7 @@ function figUpdateObjects(figParent_1, genObjects_1, batchSize_1) {
     });
 }
 function makeObjectName(obj) {
-    return (obj[FO_RETAIN] === 2 ? '' : OBJECT_PREFIX)
+    return (obj[FO_PERSIST] === 2 ? '' : OBJECT_PREFIX)
         + (showIds ? obj[FO_OBJECT_ID] : obj[FO_OBJECT_NAME]);
 }
 function figCreateObject(genObj_1) {
@@ -2835,8 +2835,8 @@ function figCreateObject(genObj_1) {
                 || !!figObj, 'no Figma object created');
             if (figObj != undefined
                 && figObj != null) {
-                figObj.setPluginData('retain', genObj[FO_RETAIN].toString());
-                if (genObj[FO_RETAIN] < 2) {
+                figObj.setPluginData('persist', genObj[FO_PERSIST].toString());
+                if (genObj[FO_PERSIST] < 2) {
                     figObj.setPluginData('userId', figma.currentUser.id);
                     figObj.setPluginData('sessionId', figma.currentUser.sessionId.toString());
                     figObj.setPluginData('type', genObj[FO_TYPE]);
@@ -2866,7 +2866,7 @@ function figUpdateObjectAsync(figObj, genObj, addProps, transform) {
             || figObj.removed)
             return;
         figObj.name = makeObjectName(genObj);
-        figObj.setPluginData('retain', genObj[FO_RETAIN].toString());
+        figObj.setPluginData('persist', genObj[FO_PERSIST].toString());
         switch (genObj[FO_TYPE]) {
             case RECTANGLE:
                 figUpdateRect(figObj, genObj, addProps, transform);
@@ -2965,7 +2965,7 @@ function clearObjectData(figObj) {
     figObj.setPluginData('sessionId', '');
     figObj.setPluginData('objectId', '');
     figObj.setPluginData('isCenter', '');
-    figObj.setPluginData('retain', '');
+    figObj.setPluginData('persist', '');
 }
 function figGetObjectBounds(objects) {
     const bounds = {

@@ -1977,7 +1977,7 @@ const FO_OBJECT_ID      =  2;   const FO_STYLE_ID     = 2;
 const FO_OBJECT_NAME    =  3;   const FO_STYLE_NAME   = 3;
 
 const FO_FEEDBACK       =  4;   const FO_STYLE_PAINTS = 4;
-const FO_RETAIN         =  5;
+const FO_PERSIST        =  5;
 
 
 const FO_XP0            =  6;
@@ -2538,7 +2538,7 @@ function figDeleteAllObjects(forceDelete = false)
 
         if (    figObj.getPluginData('objectId') != ''
             &&  figObj.getPluginData('userId'  ) == figma.currentUser.id
-            && (   parseInt(figObj.getPluginData('retain')) == 0
+            && (   parseInt(figObj.getPluginData('persist')) == 0
                 || forceDelete)) 
             figObj.remove();
     }
@@ -2578,7 +2578,7 @@ function figDeleteObjectsExcept(nodeIds, genIgnoreObjects)
             
             if (  !figObj.removed)
             {
-                if (parseInt(figObj.getPluginData('retain')) == 2)
+                if (parseInt(figObj.getPluginData('persist')) == 2)
                     clearObjectData(figObj);
             }
         }
@@ -2609,8 +2609,8 @@ function findObject(figObj, genIgnoreObjects)
                   figObj.getPluginData('objectId' ) == o[FO_OBJECT_ID] 
                && figObj.getPluginData('userId'   ) == figma.currentUser.id
                //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
-            ||    o[FO_RETAIN] == 2
-               && o[FO_RETAIN] == figObj.getPluginData('retain'));
+            ||    o[FO_PERSIST] == 2
+               && o[FO_PERSIST] == figObj.getPluginData('persist'));
 
         if (found) 
             return found;
@@ -3959,7 +3959,7 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
             const localVars = await figma.variables.getLocalVariablesAsync();
 
 
-            let figVar = figLinkVariableAsync(
+            let figVar = await figLinkVariableAsync(
                 localVars, 
                 genVar[FO_NODE_ID], 
                 NULL, 
@@ -3969,7 +3969,6 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
 
 
             consoleAssert(figVar, 'variable must have been created');
-
 
             await figUpdateVariableAsync(figVar.id, genVar[FO_VARIABLE_VALUE]);
         }
@@ -4167,7 +4166,7 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
 
 function makeObjectName(obj)
 {
-    return (obj[FO_RETAIN] === 2 ? '' : OBJECT_PREFIX)
+    return (obj[FO_PERSIST] === 2 ? '' : OBJECT_PREFIX)
          + (showIds ? obj[FO_OBJECT_ID] : obj[FO_OBJECT_NAME]);
 }
 
@@ -4216,9 +4215,9 @@ async function figCreateObject(genObj, addObject = null, addProps = true, transf
         if (   figObj != undefined
             && figObj != null)
         {
-            figObj.setPluginData('retain', genObj[FO_RETAIN].toString());
+            figObj.setPluginData('persist', genObj[FO_PERSIST].toString());
 
-            if (genObj[FO_RETAIN] < 2)
+            if (genObj[FO_PERSIST] < 2)
             {
                 figObj.setPluginData('userId',    figma.currentUser.id);
                 figObj.setPluginData('sessionId', figma.currentUser.sessionId.toString());
@@ -4262,7 +4261,7 @@ async function figUpdateObjectAsync(figObj, genObj, addProps, transform)
         
     figObj.name = makeObjectName(genObj);
     
-    figObj.setPluginData('retain', genObj[FO_RETAIN].toString());
+    figObj.setPluginData('persist', genObj[FO_PERSIST].toString());
 
 
     switch (genObj[FO_TYPE])
@@ -4364,7 +4363,7 @@ function clearObjectData(figObj)
     figObj.setPluginData('sessionId', '');
     figObj.setPluginData('objectId',  '');
     figObj.setPluginData('isCenter',  '');
-    figObj.setPluginData('retain',    '');
+    figObj.setPluginData('persist',   '');
 }
 
 

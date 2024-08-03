@@ -2524,7 +2524,7 @@ function genParsePersist(parse)
     for (let i = 0; i < nInputs; i++)
         persist.inputs.push(genParse(parse));
 
-    persist.retain   = genParse(parse);
+    persist.persist  = genParse(parse);
     persist.finalize = genParse(parse);
 
 
