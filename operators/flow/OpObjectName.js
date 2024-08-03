@@ -18,7 +18,7 @@ extends OperatorBase
         this.addInput (new Input(SHAPE_VALUES));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
-        // this.addParam(this.paramLogo = new NumberParam('addLogo', 'prefix&nbsp;&nbsp;' + GENERATOR_LOGO + '&nbsp;', true,  true, true, 1, 0, 1));
+        // this.addParam(this.paramLogo = new NumberParam('addLogo', 'prefix&nbsp;&nbsp;' + PLUGIN_LOGO + '&nbsp;', true,  true, true, 1, 0, 1));
         this.addParam(this.paramName = new   TextParam('name',    'name',  false, true, true));
 
         //this.paramLogo.divider = 0.67;

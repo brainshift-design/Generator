@@ -51,7 +51,9 @@ function clearGraph()
         graph.createPage('');
 
     uiDeleteAllObjects();
+    uiDeleteAllVariables();
     uiRemoveAllSavedNodesAndConns();
+
     graph.clear();
 
     totalObjectCount = 0;

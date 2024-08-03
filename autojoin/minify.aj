@@ -875,7 +875,7 @@ MAX_INT32
 HTAB
 TAB
 NL
-GENERATOR_LOGO
+PLUGIN_LOGO
 OBJECT_PREFIX
 nodeTag
 connTag
@@ -1532,6 +1532,7 @@ getLocalFile
 saveToLocalFile
 figDeleteObjectsFromNodeIds
 figDeleteAllObjects
+figDeleteTempVariableCollection
 forceDelete
 figDeleteObjectsExcept
 genIgnoreObjects
@@ -2652,6 +2653,7 @@ uiDeleteSavedConnectionsFromNodeId
 uiRemoveSavedNodesAndConns
 uiRemoveConnsToNodes
 uiDeleteAllObjects
+uiDeleteAllVariables
 uiRemoveAllSavedNodesAndConns
 uiRemovePluginDataFromAllLocalStyles
 uiCleanAllIds
@@ -2759,9 +2761,9 @@ actualObjectCount
 updateObjectCount
 figCreateVectorPath
 figCreateVectorNetwork
-figCreateShapeBoolean
-figCreateShapeGroup
-figCreateFrame
+figCreateShapeBooleanAsync
+figCreateShapeGroupAsync
+figCreateFrameAsync
 figUpdatePoint
 figUpdateVectorPath
 figUpdateVectorNetwork

@@ -10,8 +10,10 @@ const HTAB             = '  '; // half-tab
 const TAB              = '    ';
 const NL               = '\n';
   
-const GENERATOR_LOGO   = '◦ G •';
-const OBJECT_PREFIX    = GENERATOR_LOGO + ' ';
+const PLUGIN_NAME      = 'Generator';
+const PLUGIN_LOGO      = '◦ G •';
+
+const OBJECT_PREFIX    = PLUGIN_LOGO + ' ';
 
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';

@@ -10,7 +10,7 @@ function genFrameIsValid(genFrame)
 
 
 
-async function figCreateFrame(genFrame, addProps, transform)
+async function figCreateFrameAsync(genFrame, addProps, transform)
 {
     if (!genFrameIsValid(genFrame))
         return null;

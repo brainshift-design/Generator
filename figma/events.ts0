@@ -102,5 +102,7 @@ function figOnDocumentChange(e)
 function figOnPluginClose()
 {
     figDeleteAllObjects();
+    figDeleteTempVariableCollection();
+    
     figPostMessageToUi({ cmd: 'updateMetrics' });
 }

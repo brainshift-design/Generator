@@ -8,13 +8,14 @@ figma.loadAllPagesAsync().then(() =>
 {
     //figma.on('selectionchange', figOnSelectionChange);
 
-    figma.on('documentchange',  figOnDocumentChange);
+    figma.on('documentchange',  figOnDocumentChange );
     figma.on('selectionchange', figOnSelectionChange);
-    figma.on('close',           figOnPluginClose);
+    figma.on('close',           figOnPluginClose    );
 });
 
 
 figDeleteAllObjects(true);
+figDeleteTempVariableCollection();
 
 
 figma.clientStorage.getAsync('pro').then(data =>
@@ -24,7 +25,7 @@ figma.clientStorage.getAsync('pro').then(data =>
         {
             visible:     false,
             themeColors: true,
-            title:       'Generator' + (data !== true ? ' (Free version)' : '')
+            title:       PLUGIN_NAME + (data !== true ? ' (Free version)' : '')
         });
 });
 
@@ -37,12 +38,16 @@ var strBackgrounds = '';
 setInterval(figCheckBackgrounds, 500);
 
 
-const clockMarker   = 'clock_';
-const clockInterval = 1000;
+
+const clockMarker          = 'clock_';
+const clockInterval        = 1000;
 
 
-var showIds          = false;
-var objectCenterSize = 15;
+var showIds                = false;
+var objectCenterSize       = 15;
+
+var tempVariableCollection = null;
+
 
 
 // figma.currentPage
@@ -78,7 +83,7 @@ function figStartGenerator()
     
             const eula      = (await figma.clientStorage.getAsync('eula'     )) === 'true';
             const tutorials = (await figma.clientStorage.getAsync('tutorials')) === 'true';
-            const isLocked  = await figPageIsLocked();
+            const isLocked  =  await figPageIsLocked();
 
         
             figPostMessageToUi(
@@ -100,9 +105,10 @@ function figStartGenerator()
 
 
 
-function figRestartGenerator()
+async function figRestartGenerator()
 {
     figDeleteAllObjects();
+    figDeleteTempVariableCollection();
 
     figma.showUI(
         __html__,

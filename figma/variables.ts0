@@ -1,3 +1,74 @@
+function genVariableIsValid(genVariable)
+{
+    return genVariable[FO_VARIABLE_TYPE ] != null
+        && genVariable[FO_VARIABLE_VALUE] != null;
+}
+
+
+
+async function figCreateVariableAsync(genVariable)
+{
+//     if (!genRectIsValid(genVariable))
+//         return null;
+
+
+//     const figVariable = null;//figma.createRectangle();
+
+//     await figUpdateVariableAsync(figVariable, genVariable, true);
+
+//     return figVariable;
+}
+
+
+
+async function figUpdateVariableAsync(figVariable, genVariable, isValid = false)
+{
+//     if (   !isValid
+//         && !genVariableIsValid(genVariable))
+//         return;
+
+
+//     const foundCorners = genVariable[FO_EFFECTS].findIndex(e => e[0] == 'ROUND_CORNERS');
+
+//     if (foundCorners > -1)
+//     {
+//         const corners = genVariable[FO_EFFECTS][foundCorners];
+
+//         figVariable.topLeftRadius     = corners[1];
+//         figVariable.topRightRadius    = corners[2];
+//         figVariable.bottomLeftRadius  = corners[3];
+//         figVariable.bottomRightRadius = corners[4];
+//     }
+//     else
+//         figVariable.cornerRadius = genVariable[FO_RECT_ROUND];
+
+
+//     if (transform)
+//         setObjectTransform(figVariable, genVariable);
+    
+//     setObjectProps(figVariable, genVariable, addProps);
+
+
+//     figUpdateStrokeSides(figVariable, genVariable);
+}
+
+
+
+async function figGetVariableCollectionByNameAsync(name)
+{
+    const collections = await figma.variables.getLocalVariableCollectionsAsync();
+
+    for (const collection of collections)
+    {
+        if (collection.name == name)
+            return collection;
+    }
+
+    return null;
+}
+
+
+
 function figGetAllLocalVariables(nodeId, px, py)
 {
     figma.variables.getLocalVariablesAsync().then(async localVars =>
@@ -118,7 +189,7 @@ function figLinkNodeToVariable(nodeId, varId, varType, varName)
 
 
 
-async function figUpdateVariableAsync(varId, value)
+async function _figUpdateVariableAsync(varId, value)
 {
     figma.variables.getLocalVariablesAsync().then(async localVars =>
     {
@@ -228,4 +299,12 @@ async function figGetResolvedVariableValuesAsync(variable)
 
 
     return [variable, values];
+}
+
+
+
+function figDeleteTempVariableCollection(forceDelete = false)
+{
+    if (tempVariableCollection)
+        tempVariableCollection.remove();
 }

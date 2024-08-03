@@ -26,8 +26,9 @@ const NULL_VALUE = 'NULL';
 const HTAB = '  '; // half-tab
 const TAB = '    ';
 const NL = '\n';
-const GENERATOR_LOGO = '◦ G •';
-const OBJECT_PREFIX = GENERATOR_LOGO + ' ';
+const PLUGIN_NAME = 'Generator';
+const PLUGIN_LOGO = '◦ G •';
+const OBJECT_PREFIX = PLUGIN_LOGO + ' ';
 const nodeTag = 'G_NODE';
 const connTag = 'G_CONN';
 const pageTag = 'G_PAGE';
@@ -1507,11 +1508,12 @@ figma.loadAllPagesAsync().then(() => {
     figma.on('close', figOnPluginClose);
 });
 figDeleteAllObjects(true);
+figDeleteTempVariableCollection();
 figma.clientStorage.getAsync('pro').then(data => {
     figma.showUI(__html__, {
         visible: false,
         themeColors: true,
-        title: 'Generator' + (data !== true ? ' (Free version)' : '')
+        title: PLUGIN_NAME + (data !== true ? ' (Free version)' : '')
     });
 });
 var curZoom = figma.viewport.zoom;
@@ -1522,6 +1524,7 @@ const clockMarker = 'clock_';
 const clockInterval = 1000;
 var showIds = false;
 var objectCenterSize = 15;
+var tempVariableCollection = null;
 // figma.currentPage
 //     .getPluginDataKeys()
 //     .forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k).replace('\\', '\\\\')));
@@ -1568,10 +1571,13 @@ function figStartGenerator() {
     })();
 }
 function figRestartGenerator() {
-    figDeleteAllObjects();
-    figma.showUI(__html__, {
-        visible: false,
-        themeColors: true
+    return __awaiter(this, void 0, void 0, function* () {
+        figDeleteAllObjects();
+        figDeleteTempVariableCollection();
+        figma.showUI(__html__, {
+            visible: false,
+            themeColors: true
+        });
     });
 }
 function figFinishStart() {
@@ -1800,6 +1806,7 @@ function figOnDocumentChange(e) {
 }
 function figOnPluginClose() {
     figDeleteAllObjects();
+    figDeleteTempVariableCollection();
     figPostMessageToUi({ cmd: 'updateMetrics' });
 }
 // from UI <--
@@ -1975,6 +1982,9 @@ figma.ui.onmessage = function (msg) {
             break;
         case 'figDeleteAllObjects':
             figDeleteAllObjects();
+            break;
+        case 'figDeleteAllVariables':
+            figDeleteTempVariableCollection();
             break;
         case 'figUpdateObjectsAndStyles':
             nominalObjectCount = 0;
@@ -2623,6 +2633,149 @@ var _genIgnoreNodeIds = [];
 var _genIgnoreObjects = [];
 var nominalObjectCount = 0;
 var actualObjectCount = 0;
+function figUpdateObjects(figParent_1, genObjects_1, batchSize_1) {
+    return __awaiter(this, arguments, void 0, function* (figParent, genObjects, batchSize, totalObjects = -1, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false, addProps = true, transform = true) {
+        let curNodeId = NULL;
+        let figObjects = null;
+        let abort = false;
+        const updateObjects = [];
+        let updateObjectCount = 0;
+        _genIgnoreNodeIds.push(...nodeIds);
+        if (totalObjects > -1)
+            nominalObjectCount = totalObjects;
+        for (const genObj of genObjects) {
+            if (genObj[FO_TYPE] != VARIABLE) // geometric objects
+             {
+                _genIgnoreObjects.push(genObj);
+                if (genObj[FO_NODE_ID] != curNodeId) {
+                    curNodeId = genObj[FO_NODE_ID];
+                    figObjects = figObjectArrays.find(a => a.nodeId == genObj[FO_NODE_ID]);
+                    if (!figObjects) {
+                        figObjectArrays.push(figObjects =
+                            {
+                                nodeId: genObj[FO_NODE_ID],
+                                objects: []
+                            });
+                    }
+                }
+                const addObject = figObj => {
+                    if (figParent != undefined
+                        && figParent != null
+                        && !figParent.removed)
+                        figParent.appendChild(figObj);
+                    else
+                        figObjects.objects.push(figObj);
+                };
+                let objects = figParent != undefined
+                    && figParent != null
+                    && !figParent.removed
+                    ? figParent.children
+                    : figObjects.objects;
+                let figObj = objects.find(o => o.removed
+                    || o.getPluginData('userId') == figma.currentUser.id
+                        && o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
+                if (figObj != undefined
+                    && figObj != null
+                    && figObj.removed) {
+                    removeFrom(objects, figObj);
+                    if (figPoints.includes(figObj))
+                        removeFromArray(figPoints, figObj);
+                    if (figEmptyObjects.includes(figObj))
+                        removeFromArray(figEmptyObjects, figObj);
+                }
+                if (figObj == undefined
+                    || figObj == null
+                    || figObj.removed) // no existing object, create new one
+                 {
+                    const newObj = yield figCreateObject(genObj, addObject, addProps, transform);
+                    updateObjects.push(newObj);
+                }
+                else if (figObj != undefined
+                    && figObj != null
+                    && !figObj.removed
+                    && figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
+                 {
+                    yield figUpdateObjectAsync(figObj, genObj, addProps, transform);
+                    if (figObj != undefined
+                        && figObj != null
+                        && !figObj.removed)
+                        updateObjects.push(figObj);
+                }
+                else // delete existing object, create new one
+                 {
+                    figObj.remove();
+                    if (figPoints.includes(figObj))
+                        removeFromArray(figPoints, figObj);
+                    if (figEmptyObjects.includes(figObj))
+                        removeFromArray(figEmptyObjects, figObj);
+                    yield figCreateObject(genObj, addObject, addProps, transform);
+                }
+                updateObjectCount++;
+                if (updateObjectCount >= batchSize) {
+                    const result = yield figGetValueFromUiSync('returnObjectUpdate', {
+                        nominalObjectCount: nominalObjectCount,
+                        actualObjectCount: actualObjectCount
+                    });
+                    abort = result.value;
+                    updateObjectCount = 0;
+                    if (abort)
+                        break;
+                }
+            }
+            else // variable objects
+             {
+                const tempCollectionName = PLUGIN_LOGO + ' ' + PLUGIN_NAME;
+                tempVariableCollection = yield figGetVariableCollectionByNameAsync(tempCollectionName);
+                if (!tempVariableCollection) {
+                    tempVariableCollection = yield figma.variables.createVariableCollection(tempCollectionName);
+                    tempVariableCollection.setPluginData('userId', figma.currentUser.id);
+                    tempVariableCollection.setPluginData('sessionId', figma.currentUser.sessionId.toString());
+                }
+            }
+        }
+        // delete removed objects from parent
+        if (figParent != undefined
+            && figParent != null
+            && !figParent.removed) {
+            for (const figObj of figParent.children) {
+                if (figObj != undefined
+                    && figObj != null
+                    && figObj.removed
+                    || !genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
+                        && figObj.getPluginData('userId') == figma.currentUser.id))
+                    //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()))
+                    figObj.remove();
+            }
+        }
+        // put points on top
+        for (const point of figPoints) {
+            if (point.parent == figma.currentPage)
+                yield figma.currentPage.loadAsync();
+            if (point != undefined
+                && point != null
+                && !point.removed
+                && !point.parent.removed)
+                point.parent.appendChild(point);
+        }
+        if (lastChunk
+            && !abort) {
+            // delete old content
+            figDeleteObjectsExcept(_genIgnoreNodeIds, _genIgnoreObjects);
+            _genIgnoreNodeIds = [];
+            _genIgnoreObjects = [];
+            if (zoomToFit
+                && updateObjects.length > 0) {
+                figma.viewport.scrollAndZoomIntoView(updateObjects);
+                const bounds = figGetObjectBounds(updateObjects);
+                figma.viewport.zoom = Math.min(figma.viewport.bounds.width * figma.viewport.zoom / bounds.width - 0.05, figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
+            }
+        }
+        yield figGetValueFromUiSync('returnObjectUpdate', {
+            nominalObjectCount: nominalObjectCount,
+            actualObjectCount: actualObjectCount
+        });
+    });
+}
 function makeObjectName(obj) {
     return (obj[FO_RETAIN] === 2 ? '' : OBJECT_PREFIX)
         + (showIds ? obj[FO_OBJECT_ID] : obj[FO_OBJECT_NAME]);
@@ -2661,13 +2814,16 @@ function figCreateObject(genObj_1) {
                 figObj = figCreateVectorNetwork(genObj, addProps, transform);
                 break;
             case SHAPE_BOOLEAN:
-                figObj = yield figCreateShapeBoolean(genObj, addProps, transform);
+                figObj = yield figCreateShapeBooleanAsync(genObj, addProps, transform);
                 break;
             case SHAPE_GROUP:
-                figObj = yield figCreateShapeGroup(genObj);
+                figObj = yield figCreateShapeGroupAsync(genObj);
                 break;
             case FRAME:
-                figObj = yield figCreateFrame(genObj, addProps, transform);
+                figObj = yield figCreateFrameAsync(genObj, addProps, transform);
+                break;
+            case VARIABLE:
+                figObj = yield figCreateVariableAsync(genObj);
                 break;
         }
         if (addObject
@@ -2748,6 +2904,9 @@ function figUpdateObjectAsync(figObj, genObj, addProps, transform) {
             case FRAME:
                 figUpdateFrame(figObj, genObj, addProps, transform);
                 break;
+            case VARIABLE:
+                yield figUpdateVariableAsync(figObj, genObj);
+                break;
         }
         if (figObj != undefined
             && figObj != null
@@ -2762,136 +2921,6 @@ function figUpdateObjectAsync(figObj, genObj, addProps, transform) {
             actualObjectCount++;
             genObj.counted = true;
         }
-    });
-}
-function figUpdateObjects(figParent_1, genObjects_1, batchSize_1) {
-    return __awaiter(this, arguments, void 0, function* (figParent, genObjects, batchSize, totalObjects = -1, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false, addProps = true, transform = true) {
-        let curNodeId = NULL;
-        let figObjects = null;
-        let abort = false;
-        const updateObjects = [];
-        let updateObjectCount = 0;
-        _genIgnoreNodeIds.push(...nodeIds);
-        if (totalObjects > -1)
-            nominalObjectCount = totalObjects;
-        for (const genObj of genObjects) {
-            _genIgnoreObjects.push(genObj);
-            if (genObj[FO_NODE_ID] != curNodeId) {
-                curNodeId = genObj[FO_NODE_ID];
-                figObjects = figObjectArrays.find(a => a.nodeId == genObj[FO_NODE_ID]);
-                if (!figObjects) {
-                    figObjectArrays.push(figObjects =
-                        {
-                            nodeId: genObj[FO_NODE_ID],
-                            objects: []
-                        });
-                }
-            }
-            const addObject = figObj => {
-                if (figParent != undefined
-                    && figParent != null
-                    && !figParent.removed)
-                    figParent.appendChild(figObj);
-                else
-                    figObjects.objects.push(figObj);
-            };
-            let objects = figParent != undefined
-                && figParent != null
-                && !figParent.removed
-                ? figParent.children
-                : figObjects.objects;
-            let figObj = objects.find(o => o.removed
-                || o.getPluginData('userId') == figma.currentUser.id
-                    && o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
-            if (figObj != undefined
-                && figObj != null
-                && figObj.removed) {
-                removeFrom(objects, figObj);
-                if (figPoints.includes(figObj))
-                    removeFromArray(figPoints, figObj);
-                if (figEmptyObjects.includes(figObj))
-                    removeFromArray(figEmptyObjects, figObj);
-            }
-            if (figObj == undefined
-                || figObj == null
-                || figObj.removed) // no existing object, create new one
-             {
-                const newObj = yield figCreateObject(genObj, addObject, addProps, transform);
-                updateObjects.push(newObj);
-            }
-            else if (figObj != undefined
-                && figObj != null
-                && !figObj.removed
-                && figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
-             {
-                yield figUpdateObjectAsync(figObj, genObj, addProps, transform);
-                if (figObj != undefined
-                    && figObj != null
-                    && !figObj.removed)
-                    updateObjects.push(figObj);
-            }
-            else // delete existing object, create new one
-             {
-                figObj.remove();
-                if (figPoints.includes(figObj))
-                    removeFromArray(figPoints, figObj);
-                if (figEmptyObjects.includes(figObj))
-                    removeFromArray(figEmptyObjects, figObj);
-                yield figCreateObject(genObj, addObject, addProps, transform);
-            }
-            updateObjectCount++;
-            if (updateObjectCount >= batchSize) {
-                const result = yield figGetValueFromUiSync('returnObjectUpdate', {
-                    nominalObjectCount: nominalObjectCount,
-                    actualObjectCount: actualObjectCount
-                });
-                abort = result.value;
-                updateObjectCount = 0;
-                if (abort)
-                    break;
-            }
-        }
-        // delete removed objects from parent
-        if (figParent != undefined
-            && figParent != null
-            && !figParent.removed) {
-            for (const figObj of figParent.children) {
-                if (figObj != undefined
-                    && figObj != null
-                    && figObj.removed
-                    || !genObjects.find(o => o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
-                        && figObj.getPluginData('userId') == figma.currentUser.id))
-                    //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()))
-                    figObj.remove();
-            }
-        }
-        // put points on top
-        for (const point of figPoints) {
-            if (point.parent == figma.currentPage)
-                yield figma.currentPage.loadAsync();
-            if (point != undefined
-                && point != null
-                && !point.removed
-                && !point.parent.removed)
-                point.parent.appendChild(point);
-        }
-        if (lastChunk
-            && !abort) {
-            // delete old content
-            figDeleteObjectsExcept(_genIgnoreNodeIds, _genIgnoreObjects);
-            _genIgnoreNodeIds = [];
-            _genIgnoreObjects = [];
-            if (zoomToFit
-                && updateObjects.length > 0) {
-                figma.viewport.scrollAndZoomIntoView(updateObjects);
-                const bounds = figGetObjectBounds(updateObjects);
-                figma.viewport.zoom = Math.min(figma.viewport.bounds.width * figma.viewport.zoom / bounds.width - 0.05, figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
-            }
-        }
-        yield figGetValueFromUiSync('returnObjectUpdate', {
-            nominalObjectCount: nominalObjectCount,
-            actualObjectCount: actualObjectCount
-        });
     });
 }
 function genObjectIsValid(genObj) {
@@ -3447,6 +3476,51 @@ function setStylePaints(figStyle, genStyle) {
     else
         figStyle.paints = [];
 }
+function genVariableIsValid(genVariable) {
+    return genVariable[FO_VARIABLE_TYPE] != null
+        && genVariable[FO_VARIABLE_VALUE] != null;
+}
+function figCreateVariableAsync(genVariable) {
+    return __awaiter(this, void 0, void 0, function* () {
+        //     if (!genRectIsValid(genVariable))
+        //         return null;
+        //     const figVariable = null;//figma.createRectangle();
+        //     await figUpdateVariableAsync(figVariable, genVariable, true);
+        //     return figVariable;
+    });
+}
+function figUpdateVariableAsync(figVariable_1, genVariable_1) {
+    return __awaiter(this, arguments, void 0, function* (figVariable, genVariable, isValid = false) {
+        //     if (   !isValid
+        //         && !genVariableIsValid(genVariable))
+        //         return;
+        //     const foundCorners = genVariable[FO_EFFECTS].findIndex(e => e[0] == 'ROUND_CORNERS');
+        //     if (foundCorners > -1)
+        //     {
+        //         const corners = genVariable[FO_EFFECTS][foundCorners];
+        //         figVariable.topLeftRadius     = corners[1];
+        //         figVariable.topRightRadius    = corners[2];
+        //         figVariable.bottomLeftRadius  = corners[3];
+        //         figVariable.bottomRightRadius = corners[4];
+        //     }
+        //     else
+        //         figVariable.cornerRadius = genVariable[FO_RECT_ROUND];
+        //     if (transform)
+        //         setObjectTransform(figVariable, genVariable);
+        //     setObjectProps(figVariable, genVariable, addProps);
+        //     figUpdateStrokeSides(figVariable, genVariable);
+    });
+}
+function figGetVariableCollectionByNameAsync(name) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const collections = yield figma.variables.getLocalVariableCollectionsAsync();
+        for (const collection of collections) {
+            if (collection.name == name)
+                return collection;
+        }
+        return null;
+    });
+}
 function figGetAllLocalVariables(nodeId, px, py) {
     figma.variables.getLocalVariablesAsync().then((localVars) => __awaiter(this, void 0, void 0, function* () {
         const variables = new Array();
@@ -3520,7 +3594,7 @@ function figLinkNodeToVariable(nodeId, varId, varType, varName) {
         figLinkVariableAsync(localVars, nodeId, varId, varType, varName);
     });
 }
-function figUpdateVariableAsync(varId, value) {
+function _figUpdateVariableAsync(varId, value) {
     return __awaiter(this, void 0, void 0, function* () {
         figma.variables.getLocalVariablesAsync().then((localVars) => __awaiter(this, void 0, void 0, function* () {
             let variable = localVars.find(v => v.id == varId);
@@ -3590,6 +3664,10 @@ function figGetResolvedVariableValuesAsync(variable) {
         return [variable, values];
     });
 }
+function figDeleteTempVariableCollection(forceDelete = false) {
+    if (tempVariableCollection)
+        tempVariableCollection.remove();
+}
 function getFigmaTransform(tl, tr, bl) {
     let vr = point(tr.x - tl.x, tr.y - tl.y);
     let vb = point(bl.x - tl.x, bl.y - tl.y);
@@ -3658,7 +3736,7 @@ function updateExistingPointTransform(figPoint) {
 function genBooleanIsValid(genBool) {
     return true; //genBool[FO_BOOLEAN_CHILDREN].length > 0;
 }
-function figCreateShapeBoolean(genBool, addProps, transform) {
+function figCreateShapeBooleanAsync(genBool, addProps, transform) {
     return __awaiter(this, void 0, void 0, function* () {
         let objects = [];
         for (const obj of genBool[FO_BOOLEAN_CHILDREN])
@@ -3751,7 +3829,7 @@ function genFrameIsValid(genFrame) {
         && genFrame[FO_FRAME_ROUND] != null && !isNaN(genFrame[FO_FRAME_ROUND])
         && genFrame[FO_FRAME_CLIP] != null && !isNaN(genFrame[FO_FRAME_CLIP]);
 }
-function figCreateFrame(genFrame, addProps, transform) {
+function figCreateFrameAsync(genFrame, addProps, transform) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!genFrameIsValid(genFrame))
             return null;
@@ -3783,7 +3861,7 @@ function figUpdateFrameData(figFrame, genFrame, addProps, transform) {
 function genShapeGroupIsValid(genGroup) {
     return true; //genGroup[FO_GROUP_CHILDREN].length > 0;
 }
-function figCreateShapeGroup(genGroup) {
+function figCreateShapeGroupAsync(genGroup) {
     return __awaiter(this, void 0, void 0, function* () {
         let objects = [];
         for (const obj of genGroup[FO_GROUP_CHILDREN])

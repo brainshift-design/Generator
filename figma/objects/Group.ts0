@@ -5,7 +5,7 @@ function genShapeGroupIsValid(genGroup)
 
 
 
-async function figCreateShapeGroup(genGroup)
+async function figCreateShapeGroupAsync(genGroup)
 {
     let objects = [];
 

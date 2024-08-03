@@ -1212,6 +1212,15 @@ function uiDeleteAllObjects()
 
 
 
+function uiDeleteAllVariables()
+{
+    uiQueueMessageToFigma({
+        cmd: 'figDeleteAllVariables'
+    });
+}
+
+
+
 function uiRemoveAllSavedNodesAndConns()
 {
     uiQueueMessageToFigma({
@@ -1298,6 +1307,7 @@ function uiOpenLocalFile()
         graph.createPage('');
 
     uiDeleteAllObjects();
+    uiDeleteAllVariables();
     uiRemoveAllSavedNodesAndConns();
     graph.clear();
 

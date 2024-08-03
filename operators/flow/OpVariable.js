@@ -201,7 +201,8 @@ extends ResizableBase
             this.removeAllParams();
 
 
-            if (type != NULL)
+            if (   type != NULL
+                && type != ANY_VALUE)
             {
                 this.paramValue = this.createAndAddParamByType(type, 'value', false, true, true);
                 this.paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
@@ -226,7 +227,7 @@ extends ResizableBase
                 this.linkedType = NULL;
                 this.linkedName = '';
 
-                pushUpdate(null, [this]);
+                //pushUpdate(null, [this]);
 
                 actionManager.clear();
                 uiShowClearUndoWarning('variables');
@@ -270,6 +271,36 @@ extends ResizableBase
 
 
 
+    updateValueParamValue(varValue, update = false)
+    {
+        let updateNode = false;
+
+        
+        if (this.linkedName != varValue.variableName)
+        {
+            this.linkedName = varValue.variableName;
+            updateNode = true;
+
+
+            consoleAssert(varValue.variableValue, 'a valid variable value is required here');
+
+
+            if (!this.paramValue.value.equals(varValue.variableValue))
+            {
+                this.paramValue.setValue(varValue.variableValue, update, true, update);
+
+                actionManager.clear();
+                uiShowClearUndoWarning('variables');
+            }
+        }
+
+
+        if (updateNode)
+            this.updateNode();
+    }
+
+
+
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
@@ -284,6 +315,12 @@ extends ResizableBase
                 ? value.variableValue.isBoolean 
                 : false, 
             this.isBool);
+
+        if (   value.variableValue
+            && value.variableValue.type != NULL
+            && value.variableValue.type != ANY_VALUE)
+            this.updateValueParamValue(value);
+
 
         //this.updateValueParamFromResolved(value.resolvedType);
         //this.updateValueParamValuesFromResolved(value.resolvedType, value.name, [value.value]);
