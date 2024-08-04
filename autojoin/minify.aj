@@ -1627,7 +1627,7 @@ buttonText
 buttonAction
 figGetAllLocalVariables
 getVariableValuesAsync
-figLinkNodeToVariable
+figLinkNodeToVariableAsync
 figUpdateVariable
 figLinkVariable
 genParseColorValue

@@ -89,10 +89,25 @@ extends GValue
 
 
 
-    // toFigma()
-    // {
-    //     return [['SOLID', this.toString()]];
-    // }
+    toRgbaObject(limit = false)
+    {
+        const rgba = rgb_a(
+            dataColor2rgb(this.color.toDataColor()),
+            this.opacity.value / 100);
+
+        if (limit && rgbIsNaN(rgba))
+            return {r: 0.5, g: 0.5, b: 0.5};
+        
+        return limit
+            ? { r: Math.min(Math.max(0, rgba[0]), 1),
+                g: Math.min(Math.max(0, rgba[1]), 1),
+                b: Math.min(Math.max(0, rgba[2]), 1),
+                a: Math.min(Math.max(0, rgba[3]), 1) }
+            : { r: rgba[0],
+                g: rgba[1],
+                b: rgba[2],
+                a: rgba[3] };
+    }
 
 
 

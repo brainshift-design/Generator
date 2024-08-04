@@ -21,28 +21,26 @@ extends FigmaObject
                         ? 'BOOLEAN' 
                         : 'FLOAT'; 
 
-                    this.variableValue = variableValue.toPreviewString();
+                    this.variableValue = variableValue.toNumber();
                     
                     break;
 
 
                 case TEXT_VALUE: 
                     this.variableType  = 'STRING';
-                    this.variableValue = variableValue.toJson();
+                    this.variableValue = variableValue.toString();
                     break;
 
 
                 case COLOR_VALUE: 
-                    this.variableType = 'COLOR';
+                    this.variableType  = 'COLOR';
+                    this.variableValue = variableValue.toRgbObject();
+                    break;
 
-                    this.variableValue = 
-                    {
-                        type:      'SOLID',
-                        color:      variableValue.toRgb(),
-                        opacity:    variableValue.toRgba()[3],
-                        blendMode: 'PASS_THROUGH'
-                    };
 
+                case FILL_VALUE: 
+                    this.variableType  = 'COLOR';
+                    this.variableValue = variableValue.toRgbaObject();
                     break;
             }
         }

@@ -39,7 +39,7 @@ function uiReturnFigGetVariableUpdates(values)
 
         if (node)
         {
-            node.updateValueParamTypeFromResolved(value.resolvedType);
+            node.updateValueParamFromResolved(value.resolvedType);
 
             if (node.paramValue)
             {
@@ -325,7 +325,7 @@ function uiLinkNodeToVariable(node, varId, varType, varName)//, varTemp)
         node.name = varName;
 
 
-    node.updateValueParamTypeFromResolved(varType);
+    node.updateValueParamFromResolved(varType);
 
 
     uiQueueMessageToFigma(
@@ -381,7 +381,8 @@ function getVariableValue(value)
     switch (value.type)
     {
         case NUMBER_VALUE: return value.value;
-        case TEXT_VALUE:   return value.value;
-        case COLOR_VALUE:  return value.toRgbObject(true);
+        case   TEXT_VALUE:   return value.value;
+        case  COLOR_VALUE:  return value.toRgbObject(true);
+        case   FILL_VALUE:  return value.toRgbaObject(true);
     }
 }

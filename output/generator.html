@@ -4,30 +4,32 @@
 
 
 
-const generatorVersion = 441;
+const generatorVersion     = 441;
 
 
-const MAX_INT32        = 2147483647;
+const MAX_INT32            = 2147483647;
   
-const NULL             = '';
-const NULL_VALUE       = 'NULL';
+const NULL                 = '';
+const NULL_VALUE           = 'NULL';
   
-const HTAB             = '  '; // half-tab
-const TAB              = '    ';
-const NL               = '\n';
+const HTAB                 = '  '; // half-tab
+const TAB                  = '    ';
+const NL                   = '\n';
   
-const PLUGIN_NAME      = 'Generator';
-const PLUGIN_LOGO      = '◦ G •';
+const PLUGIN_LOGO          = '◦ G •';
+const PLUGIN_NAME          = 'Generator';
+const PLUGIN_LOGO_AND_NAME = PLUGIN_LOGO + ' ' + PLUGIN_NAME;
 
-const OBJECT_PREFIX    = PLUGIN_LOGO + ' ';
+const OBJECT_PREFIX        = PLUGIN_LOGO + ' ';
 
-const nodeTag          = 'G_NODE';
-const connTag          = 'G_CONN';
-const pageTag          = 'G_PAGE';
-const tempTag          = 'G_TEMP';
+const nodeTag              = 'G_NODE';
+const connTag              = 'G_CONN';
+const pageTag              = 'G_PAGE';
+const tempTag              = 'G_TEMP';
 
-const minWindowWidth   = 602;
-const minWindowHeight  =  39;
+
+const minWindowWidth       = 602;
+const minWindowHeight      =  39;
 
 
 const identity = Object.freeze(
@@ -10788,28 +10790,26 @@ extends FigmaObject
                         ? 'BOOLEAN' 
                         : 'FLOAT'; 
 
-                    this.variableValue = variableValue.toPreviewString();
+                    this.variableValue = variableValue.toNumber();
                     
                     break;
 
 
                 case TEXT_VALUE: 
                     this.variableType  = 'STRING';
-                    this.variableValue = variableValue.toJson();
+                    this.variableValue = variableValue.toString();
                     break;
 
 
                 case COLOR_VALUE: 
-                    this.variableType = 'COLOR';
+                    this.variableType  = 'COLOR';
+                    this.variableValue = variableValue.toRgbObject();
+                    break;
 
-                    this.variableValue = 
-                    {
-                        type:      'SOLID',
-                        color:      variableValue.toRgb(),
-                        opacity:    variableValue.toRgba()[3],
-                        blendMode: 'PASS_THROUGH'
-                    };
 
+                case FILL_VALUE: 
+                    this.variableType  = 'COLOR';
+                    this.variableValue = variableValue.toRgbaObject();
                     break;
             }
         }
@@ -13548,10 +13548,25 @@ extends GValue
 
 
 
-    // toFigma()
-    // {
-    //     return [['SOLID', this.toString()]];
-    // }
+    toRgbaObject(limit = false)
+    {
+        const rgba = rgb_a(
+            dataColor2rgb(this.color.toDataColor()),
+            this.opacity.value / 100);
+
+        if (limit && rgbIsNaN(rgba))
+            return {r: 0.5, g: 0.5, b: 0.5};
+        
+        return limit
+            ? { r: Math.min(Math.max(0, rgba[0]), 1),
+                g: Math.min(Math.max(0, rgba[1]), 1),
+                b: Math.min(Math.max(0, rgba[2]), 1),
+                a: Math.min(Math.max(0, rgba[3]), 1) }
+            : { r: rgba[0],
+                g: rgba[1],
+                b: rgba[2],
+                a: rgba[3] };
+    }
 
 
 
@@ -20173,6 +20188,7 @@ extends GOperator1
         const paramValue = await evalValue(this.variableValue, parse);
 
         const varValue   = input; // TODO figure out whether to send input or paramValue
+
 
         this.value = new VariableValue(
             this.nodeId, 

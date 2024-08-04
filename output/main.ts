@@ -23,30 +23,32 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 441;
+const generatorVersion     = 441;
 
 
-const MAX_INT32        = 2147483647;
+const MAX_INT32            = 2147483647;
   
-const NULL             = '';
-const NULL_VALUE       = 'NULL';
+const NULL                 = '';
+const NULL_VALUE           = 'NULL';
   
-const HTAB             = '  '; // half-tab
-const TAB              = '    ';
-const NL               = '\n';
+const HTAB                 = '  '; // half-tab
+const TAB                  = '    ';
+const NL                   = '\n';
   
-const PLUGIN_NAME      = 'Generator';
-const PLUGIN_LOGO      = '◦ G •';
+const PLUGIN_LOGO          = '◦ G •';
+const PLUGIN_NAME          = 'Generator';
+const PLUGIN_LOGO_AND_NAME = PLUGIN_LOGO + ' ' + PLUGIN_NAME;
 
-const OBJECT_PREFIX    = PLUGIN_LOGO + ' ';
+const OBJECT_PREFIX        = PLUGIN_LOGO + ' ';
 
-const nodeTag          = 'G_NODE';
-const connTag          = 'G_CONN';
-const pageTag          = 'G_PAGE';
-const tempTag          = 'G_TEMP';
+const nodeTag              = 'G_NODE';
+const connTag              = 'G_CONN';
+const pageTag              = 'G_PAGE';
+const tempTag              = 'G_TEMP';
 
-const minWindowWidth   = 602;
-const minWindowHeight  =  39;
+
+const minWindowWidth       = 602;
+const minWindowHeight      =  39;
 
 
 const identity = Object.freeze(
@@ -2852,7 +2854,7 @@ figma.ui.onmessage = function(msg)
         case 'figRemovePluginDataFromAllLocalStyles': figRemovePluginDataFromAllLocalStyles();                                            break;
 
         case 'figGetAllLocalVariables':               figGetAllLocalVariables              (msg.nodeId, msg.px, msg.py);                  break;
-        case 'figLinkNodeToVariable':                 figLinkNodeToVariable                (msg.nodeId, msg.variableId, msg.variableType, msg.variableName); break;
+        case 'figLinkNodeToVariable':                 figLinkNodeToVariableAsync           (msg.nodeId, msg.variableId, msg.variableType, msg.variableName); break;
         case 'figUpdateVariable':                     figUpdateVariableAsync               (msg.variableId, msg.value);                   break;
 
         case 'figGetAllLocalColorStyles':             figGetAllLocalColorStyles            (msg.nodeId, msg.px, msg.py);                  break;
@@ -3956,11 +3958,8 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
 
             await figUpdateTempVariableCollection();
         
-            const localVars = await figma.variables.getLocalVariablesAsync();
 
-
-            let figVar = await figLinkVariableAsync(
-                localVars, 
+            let figVar = await figLinkNodeToVariableAsync(
                 genVar[FO_NODE_ID], 
                 NULL, 
                 genVar[FO_VARIABLE_TYPE], 
@@ -3969,6 +3968,7 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
 
 
             consoleAssert(figVar, 'variable must have been created');
+
 
             await figUpdateVariableAsync(figVar.id, genVar[FO_VARIABLE_VALUE]);
         }
@@ -4015,7 +4015,7 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
 
 
             let figObj = objects.find(o => 
-                o.removed
+                   o.removed
                 ||    o.getPluginData('userId'  ) == figma.currentUser.id
                    && o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
 
@@ -5207,7 +5207,7 @@ async function figGetVariableCollectionByNameAsync(name)
 
 async function figUpdateTempVariableCollection()
 {
-    const tempCollectionName = PLUGIN_LOGO + ' ' + PLUGIN_NAME;
+    const tempCollectionName = PLUGIN_LOGO_AND_NAME;
 
     tempVariableCollection = await figGetVariableCollectionByNameAsync(tempCollectionName);
 
@@ -5353,55 +5353,61 @@ async function getVariableValuesAsync(varIds)
 
 
 
-function figLinkNodeToVariable(nodeId, varId, varType, varName)
+async function figUpdateVariableAsync(varId, value)
 {
-    figma.variables.getLocalVariablesAsync().then(async (localVars) =>
-    {
-        const collections = await figma.variables.getLocalVariableCollectionsAsync();
+    let variable = await figma.variables.getVariableByIdAsync(varId);
+    if (!variable) return;
 
-        if (collections.length > 0)
-            figLinkVariableAsync(localVars, nodeId, varId, varType, varName, collections[0]);
-    });
+
+    let collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
+    let mode       = collection.modes[0];
+
+    
+    // resolve if alias
+
+    let curValue = variable.valuesByMode[mode.modeId];
+
+    
+    while (curValue
+        && curValue.hasOwnProperty('type')
+        && curValue['type'] === 'VARIABLE_ALIAS')
+    {
+        variable   = await figma.variables.getVariableByIdAsync(curValue['id']);
+        curValue   = variable.valuesByMode[mode.modeId];
+    
+        collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
+        mode       = collection.modes[0];
+    }
+
+
+    if (value !== null)
+    {
+        if (variable.resolvedType == 'BOOLEAN')
+            value = value != 0;
+        else
+            variable.setValueForMode(mode.modeId, value);
+    }
 }
 
 
 
-async function figUpdateVariableAsync(varId, value)
+async function figLinkNodeToVariableAsync(nodeId, varId, varType, varName, collection = null)
 {
-    figma.variables.getLocalVariablesAsync().then(async localVars =>
+    const localVars = await figma.variables.getLocalVariablesAsync();
+    
+    if (!collection)
     {
-        let variable = localVars.find(v => v.id == varId);
-        if (!variable) return;
+        const collections = await figma.variables.getLocalVariableCollectionsAsync();
 
+        collection = 
+            collections.length > 0 
+            ? collections[0]
+            : null;
+    }
 
-        let collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
-        let mode       = collection.modes[0];
-
-        
-        // resolve if alias
-
-        let curValue = variable.valuesByMode[mode.modeId];
-        
-        while (curValue
-            && curValue.hasOwnProperty('type')
-            && curValue['type'] === 'VARIABLE_ALIAS')
-        {
-            variable = await figma.variables.getVariableByIdAsync(curValue['id']);
-            curValue = variable.valuesByMode[mode.modeId];
-            
-            collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
-            mode       = collection.modes[0];
-        }
-
-
-        if (value !== null)
-        {
-            if (variable.resolvedType == 'BOOLEAN')
-                value = value != 0;
-            else
-                variable.setValueForMode(mode.modeId, value);
-        }
-    });
+    return collection
+        ? await figLinkVariableAsync(localVars, nodeId, varId, varType, varName, collection)
+        : null;
 }
 
 
@@ -5410,6 +5416,7 @@ async function figLinkVariableAsync(localVars, nodeId, varId, varType, varName, 
 {
     let variable = localVars.find(v => v.id == varId);
 
+    
     if (!variable) 
     {
         if (varId != NULL)
@@ -5417,15 +5424,10 @@ async function figLinkVariableAsync(localVars, nodeId, varId, varType, varName, 
 
         else
         {
-            // const collections = await figma.variables.getLocalVariableCollectionsAsync();
-
-            // if (collections.length > 0)
-            // {
-                variable = figma.variables.createVariable(
-                    varName,
-                    collection,
-                    varType);
-            // }
+            variable = figma.variables.createVariable(
+                varName,
+                collection,
+                varType);
         }
     }
 

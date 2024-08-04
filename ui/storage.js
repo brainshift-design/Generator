@@ -409,7 +409,7 @@ async function loadNodesAndConnsAsync(_nodes, _conns, setProgress, pasting = fal
                     {
                         const node = varNodes.find(n => n.linkedId == value.id);
 
-                        node.updateValueParamTypeFromResolved(value.resolvedType);
+                        node.updateValueParamFromResolved(value.resolvedType);
                         node.updateValueParamValuesFromResolved(value.resolvedType, value.name, [value.value]);
                     }
 

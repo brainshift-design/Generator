@@ -27,7 +27,7 @@ extends ResizableBase
         this.divIcon.style.pointerEvents = 'all';
 
 
-        this.addInput(new Input([NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE]));
+        this.addInput(new Input([NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE, FILL_VALUE]));
         this.addOutput(new Output([VARIABLE_VALUE], this.output_genRequest));
 
         // this.inputs[0].addEventListener('connect',    () => OpVariable_onConnectInput   (this));
@@ -182,8 +182,9 @@ extends ResizableBase
         switch (type)
         {
             case NUMBER_VALUE:  icon = isBool ? iconVarBoolean : iconVarNumber;  iconOffsetY =  isBool ? 0 : -1;  break;
-            case TEXT_VALUE:    icon = iconVarText;                              iconOffsetY =  1;                break;
-            case COLOR_VALUE:   icon = iconVarColor;                             iconOffsetY = -2;                break;
+            case   TEXT_VALUE:  icon = iconVarText;                              iconOffsetY =  1;                break;
+            case  COLOR_VALUE:   
+            case   FILL_VALUE:  icon = iconVarColor;                             iconOffsetY = -2;                break;
             default:            icon = iconVariable;                             iconOffsetY =  0;                break;
         }
 
@@ -380,9 +381,9 @@ extends ResizableBase
             return this.linkedName;
     
         
-        return parts.join('/');
-        // return parts.slice(0, -1).map(p => '<b>' + p + '</b>').join('/') 
-        //      + '/' + parts.at(-1);
+        // return parts.join('/');
+        return parts.slice(0, -1).map(p => '<b>' + p + '</b>').join('/') 
+             + '/' + parts.at(-1);
     }
 
 

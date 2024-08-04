@@ -47,6 +47,7 @@ extends GOperator1
 
         const varValue   = input; // TODO figure out whether to send input or paramValue
 
+
         this.value = new VariableValue(
             this.nodeId, 
             this.variableId,

@@ -1,27 +1,29 @@
-const generatorVersion = 441;
+const generatorVersion     = 441;
 
 
-const MAX_INT32        = 2147483647;
+const MAX_INT32            = 2147483647;
   
-const NULL             = '';
-const NULL_VALUE       = 'NULL';
+const NULL                 = '';
+const NULL_VALUE           = 'NULL';
   
-const HTAB             = '  '; // half-tab
-const TAB              = '    ';
-const NL               = '\n';
+const HTAB                 = '  '; // half-tab
+const TAB                  = '    ';
+const NL                   = '\n';
   
-const PLUGIN_NAME      = 'Generator';
-const PLUGIN_LOGO      = '◦ G •';
+const PLUGIN_LOGO          = '◦ G •';
+const PLUGIN_NAME          = 'Generator';
+const PLUGIN_LOGO_AND_NAME = PLUGIN_LOGO + ' ' + PLUGIN_NAME;
 
-const OBJECT_PREFIX    = PLUGIN_LOGO + ' ';
+const OBJECT_PREFIX        = PLUGIN_LOGO + ' ';
 
-const nodeTag          = 'G_NODE';
-const connTag          = 'G_CONN';
-const pageTag          = 'G_PAGE';
-const tempTag          = 'G_TEMP';
+const nodeTag              = 'G_NODE';
+const connTag              = 'G_CONN';
+const pageTag              = 'G_PAGE';
+const tempTag              = 'G_TEMP';
 
-const minWindowWidth   = 602;
-const minWindowHeight  =  39;
+
+const minWindowWidth       = 602;
+const minWindowHeight      =  39;
 
 
 const identity = Object.freeze(

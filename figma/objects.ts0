@@ -32,11 +32,8 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
 
             await figUpdateTempVariableCollection();
         
-            const localVars = await figma.variables.getLocalVariablesAsync();
 
-
-            let figVar = await figLinkVariableAsync(
-                localVars, 
+            let figVar = await figLinkNodeToVariableAsync(
                 genVar[FO_NODE_ID], 
                 NULL, 
                 genVar[FO_VARIABLE_TYPE], 
@@ -45,6 +42,7 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
 
 
             consoleAssert(figVar, 'variable must have been created');
+
 
             await figUpdateVariableAsync(figVar.id, genVar[FO_VARIABLE_VALUE]);
         }
@@ -91,7 +89,7 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
 
 
             let figObj = objects.find(o => 
-                o.removed
+                   o.removed
                 ||    o.getPluginData('userId'  ) == figma.currentUser.id
                    && o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
 
