@@ -310,8 +310,8 @@ class FigmaObject
             type:       this.type,
             nodeId:     this.nodeId,
 
-            objectId:   this.objectId,
-            objectName: this.objectName,
+            objectId:   this.objectId,   // or variable ID
+            objectName: this.objectName, // or variable name
             
             feedback:   this.feedback,
 

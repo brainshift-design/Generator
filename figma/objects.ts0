@@ -5,11 +5,8 @@ var  nominalObjectCount = 0;
 var  actualObjectCount  = 0;
 
 
-async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects = -1, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false, addProps = true, transform = true)
+async function figUpdateObjectsAsync(figParent, genObjects, batchSize, totalObjects = -1, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false, addProps = true, transform = true)
 {
-    let   curNodeId         = NULL;
-    let   figObjects        = null;
-        
     let   abort             = false;
 
     const updateObjects     = [];
@@ -25,143 +22,25 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
 
     for (const genObj of genObjects)
     {
-        if (genObj[FO_TYPE] == VARIABLE) // variable objects
+        if (genObj[FO_TYPE] == VARIABLE) 
+            await figUpdateVariableObjectAsync(genObj);
+        else
         {
-            const genVar = genObj;
+            const result = await figUpdateGeometricObjectAsync(
+                genObj, 
+                updateObjects, 
+                updateObjectCount, 
+                batchSize,
+                abort,
+                figParent, 
+                addProps, 
+                transform);
 
+            updateObjectCount = result[1];
+            abort             = result[2];
 
-            await figUpdateTempVariableCollection();
-        
-
-            let figVar = await figLinkNodeToVariableAsync(
-                genVar[FO_NODE_ID], 
-                NULL, 
-                genVar[FO_VARIABLE_TYPE], 
-                genVar[FO_VARIABLE_NAME], 
-                tempVariableCollection);
-
-
-            consoleAssert(figVar, 'variable must have been created');
-
-
-            await figUpdateVariableAsync(figVar.id, genVar[FO_VARIABLE_VALUE]);
-        }
-        
-        else // geometric objects
-        {
-            _genIgnoreObjects.push(genObj);
-
-
-            if (genObj[FO_NODE_ID] != curNodeId)
-            {
-                curNodeId  = genObj[FO_NODE_ID];
-                
-                figObjects = figObjectArrays.find(a => a.nodeId == genObj[FO_NODE_ID]);
-
-                if (!figObjects)
-                {
-                    figObjectArrays.push(figObjects = 
-                    {
-                        nodeId:  genObj[FO_NODE_ID], 
-                        objects: []
-                    });
-                }
-            }
-
-
-            const addObject = figObj =>
-            {
-                if (    figParent != undefined
-                    &&  figParent != null
-                    && !figParent.removed) 
-                    figParent.appendChild(figObj);
-                else
-                    figObjects.objects.push(figObj);
-            };
-
-
-            let objects =
-                    figParent != undefined
-                &&  figParent != null
-                && !figParent.removed
-                ? figParent.children
-                : figObjects.objects;
-
-
-            let figObj = objects.find(o => 
-                   o.removed
-                ||    o.getPluginData('userId'  ) == figma.currentUser.id
-                   && o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
-
-
-            if (   figObj != undefined
-                && figObj != null
-                && figObj.removed)
-            {
-                removeFrom(objects, figObj);
-            
-                if (figPoints.includes(figObj))
-                    removeFromArray(figPoints, figObj);
-
-                if (figEmptyObjects.includes(figObj))
-                    removeFromArray(figEmptyObjects, figObj);
-            }
-
-
-            if (   figObj == undefined
-                || figObj == null
-                || figObj.removed) // no existing object, create new one
-            {
-                const newObj = await figCreateObject(genObj, addObject, addProps, transform);
-                updateObjects.push(newObj);
-            }
-
-            else if (  figObj != undefined
-                &&  figObj != null
-                && !figObj.removed
-                &&  figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
-            {
-                await figUpdateObjectAsync(figObj, genObj, addProps, transform);
-                
-                if (    figObj != undefined
-                    &&  figObj != null
-                    && !figObj.removed) 
-                    updateObjects.push(figObj);
-            }
-        
-            else // delete existing object, create new one
-            {
-                figObj.remove();
-
-                if (figPoints.includes(figObj))
-                    removeFromArray(figPoints, figObj);
-
-                if (figEmptyObjects.includes(figObj))
-                    removeFromArray(figEmptyObjects, figObj);
-
-                await figCreateObject(genObj, addObject, addProps, transform);
-            }
-
-
-            updateObjectCount++;
-            
-
-            if (updateObjectCount >= batchSize)
-            {
-                const result = await figGetValueFromUiSync(
-                    'returnObjectUpdate', 
-                    { 
-                        nominalObjectCount: nominalObjectCount,
-                        actualObjectCount:  actualObjectCount 
-                    }
-                    ) as { key: string, value: boolean };
-
-                abort = result.value;
-
-                updateObjectCount = 0;
-
-                if (abort) break;
-            }
+            if (!result[0])
+                break;
         }
     }
 
@@ -234,6 +113,178 @@ async function figUpdateObjects(figParent, genObjects, batchSize, totalObjects =
             nominalObjectCount: nominalObjectCount,
             actualObjectCount:  actualObjectCount 
         });
+}
+
+
+
+async function figUpdateVariableObjectAsync(genVar)
+{
+    const varId    = genVar[FO_OBJECT_ID     ];
+    const varValue = genVar[FO_VARIABLE_VALUE];
+
+
+    let figVar;
+
+
+
+    if (varId == NULL) // not linked yet
+    {
+        const varName   = genVar[FO_OBJECT_NAME];
+
+        const nameParts = varName.split('/');
+
+        console.log('nameParts =', nameParts);
+        console.assert(nameParts.length > 1);
+
+        
+        let collection;
+        
+        if (nameParts.length > 1)
+        {
+            collection = await figGetVariableCollectionByNameAsync(nameParts[0]);
+
+            if (!collection)
+                collection = await figCreateVariableCollectionAsync(nameParts[0]);
+        }
+
+
+
+    }
+
+    // else // linked already
+    //     let figVar = await figLinkNodeToVariableAsync(genVar[FO_NODE_ID], genVar[FO_OBJECT_ID]);
+
+
+    consoleAssert(figVar, 'variable must have been created');
+
+
+    await figUpdateVariableAsync(figVar.id, varValue);
+}
+
+
+
+async function figUpdateGeometricObjectAsync(genObj, updateObjects, updateObjectCount, batchSize, abort, figParent, addProps, transform)
+{
+    _genIgnoreObjects.push(genObj);
+
+
+    let figObjects = null;
+    let curNodeId  = NULL;
+
+
+    if (genObj[FO_NODE_ID] != curNodeId)
+    {
+        curNodeId  = genObj[FO_NODE_ID];
+        
+        figObjects = figObjectArrays.find(a => a.nodeId == genObj[FO_NODE_ID]);
+
+        if (!figObjects)
+        {
+            figObjectArrays.push(figObjects = 
+            {
+                nodeId:  genObj[FO_NODE_ID], 
+                objects: []
+            });
+        }
+    }
+
+
+    const addObject = figObj =>
+    {
+        if (    figParent != undefined
+            &&  figParent != null
+            && !figParent.removed) 
+            figParent.appendChild(figObj);
+        else
+            figObjects.objects.push(figObj);
+    };
+
+
+    let objects =
+            figParent != undefined
+        &&  figParent != null
+        && !figParent.removed
+        ? figParent.children
+        : figObjects.objects;
+
+
+    let figObj = objects.find(o => 
+           o.removed
+        ||    o.getPluginData('userId'  ) == figma.currentUser.id
+           && o.getPluginData('objectId') == genObj[FO_OBJECT_ID]);
+
+
+    if (   figObj != undefined
+        && figObj != null
+        && figObj.removed)
+    {
+        removeFrom(objects, figObj);
+    
+        if (figPoints.includes(figObj))
+            removeFromArray(figPoints, figObj);
+
+        if (figEmptyObjects.includes(figObj))
+            removeFromArray(figEmptyObjects, figObj);
+    }
+
+
+    if (   figObj == undefined
+        || figObj == null
+        || figObj.removed) // no existing object, create new one
+    {
+        const newObj = await figCreateObject(genObj, addObject, addProps, transform);
+        updateObjects.push(newObj);
+    }
+
+    else if (  figObj != undefined
+        &&  figObj != null
+        && !figObj.removed
+        &&  figObj.getPluginData('type') == genObj[FO_TYPE].toString()) // update existing object
+    {
+        await figUpdateObjectAsync(figObj, genObj, addProps, transform);
+        
+        if (    figObj != undefined
+            &&  figObj != null
+            && !figObj.removed) 
+            updateObjects.push(figObj);
+    }
+
+    else // delete existing object, create new one
+    {
+        figObj.remove();
+
+        if (figPoints.includes(figObj))
+            removeFromArray(figPoints, figObj);
+
+        if (figEmptyObjects.includes(figObj))
+            removeFromArray(figEmptyObjects, figObj);
+
+        await figCreateObject(genObj, addObject, addProps, transform);
+    }
+
+
+    updateObjectCount++;
+    
+
+    if (updateObjectCount >= batchSize)
+    {
+        const result = await figGetValueFromUiSync(
+            'returnObjectUpdate', 
+            { 
+                nominalObjectCount: nominalObjectCount,
+                actualObjectCount:  actualObjectCount 
+            }
+            ) as { key: string, value: boolean };
+
+        abort = result.value;
+
+        updateObjectCount = 0;
+
+        if (abort) return [false, updateObjectCount, abort];
+    }
+
+
+    return [true, updateObjectCount, abort];
 }
 
 

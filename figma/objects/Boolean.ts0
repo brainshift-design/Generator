@@ -51,7 +51,7 @@ async function figUpdateBoolean(figBool, genBool, addProps, transform) //, isVal
     }
 
     
-    await figUpdateObjects(
+    await figUpdateObjectsAsync(
         figBool, 
         genBool[FO_BOOLEAN_CHILDREN], 
         genBool[FO_BOOLEAN_CHILDREN].length,

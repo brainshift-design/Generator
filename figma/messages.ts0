@@ -81,8 +81,7 @@ figma.ui.onmessage = function(msg)
         case 'figRemovePluginDataFromAllLocalStyles': figRemovePluginDataFromAllLocalStyles();                                            break;
 
         case 'figGetAllLocalVariables':               figGetAllLocalVariables              (msg.nodeId, msg.px, msg.py);                  break;
-        case 'figLinkNodeToVariable':                 figLinkNodeToVariableAsync           (msg.nodeId, msg.variableId, msg.variableType, msg.variableName); break;
-        case 'figUpdateVariable':                     figUpdateVariableAsync               (msg.variableId, msg.value);                   break;
+        //case 'figUpdateVariable':                     figUpdateVariableAsync               (msg.variableId, msg.value);                   break;
 
         case 'figGetAllLocalColorStyles':             figGetAllLocalColorStyles            (msg.nodeId, msg.px, msg.py);                  break;
         case 'figLinkNodeToExistingColorStyle':       figLinkNodeToExistingColorStyle      (msg.nodeId, msg.styleId);                     break;
@@ -111,7 +110,7 @@ figma.ui.onmessage = function(msg)
             
             msg.objects.forEach(o => o.counted = false);
             
-            figUpdateObjects(
+            figUpdateObjectsAsync(
                 null, 
                 msg.objects, 
                 msg.objectBatchSize, 

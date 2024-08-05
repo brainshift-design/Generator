@@ -2744,7 +2744,7 @@ figNetwork
 figObjectArrays
 figObjArray
 figStyleArrays
-figUpdateObjects
+figUpdateObjectsAsync
 figLoadLocal
 loadingFlag
 figGetAllLocalTemplateNames

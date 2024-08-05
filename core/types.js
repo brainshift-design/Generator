@@ -935,10 +935,10 @@ const FO_XP2            =  8;
 
 const FO_SCALE          =  9;
 
-const FO_FILLS          = 10;   const FO_VARIABLE_NAME   = 10;
-const FO_STROKES        = 11;   const FO_VARIABLE_TYPE   = 11;
+const FO_FILLS          = 10;   const FO_VARIABLE_TYPE   = 10;
+const FO_STROKES        = 11;   const FO_VARIABLE_VALUE  = 11;
 
-const FO_STROKE_WEIGHT  = 12;   const FO_VARIABLE_VALUE  = 12;
+const FO_STROKE_WEIGHT  = 12;
 const FO_STROKE_ALIGN   = 13;
 const FO_STROKE_JOIN    = 14;                                    
 const FO_STROKE_MITER   = 15;

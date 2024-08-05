@@ -7466,10 +7466,10 @@ const FO_XP2            =  8;
 
 const FO_SCALE          =  9;
 
-const FO_FILLS          = 10;   const FO_VARIABLE_NAME   = 10;
-const FO_STROKES        = 11;   const FO_VARIABLE_TYPE   = 11;
+const FO_FILLS          = 10;   const FO_VARIABLE_TYPE   = 10;
+const FO_STROKES        = 11;   const FO_VARIABLE_VALUE  = 11;
 
-const FO_STROKE_WEIGHT  = 12;   const FO_VARIABLE_VALUE  = 12;
+const FO_STROKE_WEIGHT  = 12;
 const FO_STROKE_ALIGN   = 13;
 const FO_STROKE_JOIN    = 14;                                    
 const FO_STROKE_MITER   = 15;
@@ -7817,8 +7817,8 @@ class FigmaObject
             type:       this.type,
             nodeId:     this.nodeId,
 
-            objectId:   this.objectId,
-            objectName: this.objectName,
+            objectId:   this.objectId,   // or variable ID
+            objectName: this.objectName, // or variable name
             
             feedback:   this.feedback,
 
@@ -10850,9 +10850,8 @@ extends FigmaObject
         return [
             ...super.toData(),
    
-            /* 10 */ this.objectName,
-            /* 11 */ this.variableType,
-            /* 12 */ this.variableValue
+            /* 10 */ this.variableType,
+            /* 11 */ this.variableValue
         ];
     }
 }
@@ -20144,7 +20143,7 @@ class GVariable
 extends GOperator1
 {
     variableId    = NULL;
-    //variableName  = '';
+    variableName  = '';
     variableValue = null;
 
     //variableVariableTemp  = false;
@@ -20201,7 +20200,8 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value]
+            ['value',        this.value                      ],
+            ['variableName', new TextValue(this.variableName)]
         ]);
 
 
@@ -51160,6 +51160,7 @@ function genParseVariable(parse)
 
     const variable = new GVariable(nodeId, options);
 
+
     //variable.existing = options.existing;
 
 
@@ -51192,9 +51193,9 @@ function genParseVariable(parse)
         variable.input = genParse(parse);
 
     
-    variable.linkedId   = parse.move();
-    variable.linkedType = parse.move();
-    variable.linkedName = parse.move();
+    variable.variableId   = parse.move();
+    variable.variableType = parse.move();
+    variable.variableName = parse.move();
     //variable.linkedVariableTemp = parseInt(parse.move()) == 1;
 
 

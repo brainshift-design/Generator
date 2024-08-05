@@ -2,7 +2,7 @@ class GVariable
 extends GOperator1
 {
     variableId    = NULL;
-    //variableName  = '';
+    variableName  = '';
     variableValue = null;
 
     //variableVariableTemp  = false;
@@ -59,7 +59,8 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value]
+            ['value',        this.value                      ],
+            ['variableName', new TextValue(this.variableName)]
         ]);
 
 

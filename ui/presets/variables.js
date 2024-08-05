@@ -85,9 +85,9 @@ const presetBasicVariables = '\
             "z": "5",\
             "width": "120",\
             "height": "32",\
-            "linkedId": "",\
-            "linkedType": "",\
-            "linkedName": ""\
+            "variableId": "",\
+            "variableType": "",\
+            "variableName": ""\
             },\
             {\
             "type": "NBOOL",\
@@ -296,9 +296,9 @@ const presetBasicVariables = '\
             "z": "22",\
             "width": "120",\
             "height": "32",\
-            "linkedId": "",\
-            "linkedType": "",\
-            "linkedName": ""\
+            "variableId": "",\
+            "variableType": "",\
+            "variableName": ""\
             },\
             {\
             "type": "CMNT",\

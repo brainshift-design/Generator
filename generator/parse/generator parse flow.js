@@ -49,6 +49,7 @@ function genParseVariable(parse)
 
     const variable = new GVariable(nodeId, options);
 
+
     //variable.existing = options.existing;
 
 
@@ -81,9 +82,9 @@ function genParseVariable(parse)
         variable.input = genParse(parse);
 
     
-    variable.linkedId   = parse.move();
-    variable.linkedType = parse.move();
-    variable.linkedName = parse.move();
+    variable.variableId   = parse.move();
+    variable.variableType = parse.move();
+    variable.variableName = parse.move();
     //variable.linkedVariableTemp = parseInt(parse.move()) == 1;
 
 

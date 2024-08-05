@@ -43,9 +43,9 @@ extends Action
 
     do(updateNodes)
     {
-        this.prevVariableId   = this.node.linkedId;
-        this.prevVariableType = this.node.linkedType;
-        this.prevVariableName = this.node.linkedName;
+        this.prevVariableId   = this.node.variableId;
+        this.prevVariableType = this.node.variableType;
+        this.prevVariableName = this.node.variableName;
         //this.prevVariableTemp = this.node.linkedTemp;
  
        

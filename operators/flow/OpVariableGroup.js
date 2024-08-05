@@ -10,9 +10,9 @@ extends ResizableBase
     linkedGroupId   = NULL;
     linkedGroupName = '';
 
-    linkedIds       = [];
-    linkedTypes     = []; // this is resolvedType
-    linkedNames     = [];
+    variableIds     = [];
+    variableTypes   = []; // this is resolvedType
+    variableNames   = [];
 
     isBool          = [];
 

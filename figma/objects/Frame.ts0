@@ -44,7 +44,7 @@ function figUpdateFrame(figFrame, genFrame, addProps, transform)
 {
     figUpdateFrameData(figFrame, genFrame, addProps, transform);
 
-    figUpdateObjects(
+    figUpdateObjectsAsync(
         figFrame, 
         genFrame[FO_FRAME_CHILDREN], 
         genFrame[FO_FRAME_CHILDREN].length);

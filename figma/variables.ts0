@@ -54,6 +54,18 @@ async function figCreateVariableAsync(genVariable)
 
 
 
+async function figCreateVariableCollectionAsync(name)
+{
+    const collection = await figma.variables.createVariableCollection(name);
+
+    collection.setPluginData('userId',    figma.currentUser.id);
+    collection.setPluginData('sessionId', figma.currentUser.sessionId.toString());
+
+    return collection;
+}
+
+
+
 async function figGetVariableCollectionByNameAsync(name)
 {
     const collections = await figma.variables.getLocalVariableCollectionsAsync();
@@ -65,23 +77,6 @@ async function figGetVariableCollectionByNameAsync(name)
     }
 
     return null;
-}
-
-
-
-async function figUpdateTempVariableCollection()
-{
-    const tempCollectionName = PLUGIN_LOGO_AND_NAME;
-
-    tempVariableCollection = await figGetVariableCollectionByNameAsync(tempCollectionName);
-
-    if (!tempVariableCollection)
-    {
-        tempVariableCollection = await figma.variables.createVariableCollection(tempCollectionName);
-
-        tempVariableCollection.setPluginData('userId',    figma.currentUser.id);
-        tempVariableCollection.setPluginData('sessionId', figma.currentUser.sessionId.toString());
-    }
 }
 
 
@@ -255,59 +250,51 @@ async function figUpdateVariableAsync(varId, value)
 
 
 
-async function figLinkNodeToVariableAsync(nodeId, varId, varType, varName, collection = null)
-{
-    const localVars = await figma.variables.getLocalVariablesAsync();
+// async function figLinkNodeToVariableAsync(nodeId, varId, varType, varName, collection = null)
+// {
+//     const localVars = await figma.variables.getLocalVariablesAsync();
     
-    if (!collection)
-    {
-        const collections = await figma.variables.getLocalVariableCollectionsAsync();
+//     if (!collection)
+//     {
+//         const collections = await figma.variables.getLocalVariableCollectionsAsync();
 
-        collection = 
-            collections.length > 0 
-            ? collections[0]
-            : null;
-    }
+//         collection = 
+//             collections.length > 0 
+//             ? collections[0]
+//             : null;
+//     }
 
-    return collection
-        ? await figLinkVariableAsync(localVars, nodeId, varId, varType, varName, collection)
-        : null;
-}
+//     return collection
+//         ? await figLinkVariableAsync(localVars, nodeId, varId, varType, varName, collection)
+//         : null;
+// }
 
 
 
-async function figLinkVariableAsync(localVars, nodeId, varId, varType, varName, collection)
+async function figLinkNodeToVariableAsync(nodeId, varId)
 {
-    let variable = localVars.find(v => v.id == varId);
+    const variable = await figma.variables.getVariableByIdAsync(varId);
+
+    console.assert(variable != null, 'variable must exist');
 
     
-    if (!variable) 
-    {
-        if (varId != NULL)
-            return null;
-
-        else
-        {
-            variable = figma.variables.createVariable(
-                varName,
-                collection,
-                varType);
-        }
-    }
+    variable.setPluginData('userId',    figma.currentUser.id);
+    variable.setPluginData('sessionId', figma.currentUser.sessionId.toString());
+    variable.setPluginData('nodeId',    nodeId);
 
 
     const [resolvedVar, values] = await figGetResolvedVariableValuesAsync(variable);
 
 
-    // figPostMessageToUi(
-    // {
-    //     cmd:         'uiReturnFigLinkNodeToVariable',
-    //     nodeId:       nodeId,
-    //     variableId:   resolvedVar ? resolvedVar.id           : NULL,
-    //     variableName: resolvedVar ? resolvedVar.name         : '',
-    //     resolvedType: resolvedVar ? resolvedVar.resolvedType : NULL,
-    //     values:       values
-    // });
+    figPostMessageToUi(
+    {
+        cmd:         'uiReturnFigLinkNodeToVariable',
+        nodeId:       nodeId,
+        variableId:   resolvedVar ? resolvedVar.id           : NULL,
+        variableName: resolvedVar ? resolvedVar.name         : '',
+        resolvedType: resolvedVar ? resolvedVar.resolvedType : NULL,
+        values:       values
+    });
 
 
     return resolvedVar;

@@ -5,11 +5,11 @@ var variableTimer = setInterval(() =>
     
     const varNodes = graph.currentPage.nodes.filter(n => 
            n.type     == VARIABLE 
-        && n.linkedId != NULL);
+        && n.variableId != NULL);
 
     uiQueueMessageToFigma({
         cmd:         'figGetVariableUpdates',
-        linkedVarIds: varNodes.map(n => n.linkedId)});
+        linkedVarIds: varNodes.map(n => n.variableId)});
 },
 333);
 
@@ -30,12 +30,12 @@ function uiReturnFigGetVariableUpdates(values)
 {
     const varNodes = graph.currentPage.nodes.filter(n => 
                n.type     == VARIABLE 
-            && n.linkedId != NULL);
+            && n.variableId != NULL);
 
 
     for (let value of values)
     {
-        const node = varNodes.find(n => n.linkedId == value.id);
+        const node = varNodes.find(n => n.variableId == value.id);
 
         if (node)
         {
@@ -81,7 +81,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
 
     const linkedNodes = graph.currentPage.nodes.filter(n => 
            n.type     == VARIABLE
-        && n.linkedId != NULL);
+        && n.variableId != NULL);
 
 
     menuLocalVariables.node      = node;
@@ -102,7 +102,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
                 variable.name,
                 false));
 
-        options.enabled = !linkedNodes.find(n => n.linkedId == variable.id);
+        options.enabled = !linkedNodes.find(n => n.variableId == variable.id);
 
 
         switch (variable.resolvedType)
@@ -124,7 +124,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
 
         const item = new MenuItem(name.replaceAll('/', ' / '), null, false, options);
 
-        item.setChecked(variable.id == node.linkedId);
+        item.setChecked(variable.id == node.variableId);
 
         menuLocalVariables.menuItems.push(item);
     }
@@ -281,7 +281,7 @@ function updateMenuLocalVariables()
         new MenuItem('None', null, false,
         {
             callback: e => actionManager.do(new LinkExistingVariableAction(menuLocalVariables.node.nodeId, NULL, NULL, '', false)),
-            enabled:  menuLocalVariables.node.linkedId != NULL
+            enabled:  menuLocalVariables.node.variableId != NULL
         })
     ]);
 
@@ -301,7 +301,7 @@ function updateMenuLocalVariables()
 
 function uiLinkNodeToVariable(node, varId, varType, varName)//, varTemp)
 {
-    if (   node.linkedType != NULL
+    if (   node.variableType != NULL
         && varType == NULL
         && node.paramValue)
     {
@@ -316,9 +316,9 @@ function uiLinkNodeToVariable(node, varId, varType, varName)//, varTemp)
     }
 
 
-    node.linkedId   = varId;
-    node.linkedType = varType;
-    node.linkedName = varName;
+    node.variableId   = varId;
+    node.variableType = varType;
+    node.variableName = varName;
     //node.linkedTemp = varTemp;
     
     if (varName != NULL)
@@ -340,14 +340,14 @@ function uiLinkNodeToVariable(node, varId, varType, varName)//, varTemp)
 
 
 
-function uiUpdateVariable(variableId, variableTemp, value)
-{
-    uiQueueMessageToFigma({
-        cmd:         'figUpdateVariable',
-        variableId:   variableId,
-        //variableTemp: variableTemp,
-        value:        value});
-}
+// function uiUpdateVariable(variableId, variableTemp, value)
+// {
+//     uiQueueMessageToFigma({
+//         cmd:         'figUpdateVariable',
+//         variableId:   variableId,
+//         //variableTemp: variableTemp,
+//         value:        value});
+// }
 
 
 

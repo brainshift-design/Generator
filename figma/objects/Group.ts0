@@ -42,7 +42,7 @@ function figUpdateShapeGroup(figGroup, genGroup)
     }
 
 
-    figUpdateObjects(
+    figUpdateObjectsAsync(
         figGroup, 
         genGroup[FO_GROUP_CHILDREN],
         genGroup[FO_GROUP_CHILDREN].length);

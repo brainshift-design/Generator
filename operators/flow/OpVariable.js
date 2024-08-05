@@ -1,14 +1,18 @@
+const defaultVariableNodeName = PLUGIN_NAME + '/variable';
+
+
+
 class   OpVariable
 extends ResizableBase
 {
-    paramValue = null;
+    paramValue   = null;
 
 
-    linkedId   = NULL;
-    linkedType = NULL; // this is resolvedType
-    linkedName = '';
+    variableId   = NULL;
+    variableName = '';   // must be set even if nothing is connected
+    variableType = NULL; // this is resolvedType
 
-    isBool     = false;
+    isBool       = false;
 
     menuBoolValue;
     
@@ -16,7 +20,7 @@ extends ResizableBase
 
     constructor()
     {
-        super(VARIABLE, 'variable', 'variable', iconVariable);
+        super(VARIABLE, 'variable', defaultVariableNodeName, iconVariable, 200);
 
 
         this.iconOffsetY    = 1;
@@ -74,6 +78,15 @@ extends ResizableBase
 
     setName(newName, options = {})
     {
+        if (newName.split('/').length < 2)
+        {
+            super.setName(this.textbox.savedValue.trim(), options);
+            return;
+        }
+
+
+        console.log('newName =', newName);
+        console.trace();
         super.setName(newName, options);
 
         if (isValid(options.updateNodes))
@@ -136,9 +149,9 @@ extends ResizableBase
             request.push(...pushInputOrParam(input, gen));
 
 
-        request.push(this.node.linkedId);
-        request.push(this.node.linkedType);
-        request.push(this.node.linkedName);
+        request.push(this.node.variableId);
+        request.push(this.node.variableType);
+        request.push(this.node.name);//this.node.variableName);
 
 
         request.push(this.node.paramValue ? 1 : 0);
@@ -222,11 +235,11 @@ extends ResizableBase
             else
             {
                 this.paramValue = null;
-                this.name       = 'variable';
+                this.name       = this.variableName;
 
-                this.linkedId   = NULL;
-                this.linkedType = NULL;
-                this.linkedName = '';
+                this.variableId   = NULL;
+                this.variableType = NULL;
+                this.variableName = '';
 
                 //pushUpdate(null, [this]);
 
@@ -244,9 +257,9 @@ extends ResizableBase
 
     updateValueParamValuesFromResolved(resolvedType, varName, values, update = false)
     {
-        if (this.linkedName != varName)
+        if (this.variableName != varName)
         {
-            this.linkedName = varName;
+            this.variableName = varName;
             this.updateNode();
         }
 
@@ -277,9 +290,9 @@ extends ResizableBase
         let updateNode = false;
 
         
-        if (this.linkedName != varValue.variableName)
+        if (this.variableName != varValue.variableName)
         {
-            this.linkedName = varValue.variableName;
+            this.variableName = varValue.variableName;
             updateNode = true;
 
 
@@ -307,7 +320,11 @@ extends ResizableBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const value        = values[paramIds.findIndex(id => id == 'value')];
+        const variableName = values[paramIds.findIndex(id => id == 'variableName')];
+
+
+        this.variableName = variableName.value;
 
 
         this.updateValueParamFromType(
@@ -371,14 +388,18 @@ extends ResizableBase
 
     getLabelText()
     {
-        if (this.linkedId == NULL)
-            return 'variable';
+        // if (this.variableId == NULL)
+        //     return defaultVariableNodeName;
         
 
-        const parts = this.linkedName.split('/');
+        console.trace();
+        const parts = this.variableName.split('/');
+        console.log('variableName =', this.variableName);
+        console.log('parts =', parts);
+
         
         if (parts.length == 1)
-            return this.linkedName;
+            return this.variableName;
     
         
         // return parts.join('/');
@@ -410,32 +431,32 @@ extends ResizableBase
         const tab = HTAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"linkedId": "'   + this.linkedId   + '"'
-             + ',\n' + pos + tab + '"linkedType": "' + this.linkedType + '"'
-             + ',\n' + pos + tab + '"linkedName": "' + this.linkedName + '"';
+             + ',\n' + pos + tab + '"variableId": "'   + this.variableId   + '"'
+             + ',\n' + pos + tab + '"variableType": "' + this.variableType + '"'
+             + ',\n' + pos + tab + '"variableName": "' + this.variableName + '"';
     }
 
 
 
     loadParams(_node, pasting)
     {
-        const found = graph.currentPage.nodes.find(n => n.linkedId == _node.linkedId);
+        const found = graph.currentPage.nodes.find(n => n.variableId == _node.variableId);
 
         if (!found)
         {
             super.loadParams(_node, pasting);
             
-            this.linkedId   = _node.linkedId;
-            this.linkedType = _node.linkedType;
-            this.linkedName = _node.linkedName;
+            this.variableId   = _node.variableId;
+            this.variableType = _node.variableType;
+            this.variableName = _node.variableName;
         }
         else
         {
             this.name       = this.defName;
 
-            this.linkedId   = NULL;
-            this.linkedType = NULL;
-            this.linkedName = '';
+            this.variableId   = NULL;
+            this.variableType = NULL;
+            this.variableName = '';
         }
     }
 }

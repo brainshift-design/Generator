@@ -81,9 +81,8 @@ extends FigmaObject
         return [
             ...super.toData(),
    
-            /* 10 */ this.objectName,
-            /* 11 */ this.variableType,
-            /* 12 */ this.variableValue
+            /* 10 */ this.variableType,
+            /* 11 */ this.variableValue
         ];
     }
 }
