@@ -454,6 +454,8 @@ function initGeneratorMenus()
 
     menuFlow = new Menu('Data flow', true, false);
     menuFlow.addItems([
+        menuItemCombine    = new MenuItem('Combine',           null,            false, {icon: iconCombine,       createType: COMBINE,       callback: e => actionManager.do(getCreateNodeAction(COMBINE,          btnFlow.div, getCreateOptions(e)))}),
+                             new MenuItem('',               null, false, {separator: true}),
         menuItemRepeat     = new MenuItem('. . . Repeat',   null, false, {icon: iconRepeat, childMenu: menuRepeat, createType: REPEAT,         callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
         menuItemStart      = new MenuItem('Feedback . . .', null, false, {icon: iconFeedback,      createType: FEEDBACK,       callback: e => actionManager.do(getCreateNodeAction(FEEDBACK,        btnFlow.div, getCreateOptions(e)))}),
         //menuItemVarGroup   = new MenuItem('Variable group', null, false, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
@@ -490,7 +492,6 @@ function initGeneratorMenus()
 
     menuData = new Menu('Lists', true, false);
     menuData.addItems([
-        menuItemCombine     = new MenuItem('Combine',           null,            false, {icon: iconCombine,       createType: COMBINE,       callback: e => actionManager.do(getCreateNodeAction(COMBINE,          btnData.div, getCreateOptions(e)))}),
         menuItemList        = new MenuItem('List...',           null,            false, {icon: iconList,          createType: LIST,          callback: e => actionManager.do(getCreateNodeAction(LIST,             btnData.div, getCreateOptions(e)))}),
                               new MenuItem('',                  null,            false, {separator: true}),     
         menuItemCount       = new MenuItem('Count',             null,            false, {icon: iconCount,         createType: LIST_COUNT,    callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,       btnData.div, getCreateOptions(e)))}),
@@ -498,11 +499,11 @@ function initGeneratorMenus()
                             //new MenuItem('',                  null,            false, {separator: true}),     
                               new MenuItem('Contains',          'List contains', true,  {icon: iconContains,      createType: CONTAINS,      callback: e => actionManager.do(getCreateNodeAction(CONTAINS,         btnData.div, getCreateOptions(e))), disambiguate: true}),
                               new MenuItem('',                  null,            false, {separator: true}),     
-                              new MenuItem('Functions',         null,            false, {icon: iconListFunctions, childMenu: menuItems}),
-                              new MenuItem('',                  null,            false, {separator: true}),     
         menuItemIfElse      = new MenuItem('I&hairsp;f / else', 'If else',       false, {icon: iconIfElse,        createType: IF_ELSE,       callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,          btnData.div, getCreateOptions(e))), disambiguate: true}),
         menuItemSelect      = new MenuItem('Select',            null,            false, {icon: iconSelect,        createType: SELECT,        callback: e => actionManager.do(getCreateNodeAction(SELECT,           btnData.div, getCreateOptions(e)))}),
                               new MenuItem('Select from list',  null,            false, {icon: iconSelectFromList, createType: SELECT_FROM_LIST,        callback: e => actionManager.do(getCreateNodeAction(SELECT_FROM_LIST, btnData.div, getCreateOptions(e)))}),
+                              new MenuItem('',                  null,            false, {separator: true}),     
+                              new MenuItem('Functions',         null,            false, {icon: iconListFunctions, childMenu: menuItems}),
                               new MenuItem('',                  null,            false, {separator: true}),     
                               new MenuItem('Column',            null,            false, {icon: iconColumn,        createType: COLUMN,        callback: e => actionManager.do(getCreateNodeAction(COLUMN,           btnData.div, getCreateOptions(e)))}),
                               new MenuItem('Cell',              null,            false, {icon: iconCell,          createType: CELL,          callback: e => actionManager.do(getCreateNodeAction(CELL,             btnData.div, getCreateOptions(e)))}),
@@ -565,21 +566,23 @@ function initGeneratorMenus()
 
     menuFunctions = new Menu('Functions', true, false);
     menuFunctions.addItems([
-                           new MenuItem('Sign',      null, false, {icon: iconSign,        createType: NUMBER_SIGN,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,          btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('Negative',  null, false, {icon: iconNegative,    createType: NUMBER_NEGATIVE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_NEGATIVE,      btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('Absolute',  null, false, {icon: iconAbsolute,    createType: NUMBER_ABSOLUTE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,      btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('',          null, false, {separator: true}),
-                           new MenuItem('Precision', null, false, {icon: iconNumberPrecision, createType: NUMBER_PRECISION, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PRECISION,     btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('',          null, false, {separator: true}),
-                           new MenuItem('Round',     null, false, {icon: iconRound,       createType: NUMBER_ROUND,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,         btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('Quantize',  null, false, {icon: iconQuantize,    createType: NUMBER_QUANTIZE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_QUANTIZE,      btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('',          null, false, {separator: true}),
-                           new MenuItem('Min / max', null, false, {icon: iconMinMax,      childMenu: menuMinMax, createType: NUMBER_SIMPLE_MINMAX, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MINMAX, btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('Limits',    null, false, {icon: iconLimits,      createType: NUMBER_LIMITS,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,        btnNumber.div, getCreateOptions(e)))}), 
-                           new MenuItem('',          null, false, {separator: true}),
-                           new MenuItem('Curve',     null, false, {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,         btnNumber.div, getCreateOptions(e)))}), 
-                           new MenuItem('Bias',      null, false, {icon: iconNumberBias,  createType: NUMBER_BIAS,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_BIAS,          btnNumber.div, getCreateOptions(e)))}), 
-                           new MenuItem('Remap',     null, false, {icon: iconNumberMap,   createType: NUMBER_MAP,           callback: e => actionManager.do(getCreateNodeAction(NUMBER_MAP,           btnNumber.div, getCreateOptions(e)))})]);
+                           new MenuItem('Sign',          null, false, {icon: iconSign,        createType: NUMBER_SIGN,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,          btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Negative',      null, false, {icon: iconNegative,    createType: NUMBER_NEGATIVE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_NEGATIVE,      btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Absolute',      null, false, {icon: iconAbsolute,    createType: NUMBER_ABSOLUTE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,      btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('',              null, false, {separator: true}),
+                           new MenuItem('Precision',     null, false, {icon: iconNumberPrecision, createType: NUMBER_PRECISION, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PRECISION,     btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('',              null, false, {separator: true}),
+                           new MenuItem('Round',         null, false, {icon: iconRound,       createType: NUMBER_ROUND,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,         btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Quantize',      null, false, {icon: iconQuantize,    createType: NUMBER_QUANTIZE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_QUANTIZE,      btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('',              null, false, {separator: true}),
+                           new MenuItem('Min / max',     null, false, {icon: iconMinMax,      childMenu: menuMinMax, createType: NUMBER_SIMPLE_MINMAX, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MINMAX, btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Limits',        null, false, {icon: iconLimits,      createType: NUMBER_LIMITS,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,        btnNumber.div, getCreateOptions(e)))}), 
+                           new MenuItem('',              null, false, {separator: true}),
+                           new MenuItem('Trigonometric', null, false, {icon: iconSine,         childMenu: menuTrig,          createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('',              null, false, {separator: true}),
+                           new MenuItem('Curve',         null, false, {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,         btnNumber.div, getCreateOptions(e)))}), 
+                           new MenuItem('Bias',          null, false, {icon: iconNumberBias,  createType: NUMBER_BIAS,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_BIAS,          btnNumber.div, getCreateOptions(e)))}), 
+                           new MenuItem('Remap',         null, false, {icon: iconNumberMap,   createType: NUMBER_MAP,           callback: e => actionManager.do(getCreateNodeAction(NUMBER_MAP,           btnNumber.div, getCreateOptions(e)))})]);
         
 
     menuTrig = new Menu('Trigonometric', true, false);
@@ -614,12 +617,11 @@ function initGeneratorMenus()
                           new MenuItem('Logic',         null,                 false, {icon: iconBoolean,      /*childMenu: menuBoolean,  */ createType: NUMBER_BOOLEAN,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('Compare',       null,                 false, {icon: iconCondition,    /*childMenu: menuCondition,*/ createType: NUMBER_CONDITION,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
                           new MenuItem('',              null,                 false, {separator: true}),
-                          new MenuItem('Trigonometric', null,                 false, {icon: iconSine,         childMenu: menuTrig,          createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
-                          new MenuItem('',              null,                 false, {separator: true}),
                           new MenuItem('Functions',     null,                 false, {icon: iconRound,        childMenu: menuFunctions}),
-                          new MenuItem('Convert',       null,                 false, {icon: iconConvert,      childMenu: menuConvertNumber}),
                           new MenuItem('',              null,                 false, {separator: true}),
-                          new MenuItem('Interpolate',   'Interpolate number', true,  {icon: iconInterpolate,                                createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))})]);
+                          new MenuItem('Interpolate',   'Interpolate number', true,  {icon: iconInterpolate,                                createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
+                          new MenuItem('',              null,                 false, {separator: true}),
+                          new MenuItem('Convert',       null,                 false, {icon: iconConvert,      childMenu: menuConvertNumber})]);
 
 
     menuTextFunctions = new Menu('Text functions', true, false);
@@ -642,6 +644,7 @@ function initGeneratorMenus()
                            new MenuItem('Contains',   'Text contains', true,  {icon: iconTextContains,  createType: TEXT_CONTAINS,  callback: e => actionManager.do(getCreateNodeAction(TEXT_CONTAINS,  btnText.div, getCreateOptions(e)))}),
                            new MenuItem('',           null,            false, {separator: true}),
                            new MenuItem('Functions',  null,            false, {icon: iconTextFunctions, childMenu: menuTextFunctions}),
+                           new MenuItem('',           null,            false, {separator: true}),
                            new MenuItem('Convert',    null,            false, {icon: iconConvert,      childMenu: menuConvertText})]);
 
 
@@ -767,10 +770,11 @@ function initGeneratorMenus()
         menuItemVectorRegion       = new MenuItem('Region',    null,          false, {icon: iconVectorRegion,                createType: VECTOR_REGION,  callback: e => actionManager.do(getCreateNodeAction(VECTOR_REGION,  btnShape.div, getCreateOptions(e)))}),
         menuItemVectorNetwork      = new MenuItem('Network',   null,          false, {icon: iconVectorNetwork,               createType: VECTOR_NETWORK, callback: e => actionManager.do(getCreateNodeAction(VECTOR_NETWORK, btnShape.div, getCreateOptions(e)))}),
                                      new MenuItem('',          null,          false, {separator: true}),           
-                                     new MenuItem('Shapes',    null,          false, {childMenu: menuVectorShapes}),
-                                     new MenuItem('',          null,          false, {separator: true}),           
-                                     new MenuItem('Functions', null,          false, {childMenu: menuVectorFunctions})]);
-
+                                    //  new MenuItem('Shapes',    null,          false, {childMenu: menuVectorShapes}),
+                                     new MenuItem('Arc',             null, false, {icon: iconArcPath,       createType: ARC_PATH,              callback: e => actionManager.do(getCreateNodeAction(ARC_PATH,        btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('Arc from points', null, false, {icon: iconArcFromPoints, createType: ARC_FROM_POINTS,       callback: e => actionManager.do(getCreateNodeAction(ARC_FROM_POINTS, btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('Wave',            null, false, {icon: iconWavePath,      createType: WAVE_PATH,             callback: e => actionManager.do(getCreateNodeAction(WAVE_PATH,       btnShape.div, getCreateOptions(e)))})]);
+                             
 
     menuRectangle = new Menu('Rectangle', true, false);
     menuRectangle.addItems([
@@ -808,22 +812,24 @@ function initGeneratorMenus()
     menuShape = new Menu('Shapes', true, false);
     menuShape.addItems([
         // menuItemShapeSelected = new MenuItem('Selected objects...', null, {icon: iconSelected,   enabled: false}),
-                             // new MenuItem('',            null, false, {separator: true}),
-                                new MenuItem('Shapes',      null, false, {icon: iconShapes,        childMenu: menuShapes}),
-                                new MenuItem('Vector',      null, false, {icon: iconVectorPath,    childMenu: menuVectorPath}),
-                                new MenuItem('',            null, false, {separator: true}),
-                                new MenuItem('Frame',       null, false, {icon: iconFrame,      createType: FRAME,         callback: e => actionManager.do(getCreateNodeAction(FRAME,         btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Group',       null, false, {icon: iconShapeGroup, createType: SHAPE_GROUP,   callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP,   btnShape.div, getCreateOptions(e)))}),
-        menuItemBooleanShape  = new MenuItem('Boolean',     null, false, {icon: iconBoolUnion,  createType: SHAPE_BOOLEAN, callback: e => actionManager.do(getCreateNodeAction(SHAPE_BOOLEAN, btnShape.div, getCreateOptions(e)))}),
-        menuItemShapeSep1     = new MenuItem('',            null, false, {separator: true}),
-                                new MenuItem('Transform',   null, false, {icon: iconMove, childMenu: menuTransform}),
-                                new MenuItem('',            null, false, {separator: true}),
-                                new MenuItem('Apply style', null, false, {icon: iconApply, createType: SHAPE_APPLY, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('',            null, false, {separator: true}),
-                                new MenuItem('Effects',     null, false, {icon: iconEffects, childMenu: menuEffects}),
-                                new MenuItem('Styles',      null, false, {icon: iconStyle, childMenu: menuStyles})]);
-     //                         new MenuItem('',            null, false, {separator: true}),
-     // menuItemShapeExport   = new MenuItem('Export',      null, false, {icon: iconExport,     createType: EXPORT, callback: e => actionManager.do(getCreateNodeAction(EXPORT, btnShape.div, getCreateOptions(e)))})]);
+                             // new MenuItem('',                 null, false, {separator: true}),
+                                new MenuItem('Shapes',           null, false, {icon: iconShapes,        childMenu: menuShapes}),
+                                new MenuItem('',                 null, false, {separator: true}),
+                                new MenuItem('Vector shapes',    null, false, {icon: iconVectorPath,    childMenu: menuVectorPath}),
+                                new MenuItem('Vector functions', null, false, {childMenu: menuVectorFunctions}),
+                                new MenuItem('',                 null, false, {separator: true}),
+                                new MenuItem('Frame',            null, false, {icon: iconFrame,      createType: FRAME,         callback: e => actionManager.do(getCreateNodeAction(FRAME,         btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Group',            null, false, {icon: iconShapeGroup, createType: SHAPE_GROUP,   callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP,   btnShape.div, getCreateOptions(e)))}),
+        menuItemBooleanShape  = new MenuItem('Boolean',          null, false, {icon: iconBoolUnion,  createType: SHAPE_BOOLEAN, callback: e => actionManager.do(getCreateNodeAction(SHAPE_BOOLEAN, btnShape.div, getCreateOptions(e)))}),
+        menuItemShapeSep1     = new MenuItem('',                 null, false, {separator: true}),
+                                new MenuItem('Transform',        null, false, {icon: iconMove, childMenu: menuTransform}),
+                                new MenuItem('',                 null, false, {separator: true}),
+                                new MenuItem('Apply style',      null, false, {icon: iconApply, createType: SHAPE_APPLY, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('',                 null, false, {separator: true}),
+                                new MenuItem('Effects',          null, false, {icon: iconEffects, childMenu: menuEffects}),
+                                new MenuItem('Styles',           null, false, {icon: iconStyle, childMenu: menuStyles})]);
+     //                         new MenuItem('',                 null, false, {separator: true}),
+     // menuItemShapeExport   = new MenuItem('Export',           null, false, {icon: iconExport,     createType: EXPORT, callback: e => actionManager.do(getCreateNodeAction(EXPORT, btnShape.div, getCreateOptions(e)))})]);
 
 
     menuTemplate = new Menu('Templates', true, false);

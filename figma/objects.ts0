@@ -25,8 +25,7 @@ async function figUpdateObjectsAsync(figParent, genObjects, batchSize, totalObje
         if (genObj[FO_TYPE] == VARIABLE) 
             await figUpdateVariableObjectAsync(genObj);
         else
-        {
-            const result = await figUpdateGeometricObjectAsync(
+            await figUpdateGeometricObjectAsync(
                 genObj, 
                 updateObjects, 
                 updateObjectCount, 
@@ -36,10 +35,25 @@ async function figUpdateObjectsAsync(figParent, genObjects, batchSize, totalObje
                 addProps, 
                 transform);
 
-            updateObjectCount = result[1];
-            abort             = result[2];
 
-            if (!result[0])
+        updateObjectCount++;
+
+
+        if (updateObjectCount >= batchSize)
+        {
+            const result = await figGetValueFromUiSync(
+                'returnObjectUpdate', 
+                { 
+                    nominalObjectCount: nominalObjectCount,
+                    actualObjectCount:  actualObjectCount 
+                }
+                ) as { key: string, value: boolean };
+
+            abort = result.value;
+
+            updateObjectCount = 0;
+
+            if (abort) 
                 break;
         }
     }
@@ -130,11 +144,9 @@ async function figUpdateVariableObjectAsync(genVar)
     if (varId == NULL) // not linked yet
     {
         const varName   = genVar[FO_OBJECT_NAME];
-
         const nameParts = varName.split('/');
 
-        console.log('nameParts =', nameParts);
-        console.assert(nameParts.length > 1);
+        console.assert(nameParts.length > 1, 'nameParts must be > 1');
 
         
         let collection;
@@ -155,7 +167,8 @@ async function figUpdateVariableObjectAsync(genVar)
     //     let figVar = await figLinkNodeToVariableAsync(genVar[FO_NODE_ID], genVar[FO_OBJECT_ID]);
 
 
-    consoleAssert(figVar, 'variable must have been created');
+    console.assert(figVar, 'variable must have been created');
+    console.log('figVar =', figVar);
 
 
     await figUpdateVariableAsync(figVar.id, varValue);
@@ -261,30 +274,6 @@ async function figUpdateGeometricObjectAsync(genObj, updateObjects, updateObject
 
         await figCreateObject(genObj, addObject, addProps, transform);
     }
-
-
-    updateObjectCount++;
-    
-
-    if (updateObjectCount >= batchSize)
-    {
-        const result = await figGetValueFromUiSync(
-            'returnObjectUpdate', 
-            { 
-                nominalObjectCount: nominalObjectCount,
-                actualObjectCount:  actualObjectCount 
-            }
-            ) as { key: string, value: boolean };
-
-        abort = result.value;
-
-        updateObjectCount = 0;
-
-        if (abort) return [false, updateObjectCount, abort];
-    }
-
-
-    return [true, updateObjectCount, abort];
 }
 
 

@@ -2640,11 +2640,17 @@ function figUpdateObjectsAsync(figParent_1, genObjects_1, batchSize_1) {
         for (const genObj of genObjects) {
             if (genObj[FO_TYPE] == VARIABLE)
                 yield figUpdateVariableObjectAsync(genObj);
-            else {
-                const result = yield figUpdateGeometricObjectAsync(genObj, updateObjects, updateObjectCount, batchSize, abort, figParent, addProps, transform);
-                updateObjectCount = result[1];
-                abort = result[2];
-                if (!result[0])
+            else
+                yield figUpdateGeometricObjectAsync(genObj, updateObjects, updateObjectCount, batchSize, abort, figParent, addProps, transform);
+            updateObjectCount++;
+            if (updateObjectCount >= batchSize) {
+                const result = yield figGetValueFromUiSync('returnObjectUpdate', {
+                    nominalObjectCount: nominalObjectCount,
+                    actualObjectCount: actualObjectCount
+                });
+                abort = result.value;
+                updateObjectCount = 0;
+                if (abort)
                     break;
             }
         }
@@ -2700,8 +2706,7 @@ function figUpdateVariableObjectAsync(genVar) {
          {
             const varName = genVar[FO_OBJECT_NAME];
             const nameParts = varName.split('/');
-            console.log('nameParts =', nameParts);
-            console.assert(nameParts.length > 1);
+            console.assert(nameParts.length > 1, 'nameParts must be > 1');
             let collection;
             if (nameParts.length > 1) {
                 collection = yield figGetVariableCollectionByNameAsync(nameParts[0]);
@@ -2711,7 +2716,8 @@ function figUpdateVariableObjectAsync(genVar) {
         }
         // else // linked already
         //     let figVar = await figLinkNodeToVariableAsync(genVar[FO_NODE_ID], genVar[FO_OBJECT_ID]);
-        consoleAssert(figVar, 'variable must have been created');
+        console.assert(figVar, 'variable must have been created');
+        console.log('figVar =', figVar);
         yield figUpdateVariableAsync(figVar.id, varValue);
     });
 }
@@ -2783,18 +2789,6 @@ function figUpdateGeometricObjectAsync(genObj, updateObjects, updateObjectCount,
                 removeFromArray(figEmptyObjects, figObj);
             yield figCreateObject(genObj, addObject, addProps, transform);
         }
-        updateObjectCount++;
-        if (updateObjectCount >= batchSize) {
-            const result = yield figGetValueFromUiSync('returnObjectUpdate', {
-                nominalObjectCount: nominalObjectCount,
-                actualObjectCount: actualObjectCount
-            });
-            abort = result.value;
-            updateObjectCount = 0;
-            if (abort)
-                return [false, updateObjectCount, abort];
-        }
-        return [true, updateObjectCount, abort];
     });
 }
 function makeObjectName(obj) {

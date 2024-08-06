@@ -1,4 +1,4 @@
-const defaultVariableNodeName = PLUGIN_NAME + '/variable';
+const defaultVariableNodeName = PLUGIN_LOGO + '/variable';
 
 
 

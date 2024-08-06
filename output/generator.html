@@ -20197,14 +20197,16 @@ extends GOperator1
         const input      = await evalValue(this.input,      parse);
         const paramValue = await evalValue(this.paramValue, parse);
 
-        const varValue = input; // TODO figure out whether to send input or paramValue
+        console.log('input =', input);
+        console.log('paramValue =', paramValue);
+
+        const varValue = paramValue ?? input;
 
 
         this.value = new VariableValue(
             this.nodeId, 
             this.variableId,
             this.variableName,
-            this.variableValue,
             varValue);
 
 
