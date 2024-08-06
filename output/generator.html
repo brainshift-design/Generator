@@ -20194,19 +20194,17 @@ extends GOperator1
             return this;
 
         
-        const input      = await evalValue(this.input,         parse);
-        const paramValue = await evalValue(this.variableValue, parse);
+        const input      = await evalValue(this.input,      parse);
+        const paramValue = await evalValue(this.paramValue, parse);
 
-        const varValue   = input; // TODO figure out whether to send input or paramValue
+        const varValue = input; // TODO figure out whether to send input or paramValue
 
 
         this.value = new VariableValue(
             this.nodeId, 
             this.variableId,
+            this.variableName,
             this.variableValue,
-            // getNewNumberId(
-            //     parse.parsedNodes.find(n => n.nodeId == this.nodeId).nodeName,
-            //     newId => parse.parsedNodes.find(n => n.nodeId == newId) != null),
             varValue);
 
 
@@ -51209,6 +51207,13 @@ function genParseVariable(parse)
     variable.variableType = parse.move();
     //variable.linkedVariableTemp = parseInt(parse.move()) == 1;
 
+    if (parse.settings.logRequests) 
+    {
+        logReqString(variable.variableId   != NULL ? variable.variableId   : 'NULL', parse);
+        logReqString(variable.variableName != ''   ? variable.variableName : '\'\'', parse);
+        logReqString(variable.variableType != NULL ? variable.variableType : 'NULL', parse);
+    }
+
 
     const nParams = parseInt(parse.move());
 
@@ -59935,6 +59940,13 @@ function logReqColorContrast(lerp, nInputs, valueIndex, parse, ignore)
 function logReqValue(type, val, parse)
 {
     parse.log += parse.tab + type + ' ' + displayValue(type, val);
+}
+
+
+
+function logReqString(str, parse)
+{
+    parse.log += parse.tab + str;
 }
 
 

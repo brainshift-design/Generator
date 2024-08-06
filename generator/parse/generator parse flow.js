@@ -87,6 +87,13 @@ function genParseVariable(parse)
     variable.variableType = parse.move();
     //variable.linkedVariableTemp = parseInt(parse.move()) == 1;
 
+    if (parse.settings.logRequests) 
+    {
+        logReqString(variable.variableId   != NULL ? variable.variableId   : 'NULL', parse);
+        logReqString(variable.variableName != ''   ? variable.variableName : '\'\'', parse);
+        logReqString(variable.variableType != NULL ? variable.variableType : 'NULL', parse);
+    }
+
 
     const nParams = parseInt(parse.move());
 

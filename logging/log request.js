@@ -105,6 +105,13 @@ function logReqValue(type, val, parse)
 
 
 
+function logReqString(str, parse)
+{
+    parse.log += parse.tab + str;
+}
+
+
+
 // function logReqListValue(list, parse, ignore)
 // {
 //     parse.log += parse.tab + LIST_VALUE + ' ' + displayValue(LIST_VALUE, list);

@@ -10,7 +10,7 @@ extends ResizableBase
 
     variableId   = NULL;
     variableName = '';   // must be set even if nothing is connected
-    variableType = NULL; // this is resolvedType
+    variableType = NULL; // this is the resolved type
 
     isBool       = false;
 
@@ -31,7 +31,7 @@ extends ResizableBase
         this.divIcon.style.pointerEvents = 'all';
 
 
-        this.addInput(new Input([NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE, FILL_VALUE]));
+        this.addInput (new Input([NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE, FILL_VALUE]));
         this.addOutput(new Output([VARIABLE_VALUE], this.output_genRequest));
 
         // this.inputs[0].addEventListener('connect',    () => OpVariable_onConnectInput   (this));
@@ -85,7 +85,6 @@ extends ResizableBase
         }
 
 
-        console.log('newName =', newName);
         this.variableName = newName;
         
 
@@ -151,8 +150,8 @@ extends ResizableBase
             request.push(...pushInputOrParam(input, gen));
 
 
-        request.push(this.node.variableId  );
-        request.push(this.node.name);//variableName);
+        request.push(this.node.variableId);
+        request.push(this.node.name);
         request.push(this.node.variableType);
 
 
@@ -325,7 +324,6 @@ extends ResizableBase
         const value = values[paramIds.findIndex(id => id == 'value')];
 
 
-        console.log('value =', value);
         this.variableName = value.variableName;
 
 
@@ -432,7 +430,7 @@ extends ResizableBase
         return super.toJsonBase(nTab)
              + ',\n' + pos + tab + '"variableId": "'   + this.variableId   + '"'
              + ',\n' + pos + tab + '"variableType": "' + this.variableType + '"'
-             + ',\n' + pos + tab + '"variableName": "' + this.variableName + '"';
+             + ',\n' + pos + tab + '"variableName": "' + encodeURIComponent(this.variableName) + '"';
     }
 
 
@@ -447,7 +445,7 @@ extends ResizableBase
             
             this.variableId   = _node.variableId;
             this.variableType = _node.variableType;
-            this.variableName = _node.variableName;
+            this.variableName = decodeURIComponent(_node.variableName);
         }
         else
         {

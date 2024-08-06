@@ -50,19 +50,17 @@ extends GOperator1
             return this;
 
         
-        const input      = await evalValue(this.input,         parse);
-        const paramValue = await evalValue(this.variableValue, parse);
+        const input      = await evalValue(this.input,      parse);
+        const paramValue = await evalValue(this.paramValue, parse);
 
-        const varValue   = input; // TODO figure out whether to send input or paramValue
+        const varValue = input; // TODO figure out whether to send input or paramValue
 
 
         this.value = new VariableValue(
             this.nodeId, 
             this.variableId,
+            this.variableName,
             this.variableValue,
-            // getNewNumberId(
-            //     parse.parsedNodes.find(n => n.nodeId == this.nodeId).nodeName,
-            //     newId => parse.parsedNodes.find(n => n.nodeId == newId) != null),
             varValue);
 
 
