@@ -154,9 +154,12 @@ function parseVariableValue(str, i = -1)
     const iStart = i;
     let   length = 0;
 
-    const variableId    = _str[i];                                              length += _str[i].length + 1;  i++;
-    const variableName  = decodeURIComponent(_str[i]);                          length += _str[i].length + 1;  i++;
-    const variableType  = _str[i];                                              length += _str[i].length + 1;  i++;
+    const variableId    = _str[i] != NULL_VALUE ? _str[i] : NULL;               length += _str[i].length + 1;  i++;
+
+    const strName       = decodeURIComponent(_str[i]);
+    const variableName  = strName != NULL_VALUE ? strName : NULL;               length += _str[i].length + 1;  i++;
+
+    const variableType  = _str[i] != NULL_VALUE ? _str[i] : NULL;               length += _str[i].length + 1;  i++;
     const variableValue = parseValueFromType(variableType, str.slice(length));                                 i += variableValue ? variableValue[1] : 1;
 
 

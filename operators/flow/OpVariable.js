@@ -80,13 +80,15 @@ extends ResizableBase
     {
         if (newName.split('/').length < 2)
         {
-            super.setName(this.textbox.savedValue.trim(), options);
+            // super.setName(this.textbox.savedValue.trim(), options);
             return;
         }
 
 
         console.log('newName =', newName);
-        console.trace();
+        this.variableName = newName;
+        
+
         super.setName(newName, options);
 
         if (isValid(options.updateNodes))
@@ -149,9 +151,9 @@ extends ResizableBase
             request.push(...pushInputOrParam(input, gen));
 
 
-        request.push(this.node.variableId);
+        request.push(this.node.variableId  );
+        request.push(this.node.name);//variableName);
         request.push(this.node.variableType);
-        request.push(this.node.name);//this.node.variableName);
 
 
         request.push(this.node.paramValue ? 1 : 0);
@@ -239,7 +241,7 @@ extends ResizableBase
 
                 this.variableId   = NULL;
                 this.variableType = NULL;
-                this.variableName = '';
+                //this.variableName = '';
 
                 //pushUpdate(null, [this]);
 
@@ -320,11 +322,11 @@ extends ResizableBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const value        = values[paramIds.findIndex(id => id == 'value')];
-        const variableName = values[paramIds.findIndex(id => id == 'variableName')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
 
 
-        this.variableName = variableName.value;
+        console.log('value =', value);
+        this.variableName = value.variableName;
 
 
         this.updateValueParamFromType(
@@ -392,10 +394,7 @@ extends ResizableBase
         //     return defaultVariableNodeName;
         
 
-        console.trace();
         const parts = this.variableName.split('/');
-        console.log('variableName =', this.variableName);
-        console.log('parts =', parts);
 
         
         if (parts.length == 1)

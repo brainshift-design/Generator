@@ -83,8 +83,8 @@ function genParseVariable(parse)
 
     
     variable.variableId   = parse.move();
-    variable.variableType = parse.move();
     variable.variableName = parse.move();
+    variable.variableType = parse.move();
     //variable.linkedVariableTemp = parseInt(parse.move()) == 1;
 
 

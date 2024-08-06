@@ -3,9 +3,9 @@ extends GOperator1
 {
     variableId    = NULL;
     variableName  = '';
-    variableValue = null;
+    variableType  = NULL;
 
-    //variableVariableTemp  = false;
+    variableValue = new NullValue();
 
 
 
@@ -20,6 +20,10 @@ extends GOperator1
     {
         super.reset();
 
+        this.variableId    = NULL;
+        this.variableName  = '';
+        this.variableType  = NULL;
+        
         this.variableValue = new NullValue();
     }
 
@@ -28,6 +32,10 @@ extends GOperator1
     copy()
     {
         const copy = new GVariable(this.nodeId, this.options);
+
+        copy.variableId   = this.variableId;
+        copy.variableName = this.variableName;
+        copy.variableType = this.variableType;
 
         if (this.variableValue) copy.variableValue = this.variableValue.copy();
         
@@ -51,16 +59,16 @@ extends GOperator1
         this.value = new VariableValue(
             this.nodeId, 
             this.variableId,
-            getNewNumberId(
-                parse.parsedNodes.find(n => n.nodeId == this.nodeId).nodeName,
-                newId => parse.parsedNodes.find(n => n.nodeId == newId) != null),
+            this.variableValue,
+            // getNewNumberId(
+            //     parse.parsedNodes.find(n => n.nodeId == this.nodeId).nodeName,
+            //     newId => parse.parsedNodes.find(n => n.nodeId == newId) != null),
             varValue);
 
 
         this.setUpdateValues(parse,
         [
-            ['value',        this.value                      ],
-            ['variableName', new TextValue(this.variableName)]
+            ['value', this.value]
         ]);
 
 
