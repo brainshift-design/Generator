@@ -599,6 +599,9 @@ function handleLegacyNode(_node, genVersion)
     else if (_node.type == 'DEFINE') _node.type = ITERATE;
     else if (_node.type == 'START' ) _node.type = FEEDBACK;
     else if (_node.type == 'RENDER') _node.type = PERSIST;
+    else if (_node.type == 'VNAME' ) _node.type = SET_VALUE_NAME;
+    else if (_node.type == 'VNAMES') _node.type = SET_LIST_VALUE_NAMES;
+    else if (_node.type == 'ONAME' ) _node.type = SET_OBJECT_NAME;
 
 
     // remove 'showCenter' param from everything

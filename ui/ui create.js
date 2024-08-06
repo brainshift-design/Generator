@@ -12,10 +12,11 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case CACHE:                   node = new OpCache();              break;
         case FREEZE:                  node = new OpFreeze();             break;
         case TIMER:                   node = new OpTimer();              break;
-        case VALUE_NAME:              node = new OpValueName();          break;
+        case GET_VALUE_NAME:          node = new OpGetValueName();          break;
+        case SET_VALUE_NAME:          node = new OpSetValueName();          break;
         case GET_LIST_VALUE_NAMES:    node = new OpGetListValueNames();  break;
-        case LIST_VALUE_NAMES:        node = new OpListValueNames();     break;
-        case OBJECT_NAME:             node = new OpObjectName();         break;
+        case SET_LIST_VALUE_NAMES:    node = new OpSetListValueNames();     break;
+        case SET_OBJECT_NAME:         node = new OpSetObjectName();         break;
  
         case COMBINE:                 node = new OpCombine();            break;
         case LIST_AS_ITEM:            node = new OpListAsItem();         break;

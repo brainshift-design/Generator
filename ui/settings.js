@@ -402,8 +402,8 @@ function enableFeatures(sub)
     enableMenuItem(menuItemParseJson,           true, sub);
     enableMenuItem(menuItemCorrectColor,       true, sub);
     enableMenuItem(menuItemConvertToP3,        true, sub);
-    enableMenuItem(menuItemPersist,        true, sub);
-    enableMenuItem(menuItemVectorSep1,         true, sub, true);
+    enableMenuItem(menuItemPersist,            true, sub);
+    enableMenuItem(menuItemVectorNetworks,     true, sub, true);
     enableMenuItem(menuItemVectorVertex,       true, sub, true);
     enableMenuItem(menuItemVectorEdge,         true, sub, true);
     enableMenuItem(menuItemVectorRegion,       true, sub, true);

@@ -6400,8 +6400,8 @@ function enableFeatures(sub)
     enableMenuItem(menuItemParseJson,           true, sub);
     enableMenuItem(menuItemCorrectColor,       true, sub);
     enableMenuItem(menuItemConvertToP3,        true, sub);
-    enableMenuItem(menuItemPersist,        true, sub);
-    enableMenuItem(menuItemVectorSep1,         true, sub, true);
+    enableMenuItem(menuItemPersist,            true, sub);
+    enableMenuItem(menuItemVectorNetworks,     true, sub, true);
     enableMenuItem(menuItemVectorVertex,       true, sub, true);
     enableMenuItem(menuItemVectorEdge,         true, sub, true);
     enableMenuItem(menuItemVectorRegion,       true, sub, true);
@@ -6543,10 +6543,11 @@ const REPEAT               = 'REPT';
 const CACHE                = 'CACHE';
 const FREEZE               = 'FRZ';
 const TIMER                = 'TIMER';
-const VALUE_NAME           = 'VNAME';
+const GET_VALUE_NAME       = 'GVNAME';
+const SET_VALUE_NAME       = 'SVNAME';
 const GET_LIST_VALUE_NAMES = 'GVNAMES';
-const LIST_VALUE_NAMES     = 'VNAMES';
-const OBJECT_NAME          = 'ONAME';
+const SET_LIST_VALUE_NAMES = 'SVNAMES';
+const SET_OBJECT_NAME      = 'SONAME';
 
 
 const VARIABLE             = 'VAR';
@@ -6734,10 +6735,11 @@ const FLOW_TYPES =
     PARSE_JSON,
     PARSE_CSV,
     TIMER,
-    VALUE_NAME,
+    GET_VALUE_NAME,
+    SET_VALUE_NAME,
     GET_LIST_VALUE_NAMES,
-    LIST_VALUE_NAMES,
-    OBJECT_NAME
+    SET_LIST_VALUE_NAMES,
+    SET_OBJECT_NAME
 ];
 
 
@@ -11635,8 +11637,8 @@ extends GNode
         {
             const obj     = this.value.objects[i];
 
-            obj.nodeId    = this.nodeId;
-            obj.objectId += OBJECT_SEPARATOR + this.nodeId;
+            obj.nodeId    =  this.nodeId;
+            obj.objectId +=  OBJECT_SEPARATOR + this.nodeId;
             obj.listId    = -1;
         }
     }
@@ -20769,7 +20771,65 @@ extends GOperator1
 
 
 
-class GValueName
+class GGetValueName
+extends GOperator1
+{
+    constructor(nodeId, options)
+    {
+        super(GET_VALUE_NAME, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GGetValueName(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.value) copy.value = this.value.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = new TextValue(
+            this.input 
+            ? (await this.input.eval(parse)).toValue().valueId
+            : '');
+
+        
+        this.setUpdateValues(parse,
+        [
+            ['type', this.outputType()]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+}
+
+
+
+class GSetValueName
 extends GOperator1
 {
     name = null;
@@ -20778,7 +20838,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(VALUE_NAME, nodeId, options);
+        super(SET_VALUE_NAME, nodeId, options);
     }
 
 
@@ -20794,7 +20854,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GValueName(this.nodeId, this.options);
+        const copy = new GSetValueName(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -20825,6 +20885,7 @@ extends GOperator1
             && this.value.isValid())
         {
             this.value.valueId = name.value;
+            console.log('this.value =', this.value);
         }
 
 
@@ -21007,19 +21068,19 @@ extends GOperator1
 
 
 
-class GListValueNames
+class GSetListValueNames
 extends GOperator2
 {
     constructor(nodeId, options)
     {
-        super(LIST_VALUE_NAMES, nodeId, options);
+        super(SET_LIST_VALUE_NAMES, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GListValueNames(this.nodeId, this.options);
+        const copy = new GSetListValueNames(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -52569,12 +52630,58 @@ function genParseTimer(parse)
 
 
 
-function genParseValueName(parse)
+function genParseGetValueName(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const name = new GValueName(nodeId, options);
+    const name = new GGetValueName(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(name, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, name);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        name.input = genParse(parse);
+
+    name.name = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, name);
+    return name;
+}
+
+
+
+function genParseSetValueName(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const name = new GSetValueName(nodeId, options);
 
 
     let nInputs = -1;
@@ -59267,10 +59374,11 @@ function genParse(parse, inParam = true)
     else if (parse.next == ITERATE                ) result = genParseIterate           (parse);
     else if (parse.next == FREEZE                 ) result = genParseFreeze            (parse);
     else if (parse.next == TIMER                  ) result = genParseTimer             (parse);
-    else if (parse.next == VALUE_NAME             ) result = genParseValueName         (parse);
+    else if (parse.next == GET_VALUE_NAME         ) result = genParseGetValueName      (parse);
+    else if (parse.next == SET_VALUE_NAME         ) result = genParseSetValueName      (parse);
     else if (parse.next == GET_LIST_VALUE_NAMES   ) result = genParseGetListValueNames (parse);
-    else if (parse.next == LIST_VALUE_NAMES       ) result = genParseListValueNames    (parse);
-    else if (parse.next == OBJECT_NAME            ) result = genParseObjectName        (parse);
+    else if (parse.next == SET_LIST_VALUE_NAMES   ) result = genParseSetListValueNames (parse);
+    else if (parse.next == SET_OBJECT_NAME        ) result = genParseSetObjectName     (parse);
 
     else if (parse.next == COMBINE                ) result = genParseCombine           (parse);
     else if (parse.next == LIST_AS_ITEM           ) result = genParseListAsItem        (parse);

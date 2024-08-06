@@ -259,8 +259,8 @@ extends GNode
         {
             const obj     = this.value.objects[i];
 
-            obj.nodeId    = this.nodeId;
-            obj.objectId += OBJECT_SEPARATOR + this.nodeId;
+            obj.nodeId    =  this.nodeId;
+            obj.objectId +=  OBJECT_SEPARATOR + this.nodeId;
             obj.listId    = -1;
         }
     }

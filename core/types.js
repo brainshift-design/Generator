@@ -12,10 +12,11 @@ const REPEAT               = 'REPT';
 const CACHE                = 'CACHE';
 const FREEZE               = 'FRZ';
 const TIMER                = 'TIMER';
-const VALUE_NAME           = 'VNAME';
+const GET_VALUE_NAME       = 'GVNAME';
+const SET_VALUE_NAME       = 'SVNAME';
 const GET_LIST_VALUE_NAMES = 'GVNAMES';
-const LIST_VALUE_NAMES     = 'VNAMES';
-const OBJECT_NAME          = 'ONAME';
+const SET_LIST_VALUE_NAMES = 'SVNAMES';
+const SET_OBJECT_NAME      = 'SONAME';
 
 
 const VARIABLE             = 'VAR';
@@ -203,10 +204,11 @@ const FLOW_TYPES =
     PARSE_JSON,
     PARSE_CSV,
     TIMER,
-    VALUE_NAME,
+    GET_VALUE_NAME,
+    SET_VALUE_NAME,
     GET_LIST_VALUE_NAMES,
-    LIST_VALUE_NAMES,
-    OBJECT_NAME
+    SET_LIST_VALUE_NAMES,
+    SET_OBJECT_NAME
 ];
 
 

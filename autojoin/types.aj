@@ -86,10 +86,11 @@
 ../generator/types/flow/GCache.js
 ../generator/types/flow/GFreeze.js
 ../generator/types/flow/GTimer.js
-../generator/types/flow/GValueName.js
+../generator/types/flow/GGetValueName.js
+../generator/types/flow/GSetValueName.js
 ../generator/types/flow/GGetListValueNames.js
-../generator/types/flow/GListValueNames.js
-../generator/types/flow/GObjectName.js
+../generator/types/flow/GSetListValueNames.js
+../generator/types/flow/GSetObjectName.js
 
 ../generator/types/flow/GCombine.js
 ../generator/types/flow/GListAsItem.js

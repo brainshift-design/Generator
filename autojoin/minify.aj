@@ -1072,7 +1072,8 @@ REPEAT
 CACHE
 FREEZE
 TIMER
-VALUE_NAME
+GET_VALUE_NAME
+SET_VALUE_NAME
 COMBINE
 LIST_AS_ITEM
 EXTRACT
@@ -1357,8 +1358,8 @@ REORDER_LIST
 SHIFT_LIST
 BUCKLE_LIST
 GET_LIST_VALUE_NAMES
-LIST_VALUE_NAMES
-OBJECT_NAME
+SET_LIST_VALUE_NAMES
+SET_OBJECT_NAME
 NUMBER_PRECISION
 NUMBER_NEGATIVE
 NUMBER_QUANTIZE
@@ -4304,8 +4305,9 @@ iconFeedback
 iconParameters
 iconNames
 iconListNames
-iconListValueNames
-iconObjectName
+iconGetListValueNames
+iconSetListValueNames
+iconSetObjectName
 iconListFunctions
 iconBuckleList
 iconSelectFromList

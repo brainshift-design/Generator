@@ -52,10 +52,11 @@
 ../operators/flow/OpCache.js
 ../operators/flow/OpFreeze.js
 ../operators/flow/OpTimer.js
-../operators/flow/OpValueName.js
+../operators/flow/OpGetValueName.js
+../operators/flow/OpSetValueName.js
 ../operators/flow/OpGetListValueNames.js
-../operators/flow/OpListValueNames.js
-../operators/flow/OpObjectName.js
+../operators/flow/OpSetListValueNames.js
+../operators/flow/OpSetObjectName.js
 
 ../operators/flow/OpCombine.js
 ../operators/flow/OpListAsItem.js
