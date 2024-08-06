@@ -44,6 +44,7 @@ var menuLogMessages;
 var menuDebugDelete;
 
 var menuRepeat;
+var menuSelectFromList;
 var menuFlow;
 var menuData;
 var menuItems;
@@ -74,8 +75,9 @@ var menuCondition;
 var menuTrig;
 var menuFunctions;
 
-var menuVectorPath;
-var menuVectorFunctions;
+var menuVectorPoints;
+var menuVectorPaths;
+var menuVectorNetworks;
 var menuVectorShapes;
 var menuPoint;
 var menuShapes;
@@ -452,26 +454,35 @@ function initGeneratorMenus()
         menuItemTimer   = new MenuItem('Timer ',         null, false, {icon: iconTimer,         createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
         menuItemAnimate = new MenuItem('Animate',        null, false, {icon: iconAnimate,       createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))})]);
 
+
+    menuSelectFromList = new Menu('Select', true, false);
+    menuSelectFromList.addItems([
+        new MenuItem('Select from list', null, false, {icon: iconSelectFromList, createType: SELECT_FROM_LIST,        callback: e => actionManager.do(getCreateNodeAction(SELECT_FROM_LIST, btnFlow.div, getCreateOptions(e)))})]);
+
+
     menuFlow = new Menu('Data flow', true, false);
     menuFlow.addItems([
-        menuItemCombine    = new MenuItem('Combine',           null,            false, {icon: iconCombine,       createType: COMBINE,       callback: e => actionManager.do(getCreateNodeAction(COMBINE,          btnFlow.div, getCreateOptions(e)))}),
-                             new MenuItem('',               null, false, {separator: true}),
-        menuItemRepeat     = new MenuItem('. . . Repeat',   null, false, {icon: iconRepeat, childMenu: menuRepeat, createType: REPEAT,         callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
-        menuItemStart      = new MenuItem('Feedback . . .', null, false, {icon: iconFeedback,      createType: FEEDBACK,       callback: e => actionManager.do(getCreateNodeAction(FEEDBACK,        btnFlow.div, getCreateOptions(e)))}),
-        //menuItemVarGroup   = new MenuItem('Variable group', null, false, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
-                             new MenuItem('',               null, false, {separator: true}),
-        menuItemCache      = new MenuItem('Cache. . .',     null, false, {icon: iconCache,         createType: CACHE,          callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
-        menuItemFreeze     = new MenuItem('Freeze',         null, false, {icon: iconFreeze,        createType: FREEZE,         callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
-        menuItemPersist    = new MenuItem('Persist',        null, false, {icon: iconPersist,   createType: PERSIST,        callback: e => actionManager.do(getCreateNodeAction(PERSIST,         btnFlow.div, getCreateOptions(e)))}),
-                             new MenuItem('',               null, false, {separator: true}),
-                             new MenuItem('Variable',       null, false, {icon: iconVariable,      createType: VARIABLE,       callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
-                             new MenuItem('',               null, false, {separator: true}),
-        menuItemNull       = new MenuItem('Null',           null, false, {icon: iconNull,          createType: NULL_NODE,      callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
-                             new MenuItem('',               null, false, {separator: true}),
-                             new MenuItem('Data',           null, false, {icon: iconTextFile,     childMenu: menuComplexData}),
-                             new MenuItem('',               null, false, {separator: true}),
-                             new MenuItem('Parameters',     null, false, {icon: iconParameters, childMenu: menuParams}),
-                             new MenuItem('Value names',    null, false, {icon: iconNames, childMenu: menuNames})]);
+        menuItemCombine    = new MenuItem('Combine',           null,      false, {icon: iconCombine,       createType: COMBINE,       callback: e => actionManager.do(getCreateNodeAction(COMBINE,          btnFlow.div, getCreateOptions(e)))}),
+                             new MenuItem('',                  null,      false, {separator: true}),     
+        menuItemIfElse     = new MenuItem('I&hairsp;f / else', 'If else', false, {icon: iconIfElse,        createType: IF_ELSE,       callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,          btnFlow.div, getCreateOptions(e))), disambiguate: true}),
+        menuItemSelect     = new MenuItem('Select',            null,      false, {childMenu: menuSelectFromList, icon: iconSelect,        createType: SELECT,        callback: e => actionManager.do(getCreateNodeAction(SELECT,           btnFlow.div, getCreateOptions(e)))}),
+                             new MenuItem('',                  null,      false, {separator: true}),
+        menuItemRepeat     = new MenuItem('. . . Repeat',      null,      false, {icon: iconRepeat, childMenu: menuRepeat, createType: REPEAT,         callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
+        menuItemStart      = new MenuItem('Feedback . . .',    null,      false, {icon: iconFeedback,      createType: FEEDBACK,       callback: e => actionManager.do(getCreateNodeAction(FEEDBACK,        btnFlow.div, getCreateOptions(e)))}),
+        //menuItemVarGroup   = new MenuItem('Variable group',  null,      false, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
+                             new MenuItem('',                  null,      false, {separator: true}),
+        menuItemCache      = new MenuItem('Cache. . .',        null,      false, {icon: iconCache,         createType: CACHE,          callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemFreeze     = new MenuItem('Freeze',            null,      false, {icon: iconFreeze,        createType: FREEZE,         callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
+        menuItemPersist    = new MenuItem('Persist',           null,      false, {icon: iconPersist,   createType: PERSIST,        callback: e => actionManager.do(getCreateNodeAction(PERSIST,         btnFlow.div, getCreateOptions(e)))}),
+                             new MenuItem('',                  null,      false, {separator: true}),
+                             new MenuItem('Variable',          null,      false, {icon: iconVariable,      createType: VARIABLE,       callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
+                             new MenuItem('',                  null,      false, {separator: true}),
+        menuItemNull       = new MenuItem('Null',              null,      false, {icon: iconNull,          createType: NULL_NODE,      callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
+                             new MenuItem('',                  null,      false, {separator: true}),
+                             new MenuItem('Data',              null,      false, {icon: iconTextFile,     childMenu: menuComplexData}),
+                             new MenuItem('',                  null,      false, {separator: true}),
+                             new MenuItem('Parameters',        null,      false, {icon: iconParameters, childMenu: menuParams}),
+                             new MenuItem('Value names',       null,      false, {icon: iconNames, childMenu: menuNames})]);
     
 
     menuItems = new Menu('List functions', true, false);
@@ -498,10 +509,6 @@ function initGeneratorMenus()
                             //new MenuItem('Object count',      null,            false, {icon: iconObjectCount,   createType: OBJECT_COUNT,  callback: e => actionManager.do(getCreateNodeAction(OBJECT_COUNT,     btnData.div, getCreateOptions(e)))}),
                             //new MenuItem('',                  null,            false, {separator: true}),     
                               new MenuItem('Contains',          'List contains', true,  {icon: iconContains,      createType: CONTAINS,      callback: e => actionManager.do(getCreateNodeAction(CONTAINS,         btnData.div, getCreateOptions(e))), disambiguate: true}),
-                              new MenuItem('',                  null,            false, {separator: true}),     
-        menuItemIfElse      = new MenuItem('I&hairsp;f / else', 'If else',       false, {icon: iconIfElse,        createType: IF_ELSE,       callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,          btnData.div, getCreateOptions(e))), disambiguate: true}),
-        menuItemSelect      = new MenuItem('Select',            null,            false, {icon: iconSelect,        createType: SELECT,        callback: e => actionManager.do(getCreateNodeAction(SELECT,           btnData.div, getCreateOptions(e)))}),
-                              new MenuItem('Select from list',  null,            false, {icon: iconSelectFromList, createType: SELECT_FROM_LIST,        callback: e => actionManager.do(getCreateNodeAction(SELECT_FROM_LIST, btnData.div, getCreateOptions(e)))}),
                               new MenuItem('',                  null,            false, {separator: true}),     
                               new MenuItem('Functions',         null,            false, {icon: iconListFunctions, childMenu: menuItems}),
                               new MenuItem('',                  null,            false, {separator: true}),     
@@ -733,26 +740,6 @@ function initGeneratorMenus()
         new MenuItem('Corner', 'Point corner', false, {icon: iconPointCorner, createType: POINT_CORNER,      callback: e => actionManager.do(getCreateNodeAction(POINT_CORNER, btnShape.div, getCreateOptions(e)))})]);
 
 
-    menuVectorFunctions = new Menu('Vector functions', true, false);
-    menuVectorFunctions.addItems([
-                                     new MenuItem('Vector',                null, false, {icon: iconVector,                      createType: VECTOR,         callback: e => actionManager.do(getCreateNodeAction(VECTOR,         btnShape.div, getCreateOptions(e)))}),
-                                     new MenuItem('',                      null, false, {separator: true}),
-                                     new MenuItem('Circle center',         null, false, {icon: iconCircleCenter,                createType: CIRCLE_CENTER,         callback: e => actionManager.do(getCreateNodeAction(CIRCLE_CENTER,         btnShape.div, getCreateOptions(e)))}),
-        menuItemPointAlongPath     = new MenuItem('Point along path',      null, false, {icon: iconPointAlongPath,              createType: POINT_ALONG_PATH,      callback: e => actionManager.do(getCreateNodeAction(POINT_ALONG_PATH,      btnShape.div, getCreateOptions(e)))}),
-        menuItemClosestPointOnPath = new MenuItem('Closest point on path', null, false, {icon: iconClosestPointOnPath,          createType: CLOSEST_POINT_ON_PATH, callback: e => actionManager.do(getCreateNodeAction(CLOSEST_POINT_ON_PATH, btnShape.div, getCreateOptions(e)))}),
-                                     new MenuItem('Intersect lines',       null, false, {icon: iconIntersectLines,              createType: INTERSECT_LINES,       callback: e => actionManager.do(getCreateNodeAction(INTERSECT_LINES,       btnShape.div, getCreateOptions(e)))}),
-                                     new MenuItem('Interpolate points',    null, false, {icon: iconInterpolatePoint,            createType: INTERPOLATE_POINT,     callback: e => actionManager.do(getCreateNodeAction(INTERPOLATE_POINT,     btnShape.div, getCreateOptions(e)))}),
-                                     new MenuItem('',                      null, false, {separator: true}),       
-                                     new MenuItem('Measure vector',        null, false, {icon: iconMeasureVector,               createType: MEASURE_VECTOR,        callback: e => actionManager.do(getCreateNodeAction(MEASURE_VECTOR,        btnShape.div, getCreateOptions(e)))}),
-                                     new MenuItem('Point angle',           null, false, {icon: iconPointAngle,                  createType: POINT_ANGLE,           callback: e => actionManager.do(getCreateNodeAction(POINT_ANGLE,           btnShape.div, getCreateOptions(e)))}),
-        menuItemPathLength         = new MenuItem('Path length',           null, false, {icon: iconPathLength,                  createType: PATH_LENGTH,           callback: e => actionManager.do(getCreateNodeAction(PATH_LENGTH,           btnShape.div, getCreateOptions(e)))}),
-                                     new MenuItem('',                      null, false, {separator: true}),
-                                     new MenuItem('Join paths',            null, false, {icon: iconJoinPaths,                   createType: JOIN_PATHS,            callback: e => actionManager.do(getCreateNodeAction(JOIN_PATHS,            btnShape.div, getCreateOptions(e)))}),
-                                     new MenuItem('Reorient paths',        null, false, {icon: iconReorientPaths,               createType: REORIENT_PATHS,        callback: e => actionManager.do(getCreateNodeAction(REORIENT_PATHS,        btnShape.div, getCreateOptions(e)))}),
-                                     new MenuItem('Reverse path',          null, false, {icon: iconReversePath,                 createType: REVERSE_PATH,          callback: e => actionManager.do(getCreateNodeAction(REVERSE_PATH,          btnShape.div, getCreateOptions(e)))})]);
-                                   //new MenuItem('Blend path',            null, false, {icon: iconBlendPath,                   createType: BLEND_PATH,            callback: e => actionManager.do(getCreateNodeAction(BLEND_PATH,            btnShape.div, getCreateOptions(e)))}),
-
-
     menuVectorShapes = new Menu('Vector shapes', true, false);
     menuVectorShapes.addItems([
         new MenuItem('Arc',             null, false, {icon: iconArcPath,       createType: ARC_PATH,              callback: e => actionManager.do(getCreateNodeAction(ARC_PATH,        btnShape.div, getCreateOptions(e)))}),
@@ -760,20 +747,47 @@ function initGeneratorMenus()
         new MenuItem('Wave',            null, false, {icon: iconWavePath,      createType: WAVE_PATH,             callback: e => actionManager.do(getCreateNodeAction(WAVE_PATH,       btnShape.div, getCreateOptions(e)))})]);
 
 
-    menuVectorPath = new Menu('Vector path', true, false);
-    menuVectorPath.addItems([
-                                     new MenuItem('Point',     null,          false, {childMenu: menuPoint, icon: iconPoint, createType: POINT,          callback: e => actionManager.do(getCreateNodeAction(POINT,          btnShape.div, getCreateOptions(e)))}),
-                                     new MenuItem('Path',      'Vector path', true,  {icon: iconVectorPath,                  createType: VECTOR_PATH,    callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH,    btnShape.div, getCreateOptions(e)))}),
-        menuItemVectorSep1         = new MenuItem('',          null,          false, {separator: true}),           
+    menuVectorPoints = new Menu('Vector points', true, false);
+    menuVectorPoints.addItems([
+                                     new MenuItem('Point',                 null, false, {icon: iconPoint, createType: POINT,          callback: e => actionManager.do(getCreateNodeAction(POINT,          btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('Vector',                null, false, {icon: iconVector,                      createType: VECTOR,         callback: e => actionManager.do(getCreateNodeAction(VECTOR,         btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('',                      null, false, {separator: true}),       
+                                     new MenuItem('Measure vector',        null, false, {icon: iconMeasureVector,               createType: MEASURE_VECTOR,        callback: e => actionManager.do(getCreateNodeAction(MEASURE_VECTOR,        btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('Point angle',           null, false, {icon: iconPointAngle,                  createType: POINT_ANGLE,           callback: e => actionManager.do(getCreateNodeAction(POINT_ANGLE,           btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('',                      null, false, {separator: true}),
+                                     new MenuItem('Interpolate points',    null, false, {icon: iconInterpolatePoint,            createType: INTERPOLATE_POINT,     callback: e => actionManager.do(getCreateNodeAction(INTERPOLATE_POINT,     btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('Intersect lines',       null, false, {icon: iconIntersectLines,              createType: INTERSECT_LINES,       callback: e => actionManager.do(getCreateNodeAction(INTERSECT_LINES,       btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('',                      null, false, {separator: true}),
+                                     new MenuItem('Circle center',         null, false, {icon: iconCircleCenter,                createType: CIRCLE_CENTER,         callback: e => actionManager.do(getCreateNodeAction(CIRCLE_CENTER,         btnShape.div, getCreateOptions(e)))}),
+        menuItemPointAlongPath     = new MenuItem('Point along path',      null, false, {icon: iconPointAlongPath,              createType: POINT_ALONG_PATH,      callback: e => actionManager.do(getCreateNodeAction(POINT_ALONG_PATH,      btnShape.div, getCreateOptions(e)))}),
+        menuItemClosestPointOnPath = new MenuItem('Closest point on path', null, false, {icon: iconClosestPointOnPath,          createType: CLOSEST_POINT_ON_PATH, callback: e => actionManager.do(getCreateNodeAction(CLOSEST_POINT_ON_PATH, btnShape.div, getCreateOptions(e)))})]);
+                             
+
+    menuVectorPaths = new Menu('Vector paths', true, false);
+    menuVectorPaths.addItems([
+                                     new MenuItem('Point',           null,          false, {childMenu: menuPoint, icon: iconPoint, createType: POINT,          callback: e => actionManager.do(getCreateNodeAction(POINT,          btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('Path',            'Vector path', true,  {icon: iconVectorPath,                  createType: VECTOR_PATH,    callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH,    btnShape.div, getCreateOptions(e)))}),
+        menuItemVectorSep1         = new MenuItem('',                null,          false, {separator: true}),           
+                                    //  new MenuItem('Shapes',       null,          false, {childMenu: menuVectorShapes}),
+                                     new MenuItem('Arc',             null,          false, {icon: iconArcPath,       createType: ARC_PATH,              callback: e => actionManager.do(getCreateNodeAction(ARC_PATH,        btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('Arc from points', null,          false, {icon: iconArcFromPoints, createType: ARC_FROM_POINTS,       callback: e => actionManager.do(getCreateNodeAction(ARC_FROM_POINTS, btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('Wave',            null,          false, {icon: iconWavePath,      createType: WAVE_PATH,             callback: e => actionManager.do(getCreateNodeAction(WAVE_PATH,       btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('',                null,          false, {separator: true}),
+        menuItemPathLength         = new MenuItem('Path length',     null,          false, {icon: iconPathLength,                  createType: PATH_LENGTH,           callback: e => actionManager.do(getCreateNodeAction(PATH_LENGTH,           btnShape.div, getCreateOptions(e)))}),
+                                   //new MenuItem('',                null,          false, {separator: true}),
+                                   //new MenuItem('Blend path',      null,          false, {icon: iconBlendPath,                   createType: BLEND_PATH,            callback: e => actionManager.do(getCreateNodeAction(BLEND_PATH,            btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('',                null,          false, {separator: true}),
+                                     new MenuItem('Join paths',      null,          false, {icon: iconJoinPaths,                   createType: JOIN_PATHS,            callback: e => actionManager.do(getCreateNodeAction(JOIN_PATHS,            btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('Reorient paths',  null,          false, {icon: iconReorientPaths,               createType: REORIENT_PATHS,        callback: e => actionManager.do(getCreateNodeAction(REORIENT_PATHS,        btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('Reverse path',    null,          false, {icon: iconReversePath,                 createType: REVERSE_PATH,          callback: e => actionManager.do(getCreateNodeAction(REVERSE_PATH,          btnShape.div, getCreateOptions(e)))})]);
+                             
+
+    menuVectorNetworks = new Menu('Vector networks', true, false);
+    menuVectorNetworks.addItems([
         menuItemVectorVertex       = new MenuItem('Vertex',    null,          false, {icon: iconVectorVertex,                createType: VECTOR_VERTEX,  callback: e => actionManager.do(getCreateNodeAction(VECTOR_VERTEX,  btnShape.div, getCreateOptions(e)))}),
         menuItemVectorEdge         = new MenuItem('Edge',      null,          false, {icon: iconVectorEdge,                  createType: VECTOR_EDGE,    callback: e => actionManager.do(getCreateNodeAction(VECTOR_EDGE,    btnShape.div, getCreateOptions(e)))}),
         menuItemVectorRegion       = new MenuItem('Region',    null,          false, {icon: iconVectorRegion,                createType: VECTOR_REGION,  callback: e => actionManager.do(getCreateNodeAction(VECTOR_REGION,  btnShape.div, getCreateOptions(e)))}),
-        menuItemVectorNetwork      = new MenuItem('Network',   null,          false, {icon: iconVectorNetwork,               createType: VECTOR_NETWORK, callback: e => actionManager.do(getCreateNodeAction(VECTOR_NETWORK, btnShape.div, getCreateOptions(e)))}),
-                                     new MenuItem('',          null,          false, {separator: true}),           
-                                    //  new MenuItem('Shapes',    null,          false, {childMenu: menuVectorShapes}),
-                                     new MenuItem('Arc',             null, false, {icon: iconArcPath,       createType: ARC_PATH,              callback: e => actionManager.do(getCreateNodeAction(ARC_PATH,        btnShape.div, getCreateOptions(e)))}),
-                                     new MenuItem('Arc from points', null, false, {icon: iconArcFromPoints, createType: ARC_FROM_POINTS,       callback: e => actionManager.do(getCreateNodeAction(ARC_FROM_POINTS, btnShape.div, getCreateOptions(e)))}),
-                                     new MenuItem('Wave',            null, false, {icon: iconWavePath,      createType: WAVE_PATH,             callback: e => actionManager.do(getCreateNodeAction(WAVE_PATH,       btnShape.div, getCreateOptions(e)))})]);
+        menuItemVectorNetwork      = new MenuItem('Network',   null,          false, {icon: iconVectorNetwork,               createType: VECTOR_NETWORK, callback: e => actionManager.do(getCreateNodeAction(VECTOR_NETWORK, btnShape.div, getCreateOptions(e)))})]);
                              
 
     menuRectangle = new Menu('Rectangle', true, false);
@@ -815,8 +829,9 @@ function initGeneratorMenus()
                              // new MenuItem('',                 null, false, {separator: true}),
                                 new MenuItem('Shapes',           null, false, {icon: iconShapes,        childMenu: menuShapes}),
                                 new MenuItem('',                 null, false, {separator: true}),
-                                new MenuItem('Vector shapes',    null, false, {icon: iconVectorPath,    childMenu: menuVectorPath}),
-                                new MenuItem('Vector functions', null, false, {childMenu: menuVectorFunctions}),
+                                new MenuItem('Vector points',    null, false, {icon: iconPoint,         childMenu: menuVectorPoints}),
+                                new MenuItem('Vector paths',     null, false, {icon: iconVectorPath,    childMenu: menuVectorPaths}),
+                                new MenuItem('Vector networks',  null, false, {icon: iconVectorNetwork, childMenu: menuVectorNetworks}),
                                 new MenuItem('',                 null, false, {separator: true}),
                                 new MenuItem('Frame',            null, false, {icon: iconFrame,      createType: FRAME,         callback: e => actionManager.do(getCreateNodeAction(FRAME,         btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('Group',            null, false, {icon: iconShapeGroup, createType: SHAPE_GROUP,   callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP,   btnShape.div, getCreateOptions(e)))}),
@@ -1185,6 +1200,8 @@ function initGeneratorMenus()
 
     menuBarMenus = 
     [
+        menuRepeat,
+        menuSelectFromList,
         menuFlow,
         menuData,
         menuItems,
@@ -1211,8 +1228,9 @@ function initGeneratorMenus()
         menuShapes,
         menuStroke,
         menuRectangle,
-        menuVectorPath,
-        menuVectorFunctions,
+        menuVectorPoints,
+        menuVectorPaths,
+        menuVectorNetworks,
         menuPoint,
         menuTransform,
         menuDecoration
