@@ -21147,7 +21147,7 @@ extends GOperator2
 
 
 
-class GObjectName
+class GSetObjectName
 extends GOperator1
 {
     name    = null;
@@ -21157,7 +21157,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(OBJECT_NAME, nodeId, options);
+        super(SET_OBJECT_NAME, nodeId, options);
     }
 
 
@@ -21174,7 +21174,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GObjectName(this.nodeId, this.options);
+        const copy = new GSetObjectName(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -52936,12 +52936,12 @@ function genParseGetListValueNames(parse)
 
 
 
-function genParseListValueNames(parse)
+function genParseSetListValueNames(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const names = new GListValueNames(nodeId, options);
+    const names = new GSetListValueNames(nodeId, options);
 
 
     let nInputs = -1;
@@ -52992,12 +52992,12 @@ function genParseListValueNames(parse)
 
 
 
-function genParseObjectName(parse)
+function genParseSetObjectName(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const name = new GObjectName(nodeId, options);
+    const name = new GSetObjectName(nodeId, options);
 
 
     let nInputs = -1;

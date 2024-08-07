@@ -1,4 +1,4 @@
-class   OpObjectName
+class   OpSetObjectName
 extends OperatorBase
 {
     paramName;
@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(OBJECT_NAME, 'objectName', 'object name', iconSetObjectName);
+        super(SET_OBJECT_NAME, 'setObjectName', 'set object name', iconSetObjectName);
 
 
         this.subscription = true;

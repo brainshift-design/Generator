@@ -4345,7 +4345,7 @@ connectionGap
 initLabelTextbox
 OpGetListValueNames
 OpListValueNames
-OpObjectName
+OpSetObjectName
 OpBuckleList
 OpObjectCount
 OpSetPrecision

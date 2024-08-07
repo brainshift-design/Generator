@@ -1583,12 +1583,12 @@ function genParseGetListValueNames(parse)
 
 
 
-function genParseListValueNames(parse)
+function genParseSetListValueNames(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const names = new GListValueNames(nodeId, options);
+    const names = new GSetListValueNames(nodeId, options);
 
 
     let nInputs = -1;
@@ -1639,12 +1639,12 @@ function genParseListValueNames(parse)
 
 
 
-function genParseObjectName(parse)
+function genParseSetObjectName(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const name = new GObjectName(nodeId, options);
+    const name = new GSetObjectName(nodeId, options);
 
 
     let nInputs = -1;

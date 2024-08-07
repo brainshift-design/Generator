@@ -1,4 +1,4 @@
-class GObjectName
+class GSetObjectName
 extends GOperator1
 {
     name    = null;
@@ -8,7 +8,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(OBJECT_NAME, nodeId, options);
+        super(SET_OBJECT_NAME, nodeId, options);
     }
 
 
@@ -25,7 +25,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GObjectName(this.nodeId, this.options);
+        const copy = new GSetObjectName(this.nodeId, this.options);
 
         copy.copyBase(this);
 
