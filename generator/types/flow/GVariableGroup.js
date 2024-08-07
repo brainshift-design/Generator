@@ -57,9 +57,9 @@ extends GOperator
 
         //         valueId = getNewNumberId(
         //             valueId,
-        //             id => this.value.items.find(i => 
+        //             id => this.value.items.filter(i => 
         //                    i != item 
-        //                 && i.valueId == id));
+        //                 && i.valueId == id).length);
 
         //         Object.assign(this, {[valueId]: item});
         //         this.setUpdateValues(parse, [[valueId, item]], true);

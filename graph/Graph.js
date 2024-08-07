@@ -43,7 +43,7 @@ class Graph
 
         node.id = getNewNumberId(
             node.id,
-            id => this.nodes.find(n => n.id == id));
+            id => this.nodes.filter(n => n.id == id).length);
 
         this.nodes.push(node);
         graphView.div.appendChild(node.div);

@@ -80,7 +80,7 @@ extends GOperator1
 
                                 item.valueId = getNewNumberId(
                                     item.valueId, 
-                                    id => valueIds.includes(id),
+                                    id => valueIds.filter(_id => _id == id).length,
                                     item.valueId,
                                     '',
                                     1,

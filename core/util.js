@@ -293,15 +293,16 @@ function simpleIntHash(x)
 
 
 
-function getNewNumberId(curId, checkExists, id = curId, join = '', startNum = 2, addZero = false)
+function getNewNumberId(curId, countExisting, id = curId, join = '', startNum = 2, addZero = false)
 {
     if (   addZero
         && (    id.length == 0
-            || !isDigit(id.at(-1))))
+            || !isDigit(id.at(-1)))
+        && countExisting(id) > 1)
         id += '0';
 
 
-    if (!checkExists(id))
+    if (countExisting(id) == 0)
         return id;
     
 
@@ -313,7 +314,7 @@ function getNewNumberId(curId, checkExists, id = curId, join = '', startNum = 2,
         let   num = parseInt(id.substring(len));
 
         let newId = '';
-        while (newId == '' || checkExists(newId))
+        while (newId == '' || countExisting(newId) > 0)
             newId = id.substring(0, len + join.length) + join + (++num);
 
         return newId;
@@ -324,7 +325,7 @@ function getNewNumberId(curId, checkExists, id = curId, join = '', startNum = 2,
         let num   = startNum;
         let newId = id + join + num;
 
-        while (checkExists(newId))
+        while (countExisting(newId) > 0)
             newId = id + join + (++num);
 
         return newId;

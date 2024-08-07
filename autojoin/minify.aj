@@ -1492,7 +1492,7 @@ getCreateNodeAction
 simpleIntHash
 getNewNumberId
 curId
-checkExists
+countExisting
 getNumLength
 isValidFloatString
 setControlFont

@@ -301,7 +301,7 @@ extends OperatorBase
 
             newName = getNewNumberId(
                 newName, 
-                name => paramNodes.find(n => n.name == name), 
+                name => paramNodes.filter(n => n.name == name).length,
                 newName, 
                 '');
 

@@ -16,11 +16,11 @@ Graph.prototype.addPage = function(page)
 {
     page.id = getNewNumberId(
         page.id,
-        id => graph.pages.find(p => p.id == id));
+        id => graph.pages.filter(p => p.id == id).length);
 
     page.name = getNewNumberId(
         page.name, 
-        name => graph.pages.find(p => p.name == name), 
+        name => graph.pages.filter(p => p.name == name).length, 
         page.name, 
         ' ');
 

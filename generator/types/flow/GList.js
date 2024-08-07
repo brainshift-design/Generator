@@ -98,13 +98,11 @@ extends GOperator1
 
                 valueId = getNewNumberId(
                     valueId,
-                    id => valueIds.includes(id),
+                    id => valueIds.filter(_id => _id == id).length,
                     valueId,
                     '',
                     1,
                     true);
-
-                console.log('valueId =', valueId);
 
                 valueIds.push(valueId);
             }
