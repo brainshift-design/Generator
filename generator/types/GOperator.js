@@ -307,7 +307,23 @@ async function evalValue(_value, parse, nan = () => new NullValue())
 
 
 
-async function evalNumberValue(_value, parse) { return await evalValue(_value, parse, () => NumberValue        .NaN.copy()); }
+async function evalNumberValue(_value, parse) 
+{ 
+    let value = await evalValue(_value, parse, () => NumberValue.NaN.copy()); 
+
+    if (   value
+        && value.type == TEXT_VALUE)
+        value = new NumberValue(parseFloat(value.value));
+
+    else if (value
+          && value.type == LIST_VALUE
+          && finalListTypeFromItems(value.items) == TEXT_LIST_VALUE)
+        value = new ListValue(value.items.map(i => new NumberValue(parseFloat(i.value))));
+    
+    return value;                
+}
+
+
 
 async function evalTextValue(_value, parse) 
 { 
@@ -324,6 +340,8 @@ async function evalTextValue(_value, parse)
     
     return value;                
 }
+
+
 
 async function evalColorValue         (_value, parse) { return await evalValue(_value, parse, () => ColorValue         .NaN.copy()); }
 async function evalFillValue          (_value, parse) { return await evalValue(_value, parse, () => FillValue          .NaN.copy()); }

@@ -52,9 +52,11 @@ extends GOperator1
             return this;
 
             
-        const input = await evalValue    (this.input, parse);
-        const from  = await evalListValue(this.from,  parse);
-        const to    = await evalListValue(this.to,    parse);
+        const input = await evalNumberValue(this.input, parse);
+        const from  = await evalListValue  (this.from,  parse);
+        const to    = await evalListValue  (this.to,    parse);
+
+        let nanList = false;
 
 
         if (   input 
@@ -83,7 +85,15 @@ extends GOperator1
                         this.value = getNumberMapValue(input, from, to);
                 }
                 else
-                    this.value = NumberValue.NaN.copy();
+                {
+                    if (isListValueType(input.type))
+                    {
+                        this.value = new ListValue();
+                        nanList = true;
+                    }
+                    else
+                        this.value = NumberValue.NaN.copy();
+                }
             }
             else
                 this.value = input;
@@ -91,12 +101,12 @@ extends GOperator1
         else
             this.value = NumberValue.NaN.copy();
 
-
+        console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
-            ['type', this.outputType()],
-            ['from', from             ],
-            ['to',   to               ]
+            ['type', nanList ? new TextValue(NUMBER_LIST_VALUE) : this.outputType()],
+            ['from', from                                           ],
+            ['to',   to                                             ]
         ]);
 
 
