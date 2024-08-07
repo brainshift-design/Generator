@@ -313,8 +313,14 @@ async function evalTextValue(_value, parse)
 { 
     let value = await evalValue(_value, parse, () => new TextValue());
 
-    if (value.type == NUMBER_VALUE)
+    if (   value
+        && value.type == NUMBER_VALUE)
         value = new TextValue(value.value.toString());
+
+    else if (value
+          && value.type == LIST_VALUE
+          && finalListTypeFromItems(value.items) == NUMBER_LIST_VALUE)
+        value = new ListValue(value.items.map(i => new TextValue(i.value.toString())));
     
     return value;                
 }

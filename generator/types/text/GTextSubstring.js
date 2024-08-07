@@ -48,40 +48,43 @@ extends GOperator1
         const end   = await evalNumberValue(this.end,   parse);
 
 
-        let length = 0;
+        let length     = 0;
+        let fullLength = 0;
 
 
         if (   input
             && start
             && end)
         {
-            length = input.value.length;
-            
-            this.value = input.copy();
-            
-            consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
-                
-                
-            const _end =
-                end.isValid()
-                ? end
-                : new NumberValue(input.value.length);
-
-
-            if (this.options.enabled)
+            if (isListValueType(input.type))
             {
-                const endValue = 
-                    _end.value < 0
-                    ? length + _end.value
-                    : _end.value;
+                this.value = new ListValue();
 
-                if (start.value <= endValue)
-                    this.value.value = this.value.value.substring(start.value, endValue);
-                else
-                    this.value = new TextValue();
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    const sub =
+                        item.type == TEXT_VALUE
+                        ? getSubstringValue(item, start, end, this.options.enabled)
+                        : new TextValue();
+
+                    length     = Math.max(length,     sub.value.length);
+                    fullLength = Math.max(fullLength, sub.value.length);
+
+                    this.value.items.push(sub);
+                }
+
             }
             else
-                this.value = input.copy();
+            {
+                this.value = getSubstringValue(input, start, end, this.options.enabled);
+                
+                length     = this .value.length;
+                fullLength = input.value.length;
+            }
+                        
+            //consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
         }
         else
             this.value = new TextValue();
@@ -89,10 +92,11 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['length',     new NumberValue(length)                        ], // used to set start and end limits
-            ['fullLength', new NumberValue(input ? input.value.length : 0)], // used to set start and end maxima
-            ['start',      start                                          ],
-            ['end',        end                                            ]
+            ['type',       this.outputType()          ],
+            ['length',     new NumberValue(length)    ], // used to set start and end limits
+            ['fullLength', new NumberValue(fullLength)], // used to set start and end maxima
+            ['start',      start                      ],
+            ['end',        end                        ]
         ]);
         
 
@@ -139,4 +143,36 @@ extends GOperator1
         if (this.start) this.start.iterateLoop(parse, from);
         if (this.end  ) this.end  .iterateLoop(parse, from);
     }
+}
+
+
+
+function getSubstringValue(input, start, end, enabled)
+{
+    let value = new TextValue();
+
+
+    const _end =
+        end.isValid()
+        ? end
+        : new NumberValue(input.value.length);
+
+
+    if (enabled)
+    {
+        const endValue = 
+            _end.value < 0
+            ? input.value.length + _end.value
+            : _end.value;
+
+        if (start.value <= endValue)
+            value.value = input.value.substring(start.value, endValue);
+        else
+            value = new TextValue();
+    }
+    else
+        value = input.copy();
+
+    
+    return value;
 }

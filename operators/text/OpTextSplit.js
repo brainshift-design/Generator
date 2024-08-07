@@ -12,7 +12,7 @@ extends OperatorBase
         super(TEXT_SPLIT, 'split', 'split', iconTextSplit);
 
 
-        this.addInput(new Input([TEXT_VALUE]));
+        this.addInput(new Input([TEXT_VALUE, NUMBER_VALUE]));
         this.addOutput(new Output([TEXT_LIST_VALUE], this.output_genRequest));
 
         this.addParam(this.paramSeparator = new TextParam('separator', 'separator', false, true,  true, ''));

@@ -46,8 +46,8 @@ extends GOperator1
         this.value = new NumberValue(0);
 
 
-        const input  = await evalNumberValue(this.input,  parse);
-        const text   = await evalNumberValue(this.text,   parse);
+        const input  = await evalTextValue  (this.input,  parse);
+        const text   = await evalTextValue  (this.text,   parse);
         const prefix = await evalNumberValue(this.prefix, parse);
 
 

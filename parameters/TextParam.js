@@ -48,7 +48,7 @@ extends Parameter
         this.divControls.appendChild(this.controls[0].div);
 
        
-        if (hasInput ) this.initInput ([TEXT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput ) this.initInput ([TEXT_VALUE, NUMBER_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([TEXT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 

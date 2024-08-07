@@ -14,8 +14,8 @@ extends OperatorBase
         this.iconOffsetY = 0;
         
 
-        this.addInput (new Input([TEXT_VALUE]));
-        this.addInput (new Input([TEXT_VALUE]));
+        this.addInput (new Input([TEXT_VALUE, NUMBER_VALUE]));
+        this.addInput (new Input([TEXT_VALUE, NUMBER_VALUE]));
 
         this.addParam(this.paramValue     = new NumberParam('value',     '', false, false, true));
         this.addParam(this.paramOperation = new SelectParam('operation', '', false, true,  true, CONDITION_OPS.map(s => s[1]), 3));

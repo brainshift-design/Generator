@@ -10,7 +10,7 @@ extends OperatorBase
         super(TEXT_LENGTH, 'length', 'text length', iconTextLength);
 
 
-        this.addInput(new Input([TEXT_VALUE]));
+        this.addInput(new Input([TEXT_VALUE, NUMBER_VALUE]));
 
         this.addParam(this.paramLength = new NumberParam('length', 'length', false, false, true));
 

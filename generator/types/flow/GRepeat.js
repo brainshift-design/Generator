@@ -301,6 +301,7 @@ extends GOperator1
         
         const type = this.outputListType();
 
+        
         this.setUpdateValues(parse,
         [
             ['type',      type     ],

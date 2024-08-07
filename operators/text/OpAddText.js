@@ -17,8 +17,8 @@ extends OperatorBase
         this.canDisable       = true;
         
 
-        this.addInput (new Input ([...NUMBER_TYPES, ...TEXT_TYPES]));
-        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+        this.addInput (new Input ([TEXT_VALUE, NUMBER_VALUE]));
+        this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramText   = new   TextParam('text',   'text',   false, true, true));
         this.addParam(this.paramPrefix = new NumberParam('prefix', 'prefix', true,  true, true, 0, 0, 1));
