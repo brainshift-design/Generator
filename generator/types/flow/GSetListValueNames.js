@@ -44,7 +44,8 @@ extends GOperator2
         }
         else if (input0)
             this.value = input0;
-
+        else
+            this.value = new ListValue();
 
 
         this.updateValueObjects();
