@@ -50,6 +50,7 @@ var menuData;
 var menuItems;
 var menuNumber;
 var menuSets;
+var menuAddText;
 var menuString;
 var menuTextFunctions;
 var menuConvertNumber;
@@ -165,7 +166,7 @@ var menuItemShowNodeIcons;
 var menuItemShowColorLegendInMenus;
 var menuItemShowBoolValues;
 var menuItemSeparateThousands;
-var menuItemInvertSimpleMathParamOrder;
+var menuItemAllowInvertParams;
 var menuItemActivateDeactiatesOthers;
 var menuItemRandomShiftR;
 var menuItemColorShiftR;
@@ -543,12 +544,12 @@ function initGeneratorMenus()
     
     menuMath = new Menu('Math', true, false);
     menuMath.addItems([
-        new MenuItem('Math',  null, false, {icon: iconMulti, createType: NUMBER_MATH, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH, btnNumber.div, getCreateOptions(e)))})]);
+        new MenuItem('Math (many)',  null, false, {icon: iconMulti, createType: NUMBER_MATH, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH, btnNumber.div, getCreateOptions(e)))})]);
         
 
     menuMinMax = new Menu('Min/max', true, false);
     menuMinMax.addItems([
-        new MenuItem('Min / max', null, false, {icon: iconMulti, createType: NUMBER_MINMAX, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MINMAX, btnNumber.div, getCreateOptions(e)))})]);
+        new MenuItem('Min / max (many)', null, false, {icon: iconMulti, createType: NUMBER_MINMAX, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MINMAX, btnNumber.div, getCreateOptions(e)))})]);
         
 
     menuBoolean = new Menu('Boolean', true, false);
@@ -647,6 +648,11 @@ function initGeneratorMenus()
         new MenuItem('Pad',        null, false, {icon: iconTextPad,       createType: TEXT_PAD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_PAD,       btnText.div, getCreateOptions(e)))})]);
 
 
+    menuAddText = new Menu('Add text', true, false);
+    menuAddText.addItems([
+        new MenuItem('Join (many)', null, false, {icon: iconMulti, createType: TEXT_JOIN, callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))})]);
+        
+
     menuString = new Menu('Text', true, false);
     menuString.addItems([
         new MenuItem('Text',       null,            false, {icon: iconText,          createType: TEXT,           callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
@@ -655,7 +661,7 @@ function initGeneratorMenus()
         new MenuItem('Contains',   'Text contains', true,  {icon: iconTextContains,  createType: TEXT_CONTAINS,  callback: e => actionManager.do(getCreateNodeAction(TEXT_CONTAINS,  btnText.div, getCreateOptions(e)))}),
         new MenuItem('Split',      null,            false, {icon: iconTextSplit,     createType: TEXT_SPLIT,     callback: e => actionManager.do(getCreateNodeAction(TEXT_SPLIT,     btnText.div, getCreateOptions(e)))}),
         new MenuItem('',           null,            false, {separator: true}),
-        new MenuItem('Join',       null,            false, {icon: iconTextJoin,      createType: TEXT_JOIN,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Add text',   null,            false, {childMenu: menuAddText, icon: iconAddText,       createType: TEXT_ADD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_ADD,       btnText.div, getCreateOptions(e)))}),
         new MenuItem('Compare',    null,            false, {icon: iconTextCompare,   createType: TEXT_COMPARE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_COMPARE,   btnText.div, getCreateOptions(e)))}),
         new MenuItem('',           null,            false, {separator: true}),
         new MenuItem('Functions',  null,            false, {icon: iconTextFunctions, childMenu: menuTextFunctions}),
@@ -1225,6 +1231,7 @@ function initGeneratorMenus()
         menuTrig,
         menuConvertNumber,
         menuConvertText,
+        menuAddText,
         menuString,
         menuTextFunctions,
         menuComplexData,
@@ -1279,7 +1286,7 @@ function initPreferenceMenus()
         menuItemShowNodeIcons              = new MenuItem('Show node icons',                          null, false, {checkCallback: () => settings.showNodeIcons,                             callback: () => { updateSettingAndMenu('showNodeIcons',              true, !settings.showNodeIcons);              updateMenuItemShowNodeIcons();              }}),
         menuItemShowBoolValues             = new MenuItem('Show boolean values as   ✓ ✗',            null, false, {checkCallback: () => settings.showBoolValues,                            callback: () => { updateSettingAndMenu('showBoolValues',             true, !settings.showBoolValues);             updateMenuItemShowBoolValues();             }}),
         menuItemSeparateThousands          = new MenuItem('Separate thousands in numbers',            null, false, {checkCallback: () => settings.separateThousands,                         callback: () => { updateSettingAndMenu('separateThousands',          true, !settings.separateThousands);          updateMenuItemSeparateThousands();          }}),
-        menuItemInvertSimpleMathParamOrder = new MenuItem('Invert simple math parameters',            null, false, {checkCallback: () => settings.invertSimpleMathParamOrder,                callback: () => { updateSettingAndMenu('invertSimpleMathParamOrder', true, !settings.invertSimpleMathParamOrder); updateMenuItemInvertSimpleMathParamOrder(); }}),
+        menuItemAllowInvertParams          = new MenuItem('Allow inverting of parameters',            null, false, {checkCallback: () => settings.allowInvertParams,                callback: () => { updateSettingAndMenu('allowInvertParams', true, !settings.allowInvertParams); updateMenuItemAllowInvertParams(); }}),
         menuItemActivateDeactiatesOthers   = new MenuItem('Activate deactivates others',              null, false, {checkCallback: () => settings.activateDeactiatesOthers,                  callback: () => { updateSettingAndMenu('activateDeactiatesOthers',   true, !settings.activateDeactiatesOthers);                                               }}),
         menuItemShowAllColorSpaces         = new MenuItem('Show all color spaces',                    null, false, {checkCallback: () => settings.showAllColorSpaces,                        callback: () => { updateSettingAndMenu('showAllColorSpaces',         true, !settings.showAllColorSpaces);         updateMenuItemShowAllColorSpaces();         }}),
         menuItemPreferHtmlColorNames       = new MenuItem('Prefer HTML color names',                  null, false, {checkCallback: () => settings.preferHtmlColorNames,                      callback: () => { updateSettingAndMenu('preferHtmlColorNames',       true, !settings.preferHtmlColorNames);                                                   }}),

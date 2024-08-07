@@ -54,7 +54,7 @@ async function uiReturnFigGetLocalData(msg)
         case 'showNodeIcons':
         case 'showBoolValues':
         case 'separateThousands':
-        case 'invertSimpleMathParamOrder':
+        case 'allowInvertParams':
         case 'activateDeactiatesOthers':
         case 'preferHtmlColorNames':
         case 'randomShiftR':

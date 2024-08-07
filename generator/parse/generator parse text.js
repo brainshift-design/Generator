@@ -382,6 +382,53 @@ function genParseTextReplace(parse)
 
 
 
+function genParseAddText(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const addText = new GAddText(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(addText, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, addText);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        addText.input = genParse(parse);
+
+    addText.text   = genParse(parse);
+    addText.prefix = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, addText);
+    return addText;
+}
+
+
+
 function genParseTextJoin(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);

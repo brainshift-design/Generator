@@ -6013,7 +6013,7 @@ const settings =
     showNodeIcons:                 true,
     showBoolValues:                true,
     separateThousands:             true,
-    invertSimpleMathParamOrder:    true,
+    allowInvertParams:    true,
     activateDeactiatesOthers:      true,
     preferHtmlColorNames:          false,
     randomShiftR:                  true,
@@ -6084,7 +6084,7 @@ function updateSetting(settingName, value)
         case 'showNodeIcons':                 settings.showNodeIcons                 = value;  break;
         case 'showBoolValues':                settings.showBoolValues                = value;  break;
         case 'separateThousands':             settings.separateThousands             = value;  break;
-        case 'invertSimpleMathParamOrder':    settings.invertSimpleMathParamOrder    = value;  break;
+        case 'allowInvertParams':    settings.allowInvertParams    = value;  break;
         case 'activateDeactiatesOthers':      settings.activateDeactiatesOthers      = value;  break;
         case 'preferHtmlColorNames':          settings.preferHtmlColorNames          = value;  break;
         case 'randomShiftR':                  settings.randomShiftR                  = value;  break;
@@ -6164,7 +6164,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showNodeIcons':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeIcons                ); break;
         case 'showBoolValues':                updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues               ); break;
         case 'separateThousands':             updateSettingAndMenu_(valid, settingName, value, menuItemSeparateThousands            ); break;
-        case 'invertSimpleMathParamOrder':    updateSettingAndMenu_(valid, settingName, value, menuItemInvertSimpleMathParamOrder   ); break;
+        case 'allowInvertParams':    updateSettingAndMenu_(valid, settingName, value, menuItemAllowInvertParams   ); break;
         case 'activateDeactiatesOthers':      updateSettingAndMenu_(valid, settingName, value, menuItemActivateDeactiatesOthers     ); break;
         case 'preferHtmlColorNames':          updateSettingAndMenu_(valid, settingName, value, menuItemPreferHtmlColorNames         ); break;
         case 'randomShiftR':                  updateSettingAndMenu_(valid, settingName, value, menuItemRandomShiftR                 ); break;
@@ -6257,7 +6257,7 @@ function updateSettingsMenus()
     menuItemShowNodeIcons                .setChecked(settings.showNodeIcons                );
     menuItemShowBoolValues               .setChecked(settings.showBoolValues               );
     menuItemSeparateThousands            .setChecked(settings.separateThousands            );
-    menuItemInvertSimpleMathParamOrder   .setChecked(settings.invertSimpleMathParamOrder   );
+    menuItemAllowInvertParams   .setChecked(settings.allowInvertParams   );
     menuItemActivateDeactiatesOthers     .setChecked(settings.activateDeactiatesOthers     );
     menuItemPreferHtmlColorNames         .setChecked(settings.preferHtmlColorNames         );
     menuItemRandomShiftR                 .setChecked(settings.randomShiftR                 );
@@ -6366,7 +6366,7 @@ function updateMenuItemSeparateThousands()
 
 
 
-function updateMenuItemInvertSimpleMathParamOrder()
+function updateMenuItemAllowInvertParams()
 {
     graph.nodes
         .filter(n => n.type == NUMBER_SIMPLE_MATH)
@@ -6479,7 +6479,7 @@ function loadLocalSettings()
     uiGetLocalData('showNodeIcons'                );
     uiGetLocalData('showBoolValues'               );
     uiGetLocalData('separateThousands'            );
-    uiGetLocalData('invertSimpleMathParamOrder'   );
+    uiGetLocalData('allowInvertParams'   );
     uiGetLocalData('activateDeactiatesOthers'     );
     uiGetLocalData('preferHtmlColorNames'         );
     uiGetLocalData('randomShiftR'                 );
@@ -6687,6 +6687,7 @@ const TEXT_SUBSTRING          = 'TSUB';
 const TEXT_CONTAINS           = 'TCONT';
 const TEXT_CASE               = 'TCASE';
 const TEXT_REPLACE            = 'TREPL';
+const TEXT_ADD                = 'TADD';
 const TEXT_JOIN               = 'TJOIN';
 const TEXT_PAD                = 'TPAD';
 const TEXT_COMPARE            = 'TCMP';
@@ -6845,6 +6846,7 @@ const TEXT_TYPES =
     TEXT_SUBSTRING,
     TEXT_CONTAINS,
     TEXT_CASE,
+    TEXT_ADD,
     TEXT_JOIN,
     TEXT_PAD,
     TEXT_REPLACE,
@@ -11689,8 +11691,17 @@ async function evalValue(_value, parse, nan = () => new NullValue())
 
 
 
-async function evalNumberValue        (_value, parse) { return await evalValue(_value, parse, () => NumberValue        .NaN.copy()); }
-async function evalTextValue          (_value, parse) { return await evalValue(_value, parse, () => new TextValue());                }
+async function evalNumberValue(_value, parse) { return await evalValue(_value, parse, () => NumberValue        .NaN.copy()); }
+
+async function evalTextValue(_value, parse) 
+{ 
+    let value = await evalValue(_value, parse, () => new TextValue());
+
+    if (value.type == NUMBER_VALUE)
+        value = new TextValue(value.value.toString());
+    
+    return value;                
+}
 
 async function evalColorValue         (_value, parse) { return await evalValue(_value, parse, () => ColorValue         .NaN.copy()); }
 async function evalFillValue          (_value, parse) { return await evalValue(_value, parse, () => FillValue          .NaN.copy()); }
@@ -25820,7 +25831,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GRound(this.nodeId, this.options);
+        const copy = new GSimpleMinMax(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -30438,7 +30449,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GRound(this.nodeId, this.options);
+        const copy = new GSimpleMath(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -34139,12 +34150,8 @@ async function evalJoinInputs(inputs, _with, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
-        let val = await evalValue(inputs[i], parse);
+        const val = await evalTextValue(inputs[i], parse);
         if (!val) continue;
-
-
-        if (val.type == NUMBER_VALUE)
-            val = new TextValue(val.value.toString());
 
 
         if (i > 0)
@@ -34159,10 +34166,7 @@ async function evalJoinInputs(inputs, _with, parse)
                     value.value += w;
 
 
-                let item = val.items[j];
-
-                if (item.type == NUMBER_VALUE)
-                    item = new TextValue(item.value.toString());
+                const item = val.items[j];
 
                 if (item.type == TEXT_VALUE)
                     value.value += item.value;
@@ -34179,6 +34183,147 @@ async function evalJoinInputs(inputs, _with, parse)
 
     return value;
 }
+
+
+class GAddText
+extends GOperator1
+{
+    text;
+    prefix;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(TEXT_ADD, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.text   = null;
+        this.prefix = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GAddText(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.text  ) copy.text   = this.text  .copy();
+        if (this.prefix) copy.prefix = this.prefix.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = new NumberValue(0);
+
+
+        const input  = await evalNumberValue(this.input,  parse);
+        const text   = await evalNumberValue(this.text,   parse);
+        const prefix = await evalNumberValue(this.prefix, parse);
+
+
+        if (input)
+        {
+            if (this.options.enabled)
+            {
+                if (isListValueType(input.type))
+                {
+                    this.value = new ListValue();
+
+                    for (let i = 0; i < input.items.length; i++)
+                    {
+                        const item = input.items[i];
+
+                        this.value.items.push(new TextValue(
+                            prefix.value > 0
+                            ? text.value + item.value
+                            : item.value + text.value));
+                    }
+                }
+                else
+                {
+                    this.value = new TextValue(
+                        prefix.value > 0
+                        ? text .value + input.value
+                        : input.value + text .value);
+                }
+            }
+            else
+                this.value = input.copy();
+        }
+        else
+            this.value = new TextValue();//TextValue.NaN.copy();
+
+
+        this.setUpdateValues(parse,
+        [
+            ['type',   this.outputType()],
+            ['text',   text             ],
+            ['prefix', prefix           ]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.text   && this.text  .isValid()
+            && this.prefix && this.prefix.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.text  ) this.text  .pushValueUpdates(parse);
+        if (this.prefix) this.prefix.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.text  ) this.text  .invalidateInputs(parse, from, force);
+        if (this.prefix) this.prefix.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.text  ) this.text  .iterateLoop(parse);
+        if (this.prefix) this.prefix.iterateLoop(parse);
+    }
+}
+
 
 
 class GTextPad
@@ -58599,6 +58744,53 @@ function genParseTextReplace(parse)
 
 
 
+function genParseAddText(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const addText = new GAddText(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(addText, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, addText);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        addText.input = genParse(parse);
+
+    addText.text   = genParse(parse);
+    addText.prefix = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, addText);
+    return addText;
+}
+
+
+
 function genParseTextJoin(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -59508,12 +59700,13 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber      (parse);
     else if (parse.next == TEXT_TO_COLOR          ) result = genParseTextToColor       (parse);
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace       (parse);
+    else if (parse.next == TEXT_ADD               ) result = genParseAddText           (parse);
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin          (parse);
     else if (parse.next == TEXT_PAD               ) result = genParseTextPad           (parse);
     else if (parse.next == TEXT_COMPARE           ) result = genParseTextCompare       (parse);
     else if (parse.next == TEXT_SPLIT             ) result = genParseTextSplit         (parse);
-    else if (parse.next == PARSE_CSV               ) result = genParseParseCSV           (parse);
-    else if (parse.next == PARSE_JSON              ) result = genParseParseJson          (parse);
+    else if (parse.next == PARSE_CSV              ) result = genParseParseCSV           (parse);
+    else if (parse.next == PARSE_JSON             ) result = genParseParseJson          (parse);
     else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch         (parse);
     else if (parse.next == TEXT_FILE              ) result = genParseTextFile          (parse);
  

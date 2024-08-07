@@ -7,7 +7,7 @@ extends ResizableBase
 
     constructor()
     {
-        super(TEXT_JOIN, 'join', 'join', iconTextJoin);
+        super(TEXT_JOIN, 'join', 'join', iconAddText);
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;

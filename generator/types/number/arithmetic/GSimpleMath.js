@@ -27,7 +27,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GRound(this.nodeId, this.options);
+        const copy = new GSimpleMath(this.nodeId, this.options);
 
         copy.copyBase(this);
 

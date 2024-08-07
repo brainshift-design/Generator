@@ -307,8 +307,17 @@ async function evalValue(_value, parse, nan = () => new NullValue())
 
 
 
-async function evalNumberValue        (_value, parse) { return await evalValue(_value, parse, () => NumberValue        .NaN.copy()); }
-async function evalTextValue          (_value, parse) { return await evalValue(_value, parse, () => new TextValue());                }
+async function evalNumberValue(_value, parse) { return await evalValue(_value, parse, () => NumberValue        .NaN.copy()); }
+
+async function evalTextValue(_value, parse) 
+{ 
+    let value = await evalValue(_value, parse, () => new TextValue());
+
+    if (value.type == NUMBER_VALUE)
+        value = new TextValue(value.value.toString());
+    
+    return value;                
+}
 
 async function evalColorValue         (_value, parse) { return await evalValue(_value, parse, () => ColorValue         .NaN.copy()); }
 async function evalFillValue          (_value, parse) { return await evalValue(_value, parse, () => FillValue          .NaN.copy()); }

@@ -11,7 +11,7 @@ const settings =
     showNodeIcons:                 true,
     showBoolValues:                true,
     separateThousands:             true,
-    invertSimpleMathParamOrder:    true,
+    allowInvertParams:    true,
     activateDeactiatesOthers:      true,
     preferHtmlColorNames:          false,
     randomShiftR:                  true,
@@ -82,7 +82,7 @@ function updateSetting(settingName, value)
         case 'showNodeIcons':                 settings.showNodeIcons                 = value;  break;
         case 'showBoolValues':                settings.showBoolValues                = value;  break;
         case 'separateThousands':             settings.separateThousands             = value;  break;
-        case 'invertSimpleMathParamOrder':    settings.invertSimpleMathParamOrder    = value;  break;
+        case 'allowInvertParams':    settings.allowInvertParams    = value;  break;
         case 'activateDeactiatesOthers':      settings.activateDeactiatesOthers      = value;  break;
         case 'preferHtmlColorNames':          settings.preferHtmlColorNames          = value;  break;
         case 'randomShiftR':                  settings.randomShiftR                  = value;  break;
@@ -162,7 +162,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showNodeIcons':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeIcons                ); break;
         case 'showBoolValues':                updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues               ); break;
         case 'separateThousands':             updateSettingAndMenu_(valid, settingName, value, menuItemSeparateThousands            ); break;
-        case 'invertSimpleMathParamOrder':    updateSettingAndMenu_(valid, settingName, value, menuItemInvertSimpleMathParamOrder   ); break;
+        case 'allowInvertParams':    updateSettingAndMenu_(valid, settingName, value, menuItemAllowInvertParams   ); break;
         case 'activateDeactiatesOthers':      updateSettingAndMenu_(valid, settingName, value, menuItemActivateDeactiatesOthers     ); break;
         case 'preferHtmlColorNames':          updateSettingAndMenu_(valid, settingName, value, menuItemPreferHtmlColorNames         ); break;
         case 'randomShiftR':                  updateSettingAndMenu_(valid, settingName, value, menuItemRandomShiftR                 ); break;
@@ -255,7 +255,7 @@ function updateSettingsMenus()
     menuItemShowNodeIcons                .setChecked(settings.showNodeIcons                );
     menuItemShowBoolValues               .setChecked(settings.showBoolValues               );
     menuItemSeparateThousands            .setChecked(settings.separateThousands            );
-    menuItemInvertSimpleMathParamOrder   .setChecked(settings.invertSimpleMathParamOrder   );
+    menuItemAllowInvertParams   .setChecked(settings.allowInvertParams   );
     menuItemActivateDeactiatesOthers     .setChecked(settings.activateDeactiatesOthers     );
     menuItemPreferHtmlColorNames         .setChecked(settings.preferHtmlColorNames         );
     menuItemRandomShiftR                 .setChecked(settings.randomShiftR                 );
@@ -364,7 +364,7 @@ function updateMenuItemSeparateThousands()
 
 
 
-function updateMenuItemInvertSimpleMathParamOrder()
+function updateMenuItemAllowInvertParams()
 {
     graph.nodes
         .filter(n => n.type == NUMBER_SIMPLE_MATH)
@@ -477,7 +477,7 @@ function loadLocalSettings()
     uiGetLocalData('showNodeIcons'                );
     uiGetLocalData('showBoolValues'               );
     uiGetLocalData('separateThousands'            );
-    uiGetLocalData('invertSimpleMathParamOrder'   );
+    uiGetLocalData('allowInvertParams'   );
     uiGetLocalData('activateDeactiatesOthers'     );
     uiGetLocalData('preferHtmlColorNames'         );
     uiGetLocalData('randomShiftR'                 );

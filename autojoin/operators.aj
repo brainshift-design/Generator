@@ -157,6 +157,7 @@
 ../operators/text/OpIndexToName.js
 ../operators/text/OpTextReplace.js
 ../operators/text/OpTextJoin.js
+../operators/text/OpAddText.js
 ../operators/text/OpTextPad.js
 ../operators/text/OpTextSplit.js
 ../operators/text/OpTextCompare.js

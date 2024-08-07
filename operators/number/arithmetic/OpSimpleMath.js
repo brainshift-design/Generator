@@ -114,7 +114,7 @@ extends OperatorBase
 
 
         if (   (    this.paramInvert.value.value == 0
-                || !settings.invertSimpleMathParamOrder)
+                || !settings.allowInvertParams)
             && this.params.indexOf(this.paramOperation) != 0)
         {
             this.params = 

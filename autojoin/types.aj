@@ -189,6 +189,7 @@
 ../generator/types/text/GIndexToName.js
 ../generator/types/text/GTextReplace.js
 ../generator/types/text/GTextJoin.js
+../generator/types/text/GAddText.js
 ../generator/types/text/GTextPad.js
 ../generator/types/text/GTextSplit.js
 ../generator/types/text/GTextCompare.js

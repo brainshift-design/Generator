@@ -661,7 +661,7 @@ menuItemShowNodeIcons
 menuItemShowColorLegendInMenus
 menuItemShowBoolValues
 menuItemSeparateThousands
-menuItemInvertSimpleMathParamOrder
+menuItemAllowInvertParams
 menuItemShowClearUndoWarning
 menuItemShareUsageMetrics
 menuItemShowTooltips

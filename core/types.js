@@ -152,6 +152,7 @@ const TEXT_SUBSTRING          = 'TSUB';
 const TEXT_CONTAINS           = 'TCONT';
 const TEXT_CASE               = 'TCASE';
 const TEXT_REPLACE            = 'TREPL';
+const TEXT_ADD                = 'TADD';
 const TEXT_JOIN               = 'TJOIN';
 const TEXT_PAD                = 'TPAD';
 const TEXT_COMPARE            = 'TCMP';
@@ -310,6 +311,7 @@ const TEXT_TYPES =
     TEXT_SUBSTRING,
     TEXT_CONTAINS,
     TEXT_CASE,
+    TEXT_ADD,
     TEXT_JOIN,
     TEXT_PAD,
     TEXT_REPLACE,
