@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(GET_LIST_VALUE_NAMES, 'getNames', 'get names', iconGetListValueNames);
+        super(GET_LIST_VALUE_NAMES, 'getValueNames', 'get value names', iconGetListValueNames);
 
 
         this.canDisable        = true;

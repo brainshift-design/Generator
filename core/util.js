@@ -295,7 +295,11 @@ function simpleIntHash(x)
 
 function getNewNumberId(curId, checkExists, id = curId, join = '', startNum = 2, addZero = false)
 {
-    if (addZero) id += '0';
+    if (   addZero
+        && (    id.length == 0
+            || !isDigit(id.at(-1))))
+        id += '0';
+
 
     if (!checkExists(id))
         return id;

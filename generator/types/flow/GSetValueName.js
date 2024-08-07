@@ -53,6 +53,7 @@ extends GOperator1
         if (   this.options.enabled
             && this.value.isValid())
         {
+            console.log('name.value =', name.value);
             this.value.valueId = name.value;
             console.log('this.value =', this.value);
         }

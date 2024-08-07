@@ -3,7 +3,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(GET_VALUE_NAME, 'getName', 'get name', iconGetValueName);
+        super(GET_VALUE_NAME, 'getValueName', 'get value name', iconGetValueName);
 
 
         this.subscription = true;

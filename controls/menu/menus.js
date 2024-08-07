@@ -433,13 +433,16 @@ function initGeneratorMenus()
 
     menuNames = new Menu('Name', true, false);
     menuNames.addItems([
-        menuItemObjectName    = new MenuItem('Set object name',      null, false, {icon: iconSetObjectName,     createType: SET_OBJECT_NAME,      callback: e => actionManager.do(getCreateNodeAction(SET_OBJECT_NAME,      btnFlow.div, getCreateOptions(e)))}),
-                                new MenuItem('',                     null, false, {separator: true}),
         menuItemValueName     = new MenuItem('Get value name',       null, false, {icon: iconGetValueName,      createType: GET_VALUE_NAME,       callback: e => actionManager.do(getCreateNodeAction(GET_VALUE_NAME,       btnFlow.div, getCreateOptions(e)))}),
         menuItemValueName     = new MenuItem('Set value name',       null, false, {icon: iconSetValueName,      createType: SET_VALUE_NAME,       callback: e => actionManager.do(getCreateNodeAction(SET_VALUE_NAME,       btnFlow.div, getCreateOptions(e)))}),
                                 new MenuItem('',                     null, false, {separator: true}),
                                 new MenuItem('Get list value names', null, false, {icon: iconGetListValueNames,      createType: GET_LIST_VALUE_NAMES, callback: e => actionManager.do(getCreateNodeAction(GET_LIST_VALUE_NAMES, btnFlow.div, getCreateOptions(e)))}),
-        menuItemSetValueNames = new MenuItem('Set list value names', null, false, {icon: iconSetListValueNames, createType: SET_LIST_VALUE_NAMES, callback: e => actionManager.do(getCreateNodeAction(SET_LIST_VALUE_NAMES, btnFlow.div, getCreateOptions(e)))})]);
+        menuItemSetValueNames = new MenuItem('Set list value names', null, false, {icon: iconSetListValueNames, createType: SET_LIST_VALUE_NAMES, callback: e => actionManager.do(getCreateNodeAction(SET_LIST_VALUE_NAMES, btnFlow.div, getCreateOptions(e)))}),
+                                new MenuItem('',                     null, false, {separator: true}),
+        menuItemObjectName    = new MenuItem('Set object name',      null, false, {icon: iconSetObjectName,     createType: SET_OBJECT_NAME,      callback: e => actionManager.do(getCreateNodeAction(SET_OBJECT_NAME,      btnFlow.div, getCreateOptions(e)))}),
+                                new MenuItem('',                     null, false, {separator: true}),
+                                new MenuItem('Get parameter', null, false, {icon: iconGetParam, createType: GET_PARAM, callback: e => actionManager.do(getCreateNodeAction(GET_PARAM, btnFlow.div, getCreateOptions(e)))}),
+                                new MenuItem('Set parameter', null, false, {icon: iconSetParam, createType: SET_PARAM, callback: e => actionManager.do(getCreateNodeAction(SET_PARAM, btnFlow.div, getCreateOptions(e)))})]);
 
     menuNames.init = () => menuNames.minWidth = subscribed() ? 200 : 220;        
 
@@ -483,10 +486,10 @@ function initGeneratorMenus()
                              new MenuItem('',                  null,      false, {separator: true}),
         menuItemNull       = new MenuItem('Null',              null,      false, {icon: iconNull,          createType: NULL_NODE,      callback: e => actionManager.do(getCreateNodeAction(NULL_NODE,       btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null,      false, {separator: true}),
-                             new MenuItem('Data',              null,      false, {icon: iconTextFile,     childMenu: menuComplexData}),
+                             new MenuItem('Values',            null,      false, {icon: iconValues, childMenu: menuNames}),
                              new MenuItem('',                  null,      false, {separator: true}),
-                             new MenuItem('Value names',       null,      false, {icon: iconNames, childMenu: menuNames}),
-                             new MenuItem('Parameters',        null,      false, {icon: iconParameters, childMenu: menuParams})]);
+                             new MenuItem('Data',              null,      false, {icon: iconTextFile,     childMenu: menuComplexData})]);
+                             //new MenuItem('Parameters',        null,      false, {icon: iconParameters, childMenu: menuParams})]);
     
 
     menuItems = new Menu('List functions', true, false);

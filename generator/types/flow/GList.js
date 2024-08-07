@@ -84,6 +84,9 @@ extends GOperator1
             &&  this.value.items
             && !isEmpty(this.value.items))
         {
+            const valueIds = [];
+
+            
             for (let i = 0; i < this.value.items.length; i++)
             {
                 const item = this.value.items[i];
@@ -95,15 +98,30 @@ extends GOperator1
 
                 valueId = getNewNumberId(
                     valueId,
-                    id => this.value.items.find(i =>
-                           i != item 
-                        && i.valueId == id));
+                    id => valueIds.includes(id),
+                    valueId,
+                    '',
+                    1,
+                    true);
+
+                console.log('valueId =', valueId);
+
+                valueIds.push(valueId);
+            }
+
+
+            for (let i = 0; i < this.value.items.length; i++)
+            {
+                const item = this.value.items[i];
+                
+                let valueId = valueIds[i];
 
                 Object.assign(this, {[valueId]: item});
                 this.setUpdateValues(parse, [[valueId, item]], true);
 
                 item.sortId = i;
             }
+
 
             this.updateValues.sort((a, b) => a.sortId - b.sortId);
 

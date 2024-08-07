@@ -127,8 +127,12 @@ async function evalJoinInputs(inputs, _with, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
-        const val = await evalTextValue(inputs[i], parse);
+        let val = await evalValue(inputs[i], parse);
         if (!val) continue;
+
+
+        if (val.type == NUMBER_VALUE)
+            val = new TextValue(val.value.toString());
 
 
         if (i > 0)
@@ -143,7 +147,10 @@ async function evalJoinInputs(inputs, _with, parse)
                     value.value += w;
 
 
-                const item = val.items[j];
+                let item = val.items[j];
+
+                if (item.type == NUMBER_VALUE)
+                    item = new TextValue(item.value.toString());
 
                 if (item.type == TEXT_VALUE)
                     value.value += item.value;

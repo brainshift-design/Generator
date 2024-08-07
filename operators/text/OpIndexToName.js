@@ -11,6 +11,9 @@ extends OperatorBase
         super(INDEX_TO_NAME, 'index', 'index', iconIndexToName);
 
 
+        //this.iconOffsetY = 1;
+
+
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramName  = new SelectParam('name',  'name',  false, true, true, ['day of week', 'month', 'font name'], 0));
