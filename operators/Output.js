@@ -17,6 +17,16 @@ extends EventTarget
                : ''; 
     }
 
+    get fullId()   
+    { 
+        return this.node
+             ? this.node.id + '.' + this.node.getOutputId(this)
+             : this.param
+               ? this.node.id + '.' + this.param.id
+               : '';     
+    }
+
+
     get index() { return this.node ? this.node.outputs.indexOf(this) : ''; }
 
 

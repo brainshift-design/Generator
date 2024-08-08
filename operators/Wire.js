@@ -591,10 +591,18 @@ class Wire
                 && conn.input.node.isOrFollowedByMultiplier());
         
     
-        const outColor  = conn.output ? conn.output.wireColor : rgbFromType(ANY_VALUE, true);
-        const  inColor  = conn.input  ? conn.input .wireColor : outColor;
+        const outColor = 
+            conn.output 
+            ? conn.output.wireColor 
+            : rgbFromType(ANY_VALUE, true);
 
-        const wireStyle = rgba2style(color);
+        const inColor = 
+            conn.input 
+            ? conn.input.wireColor 
+            : graphView.overInput 
+              ? graphView.overInput.wireColor 
+              : outColor;
+
 
         const arrowStyle = rgba2style(
             rgbaLerp(
@@ -610,9 +618,9 @@ class Wire
 
 
         this.curve.curveId = 
-              (this.connection.output ? this.connection.output.node.id + '.' + this.connection.output.id : '')
+              (this.connection.output ? this.connection.output.fullId : '')
             + '-' 
-            + (this.connection.input  ? this.connection.input .node.id + '.' + this.connection.input .id : '');
+            + (this.connection.input  ? this.connection.input .fullId : '');
 
 
         setSvgLinearGradientStroke(

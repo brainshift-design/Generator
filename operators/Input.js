@@ -17,6 +17,16 @@ extends EventTarget
                : '';     
     }
     
+    get fullId()   
+    { 
+        return this.node
+             ? this.node.id + '.' + this.node.getInputId(this)
+             : this.param
+               ? this.node.id + '.' + this.param.id
+               : '';     
+    }
+    
+
     get index() { return this.node.inputs.indexOf(this); }
 
     
@@ -344,7 +354,15 @@ extends EventTarget
         this.wireBall.style.top        = 'calc(50% - 3px)';
        
         this.wireBall.style.zIndex     = MAX_INT32;
-        this.wireBall.style.background = rgba2style(tc && graphView.overInput == this ? tc.wire.getColor() : this.connection ? this.connection.wire.getColor() : [1, 0, 1, 1]);
+
+        const ballColor = rgbFromType(this.types[0], true);
+        
+        this.wireBall.style.background = rgba2style(
+            tc && graphView.overInput == this 
+            ? this.wireColor //tc.wire.getColor() 
+            : this.connection 
+              ? this.wireColor //this.connection.wire.getColor() 
+              : [1, 0, 1, 1]);
 
         showElement(this.wireBall, isConnected); 
     }
