@@ -572,7 +572,7 @@ function noColorStyle(rgba)
 
 
 
-function addHue(rgb, d, min = 0, max = Tau)
+function addHueHsl(rgb, d, min = 0, max = Tau)
 {
     const hsl = rgb2hsl(rgb);
 
@@ -580,4 +580,16 @@ function addHue(rgb, d, min = 0, max = Tau)
         trimAngle(hsl[0] + d, min, max),
         hsl[1], 
         hsl[2]);
+}
+
+
+
+function addHueHcl(rgb, d, min = 0, max = Tau)
+{
+    const hcl = rgb2hclok(rgb);
+
+    return hclok2rgb_(
+        trimAngle(hcl[0] + d, min, max),
+        hcl[1], 
+        hcl[2]);
 }

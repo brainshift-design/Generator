@@ -1,16 +1,14 @@
 class   OpColorScheme
-extends OpColorBase
+extends OperatorBase
 {
     paramType;
-
-
-    colorBack;
+    paramSpace;
 
 
 
     constructor()
     {
-        super(COLOR_SCHEME, 'scheme', 'scheme', iconColorScheme, true);
+        super(COLOR_SCHEME, 'scheme', 'scheme', iconColorScheme);
 
         this.subscription = true;
         this.iconOffsetY  = -1;
@@ -26,10 +24,8 @@ extends OpColorBase
         this.alwaysSaveParams = true;
 
         
-        this.addParam(this.paramType = new SelectParam('schemeType', '', false, true, true, ['similar', 'similar with accent', 'less similar', 'opposite', 'split opposite', 'double opposite', 'triangle', 'rectangle', 'square', 'hexagon'], 0));
-
-
-        this.header.connectionPadding = 18;
+        this.addParam(this.paramType  = new SelectParam('schemeType', '',      false, true, true, ['similar', 'similar with accent', 'less similar', 'opposite', 'split opposite', 'double opposite', 'triangle', 'rectangle', 'square', 'hexagon'], 0));
+        this.addParam(this.paramSpace = new SelectParam('space',      'space', false, true, true, ['HSV', 'HCL/ok'], 0));
     }
 
 
@@ -56,7 +52,8 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
 
-        request.push(...this.node.paramType.genRequest(gen));
+        request.push(...this.node.paramType .genRequest(gen));
+        request.push(...this.node.paramSpace.genRequest(gen));
 
 
         gen.scope.pop();
@@ -92,10 +89,9 @@ extends OpColorBase
     {
         super.updateHeader();
 
-        const colors = this.getHeaderColors();
-        updateColorHeader(this, colors);
+        // const colors = this.getHeaderColors();
 
-        this._warningOverlay.style.height = this.measureData.headerOffset.height;
+        // this._warningOverlay.style.height = this.measureData.headerOffset.height;
     }
 
 

@@ -385,6 +385,7 @@ function genParseColorScheme(parse)
 
 
     scheme.schemeType = genParse(parse);
+    scheme.space      = genParse(parse);
 
 
     parse.nTab--;

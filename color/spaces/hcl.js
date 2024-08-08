@@ -12,7 +12,7 @@ function hclok2rgb(hcl, cs = sRGB)
 
 function hclok2rgb_(h, c, l, cs = sRGB)
 {
-    return hclok2rgb_([h, c, l], cs);
+    return hclok2rgb([h, c, l], cs);
 }    
     
     

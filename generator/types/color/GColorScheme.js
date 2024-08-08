@@ -1,7 +1,8 @@
 class GColorScheme
 extends GOperator1
 {
-    schemeType  = null;
+    schemeType = null;
+    space      = null;
 
 
 
@@ -17,6 +18,7 @@ extends GOperator1
         super.reset();
 
         this.schemeType = null;
+        this.space      = null;
     }
 
 
@@ -29,6 +31,7 @@ extends GOperator1
 
         if (this.value     ) copy.value      = this.value     .copy();
         if (this.schemeType) copy.schemeType = this.schemeType.copy();
+        if (this.space     ) copy.space      = this.space     .copy();
 
         return copy;
     }
@@ -43,6 +46,7 @@ extends GOperator1
 
         const input      = await evalColorValue (this.input,      parse);
         const schemeType = await evalNumberValue(this.schemeType, parse);
+        const space      = await evalNumberValue(this.space,      parse);
 
 
         if (input)
@@ -53,6 +57,12 @@ extends GOperator1
 
 
                 const rgb = input.toRgb();
+
+
+                const addHue = 
+                    space.value == 0 
+                    ? addHueHsl 
+                    : addHueHcl;
 
 
                 switch (schemeType.value)
@@ -156,7 +166,8 @@ extends GOperator1
         [
             ['value',      this.value       ],
             ['type',       this.outputType()],
-            ['schemeType', schemeType       ]
+            ['schemeType', schemeType       ],
+            ['space',      space            ]
         ]);
 
         
@@ -170,7 +181,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.schemeType && this.schemeType.isValid();
+            && this.schemeType && this.schemeType.isValid()
+            && this.space      && this.space     .isValid();
     }
 
 
@@ -180,6 +192,7 @@ extends GOperator1
         super.pushValueUpdates(parse);
 
         if (this.schemeType) this.schemeType.pushValueUpdates(parse);
+        if (this.space     ) this.space     .pushValueUpdates(parse);
     }
 
 
@@ -189,6 +202,7 @@ extends GOperator1
         super.invalidateInputs(parse, from, force);
 
         if (this.schemeType) this.schemeType.invalidateInputs(parse, from, force);
+        if (this.space     ) this.space     .invalidateInputs(parse, from, force);
     }
 
 
@@ -198,5 +212,6 @@ extends GOperator1
         super.iterateLoop(parse);
 
         if (this.schemeType) this.schemeType.iterateLoop(parse);
+        if (this.space     ) this.space     .iterateLoop(parse);
     }
 }
