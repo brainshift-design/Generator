@@ -12,11 +12,11 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case CACHE:                   node = new OpCache();              break;
         case FREEZE:                  node = new OpFreeze();             break;
         case TIMER:                   node = new OpTimer();              break;
-        case GET_VALUE_NAME:          node = new OpGetValueName();          break;
-        case SET_VALUE_NAME:          node = new OpSetValueName();          break;
+        case GET_VALUE_NAME:          node = new OpGetValueName();       break;
+        case SET_VALUE_NAME:          node = new OpSetValueName();       break;
         case GET_LIST_VALUE_NAMES:    node = new OpGetListValueNames();  break;
-        case SET_LIST_VALUE_NAMES:    node = new OpSetListValueNames();     break;
-        case SET_OBJECT_NAME:         node = new OpSetObjectName();         break;
+        case SET_LIST_VALUE_NAMES:    node = new OpSetListValueNames();  break;
+        case SET_OBJECT_NAME:         node = new OpSetObjectName();      break;
  
         case COMBINE:                 node = new OpCombine();            break;
         case LIST_AS_ITEM:            node = new OpListAsItem();         break;
@@ -123,8 +123,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_TO_NUMBER:          node = new OpTextToNumber();       break;
         case TEXT_TO_COLOR:           node = new OpTextToColor();        break;
         case TEXT_SPLIT:              node = new OpTextSplit();          break;
-        case PARSE_CSV:                node = new OpParseCSV();            break;
-        case PARSE_JSON:               node = new OpParseJson();           break;
+        case PARSE_CSV:               node = new OpParseCSV();           break;
+        case PARSE_JSON:              node = new OpParseJson();          break;
         case TEXT_FETCH:              node = new OpTextFetch();          break;
         case TEXT_FILE:               node = new OpTextFile();           break;
  
@@ -134,6 +134,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case COLOR_CONTRAST:          node = new OpColorContrast();      break;
         case COLOR_CONVERT_P3:        node = new OpConvertP3();          break;
         case COLORBLIND:              node = new OpColorBlind();         break;
+        case COLOR_SCHEME:            node = new OpColorScheme();        break;
         case COLOR_INTERPOLATE:       node = new OpColorInterpolate();   break;
         case COLOR_BLEND:             node = new OpColorBlend();         break;
  

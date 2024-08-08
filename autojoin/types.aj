@@ -207,6 +207,7 @@
 ../generator/types/color/GColorContrast.js
 ../generator/types/color/GConvertP3.js
 ../generator/types/color/GColorBlind.js
+../generator/types/color/GColorScheme.js
 ../generator/types/color/GColorInterpolate.js
 ../generator/types/color/GColorBlend.js
 ../generator/types/color/GColorBlend modes.js

@@ -333,6 +333,7 @@ const CORRECT_COLOR      = 'CCOR';
 const COLOR_CONVERT_P3   = 'COLP3';
 const COLOR_CONTRAST     = 'CCNT';  
 const COLORBLIND         = 'BLND';  
+const COLOR_SCHEME      = 'CPAL'; 
 const COLOR_INTERPOLATE  = 'CLERP'; 
 const COLOR_BLEND        = 'CBLND';
 
@@ -341,9 +342,11 @@ const COLOR_TYPES =
 [
     COLOR_VALUE,
     COLOR,
+    VALID_COLOR,
     CORRECT_COLOR,
     COLOR_CONVERT_P3,
     COLORBLIND,
+    COLOR_SCHEME,
     COLOR_INTERPOLATE,
     COLOR_BLEND,
     COLOR_TO_TEXT

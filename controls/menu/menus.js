@@ -57,6 +57,7 @@ var menuConvertNumber;
 var menuConvertText;
 var menuComplexData;
 var menuStroke;
+var menuValidColor;
 var menuColor;
 var menuCreateColor;
 var menuColorStyle;
@@ -250,6 +251,7 @@ var menuItemConvertToP3;
 var menuItemColorSep1;
 var menuItemColorblind;
 var menuItemColorBlend;
+var menuItemColorScheme;
 
 
 var menuItemLayerFill;
@@ -693,6 +695,11 @@ function initGeneratorMenus()
         new MenuItem('Stroke sides', null, true, {icon: iconStrokeSides, createType: STROKE_SIDES, callback: e => actionManager.do(getCreateNodeAction(STROKE_SIDES, btnShape.div, getCreateOptions(e)))})]);
 
 
+    menuValidColor = new Menu('Valid color', true, false);
+    menuValidColor.addItems([
+        menuItemCorrectColor = new MenuItem('Correct color', null, false, {icon: iconCorrectColor, callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))})]);
+
+
     menuColor = new Menu('Colors', true, false);
     menuColor.addItems([
         menuItemColor        = new MenuItem('Color',         null,                false, {icon: iconColor,            childMenu: menuCreateColor,  callback: e => actionManager.do(getCreateNodeAction(COLOR, btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
@@ -703,8 +710,7 @@ function initGeneratorMenus()
                                new MenuItem('Color stop',    null,                false, {icon: iconColorStop,        callback: e => actionManager.do(getCreateNodeAction(COLOR_STOP,        btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('Gradient',      null,                false, {icon: iconGradient,         callback: e => actionManager.do(getCreateNodeAction(GRADIENT,          btnColor.div, getCreateOptions(e)))}),
         menuItemLayerSep1    = new MenuItem('',              null,                false, {separator: true}),
-        menuItemValidColor   = new MenuItem('Valid sRGB',    null,                false, {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
-        menuItemCorrectColor = new MenuItem('Correct color', null,                false, {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
+        menuItemValidColor   = new MenuItem('Valid sRGB',    null,                false, {childMenu: menuValidColor, icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
         menuItemLayerSep1    = new MenuItem('',              null,                false, {separator: true}),
         menuItemConvertToP3  = new MenuItem('sRGB ⟷ P3',    null,                false, {icon: iconConvertP3,        callback: e => actionManager.do(getCreateNodeAction(COLOR_CONVERT_P3,  btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('',              null,                false, {separator: true}),
@@ -712,7 +718,9 @@ function initGeneratorMenus()
                                new MenuItem('Web contrast',  null,                false, {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('',              null,                false, {separator: true}),
                                new MenuItem('Interpolate',   'Interpolate color', true,  {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))}),
-        menuItemColorBlend   = new MenuItem('Blend',         null,                false, {icon: iconColorBlend,       callback: e => actionManager.do(getCreateNodeAction(COLOR_BLEND,       btnColor.div, getCreateOptions(e)))})]);
+        menuItemColorBlend   = new MenuItem('Blend',         null,                false, {icon: iconColorBlend,       callback: e => actionManager.do(getCreateNodeAction(COLOR_BLEND,       btnColor.div, getCreateOptions(e)))}),
+                               new MenuItem('',              null,                false, {separator: true}),
+        menuItemColorScheme  = new MenuItem('Scheme',        null,                false, {icon: iconColorScheme,      callback: e => actionManager.do(getCreateNodeAction(COLOR_SCHEME,      btnColor.div, getCreateOptions(e)))})]);
 
     menuColor.init = () => 
     {
@@ -1242,6 +1250,7 @@ function initGeneratorMenus()
         menuShape,
         menuShapes,
         menuStroke,
+        menuValidColor,
         menuRectangle,
         menuVectorPoints,
         menuVectorPaths,

@@ -569,3 +569,15 @@ function noColorStyle(rgba)
             : 'rgba(255, 255, 255, 0.95)';
     }
 }
+
+
+
+function addHue(rgb, d, min = 0, max = Tau)
+{
+    const hsl = rgb2hsl(rgb);
+
+    return hsl2rgb_(
+        trimAngle(hsl[0] + d, min, max),
+        hsl[1], 
+        hsl[2]);
+}
