@@ -55,6 +55,7 @@ class Wire
         this.curve                       = createSvg('path');
         this.curve.style.position        = 'absolute';
         this.curve.style.fill            = 'none';
+        this.curve.curveId               = null;
       
         this.curve2                      = createSvg('path');
         this.curve2.style.position       = 'absolute';
@@ -225,7 +226,7 @@ class Wire
         this.updateCurve  (x1, y1, x2, y2);
         this.updateOutBall(x1, y1        );
         this.updateInBall (        x2, y2);
-        this.updateStyle  ();
+        this.updateStyle  (x1, y1, x2, y2);
 
 
         this.svg.setAttribute('width',  graphView.div.clientWidth);
@@ -505,7 +506,7 @@ class Wire
 
 
 
-    updateStyle()
+    updateStyle(x1, y1, x2, y2)
     {
         const conn = this.connection;
 
@@ -590,6 +591,9 @@ class Wire
                 && conn.input.node.isOrFollowedByMultiplier());
         
     
+        const outColor  = conn.output ? conn.output.wireColor : rgbFromType(ANY_VALUE, true);
+        const  inColor  = conn.input  ? conn.input .wireColor : outColor;
+
         const wireStyle = rgba2style(color);
 
         const arrowStyle = rgba2style(
@@ -600,8 +604,27 @@ class Wire
                 color, 
                 color[3]));
 
-               
-        this.curve .style.stroke = wireStyle;
+        
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+
+
+        this.curve.curveId = 
+              (this.connection.output ? this.connection.output.node.id + '.' + this.connection.output.id : '')
+            + '-' 
+            + (this.connection.input  ? this.connection.input .node.id + '.' + this.connection.input .id : '');
+
+
+        setSvgLinearGradientStroke(
+            this.curve.closest('svg'), 
+            this.curve, 
+            rgba2style(outColor), 
+            rgba2style(inColor ),
+            -dx > Math.abs(dy) ? 100 : 0,
+            -dy > Math.abs(dx) ? 100 : 0,
+             dx > Math.abs(dy) ? 100 : 0,
+             dy > Math.abs(dx) ? 100 : 0,);
+
         this.curve2.style.stroke = rgb2style(rgbDocumentBody);
     
 
@@ -614,15 +637,15 @@ class Wire
             : '0';
     
 
-        this. inBall.style.fill = wireStyle;
-        this.outBall.style.fill = wireStyle;
+        this.outBall.style.fill = rgb2style(outColor);
+        this. inBall.style.fill = rgb2style( inColor);
 
         this.arrow1 .style.fill = arrowStyle;
         this.arrow2 .style.fill = arrowStyle;
     
     
-        if (conn.output) conn.output.wireBall.style.background = wireStyle;
-        if (conn.input ) conn.input .wireBall.style.background = wireStyle;
+        if (conn.output) conn.output.wireBall.style.background = rgb2style(outColor);
+        if (conn.input ) conn.input .wireBall.style.background = rgb2style( inColor);
     
     
         const isList = this.connectionIsList();

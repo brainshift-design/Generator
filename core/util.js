@@ -729,3 +729,57 @@ function currentUserIsDev()
 {
     return devUsers.includes(currentUser.id);
 }
+
+
+
+function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2) 
+{
+    if (!(svg instanceof SVGElement))
+        throw new Error('First argument must be an SVG element');
+
+    
+    let defs = svg.querySelector('defs');
+
+    if (!defs) 
+    {
+        defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        svg.insertBefore(defs, svg.firstChild);
+    }
+
+
+    const existingGradients = defs.querySelectorAll('linearGradient');
+    const gradientId        = `svgLinearGradient-${target.curveId}`;
+
+    existingGradients.forEach(gradient => 
+    {
+        if (gradient.id == gradientId) 
+            gradient.remove();
+    });
+
+
+    const linearGradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+    linearGradient.setAttribute('id', gradientId);
+    linearGradient.setAttribute('x1', x1+'%');
+    linearGradient.setAttribute('y1', y1+'%');
+    linearGradient.setAttribute('x2', x2+'%');
+    linearGradient.setAttribute('y2', y2+'%');
+
+    const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop1.setAttribute('offset', '0%');
+    stop1.setAttribute('stop-color', color1);
+
+    const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop2.setAttribute('offset', '100%');
+    stop2.setAttribute('stop-color', color2);
+
+    linearGradient.appendChild(stop1);
+    linearGradient.appendChild(stop2);
+
+    defs.appendChild(linearGradient);
+
+
+    target.setAttribute('stroke', `url(#${gradientId})`);
+
+
+    return gradientId;
+}

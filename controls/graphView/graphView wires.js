@@ -102,7 +102,9 @@ GraphView.prototype.updateWires = function(_wires)
         if (wire.outBall) wire.updateOutBall(pOut[i].x, pOut[i].y);
         if (wire. inBall) wire.updateInBall (pIn [i].x, pIn [i].y);
 
-        wire.updateStyle();
+        wire.updateStyle(
+            pOut[i].x, pOut[i].y, 
+            pIn [i].x, pIn [i].y);
 
         wire.svg.setAttribute('width',  cw);
         wire.svg.setAttribute('height', ch);

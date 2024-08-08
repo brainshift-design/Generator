@@ -333,16 +333,11 @@ function finalTypeFromTypes(types)
 
         else if (    SHAPE_VALUES.includes(_type) 
                  && !SHAPE_VALUES.includes( type))
-        {
-            _type = ANY_VALUE;
-            break; 
-        }
+            return ANY_VALUE;
+
         else if (   !SHAPE_VALUES.includes(_type) 
                  && _type != type)
-        {
-            _type = ANY_VALUE;
-            break; 
-        }
+            return ANY_VALUE;
     }
 
     return _type;
