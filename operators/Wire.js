@@ -608,8 +608,6 @@ class Wire
               : outColor;
 
 
-        //const wireStyle = rgba2style(color);
-
         const arrowStyle = rgba2style(
             rgbaLerp(
                 darkMode 
@@ -619,25 +617,30 @@ class Wire
                 color[3]));
 
         
-        const dx = x2 - x1;
-        const dy = y2 - y1;
-
-
         this.curve.curveId = 
-              (this.connection.output ? this.connection.output.fullId : '')
+              (conn.output ? conn.output.fullId : '')
             + '-' 
-            + (this.connection.input  ? this.connection.input .fullId : '');
+            + (conn.input  ? conn.input .fullId : '');
 
 
-        setSvgLinearGradientStroke(
-            this.curve.closest('svg'), 
-            this.curve, 
-            rgba2style(outColor), 
-            rgba2style(inColor ),
-            -dx > Math.abs(dy) ? 100 : 0,
-            -dy > Math.abs(dx) ? 100 : 0,
-             dx > Math.abs(dy) ? 100 : 0,
-             dy > Math.abs(dx) ? 100 : 0);
+        if (   conn.output.types[0] == NUMBER_VALUE && conn.input.types.includes(  TEXT_VALUE)
+            || conn.output.types[0] ==   TEXT_VALUE && conn.input.types.includes(NUMBER_VALUE))
+        {
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+        
+            setSvgLinearGradientStroke(
+                this.curve.closest('svg'), 
+                this.curve, 
+                rgba2style(outColor), 
+                rgba2style(inColor ),
+                -dx > Math.abs(dy) ? 100 : 0,
+                -dy > Math.abs(dx) ? 100 : 0,
+                dx > Math.abs(dy) ? 100 : 0,
+                dy > Math.abs(dx) ? 100 : 0);
+        }
+        else
+            this.curve.style.stroke = rgba2style(color);
 
         
         this.curve2.style.stroke = rgb2style(rgbDocumentBody);

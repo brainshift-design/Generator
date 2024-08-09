@@ -27044,8 +27044,8 @@ extends GOperator1
             return this;
 
 
-        const  input = await evalNumberValue(this. input, parse);
-        const _value = await evalNumberValue(this._value, parse);
+        const  input = await evalNumberOrListValue(this. input, parse);
+        const _value = await evalNumberValue      (this._value, parse);
 
 
         if (input)
@@ -27076,8 +27076,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type',   this.outputType()]//,
-            //['value', _value            ]
+            ['type', this.outputType()]
         ]);
 
 
@@ -29950,14 +29949,14 @@ async function evalAddInputs(node, inputs, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
-        const val = await evalNumberValue(inputs[i], parse);
+        const val = await evalNumberOrListValue(inputs[i], parse);
         
 
         if (   !val
             || !val.isValid())
         {
             for (let j = i+1; j < inputs.length; j++)
-                await evalNumberValue(inputs[j], parse);
+                await evalNumberOrListValue(inputs[j], parse);
             
             return NumberValue.NaN.copy();
         }
@@ -30006,13 +30005,13 @@ async function evalSubtractInputs(node, inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = await evalNumberValue(inputs[0], parse);
+        const val0 = await evalNumberOrListValue(inputs[0], parse);
 
         if (   !val0
             || !val0.isValid())
         {
             for (let j = 1; j < inputs.length; j++)
-                await evalNumberValue(inputs[j], parse);
+                await evalNumberOrListValue(inputs[j], parse);
             
             return NumberValue.NaN.copy();
         }
@@ -30064,13 +30063,13 @@ async function evalSubtractInputs(node, inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = await evalNumberValue(inputs[i], parse);
+            const val = await evalNumberOrListValue(inputs[i], parse);
 
             if (   !val
                 || !val.isValid())
             {
                 for (let j = i+1; j < inputs.length; j++)
-                    await evalNumberValue(inputs[j], parse);
+                    await evalNumberOrListValue(inputs[j], parse);
                 
                 return NumberValue.NaN.copy();
             }
@@ -30120,13 +30119,13 @@ async function evalMultiplyInputs(node, inputs, parse)
 
         for (let i = 0; i < inputs.length; i++)
         {
-            const val = await evalNumberValue(inputs[i], parse);
+            const val = await evalNumberOrListValue(inputs[i], parse);
 
             if (   !val
                 || !val.isValid())
             {
                 for (let j = i+1; j < inputs.length; j++)
-                    await evalNumberValue(inputs[j], parse);
+                    await evalNumberOrListValue(inputs[j], parse);
                 
                 return NumberValue.NaN.copy();
             }
@@ -30173,13 +30172,13 @@ async function evalDivideInputs(node, inputs, parse)
         
     if (!isEmpty(inputs))
     {
-        const val0 = await evalNumberValue(inputs[0], parse);
+        const val0 = await evalNumberOrListValue(inputs[0], parse);
 
         if (   !val0
             || !val0.isValid())
         {
             for (let j = 1; j < inputs.length; j++)
-                await evalNumberValue(inputs[j], parse);
+                await evalNumberOrListValue(inputs[j], parse);
             
             return NumberValue.NaN.copy();
         }
@@ -30233,13 +30232,13 @@ async function evalDivideInputs(node, inputs, parse)
         
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = await evalNumberValue(inputs[i], parse);
+            const val = await evalNumberOrListValue(inputs[i], parse);
 
             if (   !val
                 || !val.isValid())
             {
                 for (let j = i+1; j < inputs.length; j++)
-                    await evalNumberValue(inputs[j], parse);
+                    await evalNumberOrListValue(inputs[j], parse);
                 
                 return NumberValue.NaN.copy();
             }
@@ -30307,13 +30306,13 @@ async function evalModuloInputs(node, inputs, parse)
         
     if (!isEmpty(inputs))
     {
-        const val0 = await evalNumberValue(inputs[0], parse);
+        const val0 = await evalNumberOrListValue(inputs[0], parse);
 
         if (   !val0
             || !val0.isValid())
         {
             for (let j = 1; j < inputs.length; j++)
-                await evalNumberValue(inputs[j], parse);
+                await evalNumberOrListValue(inputs[j], parse);
             
             return NumberValue.NaN.copy();
         }
@@ -30367,13 +30366,13 @@ async function evalModuloInputs(node, inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = await evalNumberValue(inputs[i], parse);
+            const val = await evalNumberOrListValue(inputs[i], parse);
 
             if (   !val
                 || !val.isValid())
             {
                 for (let j = i+1; j < inputs.length; j++)
-                    await evalNumberValue(inputs[j], parse);
+                    await evalNumberOrListValue(inputs[j], parse);
                 
                 return NumberValue.NaN.copy();
             }
@@ -30438,13 +30437,13 @@ async function evalExponentInputs(node, inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = await evalNumberValue(inputs[0], parse);
+        const val0 = await evalNumberOrListValue(inputs[0], parse);
 
         if (   !val0
             || !val0.isValid())
         {
             for (let j = 1; j < inputs.length; j++)
-                await evalNumberValue(inputs[j], parse);
+                await evalNumberOrListValue(inputs[j], parse);
             
             return NumberValue.NaN.copy();
         }
@@ -30491,13 +30490,13 @@ async function evalExponentInputs(node, inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = await evalNumberValue(inputs[i], parse);
+            const val = await evalNumberOrListValue(inputs[i], parse);
 
             if (   !val
                 || !val.isValid())
             {
                 for (let j = i+1; j < inputs.length; j++)
-                    await evalNumberValue(inputs[j], parse);
+                    await evalNumberOrListValue(inputs[j], parse);
                 
                 return NumberValue.NaN.copy();
             }
@@ -30586,10 +30585,10 @@ extends GOperator1
         this.value = new NumberValue(0);
 
 
-        const input   = await evalNumberValue(this.input,     parse);
-        const op      = await evalNumberValue(this.operation, parse);
-        const operand = await evalNumberValue(this.operand,   parse);
-        const invert  = await evalNumberValue(this.invert,    parse);
+        const input   = await evalNumberOrListValue(this.input,     parse);
+        const op      = await evalNumberValue      (this.operation, parse);
+        const operand = await evalNumberValue      (this.operand,   parse);
+        const invert  = await evalNumberValue      (this.invert,    parse);
 
 
         if (op)

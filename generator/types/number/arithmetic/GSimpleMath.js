@@ -49,10 +49,10 @@ extends GOperator1
         this.value = new NumberValue(0);
 
 
-        const input   = await evalNumberValue(this.input,     parse);
-        const op      = await evalNumberValue(this.operation, parse);
-        const operand = await evalNumberValue(this.operand,   parse);
-        const invert  = await evalNumberValue(this.invert,    parse);
+        const input   = await evalNumberOrListValue(this.input,     parse);
+        const op      = await evalNumberValue      (this.operation, parse);
+        const operand = await evalNumberValue      (this.operand,   parse);
+        const invert  = await evalNumberValue      (this.invert,    parse);
 
 
         if (op)

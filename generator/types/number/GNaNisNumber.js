@@ -40,8 +40,8 @@ extends GOperator1
             return this;
 
 
-        const  input = await evalNumberValue(this. input, parse);
-        const _value = await evalNumberValue(this._value, parse);
+        const  input = await evalNumberOrListValue(this. input, parse);
+        const _value = await evalNumberValue      (this._value, parse);
 
 
         if (input)
@@ -72,8 +72,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type',   this.outputType()]//,
-            //['value', _value            ]
+            ['type', this.outputType()]
         ]);
 
 
