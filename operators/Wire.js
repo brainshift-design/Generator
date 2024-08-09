@@ -604,7 +604,7 @@ class Wire
               : outColor;
 
 
-        const wireStyle = rgba2style(color);
+        //const wireStyle = rgba2style(color);
 
         const arrowStyle = rgba2style(
             rgbaLerp(
@@ -635,8 +635,6 @@ class Wire
              dx > Math.abs(dy) ? 100 : 0,
              dy > Math.abs(dx) ? 100 : 0);
 
-        console.log('dx =', dx);
-        console.log('dy =', dy);
         
         this.curve2.style.stroke = rgb2style(rgbDocumentBody);
     

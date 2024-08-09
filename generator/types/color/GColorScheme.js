@@ -99,7 +99,21 @@ extends GOperator1
                         break;
                     }
 
-                    case 4: // split opposite
+                    case 4: // opposite -
+                    {
+                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
+                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  5/12, 0, 1))));
+                        break;
+                    }
+
+                    case 5: // opposite +
+                    {
+                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
+                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  7/12, 0, 1))));
+                        break;
+                    }
+
+                    case 6: // opposite split
                     {
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  5/12, 0, 1))));
@@ -107,7 +121,16 @@ extends GOperator1
                         break;
                     }
 
-                    case 5: // double opposite
+                    case 7: // double opposite -
+                    {
+                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,   0,    0, 1))));
+                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  11/12, 0, 1))));
+                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,   5/12, 0, 1))));
+                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,   6/12, 0, 1))));
+                        break;
+                    }
+
+                    case 8: // double opposite +
                     {
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  1/12, 0, 1))));
@@ -116,7 +139,7 @@ extends GOperator1
                         break;
                     }
 
-                    case 6: // triangle
+                    case 9: // triangle
                     {
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  4/12, 0, 1))));
@@ -124,7 +147,7 @@ extends GOperator1
                         break;
                     }
 
-                    case 7: // rectangle
+                    case 10: // rectangle
                     {
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  2/12, 0, 1))));
@@ -133,7 +156,7 @@ extends GOperator1
                         break;
                     }
 
-                    case 8: // square
+                    case 11: // square
                     {
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  3/12, 0, 1))));
@@ -142,7 +165,7 @@ extends GOperator1
                         break;
                     }
 
-                    case 9: // hexagon
+                    case 12: // hexagon
                     {
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  2/12, 0, 1))));

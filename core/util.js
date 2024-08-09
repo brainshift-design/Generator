@@ -734,12 +734,8 @@ function currentUserIsDev()
 
 function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2) 
 {
-    console.log('x1 =', x1);
-    console.log('y1 =', y1);
-    console.log('x2 =', x2);
-    console.log('y2 =', y2);
     if (!(svg instanceof SVGElement))
-        throw new Error('First argument must be an SVG element');
+        throw new Error('\'svg\' must be an SVG element');
 
     
     let defs = svg.querySelector('defs');
@@ -774,7 +770,7 @@ function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2)
 
     const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop2.setAttribute('offset', '100%');
-    stop2.setAttribute('stop-color', color2);
+    //stop2.setAttribute('stop-color', color2);
 
     linearGradient.appendChild(stop1);
     linearGradient.appendChild(stop2);
