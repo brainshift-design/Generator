@@ -604,6 +604,8 @@ class Wire
               : outColor;
 
 
+        const wireStyle = rgba2style(color);
+
         const arrowStyle = rgba2style(
             rgbaLerp(
                 darkMode 

@@ -51,8 +51,13 @@ extends GOperator
             {
                 if (isListValueType(input.type))
                 {
-                    for (const item of input.items)
-                        _values.push(item.copy());   
+                    if (input.condensed === true)
+                        _values.push(input.copy());
+                    else
+                    {
+                        for (const item of input.items)
+                            _values.push(item.copy());   
+                    }
                 }
                 else
                     _values.push(input.copy());

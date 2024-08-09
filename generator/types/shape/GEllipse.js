@@ -85,11 +85,11 @@ extends GShape
         let sweep = await evalNumberValue(this.sweep,    parse);
         let inner = await evalNumberValue(this.inner,    parse);
 
-        if (pos   && !pos  .isValid()) pos   = NumberValue.NaN.copy();
-        if (round && !round.isValid()) round = NumberValue.NaN.copy();
-        if (start && !start.isValid()) start = NumberValue.NaN.copy();
-        if (sweep && !sweep.isValid()) sweep = NumberValue.NaN.copy();
-        if (inner && !inner.isValid()) inner = NumberValue.NaN.copy();
+        // if (pos   && !pos  .isValid()) pos   = NumberValue.NaN.copy();
+        // if (round && !round.isValid()) round = NumberValue.NaN.copy();
+        // if (start && !start.isValid()) start = NumberValue.NaN.copy();
+        // if (sweep && !sweep.isValid()) sweep = NumberValue.NaN.copy();
+        // if (inner && !inner.isValid()) inner = NumberValue.NaN.copy();
 
 
         if (input)

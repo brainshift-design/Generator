@@ -4520,6 +4520,10 @@ function currentUserIsDev()
 
 function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2) 
 {
+    console.log('x1 =', x1);
+    console.log('y1 =', y1);
+    console.log('x2 =', x2);
+    console.log('y2 =', y2);
     if (!(svg instanceof SVGElement))
         throw new Error('First argument must be an SVG element');
 
@@ -11757,6 +11761,19 @@ async function evalNumberValue(_value, parse)
         && value.type == TEXT_VALUE)
         value = new NumberValue(parseFloat(value.value));
 
+    return value;                
+}
+
+
+
+async function evalNumberOrListValue(_value, parse) 
+{ 
+    let value = await evalValue(_value, parse, () => NumberValue.NaN.copy()); 
+
+    if (   value
+        && value.type == TEXT_VALUE)
+        value = new NumberValue(parseFloat(value.value));
+
     else if (value
           && value.type == LIST_VALUE
           && finalListTypeFromItems(value.items) == TEXT_LIST_VALUE)
@@ -11768,6 +11785,19 @@ async function evalNumberValue(_value, parse)
 
 
 async function evalTextValue(_value, parse) 
+{ 
+    let value = await evalValue(_value, parse, () => new TextValue());
+
+    if (   value
+        && value.type == NUMBER_VALUE)
+        value = new TextValue(value.value.toString());
+
+    return value;                
+}
+
+
+
+async function evalTextOrListValue(_value, parse) 
 { 
     let value = await evalValue(_value, parse, () => new TextValue());
 
@@ -27442,8 +27472,13 @@ extends GOperator
             {
                 if (isListValueType(input.type))
                 {
-                    for (const item of input.items)
-                        _values.push(item.copy());   
+                    if (input.condensed === true)
+                        _values.push(input.copy());
+                    else
+                    {
+                        for (const item of input.items)
+                            _values.push(item.copy());   
+                    }
                 }
                 else
                     _values.push(input.copy());
@@ -41075,11 +41110,11 @@ extends GShape
         let sweep = await evalNumberValue(this.sweep,    parse);
         let inner = await evalNumberValue(this.inner,    parse);
 
-        if (pos   && !pos  .isValid()) pos   = NumberValue.NaN.copy();
-        if (round && !round.isValid()) round = NumberValue.NaN.copy();
-        if (start && !start.isValid()) start = NumberValue.NaN.copy();
-        if (sweep && !sweep.isValid()) sweep = NumberValue.NaN.copy();
-        if (inner && !inner.isValid()) inner = NumberValue.NaN.copy();
+        // if (pos   && !pos  .isValid()) pos   = NumberValue.NaN.copy();
+        // if (round && !round.isValid()) round = NumberValue.NaN.copy();
+        // if (start && !start.isValid()) start = NumberValue.NaN.copy();
+        // if (sweep && !sweep.isValid()) sweep = NumberValue.NaN.copy();
+        // if (inner && !inner.isValid()) inner = NumberValue.NaN.copy();
 
 
         if (input)

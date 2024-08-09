@@ -315,6 +315,19 @@ async function evalNumberValue(_value, parse)
         && value.type == TEXT_VALUE)
         value = new NumberValue(parseFloat(value.value));
 
+    return value;                
+}
+
+
+
+async function evalNumberOrListValue(_value, parse) 
+{ 
+    let value = await evalValue(_value, parse, () => NumberValue.NaN.copy()); 
+
+    if (   value
+        && value.type == TEXT_VALUE)
+        value = new NumberValue(parseFloat(value.value));
+
     else if (value
           && value.type == LIST_VALUE
           && finalListTypeFromItems(value.items) == TEXT_LIST_VALUE)
@@ -326,6 +339,19 @@ async function evalNumberValue(_value, parse)
 
 
 async function evalTextValue(_value, parse) 
+{ 
+    let value = await evalValue(_value, parse, () => new TextValue());
+
+    if (   value
+        && value.type == NUMBER_VALUE)
+        value = new TextValue(value.value.toString());
+
+    return value;                
+}
+
+
+
+async function evalTextOrListValue(_value, parse) 
 { 
     let value = await evalValue(_value, parse, () => new TextValue());
 

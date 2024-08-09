@@ -734,6 +734,10 @@ function currentUserIsDev()
 
 function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2) 
 {
+    console.log('x1 =', x1);
+    console.log('y1 =', y1);
+    console.log('x2 =', x2);
+    console.log('y2 =', y2);
     if (!(svg instanceof SVGElement))
         throw new Error('First argument must be an SVG element');
 
