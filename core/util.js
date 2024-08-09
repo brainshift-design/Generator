@@ -757,6 +757,7 @@ function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2)
     });
 
 
+    
     const linearGradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
     linearGradient.setAttribute('id', gradientId);
     linearGradient.setAttribute('x1', x1+'%');
@@ -770,7 +771,7 @@ function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2)
 
     const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop2.setAttribute('offset', '100%');
-    //stop2.setAttribute('stop-color', color2);
+    stop2.setAttribute('stop-color', color2);
 
     linearGradient.appendChild(stop1);
     linearGradient.appendChild(stop2);

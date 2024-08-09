@@ -239,6 +239,10 @@ class Wire
 
     updateCurve(x1, y1, x2, y2)
     {
+        if (equal(x1, x2, 0.001)) x2 += 0.001;
+        if (equal(y1, y2, 0.001)) y2 += 0.001;
+    
+    
         if (!pointIsNaN(this.outputPos))
         {
             x1 = this.outputPos.x;
