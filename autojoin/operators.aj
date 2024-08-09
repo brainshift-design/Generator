@@ -124,7 +124,7 @@
 ../operators/number/boolean/OpOr.js
 ../operators/number/boolean/OpXor.js
 
-../operators/number/condition/OpCondition.js
+../operators/number/condition/OpCompare.js
 ../operators/number/condition/OpConditionBase.js
 ../operators/number/condition/OpEqual.js
 ../operators/number/condition/OpNotEqual.js

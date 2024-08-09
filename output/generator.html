@@ -30631,7 +30631,6 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            //['value',     this.value       ],
             ['type',      this.outputType()],
             ['operation', op               ],
             ['operand',   operand          ],
@@ -30917,7 +30916,7 @@ async function evalNandInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = await evalNumberValue(inputs[0], parse);
+        const val0 = await evalNumberOrListValue(inputs[0], parse);
         if (!val0.isValid()) return NumberValue.NaN.copy();
 
         if (    isListValueType(val0.type)
@@ -30947,7 +30946,7 @@ async function evalNandInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = await evalNumberValue(inputs[i], parse);
+            const val = await evalNumberOrListValue(inputs[i], parse);
             if (!val.isValid()) return NumberValue.NaN.copy();
 
             if (isListValueType(val.type))
@@ -31032,7 +31031,7 @@ async function evalAndInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = await evalNumberValue(inputs[0], parse);
+        const val0 = await evalNumberOrListValue(inputs[0], parse);
         if (!val0.isValid()) return NumberValue.NaN.copy();
 
 
@@ -31062,7 +31061,7 @@ async function evalAndInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = await evalNumberValue(inputs[i], parse);
+            const val = await evalNumberOrListValue(inputs[i], parse);
             if (!val.isValid()) return NumberValue.NaN.copy();
 
 
@@ -31152,7 +31151,7 @@ async function evalOrInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = await evalNumberValue(inputs[0], parse);
+        const val0 = await evalNumberOrListValue(inputs[0], parse);
         if (!val0.isValid()) return NumberValue.NaN.copy();
 
         if (    isListValueType(val0.type)
@@ -31181,7 +31180,7 @@ async function evalOrInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = await evalNumberValue(inputs[i], parse);
+            const val = await evalNumberOrListValue(inputs[i], parse);
             if (!val.isValid()) return NumberValue.NaN.copy();
 
             if (isListValueType(val.type))
@@ -31269,7 +31268,7 @@ async function evalXorInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = await evalNumberValue(inputs[0], parse);
+        const val0 = await evalNumberOrListValue(inputs[0], parse);
         if (!val0.isValid()) return NumberValue.NaN.copy();
 
         if (    isListValueType(val0.type)
@@ -31299,7 +31298,7 @@ async function evalXorInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = await evalNumberValue(inputs[i], parse);
+            const val = await evalNumberOrListValue(inputs[i], parse);
             if (!val.isValid()) return NumberValue.NaN.copy();
 
             if (isListValueType(val.type))
@@ -31331,7 +31330,7 @@ async function evalXorInputs(inputs, parse)
 }
 
 
-class GCondition
+class GCompare
 extends GOperator1
 {
     operation;
@@ -31358,7 +31357,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GCondition(this.nodeId, this.options);
+        const copy = new GCompare(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -31376,34 +31375,51 @@ extends GOperator1
             return this;
 
 
-        const op      = await evalNumberValue(this.operation, parse);
-        const operand = await evalNumberValue(this.operand,   parse);
+        const input   = await evalNumberOrListValue(this.input,     parse);
+        const op      = await evalNumberValue      (this.operation, parse);
+        const operand = await evalNumberValue      (this.operand,   parse);
 
         op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
 
         
-        switch (op.value)
+        if (   input
+            && operand
+            && op)
         {
-            case CONDITION_LESS:              this.value = await evalConditionInputs(this.input, operand, ((a, b) => a <  b), parse);  break;
-            case CONDITION_LESS_OR_EQUAL:     this.value = await evalConditionInputs(this.input, operand, ((a, b) => a <= b), parse);  break;
-            case CONDITION_NOT_EQUAL:         this.value = await evalConditionInputs(this.input, operand, ((a, b) => a != b), parse);  break;
-            case CONDITION_EQUAL:             this.value = await evalConditionInputs(this.input, operand, ((a, b) => a == b), parse);  break;
-            case CONDITION_GREATER_OR_EQUAL:  this.value = await evalConditionInputs(this.input, operand, ((a, b) => a >= b), parse);  break;
-            case CONDITION_GREATER:           this.value = await evalConditionInputs(this.input, operand, ((a, b) => a >  b), parse);  break;
+            if (isListValueType(input.type))
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? await getCompareValue(item, operand, op, parse)
+                        : NumberValue.NaN.copy());
+                }
+            }
+            else
+            {
+                this.value = await getCompareValue(input, operand, op, parse);
+            }
         }
+        else
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
         [
-            //['value',     this.value],
-            ['operation', op        ],
-            ['operand',   operand   ]
+            ['type',      this.outputType()],
+            ['operation', op               ],
+            ['operand',   operand          ]
         ]);
 
 
         this.validate();
 
-    return this;
+        return this;
     }
 
 
@@ -31448,16 +31464,28 @@ extends GOperator1
 
 
 
-async function evalConditionInputs(input0, input1, op, parse) 
+async function getCompareValue(input, operand, op, parse)
 {
-    const val0 = await evalNumberValue(input0, parse);
-    const val1 = await evalNumberValue(input1, parse);
+    switch (op.value)
+    {
+        case CONDITION_LESS:              return await evalCompareInputs(input, operand, ((a, b) => a <  b), parse);
+        case CONDITION_LESS_OR_EQUAL:     return await evalCompareInputs(input, operand, ((a, b) => a <= b), parse);
+        case CONDITION_NOT_EQUAL:         return await evalCompareInputs(input, operand, ((a, b) => a != b), parse);
+        case CONDITION_EQUAL:             return await evalCompareInputs(input, operand, ((a, b) => a == b), parse);
+        case CONDITION_GREATER_OR_EQUAL:  return await evalCompareInputs(input, operand, ((a, b) => a >= b), parse);
+        case CONDITION_GREATER:           return await evalCompareInputs(input, operand, ((a, b) => a >  b), parse);
+    }
+}
 
-    if (   val0 && val0.isValid() 
-        && val1 && val1.isValid())
+
+
+async function evalCompareInputs(input, operand, op, parse) 
+{
+    if (   input   && input  .isValid() 
+        && operand && operand.isValid())
     {
         return new NumberValue(
-            op(val0.toNumber(), val1.toNumber()) ? 1 : 0,
+            op(input.toNumber(), operand.toNumber()) ? 1 : 0,
             0,
             true);
     }
@@ -55842,7 +55870,7 @@ function genParseCondition(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cond = new GCondition(nodeId, options);
+    const cond = new GCompare(nodeId, options);
 
 
     let nInputs = -1;

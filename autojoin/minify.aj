@@ -1920,7 +1920,7 @@ GBoolean
 GNot
 GOr
 GXor
-GCondition
+GCompare
 GEqual
 GGreater
 GGreaterOrEqual
@@ -2219,7 +2219,7 @@ OpBooleanBase
 OpNot
 OpOr
 OpXor
-OpCondition
+OpCompare
 OpConditionBase
 OpEqual
 OpGreater

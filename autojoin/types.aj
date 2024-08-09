@@ -157,7 +157,7 @@
 ../generator/types/number/boolean/GOr.js
 ../generator/types/number/boolean/GXor.js
 
-../generator/types/number/condition/GCondition.js
+../generator/types/number/condition/GCompare.js
 ../generator/types/number/condition/GEqual.js
 ../generator/types/number/condition/GNotEqual.js
 ../generator/types/number/condition/GLess.js

@@ -623,8 +623,18 @@ class Wire
             + (conn.input  ? conn.input .fullId : '');
 
 
-        if (   conn.output.types[0] == NUMBER_VALUE && conn.input.types.includes(  TEXT_VALUE)
-            || conn.output.types[0] ==   TEXT_VALUE && conn.input.types.includes(NUMBER_VALUE))
+        if (   conn.output
+            && conn.input
+            && (      conn.output.types[0] == NUMBER_VALUE 
+                   && conn.input .types.includes(TEXT_VALUE)
+                ||    conn.output.types[0] == TEXT_VALUE 
+                   && conn.input .types.includes(NUMBER_VALUE)
+                ||    conn.output.types[0] == NUMBER_LIST_VALUE 
+                   && conn.input .types.includes(TEXT_VALUE)
+                   && conn.input .types.includes(TEXT_LIST_VALUE)
+                ||    conn.output.types[0] == TEXT_LIST_VALUE 
+                   && conn.input .types.includes(NUMBER_VALUE)
+                   && conn.input .types.includes(NUMBER_LIST_VALUE)))
         {
             const dx = x2 - x1;
             const dy = y2 - y1;
@@ -636,8 +646,8 @@ class Wire
                 rgba2style(inColor ),
                 -dx > Math.abs(dy) ? 100 : 0,
                 -dy > Math.abs(dx) ? 100 : 0,
-                dx > Math.abs(dy) ? 100 : 0,
-                dy > Math.abs(dx) ? 100 : 0);
+                 dx > Math.abs(dy) ? 100 : 0,
+                 dy > Math.abs(dx) ? 100 : 0);
         }
         else
             this.curve.style.stroke = rgba2style(color);

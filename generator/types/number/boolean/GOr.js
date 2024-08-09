@@ -56,7 +56,7 @@ async function evalOrInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = await evalNumberValue(inputs[0], parse);
+        const val0 = await evalNumberOrListValue(inputs[0], parse);
         if (!val0.isValid()) return NumberValue.NaN.copy();
 
         if (    isListValueType(val0.type)
@@ -85,7 +85,7 @@ async function evalOrInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = await evalNumberValue(inputs[i], parse);
+            const val = await evalNumberOrListValue(inputs[i], parse);
             if (!val.isValid()) return NumberValue.NaN.copy();
 
             if (isListValueType(val.type))

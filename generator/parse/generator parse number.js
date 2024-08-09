@@ -1423,7 +1423,7 @@ function genParseCondition(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cond = new GCondition(nodeId, options);
+    const cond = new GCompare(nodeId, options);
 
 
     let nInputs = -1;
