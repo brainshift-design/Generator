@@ -358,7 +358,7 @@ iconCell
 iconList
 iconSelect
 iconCount
-iconContains
+iconListContains
 iconForEach
 iconIterate
 iconIfElse
@@ -1087,7 +1087,7 @@ COLUMN
 CELL
 LIST
 LIST_COUNT
-CONTAINS
+LIST_CONTAINS
 SELECT
 IF_ELSE
 FILTER
@@ -1867,7 +1867,7 @@ GCell
 GColumn
 GCombine
 GListAsItem
-GContains
+GListContains
 GExtract
 GFilter
 GFreeze
@@ -2164,7 +2164,7 @@ OpCache
 OpCell
 OpCombine
 OpListAsItem
-OpContains
+OpListContains
 OpCreateVariable
 OpExtract
 OpFilter

@@ -1,4 +1,4 @@
-class GContains
+class GListContains
 extends GOperator2
 {
     first;
@@ -9,7 +9,7 @@ extends GOperator2
 
     constructor(nodeId, options)
     {
-        super(CONTAINS, nodeId, options);
+        super(LIST_CONTAINS, nodeId, options);
     }
 
 
@@ -27,7 +27,7 @@ extends GOperator2
 
     copy()
     {
-        const copy = new GContains(this.nodeId, this.options);
+        const copy = new GListContains(this.nodeId, this.options);
 
         copy.copyBase(this);
 

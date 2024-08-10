@@ -1,12 +1,6 @@
 class   OpTextContains
 extends OperatorBase
 {
-    paramFirst;
-    paramLast;
-    paramAll;
-
-
-
     constructor()
     {
         super(TEXT_CONTAINS, 'contains', 'contains', iconTextContains);
@@ -15,18 +9,9 @@ extends OperatorBase
         this.iconOffsetY = 1;
         
 
-        this.addInput (new Input ([TEXT_VALUE, TEXT_LIST_VALUE, NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
+        this.addInput (new Input ([TEXT_VALUE, NUMBER_VALUE]));
         this.addInput (new Input ([TEXT_VALUE, NUMBER_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
-
-        this.addParam(this.paramFirst = new NumberParam('first', 'first index', true,  false, true));
-        this.addParam(this.paramLast  = new NumberParam('last',  'last index',  true,  false, true));
-        this.addParam(this.paramAll   = new   ListParam('all',   'all indices', false, false, true));
-
-        this.paramAll.itemName = [];
-
-        this.paramFirst.divider = 0.62;
-        this.paramLast .divider = 0.62;
     }
 
 
@@ -68,26 +53,12 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-        const value = values[paramIds.findIndex(id => id == 'value')];
         const type  = values[paramIds.findIndex(id => id == 'type' )];
 
         if (type) 
             this.headerOutputs[0].types = [type.value];
 
-        this.paramAll.showCount = value.isValid();
-    }
-
-
-
-    updateParams()
-    {
-        this.paramFirst.enableControlText(false, this.isUnknown());
-        this.paramLast .enableControlText(false, this.isUnknown());
-        this.paramAll  .enableControlText(false, this.isUnknown());
-
-        this.updateParamControls();
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 

@@ -604,7 +604,8 @@ const CELL = 'CELL';
 const LIST = 'LIST';
 const LIST_COUNT = 'COUNT';
 const OBJECT_COUNT = 'OBJCOUNT';
-const CONTAINS = 'LCONT';
+const LIST_CONTAINS = 'LCONT';
+const LIST_FIND = 'LFIND';
 const SELECT = 'SELECT';
 const SELECT_FROM_LIST = 'LSTSEL';
 const IF_ELSE = 'IF';
@@ -622,7 +623,8 @@ const LIST_TYPES = [
     SUBLIST,
     LIST,
     LIST_COUNT,
-    CONTAINS,
+    LIST_CONTAINS,
+    LIST_FIND,
     REPEAT
 ];
 const LIST_VALUES = [

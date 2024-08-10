@@ -1102,7 +1102,7 @@ function genParseListContains(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cont = new GContains(nodeId, options);
+    const cont = new GListContains(nodeId, options);
    
 
     let nInputs = -1;

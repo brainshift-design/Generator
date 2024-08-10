@@ -112,7 +112,7 @@
 ../generator/types/flow/GSelectFromList.js
 ../generator/types/flow/GListCount.js
 ../generator/types/flow/GObjectCount.js
-../generator/types/flow/GContains.js
+../generator/types/flow/GListContains.js
 ../generator/types/flow/GIfElse.js
 
 

@@ -6632,7 +6632,8 @@ const CELL                 = 'CELL';
 const LIST                 = 'LIST';
 const LIST_COUNT           = 'COUNT';
 const OBJECT_COUNT         = 'OBJCOUNT';
-const CONTAINS             = 'LCONT';
+const LIST_CONTAINS        = 'LCONT';
+const LIST_FIND            = 'LFIND';
 const SELECT               = 'SELECT';
 const SELECT_FROM_LIST     = 'LSTSEL';
 const IF_ELSE              = 'IF';
@@ -6655,7 +6656,8 @@ const LIST_TYPES =
     SUBLIST,
     LIST,
     LIST_COUNT,
-    CONTAINS,
+    LIST_CONTAINS,
+    LIST_FIND,
     REPEAT
 ];
 
@@ -24734,7 +24736,7 @@ extends GOperator1
 }
 
 
-class GContains
+class GListContains
 extends GOperator2
 {
     first;
@@ -24745,7 +24747,7 @@ extends GOperator2
 
     constructor(nodeId, options)
     {
-        super(CONTAINS, nodeId, options);
+        super(LIST_CONTAINS, nodeId, options);
     }
 
 
@@ -24763,7 +24765,7 @@ extends GOperator2
 
     copy()
     {
-        const copy = new GContains(this.nodeId, this.options);
+        const copy = new GListContains(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -32880,81 +32882,47 @@ extends GOperator2
             return this;
 
 
-        const input0 = await evalTextOrListValue(this.input0, parse);
-        const input1 = await evalTextValue      (this.input1, parse);
+        const input0 = await evalTextValue(this.input0, parse);
+        const input1 = await evalTextValue(this.input1, parse);
     
 
         if (   input0 && input0.isValid() 
             && input1 && input1.isValid())
         {
-            const indices = [];
-            let   index   = 0;
-
-            if (input1.value != '')
+            if (isListValueType(input0.type))
             {
-                while (index != -1) 
+                this.value = new ListValue();
+
+                for (let i = 0; i < input0.items.length; i++)
                 {
-                    index = input0.value.indexOf(input1.value, index);
+                    const item = input0.items[i];
 
-                    if (index != -1) 
-                    {
-                        indices.push(index);
-                        index += 1;
-                    }
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? new NumberValue(item.value.includes(input1.value) ? 1 : 0, 0, true)
+                        : NumberValue.NaN.copy());
                 }
-
-                
-                this.value = new NumberValue(indices.length > 0 ? 1 : 0);
-
-                this.first = indices.length > 0 ? new NumberValue(indices.at( 0)) : NumberValue.NaN.copy();
-                this.last  = indices.length > 0 ? new NumberValue(indices.at(-1)) : NumberValue.NaN.copy();
-
-                this.all   = new ListValue();
-
-                for (const index of indices)
-                    this.all.items.push(new NumberValue(index));
             }
             else
             {
-                this.value = new NumberValue(1);
-
-                this.first = NumberValue.NaN.copy();
-                this.last  = NumberValue.NaN.copy();
-                this.all   =   ListValue.NaN.copy();
+                this.value = new NumberValue(input0.value.includes(input1.value) ? 1 : 0, 0, true);
             }
         }
         else                  
         {
             this.value = NumberValue.NaN.copy();
-            this.first = NumberValue.NaN.copy();
-            this.last  = NumberValue.NaN.copy();
-            this.all   =   ListValue.NaN.copy();
         }
     
 
         this.setUpdateValues(parse,
         [
-            ['type',  this.outputType()],
-            ['value', this.value       ],
-            ['first', this.first       ],
-            ['last',  this.last        ],
-            ['all',   this.all         ]
+            ['type', this.outputType()]
         ]);
 
 
         this.validate();
 
         return this;
-    }
-
-
-
-    isValid()
-    {
-        return super.isValid()
-            && this.first && this.first.isValid()
-            && this.last  && this.last .isValid()
-            && this.all   && this.all  .isValid();
     }
 }
 
@@ -53061,7 +53029,7 @@ function genParseListContains(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cont = new GContains(nodeId, options);
+    const cont = new GListContains(nodeId, options);
    
 
     let nInputs = -1;
@@ -60274,7 +60242,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SELECT_FROM_LIST       ) result = genParseSelectFromList    (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
     else if (parse.next == OBJECT_COUNT           ) result = genParseObjectCount       (parse);
-    else if (parse.next == CONTAINS               ) result = genParseListContains      (parse);
+    else if (parse.next == LIST_CONTAINS               ) result = genParseListContains      (parse);
      
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue          (parse);
     else if (parse.next == NUMBER                 ) result = genParseNumber            (parse);

@@ -1,4 +1,4 @@
-class   OpContains
+class   OpListContains
 extends OperatorBase
 {
     paramValue;
@@ -10,7 +10,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(CONTAINS, 'contains', 'contains', iconContains);
+        super(LIST_CONTAINS, 'contains', 'contains', iconListContains);
 
         this.canDisable  = true;
         this.iconOffsetY = 0;

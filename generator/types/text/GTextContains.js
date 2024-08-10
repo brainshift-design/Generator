@@ -42,80 +42,46 @@ extends GOperator2
             return this;
 
 
-        const input0 = await evalTextOrListValue(this.input0, parse);
-        const input1 = await evalTextValue      (this.input1, parse);
+        const input0 = await evalTextValue(this.input0, parse);
+        const input1 = await evalTextValue(this.input1, parse);
     
 
         if (   input0 && input0.isValid() 
             && input1 && input1.isValid())
         {
-            const indices = [];
-            let   index   = 0;
-
-            if (input1.value != '')
+            if (isListValueType(input0.type))
             {
-                while (index != -1) 
+                this.value = new ListValue();
+
+                for (let i = 0; i < input0.items.length; i++)
                 {
-                    index = input0.value.indexOf(input1.value, index);
+                    const item = input0.items[i];
 
-                    if (index != -1) 
-                    {
-                        indices.push(index);
-                        index += 1;
-                    }
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? new NumberValue(item.value.includes(input1.value) ? 1 : 0, 0, true)
+                        : NumberValue.NaN.copy());
                 }
-
-                
-                this.value = new NumberValue(indices.length > 0 ? 1 : 0);
-
-                this.first = indices.length > 0 ? new NumberValue(indices.at( 0)) : NumberValue.NaN.copy();
-                this.last  = indices.length > 0 ? new NumberValue(indices.at(-1)) : NumberValue.NaN.copy();
-
-                this.all   = new ListValue();
-
-                for (const index of indices)
-                    this.all.items.push(new NumberValue(index));
             }
             else
             {
-                this.value = new NumberValue(1);
-
-                this.first = NumberValue.NaN.copy();
-                this.last  = NumberValue.NaN.copy();
-                this.all   =   ListValue.NaN.copy();
+                this.value = new NumberValue(input0.value.includes(input1.value) ? 1 : 0, 0, true);
             }
         }
         else                  
         {
             this.value = NumberValue.NaN.copy();
-            this.first = NumberValue.NaN.copy();
-            this.last  = NumberValue.NaN.copy();
-            this.all   =   ListValue.NaN.copy();
         }
     
 
         this.setUpdateValues(parse,
         [
-            ['type',  this.outputType()],
-            ['value', this.value       ],
-            ['first', this.first       ],
-            ['last',  this.last        ],
-            ['all',   this.all         ]
+            ['type', this.outputType()]
         ]);
 
 
         this.validate();
 
         return this;
-    }
-
-
-
-    isValid()
-    {
-        return super.isValid()
-            && this.first && this.first.isValid()
-            && this.last  && this.last .isValid()
-            && this.all   && this.all  .isValid();
     }
 }
