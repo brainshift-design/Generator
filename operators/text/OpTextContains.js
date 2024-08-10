@@ -1,7 +1,6 @@
 class   OpTextContains
 extends OperatorBase
 {
-    paramValue;
     paramFirst;
     paramLast;
     paramAll;
@@ -12,19 +11,17 @@ extends OperatorBase
     {
         super(TEXT_CONTAINS, 'contains', 'contains', iconTextContains);
 
-        this.canDisable  = true;
+
         this.iconOffsetY = 1;
         
 
-        this.addInput(new Input([TEXT_VALUE, NUMBER_VALUE]));
-        this.addInput(new Input([TEXT_VALUE, NUMBER_VALUE]));
+        this.addInput (new Input ([TEXT_VALUE, TEXT_LIST_VALUE, NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
+        this.addInput (new Input ([TEXT_VALUE, NUMBER_VALUE]));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue = new NumberParam('value', '',            false, false, true));
         this.addParam(this.paramFirst = new NumberParam('first', 'first index', true,  false, true));
         this.addParam(this.paramLast  = new NumberParam('last',  'last index',  true,  false, true));
-        this.addParam(this.paramAll   = new   ListParam('all',   'all',         false, false, true));
-
-        this.paramValue.isNodeValue = true;
+        this.addParam(this.paramAll   = new   ListParam('all',   'all indices', false, false, true));
 
         this.paramAll.itemName = [];
 
@@ -34,20 +31,20 @@ extends OperatorBase
 
 
 
-    genRequest(gen)
+    output_genRequest(gen)
     {
-        // 'this' is the node
+        // 'this' is the output
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
         
-        const input0 = this.inputs[0];
-        const input1 = this.inputs[1];
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
 
         
         if (   input0.connected
@@ -62,7 +59,7 @@ extends OperatorBase
 
 
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
 
         return request;
     }
@@ -74,6 +71,10 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         const value = values[paramIds.findIndex(id => id == 'value')];
+        const type  = values[paramIds.findIndex(id => id == 'type' )];
+
+        if (type) 
+            this.headerOutputs[0].types = [type.value];
 
         this.paramAll.showCount = value.isValid();
     }
@@ -82,13 +83,23 @@ extends OperatorBase
 
     updateParams()
     {
-        // this.paramValue.enableControlText(false);
         this.paramFirst.enableControlText(false, this.isUnknown());
         this.paramLast .enableControlText(false, this.isUnknown());
         this.paramAll  .enableControlText(false, this.isUnknown());
 
-        updateParamConditionText(this.paramValue, this.isUnknown() || this.hasConditionOutputs(), true);
-
         this.updateParamControls();
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors   = super.getHeaderColors(options);
+        const type     = this.outputs[0].types[0];
+
+        colors.output  = rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.outWire = rgbFromType(type, true);
+
+        return colors;
     }
 }

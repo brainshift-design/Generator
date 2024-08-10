@@ -662,6 +662,7 @@ function initGeneratorMenus()
         new MenuItem('',           null,            false, {separator: true}),
         new MenuItem('Length',     null,            false, {icon: iconTextLength,    createType: TEXT_LENGTH,    callback: e => actionManager.do(getCreateNodeAction(TEXT_LENGTH,    btnText.div, getCreateOptions(e)))}),
         new MenuItem('Contains',   'Text contains', true,  {icon: iconTextContains,  createType: TEXT_CONTAINS,  callback: e => actionManager.do(getCreateNodeAction(TEXT_CONTAINS,  btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Find',       'Find in text',  true,  {icon: iconTextFind,      createType: TEXT_FIND,      callback: e => actionManager.do(getCreateNodeAction(TEXT_FIND,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('Split',      null,            false, {icon: iconTextSplit,     createType: TEXT_SPLIT,     callback: e => actionManager.do(getCreateNodeAction(TEXT_SPLIT,     btnText.div, getCreateOptions(e)))}),
         new MenuItem('',           null,            false, {separator: true}),
         new MenuItem('Add text',   null,            false, {childMenu: menuAddText, icon: iconAddText,       createType: TEXT_ADD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_ADD,       btnText.div, getCreateOptions(e)))}),

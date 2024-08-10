@@ -151,6 +151,7 @@
 ../operators/text/OpTextTrim.js
 ../operators/text/OpTextSubstring.js
 ../operators/text/OpTextContains.js
+../operators/text/OpTextFind.js
 ../operators/text/OpTextCase.js
 ../operators/text/OpCodeToCharacter.js
 ../operators/text/OpCharacterToCode.js

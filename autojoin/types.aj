@@ -179,6 +179,7 @@
 ../generator/types/text/GTextTrim.js
 ../generator/types/text/GTextSubstring.js
 ../generator/types/text/GTextContains.js
+../generator/types/text/GTextFind.js
 ../generator/types/text/GTextCase.js
 ../generator/types/text/GNumberToText.js
 ../generator/types/text/GColorToText.js

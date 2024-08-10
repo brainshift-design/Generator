@@ -1203,6 +1203,7 @@ const TEXT_LENGTH             = 'TLEN';
 const TEXT_TRIM               = 'TTRIM';
 const TEXT_SUBSTRING          = 'TSUB';
 const TEXT_CONTAINS           = 'TCONT';
+const TEXT_FIND               = 'TFIND';
 const TEXT_CASE               = 'TCASE';
 const TEXT_REPLACE            = 'TREPL';
 const TEXT_ADD                = 'TADD';
@@ -1363,6 +1364,7 @@ const TEXT_TYPES =
     TEXT_TRIM,
     TEXT_SUBSTRING,
     TEXT_CONTAINS,
+    TEXT_FIND,
     TEXT_CASE,
     TEXT_ADD,
     TEXT_JOIN,

@@ -184,7 +184,7 @@ extends Parameter
             : this.name;
 
         if (this.showCount)
-            value += '  [ ' + nItems + ' ]';
+            value += /*'  */ ' [ ' + nItems + ' ]';
 
 
         this.controls[0].textbox.value = value;

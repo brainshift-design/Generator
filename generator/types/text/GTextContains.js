@@ -42,8 +42,8 @@ extends GOperator2
             return this;
 
 
-        const input0 = await evalTextValue(this.input0, parse);
-        const input1 = await evalTextValue(this.input1, parse);
+        const input0 = await evalTextOrListValue(this.input0, parse);
+        const input1 = await evalTextValue      (this.input1, parse);
     
 
         if (   input0 && input0.isValid() 
@@ -96,10 +96,11 @@ extends GOperator2
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
-            ['first', this.first],
-            ['last',  this.last ],
-            ['all',   this.all  ]
+            ['type',  this.outputType()],
+            ['value', this.value       ],
+            ['first', this.first       ],
+            ['last',  this.last        ],
+            ['all',   this.all         ]
         ]);
 
 
