@@ -1,6 +1,9 @@
 class   NumberParam
 extends NumberParamBase
 {
+    isBoolean;
+
+
     constructor(id,
                 name, 
                 showName,
@@ -27,7 +30,7 @@ extends NumberParamBase
 
             
         this.defaultValue = new NumberValue(defaultValue, decimals);
-        
+        this.isBoolean    = false;
         
         this.controls[0].successOnFocusOut = true;
         
@@ -113,15 +116,28 @@ extends NumberParamBase
     }
 
 
-    // updateControls()
-    // {
-    //     this.controls[0].div.style.width = '100%';
+    toJson(nTab = 0, id = '')
+    {
+        let pos = ' '.repeat(nTab);
         
-    //     this.div.style.background = 
-    //         darkMode 
-    //         ? this. backStyleDark 
-    //         : this. backStyleLight;
+        if (id == '')
+            id = this.id;
 
-    //     super.updateControls();
-    // }
+        const val = 
+            this.isBoolean
+            ? (this.value.value > 0 ? 'true' : 'false')
+            : this.value.toJson();
+
+        return pos + '["' + this.type  + '", "' + id  + '", "' + val + '"]';
+    }
+
+
+
+    loadParam(_param)
+    {
+        const value = parseNumberValue(_param[2])[0];
+
+        this.setValue(value, true, true, false);
+        this.isBoolean = value.isBoolean;
+    }
 }

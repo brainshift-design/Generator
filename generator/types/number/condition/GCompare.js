@@ -64,13 +64,13 @@ extends GOperator1
 
                     this.value.items.push(
                         item.type == NUMBER_VALUE
-                        ? await getCompareValue(item, operand, op, parse)
+                        ? await getCompareValue(item, operand, op)
                         : NumberValue.NaN.copy());
                 }
             }
             else
             {
-                this.value = await getCompareValue(input, operand, op, parse);
+                this.value = await getCompareValue(input, operand, op);
             }
         }
         else
@@ -132,31 +132,33 @@ extends GOperator1
 
 
 
-async function getCompareValue(input, operand, op, parse)
+async function getCompareValue(input, operand, op)
 {
     switch (op.value)
     {
-        case CONDITION_LESS:              return await evalCompareInputs(input, operand, ((a, b) => a <  b), parse);
-        case CONDITION_LESS_OR_EQUAL:     return await evalCompareInputs(input, operand, ((a, b) => a <= b), parse);
-        case CONDITION_NOT_EQUAL:         return await evalCompareInputs(input, operand, ((a, b) => a != b), parse);
-        case CONDITION_EQUAL:             return await evalCompareInputs(input, operand, ((a, b) => a == b), parse);
-        case CONDITION_GREATER_OR_EQUAL:  return await evalCompareInputs(input, operand, ((a, b) => a >= b), parse);
-        case CONDITION_GREATER:           return await evalCompareInputs(input, operand, ((a, b) => a >  b), parse);
+        case CONDITION_LESS:              return await evalCompareNumberInputs(input, operand, ((a, b) => a <  b));
+        case CONDITION_LESS_OR_EQUAL:     return await evalCompareNumberInputs(input, operand, ((a, b) => a <= b));
+        case CONDITION_NOT_EQUAL:         return await evalCompareNumberInputs(input, operand, ((a, b) => a != b));
+        case CONDITION_EQUAL:             return await evalCompareNumberInputs(input, operand, ((a, b) => a == b));
+        case CONDITION_GREATER_OR_EQUAL:  return await evalCompareNumberInputs(input, operand, ((a, b) => a >= b));
+        case CONDITION_GREATER:           return await evalCompareNumberInputs(input, operand, ((a, b) => a >  b));
     }
 }
 
 
 
-async function evalCompareInputs(input, operand, op, parse) 
+async function evalCompareNumberInputs(input, operand, compare) 
 {
     if (   input   && input  .isValid() 
         && operand && operand.isValid())
     {
         return new NumberValue(
-            op(input.toNumber(), operand.toNumber()) ? 1 : 0,
+            compare(input.toNumber(), operand.toNumber()) ? 1 : 0,
             0,
             true);
     }
-    else                  
+    else
+    {
         return NumberValue.NaN.copy();
+    }
 }

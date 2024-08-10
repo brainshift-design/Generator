@@ -2972,7 +2972,7 @@ defId
 defName
 getValuesForUndo
 createAndAddParamByType
-createAndInsertParamByType
+createAndInsertParamByValue
 insertParam
 getAllParamConnections
 removeParam

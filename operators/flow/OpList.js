@@ -175,9 +175,9 @@ extends ResizableBase
     {
         this.scrollbar = createDiv('itemsScroll');
 
-        this.scrollbar.down = false;
-        this.scrollbar.sy   = Number.NaN;
-        this.scrollbar.spy  = Number.NaN;
+        this.scrollbar.down         = false;
+        this.scrollbar.sy           = Number.NaN;
+        this.scrollbar.spy          = Number.NaN;
         this.scrollbar.style.height = 0;
 
         this.div.appendChild(this.scrollbar);
@@ -415,7 +415,6 @@ extends ResizableBase
                 if (valueId == '-type-')
                     continue;
 
-                    
                 let oldParam = oldParams.find(p =>
                        p.id == valueId 
                     && p.node
@@ -438,7 +437,7 @@ extends ResizableBase
                 {
                     if (!oldParam)
                     {
-                        this.createAndInsertParamByType(i, value.type, valueId, true, false, true, true);
+                        this.createAndInsertParamByValue(i, value, valueId, true, false, true, true);
                         paramIndex++;
                     }
                     else if (!found)
@@ -491,9 +490,25 @@ extends ResizableBase
     updateParams()
     {
         for (const param of this.params)
-            param.enableControlText(false, this.isUnknown() && this.headerOutputs[0].isLooped());
+        {
+            const unknown = 
+                   this.isUnknown() 
+                && this.headerOutputs[0].isLooped();
 
-        this.params.forEach(p => p.isNodeValue = true);
+
+            if (   param.type == NUMBER_VALUE
+                && param.isBoolean)
+            {
+                param.enableControlText(false);
+                updateParamConditionText(param, param.isUnknown(), true, 1);
+            }
+            else
+                param.enableControlText(false, unknown);
+    
+                
+            param.isNodeValue = true;
+        }
+
 
         this.updateParamControls();
     }

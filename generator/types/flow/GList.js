@@ -110,10 +110,10 @@ extends GOperator1
 
             for (let i = 0; i < this.value.items.length; i++)
             {
-                const item = this.value.items[i];
-                
                 let valueId = valueIds[i];
 
+                const item = this.value.items[i];
+                
                 Object.assign(this, {[valueId]: item});
                 this.setUpdateValues(parse, [[valueId, item]], true);
 

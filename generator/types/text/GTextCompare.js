@@ -52,12 +52,12 @@ extends GOperator2
 
             switch (op.value)
             {
-                case CONDITION_LESS:              this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a <  b), parse);  break;
-                case CONDITION_LESS_OR_EQUAL:     this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a <= b), parse);  break;
-                case CONDITION_NOT_EQUAL:         this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a != b), parse);  break;
-                case CONDITION_EQUAL:             this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a == b), parse);  break;
-                case CONDITION_GREATER_OR_EQUAL:  this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a >= b), parse);  break;
-                case CONDITION_GREATER:           this.value = await evalCompareInputs(this.input0, this.input1, ((a, b) => a >  b), parse);  break;
+                case CONDITION_LESS:              this.value = await evalCompareTextInputs(this.input0, this.input1, ((a, b) => a <  b), parse);  break;
+                case CONDITION_LESS_OR_EQUAL:     this.value = await evalCompareTextInputs(this.input0, this.input1, ((a, b) => a <= b), parse);  break;
+                case CONDITION_NOT_EQUAL:         this.value = await evalCompareTextInputs(this.input0, this.input1, ((a, b) => a != b), parse);  break;
+                case CONDITION_EQUAL:             this.value = await evalCompareTextInputs(this.input0, this.input1, ((a, b) => a == b), parse);  break;
+                case CONDITION_GREATER_OR_EQUAL:  this.value = await evalCompareTextInputs(this.input0, this.input1, ((a, b) => a >= b), parse);  break;
+                case CONDITION_GREATER:           this.value = await evalCompareTextInputs(this.input0, this.input1, ((a, b) => a >  b), parse);  break;
             }
         }
 
@@ -112,7 +112,7 @@ extends GOperator2
 
 
 
-async function evalCompareInputs(input0, input1, op, parse) 
+async function evalCompareTextInputs(input0, input1, op, parse) 
 {
     const val0 = await evalTextValue(input0, parse);
     const val1 = await evalTextValue(input1, parse);

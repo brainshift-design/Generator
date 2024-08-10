@@ -194,6 +194,9 @@ function parseNumberValue(str)
 
 function parseSimpleNumberValue(str)
 {
+         if (str === 'true' ) return [new NumberValue(1, 0, true), 1];
+    else if (str === 'false') return [new NumberValue(0, 0, true), 1];
+
     const num = 
         str == NAN_DISPLAY
         ? NumberValue.NaN.copy()
