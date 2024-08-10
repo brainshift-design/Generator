@@ -1,38 +1,31 @@
 class   OpTextLength
 extends OperatorBase
 {
-    paramLength;
-
-
-
     constructor()
     {
         super(TEXT_LENGTH, 'length', 'text length', iconTextLength);
 
 
-        this.addInput(new Input([TEXT_VALUE, NUMBER_VALUE]));
-
-        this.addParam(this.paramLength = new NumberParam('length', 'length', false, false, true));
-
-        this.paramLength.isNodeValue = true;
+        this.addInput (new Input ([TEXT_VALUE, TEXT_LIST_VALUE, NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
     }
 
 
 
-    genRequest(gen)
+    output_genRequest(gen)
     {
-        // 'this' is the node
+        // 'this' is the output
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
         
-        const input = this.inputs[0];
+        const input = this.node.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
@@ -49,10 +42,26 @@ extends OperatorBase
 
 
 
-    updateParams()
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        this.paramLength.enableControlText(false, this.isUnknown());
+        const type = values[paramIds.findIndex(id => id == 'type')];
 
-        this.updateParamControls();
+        if (type)
+            this.headerOutputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors   = super.getHeaderColors(options);
+        const type     = this.outputs[0].types[0];
+
+        colors.output  = rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.outWire = rgbFromType(type, true);
+
+        return colors;
     }
 }

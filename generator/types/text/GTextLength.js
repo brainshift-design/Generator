@@ -1,10 +1,6 @@
 class GTextLength
 extends GOperator1
 {
-    length;
-
-
-
     constructor(nodeId, options)
     {
         super(TEXT_LENGTH, nodeId, options);
@@ -15,8 +11,6 @@ extends GOperator1
     reset()
     {
         super.reset();
-
-        this.length = null;
     }
 
 
@@ -26,8 +20,6 @@ extends GOperator1
         const copy = new GTextLength(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.length) copy.length = this.length.copy();
 
         return copy;
     }
@@ -40,22 +32,35 @@ extends GOperator1
             return this;
 
 
-        const input = await evalTextValue(this.input, parse);
+        const input = await evalTextOrListValue(this.input, parse);
 
         if (   input
-            && input.value)
+            && input.isValid())
         {
-            consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+            if (isListValueType(input.type))
+            {
+                this.value = new ListValue();
 
-            this.length = new NumberValue(input.value.length);
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? new NumberValue(item.value.length)
+                        : NumberValue.NaN.copy());
+                }
+            }
+            else
+                this.value = new NumberValue(input.value.length);
         }
         else
-            this.length = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN.copy();
     
 
         this.setUpdateValues(parse,
         [
-            ['length', this.length]
+            ['type', this.outputType()]
         ]);
 
 

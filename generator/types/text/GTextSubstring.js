@@ -43,9 +43,9 @@ extends GOperator1
             return this;
 
 
-        const input = await evalTextValue  (this.input, parse);
-        const start = await evalNumberValue(this.start, parse);
-        const end   = await evalNumberValue(this.end,   parse);
+        const input = await evalTextOrListValue(this.input, parse);
+        const start = await evalNumberValue    (this.start, parse);
+        const end   = await evalNumberValue    (this.end,   parse);
 
 
         let length     = 0;
@@ -83,8 +83,6 @@ extends GOperator1
                 length     = this .value.length;
                 fullLength = input.value.length;
             }
-                        
-            //consoleAssert(this.value.type == TEXT_VALUE, 'this.value.type must be TEXT_VALUE');
         }
         else
             this.value = new TextValue();

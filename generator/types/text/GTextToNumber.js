@@ -46,10 +46,10 @@ extends GOperator1
             return this;
 
 
-        const input     = await evalTextValue  (this.input,     parse);
-        const base      = await evalNumberValue(this.base,      parse);
-        const decimals  = await evalNumberValue(this.decimals,  parse);
-        const thousands = await evalTextValue  (this.thousands, parse);
+        const input     = await evalTextOrListValue(this.input,     parse);
+        const base      = await evalNumberValue    (this.base,      parse);
+        const decimals  = await evalNumberValue    (this.decimals,  parse);
+        const thousands = await evalTextValue      (this.thousands, parse);
 
 
         if (   input
