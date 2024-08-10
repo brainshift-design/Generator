@@ -1148,6 +1148,57 @@ function genParseListContains(parse)
 
 
 
+function genParseListFind(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const find = new GListFind(nodeId, options);
+   
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(find, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, find);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        find.input0 = genParse(parse);
+        find.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        find.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
+  
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, find);
+    return find;
+}
+
+
+
 function genParseIfElse(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

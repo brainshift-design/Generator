@@ -31,6 +31,10 @@ extends GOperator2
 
         copy.copyBase(this);
 
+        if (this.first = null) copy.first = this.first.copy();
+        if (this.last  = null) copy.last  = this.last .copy();
+        if (this.all   = null) copy.all   = this.all  .copy();
+
         return copy;
     }
 
@@ -49,68 +53,39 @@ extends GOperator2
         if (   input0 && input0.isValid() 
             && input1 && input1.isValid())
         {
-            const indices = [];
-
-            
-            if (   input1
-                && input1.isValid())
+            if (isValueListOfLists(input0))
             {
+                this.value = new ListValue();
+
                 for (let i = 0; i < input0.items.length; i++)
                 {
-                    if (input0.items[i].equals(input1))
-                        indices.push(i);
-                }  
+                    const item = input0.items[i];
 
-
-                this.value = new NumberValue(indices.length > 0 ? 1 : 0);
-
-                this.first = indices.length > 0 ? new NumberValue(indices.at( 0)) : NumberValue.NaN.copy();
-                this.last  = indices.length > 0 ? new NumberValue(indices.at(-1)) : NumberValue.NaN.copy();
-
-                this.all   = new ListValue();
-
-                for (const index of indices)
-                    this.all.items.push(new NumberValue(index));
+                    this.value.items.push(
+                        isListValueType(item.type)
+                        ? new NumberValue(item.items.find(i => i.equals(input1)) ? 1 : 0, 0, true)
+                        : NumberValue.NaN.copy());
+                }
             }
             else
             {
-                this.value = new NumberValue(1);
-
-                this.first = NumberValue.NaN.copy();
-                this.last  = NumberValue.NaN.copy();
-                this.all   =   ListValue.NaN.copy();
+                this.value = new NumberValue(input0.items.find(i => i.equals(input1)) ? 1 : 0, 0, true);
             }
         }
         else                  
         {
             this.value = NumberValue.NaN.copy();
-            this.first = NumberValue.NaN.copy();
-            this.last  = NumberValue.NaN.copy();
-            this.all   =   ListValue.NaN.copy();
         }
     
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
-            ['first', this.first],
-            ['last',  this.last ],
-            ['all',   this.all  ]
+            ['type', this.outputType()]
         ]);
 
 
         this.validate();
 
         return this;
-    }
-
-
-
-    isValid()
-    {
-        return super.isValid()
-            && this.first && this.first.isValid()
-            && this.last  && this.last .isValid()
-            && this.all   && this.all  .isValid();
     }
 }

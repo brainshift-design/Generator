@@ -1032,6 +1032,22 @@ function isListValueType(type)
 }
 
 
+
+function isValueListOfLists(value)
+{
+    if (!isListValueType(value.type))
+        return false;
+
+    for (const item of value.items)
+    {
+        if (!isListValueType(item.type))
+            return false;
+    }
+
+    return true;
+}
+
+
 function rgbFromType(type, active)
 {
     return rgbFromTypeMode(type, active, darkMode);
@@ -24769,6 +24785,99 @@ extends GOperator2
 
         copy.copyBase(this);
 
+        if (this.first = null) copy.first = this.first.copy();
+        if (this.last  = null) copy.last  = this.last .copy();
+        if (this.all   = null) copy.all   = this.all  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input0 = await evalListValue(this.input0, parse);
+        const input1 = await evalValue    (this.input1, parse);
+    
+
+        if (   input0 && input0.isValid() 
+            && input1 && input1.isValid())
+        {
+            if (isValueListOfLists(input0))
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input0.items.length; i++)
+                {
+                    const item = input0.items[i];
+
+                    this.value.items.push(
+                        isListValueType(item.type)
+                        ? new NumberValue(item.items.find(i => i.equals(input1)) ? 1 : 0, 0, true)
+                        : NumberValue.NaN.copy());
+                }
+            }
+            else
+            {
+                this.value = new NumberValue(input0.items.find(i => i.equals(input1)) ? 1 : 0, 0, true);
+            }
+        }
+        else                  
+        {
+            this.value = NumberValue.NaN.copy();
+        }
+    
+
+        this.setUpdateValues(parse,
+        [
+            ['type', this.outputType()]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+class GListFind
+extends GOperator2
+{
+    first;
+    last;
+    all;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(LIST_FIND, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.first = null;
+        this.last  = null;
+        this.all   = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GListFind(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
         return copy;
     }
 
@@ -32870,6 +32979,10 @@ extends GOperator2
         const copy = new GTextContains(this.nodeId, this.options);
 
         copy.copyBase(this);
+
+        if (this.first = null) copy.first = this.first.copy();
+        if (this.last  = null) copy.last  = this.last .copy();
+        if (this.all   = null) copy.all   = this.all  .copy();
 
         return copy;
     }
@@ -53075,6 +53188,57 @@ function genParseListContains(parse)
 
 
 
+function genParseListFind(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const find = new GListFind(nodeId, options);
+   
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(find, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, find);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        find.input0 = genParse(parse);
+        find.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        find.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
+  
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, find);
+    return find;
+}
+
+
+
 function genParseIfElse(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -60242,7 +60406,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == SELECT_FROM_LIST       ) result = genParseSelectFromList    (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
     else if (parse.next == OBJECT_COUNT           ) result = genParseObjectCount       (parse);
-    else if (parse.next == LIST_CONTAINS               ) result = genParseListContains      (parse);
+    else if (parse.next == LIST_CONTAINS          ) result = genParseListContains      (parse);
+    else if (parse.next == LIST_FIND              ) result = genParseListFind          (parse);
      
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue          (parse);
     else if (parse.next == NUMBER                 ) result = genParseNumber            (parse);

@@ -1867,7 +1867,7 @@ GCell
 GColumn
 GCombine
 GListAsItem
-GListContains
+GListFind
 GExtract
 GFilter
 GFreeze
@@ -2164,7 +2164,7 @@ OpCache
 OpCell
 OpCombine
 OpListAsItem
-OpListContains
+OpListFind
 OpCreateVariable
 OpExtract
 OpFilter

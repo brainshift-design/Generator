@@ -113,6 +113,7 @@
 ../generator/types/flow/GListCount.js
 ../generator/types/flow/GObjectCount.js
 ../generator/types/flow/GListContains.js
+../generator/types/flow/GListFind.js
 ../generator/types/flow/GIfElse.js
 
 

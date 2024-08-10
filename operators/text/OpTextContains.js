@@ -3,7 +3,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(TEXT_CONTAINS, 'contains', 'contains', iconTextContains);
+        super(TEXT_CONTAINS, 'textContains', 'contains', iconTextContains);
 
 
         this.iconOffsetY = 1;
@@ -53,7 +53,7 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const type  = values[paramIds.findIndex(id => id == 'type' )];
+        const type = values[paramIds.findIndex(id => id == 'type')];
 
         if (type) 
             this.headerOutputs[0].types = [type.value];

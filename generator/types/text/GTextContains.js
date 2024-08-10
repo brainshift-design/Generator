@@ -31,6 +31,10 @@ extends GOperator2
 
         copy.copyBase(this);
 
+        if (this.first = null) copy.first = this.first.copy();
+        if (this.last  = null) copy.last  = this.last .copy();
+        if (this.all   = null) copy.all   = this.all  .copy();
+
         return copy;
     }
 

@@ -79,6 +79,7 @@
 ../operators/flow/OpListCount.js
 ../operators/flow/OpObjectCount.js
 ../operators/flow/OpListContains.js
+../operators/flow/OpListFind.js
 ../operators/flow/OpIfElse.js
 
 ../operators/number/OpNumber.js

@@ -568,6 +568,15 @@ function getObjectFills(genObjFills) {
 function isListValueType(type) {
     return LIST_VALUES.includes(type);
 }
+function isValueListOfLists(value) {
+    if (!isListValueType(value.type))
+        return false;
+    for (const item of value.items) {
+        if (!isListValueType(item.type))
+            return false;
+    }
+    return true;
+}
 const LIST_VALUE = 'LIST#';
 const NUMBER_LIST_VALUE = 'NLIST#';
 const TEXT_LIST_VALUE = 'TLIST#';
