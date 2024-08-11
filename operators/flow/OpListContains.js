@@ -17,7 +17,7 @@ extends OperatorBase
 
         this.addInput(new Input(LIST_VALUES));
         this.addInput(new Input([ANY_VALUE]));
-        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
     }
 
 

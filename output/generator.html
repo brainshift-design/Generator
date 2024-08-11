@@ -35071,29 +35071,41 @@ extends GOperator2
         this.value = NumberValue.NaN.copy();
         
         
-        const op = await evalNumberValue(this.operation, parse);
+        const input0 = await evalTextOrListValue(this.input0,    parse);
+        const input1 = await evalTextValue      (this.input1,    parse);
+
+        const op     = await evalNumberValue    (this.operation, parse);
 
         
         if (op)
         {
             op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
 
-            switch (op.value)
-            {
-                case CONDITION_LESS:              this.value = await evalCompareTextInputs(this.input0, this.input1, ((a, b) => a <  b), parse);  break;
-                case CONDITION_LESS_OR_EQUAL:     this.value = await evalCompareTextInputs(this.input0, this.input1, ((a, b) => a <= b), parse);  break;
-                case CONDITION_NOT_EQUAL:         this.value = await evalCompareTextInputs(this.input0, this.input1, ((a, b) => a != b), parse);  break;
-                case CONDITION_EQUAL:             this.value = await evalCompareTextInputs(this.input0, this.input1, ((a, b) => a == b), parse);  break;
-                case CONDITION_GREATER_OR_EQUAL:  this.value = await evalCompareTextInputs(this.input0, this.input1, ((a, b) => a >= b), parse);  break;
-                case CONDITION_GREATER:           this.value = await evalCompareTextInputs(this.input0, this.input1, ((a, b) => a >  b), parse);  break;
-            }
+            if (isListValueType(input0.type))
+                {
+                    this.value = new ListValue();
+    
+                    for (let i = 0; i < input0.items.length; i++)
+                    {
+                        const item = input0.items[i];
+    
+                        this.value.items.push(
+                            item.type == TEXT_VALUE
+                            ? await evalCompareTextInputs(item, input1, op, parse)
+                            : NumberValue.NaN.copy());
+                    }
+                }
+                else
+                {
+                    this.value = await evalCompareTextInputs(input0, input1, op, parse);
+                }
         }
 
 
         this.setUpdateValues(parse,
         [
-            ['value',     this.value],
-            ['operation', op        ]
+            ['type',      this.outputType()],
+            ['operation', op               ]
         ]);
 
 
@@ -35142,12 +35154,22 @@ extends GOperator2
 
 async function evalCompareTextInputs(input0, input1, op, parse) 
 {
-    const val0 = await evalTextValue(input0, parse);
-    const val1 = await evalTextValue(input1, parse);
+    let opFunc = null;
 
-    if (   val0 && val0.isValid() 
-        && val1 && val1.isValid())
-        return new NumberValue(op(val0.value, val1.value) ? 1 : 0);
+    switch (op.value)
+    {
+        case CONDITION_LESS:              opFunc = (a, b) => a <  b;  break;
+        case CONDITION_LESS_OR_EQUAL:     opFunc = (a, b) => a <= b;  break;
+        case CONDITION_NOT_EQUAL:         opFunc = (a, b) => a != b;  break;
+        case CONDITION_EQUAL:             opFunc = (a, b) => a == b;  break;
+        case CONDITION_GREATER_OR_EQUAL:  opFunc = (a, b) => a >= b;  break;
+        case CONDITION_GREATER:           opFunc = (a, b) => a >  b;  break;
+    }
+
+
+    if (   input0 && input0.isValid() 
+        && input1 && input1.isValid())
+        return new NumberValue(opFunc(input0.value, input1.value) ? 1 : 0, 0, true);
     else                  
         return new NullValue();
 }

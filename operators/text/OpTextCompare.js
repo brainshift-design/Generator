@@ -1,7 +1,6 @@
 class   OpTextCompare
 extends OperatorBase
 {
-    paramValue;
     paramOperation;
 
 
@@ -14,32 +13,31 @@ extends OperatorBase
         this.iconOffsetY = 0;
         
 
+        this.addInput (new Input([TEXT_VALUE, TEXT_LIST_VALUE, NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
         this.addInput (new Input([TEXT_VALUE, NUMBER_VALUE]));
-        this.addInput (new Input([TEXT_VALUE, NUMBER_VALUE]));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue     = new NumberParam('value',     '', false, false, true));
         this.addParam(this.paramOperation = new SelectParam('operation', '', false, true,  true, CONDITION_OPS.map(s => s[1]), 3));
 
-        this.paramValue    .isNodeValue = true;
         this.paramOperation.reverseMenu = true;
     }
 
 
 
-    genRequest(gen)
+    output_genRequest(gen)
     {
-        // 'this' is the node
+        // 'this' is the output
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
         
-        const input0 = this.inputs[0];
-        const input1 = this.inputs[1];
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
 
         
         if (   input0.connected
@@ -53,11 +51,11 @@ extends OperatorBase
         else                       request.push(0);
 
 
-        request.push(...this.paramOperation.genRequest(gen));
+        request.push(...this.node.paramOperation.genRequest(gen));
 
         
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
 
         return request;
     }
@@ -66,32 +64,39 @@ extends OperatorBase
 
     updateParams()
     {
-        // switch (this.paramOperation.value.value)
-        // {
-        //     case 0: this.icon = iconLess;           this.iconOffsetY = 1; break;
-        //     case 1: this.icon = iconLessOrEqual;    this.iconOffsetY = 0; break;
-        //     case 2: this.icon = iconNotEqual;       this.iconOffsetY = 2; break;
-        //     case 3: this.icon = iconEqual;          this.iconOffsetY = 0; break;
-        //     case 4: this.icon = iconGreaterOrEqual; this.iconOffsetY = 0; break;
-        //     case 5: this.icon = iconGreater;        this.iconOffsetY = 1; break;
-        // }
-
-        // this.updateIcon();
-
-
-        this.paramValue   .enableControlText(false);
         this.paramOperation.enableControlText(true );
 
-        updateParamConditionText(this.paramValue, this.isUnknown() || this.hasConditionOutputs(), true);
-
-        
         if (this.hasConditionOutputs())
         {
             this.headerInputs[0].types = [ANY_VALUE];
             this.headerInputs[1].types = [ANY_VALUE];
         }
 
-
         this.updateParamControls();
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const type = values[paramIds.findIndex(id => id == 'type')];
+
+        if (type) 
+            this.headerOutputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors   = super.getHeaderColors(options);
+        const type     = this.outputs[0].types[0];
+
+        colors.output  = rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.outWire = rgbFromType(type, true);
+
+        return colors;
     }
 }
