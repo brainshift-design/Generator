@@ -69,15 +69,15 @@ extends GOperator1
 
             index = 
                    index.isValid()
-                && index.value >= -input.items.length
-                && index.value <   input.items.length
+                && index.value >= -length
+                && index.value <   length
                 ? new NumberValue(Math.round(index.value))
                 : new NumberValue(0);
             
 
             if (   index.isValid()
-                && index.value >= -input.items.length
-                && index.value <   input.items.length)
+                && index.value >= -length
+                && index.value <   length)
             {
                 this.value = input.items.at(index.value);
                 
@@ -117,6 +117,7 @@ extends GOperator1
 
         const type = this.outputType();
 
+        
         this.setUpdateValues(parse,
         [
             ['value',      type == COLOR_VALUE 
