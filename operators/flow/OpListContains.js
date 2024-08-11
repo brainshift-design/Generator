@@ -12,7 +12,7 @@ extends OperatorBase
     {
         super(LIST_CONTAINS, 'listContains', 'contains', iconListContains);
 
-        this.iconOffsetY = 0;
+        this.iconOffsetY = 2;
         
 
         this.addInput(new Input(LIST_VALUES));

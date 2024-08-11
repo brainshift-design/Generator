@@ -46,7 +46,7 @@ extends GValue
         if (!list)                                  return false;
         if (!(list instanceof ListValue))           return false;
         if (this.items.length != list.items.length) return false;
-            
+
         for (let i = 0; i < this.items.length; i++)
             if (!this.items[i].equals(list.items[i]))
                 return false;

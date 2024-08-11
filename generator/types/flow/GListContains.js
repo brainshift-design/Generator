@@ -55,16 +55,32 @@ extends GOperator2
         {
             if (isValueListOfLists(input0))
             {
-                this.value = new ListValue();
-
-                for (let i = 0; i < input0.items.length; i++)
+                if (isListValueType(input1.type))
                 {
-                    const item = input0.items[i];
+                    let result = false;
 
-                    this.value.items.push(
-                        isListValueType(item.type)
-                        ? new NumberValue(item.items.find(i => i.equals(input1)) ? 1 : 0, 0, true)
-                        : NumberValue.NaN.copy());
+                    for (const item of input0.items)
+                    {
+                        if (item.equals(input1))
+                        {
+                            result = true;
+                            break;
+                        }
+                    }
+
+                    this.value = new NumberValue(result ? 1 : 0, 0, true);
+                }
+                else // non-list value
+                {
+                    this.value = new ListValue();
+
+                    for (const item of input0.items)
+                    {
+                        this.value.items.push(
+                            isListValueType(item.type)
+                            ? new NumberValue(item.items.find(i => i.equals(input1)) ? 1 : 0, 0, true)
+                            : NumberValue.NaN.copy());
+                    }
                 }
             }
             else
