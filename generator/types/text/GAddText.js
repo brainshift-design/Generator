@@ -46,9 +46,9 @@ extends GOperator1
         this.value = new NumberValue(0);
 
 
-        const input  = await evalTextValue  (this.input,  parse);
-        const text   = await evalTextValue  (this.text,   parse);
-        const prefix = await evalNumberValue(this.prefix, parse);
+        const input  = await evalTextOrListValue(this.input,  parse);
+        const text   = await evalTextValue      (this.text,   parse);
+        const prefix = await evalNumberValue    (this.prefix, parse);
 
 
         if (input)
@@ -63,25 +63,19 @@ extends GOperator1
                     {
                         const item = input.items[i];
 
-                        this.value.items.push(new TextValue(
-                            prefix.value > 0
-                            ? text.value + item.value
-                            : item.value + text.value));
+                        this.value.items.push(evalAddText(item, text, prefix));
                     }
                 }
                 else
                 {
-                    this.value = new TextValue(
-                        prefix.value > 0
-                        ? text .value + input.value
-                        : input.value + text .value);
+                    this.value.items.push(evalAddText(input, text, prefix));
                 }
             }
             else
                 this.value = input.copy();
         }
         else
-            this.value = new TextValue();//TextValue.NaN.copy();
+            this.value = new TextValue();
 
 
         this.setUpdateValues(parse,
@@ -135,4 +129,14 @@ extends GOperator1
         if (this.text  ) this.text  .iterateLoop(parse);
         if (this.prefix) this.prefix.iterateLoop(parse);
     }
+}
+
+
+
+function evalAddText(input, text, prefix)
+{
+    return new TextValue(
+        prefix.value > 0
+        ? text .value + input.value
+        : input.value + text .value);
 }
