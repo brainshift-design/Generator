@@ -12,7 +12,7 @@ extends OperatorBase
         super(TEXT_SPLIT, 'split', 'split', iconTextSplit);
 
 
-        this.addInput(new Input([TEXT_VALUE, NUMBER_VALUE]));
+        this.addInput (new Input ([TEXT_VALUE, TEXT_LIST_VALUE, NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_LIST_VALUE], this.output_genRequest));
 
         this.addParam(this.paramSeparator = new TextParam('separator', 'separator', false, true,  true, ''));
@@ -63,9 +63,9 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const length = values[paramIds.findIndex(id => id == 'length')];
+        // const length = values[paramIds.findIndex(id => id == 'length')];
 
-        this.length = length.value;
+        // this.length = length.value;
     }
 
 

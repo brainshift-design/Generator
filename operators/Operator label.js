@@ -144,7 +144,7 @@ Operator.prototype.updateHeaderLabelText = function()
     //else if (this.type == SORT          ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
     else if (this.type == FILTER          ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
     else if (this.type == UNIQUE          ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
-    else if (this.type == TEXT_SPLIT      ) suffix =            sep + '[ ' + (this.isUnknown() ? '?' : this.length       ) + ' ]';
+    //else if (this.type == TEXT_SPLIT      ) suffix =            sep + '[ ' + (this.isUnknown() ? '?' : this.length       ) + ' ]';
     else if (this.type == LIST            ) suffix = ellipsis + sep + '[ ' + (isListUnknown ? '?' : this.params.length) + ' ]';
     else if (this.type == CACHE           ) suffix = ellipsis;
     else

@@ -40,38 +40,37 @@ extends GOperator2
             return this;
 
 
-        this.value = NumberValue.NaN.copy();
-        
-        
         const input0 = await evalTextOrListValue(this.input0,    parse);
         const input1 = await evalTextValue      (this.input1,    parse);
 
         const op     = await evalNumberValue    (this.operation, parse);
 
         
-        if (op)
+        if (   input0
+            && input1
+            && op)
         {
             op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
 
             if (isListValueType(input0.type))
+            {
+                this.value = new ListValue();
+
+                for (const item of input0.items)
                 {
-                    this.value = new ListValue();
-    
-                    for (let i = 0; i < input0.items.length; i++)
-                    {
-                        const item = input0.items[i];
-    
-                        this.value.items.push(
-                            item.type == TEXT_VALUE
-                            ? await evalCompareTextInputs(item, input1, op, parse)
-                            : NumberValue.NaN.copy());
-                    }
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? await evalCompareTextInputs(item, input1, op, parse)
+                        : NumberValue.NaN.copy());
                 }
-                else
-                {
-                    this.value = await evalCompareTextInputs(input0, input1, op, parse);
-                }
+            }
+            else
+            {
+                this.value = await evalCompareTextInputs(input0, input1, op, parse);
+            }
         }
+        else
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,

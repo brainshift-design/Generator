@@ -40,33 +40,43 @@ extends GOperator1
             return this;
 
 
-        const separator = await evalTextValue(this.separator, parse);
+        const input     = await evalTextOrListValue(this.input,     parse);
+        const separator = await evalTextValue      (this.separator, parse);
 
 
         this.value = new ListValue();
 
 
-        if (   this.input
+        if (   input
             && separator)
         {
-            const input = await evalTextValue(this.input, parse);
-            
-            if (   input
-                && input.value)
+            if (isListValueType(input.type))
+            {
+                for (const item of input.items)
+                {
+                    const itemList = new ListValue(
+                        item.value
+                            .split(unescapeString(separator.value))
+                            .map(s => new TextValue(s)));
+
+                    this.value.items.push(itemList);
+                }
+            }
+            else
             {
                 consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
-                const items = input.value.split(unescapeString(separator.value));
 
-                for (const item of items)
-                    this.value.items.push(new TextValue(item));
+                this.value.items = input.value
+                    .split(unescapeString(separator.value))
+                    .map(s => new TextValue(s));
             }
         }
-    
+
 
         this.setUpdateValues(parse,
         [
-            ['length',    new NumberValue(this.value.items.length)],
-            ['separator', separator                               ]
+            ['type',      this.outputType()],
+            ['separator', separator        ]
         ]);
         
 

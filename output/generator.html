@@ -34953,33 +34953,43 @@ extends GOperator1
             return this;
 
 
-        const separator = await evalTextValue(this.separator, parse);
+        const input     = await evalTextOrListValue(this.input,     parse);
+        const separator = await evalTextValue      (this.separator, parse);
 
 
         this.value = new ListValue();
 
 
-        if (   this.input
+        if (   input
             && separator)
         {
-            const input = await evalTextValue(this.input, parse);
-            
-            if (   input
-                && input.value)
+            if (isListValueType(input.type))
+            {
+                for (const item of input.items)
+                {
+                    const itemList = new ListValue(
+                        item.value
+                            .split(unescapeString(separator.value))
+                            .map(s => new TextValue(s)));
+
+                    this.value.items.push(itemList);
+                }
+            }
+            else
             {
                 consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
-                const items = input.value.split(unescapeString(separator.value));
 
-                for (const item of items)
-                    this.value.items.push(new TextValue(item));
+                this.value.items = input.value
+                    .split(unescapeString(separator.value))
+                    .map(s => new TextValue(s));
             }
         }
-    
+
 
         this.setUpdateValues(parse,
         [
-            ['length',    new NumberValue(this.value.items.length)],
-            ['separator', separator                               ]
+            ['type',      this.outputType()],
+            ['separator', separator        ]
         ]);
         
 
@@ -35068,38 +35078,37 @@ extends GOperator2
             return this;
 
 
-        this.value = NumberValue.NaN.copy();
-        
-        
         const input0 = await evalTextOrListValue(this.input0,    parse);
         const input1 = await evalTextValue      (this.input1,    parse);
 
         const op     = await evalNumberValue    (this.operation, parse);
 
         
-        if (op)
+        if (   input0
+            && input1
+            && op)
         {
             op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
 
             if (isListValueType(input0.type))
+            {
+                this.value = new ListValue();
+
+                for (const item of input0.items)
                 {
-                    this.value = new ListValue();
-    
-                    for (let i = 0; i < input0.items.length; i++)
-                    {
-                        const item = input0.items[i];
-    
-                        this.value.items.push(
-                            item.type == TEXT_VALUE
-                            ? await evalCompareTextInputs(item, input1, op, parse)
-                            : NumberValue.NaN.copy());
-                    }
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? await evalCompareTextInputs(item, input1, op, parse)
+                        : NumberValue.NaN.copy());
                 }
-                else
-                {
-                    this.value = await evalCompareTextInputs(input0, input1, op, parse);
-                }
+            }
+            else
+            {
+                this.value = await evalCompareTextInputs(input0, input1, op, parse);
+            }
         }
+        else
+            this.value = NumberValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
