@@ -1,5 +1,5 @@
 class   OpTextTrim
-extends OperatorBase
+extends ResizableBase
 {
     paramStart;
     paramEnd;
@@ -16,8 +16,8 @@ extends OperatorBase
         this.addInput (new Input ([TEXT_VALUE, TEXT_LIST_VALUE, NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramStart = new TextParam('start', 'start', false, true, true, ''));
-        this.addParam(this.paramEnd   = new TextParam('end',   'end',   false, true, true, ''));
+        this.addParam(this.paramStart = new TextParam('start', 'start', true, true, true, ' '));
+        this.addParam(this.paramEnd   = new TextParam('end',   'end',   true, true, true, ' '));
 
 
         setControlFont(this.paramStart.controls[0].textbox, 'Roboto Mono', 10, 'center');
@@ -25,6 +25,23 @@ extends OperatorBase
 
         this.paramStart.controls[0].textbox.defPlaceholder = 'start';
         this.paramEnd  .controls[0].textbox.defPlaceholder = 'end';
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        const height = defHeaderHeight + defParamHeight*2;
+
+        this.height             = height;
+        this.inner.style.height = height + 'px';
+
+        super.setRect(
+            x, 
+            y, 
+            w, 
+            height, 
+            updateTransform);
     }
 
 

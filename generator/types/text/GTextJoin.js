@@ -141,7 +141,10 @@ async function evalJoinListInputs(inputs, _with, parse)
     for (const input of inputs)
     {
         if (!input) continue;
-        console.assert(isListValueType(input.type), `input is ${input.type}, must be a list`);
+
+        console.assert(
+             isListValueType(input.type), 
+            `input is ${input.type}, must be a list`);
 
         if (allInputsAreCondensedLists(input.items))
             value.items.push(...(await evalJoinListInputs(input.items, _with, parse)).items);

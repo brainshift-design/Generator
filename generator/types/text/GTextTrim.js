@@ -43,13 +43,13 @@ extends GOperator1
             return this;
 
 
-        const start = await evalNumberValue(this.start, parse);
-        const end   = await evalNumberValue(this.end,   parse);
+        const start = await evalTextValue(this.start, parse);
+        const end   = await evalTextValue(this.end,   parse);
 
 
         if (this.input)
         {
-            const input = await evalTextValue(this.input, parse);
+            const input = await evalTextOrListValue(this.input, parse);
             
             if (isListValueType(input.type))
             {
@@ -71,7 +71,7 @@ extends GOperator1
             }
         }
         else
-            this.value = new TextValue();//TextValue.NaN.copy();
+            this.value = new TextValue();
 
 
         this.setUpdateValues(parse,

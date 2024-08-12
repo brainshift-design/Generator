@@ -30,15 +30,10 @@ extends ResizableBase
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        // const headerHeight = Math.max(defHeaderHeight, boundingRect(this.header).height / graph.currentPage.zoom);
-
         const height = defHeaderHeight + (this.paramName ? defParamHeight : 0);
-
 
         this.height             = height;
         this.inner.style.height = height + 'px';
-
-        //this.updateSizers();
 
         super.setRect(
             x, 
