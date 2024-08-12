@@ -100,6 +100,18 @@ extends ResizableBase
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const type = values[paramIds.findIndex(id => id == 'type')];
+
+        if (type)
+            this.headerOutputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
     updateParams()
     {
         this.paramWith .enableControlText(true, this.paramWith.isUnknown());
@@ -115,5 +127,18 @@ extends ResizableBase
     {
         this.paramWith.div.style.width  = this.div.offsetWidth;
         this.paramWith.div.style.height = defParamHeight;    
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors   = super.getHeaderColors(options);
+        const type     = this.outputs[0].types[0];
+
+        colors.output  = rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.outWire = rgbFromType(type, true);
+
+        return colors;
     }
 }

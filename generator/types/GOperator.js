@@ -353,7 +353,9 @@ async function evalTextValue(_value, parse)
 
 async function evalTextOrListValue(_value, parse) 
 { 
+    console.log('_value =', _value);
     let value = await evalValue(_value, parse, () => new TextValue());
+    console.log('value =', value);
 
     if (   value
         && value.type == NUMBER_VALUE)

@@ -1048,6 +1048,23 @@ function isValueListOfLists(value)
 }
 
 
+
+function isValueListOfCondensedLists(value)
+{
+    if (!isListValueType(value.type))
+        return false;
+    
+    for (const item of value.items)
+    {
+        if (  !isListValueType(item.type)
+            || item.condensed !== true)
+            return false;
+    }
+
+    return true;
+}
+
+
 function rgbFromType(type, active)
 {
     return rgbFromTypeMode(type, active, darkMode);
@@ -11816,7 +11833,9 @@ async function evalTextValue(_value, parse)
 
 async function evalTextOrListValue(_value, parse) 
 { 
+    console.log('_value =', _value);
     let value = await evalValue(_value, parse, () => new TextValue());
+    console.log('value =', value);
 
     if (   value
         && value.type == NUMBER_VALUE)
@@ -34486,15 +34505,17 @@ extends GOperator
             return this;
 
 
-        const _with = await evalTextValue(this.with, parse);
+        const inputs = await Promise.all(this.inputs.map(async i => await evalTextOrListValue(i, parse)));
+        const _with  = await evalTextValue(this.with, parse);
 
-        this.value = await evalJoinInputs(this.inputs, _with, parse);
+
+        this.value = await evalJoinInputs(inputs, _with, parse);
 
         
         this.setUpdateValues(parse,
         [
-            //['value', this.value],
-            ['with',  _with     ]
+            ['type', this.outputType()],
+            ['with',  _with           ]
         ]);
 
 
@@ -34550,31 +34571,64 @@ extends GOperator
 async function evalJoinInputs(inputs, _with, parse)
 {
     if (isEmpty(inputs))
-        return new TextValue();//TextValue.NaN.copy();
+        return new TextValue();
 
 
+    const allAreLists = allInputsAreCondensedLists(inputs);
+    const w           = unescapeString(_with.value);
+
+    if (allAreLists) return await evalJoinListInputs(inputs, w, parse);
+    else             return await evalJoinItemInputs(inputs, w, parse);
+}
+
+
+
+async function evalJoinListInputs(inputs, _with, parse)
+{
+    const value = new ListValue();
+
+    
+    for (const input of inputs)
+    {
+        if (!input) continue;
+        console.assert(isListValueType(input.type), `input is ${input.type}, must be a list`);
+
+        if (allInputsAreCondensedLists(input.items))
+            value.items.push(...(await evalJoinListInputs(input.items, _with, parse)).items);
+        else
+            value.items.push(await evalJoinItemInputs(input.items, _with, parse));
+    }
+
+
+    return value;
+}
+
+
+
+async function evalJoinItemInputs(inputs, _with, parse)
+{
     const value = new TextValue();
-    const w     = unescapeString(_with.value);
 
+        
     for (let i = 0; i < inputs.length; i++)
     {
-        const val = await evalTextValue(inputs[i], parse);
-        if (!val) continue;
+        const input = await evalTextOrListValue(inputs[i], parse);
+        if (!input) continue;
 
 
         if (i > 0)
-            value.value += w;
+            value.value += _with;
 
 
-        if (isListValueType(val.type))
+        if (isListValueType(input.type))
         {
-            for (let j = 0; j < val.items.length; j++)
+            for (let j = 0; j < input.items.length; j++)
             {
                 if (j > 0)
-                    value.value += w;
+                    value.value += _with;
 
 
-                const item = val.items[j];
+                const item = input.items[j];
 
                 if (item.type == TEXT_VALUE)
                     value.value += item.value;
@@ -34582,14 +34636,29 @@ async function evalJoinInputs(inputs, _with, parse)
         }
         else
         {
-            consoleAssert(val.type == TEXT_VALUE, 'val.type must be TEXT_VALUE');
+            consoleAssert(input.type == TEXT_VALUE, 'val.type must be TEXT_VALUE');
 
-            value.value += val.value;
+            value.value += input.value;
         }
     }
 
 
     return value;
+}
+
+
+
+function allInputsAreCondensedLists(inputs)
+{
+    for (const input of inputs)
+    {
+        if (   !isValueListOfCondensedLists(input)
+            && !isListValueType(input)
+            && input.condensed !== true) 
+            return false;
+    }
+
+    return true;
 }
 
 
