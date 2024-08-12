@@ -57,7 +57,8 @@ extends GOperator1
 
         if (this.input)
         {
-            const input = await evalTextValue(this.input, parse);
+            const input = await evalTextOrListValue(this.input, parse);
+            console.log('input =', input);
             
             if (isListValueType(input.type))
             {
@@ -91,12 +92,11 @@ extends GOperator1
             }
         }
         else
-            this.value = new TextValue();//TextValue.NaN.copy();
+            this.value = new TextValue();
 
 
         this.setUpdateValues(parse,
         [
-            //['value',      this.value       ],
             ['type',       this.outputType()],
             ['startPad',   startPad         ],
             ['startCount', startCount       ],
