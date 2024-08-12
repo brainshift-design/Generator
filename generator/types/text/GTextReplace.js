@@ -48,10 +48,10 @@ extends GOperator1
             return this;
 
 
-        const  input = await evalTextValue  (this.input, parse);
-        const _what  = await evalTextValue  (this.what,  parse);
-        const _with  = await evalTextValue  (this.with,  parse);
-        const _regex = await evalNumberValue(this.regex, parse);
+        const  input = await evalTextOrListValue(this.input, parse);
+        const _what  = await evalTextValue      (this.what,  parse);
+        const _with  = await evalTextValue      (this.with,  parse);
+        const _regex = await evalNumberValue    (this.regex, parse);
 
 
         if (input)

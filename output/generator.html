@@ -33241,8 +33241,8 @@ extends GOperator1
             return this;
 
 
-        const input = await evalTextValue  (this.input, parse);
-        const _case = await evalNumberValue(this.case,  parse);
+        const input = await evalTextOrListValue(this.input, parse);
+        const _case = await evalNumberValue    (this.case,  parse);
 
 
         if (input)
@@ -34319,10 +34319,10 @@ extends GOperator1
             return this;
 
 
-        const  input = await evalTextValue  (this.input, parse);
-        const _what  = await evalTextValue  (this.what,  parse);
-        const _with  = await evalTextValue  (this.with,  parse);
-        const _regex = await evalNumberValue(this.regex, parse);
+        const  input = await evalTextOrListValue(this.input, parse);
+        const _what  = await evalTextValue      (this.what,  parse);
+        const _with  = await evalTextValue      (this.with,  parse);
+        const _regex = await evalNumberValue    (this.regex, parse);
 
 
         if (input)
@@ -35600,12 +35600,10 @@ extends GOperator
             }
             catch (e)
             {
-                // const parts = e.message.split(':');
-                
                 this.value = 
                     request.value.trim() == NULL
                     ? new TextValue()
-                    : new TextValue('invalid request');//parts[Math.min(1, parts.length-1)]);
+                    : new TextValue('invalid request');
             }
         }
         else

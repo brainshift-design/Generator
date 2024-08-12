@@ -61,12 +61,10 @@ extends GOperator
             }
             catch (e)
             {
-                // const parts = e.message.split(':');
-                
                 this.value = 
                     request.value.trim() == NULL
                     ? new TextValue()
-                    : new TextValue('invalid request');//parts[Math.min(1, parts.length-1)]);
+                    : new TextValue('invalid request');
             }
         }
         else
