@@ -25521,7 +25521,7 @@ extends GOperator1
             return this;
 
 
-        const input = await evalNumberValue(this.input, parse);
+        const input = await evalNumberOrListValue(this.input, parse);
 
 
         if (input)
