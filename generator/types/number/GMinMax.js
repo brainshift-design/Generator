@@ -42,7 +42,9 @@ extends GArithmetic
             return this;
 
 
-        let op = await evalNumberValue(this.operation, parse);
+        const inputs = await Promise.all(this.inputs.map(async i => await evalNumberOrListValue(i, parse)));
+        let   op     = await evalNumberValue(this.operation, parse);
+
 
         if (op) op = op.toInteger();
 
@@ -51,12 +53,13 @@ extends GArithmetic
             op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
         
 
-        this.value = await evalMinMaxInputs(this.inputs, op.value, parse);
+        this.value = await evalMinMaxInputs(inputs, op, parse);
 
         
         this.setUpdateValues(parse,
         [
-            ['operation', op]
+            ['type',      this.outputType()],
+            ['operation', op               ]
         ]);
 
 
@@ -109,6 +112,45 @@ async function evalMinMaxInputs(inputs, op, parse)
         return NumberValue.NaN.copy();
 
 
+    const allAreLists = allInputsAreCondensedLists(inputs);
+
+    if (allAreLists) return await evalMinMaxListInputs(inputs, op, parse);
+    else             return await evalMinMaxItemInputs(inputs, op, parse);
+}
+
+
+
+async function evalMinMaxListInputs(inputs, op, parse)
+{
+    const value = new ListValue();
+
+    
+    for (const input of inputs)
+    {
+        if (!input) continue;
+
+        console.assert(
+             isListValueType(input.type), 
+            `input is ${input.type}, must be a list`);
+
+        if (allInputsAreCondensedLists(input.items))
+            value.items.push(...(await evalMinMaxListInputs(input.items, op, parse)).items);
+        else
+            value.items.push(await evalMinMaxItemInputs(input.items, op, parse));
+    }
+
+
+    return value;
+}
+
+
+
+async function evalMinMaxItemInputs(inputs, op, parse)
+{
+    if (isEmpty(inputs))
+        return NumberValue.NaN.copy();
+
+
     let value = new NumberValue(0);
 
 
@@ -127,7 +169,7 @@ async function evalMinMaxInputs(inputs, op, parse)
             if (item.type == NUMBER_VALUE)
             {
                 value = new NumberValue( 
-                    op == 0
+                    op.value == 0
                     ? Math.min(value.value, item.value)
                     : Math.max(value.value, item.value));
             }                    
@@ -154,7 +196,7 @@ async function evalMinMaxInputs(inputs, op, parse)
                 if (item.type == NUMBER_VALUE)
                 {
                     value = new NumberValue(
-                        op == 0
+                        op.value == 0
                         ? Math.min(value.value, item.value)
                         : Math.max(value.value, item.value));
 
@@ -169,7 +211,7 @@ async function evalMinMaxInputs(inputs, op, parse)
                 'val.type must be NUMBER_VALUE');
                 
             value = new NumberValue(
-                op == 0
+                op.value == 0
                 ? Math.min(value.value, input.value)
                 : Math.max(value.value, input.value));
 

@@ -178,12 +178,7 @@ async function evalAddInputs(inputs, parse)
 
         if (   !input
             || !input.isValid())
-        {
-            // for (let j = i+1; j < inputs.length; j++)
-            //     await evalNumberOrListValue(inputs[j], parse);
-            
             return NumberValue.NaN.copy();
-        }
 
 
         if (isListValueType(input.type))
@@ -233,12 +228,7 @@ async function evalSubtractInputs(inputs, parse)
 
         if (   !input0
             || !input0.isValid())
-        {
-            // for (let j = 1; j < inputs.length; j++)
-            //     await evalNumberOrListValue(inputs[j], parse);
-            
             return NumberValue.NaN.copy();
-        }
 
 
         if (     isListValueType(input0.type)
@@ -284,12 +274,7 @@ async function evalSubtractInputs(inputs, parse)
 
             if (   !input
                 || !input.isValid())
-            {
-                // for (let j = i+1; j < inputs.length; j++)
-                //     await evalNumberOrListValue(inputs[j], parse);
-                
                 return NumberValue.NaN.copy();
-            }
 
 
             if (isListValueType(input.type))
@@ -340,12 +325,7 @@ async function evalMultiplyInputs(inputs, parse)
 
             if (   !input
                 || !input.isValid())
-            {
-                // for (let j = i+1; j < inputs.length; j++)
-                //     await evalNumberOrListValue(inputs[j], parse);
-                
                 return NumberValue.NaN.copy();
-            }
 
 
             if (isListValueType(input.type))
@@ -393,12 +373,7 @@ async function evalDivideInputs(inputs, parse)
 
         if (   !input0
             || !input0.isValid())
-        {
-            // for (let j = 1; j < inputs.length; j++)
-            //     await evalNumberOrListValue(inputs[j], parse);
-            
             return NumberValue.NaN.copy();
-        }
 
 
         if (    isListValueType(input0.type)
@@ -452,12 +427,7 @@ async function evalDivideInputs(inputs, parse)
 
             if (   !input
                 || !input.isValid())
-            {
-                // for (let j = i+1; j < inputs.length; j++)
-                //     await evalNumberOrListValue(inputs[j], parse);
-                
                 return NumberValue.NaN.copy();
-            }
 
 
             if (isListValueType(input.type))
@@ -496,7 +466,6 @@ async function evalDivideInputs(inputs, parse)
                     break; 
                 }
     
-                //value = new NumberValue(value.toNumber() / input.toNumber());
                 
                 value.value    = value.value / input.value;
                 value.decimals = Math.max(value.decimals, input.decimals);
@@ -525,12 +494,7 @@ async function evalModuloInputs(inputs, parse)
 
         if (   !input0
             || !input0.isValid())
-        {
-            // for (let j = 1; j < inputs.length; j++)
-            //     await evalNumberOrListValue(inputs[j], parse);
-            
             return NumberValue.NaN.copy();
-        }
 
 
         if (    isListValueType(input0.type)
@@ -584,12 +548,7 @@ async function evalModuloInputs(inputs, parse)
 
             if (   !input
                 || !input.isValid())
-            {
-                // for (let j = i+1; j < inputs.length; j++)
-                //     await evalNumberOrListValue(inputs[j], parse);
-                
                 return NumberValue.NaN.copy();
-            }
 
 
             if (isListValueType(input.type))
@@ -655,12 +614,7 @@ async function evalExponentInputs(inputs, parse)
 
         if (   !input0
             || !input0.isValid())
-        {
-            // for (let j = 1; j < inputs.length; j++)
-            //     await evalNumberOrListValue(inputs[j], parse);
-            
             return NumberValue.NaN.copy();
-        }
 
 
         if (    isListValueType(input0.type)
@@ -707,12 +661,7 @@ async function evalExponentInputs(inputs, parse)
 
             if (   !input
                 || !input.isValid())
-            {
-                // for (let j = i+1; j < inputs.length; j++)
-                //     await evalNumberOrListValue(inputs[j], parse);
-                
                 return NumberValue.NaN.copy();
-            }
 
 
             if (isListValueType(input.type))
