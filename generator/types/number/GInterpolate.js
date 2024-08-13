@@ -57,7 +57,7 @@ extends GOperator2
         
         for (const _input of this.inputs)
         {
-            const input = await evalNumberValue(_input, parse);
+            const input = await evalNumberOrListValue(_input, parse);
 
             if (isListValueType(input.type))
             {
