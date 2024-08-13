@@ -154,7 +154,7 @@ async function evalMinMaxItemInputs(inputs, op, parse)
     let value = new NumberValue(0);
 
 
-    const input0 = await evalNumberValue(inputs[0], parse);
+    const input0 = await evalNumberOrListValue(inputs[0], parse);
 
 
     if (    isListValueType(input0.type)
@@ -186,7 +186,7 @@ async function evalMinMaxItemInputs(inputs, op, parse)
 
     for (let i = 1; i < inputs.length; i++)
     {
-        const input = await evalNumberValue(inputs[i], parse);
+        const input = await evalNumberOrListValue(inputs[i], parse);
 
 
         if (isListValueType(input.type))
@@ -199,8 +199,6 @@ async function evalMinMaxItemInputs(inputs, op, parse)
                         op.value == 0
                         ? Math.min(value.value, item.value)
                         : Math.max(value.value, item.value));
-
-                    // value.decimals = Math.max(value.decimals, item.decimals);
                 }                    
             }
         }
@@ -214,8 +212,6 @@ async function evalMinMaxItemInputs(inputs, op, parse)
                 op.value == 0
                 ? Math.min(value.value, input.value)
                 : Math.max(value.value, input.value));
-
-            //value.decimals = Math.max(value.decimals, val.decimals);
         }
     }
 

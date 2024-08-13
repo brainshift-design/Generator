@@ -346,8 +346,13 @@ async function evalNumberOrListValue(_value, parse)
     else if (value
           && value.type == LIST_VALUE
           && finalListTypeFromItems(value.items) == TEXT_LIST_VALUE)
+    {
+        const condensed = value.condensed;
+
         value = new ListValue(value.items.map(i => new NumberValue(parseFloat(i.value))));
-    
+        value.condensed = condensed;
+    }
+
     return value;                
 }
 
@@ -377,7 +382,12 @@ async function evalTextOrListValue(_value, parse)
     else if (value
           && value.type == LIST_VALUE
           && finalListTypeFromItems(value.items) == NUMBER_LIST_VALUE)
+    {
+        const condensed = value.condensed;
+        
         value = new ListValue(value.items.map(i => new TextValue(i.value.toString())));
+        value.condensed = condensed;
+    }
     
     return value;                
 }

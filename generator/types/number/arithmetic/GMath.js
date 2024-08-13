@@ -45,6 +45,7 @@ extends GArithmetic
         const inputs = await Promise.all(this.inputs.map(async i => await evalNumberOrListValue(i, parse)));
         let   op     = await evalNumberValue(this.operation, parse);
 
+
         if (op) op = op.toInteger();
         
 
@@ -115,6 +116,8 @@ async function evalMathInputs(inputs, op, parse)
 
 
     const allAreLists = allInputsAreCondensedLists(inputs);
+    console.log('inputs =', inputs);
+    console.log('allAreLists =', allAreLists);
 
     if (allAreLists) return await evalMathListInputs(inputs, op, parse);
     else             return await evalMathItemInputs(inputs, op, parse);

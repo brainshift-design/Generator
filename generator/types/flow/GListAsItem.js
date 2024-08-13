@@ -1,10 +1,6 @@
 class GListAsItem
 extends GOperator1
 {
-    // cachedValue = null;
-
-
-
     constructor(nodeId, options)
     {
         super(LIST_AS_ITEM, nodeId, options);
@@ -15,8 +11,6 @@ extends GOperator1
     reset()
     {
         super.reset();
-
-        // this.cachedValue = null;
     }
 
 
@@ -27,8 +21,6 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        //copy.value  = this.value.copy();
-
         return copy;
     }
 
@@ -36,8 +28,7 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (   this.isCached())
-            // && this.cachedValue)
+        if (this.isCached())
             return this;
 
 
@@ -50,41 +41,31 @@ extends GOperator1
         const input = await evalListValue(this.input, parse);
 
 
-        // if (this.cachedValue)
-        //     this.value = this.cachedValue.copy();
-
-        // else
-        // {
-            if (input)
-            {
-                length = input.items.length;
+        if (input)
+        {
+            length = input.items.length;
+            
                 
-                    
-                if (   isListValueType(input.type)
-                    && this.options.enabled)
+            if (   isListValueType(input.type)
+                && this.options.enabled)
+            {
+                for (const item of input.items)
                 {
-                    for (const item of input.items)
-                    {
-                        const copy = item.copy();
-
-                        this.value.items.push(copy);
-                        //this.value.objects.push(...copy.objects);
-                    }
-                }
-                else
-                {
-                    const copy = input.copy();
+                    const copy = item.copy();
 
                     this.value.items.push(copy);
-                    this.value.objects.push(...copy.objects);
                 }
             }
             else
-                this.value = new ListValue();
+            {
+                const copy = input.copy();
 
-
-            // this.cachedValue = this.value.copy();
-        // }
+                this.value.items  .push(copy);
+                this.value.objects.push(...copy.objects);
+            }
+        }
+        else
+            this.value = new ListValue();
     
 
         this.updateValueObjects();
@@ -92,8 +73,8 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['length', new NumberValue(length)                              ],
-            ['type', new TextValue(finalListTypeFromItems(this.value.items))]
+            ['length', new NumberValue(length)                                ],
+            ['type',   new TextValue(finalListTypeFromItems(this.value.items))]
         ]);
         
 

@@ -11826,8 +11826,13 @@ async function evalNumberOrListValue(_value, parse)
     else if (value
           && value.type == LIST_VALUE
           && finalListTypeFromItems(value.items) == TEXT_LIST_VALUE)
+    {
+        const condensed = value.condensed;
+
         value = new ListValue(value.items.map(i => new NumberValue(parseFloat(i.value))));
-    
+        value.condensed = condensed;
+    }
+
     return value;                
 }
 
@@ -11857,7 +11862,12 @@ async function evalTextOrListValue(_value, parse)
     else if (value
           && value.type == LIST_VALUE
           && finalListTypeFromItems(value.items) == NUMBER_LIST_VALUE)
+    {
+        const condensed = value.condensed;
+        
         value = new ListValue(value.items.map(i => new TextValue(i.value.toString())));
+        value.condensed = condensed;
+    }
     
     return value;                
 }
@@ -21677,10 +21687,6 @@ extends GOperator
 class GListAsItem
 extends GOperator1
 {
-    // cachedValue = null;
-
-
-
     constructor(nodeId, options)
     {
         super(LIST_AS_ITEM, nodeId, options);
@@ -21691,8 +21697,6 @@ extends GOperator1
     reset()
     {
         super.reset();
-
-        // this.cachedValue = null;
     }
 
 
@@ -21703,8 +21707,6 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        //copy.value  = this.value.copy();
-
         return copy;
     }
 
@@ -21712,8 +21714,7 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (   this.isCached())
-            // && this.cachedValue)
+        if (this.isCached())
             return this;
 
 
@@ -21726,41 +21727,31 @@ extends GOperator1
         const input = await evalListValue(this.input, parse);
 
 
-        // if (this.cachedValue)
-        //     this.value = this.cachedValue.copy();
-
-        // else
-        // {
-            if (input)
-            {
-                length = input.items.length;
+        if (input)
+        {
+            length = input.items.length;
+            
                 
-                    
-                if (   isListValueType(input.type)
-                    && this.options.enabled)
+            if (   isListValueType(input.type)
+                && this.options.enabled)
+            {
+                for (const item of input.items)
                 {
-                    for (const item of input.items)
-                    {
-                        const copy = item.copy();
-
-                        this.value.items.push(copy);
-                        //this.value.objects.push(...copy.objects);
-                    }
-                }
-                else
-                {
-                    const copy = input.copy();
+                    const copy = item.copy();
 
                     this.value.items.push(copy);
-                    this.value.objects.push(...copy.objects);
                 }
             }
             else
-                this.value = new ListValue();
+            {
+                const copy = input.copy();
 
-
-            // this.cachedValue = this.value.copy();
-        // }
+                this.value.items  .push(copy);
+                this.value.objects.push(...copy.objects);
+            }
+        }
+        else
+            this.value = new ListValue();
     
 
         this.updateValueObjects();
@@ -21768,8 +21759,8 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['length', new NumberValue(length)                              ],
-            ['type', new TextValue(finalListTypeFromItems(this.value.items))]
+            ['length', new NumberValue(length)                                ],
+            ['type',   new TextValue(finalListTypeFromItems(this.value.items))]
         ]);
         
 
@@ -26383,7 +26374,7 @@ async function evalMinMaxItemInputs(inputs, op, parse)
     let value = new NumberValue(0);
 
 
-    const input0 = await evalNumberValue(inputs[0], parse);
+    const input0 = await evalNumberOrListValue(inputs[0], parse);
 
 
     if (    isListValueType(input0.type)
@@ -26415,7 +26406,7 @@ async function evalMinMaxItemInputs(inputs, op, parse)
 
     for (let i = 1; i < inputs.length; i++)
     {
-        const input = await evalNumberValue(inputs[i], parse);
+        const input = await evalNumberOrListValue(inputs[i], parse);
 
 
         if (isListValueType(input.type))
@@ -26428,8 +26419,6 @@ async function evalMinMaxItemInputs(inputs, op, parse)
                         op.value == 0
                         ? Math.min(value.value, item.value)
                         : Math.max(value.value, item.value));
-
-                    // value.decimals = Math.max(value.decimals, item.decimals);
                 }                    
             }
         }
@@ -26443,8 +26432,6 @@ async function evalMinMaxItemInputs(inputs, op, parse)
                 op.value == 0
                 ? Math.min(value.value, input.value)
                 : Math.max(value.value, input.value));
-
-            //value.decimals = Math.max(value.decimals, val.decimals);
         }
     }
 
@@ -30055,6 +30042,7 @@ extends GArithmetic
         const inputs = await Promise.all(this.inputs.map(async i => await evalNumberOrListValue(i, parse)));
         let   op     = await evalNumberValue(this.operation, parse);
 
+
         if (op) op = op.toInteger();
         
 
@@ -30125,6 +30113,8 @@ async function evalMathInputs(inputs, op, parse)
 
 
     const allAreLists = allInputsAreCondensedLists(inputs);
+    console.log('inputs =', inputs);
+    console.log('allAreLists =', allAreLists);
 
     if (allAreLists) return await evalMathListInputs(inputs, op, parse);
     else             return await evalMathItemInputs(inputs, op, parse);
