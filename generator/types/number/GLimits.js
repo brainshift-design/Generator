@@ -52,9 +52,9 @@ extends GOperator1
             return this;
 
             
-        const input = await evalNumberValue(this.input, parse);
-        const min   = await evalNumberValue(this.min,   parse);
-        const max   = await evalNumberValue(this.max,   parse);
+        const input = await evalNumberOrListValue(this.input, parse);
+        const min   = await evalNumberValue      (this.min,   parse);
+        const max   = await evalNumberValue      (this.max,   parse);
 
 
         if (input)
@@ -83,8 +83,8 @@ extends GOperator1
         this.setUpdateValues(parse,
         [
             ['type', this.outputType()],
-            ['min',   min             ],
-            ['max',   max             ]
+            ['min',  min              ],
+            ['max',  max              ]
         ]);
 
 

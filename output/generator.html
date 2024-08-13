@@ -26494,9 +26494,9 @@ extends GOperator1
             return this;
 
             
-        const input = await evalNumberValue(this.input, parse);
-        const min   = await evalNumberValue(this.min,   parse);
-        const max   = await evalNumberValue(this.max,   parse);
+        const input = await evalNumberOrListValue(this.input, parse);
+        const min   = await evalNumberValue      (this.min,   parse);
+        const max   = await evalNumberValue      (this.max,   parse);
 
 
         if (input)
@@ -26525,8 +26525,8 @@ extends GOperator1
         this.setUpdateValues(parse,
         [
             ['type', this.outputType()],
-            ['min',   min             ],
-            ['max',   max             ]
+            ['min',  min              ],
+            ['max',  max              ]
         ]);
 
 
@@ -26656,10 +26656,10 @@ extends GOperator1
             return this;
 
             
-        const input = await evalNumberValue(this.input, parse);
-        const min   = await evalNumberValue(this.min,   parse);
-        const max   = await evalNumberValue(this.max,   parse);
-        const power = await evalNumberValue(this.power, parse);
+        const input = await evalNumberOrListValue(this.input, parse);
+        const min   = await evalNumberValue      (this.min,   parse);
+        const max   = await evalNumberValue      (this.max,   parse);
+        const power = await evalNumberValue      (this.power, parse);
 
 
         if (input)
@@ -26819,9 +26819,9 @@ extends GOperator1
             return this;
 
             
-        const input = await evalNumberValue(this.input, parse);
-        const from  = await evalListValue  (this.from,  parse);
-        const to    = await evalListValue  (this.to,    parse);
+        const input = await evalNumberOrListValue(this.input, parse);
+        const from  = await evalListValue        (this.from,  parse);
+        const to    = await evalListValue        (this.to,    parse);
 
         let nanList = false;
 
@@ -26868,7 +26868,7 @@ extends GOperator1
         else
             this.value = NumberValue.NaN.copy();
 
-        console.log('this.value =', this.value);
+
         this.setUpdateValues(parse,
         [
             ['type', nanList ? new TextValue(NUMBER_LIST_VALUE) : this.outputType()],
@@ -27052,11 +27052,11 @@ extends GOperator1
             return this;
 
             
-        const input  = await evalNumberValue(this.input,  parse);
-        const min    = await evalNumberValue(this.min,    parse);
-        const max    = await evalNumberValue(this.max,    parse);
-        const bias   = await evalNumberValue(this.bias,   parse);
-        const spread = await evalNumberValue(this.spread, parse);
+        const input  = await evalNumberOrListValue(this.input,  parse);
+        const min    = await evalNumberValue      (this.min,    parse);
+        const max    = await evalNumberValue      (this.max,    parse);
+        const bias   = await evalNumberValue      (this.bias,   parse);
+        const spread = await evalNumberValue      (this.spread, parse);
 
 
         if (input)
@@ -30113,8 +30113,6 @@ async function evalMathInputs(inputs, op, parse)
 
 
     const allAreLists = allInputsAreCondensedLists(inputs);
-    console.log('inputs =', inputs);
-    console.log('allAreLists =', allAreLists);
 
     if (allAreLists) return await evalMathListInputs(inputs, op, parse);
     else             return await evalMathItemInputs(inputs, op, parse);
@@ -31988,8 +31986,8 @@ extends GOperator1
             return this;
 
 
-        const input = await evalNumberValue(this.input,    parse);
-        const func  = await evalNumberValue(this.function, parse);
+        const input = await evalNumberOrListValue(this.input,    parse);
+        const func  = await evalNumberValue      (this.function, parse);
 
         func.value = Math.min(Math.max(0, func.value), TRIG_OPS.length-1);
 
@@ -33844,7 +33842,7 @@ function getTextToNumberValue(input, base, decimals, thousands)
             case 0: // dec
             {
                 if (value.lastIndexOf(decimals.value) < 0)
-                    num = parseInt(value.replace(/\D/g, ''), 10);
+                    num = parseInt(value.replace(/[^\d-]/g, ''), 10);
                 else
                 {
                     value = replaceLast(value, decimals.value, '.');
@@ -33865,7 +33863,7 @@ function getTextToNumberValue(input, base, decimals, thousands)
                     const frac  = value.slice(decIndex + decimals.value.length);
 
                     num = 
-                        parseInt(whole, 16)
+                          parseInt(whole, 16)
                         + frac.split('')
                             .reduce((sum, digit, index) => sum + parseInt(digit, 16) / Math.pow(16, index + 1), 0);
                 }

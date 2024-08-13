@@ -40,8 +40,8 @@ extends GOperator1
             return this;
 
 
-        const input = await evalNumberValue(this.input,    parse);
-        const func  = await evalNumberValue(this.function, parse);
+        const input = await evalNumberOrListValue(this.input,    parse);
+        const func  = await evalNumberValue      (this.function, parse);
 
         func.value = Math.min(Math.max(0, func.value), TRIG_OPS.length-1);
 

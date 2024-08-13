@@ -52,9 +52,9 @@ extends GOperator1
             return this;
 
             
-        const input = await evalNumberValue(this.input, parse);
-        const from  = await evalListValue  (this.from,  parse);
-        const to    = await evalListValue  (this.to,    parse);
+        const input = await evalNumberOrListValue(this.input, parse);
+        const from  = await evalListValue        (this.from,  parse);
+        const to    = await evalListValue        (this.to,    parse);
 
         let nanList = false;
 
@@ -101,7 +101,7 @@ extends GOperator1
         else
             this.value = NumberValue.NaN.copy();
 
-        console.log('this.value =', this.value);
+
         this.setUpdateValues(parse,
         [
             ['type', nanList ? new TextValue(NUMBER_LIST_VALUE) : this.outputType()],

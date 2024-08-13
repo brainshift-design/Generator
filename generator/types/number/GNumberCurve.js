@@ -56,10 +56,10 @@ extends GOperator1
             return this;
 
             
-        const input = await evalNumberValue(this.input, parse);
-        const min   = await evalNumberValue(this.min,   parse);
-        const max   = await evalNumberValue(this.max,   parse);
-        const power = await evalNumberValue(this.power, parse);
+        const input = await evalNumberOrListValue(this.input, parse);
+        const min   = await evalNumberValue      (this.min,   parse);
+        const max   = await evalNumberValue      (this.max,   parse);
+        const power = await evalNumberValue      (this.power, parse);
 
 
         if (input)

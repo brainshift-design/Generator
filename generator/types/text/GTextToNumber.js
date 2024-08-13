@@ -153,7 +153,7 @@ function getTextToNumberValue(input, base, decimals, thousands)
             case 0: // dec
             {
                 if (value.lastIndexOf(decimals.value) < 0)
-                    num = parseInt(value.replace(/\D/g, ''), 10);
+                    num = parseInt(value.replace(/[^\d-]/g, ''), 10);
                 else
                 {
                     value = replaceLast(value, decimals.value, '.');
@@ -174,7 +174,7 @@ function getTextToNumberValue(input, base, decimals, thousands)
                     const frac  = value.slice(decIndex + decimals.value.length);
 
                     num = 
-                        parseInt(whole, 16)
+                          parseInt(whole, 16)
                         + frac.split('')
                             .reduce((sum, digit, index) => sum + parseInt(digit, 16) / Math.pow(16, index + 1), 0);
                 }

@@ -60,11 +60,11 @@ extends GOperator1
             return this;
 
             
-        const input  = await evalNumberValue(this.input,  parse);
-        const min    = await evalNumberValue(this.min,    parse);
-        const max    = await evalNumberValue(this.max,    parse);
-        const bias   = await evalNumberValue(this.bias,   parse);
-        const spread = await evalNumberValue(this.spread, parse);
+        const input  = await evalNumberOrListValue(this.input,  parse);
+        const min    = await evalNumberValue      (this.min,    parse);
+        const max    = await evalNumberValue      (this.max,    parse);
+        const bias   = await evalNumberValue      (this.bias,   parse);
+        const spread = await evalNumberValue      (this.spread, parse);
 
 
         if (input)
