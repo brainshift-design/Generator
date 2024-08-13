@@ -56,8 +56,7 @@ extends GArithmetic
         
         this.setUpdateValues(parse,
         [
-            ['operation', op        ]//,
-            //['value',     this.value]
+            ['operation', op]
         ]);
 
 
@@ -113,22 +112,17 @@ async function evalMinMaxInputs(inputs, op, parse)
     let value = new NumberValue(0);
 
 
-    const val0 = await evalNumberValue(inputs[0], parse);
+    const input0 = await evalNumberValue(inputs[0], parse);
 
 
-    if (   inputs.length == 1
-        && val0.type == NUMBER_VALUE)
+    if (    isListValueType(input0.type)
+        && !isEmpty(input0.items))
     {
-        value = new NumberValue(-val0.value);//, val0.decimals);
-    }
-    else if (isListValueType(val0.type)
-            && !isEmpty(val0.items))
-    {
-        value = val0.items[0].copy();
+        value = input0.items[0].copy();
         
-        for (let i = 1; i < val0.items.length; i++)
+        for (let i = 1; i < input0.items.length; i++)
         {
-            const item = val0.items[i];
+            const item = input0.items[i];
 
             if (item.type == NUMBER_VALUE)
             {
@@ -141,21 +135,21 @@ async function evalMinMaxInputs(inputs, op, parse)
     }
     else
     {
-        if (val0.type != NUMBER_VALUE)
+        if (input0.type != NUMBER_VALUE)
             return NumberValue.NaN.copy();
 
-        value = val0;
+        value = input0;
     }
 
 
     for (let i = 1; i < inputs.length; i++)
     {
-        const val = await evalNumberValue(inputs[i], parse);
+        const input = await evalNumberValue(inputs[i], parse);
 
 
-        if (isListValueType(val.type))
+        if (isListValueType(input.type))
         {
-            for (const item of val.items)
+            for (const item of input.items)
             {
                 if (item.type == NUMBER_VALUE)
                 {
@@ -171,13 +165,13 @@ async function evalMinMaxInputs(inputs, op, parse)
         else
         {
             consoleAssert(
-                val.type == NUMBER_VALUE, 
+                input.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
             value = new NumberValue(
                 op == 0
-                ? Math.min(value.value, val.value)
-                : Math.max(value.value, val.value));
+                ? Math.min(value.value, input.value)
+                : Math.max(value.value, input.value));
 
             //value.decimals = Math.max(value.decimals, val.decimals);
         }

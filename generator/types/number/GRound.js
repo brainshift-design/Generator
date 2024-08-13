@@ -46,9 +46,9 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const input = await evalNumberValue(this.input,    parse);
-        const type  = await evalNumberValue(this.type,     parse);
-        const dec   = await evalNumberValue(this.decimals, parse);
+        const input = await evalNumberOrListValue(this.input,    parse);
+        const type  = await evalNumberValue      (this.type,     parse);
+        const dec   = await evalNumberValue      (this.decimals, parse);
 
 
         if (   input

@@ -52,11 +52,11 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const input  = await evalNumberValue(this.input,  parse);
-        const type   = await evalNumberValue(this.type,   parse);
-        const base   = await evalNumberValue(this.base,   parse);
-        const step   = await evalNumberValue(this.step,   parse);
-        const amount = await evalNumberValue(this.amount, parse);
+        const input  = await evalNumberOrListValue(this.input,  parse);
+        const type   = await evalNumberValue      (this.type,   parse);
+        const base   = await evalNumberValue      (this.base,   parse);
+        const step   = await evalNumberValue      (this.step,   parse);
+        const amount = await evalNumberValue      (this.amount, parse);
 
 
         if (input)

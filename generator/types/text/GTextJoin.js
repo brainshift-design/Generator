@@ -198,18 +198,3 @@ async function evalJoinItemInputs(inputs, _with, parse)
 
     return value;
 }
-
-
-
-function allInputsAreCondensedLists(inputs)
-{
-    for (const input of inputs)
-    {
-        if (   !isValueListOfCondensedLists(input)
-            && !isListValueType(input)
-            && input.condensed !== true) 
-            return false;
-    }
-
-    return true;
-}

@@ -114,19 +114,12 @@ extends ResizableBase
 
     updateParams()
     {
-        this.paramWith .enableControlText(true, this.paramWith.isUnknown());
+        this.paramWith.enableControlText(true, this.paramWith.isUnknown());
 
-        this.updateValueParam();
-
-        this.updateParamControls();
-    }
-
-
-
-    updateValueParam()
-    {
         this.paramWith.div.style.width  = this.div.offsetWidth;
         this.paramWith.div.style.height = defParamHeight;    
+
+        this.updateParamControls();
     }
 
 

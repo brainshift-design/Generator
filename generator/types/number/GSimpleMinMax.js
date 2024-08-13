@@ -46,9 +46,9 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const input   = await evalNumberValue(this.input,     parse);
-        const operand = await evalNumberValue(this.operand,   parse);
-        const op      = await evalNumberValue(this.operation, parse);
+        const input   = await evalNumberOrListValue(this.input,     parse);
+        const operand = await evalNumberValue      (this.operand,   parse);
+        const op      = await evalNumberValue      (this.operation, parse);
 
 
         if (input)
@@ -83,7 +83,6 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            //['value',     this.value       ],
             ['type',      this.outputType()],
             ['operand',   operand          ],
             ['operation', op               ]

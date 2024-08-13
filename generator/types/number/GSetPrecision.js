@@ -43,8 +43,8 @@ extends GOperator1
         this.value = new NumberValue(0);
 
         
-        const input    = await evalNumberValue(this.input,    parse);
-        const decimals = await evalNumberValue(this.decimals, parse);
+        const input    = await evalNumberOrListValue(this.input,    parse);
+        const decimals = await evalNumberValue      (this.decimals, parse);
 
 
         if (input)

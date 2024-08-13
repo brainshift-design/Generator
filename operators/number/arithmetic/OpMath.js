@@ -13,7 +13,6 @@ extends OperatorBase
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
-        this.canDisable       = true;
 
 
         this.addNewInput();
@@ -87,6 +86,18 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const type = values[paramIds.findIndex(id => id == 'type')];
+
+        if (type)
+            this.headerOutputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
