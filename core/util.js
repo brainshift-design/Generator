@@ -732,7 +732,7 @@ function currentUserIsDev()
 
 
 
-function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2) 
+function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2, contrast = 0) 
 {
     if (!(svg instanceof SVGElement))
         throw new Error('\'svg\' must be an SVG element');
@@ -749,15 +749,14 @@ function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2)
 
     const existingGradients = defs.querySelectorAll('linearGradient');
     const gradientId        = `svgLinearGradient-${target.curveId}`;
-
+    
     existingGradients.forEach(gradient => 
     {
-        if (gradient.id == gradientId) 
+        if (gradient.id == gradientId)
             gradient.remove();
     });
 
 
-    
     const linearGradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
     linearGradient.setAttribute('id', gradientId);
     linearGradient.setAttribute('x1', x1+'%');
@@ -765,16 +764,28 @@ function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2)
     linearGradient.setAttribute('x2', x2+'%');
     linearGradient.setAttribute('y2', y2+'%');
 
+    const contrastDist = 35;
+
     const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop1.setAttribute('offset', '0%');
     stop1.setAttribute('stop-color', color1);
 
     const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
-    stop2.setAttribute('offset', '100%');
-    stop2.setAttribute('stop-color', color2);
+    stop2.setAttribute('offset', (contrastDist*contrast) + '%');
+    stop2.setAttribute('stop-color', color1);
+
+    const stop3 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop3.setAttribute('offset', (100 - contrastDist*contrast) + '%');
+    stop3.setAttribute('stop-color', color2);
+
+    const stop4 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop4.setAttribute('offset', '100%');
+    stop4.setAttribute('stop-color', color2);
 
     linearGradient.appendChild(stop1);
     linearGradient.appendChild(stop2);
+    linearGradient.appendChild(stop3);
+    linearGradient.appendChild(stop4);
 
     defs.appendChild(linearGradient);
 

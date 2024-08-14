@@ -564,8 +564,6 @@ function setAutoScrollTimer(dScroll, e, sizer = null)
     else if (graphView.tempConn)
         graphView.tempConn.wire.update(px, py);
     
-    //if (dragging.length > 0)
-                
        
     if (autoScrollTimer)
     {

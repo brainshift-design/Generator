@@ -55,7 +55,7 @@ class Wire
         this.curve                       = createSvg('path');
         this.curve.style.position        = 'absolute';
         this.curve.style.fill            = 'none';
-        this.curve.curveId               = null;
+        this.curve.curveId               = NULL;
       
         this.curve2                      = createSvg('path');
         this.curve2.style.position       = 'absolute';
@@ -595,19 +595,6 @@ class Wire
                 && conn.input.node.isOrFollowedByMultiplier());
         
     
-        const outColor = 
-            conn.output 
-            ? conn.output.wireColor 
-            : rgbFromType(ANY_VALUE, true);
-
-        const inColor = 
-            conn.input 
-            ? conn.input.wireColor 
-            : graphView.overInput 
-              ? graphView.overInput.wireColor 
-              : outColor;
-
-
         const arrowStyle = rgba2style(
             rgbaLerp(
                 darkMode 
@@ -617,27 +604,46 @@ class Wire
                 color[3]));
 
         
+        const output = graphView.overOutput ?? conn.output;
+        const input  = graphView.overInput  ?? conn.input;
+
         this.curve.curveId = 
-              (conn.output ? conn.output.fullId : '')
+              (output ? output.fullId : '')
             + '-' 
-            + (conn.input  ? conn.input .fullId : '');
+            + (input  ? input .fullId : '');
+
+        const outColor = 
+            output 
+            ? output.wireColor 
+            : rgbFromType(ANY_VALUE, true);
+
+        const inColor = 
+            input 
+            ? input.wireColor 
+            : outColor;
 
 
-        if (   conn.output
-            && conn.input
-            && (      conn.output.types[0] == NUMBER_VALUE 
-                   && conn.input .types.includes(TEXT_VALUE)
-                ||    conn.output.types[0] == TEXT_VALUE 
-                   && conn.input .types.includes(NUMBER_VALUE)
-                ||    conn.output.types[0] == NUMBER_LIST_VALUE 
-                   && conn.input .types.includes(TEXT_VALUE)
-                   && conn.input .types.includes(TEXT_LIST_VALUE)
-                ||    conn.output.types[0] == TEXT_LIST_VALUE 
-                   && conn.input .types.includes(NUMBER_VALUE)
-                   && conn.input .types.includes(NUMBER_LIST_VALUE)))
+        // converting types
+        if (   output 
+            && input  
+            && (      output.types[0] == NUMBER_VALUE 
+                   && input .types.includes(TEXT_VALUE)
+                ||    output.types[0] == TEXT_VALUE 
+                   && input .types.includes(NUMBER_VALUE)
+                ||    output.types[0] == NUMBER_LIST_VALUE 
+                   && input .types.includes(TEXT_VALUE)
+                   && input .types.includes(TEXT_LIST_VALUE)
+                ||    output.types[0] == TEXT_LIST_VALUE 
+                   && input .types.includes(NUMBER_VALUE)
+                   && input .types.includes(NUMBER_LIST_VALUE)))
         {
+            console.log('gradient');
             const dx = x2 - x1;
             const dy = y2 - y1;
+
+            const wireLength   = distv(point(x1, y1), point(x2, y2)) / graph.currentPage.zoom;
+            const gradContrast = 1 - Math.min(Math.max(0, wireLength / 100 - 0.5), 1);
+            console.log('gradContrast =', gradContrast);
         
             setSvgLinearGradientStroke(
                 this.curve.closest('svg'), 
@@ -647,10 +653,16 @@ class Wire
                 -dx > Math.abs(dy) ? 100 : 0,
                 -dy > Math.abs(dx) ? 100 : 0,
                  dx > Math.abs(dy) ? 100 : 0,
-                 dy > Math.abs(dx) ? 100 : 0);
+                 dy > Math.abs(dx) ? 100 : 0,
+                 gradContrast);
         }
-        else
+        
+        // same type
+        else 
+        {
+            console.log('color');
             this.curve.style.stroke = rgba2style(color);
+        }
 
         
         this.curve2.style.stroke = rgb2style(rgbDocumentBody);
