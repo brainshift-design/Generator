@@ -177,19 +177,25 @@ class Wire
         let pOut = point(0, 0),
             pIn  = point(0, 0);
     
-    
-        if (this.connection.output)
+
+        const conn   = this.connection;
+
+        const output = graphView.overOutput ?? conn.output;
+        const input  = graphView.overInput  ?? conn.input;
+
+        
+        if (output)
         {
-            const ro = boundingRect(this.connection.output.div);
+            const ro = boundingRect(output.div);
             pOut = point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset);
         }
         else
             pOut = point(x, y - yOffset);
     
     
-        if (this.connection.input)
+        if (input)
         {
-            const ri = boundingRect(this.connection.input.div);
+            const ri = boundingRect(input.div);
             pIn = point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset);
         }
         else
@@ -198,11 +204,11 @@ class Wire
             
         // make sure wires don't stick out of list
         
-        if (   this.connection.output
-            && this.connection.output.node
-            && this.connection.output.param)
+        if (   output
+            && output.node
+            && output.param)
         {
-            const outNode   = this.connection.output.node;
+            const outNode   = output.node;
             const outTop    = Math.round(outNode.measureData.divBounds.y + outNode.measureData.headerOffset.height * graph.currentPage.zoom - yOffset + 1);
             const outBottom = Math.round(outNode.measureData.divBounds.y + outNode.measureData.divBounds.height                             - yOffset - 1);
 
@@ -506,13 +512,20 @@ class Wire
 
     updateStyle(x1, y1, x2, y2)
     {
+        if (equal(x1, x2, 0.001)) x2 += 0.001;
+        if (equal(y1, y2, 0.001)) y2 += 0.001;
+
         //console.trace();
 
-        const conn = this.connection;
+        const conn   = this.connection;
+
+        const output = graphView.overOutput ?? conn.output;
+        const input  = graphView.overInput  ?? conn.input;
+
 
         this.isReset = 
-               conn.input 
-            && conn.input.isLoop();
+               input 
+            && input.isLoop();
 
 
         let color = rgb_a(this.getColor());
@@ -524,15 +537,15 @@ class Wire
         if (darkMode) bright = 1-bright;
     
         
-        if (   conn.output && color[3] < 1
-            || conn. input && color[3] < 1)
+        if (   output && color[3] < 1
+            ||  input && color[3] < 1)
         {
             this.xp1.style.display          = 'inline';
             this.xp1.style.stroke           = rgba2style(rgb_a(darkMode ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
             this.xp1.style.strokeDasharray  = 9 * Math.max(1, graph.currentPage.zoom);
     
             this.xp2.style.display          = 'inline';
-            this.xp2.style.stroke           = rgba2style(rgb_a(darkMode ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//darkMode ? '#4d4d4d' : '#fff';
+            this.xp2.style.stroke           = rgba2style(rgb_a(darkMode ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));
             this.xp2.style.strokeDasharray  = 9 * Math.max(1, graph.currentPage.zoom);
             this.xp2.style.strokeDashoffset = 9 * Math.max(1, graph.currentPage.zoom);
         }
@@ -570,20 +583,20 @@ class Wire
     
                 
         const unknown = 
-               conn.output 
-            && (      conn.output.param
-                   && conn.output.param.isNodeValue
-                   && conn.output.param.node.isOrPrecededByUncached()
-                ||     conn.output.param
-                   && !conn.output.param.isNodeValue
-                   &&  conn.output.param.input
-                   &&  conn.output.param.input.isUncached()
-                ||   !conn.output.param
-                   && conn.output.node.isOrPrecededByUncached()
-                ||    conn.output.node.type == LIST
-                   && conn.output.node.isOrPrecededByUncached())
-            && (   conn.input
-                && conn.input.node.isOrFollowedByMultiplier());
+               output 
+            && (      output.param
+                   && output.param.isNodeValue
+                   && output.param.node.isOrPrecededByUncached()
+                ||     output.param
+                   && !output.param.isNodeValue
+                   &&  output.param.input
+                   &&  output.param.input.isUncached()
+                ||   !output.param
+                   && output.node.isOrPrecededByUncached()
+                ||    output.node.type == LIST
+                   && output.node.isOrPrecededByUncached())
+            && (   input
+                && input.node.isOrFollowedByMultiplier());
         
     
         const arrowStyle = rgba2style(
@@ -595,9 +608,6 @@ class Wire
                 color[3]));
 
         
-        const output = graphView.overOutput ?? conn.output;
-        const input  = graphView.overInput  ?? conn.input;
-
         this.curve.curveId = 
               (output ? output.fullId : '')
             + '-' 
@@ -614,9 +624,6 @@ class Wire
             : outColor;
 
 
-        //this.curve.style.stroke = 'none';
-        
-
         // converting types
         if (   output 
             && input  
@@ -631,17 +638,12 @@ class Wire
                    && input .types.includes(NUMBER_VALUE)
                    && input .types.includes(NUMBER_LIST_VALUE)))
         {
-            console.log('gradient');
-            console.log('outColor =', outColor);
-            console.log('inColor =', inColor);
-            console.log('this.curve.closest(\'svg\') =', this.curve.closest('svg'));
-            console.log('this.curve =', this.curve);
             const dx = x2 - x1;
             const dy = y2 - y1;
 
             const wireLength   = distv(point(x1, y1), point(x2, y2)) / graph.currentPage.zoom;
             const gradContrast = 1 - Math.min(Math.max(0, wireLength / 100 - 0.5), 1);
-        
+
             setSvgLinearGradientStroke(
                 this.curve.closest('svg'),
                 this.curve,
@@ -657,7 +659,6 @@ class Wire
         // same type
         else 
         {
-            console.log('color');
             this.curve.style.stroke = rgba2style(color);
         }
 

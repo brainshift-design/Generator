@@ -168,7 +168,7 @@ ColorControl.prototype.initEvents = function()
             return;
 
 
-        this.div.style.cursor       = 'default';
+        this.div.style.cursor          = 'default';
         
         this.divFocus.style.visibility = 'hidden';
         this.divFocus.style.opacity    = 0;

@@ -350,21 +350,32 @@ extends EventTarget
         if (this.param)
             this.wireColor = rgb_a(rgbFromType(finalTypeFromTypes(this.types), true));
         
-        this.wireBall.style.left       = '1px';
-        this.wireBall.style.top        = 'calc(50% - 3px)';
+        this.wireBall.style.left   = '1px';
+        this.wireBall.style.top    = 'calc(50% - 3px)';
        
-        this.wireBall.style.zIndex     = MAX_INT32;
+        this.wireBall.style.zIndex = MAX_INT32;
 
         const ballColor = rgbFromType(this.types[0], true);
         
         this.wireBall.style.background = rgba2style(
             tc && graphView.overInput == this 
-            ? this.wireColor //tc.wire.getColor() 
+            ? this.wireColor
             : this.connection 
-              ? this.wireColor //this.connection.wire.getColor() 
+              ? this.wireColor
               : [1, 0, 1, 1]);
 
         showElement(this.wireBall, isConnected); 
+    }
+
+
+
+    getWirePosition()
+    {
+        const inputRect = boundingRect(this.div);
+
+        return point(
+            inputRect.x + inputRect.w/2,
+            inputRect.y + inputRect.h/2 - getTopHeight());
     }
 
 

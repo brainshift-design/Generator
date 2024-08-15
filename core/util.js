@@ -758,12 +758,14 @@ function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2,
 
 
     const linearGradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+
     linearGradient.setAttribute('id', gradientId);
     linearGradient.setAttribute('x1', x1+'%');
     linearGradient.setAttribute('y1', y1+'%');
     linearGradient.setAttribute('x2', x2+'%');
     linearGradient.setAttribute('y2', y2+'%');
 
+    
     const contrastDist = 35;
 
     const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
@@ -771,17 +773,18 @@ function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2,
     stop1.setAttribute('stop-color', color1);
 
     const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
-    stop2.setAttribute('offset', (contrastDist*contrast) + '%');
+    stop2.setAttribute('offset', roundTo(contrastDist*contrast, 2) + '%');
     stop2.setAttribute('stop-color', color1);
 
     const stop3 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
-    stop3.setAttribute('offset', (100 - contrastDist*contrast) + '%');
+    stop3.setAttribute('offset', roundTo(100 - contrastDist*contrast, 2) + '%');
     stop3.setAttribute('stop-color', color2);
 
     const stop4 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
     stop4.setAttribute('offset', '100%');
     stop4.setAttribute('stop-color', color2);
 
+ 
     linearGradient.appendChild(stop1);
     linearGradient.appendChild(stop2);
     linearGradient.appendChild(stop3);
@@ -790,7 +793,6 @@ function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2,
     defs.appendChild(linearGradient);
 
 
-    //target.setAttribute('stroke', `url(#${gradientId})`);
     target.style.stroke = `url(#${gradientId})`;
 
 

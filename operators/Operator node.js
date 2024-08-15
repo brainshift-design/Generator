@@ -303,11 +303,7 @@ Operator.prototype.createHeader = function()
                     input.mouseOver = true;
                     input.updateControl();
 
-                    const inputRect = boundingRect(input.div);
-
-                    tempConn.wire.inputPos = point(
-                        inputRect.x + inputRect.w/2,
-                        inputRect.y + inputRect.h/2 - getTopHeight());
+                    tempConn.wire.inputPos = input.getWirePosition();
                 }
             }
             else if ( tempConn.input
@@ -325,9 +321,7 @@ Operator.prototype.createHeader = function()
 
                 const rect = boundingRect(output.div);
 
-                tempConn.wire.outputPos = point(
-                    rect.x + rect.w/2,
-                    rect.y + rect.h/2 - getTopHeight());
+                tempConn.wire.outputPos = output.getWirePosition();
 
 
                 tempConn.input.updateControl();

@@ -289,6 +289,17 @@ extends EventTarget
 
 
 
+    getWirePosition()
+    {
+        const rect = boundingRect(this.div);
+
+        return point(
+            rect.x + rect.w/2,
+            rect.y + rect.h/2 - getTopHeight());
+    }
+
+
+
     supportsTypes(types)
     {
         return this.types.includes(ANY_VALUE)
