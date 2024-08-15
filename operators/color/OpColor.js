@@ -360,10 +360,10 @@ extends OpColorBase
                     ? dataColor_NaN
                     : makeDataColor(_space, _c1, _c2, _c3);
 
-                this.outputs[0].wireColor = 
-                    this.isUnknown()
-                    ? rgbFromType(CACHE, true)
-                    : dataColor2rgb(this._color);
+                // this.outputs[0].wireColor = 
+                //     this.isUnknown()
+                //     ? rgbFromType(CACHE, true)
+                //     : dataColor2rgb(this._color);
 
                 this.prevSpace = colorSpace(_space.value);
             }
@@ -374,7 +374,7 @@ extends OpColorBase
                 this._color    = dataColor_NaN;
                 this.prevSpace = NAN_DISPLAY;
 
-                this.outputs[0].wireColor = rgb_NaN;
+                //this.outputs[0].wireColor = rgb_NaN;
             }
         }
         else if (space)
@@ -742,11 +742,11 @@ function updateColorHeader(node, colors)
      
     // node. inputs[0].colorLight =
     // node. inputs[0].colorDark  = colors.input;
-    node. inputs[0].wireColor  = rgb_a(colors.inWire);
+    //node. inputs[0].wireColor  = rgb_a(colors.inWire);
 
     // node.outputs[0].colorLight =
     // node.outputs[0].colorDark  = colors.output; 
-    node.outputs[0].wireColor  = rgb_a(colors.outWire);
+    //node.outputs[0].wireColor  = rgb_a(colors.outWire);
 
 
     if (node.isUnknown())

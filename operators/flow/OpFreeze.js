@@ -93,8 +93,8 @@ extends OperatorBase
             || this.outputs[0].supportsTypes([FILL_VALUE]))
         {
             if (this.inputs[0].connected)
-                colors.output =
-                colors.outWire = this.inputs[0].connectedOutput.wireColor;
+                colors.output = this.inputs[0].connectedOutput.wireColor;
+                // colors.outWire = this.inputs[0].connectedOutput.wireColor;
         }
         else
         {

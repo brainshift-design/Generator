@@ -268,8 +268,8 @@ extends OperatorBase
         {
             if (   this.inputs[0].supportsTypes([COLOR_VALUE])
                 || this.inputs[0].supportsTypes([ FILL_VALUE]))
-                colors.output  =
-                colors.outWire = this.inputs[0].connectedOutput.wireColor;
+                colors.output  = this.inputs[0].connectedOutput.wireColor;
+                //colors.outWire = this.inputs[0].connectedOutput.wireColor;
             else
                 colors.output  =
                 colors.outWire = rgbFromType(this.inputs[0].types[0], true);
@@ -278,8 +278,8 @@ extends OperatorBase
         {
             if (   this.outputs[0].supportsTypes([COLOR_VALUE])
                 || this.outputs[0].supportsTypes([ FILL_VALUE]))
-                colors.output  =
-                colors.outWire = this.outputs[0].connectedInputs[0].wireColor;
+                colors.output  = this.outputs[0].connectedInputs[0].wireColor;
+                // colors.outWire = this.outputs[0].connectedInputs[0].wireColor;
             else
                 colors.output  =
                 colors.outWire = rgbFromType(this.outputs[0].types[0], true);

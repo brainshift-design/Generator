@@ -128,21 +128,23 @@ class Wire
 
         if (output)
         {
-                 if (!isEmpty(output.types)) types.push(...output.types);
-            else if (output)                 types.push(output.node.type);
+            types.push(...output.types);
+            //     if (!isEmpty(output.types)) types.push(...output.types);
+            //else if (output)                 types.push(output.node.type);
         }
         else if (input)
         {
-            if (   graphView.overOutput
-                && input.canConnectFrom(graphView.overOutput)) 
-            {
-                types.push(...graphView.overOutput.types);
-            }
-            else if (input)
-            {
-                     if (!isEmpty(input.types)) types.push(...input.types);
-                else                            types.push(input.node.type);
-            }
+            types.push(...input.types);
+            // if (   graphView.overOutput
+            //     && input.canConnectFrom(graphView.overOutput)) 
+            // {
+            //     types.push(...graphView.overOutput.types);
+            // }
+            // else if (input)
+            // {
+            //          if (!isEmpty(input.types)) types.push(...input.types);
+            //     else                            types.push(input.node.type);
+            // }
         }
 
 
@@ -150,10 +152,18 @@ class Wire
             return rgb_a(rgbFromType(ANY_VALUE, true));
 
         else if (output)
-            return output.wireColor;
+        {
+            return output.param 
+                ? output.param.value.toRgb()
+                : output.getWireColor(); //rgb_a(rgbFromType(output.types[0], true));//output.wireColor;
+        }
 
         else if (input)
-            return input.wireColor;
+        {
+            return input.param 
+                ? input.param.value.toRgb()
+                : input.getWireColor(); //rgb_a(rgbFromType(input.types[0], true)); //input.wireColor;
+        }
 
         else if (!isEmpty(types))
             return rgb_a(rgbFromType(types[0], true));
@@ -224,6 +234,9 @@ class Wire
     
     updateSvg(x1, y1, x2, y2)
     {
+        // if (equal(x1, x2, 0.001)) x2 += 0.001;
+        // if (equal(y1, y2, 0.001)) y2 += 0.001;
+
         this.updateCurve  (x1, y1, x2, y2);
         this.updateOutBall(x1, y1        );
         this.updateInBall (        x2, y2);
@@ -240,9 +253,11 @@ class Wire
 
     updateCurve(x1, y1, x2, y2)
     {
-        if (equal(x1, x2, 0.001)) x2 += 0.001;
-        if (equal(y1, y2, 0.001)) y2 += 0.001;
+        // if (equal(x1, x2, 0.001)) x2 += 0.001;
+        // if (equal(y1, y2, 0.001)) y2 += 0.001;
     
+        // console.log('y1 =', y1);
+        // console.log('y2 =', y2);
     
         if (!pointIsNaN(this.outputPos))
         {
@@ -512,10 +527,13 @@ class Wire
 
     updateStyle(x1, y1, x2, y2)
     {
-        if (equal(x1, x2, 0.001)) x2 += 0.001;
-        if (equal(y1, y2, 0.001)) y2 += 0.001;
+        // if (equal(x1, x2, 0.001)) x2 += 0.001;
+        // if (equal(y1, y2, 0.001)) y2 += 0.001;
 
-        //console.trace();
+        // this was fixed, then it still would fail sometimes
+        // now I commented out the fix and it started working consistently
+        // \o/
+
 
         const conn   = this.connection;
 
@@ -615,12 +633,12 @@ class Wire
 
         const outColor = 
             output 
-            ? output.wireColor 
+            ? rgb_a(rgbFromType(output.types[0], true)) //output.wireColor 
             : rgbFromType(ANY_VALUE, true);
 
         const inColor = 
             input 
-            ? input.wireColor 
+            ? rgb_a(rgbFromType(input.types[0], true)) //input.wireColor 
             : outColor;
 
 
@@ -682,8 +700,8 @@ class Wire
         this.arrow2 .style.fill = arrowStyle;
     
     
-        if (output) output.wireBall.style.background = rgb2style(outColor);
-        if (input ) input .wireBall.style.background = rgb2style( inColor);
+        //if (output) output.wireBall.style.background = rgb2style(outColor);
+        //if (input ) input .wireBall.style.background = rgb2style( inColor);
     
     
         const isList = this.connectionIsList();
@@ -720,7 +738,7 @@ class Wire
                && arraysIntersect(conn.output.types, LIST_TYPES)
             ||   !conn.output
                && conn.input
-               && LIST_TYPES.includes(conn.input.types[0]);//arraysIntersect(conn.input.types, LIST_TYPES);
+               && LIST_TYPES.includes(conn.input.types[0]);
     }
 
 

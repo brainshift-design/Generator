@@ -56,7 +56,7 @@ extends Operator
             input.colorLight =
             input.colorDark  = colors.input;
 
-            input.wireColor  = colors.inWire;
+            //input.wireColor  = colors.inWire;
         }
 
 
@@ -65,7 +65,7 @@ extends Operator
             output.colorLight = 
             output.colorDark  = colors.output;
 
-            output.wireColor  = colors.outWire;
+            //output.wireColor  = colors.outWire;
         }
 
 

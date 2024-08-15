@@ -228,11 +228,11 @@ extends OpColorBase
 
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = colors.input;
-        this.inputs[0] .wireColor  = colors.inWire;
+        //this.inputs[0] .wireColor  = colors.inWire;
 
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = colors.output;
-        this.outputs[0].wireColor  = colors.outWire;
+        //this.outputs[0].wireColor  = colors.outWire;
 
 
         if (this.isUnknown())

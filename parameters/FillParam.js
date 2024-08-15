@@ -351,14 +351,14 @@ extends Parameter
         {
             this.input.colorLight  = 
             this.input.colorDark   = showColorBack ? rgb_a(rgbaText, 0.2) : noColor;
-            this.input.wireColor   = !rgbaIsNaN(rgbaStripe) && showColorBack ? rgbaStripe : noColor;
+            //this.input.wireColor   = !rgbaIsNaN(rgbaStripe) && showColorBack ? rgbaStripe : noColor;
         }
 
         if (this.output)
         {
             this.output.colorLight =
             this.output.colorDark  = showColorBack ? rgb_a(rgbaText, 0.2) : noColor;
-            this.output.wireColor  = !rgbaIsNaN(rgbaStripe) && showColorBack ? rgbaStripe : noColor;
+            //this.output.wireColor  = !rgbaIsNaN(rgbaStripe) && showColorBack ? rgbaStripe : noColor;
         }
 
 

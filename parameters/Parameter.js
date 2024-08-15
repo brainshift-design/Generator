@@ -395,15 +395,15 @@ extends EventTarget
         if (this.input)
         {
             this.input.colorLight  = 
-            this.input.colorDark   =  
-            this.input.wireColor   = rgbFromType(this.type, true);
+            this.input.colorDark   = rgbFromType(this.type, true);
+            //this.input.wireColor   = rgbFromType(this.type, true);
         }
 
         if (this.output)
         {
             this.output.colorLight =
-            this.output.colorDark  = 
-            this.output.wireColor  = rgbFromType(this.output.types[0], true);
+            this.output.colorDark  = rgbFromType(this.output.types[0], true);
+            //this.output.wireColor  = rgbFromType(this.output.types[0], true);
         }
     }
 

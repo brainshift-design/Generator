@@ -170,14 +170,14 @@ extends Parameter
         {
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
-            this.input.wireColor   = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
+            //this.input.wireColor   = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
         }
 
         if (this.output)
         {
             this.output.colorLight =
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
-            this.output.wireColor  = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
+            //this.output.wireColor  = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
         }
     }
 

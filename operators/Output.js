@@ -33,7 +33,7 @@ extends EventTarget
     colorLight;
     colorDark;
 
-    wireColor;
+    //wireColor;
 
 
     div;
@@ -91,7 +91,7 @@ extends EventTarget
         this.colorLight       = [0, 0, 0, 1];
         this.colorDark        = [1, 1, 1, 1];
       
-        this.wireColor        = rgb_NaN;
+        //this.wireColor        = rgb_NaN;
         
 
         this.div.appendChild(this.hitbox);
@@ -218,6 +218,9 @@ extends EventTarget
     
     updateControl()
     {
+        const tc = graphView.tempConn;
+
+
         const mouseOver =
                this.mouseOver
             && !(   graphView.tempConn
@@ -228,14 +231,22 @@ extends EventTarget
                      || this.node.isOrFollows(graphView.tempConn.input.node)));
 
 
-        const color = 
-               this.param
-            && this.param.type != COLOR_VALUE
-            && this.param.type !=  FILL_VALUE
-            ? rgb_a(rgbFromType(this.types[0], true), 0.38)
-            : (darkMode
-               ? this.colorDark
-               : this.colorLight);
+        const ballColor = 
+            darkMode
+            ? this.colorDark
+            : this.colorLight;
+        console.log('ballColor =', ballColor);
+
+
+        const color = ballColor;//rgb_a(rgbFromType(this.types[0], true), 0.38);
+            //    this.param
+            // && this.param.type != COLOR_VALUE
+            // && this.param.type !=  FILL_VALUE
+            // ? rgb_a(rgbFromType(this.types[0], true), 0.38)
+            // : (darkMode
+            //    ? this.colorDark
+            //    : this.colorLight);
+
 
         const colorStyle = 
             rgba2style(rgb_a(
@@ -284,6 +295,15 @@ extends EventTarget
         this.wireBall.style.zIndex =  MAX_INT32;
 
 
+        this.wireBall.style.background = rgba2style(ballColor);
+            //tc && graphView.overOutput == this 
+            //? rgbFromType(tc.input.types[0], true)
+            //: 
+            //this.connection 
+            //  ? ballColor //rgb_a(ballColor, 0.35) //rgbFromType(this.types[0], true)
+            //  : [1, 0, 1, 1]);
+
+
         showElement(this.wireBall, isConnected);
     }
 
@@ -296,6 +316,16 @@ extends EventTarget
         return point(
             rect.x + rect.w/2,
             rect.y + rect.h/2 - getTopHeight());
+    }
+
+
+
+    getWireColor()
+    {
+        if (this.node.type == COLOR)
+            return dataColor2rgb(this.node._color);
+        else
+            return rgb_a(rgbFromType(this.types[0], true));
     }
 
 

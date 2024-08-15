@@ -1239,9 +1239,9 @@ class Operator
             border:  rgbaBorder,
             text:    rgbaText,
             input:   colInput,
-            output:  colOutput,
-            inWire:  colWire,
-            outWire: colWire };
+            output:  colOutput };//,
+            // inWire:  colWire,
+            // outWire: colWire };
     }
 
 
