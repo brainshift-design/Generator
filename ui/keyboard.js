@@ -99,6 +99,13 @@ document.addEventListener('keydown', e =>
         console.clear();
     }    
 
+    // insert separator into console
+    else if (e.code == 'KeyV'
+        && e.altKey)
+    {
+        logInsertSeparator();
+    }    
+
     // randomize seeds
     else if (e.code == 'KeyR'
           && e.shiftKey

@@ -184,7 +184,10 @@ function logUndoStack()
         'UNDO STACK:\n'
         + actionManager.actions.map(a => '    ' + a.name).join('\n');
 
-    console.log('%c%s', 'background: #ffd; color: #b80;', log);
+    console.log(
+        '%c%s', 
+        'background: #ffd; color: #b80;', 
+        log);
 }
 
 
@@ -195,7 +198,20 @@ function logRedoStack()
          'REDO STACK:\n'
         + actionManager.redoActions.map(a => '    ' + a.name).join('\n');
 
-    console.log('%c%s', 'background: #fff4e8; color: #c64;', log);
+    console.log(
+        '%c%s', 
+        'background: #fff4e8; color: #c64;', 
+        log);
+}
+
+
+
+function logInsertSeparator()
+{
+    console.log(
+        '%c%s', 
+        'background: #f44; color: #fff;', 
+        Math.random() + '--------------------');
 }
 
 

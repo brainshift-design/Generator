@@ -26,6 +26,13 @@ Operator.prototype.initLabelTextbox = function()
             console.clear();
         }    
 
+        // insert separator into console
+        else if (e.code == 'KeyV'
+            && e.altKey)
+        {
+            logInsertSeparator();
+        }    
+
         else if (e.code == 'KeyV'
               && getCtrlKey(e))
         {

@@ -509,9 +509,9 @@ class Wire
 
 
 
-
     updateStyle(x1, y1, x2, y2)
     {
+        console.trace();
         const conn = this.connection;
 
         this.isReset = 
@@ -558,11 +558,6 @@ class Wire
     
             if (hcl[2] < th + dl)
                 color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th + dl]));
-
-            // if (hcl[2] > th - dl && hcl[2] <= th)
-            //     color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th - dl]));
-            // if (hcl[2] > th && hcl[2] < th + dl)
-            //     color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th + dl]));
         }
         else // light mode
         {
@@ -643,12 +638,11 @@ class Wire
 
             const wireLength   = distv(point(x1, y1), point(x2, y2)) / graph.currentPage.zoom;
             const gradContrast = 1 - Math.min(Math.max(0, wireLength / 100 - 0.5), 1);
-            console.log('gradContrast =', gradContrast);
         
             setSvgLinearGradientStroke(
-                this.curve.closest('svg'), 
-                this.curve, 
-                rgba2style(outColor), 
+                this.curve.closest('svg'),
+                this.curve,
+                rgba2style(outColor),
                 rgba2style(inColor ),
                 -dx > Math.abs(dy) ? 100 : 0,
                 -dy > Math.abs(dx) ? 100 : 0,
@@ -684,8 +678,8 @@ class Wire
         this.arrow2 .style.fill = arrowStyle;
     
     
-        if (conn.output) conn.output.wireBall.style.background = rgb2style(outColor);
-        if (conn.input ) conn.input .wireBall.style.background = rgb2style( inColor);
+        if (output) output.wireBall.style.background = rgb2style(outColor);
+        if (input ) input .wireBall.style.background = rgb2style( inColor);
     
     
         const isList = this.connectionIsList();
