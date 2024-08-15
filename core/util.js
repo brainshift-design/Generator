@@ -790,7 +790,8 @@ function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2,
     defs.appendChild(linearGradient);
 
 
-    target.setAttribute('stroke', `url(#${gradientId})`);
+    //target.setAttribute('stroke', `url(#${gradientId})`);
+    target.style.stroke = `url(#${gradientId})`;
 
 
     return gradientId;

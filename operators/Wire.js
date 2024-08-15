@@ -172,11 +172,7 @@ class Wire
         this.clientY = y;
     
 
-        // const listType = 
-        //        this.connection.output
-        //     && arraysIntersect(this.connection.output.types, LIST_TYPES);
-    
-        const yOffset = getTopHeight();// + (listType ? 1/graph.currentPage.zoom : 0);
+        const yOffset = getTopHeight();
     
         let pOut = point(0, 0),
             pIn  = point(0, 0);
@@ -186,7 +182,6 @@ class Wire
         {
             const ro = boundingRect(this.connection.output.div);
             pOut = point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset);
-            //console.log('this.connection.output =', this.connection.output);
         }
         else
             pOut = point(x, y - yOffset);
@@ -511,7 +506,8 @@ class Wire
 
     updateStyle(x1, y1, x2, y2)
     {
-        console.trace();
+        //console.trace();
+
         const conn = this.connection;
 
         this.isReset = 
@@ -618,6 +614,9 @@ class Wire
             : outColor;
 
 
+        //this.curve.style.stroke = 'none';
+        
+
         // converting types
         if (   output 
             && input  
@@ -633,6 +632,10 @@ class Wire
                    && input .types.includes(NUMBER_LIST_VALUE)))
         {
             console.log('gradient');
+            console.log('outColor =', outColor);
+            console.log('inColor =', inColor);
+            console.log('this.curve.closest(\'svg\') =', this.curve.closest('svg'));
+            console.log('this.curve =', this.curve);
             const dx = x2 - x1;
             const dy = y2 - y1;
 
