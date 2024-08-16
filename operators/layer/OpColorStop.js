@@ -284,23 +284,23 @@ extends OpColorBase
             colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
             colors.input      = rgb_a(colors.text, 0.3);
             colors.output     = rgb_a(colors.text, 0.3);
-            colors.inWire     =
-            colors.outWire    = darkMode ? hex2rgb('888') : hex2rgb('aaa');
+            // colors.inWire     =
+            // colors.outWire    = darkMode ? hex2rgb('888') : hex2rgb('aaa');
         }
         else
         {
             const opacity = this.paramFill.value.opacity.value/100;
 
-            colors.back       = rgb_a(colors.back,       opacity);
-            colors.stripeBack = rgb_a(colors.stripeBack, opacity);
+            colors.back       = rgb_a(colors.back);//,       opacity);
+            colors.stripeBack = rgb_a(colors.stripeBack);//, opacity);
             colors.text       = getTextColorFromBackColor(colors.stripeBack, opacity);
             colors.input      = rgb_a(colors.text, 0.3);
             colors.output     = rgb_a(colors.text, 0.3);
-            colors.inWire     =
-            colors.outWire    = 
-                !rgbaIsNaN(colors.stripeBack)
-                ? colors.stripeBack
-                : rgbFromType(ANY_VALUE, false);
+            // colors.inWire     =
+            // colors.outWire    = 
+            //     !rgbaIsNaN(colors.stripeBack)
+            //     ? colors.stripeBack
+            //     : rgbFromType(ANY_VALUE, false);
         }
 
 
