@@ -1,8 +1,8 @@
 class GColorBlend
 extends GOperator2
 {
-    mode    = null;
-    opacity = null;
+    mode   = null;
+    amount = null;
     
 
     constructor(nodeId, options)
@@ -16,8 +16,8 @@ extends GOperator2
     {
         super.reset();
 
-        this.mode    = null;
-        this.opacity = null;
+        this.mode   = null;
+        this.amount = null;
     }
 
 
@@ -28,8 +28,8 @@ extends GOperator2
 
         copy.copyBase(this);
 
-        if (this.mode   ) copy.mode    = this.mode   .copy();
-        if (this.opacity) copy.opacity = this.opacity.copy();
+        if (this.mode  ) copy.mode   = this.mode  .copy();
+        if (this.amount) copy.amount = this.amount.copy();
 
         return copy;
     }
@@ -42,10 +42,10 @@ extends GOperator2
             return this;
 
 
-        const input0  = await evalColorValue (this.input0,  parse);
-        const input1  = await evalColorValue (this.input1,  parse);
-        let   mode    = await evalNumberValue(this.mode,    parse);
-        const opacity = await evalNumberValue(this.opacity, parse);
+        const input0 = await evalColorValue (this.input0, parse);
+        const input1 = await evalColorValue (this.input1, parse);
+        let   mode   = await evalNumberValue(this.mode,   parse);
+        const amount = await evalNumberValue(this.amount, parse);
         
         if (mode) mode = mode.toInteger();
 
@@ -54,10 +54,10 @@ extends GOperator2
             && input1)
         {
             consoleAssert(
-                opacity.type == NUMBER_VALUE, 
+                amount.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
 
-            const _opacity = opacity.value / 100;
+            const _amount = amount.value / 100;
 
             const modeIndex = Math.min(Math.max(0, mode.value), BlendModes.length-1);
 
@@ -66,7 +66,7 @@ extends GOperator2
                 modeIndex,
                 input0.toRgb(),
                 input1.toRgb(),
-                _opacity);
+                _amount);
 
             this.value = ColorValue.fromRgb(scaleRgb(col));
         }
@@ -83,9 +83,9 @@ extends GOperator2
 
         this.setUpdateValues(parse,
         [
-            ['value',   this.value],
-            ['mode',    mode      ],
-            ['opacity', opacity   ]
+            ['value',  this.value],
+            ['mode',   mode      ],
+            ['amount', amount    ]
         ]);
 
 
@@ -96,31 +96,33 @@ extends GOperator2
 
 
 
-    blend(mode, col0, col1, opacity)
+    blend(mode, col0, col1, amount)
     {
         switch (mode)
         {
-            case  0: return blendNormal    (col0, col1, opacity);
+            case  BLEND_NORMAL_INDEX:       return blendNormal     (col0, col1, amount);
 
-            case  1: return blendDarken    (col0, col1, opacity);
-            case  2: return blendMultiply  (col0, col1, opacity);
-            case  3: return blendColorBurn (col0, col1, opacity);
+            case  BLEND_DARKEN_INDEX:       return blendDarken     (col0, col1, amount);
+            case  BLEND_MULTIPLY_INDEX:     return blendMultiply   (col0, col1, amount);
+            case  BLEND_PLUS_DARKER_INDEX:  return blendPlusDarker (col0, col1, amount);
+            case  BLEND_COLOR_BURN_INDEX:   return blendColorBurn  (col0, col1, amount);
 
-            case  4: return blendLighten   (col0, col1, opacity);
-            case  5: return blendScreen    (col0, col1, opacity);
-            case  6: return blendColorDodge(col0, col1, opacity);
+            case  BLEND_LIGHTEN_INDEX:      return blendLighten    (col0, col1, amount);
+            case  BLEND_SCREEN_INDEX:       return blendScreen     (col0, col1, amount);
+            case  BLEND_PLUS_LIGHTER_INDEX: return blendPlusLighter(col0, col1, amount);
+            case  BLEND_COLOR_DODGE_INDEX:  return blendColorDodge (col0, col1, amount);
 
-            case  7: return blendOverlay   (col0, col1, opacity);
-            case  8: return blendSoftLight (col0, col1, opacity);
-            case  9: return blendHardLight (col0, col1, opacity);
+            case  BLEND_OVERLAY_INDEX:      return blendOverlay    (col0, col1, amount);
+            case  BLEND_SOFT_LIGHT_INDEX:   return blendSoftLight  (col0, col1, amount);
+            case  BLEND_HARD_LIGHT_INDEX:   return blendHardLight  (col0, col1, amount);
 
-            case 10: return blendDifference(col0, col1, opacity);
-            case 11: return blendExclusion (col0, col1, opacity);
+            case BLEND_DIFFERENCE_INDEX:    return blendDifference (col0, col1);
+            case BLEND_EXCLUSION_INDEX:     return blendExclusion  (col0, col1, amount);
 
-            case 12: return blendHue       (col0, col1, opacity);
-            case 13: return blendSaturation(col0, col1, opacity);
-            case 14: return blendColor     (col0, col1, opacity);
-            case 15: return blendLuminosity(col0, col1, opacity);
+            case BLEND_HUE_INDEX:           return blendHue        (col0, col1, amount);
+            case BLEND_SATURATION_INDEX:    return blendSaturation (col0, col1, amount);
+            case BLEND_COLOR_INDEX:         return blendColor      (col0, col1, amount);
+            case BLEND_LUMINOSITY_INDEX:    return blendLuminosity (col0, col1, amount);
         }
     }
 
@@ -129,8 +131,8 @@ extends GOperator2
     isValid()
     {
         return super.isValid()
-            && this.mode    && this.mode   .isValid()
-            && this.opacity && this.opacity.isValid();
+            && this.mode   && this.mode  .isValid()
+            && this.amount && this.amount.isValid();
     }
 
 
@@ -139,8 +141,8 @@ extends GOperator2
     {
         super.pushValueUpdates(parse);
 
-        if (this.mode   ) this.mode   .pushValueUpdates(parse);
-        if (this.opacity) this.opacity.pushValueUpdates(parse);
+        if (this.mode  ) this.mode  .pushValueUpdates(parse);
+        if (this.amount) this.amount.pushValueUpdates(parse);
     }
 
 
@@ -149,8 +151,8 @@ extends GOperator2
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.mode   ) this.mode   .invalidateInputs(parse, from, force);
-        if (this.opacity) this.opacity.invalidateInputs(parse, from, force);
+        if (this.mode  ) this.mode  .invalidateInputs(parse, from, force);
+        if (this.amount) this.amount.invalidateInputs(parse, from, force);
     }
 
 
@@ -159,7 +161,7 @@ extends GOperator2
     {
         super.iterateLoop(parse);
 
-        if (this.mode   ) this.mode   .iterateLoop(parse);
-        if (this.opacity) this.opacity.iterateLoop(parse);
+        if (this.mode  ) this.mode  .iterateLoop(parse);
+        if (this.amount) this.amount.iterateLoop(parse);
     }
 }

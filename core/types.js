@@ -890,6 +890,25 @@ const BLEND_SATURATION           = 'BSAT';
 const BLEND_COLOR                = 'BCOL';
 const BLEND_LUMINOSITY           = 'BLUM';
 
+const BLEND_NORMAL_INDEX         =  0;
+const BLEND_DARKEN_INDEX         =  1;
+const BLEND_MULTIPLY_INDEX       =  2;
+const BLEND_PLUS_DARKER_INDEX    =  3;
+const BLEND_COLOR_BURN_INDEX     =  4;
+const BLEND_LIGHTEN_INDEX        =  5;
+const BLEND_SCREEN_INDEX         =  6;
+const BLEND_PLUS_LIGHTER_INDEX   =  7;
+const BLEND_COLOR_DODGE_INDEX    =  8;
+const BLEND_OVERLAY_INDEX        =  9;
+const BLEND_SOFT_LIGHT_INDEX     = 10;
+const BLEND_HARD_LIGHT_INDEX     = 11;
+const BLEND_DIFFERENCE_INDEX     = 12;
+const BLEND_EXCLUSION_INDEX      = 13;
+const BLEND_HUE_INDEX            = 14;
+const BLEND_SATURATION_INDEX     = 15;
+const BLEND_COLOR_INDEX          = 16;
+const BLEND_LUMINOSITY_INDEX     = 17;
+
 
 const BlendModes =
 [

@@ -7528,6 +7528,25 @@ const BLEND_SATURATION           = 'BSAT';
 const BLEND_COLOR                = 'BCOL';
 const BLEND_LUMINOSITY           = 'BLUM';
 
+const BLEND_NORMAL_INDEX         =  0;
+const BLEND_DARKEN_INDEX         =  1;
+const BLEND_MULTIPLY_INDEX       =  2;
+const BLEND_PLUS_DARKER_INDEX    =  3;
+const BLEND_COLOR_BURN_INDEX     =  4;
+const BLEND_LIGHTEN_INDEX        =  5;
+const BLEND_SCREEN_INDEX         =  6;
+const BLEND_PLUS_LIGHTER_INDEX   =  7;
+const BLEND_COLOR_DODGE_INDEX    =  8;
+const BLEND_OVERLAY_INDEX        =  9;
+const BLEND_SOFT_LIGHT_INDEX     = 10;
+const BLEND_HARD_LIGHT_INDEX     = 11;
+const BLEND_DIFFERENCE_INDEX     = 12;
+const BLEND_EXCLUSION_INDEX      = 13;
+const BLEND_HUE_INDEX            = 14;
+const BLEND_SATURATION_INDEX     = 15;
+const BLEND_COLOR_INDEX          = 16;
+const BLEND_LUMINOSITY_INDEX     = 17;
+
 
 const BlendModes =
 [
@@ -38009,8 +38028,8 @@ extends GOperator2
 class GColorBlend
 extends GOperator2
 {
-    mode    = null;
-    opacity = null;
+    mode   = null;
+    amount = null;
     
 
     constructor(nodeId, options)
@@ -38024,8 +38043,8 @@ extends GOperator2
     {
         super.reset();
 
-        this.mode    = null;
-        this.opacity = null;
+        this.mode   = null;
+        this.amount = null;
     }
 
 
@@ -38036,8 +38055,8 @@ extends GOperator2
 
         copy.copyBase(this);
 
-        if (this.mode   ) copy.mode    = this.mode   .copy();
-        if (this.opacity) copy.opacity = this.opacity.copy();
+        if (this.mode  ) copy.mode   = this.mode  .copy();
+        if (this.amount) copy.amount = this.amount.copy();
 
         return copy;
     }
@@ -38050,10 +38069,10 @@ extends GOperator2
             return this;
 
 
-        const input0  = await evalColorValue (this.input0,  parse);
-        const input1  = await evalColorValue (this.input1,  parse);
-        let   mode    = await evalNumberValue(this.mode,    parse);
-        const opacity = await evalNumberValue(this.opacity, parse);
+        const input0 = await evalColorValue (this.input0, parse);
+        const input1 = await evalColorValue (this.input1, parse);
+        let   mode   = await evalNumberValue(this.mode,   parse);
+        const amount = await evalNumberValue(this.amount, parse);
         
         if (mode) mode = mode.toInteger();
 
@@ -38062,10 +38081,10 @@ extends GOperator2
             && input1)
         {
             consoleAssert(
-                opacity.type == NUMBER_VALUE, 
+                amount.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
 
-            const _opacity = opacity.value / 100;
+            const _amount = amount.value / 100;
 
             const modeIndex = Math.min(Math.max(0, mode.value), BlendModes.length-1);
 
@@ -38074,7 +38093,7 @@ extends GOperator2
                 modeIndex,
                 input0.toRgb(),
                 input1.toRgb(),
-                _opacity);
+                _amount);
 
             this.value = ColorValue.fromRgb(scaleRgb(col));
         }
@@ -38091,9 +38110,9 @@ extends GOperator2
 
         this.setUpdateValues(parse,
         [
-            ['value',   this.value],
-            ['mode',    mode      ],
-            ['opacity', opacity   ]
+            ['value',  this.value],
+            ['mode',   mode      ],
+            ['amount', amount    ]
         ]);
 
 
@@ -38104,31 +38123,33 @@ extends GOperator2
 
 
 
-    blend(mode, col0, col1, opacity)
+    blend(mode, col0, col1, amount)
     {
         switch (mode)
         {
-            case  0: return blendNormal    (col0, col1, opacity);
+            case  BLEND_NORMAL_INDEX:       return blendNormal     (col0, col1, amount);
 
-            case  1: return blendDarken    (col0, col1, opacity);
-            case  2: return blendMultiply  (col0, col1, opacity);
-            case  3: return blendColorBurn (col0, col1, opacity);
+            case  BLEND_DARKEN_INDEX:       return blendDarken     (col0, col1, amount);
+            case  BLEND_MULTIPLY_INDEX:     return blendMultiply   (col0, col1, amount);
+            case  BLEND_PLUS_DARKER_INDEX:  return blendPlusDarker (col0, col1, amount);
+            case  BLEND_COLOR_BURN_INDEX:   return blendColorBurn  (col0, col1, amount);
 
-            case  4: return blendLighten   (col0, col1, opacity);
-            case  5: return blendScreen    (col0, col1, opacity);
-            case  6: return blendColorDodge(col0, col1, opacity);
+            case  BLEND_LIGHTEN_INDEX:      return blendLighten    (col0, col1, amount);
+            case  BLEND_SCREEN_INDEX:       return blendScreen     (col0, col1, amount);
+            case  BLEND_PLUS_LIGHTER_INDEX: return blendPlusLighter(col0, col1, amount);
+            case  BLEND_COLOR_DODGE_INDEX:  return blendColorDodge (col0, col1, amount);
 
-            case  7: return blendOverlay   (col0, col1, opacity);
-            case  8: return blendSoftLight (col0, col1, opacity);
-            case  9: return blendHardLight (col0, col1, opacity);
+            case  BLEND_OVERLAY_INDEX:      return blendOverlay    (col0, col1, amount);
+            case  BLEND_SOFT_LIGHT_INDEX:   return blendSoftLight  (col0, col1, amount);
+            case  BLEND_HARD_LIGHT_INDEX:   return blendHardLight  (col0, col1, amount);
 
-            case 10: return blendDifference(col0, col1, opacity);
-            case 11: return blendExclusion (col0, col1, opacity);
+            case BLEND_DIFFERENCE_INDEX:    return blendDifference (col0, col1);
+            case BLEND_EXCLUSION_INDEX:     return blendExclusion  (col0, col1, amount);
 
-            case 12: return blendHue       (col0, col1, opacity);
-            case 13: return blendSaturation(col0, col1, opacity);
-            case 14: return blendColor     (col0, col1, opacity);
-            case 15: return blendLuminosity(col0, col1, opacity);
+            case BLEND_HUE_INDEX:           return blendHue        (col0, col1, amount);
+            case BLEND_SATURATION_INDEX:    return blendSaturation (col0, col1, amount);
+            case BLEND_COLOR_INDEX:         return blendColor      (col0, col1, amount);
+            case BLEND_LUMINOSITY_INDEX:    return blendLuminosity (col0, col1, amount);
         }
     }
 
@@ -38137,8 +38158,8 @@ extends GOperator2
     isValid()
     {
         return super.isValid()
-            && this.mode    && this.mode   .isValid()
-            && this.opacity && this.opacity.isValid();
+            && this.mode   && this.mode  .isValid()
+            && this.amount && this.amount.isValid();
     }
 
 
@@ -38147,8 +38168,8 @@ extends GOperator2
     {
         super.pushValueUpdates(parse);
 
-        if (this.mode   ) this.mode   .pushValueUpdates(parse);
-        if (this.opacity) this.opacity.pushValueUpdates(parse);
+        if (this.mode  ) this.mode  .pushValueUpdates(parse);
+        if (this.amount) this.amount.pushValueUpdates(parse);
     }
 
 
@@ -38157,8 +38178,8 @@ extends GOperator2
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.mode   ) this.mode   .invalidateInputs(parse, from, force);
-        if (this.opacity) this.opacity.invalidateInputs(parse, from, force);
+        if (this.mode  ) this.mode  .invalidateInputs(parse, from, force);
+        if (this.amount) this.amount.invalidateInputs(parse, from, force);
     }
 
 
@@ -38167,30 +38188,30 @@ extends GOperator2
     {
         super.iterateLoop(parse);
 
-        if (this.mode   ) this.mode   .iterateLoop(parse);
-        if (this.opacity) this.opacity.iterateLoop(parse);
+        if (this.mode  ) this.mode  .iterateLoop(parse);
+        if (this.amount) this.amount.iterateLoop(parse);
     }
 }
 
 
 
-function blendNormal(col, back, opacity)
+function blendNormal(col, back, amount)
 {
-    return [ col[0] * opacity + back[0] * (1 - opacity),
-             col[1] * opacity + back[1] * (1 - opacity),
-             col[2] * opacity + back[2] * (1 - opacity) ];
+    return [ col[0] * amount + back[0] * (1 - amount),
+             col[1] * amount + back[1] * (1 - amount),
+             col[2] * amount + back[2] * (1 - amount) ];
 }
 
 
 
-function blendDarken(col, back, opacity)
+function blendDarken(col, back, amount)
 {
     return blendNormal(
         [ Math.min(back[0], col[0]),
           Math.min(back[1], col[1]),
           Math.min(back[2], col[2]) ],
         back,
-        opacity);
+        amount);
 }
 
 
@@ -38202,14 +38223,26 @@ function chanMultiply(c, b)
 
 
 
-function blendMultiply(col, back, opacity)
+function blendMultiply(col, back, amount)
 {
     return blendNormal(
         [ chanMultiply(col[0], back[0]),
           chanMultiply(col[1], back[1]),
           chanMultiply(col[2], back[2]) ],
         back,
-        opacity);
+        amount);
+}
+
+
+
+function blendPlusDarker(col, back, amount)
+{
+    return blendNormal(
+        [ Math.min(back[0] + col[0], back[0], col[0]),
+          Math.min(back[1] + col[1], back[1], col[1]),
+          Math.min(back[2] + col[2], back[2], col[2]) ],
+        back,
+        amount);
 }
 
 
@@ -38218,31 +38251,31 @@ function chanColorBurn(c, b)
 {
          if (b == 1) return 1;
     else if (c == 0) return 0;
-    else             return 1 - Math.min((1 - b) / c, 1);
+    else             return Math.min(Math.max(0, 1 - (1 - b) / c), 1);
 }
 
 
 
-function blendColorBurn(col, back, opacity)
+function blendColorBurn(col, back, amount)
 {
     return blendNormal(
          [ chanColorBurn(col[0], back[0]),
            chanColorBurn(col[1], back[1]),
            chanColorBurn(col[2], back[2]) ],
         back,
-        opacity);
+        amount);
 }
 
 
 
-function blendLighten(col, back, opacity)
+function blendLighten(col, back, amount)
 {
     return blendNormal(
         [ Math.max(back[0], col[0]),
           Math.max(back[1], col[1]),
           Math.max(back[2], col[2]) ],
         back,
-        opacity);
+        amount);
 }
 
 
@@ -38254,14 +38287,26 @@ function chanScreen(c, b)
 
 
 
-function blendScreen(col, back, opacity)
+function blendScreen(col, back, amount)
 {
     return blendNormal(
         [ chanScreen(col[0], back[0]),
           chanScreen(col[1], back[1]),
           chanScreen(col[2], back[2]) ],
         back,
-        opacity);
+        amount);
+}
+
+
+
+function blendPlusLighter(col, back, amount)
+{
+    return blendNormal(
+        [ Math.min(back[0] + col[0], 1),
+          Math.min(back[1] + col[1], 1),
+          Math.min(back[2] + col[2], 1) ],
+        back,
+        amount);
 }
 
 
@@ -38275,26 +38320,26 @@ function chanColorDodge(c, b)
 
 
 
-function blendColorDodge(col, back, opacity)
+function blendColorDodge(col, back, amount)
 {
     return blendNormal(
         [ chanColorDodge(col[0], back[0]),
           chanColorDodge(col[1], back[1]),
           chanColorDodge(col[2], back[2]) ],
         back,
-        opacity);
+        amount);
 }
 
 
 
-function blendOverlay(col, back, opacity)
+function blendOverlay(col, back, amount)
 {
     return blendNormal(
         [ chanHardLight(back[0], col[0]),
           chanHardLight(back[1], col[1]),
           chanHardLight(back[2], col[2]) ],
         back,
-        opacity);
+        amount);
 }
 
 
@@ -38317,14 +38362,14 @@ function chanSoftLight(c, b)
 
 
 
-function blendSoftLight(col, back, opacity)
+function blendSoftLight(col, back, amount)
 {
     return blendNormal(
         [ chanSoftLight(col[0], back[0]),
           chanSoftLight(col[1], back[1]),
           chanSoftLight(col[2], back[2]) ],
         back,
-        opacity);
+        amount);
 }
 
 
@@ -38337,19 +38382,19 @@ function chanHardLight(c, b)
 
 
 
-function blendHardLight(col, back, opacity)
+function blendHardLight(col, back, amount)
 {
     return blendNormal(
         [ chanHardLight(col[0], back[0]),
           chanHardLight(col[1], back[1]),
           chanHardLight(col[2], back[2]) ],
         back,
-        opacity);
+        amount);
 }
 
 
 
-function blendDifference(col, back, opacity)
+function blendDifference(col, back)
 {
     return [ Math.abs(back[0] - col[0]),
              Math.abs(back[1] - col[1]),
@@ -38365,14 +38410,14 @@ function chanExclusion(c, b)
 
 
 
-function blendExclusion(col, back, opacity)
+function blendExclusion(col, back, amount)
 {
     return blendNormal(
         [ chanExclusion(col[0], back[0]),
           chanExclusion(col[1], back[1]),
           chanExclusion(col[2], back[2]) ],
         back,
-        opacity);
+        amount);
 }
 
 
@@ -38504,42 +38549,42 @@ function bl_clamp(col)
 
 
 
-function blendHue(col, back, opacity)
+function blendHue(col, back, amount)
 {
     return blendNormal(
         bl_setLum(bl_setSat(col, bl_sat(back)), bl_lum(back)),
         back,
-        opacity);
+        amount);
 }
 
 
 
-function blendSaturation(col, back, opacity)
+function blendSaturation(col, back, amount)
 {
     return blendNormal(
         bl_setLum(bl_setSat(back, bl_sat(col)), bl_lum(back)),
         back,
-        opacity);
+        amount);
 }
 
 
 
-function blendColor(col, back, opacity)
+function blendColor(col, back, amount)
 {
     return blendNormal(
         bl_setLum(col, bl_lum(back)),
         back,
-        opacity);
+        amount);
 }
 
 
 
-function blendLuminosity(col, back, opacity)
+function blendLuminosity(col, back, amount)
 {
     return blendNormal(
         bl_setLum(back, bl_lum(col)),
         back,
-        opacity);
+        amount);
 }
 
 
@@ -51968,8 +52013,8 @@ function genParseColorBlend(parse)
         consoleError('nInputs must be [0, 2]');
 
 
-    blend.mode    = genParse(parse);
-    blend.opacity = genParse(parse);
+    blend.mode   = genParse(parse);
+    blend.amount = genParse(parse);
 
 
     parse.nTab--;

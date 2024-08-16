@@ -499,8 +499,8 @@ function genParseColorBlend(parse)
         consoleError('nInputs must be [0, 2]');
 
 
-    blend.mode    = genParse(parse);
-    blend.opacity = genParse(parse);
+    blend.mode   = genParse(parse);
+    blend.amount = genParse(parse);
 
 
     parse.nTab--;

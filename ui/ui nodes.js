@@ -683,6 +683,14 @@ function handleLegacyNode(_node, genVersion)
         if (paramTo) paramTo[1] = 'sweep';
     }
 
+    else if (_node.type == COLOR_BLEND
+          && _node.params
+          && _node.params.length > 0)
+    {
+        const paramFrom = _node.params.find(p => p[1] == 'opacity');
+        if (paramFrom) paramFrom[1] = 'amount';
+    }
+
     else if (_node.type == GRADIENT
           && _node.params
           && _node.params.length > 0)

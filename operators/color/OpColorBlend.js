@@ -2,7 +2,7 @@ class   OpColorBlend
 extends OpColorBase
 {
     paramMode;
-    paramOpacity;
+    paramAmount;
 
 
     colorBack;
@@ -26,18 +26,18 @@ extends OpColorBase
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramMode    = new SelectParam('mode',    '',        false, true, true, BlendModes.map(bm => bm[1]), 0));
-        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0,  100, 0));
+        this.addParam(this.paramMode   = new SelectParam('mode',   '',       false, true, true, BlendModes.map(bm => bm[1]), 0));
+        this.addParam(this.paramAmount = new NumberParam('amount', 'amount', false, true, true, 50, 0,  100, 0));
       
         
         this.paramMode.separatorsBefore.push(1, 4, 7, 10, 12);
         this.paramMode.input.outputMustBeCached = true;
 
         
-        this.paramOpacity.controls[0].min = Number.MIN_SAFE_INTEGER; // allow
-        this.paramOpacity.controls[0].max = Number.MAX_SAFE_INTEGER; // extrapolation
+        this.paramAmount.controls[0].min = Number.MIN_SAFE_INTEGER; // allow
+        this.paramAmount.controls[0].max = Number.MAX_SAFE_INTEGER; // extrapolation
 
-        this.paramOpacity.controls[0].setSuffix('%', true);
+        this.paramAmount.controls[0].setSuffix('%', true);
         
 
         this.header.connectionPadding = 12.5;
@@ -73,8 +73,8 @@ extends OpColorBase
         else                       request.push(0);
 
 
-        request.push(...this.node.paramMode   .genRequest(gen));
-        request.push(...this.node.paramOpacity.genRequest(gen));
+        request.push(...this.node.paramMode  .genRequest(gen));
+        request.push(...this.node.paramAmount.genRequest(gen));
 
 
         gen.scope.pop();
@@ -115,11 +115,7 @@ extends OpColorBase
         const colors = super.getHeaderColors();
 
         if (this.isUnknown())
-        {
-            colors.text    = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
-            colors.inWire  =
-            colors.outWire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
-        }
+            colors.text = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
 
         return colors;
     }

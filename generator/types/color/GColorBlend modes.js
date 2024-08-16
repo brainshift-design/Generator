@@ -1,20 +1,20 @@
-function blendNormal(col, back, opacity)
+function blendNormal(col, back, amount)
 {
-    return [ col[0] * opacity + back[0] * (1 - opacity),
-             col[1] * opacity + back[1] * (1 - opacity),
-             col[2] * opacity + back[2] * (1 - opacity) ];
+    return [ col[0] * amount + back[0] * (1 - amount),
+             col[1] * amount + back[1] * (1 - amount),
+             col[2] * amount + back[2] * (1 - amount) ];
 }
 
 
 
-function blendDarken(col, back, opacity)
+function blendDarken(col, back, amount)
 {
     return blendNormal(
         [ Math.min(back[0], col[0]),
           Math.min(back[1], col[1]),
           Math.min(back[2], col[2]) ],
         back,
-        opacity);
+        amount);
 }
 
 
@@ -26,14 +26,26 @@ function chanMultiply(c, b)
 
 
 
-function blendMultiply(col, back, opacity)
+function blendMultiply(col, back, amount)
 {
     return blendNormal(
         [ chanMultiply(col[0], back[0]),
           chanMultiply(col[1], back[1]),
           chanMultiply(col[2], back[2]) ],
         back,
-        opacity);
+        amount);
+}
+
+
+
+function blendPlusDarker(col, back, amount)
+{
+    return blendNormal(
+        [ Math.min(back[0] + col[0], back[0], col[0]),
+          Math.min(back[1] + col[1], back[1], col[1]),
+          Math.min(back[2] + col[2], back[2], col[2]) ],
+        back,
+        amount);
 }
 
 
@@ -42,31 +54,31 @@ function chanColorBurn(c, b)
 {
          if (b == 1) return 1;
     else if (c == 0) return 0;
-    else             return 1 - Math.min((1 - b) / c, 1);
+    else             return Math.min(Math.max(0, 1 - (1 - b) / c), 1);
 }
 
 
 
-function blendColorBurn(col, back, opacity)
+function blendColorBurn(col, back, amount)
 {
     return blendNormal(
          [ chanColorBurn(col[0], back[0]),
            chanColorBurn(col[1], back[1]),
            chanColorBurn(col[2], back[2]) ],
         back,
-        opacity);
+        amount);
 }
 
 
 
-function blendLighten(col, back, opacity)
+function blendLighten(col, back, amount)
 {
     return blendNormal(
         [ Math.max(back[0], col[0]),
           Math.max(back[1], col[1]),
           Math.max(back[2], col[2]) ],
         back,
-        opacity);
+        amount);
 }
 
 
@@ -78,14 +90,26 @@ function chanScreen(c, b)
 
 
 
-function blendScreen(col, back, opacity)
+function blendScreen(col, back, amount)
 {
     return blendNormal(
         [ chanScreen(col[0], back[0]),
           chanScreen(col[1], back[1]),
           chanScreen(col[2], back[2]) ],
         back,
-        opacity);
+        amount);
+}
+
+
+
+function blendPlusLighter(col, back, amount)
+{
+    return blendNormal(
+        [ Math.min(back[0] + col[0], 1),
+          Math.min(back[1] + col[1], 1),
+          Math.min(back[2] + col[2], 1) ],
+        back,
+        amount);
 }
 
 
@@ -99,26 +123,26 @@ function chanColorDodge(c, b)
 
 
 
-function blendColorDodge(col, back, opacity)
+function blendColorDodge(col, back, amount)
 {
     return blendNormal(
         [ chanColorDodge(col[0], back[0]),
           chanColorDodge(col[1], back[1]),
           chanColorDodge(col[2], back[2]) ],
         back,
-        opacity);
+        amount);
 }
 
 
 
-function blendOverlay(col, back, opacity)
+function blendOverlay(col, back, amount)
 {
     return blendNormal(
         [ chanHardLight(back[0], col[0]),
           chanHardLight(back[1], col[1]),
           chanHardLight(back[2], col[2]) ],
         back,
-        opacity);
+        amount);
 }
 
 
@@ -141,14 +165,14 @@ function chanSoftLight(c, b)
 
 
 
-function blendSoftLight(col, back, opacity)
+function blendSoftLight(col, back, amount)
 {
     return blendNormal(
         [ chanSoftLight(col[0], back[0]),
           chanSoftLight(col[1], back[1]),
           chanSoftLight(col[2], back[2]) ],
         back,
-        opacity);
+        amount);
 }
 
 
@@ -161,19 +185,19 @@ function chanHardLight(c, b)
 
 
 
-function blendHardLight(col, back, opacity)
+function blendHardLight(col, back, amount)
 {
     return blendNormal(
         [ chanHardLight(col[0], back[0]),
           chanHardLight(col[1], back[1]),
           chanHardLight(col[2], back[2]) ],
         back,
-        opacity);
+        amount);
 }
 
 
 
-function blendDifference(col, back, opacity)
+function blendDifference(col, back)
 {
     return [ Math.abs(back[0] - col[0]),
              Math.abs(back[1] - col[1]),
@@ -189,14 +213,14 @@ function chanExclusion(c, b)
 
 
 
-function blendExclusion(col, back, opacity)
+function blendExclusion(col, back, amount)
 {
     return blendNormal(
         [ chanExclusion(col[0], back[0]),
           chanExclusion(col[1], back[1]),
           chanExclusion(col[2], back[2]) ],
         back,
-        opacity);
+        amount);
 }
 
 
@@ -328,40 +352,40 @@ function bl_clamp(col)
 
 
 
-function blendHue(col, back, opacity)
+function blendHue(col, back, amount)
 {
     return blendNormal(
         bl_setLum(bl_setSat(col, bl_sat(back)), bl_lum(back)),
         back,
-        opacity);
+        amount);
 }
 
 
 
-function blendSaturation(col, back, opacity)
+function blendSaturation(col, back, amount)
 {
     return blendNormal(
         bl_setLum(bl_setSat(back, bl_sat(col)), bl_lum(back)),
         back,
-        opacity);
+        amount);
 }
 
 
 
-function blendColor(col, back, opacity)
+function blendColor(col, back, amount)
 {
     return blendNormal(
         bl_setLum(col, bl_lum(back)),
         back,
-        opacity);
+        amount);
 }
 
 
 
-function blendLuminosity(col, back, opacity)
+function blendLuminosity(col, back, amount)
 {
     return blendNormal(
         bl_setLum(back, bl_lum(col)),
         back,
-        opacity);
+        amount);
 }
