@@ -249,6 +249,15 @@ extends Parameter
 
 
 
+    getWireColor()
+    {
+        return this.value.isValid()
+             ? this.value.color.toRgb()
+             : rgbFromType(this.type, true);
+    }
+
+
+
     genRequest(gen)
     {
         super.updateControls(false);

@@ -240,6 +240,16 @@ extends OpColorBase
 
 
 
+    getInputWireColor()
+    {
+        if (!dataColorIsNaN(this._color))
+            return dataColor2rgb(this._color);
+        else
+            return super.getInputWireColor();
+    }
+
+
+
     updateParams()
     {
         const enableFill = 

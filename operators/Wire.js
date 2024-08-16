@@ -126,26 +126,8 @@ class Wire
         const input  = conn.input;
         
 
-        if (output)
-        {
-            types.push(...output.types);
-            //     if (!isEmpty(output.types)) types.push(...output.types);
-            //else if (output)                 types.push(output.node.type);
-        }
-        else if (input)
-        {
-            types.push(...input.types);
-            // if (   graphView.overOutput
-            //     && input.canConnectFrom(graphView.overOutput)) 
-            // {
-            //     types.push(...graphView.overOutput.types);
-            // }
-            // else if (input)
-            // {
-            //          if (!isEmpty(input.types)) types.push(...input.types);
-            //     else                            types.push(input.node.type);
-            // }
-        }
+             if (output) types.push(...output.types);
+        else if (input ) types.push(... input.types);
 
 
         if (this.isReset)
@@ -153,16 +135,12 @@ class Wire
 
         else if (output)
         {
-            return output.param 
-                ? output.param.value.toRgb()
-                : output.getWireColor(); //rgb_a(rgbFromType(output.types[0], true));//output.wireColor;
+            return output.getWireColor();
         }
 
         else if (input)
         {
-            return input.param 
-                ? input.param.value.toRgb()
-                : input.getWireColor(); //rgb_a(rgbFromType(input.types[0], true)); //input.wireColor;
+            return input.getWireColor();
         }
 
         else if (!isEmpty(types))

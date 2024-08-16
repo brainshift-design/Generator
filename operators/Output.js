@@ -322,10 +322,17 @@ extends EventTarget
 
     getWireColor()
     {
-        if (this.node.type == COLOR)
-            return dataColor2rgb(this.node._color);
+        if (this.param)
+            return this.param.getWireColor();
+
         else
-            return rgb_a(rgbFromType(this.types[0], true));
+        {
+            const color = this.node.getOutputWireColor();
+
+            return !rgbIsNaN(color)
+                ? color
+                : rgbFromType(this.types[0], true);
+        }
     }
 
 

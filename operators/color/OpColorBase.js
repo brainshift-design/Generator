@@ -127,6 +127,16 @@ extends Operator
 
 
 
+    getOutputWireColor()
+    {
+        if (!dataColorIsNaN(this._color))
+            return dataColor2rgb(this._color);
+        else
+            return super.getOutputWireColor();
+    }
+
+
+
     updateWarningOverlay() 
     {
         //console.log(this.id + '.updateWarningOverlay()');

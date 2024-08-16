@@ -450,6 +450,13 @@ extends EventTarget
 
 
 
+    getWireColor()
+    {
+        return rgbFromType(this.type, true);
+    }
+
+
+
     updateSetting(setting, value)
     {
 

@@ -240,6 +240,15 @@ extends Parameter
 
 
 
+    getWireColor()
+    {
+        return this.value.isValid()
+             ? this.value.toRgb()
+             : rgbFromType(this.type, true);
+    }
+
+
+
     genRequest(gen)
     {
         // this function exists because a parameter without an output
