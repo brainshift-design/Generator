@@ -45,10 +45,10 @@ extends OpColorBase
         this.addParam(this.paramCap    = new SelectParam('cap',    'cap',    true,  true, true, ['none', 'square', 'round'], 0));
         this.addParam(this.paramDashes = new   TextParam('dashes', 'dashes', false, true, true));
 
-        this.paramFills.itemName  = ['fill'];
-        this.paramFills.showZero  = false;
-        this.paramFills.listTypes = [COLOR_VALUE, FILL_VALUE, GRADIENT_VALUE];
-        this.paramFills.input.types.push(...this.paramFills.listTypes);
+        this.paramFills.itemName    = ['fill'];
+        this.paramFills.showZero    = false;
+        this.paramFills.listTypes   = [COLOR_VALUE, FILL_VALUE, GRADIENT_VALUE, LIST_VALUE];
+        this.paramFills.input.types = this.paramFills.listTypes;
 
 
         this.setAllParamDividers(0.45);

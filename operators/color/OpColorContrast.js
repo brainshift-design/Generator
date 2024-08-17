@@ -41,9 +41,6 @@ extends OpColorBase
     _rgbBack   = [0, 0, 0];
 
 
-    // divShadowLeft;
-    // divShadowRight;
-
 
     constructor()
     {
@@ -57,11 +54,8 @@ extends OpColorBase
         this.inner.insertBefore(this.colorBack, this.paramHolder);
 
 
-        this.addInput(new Input(COLOR_TYPES));
-        this.addInput(new Input(COLOR_TYPES));
-
-        //this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
-        //this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
+        this.addInput(new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE]));
+        this.addInput(new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE]));
 
 
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
@@ -83,20 +77,6 @@ extends OpColorBase
 
         
         this.header.connectionPadding = 12.5;
-
-
-        // this.divShadowLeft  = createDiv('rangeShadowLeft');
-        // this.divShadowRight = createDiv('rangeShadowRight');
-
-        // this.paramContrast.controls[0].div.appendChild(this.divShadowLeft);
-        // this.paramContrast.controls[0].div.appendChild(this.divShadowRight);
-
-
-        // this.inputs[0].addEventListener('connect',    () => OpColorContrast_onConnectInput(this));
-        // this.inputs[1].addEventListener('connect',    () => OpColorContrast_onConnectInput(this));
-
-        // this.inputs[0].addEventListener('disconnect', () => OpColorContrast_onDisconnectInput(this));
-        // this.inputs[1].addEventListener('disconnect', () => OpColorContrast_onDisconnectInput(this));
     }
 
 
@@ -106,7 +86,6 @@ extends OpColorBase
         // 'this' is the node
 
 
-        // console.trace();
         if (gen.passedNodes.includes(this))
         {
             return [

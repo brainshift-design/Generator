@@ -394,8 +394,40 @@ async function evalTextOrListValue(_value, parse)
 
 
 
-async function evalColorValue         (_value, parse) { return await evalValue(_value, parse, () => ColorValue         .NaN.copy()); }
-async function evalFillValue          (_value, parse) { return await evalValue(_value, parse, () => FillValue          .NaN.copy()); }
+async function evalColorValue(_value, parse)
+{ 
+    let value = await evalValue(_value, parse, () => ColorValue.NaN.copy()); 
+
+    if (   value
+        && value.type == FILL_VALUE)
+        value = value.color;
+
+    else if (value
+          && value.type == COLOR_STOP_VALUE)
+        value = value.fill.color;
+
+    return value;
+}
+
+
+
+async function evalFillValue(_value, parse)
+{ 
+    let value = await evalValue(_value, parse, () => FillValue.NaN.copy());
+    
+    if (   value
+        && value.type == COLOR_VALUE)
+        value = new FillValue(value);
+
+    if (   value
+        && value.type == COLOR_STOP_VALUE)
+        value = value.fill;
+
+    return value; 
+}
+
+
+
 async function evalStrokeValue        (_value, parse) { return await evalValue(_value, parse, () => StrokeValue        .NaN.copy()); }
 async function evalColorStopValue     (_value, parse) { return await evalValue(_value, parse, () => ColorStopValue     .NaN.copy()); }
 async function evalGradientValue      (_value, parse) { return await evalValue(_value, parse, () => GradientValue      .NaN.copy()); }

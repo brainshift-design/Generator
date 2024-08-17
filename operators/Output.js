@@ -235,7 +235,7 @@ extends EventTarget
             darkMode
             ? this.colorDark
             : this.colorLight;
-        console.log('ballColor =', ballColor);
+        //console.log('ballColor =', ballColor);
 
 
         const color = ballColor;//rgb_a(rgbFromType(this.types[0], true), 0.38);

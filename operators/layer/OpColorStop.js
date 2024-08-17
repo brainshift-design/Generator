@@ -127,14 +127,6 @@ extends OpColorBase
             ? value.fill.color.toDataColor()
             : dataColor_NaN;
 
-            
-        // this.outputs[0].types =
-        //        this.inputs[0].connected
-        //     && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
-        //     ? [...this.inputs[0].connectedOutput.types, COLOR_STOP_VALUE]
-        //     : [COLOR_STOP_VALUE];
-
-
         // super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
@@ -186,11 +178,8 @@ extends OpColorBase
         }
 
 
-        //this.inputs[0] .wireColor  = colors.inWire;
-
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = colors.output;
-        //this.outputs[0].wireColor  = colors.outWire;
 
 
         if (this.isUnknown())
@@ -284,23 +273,16 @@ extends OpColorBase
             colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
             colors.input      = rgb_a(colors.text, 0.3);
             colors.output     = rgb_a(colors.text, 0.3);
-            // colors.inWire     =
-            // colors.outWire    = darkMode ? hex2rgb('888') : hex2rgb('aaa');
         }
         else
         {
             const opacity = this.paramFill.value.opacity.value/100;
 
-            colors.back       = rgb_a(colors.back);//,       opacity);
-            colors.stripeBack = rgb_a(colors.stripeBack);//, opacity);
+            colors.back       = rgb_a(colors.back);
+            colors.stripeBack = rgb_a(colors.stripeBack);
             colors.text       = getTextColorFromBackColor(colors.stripeBack, opacity);
             colors.input      = rgb_a(colors.text, 0.3);
             colors.output     = rgb_a(colors.text, 0.3);
-            // colors.inWire     =
-            // colors.outWire    = 
-            //     !rgbaIsNaN(colors.stripeBack)
-            //     ? colors.stripeBack
-            //     : rgbFromType(ANY_VALUE, false);
         }
 
 

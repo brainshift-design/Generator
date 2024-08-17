@@ -139,12 +139,6 @@ extends Parameter
         super.updateControls();
 
 
-        // this.div.style.background = 
-        //     darkMode 
-        //     ? this.backStyleDark 
-        //     : this.backStyleLight;
-
-
         enableElementText(this.controls[0].div, false);
 
         this.controls[0].readOnly = true;
@@ -152,26 +146,22 @@ extends Parameter
         this.controls[0].textbox.style.fontStyle  = 'italic';
         this.controls[0].textbox.style.fontWeight = '500';
 
- 
-        this.controls[0].textbox.value =
-                    rgb2hex(this.value.fill.color.toRgb())
-            + ' ' + this.value.fill.opacity.toNumber() + '%'
-            + ' ' + this.value.weight.toNumber() + 'px';
 
+        const fills = this.value.fills.items;
 
-        // if (this.input)
-        // {
-        //     this.input.colorLight  = 
-        //     this.input.colorDark   =  rgb_a(rgbText, 0.2);
-        //     this.input.wireColor   = !rgbIsNaN(rgbStripe) ? rgbStripe : noColor;
-        // }
-
-        // if (this.output)
-        // {
-        //     this.output.colorLight =
-        //     this.output.colorDark  =  rgb_a(rgbText, 0.2);
-        //     this.output.wireColor  = !rgbIsNaN(rgbStripe) ? rgbStripe : noColor;
-        // }
+        if (fills.length != 1)
+        {
+            this.controls[0].textbox.value =
+                        fills.length + ' fill' + (fills.length == 1 ? '' : 's')
+                + ', ' + this.value.weight.toNumber() + 'px';
+        }
+        else
+        {
+            this.controls[0].textbox.value =
+                        rgb2hex(fills[0].color.toRgb())
+                + ' ' + fills[0].opacity.toNumber() + '%'
+                + ', ' + this.value.weight.toNumber() + 'px';
+        }
      }
 
 

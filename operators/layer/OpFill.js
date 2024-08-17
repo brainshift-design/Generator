@@ -173,28 +173,6 @@ extends OpColorBase
 
         if (this.paramOpacity.value.isValid())
             this.checkersHolder.style.opacity = (100 - this.paramOpacity.value.toNumber()) + '%';
-
-
-        // this.paramColor.controls[0]. backStyleLight = 
-        // this.paramColor.controls[0]. backStyleDark  = 
-        //     !rgbIsNaN(colors.stripeBack)
-        //     ? rgb2style(colors.stripeBack, 1)
-        //     : noColorStyle(colors.stripeBack);
-
-              
-        // this.paramColor.controls[0].valueStyleLight = 
-        // this.paramColor.controls[0].valueStyleDark  = 'transparent';//rgba2style(rgb_a(colors.back));
-
-        // this.paramColor.controls[0].textStyleLight  = 
-        // this.paramColor.controls[0].textStyleDark   = rgba2style(colors.text);
-
-        // this.paramColor. input.colorLight           =
-        // this.paramColor. input.colorDark            = colors.input;
-        
-        // this.paramColor.output.colorLight           =
-        // this.paramColor.output.colorDark            = colors.output;
-
-        // this.paramColor.output.wireColor            = colors.stripeBack;
     }
 
 
@@ -210,13 +188,9 @@ extends OpColorBase
 
     updateHeader()
     {
-        //console.log(this.id + '.OpFill.updateHeader()');
-        
         Operator.prototype.updateHeader.call(this);
 
-
         const colors = this.getHeaderColors();
-
 
         updateFillHeader(this, colors, this.paramOpacity.value.isValid());
     }
@@ -250,31 +224,24 @@ extends OpColorBase
             colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
             colors.input      = rgb_a(colors.text, 0.3);
             colors.output     = rgb_a(colors.text, 0.3);
-            //colors.inWire     =
-            //colors.outWire    = darkMode ? hex2rgb('888' ) : hex2rgb('aaa' );
         }
         else
         {
             colors.back = 
                    !rgbIsNaN(colors.back) 
                 && !isNaN(opacity) 
-                ? rgb_a(colors.back)//, opacity) 
+                ? rgb_a(colors.back)
                 : rgb_NaN;
 
             colors.stripeBack = 
                    !rgbIsNaN(colors.stripeBack) 
                 && !isNaN(opacity) 
-                ? rgb_a(colors.stripeBack)//, opacity) 
+                ? rgb_a(colors.stripeBack)
                 : rgbDocumentBody;
 
             colors.text   = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
             colors.input  = rgb_a(colors.text, 0.3);
             colors.output = rgb_a(colors.text, 0.3);
-            //colors.inWire     =
-            //colors.outWire    = 
-            //    !rgbaIsNaN(colors.stripeBack)
-            //    ? colors.stripeBack
-            //    : rgb_a(rgbFromType(ANY_VALUE, false));
         }
         
 

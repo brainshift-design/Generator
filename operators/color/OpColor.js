@@ -40,7 +40,7 @@ extends OpColorBase
         this.inner.insertBefore(this.colorBack, this.paramHolder);
 
 
-        this.addInput(new Input(COLOR_TYPES, getColorInputValuesForUndo, this.input_getBackInitValue));
+        this.addInput(new Input([COLOR_VALUE], getColorInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest, getColorOutputValuesForUndo, this.output_backInit));
 
         
@@ -172,7 +172,6 @@ extends OpColorBase
 
         const _value = ColorValue.fromDataColor(_color);
 
-        //this.node.paramSpace.setValue(value.space, false, true, false);
         this.node.param1.setValue(_value.c1, false, true, false);
         this.node.param2.setValue(_value.c2, false, true, false);
         this.node.param3.setValue(_value.c3, false, true, false);
@@ -360,11 +359,6 @@ extends OpColorBase
                     ? dataColor_NaN
                     : makeDataColor(_space, _c1, _c2, _c3);
 
-                // this.outputs[0].wireColor = 
-                //     this.isUnknown()
-                //     ? rgbFromType(CACHE, true)
-                //     : dataColor2rgb(this._color);
-
                 this.prevSpace = colorSpace(_space.value);
             }
             else
@@ -373,8 +367,6 @@ extends OpColorBase
 
                 this._color    = dataColor_NaN;
                 this.prevSpace = NAN_DISPLAY;
-
-                //this.outputs[0].wireColor = rgb_NaN;
             }
         }
         else if (space)
@@ -447,10 +439,7 @@ extends OpColorBase
 
         const enable = !this.inputs[0].connected;
 
-        // const headerConnectedUnknown = 
-        //        this.inputs[0].connected 
-        //     && this.inputs[0].connectedOutput.node.isUnknown();
--
+
         this.paramSpace.enableControlText(!this.paramSpace.input.connected);
         this.param1    .enableControlText(enable, (this.param1.isOnlyParamUnknown() /*|| headerConnectedUnknown*/) && !this.param1.input.connected);
         this.param2    .enableControlText(enable, (this.param2.isOnlyParamUnknown() /*|| headerConnectedUnknown*/) && !this.param2.input.connected);
@@ -485,8 +474,6 @@ extends OpColorBase
 
     updateAllControlRanges()
     {
-        //const warnLineStyle = getWarningRangeStyle();
-
         const space = this.paramSpace.value.value;
 
         if (    (   space == 1  // RGB
