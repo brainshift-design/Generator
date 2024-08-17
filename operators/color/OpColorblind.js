@@ -32,7 +32,7 @@ extends OpColorBase
         this.inner.insertBefore(this.colorBack, this.paramHolder);
 
 
-        this.addInput(new Input([...COLOR_TYPES, LIST_VALUE]));
+        this.addInput(new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, LIST_VALUE]));
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
@@ -237,9 +237,6 @@ extends OpColorBase
             colors.text   = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
             colors.inWire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
         }
-
-        //colors.output  = rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-        //colors.outWire = rgbFromType(type, true);
 
         return colors;
     }

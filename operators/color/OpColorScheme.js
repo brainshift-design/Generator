@@ -18,7 +18,7 @@ extends OperatorBase
         this.inner.insertBefore(this.colorBack, this.paramHolder);
 
 
-        this.addInput (new Input ([COLOR_VALUE]));
+        this.addInput (new Input ([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE]));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.alwaysSaveParams = true;
