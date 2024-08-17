@@ -152,8 +152,8 @@ extends Parameter
  
         this.controls[0].textbox.value =
                     rgb2hex(this.value.fill.color.toRgb())
-            + ' ' + this.value.fill.opacity.toNumber() + '%'
-            + ' ' + this.value.position.toNumber() + '%';
+            + ' '  + this.value.fill.opacity.toNumber() + '%'
+            + ', ' + this.value.position.toNumber() + '%';
 
 
         const rgba       = this.value.fill.toRgba();
@@ -170,14 +170,12 @@ extends Parameter
         {
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
-            //this.input.wireColor   = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
         }
 
         if (this.output)
         {
             this.output.colorLight =
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
-            //this.output.wireColor  = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
         }
     }
 

@@ -39541,6 +39541,13 @@ extends GOperator1
         else
         {
             consoleAssert(fills.type == LIST_VALUE, 'stroke.fills must be a LIST_VALUE');
+
+            for (let i = 0; i < fills.items.length; i++)
+            {
+                if (fills.items[i].type == COLOR_VALUE)
+                    fills.items[i] = new FillValue(fills.items[i]);
+            }
+
             return fills;
         }
     }

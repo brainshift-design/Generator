@@ -149,17 +149,18 @@ extends Parameter
 
         const fills = this.value.fills.items;
 
+        
         if (fills.length != 1)
         {
             this.controls[0].textbox.value =
-                        fills.length + ' fill' + (fills.length == 1 ? '' : 's')
+                         fills.length + ' fill' + (fills.length == 1 ? '' : 's')
                 + ', ' + this.value.weight.toNumber() + 'px';
         }
         else
         {
             this.controls[0].textbox.value =
                         rgb2hex(fills[0].color.toRgb())
-                + ' ' + fills[0].opacity.toNumber() + '%'
+                + ' '  + fills[0].opacity.toNumber() + '%'
                 + ', ' + this.value.weight.toNumber() + 'px';
         }
      }
