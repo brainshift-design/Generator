@@ -1324,7 +1324,7 @@ const presetSkyline ='\
       "x": "9337",\
       "y": "12538",\
       "z": "68",\
-      "prevSpace": "hsv",\
+      "prevSpace": "hsb",\
       "params":\
       [\
             ["NUM#", "space", "2,0"],\
@@ -1368,7 +1368,7 @@ const presetSkyline ='\
       "x": "6495",\
       "y": "8681",\
       "z": "70",\
-      "prevSpace": "hsv",\
+      "prevSpace": "hsb",\
       "params":\
       [\
             ["NUM#", "space", "2,0"],\
@@ -1412,7 +1412,7 @@ const presetSkyline ='\
       "x": "6366",\
       "y": "12037",\
       "z": "72",\
-      "prevSpace": "hsv",\
+      "prevSpace": "hsb",\
       "params":\
       [\
             ["NUM#", "space", "2,0"],\
@@ -2187,7 +2187,7 @@ const presetSkyline ='\
       "x": "9357",\
       "y": "12340",\
       "z": "115",\
-      "prevSpace": "hsv",\
+      "prevSpace": "hsb",\
       "params":\
       [\
             ["NUM#", "space", "2,0"],\
@@ -2371,7 +2371,7 @@ const presetSkyline ='\
       "x": "9712",\
       "y": "13396",\
       "z": "125",\
-      "prevSpace": "hsv",\
+      "prevSpace": "hsb",\
       "params":\
       [\
             ["NUM#", "space", "2,0"],\

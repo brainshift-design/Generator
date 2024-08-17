@@ -1,5 +1,7 @@
 const NAN_CHAR               = '\uFFFD';
 const NAN_DISPLAY            = '?';
+
+const SEP                    = ' ';
     
 const UNKNOWN_CHAR           = '?';
 const UNKNOWN_DISPLAY        = UNKNOWN_CHAR;//'🤷‍♂️';

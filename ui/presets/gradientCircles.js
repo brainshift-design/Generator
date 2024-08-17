@@ -390,7 +390,7 @@ const presetGradientCircles = '\
             "x": "5847",\
             "y": "6074",\
             "z": "22",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\
@@ -612,7 +612,7 @@ const presetGradientCircles = '\
             "x": "7224",\
             "y": "6501",\
             "z": "36",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\
@@ -772,7 +772,7 @@ const presetGradientCircles = '\
             "x": "4643",\
             "y": "5740",\
             "z": "46",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\

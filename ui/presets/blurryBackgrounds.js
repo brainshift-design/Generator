@@ -220,7 +220,7 @@ const presetBlurryBackgrounds = '\
             "x": "6065",\
             "y": "1139",\
             "z": "13",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\
@@ -304,7 +304,7 @@ const presetBlurryBackgrounds = '\
             "x": "4428",\
             "y": "884",\
             "z": "18",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\

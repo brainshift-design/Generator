@@ -35,7 +35,7 @@ const presetTargets = '\
         "x": "6232.12",\
         "y": "7031",\
         "z": "1",\
-        "prevSpace": "hsv",\
+        "prevSpace": "hsb",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\
@@ -57,7 +57,7 @@ const presetTargets = '\
         "x": "6231.12",\
         "y": "6889",\
         "z": "2",\
-        "prevSpace": "hsv",\
+        "prevSpace": "hsb",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\
@@ -79,7 +79,7 @@ const presetTargets = '\
         "x": "6234.12",\
         "y": "6748",\
         "z": "3",\
-        "prevSpace": "hsv",\
+        "prevSpace": "hsb",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

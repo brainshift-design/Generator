@@ -89,7 +89,7 @@ const presetPaletteFromColor = '\
             "x": "4035",\
             "y": "5368",\
             "z": "4",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\

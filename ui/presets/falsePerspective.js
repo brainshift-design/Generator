@@ -345,7 +345,7 @@ const presetFalsePerspective = '\
         "x": "1363",\
         "y": "1459",\
         "z": "18",\
-        "prevSpace": "hsv",\
+        "prevSpace": "hsb",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

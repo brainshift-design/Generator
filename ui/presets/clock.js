@@ -220,7 +220,7 @@ const presetClock = '\
             "x": "6118",\
             "y": "6703",\
             "z": "13",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

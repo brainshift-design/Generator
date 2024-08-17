@@ -26,7 +26,7 @@ const presetIfElse = '\
             "x": "2882",\
             "y": "4324",\
             "z": "1",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

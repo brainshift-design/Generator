@@ -106,7 +106,7 @@ const presetActive = `
         "x": "1540",
         "y": "1667",
         "z": "7",
-        "prevSpace": "hsv",
+        "prevSpace": "hsb",
         "params":
         [
                 ["NUM#", "space", "2,0"],

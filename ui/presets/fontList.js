@@ -52,7 +52,7 @@ const presetFontList = '\
             "x": "5161",\
             "y": "4006",\
             "z": "3",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

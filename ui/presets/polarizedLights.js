@@ -206,7 +206,7 @@ const presetPolarizedLights = '\
             "x": "5683",\
             "y": "2875",\
             "z": "13",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\
@@ -225,7 +225,7 @@ const presetPolarizedLights = '\
             "x": "5688",\
             "y": "2718",\
             "z": "14",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\
@@ -349,7 +349,7 @@ const presetPolarizedLights = '\
             "x": "3584",\
             "y": "2248",\
             "z": "21",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

@@ -102,7 +102,7 @@ const presetShapesStyles = '\
             "x": "367",\
             "y": "1877",\
             "z": "6",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\
@@ -121,7 +121,7 @@ const presetShapesStyles = '\
             "x": "173",\
             "y": "2287",\
             "z": "7",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\
@@ -163,7 +163,7 @@ const presetShapesStyles = '\
             "x": "169",\
             "y": "2693",\
             "z": "10",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\
@@ -231,7 +231,7 @@ const presetShapesStyles = '\
             "x": "550",\
             "y": "1130",\
             "z": "14",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\
@@ -303,7 +303,7 @@ const presetShapesStyles = '\
             "x": "-12",\
             "y": "2892",\
             "z": "19",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\
@@ -339,7 +339,7 @@ const presetShapesStyles = '\
             "x": "366",\
             "y": "1520",\
             "z": "21",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

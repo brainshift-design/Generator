@@ -1431,7 +1431,7 @@ const presetGalaxy ='\
         "x": "17513",\
         "y": "11803",\
         "z": "74",\
-        "prevSpace": "hsv",\
+        "prevSpace": "hsb",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\
@@ -1542,7 +1542,7 @@ const presetGalaxy ='\
         "x": "16214",\
         "y": "9604",\
         "z": "80",\
-        "prevSpace": "hsv",\
+        "prevSpace": "hsb",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

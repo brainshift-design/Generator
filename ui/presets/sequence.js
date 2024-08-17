@@ -77,7 +77,7 @@ const presetSequence = `
         "x": "-5",
         "y": "1840",
         "z": "4",
-        "prevSpace": "hsv",
+        "prevSpace": "hsb",
         "params":
         [
                 ["NUM#", "space", "2,0"],

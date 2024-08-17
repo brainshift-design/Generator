@@ -2,8 +2,8 @@ const ColorSpaces =
 [
     ['hex',   'Hex'   ],
     ['rgb',   'RGB'   ], 
-    ['hsv',   'HSV'   ], 
     ['hsl',   'HSL'   ], 
+    ['hsb',   'HSB'   ], 
     ['hclok', 'HCL/ok'],
     ['hclab', 'HCL/ab'],
     ['hcluv', 'HCL/uv'],
@@ -18,8 +18,8 @@ class ColorSpace
 {
     hex   = Object.freeze(0);
     rgb   = Object.freeze(1);
-    hsv   = Object.freeze(2);
-    hsl   = Object.freeze(3);
+    hsl   = Object.freeze(2);
+    hsb   = Object.freeze(3);
     hclok = Object.freeze(4);
     hclab = Object.freeze(5);
     hcluv = Object.freeze(6);

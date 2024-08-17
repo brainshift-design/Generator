@@ -12,7 +12,7 @@ const presetColorContrast = '\
             "x": "1073",\
             "y": "2611",\
             "z": "0",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\
@@ -31,7 +31,7 @@ const presetColorContrast = '\
             "x": "1073",\
             "y": "2416",\
             "z": "1",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

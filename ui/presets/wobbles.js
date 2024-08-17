@@ -226,7 +226,7 @@ const presetWobbles = '\
             "x": "2781",\
             "y": "989",\
             "z": "14",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

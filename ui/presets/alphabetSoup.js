@@ -473,7 +473,7 @@ const presetAlphabetSoup = '\
         "x": "1826",\
         "y": "2314",\
         "z": "24",\
-        "prevSpace": "hsv",\
+        "prevSpace": "hsb",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\
@@ -495,7 +495,7 @@ const presetAlphabetSoup = '\
         "x": "1975",\
         "y": "1975",\
         "z": "25",\
-        "prevSpace": "hsv",\
+        "prevSpace": "hsb",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\
@@ -1417,7 +1417,7 @@ const presetAlphabetSoup = '\
         "x": "2443",\
         "y": "2648",\
         "z": "72",\
-        "prevSpace": "hsv",\
+        "prevSpace": "hsb",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

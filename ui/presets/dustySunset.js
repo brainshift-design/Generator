@@ -1211,7 +1211,7 @@ const presetDustySunset = '\
         "x": "7702",\
         "y": "8376",\
         "z": "63",\
-        "prevSpace": "hsv",\
+        "prevSpace": "hsb",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

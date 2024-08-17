@@ -378,7 +378,7 @@ function getMinCorrections(space, order)
         case 'hex':
         case 'rgb':   min = [0, 0, 0]; break;
 
-        case 'hsv': 
+        case 'hsb': 
         case 'hsl':   min = [0, 0, 0]; break;
 
         case 'hclok':
@@ -411,7 +411,7 @@ function getMaxCorrections(space, order)
         case 'hex':
         case 'rgb':   max = [...rgbFactor]; break;
 
-        case 'hsv': 
+        case 'hsb': 
         case 'hsl':   max = [hs_Factor[0]/2, hs_Factor[1], hs_Factor[2]]; break;
 
         case 'hclok':
@@ -515,11 +515,11 @@ function getColorCorrections(colorSpace)
             new ColorCorrection('G', rgbFactor[1]),
             new ColorCorrection('B', rgbFactor[2]) ];
 
-    case 'hsv':
+    case 'hsb':
         return [
             new ColorCorrection('H', hs_Factor[0]/2),
             new ColorCorrection('S', hs_Factor[1]),
-            new ColorCorrection('V', hs_Factor[2]) ];
+            new ColorCorrection('B', hs_Factor[2]) ];
 
     case 'hsl':
         return [

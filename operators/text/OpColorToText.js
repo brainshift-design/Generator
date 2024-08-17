@@ -13,7 +13,16 @@ extends OperatorBase
         this.addInput (new Input([COLOR_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['hex', 'rgb 0.0 – 1.0', 'rgb 0 – 255', 'name']));
+        this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['hex', 'rgb 0.0 – 1.0', 'rgb 0 – 255', 'name', 'CSS hex', 'CSS rgb', 'CSS hsl', 'CSS color']));
+
+        this.paramFormat.separatorsBefore.push(1, 3, 4);
+
+        /*
+        CSS hex
+        CSS rgb
+        CSS hsl
+        CSS color()
+        */
     }
 
 

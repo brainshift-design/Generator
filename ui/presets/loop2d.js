@@ -28,7 +28,7 @@ const presetLoop2d = `
         "x": "3045",
         "y": "3327",
         "z": "1",
-        "prevSpace": "hsv",
+        "prevSpace": "hsb",
         "params":
         [
             ["NUM#", "space", "2,0"],

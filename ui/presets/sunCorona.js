@@ -620,7 +620,7 @@ const presetSunCorona = '\
         "x": "19607",\
         "y": "14713",\
         "z": "30",\
-        "prevSpace": "hsv",\
+        "prevSpace": "hsb",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\
@@ -687,7 +687,7 @@ const presetSunCorona = '\
         "x": "18258",\
         "y": "13990",\
         "z": "33",\
-        "prevSpace": "hsv",\
+        "prevSpace": "hsb",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

@@ -111,7 +111,7 @@ const presetBasicVariables = '\
             "y": "973",\
             "z": "7",\
             "active": "true",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

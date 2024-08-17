@@ -1,17 +1,17 @@
 function rgbLightenHsv(rgb, amount)
 {
-    const hsv = rgb2hsv(rgb);
-    hsv[2] *= amount;
-    return hsv2rgb(hsv);
+    const hsb = rgb2hsv(rgb);
+    hsb[2] *= amount;
+    return hsv2rgb(hsb);
 }
 
 
 
 function rgbSaturateHsv(rgb, amount)
 {
-    const hsv = rgb2hsv(rgb);
-    hsv[1] *= amount;
-    return hsv2rgb(hsv);
+    const hsb = rgb2hsv(rgb);
+    hsb[1] *= amount;
+    return hsv2rgb(hsb);
 }
 
 

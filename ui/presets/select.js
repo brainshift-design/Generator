@@ -45,7 +45,7 @@ const presetSelect = '\
         "x": "3158",\
         "y": "3839.43",\
         "z": "2",\
-        "prevSpace": "hsv",\
+        "prevSpace": "hsb",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\
@@ -155,7 +155,7 @@ const presetSelect = '\
         "x": "1832",\
         "y": "3640",\
         "z": "9",\
-        "prevSpace": "hsv",\
+        "prevSpace": "hsb",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

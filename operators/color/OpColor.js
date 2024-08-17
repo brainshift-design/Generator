@@ -477,7 +477,7 @@ extends OpColorBase
         const space = this.paramSpace.value.value;
 
         if (    (   space == 1  // RGB
-                 || space == 2  // HSV
+                 || space == 2  // HSB
                  || space == 3) // HSL
              && !dataColorIsNaN  (this._color)
              && !dataColorIsValid(this._color))

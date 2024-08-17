@@ -42,7 +42,7 @@ const presetIterate = '\
             "x": "245",\
             "y": "2090",\
             "z": "2",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

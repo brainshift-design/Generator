@@ -108,7 +108,7 @@ const presetRoughStar = '\
             "x": "3410.55",\
             "y": "2711",\
             "z": "6",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\

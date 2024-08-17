@@ -655,6 +655,21 @@ function handleLegacyNode(_node, genVersion)
             removeFromArray(_node.params, parts);
     }
 
+    else if (   _node.type == COLOR
+             && genVersion < 441) 
+    {
+        if (!_node.params)
+            _node.params = [];
+
+        const paramSpace = _node.params.find(p => p[1] == 'space');
+
+        if (paramSpace)
+        {
+                 if (paramSpace[2] == '2,0') paramAffectSpace[2] = '3,0';
+            else if (paramSpace[2] == '3,0') paramAffectSpace[2] = '2,0';
+        }
+    }
+
     else if (   (   _node.type == MOVE
                  || _node.type == ROTATE
                  || _node.type == SCALE

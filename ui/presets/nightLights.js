@@ -270,7 +270,7 @@ const presetNightLights = '\
         "x": "-1371",\
         "y": "847",\
         "z": "13",\
-        "prevSpace": "hsv",\
+        "prevSpace": "hsb",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

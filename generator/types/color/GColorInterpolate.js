@@ -134,7 +134,7 @@ extends GOperator2
                 Math.sign(g) * Math.pow(Math.abs(g), 1/gamma),
                 Math.sign(b) * Math.pow(Math.abs(b), 1/gamma) ];
         }
-        else // hsv/hsl/hcl
+        else // hsb/hsl/hcl
         {
             const h0 = col0[1] * Tau;  const h1 = col1[1] * Tau;
             const c0 = col0[2];        const c1 = col1[2];

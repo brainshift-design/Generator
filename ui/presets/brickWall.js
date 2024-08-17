@@ -86,7 +86,7 @@ const presetBrickWall = '\
             "x": "3739",\
             "y": "4674",\
             "z": "5",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\
@@ -148,7 +148,7 @@ const presetBrickWall = '\
             "x": "5206",\
             "y": "5236",\
             "z": "9",\
-            "prevSpace": "hsv",\
+            "prevSpace": "hsb",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\

@@ -40,7 +40,7 @@ function colorFactor(space)
         case 'hex':
         case 'rgb':   return rgbFactor;
 
-        case 'hsv':
+        case 'hsb':
         case 'hsl':   return hs_Factor;
 
         case 'hclok':
@@ -66,7 +66,7 @@ function scaleColor(col, space)
         case 'hex':    
         case 'rgb':   scale = rgbScale;   break;
 
-        case 'hsv':    
+        case 'hsb':    
         case 'hsl':   scale = hs_Scale;   break;
 
         case 'hclok': scale = hclokScale; break;
@@ -111,7 +111,7 @@ function switchToSpace(node, space)
         case 'hex':   switchToHex   (node); break;
         case 'rgb':   switchToRgb   (node); break;
 
-        case 'hsv':   switchToHsv   (node); break;
+        case 'hsb':   switchToHsv   (node); break;
         case 'hsl':   switchToHsl   (node); break;
 
         case 'hclok': switchToHclok (node); break;
@@ -131,7 +131,7 @@ function switchToSpace(node, space)
 function switchToHex  (node) { switchToRgbControls   (node); switchToTextbox(node); }
 function switchToRgb  (node) { switchToRgbControls   (node);                        }
 
-function switchToHsv  (node) { switchToHs_Controls   (node, 'V');                   }
+function switchToHsv  (node) { switchToHs_Controls   (node, 'B');                   }
 function switchToHsl  (node) { switchToHs_Controls   (node, 'L');                   }
              
 function switchToHclok(node) { switchToHclOklControls(node);                        }
@@ -333,7 +333,7 @@ function getNormalColorValue(value, space, chan)
         case 'hex':
         case 'rgb':   return getNormalValueRgb_(value, chan);
 
-        case 'hsv':   
+        case 'hsb':   
         case 'hsl':   return getNormalValueHs_ (value, chan);
 
         case 'hclok': 
@@ -414,7 +414,7 @@ function getNormalColor_(space, c1, c2, c3)
         case 'hex':
         case 'rgb':   return getNormalColorRgb_(c1, c2, c3);
 
-        case 'hsv':   
+        case 'hsb':   
         case 'hsl':   return getNormalColorHs_(c1, c2, c3);
 
         case 'hclok': 
@@ -476,7 +476,7 @@ function getScaledDataColor(color)
         case 'hex':
         case 'rgb':   return getScaledDataColorRgb(         color[1], color[2], color[3]);
 
-        case 'hsv':   return getScaledDataColorHs_('hsv',   color[1], color[2], color[3]);
+        case 'hsb':   return getScaledDataColorHs_('hsb',   color[1], color[2], color[3]);
         case 'hsl':   return getScaledDataColorHs_('hsl',   color[1], color[2], color[3]);
 
         case 'hclok': return getScaledDataColorHcl('hclok', color[1], color[2], color[3]);
@@ -552,7 +552,7 @@ function colorSpaceFactor(space)
         case 'hex':
         case 'rgb':   return rgbFactor;
 
-        case 'hsv':   
+        case 'hsb':   
         case 'hsl':   return hs_Factor;
 
         case 'hclok': 
@@ -574,7 +574,7 @@ function getColorSpaceScale(space)
         case 'hex':
         case 'rgb':   return rgbScale;
 
-        case 'hsv':   
+        case 'hsb':   
         case 'hsl':   return hs_Scale;
 
         case 'hclok': return hclokScale;

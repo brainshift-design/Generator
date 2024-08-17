@@ -54,7 +54,7 @@ const presetLoopLock = `
         "x": "95",
         "y": "377",
         "z": "3",
-        "prevSpace": "hsv",
+        "prevSpace": "hsb",
         "params":
         [
             ["NUM#", "space", "2,0"],

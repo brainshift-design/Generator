@@ -12,7 +12,7 @@ const presetLoop1d = `
         "x": "95",
         "y": "377",
         "z": "0",
-        "prevSpace": "hsv",
+        "prevSpace": "hsb",
         "params":
         [
                 ["NUM#", "space", "2,0"],
