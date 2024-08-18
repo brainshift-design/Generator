@@ -665,8 +665,8 @@ function handleLegacyNode(_node, genVersion)
 
         if (paramSpace)
         {
-                 if (paramSpace[2] == '2,0') paramAffectSpace[2] = '3,0';
-            else if (paramSpace[2] == '3,0') paramAffectSpace[2] = '2,0';
+                 if (paramSpace[2] == '2,0') paramSpace[2] = '3,0';
+            else if (paramSpace[2] == '3,0') paramSpace[2] = '2,0';
         }
     }
 

@@ -235,7 +235,7 @@ extends EventTarget
             darkMode
             ? this.colorDark
             : this.colorLight;
-        //console.log('ballColor =', ballColor);
+        //console.log('this.colorDark =', this.colorDark);
 
 
         const color = ballColor;//rgb_a(rgbFromType(this.types[0], true), 0.38);
@@ -248,6 +248,8 @@ extends EventTarget
             //    : this.colorLight);
 
 
+        // console.log('this.node.type =', this.node.type);
+        // console.log('color =', color);
         const colorStyle = 
             rgba2style(rgb_a(
                 color, 

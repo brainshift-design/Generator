@@ -146,14 +146,14 @@ extends OperatorBase
                    && this.paramCondition.input.connectedOutput.node.isUnknown();
 
 
-            if (   this.inputs[0].connected
-                && this.paramCondition.value.value > 0)
-                colors.output  = unknown ? noColor : this.inputs[0].connectedOutput.wireColor;
-                //colors.outWire = 
-            else if (this.inputs[1].connected
-                  && this.paramCondition.value.value == 0)
-                colors.output = unknown ? noColor : this.inputs[1].connectedOutput.wireColor;
-                //colors.outWire = unknown ? noColor : this.inputs[1].connectedOutput.wireColor;
+            // if (   this.inputs[0].connected
+            //     && this.paramCondition.value.value > 0)
+            //     colors.output  = unknown ? noColor : this.inputs[0].connectedOutput.wireColor;
+            //     //colors.outWire = 
+            // else if (this.inputs[1].connected
+            //       && this.paramCondition.value.value == 0)
+            //     colors.output = unknown ? noColor : this.inputs[1].connectedOutput.wireColor;
+            //     //colors.outWire = unknown ? noColor : this.inputs[1].connectedOutput.wireColor;
         }
         else
         {

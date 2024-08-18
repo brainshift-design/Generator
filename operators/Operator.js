@@ -1234,6 +1234,12 @@ class Operator
         //const colWire    = rgbFromType(this.type, true);
 
         
+        if (this.type == SET_VALUE_NAME)
+        {
+            console.log('SVNAME colInput =', colInput);
+            console.log('SVNAME colOutput =', colOutput);
+        }
+
         return {
             back:    rgbaBack, 
             border:  rgbaBorder,

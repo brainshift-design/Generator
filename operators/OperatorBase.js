@@ -22,6 +22,9 @@ extends Operator
         this.label .style.color           = rgba2style(colors.text);
 
 
+        // console.log('colors.input =', colors.input);
+        // console.log('colors.output =', colors.output);
+
         for (const input of this.headerInputs)
         {
             input.colorLight = 

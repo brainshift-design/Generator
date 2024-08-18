@@ -97,7 +97,7 @@ extends GShape
 
 
         const input         = await evalTextShapeValue(this.input,         parse);
-        let   text          = await evalNumberValue   (this.text,          parse);
+        let   text          = await evalTextValue     (this.text,          parse);
         let   x             = await evalNumberValue   (this.x,             parse);
         let   y             = await evalNumberValue   (this.y,             parse);
         let   width         = await evalNumberValue   (this.width,         parse);

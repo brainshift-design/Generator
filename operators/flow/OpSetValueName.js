@@ -87,8 +87,8 @@ extends OperatorBase
         if (   this.outputs[0].supportsTypes([COLOR_VALUE])
             || this.outputs[0].supportsTypes([FILL_VALUE]))
         {
-            if (this.inputs[0].connected)
-                colors.output  = this.inputs[0].connectedOutput.wireColor;
+            //if (this.inputs[0].connected)
+            //    colors.output  = this.inputs[0].connectedOutput.wireColor;
                 //colors.outWire = this.inputs[0].connectedOutput.wireColor;
         }
         else
@@ -99,6 +99,8 @@ extends OperatorBase
             colors.outWire = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
         }
         
+        console.log('OpSetValueName.update() colors.output =', colors.output);
+
         return colors;
     }
 }
