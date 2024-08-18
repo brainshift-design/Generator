@@ -162,7 +162,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showNodeIcons':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeIcons                ); break;
         case 'showBoolValues':                updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues               ); break;
         case 'separateThousands':             updateSettingAndMenu_(valid, settingName, value, menuItemSeparateThousands            ); break;
-        case 'allowInvertParams':    updateSettingAndMenu_(valid, settingName, value, menuItemAllowInvertParams   ); break;
+        case 'allowInvertParams':             updateSettingAndMenu_(valid, settingName, value, menuItemAllowInvertParams            ); break;
         case 'activateDeactiatesOthers':      updateSettingAndMenu_(valid, settingName, value, menuItemActivateDeactiatesOthers     ); break;
         case 'preferHtmlColorNames':          updateSettingAndMenu_(valid, settingName, value, menuItemPreferHtmlColorNames         ); break;
         case 'randomShiftR':                  updateSettingAndMenu_(valid, settingName, value, menuItemRandomShiftR                 ); break;
@@ -255,7 +255,7 @@ function updateSettingsMenus()
     menuItemShowNodeIcons                .setChecked(settings.showNodeIcons                );
     menuItemShowBoolValues               .setChecked(settings.showBoolValues               );
     menuItemSeparateThousands            .setChecked(settings.separateThousands            );
-    menuItemAllowInvertParams   .setChecked(settings.allowInvertParams   );
+    menuItemAllowInvertParams            .setChecked(settings.allowInvertParams            );
     menuItemActivateDeactiatesOthers     .setChecked(settings.activateDeactiatesOthers     );
     menuItemPreferHtmlColorNames         .setChecked(settings.preferHtmlColorNames         );
     menuItemRandomShiftR                 .setChecked(settings.randomShiftR                 );

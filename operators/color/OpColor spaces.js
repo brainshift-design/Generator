@@ -1,14 +1,14 @@
 function colorSpace     (index) { return ColorSpaces[index][0]; }
 function colorSpaceIndex(space) { return ColorSpaces.findIndex(s => s[0] == space); }
 
-function colorSpaceCount(parse = null)
-{ 
-    const set = parse ? parse.settings : settings;
+// function colorSpaceCount(parse = null)
+// { 
+//     const set = parse ? parse.settings : settings;
 
-    return set.showAllColorSpaces 
-           ? ColorSpaces.length
-        : ColorSpaces.length - 5; 
-}
+//     return set.showAllColorSpaces 
+//          ? ColorSpaces.length
+//          : ColorSpaces.length - 5; 
+// }
 
 
 

@@ -64,7 +64,7 @@ extends GOperator2
             const f = amount.value / 100;
 
 
-            const spaceIndex = Math.min(Math.max(0, space.value), colorSpaceCount()-1);
+            const spaceIndex = space.value;//Math.min(Math.max(0, space.value), colorSpaceCount()-1);
             const gammaValue = Math.max(0.0001, gamma.value);
 
             const _space = colorSpace(spaceIndex);

@@ -1167,7 +1167,10 @@ function isSimpleLatinLetter(c)
 
 function getDigitCount(i)
 {
+    if (i == 0) return 1;
+
     let l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
+
     return l + 1;
 }
 
@@ -6269,7 +6272,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showNodeIcons':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeIcons                ); break;
         case 'showBoolValues':                updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues               ); break;
         case 'separateThousands':             updateSettingAndMenu_(valid, settingName, value, menuItemSeparateThousands            ); break;
-        case 'allowInvertParams':    updateSettingAndMenu_(valid, settingName, value, menuItemAllowInvertParams   ); break;
+        case 'allowInvertParams':             updateSettingAndMenu_(valid, settingName, value, menuItemAllowInvertParams            ); break;
         case 'activateDeactiatesOthers':      updateSettingAndMenu_(valid, settingName, value, menuItemActivateDeactiatesOthers     ); break;
         case 'preferHtmlColorNames':          updateSettingAndMenu_(valid, settingName, value, menuItemPreferHtmlColorNames         ); break;
         case 'randomShiftR':                  updateSettingAndMenu_(valid, settingName, value, menuItemRandomShiftR                 ); break;
@@ -6362,7 +6365,7 @@ function updateSettingsMenus()
     menuItemShowNodeIcons                .setChecked(settings.showNodeIcons                );
     menuItemShowBoolValues               .setChecked(settings.showBoolValues               );
     menuItemSeparateThousands            .setChecked(settings.separateThousands            );
-    menuItemAllowInvertParams   .setChecked(settings.allowInvertParams   );
+    menuItemAllowInvertParams            .setChecked(settings.allowInvertParams            );
     menuItemActivateDeactiatesOthers     .setChecked(settings.activateDeactiatesOthers     );
     menuItemPreferHtmlColorNames         .setChecked(settings.preferHtmlColorNames         );
     menuItemRandomShiftR                 .setChecked(settings.randomShiftR                 );
@@ -36501,14 +36504,16 @@ extends GOperator1
 
                     const fromSpaceIndex = input.space.value;
 
-                    const toSpaceIndex = Math.min(Math.max(
-                        0,
-                        Math.round(space.value)), // round because a value can come in with decimals (TODO fix this)
-                        colorSpaceCount(parse)-1);
+                    const toSpaceIndex = Math.round(space.value);
+                    //Math.min(Math.max(
+                    //    0,
+                    //    Math.round(space.value)), // round because a value can come in with decimals
+                    //    colorSpaceCount(parse)-1);
 
 
                     if (toSpaceIndex != fromSpaceIndex)
                     {
+                        console.log('1');
                         this.convertColor(
                             this.value,
                             colorSpace(fromSpaceIndex), 
@@ -36544,10 +36549,11 @@ extends GOperator1
             this.value = new ColorValue(space, c1, c2, c3);
 
 
-            const toSpaceIndex = Math.min(Math.max(
-                0,
-                Math.round(this.value.space.value)), // round because a value can come in with decimals (TODO fix this)
-                colorSpaceCount(parse)-1);
+            const toSpaceIndex = Math.round(this.value.space.value); 
+            //Math.min(Math.max(
+            //    0,
+            //    Math.round(this.value.space.value)), // round because a value can come in with decimals (TODO fix this)
+            //    colorSpaceCount(parse)-1);
 
             this.value.space.value = toSpaceIndex;
 
@@ -37929,7 +37935,7 @@ extends GOperator2
             const f = amount.value / 100;
 
 
-            const spaceIndex = Math.min(Math.max(0, space.value), colorSpaceCount()-1);
+            const spaceIndex = space.value;//Math.min(Math.max(0, space.value), colorSpaceCount()-1);
             const gammaValue = Math.max(0.0001, gamma.value);
 
             const _space = colorSpace(spaceIndex);
@@ -62176,34 +62182,63 @@ function p32srgb(rgb)
 }
 
 
-const ColorSpaces = 
+const SimpleColorSpaces = 
 [
     ['hex',   'Hex'   ],
     ['rgb',   'RGB'   ], 
     ['hsl',   'HSL'   ], 
     ['hsb',   'HSB'   ], 
-    ['hclok', 'HCL/ok'],
-    ['hclab', 'HCL/ab'],
-    ['hcluv', 'HCL/uv'],
-    ['oklab', 'okLab' ],
-    ['lab',   'Lab'   ],
-    ['luv',   'Luv'   ]
+    ['hclok', 'HCL/ok']
 ];
+
+
+const AdvancedColorSpaces = 
+[
+    ['hex',         'Hex'         ],
+    ['rgb',         'RGB'         ], 
+    ['rgblin',      'RGB/Linear'  ], 
+    ['rgbp3',       'RGB/P3'      ], 
+    ['rgba98',      'RGB/A98'     ], 
+    ['rgbprophoto', 'RGB/ProPhoto'], 
+    ['rgbrec2020',  'RGB/Rec.2020'], 
+    ['hsl',         'HSL'         ], 
+    ['hsb',         'HSB'         ], 
+    ['hclok',       'HCL/ok'      ],
+    ['hclab',       'HCL/ab'      ],
+    ['hcluv',       'HCL/uv'      ],
+    ['oklab',       'okLab'       ],
+    ['lab',         'Lab'         ],
+    ['luv',         'Luv'         ],
+    ['xyz',         'XYZ'         ],
+    ['xyzd50',      'XYZ/D50'     ],
+    ['xyzd65',      'XYZ/D65'     ]
+];
+
+
+var ColorSpaces = SimpleColorSpaces;
 
 
 
 class ColorSpace
 {
-    hex   = Object.freeze(0);
-    rgb   = Object.freeze(1);
-    hsl   = Object.freeze(2);
-    hsb   = Object.freeze(3);
-    hclok = Object.freeze(4);
-    hclab = Object.freeze(5);
-    hcluv = Object.freeze(6);
-    oklab = Object.freeze(7);
-    lab   = Object.freeze(8);
-    luv   = Object.freeze(9);
+    hex         = Object.freeze( 0);
+    rgb         = Object.freeze( 1);
+    rgblin      = Object.freeze( 2);
+    rgbp3       = Object.freeze( 3);
+    rgba98      = Object.freeze( 4);
+    rgbprophoto = Object.freeze( 5);
+    rgbrec2020  = Object.freeze( 6);
+    hsl         = Object.freeze( 7);
+    hsb         = Object.freeze( 8);
+    hclok       = Object.freeze( 9);
+    hclab       = Object.freeze(10);
+    hcluv       = Object.freeze(11);
+    oklab       = Object.freeze(12);
+    lab         = Object.freeze(13);
+    luv         = Object.freeze(14);
+    xyz         = Object.freeze(15);
+    xyzd50      = Object.freeze(16);
+    xyzd65      = Object.freeze(17);
 }
 
 
@@ -63280,14 +63315,14 @@ function APCAcontrast(txtY, bgY)
 function colorSpace     (index) { return ColorSpaces[index][0]; }
 function colorSpaceIndex(space) { return ColorSpaces.findIndex(s => s[0] == space); }
 
-function colorSpaceCount(parse = null)
-{ 
-    const set = parse ? parse.settings : settings;
+// function colorSpaceCount(parse = null)
+// { 
+//     const set = parse ? parse.settings : settings;
 
-    return set.showAllColorSpaces 
-           ? ColorSpaces.length
-        : ColorSpaces.length - 5; 
-}
+//     return set.showAllColorSpaces 
+//          ? ColorSpaces.length
+//          : ColorSpaces.length - 5; 
+// }
 
 
 

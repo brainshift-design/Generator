@@ -197,7 +197,7 @@ function initSelectParamMenu(param)
     const c = !param.reverseMenu ? i => i <= param.controls[0].displayMax : i => i >= 0;
     const d = !param.reverseMenu ? 1 : -1;
 
-    //const indexPad = getDigitCount(param.controls[0].displayMax);
+    const pad = getDigitCount(param.controls[0].displayMax);
 
     
     for (let i = s; c(i); i += d)
@@ -218,8 +218,12 @@ function initSelectParamMenu(param)
             options.enabled = false;
 
             
+        const index =
+              '  '.repeat(pad - getDigitCount(i)) // Nspace + thinspace, works for Inter
+            + i.toString();
+
         const item = new MenuItem(
-              i + '  ·  '
+              index + '  ·  '
             + option.replaceAll('/', ' / '), 
             null,
             false,

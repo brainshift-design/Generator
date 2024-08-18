@@ -14,7 +14,10 @@ function isSimpleLatinLetter(c)
 
 function getDigitCount(i)
 {
+    if (i == 0) return 1;
+
     let l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
+
     return l + 1;
 }
 

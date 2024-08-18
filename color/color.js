@@ -1,31 +1,60 @@
-const ColorSpaces = 
+const SimpleColorSpaces = 
 [
     ['hex',   'Hex'   ],
     ['rgb',   'RGB'   ], 
     ['hsl',   'HSL'   ], 
     ['hsb',   'HSB'   ], 
-    ['hclok', 'HCL/ok'],
-    ['hclab', 'HCL/ab'],
-    ['hcluv', 'HCL/uv'],
-    ['oklab', 'okLab' ],
-    ['lab',   'Lab'   ],
-    ['luv',   'Luv'   ]
+    ['hclok', 'HCL/ok']
 ];
+
+
+const AdvancedColorSpaces = 
+[
+    ['hex',         'Hex'         ],
+    ['rgb',         'RGB'         ], 
+    ['rgblin',      'RGB/Linear'  ], 
+    ['rgbp3',       'RGB/P3'      ], 
+    ['rgba98',      'RGB/A98'     ], 
+    ['rgbprophoto', 'RGB/ProPhoto'], 
+    ['rgbrec2020',  'RGB/Rec.2020'], 
+    ['hsl',         'HSL'         ], 
+    ['hsb',         'HSB'         ], 
+    ['hclok',       'HCL/ok'      ],
+    ['hclab',       'HCL/ab'      ],
+    ['hcluv',       'HCL/uv'      ],
+    ['oklab',       'okLab'       ],
+    ['lab',         'Lab'         ],
+    ['luv',         'Luv'         ],
+    ['xyz',         'XYZ'         ],
+    ['xyzd50',      'XYZ/D50'     ],
+    ['xyzd65',      'XYZ/D65'     ]
+];
+
+
+var ColorSpaces = SimpleColorSpaces;
 
 
 
 class ColorSpace
 {
-    hex   = Object.freeze(0);
-    rgb   = Object.freeze(1);
-    hsl   = Object.freeze(2);
-    hsb   = Object.freeze(3);
-    hclok = Object.freeze(4);
-    hclab = Object.freeze(5);
-    hcluv = Object.freeze(6);
-    oklab = Object.freeze(7);
-    lab   = Object.freeze(8);
-    luv   = Object.freeze(9);
+    hex         = Object.freeze( 0);
+    rgb         = Object.freeze( 1);
+    rgblin      = Object.freeze( 2);
+    rgbp3       = Object.freeze( 3);
+    rgba98      = Object.freeze( 4);
+    rgbprophoto = Object.freeze( 5);
+    rgbrec2020  = Object.freeze( 6);
+    hsl         = Object.freeze( 7);
+    hsb         = Object.freeze( 8);
+    hclok       = Object.freeze( 9);
+    hclab       = Object.freeze(10);
+    hcluv       = Object.freeze(11);
+    oklab       = Object.freeze(12);
+    lab         = Object.freeze(13);
+    luv         = Object.freeze(14);
+    xyz         = Object.freeze(15);
+    xyzd50      = Object.freeze(16);
+    xyzd65      = Object.freeze(17);
 }
 
 

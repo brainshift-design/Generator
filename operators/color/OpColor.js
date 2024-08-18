@@ -40,7 +40,7 @@ extends OpColorBase
         this.inner.insertBefore(this.colorBack, this.paramHolder);
 
 
-        this.addInput(new Input([COLOR_VALUE], getColorInputValuesForUndo, this.input_getBackInitValue));
+        this.addInput (new Input ([COLOR_VALUE], getColorInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest, getColorOutputValuesForUndo, this.output_backInit));
 
         
@@ -389,7 +389,7 @@ extends OpColorBase
     updateNode()
     {
         if (!hasFocus(this.paramColor.controls[0]))
-            this.paramColor.setValue(ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color))), false, true, false);// = 
+            this.paramColor.setValue(ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color))), false, true, false);
         
 
         const colors = this.getHeaderColors();
@@ -401,7 +401,13 @@ extends OpColorBase
             : [0, 0, 0, 0.09]; 
 
 
-        this.paramSpace.controls[0].setMax(colorSpaceCount()-1);
+        ColorSpaces = 
+            settings.showAllColorSpaces
+            ? AdvancedColorSpaces
+            : SimpleColorSpaces;
+
+        this.paramSpace.setOptions(ColorSpaces.map(s => s[1]));
+        this.paramSpace.controls[0].setMax(ColorSpaces.length-1);
 
 
         this.paramSpace.controls[0].backStyleLight  =
