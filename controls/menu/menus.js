@@ -714,11 +714,11 @@ function initGeneratorMenus()
                                new MenuItem('Gradient',      null,                false, {icon: iconGradient,         callback: e => actionManager.do(getCreateNodeAction(GRADIENT,          btnColor.div, getCreateOptions(e)))}),
         menuItemLayerSep1    = new MenuItem('',              null,                false, {separator: true}),
         menuItemValidColor   = new MenuItem('Valid sRGB',    null,                false, {childMenu: menuValidColor, icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
-        menuItemLayerSep1    = new MenuItem('',              null,                false, {separator: true}),
-        menuItemConvertToP3  = new MenuItem('sRGB ⟷ P3',    null,                false, {icon: iconConvertP3,        callback: e => actionManager.do(getCreateNodeAction(COLOR_CONVERT_P3,  btnColor.div, getCreateOptions(e)))}),
-                               new MenuItem('',              null,                false, {separator: true}),
-        menuItemColorblind   = new MenuItem('Colorblind',    null,                false, {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
+        // menuItemLayerSep1    = new MenuItem('',              null,                false, {separator: true}),
+        // menuItemConvertToP3  = new MenuItem('sRGB ⟷ P3',    null,                false, {icon: iconConvertP3,        callback: e => actionManager.do(getCreateNodeAction(COLOR_CONVERT_P3,  btnColor.div, getCreateOptions(e)))}),
+                            //    new MenuItem('',              null,                false, {separator: true}),
                                new MenuItem('Web contrast',  null,                false, {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
+        menuItemColorblind   = new MenuItem('Colorblind',    null,                false, {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('',              null,                false, {separator: true}),
                                new MenuItem('Interpolate',   'Interpolate color', true,  {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))}),
         menuItemColorBlend   = new MenuItem('Blend',         null,                false, {icon: iconColorBlend,       callback: e => actionManager.do(getCreateNodeAction(COLOR_BLEND,       btnColor.div, getCreateOptions(e)))}),
@@ -1268,10 +1268,10 @@ function initGeneratorMenus()
 
 function createObjectCountInfo()
 {
-    objectCountWrapper  = createDiv('', "objectCountWrapper" );
-    objectCountInfo     = createDiv('', "objectCountInfo"    );
-    objectCountProgress = createDiv('', "objectCountProgress");
-    objectCountNumber   = createDiv('', "objectCountNumber"  );
+    objectCountWrapper  = createDiv('', 'objectCountWrapper' );
+    objectCountInfo     = createDiv('', 'objectCountInfo'    );
+    objectCountProgress = createDiv('', 'objectCountProgress');
+    objectCountNumber   = createDiv('', 'objectCountNumber'  );
 
     objectCountNumber.innerHTML = '0';
     
@@ -1295,12 +1295,12 @@ function initPreferenceMenus()
      // menuPrefSep1                       = new MenuItem('',                                         null, false, {separator: true}),    
      // menuItemShowSnapshots              = new MenuItem('Show snapshots',                           null, false, {checkCallback: () => settings.showSnapshots,                             callback: () => { updateSettingAndMenu('showSnapshots',              true, !settings.showSnapshots);              updateMenuItemShowSnapshots();              }}),
      //                                      new MenuItem('',                                         null, false, {separator: true}),    
-        menuItemShowNodeIcons              = new MenuItem('Show node icons',                          null, false, {checkCallback: () => settings.showNodeIcons,                             callback: () => { updateSettingAndMenu('showNodeIcons',              true, !settings.showNodeIcons);              updateMenuItemShowNodeIcons();              }}),
+        menuItemShowAllColorSpaces         = new MenuItem('Show advanced color spaces',               null, false, {checkCallback: () => settings.showAllColorSpaces,                        callback: () => { updateSettingAndMenu('showAllColorSpaces',         true, !settings.showAllColorSpaces);         updateMenuItemShowAllColorSpaces();         }}),
         menuItemShowBoolValues             = new MenuItem('Show boolean values as   ✓ ✗',            null, false, {checkCallback: () => settings.showBoolValues,                            callback: () => { updateSettingAndMenu('showBoolValues',             true, !settings.showBoolValues);             updateMenuItemShowBoolValues();             }}),
         menuItemSeparateThousands          = new MenuItem('Separate thousands in numbers',            null, false, {checkCallback: () => settings.separateThousands,                         callback: () => { updateSettingAndMenu('separateThousands',          true, !settings.separateThousands);          updateMenuItemSeparateThousands();          }}),
+        menuItemShowNodeIcons              = new MenuItem('Show node icons',                          null, false, {checkCallback: () => settings.showNodeIcons,                             callback: () => { updateSettingAndMenu('showNodeIcons',              true, !settings.showNodeIcons);              updateMenuItemShowNodeIcons();              }}),
         menuItemAllowInvertParams          = new MenuItem('Allow inverting of parameters',            null, false, {checkCallback: () => settings.allowInvertParams,                         callback: () => { updateSettingAndMenu('allowInvertParams',          true, !settings.allowInvertParams);          updateMenuItemAllowInvertParams();          }}),
         menuItemActivateDeactiatesOthers   = new MenuItem('Activate deactivates others',              null, false, {checkCallback: () => settings.activateDeactiatesOthers,                  callback: () => { updateSettingAndMenu('activateDeactiatesOthers',   true, !settings.activateDeactiatesOthers);                                               }}),
-        menuItemShowAllColorSpaces         = new MenuItem('Show advanced color spaces',               null, false, {checkCallback: () => settings.showAllColorSpaces,                        callback: () => { updateSettingAndMenu('showAllColorSpaces',         true, !settings.showAllColorSpaces);         updateMenuItemShowAllColorSpaces();         }}),
         menuItemPreferHtmlColorNames       = new MenuItem('Prefer HTML color names',                  null, false, {checkCallback: () => settings.preferHtmlColorNames,                      callback: () => { updateSettingAndMenu('preferHtmlColorNames',       true, !settings.preferHtmlColorNames);                                                   }}),
                                              new MenuItem( osShift(true) + 'R randomizes mixed. . .', null, false, {childMenu: menuShiftR}),
         //menuItemShowColorLegendInMenus   = new MenuItem('Show color legend in menus',               null, false, {checkCallback: () => settings.showColorLegendInMenus,                    callback: () => { updateSettingAndMenu('showColorLegendInMenus',     true, !settings.showColorLegendInMenus);     updateMenuItemShowColorLegendInMenus();     }}),

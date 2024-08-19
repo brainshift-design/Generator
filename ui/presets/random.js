@@ -42,7 +42,7 @@ const presetRandom = '\
             "x": "395",\
             "y": "2240",\
             "z": "2",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

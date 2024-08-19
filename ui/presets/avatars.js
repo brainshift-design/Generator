@@ -1187,7 +1187,7 @@ const presetAvatars = '\
             "x": "1733",\
             "y": "11247",\
             "z": "74",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\
@@ -1522,7 +1522,7 @@ const presetAvatars = '\
             "x": "2277",\
             "y": "9521",\
             "z": "93",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\

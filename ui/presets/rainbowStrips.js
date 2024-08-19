@@ -355,7 +355,7 @@ const presetRainbowStrips = '\
         "x": "18293",\
         "y": "14973",\
         "z": "18",\
-        "k3201": "hsb",\
+        "k3201": "hsv",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

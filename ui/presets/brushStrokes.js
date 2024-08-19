@@ -318,7 +318,7 @@ const presetBrushStrokes = '\
             "x": "7965",\
             "y": "7702",\
             "z": "19",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\

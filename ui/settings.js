@@ -82,7 +82,7 @@ function updateSetting(settingName, value)
         case 'showNodeIcons':                 settings.showNodeIcons                 = value;  break;
         case 'showBoolValues':                settings.showBoolValues                = value;  break;
         case 'separateThousands':             settings.separateThousands             = value;  break;
-        case 'allowInvertParams':    settings.allowInvertParams    = value;  break;
+        case 'allowInvertParams':             settings.allowInvertParams             = value;  break;
         case 'activateDeactiatesOthers':      settings.activateDeactiatesOthers      = value;  break;
         case 'preferHtmlColorNames':          settings.preferHtmlColorNames          = value;  break;
         case 'randomShiftR':                  settings.randomShiftR                  = value;  break;

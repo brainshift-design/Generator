@@ -149,7 +149,7 @@ const presetLineGraph = '\
         "x": "5327",\
         "y": "4057",\
         "z": "7",\
-        "prevSpace": "hsb",\
+        "prevSpace": "hsv",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

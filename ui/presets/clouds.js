@@ -311,7 +311,7 @@ const presetClouds = '\
             "x": "3148",\
             "y": "3811",\
             "z": "19",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\

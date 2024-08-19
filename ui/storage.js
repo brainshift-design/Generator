@@ -244,6 +244,14 @@ function uiReturnFigLoadNodesAndConns(msg)
         _showAllColorSpaces ? parseBool(_showAllColorSpaces) : false,
         false); 
 
+    if (_showAllColorSpaces)
+    {
+        ColorSpaces = 
+            parseBool(_showAllColorSpaces)
+            ? AdvancedColorSpaces
+            : SimpleColorSpaces;
+    }
+
 
     graphView.loadingNodes   = true;
     graphView.canUpdateNodes = false;

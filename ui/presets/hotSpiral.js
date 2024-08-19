@@ -216,7 +216,7 @@ const presetHotSpring = '\
             "x": "5191",\
             "y": "3415",\
             "z": "13",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\
@@ -235,7 +235,7 @@ const presetHotSpring = '\
             "x": "5020",\
             "y": "3302",\
             "z": "14",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

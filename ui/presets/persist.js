@@ -238,7 +238,7 @@ const presetPersist = '\
             "x": "5399",\
             "y": "4352",\
             "z": "14",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\

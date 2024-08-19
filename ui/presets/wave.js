@@ -107,7 +107,7 @@ const presetWave = '\
             "x": "615",\
             "y": "2090",\
             "z": "6",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

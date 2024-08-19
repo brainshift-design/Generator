@@ -45,6 +45,20 @@ const invM1 = inversem3(M1);
 
 
 
+function xy2XYZ(x, y, Y = 1) 
+{
+    let X = (x / y) * Y;
+    let Z = ((1 - x - y) / y) * Y;
+    
+    let N = X + Y + Z;
+
+    return [X / N, 
+            Y / N, 
+            Z / N];
+}
+
+
+
 function rgbIsNaN(rgb) 
 {
     return isNaN(rgb[0])

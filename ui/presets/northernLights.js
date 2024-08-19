@@ -16,7 +16,7 @@ const presetNorthernLights = '\
       "x": "10873",\
       "y": "9002",\
       "z": "0",\
-      "prevSpace": "hsb",\
+      "prevSpace": "hsv",\
       "params":\
       [\
             ["NUM#", "space", "2,0"],\
@@ -110,7 +110,7 @@ const presetNorthernLights = '\
       "x": "7608",\
       "y": "7988",\
       "z": "5",\
-      "prevSpace": "hsb",\
+      "prevSpace": "hsv",\
       "params":\
       [\
             ["NUM#", "space", "2,0"],\
@@ -388,7 +388,7 @@ const presetNorthernLights = '\
       "x": "9910",\
       "y": "10273",\
       "z": "19",\
-      "prevSpace": "hsb",\
+      "prevSpace": "hsv",\
       "params":\
       [\
             ["NUM#", "space", "2,0"],\
@@ -544,7 +544,7 @@ const presetNorthernLights = '\
       "x": "10871",\
       "y": "9153",\
       "z": "27",\
-      "prevSpace": "hsb",\
+      "prevSpace": "hsv",\
       "params":\
       [\
             ["NUM#", "space", "2,0"],\
@@ -753,7 +753,7 @@ const presetNorthernLights = '\
       "x": "10250",\
       "y": "10214",\
       "z": "38",\
-      "prevSpace": "hsb",\
+      "prevSpace": "hsv",\
       "params":\
       [\
             ["NUM#", "space", "2,0"],\
@@ -829,7 +829,7 @@ const presetNorthernLights = '\
       "x": "10595",\
       "y": "10235",\
       "z": "42",\
-      "prevSpace": "hsb",\
+      "prevSpace": "hsv",\
       "params":\
       [\
             ["NUM#", "space", "2,0"],\
@@ -940,7 +940,7 @@ const presetNorthernLights = '\
       "x": "8077",\
       "y": "7053",\
       "z": "48",\
-      "prevSpace": "hsb",\
+      "prevSpace": "hsv",\
       "params":\
       [\
             ["NUM#", "space", "2,0"],\
@@ -1187,7 +1187,7 @@ const presetNorthernLights = '\
       "x": "10877",\
       "y": "9313",\
       "z": "60",\
-      "prevSpace": "hsb",\
+      "prevSpace": "hsv",\
       "params":\
       [\
             ["NUM#", "space", "2,0"],\
@@ -1395,7 +1395,7 @@ const presetNorthernLights = '\
       "x": "9913",\
       "y": "10111",\
       "z": "71",\
-      "prevSpace": "hsb",\
+      "prevSpace": "hsv",\
       "params":\
       [\
             ["NUM#", "space", "2,0"],\

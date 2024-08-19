@@ -59,7 +59,7 @@ const presetNoise = '\
             "x": "1045",\
             "y": "2890",\
             "z": "3",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

@@ -721,7 +721,7 @@ const presetSnowflakes = '\
         "y": "9273",\
         "z": "40",\
         "active": "true",\
-        "prevSpace": "hsb",\
+        "prevSpace": "hsv",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\
@@ -743,7 +743,7 @@ const presetSnowflakes = '\
         "y": "9429",\
         "z": "41",\
         "active": "true",\
-        "prevSpace": "hsb",\
+        "prevSpace": "hsv",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

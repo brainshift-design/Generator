@@ -42,7 +42,7 @@ const presetRange = `
         "x": "145",
         "y": "1990",
         "z": "2",
-        "prevSpace": "hsb",
+        "prevSpace": "hsv",
         "params":
         [
                 ["NUM#", "space", "2,0"],

@@ -470,7 +470,7 @@ const presetNestedTorus = '\
         "x": "3157",\
         "y": "3007",\
         "z": "25",\
-        "prevSpace": "hsb",\
+        "prevSpace": "hsv",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

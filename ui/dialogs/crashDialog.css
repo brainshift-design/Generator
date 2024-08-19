@@ -35,7 +35,7 @@
     left:          50%;
     transform:     translateX(-50%)
                    translateY(-50%);
-    width:         440px;
+    width:         478px;
     height:        300px;
 
     overflow:      hidden;
@@ -162,7 +162,7 @@
 #btnCrashClearRestart
 {
     position: absolute;
-    right:    202px;
+    right:    221px;
     bottom:   21px;
 }
 

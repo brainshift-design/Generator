@@ -12,7 +12,7 @@ const presetTintsAndShades = '\
             "x": "2792",\
             "y": "3998",\
             "z": "0",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

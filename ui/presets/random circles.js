@@ -102,7 +102,7 @@ const presetRandomCircles = '\
         "x": "2789",\
         "y": "2634",\
         "z": "4",\
-        "r3201": "hsb",\
+        "r3201": "hsv",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\
@@ -311,7 +311,7 @@ const presetRandomCircles = '\
         "x": "2780",\
         "y": "4112",\
         "z": "14",\
-        "r3201": "hsb",\
+        "r3201": "hsv",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

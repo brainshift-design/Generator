@@ -2017,7 +2017,7 @@ const presetBubbles = '\
         "x": "10404",\
         "y": "7463",\
         "z": "102",\
-        "prevSpace": "hsb",\
+        "prevSpace": "hsv",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\
@@ -2039,7 +2039,7 @@ const presetBubbles = '\
         "x": "10404",\
         "y": "7325",\
         "z": "103",\
-        "prevSpace": "hsb",\
+        "prevSpace": "hsv",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\
@@ -2083,7 +2083,7 @@ const presetBubbles = '\
         "x": "10412",\
         "y": "7614",\
         "z": "105",\
-        "prevSpace": "hsb",\
+        "prevSpace": "hsv",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

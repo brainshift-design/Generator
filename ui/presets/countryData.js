@@ -112,7 +112,7 @@ const presetCountryData = '\
             "x": "5316",\
             "y": "1338",\
             "z": "7",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

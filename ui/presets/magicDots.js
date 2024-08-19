@@ -16,7 +16,7 @@ const presetMagicDots = '\
         "x": "4003",\
         "y": "5662",\
         "z": "0",\
-        "prevSpace": "hsb",\
+        "prevSpace": "hsv",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

@@ -74,7 +74,7 @@ const presetProbability = '\
             "x": "795",\
             "y": "2640",\
             "z": "4",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

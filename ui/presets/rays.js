@@ -347,7 +347,7 @@ const presetRays = '\
         "x": "5458",\
         "y": "4109",\
         "z": "18",\
-        "prevSpace": "hsb",\
+        "prevSpace": "hsv",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

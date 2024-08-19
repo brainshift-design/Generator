@@ -1,5 +1,6 @@
 ../color/spaces/colorSpace.js
 ../color/spaces/sRGB.js
+../color/spaces/A98.js
 ../color/spaces/rgb.js
 ../color/spaces/hsv.js
 ../color/spaces/hsl.js
@@ -10,7 +11,6 @@
 ../color/spaces/oklab.js
 ../color/spaces/polar.js
 ../color/spaces/hcl.js
-../color/spaces/p3.js
 
 ../color/Color.js
 

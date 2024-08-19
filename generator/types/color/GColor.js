@@ -93,16 +93,14 @@ extends GOperator1
 
                     const fromSpaceIndex = input.space.value;
 
-                    const toSpaceIndex = Math.round(space.value);
-                    //Math.min(Math.max(
-                    //    0,
-                    //    Math.round(space.value)), // round because a value can come in with decimals
-                    //    colorSpaceCount(parse)-1);
+                    const toSpaceIndex = Math.min(Math.max(
+                        0,
+                        Math.round(space.value)), // round because a value can come in with decimals
+                        ColorSpaces.length-1);//colorSpaceCount(parse)-1);
 
 
                     if (toSpaceIndex != fromSpaceIndex)
                     {
-                        console.log('1');
                         this.convertColor(
                             this.value,
                             colorSpace(fromSpaceIndex), 
@@ -138,11 +136,10 @@ extends GOperator1
             this.value = new ColorValue(space, c1, c2, c3);
 
 
-            const toSpaceIndex = Math.round(this.value.space.value); 
-            //Math.min(Math.max(
-            //    0,
-            //    Math.round(this.value.space.value)), // round because a value can come in with decimals (TODO fix this)
-            //    colorSpaceCount(parse)-1);
+            const toSpaceIndex = Math.min(Math.max(
+                0,
+                Math.round(this.value.space.value)), // round because a value can come in with decimals
+                ColorSpaces.length-1);//colorSpaceCount(parse)-1);
 
             this.value.space.value = toSpaceIndex;
 

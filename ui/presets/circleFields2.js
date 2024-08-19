@@ -160,7 +160,7 @@ const presetCircleFields2 = '\
         "x": "4760",\
         "y": "4900",\
         "z": "7",\
-        "prevSpace": "hsb",\
+        "prevSpace": "hsv",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\
@@ -255,7 +255,7 @@ const presetCircleFields2 = '\
         "x": "6348",\
         "y": "5245",\
         "z": "12",\
-        "prevSpace": "hsb",\
+        "prevSpace": "hsv",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

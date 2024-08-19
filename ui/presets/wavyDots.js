@@ -61,7 +61,7 @@ const presetWavyDots = '\
             "x": "270",\
             "y": "772",\
             "z": "3",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

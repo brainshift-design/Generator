@@ -215,7 +215,7 @@ extends OpColorBase
         {
         case 'hex':
         case 'rgb':    this.paramOrder.setOptions(makeOptions('RGB')); break;
-        case 'hsb':    this.paramOrder.setOptions(makeOptions('HSB')); break;
+        case 'hsv':    this.paramOrder.setOptions(makeOptions('HSB')); break;
         case 'hsl':    this.paramOrder.setOptions(makeOptions('HSL')); break;
         case 'hclok':
         case 'hclab':

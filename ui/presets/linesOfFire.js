@@ -27,7 +27,7 @@ const presetLinesOfFire = '\
             "x": "3082",\
             "y": "1758",\
             "z": "1",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\
@@ -329,7 +329,7 @@ const presetLinesOfFire = '\
             "x": "4302",\
             "y": "2394",\
             "z": "19",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\
@@ -384,7 +384,7 @@ const presetLinesOfFire = '\
             "x": "4307",\
             "y": "2237",\
             "z": "22",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                 ["NUM#", "space", "2,0"],\

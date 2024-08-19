@@ -27,7 +27,7 @@ const presetDefault = `
         "x": "5547.54",
         "y": "6156",
         "z": "1",
-        "prevSpace": "hsb",
+        "prevSpace": "hsv",
         "params":
         [
                 ["NUM#", "space", "2,0"],

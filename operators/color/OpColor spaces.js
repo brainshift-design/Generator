@@ -16,6 +16,7 @@ const rgbFactor  = [255, 255, 255];
 const hs_Factor  = [360, 100, 100];
 const hclFactor  = [360, 100, 100];
 const oppFactor  = [100, 100, 100];
+const xyzFactor  = [100, 100, 100];
   
  
 const rgbScale   = [255, 255, 255];
@@ -26,10 +27,11 @@ const hclokScale = [360, 50,  100];
 const hclabScale = [360, 400, 100];
 const hcluvScale = [360, 330, 100];
  
- 
 const oklabScale = [100,  30,  30];
 const labScale   = [100, 100, 100];
 const luvScale   = [100, 150, 150];
+
+const xyzScale   = [ 95, 100, 108];
  
 
 
@@ -38,20 +40,29 @@ function colorFactor(space)
     switch (space)
     {
         case 'hex':
-        case 'rgb':   return rgbFactor;
+        case 'rgb':
+        case 'lrgb':
+        case 'rgbp3':
+        case 'rgba98':
+        case 'rgbprophoto':
+        case 'rgbrec2020':  return rgbFactor;
 
-        case 'hsb':
-        case 'hsl':   return hs_Factor;
+        case 'hsv':
+        case 'hsl':         return hs_Factor;
 
         case 'hclok':
         case 'hclab':
-        case 'hcluv': return hclFactor;
+        case 'hcluv':       return hclFactor;
 
-        case 'oklab':  
-        case 'lab':      
-        case 'luv':   return oppFactor;   
+        case 'oklab':
+        case 'lab':
+        case 'luv':         return oppFactor;
+
+        case 'xyz':
+        case 'xyzd50':
+        case 'xyzd65':      return xyzFactor;
         
-        default:      consoleError('invalid color factor from space \''+space+'\''); break;
+        default:            consoleError('invalid color factor from space \''+space+'\''); break;
     }
 }
 
@@ -63,19 +74,28 @@ function scaleColor(col, space)
 
     switch (space)
     {
-        case 'hex':    
-        case 'rgb':   scale = rgbScale;   break;
+        case 'hex':
+        case 'rgb':
+        case 'lrgb':
+        case 'rgbp3':
+        case 'rgba98':
+        case 'rgbprophoto':
+        case 'rgbrec2020':  scale = rgbScale;   break;
 
-        case 'hsb':    
-        case 'hsl':   scale = hs_Scale;   break;
+        case 'hsv':    
+        case 'hsl':         scale = hs_Scale;   break;
 
-        case 'hclok': scale = hclokScale; break;
-        case 'hclab': scale = hclabScale; break;
-        case 'hcluv': scale = hcluvScale; break;
+        case 'hclok':       scale = hclokScale; break;
+        case 'hclab':       scale = hclabScale; break;
+        case 'hcluv':       scale = hcluvScale; break;
 
-        case 'oklab': scale = oklabScale; break;
-        case 'lab':   scale = labScale;   break;
-        case 'luv':   scale = luvScale;   break;
+        case 'oklab':       scale = oklabScale; break;
+        case 'lab':         scale = labScale;   break;
+        case 'luv':         scale = luvScale;   break;
+
+        case 'xyz':
+        case 'xyzd50':
+        case 'xyzd65':      scale = xyzScale;   break;
     }
 
     return [
@@ -108,19 +128,29 @@ function switchToSpace(node, space)
 {
     switch (space)
     {
-        case 'hex':   switchToHex   (node); break;
-        case 'rgb':   switchToRgb   (node); break;
+        case 'hex':         switchToHex   (node); break;
 
-        case 'hsb':   switchToHsv   (node); break;
-        case 'hsl':   switchToHsl   (node); break;
+        case 'rgb':
+        case 'lrgb':
+        case 'rgbp3':
+        case 'rgba98':
+        case 'rgbprophoto':
+        case 'rgbrec2020':  switchToRgb   (node); break;
 
-        case 'hclok': switchToHclok (node); break;
-        case 'hclab': switchToHclab (node); break;
-        case 'hcluv': switchToHcluv (node); break;
+        case 'hsv':         switchToHsv   (node); break;
+        case 'hsl':         switchToHsl   (node); break;
 
-        case 'oklab': switchToOklab (node); break;
-        case 'lab':   switchToLab   (node); break;
-        case 'luv':   switchToLuv   (node); break;
+        case 'hclok':       switchToHclok (node); break;
+        case 'hclab':       switchToHclab (node); break;
+        case 'hcluv':       switchToHcluv (node); break;
+
+        case 'oklab':       switchToOklab (node); break;
+        case 'lab':         switchToLab   (node); break;
+        case 'luv':         switchToLuv   (node); break;
+
+        case 'xyz':    
+        case 'xyzd50': 
+        case 'xyzd65':      switchToXyz   (node); break;
     }
 
     node.resetAllControlRanges();
@@ -141,6 +171,8 @@ function switchToHcluv(node) { switchToHclLuvControls(node);                    
 function switchToOklab(node) { switchToOklabControls (node, 'a', 'b');              }
 function switchToLab  (node) { switchToLabControls   (node, 'a', 'b');              }
 function switchToLuv  (node) { switchToLuvControls   (node, 'u', 'v');              }
+
+function switchToXyz  (node) { switchToXyzControls   (node);                        }
    
 
 
@@ -225,6 +257,24 @@ function switchToOppControls(node, c2, c3, scale)
 function switchToOklabControls(node) { switchToOppControls(node, 'a', 'b', oklabScale); }
 function switchToLabControls  (node) { switchToOppControls(node, 'a', 'b', labScale  ); }
 function switchToLuvControls  (node) { switchToOppControls(node, 'u', 'v', luvScale  ); }
+
+
+
+function switchToXyzControls(node, scale) 
+{ 
+    switchToControls(node, 
+        'X', 0, scale[0],
+        'Y', 0, scale[1], 
+        'Z', 0, scale[2]);  
+
+        node.param1.controls[0].min = 
+        node.param2.controls[0].min = 
+        node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+    
+        node.param1.controls[0].max = 
+        node.param2.controls[0].max = 
+        node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+    }
 
 
 
@@ -331,18 +381,27 @@ function getNormalColorValue(value, space, chan)
     switch (space)
     {
         case 'hex':
-        case 'rgb':   return getNormalValueRgb_(value, chan);
+        case 'rgb':         
+        case 'lrgb':      
+        case 'rgbp3':       
+        case 'rgba98':      
+        case 'rgbprophoto': 
+        case 'rgbrec2020':  return getNormalValueRgb_(value, chan);
 
-        case 'hsb':   
-        case 'hsl':   return getNormalValueHs_ (value, chan);
+        case 'hsv':   
+        case 'hsl':         return getNormalValueHs_ (value, chan);
 
         case 'hclok': 
         case 'hclab': 
-        case 'hcluv': return getNormalValueHcl (value, chan);
+        case 'hcluv':       return getNormalValueHcl (value, chan);
 
         case 'oklab':  
         case 'lab':    
-        case 'luv':   return getNormalValueOpp (value, chan);
+        case 'luv':         return getNormalValueOpp (value, chan);
+
+        case 'xyz':  
+        case 'xyzd50':    
+        case 'xyzd65':      return getNormalValueXyz (value, chan);
     }
 }
 
@@ -396,6 +455,18 @@ function getNormalValueHcl(value, chan)
 
 
 
+function getNormalValueXyz(value, chan)
+{
+    switch (chan)
+    {
+        case 0: return value / xyzFactor[0];
+        case 1: return value / xyzFactor[1]; 
+        case 2: return value / xyzFactor[2];
+    }
+}
+
+
+
 function getNormalColor(color)
 {
     return getNormalColor_(
@@ -412,18 +483,27 @@ function getNormalColor_(space, c1, c2, c3)
     switch (space)
     {
         case 'hex':
-        case 'rgb':   return getNormalColorRgb_(c1, c2, c3);
+        case 'rgb':
+        case 'lrgb':
+        case 'rgbp3':
+        case 'rgba98':
+        case 'rgbprophoto':
+        case 'rgbrec2020':  return getNormalColorRgb_(c1, c2, c3);
 
-        case 'hsb':   
-        case 'hsl':   return getNormalColorHs_(c1, c2, c3);
+        case 'hsv':
+        case 'hsl':         return getNormalColorHs_(c1, c2, c3);
 
-        case 'hclok': 
-        case 'hclab': 
-        case 'hcluv': return getNormalColorHcl(c1, c2, c3);
+        case 'hclok':
+        case 'hclab':
+        case 'hcluv':       return getNormalColorHcl(c1, c2, c3);
 
-        case 'oklab': 
-        case 'lab': 
-        case 'luv':   return getNormalColorOpp(c1, c2, c3);
+        case 'oklab':
+        case 'lab':
+        case 'luv':         return getNormalColorOpp(c1, c2, c3);
+
+        case 'xyz':
+        case 'xyzd50':
+        case 'xyzd65':      return getNormalColorXyz(c1, c2, c3);
     }
 }
 
@@ -469,23 +549,42 @@ function getNormalColorOpp(c1, c2, c3)
 
 
 
+function getNormalColorXyz(c1, c2, c3)
+{
+    return [
+        c1 / xyzFactor[0], 
+        c2 / xyzFactor[1], 
+        c3 / xyzFactor[2]];
+}
+
+
+
 function getScaledDataColor(color)
 {
     switch (color[0])
     {
         case 'hex':
-        case 'rgb':   return getScaledDataColorRgb(         color[1], color[2], color[3]);
+        case 'rgb':
+        case 'lrgb':
+        case 'rgbp3':
+        case 'rgba98':
+        case 'rgbprophoto':
+        case 'rgbrec2020':  return getScaledDataColorRgb(          color[1], color[2], color[3]);
 
-        case 'hsb':   return getScaledDataColorHs_('hsb',   color[1], color[2], color[3]);
-        case 'hsl':   return getScaledDataColorHs_('hsl',   color[1], color[2], color[3]);
+        case 'hsv':         return getScaledDataColorHs_('hsv',    color[1], color[2], color[3]);
+        case 'hsl':         return getScaledDataColorHs_('hsl',    color[1], color[2], color[3]);
 
-        case 'hclok': return getScaledDataColorHcl('hclok', color[1], color[2], color[3]);
-        case 'hclab': return getScaledDataColorHcl('hclab', color[1], color[2], color[3]);
-        case 'hcluv': return getScaledDataColorHcl('hcluv', color[1], color[2], color[3]);
+        case 'hclok':       return getScaledDataColorHcl('hclok',  color[1], color[2], color[3]);
+        case 'hclab':       return getScaledDataColorHcl('hclab',  color[1], color[2], color[3]);
+        case 'hcluv':       return getScaledDataColorHcl('hcluv',  color[1], color[2], color[3]);
 
-        case 'oklab': return getScaledDataColorOpp('oklab', color[1], color[2], color[3]);
-        case 'lab':   return getScaledDataColorOpp('lab',   color[1], color[2], color[3]);
-        case 'luv':   return getScaledDataColorOpp('luv',   color[1], color[2], color[3]);
+        case 'oklab':       return getScaledDataColorOpp('oklab',  color[1], color[2], color[3]);
+        case 'lab':         return getScaledDataColorOpp('lab',    color[1], color[2], color[3]);
+        case 'luv':         return getScaledDataColorOpp('luv',    color[1], color[2], color[3]);
+
+        case 'xyz':         return getScaledDataColorXyz('xyz',    color[1], color[2], color[3]);
+        case 'xyzd50':      return getScaledDataColorXyz('xyzd50', color[1], color[2], color[3]);
+        case 'xyzd65':      return getScaledDataColorXyz('xyzd60', color[1], color[2], color[3]);
     }
 }
 
@@ -535,6 +634,17 @@ function getScaledDataColorOpp(space, c1, c2, c3)
 
 
 
+function getScaledDataColorXyz(space, c1, c2, c3)
+{
+    return [
+        space,
+        c1 * xyzFactor[0], 
+        c2 * xyzFactor[1], 
+        c3 * xyzFactor[2] ];
+}
+
+
+
 function setDataColorToCurrentSpace(node, color)
 {
     const toSpace = colorSpace(node.paramSpace.value);
@@ -550,18 +660,27 @@ function colorSpaceFactor(space)
     switch (space)
     {
         case 'hex':
-        case 'rgb':   return rgbFactor;
+        case 'rgb':   
+        case 'lrgb':
+        case 'rgbp3':
+        case 'rgba98':
+        case 'rgbprophoto':
+        case 'rgbrec2020':  return rgbFactor;
 
-        case 'hsb':   
-        case 'hsl':   return hs_Factor;
+        case 'hsv':   
+        case 'hsl':         return hs_Factor;
 
         case 'hclok': 
         case 'hclab': 
-        case 'hcluv': return hclFactor;
+        case 'hcluv':       return hclFactor;
 
         case 'oklab': 
         case 'lab': 
-        case 'luv':   return oppFactor;
+        case 'luv':         return oppFactor;
+
+        case 'xyz': 
+        case 'xyzd50': 
+        case 'xyzd65':      return xyzFactor;
     }    
 }
 
@@ -572,17 +691,26 @@ function getColorSpaceScale(space)
     switch (space)
     {
         case 'hex':
-        case 'rgb':   return rgbScale;
+        case 'rgb':   
+        case 'lrgb':
+        case 'rgbp3':
+        case 'rgba98':
+        case 'rgbprophoto':
+        case 'rgbrec2020':  return rgbScale;
 
-        case 'hsb':   
-        case 'hsl':   return hs_Scale;
+        case 'hsv':   
+        case 'hsl':         return hs_Scale;
 
-        case 'hclok': return hclokScale;
-        case 'hclab': return hclabScale;
-        case 'hcluv': return hcluvScale;
+        case 'hclok':       return hclokScale;
+        case 'hclab':       return hclabScale;
+        case 'hcluv':       return hcluvScale;
 
-        case 'oklab': return oklabScale;
-        case 'lab':   return labScale;
-        case 'luv':   return luvScale;
+        case 'oklab':       return oklabScale;
+        case 'lab':         return labScale;
+        case 'luv':         return luvScale;
+
+        case 'xyz':
+        case 'xyzd50':
+        case 'xyzd65':      return xyzScale;
     }    
 }

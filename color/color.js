@@ -3,7 +3,7 @@ const SimpleColorSpaces =
     ['hex',   'Hex'   ],
     ['rgb',   'RGB'   ], 
     ['hsl',   'HSL'   ], 
-    ['hsb',   'HSB'   ], 
+    ['hsv',   'HSB'   ], 
     ['hclok', 'HCL/ok']
 ];
 
@@ -12,13 +12,13 @@ const AdvancedColorSpaces =
 [
     ['hex',         'Hex'         ],
     ['rgb',         'RGB'         ], 
-    ['rgblin',      'RGB/Linear'  ], 
+    ['lrgb',        'RGB/linear'  ], 
     ['rgbp3',       'RGB/P3'      ], 
-    ['rgba98',      'RGB/A98'     ], 
+    ['rgba98',      'RGB/Adobe98' ], 
     ['rgbprophoto', 'RGB/ProPhoto'], 
-    ['rgbrec2020',  'RGB/Rec.2020'], 
+    ['rgbrec2020',  'RGB/rec.2020'], 
     ['hsl',         'HSL'         ], 
-    ['hsb',         'HSB'         ], 
+    ['hsv',         'HSB'         ], 
     ['hclok',       'HCL/ok'      ],
     ['hclab',       'HCL/ab'      ],
     ['hcluv',       'HCL/uv'      ],
@@ -39,13 +39,13 @@ class ColorSpace
 {
     hex         = Object.freeze( 0);
     rgb         = Object.freeze( 1);
-    rgblin      = Object.freeze( 2);
+    lrgb        = Object.freeze( 2);
     rgbp3       = Object.freeze( 3);
     rgba98      = Object.freeze( 4);
     rgbprophoto = Object.freeze( 5);
     rgbrec2020  = Object.freeze( 6);
     hsl         = Object.freeze( 7);
-    hsb         = Object.freeze( 8);
+    hsv         = Object.freeze( 8);
     hclok       = Object.freeze( 9);
     hclab       = Object.freeze(10);
     hcluv       = Object.freeze(11);

@@ -51,7 +51,7 @@ const presetColorSpaces = '\
             "x": "2208",\
             "y": "2835",\
             "z": "2",\
-            "prevSpace": "hsb",\
+            "prevSpace": "hsv",\
             "params":\
             [\
                     ["NUM#", "space", "2,0"],\

@@ -219,7 +219,7 @@ function initSelectParamMenu(param)
 
             
         const index =
-              '  '.repeat(pad - getDigitCount(i)) // Nspace + thinspace, works for Inter
+              '  '.repeat(pad - getDigitCount(i)) // en space + thin space, works for Inter
             + i.toString();
 
         const item = new MenuItem(

@@ -728,7 +728,7 @@ const presetCartoonForest = '\
         "x": "9785",\
         "y": "27489",\
         "z": "38",\
-        "prevSpace": "hsb",\
+        "prevSpace": "hsv",\
         "params":\
         [\
                 ["NUM#", "space", "2,0"],\

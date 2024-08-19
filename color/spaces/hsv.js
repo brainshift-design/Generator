@@ -59,7 +59,7 @@ function hsv2rgb_(h, s, v)
 
 
 
-function hsv2rgb(hsb)
+function hsv2rgb(hsv)
 {
-	return hsv2rgb_(hsb[0], hsb[1], hsb[2]);
+	return hsv2rgb_(hsv[0], hsv[1], hsv[2]);
 }

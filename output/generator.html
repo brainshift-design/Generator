@@ -6192,7 +6192,7 @@ function updateSetting(settingName, value)
         case 'showNodeIcons':                 settings.showNodeIcons                 = value;  break;
         case 'showBoolValues':                settings.showBoolValues                = value;  break;
         case 'separateThousands':             settings.separateThousands             = value;  break;
-        case 'allowInvertParams':    settings.allowInvertParams    = value;  break;
+        case 'allowInvertParams':             settings.allowInvertParams             = value;  break;
         case 'activateDeactiatesOthers':      settings.activateDeactiatesOthers      = value;  break;
         case 'preferHtmlColorNames':          settings.preferHtmlColorNames          = value;  break;
         case 'randomShiftR':                  settings.randomShiftR                  = value;  break;
@@ -36229,7 +36229,7 @@ function getMinCorrections(space, order)
         case 'hex':
         case 'rgb':   min = [0, 0, 0]; break;
 
-        case 'hsb': 
+        case 'hsv': 
         case 'hsl':   min = [0, 0, 0]; break;
 
         case 'hclok':
@@ -36262,7 +36262,7 @@ function getMaxCorrections(space, order)
         case 'hex':
         case 'rgb':   max = [...rgbFactor]; break;
 
-        case 'hsb': 
+        case 'hsv': 
         case 'hsl':   max = [hs_Factor[0]/2, hs_Factor[1], hs_Factor[2]]; break;
 
         case 'hclok':
@@ -36366,7 +36366,7 @@ function getColorCorrections(colorSpace)
             new ColorCorrection('G', rgbFactor[1]),
             new ColorCorrection('B', rgbFactor[2]) ];
 
-    case 'hsb':
+    case 'hsv':
         return [
             new ColorCorrection('H', hs_Factor[0]/2),
             new ColorCorrection('S', hs_Factor[1]),
@@ -36504,16 +36504,14 @@ extends GOperator1
 
                     const fromSpaceIndex = input.space.value;
 
-                    const toSpaceIndex = Math.round(space.value);
-                    //Math.min(Math.max(
-                    //    0,
-                    //    Math.round(space.value)), // round because a value can come in with decimals
-                    //    colorSpaceCount(parse)-1);
+                    const toSpaceIndex = Math.min(Math.max(
+                        0,
+                        Math.round(space.value)), // round because a value can come in with decimals
+                        ColorSpaces.length-1);//colorSpaceCount(parse)-1);
 
 
                     if (toSpaceIndex != fromSpaceIndex)
                     {
-                        console.log('1');
                         this.convertColor(
                             this.value,
                             colorSpace(fromSpaceIndex), 
@@ -36549,11 +36547,10 @@ extends GOperator1
             this.value = new ColorValue(space, c1, c2, c3);
 
 
-            const toSpaceIndex = Math.round(this.value.space.value); 
-            //Math.min(Math.max(
-            //    0,
-            //    Math.round(this.value.space.value)), // round because a value can come in with decimals (TODO fix this)
-            //    colorSpaceCount(parse)-1);
+            const toSpaceIndex = Math.min(Math.max(
+                0,
+                Math.round(this.value.space.value)), // round because a value can come in with decimals
+                ColorSpaces.length-1);//colorSpaceCount(parse)-1);
 
             this.value.space.value = toSpaceIndex;
 
@@ -38005,7 +38002,7 @@ extends GOperator2
                 Math.sign(g) * Math.pow(Math.abs(g), 1/gamma),
                 Math.sign(b) * Math.pow(Math.abs(b), 1/gamma) ];
         }
-        else // hsb/hsl/hcl
+        else // hsv/hsl/hcl
         {
             const h0 = col0[1] * Tau;  const h1 = col1[1] * Tau;
             const c0 = col0[2];        const c1 = col1[2];
@@ -61445,6 +61442,7 @@ function logSavedConn(conn, darkMode)
 
 // Observer = 2°
 
+const D50 = [0.96422, 1, 0.82521];
 const D65 = [0.95047, 1, 1.08883]; 
 
 
@@ -61515,7 +61513,6 @@ const sRGB = createColorSpace
     2.4,        // gamma
 
 
-
     function(v) // degamma
     {
         return v >= 0.04045
@@ -61524,7 +61521,6 @@ const sRGB = createColorSpace
     },
     
 
-
     function(v) // regamma
     {
         return v > 0.0031308
@@ -61532,7 +61528,6 @@ const sRGB = createColorSpace
                : v * 12.92;
     },
     
-
     
     function(rgb) // luminance
     {
@@ -61544,20 +61539,101 @@ const sRGB = createColorSpace
 
 
 
+const sRGB_D50 = createColorSpace
+(
+    [0.64, 0.33], // R
+    [0.3,  0.6 ], // G
+    [0.15, 0.06], // B
+
+    [0.34567, 
+     0.35850, 
+     0.29583],  // Y
+
+    D50,        // W
+
+    2.4,        // gamma
+
+
+    function(v) // degamma
+    {
+        return v >= 0.04045
+               ? Math.pow((v + 0.055) / 1.055, this.gamma)
+               : v / 12.92;
+    },
+    
+
+    function(v) // regamma
+    {
+        return v > 0.0031308
+               ? 1.055 * Math.pow(v, 1/this.gamma) - 0.055
+               : v * 12.92;
+    },
+    
+    
+    function(rgb) // luminance
+    {
+        return  this.Y[0] * this.degamma(rgb[0]) 
+              + this.Y[1] * this.degamma(rgb[1]) 
+              + this.Y[2] * this.degamma(rgb[2]);
+    }
+);
+
+
+
+const AdobeRGB = createColorSpace
+(
+    [0.64, 0.33], // R
+    [0.21, 0.71], // G
+    [0.15, 0.06], // B
+
+    [0.297361,
+     0.627355,
+     0.075284], // Y
+
+    D65,        // W
+
+    563/256,    // gamma 
+
+
+    function(v) // degamma
+    {
+        return v >= 0.04045
+               ? Math.pow((v + 0.055) / 1.055, this.gamma)
+               : v / 12.92;
+    },
+
+
+    function(v) // regamma
+    {
+        return v > 0.0031308
+               ? 1.055 * Math.pow(v, 1/this.gamma) - 0.055
+               : v * 12.92;
+    },
+
+
+    function(rgb) // luminance
+    {
+        return  this.Y[0] * this.degamma(rgb[0]) 
+              + this.Y[1] * this.degamma(rgb[1]) 
+              + this.Y[2] * this.degamma(rgb[2]);
+    }
+);
+
+
 function rgbLightenHsv(rgb, amount)
 {
-    const hsb = rgb2hsv(rgb);
-    hsb[2] *= amount;
-    return hsv2rgb(hsb);
+    const hsv = rgb2hsv(rgb);
+    hsv[2] *= amount;
+    return hsv2rgb(hsv);
 }
 
 
 
 function rgbSaturateHsv(rgb, amount)
 {
-    const hsb = rgb2hsv(rgb);
-    hsb[1] *= amount;
-    return hsv2rgb(hsb);
+    const hsv = rgb2hsv(rgb);
+    hsv[1] *= amount;
+    return hsv2rgb(hsv);
 }
 
 
@@ -61567,6 +61643,82 @@ function rgbSaturateHsl(rgb, amount)
     const hsl = rgb2hsl(rgb);
     hsl[1] *= amount;
     return hsl2rgb(hsl);
+}
+
+
+
+function lrgb2rgb_(r, g, b)
+{
+    return [
+        sRGB.degamma(r), 
+        sRGB.degamma(g), 
+        sRGB.degamma(b)];
+}
+
+
+
+function lrgb2rgb(rgb)
+{
+    return lrgb2rgb_(rgb[0], rgb[1], rgb[2]);
+}
+
+
+
+function rgb2lrgb_(r, g, b)
+{
+    return [
+        sRGB.regamma(r), 
+        sRGB.regamma(g), 
+        sRGB.regamma(b)];
+}
+
+
+
+function rgb2lrgb(rgb)
+{
+    return lrgb2rgb_(rgb[0], rgb[1], rgb[2]);
+}
+
+
+
+function srgb2p3(rgb)
+{
+    const p3 = 
+        [ [ 0.8225, 0.1774, 0      ],
+          [ 0.0332, 0.9669, 0      ],
+          [ 0.0171, 0.0724, 0.9108 ] ];
+
+    rgb = degamma(rgb);
+
+    return regamma(dot3(p3, rgb));
+}
+
+
+
+function p32srgb(rgb) 
+{
+    const invp3 = 
+        [ [ 1.2249, -0.2247, 0      ],
+          [-0.0420,  1.0419, 0      ],
+          [-0.0197, -0.0786, 1.0979 ] ];
+  
+    rgb = dot3(invp3, degamma(rgb));
+  
+    return regamma(rgb);
+}
+
+
+
+function srgb2a98(rgb)
+{
+    return xyz2rgb(rgb2xyz(rgb, A98), sRGB);
+}
+
+
+
+function a982srgb(rgb)
+{
+    return xyz2rgb(rgb2xyz(rgb, sRGB), A98);
 }
 
 
@@ -61631,9 +61783,9 @@ function hsv2rgb_(h, s, v)
 
 
 
-function hsv2rgb(hsb)
+function hsv2rgb(hsv)
 {
-	return hsv2rgb_(hsb[0], hsb[1], hsb[2]);
+	return hsv2rgb_(hsv[0], hsv[1], hsv[2]);
 }
 
 
@@ -62155,39 +62307,12 @@ function rgb2hcluv(rgb, cs = sRGB)
 }
 
 
-function srgb2p3(rgb)
-{
-    const p3 = 
-        [ [ 0.8225, 0.1774, 0      ],
-          [ 0.0332, 0.9669, 0      ],
-          [ 0.0171, 0.0724, 0.9108 ] ];
-
-    rgb = degamma(rgb);
-
-    return regamma(dot3(p3, rgb));
-}
-
-
-
-function p32srgb(rgb) 
-{
-    const invp3 = 
-        [ [ 1.2249, -0.2247, 0      ],
-          [-0.0420,  1.0419, 0      ],
-          [-0.0197, -0.0786, 1.0979 ] ];
-  
-    rgb = dot3(invp3, degamma(rgb));
-  
-    return regamma(rgb);
-}
-
-
 const SimpleColorSpaces = 
 [
     ['hex',   'Hex'   ],
     ['rgb',   'RGB'   ], 
     ['hsl',   'HSL'   ], 
-    ['hsb',   'HSB'   ], 
+    ['hsv',   'HSB'   ], 
     ['hclok', 'HCL/ok']
 ];
 
@@ -62196,13 +62321,13 @@ const AdvancedColorSpaces =
 [
     ['hex',         'Hex'         ],
     ['rgb',         'RGB'         ], 
-    ['rgblin',      'RGB/Linear'  ], 
+    ['lrgb',        'RGB/linear'  ], 
     ['rgbp3',       'RGB/P3'      ], 
-    ['rgba98',      'RGB/A98'     ], 
+    ['rgba98',      'RGB/Adobe98' ], 
     ['rgbprophoto', 'RGB/ProPhoto'], 
-    ['rgbrec2020',  'RGB/Rec.2020'], 
+    ['rgbrec2020',  'RGB/rec.2020'], 
     ['hsl',         'HSL'         ], 
-    ['hsb',         'HSB'         ], 
+    ['hsv',         'HSB'         ], 
     ['hclok',       'HCL/ok'      ],
     ['hclab',       'HCL/ab'      ],
     ['hcluv',       'HCL/uv'      ],
@@ -62223,13 +62348,13 @@ class ColorSpace
 {
     hex         = Object.freeze( 0);
     rgb         = Object.freeze( 1);
-    rgblin      = Object.freeze( 2);
+    lrgb        = Object.freeze( 2);
     rgbp3       = Object.freeze( 3);
     rgba98      = Object.freeze( 4);
     rgbprophoto = Object.freeze( 5);
     rgbrec2020  = Object.freeze( 6);
     hsl         = Object.freeze( 7);
-    hsb         = Object.freeze( 8);
+    hsv         = Object.freeze( 8);
     hclok       = Object.freeze( 9);
     hclab       = Object.freeze(10);
     hcluv       = Object.freeze(11);
@@ -62380,6 +62505,20 @@ const M1 = [[ 0.8189330101, 0.3618667424, -0.1288597137 ],
             [ 0.0482003018, 0.2643662691,  0.6338517070 ]];
 
 const invM1 = inversem3(M1);
+
+
+
+function xy2XYZ(x, y, Y = 1) 
+{
+    let X = (x / y) * Y;
+    let Z = ((1 - x - y) / y) * Y;
+    
+    let N = X + Y + Z;
+
+    return [X / N, 
+            Y / N, 
+            Z / N];
+}
 
 
 
@@ -63330,6 +63469,7 @@ const rgbFactor  = [255, 255, 255];
 const hs_Factor  = [360, 100, 100];
 const hclFactor  = [360, 100, 100];
 const oppFactor  = [100, 100, 100];
+const xyzFactor  = [100, 100, 100];
   
  
 const rgbScale   = [255, 255, 255];
@@ -63340,10 +63480,11 @@ const hclokScale = [360, 50,  100];
 const hclabScale = [360, 400, 100];
 const hcluvScale = [360, 330, 100];
  
- 
 const oklabScale = [100,  30,  30];
 const labScale   = [100, 100, 100];
 const luvScale   = [100, 150, 150];
+
+const xyzScale   = [ 95, 100, 108];
  
 
 
@@ -63352,20 +63493,29 @@ function colorFactor(space)
     switch (space)
     {
         case 'hex':
-        case 'rgb':   return rgbFactor;
+        case 'rgb':
+        case 'lrgb':
+        case 'rgbp3':
+        case 'rgba98':
+        case 'rgbprophoto':
+        case 'rgbrec2020':  return rgbFactor;
 
-        case 'hsb':
-        case 'hsl':   return hs_Factor;
+        case 'hsv':
+        case 'hsl':         return hs_Factor;
 
         case 'hclok':
         case 'hclab':
-        case 'hcluv': return hclFactor;
+        case 'hcluv':       return hclFactor;
 
-        case 'oklab':  
-        case 'lab':      
-        case 'luv':   return oppFactor;   
+        case 'oklab':
+        case 'lab':
+        case 'luv':         return oppFactor;
+
+        case 'xyz':
+        case 'xyzd50':
+        case 'xyzd65':      return xyzFactor;
         
-        default:      consoleError('invalid color factor from space \''+space+'\''); break;
+        default:            consoleError('invalid color factor from space \''+space+'\''); break;
     }
 }
 
@@ -63377,19 +63527,28 @@ function scaleColor(col, space)
 
     switch (space)
     {
-        case 'hex':    
-        case 'rgb':   scale = rgbScale;   break;
+        case 'hex':
+        case 'rgb':
+        case 'lrgb':
+        case 'rgbp3':
+        case 'rgba98':
+        case 'rgbprophoto':
+        case 'rgbrec2020':  scale = rgbScale;   break;
 
-        case 'hsb':    
-        case 'hsl':   scale = hs_Scale;   break;
+        case 'hsv':    
+        case 'hsl':         scale = hs_Scale;   break;
 
-        case 'hclok': scale = hclokScale; break;
-        case 'hclab': scale = hclabScale; break;
-        case 'hcluv': scale = hcluvScale; break;
+        case 'hclok':       scale = hclokScale; break;
+        case 'hclab':       scale = hclabScale; break;
+        case 'hcluv':       scale = hcluvScale; break;
 
-        case 'oklab': scale = oklabScale; break;
-        case 'lab':   scale = labScale;   break;
-        case 'luv':   scale = luvScale;   break;
+        case 'oklab':       scale = oklabScale; break;
+        case 'lab':         scale = labScale;   break;
+        case 'luv':         scale = luvScale;   break;
+
+        case 'xyz':
+        case 'xyzd50':
+        case 'xyzd65':      scale = xyzScale;   break;
     }
 
     return [
@@ -63422,19 +63581,29 @@ function switchToSpace(node, space)
 {
     switch (space)
     {
-        case 'hex':   switchToHex   (node); break;
-        case 'rgb':   switchToRgb   (node); break;
+        case 'hex':         switchToHex   (node); break;
 
-        case 'hsb':   switchToHsv   (node); break;
-        case 'hsl':   switchToHsl   (node); break;
+        case 'rgb':
+        case 'lrgb':
+        case 'rgbp3':
+        case 'rgba98':
+        case 'rgbprophoto':
+        case 'rgbrec2020':  switchToRgb   (node); break;
 
-        case 'hclok': switchToHclok (node); break;
-        case 'hclab': switchToHclab (node); break;
-        case 'hcluv': switchToHcluv (node); break;
+        case 'hsv':         switchToHsv   (node); break;
+        case 'hsl':         switchToHsl   (node); break;
 
-        case 'oklab': switchToOklab (node); break;
-        case 'lab':   switchToLab   (node); break;
-        case 'luv':   switchToLuv   (node); break;
+        case 'hclok':       switchToHclok (node); break;
+        case 'hclab':       switchToHclab (node); break;
+        case 'hcluv':       switchToHcluv (node); break;
+
+        case 'oklab':       switchToOklab (node); break;
+        case 'lab':         switchToLab   (node); break;
+        case 'luv':         switchToLuv   (node); break;
+
+        case 'xyz':    
+        case 'xyzd50': 
+        case 'xyzd65':      switchToXyz   (node); break;
     }
 
     node.resetAllControlRanges();
@@ -63455,6 +63624,8 @@ function switchToHcluv(node) { switchToHclLuvControls(node);                    
 function switchToOklab(node) { switchToOklabControls (node, 'a', 'b');              }
 function switchToLab  (node) { switchToLabControls   (node, 'a', 'b');              }
 function switchToLuv  (node) { switchToLuvControls   (node, 'u', 'v');              }
+
+function switchToXyz  (node) { switchToXyzControls   (node);                        }
    
 
 
@@ -63539,6 +63710,24 @@ function switchToOppControls(node, c2, c3, scale)
 function switchToOklabControls(node) { switchToOppControls(node, 'a', 'b', oklabScale); }
 function switchToLabControls  (node) { switchToOppControls(node, 'a', 'b', labScale  ); }
 function switchToLuvControls  (node) { switchToOppControls(node, 'u', 'v', luvScale  ); }
+
+
+
+function switchToXyzControls(node, scale) 
+{ 
+    switchToControls(node, 
+        'X', 0, scale[0],
+        'Y', 0, scale[1], 
+        'Z', 0, scale[2]);  
+
+        node.param1.controls[0].min = 
+        node.param2.controls[0].min = 
+        node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+    
+        node.param1.controls[0].max = 
+        node.param2.controls[0].max = 
+        node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+    }
 
 
 
@@ -63645,18 +63834,27 @@ function getNormalColorValue(value, space, chan)
     switch (space)
     {
         case 'hex':
-        case 'rgb':   return getNormalValueRgb_(value, chan);
+        case 'rgb':         
+        case 'lrgb':      
+        case 'rgbp3':       
+        case 'rgba98':      
+        case 'rgbprophoto': 
+        case 'rgbrec2020':  return getNormalValueRgb_(value, chan);
 
-        case 'hsb':   
-        case 'hsl':   return getNormalValueHs_ (value, chan);
+        case 'hsv':   
+        case 'hsl':         return getNormalValueHs_ (value, chan);
 
         case 'hclok': 
         case 'hclab': 
-        case 'hcluv': return getNormalValueHcl (value, chan);
+        case 'hcluv':       return getNormalValueHcl (value, chan);
 
         case 'oklab':  
         case 'lab':    
-        case 'luv':   return getNormalValueOpp (value, chan);
+        case 'luv':         return getNormalValueOpp (value, chan);
+
+        case 'xyz':  
+        case 'xyzd50':    
+        case 'xyzd65':      return getNormalValueXyz (value, chan);
     }
 }
 
@@ -63710,6 +63908,18 @@ function getNormalValueHcl(value, chan)
 
 
 
+function getNormalValueXyz(value, chan)
+{
+    switch (chan)
+    {
+        case 0: return value / xyzFactor[0];
+        case 1: return value / xyzFactor[1]; 
+        case 2: return value / xyzFactor[2];
+    }
+}
+
+
+
 function getNormalColor(color)
 {
     return getNormalColor_(
@@ -63726,18 +63936,27 @@ function getNormalColor_(space, c1, c2, c3)
     switch (space)
     {
         case 'hex':
-        case 'rgb':   return getNormalColorRgb_(c1, c2, c3);
+        case 'rgb':
+        case 'lrgb':
+        case 'rgbp3':
+        case 'rgba98':
+        case 'rgbprophoto':
+        case 'rgbrec2020':  return getNormalColorRgb_(c1, c2, c3);
 
-        case 'hsb':   
-        case 'hsl':   return getNormalColorHs_(c1, c2, c3);
+        case 'hsv':
+        case 'hsl':         return getNormalColorHs_(c1, c2, c3);
 
-        case 'hclok': 
-        case 'hclab': 
-        case 'hcluv': return getNormalColorHcl(c1, c2, c3);
+        case 'hclok':
+        case 'hclab':
+        case 'hcluv':       return getNormalColorHcl(c1, c2, c3);
 
-        case 'oklab': 
-        case 'lab': 
-        case 'luv':   return getNormalColorOpp(c1, c2, c3);
+        case 'oklab':
+        case 'lab':
+        case 'luv':         return getNormalColorOpp(c1, c2, c3);
+
+        case 'xyz':
+        case 'xyzd50':
+        case 'xyzd65':      return getNormalColorXyz(c1, c2, c3);
     }
 }
 
@@ -63783,23 +64002,42 @@ function getNormalColorOpp(c1, c2, c3)
 
 
 
+function getNormalColorXyz(c1, c2, c3)
+{
+    return [
+        c1 / xyzFactor[0], 
+        c2 / xyzFactor[1], 
+        c3 / xyzFactor[2]];
+}
+
+
+
 function getScaledDataColor(color)
 {
     switch (color[0])
     {
         case 'hex':
-        case 'rgb':   return getScaledDataColorRgb(         color[1], color[2], color[3]);
+        case 'rgb':
+        case 'lrgb':
+        case 'rgbp3':
+        case 'rgba98':
+        case 'rgbprophoto':
+        case 'rgbrec2020':  return getScaledDataColorRgb(          color[1], color[2], color[3]);
 
-        case 'hsb':   return getScaledDataColorHs_('hsb',   color[1], color[2], color[3]);
-        case 'hsl':   return getScaledDataColorHs_('hsl',   color[1], color[2], color[3]);
+        case 'hsv':         return getScaledDataColorHs_('hsv',    color[1], color[2], color[3]);
+        case 'hsl':         return getScaledDataColorHs_('hsl',    color[1], color[2], color[3]);
 
-        case 'hclok': return getScaledDataColorHcl('hclok', color[1], color[2], color[3]);
-        case 'hclab': return getScaledDataColorHcl('hclab', color[1], color[2], color[3]);
-        case 'hcluv': return getScaledDataColorHcl('hcluv', color[1], color[2], color[3]);
+        case 'hclok':       return getScaledDataColorHcl('hclok',  color[1], color[2], color[3]);
+        case 'hclab':       return getScaledDataColorHcl('hclab',  color[1], color[2], color[3]);
+        case 'hcluv':       return getScaledDataColorHcl('hcluv',  color[1], color[2], color[3]);
 
-        case 'oklab': return getScaledDataColorOpp('oklab', color[1], color[2], color[3]);
-        case 'lab':   return getScaledDataColorOpp('lab',   color[1], color[2], color[3]);
-        case 'luv':   return getScaledDataColorOpp('luv',   color[1], color[2], color[3]);
+        case 'oklab':       return getScaledDataColorOpp('oklab',  color[1], color[2], color[3]);
+        case 'lab':         return getScaledDataColorOpp('lab',    color[1], color[2], color[3]);
+        case 'luv':         return getScaledDataColorOpp('luv',    color[1], color[2], color[3]);
+
+        case 'xyz':         return getScaledDataColorXyz('xyz',    color[1], color[2], color[3]);
+        case 'xyzd50':      return getScaledDataColorXyz('xyzd50', color[1], color[2], color[3]);
+        case 'xyzd65':      return getScaledDataColorXyz('xyzd60', color[1], color[2], color[3]);
     }
 }
 
@@ -63849,6 +64087,17 @@ function getScaledDataColorOpp(space, c1, c2, c3)
 
 
 
+function getScaledDataColorXyz(space, c1, c2, c3)
+{
+    return [
+        space,
+        c1 * xyzFactor[0], 
+        c2 * xyzFactor[1], 
+        c3 * xyzFactor[2] ];
+}
+
+
+
 function setDataColorToCurrentSpace(node, color)
 {
     const toSpace = colorSpace(node.paramSpace.value);
@@ -63864,18 +64113,27 @@ function colorSpaceFactor(space)
     switch (space)
     {
         case 'hex':
-        case 'rgb':   return rgbFactor;
+        case 'rgb':   
+        case 'lrgb':
+        case 'rgbp3':
+        case 'rgba98':
+        case 'rgbprophoto':
+        case 'rgbrec2020':  return rgbFactor;
 
-        case 'hsb':   
-        case 'hsl':   return hs_Factor;
+        case 'hsv':   
+        case 'hsl':         return hs_Factor;
 
         case 'hclok': 
         case 'hclab': 
-        case 'hcluv': return hclFactor;
+        case 'hcluv':       return hclFactor;
 
         case 'oklab': 
         case 'lab': 
-        case 'luv':   return oppFactor;
+        case 'luv':         return oppFactor;
+
+        case 'xyz': 
+        case 'xyzd50': 
+        case 'xyzd65':      return xyzFactor;
     }    
 }
 
@@ -63886,18 +64144,27 @@ function getColorSpaceScale(space)
     switch (space)
     {
         case 'hex':
-        case 'rgb':   return rgbScale;
+        case 'rgb':   
+        case 'lrgb':
+        case 'rgbp3':
+        case 'rgba98':
+        case 'rgbprophoto':
+        case 'rgbrec2020':  return rgbScale;
 
-        case 'hsb':   
-        case 'hsl':   return hs_Scale;
+        case 'hsv':   
+        case 'hsl':         return hs_Scale;
 
-        case 'hclok': return hclokScale;
-        case 'hclab': return hclabScale;
-        case 'hcluv': return hcluvScale;
+        case 'hclok':       return hclokScale;
+        case 'hclab':       return hclabScale;
+        case 'hcluv':       return hcluvScale;
 
-        case 'oklab': return oklabScale;
-        case 'lab':   return labScale;
-        case 'luv':   return luvScale;
+        case 'oklab':       return oklabScale;
+        case 'lab':         return labScale;
+        case 'luv':         return luvScale;
+
+        case 'xyz':
+        case 'xyzd50':
+        case 'xyzd65':      return xyzScale;
     }    
 }
 
@@ -63919,18 +64186,28 @@ function dataColor2rgb(color)
     switch (color[0])
     {
         case 'hex':
-        case 'rgb':   return           col;
+        case 'rgb':         return                 col;
 
-        case 'hsb':   return hsv2rgb  (col);
-        case 'hsl':   return hsl2rgb  (col);
+        case 'lrgb':        return lrgb2rgb       (col);
+        case 'rgbp3':       return p32srgb        (col);
+        case 'rgba98':      return rgba982srgb    (col);
+        case 'rgbprophoto': return rgbprophoto2rgb(col);
+        case 'rgbrec2020':  return rgbrec20202rgb (col);
 
-        case 'hclok': return hclok2rgb(col);
-        case 'hclab': return hclab2rgb(col);
-        case 'hcluv': return hcluv2rgb(col);
+        case 'hsv':         return hsv2rgb        (col);
+        case 'hsl':         return hsl2rgb        (col);
 
-        case 'oklab': return oklab2rgb(col);
-        case 'lab':   return lab2rgb  (col);
-        case 'luv':   return luv2rgb  (col);
+        case 'hclok':       return hclok2rgb      (col);
+        case 'hclab':       return hclab2rgb      (col);
+        case 'hcluv':       return hcluv2rgb      (col);
+
+        case 'oklab':       return oklab2rgb      (col);
+        case 'lab':         return lab2rgb        (col);
+        case 'luv':         return luv2rgb        (col);
+
+        case 'xyz':         return xyz2rgb        (col);
+        case 'xyzd50':      return xyz2rgb        (col, sRGB_D50);
+        case 'xyzd65':      return xyz2rgb        (col);
     }
 }
 
@@ -63941,18 +64218,28 @@ function convertDataColorToSpace(color, toSpace)
     switch (toSpace)
     {
         case 'hex':    
-        case 'rgb':   return convert2rgb    (color);
+        case 'rgb':         return convert2rgb        (color);
 
-        case 'hsb':   return convert2hsv    (color);
-        case 'hsl':   return convert2hsl    (color);
+        case 'lrgb':        return convert2lrgb       (color);
+        case 'rgbp3':       return convert2p3         (color);
+        case 'rgba98':      return convert2rgba98     (color);
+        case 'rgbprophoto': return convert2rgbprophoto(color);
+        case 'rgbrec2020':  return convert2rgbrec2020 (color);
 
-        case 'hclok': return convert2hclok  (color);
-        case 'hclab': return convert2hclab  (color);
-        case 'hcluv': return convert2hcluv  (color);
+        case 'hsv':         return convert2hsv        (color);
+        case 'hsl':         return convert2hsl        (color);
 
-        case 'oklab': return dataColor2oklab(color);
-        case 'lab':   return convert2lab    (color);
-        case 'luv':   return convert2luv    (color);
+        case 'hclok':       return convert2hclok      (color);
+        case 'hclab':       return convert2hclab      (color);
+        case 'hcluv':       return convert2hcluv      (color);
+
+        case 'oklab':       return dataColor2oklab    (color);
+        case 'lab':         return convert2lab        (color);
+        case 'luv':         return convert2luv        (color);
+
+        case 'xyz':         return convert2xyz        (color);
+        case 'xyzd50':      return convert2xyzd50     (color);
+        case 'xyzd65':      return convert2xyzd65     (color);
     }
 }
 
@@ -63967,18 +64254,66 @@ function convert2rgb(fromColor)
     switch (fromColor[0])
     {
         case 'hex':
-        case 'rgb':   rgb =           col;  break;
+        case 'rgb':         rgb =                 col ; break;
 
-        case 'hsb':   rgb = hsv2rgb  (col); break;
-        case 'hsl':   rgb = hsl2rgb  (col); break;
+        case 'lrgb':        rgb = lrgb2rgb       (col); break;
+        case 'rgbp3':       rgb = p32srgb        (col); break;
+        case 'rgba98':      rgb = rgba982srgb    (col); break;
+        case 'rgbprophoto': rgb = rgbprophoto2rgb(col); break;
+        case 'rgbrec2020':  rgb = rgbrec20202rgb (col); break;
 
-        case 'hclok': rgb = hclok2rgb(col); break;
-        case 'hclab': rgb = hclab2rgb(col); break;
-        case 'hcluv': rgb = hcluv2rgb(col); break;
+        case 'hsv':         rgb = hsv2rgb        (col); break;
+        case 'hsl':         rgb = hsl2rgb        (col); break;
 
-        case 'oklab': rgb = oklab2rgb(col); break;
-        case 'lab':   rgb = lab2rgb  (col); break;
-        case 'luv':   rgb = luv2rgb  (col); break;
+        case 'hclok':       rgb = hclok2rgb      (col); break;
+        case 'hclab':       rgb = hclab2rgb      (col); break;
+        case 'hcluv':       rgb = hcluv2rgb      (col); break;
+
+        case 'oklab':       rgb = oklab2rgb      (col); break;
+        case 'lab':         rgb = lab2rgb        (col); break;
+        case 'luv':         rgb = luv2rgb        (col); break;
+
+        case 'xyz':         rgb = xyz2rgb        (col); break;
+        case 'xyzd50':      rgb = xyz2rgb        (col, sRGB_D50); break;
+        case 'xyzd65':      rgb = xyz2rgb        (col); break;
+    }
+
+    return rgb2dataColor(rgb);
+}
+
+
+
+function convert2lrgb(fromColor)
+{
+    const col = dataColor2array(fromColor);
+
+    let rgb;
+
+    switch (fromColor[0])
+    {
+        case 'hex':
+        case 'rgb':         rgb = rgb2lrgb                (col);  break;
+
+        case 'lrgb':        rgb =                          col ;  break;
+        case 'rgbp3':       rgb = rgb2lrgb(p32srgb        (col)); break;
+        case 'rgba98':      rgb = rgb2lrgb(rgba982srgb    (col)); break;
+        case 'rgbprophoto': rgb = rgb2lrgb(rgbprophoto2rgb(col)); break;
+        case 'rgbrec2020':  rgb = rgb2lrgb(rgbrec20202rgb (col)); break;
+
+        case 'hsv':         rgb = rgb2lrgb(hsv2rgb        (col)); break;
+        case 'hsl':         rgb = rgb2lrgb(hsl2rgb        (col)); break;
+
+        case 'hclok':       rgb = rgb2lrgb(hclok2rgb      (col)); break;
+        case 'hclab':       rgb = rgb2lrgb(hclab2rgb      (col)); break;
+        case 'hcluv':       rgb = rgb2lrgb(hcluv2rgb      (col)); break;
+
+        case 'oklab':       rgb = rgb2lrgb(oklab2rgb      (col)); break;
+        case 'lab':         rgb = rgb2lrgb(lab2rgb        (col)); break;
+        case 'luv':         rgb = rgb2lrgb(luv2rgb        (col)); break;
+
+        case 'xyz':         rgb = rgb2lrgb(xyz2rgb        (col)); break;
+        case 'xyzd50':      rgb = rgb2lrgb(xyz2rgb        (col, sRGB_D50)); break;
+        case 'xyzd65':      rgb = rgb2lrgb(xyz2rgb        (col)); break;
     }
 
     return rgb2dataColor(rgb);
@@ -63990,33 +64325,33 @@ function convert2hsv(fromColor)
 {
     const col = dataColor2array(fromColor);
     
-    let hsb;
+    let hsv;
     
     switch (fromColor[0])
     {
         case 'hex':
-        case 'rgb':   hsb = rgb2hsv(          col ); break;
+        case 'rgb':   hsv = rgb2hsv(          col ); break;
 
-        case 'hsb':   hsb =                   col;   break;
-        case 'hsl':   hsb = rgb2hsv(hsl2rgb  (col)); break;
+        case 'hsv':   hsv =                   col;   break;
+        case 'hsl':   hsv = rgb2hsv(hsl2rgb  (col)); break;
 
-        case 'hclok': hsb = rgb2hsv(hclok2rgb(col)); break;
-        case 'hclab': hsb = rgb2hsv(hclab2rgb(col)); break;
-        case 'hcluv': hsb = rgb2hsv(hcluv2rgb(col)); break;
+        case 'hclok': hsv = rgb2hsv(hclok2rgb(col)); break;
+        case 'hclab': hsv = rgb2hsv(hclab2rgb(col)); break;
+        case 'hcluv': hsv = rgb2hsv(hcluv2rgb(col)); break;
 
-        case 'oklab': hsb = rgb2hsv(oklab2rgb(col)); break;
-        case 'lab':   hsb = rgb2hsv(lab2rgb  (col)); break;
-        case 'luv':   hsb = rgb2hsv(luv2rgb  (col)); break;
+        case 'oklab': hsv = rgb2hsv(oklab2rgb(col)); break;
+        case 'lab':   hsv = rgb2hsv(lab2rgb  (col)); break;
+        case 'luv':   hsv = rgb2hsv(luv2rgb  (col)); break;
     }
     
-    if (isNaN(hsb[0]))
-        hsb[0] = 5/6;
+    if (isNaN(hsv[0]))
+        hsv[0] = 5/6;
     
     return [
-       'hsb',
-        hsb[0],
-        hsb[1],
-        hsb[2] ];
+       'hsv',
+        hsv[0],
+        hsv[1],
+        hsv[2] ];
 }
 
 
@@ -64032,7 +64367,7 @@ function convert2hsl(fromColor)
         case 'hex':
         case 'rgb':   hsl = rgb2hsl(          col ); break;
 
-        case 'hsb':   hsl = rgb2hsl(hsv2rgb  (col)); break;
+        case 'hsv':   hsl = rgb2hsl(hsv2rgb  (col)); break;
         case 'hsl':   hsl =                   col;   break;
 
         case 'hclok': hsl = rgb2hsl(hclok2rgb(col)); break;
@@ -64064,7 +64399,7 @@ function dataColor2oklab(fromColor)
         case 'hex':
         case 'rgb':   lab = rgb2oklab(          col ); break;
 
-        case 'hsb':   lab = rgb2oklab(hsv2rgb  (col)); break;
+        case 'hsv':   lab = rgb2oklab(hsv2rgb  (col)); break;
         case 'hsl':   lab = rgb2oklab(hsl2rgb  (col)); break;
 
         case 'hclok': lab = rgb2oklab(hclok2rgb(col)); break;
@@ -64096,7 +64431,7 @@ function convert2lab(fromColor)
         case 'hex':
         case 'rgb':   lab = rgb2lab(          col ); break;
 
-        case 'hsb':   lab = rgb2lab(hsv2rgb  (col)); break;
+        case 'hsv':   lab = rgb2lab(hsv2rgb  (col)); break;
         case 'hsl':   lab = rgb2lab(hsl2rgb  (col)); break;
 
         case 'hclok': lab = rgb2lab(hclok2rgb(col)); break;
@@ -64128,7 +64463,7 @@ function convert2luv(fromColor)
         case 'hex':
         case 'rgb':   luv = rgb2luv(          col ); break;
 
-        case 'hsb':   luv = rgb2luv(hsv2rgb  (col)); break;
+        case 'hsv':   luv = rgb2luv(hsv2rgb  (col)); break;
         case 'hsl':   luv = rgb2luv(hsl2rgb  (col)); break;
 
         case 'hclok': luv = rgb2luv(hclok2rgb(col)); break;
@@ -64160,7 +64495,7 @@ function convert2hclok(fromColor)
         case 'hex':
         case 'rgb':   hcl = rgb2hclok(          col);  break;
 
-        case 'hsb':   hcl = rgb2hclok(hsv2rgb  (col)); break;
+        case 'hsv':   hcl = rgb2hclok(hsv2rgb  (col)); break;
         case 'hsl':   hcl = rgb2hclok(hsl2rgb  (col)); break;
 
         case 'hclok': hcl =                     col;   break;
@@ -64192,7 +64527,7 @@ function convert2hclab(fromColor)
         case 'hex':
         case 'rgb':   lab = rgb2hclab(          col) ; break;
         
-        case 'hsb':   lab = rgb2hclab(hsv2rgb  (col)); break;
+        case 'hsv':   lab = rgb2hclab(hsv2rgb  (col)); break;
         case 'hsl':   lab = rgb2hclab(hsl2rgb  (col)); break;
         
         case 'hclok': lab = rgb2hclab(hclok2rgb(col)); break;
@@ -64224,7 +64559,7 @@ function convert2hcluv(fromColor)
         case 'hex':
         case 'rgb':   hcl = rgb2hcluv(          col ); break;
 
-        case 'hsb':   hcl = rgb2hcluv(hsv2rgb  (col)); break;
+        case 'hsv':   hcl = rgb2hcluv(hsv2rgb  (col)); break;
         case 'hsl':   hcl = rgb2hcluv(hsl2rgb  (col)); break;
 
         case 'hclab': hcl = rgb2hcluv(hclab2rgb(col)); break;
