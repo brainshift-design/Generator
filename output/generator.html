@@ -64437,7 +64437,6 @@ function convert2lin(fromColor)
 
     let lin;
 
-    console.log('convert to lin');
     switch (fromColor[0])
     {
         case 'hex':
@@ -64614,7 +64613,7 @@ function convert2r2020(fromColor)
         case 'lin':   r2020 = rgb2r2020(lin2rgb  (col)); break;
         case 'p3':    r2020 = rgb2r2020(p32rgb   (col)); break;
         case 'a98':   r2020 = rgb2r2020(a982rgb  (col)); break;
-        case 'pro':   r2020 = rgb2r2020(r20202rgb(col)); break;
+        case 'pro':   r2020 = rgb2r2020(pro2rgb  (col)); break;
         case 'r2020': r2020 =                     col  ; break;
 
         case 'hsv':   r2020 = rgb2r2020(hsv2rgb  (col)); break;
