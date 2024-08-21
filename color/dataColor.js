@@ -15,9 +15,9 @@ function rgb2dataColor(rgb)
 
 
 
-function makeDataColor(space, c1, c2, c3, allSpaces)
+function makeDataColor(space, c1, c2, c3)
 {
-    const _space = colorSpace(space.value, allSpaces);
+    const _space = colorSpace(space.value);
 
     return [
         _space, 

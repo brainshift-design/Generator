@@ -73,9 +73,6 @@ extends GOperator1
             return this;
 
 
-        const allSpaces = parse.settings.showAllColorSpaces;
-
-        
         const input = await evalColorValue (this.input, parse);
         let   space = await evalNumberValue(this.space, parse); 
         let   c1    = await evalNumberValue(this._c1,   parse);
@@ -98,15 +95,15 @@ extends GOperator1
                     const toSpaceIndex = Math.min(Math.max(
                         0,
                         Math.round(space.value)), // round because a value can come in with decimals
-                        getColorSpaces(allSpaces).length-1);
+                        ColorSpaces.length-1);
 
 
                     if (toSpaceIndex != fromSpaceIndex)
                     {
                         this.convertColor(
                             this.value,
-                            colorSpace(fromSpaceIndex, allSpaces), 
-                            colorSpace(  toSpaceIndex, allSpaces));
+                            colorSpace(fromSpaceIndex), 
+                            colorSpace(  toSpaceIndex));
 
                         this.value.space.value = toSpaceIndex;
                     }
@@ -141,7 +138,7 @@ extends GOperator1
             const toSpaceIndex = Math.min(Math.max(
                 0,
                 Math.round(this.value.space.value)), // round because a value can come in with decimals
-                getColorSpaces(parse.settings.showAllColorSpaces).length-1);
+                ColorSpaces.length-1);
 
             this.value.space.value = toSpaceIndex;
 
@@ -156,8 +153,8 @@ extends GOperator1
 
                 this.convertColor(
                     this.value,
-                    colorSpace(this.convert.value, allSpaces), 
-                    colorSpace(toSpaceIndex, allSpaces));
+                    colorSpace(this.convert.value), 
+                    colorSpace(toSpaceIndex));
             }
         }
         else

@@ -1,9 +1,9 @@
 // https://ixora.io/projects/colorblindness/color-blindness-simulation-research/
 
 
-const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
-const lmsB = xyz2lms(lrgb2xyz([0, 0, 1]));
-const lmsR = xyz2lms(lrgb2xyz([1, 0, 0]));
+const lmsW = xyz2lms(lin2xyz([1, 1, 1]));
+const lmsB = xyz2lms(lin2xyz([0, 0, 1]));
+const lmsR = xyz2lms(lin2xyz([1, 0, 0]));
 
 const lq1 = (lmsW[2]*lmsB[0] - lmsB[2]*lmsW[0]) / (lmsW[2]*lmsB[1] - lmsB[2]*lmsW[1]);
 const lq2 = (lmsW[1]*lmsB[0] - lmsB[1]*lmsW[0]) / (lmsW[1]*lmsB[2] - lmsB[1]*lmsW[2]);

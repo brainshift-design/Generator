@@ -25,7 +25,7 @@ function rgbSaturateHsl(rgb, amount)
 
 
 
-function lrgb2rgb_(r, g, b)
+function lin2rgb_(r, g, b)
 {
     return [
         sRGB.degamma(r), 
@@ -35,14 +35,14 @@ function lrgb2rgb_(r, g, b)
 
 
 
-function lrgb2rgb(rgb)
+function lin2rgb(rgb)
 {
-    return lrgb2rgb_(rgb[0], rgb[1], rgb[2]);
+    return lin2rgb_(rgb[0], rgb[1], rgb[2]);
 }
 
 
 
-function rgb2lrgb_(r, g, b)
+function rgb2lin_(r, g, b)
 {
     return [
         sRGB.regamma(r), 
@@ -52,14 +52,14 @@ function rgb2lrgb_(r, g, b)
 
 
 
-function rgb2lrgb(rgb)
+function rgb2lin(rgb)
 {
-    return lrgb2rgb_(rgb[0], rgb[1], rgb[2]);
+    return lin2rgb_(rgb[0], rgb[1], rgb[2]);
 }
 
 
 
-function srgb2p3(rgb)
+function rgb2p3(rgb)
 {
     const p3 = 
         [ [ 0.8225, 0.1774, 0      ],
@@ -73,7 +73,7 @@ function srgb2p3(rgb)
 
 
 
-function p32srgb(rgb) 
+function p32rgb(rgb) 
 {
     const invp3 = 
         [ [ 1.2249, -0.2247, 0      ],
@@ -87,14 +87,14 @@ function p32srgb(rgb)
 
 
 
-function srgb2a98(rgb)
+function rgb2a98(rgb)
 {
     return xyz2rgb(rgb2xyz(rgb, A98), sRGB);
 }
 
 
 
-function a982srgb(rgb)
+function a982rgb(rgb)
 {
     return xyz2rgb(rgb2xyz(rgb, sRGB), A98);
 }

@@ -70,9 +70,6 @@ extends GOperator1
             return this;
 
 
-        const allSpaces = parse.settings.showAllColorSpaces;
-
-
         const input = await evalColorValue (this. input, parse);
         let   order = await evalNumberValue(this._order, parse);
         const c1    = await evalNumberValue(this._c1,    parse);
@@ -96,7 +93,7 @@ extends GOperator1
                     genInitNodeProgress(this.nodeId);
 
 
-                const inputColor = input.toDataColor(allSpaces);
+                const inputColor = input.toDataColor();
 
 
                 const

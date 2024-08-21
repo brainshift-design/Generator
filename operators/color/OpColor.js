@@ -44,7 +44,7 @@ extends OpColorBase
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest, getColorOutputValuesForUndo, this.output_backInit));
 
         
-        this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true, getColorSpaces().map(s => s[1]), 0));
+        this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true, ColorSpaces.map(s => s[1]), 0));
         this.addParam(this.param1     = new NumberParam('c1',    '',      true,  true,  true));
         this.addParam(this.param2     = new NumberParam('c2',    '',      true,  true,  true));
         this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true,  true));
@@ -166,11 +166,9 @@ extends OpColorBase
 
         consoleAssert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
 
-        const allSpaces = settings.showAllColorSpaces;
-
         const _color = convertDataColorToSpace(
             value.toDataColor(), 
-            colorSpace(this.node.paramSpace.value.value, allSpaces));
+            colorSpace(this.node.paramSpace.value.value));
 
         const _value = ColorValue.fromDataColor(_color);
 
@@ -183,16 +181,14 @@ extends OpColorBase
 
     getDataColorFromParams()
     {
-        const allSpaces = settings.showAllColorSpaces;
-
         const col = getNormalColor_(
-            colorSpace(this.paramSpace.value, allSpaces),
+            colorSpace(this.paramSpace.value),
             this.param1.value,
             this.param2.value,
             this.param3.value);
     
         return [
-            colorSpace(this.paramSpace.value, allSpaces),
+            colorSpace(this.paramSpace.value),
             col[0],
             col[1],
             col[2] ];
@@ -247,8 +243,6 @@ extends OpColorBase
             paramId: NULL });
 
 
-        const allSpaces = settings.showAllColorSpaces;
-
         const hasInputs =
                this.node.param1.input.connected
             || this.node.param2.input.connected
@@ -294,7 +288,7 @@ extends OpColorBase
             {
                 request.push(
                     ...this.node.paramSpace.genRequest(gen),
-                    NUMBER_VALUE, this.node.prevSpace.isValid() ? numToString(colorSpaceIndex(this.node.prevSpace, allSpaces)) : NAN_DISPLAY,
+                    NUMBER_VALUE, this.node.prevSpace.isValid() ? numToString(colorSpaceIndex(this.node.prevSpace)) : NAN_DISPLAY,
                     NUMBER_VALUE, numToString(this.node._color[1] * rgbScale[0]),
                     NUMBER_VALUE, numToString(this.node._color[2] * rgbScale[1]),
                     NUMBER_VALUE, numToString(this.node._color[3] * rgbScale[2]));
@@ -303,7 +297,7 @@ extends OpColorBase
             {
                 request.push(
                     ...this.node.paramSpace.genRequest(gen),
-                    NUMBER_VALUE, this.node.prevSpace != NAN_DISPLAY ? numToString(colorSpaceIndex(this.node.prevSpace, allSpaces)) : NAN_DISPLAY,
+                    NUMBER_VALUE, this.node.prevSpace != NAN_DISPLAY ? numToString(colorSpaceIndex(this.node.prevSpace)) : NAN_DISPLAY,
                     ...this.node.param1.genRequest(gen),
                     ...this.node.param2.genRequest(gen),
                     ...this.node.param3.genRequest(gen));
@@ -327,8 +321,6 @@ extends OpColorBase
         const c2        = values[paramIds.findIndex(id => id == 'c2'     )];
         const c3        = values[paramIds.findIndex(id => id == 'c3'     )];
 
-        const allSpaces = settings.showAllColorSpaces;
-
 
         if (   space 
             && space.isValid())
@@ -340,7 +332,7 @@ extends OpColorBase
                 || graphView.pastingNodes
                 || graphView.loadingNodes
                 || graphView.restoringNodes)
-                switchToSpace(this, colorSpace(space.value, allSpaces));
+                switchToSpace(this, colorSpace(space.value));
             
 
             if (c1) this.param1.setValue(c1, false, true, false);
@@ -365,9 +357,9 @@ extends OpColorBase
                 this._color =
                     this.isUnknown()
                     ? dataColor_NaN
-                    : makeDataColor(_space, _c1, _c2, _c3, allSpaces);
+                    : makeDataColor(_space, _c1, _c2, _c3);
 
-                this.prevSpace = colorSpace(_space.value, allSpaces);
+                this.prevSpace = colorSpace(_space.value);
             }
             else
             {
@@ -409,8 +401,8 @@ extends OpColorBase
             : [0, 0, 0, 0.09]; 
 
 
-        this.paramSpace.setOptions(getColorSpaces().map(s => s[1]));
-        this.paramSpace.controls[0].setMax(getColorSpaces().length-1);
+        this.paramSpace.setOptions(ColorSpaces.map(s => s[1]));
+        this.paramSpace.controls[0].setMax(ColorSpaces.length-1);
 
 
         this.paramSpace.controls[0].backStyleLight  =
@@ -658,9 +650,6 @@ extends OpColorBase
         super.loadParams(_node, pasting);
 
 
-        const allSpaces = settings.showAllColorSpaces;
-
-
         if (_node.colorBeforeNaN)
             this._colorBeforeNaN = _node.colorBeforeNaN;
 
@@ -669,7 +658,7 @@ extends OpColorBase
 
         if (this.paramSpace.value.isValid())
         {
-            const space  = colorSpace(Math.max(1, this.paramSpace.value.value), allSpaces);
+            const space  = colorSpace(Math.max(1, this.paramSpace.value.value));
             const factor = colorFactor(space);
 
             this._color = [

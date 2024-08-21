@@ -1,14 +1,14 @@
-const SimpleColorSpaces = 
-[
-    ['hex',   'Hex'   ],
-    ['rgb',   'RGB'   ], 
-    ['hsl',   'HSL'   ], 
-    ['hsv',   'HSB'   ], 
-    ['hclok', 'HCL/ok']
-];
+// const SimpleColorSpaces = 
+// [
+//     ['hex',   'Hex'   ],
+//     ['rgb',   'RGB'   ], 
+//     ['hsl',   'HSL'   ], 
+//     ['hsv',   'HSB'   ], 
+//     ['hclok', 'HCL/ok']
+// ];
 
 
-const AdvancedColorSpaces = 
+const ColorSpaces = 
 [
     ['hex',   'Hex'         ],
     ['rgb',   'RGB'         ], 
@@ -16,7 +16,7 @@ const AdvancedColorSpaces =
     ['p3',    'RGB/P3'      ], 
     ['a98',   'RGB/Adobe98' ], 
     ['pro',   'RGB/ProPhoto'], 
-    ['2020',  'RGB/rec.2020'], 
+    ['r2020', 'RGB/rec.2020'], 
     ['hsl',   'HSL'         ], 
     ['hsv',   'HSB'         ], 
     ['hclok', 'HCL/ok'      ],
@@ -32,40 +32,31 @@ const AdvancedColorSpaces =
 
 
 
-function getColorSpaces(allSpaces)
-{
-    return allSpaces
-         ? AdvancedColorSpaces
-         : SimpleColorSpaces;
-}
-
-
-
-function colorSpace     (index, allSpaces) { return getColorSpaces(allSpaces)[index][0]; }
-function colorSpaceIndex(space, allSpaces) { return getColorSpaces(allSpaces).findIndex(s => s[0] == space); }
+function colorSpace     (index) { return ColorSpaces[index][0]; }
+function colorSpaceIndex(space) { return ColorSpaces.findIndex(s => s[0] == space); }
 
 
 
 class ColorSpace
 {
-    hex         = Object.freeze( 0);
-    rgb         = Object.freeze( 1);
-    lrgb        = Object.freeze( 2);
-    rgbp3       = Object.freeze( 3);
-    rgba98      = Object.freeze( 4);
-    rgbprophoto = Object.freeze( 5);
-    rgbrec2020  = Object.freeze( 6);
-    hsl         = Object.freeze( 7);
-    hsv         = Object.freeze( 8);
-    hclok       = Object.freeze( 9);
-    hclab       = Object.freeze(10);
-    hcluv       = Object.freeze(11);
-    oklab       = Object.freeze(12);
-    lab         = Object.freeze(13);
-    luv         = Object.freeze(14);
-    xyz         = Object.freeze(15);
-    xyzd50      = Object.freeze(16);
-    xyzd65      = Object.freeze(17);
+    hex   = Object.freeze( 0);
+    rgb   = Object.freeze( 1);
+    lin   = Object.freeze( 2);
+    p3    = Object.freeze( 3);
+    a98   = Object.freeze( 4);
+    pro   = Object.freeze( 5);
+    r2020 = Object.freeze( 6);
+    hsl   = Object.freeze( 7);
+    hsv   = Object.freeze( 8);
+    hclok = Object.freeze( 9);
+    hclab = Object.freeze(10);
+    hcluv = Object.freeze(11);
+    oklab = Object.freeze(12);
+    lab   = Object.freeze(13);
+    luv   = Object.freeze(14);
+    xyz   = Object.freeze(15);
+    xyz50 = Object.freeze(16);
+    xyz65 = Object.freeze(17);
 }
 
 

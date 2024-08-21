@@ -124,6 +124,6 @@ function getConvertP3Value(input, from)
 {
     return ColorValue.fromRgb(
         from.value == 0
-        ? scaleRgb(srgb2p3(input.toRgb()))
-        : scaleRgb(p32srgb(input.toRgb())));
+        ? scaleRgb(rgb2p3(input.toRgb()))
+        : scaleRgb(p32rgb(input.toRgb())));
 }

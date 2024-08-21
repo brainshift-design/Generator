@@ -37,6 +37,7 @@ const sRGB = createColorSpace
     }
 );
 
+const sRGB_D65 = sRGB;
 
 
 const sRGB_D50 = createColorSpace

@@ -59,8 +59,8 @@ xyz2lab
 lab2xyz
 xyz2lms
 lms2xyz
-srgb2p3
-p32srgb
+rgb2p3
+p32rgb
 opp2pol
 pol2opp
 hclok_C_scale
@@ -68,9 +68,9 @@ rgbLightenHsv
 rgbSaturateHsv
 rgbSaturateHsl
 rgb2xyz
-lrgb2xyz
+lin2xyz
 xyz2rgb
-xyz2lrgb
+xyz2lin
 rgbIsNaN
 rgbaIsNaN
 rgbIsValid
@@ -129,9 +129,7 @@ _col
 chan
 clipChroma
 noColorStyle
-AdvancedColorSpaces
-SimpleColorSpaces
-getColorSpaces
+ColorSpaces
 ColorSpace
 colorSpace
 rgb2colorblind
