@@ -15,7 +15,7 @@ const ProPhotoRGB = createColorSpace
 
     function(v) // degamma
     {
-        return v >= 0.03125
+        return v >= 0.001953125 //0.03125
                ? Math.pow(v, this.gamma)
                : v / 16;
     },
@@ -23,7 +23,7 @@ const ProPhotoRGB = createColorSpace
 
     function(v) // regamma
     {
-        return v > Math.pow(16 * 0.03125, this.gamma - 1)
+        return v > Math.pow(16 * 0.001953125, this.gamma - 1)
                ? Math.pow(v, 1/this.gamma)
                : v * 16;
     },

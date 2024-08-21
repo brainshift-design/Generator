@@ -16,16 +16,16 @@ const sRGB = createColorSpace
     function(v) // degamma
     {
         return v >= 0.04045
-               ? Math.pow((v + 0.055) / 1.055, this.gamma)
-               : v / 12.92;
+             ? Math.pow((v + 0.055) / 1.055, this.gamma)
+             : v / 12.92;
     },
     
 
     function(v) // regamma
     {
         return v > 0.0031308
-               ? 1.055 * Math.pow(v, 1/this.gamma) - 0.055
-               : v * 12.92;
+             ? 1.055 * Math.pow(v, 1/this.gamma) - 0.055
+             : v * 12.92;
     },
     
     

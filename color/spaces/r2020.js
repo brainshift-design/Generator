@@ -10,23 +10,25 @@ const Rec2020 = createColorSpace
 
     D65,       // W
 
-    2.4,       // gamma 
+    2.2,       // gamma 
 
 
     function(v) // degamma
     {
-        // Rec. 2020 uses a simple power function with a gamma of 2.4.
-        return Math.pow(v, this.gamma);
+        return v >= 0.08145
+             ? Math.pow((v + 0.0993) / 1.0993, this.gamma)
+             : v / 4.5;
     },
 
 
     function(v) // regamma
     {
-        // The inverse of the degamma function
-        return Math.pow(v, 1 / this.gamma);
+        return v > 0.0181
+             ? 1.0993 * Math.pow(v, 1 / this.gamma) - 0.0993
+             : v * 4.5;
     },
-
     
+
     function(rgb) // luminance
     {
         return this.Y[0] * this.degamma(rgb[0]) 

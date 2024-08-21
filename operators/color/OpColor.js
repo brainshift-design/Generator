@@ -475,18 +475,31 @@ extends OpColorBase
 
     updateAllControlRanges()
     {
-        const space = this.paramSpace.value.value;
+        const space = colorSpace(this.paramSpace.value.value);
 
-        if (    (   space == 1  // RGB
-                 || space == 2  // HSB
-                 || space == 3) // HSL
+        if (    (   space == 'rgb'
+                 || space == 'lin'
+                 || space == 'hsv'
+                 || space == 'hsl')
              && !dataColorIsNaN  (this._color)
              && !dataColorIsValid(this._color))
         {
             this.showExtRanges(true);
         }
-        else if ( space > 3 // HCL
-              && !dataColorIsNaN(this._color))
+        else if (   (   space == 'p3'
+                     || space == 'a98'
+                     || space == 'pro'
+                     || space == 'r2020'
+                     || space == 'hclok'
+                     || space == 'hclab'
+                     || space == 'hcluv'
+                     || space == 'oklab'
+                     || space == 'lab'
+                     || space == 'luv'
+                     || space == 'xyz'
+                     || space == 'xyz50'
+                     || space == 'xyz65')
+                 && !dataColorIsNaN(this._color))
         {
             this.showExtRanges(false);
 
