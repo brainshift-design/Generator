@@ -42,6 +42,7 @@ const ProPhotoRGB = createColorSpace
 function rgb2pro(rgb)
 {
     return xyz2rgb(rgb2xyz(rgb), ProPhotoRGB);
+    //return xyz2rgb(d652d50(rgb2xyz(rgb)), ProPhotoRGB);
 }
 
 
@@ -49,4 +50,5 @@ function rgb2pro(rgb)
 function pro2rgb(pro)
 {
     return xyz2rgb(rgb2xyz(pro, ProPhotoRGB));
+    //return xyz2rgb(d502d65(rgb2xyz(pro, ProPhotoRGB)));
 }

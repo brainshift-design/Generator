@@ -9,7 +9,7 @@ const rgbScale   = [255, 255, 255];
   
 const hs_Scale   = [360, 100, 100];
  
-const hclokScale = [360, 50,  100];
+const hclokScale = [360,  50, 100];
 const hclabScale = [360, 400, 100];
 const hcluvScale = [360, 330, 100];
  
@@ -17,7 +17,8 @@ const oklabScale = [100,  30,  30];
 const labScale   = [100, 100, 100];
 const luvScale   = [100, 150, 150];
 
-const xyzScale   = [ 95, 100, 108];
+//const xyzScale   = [ 95, 100, 108];
+const xyzScale   = [100, 100, 100];
  
 
 
@@ -249,7 +250,7 @@ function switchToLuvControls  (node) { switchToOppControls(node, 'u', 'v', luvSc
 function switchToXyzControls(node) 
 { 
     switchToControls(node, 
-        'X', 0, xyzScale[0],
+        'X', 0, xyzScale[0], '', false,
         'Y', 0, xyzScale[1], 
         'Z', 0, xyzScale[2]);  
 

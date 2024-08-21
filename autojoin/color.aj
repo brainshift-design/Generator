@@ -1,4 +1,5 @@
 ../color/spaces/colorSpace.js
+../color/spaces/adaptation.js
 ../color/spaces/sRGB.js
 ../color/spaces/p3.js
 ../color/spaces/a98.js

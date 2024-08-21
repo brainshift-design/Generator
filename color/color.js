@@ -12,7 +12,7 @@ const ColorSpaces =
 [
     ['hex',   'Hex'         ],
     ['rgb',   'RGB'         ], 
-    ['lin',   'RGB / linear'  ], 
+    ['lin',   'RGB / Linear'  ], 
     ['p3',    'RGB / P3'      ], 
     ['a98',   'RGB / Adobe98' ], 
     ['pro',   'RGB / ProPhoto'], 
@@ -26,8 +26,8 @@ const ColorSpaces =
     ['lab',   'Lab'         ],
     ['luv',   'Luv'         ],
     ['xyz',   'XYZ'         ],
-    ['xyz50', 'XYZ/D50'     ],
-    ['xyz65', 'XYZ/D65'     ]
+    ['xyz50', 'XYZ / D50'     ],
+    ['xyz65', 'XYZ / D65'     ]
 ];
 
 

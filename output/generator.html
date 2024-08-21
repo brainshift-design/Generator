@@ -61498,6 +61498,29 @@ function colorVector(c)
 
 
 
+function d502d65(xyz)
+{
+    const bradford = 
+        [ [ 0.9555766, -0.0230393,  0.0631636 ],
+          [-0.0282895,  1.0099416,  0.0210077 ],
+          [ 0.0122982, -0.0204830,  1.3299098 ] ];
+
+    return dot3(bradford, xyz);
+}
+
+
+
+function d652d50(xyz)
+{
+    const bradford = 
+        [ [ 1.0184567, 0.0093864, -0.0213199 ],
+          [ 0.0120291, 0.9951460, -0.0072228 ],
+          [-0.0039673, 0.0064899,  0.8925936 ] ];
+
+    return dot3(bradford, xyz);
+}
+
+
 const sRGB = createColorSpace
 (
     [0.64, 0.33], // R
@@ -61729,6 +61752,7 @@ const ProPhotoRGB = createColorSpace
 function rgb2pro(rgb)
 {
     return xyz2rgb(rgb2xyz(rgb), ProPhotoRGB);
+    //return xyz2rgb(d652d50(rgb2xyz(rgb)), ProPhotoRGB);
 }
 
 
@@ -61736,6 +61760,7 @@ function rgb2pro(rgb)
 function pro2rgb(pro)
 {
     return xyz2rgb(rgb2xyz(pro, ProPhotoRGB));
+    //return xyz2rgb(d502d65(rgb2xyz(pro, ProPhotoRGB)));
 }
 
 
@@ -62455,7 +62480,7 @@ const ColorSpaces =
 [
     ['hex',   'Hex'         ],
     ['rgb',   'RGB'         ], 
-    ['lin',   'RGB / linear'  ], 
+    ['lin',   'RGB / Linear'  ], 
     ['p3',    'RGB / P3'      ], 
     ['a98',   'RGB / Adobe98' ], 
     ['pro',   'RGB / ProPhoto'], 
@@ -62469,8 +62494,8 @@ const ColorSpaces =
     ['lab',   'Lab'         ],
     ['luv',   'Luv'         ],
     ['xyz',   'XYZ'         ],
-    ['xyz50', 'XYZ/D50'     ],
-    ['xyz65', 'XYZ/D65'     ]
+    ['xyz50', 'XYZ / D50'     ],
+    ['xyz65', 'XYZ / D65'     ]
 ];
 
 
@@ -63598,7 +63623,7 @@ const rgbScale   = [255, 255, 255];
   
 const hs_Scale   = [360, 100, 100];
  
-const hclokScale = [360, 50,  100];
+const hclokScale = [360,  50, 100];
 const hclabScale = [360, 400, 100];
 const hcluvScale = [360, 330, 100];
  
@@ -63606,7 +63631,8 @@ const oklabScale = [100,  30,  30];
 const labScale   = [100, 100, 100];
 const luvScale   = [100, 150, 150];
 
-const xyzScale   = [ 95, 100, 108];
+//const xyzScale   = [ 95, 100, 108];
+const xyzScale   = [100, 100, 100];
  
 
 
@@ -63838,7 +63864,7 @@ function switchToLuvControls  (node) { switchToOppControls(node, 'u', 'v', luvSc
 function switchToXyzControls(node) 
 { 
     switchToControls(node, 
-        'X', 0, xyzScale[0],
+        'X', 0, xyzScale[0], '', false,
         'Y', 0, xyzScale[1], 
         'Z', 0, xyzScale[2]);  
 
