@@ -37,14 +37,14 @@ const Rec2020 = createColorSpace
 
 
 
-function rgb2pro(rgb)
+function rgb2r2020(rgb)
 {
     return xyz2rgb(rgb2xyz(rgb), Rec2020);
 }
 
 
 
-function pro2rgb(r2020)
+function r20202rgb(r2020)
 {
     return xyz2rgb(rgb2xyz(r2020, Rec2020));
 }

@@ -1,4 +1,4 @@
-const AdobeRGB = createColorSpace
+const Adobe98 = createColorSpace
 (
     [0.64, 0.33], // R
     [0.21, 0.71], // G

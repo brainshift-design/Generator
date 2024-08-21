@@ -246,12 +246,12 @@ function switchToLuvControls  (node) { switchToOppControls(node, 'u', 'v', luvSc
 
 
 
-function switchToXyzControls(node, scale) 
+function switchToXyzControls(node) 
 { 
     switchToControls(node, 
-        'X', 0, scale[0],
-        'Y', 0, scale[1], 
-        'Z', 0, scale[2]);  
+        'X', 0, xyzScale[0],
+        'Y', 0, xyzScale[1], 
+        'Z', 0, xyzScale[2]);  
 
         node.param1.controls[0].min = 
         node.param2.controls[0].min = 

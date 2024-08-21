@@ -61585,7 +61585,7 @@ const sRGB_D50 = createColorSpace
 
 
 
-const AdobeRGB = createColorSpace
+const Adobe98 = createColorSpace
 (
     [0.64, 0.33], // R
     [0.21, 0.71], // G
@@ -61732,14 +61732,14 @@ const Rec2020 = createColorSpace
 
 
 
-function rgb2pro(rgb)
+function rgb2r2020(rgb)
 {
     return xyz2rgb(rgb2xyz(rgb), Rec2020);
 }
 
 
 
-function pro2rgb(r2020)
+function r20202rgb(r2020)
 {
     return xyz2rgb(rgb2xyz(r2020, Rec2020));
 }
@@ -61830,20 +61830,6 @@ function p32rgb(rgb)
     rgb = dot3(invp3, degamma(rgb));
   
     return regamma(rgb);
-}
-
-
-
-function rgb2a98(rgb)
-{
-    return xyz2rgb(rgb2xyz(rgb, A98), sRGB);
-}
-
-
-
-function a982rgb(rgb)
-{
-    return xyz2rgb(rgb2xyz(rgb, sRGB), A98);
 }
 
 
@@ -63829,12 +63815,12 @@ function switchToLuvControls  (node) { switchToOppControls(node, 'u', 'v', luvSc
 
 
 
-function switchToXyzControls(node, scale) 
+function switchToXyzControls(node) 
 { 
     switchToControls(node, 
-        'X', 0, scale[0],
-        'Y', 0, scale[1], 
-        'Z', 0, scale[2]);  
+        'X', 0, xyzScale[0],
+        'Y', 0, xyzScale[1], 
+        'Z', 0, xyzScale[2]);  
 
         node.param1.controls[0].min = 
         node.param2.controls[0].min = 

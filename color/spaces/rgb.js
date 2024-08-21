@@ -84,17 +84,3 @@ function p32rgb(rgb)
   
     return regamma(rgb);
 }
-
-
-
-function rgb2a98(rgb)
-{
-    return xyz2rgb(rgb2xyz(rgb, A98), sRGB);
-}
-
-
-
-function a982rgb(rgb)
-{
-    return xyz2rgb(rgb2xyz(rgb, sRGB), A98);
-}
