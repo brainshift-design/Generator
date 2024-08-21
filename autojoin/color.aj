@@ -1,6 +1,8 @@
 ../color/spaces/colorSpace.js
 ../color/spaces/sRGB.js
 ../color/spaces/a98.js
+../color/spaces/pro.js
+../color/spaces/r2020.js
 ../color/spaces/rgb.js
 ../color/spaces/hsv.js
 ../color/spaces/hsl.js

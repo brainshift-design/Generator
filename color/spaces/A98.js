@@ -36,3 +36,17 @@ const AdobeRGB = createColorSpace
               + this.Y[2] * this.degamma(rgb[2]);
     }
 );
+
+
+
+function rgb2a98(rgb)
+{
+    return xyz2rgb(rgb2xyz(rgb), Adobe98);
+}
+
+
+
+function a982rgb(a98)
+{
+    return xyz2rgb(rgb2xyz(a98, Adobe98));
+}
