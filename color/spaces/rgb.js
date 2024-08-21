@@ -54,7 +54,7 @@ function rgb2lin_(r, g, b)
 
 function rgb2lin(rgb)
 {
-    return lin2rgb_(rgb[0], rgb[1], rgb[2]);
+    return rgb2lin_(rgb[0], rgb[1], rgb[2]);
 }
 
 

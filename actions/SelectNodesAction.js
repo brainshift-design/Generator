@@ -60,6 +60,6 @@ function updateComments(nodeIds)
 {
     nodeIds
         .map(id => nodeFromId(id))
-        .filter(n => n.type == COMMENT)
+        .filter(n => n && n.type == COMMENT)
         .forEach(n => n.updateNode());
 }

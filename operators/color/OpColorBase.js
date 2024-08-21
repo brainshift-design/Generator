@@ -88,10 +88,13 @@ extends Operator
             : rgbNoColorLight;
 
 
+        
+        console.log('this._color =', this._color);
         let rgbBack = 
             dataColorIsNaN(this._color)
             ? rgb_NaN
             : dataColor2rgb(this._color);
+        console.log('rgbBack =', rgbBack);
             
         if (   this.outputs.length > 0
             && isListValueType(this.outputs[0].types[0]))

@@ -6262,10 +6262,6 @@ function updateSetting(settingName, value)
 
 function updateSettingAndMenu(settingName, valid, value, save = true)
 {
-    console.log('settingName =', settingName);
-    console.log('valid =', valid);
-    console.log('value =', value);
-
     switch (settingName)
     {
         case 'debugMode':                     updateSettingAndMenu_(valid, settingName, value, menuItemDebugMode                    ); break;
@@ -61801,7 +61797,7 @@ function rgb2lin_(r, g, b)
 
 function rgb2lin(rgb)
 {
-    return lin2rgb_(rgb[0], rgb[1], rgb[2]);
+    return rgb2lin_(rgb[0], rgb[1], rgb[2]);
 }
 
 
@@ -62435,16 +62431,16 @@ const ColorSpaces =
 [
     ['hex',   'Hex'         ],
     ['rgb',   'RGB'         ], 
-    ['lin',   'RGB/linear'  ], 
-    ['p3',    'RGB/P3'      ], 
-    ['a98',   'RGB/Adobe98' ], 
-    ['pro',   'RGB/ProPhoto'], 
-    ['r2020', 'RGB/rec.2020'], 
+    ['lin',   'RGB / linear'  ], 
+    ['p3',    'RGB / P3'      ], 
+    ['a98',   'RGB / Adobe98' ], 
+    ['pro',   'RGB / ProPhoto'], 
+    ['r2020', 'RGB / Rec.2020'], 
     ['hsl',   'HSL'         ], 
     ['hsv',   'HSB'         ], 
-    ['hclok', 'HCL/ok'      ],
-    ['hclab', 'HCL/ab'      ],
-    ['hcluv', 'HCL/uv'      ],
+    ['hclok', 'HCL / ok'      ],
+    ['hclab', 'HCL / ab'      ],
+    ['hcluv', 'HCL / uv'      ],
     ['oklab', 'okLab'       ],
     ['lab',   'Lab'         ],
     ['luv',   'Luv'         ],
@@ -64391,6 +64387,7 @@ function convert2lin(fromColor)
 
     let lin;
 
+    console.log('convert to lin');
     switch (fromColor[0])
     {
         case 'hex':

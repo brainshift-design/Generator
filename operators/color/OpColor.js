@@ -390,7 +390,7 @@ extends OpColorBase
     {
         if (!hasFocus(this.paramColor.controls[0]))
             this.paramColor.setValue(ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color))), false, true, false);
-        
+
 
         const colors = this.getHeaderColors();
 

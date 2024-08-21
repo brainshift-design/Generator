@@ -152,10 +152,6 @@ function updateSetting(settingName, value)
 
 function updateSettingAndMenu(settingName, valid, value, save = true)
 {
-    console.log('settingName =', settingName);
-    console.log('valid =', valid);
-    console.log('value =', value);
-
     switch (settingName)
     {
         case 'debugMode':                     updateSettingAndMenu_(valid, settingName, value, menuItemDebugMode                    ); break;

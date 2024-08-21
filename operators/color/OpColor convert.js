@@ -118,6 +118,7 @@ function convert2lin(fromColor)
 
     let lin;
 
+    console.log('convert to lin');
     switch (fromColor[0])
     {
         case 'hex':
