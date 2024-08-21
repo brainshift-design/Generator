@@ -10,28 +10,39 @@ const SimpleColorSpaces =
 
 const AdvancedColorSpaces = 
 [
-    ['hex',         'Hex'         ],
-    ['rgb',         'RGB'         ], 
-    ['lrgb',        'RGB/linear'  ], 
-    ['rgbp3',       'RGB/P3'      ], 
-    ['rgba98',      'RGB/Adobe98' ], 
-    ['rgbprophoto', 'RGB/ProPhoto'], 
-    ['rgbrec2020',  'RGB/rec.2020'], 
-    ['hsl',         'HSL'         ], 
-    ['hsv',         'HSB'         ], 
-    ['hclok',       'HCL/ok'      ],
-    ['hclab',       'HCL/ab'      ],
-    ['hcluv',       'HCL/uv'      ],
-    ['oklab',       'okLab'       ],
-    ['lab',         'Lab'         ],
-    ['luv',         'Luv'         ],
-    ['xyz',         'XYZ'         ],
-    ['xyzd50',      'XYZ/D50'     ],
-    ['xyzd65',      'XYZ/D65'     ]
+    ['hex',   'Hex'         ],
+    ['rgb',   'RGB'         ], 
+    ['lin',   'RGB/linear'  ], 
+    ['p3',    'RGB/P3'      ], 
+    ['a98',   'RGB/Adobe98' ], 
+    ['pro',   'RGB/ProPhoto'], 
+    ['2020',  'RGB/rec.2020'], 
+    ['hsl',   'HSL'         ], 
+    ['hsv',   'HSB'         ], 
+    ['hclok', 'HCL/ok'      ],
+    ['hclab', 'HCL/ab'      ],
+    ['hcluv', 'HCL/uv'      ],
+    ['oklab', 'okLab'       ],
+    ['lab',   'Lab'         ],
+    ['luv',   'Luv'         ],
+    ['xyz',   'XYZ'         ],
+    ['xyz50', 'XYZ/D50'     ],
+    ['xyz65', 'XYZ/D65'     ]
 ];
 
 
-var ColorSpaces = SimpleColorSpaces;
+
+function getColorSpaces(allSpaces)
+{
+    return allSpaces
+         ? AdvancedColorSpaces
+         : SimpleColorSpaces;
+}
+
+
+
+function colorSpace     (index, allSpaces) { return getColorSpaces(allSpaces)[index][0]; }
+function colorSpaceIndex(space, allSpaces) { return getColorSpaces(allSpaces).findIndex(s => s[0] == space); }
 
 
 

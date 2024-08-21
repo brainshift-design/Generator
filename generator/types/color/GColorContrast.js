@@ -42,9 +42,12 @@ extends GOperator2
             return this;
 
 
-        const input0   = await evalColorValue (this.input0,   parse);
-        const input1   = await evalColorValue (this.input1,   parse);
-        const standard = await evalNumberValue(this.standard, parse);
+        const allSpaces = parse.settings.showAllColorSpaces;
+
+        
+        const input0    = await evalColorValue (this.input0,   parse);
+        const input1    = await evalColorValue (this.input1,   parse);
+        const standard  = await evalNumberValue(this.standard, parse);
 
         
         if (standard.isValid())
@@ -57,8 +60,8 @@ extends GOperator2
             if (   input0.isValid()
                 && input1.isValid())
             {
-                if (   dataColorIsValid(input0.toDataColor())
-                    && dataColorIsValid(input1.toDataColor()))
+                if (   dataColorIsValid(input0.toDataColor(allSpaces))
+                    && dataColorIsValid(input1.toDataColor(allSpaces)))
                 {
                     if (standard.value == 0)
                     {

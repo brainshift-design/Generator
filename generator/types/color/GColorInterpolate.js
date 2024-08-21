@@ -45,6 +45,9 @@ extends GOperator2
             return this;
 
 
+        const allSpaces = parse.settings.showAllColorSpaces;
+
+
         const input0 = await evalColorValue (this.input0, parse);
         const input1 = await evalColorValue (this.input1, parse);
         let   space  = await evalNumberValue(this.space,  parse);
@@ -67,14 +70,15 @@ extends GOperator2
             const spaceIndex = space.value;//Math.min(Math.max(0, space.value), colorSpaceCount()-1);
             const gammaValue = Math.max(0.0001, gamma.value);
 
-            const _space = colorSpace(spaceIndex);
+            const _space = colorSpace(spaceIndex, allSpaces);
 
             const _color = this.interpolate(
                 spaceIndex,
-                convertDataColorToSpace(input0.toDataColor(), _space),
-                convertDataColorToSpace(input1.toDataColor(), _space),
+                convertDataColorToSpace(input0.toDataColor(allSpaces), _space),
+                convertDataColorToSpace(input1.toDataColor(allSpaces), _space),
                 f,
-                gammaValue);
+                gammaValue,
+                allSpaces);
 
 
             // allow interpolating invalid colors,
@@ -109,7 +113,7 @@ extends GOperator2
 
 
 
-    interpolate(space, col0, col1, f, gamma)
+    interpolate(space, col0, col1, f, gamma, allSpaces)
     {
         if (   space <= 1
             || space >  6) // hex, rgb, okLab, lab, luv
@@ -129,7 +133,7 @@ extends GOperator2
             const b = lerp(b0, b1, f);        
 
             return [
-                colorSpace(space),
+                colorSpace(space, allSpaces),
                 Math.sign(r) * Math.pow(Math.abs(r), 1/gamma),
                 Math.sign(g) * Math.pow(Math.abs(g), 1/gamma),
                 Math.sign(b) * Math.pow(Math.abs(b), 1/gamma) ];
@@ -141,7 +145,7 @@ extends GOperator2
             const l0 = col0[3];        const l1 = col1[3];
 
             return [
-                colorSpace(space),
+                colorSpace(space, allSpaces),
                 normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
                 lerp(c0, c1, f),
                 lerp(l0, l1, f) ];

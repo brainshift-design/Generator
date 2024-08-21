@@ -45,7 +45,7 @@ const invM1 = inversem3(M1);
 
 
 
-function xy2XYZ(x, y, Y = 1) 
+function xy2xyz(x, y, Y = 1) 
 {
     let X = (x / y) * Y;
     let Z = ((1 - x - y) / y) * Y;

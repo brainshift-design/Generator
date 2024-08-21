@@ -48,12 +48,12 @@ extends GValue
 
 
 
-    static fromDataColor(_color, spaceIndex = -1)
+    static fromDataColor(_color, spaceIndex = -1, allSpaces)
     {
         if (spaceIndex < 0)
-            spaceIndex = colorSpaceIndex (_color[0]);
+            spaceIndex = colorSpaceIndex(_color[0], allSpaces);
 
-        const space  = colorSpace(spaceIndex);
+        const space  = colorSpace(spaceIndex, allSpaces);
         const factor = colorSpaceFactor(space);
 
         return ColorValue.create(
@@ -118,20 +118,26 @@ extends GValue
 
 
 
-    toDataColor()
+    toDataColor(allSpaces)
     {
         if (!this.isValid())
             return dataColor_NaN;
 
         const space = this.space.copy();
 
-        space.value = Math.round(Math.min(Math.max(0, space.value), ColorSpaces.length-1));
+        // space.value = 
+        //     Math.round(
+        //         Math.min(Math.max(
+        //             0, 
+        //             space.value), 
+        //             getColorSpaces().length-1));
 
         return makeDataColor(
             space,
             this.c1,
             this.c2,
-            this.c3);
+            this.c3,
+            allSpaces);
     }
 
 

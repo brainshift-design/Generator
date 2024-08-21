@@ -152,6 +152,10 @@ function updateSetting(settingName, value)
 
 function updateSettingAndMenu(settingName, valid, value, save = true)
 {
+    console.log('settingName =', settingName);
+    console.log('valid =', valid);
+    console.log('value =', value);
+
     switch (settingName)
     {
         case 'debugMode':                     updateSettingAndMenu_(valid, settingName, value, menuItemDebugMode                    ); break;
@@ -214,8 +218,8 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
     } 
 
 
-    if (   save
-        && settingName != 'showAllColorSpaces')
+    if (save)
+        //&& settingName != 'showAllColorSpaces')
         uiSetLocalData(settingName, boolToString(value));
 }
 
@@ -474,6 +478,7 @@ function loadLocalSettings()
     uiGetLocalData('minZoomForParams'             );
     uiGetLocalData('objectCenterSize'             );
     uiGetLocalData('objectBatchSize'              );
+    uiGetLocalData('showAllColorSpaces'           );
     uiGetLocalData('showNodeIcons'                );
     uiGetLocalData('showBoolValues'               );
     uiGetLocalData('separateThousands'            );

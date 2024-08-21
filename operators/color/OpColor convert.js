@@ -17,11 +17,11 @@ function dataColor2rgb(color)
         case 'hex':
         case 'rgb':         return                 col;
 
-        case 'lrgb':        return lrgb2rgb       (col);
-        case 'rgbp3':       return p32srgb        (col);
-        case 'rgba98':      return rgba982srgb    (col);
-        case 'rgbprophoto': return rgbprophoto2rgb(col);
-        case 'rgbrec2020':  return rgbrec20202rgb (col);
+        case 'lin':        return lrgb2rgb       (col);
+        case 'p3':       return p32srgb        (col);
+        case 'a98':      return rgba982srgb    (col);
+        case 'pro': return rgbprophoto2rgb(col);
+        case '2020':  return rgbrec20202rgb (col);
 
         case 'hsv':         return hsv2rgb        (col);
         case 'hsl':         return hsl2rgb        (col);
@@ -35,8 +35,8 @@ function dataColor2rgb(color)
         case 'luv':         return luv2rgb        (col);
 
         case 'xyz':         return xyz2rgb        (col);
-        case 'xyzd50':      return xyz2rgb        (col, sRGB_D50);
-        case 'xyzd65':      return xyz2rgb        (col);
+        case 'xyz50':      return xyz2rgb        (col, sRGB_D50);
+        case 'xyz65':      return xyz2rgb        (col);
     }
 }
 
@@ -49,11 +49,11 @@ function convertDataColorToSpace(color, toSpace)
         case 'hex':    
         case 'rgb':         return convert2rgb        (color);
 
-        case 'lrgb':        return convert2lrgb       (color);
-        case 'rgbp3':       return convert2p3         (color);
-        case 'rgba98':      return convert2rgba98     (color);
-        case 'rgbprophoto': return convert2rgbprophoto(color);
-        case 'rgbrec2020':  return convert2rgbrec2020 (color);
+        case 'lin':        return convert2lrgb       (color);
+        case 'p3':       return convert2p3         (color);
+        case 'a98':      return convert2rgba98     (color);
+        case 'pro': return convert2rgbprophoto(color);
+        case '2020':  return convert2rgbrec2020 (color);
 
         case 'hsv':         return convert2hsv        (color);
         case 'hsl':         return convert2hsl        (color);
@@ -67,8 +67,8 @@ function convertDataColorToSpace(color, toSpace)
         case 'luv':         return convert2luv        (color);
 
         case 'xyz':         return convert2xyz        (color);
-        case 'xyzd50':      return convert2xyzd50     (color);
-        case 'xyzd65':      return convert2xyzd65     (color);
+        case 'xyz50':      return convert2xyzd50     (color);
+        case 'xyz65':      return convert2xyzd65     (color);
     }
 }
 
@@ -85,11 +85,11 @@ function convert2rgb(fromColor)
         case 'hex':
         case 'rgb':         rgb =                 col ; break;
 
-        case 'lrgb':        rgb = lrgb2rgb       (col); break;
-        case 'rgbp3':       rgb = p32srgb        (col); break;
-        case 'rgba98':      rgb = rgba982srgb    (col); break;
-        case 'rgbprophoto': rgb = rgbprophoto2rgb(col); break;
-        case 'rgbrec2020':  rgb = rgbrec20202rgb (col); break;
+        case 'lin':        rgb = lrgb2rgb       (col); break;
+        case 'p3':       rgb = p32srgb        (col); break;
+        case 'a98':      rgb = rgba982srgb    (col); break;
+        case 'pro': rgb = rgbprophoto2rgb(col); break;
+        case '2020':  rgb = rgbrec20202rgb (col); break;
 
         case 'hsv':         rgb = hsv2rgb        (col); break;
         case 'hsl':         rgb = hsl2rgb        (col); break;
@@ -103,8 +103,8 @@ function convert2rgb(fromColor)
         case 'luv':         rgb = luv2rgb        (col); break;
 
         case 'xyz':         rgb = xyz2rgb        (col); break;
-        case 'xyzd50':      rgb = xyz2rgb        (col, sRGB_D50); break;
-        case 'xyzd65':      rgb = xyz2rgb        (col); break;
+        case 'xyz50':      rgb = xyz2rgb        (col, sRGB_D50); break;
+        case 'xyz65':      rgb = xyz2rgb        (col); break;
     }
 
     return rgb2dataColor(rgb);
@@ -121,13 +121,13 @@ function convert2lrgb(fromColor)
     switch (fromColor[0])
     {
         case 'hex':
-        case 'rgb':         rgb = rgb2lrgb                (col);  break;
+        case 'rgb':         rgb = rgb2lrgb                (col) ; break;
 
-        case 'lrgb':        rgb =                          col ;  break;
-        case 'rgbp3':       rgb = rgb2lrgb(p32srgb        (col)); break;
-        case 'rgba98':      rgb = rgb2lrgb(rgba982srgb    (col)); break;
-        case 'rgbprophoto': rgb = rgb2lrgb(rgbprophoto2rgb(col)); break;
-        case 'rgbrec2020':  rgb = rgb2lrgb(rgbrec20202rgb (col)); break;
+        case 'lin':        rgb =                          col  ; break;
+        case 'p3':       rgb = rgb2lrgb(p32srgb        (col)); break;
+        case 'a98':      rgb = rgb2lrgb(rgba982srgb    (col)); break;
+        case 'pro': rgb = rgb2lrgb(rgbprophoto2rgb(col)); break;
+        case '2020':  rgb = rgb2lrgb(rgbrec20202rgb (col)); break;
 
         case 'hsv':         rgb = rgb2lrgb(hsv2rgb        (col)); break;
         case 'hsl':         rgb = rgb2lrgb(hsl2rgb        (col)); break;
@@ -141,11 +141,11 @@ function convert2lrgb(fromColor)
         case 'luv':         rgb = rgb2lrgb(luv2rgb        (col)); break;
 
         case 'xyz':         rgb = rgb2lrgb(xyz2rgb        (col)); break;
-        case 'xyzd50':      rgb = rgb2lrgb(xyz2rgb        (col, sRGB_D50)); break;
-        case 'xyzd65':      rgb = rgb2lrgb(xyz2rgb        (col)); break;
+        case 'xyz50':      rgb = rgb2lrgb(xyz2rgb        (col, sRGB_D50)); break;
+        case 'xyz65':      rgb = rgb2lrgb(xyz2rgb        (col)); break;
     }
 
-    return rgb2dataColor(rgb);
+    return rgb2dataColor(rgb, 'lin');
 }
 
 

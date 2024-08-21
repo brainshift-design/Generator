@@ -44,8 +44,11 @@ extends GOperator1
             return this;
 
 
-        const input   = await evalColorValue (this.input,   parse);
-        const quality = await evalNumberValue(this.quality, parse);
+        const allSpaces = parse.settings.showAllColorSpaces;
+
+        
+        const input     = await evalColorValue (this.input,   parse);
+        const quality   = await evalNumberValue(this.quality, parse);
 
 
         if (input)
@@ -60,7 +63,7 @@ extends GOperator1
                         this.value.items.push(await getValidColorValue(parse, this, input.items[i], quality));
                 }
                 else
-                    this.value = await getValidColorValue(parse, this, input, quality);
+                    this.value = await getValidColorValue(parse, this, input, quality, allSpaces);
             }
             else
                 this.value = input.copy();
@@ -121,7 +124,7 @@ extends GOperator1
 
 
 
-async function getValidColorValue(parse, node, input, quality)
+async function getValidColorValue(parse, node, input, quality, allSpaces)
 {
     let rgb = input.toRgb();
 
@@ -149,7 +152,7 @@ async function getValidColorValue(parse, node, input, quality)
             genInitNodeProgress(node.nodeId);
         
 
-        const inputColor = input.toDataColor();
+        const inputColor = input.toDataColor(allSpaces);
 
 
         const

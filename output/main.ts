@@ -3131,12 +3131,12 @@ function figLoadNodesAndConns(debugMode)
         initPageStyles(nodes);
 
 
-        const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');
+        //const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');
 
 
         figPostMessageToUi({
             cmd:               'uiReturnFigLoadNodesAndConns',
-            showAllColorSpaces: showAllColorSpaces,
+            //showAllColorSpaces: showAllColorSpaces,
             pageKeys:           pageKeys,
             pageJson:           pages,
             pageOrder:          pageOrder,

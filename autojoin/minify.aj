@@ -129,7 +129,9 @@ _col
 chan
 clipChroma
 noColorStyle
-ColorSpaces
+AdvancedColorSpaces
+SimpleColorSpaces
+getColorSpaces
 ColorSpace
 colorSpace
 rgb2colorblind

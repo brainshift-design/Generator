@@ -51,6 +51,7 @@ async function uiReturnFigGetLocalData(msg)
 
         case 'enableZoomedOutParams':
         case 'showPages':
+        case 'showAllColorSpaces':
         case 'showNodeIcons':
         case 'showBoolValues':
         case 'separateThousands':
@@ -235,22 +236,23 @@ function uiReturnFigLoadNodesAndConns(msg)
     }
 
     
-    const _showAllColorSpaces = msg.showAllColorSpaces;
+    // const _showAllColorSpaces = msg.showAllColorSpaces;
 
 
-    updateSettingAndMenu(
-        'showAllColorSpaces',
-        _showAllColorSpaces, 
-        _showAllColorSpaces ? parseBool(_showAllColorSpaces) : false,
-        false); 
+    // updateSettingAndMenu(
+    //     'showAllColorSpaces',
+    //     _showAllColorSpaces, 
+    //     _showAllColorSpaces ? parseBool(_showAllColorSpaces) : false,
+    //     false); 
 
-    if (_showAllColorSpaces)
-    {
-        ColorSpaces = 
-            parseBool(_showAllColorSpaces)
-            ? AdvancedColorSpaces
-            : SimpleColorSpaces;
-    }
+    // if (_showAllColorSpaces)
+    // {
+    //     console.log('udpate all nodes for color spaces');
+    //     console.log('settings.showAllColorSpaces =', settings.showAllColorSpaces);
+    //     graph.nodes
+    //         .filter(n => COLOR_TYPES.includes(n.type))
+    //         .forEach(n => n.updateNode());
+    // }
 
 
     graphView.loadingNodes   = true;

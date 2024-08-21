@@ -107,7 +107,7 @@ initQuestion3Dialog();
 initRestartDialog();
     
 // initSnapshots();
-//console.log(xy2XYZ(0.3127, 0.3290));
+//console.log(xy2xyz(0.3127, 0.3290));
 
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});

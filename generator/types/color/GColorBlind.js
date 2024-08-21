@@ -133,7 +133,7 @@ extends GOperator1
 
 
 
-function getColorBlindValue(input, l, m, s)
+function getColorBlindValue(allSpaces, input, l, m, s)
 {
     const rgb   = input.toRgb();
 
@@ -150,7 +150,7 @@ function getColorBlindValue(input, l, m, s)
     
         const validCol = convertDataColorToSpace(
             rgb2dataColor(validRgbCb), 
-            colorSpace(input.space.value));
+            colorSpace(input.space.value, allSpaces));
 
         return ColorValue.fromDataColor(validCol);
     }
