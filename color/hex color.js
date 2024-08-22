@@ -1,9 +1,14 @@
+function chan2hex(c)
+{
+    return Math.round(c * 0xff).toString(16).padStart(2, '0').toUpperCase();    
+}
+
 function rgb2hex(rgb)
 {
     let hex =
-          Math.round(rgb[0] * 0xff).toString(16).padStart(2, '0').toUpperCase()
-        + Math.round(rgb[1] * 0xff).toString(16).padStart(2, '0').toUpperCase()
-        + Math.round(rgb[2] * 0xff).toString(16).padStart(2, '0').toUpperCase();
+          chan2hex(rgb[0])
+        + chan2hex(rgb[1])
+        + chan2hex(rgb[2]);
 
     return hex;
 }
@@ -13,10 +18,10 @@ function rgb2hex(rgb)
 function rgba2hex(rgba)
 {
     let hex =
-          Math.round(rgba[0] * 0xff).toString(16).padStart(2, '0').toUpperCase()
-        + Math.round(rgba[1] * 0xff).toString(16).padStart(2, '0').toUpperCase()
-        + Math.round(rgba[2] * 0xff).toString(16).padStart(2, '0').toUpperCase()
-        + Math.round(rgba[3] * 0xff).toString(16).padStart(2, '0').toUpperCase();
+          chan2hex(rgba[0])
+        + chan2hex(rgba[1])
+        + chan2hex(rgba[2])
+        + chan2hex(rgba[3]);
 
     return hex;
 }

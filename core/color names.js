@@ -348,13 +348,13 @@ function parseColorName(_colorName)
 
 
 
-function createColorName(rgb)
+function createColorName(rgba)
 {
-    if (rgb.length > 3 && rgba[3] == 0)
+    if (rgba.length > 3 && rgba[3] == 0)
         return 'transparent';
 
 
-    const hsl = rgb2hsl(rgb);
+    const hsl = rgb2hsl(rgba);
 
     let   h = hsl[0] * 360;
 
