@@ -14,7 +14,8 @@
 ../color/spaces/lab.js
 ../color/spaces/oklab.js
 ../color/spaces/polar.js
-../color/spaces/hcl.js
+../color/spaces/okhcl.js
+../color/spaces/hct.js
 
 ../color/Color.js
 

@@ -14,6 +14,9 @@ function rgb2hsl_(r, g, b)
     else if (max == g  ) h = 1/6 * (b - r) / delta + 1/3;
     else if (max == b  ) h = 1/6 * (r - g) / delta + 2/3;
 
+    if (h > 1)
+        h -= 1;
+    
          if (max == min) s = 0;
     else if (l <= 0.5)   s = delta / (2 * l);
     else if (l >  0.5)   s = delta / (2 - 2 * l);
