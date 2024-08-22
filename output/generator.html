@@ -11930,18 +11930,16 @@ async function evalColorValue(_value, parse)
 
 
 
-async function evalFillValue(_value, parse, convert = true)
+async function evalFillValue(_value, parse)
 { 
     let value = await evalValue(_value, parse, () => FillValue.NaN.copy());
     
     if (   value
-        && value.type == COLOR_VALUE
-        && convert)
+        && value.type == COLOR_VALUE)
         value = new FillValue(value);
 
     if (   value
-        && value.type == COLOR_STOP_VALUE
-        && convert)
+        && value.type == COLOR_STOP_VALUE)
         value = value.fill;
 
     return value; 
@@ -33645,7 +33643,7 @@ extends GOperator1
             return this;
 
 
-        const input  = await evalFillValue  (this.input,  parse, false);
+        const input  = await evalValue      (this.input,  parse);
         const format = await evalNumberValue(this.format, parse);
 
 
@@ -33660,7 +33658,8 @@ extends GOperator1
                     const item = input.items[i];
 
                     this.value.items.push(
-                        item.type == NUMBER_VALUE
+                           item.type == COLOR_VALUE
+                        || item.type == FILL_VALUE
                         ? getColorToTextValue(item, format)
                         : TextValue.NaN.copy());   
                 }

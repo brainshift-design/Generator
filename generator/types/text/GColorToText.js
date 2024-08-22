@@ -40,7 +40,7 @@ extends GOperator1
             return this;
 
 
-        const input  = await evalFillValue  (this.input,  parse, false);
+        const input  = await evalValue      (this.input,  parse);
         const format = await evalNumberValue(this.format, parse);
 
 
@@ -55,7 +55,8 @@ extends GOperator1
                     const item = input.items[i];
 
                     this.value.items.push(
-                        item.type == NUMBER_VALUE
+                           item.type == COLOR_VALUE
+                        || item.type == FILL_VALUE
                         ? getColorToTextValue(item, format)
                         : TextValue.NaN.copy());   
                 }

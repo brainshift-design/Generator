@@ -411,18 +411,16 @@ async function evalColorValue(_value, parse)
 
 
 
-async function evalFillValue(_value, parse, convert = true)
+async function evalFillValue(_value, parse)
 { 
     let value = await evalValue(_value, parse, () => FillValue.NaN.copy());
     
     if (   value
-        && value.type == COLOR_VALUE
-        && convert)
+        && value.type == COLOR_VALUE)
         value = new FillValue(value);
 
     if (   value
-        && value.type == COLOR_STOP_VALUE
-        && convert)
+        && value.type == COLOR_STOP_VALUE)
         value = value.fill;
 
     return value; 
