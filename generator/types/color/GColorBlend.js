@@ -68,7 +68,7 @@ extends GOperator2
                 input1.toRgb(),
                 _amount);
 
-            this.value = ColorValue.fromRgb(scaleRgb(col));
+            this.value = ColorValue.fromRgb(scaleRgb(col, false));
         }
 
         else if (input0) 

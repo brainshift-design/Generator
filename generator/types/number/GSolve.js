@@ -58,12 +58,11 @@ extends GOperator1
         let input   = await evalNumberValue(this.input,   parse);
         let current = await evalNumberValue(this.current, parse);
         let target  = await evalNumberValue(this.target,  parse);
-        console.log('current.value =', current.value);
 
 
-        if (   this.input.type == PARAM
-            && input
-            && current.isValid()
+        if (   input
+            && this.input.type == PARAM
+            //&& current.isValid()
             && target .isValid())
         {
             consoleAssert(
@@ -77,7 +76,7 @@ extends GOperator1
                 let   prevDiff = 0;
 
 
-                let   _input   = input.value;
+                let   _input   = current.isValid() ? input.value : 0;
                 let   step     = 10;
 
 
@@ -100,8 +99,7 @@ extends GOperator1
 
                     if (param)
                     {
-                        param.value = _input;//new NumberValue(_input, decDigits(_input));
-                        
+                        param.value = _input;
                         
                         this.input  .invalidateInputs(parse, this, true);
                         this.current.invalidateInputs(parse, this, true);
@@ -109,8 +107,6 @@ extends GOperator1
 
                         current = await evalNumberValue(this.current, parse);
                         target  = await evalNumberValue(this.target,  parse);
-                        console.log('*input.value =', input.value);
-                        console.log('*current.value =', current.value);
 
 
                         if (current.isValid())
