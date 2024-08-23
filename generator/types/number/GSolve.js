@@ -136,7 +136,7 @@ extends GOperator1
                 {
                     parse.currentProgress += maxIter - iter;
 
-                    //input = await evalNumberValue(this.input, parse);
+                    input = await evalNumberValue(this.input, parse);
                     this.value = input.copy();
                 }
                 else
@@ -149,12 +149,7 @@ extends GOperator1
                 this.value = input.copy();
         }
         else
-        {
-            // if (this.input) 
-            //     await this.input.eval(parse);
-
             this.value = NumberValue.NaN.copy();
-        }
 
         
 
