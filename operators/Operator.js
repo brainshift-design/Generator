@@ -1047,7 +1047,9 @@ class Operator
     {
         for (const output of this.outputs)
             for (const input of output.connectedInputs)
-                if (input.node.isOrFollowedBySolver())
+                if (      input.param
+                       && input.param.node.isOrFollowedBySolver()
+                    || input.node.isOrFollowedBySolver())
                     return true;
 
         return false;

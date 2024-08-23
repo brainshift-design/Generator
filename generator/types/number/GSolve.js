@@ -107,23 +107,24 @@ extends GOperator1
 
 
                         if (current.isValid())
+                        {
                             diff = target.value - current.value;
+
+                            if (Math.abs(diff) < 0.0000001)
+                                break;
+
+                            if (   Math.abs (diff) >  Math.abs (prevDiff)
+                                || Math.sign(diff) != Math.sign(prevDiff))
+                                step /= -2;
+
+                            prevDiff = diff;
+                        }
                         else
                         {
+                            diff = 0;
                             _input -= step;
-                            step /= 2;
-                        }
-
-
-                        if (Math.abs(diff) < 0.0000001)
-                            break;
-                            
-
-                        if (   Math.abs (diff) >  Math.abs (prevDiff)
-                            || Math.sign(diff) != Math.sign(prevDiff))
                             step /= -2;
-
-                        prevDiff = diff;
+                        }
                     }
                     
 
