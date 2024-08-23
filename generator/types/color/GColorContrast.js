@@ -78,12 +78,6 @@ extends GOperator2
                 this.contrast = NumberValue.NaN.copy();
 
 
-            this.value = 
-                input0 
-                ? input0//.copy() 
-                : ColorValue.NaN.copy();
-
-
             this.setUpdateValues(parse,
             [
                 ['text', input0],
@@ -99,7 +93,6 @@ extends GOperator2
                 ['back', ColorValue.NaN                            ]
             ]);
             
-            this.value    = input0;//.copy();
             this.contrast = NumberValue.NaN.copy();
         }
 
@@ -111,13 +104,11 @@ extends GOperator2
                 ['back', input1.isValid() ? input1 : ColorValue.NaN]
             ]);
 
-            this.value    = ColorValue .NaN.copy();
             this.contrast = NumberValue.NaN.copy();
         }
 
         else
         {
-            this.value    = ColorValue .NaN.copy();
             this.contrast = NumberValue.NaN.copy();
 
             this.setUpdateValues(parse,
@@ -127,6 +118,8 @@ extends GOperator2
             ]);
         }
         
+
+        this.value = input0 ?? ColorValue.NaN.copy();
 
 
         this.setUpdateValues(parse,
@@ -138,6 +131,7 @@ extends GOperator2
 
 
         this.validate();
+
 
         return this;
     }

@@ -57,6 +57,8 @@ extends OpColorBase
         this.addInput(new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE]));
         this.addInput(new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE]));
 
+        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
+
 
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'APCA'], 1));
@@ -81,31 +83,31 @@ extends OpColorBase
 
 
 
-    genRequest(gen)
+    output_genRequest(gen)
     {
-        // 'this' is the node
+        // 'this' is the output
 
 
-        if (gen.passedNodes.includes(this))
+        if (gen.passedNodes.includes(this.node))
         {
             return [
-                this.type, 
-                this.id, 
-                this.name];
+                this.node.type, 
+                this.node.id, 
+                this.node.name];
         }
 
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
         
-        const input0 = this.inputs[0];
-        const input1 = this.inputs[1];
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
 
         
         if (   input0.connected
@@ -119,11 +121,11 @@ extends OpColorBase
         else                       request.push(0);
 
 
-        request.push(...this.paramStandard.genRequest(gen));
+        request.push(...this.node.paramStandard.genRequest(gen));
 
 
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
 
 
         return request;
@@ -248,17 +250,24 @@ extends OpColorBase
     {
         const colors = super.getHeaderColors();
 
-        // if (!this.inputs[0].connected)
-        // {
         if (!rgbIsNaN(this._rgbText))
         {
             colors.text    = this._rgbText;
             colors.inwire  = 
             colors.outWire = this._rgbText;
         }
-        // }
 
         return colors;
+    }
+
+
+
+    getOutputWireColor()
+    {
+        if (!rgbIsNaN(this._rgbText))
+            return this._rgbText;
+        else
+            return super.getOutputWireColor();
     }
 
 

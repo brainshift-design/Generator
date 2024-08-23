@@ -110,7 +110,7 @@ extends GOperator1
                         {
                             diff = target.value - current.value;
 
-                            if (Math.abs(diff) < 0.0000001)
+                            if (Math.abs(diff) < 0.00001)
                                 break;
 
                             if (   Math.abs (diff) >  Math.abs (prevDiff)
@@ -154,7 +154,6 @@ extends GOperator1
         else
             this.value = NumberValue.NaN.copy();
 
-        
 
         this.setUpdateValues(parse,
         [
