@@ -187,7 +187,7 @@ extends GOperator1
                     this.input.invalidateInputs(parse, this, false);
 
                     
-                    const input = await evalValue      (this.input, parse);
+                    const input = await evalValue      (this.input,  parse);
                          _while = await evalNumberValue(this._while, parse);
 
 

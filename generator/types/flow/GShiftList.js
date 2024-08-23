@@ -61,7 +61,7 @@ extends GOperator1
 
                 if (this.options.enabled)
                 {
-                    let _offset = offset.value % input.items.length;
+                    let _offset = -(offset.value % input.items.length);
                     while (_offset < 0) _offset += input.items.length;
 
                     let j = 0;
