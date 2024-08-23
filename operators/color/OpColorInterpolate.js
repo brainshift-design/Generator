@@ -31,6 +31,9 @@ extends OpColorBase
         this.addParam(this.paramAmount = new NumberParam('amount', '',      false, true, true, 50, 0, 100, 0));
         this.addParam(this.paramGamma  = new NumberParam('gamma',  'gamma', true,  true, true, 1, 0.01, 4, 2));
       
+        this.paramSpace.separatorsBefore = [4, 9, 12, 15];
+        this.paramSpace.markMenuPro      = subscribed() ? [] : [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+        this.paramSpace.minMenuWidth     = subscribed() ? 200 : 220;
         
         this.paramSpace.controls[0].setMin(1);
         this.paramSpace.excludeFromMenu.push(0);

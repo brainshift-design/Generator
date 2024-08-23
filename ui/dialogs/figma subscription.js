@@ -9,7 +9,7 @@ function uiFigmaManageSubscription()
             subscriptionActive);
 
         if (!settings.debugMode)
-            enableFeatures(subscribed());
+            enableFeatures(!subscribed());
     })
     .catch(error =>
     {

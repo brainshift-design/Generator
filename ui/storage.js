@@ -181,7 +181,7 @@ async function uiReturnFigGetLocalData(msg)
     if (!settings.debugMode)
     {
         // if (msg.key == 'enableBetaFeatures')
-            //enableFeatures(true); 
+            //enableFeatures(false); 
 
         if (msg.key == 'showDebugMenu')
             updateMenuItemShowDebugMenu();

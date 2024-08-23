@@ -111,8 +111,23 @@ extends GOperator2
 
     interpolate(space, col0, col1, f, gamma)
     {
-        if (   space <= 1
-            || space >  6) // hex, rgb, okLab, lab, luv
+        if (   space ==  2  // hsl
+            || space ==  3  // hsv
+            || space ==  9  // hcl/ok
+            || space == 10  // hcl/ab
+            || space == 11) // hcl/uv
+        {
+                const h0 = col0[1] * Tau;  const h1 = col1[1] * Tau;
+                const c0 = col0[2];        const c1 = col1[2];
+                const l0 = col0[3];        const l1 = col1[3];
+                
+                return [
+                    colorSpace(space),
+                    normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
+                    lerp(c0, c1, f),
+                    lerp(l0, l1, f) ];
+        }
+        else // cartesian
         {
             gamma = Math.max(0.01, gamma);
 
@@ -133,18 +148,6 @@ extends GOperator2
                 Math.sign(r) * Math.pow(Math.abs(r), 1/gamma),
                 Math.sign(g) * Math.pow(Math.abs(g), 1/gamma),
                 Math.sign(b) * Math.pow(Math.abs(b), 1/gamma) ];
-        }
-        else // hsv/hsl/hcl
-        {
-            const h0 = col0[1] * Tau;  const h1 = col1[1] * Tau;
-            const c0 = col0[2];        const c1 = col1[2];
-            const l0 = col0[3];        const l1 = col1[3];
-
-            return [
-                colorSpace(space),
-                normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
-                lerp(c0, c1, f),
-                lerp(l0, l1, f) ];
         }
     }
 

@@ -198,7 +198,7 @@ function initGenerator(activate)
         updateObjectCountDisplay();
 
         if (!settings.debugMode)
-            enableFeatures(subscribed());
+            enableFeatures(!subscribed());
     }, 
     500);
 

@@ -53,6 +53,9 @@ extends OpColorBase
 
 
         this.paramSpace.separatorsBefore = [4, 9, 12, 15];
+        this.paramSpace.markMenuPro      = subscribed() ? [] : [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+        this.paramSpace.minMenuWidth     = subscribed() ? 200 : 220;
+
         this.paramSpace.alwaysSaveValue = true;
 
         this.param1    .alwaysSaveValue = true;

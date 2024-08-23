@@ -381,42 +381,42 @@ function updateMenuItemShowColorLegendInMenus()
 
 
 
-function enableFeatures(sub)
+function enableFeatures(pro)
 {
-    enableMenuItem(menuItemUpgrade,            true, sub, false, !sub);
-    enableMenuItem(menuItemSetValueNames,      true, sub);
-    enableMenuItem(menuItemEnableBetaFeatures, true, sub);
-    enableMenuItem(menuItemCopyLLMPrompt,      true, sub, true, currentUserIsDev());
+    enableMenuItem(menuItemUpgrade,            true, pro, false, !pro);
+    enableMenuItem(menuItemSetValueNames,      true, pro);
+    enableMenuItem(menuItemEnableBetaFeatures, true, pro);
+    enableMenuItem(menuItemCopyLLMPrompt,      true, pro, true, currentUserIsDev());
  // enableMenuItem(menuItemShowSnapshots,      true, sub);
-    enableMenuItem(menuItemShowRestartInfo,    true, sub);
-    enableMenuItem(menuItemValueName,          true, sub);
-    enableMenuItem(menuItemObjectName,         true, sub);
-    enableMenuItem(menuItemVarGroup,           true, sub, true);
-    enableMenuItem(menuItemTimer,              true, sub);
-    enableMenuItem(menuItemAnimate,            true, sub, true);
-    enableMenuItem(menuItemSaveToFile,         true, sub);
-    enableMenuItem(menuItemSaveSelected,       true, sub);
-    enableMenuItem(menuItemFetch,              true, sub);
-    enableMenuItem(menuItemDateTime,           true, sub);
-    enableMenuItem(menuItemSolve,              true, sub);
-    enableMenuItem(menuItemParseJson,          true, sub);
-    enableMenuItem(menuItemCorrectColor,       true, sub);
-    enableMenuItem(menuItemConvertToP3,        true, sub);
-    enableMenuItem(menuItemPersist,            true, sub);
-    enableMenuItem(menuItemVectorNetworks,     true, sub, true);
-    enableMenuItem(menuItemVectorVertex,       true, sub, true);
-    enableMenuItem(menuItemVectorEdge,         true, sub, true);
-    enableMenuItem(menuItemVectorRegion,       true, sub, true);
-    enableMenuItem(menuItemVectorNetwork,      true, sub, true);
-    enableMenuItem(menuItemBooleanShape,       true, sub, true);
-    enableMenuItem(menuItemSaveTemplate,       true, sub);
-    enableMenuItem(menuItemManageTemplates,    true, sub);
+    enableMenuItem(menuItemShowRestartInfo,    true, pro);
+    enableMenuItem(menuItemValueName,          true, pro);
+    enableMenuItem(menuItemObjectName,         true, pro);
+    enableMenuItem(menuItemVarGroup,           true, pro, true);
+    enableMenuItem(menuItemTimer,              true, pro);
+    enableMenuItem(menuItemAnimate,            true, pro, true);
+    enableMenuItem(menuItemSaveToFile,         true, pro);
+    enableMenuItem(menuItemSaveSelected,       true, pro);
+    enableMenuItem(menuItemFetch,              true, pro);
+    enableMenuItem(menuItemDateTime,           true, pro);
+    enableMenuItem(menuItemSolve,              true, pro);
+    enableMenuItem(menuItemParseJson,          true, pro);
+    enableMenuItem(menuItemCorrectColor,       true, pro);
+    enableMenuItem(menuItemConvertToP3,        true, pro);
+    enableMenuItem(menuItemPersist,            true, pro);
+    enableMenuItem(menuItemVectorNetworks,     true, pro, true);
+    enableMenuItem(menuItemVectorVertex,       true, pro, true);
+    enableMenuItem(menuItemVectorEdge,         true, pro, true);
+    enableMenuItem(menuItemVectorRegion,       true, pro, true);
+    enableMenuItem(menuItemVectorNetwork,      true, pro, true);
+    enableMenuItem(menuItemBooleanShape,       true, pro, true);
+    enableMenuItem(menuItemSaveTemplate,       true, pro);
+    enableMenuItem(menuItemManageTemplates,    true, pro);
 
 
     updatePanelButton();
 
 
-    graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
+    graph.nodes.forEach(n => n.updateSubscribeStatus(pro));
 }
 
 
@@ -429,18 +429,20 @@ function updatePanelButton()
 
 
 
-function enableMenuItem(menuItem, enable, sub, beta = false, show = true)
+function enableMenuItem(menuItem, enable, pro, beta = false, show = true)
 {
     if (!menuItem) return;
 
     menuItem.enabled = enable;
-    menuItem.sub     = sub;
+    menuItem.pro     = pro;
 
     menuItem.setVisible(
            show 
         && (
               !beta
-            || beta && sub && settings.enableBetaFeatures));
+            ||     beta 
+               && !pro 
+               &&  settings.enableBetaFeatures));
 
     menuItem.update();
 }

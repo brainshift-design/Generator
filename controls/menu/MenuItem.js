@@ -15,7 +15,7 @@ class MenuItem
     searchName         = '';
     showSearchName     = false;
     shortcut           = '';
-    sub                = true;
+    pro                = false;
      
     callback           = null;
     checkCallback      = null;
@@ -92,6 +92,7 @@ class MenuItem
         if (options.setting       != undefined) this.isSetting     = options.setting;
         if (options.disambiguate  != undefined) this.disambiguate  = options.disambiguate;
         if (options.createType    != undefined) this.createType    = options.createType;
+        if (options.subscription  != undefined) this.pro           = options.subscription;
     }
 
 
@@ -420,8 +421,8 @@ class MenuItem
         if (!isNaN(x)) e.clientX = x;
         if (!isNaN(y)) e.clientY = y;
 
-        if (   this.callback
-            && this.sub)
+        if (    this.callback
+            && !this.pro)
             this.callback(e);
         else
             uiFigmaManageSubscription();
@@ -501,8 +502,8 @@ class MenuItem
         this.divCheck   .style.visibility      = this.checked ? 'visible' : 'hidden';
         this.div        .style.opacity         = this.enabled ? '100%'    : '40%';
 
-        this.divShortcut.style.display         = this.sub ? 'inline-block' : 'none';
-        this.divPro     .style.display         = this.sub ? 'none'         : 'inline-block';
+        this.divShortcut.style.display         = this.pro ? 'none' : 'inline-block';
+        this.divPro     .style.display         = this.pro ? 'inline-block' : 'none';
 
         this.divPro     .style.backgroundColor = this.mouseOver ? 'var(--figma-color-bg-brand)' : '#1e1e1e'; 
         this.divPro     .style.color           = this.mouseOver ? '#0008' : (darkMode ? '#09fa' : '#09ff'); 

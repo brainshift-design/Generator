@@ -80,7 +80,7 @@ function onValidateClick()
 
     //             updateSubscriptionDialog();
 
-    //             enableFeatures(subscribed());
+    //             enableFeatures(!subscribed());
 
     //             uiNotify('✨   Thanks for subscribing to Generator !   ✨', {delay: 6000});
 

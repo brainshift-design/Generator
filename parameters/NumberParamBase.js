@@ -30,6 +30,15 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
+        if (   this.markMenuPro
+            && this.markMenuPro.includes(value.value))
+        {
+            while (value.value >= 1
+                && this.markMenuPro.includes(value.value))
+                value.value--;
+        }
+
+
         if (!(value instanceof NumberValue))
             console.trace(); 
 

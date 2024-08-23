@@ -220,8 +220,8 @@ function initSearchBox(query)
 
 function initSearchItem(item, search, query)
 {
-    if (!item.sub) 
-        return;
+    // if (item.pro) 
+    //     return;
 
     if (   (   makeSearchable(item.name      ).includes(makeSearchable(query))
             || makeSearchable(item.searchName).includes(makeSearchable(query)))

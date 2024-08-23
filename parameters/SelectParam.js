@@ -3,7 +3,11 @@ extends NumberParamBase
 {
     options           = [];
     excludeFromMenu   = []; // indices
+
     separatorsBefore  = [];
+    markMenuPro           = [];
+
+    minMenuWidth      = 200;
     
     saveAsText        = false;
     
@@ -212,7 +216,9 @@ function initSelectParamMenu(param)
             menuSelectParam.addItems([new MenuItem(option, null, false, {separator: true})]);
         
 
-        const options = { callback: () => param.setValue(new NumberValue(i), true) };
+        const options = { 
+            callback:     () => param.setValue(new NumberValue(i), true),
+            subscription: param.markMenuPro.includes(i) };
 
         if (param.controls[0].readOnly)
             options.enabled = false;
@@ -229,6 +235,7 @@ function initSelectParamMenu(param)
             false,
             options);
 
+
         item.divName.style.fontVariantNumeric = 'tabular-nums';
 
         item.setChecked(i == param.value.toNumber());
@@ -237,5 +244,5 @@ function initSelectParamMenu(param)
     }
 
 
-    menuSelectParam.minWidth = 120;
+    menuSelectParam.minWidth = param.minMenuWidth;
 }
