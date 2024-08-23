@@ -505,12 +505,8 @@ class Wire
 
     updateStyle(x1, y1, x2, y2)
     {
-        // if (equal(x1, x2, 0.001)) x2 += 0.001;
-        // if (equal(y1, y2, 0.001)) y2 += 0.001;
-
-        // this was fixed, then it still would fail sometimes
-        // now I commented out the fix and it started working consistently
-        // \o/
+        if (equal(x1, x2, 0.001)) x2 += 0.001;
+        if (equal(y1, y2, 0.001)) y2 += 0.001;
 
 
         const conn   = this.connection;

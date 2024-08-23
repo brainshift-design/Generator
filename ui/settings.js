@@ -383,7 +383,7 @@ function updateMenuItemShowColorLegendInMenus()
 
 function enableFeatures(pro)
 {
-    enableMenuItem(menuItemUpgrade,            true, pro, false, !pro);
+    enableMenuItem(menuItemUpgrade,            true, pro, false, pro);
     enableMenuItem(menuItemSetValueNames,      true, pro);
     enableMenuItem(menuItemEnableBetaFeatures, true, pro);
     enableMenuItem(menuItemCopyLLMPrompt,      true, pro, true, currentUserIsDev());
