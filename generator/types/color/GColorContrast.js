@@ -42,7 +42,6 @@ extends GOperator2
             return this;
 
 
-        console.log('contrast');
         const input0    = await evalColorValue (this.input0,   parse);
         const input1    = await evalColorValue (this.input1,   parse);
         const standard  = await evalNumberValue(this.standard, parse);

@@ -65,7 +65,6 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        //console.log('this.input0 =', this.input0);
         if (this.input0) this.input0.invalidateInputs(parse, from, force);
         if (this.input1) this.input1.invalidateInputs(parse, from, force);
     }

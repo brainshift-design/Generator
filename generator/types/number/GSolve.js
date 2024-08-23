@@ -58,6 +58,7 @@ extends GOperator1
         let input   = await evalNumberValue(this.input,   parse);
         let current = await evalNumberValue(this.current, parse);
         let target  = await evalNumberValue(this.target,  parse);
+        console.log('current.value =', current.value);
 
 
         if (   this.input.type == PARAM
@@ -76,8 +77,8 @@ extends GOperator1
                 let   prevDiff = 0;
 
 
-                let   temp     = 0;
-                let   step     = 1000;
+                let   _input   = input.value;
+                let   step     = 10;
 
 
                 let   iter     = 0;
@@ -92,38 +93,41 @@ extends GOperator1
 
                 while (iter++ < maxIter)
                 {
-                    temp += step;
-                    // console.log('temp =', temp);
+                    _input += step;
 
 
                     const param = this.input.node[this.input.paramId];
-                    param.value = new NumberValue(temp, decDigits(temp));
-                    
-                    // console.log('param.value =', param.value);
-                    
-                    this.input  .invalidateInputs(parse, this, true);
-                    this.current.invalidateInputs(parse, this, true);
-                    this.target .invalidateInputs(parse, this, true);
 
-                    current = await evalNumberValue(this.current, parse);
-                    target  = await evalNumberValue(this.target,  parse);
-                    //console.log('current.value =', current.value);
-
-
-                    if (current.isValid())
-                        diff = target.value - current.value;
-
-
-                    if (Math.abs(diff) < 0.0000001)
-                        break;
+                    if (param)
+                    {
+                        param.value = _input;//new NumberValue(_input, decDigits(_input));
                         
-
-                    if (   Math.abs (diff) >  Math.abs (prevDiff)
-                        || Math.sign(diff) != Math.sign(prevDiff))
-                        step /= -2;
-
-                    prevDiff = diff;
                         
+                        this.input  .invalidateInputs(parse, this, true);
+                        this.current.invalidateInputs(parse, this, true);
+                        this.target .invalidateInputs(parse, this, true);
+
+                        current = await evalNumberValue(this.current, parse);
+                        target  = await evalNumberValue(this.target,  parse);
+                        console.log('*input.value =', input.value);
+                        console.log('*current.value =', current.value);
+
+
+                        if (current.isValid())
+                            diff = target.value - current.value;
+
+
+                        if (Math.abs(diff) < 0.0000001)
+                            break;
+                            
+
+                        if (   Math.abs (diff) >  Math.abs (prevDiff)
+                            || Math.sign(diff) != Math.sign(prevDiff))
+                            step /= -2;
+
+                        prevDiff = diff;
+                    }
+                    
 
                     parse.currentProgress++;
                     genUpdateNodeProgress(parse, this.nodeId, iter / maxIter);
@@ -140,7 +144,7 @@ extends GOperator1
                 }
                 else
                 {
-                    this.value = input.copy();//NumberValue.NaN.copy();
+                    this.value = input.copy();
                     console.warn('max solve iterations');
                 }
             }
