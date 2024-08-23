@@ -398,7 +398,7 @@ function enableFeatures(sub)
     enableMenuItem(menuItemSaveSelected,       true, sub);
     enableMenuItem(menuItemFetch,              true, sub);
     enableMenuItem(menuItemDateTime,           true, sub);
-    enableMenuItem(menuItemSolve,              true, sub, true);
+    enableMenuItem(menuItemSolve,              true, sub);
     enableMenuItem(menuItemParseJson,          true, sub);
     enableMenuItem(menuItemCorrectColor,       true, sub);
     enableMenuItem(menuItemConvertToP3,        true, sub);

@@ -1,5 +1,4 @@
 class GValue
-//extends GNode
 {
     type;
     valueId;
@@ -9,14 +8,17 @@ class GValue
     objects      = null;
 
 
+    valid; // used for forced reevaluation
+
+
 
     constructor(type) 
     {
-        //super(type, options);
-
         this.type    = type;
-
+        
         this.valueId = '';
+        
+        this.valid   = true;
     }
 
 
@@ -35,8 +37,6 @@ class GValue
 
     copyBase(base)
     {
-        //super.copyBase(base);
-        
         this.valueId  = base.valueId;
         this.uniqueId = base.uniqueId;
 
@@ -63,10 +63,10 @@ class GValue
 
 
 
-    // eval()
-    // {
-    //     return this;
-    // }
+    async eval(parse)
+    {
+        return this;
+    }
 
 
 
@@ -123,14 +123,29 @@ class GValue
 
     isCached()
     {
-        return true;
+        return this.valid;
     }
 
 
 
-    pushValueUpdates(parse)              {}
-    invalidateInputs(parse, from, force) {}
-    iterateLoop     (parse)              {}
+    pushValueUpdates(parse)
+    {
+
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        this.valid = false;
+    }
+
+
+
+    iterateLoop (parse)
+    {
+
+    }
 }
 
 

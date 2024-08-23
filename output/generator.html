@@ -6508,7 +6508,7 @@ function enableFeatures(sub)
     enableMenuItem(menuItemSaveSelected,       true, sub);
     enableMenuItem(menuItemFetch,              true, sub);
     enableMenuItem(menuItemDateTime,           true, sub);
-    enableMenuItem(menuItemSolve,              true, sub, true);
+    enableMenuItem(menuItemSolve,              true, sub);
     enableMenuItem(menuItemParseJson,          true, sub);
     enableMenuItem(menuItemCorrectColor,       true, sub);
     enableMenuItem(menuItemConvertToP3,        true, sub);
@@ -11225,7 +11225,6 @@ class GNode
 
 
 class GValue
-//extends GNode
 {
     type;
     valueId;
@@ -11235,14 +11234,17 @@ class GValue
     objects      = null;
 
 
+    valid; // used for forced reevaluation
+
+
 
     constructor(type) 
     {
-        //super(type, options);
-
         this.type    = type;
-
+        
         this.valueId = '';
+        
+        this.valid   = true;
     }
 
 
@@ -11261,8 +11263,6 @@ class GValue
 
     copyBase(base)
     {
-        //super.copyBase(base);
-        
         this.valueId  = base.valueId;
         this.uniqueId = base.uniqueId;
 
@@ -11289,10 +11289,10 @@ class GValue
 
 
 
-    // eval()
-    // {
-    //     return this;
-    // }
+    async eval(parse)
+    {
+        return this;
+    }
 
 
 
@@ -11349,14 +11349,29 @@ class GValue
 
     isCached()
     {
-        return true;
+        return this.valid;
     }
 
 
 
-    pushValueUpdates(parse)              {}
-    invalidateInputs(parse, from, force) {}
-    iterateLoop     (parse)              {}
+    pushValueUpdates(parse)
+    {
+
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        this.valid = false;
+    }
+
+
+
+    iterateLoop (parse)
+    {
+
+    }
 }
 
 
@@ -12129,6 +12144,7 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
+        //console.log('this.input0 =', this.input0);
         if (this.input0) this.input0.invalidateInputs(parse, from, force);
         if (this.input1) this.input1.invalidateInputs(parse, from, force);
     }
@@ -29709,32 +29725,33 @@ extends GOperator1
             return this;
 
 
-        let   input   = await evalNumberValue(this.input,   parse);
-        let   current = await evalNumberValue(this.current, parse);
-        const target  = await evalNumberValue(this.target,  parse);
+        let input   = await evalNumberValue(this.input,   parse);
+        let current = await evalNumberValue(this.current, parse);
+        let target  = await evalNumberValue(this.target,  parse);
 
 
-        if (   input
+        if (   this.input.type == PARAM
+            && input
             && current.isValid()
             && target .isValid())
         {
             consoleAssert(
-                input.type == NUMBER_VALUE, 
+                 input.type == NUMBER_VALUE, 
                 'input.type must be NUMBER_VALUE');
 
 
             if (this.options.enabled)
             {
-                let   diff      = target.value - current.value;
-                let   prevDiff  = 0;
+                let   diff     = target.value - current.value;
+                let   prevDiff = 0;
 
 
-                let   temp      = 0;
-                let   step      = Number.MAX_SAFE_INTEGER/65536;
+                let   temp     = 0;
+                let   step     = 1000;
 
 
-                let   iter      = 0;
-                const maxIter   = 1000;
+                let   iter     = 0;
+                const maxIter  = 1000;
                 
 
                 genInitNodeProgress(this.nodeId);
@@ -29746,40 +29763,36 @@ extends GOperator1
                 while (iter++ < maxIter)
                 {
                     temp += step;
+                    // console.log('temp =', temp);
 
 
-                    if (this.input.type == PARAM)
-                    {
-                        this.input.node[this.input.paramId].value    = temp;
-                        this.input.node[this.input.paramId].decimals = decDigits(temp);
-                    }
+                    const param = this.input.node[this.input.paramId];
+                    param.value = new NumberValue(temp, decDigits(temp));
+                    
+                    // console.log('param.value =', param.value);
+                    
+                    this.input  .invalidateInputs(parse, this, true);
+                    this.current.invalidateInputs(parse, this, true);
+                    this.target .invalidateInputs(parse, this, true);
 
-                        
-                    this.current.invalidateInputs(parse, this);
                     current = await evalNumberValue(this.current, parse);
+                    target  = await evalNumberValue(this.target,  parse);
+                    //console.log('current.value =', current.value);
 
 
-                    // if (!current.isValid())
-                    //     diff = Number.MAX_SAFE_INTEGER;
-                    // else
                     if (current.isValid())
-                    {
                         diff = target.value - current.value;
-                        //console.log('diff =', diff);
 
-                        if (Math.abs(diff) < 0.0000001)
-                            break;
-                            
 
-                        if (   Math.abs (diff) >  Math.abs (prevDiff)
-                            || Math.sign(diff) != Math.sign(prevDiff))
-                            step /= -2;
+                    if (Math.abs(diff) < 0.0000001)
+                        break;
+                        
 
-                        // console.log('step =', step);
-                        // console.log('');
+                    if (   Math.abs (diff) >  Math.abs (prevDiff)
+                        || Math.sign(diff) != Math.sign(prevDiff))
+                        step /= -2;
 
-                        prevDiff = diff;
-                    }
+                    prevDiff = diff;
                         
 
                     parse.currentProgress++;
@@ -29787,16 +29800,17 @@ extends GOperator1
                 }
 
 
-                if (iter < maxIter)
+                if (   iter < maxIter
+                    && Math.abs(diff) < 0.0000001)
                 {
                     parse.currentProgress += maxIter - iter;
 
-                    input = await evalNumberValue(this.input, parse);
+                    //input = await evalNumberValue(this.input, parse);
                     this.value = input.copy();
                 }
                 else
                 {
-                    this.value = NumberValue.NaN.copy();
+                    this.value = input.copy();//NumberValue.NaN.copy();
                     console.warn('max solve iterations');
                 }
             }
@@ -29805,20 +29819,18 @@ extends GOperator1
         }
         else
         {
-            if (this.input) 
-                await this.input.eval(parse);
+            // if (this.input) 
+            //     await this.input.eval(parse);
 
             this.value = NumberValue.NaN.copy();
         }
 
         
-        // TODO push good result value to input 
 
         this.setUpdateValues(parse,
         [
-            //['value',   this.value],
-            ['current', current   ],
-            ['target',  target    ]
+            ['current', current],
+            ['target',  target ]
         ]);
 
 
@@ -37359,6 +37371,7 @@ extends GOperator2
             return this;
 
 
+        console.log('contrast');
         const input0    = await evalColorValue (this.input0,   parse);
         const input1    = await evalColorValue (this.input1,   parse);
         const standard  = await evalNumberValue(this.standard, parse);

@@ -55,32 +55,33 @@ extends GOperator1
             return this;
 
 
-        let   input   = await evalNumberValue(this.input,   parse);
-        let   current = await evalNumberValue(this.current, parse);
-        const target  = await evalNumberValue(this.target,  parse);
+        let input   = await evalNumberValue(this.input,   parse);
+        let current = await evalNumberValue(this.current, parse);
+        let target  = await evalNumberValue(this.target,  parse);
 
 
-        if (   input
+        if (   this.input.type == PARAM
+            && input
             && current.isValid()
             && target .isValid())
         {
             consoleAssert(
-                input.type == NUMBER_VALUE, 
+                 input.type == NUMBER_VALUE, 
                 'input.type must be NUMBER_VALUE');
 
 
             if (this.options.enabled)
             {
-                let   diff      = target.value - current.value;
-                let   prevDiff  = 0;
+                let   diff     = target.value - current.value;
+                let   prevDiff = 0;
 
 
-                let   temp      = 0;
-                let   step      = Number.MAX_SAFE_INTEGER/65536;
+                let   temp     = 0;
+                let   step     = 1000;
 
 
-                let   iter      = 0;
-                const maxIter   = 1000;
+                let   iter     = 0;
+                const maxIter  = 1000;
                 
 
                 genInitNodeProgress(this.nodeId);
@@ -92,40 +93,36 @@ extends GOperator1
                 while (iter++ < maxIter)
                 {
                     temp += step;
+                    // console.log('temp =', temp);
 
 
-                    if (this.input.type == PARAM)
-                    {
-                        this.input.node[this.input.paramId].value    = temp;
-                        this.input.node[this.input.paramId].decimals = decDigits(temp);
-                    }
+                    const param = this.input.node[this.input.paramId];
+                    param.value = new NumberValue(temp, decDigits(temp));
+                    
+                    // console.log('param.value =', param.value);
+                    
+                    this.input  .invalidateInputs(parse, this, true);
+                    this.current.invalidateInputs(parse, this, true);
+                    this.target .invalidateInputs(parse, this, true);
 
-                        
-                    this.current.invalidateInputs(parse, this);
                     current = await evalNumberValue(this.current, parse);
+                    target  = await evalNumberValue(this.target,  parse);
+                    //console.log('current.value =', current.value);
 
 
-                    // if (!current.isValid())
-                    //     diff = Number.MAX_SAFE_INTEGER;
-                    // else
                     if (current.isValid())
-                    {
                         diff = target.value - current.value;
-                        //console.log('diff =', diff);
 
-                        if (Math.abs(diff) < 0.0000001)
-                            break;
-                            
 
-                        if (   Math.abs (diff) >  Math.abs (prevDiff)
-                            || Math.sign(diff) != Math.sign(prevDiff))
-                            step /= -2;
+                    if (Math.abs(diff) < 0.0000001)
+                        break;
+                        
 
-                        // console.log('step =', step);
-                        // console.log('');
+                    if (   Math.abs (diff) >  Math.abs (prevDiff)
+                        || Math.sign(diff) != Math.sign(prevDiff))
+                        step /= -2;
 
-                        prevDiff = diff;
-                    }
+                    prevDiff = diff;
                         
 
                     parse.currentProgress++;
@@ -133,16 +130,17 @@ extends GOperator1
                 }
 
 
-                if (iter < maxIter)
+                if (   iter < maxIter
+                    && Math.abs(diff) < 0.0000001)
                 {
                     parse.currentProgress += maxIter - iter;
 
-                    input = await evalNumberValue(this.input, parse);
+                    //input = await evalNumberValue(this.input, parse);
                     this.value = input.copy();
                 }
                 else
                 {
-                    this.value = NumberValue.NaN.copy();
+                    this.value = input.copy();//NumberValue.NaN.copy();
                     console.warn('max solve iterations');
                 }
             }
@@ -151,20 +149,18 @@ extends GOperator1
         }
         else
         {
-            if (this.input) 
-                await this.input.eval(parse);
+            // if (this.input) 
+            //     await this.input.eval(parse);
 
             this.value = NumberValue.NaN.copy();
         }
 
         
-        // TODO push good result value to input 
 
         this.setUpdateValues(parse,
         [
-            //['value',   this.value],
-            ['current', current   ],
-            ['target',  target    ]
+            ['current', current],
+            ['target',  target ]
         ]);
 
 
