@@ -86,18 +86,19 @@ extends GOperator1
                 parse.totalProgress += maxIter;
 
 
+                const param = this.input.node[this.input.paramId];
+
+
                 while (iter++ < maxIter)
                 {
                     _input += step;
 
 
-                    const param = this.input.node[this.input.paramId];
-
                     if (param)
                     {
                         param.value = _input;
                         
-                        //this.input  .invalidateInputs(parse, this, true);
+                        this.input  .invalidateInputs(parse, this, true);
                         this.current.invalidateInputs(parse, this, true);
                         this.target .invalidateInputs(parse, this, true);
 
@@ -131,22 +132,23 @@ extends GOperator1
                 }
 
 
+                this.current.invalidateInputs(parse, this, true);
+                current = await evalNumberValue(this.current, parse);
+
+
                 if (   iter < maxIter
                     && Math.abs(diff) < 0.0000001)
-                {
                     parse.currentProgress += maxIter - iter;
-
-                    input = await evalNumberValue(this.input, parse);
-                    this.value = input.copy();
-                }
                 else
-                {
-                    this.value = input.copy();
                     console.warn('max solve iterations');
-                }
+
+
+                this.value = param
+                    ? new NumberValue(current.value, target.decimals)
+                    : NumberValue.NaN.copy();
             }
             else
-                this.value = input.copy();
+                this.value = NumberValue.NaN.copy();
         }
         else
             this.value = NumberValue.NaN.copy();
