@@ -1,8 +1,8 @@
 function blendNormal(col, back, amount)
 {
-    return [ col[0] * amount + back[0] * (1 - amount),
-             col[1] * amount + back[1] * (1 - amount),
-             col[2] * amount + back[2] * (1 - amount) ];
+    return [ hardPosZero(col[0] * amount + back[0] * (1 - amount), 0.005),
+             hardPosZero(col[1] * amount + back[1] * (1 - amount), 0.005),
+             hardPosZero(col[2] * amount + back[2] * (1 - amount), 0.005) ];
 }
 
 

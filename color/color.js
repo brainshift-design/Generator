@@ -1,31 +1,21 @@
-// const SimpleColorSpaces = 
-// [
-//     ['hex',   'Hex'   ],
-//     ['rgb',   'RGB'   ], 
-//     ['hsl',   'HSL'   ], 
-//     ['hsv',   'HSB'   ], 
-//     ['hclok', 'HCL/ok']
-// ];
-
-
 const ColorSpaces = 
 [
-    ['hex',   'Hex'         ],
-    ['rgb',   'RGB'         ], 
+    ['hex',   'Hex'           ],
+    ['rgb',   'RGB'           ], 
+    ['hsl',   'HSL'           ], 
+    ['hsv',   'HSB'           ], 
     ['lin',   'RGB / Linear'  ], 
     ['p3',    'RGB / P3'      ], 
     ['a98',   'RGB / Adobe98' ], 
     ['pro',   'RGB / ProPhoto'], 
     ['r2020', 'RGB / Rec.2020'], 
-    ['hsl',   'HSL'         ], 
-    ['hsv',   'HSB'         ], 
     ['hclok', 'HCL / ok'      ],
     ['hclab', 'HCL / ab'      ],
     ['hcluv', 'HCL / uv'      ],
-    ['oklab', 'okLab'       ],
-    ['lab',   'Lab'         ],
-    ['luv',   'Luv'         ],
-    ['xyz',   'XYZ'         ],
+    ['oklab', 'okLab'         ],
+    ['lab',   'Lab'           ],
+    ['luv',   'Luv'           ],
+    ['xyz',   'XYZ'           ],
     ['xyz50', 'XYZ / D50'     ],
     ['xyz65', 'XYZ / D65'     ]
 ];
@@ -41,13 +31,13 @@ class ColorSpace
 {
     hex   = Object.freeze( 0);
     rgb   = Object.freeze( 1);
-    lin   = Object.freeze( 2);
-    p3    = Object.freeze( 3);
-    a98   = Object.freeze( 4);
-    pro   = Object.freeze( 5);
-    r2020 = Object.freeze( 6);
-    hsl   = Object.freeze( 7);
-    hsv   = Object.freeze( 8);
+    hsl   = Object.freeze( 2);
+    hsv   = Object.freeze( 3);
+    lin   = Object.freeze( 4);
+    p3    = Object.freeze( 5);
+    a98   = Object.freeze( 6);
+    pro   = Object.freeze( 7);
+    r2020 = Object.freeze( 8);
     hclok = Object.freeze( 9);
     hclab = Object.freeze(10);
     hcluv = Object.freeze(11);

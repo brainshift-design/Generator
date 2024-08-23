@@ -102,15 +102,11 @@ function normalizeRgb(rgb)
 
 
 
-function scaleRgb(rgb, round = true)
+function scaleRgb(rgb, dec = 0)
 {
-    return round
-        ? [ Math.round(rgb[0] * 255),
-            Math.round(rgb[1] * 255),
-            Math.round(rgb[2] * 255) ]
-        : [ rgb[0] * 255,
-            rgb[1] * 255,
-            rgb[2] * 255 ];
+    return [ roundTo(rgb[0] * 255, dec),
+             roundTo(rgb[1] * 255, dec),
+             roundTo(rgb[2] * 255, dec) ];
 }
 
 

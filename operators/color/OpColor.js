@@ -52,7 +52,7 @@ extends OpColorBase
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
 
-        this.paramSpace.separatorsBefore = [1, 7, 9, 12, 15];
+        this.paramSpace.separatorsBefore = [4, 9, 12, 15];
         this.paramSpace.alwaysSaveValue = true;
 
         this.param1    .alwaysSaveValue = true;

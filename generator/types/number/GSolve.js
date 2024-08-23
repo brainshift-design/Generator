@@ -4,8 +4,6 @@ extends GOperator1
     current = null;
     target  = null;
 
-    temp    = null;
-
 
     
     constructor(nodeId, options)
@@ -21,7 +19,6 @@ extends GOperator1
 
         this.current = null;
         this.target  = null;
-        this.temp    = null;
     }
 
 
@@ -62,7 +59,6 @@ extends GOperator1
 
         if (   input
             && this.input.type == PARAM
-            //&& current.isValid()
             && target .isValid())
         {
             consoleAssert(
@@ -101,7 +97,7 @@ extends GOperator1
                     {
                         param.value = _input;
                         
-                        this.input  .invalidateInputs(parse, this, true);
+                        //this.input  .invalidateInputs(parse, this, true);
                         this.current.invalidateInputs(parse, this, true);
                         this.target .invalidateInputs(parse, this, true);
 
@@ -111,6 +107,11 @@ extends GOperator1
 
                         if (current.isValid())
                             diff = target.value - current.value;
+                        else
+                        {
+                            _input -= step;
+                            step /= 2;
+                        }
 
 
                         if (Math.abs(diff) < 0.0000001)

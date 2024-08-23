@@ -74,6 +74,16 @@ function hardZero(x, eps = 0.000000001)
 
 
 
+function hardPosZero(x, eps = 0.000000001) 
+{ 
+    return    x <  0 
+           && x > -eps 
+           ? 0 
+           : x;
+}
+
+
+
 function nozero(x, eps = 0.000000001) 
 { 
     return x != 0 

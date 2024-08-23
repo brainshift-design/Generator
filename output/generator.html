@@ -55,6 +55,16 @@ function hardZero(x, eps = 0.000000001)
 
 
 
+function hardPosZero(x, eps = 0.000000001) 
+{ 
+    return    x <  0 
+           && x > -eps 
+           ? 0 
+           : x;
+}
+
+
+
 function nozero(x, eps = 0.000000001) 
 { 
     return x != 0 
@@ -29673,8 +29683,6 @@ extends GOperator1
     current = null;
     target  = null;
 
-    temp    = null;
-
 
     
     constructor(nodeId, options)
@@ -29690,7 +29698,6 @@ extends GOperator1
 
         this.current = null;
         this.target  = null;
-        this.temp    = null;
     }
 
 
@@ -29731,7 +29738,6 @@ extends GOperator1
 
         if (   input
             && this.input.type == PARAM
-            //&& current.isValid()
             && target .isValid())
         {
             consoleAssert(
@@ -29770,7 +29776,7 @@ extends GOperator1
                     {
                         param.value = _input;
                         
-                        this.input  .invalidateInputs(parse, this, true);
+                        //this.input  .invalidateInputs(parse, this, true);
                         this.current.invalidateInputs(parse, this, true);
                         this.target .invalidateInputs(parse, this, true);
 
@@ -29780,6 +29786,11 @@ extends GOperator1
 
                         if (current.isValid())
                             diff = target.value - current.value;
+                        else
+                        {
+                            _input -= step;
+                            step /= 2;
+                        }
 
 
                         if (Math.abs(diff) < 0.0000001)
@@ -38313,7 +38324,8 @@ extends GOperator2
                 input1.toRgb(),
                 _amount);
 
-            this.value = ColorValue.fromRgb(scaleRgb(col, false));
+            console.log('col =', col);
+            this.value = ColorValue.fromRgb(scaleRgb(col, 2 ));
         }
 
         else if (input0) 
@@ -38415,9 +38427,9 @@ extends GOperator2
 
 function blendNormal(col, back, amount)
 {
-    return [ col[0] * amount + back[0] * (1 - amount),
-             col[1] * amount + back[1] * (1 - amount),
-             col[2] * amount + back[2] * (1 - amount) ];
+    return [ hardPosZero(col[0] * amount + back[0] * (1 - amount), 0.005),
+             hardPosZero(col[1] * amount + back[1] * (1 - amount), 0.005),
+             hardPosZero(col[2] * amount + back[2] * (1 - amount), 0.005) ];
 }
 
 
@@ -62664,34 +62676,24 @@ function xyzToHCT(xyz)
 }
 
 
-// const SimpleColorSpaces = 
-// [
-//     ['hex',   'Hex'   ],
-//     ['rgb',   'RGB'   ], 
-//     ['hsl',   'HSL'   ], 
-//     ['hsv',   'HSB'   ], 
-//     ['hclok', 'HCL/ok']
-// ];
-
-
 const ColorSpaces = 
 [
-    ['hex',   'Hex'         ],
-    ['rgb',   'RGB'         ], 
+    ['hex',   'Hex'           ],
+    ['rgb',   'RGB'           ], 
+    ['hsl',   'HSL'           ], 
+    ['hsv',   'HSB'           ], 
     ['lin',   'RGB / Linear'  ], 
     ['p3',    'RGB / P3'      ], 
     ['a98',   'RGB / Adobe98' ], 
     ['pro',   'RGB / ProPhoto'], 
     ['r2020', 'RGB / Rec.2020'], 
-    ['hsl',   'HSL'         ], 
-    ['hsv',   'HSB'         ], 
     ['hclok', 'HCL / ok'      ],
     ['hclab', 'HCL / ab'      ],
     ['hcluv', 'HCL / uv'      ],
-    ['oklab', 'okLab'       ],
-    ['lab',   'Lab'         ],
-    ['luv',   'Luv'         ],
-    ['xyz',   'XYZ'         ],
+    ['oklab', 'okLab'         ],
+    ['lab',   'Lab'           ],
+    ['luv',   'Luv'           ],
+    ['xyz',   'XYZ'           ],
     ['xyz50', 'XYZ / D50'     ],
     ['xyz65', 'XYZ / D65'     ]
 ];
@@ -62707,13 +62709,13 @@ class ColorSpace
 {
     hex   = Object.freeze( 0);
     rgb   = Object.freeze( 1);
-    lin   = Object.freeze( 2);
-    p3    = Object.freeze( 3);
-    a98   = Object.freeze( 4);
-    pro   = Object.freeze( 5);
-    r2020 = Object.freeze( 6);
-    hsl   = Object.freeze( 7);
-    hsv   = Object.freeze( 8);
+    hsl   = Object.freeze( 2);
+    hsv   = Object.freeze( 3);
+    lin   = Object.freeze( 4);
+    p3    = Object.freeze( 5);
+    a98   = Object.freeze( 6);
+    pro   = Object.freeze( 7);
+    r2020 = Object.freeze( 8);
     hclok = Object.freeze( 9);
     hclab = Object.freeze(10);
     hcluv = Object.freeze(11);
@@ -63919,15 +63921,11 @@ function normalizeRgb(rgb)
 
 
 
-function scaleRgb(rgb, round = true)
+function scaleRgb(rgb, dec = 0)
 {
-    return round
-        ? [ Math.round(rgb[0] * 255),
-            Math.round(rgb[1] * 255),
-            Math.round(rgb[2] * 255) ]
-        : [ rgb[0] * 255,
-            rgb[1] * 255,
-            rgb[2] * 255 ];
+    return [ roundTo(rgb[0] * 255, dec),
+             roundTo(rgb[1] * 255, dec),
+             roundTo(rgb[2] * 255, dec) ];
 }
 
 
