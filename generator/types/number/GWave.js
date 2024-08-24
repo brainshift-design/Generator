@@ -126,7 +126,14 @@ extends GOperator
             if (base) t = t + base.value;
 
 
-            this.value = new NumberValue(t);
+            return new NumberValue(
+                t, 
+                Math.max(
+                    base  .decimals, 
+                    amp   .decimals, 
+                    freq  .decimals, 
+                    offset.decimals, 
+                    bias  .decimals));
         }
         else
             this.value = base;

@@ -170,5 +170,10 @@ function getSequenceValue(start, mult, add, iteration, enabled)
         }
     }
 
-    return new NumberValue(value);
+    return new NumberValue(
+        value, 
+        Math.max(
+            start.decimals, 
+            mult .decimals, 
+            add  .decimals));
 }

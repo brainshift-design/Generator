@@ -364,7 +364,7 @@ async function evalTextValue(_value, parse)
 
     if (   value
         && value.type == NUMBER_VALUE)
-        value = new TextValue(value.value.toString());
+        value = new TextValue(numToString(value.value, value.decimals));
 
     return value;                
 }
@@ -377,7 +377,7 @@ async function evalTextOrListValue(_value, parse)
 
     if (   value
         && value.type == NUMBER_VALUE)
-        value = new TextValue(value.value.toString());
+        value = new TextValue(numToString(value.value, value.decimals));
 
     else if (value
           && value.type == LIST_VALUE
@@ -385,7 +385,7 @@ async function evalTextOrListValue(_value, parse)
     {
         const condensed = value.condensed;
         
-        value = new ListValue(value.items.map(i => new TextValue(i.value.toString())));
+        value = new ListValue(value.items.map(i => new TextValue(numToString(i.value, i.decimals))));
         value.condensed = condensed;
     }
     
