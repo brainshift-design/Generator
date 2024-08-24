@@ -6131,11 +6131,11 @@ const settings =
     showNodeIcons:                 true,
     showBoolValues:                true,
     separateThousands:             true,
-    allowInvertParams:    true,
+    allowInvertParams:             true,
     activateDeactiatesOthers:      true,
     preferHtmlColorNames:          false,
     randomShiftR:                  true,
-    colorShiftR:                   true,
+    colorShiftR:                   false,
 
     showSnapshots:                 false,
     showRestartInfo:               true,
@@ -6509,15 +6509,20 @@ function enableFeatures(pro)
     enableMenuItem(menuItemCopyLLMPrompt,      true, pro, true, currentUserIsDev());
  // enableMenuItem(menuItemShowSnapshots,      true, sub);
     enableMenuItem(menuItemShowRestartInfo,    true, pro);
-    enableMenuItem(menuItemValueName,          true, pro);
+    enableMenuItem(menuItemGetValueName,       true, pro);
+    enableMenuItem(menuItemSetValueName,       true, pro);
+    enableMenuItem(menuItemGetValueNames,      true, pro);
+    enableMenuItem(menuItemSetValueNames,      true, pro);
     enableMenuItem(menuItemObjectName,         true, pro);
+    enableMenuItem(menuItemGetParameter,       true, pro);
+    enableMenuItem(menuItemSetParameter,       true, pro);
     enableMenuItem(menuItemVarGroup,           true, pro, true);
     enableMenuItem(menuItemTimer,              true, pro);
     enableMenuItem(menuItemAnimate,            true, pro, true);
     enableMenuItem(menuItemSaveToFile,         true, pro);
     enableMenuItem(menuItemSaveSelected,       true, pro);
     enableMenuItem(menuItemFetch,              true, pro);
-    enableMenuItem(menuItemDateTime,           true, pro);
+    // enableMenuItem(menuItemDateTime,           true, pro);
     enableMenuItem(menuItemSolve,              true, pro);
     enableMenuItem(menuItemParseJson,          true, pro);
     enableMenuItem(menuItemCorrectColor,       true, pro);

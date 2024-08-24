@@ -210,17 +210,17 @@ Operator.prototype.updateSubscribe = function()
 
 
 
-Operator.prototype.updateSubscribeStatus = function(sub)
+Operator.prototype.updateSubscribeStatus = function(pro)
 {
-    sub = sub || !this.subscription;
+    pro = pro && this.subscription;
 
 
-    this.proCover.style.display = sub ? 'none' : 'block';
-    this.proLabel.style.display = sub ? 'none' : 'block';
+    this.proCover.style.display = pro ? 'block' : 'none';
+    this.proLabel.style.display = pro ? 'block' : 'none';
 
-    this.inner   .style.opacity = sub ? '100%' : '50%';
+    this.inner   .style.opacity = pro ? '50%' : '100%';
 
-    if (sub)
+    if (pro)
         this.updateSubscribe();
 };
 
