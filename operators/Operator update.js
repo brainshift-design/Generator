@@ -210,7 +210,7 @@ Operator.prototype.updateSubscribe = function()
 
 
 
-Operator.prototype.updateSubscribeStatus = function(pro)
+Operator.prototype.updateProStatus = function(pro)
 {
     pro = pro && this.subscription;
 

@@ -551,7 +551,7 @@ function finishLoading(_nodes)
 
 function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false)
 {
-    loadedNodes.forEach(n => n.updateSubscribeStatus(subscribed()));
+    loadedNodes.forEach(n => n.updateProStatus(!subscribed()));
 
     _nodes
         .filter(_n => _n.active)

@@ -420,7 +420,7 @@ function enableFeatures(pro)
     updatePanelButton();
 
 
-    graph.nodes.forEach(n => n.updateSubscribeStatus(pro));
+    graph.nodes.forEach(n => n.updateProStatus(pro));
 }
 
 

@@ -34,7 +34,7 @@ extends GOperator2
         return copy;
     }
 
-
+    menuItemSaveTemplate
 
     async eval(parse)
     {

@@ -3508,7 +3508,7 @@ _otherConns
 _nodes
 setProgress
 loadedNodes
-updateSubscribeStatus
+updateProStatus
 makeActive
 _n
 _connections
