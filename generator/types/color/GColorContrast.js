@@ -51,8 +51,8 @@ extends GOperator2
             standard.value = Math.min(Math.max(0, standard.value), 1);
 
 
-        if (   input0 
-            && input1)
+        if (   input0 && input0.type == COLOR_VALUE 
+            && input1 && input1.type == COLOR_VALUE)
         {
             if (   input0.isValid()
                 && input1.isValid())
@@ -85,7 +85,7 @@ extends GOperator2
             ]);
         }
 
-        else if (input0) 
+        else if (input0 && input0.type == COLOR_VALUE) 
         {
             this.setUpdateValues(parse,
             [
@@ -96,7 +96,7 @@ extends GOperator2
             this.contrast = NumberValue.NaN.copy();
         }
 
-        else if (input1) 
+        else if (input1 && input1.type == COLOR_VALUE) 
         {
             this.setUpdateValues(parse,
             [
