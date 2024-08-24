@@ -42,17 +42,14 @@ function initTemplateMenu(e)
 {
     menuTemplate.clearItems();
 
-    menuItemSaveTemplate = new MenuItem('Save as template...', null, false, {icon: iconManageTemplates,        callback: () => showSaveAsTemplateDialog()});    //menuItemManageTemplates = new MenuItem('Manage templates...', null, false, {icon: iconManageTemplates});
+    menuItemSaveTemplate = new MenuItem('Save as template...', null, false, {icon: iconManageTemplates,        callback: () => showSaveAsTemplateDialog()});
 
-    const sub = subscribed();
+    const pro = !subscribed();
 
-    enableMenuItem(menuItemSaveTemplate,    graphView.selectedNodes.length > 0, sub);
-    enableMenuItem(menuItemManageTemplates, true, sub);
+    enableMenuItem(menuItemSaveTemplate, graphView.selectedNodes.length > 0, pro);
 
     menuTemplate.addItems([
-        menuItemSaveTemplate]);//,
-        //new MenuItem('', null, false, {separator: true}),
-        //menuItemManageTemplates]);
+        menuItemSaveTemplate]);
 
     initTemplateMenuTemplates(presetTemplates, true,  false);
     initTemplateMenuTemplates(userTemplates,   false, true ); // don't show user template names in metrics

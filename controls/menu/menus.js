@@ -274,7 +274,6 @@ var menuItemShapeSelected;
 var menuItemPersist;
 var menuItemShapeExport;
 
-var menuItemManageTemplates;
 
 var menuItemDebugMode;
 
@@ -356,7 +355,6 @@ var menuItemLicenseSep1;
 var menuItemLicenseRemove;
 
 var menuItemSaveTemplate;
-var menuItemManageTemplates;
 
 
 

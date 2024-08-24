@@ -136,9 +136,6 @@ function uiReturnGetAllLocalTemplateNames(templateNames)
         menuItems.push(new MenuItem('', null, false, {separator: true}));
 
 
-    menuItems.push(menuItemManageTemplates);
-
-
     menuTemplate.clearItems();
     menuTemplate.addItems(...menuItems);
 

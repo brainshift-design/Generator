@@ -723,7 +723,6 @@ menuItemStyleSep2
 menuItemShapeSep1
 menuItemShapeSelected
 menuItemPersist
-menuItemManageTemplates
 menuItemDebugMode
 menuItemLogThreadMessages
 menuItemLogDataMessages

@@ -415,7 +415,6 @@ function enableFeatures(pro)
     enableMenuItem(menuItemVectorNetwork,      true, pro, true);
     enableMenuItem(menuItemBooleanShape,       true, pro, true);
     enableMenuItem(menuItemSaveTemplate,       true, pro);
-    enableMenuItem(menuItemManageTemplates,    true, pro);
 
 
     updatePanelButton();
