@@ -105,7 +105,7 @@ Operator.prototype.createHeader = function()
 
 
 
-    this.header.addEventListener('pointerdown', e =>
+this.header.addEventListener('pointerdown', e =>
     {
         if (graphView.isPanning(e))
             return;
@@ -203,8 +203,8 @@ Operator.prototype.createHeader = function()
 
         const headerRect = boundingRect(this.header);
 
-        const rightOfInputs = e.clientX - headerRect.x > 12 * graph.currentPage.zoom;
-        const leftOfOutputs = e.clientX - headerRect.x < headerRect.width - 12 * graph.currentPage.zoom;
+        const rightOfInputs = e.clientX - headerRect.x > 11 * graph.currentPage.zoom;
+        const leftOfOutputs = e.clientX - headerRect.x < headerRect.width - 11 * graph.currentPage.zoom;
 
         const tempConn  = graphView. tempConn;
         let   savedConn = graphView.savedConn;
@@ -299,6 +299,9 @@ Operator.prototype.createHeader = function()
 
                     graphView.overInput   = input;
                     graphView.headerInput = input;
+
+                    tempConn.input = input;
+
 
                     input.mouseOver = true;
                     input.updateControl();
@@ -406,7 +409,8 @@ Operator.prototype.createHeader = function()
             {
                 const input = graphView.headerInput;
 
-                graphView.overInput = null;
+                graphView.overInput      = null;
+                graphView.tempConn.input = null;
 
                 if (input) // will be null if data types don't match or there's no auto input for someo other reason
                 {

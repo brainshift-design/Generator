@@ -137,12 +137,16 @@ extends EventTarget
 
             if (graphView.tempConn)
             {
-                if (   graphView.tempConn.output
-                    && graphView.tempConn.output.node != this.node)
+                const tc = graphView.tempConn;
+
+
+                if (   tc.output
+                    && tc.output.node != this.node)
                 {
                     const input = graphView.overInput;
                     
                     graphView.overInput = null;
+                    tc.input            = null;
                     
                     if (input) // will be null if data types don't match or there's no auto input for someo other reason
                     {
@@ -150,14 +154,15 @@ extends EventTarget
                         input.updateControl();
                     }
                     
-                    graphView.tempConn.wire.inputPos = point_NaN;
+                    tc.wire.inputPos = point_NaN;
                 }
-                else if (graphView.tempConn.input
-                    && graphView.tempConn.input.node != this.node)
+                else if (tc.input
+                      && tc.input.node != this.node)
                 {
                     const output = graphView.overOutput;
                     
                     graphView.overOutput = null;
+                    tc.output            = null;
 
                     if (output) // will be null if data types don't match or there's no auto output for someo other reason
                     {
@@ -165,9 +170,9 @@ extends EventTarget
                         output.updateControl();
                     }
 
-                    graphView.tempConn.wire.outputPos = point_NaN;
+                    tc.wire.outputPos = point_NaN;
 
-                    graphView.tempConn.input.updateControl();
+                    tc.input.updateControl();
                 }
             }
         });
@@ -181,16 +186,19 @@ extends EventTarget
 
             if (graphView.tempConn)
             {
-                if (    graphView.tempConn.output
-                    && !graphView.tempConn.output.node.isOrFollows(this.node))
+                const tc = graphView.tempConn;
+
+
+                if (    tc.output
+                    && !tc.output.node.isOrFollows(this.node))
                 {
                     graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
 
                     if (graphView.overInput)
                         graphView.overInput.endConnection();
                 }
-                else if (graphView.tempConn.input
-                    && !this.node.isOrFollows(graphView.tempConn.input.node))
+                else if (tc.input
+                    && !this.node.isOrFollows(tc.input.node))
                 {
                     graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
                     
@@ -472,52 +480,44 @@ extends EventTarget
             : null;
 
 
-        if (    graphView.tempConn.output
+        const tc = graphView.tempConn;
+
+
+        if (    tc.output
             &&  this.input
-            &&  this.input.canConnectFrom(graphView.tempConn.output)
-            && !graphView.tempConn.output.node.isOrFollows(this.node)
+            &&  this.input.canConnectFrom(tc.output)
+            && !tc.output.node.isOrFollows(this.node)
             && (  !this.input.connected // not already connected to this input
-                || this.input.connectedOutput != graphView.tempConn.output
+                || this.input.connectedOutput != tc.output
                 || this.input == savedInput))
         {
             graphView.overInput = this.input;
+            tc.input            = this.input;
                 
             this.input.mouseOver = true;
             this.input.updateControl();
 
+            tc.wire.inputPos = this.input.getWirePosition();
+            tc.wire.update();
 
-            const rect = boundingRect(this.input.div);
-
-            graphView.tempConn.wire.inputPos = point(
-                rect.x + rect.w/2,
-                rect.y + rect.h/2 - getTopHeight());
-
-            graphView.tempConn.wire.update();
-
-
-            graphView.tempConn.output.updateControl();
+            tc.output.updateControl();
         }
-        else if ( graphView.tempConn.input
+
+        else if ( tc.input
                 &&  this.output
-                &&  graphView.tempConn.input.canConnectFrom(this.output)
-                && !this.node.isOrFollows(graphView.tempConn.input.node))
+                &&  tc.input.canConnectFrom(this.output)
+                && !this.node.isOrFollows(tc.input.node))
         {
             graphView.overOutput = this.output;
+            tc.output            = this.output;
                 
             this.output.mouseOver = true;
             this.output.updateControl();
 
+            tc.wire.outputPos = this.output.getWirePosition();
+            tc.wire.update();
 
-            const rect = boundingRect(this.output.div);
-
-            graphView.tempConn.wire.outputPos = point(
-                rect.x + rect.w/2,
-                rect.y + rect.h/2 - getTopHeight());
-
-            graphView.tempConn.wire.update();
-
-
-            graphView.tempConn.input.updateControl();
+            tc.input.updateControl();
         }
     }
 

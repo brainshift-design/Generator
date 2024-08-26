@@ -506,6 +506,7 @@ extends Control
         this.div.style.cursor =
                this.readOnly 
             || containsChild(this.divValue, this.textbox)
+            || graphView.tempConn
             || graphView.wheelTimer 
             || this.delayUseTimer
             || overNumberControlCtrl == this

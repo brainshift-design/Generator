@@ -13,8 +13,8 @@ extends OperatorBase
         this.addInput (new Input([COLOR_VALUE, FILL_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['Hex', 'RGB 0.0 – 1.0', 'RGB 0 – 255', 'CSS # hex', 'CSS rgb ()', 'CSS hsl ()', 'CSS lab()', 'CSS lch ()', 'CSS oklab()', 'CSS oklch ()', 'CSS color ()', 'name']));
-        this.paramFormat.separatorsBefore.push(1, 3, 6, 10, 11);
+        this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['Hex', 'RGB 0.0 – 1.0', 'RGB 0 – 255', 'CSS # hex', 'CSS rgb ()', 'CSS hsl ()', 'CSS oklch ()', 'CSS lch ()', 'CSS oklab()', 'CSS lab()', 'CSS color ()', 'name']));
+        this.paramFormat.separatorsBefore.push(3, 6, 8, 10, 11);
     }
 
 

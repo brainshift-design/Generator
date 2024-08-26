@@ -760,10 +760,11 @@ function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2,
     const linearGradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
 
     linearGradient.setAttribute('id', gradientId);
-    linearGradient.setAttribute('x1', x1+'%');
-    linearGradient.setAttribute('y1', y1+'%');
-    linearGradient.setAttribute('x2', x2+'%');
-    linearGradient.setAttribute('y2', y2+'%');
+
+    linearGradient.setAttribute('x1', x1 + '%');
+    linearGradient.setAttribute('y1', y1 + '%');
+    linearGradient.setAttribute('x2', x2 + '%');
+    linearGradient.setAttribute('y2', y2 + '%');
 
     
     const contrastDist = 35;

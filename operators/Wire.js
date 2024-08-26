@@ -154,8 +154,6 @@ class Wire
 
     update(x = 0, y = 0)
     {
-        //logFunction('Wire.update()');
-        
         this.clientX = x;
         this.clientY = y;
     
@@ -171,7 +169,7 @@ class Wire
         const output = graphView.overOutput ?? conn.output;
         const input  = graphView.overInput  ?? conn.input;
 
-        
+
         if (output)
         {
             const ro = boundingRect(output.div);
@@ -202,10 +200,10 @@ class Wire
 
             if (pOut.y < outTop   ) pOut.y = outTop;
             if (pOut.y > outBottom) pOut.y = outBottom;
-        }        
+        }
 
 
-        this.updateSvg(pOut.x, pOut.y, pIn.x, pIn.y);        
+        this.updateSvg(pOut.x, pOut.y, pIn.x, pIn.y);
     }
 
     
@@ -511,8 +509,8 @@ class Wire
 
         const conn   = this.connection;
 
-        const output = graphView.overOutput ?? conn.output;
-        const input  = graphView.overInput  ?? conn.input;
+        const output = conn.output;
+        const input  = conn.input;
 
 
         this.isReset = 
@@ -571,7 +569,7 @@ class Wire
     
             if (hcl[2] > th - dl)
                 color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th - dl]));
-         }
+        }
     
                 
         const unknown = 
@@ -620,14 +618,17 @@ class Wire
         if (   output 
             && input  
             && (      output.types[0] == NUMBER_VALUE 
-                   && input .types.includes(TEXT_VALUE)
+                   && input .types[0] == TEXT_VALUE
+
                 ||    output.types[0] == TEXT_VALUE 
-                   && input .types.includes(NUMBER_VALUE)
+                   && input .types[0] == NUMBER_VALUE
+                
                 ||    output.types[0] == NUMBER_LIST_VALUE 
-                   && input .types.includes(TEXT_VALUE)
+                   && input .types[0] == TEXT_VALUE
                    && input .types.includes(TEXT_LIST_VALUE)
+                
                 ||    output.types[0] == TEXT_LIST_VALUE 
-                   && input .types.includes(NUMBER_VALUE)
+                   && input .types[0] == NUMBER_VALUE
                    && input .types.includes(NUMBER_LIST_VALUE)))
         {
             const dx = x2 - x1;
@@ -719,20 +720,9 @@ class Wire
 
     show(show, update = true)
     {
-        // const isReordering =   
-        //        isNaN(newReorderIndex)
-        //     || isNaN(oldReorderIndex);
-    
-        showElement(this.svg, show);//(this != this.savedConn || isReordering));
-        //showElement(this.curve,   show);//show && (this != this.savedConn || isReordering));
-        //showElement(this.xp1,     show);//(this != this.savedConn || isReordering));
-        //showElement(this.xp2,     show);//(this != this.savedConn || isReordering));
-        //showElement(this.outBall, show);//(!this.tempConn || this.tempConn.output));
-        //showElement(this. inBall, show);//(!this.tempConn || this.tempConn. input));
-    
+        showElement(this.svg, show);
     
         if (update)
             this.update();
-            // updateWire(wire);
     }
 }

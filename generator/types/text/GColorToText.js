@@ -200,20 +200,21 @@ function getColorToTextValue(input, format)
                 str += ')';
             break;
         }
-        case 6: // CSS lab
+        case 6: // CSS oklch
         {
-            const lab = rgb2lab(rgba);
+            const hcl = rgb2hclok(rgba);
 
             str = 
-                'lab('
-                +       numToString(lab[0] * 100)
-                + ' ' + numToString(lab[1] * 100)
-                + ' ' + numToString(lab[2] * 100);
+                'oklch('
+                +       numToString(hcl[2] * 100)
+                + ' ' + numToString(hcl[1], -3)
+                + ' ' + numToString(hcl[0] * 360);
 
-                if (input.type == FILL_VALUE)
-                    str += ' / ' + numToString(rgba[3], -3);
-    
-                str += ')';
+            if (input.type == FILL_VALUE)
+                str += ' / ' + numToString(rgba[3], -3);
+
+            str += ')';
+
             break;
         }
         case 7: // CSS lch
@@ -250,21 +251,20 @@ function getColorToTextValue(input, format)
 
             break;
         }
-        case 9: // CSS oklch
+        case 9: // CSS lab
         {
-            const hcl = rgb2hclok(rgba);
+            const lab = rgb2lab(rgba);
 
             str = 
-                'oklch('
-                +       numToString(hcl[2] * 100)
-                + ' ' + numToString(hcl[1], -3)
-                + ' ' + numToString(hcl[0] * 360);
+                'lab('
+                +       numToString(lab[0] * 100)
+                + ' ' + numToString(lab[1] * 100)
+                + ' ' + numToString(lab[2] * 100);
 
-            if (input.type == FILL_VALUE)
-                str += ' / ' + numToString(rgba[3], -3);
-
-            str += ')';
-
+                if (input.type == FILL_VALUE)
+                    str += ' / ' + numToString(rgba[3], -3);
+    
+                str += ')';
             break;
         }
         case 10: // CSS color
@@ -282,8 +282,8 @@ function getColorToTextValue(input, format)
             {
                 case  0:
                 case  1: 
-                case  7:
-                case  8:
+                case  2: 
+                case  3: 
                 case  9:
                 case 10:
                 case 11:
@@ -291,11 +291,11 @@ function getColorToTextValue(input, format)
                 case 13:
                 case 14: space = 'srgb';         color =           rgba;  break;
 
-                case  2: space = 'srgb-linear';  color = rgb2lin  (rgba); break;
-                case  3: space = 'display-p3';   color = rgb2p3   (rgba); break;
-                case  4: space = 'a98-rgb';      color = rgb2a98  (rgba); break;
-                case  5: space = 'prophoto-rgb'; color = rgb2pro  (rgba); break;
-                case  6: space = 'rec2020';      color = rgb2r2020(rgba); break;
+                case  4: space = 'srgb-linear';  color = rgb2lin  (rgba); break;
+                case  5: space = 'display-p3';   color = rgb2p3   (rgba); break;
+                case  6: space = 'a98-rgb';      color = rgb2a98  (rgba); break;
+                case  7: space = 'prophoto-rgb'; color = rgb2pro  (rgba); break;
+                case  8: space = 'rec2020';      color = rgb2r2020(rgba); break;
 
                 case 15: space = 'xyz';          color = rgb2xyz  (rgba); break;
                 case 16: space = 'xyz-d50';      color = rgb2xyz  (rgba, sRGB_D50); break;

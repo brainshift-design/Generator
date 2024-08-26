@@ -136,7 +136,6 @@ extends EventTarget
             {
                 graphView.headerInput.updateControl();
                 graphView.headerInput = null;
-                //console.log('headerInput = ', graphView.headerInput);
             }
 
             
@@ -151,30 +150,31 @@ extends EventTarget
             
             const tc = graphView.tempConn;
 
-            if (   tc
-                && tc.output
-                && this.canConnectFrom(tc.output)
+
+            if (    tc
+                &&  tc.output
+                &&  this.canConnectFrom(tc.output)
+                && !tc.output.node.isOrFollows(this.node)
                 && (  !this.connected
                     || this.connectedOutput != tc.output
                     || this == savedInput))
             {
-                const rect = boundingRect(this.div);
-                const loop = tc.output.node.isOrFollows(this.node);
+                graphView.overInput = this;
+                if (tc) tc.input    = this;
 
-                if (!loop)
-                {
-                    tc.wire.inputPos = point(
-                        rect.x + rect.w/2,
-                        rect.y + rect.h/2 - getTopHeight());
-                }
+                tc.wire.inputPos = this.getWirePosition();
+                tc.wire.update();
 
-                graphView.overInput = !loop ? this : null;
-                this.node.inputs.forEach(i => i.updateControl());
+                tc.output.updateControl();
+                // this.node.inputs.forEach(i => i.updateControl());
             }
             else if (!tc
                    ||    tc.output
                       && this.canConnectFrom(tc.output))
+            {
                 graphView.overInput = this;
+                if (tc) tc.input = graphView.overInput;
+            }
 
 
             this.updateControl();
@@ -200,10 +200,16 @@ extends EventTarget
 
     endConnection()
     {
+        const overInput = graphView.overInput;
+
+        const tc = graphView.tempConn;
+
         graphView.overInput = null;
+        if (tc) tc.input = null;
 
         this.mouseOver = false;
         this.updateControl();
+// /        if (graphView.headerInput == overInput)
 
         if (   graphView.tempConn
             && graphView.tempConn.output)

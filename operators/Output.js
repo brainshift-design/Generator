@@ -117,22 +117,21 @@ extends EventTarget
             this.updateControl();
 
 
-            if (   graphView.tempConn
-                && graphView.tempConn.input
-                && graphView.tempConn.input.canConnectFrom(this))//this.supportsTypes(graphView.tempConn.input.types))//.includes(this.type))
+            const tc = graphView.tempConn;
+
+
+            if (    tc
+                &&  tc.input
+                &&  tc.input.canConnectFrom(this)
+                && !this.node.isOrFollows(tc.input.node))//this.supportsTypes(graphView.tempConn.input.types))//.includes(this.type))
             {
-                const rect = boundingRect(this.div);
-                const loop = this.node.isOrFollows(graphView.tempConn.input.node);
+                graphView.overOutput = this;
+                tc.output            = this;
 
-                if (!loop)
-                {
-                    graphView.tempConn.wire.outputPos = point(
-                        rect.x + rect.w/2,
-                        rect.y + rect.h/2 - getTopHeight());
-                }
+                tc.wire.outputPos = this.getWirePosition();
 
-                graphView.overOutput = !loop ? this : null;
-                this.node.outputs.forEach(o => o.updateControl());
+                tc.input.updateControl();
+                // this.node.outputs.forEach(o => o.updateControl());
             }
             else
                 graphView.overOutput = this; 
