@@ -27,7 +27,6 @@ const connTag              = 'G_CONN';
 const pageTag              = 'G_PAGE';
 const tempTag              = 'G_TEMP';
 
-
 const minWindowWidth       = 602;
 const minWindowHeight      =  39;
 
@@ -11647,6 +11646,28 @@ extends GNode
     async evalObjects(parse)
     {
 
+    }
+
+
+
+    evalInputOrList(input, evalFunc, nan)
+    {
+        if (isListValueType(input.type))
+        {
+            this.value = new ListValue();
+    
+            for (let i = 0; i < input.items.length; i++)
+            {
+                const item = input.items[i];
+    
+                this.value.items.push(
+                    item.type == nan.type
+                    ? evalFunc(item)
+                    : nan);   
+            }
+        }
+        else
+            this.value = evalFunc(input);
     }
 
 
@@ -25460,22 +25481,10 @@ extends GOperator1
         {
             if (this.options.enabled)
             {
-                if (isListValueType(input.type))
-                {
-                    this.value = new ListValue();
-
-                    for (let i = 0; i < input.items.length; i++)
-                    {
-                        const item = input.items[i];
-
-                        this.value.items.push(
-                            item.type == NUMBER_VALUE
-                            ? getSetPrecisionValue(item, decimals)
-                            : NumberValue.NaN.copy());   
-                    }
-                }
-                else
-                    this.value = getSetPrecisionValue(input, decimals);
+                this.evalInputOrList(
+                    input, 
+                    item => getSetPrecisionValue(item, decimals), 
+                    NumberValue.NaN.copy()); 
             }
             else
                 this.value = input;
@@ -25541,7 +25550,22 @@ function getSetPrecisionValue(input, decimals)
          input == NUMBER_VALUE, 
         'input must be NUMBER_VALUE');
 
-    return new NumberValue(input.value, decimals.value);
+    if (input.type == COLOR_VALUE)
+        return new ColorValue(
+            new NumberValue(input.c1.value, decimals),
+            new NumberValue(input.c2.value, decimals),
+            new NumberValue(input.c3.value, decimals));
+    
+    else if (input.type == FILL_VALUE)
+        return new FillValue(
+            new ColorValue(
+                new NumberValue(input.color.c1.value, decimals),
+                new NumberValue(input.color.c2.value, decimals),
+                new NumberValue(input.color.c3.value, decimals)),
+            new NumberValue(input.opacity.value, decimals));
+
+    else
+        return new NumberValue(input.value, decimals.value);
 }
 
 
@@ -33707,8 +33731,14 @@ extends GOperator1
 
 function getColorToTextValue(input, format)
 {
+    if (   input.type != COLOR_VALUE
+        && input.type != FILL_VALUE)
+        return new TextValue();
+
+
     let str = NAN_CHAR;
 
+    
     const rgba = 
         input.type == COLOR_VALUE
         ? rgb_a(input.toRgb())
@@ -34937,21 +34967,10 @@ extends GOperator1
         {
             if (this.options.enabled)
             {
-                if (isListValueType(input.type))
-                {
-                    this.value = new ListValue();
-
-                    for (let i = 0; i < input.items.length; i++)
-                    {
-                        const item = input.items[i];
-
-                        this.value.items.push(evalAddText(item, text, prefix));
-                    }
-                }
-                else
-                {
-                    this.value.items.push(evalAddText(input, text, prefix));
-                }
+                this.evalInputOrList(
+                    input, 
+                    item => evalAddText(item, text, prefix), 
+                    new TextValue());
             }
             else
                 this.value = input.copy();
@@ -63089,6 +63108,13 @@ function rgb_a(rgb, a = 1)
 function isDark(rgb, threshold = 0.71)
 {
     return rgb2hclok(rgb)[2] < threshold;
+}
+
+
+
+function isLight(rgb, threshold = 0.71)
+{
+    return !isDark(rgb, threshold);
 }
 
 

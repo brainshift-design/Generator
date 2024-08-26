@@ -55,21 +55,10 @@ extends GOperator1
         {
             if (this.options.enabled)
             {
-                if (isListValueType(input.type))
-                {
-                    this.value = new ListValue();
-
-                    for (let i = 0; i < input.items.length; i++)
-                    {
-                        const item = input.items[i];
-
-                        this.value.items.push(evalAddText(item, text, prefix));
-                    }
-                }
-                else
-                {
-                    this.value.items.push(evalAddText(input, text, prefix));
-                }
+                this.evalInputOrList(
+                    input, 
+                    item => evalAddText(item, text, prefix), 
+                    new TextValue());
             }
             else
                 this.value = input.copy();

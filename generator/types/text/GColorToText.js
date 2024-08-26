@@ -123,8 +123,14 @@ extends GOperator1
 
 function getColorToTextValue(input, format)
 {
+    if (   input.type != COLOR_VALUE
+        && input.type != FILL_VALUE)
+        return new TextValue();
+
+
     let str = NAN_CHAR;
 
+    
     const rgba = 
         input.type == COLOR_VALUE
         ? rgb_a(input.toRgb())

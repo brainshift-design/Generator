@@ -314,6 +314,13 @@ function isDark(rgb, threshold = 0.71)
 
 
 
+function isLight(rgb, threshold = 0.71)
+{
+    return !isDark(rgb, threshold);
+}
+
+
+
 function rgbDistance(col1, col2)
 {
     const d0 = col2[0] - col1[0];

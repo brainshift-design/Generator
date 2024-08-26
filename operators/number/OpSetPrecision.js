@@ -13,7 +13,15 @@ extends OperatorBase
         //this.iconOffsetY = -2;
         
 
-        this.addInput (new Input ([NUMBER_VALUE, NUMBER_LIST_VALUE, TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
+        this.addInput(new Input([
+            NUMBER_VALUE, 
+            NUMBER_LIST_VALUE, 
+            TEXT_VALUE, 
+            TEXT_LIST_VALUE, 
+            COLOR_VALUE, 
+            FILL_VALUE, 
+            LIST_VALUE]));
+
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramDecimals = new NumberParam('decimals', 'decimals', false, true,  true, 0, 0, 10));
@@ -79,15 +87,25 @@ extends OperatorBase
         const colors = super.getHeaderColors(options);
         const type   = this.outputs[0].types[0];
 
-        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+        //colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
-        const gray =
-               this.active
-            && this.outputs[0].types[0] == LIST_VALUE;
+        if (   this.outputs[0].supportsTypes([COLOR_VALUE])
+            || this.outputs[0].supportsTypes([FILL_VALUE]))
+        {
+            if (this.inputs[0].connected)
+                colors.output  = this.inputs[0].connectedOutput.getWireColor();//wireColor;
+                //colors.outWire = this.inputs[0].connectedOutput.wireColor;
+        }
+        else
+        {
+            const gray =
+                this.active
+                && this.outputs[0].types[0] == LIST_VALUE;
 
-        colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-        colors.outWire = rgbFromType(type, true);
-
+            colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+            //colors.outWire = rgbFromType(type, true);
+        }
+        
         return colors;
     }
 }

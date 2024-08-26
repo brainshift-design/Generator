@@ -100,6 +100,28 @@ extends GNode
 
 
 
+    evalInputOrList(input, evalFunc, nan)
+    {
+        if (isListValueType(input.type))
+        {
+            this.value = new ListValue();
+    
+            for (let i = 0; i < input.items.length; i++)
+            {
+                const item = input.items[i];
+    
+                this.value.items.push(
+                    item.type == nan.type
+                    ? evalFunc(item)
+                    : nan);   
+            }
+        }
+        else
+            this.value = evalFunc(input);
+    }
+
+
+
     copyObjects(value, listId = -1)
     {
         const objects = getValidObjects(value);

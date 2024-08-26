@@ -46,7 +46,6 @@ const connTag              = 'G_CONN';
 const pageTag              = 'G_PAGE';
 const tempTag              = 'G_TEMP';
 
-
 const minWindowWidth       = 602;
 const minWindowHeight      =  39;
 

@@ -51,22 +51,10 @@ extends GOperator1
         {
             if (this.options.enabled)
             {
-                if (isListValueType(input.type))
-                {
-                    this.value = new ListValue();
-
-                    for (let i = 0; i < input.items.length; i++)
-                    {
-                        const item = input.items[i];
-
-                        this.value.items.push(
-                            item.type == NUMBER_VALUE
-                            ? getSetPrecisionValue(item, decimals)
-                            : NumberValue.NaN.copy());   
-                    }
-                }
-                else
-                    this.value = getSetPrecisionValue(input, decimals);
+                this.evalInputOrList(
+                    input, 
+                    item => getSetPrecisionValue(item, decimals), 
+                    NumberValue.NaN.copy()); 
             }
             else
                 this.value = input;
@@ -132,5 +120,20 @@ function getSetPrecisionValue(input, decimals)
          input == NUMBER_VALUE, 
         'input must be NUMBER_VALUE');
 
-    return new NumberValue(input.value, decimals.value);
+    if (input.type == COLOR_VALUE)
+        return new ColorValue(
+            new NumberValue(input.c1.value, decimals),
+            new NumberValue(input.c2.value, decimals),
+            new NumberValue(input.c3.value, decimals));
+    
+    else if (input.type == FILL_VALUE)
+        return new FillValue(
+            new ColorValue(
+                new NumberValue(input.color.c1.value, decimals),
+                new NumberValue(input.color.c2.value, decimals),
+                new NumberValue(input.color.c3.value, decimals)),
+            new NumberValue(input.opacity.value, decimals));
+
+    else
+        return new NumberValue(input.value, decimals.value);
 }
