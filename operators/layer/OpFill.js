@@ -338,15 +338,6 @@ function updateFillHeader(node, colors, opacityIsValid)
         updateHeaderCheckers(node, colors);
                         
 
-    node.inputs[0] .colorLight = 
-    node.inputs[0] .colorDark  = colors.input;
-    //node.inputs[0] .wireColor  = colors.inWire;
-
-    node.outputs[0].colorLight =
-    node.outputs[0].colorDark  = colors.output;
-    //node.outputs[0].wireColor  = colors.outWire;
-
-
     if (node.isUnknown())
         node._warningOverlay.style.display = 'none';
 

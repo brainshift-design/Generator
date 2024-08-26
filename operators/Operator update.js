@@ -369,22 +369,12 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
     for (let i = 0; i < inputs.length; i++)
     {
         inputs[i].div.style.top = inputY[i];
-        
-        inputs[i].colorLight =
-        inputs[i].colorDark  = colors.input;
-
-        //inputs[i].wireBall.style.background = rgba2style(colors.input);
-
         inputs[i].updateControl();
     }
 
     for (let i = 0; i < outputs.length; i++) 
     {
         outputs[i].div.style.top = outputY[i];
-
-        outputs[i].colorLight =
-        outputs[i].colorDark  = colors.output;
-
         outputs[i].updateControl();
     }
 

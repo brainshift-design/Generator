@@ -178,10 +178,6 @@ extends OpColorBase
         }
 
 
-        this.outputs[0].colorLight =
-        this.outputs[0].colorDark  = colors.output;
-
-
         if (this.isUnknown())
             this._warningOverlay.style.display = 'none';
 

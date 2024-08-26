@@ -2,6 +2,7 @@ class GradientValue
 extends GValue
 {
     stops;
+ 
     gradType;
     position;
     x;
@@ -136,8 +137,13 @@ extends GValue
 
     toRgba()
     {
-        return this.stops.length > 0
-             ? this.stops[0].fill.toRgba()
+        const stops = this.stops.items;
+
+        return stops.length > 0
+             ? rgbaLerp(
+                 stops[0]    .fill.color.toRgba(), 
+                 stops.at(-1).fill.color.toRgba(), 
+                 0.5)
              : rgba_NaN;
     }
 

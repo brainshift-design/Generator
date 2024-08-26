@@ -106,12 +106,6 @@
 //         this.div.input        = this;
         
         
-//         this.colorLight       = [0, 0, 0, 1];
-//         this.colorDark        = [1, 1, 1, 1];
-
-//         this.wireColor        = rgbFromType(this.types[0], true);
-
-        
 //         this.div.appendChild(this.hitbox);
 //         this.div.appendChild(this.wireBall);
 
@@ -227,23 +221,6 @@
 
 
     
-//     // updateColor()
-//     // {
-//     //     this.colorDark = rgbFromTypeMode(
-//     //         !isEmpty(this.types) 
-//     //         ? this.types[0] 
-//     //         : NUMBER_VALUE, 
-//     //         true);
-
-//     //     this.colorLight = rgbFromTypeMode(
-//     //         !isEmpty(this.types) 
-//     //         ? this.types[0] 
-//     //         : NUMBER_VALUE, 
-//     //         false);
-//     // }
-
-
-
 //     updateControl()
 //     {
 //         const tc = graphView.tempConn;
@@ -262,9 +239,7 @@
 //             && this.param.type != COLOR_VALUE
 //             && this.param.type !=  FILL_VALUE
 //             ? rgb_a(rgbFromType(this.param.type, true), 0.5)
-//             : (darkMode
-//                ? this.colorDark
-//                : this.colorLight);
+//             : _color;
 
 //         const colorStyle = 
 //             rgba2style(rgb_a(

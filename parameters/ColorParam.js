@@ -324,21 +324,6 @@ extends Parameter
         super.updateControls(false);
 
 
-        if (this.input)
-        {
-            this.input.colorLight  = 
-            this.input.colorDark   = showColorBack ? rgb_a(rgbText, 0.2) : noColor;
-            //this.input.wireColor   = !rgbIsNaN(rgbStripe) && showColorBack ? rgbStripe : noColor;
-        }
-
-        if (this.output)
-        {
-            this.output.colorLight =
-            this.output.colorDark  = showColorBack ? rgb_a(rgbText, 0.2) : noColor;
-            //this.output.wireColor  = !rgbIsNaN(rgbStripe) && showColorBack ? rgbStripe : noColor;
-        }
-
-
         this.div.style.background =
             showColorBack
             ? (!rgbIsNaN(rgbBack)

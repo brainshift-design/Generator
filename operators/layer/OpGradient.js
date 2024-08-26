@@ -370,6 +370,28 @@ extends OpColorBase
 
 
 
+    getInputWireColor()
+    {
+        let color = this.value.toRgba();
+        if (rgbaIsNaN(color)) color = rgbFromType(ANY_VALUE, true);
+
+        if (!rgbIsNaN(color)) return color;
+        else                  return super.getInputWireColor();
+    }
+
+
+
+    getOutputWireColor()
+    {
+        let color = this.value.toRgba();
+        if (rgbaIsNaN(color)) color = rgbFromType(ANY_VALUE, true);
+
+        if (!rgbIsNaN(color)) return color;
+        else                  return super.getOutputWireColor();
+    }
+
+
+
     createNormalGradient(stops)
     {
         let gradient = '';

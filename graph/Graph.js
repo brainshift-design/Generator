@@ -190,9 +190,12 @@ class Graph
         removeFromArray(output.connectedInputs, input);
 
 
-        input.connectedOutput.connection = null;
-        input.connectedOutput            = null;
-        input.connection                 = null;
+        if (!output.connected)
+            input.connectedOutput.connection = null;
+
+        
+        input.connectedOutput = null;
+        input.connection      = null;
 
 
         if (input.param)

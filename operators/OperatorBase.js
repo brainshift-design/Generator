@@ -20,23 +20,6 @@ extends Operator
 
         this.header.style.backgroundColor = rgba2style(colors.back);
         this.label .style.color           = rgba2style(colors.text);
-
-
-        // console.log('colors.input =', colors.input);
-        // console.log('colors.output =', colors.output);
-
-        for (const input of this.headerInputs)
-        {
-            input.colorLight = 
-            input.colorDark  = colors.input;
-        }
-
-        
-        for (const output of this.headerOutputs) 
-        {
-            output.colorLight =
-            output.colorDark  = colors.output;
-        }
     }
 }
 

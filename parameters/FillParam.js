@@ -356,21 +356,6 @@ extends Parameter
         super.updateControls();
 
 
-        if (this.input)
-        {
-            this.input.colorLight  = 
-            this.input.colorDark   = showColorBack ? rgb_a(rgbaText, 0.2) : noColor;
-            //this.input.wireColor   = !rgbaIsNaN(rgbaStripe) && showColorBack ? rgbaStripe : noColor;
-        }
-
-        if (this.output)
-        {
-            this.output.colorLight =
-            this.output.colorDark  = showColorBack ? rgb_a(rgbaText, 0.2) : noColor;
-            //this.output.wireColor  = !rgbaIsNaN(rgbaStripe) && showColorBack ? rgbaStripe : noColor;
-        }
-
-
         this.checkers.style.background =
             darkMode
             ?   'linear-gradient(-45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '

@@ -147,6 +147,13 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this._color = 
+            value
+            ? value.fills.items[0].color.toDataColor()
+            : dataColor_NaN;
+
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         this.outputs[0].types =
@@ -220,21 +227,6 @@ extends OpColorBase
         }
 
 
-        // this.header.style.background = 
-        //     !rgbIsNaN(colors.stripeBack)
-        //     ? rgba2style(colors.stripeBack) 
-        //     : 'transparent';
-
-
-        this.inputs[0] .colorLight = 
-        this.inputs[0] .colorDark  = colors.input;
-        //this.inputs[0] .wireColor  = colors.inWire;
-
-        this.outputs[0].colorLight =
-        this.outputs[0].colorDark  = colors.output;
-        //this.outputs[0].wireColor  = colors.outWire;
-
-
         if (this.isUnknown())
             this._warningOverlay.style.display = 'none';
 
@@ -283,6 +275,27 @@ extends OpColorBase
     }
 
     
+
+    getInputWireColor()
+    {
+        if (!dataColorIsNaN(this._color))
+            return dataColor2rgb(this._color);
+        else
+            return super.this._colorgetInputWireColor();
+    }
+
+
+
+    getOutputWireColor()
+    {
+        console.log('this._color =', this._color);
+        if (!dataColorIsNaN(this._color))
+            return dataColor2rgb(this._color);
+        else
+            return super.getOutputWireColor();
+    }
+
+
 
     getHeaderColors(options = {})
     {

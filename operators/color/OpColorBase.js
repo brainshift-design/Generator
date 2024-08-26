@@ -50,21 +50,7 @@ extends Operator
             ? rgb2style(colors.stripeBack)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
-
-        for (const input of this.headerInputs)
-        {
-            input.colorLight =
-            input.colorDark  = colors.input;
-        }
-
-
-        for (const output of this.headerOutputs)
-        {
-            output.colorLight = 
-            output.colorDark  = colors.output;
-        }
-
-
+            
         this.updateWarningOverlay();
     }
 

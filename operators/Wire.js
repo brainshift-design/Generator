@@ -615,45 +615,45 @@ class Wire
 
 
         // converting types
-        if (   output 
-            && input  
-            && (      output.types[0] == NUMBER_VALUE 
-                   && input .types[0] == TEXT_VALUE
+        // if (   output 
+        //     && input  
+        //     && (      output.types[0] == NUMBER_VALUE 
+        //            && input .types[0] == TEXT_VALUE
 
-                ||    output.types[0] == TEXT_VALUE 
-                   && input .types[0] == NUMBER_VALUE
+        //         ||    output.types[0] == TEXT_VALUE 
+        //            && input .types[0] == NUMBER_VALUE
                 
-                ||    output.types[0] == NUMBER_LIST_VALUE 
-                   && input .types[0] == TEXT_VALUE
-                   && input .types.includes(TEXT_LIST_VALUE)
+        //         ||    output.types[0] == NUMBER_LIST_VALUE 
+        //            && input .types[0] == TEXT_VALUE
+        //            && input .types.includes(TEXT_LIST_VALUE)
                 
-                ||    output.types[0] == TEXT_LIST_VALUE 
-                   && input .types[0] == NUMBER_VALUE
-                   && input .types.includes(NUMBER_LIST_VALUE)))
-        {
-            const dx = x2 - x1;
-            const dy = y2 - y1;
+        //         ||    output.types[0] == TEXT_LIST_VALUE 
+        //            && input .types[0] == NUMBER_VALUE
+        //            && input .types.includes(NUMBER_LIST_VALUE)))
+        // {
+        //     const dx = x2 - x1;
+        //     const dy = y2 - y1;
 
-            const wireLength   = distv(point(x1, y1), point(x2, y2)) / graph.currentPage.zoom;
-            const gradContrast = 1 - Math.min(Math.max(0, wireLength / 100 - 0.5), 1);
+        //     const wireLength   = distv(point(x1, y1), point(x2, y2)) / graph.currentPage.zoom;
+        //     const gradContrast = 1 - Math.min(Math.max(0, wireLength / 100 - 0.5), 1);
 
-            setSvgLinearGradientStroke(
-                this.curve.closest('svg'),
-                this.curve,
-                rgba2style(outColor),
-                rgba2style(inColor ),
-                -dx > Math.abs(dy) ? 100 : 0,
-                -dy > Math.abs(dx) ? 100 : 0,
-                 dx > Math.abs(dy) ? 100 : 0,
-                 dy > Math.abs(dx) ? 100 : 0,
-                 gradContrast);
-        }
+        //     setSvgLinearGradientStroke(
+        //         this.curve.closest('svg'),
+        //         this.curve,
+        //         rgba2style(outColor),
+        //         rgba2style(inColor ),
+        //         -dx > Math.abs(dy) ? 100 : 0,
+        //         -dy > Math.abs(dx) ? 100 : 0,
+        //          dx > Math.abs(dy) ? 100 : 0,
+        //          dy > Math.abs(dx) ? 100 : 0,
+        //          gradContrast);
+        // }
         
-        // same type
-        else 
-        {
+        // // same type
+        // else 
+        // {
             this.curve.style.stroke = rgba2style(color);
-        }
+        // }
 
         
         this.curve2.style.stroke = rgb2style(rgbDocumentBody);

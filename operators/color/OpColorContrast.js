@@ -262,6 +262,16 @@ extends OpColorBase
 
 
 
+    getInputWireColor()
+    {
+        if (!rgbIsNaN(this._rgbText))
+            return this._rgbText;
+        else
+            return super.getInputWireColor();
+    }
+
+
+
     getOutputWireColor()
     {
         if (!rgbIsNaN(this._rgbText))

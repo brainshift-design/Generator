@@ -230,8 +230,6 @@ extends EventTarget
         this.input.div.style.top       = '50%';
         this.input.div.style.transform = 'translateY(-50%)';
 
-        this.input.colorLight          = [0, 0, 0, 0.12];
-        this.input.colorDark           = [1, 1, 1, 0.12];
         this.input.overFactor          = 3;
 
         this.input.canAutoConnect      = false;
@@ -255,8 +253,6 @@ extends EventTarget
         this.output.div.style.top       = '50%';
         this.output.div.style.transform = 'translateY(-50%)';
         
-        this.output.colorLight          = [0, 0, 0, 0.12];
-        this.output.colorDark           = [1, 1, 1, 0.12];
         this.output.overFactor          = 3;
 
         this.div.appendChild(this.output.div);
@@ -398,21 +394,6 @@ extends EventTarget
 
 
         this.controls.forEach(c => c.update());
-
-
-        if (this.input)
-        {
-            this.input.colorLight  = 
-            this.input.colorDark   = rgbFromType(this.type, true);
-            //this.input.wireColor   = rgbFromType(this.type, true);
-        }
-
-        if (this.output)
-        {
-            this.output.colorLight =
-            this.output.colorDark  = rgbFromType(this.output.types[0], true);
-            //this.output.wireColor  = rgbFromType(this.output.types[0], true);
-        }
     }
 
 

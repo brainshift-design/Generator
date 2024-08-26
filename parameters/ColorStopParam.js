@@ -161,22 +161,6 @@ extends Parameter
         const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
         const rgbaBack   = rgbaStripe;
         const rgbaText   = getTextColorFromBackColor(rgbaStripe, rgba[3]);
-
-
-        //this.updateWarningOverlay();
-
-
-        if (this.input)
-        {
-            this.input.colorLight  = 
-            this.input.colorDark   = rgb_a(rgbaText, 0.2);
-        }
-
-        if (this.output)
-        {
-            this.output.colorLight =
-            this.output.colorDark  = rgb_a(rgbaText, 0.2);
-        }
     }
 
 

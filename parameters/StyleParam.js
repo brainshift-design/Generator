@@ -136,30 +136,12 @@
 //             const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
 
 
-//             //this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
-//             this.input.colorLight  = 
-//             this.input.colorDark   = rgb_a(rgbaText, 0.2);
-
-//             //this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
-//             this.output.colorLight =
-//             this.output.colorDark  = rgb_a(rgbaText, 0.2);
-
-
 //             this.textControl.style.display = 'none';
 //         }
 //         else
 //         {
 //             const noColor  = darkMode ? rgbNoColorDark      : rgbNoColorLight;
 //             const rgbaText = darkMode ? rgbaNoColorTextDark : rgbaNoColorTextLight;
-
-
-//             //this.input.wireColor           = noColor;
-//             this.input.colorLight          = 
-//             this.input.colorDark           = rgb_a(rgbaText, 0.12);
-        
-//             //this.output.wireColor          = noColor;
-//             this.output.colorLight         =
-//             this.output.colorDark          = rgb_a(rgbaText, 0.12);
 
 
 //             this.textControl.style.display = 'inline-block';
