@@ -1643,6 +1643,16 @@ const COLOR_TYPES =
 ];
 
 
+const COLOR_VALUES =
+[
+    COLOR_VALUE,
+    FILL_VALUE,
+    STROKE_VALUE,
+    COLOR_STOP_VALUE,
+    GRADIENT_VALUE
+];
+
+
 const EFFECT_TYPES =
 [
     ...STROKE_SIDES_TYPES,

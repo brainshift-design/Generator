@@ -329,17 +329,6 @@ extends EventTarget
 
 
 
-    typeIsColor()
-    {
-        return this.types[0] == COLOR_VALUE
-            || this.types[0] == FILL_VALUE
-            || this.types[0] == STROKE_VALUE
-            || this.types[0] == COLOR_STOP_VALUE
-            || this.types[0] == GRADIENT_VALUE;
-    }
-
-
-
     paramTypeIsColor()
     {
         return this.param
@@ -370,7 +359,7 @@ extends EventTarget
 
         if (   graphView.tempConn
             && graphView.overInput == this
-            && (   this.typeIsColor()
+            && (   isColorType(this.types[0])
                 || graphView.tempConn.output.types[0] != this.types[0]))
             return graphView.tempConn.output.getWireColor();
 
@@ -388,13 +377,13 @@ extends EventTarget
             return transparent;
 
         if (   this.connected
-            && (   this.typeIsColor()
+            && (   isColorType(this.types[0])
                 || this.connectedOutput.types[0] != this.types[0]))
             return this.connectedOutput.getWireColor();
 
         if (   graphView.tempConn
             && graphView.overInput == this
-            && (   this.typeIsColor()
+            && (   isColorType(this.types[0])
                 || graphView.tempConn.output.types[0] != this.types[0]))
             return graphView.tempConn.output.getWireColor();
 
@@ -423,7 +412,7 @@ extends EventTarget
 
         if (darkMode)
         {
-            if (   this.typeIsColor()
+            if (   isColorType(this.types[0])
                 && this.paramTypeIsColor())
             {
                 ringColor = 
@@ -438,7 +427,7 @@ extends EventTarget
         }
         else
         {
-            if (   this.typeIsColor()
+            if (   isColorType(this.types[0])
                 && this.paramTypeIsColor())
             {
                 ringColor = 
@@ -467,7 +456,7 @@ extends EventTarget
 
         if (darkMode)
         {
-            if (this.typeIsColor())
+            if (isColorType(this.types[0]))
             {
                 ringColor =
                     rgbIsNaN(colors.back)
@@ -483,7 +472,7 @@ extends EventTarget
         }
         else // light mode
         {
-            if (this.typeIsColor())
+            if (isColorType(this.types[0]))
             {
                 ringColor =
                     rgbIsNaN(colors.back)

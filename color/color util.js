@@ -655,3 +655,10 @@ function deltaE(rgb1, rgb2)
         + sqr(lab2[1] - lab1[1])
         + sqr(lab2[2] - lab1[2]));
 }
+
+
+
+function isColorType(type)
+{
+    return COLOR_VALUES.includes(type);
+}

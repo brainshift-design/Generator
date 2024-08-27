@@ -7208,6 +7208,16 @@ const COLOR_TYPES =
 ];
 
 
+const COLOR_VALUES =
+[
+    COLOR_VALUE,
+    FILL_VALUE,
+    STROKE_VALUE,
+    COLOR_STOP_VALUE,
+    GRADIENT_VALUE
+];
+
+
 const EFFECT_TYPES =
 [
     ...STROKE_SIDES_TYPES,
@@ -63346,6 +63356,13 @@ function deltaE(rgb1, rgb2)
           sqr(lab2[0] - lab1[0])
         + sqr(lab2[1] - lab1[1])
         + sqr(lab2[2] - lab1[2]));
+}
+
+
+
+function isColorType(type)
+{
+    return COLOR_VALUES.includes(type);
 }
 
 

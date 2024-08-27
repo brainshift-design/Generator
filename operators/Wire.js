@@ -593,8 +593,11 @@ class Wire
             + '-' 
             + (input  ? input .fullId : '');
 
-        const outColor = output  
-            ? rgb_a(rgbFromType(output.types[0], true))
+        const outColor = 
+            output
+            ? (isColorType(output.types[0])
+               ? output.getWireColor()
+               : rgb_a(rgbFromType(output.types[0], true)))
             : rgbFromType(ANY_VALUE, true);
 
         const inColor = 

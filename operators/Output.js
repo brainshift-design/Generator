@@ -285,17 +285,6 @@ extends EventTarget
 
 
 
-    typeIsColor()
-    {
-        return this.types[0] == COLOR_VALUE
-            || this.types[0] == FILL_VALUE
-            || this.types[0] == STROKE_VALUE
-            || this.types[0] == COLOR_STOP_VALUE
-            || this.types[0] == GRADIENT_VALUE;
-    }
-
-
-
     getBallColor()
     {
         return this.param
@@ -381,7 +370,7 @@ extends EventTarget
         
         if (darkMode)
         {
-            if (this.typeIsColor())
+            if (isColorType(this.types[0]))
             {
                 const color = this.node.getOutputWireColor();
 
@@ -405,7 +394,7 @@ extends EventTarget
         }
         else // light mode
         {
-            if (this.typeIsColor())
+            if (isColorType(this.types[0]))
             {
                 const color = this.node.getOutputWireColor();
 
@@ -507,7 +496,7 @@ extends EventTarget
 
         if (darkMode)
         {
-            if (this.typeIsColor())
+            if (isColorType(this.types[0]))
             {
                 ringColor = 
                     isLight(this.node.getOutputWireColor())
@@ -521,7 +510,7 @@ extends EventTarget
         }
         else // light mode
         {
-            if (this.typeIsColor())
+            if (isColorType(this.types[0]))
             {
                 ringColor = 
                     isLight(this.node.getOutputWireColor())
