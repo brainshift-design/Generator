@@ -378,15 +378,15 @@ extends EventTarget
 
         if (   this.connected
             && (   isColorType(this.types[0])
-                || this.connectedOutput.types[0] != this.types[0]
-                || this.types[0] != this.node.valueType))
+                ||    this.connectedOutput.types[0] != this.types[0]
+                   && this.types[0] != this.node.valueType))
             return this.connectedOutput.getWireColor();
 
         if (   graphView.tempConn
             && graphView.overInput == this
             && (   isColorType(this.types[0])
-                || graphView.tempConn.output.types[0] != this.types[0]
-                || this.types[0] != this.node.valueType))
+                ||    graphView.tempConn.output.types[0] != this.types[0]
+                   && this.types[0] != this.node.valueType))
             return graphView.tempConn.output.getWireColor();
 
 
@@ -451,13 +451,17 @@ extends EventTarget
 
     getHeaderRingColor()
     {
-        const typeColorDark  = rgbFromTypeMode(this.types[0], true, true );
-        const typeColorLight = rgbFromTypeMode(this.types[0], true, false);
+        const colors = this.node.getHeaderColors();
 
-        const colors      = this.node.getHeaderColors();
-        const sameType    = this.types[0] == this.valueType;
+        const sameType = 
+               this.node.valueType == NULL
+            || this.node.valueType == this.types[0];
 
-        const inRingColor = c => sameType ? c : rgbFromTypeMode(this.types[0], true, darkMode);
+
+        const inRingColor = color => 
+            sameType 
+            ? color 
+            : rgbFromTypeMode(this.types[0], true, darkMode);
 
 
         let ringColor;

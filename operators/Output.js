@@ -358,7 +358,11 @@ extends EventTarget
         const typeColorLight = rgbFromTypeMode(this.types[0], true, false);
 
         const colors = this.node.getHeaderColors();
-        const conn   = this.connected;
+
+        const conn = 
+               this.connected
+            ||    graphView.tempConn 
+               && graphView.tempConn.output == this;
 
         const connOrDiff = 
                conn 
