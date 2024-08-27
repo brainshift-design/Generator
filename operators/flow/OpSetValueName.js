@@ -3,7 +3,7 @@ extends OperatorBase
 {
     paramName;
 
-    value = null;
+    value;
 
 
 
@@ -21,13 +21,9 @@ extends OperatorBase
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
         this.headerOutputs[0].forceNodeOutputColor = true;
-        
+
 
         this.addParam(this.paramName = new TextParam('name', 'name', false, true, true));
-
-
-        //this.inputs[0].addEventListener('connect',    () => OpValueName_onConnectInput(this));
-        //this.inputs[0].addEventListener('disconnect', () => OpValueName_onDisconnectInput(this));
     }
 
 
@@ -72,13 +68,13 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-        
         this.value = values[paramIds.findIndex(id => id == 'value')];
         const type = values[paramIds.findIndex(id => id == 'type' )];
 
         if (type)
             this.headerOutputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
@@ -87,29 +83,11 @@ extends OperatorBase
     {
         if (this.value) 
         {
-            if (    this.value.type == COLOR_VALUE 
-                && !rgbIsNaN(this.value.toRgb())) 
-                return this.value.toRgb();
+            const rgb = rgbFromColorValue(this.value);
 
-            else if (    this.value.type == FILL_VALUE 
-                     && !rgbIsNaN(this.value.color.toRgb())) 
-                return this.value.color.toRgb();
-
-            else if (    this.value.type == STROKE_VALUE 
-                     &&  this.value.fills.items.length > 0
-                     && !rgbIsNaN(this.value.fills.items.at(-1).color.toRgb())) 
-                return this.value.fills.items.at(-1).color.toRgb();
-
-            else if (    this.value.type == GRADIENT_VALUE 
-                     && !rgbaIsNaN(this.value.toRgba())) 
-                return rgb_a(this.value.toRgba());
-
-            else if (    this.value.type == COLOR_STOP_VALUE 
-                     && !rgbIsNaN(this.value.fill.color.toRgb())) 
-                return rgb_a(this.value.fill.color.toRgb());
-
-            else
-                return super.getOutputWireColor();
+            return !rgbIsNaN(rgb)
+                 ? rgb
+                 : super.getOutputWireColor();
         }
         else
             return super.getOutputWireColor();

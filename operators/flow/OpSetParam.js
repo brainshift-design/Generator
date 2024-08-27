@@ -3,6 +3,7 @@ extends ResizableBase
 {
     paramName;
 
+    value;
     length;
 
     _connected = false;
@@ -21,11 +22,15 @@ extends ResizableBase
         this.addInput (new Input ([ANY_VALUE]));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
+        this.headerOutputs[0].forceNodeOutputColor = true;
+
+
         this.addParam(this.paramName = new TextParam('name', 'name', true, true, true));
 
-        this.inputs[0].addEventListener('disconnect', () => OpSetParam_onDisconnectInput(this));
-
         this.paramName.divider = 0.35;
+
+
+        this.inputs[0].addEventListener('disconnect', () => OpSetParam_onDisconnectInput(this));
     }
 
 
@@ -64,9 +69,6 @@ extends ResizableBase
         if (ignore) return request;
 
         
-        const input = this.node.inputs[0];
-
-
         const input0 = this.node.inputs[0];
         const input1 = this.node.inputs[1];
 
@@ -95,12 +97,29 @@ extends ResizableBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const type = values[paramIds.findIndex(id => id == 'type')];
+        this.value = values[paramIds.findIndex(id => id == 'value')];
+        const type = values[paramIds.findIndex(id => id == 'type' )];
 
         if (type)
             this.headerOutputs[0].types = [type.value];
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    getOutputWireColor()
+    {
+        if (this.value) 
+        {
+            const rgb = rgbFromColorValue(this.value);
+
+            return !rgbIsNaN(rgb)
+                 ? rgb
+                 : super.getOutputWireColor();
+        }
+        else
+            return super.getOutputWireColor();
     }
 
 

@@ -97,8 +97,9 @@ extends GOperator2
 
         this.setUpdateValues(parse,
         [
-            ['type', this.outputType()],
-            ['name', name             ]
+            ['type',  this.outputType()],
+            ['value', this.value       ],
+            ['name',  name             ]
         ]);
         
 

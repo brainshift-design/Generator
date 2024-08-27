@@ -662,3 +662,37 @@ function isColorType(type)
 {
     return COLOR_VALUES.includes(type);
 }
+
+
+
+function rgbFromColorValue(value)
+{
+    consoleAssert(
+         value, 
+        'rgbFromColorValue() requires a valid value');
+
+
+    if (    value.type == COLOR_VALUE 
+        && !rgbIsNaN(value.toRgb())) 
+        return value.toRgb();
+
+    else if ( value.type == FILL_VALUE 
+                && !rgbIsNaN(value.color.toRgb())) 
+        return value.color.toRgb();
+
+    else if ( value.type == STROKE_VALUE 
+                &&  value.fills.items.length > 0
+                && !rgbIsNaN(value.fills.items.at(-1).color.toRgb())) 
+        return value.fills.items.at(-1).color.toRgb();
+
+    else if ( value.type == GRADIENT_VALUE 
+                && !rgbaIsNaN(value.toRgba())) 
+        return rgb_a(value.toRgba());
+
+    else if ( value.type == COLOR_STOP_VALUE 
+                && !rgbIsNaN(value.fill.color.toRgb())) 
+        return rgb_a(value.fill.color.toRgb());
+
+
+    return rgb_NaN;
+}

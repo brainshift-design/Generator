@@ -20,11 +20,15 @@ extends ResizableBase
         this.addInput (new Input ([ANY_VALUE]));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
+        this.headerOutputs[0].forceNodeOutputColor = true;
+
+
         this.addParam(this.paramName = new TextParam('name', 'name', true, true, true));
 
-        this.inputs[0].addEventListener('disconnect', () => OpGetParam_onDisconnectInput(this));
-
         this.paramName.divider = 0.35;
+
+
+        this.inputs[0].addEventListener('disconnect', () => OpGetParam_onDisconnectInput(this));
     }
 
 
@@ -100,6 +104,22 @@ extends ResizableBase
             : [0, 0, 0, 1]; 
 
         return colors;
+    }
+
+
+
+    getOutputWireColor()
+    {
+        if (this.value) 
+        {
+            const rgb = rgbFromColorValue(this.value);
+
+            return !rgbIsNaN(rgb)
+                 ? rgb
+                 : super.getOutputWireColor();
+        }
+        else
+            return super.getOutputWireColor();
     }
 
 
