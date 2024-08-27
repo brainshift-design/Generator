@@ -203,7 +203,7 @@ function initGenerator(activate)
     500);
 
 
-    updateUserTemplatesFromDB();
+    updateUserTemplatesFromServer();
 }
 
 

@@ -2406,7 +2406,7 @@ updateSaveAsTemplateInputBack
 saveSelectedAsTemplate
 checkoutTimer
 presetTemplates
-updateUserTemplatesFromDB
+updateUserTemplatesFromServer
 initTemplateMenu
 initTemplateMenuTemplates
 curMenu

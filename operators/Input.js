@@ -378,13 +378,15 @@ extends EventTarget
 
         if (   this.connected
             && (   isColorType(this.types[0])
-                || this.connectedOutput.types[0] != this.types[0]))
+                || this.connectedOutput.types[0] != this.types[0]
+                || this.types[0] != this.node.valueType))
             return this.connectedOutput.getWireColor();
 
         if (   graphView.tempConn
             && graphView.overInput == this
             && (   isColorType(this.types[0])
-                || graphView.tempConn.output.types[0] != this.types[0]))
+                || graphView.tempConn.output.types[0] != this.types[0]
+                || this.types[0] != this.node.valueType))
             return graphView.tempConn.output.getWireColor();
 
 

@@ -14,7 +14,7 @@ var userTemplates = [];
 
 
 
-function updateUserTemplatesFromDB()
+function updateUserTemplatesFromServer()
 {
     postToServer(
     {
@@ -197,7 +197,7 @@ function adjustTemplateMenu(e, thisMenu, action, template)
                 .then(response =>
                 {
                     hideAllMenus();
-                    updateUserTemplatesFromDB();
+                    updateUserTemplatesFromServer();
                 })
                 .catch(e =>
                 {

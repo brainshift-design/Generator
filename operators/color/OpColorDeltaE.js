@@ -23,6 +23,7 @@ extends OperatorBase
         this.paramValue.controls[0].setMin(0, 0);
         this.paramValue.controls[0].setMax(100);
         
+        this.paramValue.controls[0].suffix    = '%';
         this.paramValue.controls[0].thinMinus = true;
     }
 

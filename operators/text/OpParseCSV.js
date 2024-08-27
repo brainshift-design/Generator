@@ -17,9 +17,9 @@ extends OperatorBase
 
         this.addInput(new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramValue           = new ListParam  ('value',           'table',     false, false, true));
-        this.addParam(this.paramRowSeparator    = new TextParam  ('rowSeparator',    'rows', true , true,  true, '\\n'));
-        this.addParam(this.paramColumnSeparator = new TextParam  ('columnSeparator', 'columns', true , true,  true, ','));
+        this.addParam(this.paramValue           = new ListParam('value',           'table',     false, false, true));
+        this.addParam(this.paramRowSeparator    = new TextParam('rowSeparator',    'rows', true , true,  true, '\\n'));
+        this.addParam(this.paramColumnSeparator = new TextParam('columnSeparator', 'columns', true , true,  true, ','));
 
         this.paramValue.itemName = [];
 
@@ -90,14 +90,10 @@ extends OperatorBase
     {
         const colors = super.getHeaderColors();
 
-        
         colors.input  =
             this.active 
             ? rgb_a(rgbFromType(this.inputs[0].types[0], false), 0.4) 
             : rgb_a(rgbLightenHsv(rgbSaturateHsv(rgbFromType(this.inputs[0].types[0], true), 0.5), 0.9), 1);
-        
-        colors.inWire = rgbFromType(this.inputs[0].types[0], true);
-        
         
         return colors;
     }

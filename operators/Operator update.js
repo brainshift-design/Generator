@@ -361,8 +361,6 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
     for (let i = 0; i < outputs.length; i++) outputY[i] += connectionSize/2 + this.header.connectionPadding;
 
 
-    const colors = this.getHeaderColors();
-
     for (let i = 0; i < inputs.length; i++)
     {
         inputs[i].div.style.top = inputY[i];
