@@ -2,7 +2,6 @@ class   OpSetObjectName
 extends OperatorBase
 {
     paramName;
-    // paramLogo;
 
 
 
@@ -10,6 +9,7 @@ extends OperatorBase
     {
         super(SET_OBJECT_NAME, 'setObjectName', 'set object name', iconSetObjectName);
 
+        this.valueType = ANY_VALUE;
 
         this.subscription = true;
         this.canDisable   = true;
@@ -18,10 +18,10 @@ extends OperatorBase
         this.addInput (new Input(SHAPE_VALUES));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
-        // this.addParam(this.paramLogo = new NumberParam('addLogo', 'prefix&nbsp;&nbsp;' + PLUGIN_LOGO + '&nbsp;', true,  true, true, 1, 0, 1));
-        this.addParam(this.paramName = new   TextParam('name',    'name',  false, true, true));
+        this.headerOutputs[0].forceNodeOutputColor = true;
 
-        //this.paramLogo.divider = 0.67;
+        
+        this.addParam(this.paramName = new   TextParam('name',    'name',  false, true, true));
     }
 
 
@@ -54,7 +54,6 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         request.push(...this.node.paramName.genRequest(gen));
-        // request.push(...this.node.paramLogo.genRequest(gen));
 
         
         gen.scope.pop();
@@ -74,16 +73,4 @@ extends OperatorBase
         if (type)
             this.headerOutputs[0].types = [type.value];
     }
-
-
-
-    // updateParams()
-    // {
-    //     this.paramName.enableControlText(true, this.paramName.isUnknown());
-    //     // this.paramLogo.enableControlText(true);
-
-    //     // updateParamConditionText(this.paramLogo, this.paramLogo.isUnknown(), false, 1);
-
-    //     this.updateParamControls();
-    // }
 }

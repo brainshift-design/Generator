@@ -451,7 +451,14 @@ extends EventTarget
 
     getHeaderRingColor()
     {
-        const colors = this.node.getHeaderColors();
+        const typeColorDark  = rgbFromTypeMode(this.types[0], true, true );
+        const typeColorLight = rgbFromTypeMode(this.types[0], true, false);
+
+        const colors      = this.node.getHeaderColors();
+        const sameType    = this.types[0] == this.valueType;
+
+        const inRingColor = c => sameType ? c : rgbFromTypeMode(this.types[0], true, darkMode);
+
 
         let ringColor;
 
@@ -467,10 +474,10 @@ extends EventTarget
                       ? [0, 0, 0, 0.25]
                       : [1, 1, 1, 0.25];
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ringColor = [1, 1, 1, 0.35];
-            else if (this.types[0] == TEXT_VALUE         ) ringColor = [0, 0, 0, 0.28];
-            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = [1, 1, 1, 0.4 ];
-            else                                           ringColor = [0, 0, 0, 0.28];
+            else if (this.types[0] == NUMBER_VALUE       ) ringColor = inRingColor([1, 1, 1, 0.35]);
+            else if (this.types[0] == TEXT_VALUE         ) ringColor = inRingColor([0, 0, 0, 0.28]);
+            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = inRingColor([1, 1, 1, 0.4 ]);
+            else                                           ringColor = inRingColor([0, 0, 0, 0.28]);
         }
         else // light mode
         {
@@ -483,10 +490,10 @@ extends EventTarget
                       ? [0, 0, 0, 0.2 ]
                       : [1, 1, 1, 0.37];
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ringColor = [1, 1, 1, 0.5 ];
-            else if (this.types[0] == TEXT_VALUE         ) ringColor = [0, 0, 0, 0.23];
-            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = [1, 1, 1, 0.4 ];
-            else                                           ringColor = [1, 1, 1, 0.4 ];
+            else if (this.types[0] == NUMBER_VALUE       ) ringColor = inRingColor([1, 1, 1, 0.5 ]);
+            else if (this.types[0] == TEXT_VALUE         ) ringColor = inRingColor([0, 0, 0, 0.23]);
+            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = inRingColor([1, 1, 1, 0.4 ]);
+            else                                           ringColor = inRingColor([1, 1, 1, 0.4 ]);
         }
 
 
