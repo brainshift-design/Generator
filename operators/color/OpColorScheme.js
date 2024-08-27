@@ -14,10 +14,6 @@ extends OperatorBase
         this.iconOffsetY  = -1;
 
         
-        this.colorBack = createDiv('colorBack');
-        this.inner.insertBefore(this.colorBack, this.paramHolder);
-
-
         this.addInput (new Input ([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE]));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
@@ -25,7 +21,7 @@ extends OperatorBase
 
         
         this.addParam(this.paramType  = new SelectParam('schemeType', '',      false, true, true, ['similar', 'similar with accent', 'less similar', 'opposite', 'opposite -', 'opposite +', 'opposite split', 'double opposite -', 'double opposite +', 'triangle', 'rectangle', 'square', 'hexagon'], 0));
-        this.addParam(this.paramSpace = new SelectParam('space',      'space', false, true, true, ['HSB', 'HCL/ok'], 0));
+        this.addParam(this.paramSpace = new SelectParam('space',      'space', false, true, true, ['HSL', 'HCL / ok', 'HCL / ab', 'HCL / uv'], 0));
     }
 
 
@@ -66,32 +62,12 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
         const type  = values[paramIds.findIndex(id => id == 'type' )];
-
-
-        this._color = 
-                value
-            && !isListValueType(value.type)
-            ? value.toDataColor()
-            : dataColor_NaN;
 
         if (type) 
             this.headerOutputs[0].types = [type.value];
 
-
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    }
-
-
-
-    updateHeader()
-    {
-        super.updateHeader();
-
-        // const colors = this.getHeaderColors();
-
-        // this._warningOverlay.style.height = this.measureData.headerOffset.height;
     }
 
 
@@ -99,29 +75,5 @@ extends OperatorBase
     isConnected()
     {
         return this.inputs[0].connected;
-    }
-
-
-
-    toJsonBase(nTab = 0) 
-    {
-        let   pos = ' '.repeat(nTab);
-        const tab = HTAB;
-
-        return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"_color": "' + ColorValue.fromDataColor(this._color).toString() + '"';
-    }
-
-
-
-    loadParams(_node, pasting)
-    {
-        if (_node._color != undefined)
-        {
-            this._color = parseColorValue(_node._color)[0].toDataColor();
-            this.valid = true;
-        }
-
-        super.loadParams(_node, pasting);
     }
 }

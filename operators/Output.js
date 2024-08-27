@@ -365,7 +365,8 @@ extends EventTarget
         const typeColorDark  = rgbFromTypeMode(this.types[0], true, true );
         const typeColorLight = rgbFromTypeMode(this.types[0], true, false);
 
-        const conn = this.connected;
+        const colors = this.node.getHeaderColors();
+        const conn   = this.connected;
 
         const tc = 
                graphView.tempConn 
@@ -384,7 +385,9 @@ extends EventTarget
                 ballColor = 
                     conn
                     ? color
-                    : isLight(color)
+                    : rgbIsNaN(colors.back)
+                      ? [1, 1, 1, 0.25]
+                      : isLight(color)
                         ? [0, 0, 0, 0.2 ]
                         : [1, 1, 1, 0.25];
             }
@@ -402,7 +405,9 @@ extends EventTarget
                 ballColor = 
                     conn
                     ? color
-                    : isLight(color)
+                    : rgbIsNaN(colors.back)
+                      ? [0, 0, 0, 0.22]
+                      : isLight(color)
                         ? [0, 0, 0, 0.17]
                         : [1, 1, 1, 0.3 ];
             }
@@ -432,6 +437,10 @@ extends EventTarget
 
     getParamRingColor()
     {
+        const typeColorDark  = rgbFromTypeMode(this.types[0], true, true );
+        const typeColorLight = rgbFromTypeMode(this.types[0], true, false);
+
+
         let ringColor;
 
 

@@ -609,11 +609,35 @@ function addHueHsl(rgb, d, min = 0, max = Tau)
 
 
 
-function addHueHcl(rgb, d, min = 0, max = Tau)
+function addHueHclok(rgb, d, min = 0, max = Tau)
 {
     const hcl = rgb2hclok(rgb);
 
     return hclok2rgb_(
+        trimAngle(hcl[0] + d, min, max),
+        hcl[1], 
+        hcl[2]);
+}
+
+
+
+function addHueHclab(rgb, d, min = 0, max = Tau)
+{
+    const hcl = rgb2hclab(rgb);
+
+    return hclab2rgb_(
+        trimAngle(hcl[0] + d, min, max),
+        hcl[1], 
+        hcl[2]);
+}
+
+
+
+function addHueHcluv(rgb, d, min = 0, max = Tau)
+{
+    const hcl = rgb2hcluv(rgb);
+
+    return hcluv2rgb_(
         trimAngle(hcl[0] + d, min, max),
         hcl[1], 
         hcl[2]);

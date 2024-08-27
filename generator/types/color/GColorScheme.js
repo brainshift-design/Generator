@@ -59,10 +59,15 @@ extends GOperator1
                 const rgb = input.toRgb();
 
 
-                const addHue = 
-                    space.value == 0 
-                    ? addHueHsl 
-                    : addHueHcl;
+                let addHue;
+
+                switch (space.value)
+                {
+                    case 0: addHue = addHueHsl;   break;
+                    case 1: addHue = addHueHclok; break;
+                    case 2: addHue = addHueHclab; break;
+                    case 3: addHue = addHueHcluv; break;
+                }
 
 
                 switch (schemeType.value)
@@ -181,7 +186,7 @@ extends GOperator1
                 this.value = input.copy();
         }
         else
-            this.value = ColorValue.NaN.copy();
+            this.value = new ListValue();
 
 
         

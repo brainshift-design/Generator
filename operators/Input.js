@@ -420,6 +420,8 @@ extends EventTarget
 
     getHeaderRingColor()
     {
+        const colors = this.node.getHeaderColors();
+
         let ringColor;
 
 
@@ -427,10 +429,12 @@ extends EventTarget
         {
             if (this.typeIsColor())
             {
-                ringColor = 
-                    isLight(this.node.getInputWireColor())
-                    ? [0, 0, 0, 0.25]
-                    : [1, 1, 1, 0.25];
+                ringColor =
+                    rgbIsNaN(colors.back)
+                    ? [1, 1, 1, 0.25]
+                    : isLight(colors.back)
+                      ? [0, 0, 0, 0.25]
+                      : [1, 1, 1, 0.25];
             }
             else if (this.types[0] == NUMBER_VALUE       ) ringColor = [1, 1, 1, 0.35];
             else if (this.types[0] == TEXT_VALUE         ) ringColor = [0, 0, 0, 0.28];
@@ -441,10 +445,12 @@ extends EventTarget
         {
             if (this.typeIsColor())
             {
-                ringColor = 
-                    isLight(this.node.getInputWireColor())
-                    ? [0, 0, 0, 0.2 ]
-                    : [1, 1, 1, 0.37];
+                ringColor =
+                    rgbIsNaN(colors.back)
+                    ? [0, 0, 0, 0.22]
+                    : isLight(colors.back)
+                      ? [0, 0, 0, 0.2 ]
+                      : [1, 1, 1, 0.37];
             }
             else if (this.types[0] == NUMBER_VALUE       ) ringColor = [1, 1, 1, 0.5 ];
             else if (this.types[0] == TEXT_VALUE         ) ringColor = [0, 0, 0, 0.23];

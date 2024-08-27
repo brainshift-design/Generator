@@ -58,6 +58,13 @@ function hclab2rgb(hcl, cs = sRGB)
 
 
 
+function hclab2rgb_(h, c, l, cs = sRGB)
+{
+    return hclab2rgb([h, c, l], cs);
+}
+
+
+
 function lab2hclab(lab)
 {
     let hcl = opp2pol(lab);
@@ -95,6 +102,13 @@ function hcluv2luv(hcl)
 function hcluv2rgb(hcl, cs = sRGB)
 {
     return luv2rgb(hcluv2luv(hcl), cs);
+}
+
+
+
+function hcluv2rgb_(h, c, l, cs = sRGB)
+{
+    return hcluv2rgb([h, c, l], cs);
 }
 
 
