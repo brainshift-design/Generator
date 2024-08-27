@@ -259,38 +259,6 @@ extends OperatorBase
 
 
 
-    getHeaderColors(options = {})
-    {
-        const colors = super.getHeaderColors(options);
-
-
-        if (this.inputs[0].connected)
-        {
-            if (   this.inputs[0].supportsTypes([COLOR_VALUE])
-                || this.inputs[0].supportsTypes([ FILL_VALUE]))
-                colors.output  = this.inputs[0].connectedOutput.wireColor;
-                //colors.outWire = this.inputs[0].connectedOutput.wireColor;
-            else
-                colors.output  =
-                colors.outWire = rgbFromType(this.inputs[0].types[0], true);
-        }
-        else if (this.outputs[0].connected)
-        {
-            if (   this.outputs[0].supportsTypes([COLOR_VALUE])
-                || this.outputs[0].supportsTypes([ FILL_VALUE]))
-                colors.output  = this.outputs[0].connectedInputs[0].wireColor;
-                // colors.outWire = this.outputs[0].connectedInputs[0].wireColor;
-            else
-                colors.output  =
-                colors.outWire = rgbFromType(this.outputs[0].types[0], true);
-        }
-
-
-        return colors;
-    }
-
-
-
     setName(newName, options = {})
     {
         if (this.paramType == 0)

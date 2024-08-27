@@ -84,49 +84,4 @@ extends OperatorBase
         if (type)
             this.headerOutputs[0].types = [type.value];
     }
-
-
-
-    getHeaderColors(options = {})
-    {
-        const colors   = super.getHeaderColors(options);
-        //const type     = this.outputs[0].types[0];
-  
-        const anyColor = rgbFromType(ANY_VALUE, true);
-
-
-        colors.text = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
-
-      
-        if (   this.outputs[0].supportsTypes([COLOR_VALUE])
-            && this.value
-            && this.value.isValid())
-        {
-            colors.output  =
-            colors.outWire = this.isUnknown() ? anyColor : this.value.toRgb();
-        }
-        else if (this.outputs[0].supportsTypes([FILL_VALUE])
-              && this.value
-              && this.value.isValid())
-        {
-            colors.output  =
-            colors.outWire = this.isUnknown() ? anyColor : this.value.color.toRgb();
-        }
-        else
-        {
-            // const gray =
-            //            this.active
-            //        && !this.inputs[0].connected;
-
-            const outType = finalTypeFromTypes(this.outputs[0].types);
-            // console.log('outType =', outType);
-
-            // colors.output  = gray ? rgb_a(colors.text, 0.35)     : rgb_a(rgbSaturateHsv(rgbFromType(outType, true), 0.5), 0.7);
-            // colors.outWire = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(outType, true);
-            colors.output  = rgb_a(rgbSaturateHsv(rgbFromType(outType, true), 0.5), 0.7);
-            colors.outWire = rgbFromType(outType, true);
-        }
-        
-        return colors;
-    }
 }

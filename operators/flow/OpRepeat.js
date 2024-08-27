@@ -151,19 +151,4 @@ extends OperatorBase
 
         this.updateParamControls();
     }
-
-
-
-    getHeaderColors(options = {})
-    {
-        const colors = super.getHeaderColors(options);
-        const type   = this.outputs[0].types[0];
-
-        const gray = this.active;
-
-        colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-        colors.outWire = rgbFromType(type, true);
-
-        return colors;
-    }
 }

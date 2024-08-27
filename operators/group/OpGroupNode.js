@@ -103,24 +103,4 @@ extends OperatorBase
 
         this.updateParamControls();
     }
-
-
-
-    getHeaderColors(options = {})
-    {
-        const colors = super.getHeaderColors(options);
-
-        if (!isEmpty(this.headerInputs))
-        {
-            colors.output  =
-            colors.outWire = rgbFromType(this.headerInputs[0].types[0], true);
-        }
-        else if (!isEmpty(this.headerOutputs))
-        {
-            colors.output  =
-            colors.outWire = rgbFromType(this.headerOutputs[0].types[0], true);
-        }
-
-        return colors;
-    }
 }

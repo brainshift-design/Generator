@@ -123,48 +123,8 @@ extends OperatorBase
     getHeaderColors(options = {})
     {
         const colors = super.getHeaderColors(options);
-        const type   = this.outputs[0].types[0];
-
 
         colors.text = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
-
-
-        if (   this.outputs[0].supportsTypes([COLOR_VALUE])
-            || this.outputs[0].supportsTypes([FILL_VALUE]))
-        {
-            const noColor = rgbFromType(ANY_VALUE, true);
-                // darkMode
-                // ? rgbNoColorDark
-                // : rgbNoColorLight;
-
-            const unknown =
-                      this.inputs[0].connected
-                   && this.inputs[0].connectedOutput.node.isUnknown()
-                ||    this.inputs[1].connected
-                   && this.inputs[1].connectedOutput.node.isUnknown()
-                ||    this.paramCondition.input.connected
-                   && this.paramCondition.input.connectedOutput.node.isUnknown();
-
-
-            // if (   this.inputs[0].connected
-            //     && this.paramCondition.value.value > 0)
-            //     colors.output  = unknown ? noColor : this.inputs[0].connectedOutput.wireColor;
-            //     //colors.outWire = 
-            // else if (this.inputs[1].connected
-            //       && this.paramCondition.value.value == 0)
-            //     colors.output = unknown ? noColor : this.inputs[1].connectedOutput.wireColor;
-            //     //colors.outWire = unknown ? noColor : this.inputs[1].connectedOutput.wireColor;
-        }
-        else
-        {
-            const gray =
-                    this.active
-                && !this.inputs[0].connected
-                && !this.inputs[1].connected;
-
-            colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-            colors.outWire = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
-        }      
         
         return colors;
     }

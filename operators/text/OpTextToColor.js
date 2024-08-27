@@ -69,37 +69,4 @@ extends OperatorBase
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
-
-
-
-    getHeaderColors()
-    {
-        const colors = super.getHeaderColors();
-
-
-        if (this.isUnknown())
-            colors.text = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
-
-
-        if (   this.isUnknown()
-            || isListValueType(this.outputs[0].types[0]))
-        {
-            colors.outWire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
-        }
-        else
-        {
-            const noColor = 
-                darkMode
-                ? rgbNoColorDark
-                : rgbNoColorLight;
-
-            colors.outWire = 
-                !dataColorIsNaN(this._color)
-                ? dataColor2rgb(this._color)
-                : noColor;
-        }
-            
-        
-        return colors;
-    }
 }

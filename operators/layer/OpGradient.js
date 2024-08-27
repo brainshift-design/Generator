@@ -324,11 +324,8 @@ extends OpColorBase
 
     getHeaderColors(options = {})
     {
-        const colors = super.getHeaderColors(options);
-
-
+        const colors  = super.getHeaderColors(options);
         const unknown = this.inputs.some(i => i.isUncached());
-
 
         if (!unknown)
         {
@@ -341,29 +338,7 @@ extends OpColorBase
                     ? stop.fill.toRgba()
                     : rgbaMuls(rgbaAdd(rgbaBack, stop.fill.toRgba()), 0.5);
             }
-
-            const gray = this.value.stops.items.length == 0;
-
-            colors.text = darkMode ? [1, 1, 1, 1] : [0, 0, 0, 1];
-                // gray
-                // ? (darkMode ? [1, 1, 1, 1] : [0, 0, 0, 1]) 
-                // : getTextColorFromBackColor(getStripeBackColor(rgbaBack));
-
-            if (gray)
-            {
-                colors.input   = rgb_a(colors.text, 0.35);
-                colors.inWire  = rgbFromType(ANY_VALUE, true);
-                colors.output  = rgb_a(colors.text, 0.35);
-                colors.outWire = rgbFromType(ANY_VALUE, true);
-            }
-            else
-            {
-                colors.input   = rgb_a(colors.text, 0.35);
-                colors.inWire  = rgbFromType(ANY_VALUE, true);
-                colors.output  = rgb_a(colors.text, 0.35);
-            }
         }
-
 
         return colors;
     }

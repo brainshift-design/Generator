@@ -77,24 +77,4 @@ extends OperatorBase
 
         this.updateParamControls();
     }
-
-
-
-    getHeaderColors(options = {})
-    {
-        const colors = super.getHeaderColors(options);
-        const type   = this.outputs[0].types[0];
-
-        colors.text  = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
-
-        const gray =
-                this.active
-            && !this.inputs[0].connected;
-
-        // colors.input  = gray ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, !this.active), 0.5), 0.8);
-        colors.output  = gray ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, !this.active), 0.5), 0.7);
-        colors.outWire = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
-
-        return colors;
-    }
 }

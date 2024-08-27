@@ -72,44 +72,4 @@ extends OperatorBase
 
         this.headerOutputs[0].types = [type.value];
     }
-
-
-
-    getHeaderColors(options = {})
-    {
-        const colors   = super.getHeaderColors(options);
-        const type     = this.outputs[0].types[0];
-  
-        const anyColor = rgbFromType(ANY_VALUE, true);
-
-
-        colors.text = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
-
-      
-        if (   this.outputs[0].supportsTypes([COLOR_VALUE])
-            && this.value
-            && this.value.isValid())
-        {
-            colors.output  =
-            colors.outWire = this.isUnknown() ? anyColor : this.value.toRgb();
-        }
-        else if (this.outputs[0].supportsTypes([FILL_VALUE])
-              && this.value
-              && this.value.isValid())
-        {
-            colors.output  =
-            colors.outWire = this.isUnknown() ? anyColor : this.value.color.toRgb();
-        }
-        else
-        {
-            const gray =
-                       this.active
-                   && !this.inputs[0].connected;
-
-            colors.output  = gray ? rgb_a(colors.text, 0.35)     : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-            colors.outWire = gray ? rgbFromType(ANY_VALUE, true) : rgbFromType(type, true);
-        }
-        
-        return colors;
-    }
 }

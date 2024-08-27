@@ -107,16 +107,4 @@ extends OpColorBase
 
         updateColorHeader(this, colors);
     }
-
-
-
-    getHeaderColors()
-    {
-        const colors = super.getHeaderColors();
-
-        if (this.isUnknown())
-            colors.text = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
-
-        return colors;
-    }
 }

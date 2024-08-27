@@ -227,22 +227,6 @@ extends OpColorBase
 
 
 
-    getHeaderColors()
-    {
-        const colors = super.getHeaderColors();
-        const type   = this.outputs[0].types[0];
-
-        if (this.isUnknown())
-        {
-            colors.text   = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
-            colors.inWire = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
-        }
-
-        return colors;
-    }
-
-
-
     updateHeaderLabel()
     {
         super.updateHeaderLabel();

@@ -21,6 +21,10 @@ const dataColor_NaN = Object.freeze([
     Number.NaN ]);
 
 
+const transparent = [0, 0, 0, 0];
+
+
+
 // Hunt-Pointer-Estevez
 // const HPE = [[ 0.4002, 0.7076, -0.0808],
 //              [-0.2263, 1.1653,  0.0457],

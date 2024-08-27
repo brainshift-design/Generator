@@ -329,24 +329,6 @@ extends EventTarget
 
 
 
-    getBallColor()
-    {
-        if (   graphView.savedConn
-            && graphView.savedConn.input == this
-            && graphView.overInput != this)
-            return [0, 0, 0, 0];
-
-        if (this.connected)
-            // && (   this.connectedOutput.types[0] == COLOR_VALUE
-            //     || this.connectedOutput.types[0] == FILL_VALUE
-            //     || this.connectedOutput.types[0] == COLOR_STOP_VALUE))
-            return this.connectedOutput.getWireColor();
-
-        return this.getRingColor();
-    }
-
-
-
     typeIsColor()
     {
         return this.types[0] == COLOR_VALUE
@@ -367,82 +349,110 @@ extends EventTarget
 
 
 
+    getBallColor()
+    {
+        if (   graphView.savedConn
+            && graphView.savedConn.input == this
+            && graphView.overInput != this)
+            return transparent;
+
+        if (this.connected)
+            return this.connectedOutput.getWireColor();
+
+        return this.getRingColor();
+    }
+
+
+
     getRingColor()
     {
-        let ringColor = [1, 0, 1, 1];
+        return this.param
+             ? this.getParamRingColor()
+             : this.getHeaderRingColor();
+    }
 
+
+
+    getParamRingColor()
+    {
         const typeColorDark  = rgbFromTypeMode(this.types[0], true, true );
         const typeColorLight = rgbFromTypeMode(this.types[0], true, false);
-
-
-        if (this.param)
-        {
-            if (darkMode)
-            {
-                if (   this.typeIsColor()
-                    && this.paramTypeIsColor())
-                {
-                    ringColor = 
-                        isLight(this.node.getInputWireColor())
-                        ? [0, 0, 0, 0.25]
-                        : [1, 1, 1, 0.25];
-                }
-                else if (this.types[0] == NUMBER_VALUE       ) ringColor = rgb_a(typeColorDark, 0.65);
-                else if (this.types[0] == TEXT_VALUE         ) ringColor = rgb_a(typeColorDark, 0.45);
-                else if (SHAPE_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorDark, 0.6 );
-                else                                           ringColor = rgb_a(typeColorDark, 0.63);
-            }
-            else
-            {
-                if (   this.typeIsColor()
-                    && this.paramTypeIsColor())
-                {
-                    ringColor = 
-                        isLight(this.node.getInputWireColor())
-                        ? [0, 0, 0, 0.2 ]
-                        : [1, 1, 1, 0.37];
-                }
-                else if (this.types[0] == NUMBER_VALUE       ) ringColor = rgb_a(typeColorLight, 0.4);
-                else if (this.types[0] == TEXT_VALUE         ) ringColor = rgb_a(typeColorLight, 0.76);
-                else if (SHAPE_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorLight, 0.45);
-                else                                           ringColor = rgb_a(typeColorLight, 0.78);
-            }
-        }
         
-        else // header
+        let ringColor;
+
+
+        if (darkMode)
         {
-            if (darkMode)
+            if (   this.typeIsColor()
+                && this.paramTypeIsColor())
             {
-                if (this.typeIsColor())
-                {
-                    ringColor = 
-                        isLight(this.node.getInputWireColor())
-                        ? [0, 0, 0, 0.25]
-                        : [1, 1, 1, 0.25];
-                }
-                else 
-                     if (this.types[0] == NUMBER_VALUE       ) ringColor = [1, 1, 1, 0.35];
-                else if (this.types[0] == TEXT_VALUE         ) ringColor = [0, 0, 0, 0.28];
-                else if (SHAPE_VALUES.includes(this.types[0])) ringColor = [1, 1, 1, 0.4 ];
-                else                                           ringColor = [0, 0, 0, 0.28];
+                ringColor = 
+                    isLight(this.node.getInputWireColor())
+                    ? [0, 0, 0, 0.25]
+                    : [1, 1, 1, 0.25];
             }
-            else // light mode
+            else if (this.types[0] == NUMBER_VALUE       ) ringColor = rgb_a(typeColorDark, 0.65);
+            else if (this.types[0] == TEXT_VALUE         ) ringColor = rgb_a(typeColorDark, 0.45);
+            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorDark, 0.6 );
+            else                                           ringColor = rgb_a(typeColorDark, 0.63);
+        }
+        else
+        {
+            if (   this.typeIsColor()
+                && this.paramTypeIsColor())
             {
-                if (this.typeIsColor())
-                {
-                    ringColor = 
-                        isLight(this.node.getInputWireColor())
-                        ? [0, 0, 0, 0.2 ]
-                        : [1, 1, 1, 0.37];
-                }
-                else if (this.types[0] == NUMBER_VALUE       ) ringColor = [1, 1, 1, 0.5 ];
-                else if (this.types[0] == TEXT_VALUE         ) ringColor = [0, 0, 0, 0.23];
-                else if (SHAPE_VALUES.includes(this.types[0])) ringColor = [1, 1, 1, 0.4 ];
-                else                                           ringColor = [1, 1, 1, 0.4 ];
+                ringColor = 
+                    isLight(this.node.getInputWireColor())
+                    ? [0, 0, 0, 0.2 ]
+                    : [1, 1, 1, 0.37];
             }
+            else if (this.types[0] == NUMBER_VALUE       ) ringColor = rgb_a(typeColorLight, 0.4);
+            else if (this.types[0] == TEXT_VALUE         ) ringColor = rgb_a(typeColorLight, 0.76);
+            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorLight, 0.45);
+            else                                           ringColor = rgb_a(typeColorLight, 0.78);
         }
 
-        
+
+        return ringColor;
+    }
+
+
+
+    getHeaderRingColor()
+    {
+        let ringColor;
+
+
+        if (darkMode)
+        {
+            if (this.typeIsColor())
+            {
+                ringColor = 
+                    isLight(this.node.getInputWireColor())
+                    ? [0, 0, 0, 0.25]
+                    : [1, 1, 1, 0.25];
+            }
+            else if (this.types[0] == NUMBER_VALUE       ) ringColor = [1, 1, 1, 0.35];
+            else if (this.types[0] == TEXT_VALUE         ) ringColor = [0, 0, 0, 0.28];
+            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = [1, 1, 1, 0.4 ];
+            else                                           ringColor = [0, 0, 0, 0.28];
+        }
+        else // light mode
+        {
+            if (this.typeIsColor())
+            {
+                ringColor = 
+                    isLight(this.node.getInputWireColor())
+                    ? [0, 0, 0, 0.2 ]
+                    : [1, 1, 1, 0.37];
+            }
+            else if (this.types[0] == NUMBER_VALUE       ) ringColor = [1, 1, 1, 0.5 ];
+            else if (this.types[0] == TEXT_VALUE         ) ringColor = [0, 0, 0, 0.23];
+            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = [1, 1, 1, 0.4 ];
+            else                                           ringColor = [1, 1, 1, 0.4 ];
+        }
+
+
         return ringColor;
     }
 
@@ -466,11 +476,12 @@ extends EventTarget
 
         else
         {
-            const color = this.node.getInputWireColor();
+            let color = this.node.getInputWireColor();
 
-            return !rgbIsNaN(color)
-                ? color
-                : rgbFromType(this.types[0], true);
+            if (rgbIsNaN(color))
+                color = rgbFromType(this.types[0], true);
+
+            return color;
         }
     }
 

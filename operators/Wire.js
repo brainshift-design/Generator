@@ -229,12 +229,6 @@ class Wire
 
     updateCurve(x1, y1, x2, y2)
     {
-        // if (equal(x1, x2, 0.001)) x2 += 0.001;
-        // if (equal(y1, y2, 0.001)) y2 += 0.001;
-    
-        // console.log('y1 =', y1);
-        // console.log('y2 =', y2);
-    
         if (!pointIsNaN(this.outputPos))
         {
             x1 = this.outputPos.x;
@@ -503,10 +497,6 @@ class Wire
 
     updateStyle(x1, y1, x2, y2)
     {
-        // if (equal(x1, x2, 0.001)) x2 += 0.001;
-        // if (equal(y1, y2, 0.001)) y2 += 0.001;
-
-
         const conn   = this.connection;
 
         const output = conn.output;
@@ -603,59 +593,17 @@ class Wire
             + '-' 
             + (input  ? input .fullId : '');
 
-        const outColor = 
-            output 
-            ? rgb_a(rgbFromType(output.types[0], true)) //output.wireColor 
+        const outColor = output  
+            ? rgb_a(rgbFromType(output.types[0], true))
             : rgbFromType(ANY_VALUE, true);
 
         const inColor = 
             input 
-            ? rgb_a(rgbFromType(input.types[0], true)) //input.wireColor 
+            ? rgb_a(rgbFromType(input.types[0], true))
             : outColor;
-
-
-        // converting types
-        // if (   output 
-        //     && input  
-        //     && (      output.types[0] == NUMBER_VALUE 
-        //            && input .types[0] == TEXT_VALUE
-
-        //         ||    output.types[0] == TEXT_VALUE 
-        //            && input .types[0] == NUMBER_VALUE
-                
-        //         ||    output.types[0] == NUMBER_LIST_VALUE 
-        //            && input .types[0] == TEXT_VALUE
-        //            && input .types.includes(TEXT_LIST_VALUE)
-                
-        //         ||    output.types[0] == TEXT_LIST_VALUE 
-        //            && input .types[0] == NUMBER_VALUE
-        //            && input .types.includes(NUMBER_LIST_VALUE)))
-        // {
-        //     const dx = x2 - x1;
-        //     const dy = y2 - y1;
-
-        //     const wireLength   = distv(point(x1, y1), point(x2, y2)) / graph.currentPage.zoom;
-        //     const gradContrast = 1 - Math.min(Math.max(0, wireLength / 100 - 0.5), 1);
-
-        //     setSvgLinearGradientStroke(
-        //         this.curve.closest('svg'),
-        //         this.curve,
-        //         rgba2style(outColor),
-        //         rgba2style(inColor ),
-        //         -dx > Math.abs(dy) ? 100 : 0,
-        //         -dy > Math.abs(dx) ? 100 : 0,
-        //          dx > Math.abs(dy) ? 100 : 0,
-        //          dy > Math.abs(dx) ? 100 : 0,
-        //          gradContrast);
-        // }
         
-        // // same type
-        // else 
-        // {
-            this.curve.style.stroke = rgba2style(color);
-        // }
 
-        
+        this.curve .style.stroke = rgb2style(color);
         this.curve2.style.stroke = rgb2style(rgbDocumentBody);
     
 

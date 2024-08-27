@@ -195,17 +195,6 @@ extends ResizableBase
 
 
 
-    getHeaderColors()
-    {
-        const colors = super.getHeaderColors();
-
-        colors.text = darkMode ? hex2rgba('#fff6') : hex2rgba('#0006');
-
-        return colors;
-    }
-
-
-
     // toJsonBase(nTab = 0) 
     // {
     //     let   pos = ' '.repeat(nTab);

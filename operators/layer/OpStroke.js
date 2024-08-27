@@ -308,10 +308,6 @@ extends OpColorBase
             colors.back       = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
             colors.stripeBack = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
             colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
-            colors.input      = rgb_a(colors.text, 0.3);
-            colors.output     = rgb_a(colors.text, 0.3);
-            colors.inWire     =
-            colors.outWire    = darkMode ? hex2rgb('888') : hex2rgb('aaa');
         }
         else
         {
@@ -321,13 +317,6 @@ extends OpColorBase
                 colors.back       = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
                 colors.stripeBack = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
                 colors.text       = getTextColorFromBackColor(colors.stripeBack, fills[0].toRgba()[3]);
-                colors.input      = rgb_a(colors.text, 0.3);
-                colors.output     = rgb_a(colors.text, 0.3);
-                colors.inWire     =
-                colors.outWire    = 
-                    !rgbaIsNaN(colors.stripeBack)
-                    ? colors.stripeBack
-                    : rgb_a(rgbFromType(ANY_VALUE, true));
             }
             else
             {
