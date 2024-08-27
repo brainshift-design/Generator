@@ -351,6 +351,15 @@ extends EventTarget
 
     getBallColor()
     {
+        return this.param
+             ? this.getParamBallColor()
+             : this.getHeaderBallColor();
+    }
+
+
+
+    getParamBallColor()
+    {
         if (   graphView.savedConn
             && graphView.savedConn.input == this
             && graphView.overInput != this)
@@ -358,6 +367,34 @@ extends EventTarget
 
         if (this.connected)
             return this.connectedOutput.getWireColor();
+
+        if (   graphView.tempConn
+            && graphView.overInput == this
+            && graphView.tempConn.output.types[0] != this.types[0])
+            return graphView.tempConn.output.getWireColor();
+
+
+        return this.getRingColor();
+    }
+
+
+
+    getHeaderBallColor()
+    {
+        if (   graphView.savedConn
+            && graphView.savedConn.input == this
+            && graphView.overInput != this)
+            return transparent;
+
+        if (   this.connected
+            && this.connectedOutput.types[0] != this.types[0])
+            return this.connectedOutput.getWireColor();
+
+        if (   graphView.tempConn
+            && graphView.overInput == this
+            && graphView.tempConn.output.types[0] != this.types[0])
+            return graphView.tempConn.output.getWireColor();
+
 
         return this.getRingColor();
     }
