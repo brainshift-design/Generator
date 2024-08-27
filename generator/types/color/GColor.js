@@ -84,7 +84,8 @@ extends GOperator1
         
         if (input)
         {
-            if (input.isValid())
+            if (   input.isValid()
+                && input.type == COLOR_VALUE)
             {
                 if (this.options.enabled)
                 {

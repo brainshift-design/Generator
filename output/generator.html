@@ -21144,13 +21144,11 @@ extends GOperator1
             return this;
 
 
-        this.value = 
-            this.input 
-            ? (await this.input.eval(parse)).toValue() 
-            : new NullValue();
+        const input = await evalValue    (this.input, parse);
+        const name  = await evalTextValue(this.name,  parse);
 
-        
-        const name = await evalTextValue(this.name, parse);
+
+        this.value = input ?? new NullValue();
 
 
         if (   this.options.enabled
@@ -21163,8 +21161,9 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type', this.outputType()],
-            ['name', name             ]
+            ['type',  this.outputType()],
+            ['value', this.value       ],
+            ['name',  name             ]
         ]);
 
 
@@ -36700,7 +36699,8 @@ extends GOperator1
         
         if (input)
         {
-            if (input.isValid())
+            if (   input.isValid()
+                && input.type == COLOR_VALUE)
             {
                 if (this.options.enabled)
                 {
@@ -39650,7 +39650,8 @@ extends GOperator1
 
         fills = this.validateFills(fills);
 
-        if (!isListValueType(this._fills.type))
+        if (    this._fills
+            && !isListValueType(this._fills.type))
             this.fills = fills;
 
 

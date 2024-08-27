@@ -41,13 +41,11 @@ extends GOperator1
             return this;
 
 
-        this.value = 
-            this.input 
-            ? (await this.input.eval(parse)).toValue() 
-            : new NullValue();
+        const input = await evalValue    (this.input, parse);
+        const name  = await evalTextValue(this.name,  parse);
 
-        
-        const name = await evalTextValue(this.name, parse);
+
+        this.value = input ?? new NullValue();
 
 
         if (   this.options.enabled
@@ -60,8 +58,9 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type', this.outputType()],
-            ['name', name             ]
+            ['type',  this.outputType()],
+            ['value', this.value       ],
+            ['name',  name             ]
         ]);
 
 

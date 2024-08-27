@@ -150,7 +150,8 @@ extends OpColorBase
         const value = values[paramIds.findIndex(id => id == 'value')];
 
         this._color = 
-            value
+               value
+            && value.fills.items.length > 0
             ? value.fills.items[0].color.toDataColor()
             : dataColor_NaN;
 
@@ -288,7 +289,6 @@ extends OpColorBase
 
     getOutputWireColor()
     {
-        console.log('this._color =', this._color);
         if (!dataColorIsNaN(this._color))
             return dataColor2rgb(this._color);
         else
