@@ -94,9 +94,16 @@ extends GOperator
         this.evalObjects(parse);
         
 
+        const type =
+               _values.length > 1
+            && finalListTypeFromItems(_values) == LIST_VALUE
+            ? new TextValue(ANY_VALUE)
+            : this.outputType();
+
+
         this.setUpdateValues(parse,
         [
-            ['type', this.outputType()]
+            ['type', type]
         ]);
         
 

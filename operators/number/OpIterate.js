@@ -9,8 +9,11 @@ extends OperatorBase
     {
         super(ITERATE, 'iterate', 'iterate', iconIterate);
 
+        this.valueType = ANY_VALUE;
+
+
         this.cached         = false;
-        this.iconOffsetY    = 1;
+        this.iconOffsetY    = 0;
         this.variableInputs = true;
 
         

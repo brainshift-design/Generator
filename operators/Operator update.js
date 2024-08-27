@@ -363,9 +363,6 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
 
     const colors = this.getHeaderColors();
 
-    if (this.type == SET_VALUE_NAME)
-        console.log('Operator.update() colors.output =', colors.output);
-
     for (let i = 0; i < inputs.length; i++)
     {
         inputs[i].div.style.top = inputY[i];

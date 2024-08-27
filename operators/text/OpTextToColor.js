@@ -9,7 +9,9 @@ extends OperatorBase
     {
         super(TEXT_TO_COLOR, 'textToColor', 'text to color', iconTextToColor);
 
+        this.valueType = TEXT_VALUE;
 
+        
         this.colorBack = createDiv('colorBack');
         this.inner.insertBefore(this.colorBack, this.paramHolder);
 

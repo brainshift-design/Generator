@@ -9,6 +9,7 @@ extends OperatorBase
     {
         super(COLOR_DELTA_E, 'deltaE', 'delta E', iconColorDeltaE);
 
+        this.valueType = COLOR_VALUE;
 
 
         this.addInput(new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE]));
@@ -23,11 +24,6 @@ extends OperatorBase
         this.paramValue.controls[0].setMax(100);
         
         this.paramValue.controls[0].thinMinus = true;
-
-        this.paramValue.getTooltip = () => 
-            settings.showTooltipColorContrast ? 
-            (this.paramStandard.value.value == 1 ? ttWcag3 : ttWcag2) 
-            : null;
     }
 
 

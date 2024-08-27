@@ -7,11 +7,12 @@ extends ResizableBase
 
     constructor()
     {
-        super(COMBINE, 'combine', 'combine', iconCombine);
+        super(COMBINE, 'list', 'list', iconList);
 
-        //this.canDisable        = true;
+        this.valueType         = LIST_VALUE;
         this.variableInputs    = true;
         this.showHeaderTooltip = true;
+        this.iconOffsetY       = 1;
 
 
         this.addNewInput();

@@ -11,7 +11,9 @@ extends OperatorBase
     {
         super(TEXT_TO_NUMBER, 'textToNum', 'text to number', iconTextToNumber);
 
+        this.valueType = TEXT_VALUE;
 
+        
         this.addInput(new Input([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 

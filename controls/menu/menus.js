@@ -474,8 +474,6 @@ function initGeneratorMenus()
 
     menuFlow = new Menu('Data flow', true, false);
     menuFlow.addItems([
-        menuItemCombine    = new MenuItem('Combine',           null,      false, {icon: iconCombine,       createType: COMBINE,       callback: e => actionManager.do(getCreateNodeAction(COMBINE,          btnFlow.div, getCreateOptions(e)))}),
-                             new MenuItem('',                  null,      false, {separator: true}),     
         menuItemIfElse     = new MenuItem('I&hairsp;f / else', 'If else', false, {icon: iconIfElse,        createType: IF_ELSE,       callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,          btnFlow.div, getCreateOptions(e))), disambiguate: true}),
         menuItemSelect     = new MenuItem('Select',            null,      false, {childMenu: menuSelectFromList, icon: iconSelect,        createType: SELECT,        callback: e => actionManager.do(getCreateNodeAction(SELECT,           btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null,      false, {separator: true}),
@@ -515,7 +513,8 @@ function initGeneratorMenus()
 
     menuData = new Menu('Lists', true, false);
     menuData.addItems([
-        menuItemList        = new MenuItem('List...',           null,            false, {icon: iconList,          createType: LIST,          callback: e => actionManager.do(getCreateNodeAction(LIST,             btnData.div, getCreateOptions(e)))}),
+        menuItemCombine     = new MenuItem('List',              null,            false, {icon: iconList,       createType: COMBINE,       callback: e => actionManager.do(getCreateNodeAction(COMBINE,          btnData.div, getCreateOptions(e)))}),
+        menuItemList        = new MenuItem('Expand...',         null,            false, {icon: iconExpand,          createType: LIST,          callback: e => actionManager.do(getCreateNodeAction(LIST,             btnData.div, getCreateOptions(e)))}),
                               new MenuItem('',                  null,            false, {separator: true}),     
         menuItemCount       = new MenuItem('Count',             null,            false, {icon: iconCount,         createType: LIST_COUNT,    callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,       btnData.div, getCreateOptions(e)))}),
                             //new MenuItem('Object count',      null,            false, {icon: iconObjectCount,   createType: OBJECT_COUNT,  callback: e => actionManager.do(getCreateNodeAction(OBJECT_COUNT,     btnData.div, getCreateOptions(e)))}),

@@ -13,7 +13,8 @@ extends ResizableBase
     {
         super(SET_PARAM, 'setParam', 'set param', iconSetParam);
 
-        this.canDisable        = true;
+        this.valueType  = ANY_VALUE;
+        this.canDisable = true;
         
 
         this.addInput (new Input ([ANY_VALUE]));

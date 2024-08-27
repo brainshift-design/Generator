@@ -5,7 +5,9 @@ extends OperatorBase
     {
         super(TEXT_CONTAINS, 'textContains', 'contains', iconTextContains);
 
+        this.valueType = TEXT_VALUE;
 
+        
         this.iconOffsetY = 1;
         
 

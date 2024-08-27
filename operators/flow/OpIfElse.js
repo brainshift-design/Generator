@@ -11,8 +11,8 @@ extends OperatorBase
     {
         super(IF_ELSE, 'ifElse', 'if/else', iconIfElse);
 
+        this.valueType   = ANY_VALUE;
         this.iconOffsetY = -1;
-        //this.cached = false;
 
 
         this.addInput (new Input ([ANY_VALUE]));

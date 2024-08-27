@@ -5,6 +5,7 @@ extends OperatorBase
     {
         super(LIST_AS_ITEM, 'listAsItem', 'list as item', iconListAsItem);
 
+        this.valueType  = LIST_VALUE;
         this.canDisable = true;
         
 

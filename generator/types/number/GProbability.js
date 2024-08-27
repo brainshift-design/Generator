@@ -61,6 +61,9 @@ extends GOperator2
         const alternate = await evalNumberValue(this.alternate, parse);
     
 
+        const _values = [];
+
+
         if (   seed
             && iteration
             && chance
@@ -93,13 +96,21 @@ extends GOperator2
                         this.value = ch < 0.5 ? input0 : input1;
                     else
                         this.value = new NullValue();
+
+                    _values.push(input0, input1);
                 }
 
                 else if (input0)
+                {
                     this.value = input0;
+                    _values.push(input0);
+                }
                 
                 else if (input1)
+                {
                     this.value = input1;
+                    _values.push(input1);
+                }
                 
                 else
                     this.value = new NumberValue(ch < 0.5 ? 0 : 1);
@@ -111,13 +122,20 @@ extends GOperator2
             this.value = new NullValue();
 
 
+        const type =
+               _values.length > 1
+            && finalListTypeFromItems(_values) == LIST_VALUE
+            ? new TextValue(ANY_VALUE)
+            : this.outputType();
+
+
         this.setUpdateValues(parse,
         [
-            ['type',      this.outputType()],
-            ['seed',      seed             ],
-            ['iteration', iteration        ],
-            ['chance',    chance           ],
-            ['alternate', alternate        ]
+            ['type',      type     ],
+            ['seed',      seed     ],
+            ['iteration', iteration],
+            ['chance',    chance   ],
+            ['alternate', alternate]
         ]);
         
 

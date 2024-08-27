@@ -360,6 +360,11 @@ extends EventTarget
         const colors = this.node.getHeaderColors();
         const conn   = this.connected;
 
+        const connOrDiff = 
+               conn 
+            ||    this.node.valueType != NULL
+               && this.node.valueType != this.types[0];
+
         const tc = 
                graphView.tempConn 
             && graphView.tempConn.output == this;
@@ -386,10 +391,10 @@ extends EventTarget
                         ? [0, 0, 0, 0.2 ]
                         : [1, 1, 1, 0.25];
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ballColor = conn ? typeColorDark : [1, 1, 1, tc ? 0 : 0.35];
-            else if (this.types[0] == TEXT_VALUE         ) ballColor = conn ? typeColorDark : [0, 0, 0, tc ? 0 : 0.25];
-            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = conn ? typeColorDark : [1, 1, 1, tc ? 0 : 0.4 ];
-            else                                           ballColor = conn ? typeColorDark : [0, 0, 0, tc ? 0 : 0.28];
+            else if (this.types[0] == NUMBER_VALUE       ) ballColor = connOrDiff ? typeColorDark : [1, 1, 1, tc ? 0 : 0.35];
+            else if (this.types[0] == TEXT_VALUE         ) ballColor = connOrDiff ? typeColorDark : [0, 0, 0, tc ? 0 : 0.25];
+            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorDark : [1, 1, 1, tc ? 0 : 0.4 ];
+            else                                           ballColor = connOrDiff ? typeColorDark : [0, 0, 0, tc ? 0 : 0.28];
         }
         else // light mode
         {
@@ -408,10 +413,10 @@ extends EventTarget
                         ? [0, 0, 0, 0.17]
                         : [1, 1, 1, 0.3 ];
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ballColor = conn ? typeColorLight : [1, 1, 1, tc ? 0 : 0.4 ];
-            else if (this.types[0] == TEXT_VALUE         ) ballColor = conn ? typeColorLight : [0, 0, 0, tc ? 0 : 0.21];
-            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = conn ? typeColorLight : [1, 1, 1, tc ? 0 : 0.4 ];
-            else                                           ballColor = conn ? typeColorLight : [1, 1, 1, tc ? 0 : 0.4 ];
+            else if (this.types[0] == NUMBER_VALUE       ) ballColor = connOrDiff ? typeColorLight : [1, 1, 1, tc ? 0 : 0.4 ];
+            else if (this.types[0] == TEXT_VALUE         ) ballColor = connOrDiff ? typeColorLight : [0, 0, 0, tc ? 0 : 0.21];
+            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorLight : [1, 1, 1, tc ? 0 : 0.4 ];
+            else                                           ballColor = connOrDiff ? typeColorLight : [1, 1, 1, tc ? 0 : 0.4 ];
         }
 
 

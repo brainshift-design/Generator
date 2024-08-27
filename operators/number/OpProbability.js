@@ -12,6 +12,7 @@ extends OperatorBase
     {
         super(PROBABILITY, 'prob', 'probability', iconProbability);
 
+        this.valueType   = ANY_VALUE;
         this.cached      = false;
         this.iconOffsetY = -2;
 

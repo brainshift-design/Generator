@@ -9,6 +9,8 @@ extends OperatorBase
     {
         super(GET_LIST_VALUE_NAMES, 'getValueNames', 'get value names', iconGetListValueNames);
 
+        this.valueType = LIST_VALUE;
+
 
         this.canDisable        = true;
         this.showHeaderTooltip = true;

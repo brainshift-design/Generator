@@ -34,8 +34,7 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (   this.isCached())
-            //&& this.cachedValue)
+        if (this.isCached())
             return this;
 
 
@@ -45,38 +44,29 @@ extends GOperator1
         this.counts = new ListValue();
 
 
-        // if (this.cachedValue)
-        //     this.value = this.cachedValue.copy();
-
-        // else
-        // {
-            if (   input
-                && input.items)
+        if (   input
+            && input.items)
+        {
+            if (this.options.enabled)
             {
-                if (this.options.enabled)
+                this.value = new ListValue();
+                this.value.objects = [];
+
+                for (let i = 0; i < input.items.length; i++)
+                    this.value.items.push(new TextValue(input.items[i].valueId));
+
+                if (input.objects)
                 {
-                    this.value = new ListValue();
-                    this.value.objects = [];
-
-                    for (let i = 0; i < input.items.length; i++)
-                        this.value.items.push(new TextValue(input.items[i].valueId));
-
-                    if (input.objects)
-                    {
-                        for (let i = 0; i < input.objects.length; i++)
-                            this.value.objects.push(input.objects[i]);
-                    }
+                    for (let i = 0; i < input.objects.length; i++)
+                        this.value.objects.push(input.objects[i]);
                 }
-                else
-                    this.value = input.copy();
             }
             else
-                this.value = ListValue.NaN.copy();
+                this.value = input.copy();
+        }
+        else
+            this.value = ListValue.NaN.copy();
 
-
-            // this.cachedValue = this.value.copy();
-        // }
-    
 
         this.updateValueObjects();
 

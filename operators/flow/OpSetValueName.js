@@ -9,7 +9,7 @@ extends OperatorBase
     {
         super(SET_VALUE_NAME, 'setValueName', 'set value name', iconSetValueName);
 
-
+        this.valueType    = ANY_VALUE;
         this.subscription = true;
         this.canDisable   = true;
         this.iconOffsetY  = -1;

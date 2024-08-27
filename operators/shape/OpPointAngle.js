@@ -5,7 +5,7 @@ extends OperatorBase
     {
         super(POINT_ANGLE, 'pointAngle', 'point angle', iconPointAngle);
 
-        // this.iconOffsetY = 1;
+        this.valueType  = POINT_VALUE;
         this.canDisable = false;
 
         this.addInput (new Input([POINT_VALUE, SHAPE_LIST_VALUE, LIST_VALUE]));

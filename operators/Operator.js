@@ -15,6 +15,9 @@ class Operator
     get type() { return this.#type; }
     
 
+    valueType;
+
+
     createTime;
     updateTime;
 
@@ -213,6 +216,8 @@ class Operator
         this.updateTime        = this.createTime;
 
         this.#type             = type;
+
+        this.valueType         = NULL;
 
         this.id                = id;
         this.id                = makeNodePath(this);

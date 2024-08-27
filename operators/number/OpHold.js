@@ -9,9 +9,11 @@ extends OperatorBase
     {
         super(HOLD, 'hold', 'hold', iconHold);
 
+        this.valueType = ANY_VALUE;
+
+
         this.cached      = false;
-        this.iconOffsetY = 2;
-        // this.canDisable  = true;
+        this.iconOffsetY = 1;
         
 
         this.addInput (new Input ([ANY_VALUE]));

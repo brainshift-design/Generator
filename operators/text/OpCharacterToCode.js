@@ -5,7 +5,9 @@ extends OperatorBase
     {
         super(TEXT_UNICODE, 'charToCode', 'char to code', iconCharacterToCode);
 
+        this.valueType   = TEXT_VALUE;
         this.iconOffsetY = 1;
+
 
         this.addInput (new Input([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));

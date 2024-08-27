@@ -9,6 +9,9 @@ extends OperatorBase
     {
         super(TEXT_COMPARE, 'compare', 'compare', iconTextCompare);
 
+        this.valueType = TEXT_VALUE;
+
+
         this.canDisable  = true;
         this.iconOffsetY = 0;
         
