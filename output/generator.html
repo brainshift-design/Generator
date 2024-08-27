@@ -6837,8 +6837,8 @@ const COLOR_VALUE             = 'COL#';
 const COLOR                   = 'COL';   
 const VALID_COLOR             = 'CVAL';  
 const CORRECT_COLOR           = 'CCOR';  
-const COLOR_CONVERT_P3        = 'COLP3';
 const COLOR_CONTRAST          = 'CCNT';  
+const COLOR_DELTA_E           = 'CDLTE';  
 const COLORBLIND              = 'BLND';  
 const COLOR_SCHEME            = 'CPAL'; 
 const COLOR_INTERPOLATE       = 'CLERP'; 
@@ -7200,8 +7200,9 @@ const COLOR_TYPES =
     COLOR,
     VALID_COLOR,
     CORRECT_COLOR,
-    COLOR_CONVERT_P3,
     COLORBLIND,
+    COLOR_CONTRAST,
+    COLOR_DELTA_E,
     COLOR_INTERPOLATE,
     COLOR_BLEND,
     COLOR_TO_TEXT
@@ -37367,8 +37368,8 @@ extends GOperator2
         return copy;
     }
 
-    menuItemSaveTemplate
 
+    
     async eval(parse)
     {
         if (this.isCached())
@@ -37459,6 +37460,105 @@ extends GOperator2
         [
             ['standard', standard     ],
             ['contrast', this.contrast]
+        ],
+        true);
+
+
+        this.validate();
+
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.standard && this.standard.isValid()
+            && (!this.contrast || this.contrast.isValid());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.standard) this.standard.pushValueUpdates(parse);
+        if (this.contrast) this.contrast.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.standard) this.standard.invalidateInputs(parse, from, force);
+        if (this.contrast) this.contrast.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.standard) this.standard.iterateLoop(parse);
+        if (this.contrast) this.contrast.iterateLoop(parse);
+    }
+}
+
+
+
+class GColorDeltaE
+extends GOperator2
+{
+    constructor(nodeId, options)
+    {
+        super(COLOR_DELTA_E, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GColorDeltaE(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input0 = await evalColorValue(this.input0, parse);
+        const input1 = await evalColorValue(this.input1, parse);
+
+        
+        if (   input0 && input0.type == COLOR_VALUE 
+            && input1 && input1.type == COLOR_VALUE)
+        {
+            if (   input0.isValid()
+                && input1.isValid())
+                this.value = new NumberValue(deltaE(input0.toRgb(), input1.toRgb()) * 100, 1);
+            else
+                this.value = NumberValue.NaN.copy();
+        }
+        else
+            this.value = NumberValue.NaN.copy();
+        
+
+        this.setUpdateValues(parse,
+        [
+            ['type', this.outputType()]
         ],
         true);
 
@@ -51869,6 +51969,64 @@ function genParseColorContrast(parse)
 
 
 
+function genParseColorDeltaE(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const deltaE = new GColorDeltaE(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+
+    const valueIndex = 
+        nInputs == 1
+        ? parseInt(parse.move())
+        : -1;
+
+    
+    if (parse.settings.logRequests) 
+        logReqColorContrast(deltaE, nInputs, valueIndex, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, deltaE);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        deltaE.input0 = genParse(parse);
+        deltaE.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+             if (valueIndex == 0) deltaE.input0 = genParse(parse); 
+        else if (valueIndex == 1) deltaE.input1 = genParse(parse); 
+    }
+  
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, deltaE);
+    return deltaE;
+}
+
+
+
 function genParseColorConvertP3(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -60775,7 +60933,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == VALID_COLOR            ) result = genParseValidColor        (parse);
     else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor      (parse);
     else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast     (parse);
-    else if (parse.next == COLOR_CONVERT_P3       ) result = genParseColorConvertP3    (parse);
+    else if (parse.next == COLOR_DELTA_E          ) result = genParseColorDeltaE       (parse);
     else if (parse.next == COLORBLIND             ) result = genParseColorBlind        (parse);
     else if (parse.next == COLOR_SCHEME           ) result = genParseColorScheme       (parse);
     else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate  (parse);

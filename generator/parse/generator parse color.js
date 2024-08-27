@@ -254,6 +254,64 @@ function genParseColorContrast(parse)
 
 
 
+function genParseColorDeltaE(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const deltaE = new GColorDeltaE(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+
+    const valueIndex = 
+        nInputs == 1
+        ? parseInt(parse.move())
+        : -1;
+
+    
+    if (parse.settings.logRequests) 
+        logReqColorContrast(deltaE, nInputs, valueIndex, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, deltaE);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        deltaE.input0 = genParse(parse);
+        deltaE.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+             if (valueIndex == 0) deltaE.input0 = genParse(parse); 
+        else if (valueIndex == 1) deltaE.input1 = genParse(parse); 
+    }
+  
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, deltaE);
+    return deltaE;
+}
+
+
+
 function genParseColorConvertP3(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

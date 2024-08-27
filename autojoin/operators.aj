@@ -178,6 +178,7 @@
 ../operators/color/OpValidColor.js
 ../operators/color/OpCorrectColor.js
 ../operators/color/OpColorContrast.js
+../operators/color/OpColorDeltaE.js
 ../operators/color/OpColorblind.js
 ../operators/color/OpColorScheme.js
 ../operators/color/OpColorInterpolate.js

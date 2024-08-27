@@ -8,10 +8,10 @@ extends OperatorBase
 
     constructor()
     {
-        super(INDEX_TO_NAME, 'index', 'index', iconIndexToName);
+        super(INDEX_TO_NAME, 'indexToNane', 'index → name', iconIndexToName);
 
 
-        //this.iconOffsetY = 1;
+        this.iconOffsetY = 1;
 
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));

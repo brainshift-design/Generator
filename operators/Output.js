@@ -374,7 +374,6 @@ extends EventTarget
             {
                 const color = this.node.getOutputWireColor();
 
-                console.log('deltaE(color, colors.back) =', deltaE(color, colors.back));
                 ballColor = 
                        conn 
                     || (    this.forceNodeOutputColor

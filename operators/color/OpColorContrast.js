@@ -60,7 +60,7 @@ extends OpColorBase
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
         this.outputs[0].forceNodeOutputColor = true;
-        
+
 
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'APCA'], 1));
@@ -166,6 +166,9 @@ extends OpColorBase
 
         this._rgbText = colText.toRgb();
         this._rgbBack = colBack.toRgb();
+
+        if (deltaE(this._rgbText, this._rgbBack) <= 0.1)
+            this._rgbText = darkMode ? [0, 0, 0, 0.2] : [1, 1, 1, 0.2];
 
 
         if (   standard
@@ -383,24 +386,7 @@ extends OpColorBase
                     new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3light5, is5 ? 1 : 0.2), 0.8),   // green
                     new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3light6, is6 ? 1 : 0.1), 0.8),   // blue
                     new NumberControlRange(90/105, 105/105, rgb2style_a(rgb3light7, is7 ? 1 : 0  ), 0.8) ]; // white
-
-                // this.divShadowLeft .style.display = 'none'; //is4 ? 'block' : 'none';
-                // this.divShadowRight.style.display = 'none'; //is4 ? 'block' : 'none';
             }
         }
     }
 }
-
-
-
-// function OpColorContrast_onConnectInput(node)
-// {
-//     node.updateHeader();
-// }
-
-
-
-// function OpColorContrast_onDisconnectInput(node)
-// {
-//     node.updateHeader();
-// }
