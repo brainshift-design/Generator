@@ -540,12 +540,14 @@ class Wire
         {
             const hcl = rgb2hclok(color);
     
-            const th  = 0.4;
-            let   dl  = 0.05;
+            const th  = 0.27;
+            let   dl  = 0.1;
     
             dl /= Math.min(1 - (1 - graph.currentPage.zoom) / 1.75, 1);
     
-            if (hcl[2] < th + dl)
+            if (hcl[2] > th - dl && hcl[2] <= th)
+                color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th - dl]));
+            if (hcl[2] > th && hcl[2] < th + dl)
                 color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], th + dl]));
         }
         else // light mode

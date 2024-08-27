@@ -68,13 +68,6 @@ extends Operator
 
     getHeaderColors(options = {})
     {
-        const noColor = 
-            darkMode
-            ? rgbNoColorDark
-            : rgbNoColorLight;
-
-
-        
         let rgbBack = 
             dataColorIsNaN(this._color)
             ? rgb_NaN
@@ -85,18 +78,11 @@ extends Operator
             && isListValueType(this.outputs[0].types[0]))
             rgbBack = darkMode ? hex2rgb('888f') : hex2rgb('aaaf');
             
-
         let rgbStripeBack = getStripeBackColor(rgbBack);
         
 
         const rgbaBorder = rgb_a(rgbFromType(this.type, this.active), 0.95);
-
-        const rgbText  = getTextColorFromBackColor(rgbStripeBack);
-
-        const rgbaWire = 
-            !rgbIsNaN(rgbStripeBack)   
-            ? rgbStripeBack 
-            : noColor;
+        const rgbText    = getTextColorFromBackColor(rgbStripeBack);
 
         return {
             back:       rgb_a(rgbBack), 
@@ -109,10 +95,14 @@ extends Operator
 
     getOutputWireColor()
     {
-        if (!dataColorIsNaN(this._color))
+        if (!dataColorIsNaN(this._color)
+            && !this.isUnknown())
             return dataColor2rgb(this._color);
         else
-            return super.getOutputWireColor();
+            //return super.getOutputWireColor();
+            return darkMode
+                 ? rgbNoColorDark
+                 : rgbNoColorLight;
     }
 
 

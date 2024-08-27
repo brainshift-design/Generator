@@ -14023,6 +14023,13 @@ extends GValue
 
 
 
+    toRgba()
+    {
+        return this.fill.toRgba();
+    }
+
+
+
     toString()
     {
         return      this.fill    .toString()
@@ -14230,8 +14237,8 @@ extends GValue
 
         return stops.length > 0
              ? rgbaLerp(
-                 stops[0]    .fill.color.toRgba(), 
-                 stops.at(-1).fill.color.toRgba(), 
+                 stops[0]    .fill.toRgba(), 
+                 stops.at(-1).fill.toRgba(), 
                  0.5)
              : rgba_NaN;
     }
@@ -14449,6 +14456,20 @@ extends GValue
     toValue()
     {
         return this.copy();
+    }
+
+
+
+    toRgba()
+    {
+        const fills = this.stops.items;
+
+        return fills.length > 0
+             ? rgbaLerp(
+                 fills[0]    .toRgba(),
+                 fills.at(-1).toRgba(),
+                 0.5)
+             : rgba_NaN;
     }
 
 
@@ -62890,6 +62911,9 @@ const rgba_NaN = [
     Number.NaN ];
 
 
+const rgb_display_NaN  = [1, 0, 1];
+const rgba_display_NaN = [1, 0, 1, 1];
+
 const rgbInvalid  = [0xff, 0, 0xff];
 const rgbaInvalid = [0xff, 0, 0xff, 0xff];
 
@@ -62903,6 +62927,14 @@ const dataColor_NaN = Object.freeze([
 
 const transparent = [0, 0, 0, 0];
 
+
+const TRANSPARENT_THRESHOLD_DARK  = 0.45;
+const TRANSPARENT_THRESHOLD_LIGHT = 0.45;
+
+const getTransparentThreshold = () => 
+    darkMode
+    ? TRANSPARENT_THRESHOLD_DARK
+    : TRANSPARENT_THRESHOLD_LIGHT;
 
 
 // Hunt-Pointer-Estevez
@@ -63280,9 +63312,9 @@ function computedStyle2rgba(obj, style) // SLOW
 function getTextColorFromBackColor(rgb, opacity = 1)
 {
     return !rgbIsNaN(rgb)
-           ? (opacity >= 0.5
-               ? (isDark(rgb) ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75])
-               : (darkMode ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75]))
+           ? (opacity < getTransparentThreshold()
+              ? (darkMode    ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75])
+              : (isDark(rgb) ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75]))
            : (darkMode ? rgbaNoColorTextDark : rgbaNoColorTextLight);
 }
 

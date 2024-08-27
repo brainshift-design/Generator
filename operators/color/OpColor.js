@@ -22,7 +22,6 @@ extends OpColorBase
     {
         super(COLOR, 'color', 'color', iconColor);
 
-
         this.canDisable = true;
 
         

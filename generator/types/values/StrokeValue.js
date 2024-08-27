@@ -110,6 +110,20 @@ extends GValue
 
 
 
+    toRgba()
+    {
+        const fills = this.stops.items;
+
+        return fills.length > 0
+             ? rgbaLerp(
+                 fills[0]    .toRgba(),
+                 fills.at(-1).toRgba(),
+                 0.5)
+             : rgba_NaN;
+    }
+
+
+
     toString()
     {
         return      this.fills .toString()

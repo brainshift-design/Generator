@@ -10,6 +10,9 @@ const rgba_NaN = [
     Number.NaN ];
 
 
+const rgb_display_NaN  = [1, 0, 1];
+const rgba_display_NaN = [1, 0, 1, 1];
+
 const rgbInvalid  = [0xff, 0, 0xff];
 const rgbaInvalid = [0xff, 0, 0xff, 0xff];
 
@@ -23,6 +26,14 @@ const dataColor_NaN = Object.freeze([
 
 const transparent = [0, 0, 0, 0];
 
+
+const TRANSPARENT_THRESHOLD_DARK  = 0.45;
+const TRANSPARENT_THRESHOLD_LIGHT = 0.45;
+
+const getTransparentThreshold = () => 
+    darkMode
+    ? TRANSPARENT_THRESHOLD_DARK
+    : TRANSPARENT_THRESHOLD_LIGHT;
 
 
 // Hunt-Pointer-Estevez
@@ -400,9 +411,9 @@ function computedStyle2rgba(obj, style) // SLOW
 function getTextColorFromBackColor(rgb, opacity = 1)
 {
     return !rgbIsNaN(rgb)
-           ? (opacity >= 0.5
-               ? (isDark(rgb) ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75])
-               : (darkMode ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75]))
+           ? (opacity < getTransparentThreshold()
+              ? (darkMode    ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75])
+              : (isDark(rgb) ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75]))
            : (darkMode ? rgbaNoColorTextDark : rgbaNoColorTextLight);
 }
 

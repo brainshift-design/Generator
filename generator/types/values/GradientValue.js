@@ -141,8 +141,8 @@ extends GValue
 
         return stops.length > 0
              ? rgbaLerp(
-                 stops[0]    .fill.color.toRgba(), 
-                 stops.at(-1).fill.color.toRgba(), 
+                 stops[0]    .fill.toRgba(), 
+                 stops.at(-1).fill.toRgba(), 
                  0.5)
              : rgba_NaN;
     }

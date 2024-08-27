@@ -358,6 +358,26 @@ extends OpColorBase
 
     getOutputWireColor()
     {
+        if (    this.value
+            &&  this.value.isValid()
+            && !rgbaIsNaN(this.value.toRgba()))
+        {
+            if (this.value.toRgba()[3] < 0.35)
+            {
+                return darkMode
+                     ? [1, 1, 1, 0.2]
+                     : [0, 0, 0, 0.2];
+            }
+            else
+                return dataColor2rgb(this._color);
+        }
+        else
+            return darkMode
+                 ? rgbNoColorDark
+                 : rgbNoColorLight;
+    }
+    getOutputWireColor()
+    {
         let color = this.value.toRgba();
         if (rgbaIsNaN(color)) color = rgbFromType(ANY_VALUE, true);
 

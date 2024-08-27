@@ -1262,6 +1262,20 @@ class Operator
 
 
 
+    getHeaderInputColor()
+    {
+        return rgba_NaN;
+    }
+
+
+
+    getHeaderOutputColor()
+    {
+        return rgba_NaN;
+    }
+
+
+
     getInputWireColor()
     {
         return rgb_NaN;

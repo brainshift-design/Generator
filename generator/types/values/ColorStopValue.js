@@ -67,6 +67,13 @@ extends GValue
 
 
 
+    toRgba()
+    {
+        return this.fill.toRgba();
+    }
+
+
+
     toString()
     {
         return      this.fill    .toString()

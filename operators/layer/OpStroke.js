@@ -289,10 +289,24 @@ extends OpColorBase
 
     getOutputWireColor()
     {
-        if (!dataColorIsNaN(this._color))
-            return dataColor2rgb(this._color);
+        if (    this.value
+            &&  this.value.isValid()
+            &&  this.value.fills.items.length > 0
+            && !rgbaIsNaN(this.value.fills.items.at(-1).toRgba()))
+        {
+            if (this.value.fills.items.at(-1).toRgba()[3] < getTransparentThreshold())
+            {
+                return darkMode
+                     ? [1, 1, 1, 0.2]
+                     : [0, 0, 0, 0.2];
+            }
+            else
+                return dataColor2rgb(this._color);
+        }
         else
-            return super.getOutputWireColor();
+            return darkMode
+                 ? rgbNoColorDark
+                 : rgbNoColorLight;
     }
 
 
