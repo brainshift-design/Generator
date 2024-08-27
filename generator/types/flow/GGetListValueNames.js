@@ -65,7 +65,7 @@ extends GOperator1
                 this.value = input.copy();
         }
         else
-            this.value = ListValue.NaN.copy();
+            this.value = new ListValue();
 
 
         this.updateValueObjects();
@@ -73,7 +73,7 @@ extends GOperator1
 
         this.setUpdateValues(parse, 
         [
-            ['type',   this.outputListType()                   ],
+            ['type',   new TextValue(TEXT_LIST_VALUE)          ],
             ['length', new NumberValue(this.value.items.length)]
         ]); 
                
