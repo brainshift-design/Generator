@@ -642,3 +642,16 @@ function addHueHcluv(rgb, d, min = 0, max = Tau)
         hcl[1], 
         hcl[2]);
 }
+
+
+
+function deltaE(rgb1, rgb2)
+{
+    const lab1 = rgb2oklab(rgb1);
+    const lab2 = rgb2oklab(rgb2);
+
+    return Math.sqrt(
+          sqr(lab2[0] - lab1[0])
+        + sqr(lab2[1] - lab1[1])
+        + sqr(lab2[2] - lab1[2]));
+}

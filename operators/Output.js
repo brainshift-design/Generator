@@ -68,6 +68,9 @@ extends EventTarget
     backInit   = null;
 
 
+    forceNodeOutputColor = false;
+
+
 
 
     constructor(types, genRequest, getValuesForUndo = null, backInit = null)
@@ -382,8 +385,12 @@ extends EventTarget
             {
                 const color = this.node.getOutputWireColor();
 
+                console.log('deltaE(color, colors.back) =', deltaE(color, colors.back));
                 ballColor = 
-                    conn
+                       conn 
+                    || (    this.forceNodeOutputColor
+                        && !rgbIsNaN(color)
+                        &&  deltaE(color, colors.back) > 0.1)
                     ? color
                     : rgbIsNaN(colors.back)
                       ? [1, 1, 1, 0.25]
@@ -403,7 +410,9 @@ extends EventTarget
                 const color = this.node.getOutputWireColor();
 
                 ballColor = 
-                    conn
+                       conn 
+                    || (    this.forceNodeOutputColor
+                        && !rgbIsNaN(color))
                     ? color
                     : rgbIsNaN(colors.back)
                       ? [0, 0, 0, 0.22]

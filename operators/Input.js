@@ -370,7 +370,8 @@ extends EventTarget
 
         if (   graphView.tempConn
             && graphView.overInput == this
-            && graphView.tempConn.output.types[0] != this.types[0])
+            && (   this.typeIsColor()
+                || graphView.tempConn.output.types[0] != this.types[0]))
             return graphView.tempConn.output.getWireColor();
 
 
@@ -387,12 +388,14 @@ extends EventTarget
             return transparent;
 
         if (   this.connected
-            && this.connectedOutput.types[0] != this.types[0])
+            && (   this.typeIsColor()
+                || this.connectedOutput.types[0] != this.types[0]))
             return this.connectedOutput.getWireColor();
 
         if (   graphView.tempConn
             && graphView.overInput == this
-            && graphView.tempConn.output.types[0] != this.types[0])
+            && (   this.typeIsColor()
+                || graphView.tempConn.output.types[0] != this.types[0]))
             return graphView.tempConn.output.getWireColor();
 
 
