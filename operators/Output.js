@@ -299,8 +299,17 @@ extends EventTarget
         const typeColorDark  = rgbFromTypeMode(this.types[0], true, true );
         const typeColorLight = rgbFromTypeMode(this.types[0], true, false);
 
-        const outColor = this.node.getHeaderOutputColor();
+
+        let color;
         
+        switch (this.param.value.type)
+        {
+            case COLOR_VALUE: color = rgb_a(this.param.value.toRgb()); break;
+            case  FILL_VALUE: color = this.param.value.toRgba();       break;
+            default:          color = rgbFromType(this.param.type, true);
+        }
+        
+
         const conn = this.connected;
 
 
@@ -318,8 +327,8 @@ extends EventTarget
                     : rgb_a(this.param.value.toRgb());
 
                 ballColor = 
-                       rgbIsNaN(outColor)
-                    || outColor[3] < TRANSPARENT_THRESHOLD_DARK
+                       rgbIsNaN(color)
+                    || color[3] < TRANSPARENT_THRESHOLD_DARK
                     ? [1, 1, 1, 0.35]
                     : (    isLight(color)
                        && !this.param.isUnknown())
@@ -342,8 +351,8 @@ extends EventTarget
                     : this.param.value.toRgb();
 
                 ballColor = 
-                       rgbIsNaN(outColor)
-                    || outColor[3] < TRANSPARENT_THRESHOLD_DARK
+                       rgbIsNaN(color)
+                    || color[3] < TRANSPARENT_THRESHOLD_DARK
                     ? [0, 0, 0, 0.2]
                     : (isLight(color)
                        ? [0, 0, 0, conn ? 0 : 0.2]
@@ -393,22 +402,25 @@ extends EventTarget
         {
             if (isColorType(this.types[0]))
             {
+                // if (this.node.id == 'stroke')
+                //     console.log('outColor =', outColor);
+
                 ballColor = 
                        conn
                     || (    this.forceNodeOutputColor
                         && !rgbIsNaN(outColor)
                         &&  deltaE(outColor, colors.back) > 0.1)
                     ? outColor
-                    : rgbIsNaN(colors.back)
-                      ? [1, 1, 1, 0.25]
-                      :    rgbIsNaN(outColor)
-                        || outColor[3] < TRANSPARENT_THRESHOLD_DARK
-                        ? (darkMode
-                           ? [1, 1, 1, 0.35]
-                           : [0, 0, 0, 0.2 ])
-                        : (isDark(outColor)
-                           ? [1, 1, 1, 0.25]
-                           : [0, 0, 0, 0.2 ]);
+                    : (rgbIsNaN(colors.back)
+                       ? [1, 1, 1, 0.25]
+                       :    rgbIsNaN(outColor)
+                         || outColor[3] < TRANSPARENT_THRESHOLD_DARK
+                         ? (darkMode
+                            ? [1, 1, 1, 0.35]
+                            : [0, 0, 0, 0.2 ])
+                         : (isDark(outColor)
+                            ? [1, 1, 1, 0.25]
+                            : [0, 0, 0, 0.2 ]));
             }
             else if (this.types[0] == NUMBER_VALUE       ) ballColor = connOrDiff ? typeColorDark : [1, 1, 1, tc ? 0 : 0.35];
             else if (this.types[0] == TEXT_VALUE         ) ballColor = connOrDiff ? typeColorDark : [0, 0, 0, tc ? 0 : 0.25];

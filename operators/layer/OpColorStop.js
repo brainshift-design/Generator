@@ -119,16 +119,18 @@ extends OpColorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        this.value = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramFill    .setValue(this.value.fill,     false, true, false);
-        this.paramPosition.setValue(this.value.position, false, true, false);
+        this.paramFill    .setValue(value.fill,     false, true, false);
+        this.paramPosition.setValue(value.position, false, true, false);
 
         this._color = 
-               this.value.fill
-            && this.value.fill.isValid()
-            ? this.value.fill.color.toDataColor()
+               value.fill
+            && value.fill.isValid()
+            ? value.fill.color.toDataColor()
             : dataColor_NaN;
+
+        this.rgbaBack = value.fill.toRgba();
     }
 
 
@@ -226,64 +228,6 @@ extends OpColorBase
 
 
 
-    getInputWireColor()
-    {
-        if (    this.value
-            &&  this.value.isValid()
-            && !rgbaIsNaN(this.value.toRgba())) //dataColorIsNaN(this._color))
-            return this.value.toRgba();//dataColor2rgb(this._color);
-        else
-            return super.getInputWireColor();
-    }
-
-
-
-    getHeaderOutputColor()
-    {
-        if (    this.value
-            &&  this.value.isValid()
-            && !rgbaIsNaN(this.value.toRgba()))
-        {
-            if (this.value.toRgba()[3] < getTransparentThreshold())
-            {
-                return darkMode
-                     ? [1, 1, 1, 0.2]
-                     : [0, 0, 0, 0.2];
-            }
-            else
-                return rgb_a(this.value.toRgba());
-        }
-        else
-            return darkMode
-                 ? rgbNoColorDark
-                 : rgbNoColorLight;
-    }
-
-
-
-    getHeaderInputColor()
-    {
-        if (    this.value
-            &&  this.value.isValid()
-            && !rgbaIsNaN(this.value.toRgba()))
-        {
-            if (this.value.toRgba()[3] < getTransparentThreshold())
-            {
-                return darkMode
-                     ? [1, 1, 1, 0.25]
-                     : [0, 0, 0, 0.2 ];
-            }
-            else
-                return rgb_a(this.value.toRgba());
-        }
-        else
-            return darkMode
-                 ? rgbNoColorDark
-                 : rgbNoColorLight;
-    }
-
-
-
     updateParams()
     {
         const enableFill = 
@@ -306,18 +250,12 @@ extends OpColorBase
     {
         const colors = super.getHeaderColors();
 
-        colors.input      = rgb_a(colors.text, 0.2);
-        colors.output     = rgb_a(colors.text, 0.2);
-
-
-            
+           
         if (this.isUnknown())
         {
             colors.back       = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
             colors.stripeBack = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
             colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
-            colors.input      = rgb_a(colors.text, 0.3);
-            colors.output     = rgb_a(colors.text, 0.3);
         }
         else
         {
@@ -326,8 +264,6 @@ extends OpColorBase
             colors.back       = rgb_a(colors.back);
             colors.stripeBack = rgb_a(colors.stripeBack);
             colors.text       = getTextColorFromBackColor(colors.stripeBack, opacity);
-            colors.input      = rgb_a(colors.text, 0.3);
-            colors.output     = rgb_a(colors.text, 0.3);
         }
 
 

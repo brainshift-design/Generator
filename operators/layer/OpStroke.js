@@ -162,6 +162,8 @@ extends OpColorBase
             && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
             ? [...this.inputs[0].connectedOutput.types, STROKE_VALUE]
             : [STROKE_VALUE];
+
+        this.rgbaBack = value.toRgba();
     }
 
 
@@ -273,40 +275,6 @@ extends OpColorBase
 
 
         this.updateParamControls();
-    }
-
-    
-
-    getInputWireColor()
-    {
-        if (!dataColorIsNaN(this._color))
-            return dataColor2rgb(this._color);
-        else
-            return super.this._colorgetInputWireColor();
-    }
-
-
-
-    getOutputWireColor()
-    {
-        if (    this.value
-            &&  this.value.isValid()
-            &&  this.value.fills.items.length > 0
-            && !rgbaIsNaN(this.value.fills.items.at(-1).toRgba()))
-        {
-            if (this.value.fills.items.at(-1).toRgba()[3] < getTransparentThreshold())
-            {
-                return darkMode
-                     ? [1, 1, 1, 0.2]
-                     : [0, 0, 0, 0.2];
-            }
-            else
-                return dataColor2rgb(this._color);
-        }
-        else
-            return darkMode
-                 ? rgbNoColorDark
-                 : rgbNoColorLight;
     }
 
 

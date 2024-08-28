@@ -407,7 +407,14 @@ extends EventTarget
         const typeColorDark  = rgbFromTypeMode(this.types[0], true, true );
         const typeColorLight = rgbFromTypeMode(this.types[0], true, false);
         
-        const inColor = this.node.getHeaderInputColor();
+        let color;
+        
+        switch (this.param.value.type)
+        {
+            case COLOR_VALUE: color = rgb_a(this.param.value.toRgb()); break;
+            case  FILL_VALUE: color = this.param.value.toRgba();       break;
+            default:          color = rgbFromType(this.param.type, true);
+        }
 
 
         let ringColor;
@@ -418,17 +425,31 @@ extends EventTarget
             if (   isColorType(this.types[0])
                 && this.paramTypeIsColor())
             {
-                ringColor = 
+                // if (this.node.id == 'fill')
+                //     console.log('inColor =', color);
+
+                if (this.param.type == COLOR_VALUE)
+                {
+                    ringColor = 
                           !this.param.isUnknown()
-                       &&  rgbIsNaN(inColor)
-                    // ||    inColor[3]
-                    //    && inColor[3] < TRANSPARENT_THRESHOLD_DARK
-                    // ? [1, 1, 1, 0.35]
-                    || inColor[3] < TRANSPARENT_THRESHOLD_DARK
-                    ? [1, 1, 1, 0.35]
-                    : (isLight(inColor)
-                      ? [0, 0, 0, 0.25]
-                      : [1, 1, 1, 0.25]);
+                        && rgbIsNaN(color)
+                        ? [1, 1, 1, 0.35]
+                        : (isLight(color)
+                           ? [0, 0, 0, 0.25]
+                           : [1, 1, 1, 0.25]);
+                }
+                else
+                {
+                    ringColor = 
+                                !this.param.isUnknown()
+                            &&  rgbIsNaN(color)
+                        ||    this.param.type != COLOR_VALUE
+                            && color[3] < TRANSPARENT_THRESHOLD_DARK
+                        ? [1, 1, 1, 0.35]
+                        : (isLight(color)
+                            ? [0, 0, 0, 0.25]
+                            : [1, 1, 1, 0.25]);
+                }
             }
             else if (this.types[0] == NUMBER_VALUE       ) ringColor = rgb_a(typeColorDark, 0.65);
             else if (this.types[0] == TEXT_VALUE         ) ringColor = rgb_a(typeColorDark, 0.45);
@@ -442,10 +463,10 @@ extends EventTarget
             {
                 ringColor = 
                           !this.param.isUnknown()
-                       &&  rgbIsNaN(inColor)
-                    || inColor[3] < TRANSPARENT_THRESHOLD_DARK
+                       &&  rgbIsNaN(color)
+                    || color[3] < TRANSPARENT_THRESHOLD_DARK
                     ? [0, 0, 0, 0.2]
-                    : (isLight(inColor)
+                    : (isLight(color)
                        ? [0, 0, 0, 0.2 ]
                        : [1, 1, 1, 0.37]);
             }
@@ -484,6 +505,9 @@ extends EventTarget
         {
             if (isColorType(this.types[0]))
             {
+                // if (this.node.id == 'color') console.log('color inColor =', inColor);
+                // if (this.node.id == 'fill' ) console.log('fill inColor =', inColor);
+
                 ringColor =
                     rgbIsNaN(colors.back)
                     ? [1, 1, 1, 0.25]

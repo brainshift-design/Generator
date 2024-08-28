@@ -172,6 +172,7 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
+            ['value',   this.value      ],
             ['convert', this.convert    ],
             ['space',   this.value.space],
             ['c1',      this.value.c1   ],

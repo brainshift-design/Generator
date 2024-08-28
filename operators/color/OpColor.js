@@ -55,21 +55,21 @@ extends OpColorBase
         this.paramSpace.markMenuPro      = subscribed() ? [] : [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
         this.paramSpace.minMenuWidth     = subscribed() ? 200 : 220;
 
-        this.paramSpace.alwaysSaveValue = true;
+        this.paramSpace.alwaysSaveValue  = true;
 
-        this.param1    .alwaysSaveValue = true;
-        this.param2    .alwaysSaveValue = true;
-        this.param3    .alwaysSaveValue = true;
+        this.param1    .alwaysSaveValue  = true;
+        this.param2    .alwaysSaveValue  = true;
+        this.param3    .alwaysSaveValue  = true;
 
-        this.param1.controls[0].epsilon = ColorEpsilon;
-        this.param2.controls[0].epsilon = ColorEpsilon;
-        this.param3.controls[0].epsilon = ColorEpsilon;
+        this.param1.controls[0].epsilon  = ColorEpsilon;
+        this.param2.controls[0].epsilon  = ColorEpsilon;
+        this.param3.controls[0].epsilon  = ColorEpsilon;
 
-        this.paramSpace.backStyleDark  =
-        this.paramSpace.backStyleLight = 'transparent';
+        this.paramSpace.backStyleDark    =
+        this.paramSpace.backStyleLight   = 'transparent';
 
         
-        this.paramColor.showColorBack  = false;
+        this.paramColor.showColorBack    = false;
 
 
         this.paramSpace.controls[0].delayUse = 100; // so that you carelessly drag it by grabbing the space param
@@ -318,11 +318,13 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const convert   = values[paramIds.findIndex(id => id == 'convert')];
-        const space     = values[paramIds.findIndex(id => id == 'space'  )];
-        const c1        = values[paramIds.findIndex(id => id == 'c1'     )];
-        const c2        = values[paramIds.findIndex(id => id == 'c2'     )];
-        const c3        = values[paramIds.findIndex(id => id == 'c3'     )];
+        const convert = values[paramIds.findIndex(id => id == 'convert')];
+        const space   = values[paramIds.findIndex(id => id == 'space'  )];
+        const c1      = values[paramIds.findIndex(id => id == 'c1'     )];
+        const c2      = values[paramIds.findIndex(id => id == 'c2'     )];
+        const c3      = values[paramIds.findIndex(id => id == 'c3'     )];
+
+        this.rgbaBack = rgb_a(values[paramIds.findIndex(id => id == 'value')].toRgb());
 
 
         if (   space 
@@ -585,13 +587,23 @@ extends OpColorBase
 
 
 
-    getInputWireColor()
-    {
-        if (!dataColorIsNaN(this._color))
-            return dataColor2rgb(this._color);
-        else
-            return super.getInputWireColor();
-    }
+    // getInputWireColor()
+    // {
+    //     if (!dataColorIsNaN(this._color))
+    //         return dataColor2rgb(this._color);
+    //     else
+    //         return super.getInputWireColor();
+    // }
+
+
+
+    // getOutputWireColor()
+    // {
+    //     if (!dataColorIsNaN(this._color))
+    //         return dataColor2rgb(this._color);
+    //     else
+    //         return super.getOutputWireColor();
+    // }
 
 
 

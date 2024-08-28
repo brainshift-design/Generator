@@ -191,15 +191,18 @@ extends OpColorBase
         const skew     = values[paramIds.findIndex(id => id == 'skew'    )];
         const blend    = values[paramIds.findIndex(id => id == 'blend'   )];
 
-        this.paramType    .setValue(/*this.value.*/gradType, false, true, false);
-        this.paramPosition.setValue(/*this.value.*/position, false, true, false);
-        this.paramX       .setValue(/*this.value.*/x,        false, true, false);
-        this.paramY       .setValue(/*this.value.*/y,        false, true, false);
-        this.paramSize    .setValue(/*this.value.*/size,     false, true, false);
-        this.paramAngle   .setValue(/*this.value.*/angle,    false, true, false);
-        this.paramAspect  .setValue(/*this.value.*/aspect,   false, true, false);
-        this.paramSkew    .setValue(/*this.value.*/skew,     false, true, false);
-        this.paramBlend   .setValue(/*this.value.*/blend,    false, true, false);
+        this.paramType    .setValue(gradType, false, true, false);
+        this.paramPosition.setValue(position, false, true, false);
+        this.paramX       .setValue(x,        false, true, false);
+        this.paramY       .setValue(y,        false, true, false);
+        this.paramSize    .setValue(size,     false, true, false);
+        this.paramAngle   .setValue(angle,    false, true, false);
+        this.paramAspect  .setValue(aspect,   false, true, false);
+        this.paramSkew    .setValue(skew,     false, true, false);
+        this.paramBlend   .setValue(blend,    false, true, false);
+
+        this.rgbaBack = this.value.toRgba();
+        //console.log('this.rgbaBack =', this.rgbaBack);
     }
 
 
@@ -341,48 +344,6 @@ extends OpColorBase
         }
 
         return colors;
-    }
-
-
-
-    getInputWireColor()
-    {
-        let color = this.value.toRgba();
-        if (rgbaIsNaN(color)) color = rgbFromType(ANY_VALUE, true);
-
-        if (!rgbIsNaN(color)) return color;
-        else                  return super.getInputWireColor();
-    }
-
-
-
-    getOutputWireColor()
-    {
-        if (    this.value
-            &&  this.value.isValid()
-            && !rgbaIsNaN(this.value.toRgba()))
-        {
-            if (this.value.toRgba()[3] < 0.35)
-            {
-                return darkMode
-                     ? [1, 1, 1, 0.2]
-                     : [0, 0, 0, 0.2];
-            }
-            else
-                return dataColor2rgb(this._color);
-        }
-        else
-            return darkMode
-                 ? rgbNoColorDark
-                 : rgbNoColorLight;
-    }
-    getOutputWireColor()
-    {
-        let color = this.value.toRgba();
-        if (rgbaIsNaN(color)) color = rgbFromType(ANY_VALUE, true);
-
-        if (!rgbIsNaN(color)) return color;
-        else                  return super.getOutputWireColor();
     }
 
 

@@ -5,6 +5,8 @@ extends Operator
 
     _warningOverlay;
     
+    rgbaBack;
+
     forceShowWarning = false;
     warningStyle;
     
@@ -93,17 +95,88 @@ extends Operator
 
 
 
-    getOutputWireColor()
+    getHeaderInputColor()
     {
-        if (!dataColorIsNaN(this._color)
-            && !this.isUnknown())
-            return dataColor2rgb(this._color);
+        if (    this.rgbaBack
+            && !rgbaIsNaN(this.rgbaBack))
+        {
+            if (this.rgbaBack[3] < getTransparentThreshold())
+            {
+                return darkMode
+                     ? [1, 1, 1, 0.25]
+                     : [0, 0, 0, 0.2 ];
+            }
+            else
+                return rgb_a(this.rgbaBack);
+        }
         else
-            //return super.getOutputWireColor();
             return darkMode
                  ? rgbNoColorDark
                  : rgbNoColorLight;
     }
+
+
+
+    getInputWireColor()
+    {
+        if (    this.rgbaBack
+            && !rgbaIsNaN(this.rgbaBack))
+            return rgb_a(this.rgbaBack);//dataColor2rgb(this._color);
+
+        else
+            return darkMode
+                 ? rgbNoColorDark
+                 : rgbNoColorLight;
+    }
+
+
+
+    getHeaderOutputColor()
+    {
+        if (    this.rgbaBack
+            && !rgbaIsNaN(this.rgbaBack))
+        {
+            if (this.rgbaBack[3] < getTransparentThreshold())
+            {
+                return darkMode
+                     ? [1, 1, 1, 0.2]
+                     : [0, 0, 0, 0.2];
+            }
+            else
+                return rgb_a(this.rgbaBack);
+        }
+        else
+            return darkMode
+                 ? rgbNoColorDark
+                 : rgbNoColorLight;
+    }
+
+
+
+    getOutputWireColor()
+    {
+        if (    this.rgbaBack
+            && !rgbaIsNaN(this.rgbaBack))
+            return this.rgbaBack;
+        else
+            return darkMode
+                 ? rgbNoColorDark
+                 : rgbNoColorLight;
+    }
+
+
+
+    // getOutputWireColor()
+    // {
+    //     if (!dataColorIsNaN(this._color)
+    //         && !this.isUnknown())
+    //         return dataColor2rgb(this._color);
+    //     else
+    //         //return super.getOutputWireColor();
+    //         return darkMode
+    //              ? rgbNoColorDark
+    //              : rgbNoColorLight;
+    // }
 
 
 

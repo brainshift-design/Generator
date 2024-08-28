@@ -10,8 +10,6 @@ extends OpColorBase
     checkers;
     colorBack;
 
-    value;
-
 
 
     constructor()
@@ -141,16 +139,16 @@ extends OpColorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        this.value = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
 
-        this.paramColor  .setValue(this.value.color,   false, true, false);
-        this.paramOpacity.setValue(this.value.opacity, false, true, false);
-        this.paramBlend  .setValue(this.value.blend,   false, true, false);
+        this.paramColor  .setValue(value.color,   false, true, false);
+        this.paramOpacity.setValue(value.opacity, false, true, false);
+        this.paramBlend  .setValue(value.blend,   false, true, false);
  
         this._color = 
-                this.value.color.isValid()
+                value.color.isValid()
             && !this.isUnknown()
-            ? this.value.color.toDataColor()
+            ? value.color.toDataColor()
             : dataColor_NaN;
 
         this.outputs[0].types =
@@ -158,6 +156,8 @@ extends OpColorBase
             && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
             ? [...this.inputs[0].connectedOutput.types, FILL_VALUE]
             : [FILL_VALUE];
+
+        this.rgbaBack = value.toRgba();
     }
 
 
@@ -240,85 +240,13 @@ extends OpColorBase
                 ? rgb_a(colors.stripeBack)
                 : rgbDocumentBody;
 
-            colors.text = getTextColorFromBackColor(colors.stripeBack, this.value.toRgba()[3]);
+            colors.text = getTextColorFromBackColor(
+                colors.stripeBack, 
+                this.rgbaBack ? this.rgbaBack[3] : 1);
         }
         
 
         return colors;
-    }
-
-
-
-    getInputWireColor()
-    {
-        if (    this.value.isValid()
-            && !rgbaIsNaN(this.value.toRgba()))
-            return rgb_a(this.value.toRgba());//dataColor2rgb(this._color);
-
-        else
-            return darkMode
-                 ? rgbNoColorDark
-                 : rgbNoColorLight;
-    }
-
-
-
-    getHeaderOutputColor()
-    {
-        if (    this.value
-            &&  this.value.isValid()
-            && !rgbaIsNaN(this.value.toRgba()))
-        {
-            if (this.value.toRgba()[3] < getTransparentThreshold())
-            {
-                return darkMode
-                     ? [1, 1, 1, 0.2]
-                     : [0, 0, 0, 0.2];
-            }
-            else
-                return rgb_a(this.value.toRgba());
-        }
-        else
-            return darkMode
-                 ? rgbNoColorDark
-                 : rgbNoColorLight;
-    }
-
-
-
-    getHeaderInputColor()
-    {
-        if (    this.value
-            &&  this.value.isValid()
-            && !rgbaIsNaN(this.value.toRgba()))
-        {
-            if (this.value.toRgba()[3] < getTransparentThreshold())
-            {
-                return darkMode
-                     ? [1, 1, 1, 0.25]
-                     : [0, 0, 0, 0.2 ];
-            }
-            else
-                return rgb_a(this.value.toRgba());
-        }
-        else
-            return darkMode
-                 ? rgbNoColorDark
-                 : rgbNoColorLight;
-    }
-
-
-
-    getOutputWireColor()
-    {
-        if (    this.value
-            &&  this.value.isValid()
-            && !rgbaIsNaN(this.value.toRgba()))
-            return this.value.toRgba();
-        else
-            return darkMode
-                 ? rgbNoColorDark
-                 : rgbNoColorLight;
     }
 
 
