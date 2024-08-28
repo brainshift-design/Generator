@@ -319,8 +319,8 @@ extends OpColorBase
             : 'transparent';
 
 
-        this.divIcon  .style.filter = 'drop-shadow(0 0 1px ' + outlineColor + ')';
-        this.labelText.style.filter = 'drop-shadow(0 0 1px ' + outlineColor + ')';
+        //this.divIcon  .style.filter = 'drop-shadow(0 0 1px ' + outlineColor + ')';
+        //this.labelText.style.filter = 'drop-shadow(0 0 1px ' + outlineColor + ')';
     }
 
 
@@ -332,15 +332,9 @@ extends OpColorBase
 
         if (!unknown)
         {
-            let rgbaBack = rgba_NaN;
-
-            for (const stop of this.value.stops.items)
-            {
-                rgbaBack = 
-                    rgbaIsNaN(rgbaBack)
-                    ? stop.fill.toRgba()
-                    : rgbaMuls(rgbaAdd(rgbaBack, stop.fill.toRgba()), 0.5);
-            }
+            colors.back       =
+            colors.stripeBack = this.value.toRgba();
+            colors.text       = getTextColorFromBackColor(colors.stripeBack, this.value.toRgba()[3]);
         }
 
         return colors;

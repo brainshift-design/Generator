@@ -14233,14 +14233,17 @@ extends GValue
 
     toRgba()
     {
-        const stops = this.stops.items;
+        let rgba = rgba_NaN;
 
-        return stops.length > 0
-             ? rgbaLerp(
-                 stops[0]    .fill.toRgba(), 
-                 stops.at(-1).fill.toRgba(), 
-                 0.5)
-             : rgba_NaN;
+        for (const stop of this.stops.items)
+        {
+            rgba = 
+                rgbaIsNaN(rgba)
+                ? stop.fill.toRgba()
+                : rgbaMuls(rgbaAdd(rgba, stop.fill.toRgba()), 0.5);
+        }
+
+        return rgba;
     }
 
 

@@ -375,8 +375,8 @@ extends EventTarget
         const typeColorDark  = rgbFromTypeMode(this.types[0], true, true );
         const typeColorLight = rgbFromTypeMode(this.types[0], true, false);
 
-        const colors   = this.node.getHeaderColors();
-        const outColor = this.node.getHeaderOutputColor();
+        const colors       = this.node.getHeaderColors();
+        const outWireColor = this.node.getOutputWireColor();
 
         const conn = 
                !this.node.isUnknown()
@@ -402,23 +402,20 @@ extends EventTarget
         {
             if (isColorType(this.types[0]))
             {
-                // if (this.node.id == 'stroke')
-                //     console.log('outColor =', outColor);
-
                 ballColor = 
                        conn
                     || (    this.forceNodeOutputColor
-                        && !rgbIsNaN(outColor)
-                        &&  deltaE(outColor, colors.back) > 0.1)
-                    ? outColor
+                        && !rgbIsNaN(outWireColor)
+                        &&  deltaE(outWireColor, colors.back) > 0.1)
+                    ? outWireColor
                     : (rgbIsNaN(colors.back)
                        ? [1, 1, 1, 0.25]
-                       :    rgbIsNaN(outColor)
-                         || outColor[3] < TRANSPARENT_THRESHOLD_DARK
+                       :    rgbIsNaN(outWireColor)
+                         || outWireColor[3] < TRANSPARENT_THRESHOLD_DARK
                          ? (darkMode
                             ? [1, 1, 1, 0.35]
                             : [0, 0, 0, 0.2 ])
-                         : (isDark(outColor)
+                         : (isDark(outWireColor)
                             ? [1, 1, 1, 0.25]
                             : [0, 0, 0, 0.2 ]));
             }
@@ -434,14 +431,14 @@ extends EventTarget
                 ballColor = 
                        conn 
                     || (    this.forceNodeOutputColor
-                        && !rgbIsNaN(color))
-                    ? outColor
+                        && !rgbIsNaN(outWireColor))
+                    ? outWireColor
                     : rgbIsNaN(colors.back)
                       ? [0, 0, 0, 0.22]
-                      :    rgbIsNaN(outColor)
-                        || outColor[3] < TRANSPARENT_THRESHOLD_DARK
+                      :    rgbIsNaN(outWireColor)
+                        || outWireColor[3] < TRANSPARENT_THRESHOLD_DARK
                         ? [0, 0, 0, 0.2 ]
-                        : (isLight(outColor)
+                        : (isLight(outWireColor)
                            ? [0, 0, 0, 0.17]
                            : [1, 1, 1, 0.3 ]);
             }

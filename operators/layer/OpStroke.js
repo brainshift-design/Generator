@@ -287,7 +287,7 @@ extends OpColorBase
 
         if (this.isUnknown())
         {
-            colors.back       = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
+            colors.back       = 
             colors.stripeBack = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
             colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
         }
@@ -296,7 +296,7 @@ extends OpColorBase
             if (   fills.length > 0
                 && fills[0].isValid())
             {
-                colors.back       = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
+                colors.back       = 
                 colors.stripeBack = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
                 colors.text       = getTextColorFromBackColor(colors.stripeBack, fills[0].toRgba()[3]);
             }

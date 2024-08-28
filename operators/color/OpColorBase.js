@@ -117,20 +117,6 @@ extends Operator
 
 
 
-    getInputWireColor()
-    {
-        if (    this.rgbaBack
-            && !rgbaIsNaN(this.rgbaBack))
-            return rgb_a(this.rgbaBack);//dataColor2rgb(this._color);
-
-        else
-            return darkMode
-                 ? rgbNoColorDark
-                 : rgbNoColorLight;
-    }
-
-
-
     getHeaderOutputColor()
     {
         if (    this.rgbaBack
@@ -153,11 +139,12 @@ extends Operator
 
 
 
-    getOutputWireColor()
+    getInputWireColor()
     {
         if (    this.rgbaBack
             && !rgbaIsNaN(this.rgbaBack))
-            return this.rgbaBack;
+            return rgb_a(this.rgbaBack);
+
         else
             return darkMode
                  ? rgbNoColorDark
@@ -166,17 +153,16 @@ extends Operator
 
 
 
-    // getOutputWireColor()
-    // {
-    //     if (!dataColorIsNaN(this._color)
-    //         && !this.isUnknown())
-    //         return dataColor2rgb(this._color);
-    //     else
-    //         //return super.getOutputWireColor();
-    //         return darkMode
-    //              ? rgbNoColorDark
-    //              : rgbNoColorLight;
-    // }
+    getOutputWireColor()
+    {
+        if (    this.rgbaBack
+            && !rgbaIsNaN(this.rgbaBack))
+            return rgb_a(this.rgbaBack);
+        else
+            return darkMode
+                 ? rgbNoColorDark
+                 : rgbNoColorLight;
+    }
 
 
 
