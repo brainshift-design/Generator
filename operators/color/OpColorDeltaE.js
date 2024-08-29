@@ -9,7 +9,7 @@ extends OperatorBase
     {
         super(COLOR_DELTA_E, 'deltaE', 'delta E', iconColorDeltaE);
 
-        this.outputValueType = COLOR_VALUE;
+        this.outputValueType = ANY_VALUE;
 
 
         this.addInput(new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE]));
@@ -80,7 +80,11 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
         
-        const type = values[paramIds.findIndex(id => id == 'type')];
+        const type  = values[paramIds.findIndex(id => id == 'type' )];
+        const value = values[paramIds.findIndex(id => id == 'value')];
+        
+        this.paramValue.setValue(value, false, false, false);
+
 
         if (type)
             this.headerOutputs[0].types = [type.value];

@@ -532,36 +532,42 @@ extends EventTarget
 
     getHeaderRingColor()
     {
-        let ringColor;
+        const type =
+            this.node.outputValueType != NULL
+            ? this.node.outputValueType
+            : this.types[0];
 
+
+        let ringColor;
+           
 
         if (darkMode)
         {
-            if (isColorType(this.types[0]))
+            if (isColorType(type))
             {
                 ringColor = 
                     isLight(this.node.getOutputWireColor())
                     ? [0, 0, 0, 0.25]
                     : [1, 1, 1, 0.25];
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ringColor = [1, 1, 1, 0.35];
-            else if (this.types[0] == TEXT_VALUE         ) ringColor = [0, 0, 0, 0.28];
-            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = [1, 1, 1, 0.4 ];
-            else                                           ringColor = [0, 0, 0, 0.28];
+            else if (type == NUMBER_VALUE       ) ringColor = this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, 0.35];
+            else if (type == TEXT_VALUE         ) ringColor = this.node.active ? [0, 0, 0, 0.28] : [1, 1, 1, 0.28];
+            else if (SHAPE_VALUES.includes(type)) ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [1, 1, 1, 0.4 ];
+            else                                  ringColor = this.node.active ? [0, 0, 0, 0.28] : [1, 1, 1, 0.28];
         }
         else // light mode
         {
-            if (isColorType(this.types[0]))
+            if (isColorType(type))
             {
                 ringColor = 
                     isLight(this.node.getOutputWireColor())
                     ? [0, 0, 0, 0.2 ]
                     : [1, 1, 1, 0.37];
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ringColor = [1, 1, 1, 0.35];
-            else if (this.types[0] == TEXT_VALUE         ) ringColor = [0, 0, 0, 0.21];
-            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = [1, 1, 1, 0.4 ];
-            else                                           ringColor = [1, 1, 1, 0.4 ];
+            else if (type == NUMBER_VALUE       ) ringColor = this.node.active ? [1, 1, 1, 0.35] : [0, 0, 0, 0.35];
+            else if (type == TEXT_VALUE         ) ringColor = this.node.active ? [0, 0, 0, 0.21] : [0, 0, 0, 0.21];
+            else if (SHAPE_VALUES.includes(type)) ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.4 ];
+            else                                  ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.4 ];
         }
 
 
