@@ -45,7 +45,7 @@ extends GOperator1
             return this;
 
 
-        const input = await evalColorValue (this.input, parse);
+        let   input = await evalColorValue (this.input, parse);
         const l     = await evalNumberValue(this.l,     parse); 
         const m     = await evalNumberValue(this.m,     parse);
         const s     = await evalNumberValue(this.s,     parse);
@@ -53,6 +53,11 @@ extends GOperator1
 
         if (input)
         {
+                 if (input.type == FILL_VALUE      ) input = input.color;
+            else if (input.type == COLOR_STOP_VALUE) input = input.fill.color;
+            else if (input.type == GRADIENT_VALUE  ) input = ColorValue.fromRgb(input.toRgba());
+
+
             if (this.options.enabled)
             {
                 if (isListValueType(input.type))

@@ -42,13 +42,17 @@ extends GOperator2
             return this;
 
 
-        const input0 = await evalColorValue (this.input0, parse);
-        const input1 = await evalColorValue (this.input1, parse);
+        let   input0 = await evalColorValue (this.input0, parse);
+        let   input1 = await evalColorValue (this.input1, parse);
         let   mode   = await evalNumberValue(this.mode,   parse);
         const amount = await evalNumberValue(this.amount, parse);
         
         if (mode) mode = mode.toInteger();
 
+
+             if (input0 && input0.type == FILL_VALUE      ) input0 = input0.color;
+        else if (input0 && input0.type == COLOR_STOP_VALUE) input0 = input0.fill.color;
+        else if (input0 && input0.type == GRADIENT_VALUE  ) input0 = ColorValue.fromRgb(input0.toRgba());
 
         if (   input0 
             && input1)

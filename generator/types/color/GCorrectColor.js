@@ -70,11 +70,12 @@ extends GOperator1
             return this;
 
 
-        const input = await evalColorValue (this. input, parse);
+        let   input = await evalColorValue (this. input, parse);
         let   order = await evalNumberValue(this._order, parse);
         const c1    = await evalNumberValue(this._c1,    parse);
         const c2    = await evalNumberValue(this._c2,    parse);
         const c3    = await evalNumberValue(this._c3,    parse);
+
 
         if (order) 
         {
@@ -85,6 +86,11 @@ extends GOperator1
 
         if (input)
         {
+                 if (input.type == FILL_VALUE      ) input = input.color;
+            else if (input.type == COLOR_STOP_VALUE) input = input.fill.color;
+            else if (input.type == GRADIENT_VALUE  ) input = ColorValue.fromRgb(input.toRgba());
+
+
             if (this.options.enabled)
             {
                 const rgb = input.toRgb();
@@ -93,7 +99,7 @@ extends GOperator1
                     genInitNodeProgress(this.nodeId);
 
 
-                const inputColor = input.toDataColor();
+                const inputColor = rgb2dataColor(rgb);
 
 
                 const

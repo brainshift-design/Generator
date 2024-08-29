@@ -37170,11 +37170,12 @@ extends GOperator1
             return this;
 
 
-        const input = await evalColorValue (this. input, parse);
+        let   input = await evalColorValue (this. input, parse);
         let   order = await evalNumberValue(this._order, parse);
         const c1    = await evalNumberValue(this._c1,    parse);
         const c2    = await evalNumberValue(this._c2,    parse);
         const c3    = await evalNumberValue(this._c3,    parse);
+
 
         if (order) 
         {
@@ -37185,6 +37186,11 @@ extends GOperator1
 
         if (input)
         {
+                 if (input.type == FILL_VALUE      ) input = input.color;
+            else if (input.type == COLOR_STOP_VALUE) input = input.fill.color;
+            else if (input.type == GRADIENT_VALUE  ) input = ColorValue.fromRgb(input.toRgba());
+
+
             if (this.options.enabled)
             {
                 const rgb = input.toRgb();
@@ -37193,7 +37199,7 @@ extends GOperator1
                     genInitNodeProgress(this.nodeId);
 
 
-                const inputColor = input.toDataColor();
+                const inputColor = rgb2dataColor(rgb);
 
 
                 const
@@ -37702,7 +37708,7 @@ extends GOperator1
             return this;
 
 
-        const input = await evalColorValue (this.input, parse);
+        let   input = await evalColorValue (this.input, parse);
         const l     = await evalNumberValue(this.l,     parse); 
         const m     = await evalNumberValue(this.m,     parse);
         const s     = await evalNumberValue(this.s,     parse);
@@ -37710,6 +37716,11 @@ extends GOperator1
 
         if (input)
         {
+                 if (input.type == FILL_VALUE      ) input = input.color;
+            else if (input.type == COLOR_STOP_VALUE) input = input.fill.color;
+            else if (input.type == GRADIENT_VALUE  ) input = ColorValue.fromRgb(input.toRgba());
+
+
             if (this.options.enabled)
             {
                 if (isListValueType(input.type))
@@ -38307,13 +38318,17 @@ extends GOperator2
             return this;
 
 
-        const input0 = await evalColorValue (this.input0, parse);
-        const input1 = await evalColorValue (this.input1, parse);
+        let   input0 = await evalColorValue (this.input0, parse);
+        let   input1 = await evalColorValue (this.input1, parse);
         let   mode   = await evalNumberValue(this.mode,   parse);
         const amount = await evalNumberValue(this.amount, parse);
         
         if (mode) mode = mode.toInteger();
 
+
+             if (input0 && input0.type == FILL_VALUE      ) input0 = input0.color;
+        else if (input0 && input0.type == COLOR_STOP_VALUE) input0 = input0.fill.color;
+        else if (input0 && input0.type == GRADIENT_VALUE  ) input0 = ColorValue.fromRgb(input0.toRgba());
 
         if (   input0 
             && input1)
