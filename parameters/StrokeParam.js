@@ -148,7 +148,6 @@ extends Parameter
 
 
         const fills = this.value.fills.items;
-
         
         if (fills.length != 1)
         {

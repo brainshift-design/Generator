@@ -35,6 +35,8 @@ extends Parameter
        
         if (hasInput)  this.initInput ([COLOR_STOP_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([COLOR_STOP_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+
+        this.output.forceOutputColor = true;
     }
 
 

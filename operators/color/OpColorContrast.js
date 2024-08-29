@@ -59,7 +59,7 @@ extends OpColorBase
 
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
-        this.outputs[0].forceNodeOutputColor = true;
+        this.outputs[0].forceOutputColor = true;
 
 
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));

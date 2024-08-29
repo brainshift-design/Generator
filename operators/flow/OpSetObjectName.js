@@ -18,7 +18,7 @@ extends OperatorBase
         this.addInput (new Input(SHAPE_VALUES));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
-        this.headerOutputs[0].forceNodeOutputColor = true;
+        this.headerOutputs[0].forceOutputColor = true;
 
         
         this.addParam(this.paramName = new   TextParam('name',    'name',  false, true, true));

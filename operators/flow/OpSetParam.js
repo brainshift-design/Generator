@@ -22,7 +22,7 @@ extends ResizableBase
         this.addInput (new Input ([ANY_VALUE]));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
-        this.headerOutputs[0].forceNodeOutputColor = true;
+        this.headerOutputs[0].forceOutputColor = true;
 
 
         this.addParam(this.paramName = new TextParam('name', 'name', true, true, true));

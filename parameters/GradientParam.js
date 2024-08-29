@@ -150,13 +150,15 @@ extends Parameter
         this.controls[0].textbox.style.fontStyle  = 'italic';
         this.controls[0].textbox.style.fontWeight = '300';
 
-        this.controls[0].textbox.value = 'gradient';//this.value.stops.items.length + ' ' + countString(this.value.stops.items.length, 'stop');
+
+        const stops = this.value.stops.items;
+        
+        this.controls[0].textbox.value =
+            stops.length + ' stop' + (stops.length == 1 ? '' : 's');
 
 
         super.updateControls();
 
-
-        const stops = this.value.stops.items;
 
         let gradient = 'linear-gradient(90deg';
 

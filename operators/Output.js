@@ -68,7 +68,7 @@ extends EventTarget
     backInit   = null;
 
 
-    forceNodeOutputColor = false;
+    forceOutputColor = false;
 
 
 
@@ -299,18 +299,30 @@ extends EventTarget
         const typeColorDark  = rgbFromTypeMode(this.types[0], true, true );
         const typeColorLight = rgbFromTypeMode(this.types[0], true, false);
 
+        const outWireColor = 
+            isColorType(this.param.type)
+            ? rgb_a(this.param.value.toRgba())
+            : rgbFromType(this.param.type, true);
+
 
         let color;
         
         switch (this.param.value.type)
         {
-            case COLOR_VALUE: color = rgb_a(this.param.value.toRgb()); break;
-            case  FILL_VALUE: color = this.param.value.toRgba();       break;
-            default:          color = rgbFromType(this.param.type, true);
+            case      COLOR_VALUE: color = rgb_a(this.param.value.toRgb()); break;
+            case       FILL_VALUE: color = this.param.value.toRgba();       break;
+            case     STROKE_VALUE: color = this.param.value.toRgba();       break;
+            case COLOR_STOP_VALUE: color = this.param.value.toRgba();       break;
+            case   GRADIENT_VALUE: color = this.param.value.toRgba();       break;
+            default:               color = rgbFromType(this.param.type, true); 
         }
         
 
-        const conn = this.connected;
+        const conn = 
+               !this.node.isUnknown()
+            && (   this.connected
+                ||    graphView.tempConn 
+                   && graphView.tempConn.output == this);
 
 
         let ballColor;
@@ -318,22 +330,20 @@ extends EventTarget
 
         if (darkMode)
         {
-            if (   this.types[0] == COLOR_VALUE
-                || this.types[0] ==  FILL_VALUE)
+            if (isColorType(this.types[0]))
             {
-                const color = 
-                    this.types[0] == FILL_VALUE
-                    ? this.param.value.toRgba()
-                    : rgb_a(this.param.value.toRgb());
-
-                ballColor = 
-                       rgbIsNaN(color)
-                    || color[3] < TRANSPARENT_THRESHOLD_DARK
-                    ? [1, 1, 1, 0.35]
-                    : (    isLight(color)
-                       && !this.param.isUnknown())
-                       ? [0, 0, 0, conn ? 0 : 0.2]
-                       : [1, 1, 1, conn ? 0 : 0.2];
+                ballColor =
+                       conn
+                    || (    this.forceOutputColor
+                        && !rgbIsNaN(outWireColor))
+                    ? rgb_a(outWireColor, conn ? 1 : 0.25)
+                    : (   rgbIsNaN(color)
+                       || color[3] < TRANSPARENT_THRESHOLD_DARK
+                       ? [1, 1, 1, 0.35]
+                       : (    isLight(color)
+                           && !this.param.isUnknown())
+                           ? [0, 0, 0, conn ? 0 : 0.2]
+                           : [1, 1, 1, conn ? 0 : 0.2]);
             }
             else if (this.types[0] == NUMBER_VALUE       ) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.5 );
             else if (this.types[0] == TEXT_VALUE         ) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.32);
@@ -342,21 +352,19 @@ extends EventTarget
         }
         else // light mode
         {
-            if (   this.types[0] == COLOR_VALUE
-                || this.types[0] == FILL_VALUE)
+            if (isColorType(this.types[0]))
             {
-                const color = 
-                    this.types[0] == FILL_VALUE
-                    ? this.param.value.color.toRgb()
-                    : this.param.value.toRgb();
-
                 ballColor = 
-                       rgbIsNaN(color)
-                    || color[3] < TRANSPARENT_THRESHOLD_DARK
-                    ? [0, 0, 0, 0.2]
-                    : (isLight(color)
-                       ? [0, 0, 0, conn ? 0 : 0.2]
-                       : [1, 1, 1, conn ? 0 : 0.2]);
+                       conn
+                    || (    this.forceOutputColor
+                        && !rgbIsNaN(outWireColor))
+                    ? outWireColor
+                    : (   rgbIsNaN(color)
+                       || color[3] < TRANSPARENT_THRESHOLD_DARK
+                       ? [0, 0, 0, 0.2]
+                       : (isLight(color)
+                          ? [0, 0, 0, conn ? 0 : 0.2]
+                          : [1, 1, 1, conn ? 0 : 0.2]));
             }
             else if (this.types[0] == NUMBER_VALUE       ) ballColor = rgb_a(typeColorLight, conn ? 1 : 0.4 );
             else if (this.types[0] == TEXT_VALUE         ) ballColor = rgb_a(typeColorLight, conn ? 1 : 0.6 );
@@ -404,7 +412,7 @@ extends EventTarget
             {
                 ballColor = 
                        conn
-                    || (    this.forceNodeOutputColor
+                    || (    this.forceOutputColor
                         && !rgbIsNaN(outWireColor)
                         &&  deltaE(outWireColor, colors.back) > 0.1)
                     ? outWireColor
@@ -430,7 +438,7 @@ extends EventTarget
             {
                 ballColor = 
                        conn 
-                    || (    this.forceNodeOutputColor
+                    || (    this.forceOutputColor
                         && !rgbIsNaN(outWireColor))
                     ? outWireColor
                     : rgbIsNaN(colors.back)
