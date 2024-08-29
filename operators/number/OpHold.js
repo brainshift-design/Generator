@@ -9,7 +9,7 @@ extends OperatorBase
     {
         super(HOLD, 'hold', 'hold', iconHold);
 
-        this.valueType = ANY_VALUE;
+        this.outputValueType = ANY_VALUE;
 
 
         this.cached      = false;

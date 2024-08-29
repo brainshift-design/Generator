@@ -9,7 +9,7 @@ extends OperatorBase
     {
         super(TEXT_TO_COLOR, 'textToColor', 'text to color', iconTextToColor);
 
-        this.valueType = TEXT_VALUE;
+        this.outputValueType = TEXT_VALUE;
 
         
         this.colorBack = createDiv('colorBack');

@@ -5,7 +5,7 @@ extends OperatorBase
     {
         super(TEXT_LENGTH, 'length', 'text length', iconTextLength);
 
-        this.valueType = TEXT_VALUE;
+        this.outputValueType = TEXT_VALUE;
 
         
         this.addInput (new Input ([TEXT_VALUE, TEXT_LIST_VALUE, NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));

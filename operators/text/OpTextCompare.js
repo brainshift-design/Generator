@@ -9,7 +9,7 @@ extends OperatorBase
     {
         super(TEXT_COMPARE, 'compare', 'compare', iconTextCompare);
 
-        this.valueType = TEXT_VALUE;
+        this.outputValueType = TEXT_VALUE;
 
 
         this.canDisable  = true;

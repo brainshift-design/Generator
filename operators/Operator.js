@@ -217,7 +217,7 @@ class Operator
 
         this.#type             = type;
 
-        this.valueType         = NULL;
+        this.outputValueType         = NULL;
 
         this.id                = id;
         this.id                = makeNodePath(this);
@@ -1255,9 +1255,10 @@ class Operator
         const rgbaText   = isDark(rgbaBack) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         return {
-            back:    rgbaBack, 
-            border:  rgbaBorder,
-            text:    rgbaText };
+            back:      rgbaBack, 
+            colorBack: rgba_NaN, // for color headers
+            border:    rgbaBorder,
+            text:      rgbaText };
     }
 
 

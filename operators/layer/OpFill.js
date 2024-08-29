@@ -166,7 +166,7 @@ extends OpColorBase
     {
         const colors = this.getHeaderColors({color: true});
 
-        colors.text = getTextColorFromBackColor(colors.stripeBack, 1);
+        colors.text = getTextColorFromBackColor(colors.colorBack, 1);
 
         colors.input  = rgb_a(colors.text, 0.2);
         colors.output = rgb_a(colors.text, 0.2);
@@ -223,7 +223,7 @@ extends OpColorBase
         if (this.isUnknown())
         {
             colors.back       = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
-            colors.stripeBack = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
+            colors.colorBack = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
             colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
         }
         else
@@ -234,14 +234,14 @@ extends OpColorBase
                 ? rgb_a(colors.back)
                 : rgb_NaN;
 
-            colors.stripeBack = 
-                   !rgbIsNaN(colors.stripeBack) 
+            colors.colorBack = 
+                   !rgbIsNaN(colors.colorBack) 
                 && !isNaN(opacity) 
-                ? rgb_a(colors.stripeBack)
+                ? rgb_a(colors.colorBack)
                 : rgbDocumentBody;
 
             colors.text = getTextColorFromBackColor(
-                colors.stripeBack, 
+                colors.colorBack, 
                 this.rgbaBack ? this.rgbaBack[3] : 1);
         }
         
@@ -305,9 +305,9 @@ function updateFillHeader(node, colors, opacityIsValid)
     node.colorBack.style.background = 
         node.isUnknown()
         ? unknownBackStyle
-        : (  !rgbIsNaN(colors.stripeBack)
+        : (  !rgbIsNaN(colors.colorBack)
            && opacityIsValid
-           ? rgba2style(colors.stripeBack)
+           ? rgba2style(colors.colorBack)
            : rgba2style(rgb_a(rgbDocumentBody, 0.95)));
 
     node.colorBack.style.backgroundImage = 
@@ -364,7 +364,7 @@ function updateHeaderCheckers(node, colors, forceShow = false)
         :     'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
             + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-    node.checkers.style.display            = !rgbIsNaN(colors.stripeBack) || forceShow ? 'inline-block' : 'none';
+    node.checkers.style.display            = !rgbIsNaN(colors.colorBack) || forceShow ? 'inline-block' : 'none';
     node.checkers.style.backgroundColor    =  darkMode ? '#444' : '#fff';
 
     node.checkers.style.backgroundSize     = '22px 22px';

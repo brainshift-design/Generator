@@ -5,7 +5,7 @@ extends OperatorBase
     {
         super(NULL_NODE, 'null', 'null', iconNull);
 
-        this.valueType = ANY_VALUE;
+        this.outputValueType = ANY_VALUE;
 
 
         this.addInput (new Input(ALL_VALUES));

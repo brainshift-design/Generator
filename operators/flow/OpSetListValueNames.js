@@ -5,7 +5,7 @@ extends OperatorBase
     {
         super(SET_LIST_VALUE_NAMES, 'setValueNames', 'set value names', iconSetListValueNames);
 
-        this.valueType = LIST_VALUE;
+        this.outputValueType = LIST_VALUE;
 
 
         this.subscription = true;

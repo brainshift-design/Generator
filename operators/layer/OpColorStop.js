@@ -153,8 +153,8 @@ extends OpColorBase
         this.colorBack.style.background = 
             this.isUnknown()
             ? unknownBackStyle
-            : !rgbIsNaN(colors.stripeBack)
-            ? rgba2style(colors.stripeBack)
+            : !rgbIsNaN(colors.colorBack)
+            ? rgba2style(colors.colorBack)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
         this.colorBack.style.backgroundImage = 
@@ -254,7 +254,7 @@ extends OpColorBase
         if (this.isUnknown())
         {
             colors.back       = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
-            colors.stripeBack = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
+            colors.colorBack = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
             colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
         }
         else
@@ -262,8 +262,8 @@ extends OpColorBase
             const opacity = this.paramFill.value.opacity.value/100;
 
             colors.back       = rgb_a(colors.back);
-            colors.stripeBack = rgb_a(colors.stripeBack);
-            colors.text       = getTextColorFromBackColor(colors.stripeBack, opacity);
+            colors.colorBack = rgb_a(colors.colorBack);
+            colors.text       = getTextColorFromBackColor(colors.colorBack, opacity);
         }
 
 

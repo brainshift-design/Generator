@@ -9,7 +9,7 @@ extends OperatorBase
     {
         super(ITERATE, 'iterate', 'iterate', iconIterate);
 
-        this.valueType = ANY_VALUE;
+        this.outputValueType = ANY_VALUE;
 
 
         this.cached         = false;

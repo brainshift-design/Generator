@@ -9,7 +9,7 @@ extends OperatorBase
     {
         super(COLOR_DELTA_E, 'deltaE', 'delta E', iconColorDeltaE);
 
-        this.valueType = COLOR_VALUE;
+        this.outputValueType = COLOR_VALUE;
 
 
         this.addInput(new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE]));

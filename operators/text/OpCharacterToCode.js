@@ -5,7 +5,7 @@ extends OperatorBase
     {
         super(TEXT_UNICODE, 'charToCode', 'char to code', iconCharacterToCode);
 
-        this.valueType   = TEXT_VALUE;
+        this.outputValueType   = TEXT_VALUE;
         this.iconOffsetY = 1;
 
 

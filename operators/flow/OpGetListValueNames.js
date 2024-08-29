@@ -9,7 +9,7 @@ extends OperatorBase
     {
         super(GET_LIST_VALUE_NAMES, 'getValueNames', 'get value names', iconGetListValueNames);
 
-        this.valueType = LIST_VALUE;
+        this.outputValueType = LIST_VALUE;
 
 
         this.canDisable        = true;

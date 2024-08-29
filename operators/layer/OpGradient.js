@@ -333,8 +333,8 @@ extends OpColorBase
         if (!unknown)
         {
             colors.back       =
-            colors.stripeBack = this.value.toRgba();
-            colors.text       = getTextColorFromBackColor(colors.stripeBack, this.value.toRgba()[3]);
+            colors.colorBack = this.value.toRgba();
+            colors.text       = getTextColorFromBackColor(colors.colorBack, this.value.toRgba()[3]);
         }
 
         return colors;

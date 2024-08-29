@@ -11,7 +11,7 @@ extends OperatorBase
     {
         super(IF_ELSE, 'ifElse', 'if/else', iconIfElse);
 
-        this.valueType   = ANY_VALUE;
+        this.outputValueType   = ANY_VALUE;
         this.iconOffsetY = -1;
 
 

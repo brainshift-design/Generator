@@ -9,7 +9,7 @@ extends OperatorBase
     {
         super(COLOR_TO_TEXT, 'colToText', 'color → text', iconColorToText);
 
-        this.valueType = COLOR_VALUE;
+        this.outputValueType = COLOR_VALUE;
 
 
         this.addInput (new Input([COLOR_VALUE, FILL_VALUE, LIST_VALUE]));

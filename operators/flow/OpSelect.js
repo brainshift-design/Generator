@@ -12,7 +12,7 @@ extends ResizableBase
     {
         super(SELECT, 'select', 'select', iconSelect);
 
-        this.valueType        = ANY_VALUE;
+        this.outputValueType        = ANY_VALUE;
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
 

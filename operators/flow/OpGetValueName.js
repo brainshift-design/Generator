@@ -5,7 +5,7 @@ extends OperatorBase
     {
         super(GET_VALUE_NAME, 'getValueName', 'get value name', iconGetValueName);
 
-        this.valueType    = ANY_VALUE;
+        this.outputValueType    = ANY_VALUE;
         this.subscription = true;
         this.canDisable   = false;
         this.iconOffsetY  = 0;

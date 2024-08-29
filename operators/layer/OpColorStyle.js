@@ -136,7 +136,7 @@ extends OperatorBase
 
 
         //const colors   = this.getHeaderColors();
-        //const rgbaBack = rgb_a(colors.stripeBack, colors.back[3]);
+        //const rgbaBack = rgb_a(colors.colorBack, colors.back[3]);
 
         //this.paramValue.controlWrapper.style.background = rgba2style(rgbaBack);
             //   !rgbaIsNaN(rgbaBack) 
@@ -244,7 +244,7 @@ extends OperatorBase
     // {
     //     const colors = super.getHeaderColors();
 
-    //     colors.stripeBack = getStripeBackColor(colors.back);
+    //     colors.colorBack = getStripeBackColor(colors.back);
 
     //     return colors;
     // }

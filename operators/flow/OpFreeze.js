@@ -5,7 +5,7 @@ extends OperatorBase
     {
         super(FREEZE, 'freeze', 'freeze', iconFreeze);
 
-        this.valueType   = ANY_VALUE;
+        this.outputValueType   = ANY_VALUE;
         this.canDisable  = true;
         this.iconOffsetY = 1;
 

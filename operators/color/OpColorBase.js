@@ -48,8 +48,8 @@ extends Operator
         const colors = this.getHeaderColors();
 
         this.header.style.background = 
-            !rgbIsNaN(colors.stripeBack)
-            ? rgb2style(colors.stripeBack)
+            !rgbIsNaN(colors.colorBack)
+            ? rgb2style(colors.colorBack)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
             
@@ -88,7 +88,7 @@ extends Operator
 
         return {
             back:       rgb_a(rgbBack), 
-            stripeBack: rgb_a(rgbStripeBack),
+            colorBack: rgb_a(rgbStripeBack),
             border:     rgbaBorder,
             text:       rgb_a(rgbText, 0.9) };
     }

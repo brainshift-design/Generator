@@ -5,7 +5,7 @@ extends OperatorBase
     {
         super(TEXT_CHAR, 'codeToChar', 'code to char', iconCodeToCharacter, defNodeWidth, false, false);
 
-        this.valueType         = NUMBER_VALUE;
+        this.outputValueType         = NUMBER_VALUE;
         this.showHeaderTooltip = true;
 
 

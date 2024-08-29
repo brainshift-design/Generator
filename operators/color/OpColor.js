@@ -748,8 +748,8 @@ function updateColorHeader(node, colors)
     node.colorBack.style.background = 
         node.isUnknown()
         ? unknownBackStyle
-        : !rgbIsNaN(colors.stripeBack)
-          ? rgba2style(colors.stripeBack)
+        : !rgbIsNaN(colors.colorBack)
+          ? rgba2style(colors.colorBack)
           : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
     node.colorBack.style.backgroundImage = 

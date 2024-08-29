@@ -12,7 +12,7 @@ extends OperatorBase
     {
         super(SELECT_FROM_LIST, 'select', 'select', iconSelectFromList);
 
-        this.valueType         = ANY_VALUE;
+        this.outputValueType         = ANY_VALUE;
         this.alwaysSaveParams  = true;
         this.showHeaderTooltip = true;
         this.iconOffsetY       = -2.5;

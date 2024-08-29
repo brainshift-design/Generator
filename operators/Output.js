@@ -344,9 +344,6 @@ extends EventTarget
                            && !this.param.isUnknown())
                            ? [0, 0, 0, conn ? 0 : 0.2]
                            : [1, 1, 1, conn ? 0 : 0.2]);
-
-                if (this.node.id == 'expand2')
-                    console.log('ballColor =', ballColor);
             }
             else if (this.types[0] == NUMBER_VALUE       ) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.5 );
             else if (this.types[0] == TEXT_VALUE         ) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.32);
@@ -397,8 +394,8 @@ extends EventTarget
 
         const connOrDiff = 
                conn 
-            ||    this.node.valueType != NULL
-               && this.node.valueType != this.types[0]
+            ||    this.node.outputValueType != NULL
+               && this.node.outputValueType != this.types[0]
             || this.node.isUnknown();
 
         const tc = 
@@ -430,10 +427,10 @@ extends EventTarget
                             ? [1, 1, 1, 0.25]
                             : [0, 0, 0, 0.2 ]));
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ballColor = connOrDiff ? typeColorDark : [1, 1, 1, tc ? 0 : 0.35];
-            else if (this.types[0] == TEXT_VALUE         ) ballColor = connOrDiff ? typeColorDark : [0, 0, 0, tc ? 0 : 0.25];
-            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorDark : [1, 1, 1, tc ? 0 : 0.4 ];
-            else                                           ballColor = connOrDiff ? typeColorDark : [0, 0, 0, tc ? 0 : 0.28];
+            else if (this.types[0] == NUMBER_VALUE       ) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.35] : [1, 1, 1, tc ? 0 : 0.35]);
+            else if (this.types[0] == TEXT_VALUE         ) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.25] : [1, 1, 1, tc ? 0 : 0.25]);
+            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.4 ] : [1, 1, 1, tc ? 0 : 0.4 ]);
+            else                                           ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.28] : [1, 1, 1, tc ? 0 : 0.28]);
         }
         else // light mode
         {
@@ -453,10 +450,10 @@ extends EventTarget
                            ? [0, 0, 0, 0.17]
                            : [1, 1, 1, 0.3 ]);
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ballColor = connOrDiff ? typeColorLight : [1, 1, 1, tc ? 0 : 0.4 ];
-            else if (this.types[0] == TEXT_VALUE         ) ballColor = connOrDiff ? typeColorLight : [0, 0, 0, tc ? 0 : 0.21];
-            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorLight : [1, 1, 1, tc ? 0 : 0.4 ];
-            else                                           ballColor = connOrDiff ? typeColorLight : [1, 1, 1, tc ? 0 : 0.4 ];
+            else if (this.types[0] == NUMBER_VALUE       ) ballColor = connOrDiff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.35] : [0, 0, 0, tc ? 0 : 0.2 ]);
+            else if (this.types[0] == TEXT_VALUE         ) ballColor = connOrDiff ? typeColorLight : (this.node.active ? [0, 0, 0, tc ? 0 : 0.25] : [0, 0, 0, tc ? 0 : 0.21]);
+            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.4 ] : [0, 0, 0, tc ? 0 : 0.2 ]);
+            else                                           ballColor = connOrDiff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.28] : [0, 0, 0, tc ? 0 : 0.2 ]);
         }
 
 

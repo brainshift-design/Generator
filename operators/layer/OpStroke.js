@@ -185,8 +185,8 @@ extends OpColorBase
         this.colorBack.style.background = 
             this.isUnknown()
             ? unknownBackStyle
-            : (!rgbIsNaN(colors.stripeBack) //!rgbIsNaN(colors.back)
-               ? rgba2style(colors.stripeBack)
+            : (!rgbIsNaN(colors.colorBack) //!rgbIsNaN(colors.back)
+               ? rgba2style(colors.colorBack)
                : rgba2style(rgb_a(rgbDocumentBody, 0.95)));
 
         this.colorBack.style.backgroundImage = 
@@ -219,7 +219,7 @@ extends OpColorBase
                 :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
                   + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-            this.checkers.style.display            = !rgbIsNaN(colors.stripeBack) ? 'inline-block' : 'none';
+            this.checkers.style.display            = !rgbIsNaN(colors.colorBack) ? 'inline-block' : 'none';
             this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
 
             this.checkers.style.backgroundSize     = '22px 22px';
@@ -288,7 +288,7 @@ extends OpColorBase
         if (this.isUnknown())
         {
             colors.back       = 
-            colors.stripeBack = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
+            colors.colorBack = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
             colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
         }
         else
@@ -297,12 +297,12 @@ extends OpColorBase
                 && fills[0].isValid())
             {
                 colors.back       = 
-                colors.stripeBack = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
-                colors.text       = getTextColorFromBackColor(colors.stripeBack, fills[0].toRgba()[3]);
+                colors.colorBack = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
+                colors.text       = getTextColorFromBackColor(colors.colorBack, fills[0].toRgba()[3]);
             }
             else
             {
-                colors.stripeBack = rgbDocumentBody;
+                colors.colorBack = rgbDocumentBody;
             }
         }
         

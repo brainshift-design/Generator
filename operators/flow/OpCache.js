@@ -5,7 +5,7 @@ extends OperatorBase
     {
         super(CACHE, 'cache', 'cache', iconCache);
 
-        this.valueType   = ANY_VALUE;
+        this.outputValueType   = ANY_VALUE;
         this.canDisable  = true;
         this.iconOffsetY = 2;
 
