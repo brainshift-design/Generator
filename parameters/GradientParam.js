@@ -95,6 +95,15 @@ extends Parameter
 
 
 
+    getWireColor()
+    {
+        return this.value.isValid()
+             ? this.value.toRgba()
+             : rgbFromType(this.type, true);
+    }
+
+
+
     genRequest(gen)
     {
         // this function exists because a parameter without an output
@@ -148,7 +157,7 @@ extends Parameter
         this.controls[0].readOnly = true;
         
         this.controls[0].textbox.style.fontStyle  = 'italic';
-        this.controls[0].textbox.style.fontWeight = '300';
+        this.controls[0].textbox.style.fontWeight = '500';
 
 
         const stops = this.value.stops.items;

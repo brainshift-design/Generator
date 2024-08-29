@@ -35,6 +35,9 @@ extends Parameter
        
         if (hasInput)  this.initInput ([STROKE_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([STROKE_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+
+        if (this.output)
+            this.output.forceOutputColor = true;
     }
 
 
@@ -90,6 +93,15 @@ extends Parameter
     isVisible()
     {
         return this.controls[0].div.style.display != 'none';
+    }
+
+
+
+    getWireColor()
+    {
+        return this.value.isValid()
+             ? this.value.toRgba()
+             : rgbFromType(this.type, true);
     }
 
 

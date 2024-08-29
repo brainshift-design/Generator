@@ -344,6 +344,9 @@ extends EventTarget
                            && !this.param.isUnknown())
                            ? [0, 0, 0, conn ? 0 : 0.2]
                            : [1, 1, 1, conn ? 0 : 0.2]);
+
+                if (this.node.id == 'expand2')
+                    console.log('ballColor =', ballColor);
             }
             else if (this.types[0] == NUMBER_VALUE       ) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.5 );
             else if (this.types[0] == TEXT_VALUE         ) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.32);
