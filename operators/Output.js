@@ -588,8 +588,8 @@ extends EventTarget
             }
             else if (type == NUMBER_VALUE       ) ringColor = this.node.active ? [1, 1, 1, 0.35] : [0, 0, 0, 0.35];
             else if (type == TEXT_VALUE         ) ringColor = this.node.active ? [0, 0, 0, 0.21] : [0, 0, 0, 0.21];
-            else if (SHAPE_VALUES.includes(type)) ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.4 ];
-            else                                  ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.4 ];
+            else if (SHAPE_VALUES.includes(type)) ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.2 ];
+            else                                  ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.2 ];
         }
 
 

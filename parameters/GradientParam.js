@@ -161,7 +161,7 @@ extends Parameter
         this.controls[0].readOnly = true;
         
         this.controls[0].textbox.style.fontStyle  = 'italic';
-        this.controls[0].textbox.style.fontWeight = '600';
+        this.controls[0].textbox.style.fontWeight = '700';
 
 
         const stops = this.value.stops.items;
