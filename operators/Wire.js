@@ -615,8 +615,6 @@ class Wire
             ? rgb_a(rgbFromType(input.types[0], true))
             : outColor;
 
-        console.log('outColor =', outColor);
-        
 
         this.curve .style.stroke = rgb2style(color);
         this.curve2.style.stroke = rgb2style(rgbDocumentBody);

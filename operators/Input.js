@@ -384,6 +384,7 @@ extends EventTarget
             return this.connectedOutput.getWireColor();
 
         if (   graphView.tempConn
+            && graphView.tempConn.output
             && graphView.overInput == this
             && (   isColorType(this.types[0])
                 || graphView.tempConn.output.types[0] != this.types[0]))

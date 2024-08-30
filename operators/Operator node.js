@@ -407,7 +407,6 @@ this.header.addEventListener('pointerdown', e =>
             if (   graphView.tempConn.output
                 && graphView.tempConn.output.node != this)
             {
-                console.log('node leave wiht output');
                 const input = graphView.headerInput;
 
                 graphView.overInput      = null;
@@ -425,7 +424,6 @@ this.header.addEventListener('pointerdown', e =>
             else if (graphView.tempConn.input
                   && graphView.tempConn.input.node !=  this)
             {
-                console.log('node leave with input');
                 const output = graphView.headerOutput;
 
                 graphView.overOutput = null;

@@ -7,10 +7,19 @@ class Connection
 
     id;
 
-    output;
+    _output;
     outputOrder; // in which connections FROM THIS OUTPUT were made
     
-    input;
+    _input;
+
+    _outSetFirst = null;
+
+
+    get output() { return this._output; }
+    get  input() { return this._input;  }
+
+    set output(output) { this._output = output; if (this._outSetFirst === null) this._outSetFirst = true;  }
+    set  input(input ) { this. _input = input;  if (this._outSetFirst === null) this._outSetFirst = false; }
 
     list     = false;
 
