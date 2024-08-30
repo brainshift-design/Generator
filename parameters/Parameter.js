@@ -143,6 +143,7 @@ extends EventTarget
                 if (   tc.output
                     && tc.output.node != this.node)
                 {
+                    console.log('para leave with output');
                     const input = graphView.overInput;
                     
                     graphView.overInput = null;
@@ -159,6 +160,7 @@ extends EventTarget
                 else if (tc.input
                       && tc.input.node != this.node)
                 {
+                    console.log('param leave with input');
                     const output = graphView.overOutput;
                     
                     graphView.overOutput = null;

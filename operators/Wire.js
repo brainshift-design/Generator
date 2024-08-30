@@ -170,6 +170,10 @@ class Wire
         const input  = graphView.overInput  ?? conn.input;
 
 
+        // console.log('output =', output);
+        // console.log('input =', input);
+        // console.log('');
+
         if (output)
         {
             const ro = boundingRect(output.div);
@@ -600,12 +604,18 @@ class Wire
             ? (isColorType(output.types[0])
                ? output.getWireColor()
                : rgb_a(rgbFromType(output.types[0], true)))
-            : rgbFromType(ANY_VALUE, true);
+            : input
+              ? (isColorType(input.types[0])
+                 ? input.getWireColor()
+                 : rgb_a(rgbFromType(input.types[0], true)))
+              : rgbFromType(ANY_VALUE, true);
 
         const inColor = 
             input 
             ? rgb_a(rgbFromType(input.types[0], true))
             : outColor;
+
+        console.log('outColor =', outColor);
         
 
         this.curve .style.stroke = rgb2style(color);

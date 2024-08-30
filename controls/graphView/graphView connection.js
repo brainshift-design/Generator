@@ -39,6 +39,7 @@ GraphView.prototype.startConnectionFromInput = function(pointerId, input, backIn
     this.showCompatibleOutputs(input);
     this.hideAllInputs(this.tempConn.input);
 
+    
     input.updateControl();
 
 

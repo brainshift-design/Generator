@@ -26,7 +26,11 @@ extends Parameter
             this,
             this.id,
             this.name,
-            ''));
+            '',
+            { 
+                family: 'Inter',
+                size:   '11px'
+            }));
 
         this.controls[0].textbox.style.textAlign  = 'center';
    
@@ -156,7 +160,7 @@ extends Parameter
         this.controls[0].readOnly = true;
         
         this.controls[0].textbox.style.fontStyle  = 'italic';
-        this.controls[0].textbox.style.fontWeight = '500';
+        this.controls[0].textbox.style.fontWeight = '600';
 
 
         const fills = this.value.fills.items;
@@ -171,7 +175,7 @@ extends Parameter
         {
             this.controls[0].textbox.value =
                         rgb2hex(fills[0].color.toRgb())
-                + ' '  + fills[0].opacity.toNumber() + '%'
+                + '  '  + fills[0].opacity.toNumber() + '%'
                 + ', ' + this.value.weight.toNumber() + 'px';
         }
      }

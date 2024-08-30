@@ -294,90 +294,6 @@ extends EventTarget
 
 
 
-    getParamBallColor()
-    {
-        const typeColorDark  = rgbFromTypeMode(this.types[0], true, true );
-        const typeColorLight = rgbFromTypeMode(this.types[0], true, false);
-
-        const outWireColor = 
-            isColorType(this.param.type)
-            ? rgb_a(this.param.value.toRgba())
-            : rgbFromType(this.param.type, true);
-
-
-        let color;
-        
-        switch (this.param.value.type)
-        {
-            case      COLOR_VALUE: color = rgb_a(this.param.value.toRgb()); break;
-            case       FILL_VALUE: color = this.param.value.toRgba();       break;
-            case     STROKE_VALUE: color = this.param.value.toRgba();       break;
-            case COLOR_STOP_VALUE: color = this.param.value.toRgba();       break;
-            case   GRADIENT_VALUE: color = this.param.value.toRgba();       break;
-            default:               color = rgbFromType(this.param.type, true); 
-        }
-        
-
-        const conn = 
-               !this.node.isUnknown()
-            && (   this.connected
-                ||    graphView.tempConn 
-                   && graphView.tempConn.output == this);
-
-
-        let ballColor;
-
-
-        if (darkMode)
-        {
-            if (isColorType(this.types[0]))
-            {
-                ballColor =
-                       conn
-                    || (    this.forceOutputColor
-                        && !rgbIsNaN(outWireColor))
-                    ? rgb_a(outWireColor, conn ? 1 : 0.25)
-                    : (   rgbIsNaN(color)
-                       || color[3] < TRANSPARENT_THRESHOLD_DARK
-                       ? [1, 1, 1, 0.35]
-                       : (    isLight(color)
-                           && !this.param.isUnknown())
-                           ? [0, 0, 0, conn ? 0 : 0.2]
-                           : [1, 1, 1, conn ? 0 : 0.2]);
-            }
-            else if (this.types[0] == NUMBER_VALUE       ) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.5 );
-            else if (this.types[0] == TEXT_VALUE         ) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.32);
-            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.45);
-            else                                           ballColor = rgb_a(typeColorDark, conn ? 1 : 0.26);
-        }
-        else // light mode
-        {
-            if (isColorType(this.types[0]))
-            {
-                ballColor = 
-                       conn
-                    || (    this.forceOutputColor
-                        && !rgbIsNaN(outWireColor))
-                    ? outWireColor
-                    : (   rgbIsNaN(color)
-                       || color[3] < TRANSPARENT_THRESHOLD_DARK
-                       ? [0, 0, 0, 0.2]
-                       : (isLight(color)
-                          ? [0, 0, 0, conn ? 0 : 0.2]
-                          : [1, 1, 1, conn ? 0 : 0.2]));
-            }
-            else if (this.types[0] == NUMBER_VALUE       ) ballColor = rgb_a(typeColorLight, conn ? 1 : 0.4 );
-            else if (this.types[0] == TEXT_VALUE         ) ballColor = rgb_a(typeColorLight, conn ? 1 : 0.6 );
-            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = rgb_a(typeColorLight, conn ? 1 : 0.41);
-            else                                           ballColor = rgb_a(typeColorLight, conn ? 1 : 0.32);
-        }
-
-
-        return ballColor;
-    }
-
-
-
     getHeaderBallColor()
     {
         const typeColorDark  = rgbFromTypeMode(this.types[0], true, true );
@@ -463,6 +379,90 @@ extends EventTarget
 
 
 
+    getParamBallColor()
+    {
+        const typeColorDark  = rgbFromTypeMode(this.types[0], true, true );
+        const typeColorLight = rgbFromTypeMode(this.types[0], true, false);
+
+        const outWireColor = 
+            isColorType(this.param.type)
+            ? rgb_a(this.param.value.toRgba())
+            : rgbFromType(this.param.type, true);
+
+
+        let color;
+        
+        switch (this.param.value.type)
+        {
+            case      COLOR_VALUE: color = rgb_a(this.param.value.toRgb()); break;
+            case       FILL_VALUE: color = this.param.value.toRgba();       break;
+            case     STROKE_VALUE: color = this.param.value.toRgba();       break;
+            case COLOR_STOP_VALUE: color = this.param.value.toRgba();       break;
+            case   GRADIENT_VALUE: color = this.param.value.toRgba();       break;
+            default:               color = rgbFromType(this.param.type, true); 
+        }
+        
+
+        const conn = 
+               !this.node.isUnknown()
+            && (   this.connected
+                ||    graphView.tempConn 
+                   && graphView.tempConn.output == this);
+
+
+        let ballColor;
+
+
+        if (darkMode)
+        {
+            if (isColorType(this.types[0]))
+            {
+                ballColor =
+                       conn
+                    || (    this.forceOutputColor
+                        && !rgbIsNaN(outWireColor))
+                    ? rgb_a(outWireColor, conn ? 1 : 0.25)
+                    : (   rgbIsNaN(color)
+                       || color[3] < TRANSPARENT_THRESHOLD_DARK
+                       ? [1, 1, 1, 0.35]
+                       : (    isLight(color)
+                           && !this.param.isUnknown())
+                           ? [0, 0, 0, conn ? 0 : 0.2]
+                           : [1, 1, 1, conn ? 0 : 0.2]);
+            }
+            else if (this.types[0] == NUMBER_VALUE       ) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.5 );
+            else if (this.types[0] == TEXT_VALUE         ) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.32);
+            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.45);
+            else                                           ballColor = rgb_a(typeColorDark, conn ? 1 : 0.26);
+        }
+        else // light mode
+        {
+            if (isColorType(this.types[0]))
+            {
+                ballColor = 
+                       conn
+                    || (    this.forceOutputColor
+                        && !rgbIsNaN(outWireColor))
+                    ? outWireColor
+                    : (   rgbIsNaN(color)
+                       || color[3] < TRANSPARENT_THRESHOLD_DARK
+                       ? [0, 0, 0, 0.2]
+                       : (isLight(color)
+                          ? [0, 0, 0, conn ? 0 : 0.2]
+                          : [1, 1, 1, conn ? 0 : 0.2]));
+            }
+            else if (this.types[0] == NUMBER_VALUE       ) ballColor = rgb_a(typeColorLight, conn ? 1 : 0.4 );
+            else if (this.types[0] == TEXT_VALUE         ) ballColor = rgb_a(typeColorLight, conn ? 1 : 0.6 );
+            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = rgb_a(typeColorLight, conn ? 1 : 0.41);
+            else                                           ballColor = rgb_a(typeColorLight, conn ? 1 : 0.32);
+        }
+
+
+        return ballColor;
+    }
+
+
+
     getRingStyle()
     {
         const ringColor =
@@ -471,62 +471,6 @@ extends EventTarget
             : this.getHeaderRingColor();
 
         return rgba2style(ringColor);
-    }
-
-
-
-    getParamRingColor()
-    {
-        const typeColorDark  = rgbFromTypeMode(this.types[0], true, true );
-        const typeColorLight = rgbFromTypeMode(this.types[0], true, false);
-
-
-        let ringColor;
-
-
-        if (darkMode)
-        {
-            if (   this.types[0] == COLOR_VALUE
-                || this.types[0] == FILL_VALUE)
-            {
-                const color = 
-                    this.types[0] == FILL_VALUE
-                    ? this.param.value.color.toRgb()
-                    : this.param.value.toRgb();
-
-                ringColor = 
-                    isLight(color)
-                    ? [0, 0, 0, 0.25]
-                    : [1, 1, 1, 0.25];
-            }
-            else if (this.types[0] == NUMBER_VALUE       ) ringColor = rgb_a(typeColorDark, 0.65);
-            else if (this.types[0] == TEXT_VALUE         ) ringColor = rgb_a(typeColorDark, 0.45);
-            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorDark, 0.6 );
-            else                                           ringColor = rgb_a(typeColorDark, 0.63);
-        }
-        else // light mode
-        {
-            if (   this.types[0] == COLOR_VALUE
-                || this.types[0] == FILL_VALUE)
-            {
-                const color = 
-                    this.types[0] == FILL_VALUE
-                    ? this.param.value.color.toRgb()
-                    : this.param.value.toRgb();
-
-                ringColor = 
-                    isLight(color)
-                    ? [0, 0, 0, 0.2 ]
-                    : [1, 1, 1, 0.37];
-            }
-            else if (this.types[0] == NUMBER_VALUE       ) ringColor = rgb_a(typeColorLight, 0.45);
-            else if (this.types[0] == TEXT_VALUE         ) ringColor = rgb_a(typeColorLight, 0.76);
-            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorLight, 0.45);
-            else                                           ringColor = rgb_a(typeColorLight, 0.78);
-        }
-
-
-        return ringColor;
     }
 
 
@@ -586,6 +530,62 @@ extends EventTarget
             else if (type == TEXT_VALUE         ) ringColor = this.node.active ? [0, 0, 0, 0.21] : [0, 0, 0, 0.21];
             else if (SHAPE_VALUES.includes(type)) ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.2 ];
             else                                  ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.2 ];
+        }
+
+
+        return ringColor;
+    }
+
+
+
+    getParamRingColor()
+    {
+        const typeColorDark  = rgbFromTypeMode(this.types[0], true, true );
+        const typeColorLight = rgbFromTypeMode(this.types[0], true, false);
+
+
+        let ringColor;
+
+
+        if (darkMode)
+        {
+            if (   this.types[0] == COLOR_VALUE
+                || this.types[0] == FILL_VALUE)
+            {
+                const color = 
+                    this.types[0] == FILL_VALUE
+                    ? this.param.value.color.toRgb()
+                    : this.param.value.toRgb();
+
+                ringColor = 
+                    isLight(color)
+                    ? [0, 0, 0, 0.25]
+                    : [1, 1, 1, 0.25];
+            }
+            else if (this.types[0] == NUMBER_VALUE       ) ringColor = rgb_a(typeColorDark, 0.65);
+            else if (this.types[0] == TEXT_VALUE         ) ringColor = rgb_a(typeColorDark, 0.45);
+            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorDark, 0.6 );
+            else                                           ringColor = rgb_a(typeColorDark, 0.63);
+        }
+        else // light mode
+        {
+            if (   this.types[0] == COLOR_VALUE
+                || this.types[0] == FILL_VALUE)
+            {
+                const color = 
+                    this.types[0] == FILL_VALUE
+                    ? this.param.value.color.toRgb()
+                    : this.param.value.toRgb();
+
+                ringColor = 
+                    isLight(color)
+                    ? [0, 0, 0, 0.2 ]
+                    : [1, 1, 1, 0.37];
+            }
+            else if (this.types[0] == NUMBER_VALUE       ) ringColor = rgb_a(typeColorLight, 0.45);
+            else if (this.types[0] == TEXT_VALUE         ) ringColor = rgb_a(typeColorLight, 0.76);
+            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorLight, 0.45);
+            else                                           ringColor = rgb_a(typeColorLight, 0.78);
         }
 
 
