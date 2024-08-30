@@ -185,7 +185,7 @@ extends OpColorBase
         this.colorBack.style.background = 
             this.isUnknown()
             ? unknownBackStyle
-            : (!rgbIsNaN(colors.colorBack) //!rgbIsNaN(colors.back)
+            : (!rgbIsNaN(colors.colorBack)
                ? rgba2style(colors.colorBack)
                : rgba2style(rgb_a(rgbDocumentBody, 0.95)));
 
@@ -287,18 +287,18 @@ extends OpColorBase
 
         if (this.isUnknown())
         {
-            colors.back       = 
+            colors.back      = 
             colors.colorBack = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
-            colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+            colors.text      = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
         }
         else
         {
             if (   fills.length > 0
                 && fills[0].isValid())
             {
-                colors.back       = 
-                colors.colorBack = fills[0].isValid() ? fills[0].toRgba() : rgba_NaN;
-                colors.text       = getTextColorFromBackColor(colors.colorBack, fills[0].toRgba()[3]);
+                colors.back      = 
+                colors.colorBack = fills[0].isValid() ? rgb_a(fills[0].toRgba()) : rgba_NaN;
+                colors.text      = getTextColorFromBackColor(colors.colorBack, fills[0].toRgba()[3]);
             }
             else
             {
