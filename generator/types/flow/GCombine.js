@@ -9,7 +9,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(COMBINE, nodeId, options);
+        super(LIST, nodeId, options);
     }
 
 
@@ -203,8 +203,8 @@ extends GOperator
     {
         for (const input of this.inputs)
         {
-            if (   input.type == LIST
-                || input.type == COMBINE
+            if (   input.type == EXPAND
+                || input.type == LIST
                 || input.type == CACHE)
                 input.iterateCache(parse, from);
         }

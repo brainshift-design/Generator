@@ -135,7 +135,7 @@ Operator.prototype.updateHeaderLabelText = function()
         && this.inputs[0].connectedOutput.node
         && this.inputs[0].connectedOutput.node.isUnknown();
 
-    //     if (this.type == COMBINE     ) suffix = sep + '[ ' + this.length        + ' ]';
+    //     if (this.type == LIST     ) suffix = sep + '[ ' + this.length        + ' ]';
     //else 
          if (this.type == EXTRACT         ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
     else if (this.type == SUBLIST         ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
@@ -144,7 +144,7 @@ Operator.prototype.updateHeaderLabelText = function()
     else if (this.type == SELECT_FROM_LIST) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
     else if (this.type == FILTER          ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
     else if (this.type == UNIQUE          ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
-    else if (this.type == LIST            ) suffix = ellipsis + sep + '[ ' + (isListUnknown ? '?' : this.params.length) + ' ]';
+    else if (this.type == EXPAND            ) suffix = ellipsis + sep + '[ ' + (isListUnknown ? '?' : this.params.length) + ' ]';
     else if (this.type == CACHE           ) suffix = ellipsis;
     else
         suffix = 

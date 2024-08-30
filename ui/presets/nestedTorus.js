@@ -143,7 +143,7 @@ const presetNestedTorus = '\
         "z": "7",\
         "params":\
         [\
-                ["LIST#", "fills", "1 FILL# 255,0 89,0 0,0 5,0 0,0"],\
+                ["EXPAND#", "fills", "1 FILL# 255,0 89,0 0,0 5,0 0,0"],\
                 ["NUM#", "weight", "2.25,1"],\
                 ["TEXT#", "dashes", "", "center"]\
         ]\

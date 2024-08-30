@@ -18,7 +18,7 @@ const templateColorStroke = '\
         "active": "true",\
         "params":\
         [\
-                ["LIST#", "fills", "1 FILL# 217,0 217,0 217,0 100,0 0,0"],\
+                ["EXPAND#", "fills", "1 FILL# 217,0 217,0 217,0 100,0 0,0"],\
                 ["TEXT#", "dashes", "", "center"]\
         ]\
         },\

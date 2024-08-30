@@ -467,7 +467,7 @@ GraphView.prototype.randomizeSelectedSeedsAndColors = function()
 
 GraphView.prototype.connectSelectedSeeds = function()
 {
-    const list = graphView.selectedNodes.find(n => n.type == LIST);
+    const list = graphView.selectedNodes.find(n => n.type == EXPAND);
 
     const randoms = graphView.selectedNodes.filter(n => 
            n.type == NUMBER_RANDOM

@@ -451,7 +451,7 @@ function getActiveAfterNode(node, includeParams = false, alreadyChecked = [])
 
 function getListAfterNode(node, includeParams = false, alreadyChecked = [])
 {
-    if (    node.type == LIST
+    if (    node.type == EXPAND
         && !alreadyChecked.includes(node)) 
         return node;
 

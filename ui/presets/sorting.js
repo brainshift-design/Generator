@@ -246,7 +246,7 @@
             ]\
         },\
         {\
-            "type": "LIST",\
+            "type": "EXPAND",\
             "created": "1704529857729",\
             "updated": "1704529857729",\
             "id": "list3",\
@@ -301,7 +301,7 @@
             "z": "17"\
         },\
         {\
-            "type": "LIST",\
+            "type": "EXPAND",\
             "created": "1704529857724",\
             "updated": "1704530222046",\
             "id": "list4",\
@@ -330,7 +330,7 @@
             ]\
         },\
         {\
-            "type": "LIST",\
+            "type": "EXPAND",\
             "created": "1704529857717",\
             "updated": "1704529857717",\
             "id": "list",\
@@ -403,7 +403,7 @@
             "z": "22"\
         },\
         {\
-            "type": "LIST",\
+            "type": "EXPAND",\
             "created": "1704529857742",\
             "updated": "1704530222046",\
             "id": "list2",\
@@ -449,7 +449,7 @@
             ]\
         },\
         {\
-            "type": "LIST",\
+            "type": "EXPAND",\
             "created": "1704529857717",\
             "updated": "1704529857717",\
             "id": "list5",\
@@ -478,7 +478,7 @@
             ]\
         },\
         {\
-            "type": "LIST",\
+            "type": "EXPAND",\
             "created": "1704529857742",\
             "updated": "1704530222046",\
             "id": "list6",\

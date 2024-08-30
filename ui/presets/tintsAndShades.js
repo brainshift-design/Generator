@@ -142,7 +142,7 @@ const presetTintsAndShades = '\
             "height": "64"\
             },\
             {\
-            "type": "LIST",\
+            "type": "EXPAND",\
             "id": "list",\
             "name": "list",\
             "renamed": "false",\

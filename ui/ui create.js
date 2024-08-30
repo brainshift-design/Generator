@@ -18,9 +18,9 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case SET_LIST_VALUE_NAMES:    node = new OpSetListValueNames();  break;
         case SET_OBJECT_NAME:         node = new OpSetObjectName();      break;
  
-        case COMBINE:                 node = new OpCombine();            break;
+        case LIST:                 node = new OpCombine();            break;
         case LIST_AS_ITEM:            node = new OpListAsItem();         break;
-        case LIST:                    node = new OpList();               break;
+        case EXPAND:                    node = new OpList();               break;
         case LIST_COUNT:              node = new OpListCount();          break;
         case OBJECT_COUNT:            node = new OpObjectCount();        break;
         case SELECT:                  node = new OpSelect();             break;

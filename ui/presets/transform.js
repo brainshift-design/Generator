@@ -110,7 +110,7 @@ const presetTransform = '\
             "z": "7",\
             "params":\
             [\
-                    ["LIST#", "fills", "1 FILL# 255,0 131,0 53,0 100,0 0,0"]\
+                    ["EXPAND#", "fills", "1 FILL# 255,0 131,0 53,0 100,0 0,0"]\
             ]\
             },\
             {\

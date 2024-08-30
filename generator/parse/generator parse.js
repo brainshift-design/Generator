@@ -138,7 +138,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SET_LIST_VALUE_NAMES   ) result = genParseSetListValueNames (parse);
     else if (parse.next == SET_OBJECT_NAME        ) result = genParseSetObjectName     (parse);
 
-    else if (parse.next == COMBINE                ) result = genParseCombine           (parse);
+    else if (parse.next == LIST                ) result = genParseCombine           (parse);
     else if (parse.next == LIST_AS_ITEM           ) result = genParseListAsItem        (parse);
     else if (parse.next == EXTRACT                ) result = genParseExtract           (parse);
     else if (parse.next == SET_PARAM              ) result = genParseSetParam          (parse);
@@ -153,7 +153,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == FILTER                 ) result = genParseFilter            (parse);
     else if (parse.next == COLUMN                 ) result = genParseColumn            (parse);
     else if (parse.next == CELL                   ) result = genParseCell              (parse);
-    else if (parse.next == LIST                   ) result = genParseList              (parse);
+    else if (parse.next == EXPAND                   ) result = genParseList              (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect            (parse);
     else if (parse.next == SELECT_FROM_LIST       ) result = genParseSelectFromList    (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);

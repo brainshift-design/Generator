@@ -184,7 +184,7 @@ const presetGradientCircles = '\
             ]\
         },\
         {\
-            "type": "LIST",\
+            "type": "EXPAND",\
             "id": "list",\
             "name": "list",\
             "renamed": "false",\

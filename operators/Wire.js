@@ -575,7 +575,7 @@ class Wire
                    &&  output.param.input.isUncached()
                 ||   !output.param
                    && output.node.isOrPrecededByUncached()
-                ||    output.node.type == LIST
+                ||    output.node.type == EXPAND
                    && output.node.isOrPrecededByUncached())
             && (   input
                 && input.node.isOrFollowedByMultiplier());

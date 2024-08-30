@@ -22,7 +22,7 @@ const presetPaletteFromColor = '\
             ]\
         },\
         {\
-            "type": "LIST",\
+            "type": "EXPAND",\
             "id": "list",\
             "name": "list",\
             "renamed": "false",\

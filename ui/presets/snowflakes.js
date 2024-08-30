@@ -665,7 +665,7 @@ const presetSnowflakes = '\
         ]\
         },\
         {\
-        "type": "LIST",\
+        "type": "EXPAND",\
         "created": "1702969585897",\
         "updated": "1702969707625",\
         "id": "list",\

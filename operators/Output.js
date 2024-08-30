@@ -670,7 +670,7 @@ extends EventTarget
             //     if (out.isLooped())
             //         return true;
             
-            if (input.node.type == COMBINE)
+            if (input.node.type == LIST)
                 return input.node.outputs[0].isLooped();
         }
 

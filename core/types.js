@@ -1,4 +1,4 @@
-const LIST_VALUE           = 'LIST#';
+const LIST_VALUE           = 'EXPAND#';
 
 const NUMBER_LIST_VALUE    = 'NLIST#';
 const   TEXT_LIST_VALUE    = 'TLIST#';
@@ -24,7 +24,7 @@ const VARIABLE_VALUE       = 'VAR#';
 const VARIABLE_TYPES       = [VARIABLE_VALUE, VARIABLE];
 
 
-const COMBINE              = 'CMB';
+const LIST                 = 'LIST';
 const LIST_AS_ITEM         = 'LSASIT';
 const EXTRACT              = 'EXTR';
 const SET_PARAM            = 'SETP';
@@ -38,7 +38,7 @@ const BUCKLE_LIST          = 'BUKLST';
 const SORT                 = 'SORT';
 const COLUMN               = 'CLMN';
 const CELL                 = 'CELL';
-const LIST                 = 'LIST';
+const EXPAND               = 'EXPAND';
 const LIST_COUNT           = 'COUNT';
 const OBJECT_COUNT         = 'OBJCOUNT';
 const LIST_CONTAINS        = 'LCONT';
@@ -58,12 +58,12 @@ const LIST_TYPES =
     NUMBER_LIST_VALUE,
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
-    COMBINE,
+    LIST,
     EXTRACT,
     SET_PARAM,
     GET_PARAM,
     SUBLIST,
-    LIST,
+    EXPAND,
     LIST_COUNT,
     LIST_CONTAINS,
     LIST_FIND,
@@ -396,7 +396,7 @@ const FLOW_TYPES =
     COLUMN,
     SORT,
     CELL,
-    LIST,
+    EXPAND,
     SELECT,
     SELECT_FROM_LIST,
     IF_ELSE,

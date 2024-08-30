@@ -217,7 +217,7 @@ const presetPieChart = '\
         ]\
         },\
         {\
-        "type": "LIST",\
+        "type": "EXPAND",\
         "created": "1705859115795",\
         "updated": "1705906826428",\
         "id": "list",\
@@ -342,7 +342,7 @@ const presetPieChart = '\
         ]\
         },\
         {\
-        "type": "LIST",\
+        "type": "EXPAND",\
         "created": "1705898485414",\
         "updated": "1705906826428",\
         "id": "list2",\
@@ -427,7 +427,7 @@ const presetPieChart = '\
         "z": "20",\
         "params":\
         [\
-                ["LIST#", "indices", "7 NUM# 6,0 NUM# 2,0 NUM# 3,0 NUM# 4,0 NUM# 5,0 NUM# 0,0 NUM# 1,0"]\
+                ["EXPAND#", "indices", "7 NUM# 6,0 NUM# 2,0 NUM# 3,0 NUM# 4,0 NUM# 5,0 NUM# 0,0 NUM# 1,0"]\
         ]\
         },\
         {\
@@ -608,7 +608,7 @@ const presetPieChart = '\
         ]\
         },\
         {\
-        "type": "LIST",\
+        "type": "EXPAND",\
         "created": "1705898552760",\
         "updated": "1705906826428",\
         "id": "list3",\
@@ -837,8 +837,8 @@ const presetPieChart = '\
         "z": "42",\
         "params":\
         [\
-                ["LIST#", "counts", "7 NUM# 7,0 NUM# 7,0 NUM# 2,0 NUM# 3,0 NUM# 4,0 NUM# 6,0 NUM# 1,0"],\
-                ["LIST#", "indices", "7 LIST# 7 NUM# 0,0 NUM# 2,0 NUM# 7,0 NUM# 18,0 NUM# 20,0 NUM# 26,0 NUM# 28,0 LIST# 7 NUM# 1,0 NUM# 4,0 NUM# 9,0 NUM# 12,0 NUM# 13,0 NUM# 23,0 NUM# 24,0 LIST# 2 NUM# 3,0 NUM# 15,0 LIST# 3 NUM# 5,0 NUM# 8,0 NUM# 14,0 LIST# 4 NUM# 6,0 NUM# 10,0 NUM# 21,0 NUM# 27,0 LIST# 6 NUM# 11,0 NUM# 16,0 NUM# 19,0 NUM# 22,0 NUM# 25,0 NUM# 29,0 LIST# 1 NUM# 17,0"]\
+                ["EXPAND#", "counts", "7 NUM# 7,0 NUM# 7,0 NUM# 2,0 NUM# 3,0 NUM# 4,0 NUM# 6,0 NUM# 1,0"],\
+                ["EXPAND#", "indices", "7 EXPAND# 7 NUM# 0,0 NUM# 2,0 NUM# 7,0 NUM# 18,0 NUM# 20,0 NUM# 26,0 NUM# 28,0 EXPAND# 7 NUM# 1,0 NUM# 4,0 NUM# 9,0 NUM# 12,0 NUM# 13,0 NUM# 23,0 NUM# 24,0 EXPAND# 2 NUM# 3,0 NUM# 15,0 EXPAND# 3 NUM# 5,0 NUM# 8,0 NUM# 14,0 EXPAND# 4 NUM# 6,0 NUM# 10,0 NUM# 21,0 NUM# 27,0 EXPAND# 6 NUM# 11,0 NUM# 16,0 NUM# 19,0 NUM# 22,0 NUM# 25,0 NUM# 29,0 EXPAND# 1 NUM# 17,0"]\
         ]\
         },\
         {\

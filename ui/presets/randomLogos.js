@@ -405,7 +405,7 @@ const presetNamesLogos = '\
             "z": "24",\
             "params":\
             [\
-                ["LIST#", "value", "20 TEXT# B TEXT# C TEXT# D TEXT# F TEXT# G TEXT# H TEXT# J TEXT# K TEXT# L TEXT# M TEXT# N TEXT# P TEXT# Q TEXT# R TEXT# S TEXT# T TEXT# V TEXT# W TEXT# X TEXT# Z"],\
+                ["EXPAND#", "value", "20 TEXT# B TEXT# C TEXT# D TEXT# F TEXT# G TEXT# H TEXT# J TEXT# K TEXT# L TEXT# M TEXT# N TEXT# P TEXT# Q TEXT# R TEXT# S TEXT# T TEXT# V TEXT# W TEXT# X TEXT# Z"],\
                 ["TEXT#", "separator", "", "center"]\
             ]\
         },\
@@ -421,7 +421,7 @@ const presetNamesLogos = '\
             "z": "25",\
             "params":\
             [\
-                ["LIST#", "value", "6 TEXT# A TEXT# E TEXT# I TEXT# O TEXT# U TEXT# Y"],\
+                ["EXPAND#", "value", "6 TEXT# A TEXT# E TEXT# I TEXT# O TEXT# U TEXT# Y"],\
                 ["TEXT#", "separator", "", "center"]\
             ]\
         },\
@@ -629,7 +629,7 @@ const presetNamesLogos = '\
             ]\
         },\
         {\
-            "type": "LIST",\
+            "type": "EXPAND",\
             "id": "list",\
             "name": "list",\
             "renamed": "false",\

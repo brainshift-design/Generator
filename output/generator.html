@@ -6658,7 +6658,7 @@ function loadLocalSettings()
 }
 
 
-const LIST_VALUE           = 'LIST#';
+const LIST_VALUE           = 'EXPAND#';
 
 const NUMBER_LIST_VALUE    = 'NLIST#';
 const   TEXT_LIST_VALUE    = 'TLIST#';
@@ -6684,7 +6684,7 @@ const VARIABLE_VALUE       = 'VAR#';
 const VARIABLE_TYPES       = [VARIABLE_VALUE, VARIABLE];
 
 
-const COMBINE              = 'CMB';
+const LIST                 = 'LIST';
 const LIST_AS_ITEM         = 'LSASIT';
 const EXTRACT              = 'EXTR';
 const SET_PARAM            = 'SETP';
@@ -6698,7 +6698,7 @@ const BUCKLE_LIST          = 'BUKLST';
 const SORT                 = 'SORT';
 const COLUMN               = 'CLMN';
 const CELL                 = 'CELL';
-const LIST                 = 'LIST';
+const EXPAND               = 'EXPAND';
 const LIST_COUNT           = 'COUNT';
 const OBJECT_COUNT         = 'OBJCOUNT';
 const LIST_CONTAINS        = 'LCONT';
@@ -6718,12 +6718,12 @@ const LIST_TYPES =
     NUMBER_LIST_VALUE,
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
-    COMBINE,
+    LIST,
     EXTRACT,
     SET_PARAM,
     GET_PARAM,
     SUBLIST,
-    LIST,
+    EXPAND,
     LIST_COUNT,
     LIST_CONTAINS,
     LIST_FIND,
@@ -7056,7 +7056,7 @@ const FLOW_TYPES =
     COLUMN,
     SORT,
     CELL,
-    LIST,
+    EXPAND,
     SELECT,
     SELECT_FROM_LIST,
     IF_ELSE,
@@ -12526,7 +12526,7 @@ extends GOperator
         consoleAssert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
-        if (    this.node.type != LIST
+        if (    this.node.type != EXPAND
             || !this.node.cachedValue)
             await this.node.eval(parse);
 
@@ -20206,7 +20206,7 @@ function assertVolatile(loop, node)
         || loop.type == NUMBER_RANDOM
         || loop.type == NUMBER_NOISE
         || loop.type == PROBABILITY
-        || loop.type == COMBINE
+        || loop.type == LIST
         || loop.type == PARAM, // for OpFeedback
         'only volatile types can be repeated');
 }
@@ -21574,7 +21574,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(COMBINE, nodeId, options);
+        super(LIST, nodeId, options);
     }
 
 
@@ -21768,8 +21768,8 @@ extends GOperator
     {
         for (const input of this.inputs)
         {
-            if (   input.type == LIST
-                || input.type == COMBINE
+            if (   input.type == EXPAND
+                || input.type == LIST
                 || input.type == CACHE)
                 input.iterateCache(parse, from);
         }
@@ -24098,7 +24098,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(LIST, nodeId, options);
+        super(EXPAND, nodeId, options);
     }
 
 
@@ -60878,7 +60878,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SET_LIST_VALUE_NAMES   ) result = genParseSetListValueNames (parse);
     else if (parse.next == SET_OBJECT_NAME        ) result = genParseSetObjectName     (parse);
 
-    else if (parse.next == COMBINE                ) result = genParseCombine           (parse);
+    else if (parse.next == LIST                ) result = genParseCombine           (parse);
     else if (parse.next == LIST_AS_ITEM           ) result = genParseListAsItem        (parse);
     else if (parse.next == EXTRACT                ) result = genParseExtract           (parse);
     else if (parse.next == SET_PARAM              ) result = genParseSetParam          (parse);
@@ -60893,7 +60893,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == FILTER                 ) result = genParseFilter            (parse);
     else if (parse.next == COLUMN                 ) result = genParseColumn            (parse);
     else if (parse.next == CELL                   ) result = genParseCell              (parse);
-    else if (parse.next == LIST                   ) result = genParseList              (parse);
+    else if (parse.next == EXPAND                   ) result = genParseList              (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect            (parse);
     else if (parse.next == SELECT_FROM_LIST       ) result = genParseSelectFromList    (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);

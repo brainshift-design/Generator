@@ -14,7 +14,7 @@ extends ResizableBase
 
     constructor()
     {
-        super(LIST, 'expand', 'expand', iconExpand);
+        super(EXPAND, 'expand', 'expand', iconExpand);
 
         this.iconOffsetY = 1;
 

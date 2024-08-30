@@ -50,7 +50,7 @@ const presetTwoMathNodes = '\
             "height": "77"\
             },\
             {\
-            "type": "LIST",\
+            "type": "EXPAND",\
             "id": "list",\
             "name": "list",\
             "renamed": "false",\

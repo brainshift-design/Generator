@@ -80,7 +80,7 @@ const presetAvatars = '\
             "z": "4",\
             "params":\
             [\
-                ["LIST#", "fills", "1 FILL# 74,0 212,0 137,0 100,0 0,0"],\
+                ["EXPAND#", "fills", "1 FILL# 74,0 212,0 137,0 100,0 0,0"],\
                 ["NUM#", "weight", "4,0"],\
                 ["NUM#", "fit", "0,0"],\
                 ["TEXT#", "dashes", "", "center"]\
@@ -1174,7 +1174,7 @@ const presetAvatars = '\
             "z": "73",\
             "params":\
             [\
-                ["LIST#", "points", "3 PT# 39,0 89.02,2 PT# 50,0 92.98,2 PT# 61,0 89.02,2"]\
+                ["EXPAND#", "points", "3 PT# 39,0 89.02,2 PT# 50,0 92.98,2 PT# 61,0 89.02,2"]\
             ]\
         },\
         {\
@@ -1255,7 +1255,7 @@ const presetAvatars = '\
             "z": "78",\
             "params":\
             [\
-                ["LIST#", "fills", "1 FILL# 163,0 91,0 91,0 100,0 0,0"],\
+                ["EXPAND#", "fills", "1 FILL# 163,0 91,0 91,0 100,0 0,0"],\
                 ["NUM#", "weight", "11,0"],\
                 ["NUM#", "cap", "2,0"],\
                 ["TEXT#", "dashes", "", "center"]\
@@ -1352,7 +1352,7 @@ const presetAvatars = '\
             ]\
         },\
         {\
-            "type": "LIST",\
+            "type": "EXPAND",\
             "id": "list",\
             "name": "list",\
             "renamed": "false",\

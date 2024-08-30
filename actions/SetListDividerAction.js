@@ -13,7 +13,7 @@ extends Action
     {
         super(
             SET_LIST_DIVIDER_ACTION,
-           'SET LIST DIVIDER ' + nodeId + ' to \'' + newDivider + '\'');
+           'SET EXPAND DIVIDER ' + nodeId + ' to \'' + newDivider + '\'');
 
         this.affectsConnections = false;
 

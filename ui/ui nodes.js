@@ -604,6 +604,8 @@ function handleLegacyNode(_node, genVersion)
     else if (_node.type == 'ONAME'                    ) _node.type = SET_OBJECT_NAME;
     else if (_node.type == 'TCONT' && genVersion < 441) _node.type = TEXT_FIND;
     else if (_node.type == 'LCONT' && genVersion < 441) _node.type = LIST_FIND;
+    else if (_node.type == 'LIST'  && genVersion < 441) _node.type = EXPAND;
+    else if (_node.type == 'CMB'   && genVersion < 441) _node.type = LIST;
 
 
     // remove 'showCenter' param from everything
@@ -1578,7 +1580,7 @@ function uiDeactivateAllNodes()
             uiMakeNodePassive(node);
             activeNodes.push(node);
 
-            if (node.type == LIST)
+            if (node.type == EXPAND)
                 pushUpdate(null, [node]);
         }
     }

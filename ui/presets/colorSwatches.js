@@ -246,7 +246,7 @@ const presetColorSwatches = '\
             "z": "14",\
             "params":\
             [\
-                ["LIST#", "value", "11 TEXT# 5 TEXT# %2010 TEXT# %2020 TEXT# %2030 TEXT# %2040 TEXT# %2050 TEXT# %2060 TEXT# %2070 TEXT# %2080 TEXT# %2090 TEXT# %2096"],\
+                ["EXPAND#", "value", "11 TEXT# 5 TEXT# %2010 TEXT# %2020 TEXT# %2030 TEXT# %2040 TEXT# %2050 TEXT# %2060 TEXT# %2070 TEXT# %2080 TEXT# %2090 TEXT# %2096"],\
                 ["TEXT#", "separator", "%2C", "center"]\
             ]\
         },\
@@ -587,7 +587,7 @@ const presetColorSwatches = '\
             "z": "35",\
             "params":\
             [\
-                ["LIST#", "value", "14 TEXT# E87C34 TEXT# E5A43C TEXT# E3B63F TEXT# 93C842 TEXT# 60BF6B TEXT# 54B484 TEXT# 54B5A4 TEXT# 4FB4D6 TEXT# 4BA0E1 TEXT# 4F82EF TEXT# 6866E8 TEXT# 825CEF TEXT# 9E5AEF TEXT# C753E8"],\
+                ["EXPAND#", "value", "14 TEXT# E87C34 TEXT# E5A43C TEXT# E3B63F TEXT# 93C842 TEXT# 60BF6B TEXT# 54B484 TEXT# 54B5A4 TEXT# 4FB4D6 TEXT# 4BA0E1 TEXT# 4F82EF TEXT# 6866E8 TEXT# 825CEF TEXT# 9E5AEF TEXT# C753E8"],\
                 ["TEXT#", "separator", "%2C", "center"]\
             ]\
         },\

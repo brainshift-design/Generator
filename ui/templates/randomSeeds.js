@@ -39,7 +39,7 @@ const templateRandomSeeds = '\
         ]\
         },\
         {\
-        "type": "LIST",\
+        "type": "EXPAND",\
         "created": "1705641043411",\
         "updated": "1705641043425",\
         "id": "list",\
