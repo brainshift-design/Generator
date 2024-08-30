@@ -57,7 +57,7 @@ Typically nodes with connected inputs should be to the right of the nodes with c
     prompt += (new OpEllipse   ()).toPrompt();
     prompt += (new OpPolygon   ()).toPrompt();
 
-    prompt += (new OpCombine   ()).toPrompt();
+    prompt += (new OpList   ()).toPrompt();
 
     prompt += (new OpRepeat    ()).toPrompt();
 

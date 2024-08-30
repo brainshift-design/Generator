@@ -1864,14 +1864,14 @@ FigmaVectorPath
 GCache
 GCell
 GColumn
-GCombine
+GList
 GListAsItem
 GListFind
 GExtract
 GFilter
 GFreeze
 GIfElse
-GList
+GExpandList
 GListCount
 GNull
 GRepeat
@@ -2161,7 +2161,7 @@ OpCorrectColor
 OpValidColor
 OpCache
 OpCell
-OpCombine
+OpList
 OpListAsItem
 OpListFind
 OpCreateVariable
@@ -2170,7 +2170,7 @@ OpFilter
 OpForEach
 OpFreeze
 OpIfElse
-OpList
+OpExpandList
 OpListCount
 OpNull
 OpRepeat

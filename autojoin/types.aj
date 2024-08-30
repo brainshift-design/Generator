@@ -92,7 +92,7 @@
 ../generator/types/flow/GSetListValueNames.js
 ../generator/types/flow/GSetObjectName.js
 
-../generator/types/flow/GCombine.js
+../generator/types/flow/GList.js
 ../generator/types/flow/GListAsItem.js
 ../generator/types/flow/GExtract.js
 ../generator/types/flow/GSetParam.js
@@ -107,7 +107,7 @@
 ../generator/types/flow/GFilter.js
 ../generator/types/flow/GColumn.js
 ../generator/types/flow/GCell.js
-../generator/types/flow/GList.js
+../generator/types/flow/GExpandList.js
 ../generator/types/flow/GSelect.js
 ../generator/types/flow/GSelectFromList.js
 ../generator/types/flow/GListCount.js

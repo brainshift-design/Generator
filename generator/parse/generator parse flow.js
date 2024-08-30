@@ -176,7 +176,7 @@ function genParseCombine(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cmb = new GCombine(nodeId, options);
+    const cmb = new GList(nodeId, options);
 
     
     let nInputs = 0;
@@ -877,7 +877,7 @@ function genParseList(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const list = new GList(nodeId, options);
+    const list = new GExpandList(nodeId, options);
 
     
     let nInputs = -1;

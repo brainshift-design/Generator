@@ -1,22 +1,24 @@
 class GList
-extends GOperator1
+extends GOperator
 {
-    cachedValue = null;
+    inputs = [];
+
+    value;
 
 
 
     constructor(nodeId, options)
     {
-        super(EXPAND, nodeId, options);
+        super(LIST, nodeId, options);
     }
 
 
-
+    
     reset()
     {
         super.reset();
 
-        this.cachedValue = null;
+        this.inputs = [];
     }
 
 
@@ -24,121 +26,125 @@ extends GOperator1
     copy()
     {
         const copy = new GList(this.nodeId, this.options);
-        
+
         copy.copyBase(this);
 
-        if (this.input) copy.input = this.input.copy();
-        
-        for (const key of this.keys())
-        {
-            if (this[key] instanceof GValue)
-                Object.assign(copy, {[key]: this[key]});
-        }
+        copy.inputs = this.inputs.map(i => i.copy());
+
+        if (this.value) copy.value = this.value.copy();
 
         return copy;
     }
 
 
 
-    paramFromId(paramId)
+    isCached()
     {
-        let param =
-               this.value
-            && this.value.items
-            && paramId != 'value'
-            ? this.value.items.find(i => i.valueId == paramId)
-            : null;
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
 
-        if (!param)
-            param = this[paramId];
-
-        return param;
+        return super.isCached();
     }
 
 
 
     async eval(parse)
     {
-        if (   this.isCached()
-            && this.cachedValue)
+        if (this.isCached())
             return this;
 
 
-        const input = await evalListValue(this.input, parse); 
+        this.value = new ListValue();
+
+        this.value.objects = [];
 
 
-        if (this.cachedValue)
-           this.value = this.cachedValue.copy();
-
-        else
+        for (let i = 0; i < this.inputs.length; i++)
         {
-            this.value = input ?? new NullValue();
-            this.cachedValue = this.value.copy();
-        }
+            const input = await evalValue(this.inputs[i], parse);
 
 
-        this.updateValues = [];
+            if (   input
+                && input.isValid()
+                && this.options.enabled)
+            {
+                if (isListValueType(input.type))
+                {
+                    if (input.condensed === true)
+                        this.value.items.push(input);
+                    else
+                    {
+                        for (const item of input.items)
+                            this.value.items.push(item);
+                    }
+                }
+                else
+                    this.value.items.push(input);
+            }
 
 
-        if (    this.value.isValid()
-            &&  this.value.items
-            && !isEmpty(this.value.items))
-        {
-            const valueIds = [];
-
+            const inputObjects = this.copyObjects(input, i);
             
-            for (let i = 0; i < this.value.items.length; i++)
+            for (const obj of inputObjects)
             {
-                const item = this.value.items[i];
-                
-                let valueId = 
-                    item.valueId.trim() != ''
-                    ? item.valueId
-                    : i.toString();
-
-                valueId = getNewNumberId(
-                    valueId,
-                    id => valueIds.filter(_id => _id == id).length,
-                    valueId,
-                    '',
-                    1,
-                    true);
-
-                valueIds.push(valueId);
+                obj.objectId += OBJECT_SEPARATOR + i;
+                obj.itemIndex = i;
             }
 
-
-            for (let i = 0; i < this.value.items.length; i++)
-            {
-                let valueId = valueIds[i];
-
-                const item = this.value.items[i];
-                
-                Object.assign(this, {[valueId]: item});
-                this.setUpdateValues(parse, [[valueId, item]], true);
-
-                item.sortId = i;
-            }
-
-
-            this.updateValues.sort((a, b) => a.sortId - b.sortId);
-
-
-            this.setUpdateValues(parse, [['-type-', this.outputType()]], true);
+            this.value.objects.push(...inputObjects);
         }
-        else
-            this.setUpdateValues(parse, [['-type-', new TextValue(LIST_VALUE)]], true);
 
 
-        this.updateValueObjects();
+        // reset object space
+
+        const bounds = getObjBounds(this.value.objects);
+
+        const singlePoint =
+               this.value.objects.length  == 1 
+            && this.value.objects[0].type == POINT;
+
+        for (const obj of this.value.objects)
+        {
+            const angle1 = anglev_(obj.sp0, obj.sp1);
+            const angle2 = anglev_(obj.sp0, obj.sp2);
+
+            obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
+            
+            obj.sp1 = addv(obj.sp0, vector(angle1, 1));
+            obj.sp2 = addv(obj.sp0, vector(angle2, 1));
+
+            //obj.resetSpace(bounds, singlePoint);
+        }
+        
+
+        const length = new NumberValue(this.value.items.length);
+        const type   = new TextValue(finalListTypeFromItems(this.value.items));
+
+
+        this.setUpdateValues(parse,
+        [
+            ['length', length],
+            ['type',   type  ]
+        ]);
+
+
+        if (parse.settings.showListTooltips)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
+            ],
+            true);
+        }
 
 
         this.validate();
 
         return this;
     }
-    
-    
+
+
 
     toValue()
     {
@@ -147,8 +153,67 @@ extends GOperator1
 
 
 
+    isValid()
+    {
+        return !this.inputs.find(i => !i.isValid());
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
+    }
+
+
+
+    initLoop(parse, loopId)
+    {
+        this.inputs.forEach(i => i.initLoop(parse, loopId));
+    }
+
+
+
+    invalidateLoop(parse, nodeId)
+    {
+        this.inputs.forEach(i => i.invalidateLoop(parse, nodeId));
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        this.inputs.forEach(i => i.iterateLoop(parse));
+    }
+
+
+
     iterateCache(parse, from)
     {
-        this.cachedValue = null;
+        for (const input of this.inputs)
+        {
+            if (   input.type == EXPAND
+                || input.type == LIST
+                || input.type == CACHE)
+                input.iterateCache(parse, from);
+        }
+    }
+
+
+
+    resetLoop(parse, nodeId)
+    {
+        this.inputs.forEach(i => i.resetLoop(parse, nodeId));
     }
 }

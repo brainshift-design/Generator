@@ -20605,7 +20605,7 @@ extends GOperator
 
     copy()
     {
-        const copy = new GList(this.nodeId, this.options);
+        const copy = new GExpandList(this.nodeId, this.options);
         
         copy.copyBase(this);
 
@@ -21563,7 +21563,7 @@ extends GOperator1
 
 
 
-class GCombine
+class GList
 extends GOperator
 {
     inputs = [];
@@ -21590,7 +21590,7 @@ extends GOperator
 
     copy()
     {
-        const copy = new GCombine(this.nodeId, this.options);
+        const copy = new GList(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -24089,7 +24089,7 @@ extends GOperator1
 }
 
 
-class GList
+class GExpandList
 extends GOperator1
 {
     cachedValue = null;
@@ -24114,7 +24114,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GList(this.nodeId, this.options);
+        const copy = new GExpandList(this.nodeId, this.options);
         
         copy.copyBase(this);
 
@@ -52708,7 +52708,7 @@ function genParseCombine(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cmb = new GCombine(nodeId, options);
+    const cmb = new GList(nodeId, options);
 
     
     let nInputs = 0;
@@ -53409,7 +53409,7 @@ function genParseList(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const list = new GList(nodeId, options);
+    const list = new GExpandList(nodeId, options);
 
     
     let nInputs = -1;
