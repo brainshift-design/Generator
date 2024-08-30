@@ -537,6 +537,11 @@ extends EventTarget
 
     getHeaderRingColor()
     {
+        const colors       = this.node.getHeaderColors();
+
+        const outColor     = this.node.getHeaderOutputColor();
+        const outWireColor = this.node.getOutputWireColor();
+
         const type =
             this.node.outputValueType != NULL
             ? this.node.outputValueType
@@ -551,9 +556,15 @@ extends EventTarget
             if (isColorType(type))
             {
                 ringColor = 
-                    isLight(this.node.getOutputWireColor())
-                    ? [0, 0, 0, 0.25]
-                    : [1, 1, 1, 0.25];
+                    rgbIsNaN(colors.back)
+                    ? [1, 1, 1, 0.25]
+                    : (   rgbIsNaN(outColor)
+                       || rgbIsNaN(outWireColor)
+                       || outColor[3] < TRANSPARENT_THRESHOLD_DARK
+                       ? [1, 1, 1, 0.35]
+                         : isLight(outWireColor)
+                           ? [0, 0, 0, 0.25]
+                           : [1, 1, 1, 0.25]);
             }
             else if (type == NUMBER_VALUE       ) ringColor = this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, 0.35];
             else if (type == TEXT_VALUE         ) ringColor = this.node.active ? [0, 0, 0, 0.28] : [1, 1, 1, 0.28];
@@ -565,9 +576,15 @@ extends EventTarget
             if (isColorType(type))
             {
                 ringColor = 
-                    isLight(this.node.getOutputWireColor())
-                    ? [0, 0, 0, 0.2 ]
-                    : [1, 1, 1, 0.37];
+                    rgbIsNaN(colors.back)
+                    ? [0, 0, 0, 0.22]
+                    :    rgbIsNaN(outColor)
+                      || rgbIsNaN(outWireColor)
+                      || outColor[3] < TRANSPARENT_THRESHOLD_DARK
+                      ? [0, 0, 0, 0.2]
+                      : isLight(this.node.getOutputWireColor())
+                        ? [0, 0, 0, 0.2 ]
+                        : [1, 1, 1, 0.37];
             }
             else if (type == NUMBER_VALUE       ) ringColor = this.node.active ? [1, 1, 1, 0.35] : [0, 0, 0, 0.35];
             else if (type == TEXT_VALUE         ) ringColor = this.node.active ? [0, 0, 0, 0.21] : [0, 0, 0, 0.21];
