@@ -26,7 +26,11 @@ extends Parameter
             this,
             this.id,
             this.name,
-            ''));
+            '',
+            { 
+                family: 'Inter',
+                size:   '11px'
+            }));
 
         this.controls[0].highlightText           = false;
         this.controls[0].textbox.style.textAlign = 'center';
@@ -157,7 +161,7 @@ extends Parameter
         this.controls[0].readOnly = true;
         
         this.controls[0].textbox.style.fontStyle  = 'italic';
-        this.controls[0].textbox.style.fontWeight = '500';
+        this.controls[0].textbox.style.fontWeight = '600';
 
 
         const stops = this.value.stops.items;

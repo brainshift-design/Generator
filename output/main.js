@@ -1033,6 +1033,13 @@ const COLOR_TYPES = [
     COLOR_BLEND,
     COLOR_TO_TEXT
 ];
+const COLOR_HEADER_TYPES = [
+    COLOR,
+    FILL,
+    STROKE,
+    COLOR_STOP,
+    GRADIENT
+];
 const COLOR_VALUES = [
     COLOR_VALUE,
     FILL_VALUE,

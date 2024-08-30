@@ -52,9 +52,7 @@ extends Parameter
             dragScale)); 
 
         this.controls[0].successOnFocusOut = true;
-        //this.controls[0].div.style.position        = '100';
-        //this.controls[0].div.style.zIndex        = 100;
-
+        
         this.controls[0].div.style.display = 'inline-block';
         this.controls[0].div.style.width   = '100%';
 

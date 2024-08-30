@@ -33,7 +33,7 @@ extends Control
     
     
 
-    constructor(param, id, name, defaultValue = '')
+    constructor(param, id, name, defaultValue = '', font = {})
     {
         const textBehind = createDiv     ('textControlHighlight');
         const textbox    = createTextarea('textControlTextarea');
@@ -47,7 +47,19 @@ extends Control
 
 
         this.value = defaultValue;
-        
+
+        if (font.family)
+        {
+            textBehind.style.fontFamily = font.family;
+            textbox   .style.fontFamily = font.family;
+        }
+
+        if (font.size)
+        {
+            textBehind.style.fontSize = font.size;
+            textbox   .style.fontSize = font.size;
+        }
+
         
         this.div.appendChild(textBehind);
         this.div.appendChild(textbox);
@@ -122,6 +134,14 @@ extends Control
         if (   fireChangeEvent
             && this.enableChangeEvent)
             this.dispatchEvent(this.onchange);
+    }
+
+
+
+    setFont(fontFamily)
+    {
+        textBehind.style.fontFamily = fontFamily;
+        textbox   .style.fontFamily = fontFamily;
     }
 
 

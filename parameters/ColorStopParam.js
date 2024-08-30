@@ -26,9 +26,14 @@ extends Parameter
             this,
             this.id,
             this.name,
-            ''));
+            '',
+            { 
+                family: 'Inter',
+                size:   '11px'
+            }));
 
-        this.controls[0].textbox.style.textAlign  = 'center';
+        this.controls[0].textbox.style.textAlign          = 'center';
+        this.controls[0].textbox.style.fontVariantNumeric = 'tabular-nums';
    
         this.divControls.appendChild(this.controls[0].div);
 
@@ -159,12 +164,12 @@ extends Parameter
         this.controls[0].readOnly = true;
         
         this.controls[0].textbox.style.fontStyle  = 'italic';
-        this.controls[0].textbox.style.fontWeight = '500';
+        this.controls[0].textbox.style.fontWeight = '600';
 
  
         this.controls[0].textbox.value =
-                    rgb2hex(this.value.fill.color.toRgb())
-            + ' '  + this.value.fill.opacity.toNumber() + '%'
+                     rgb2hex(this.value.fill.color.toRgb())
+            + '  ' + this.value.fill.opacity.toNumber() + '%'
             + ', ' + this.value.position.toNumber() + '%';
 
 

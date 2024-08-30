@@ -496,11 +496,13 @@ extends EventTarget
             if (isColorType(this.types[0]))
             {
                 ringColor =
-                    rgbIsNaN(colors.colorBack)
+                        rgbIsNaN(colors.colorBack)
+                    && !COLOR_HEADER_TYPES.includes(this.node.type)
                     ? (this.node.active
                        ? [0, 0, 0, 0.25]
                        : [1, 1, 1, 0.25])
                     :    rgbIsNaN(inColor)
+                      || rgbIsNaN(colors.back)
                       || inColor[3] < TRANSPARENT_THRESHOLD_DARK
                       ? [1, 1, 1, 0.35]
                       : (isDark(colors.back)
@@ -517,11 +519,13 @@ extends EventTarget
             if (isColorType(this.types[0]))
             {
                 ringColor =
-                    rgbIsNaN(colors.back)
+                        rgbIsNaN(colors.back)
+                    && !COLOR_HEADER_TYPES.includes(this.node.type)
                     ? (this.node.active
                        ? [1, 1, 1, 0.25]
                        : [0, 0, 0, 0.25])
                     :    rgbIsNaN(inColor)
+                      || rgbIsNaN(colors.back)
                       || inColor[3] < TRANSPARENT_THRESHOLD_DARK
                     ? [0, 0, 0, 0.25]
                     : (isLight(colors.back)

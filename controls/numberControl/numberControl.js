@@ -440,7 +440,7 @@ extends Control
                   valueText 
                 + (valueText == UNKNOWN_DISPLAY
                    ? ''
-                   : '<span style="font-size: 8px; opacity: 50%; font-weight: 200; position: relative; top: ' + this.suffixOffsetY + 'px;">&nbsp;' + this.suffix + '</span>');
+                   : formatParamSuffix(this.suffix, this.suffixOffsetY));
         }
 
 

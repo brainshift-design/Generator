@@ -62,6 +62,8 @@ extends Parameter
         
         this.controls[1].setSuffix('%', true);
 
+        this.controls[0].textbox.style.fontVariantNumeric = 'tabular-nums';
+        this.controls[1].textbox.style.fontVariantNumeric = 'tabular-nums';
 
         this.defaultValue                  = defaultValue;
         this.value                         = defaultValue;

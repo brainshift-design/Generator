@@ -620,3 +620,10 @@ function createParamFromType(type, options = {})
     else if (STROKE_TYPES.includes(type)) return new StrokeParam(id, name, showName, hasInput, hasOutput);
     else if (  LIST_TYPES.includes(type)) return new   ListParam(id, name, showName, hasInput, hasOutput);
 }
+
+
+
+function formatParamSuffix(suffix, suffixOffsetY = 0)
+{
+    return '<span style="font-size: 8px; opacity: ' + (darkMode ? 50 : 75) + '%; font-weight: 200; position: relative; top: ' + suffixOffsetY + 'px;">&nbsp;' + suffix + '</span>';
+}

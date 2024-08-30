@@ -552,6 +552,16 @@ const COLOR_TYPES =
 ];
 
 
+const COLOR_HEADER_TYPES =
+[
+    COLOR,
+    FILL,
+    STROKE,
+    COLOR_STOP,
+    GRADIENT
+];
+
+
 const COLOR_VALUES =
 [
     COLOR_VALUE,
