@@ -102,14 +102,16 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
 
         this._color = 
-               col 
-            && col.type 
-            && col.type == COLOR_VALUE
-            ? col.toDataColor()
+               value 
+            && value.type 
+            && value.type == COLOR_VALUE
+            ? value.toDataColor()
             : dataColor_NaN;
+
+        this.rgbaBack = value.toRgba();
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }

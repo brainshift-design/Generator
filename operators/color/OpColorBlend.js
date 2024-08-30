@@ -94,6 +94,8 @@ extends OpColorBase
             ? value.toDataColor()
             : dataColor_NaN;
 
+        this.rgbaBack = value.toRgba();
+
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 

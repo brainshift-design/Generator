@@ -412,9 +412,6 @@ extends EventTarget
         {
             if (isColorType(this.types[0]))
             {
-                if (this.node.id == 'stroke')
-                    console.log('outWireColor =', outWireColor);
-
                 ballColor = 
                        conn
                     || (    this.forceOutputColor
