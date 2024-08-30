@@ -415,18 +415,17 @@ extends EventTarget
                 ballColor = 
                        conn
                     || (    this.forceOutputColor
-                        && !rgbIsNaN(outWireColor)
-                        &&  deltaE(outWireColor, colors.back) > 0.1)
+                        && !rgbIsNaN(outWireColor))
                     ? outWireColor
-                    : (rgbIsNaN(colors.back)
-                       ? [1, 1, 1, 0.25]
-                       : (   rgbIsNaN(outColor)
-                          || rgbIsNaN(outWireColor)
-                          || outColor[3] < TRANSPARENT_THRESHOLD_DARK
-                          ? [1, 1, 1, 0.35]
-                          : (isDark(outWireColor)
+                    : rgbIsNaN(colors.back)
+                      ? [1, 1, 1, 0.25]
+                      : (   rgbIsNaN(outColor)
+                         || rgbIsNaN(outWireColor)
+                         || outColor[3] < TRANSPARENT_THRESHOLD_DARK
+                         ? [1, 1, 1, 0.35]
+                         : (isDark(outWireColor)
                              ? [1, 1, 1, 0.25]
-                             : [0, 0, 0, 0.2 ])));
+                             : [0, 0, 0, 0.2 ]));
             }
             else if (this.types[0] == NUMBER_VALUE       ) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.35] : [1, 1, 1, tc ? 0 : 0.35]);
             else if (this.types[0] == TEXT_VALUE         ) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.25] : [1, 1, 1, tc ? 0 : 0.25]);
