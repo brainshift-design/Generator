@@ -11,6 +11,7 @@ extends OperatorBase
     {
         super(SHIFT_LIST, 'shift', 'shift', iconShiftList);
 
+        this.outputValueType   = LIST_VALUE;
         this.canDisable        = true;
         this.showHeaderTooltip = true;
         

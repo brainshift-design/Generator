@@ -13,7 +13,7 @@ extends OperatorBase
     {
         super(CELL, 'cell', 'cell', iconCell);
 
-        //this.cached           = false;
+        this.outputValueType   = ANY_VALUE;
         this.alwaysSaveParams  = true;
         this.iconOffsetY       = 1;
         this.showHeaderTooltip = true;

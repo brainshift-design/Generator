@@ -139,7 +139,7 @@ extends GOperator1
             this.indices = new ListValue();
         }
 
-
+        
         this.updateValueObjects();
 
 
@@ -222,14 +222,22 @@ async function asyncSort(parse, unsorted, conditionNode, node, condition, revers
         const item = unsorted[i];
 
         const cond = await getSortCondition(parse, conditionNode, node, condition, item);
-        if (!cond) return [unsorted, [...unsorted.keys()]];
+
+        if (!cond) 
+        {
+            return [unsorted, 
+                    unsorted.keys().map(k => new NumberValue(k))];
+        }
         
         const condValue = cond.toValue();
         //console.log('condValue =', condValue.value);
 
         if (   condValue.type != NUMBER_VALUE
             && condValue.type != TEXT_VALUE) 
-            return [unsorted, [...unsorted.keys()]];
+        {
+            return [ unsorted, 
+                     unsorted.keys().map(k => new NumberValue(k))];
+        }
 
         sorted.push({item, condition: condValue.value, index: i});
     }

@@ -330,10 +330,6 @@ extends EventTarget
         let ballColor;
 
 
-        if (this.node.id == 'repeat')
-            console.log('this.types[0] =', this.types[0]);
-        
-
         if (darkMode)
         {
             if (isColorType(this.types[0]))
@@ -353,10 +349,10 @@ extends EventTarget
                              ? [1, 1, 1, 0.25]
                              : [0, 0, 0, 0.2 ]));
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.35] : [1, 1, 1, tc ? 0 : 0.35]);
-            else if (this.types[0] == TEXT_VALUE         ) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.25] : [1, 1, 1, tc ? 0 : 0.25]);
-            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.4 ] : [1, 1, 1, tc ? 0 : 0.4 ]);
-            else                                           ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.28] : [1, 1, 1, tc ? 0 : 0.28]);
+            else if (NUMBER_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.35] : [1, 1, 1, tc ? 0 : 0.35]);
+            else if (  TEXT_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.25] : [1, 1, 1, tc ? 0 : 0.25]);
+            else if ( SHAPE_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.4 ] : [1, 1, 1, tc ? 0 : 0.4 ]);
+            else                                            ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.28] : [1, 1, 1, tc ? 0 : 0.28]);
         }
         else // light mode
         {
@@ -377,10 +373,10 @@ extends EventTarget
                            ? [0, 0, 0, 0.17]
                            : [1, 1, 1, 0.3 ]);
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ballColor = connOrDiff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.35] : [0, 0, 0, tc ? 0 : 0.2 ]);
-            else if (this.types[0] == TEXT_VALUE         ) ballColor = connOrDiff ? typeColorLight : (this.node.active ? [0, 0, 0, tc ? 0 : 0.25] : [0, 0, 0, tc ? 0 : 0.21]);
-            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.4 ] : [0, 0, 0, tc ? 0 : 0.2 ]);
-            else                                           ballColor = connOrDiff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.28] : [0, 0, 0, tc ? 0 : 0.2 ]);
+            else if (NUMBER_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.35] : [0, 0, 0, tc ? 0 : 0.2 ]);
+            else if (  TEXT_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorLight : (this.node.active ? [0, 0, 0, tc ? 0 : 0.25] : [0, 0, 0, tc ? 0 : 0.21]);
+            else if ( SHAPE_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.4 ] : [0, 0, 0, tc ? 0 : 0.2 ]);
+            else                                            ballColor = connOrDiff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.28] : [0, 0, 0, tc ? 0 : 0.2 ]);
         }
 
 
@@ -453,10 +449,10 @@ extends EventTarget
                            ? [0, 0, 0, conn ? 0 : 0.2]
                            : [1, 1, 1, conn ? 0 : 0.2]);
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.5 );
-            else if (this.types[0] == TEXT_VALUE         ) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.32);
-            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.45);
-            else                                           ballColor = rgb_a(typeColorDark, conn ? 1 : 0.26);
+            else if (NUMBER_VALUES.includes(this.types[0])) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.5 );
+            else if (  TEXT_VALUES.includes(this.types[0])) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.32);
+            else if ( SHAPE_VALUES.includes(this.types[0])) ballColor = rgb_a(typeColorDark, conn ? 1 : 0.45);
+            else                                            ballColor = rgb_a(typeColorDark, conn ? 1 : 0.26);
         }
         else // light mode
         {
@@ -474,10 +470,10 @@ extends EventTarget
                           ? [0, 0, 0, conn ? 0 : 0.2]
                           : [1, 1, 1, conn ? 0 : 0.2]));
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ballColor = rgb_a(typeColorLight, conn ? 1 : 0.4 );
-            else if (this.types[0] == TEXT_VALUE         ) ballColor = rgb_a(typeColorLight, conn ? 1 : 0.6 );
-            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = rgb_a(typeColorLight, conn ? 1 : 0.41);
-            else                                           ballColor = rgb_a(typeColorLight, conn ? 1 : 0.32);
+            else if (NUMBER_VALUES.includes(this.types[0])) ballColor = rgb_a(typeColorLight, conn ? 1 : 0.4 );
+            else if (  TEXT_VALUES.includes(this.types[0])) ballColor = rgb_a(typeColorLight, conn ? 1 : 0.6 );
+            else if ( SHAPE_VALUES.includes(this.types[0])) ballColor = rgb_a(typeColorLight, conn ? 1 : 0.41);
+            else                                            ballColor = rgb_a(typeColorLight, conn ? 1 : 0.32);
         }
 
 
@@ -529,10 +525,10 @@ extends EventTarget
                            ? [0, 0, 0, 0.25]
                            : [1, 1, 1, 0.25]);
             }
-            else if (type == NUMBER_VALUE       ) ringColor = this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, 0.35];
-            else if (type == TEXT_VALUE         ) ringColor = this.node.active ? [0, 0, 0, 0.28] : [1, 1, 1, 0.28];
-            else if (SHAPE_VALUES.includes(type)) ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [1, 1, 1, 0.4 ];
-            else                                  ringColor = this.node.active ? [0, 0, 0, 0.28] : [1, 1, 1, 0.28];
+            else if (NUMBER_VALUES.includes(type)) ringColor = this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, 0.35];
+            else if (  TEXT_VALUES.includes(type)) ringColor = this.node.active ? [0, 0, 0, 0.28] : [1, 1, 1, 0.28];
+            else if ( SHAPE_VALUES.includes(type)) ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [1, 1, 1, 0.4 ];
+            else                                   ringColor = this.node.active ? [0, 0, 0, 0.28] : [1, 1, 1, 0.28];
         }
         else // light mode
         {
@@ -549,10 +545,10 @@ extends EventTarget
                         ? [0, 0, 0, 0.2 ]
                         : [1, 1, 1, 0.37];
             }
-            else if (type == NUMBER_VALUE       ) ringColor = this.node.active ? [1, 1, 1, 0.35] : [0, 0, 0, 0.35];
-            else if (type == TEXT_VALUE         ) ringColor = this.node.active ? [0, 0, 0, 0.21] : [0, 0, 0, 0.21];
-            else if (SHAPE_VALUES.includes(type)) ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.2 ];
-            else                                  ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.2 ];
+            else if (NUMBER_VALUES.includes(type)) ringColor = this.node.active ? [1, 1, 1, 0.35] : [0, 0, 0, 0.35];
+            else if (  TEXT_VALUES.includes(type)) ringColor = this.node.active ? [0, 0, 0, 0.21] : [0, 0, 0, 0.21];
+            else if ( SHAPE_VALUES.includes(type)) ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.2 ];
+            else                                   ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.2 ];
         }
 
 
@@ -585,10 +581,10 @@ extends EventTarget
                     ? [0, 0, 0, 0.25]
                     : [1, 1, 1, 0.25];
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ringColor = rgb_a(typeColorDark, 0.65);
-            else if (this.types[0] == TEXT_VALUE         ) ringColor = rgb_a(typeColorDark, 0.45);
-            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorDark, 0.6 );
-            else                                           ringColor = rgb_a(typeColorDark, 0.63);
+            else if (NUMBER_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorDark, 0.65);
+            else if (  TEXT_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorDark, 0.45);
+            else if ( SHAPE_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorDark, 0.6 );
+            else                                            ringColor = rgb_a(typeColorDark, 0.63);
         }
         else // light mode
         {
@@ -605,10 +601,10 @@ extends EventTarget
                     ? [0, 0, 0, 0.2 ]
                     : [1, 1, 1, 0.37];
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ringColor = rgb_a(typeColorLight, 0.45);
-            else if (this.types[0] == TEXT_VALUE         ) ringColor = rgb_a(typeColorLight, 0.76);
-            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorLight, 0.45);
-            else                                           ringColor = rgb_a(typeColorLight, 0.78);
+            else if (NUMBER_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorLight, 0.45);
+            else if (  TEXT_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorLight, 0.76);
+            else if ( SHAPE_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorLight, 0.45);
+            else                                            ringColor = rgb_a(typeColorLight, 0.78);
         }
 
 
@@ -632,11 +628,12 @@ extends EventTarget
     {
         if (this.param)
         {
-            return this.param.outputTypes.length > 0
-                 ? rgbFromType(this.param.outputTypes[0], true)
-                 : this.param.forceOutputColorType != NULL
-                   ? rgbFromType(this.param.forceOutputColorType, true)
-                   : this.param.getWireColor();
+            return this.param.outputTypes
+                && this.param.outputTypes.length > 0
+                ? rgbFromType(this.param.outputTypes[0], true)
+                : this.param.forceOutputColorType != NULL
+                  ? rgbFromType(this.param.forceOutputColorType, true)
+                  : this.param.getWireColor();
         }
 
         else

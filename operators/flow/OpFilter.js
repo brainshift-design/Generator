@@ -12,8 +12,7 @@ extends OperatorBase
     {
         super(FILTER, 'filter', 'filter', iconFilter);
 
-
-        // this.subscription      = true;
+        this.outputValueType   = LIST_VALUE;
         this.canDisable        = true;
         this.showHeaderTooltip = true;
         

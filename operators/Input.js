@@ -440,10 +440,10 @@ extends EventTarget
                           ? [1, 1, 1, 0.25]
                           : [0, 0, 0, 0.25]));
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ringColor = this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, 0.35];
-            else if (this.types[0] == TEXT_VALUE         ) ringColor = this.node.active ? [0, 0, 0, 0.28] : [1, 1, 1, 0.28];
-            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [1, 1, 1, 0.4 ];
-            else                                           ringColor = this.node.active ? [0, 0, 0, 0.28] : [1, 1, 1, 0.28];
+            else if (NUMBER_VALUES.includes(this.types[0])) ringColor = this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, 0.35];
+            else if (  TEXT_VALUES.includes(this.types[0])) ringColor = this.node.active ? [0, 0, 0, 0.28] : [1, 1, 1, 0.28];
+            else if ( SHAPE_VALUES.includes(this.types[0])) ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [1, 1, 1, 0.4 ];
+            else                                            ringColor = this.node.active ? [0, 0, 0, 0.28] : [1, 1, 1, 0.28];
         }
         else // light mode
         {
@@ -463,9 +463,9 @@ extends EventTarget
                           ? [0, 0, 0, 0.2 ]
                           : [1, 1, 1, 0.37]));
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ringColor = this.node.active ? [1, 1, 1, 0.35] : [0, 0, 0, 0.23];
-            else if (this.types[0] == TEXT_VALUE         ) ringColor = this.node.active ? [0, 0, 0, 0.28] : [0, 0, 0, 0.23];
-            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.23];
+            else if (NUMBER_VALUES.includes(this.types[0])) ringColor = this.node.active ? [1, 1, 1, 0.35] : [0, 0, 0, 0.23];
+            else if (  TEXT_VALUES.includes(this.types[0])) ringColor = this.node.active ? [0, 0, 0, 0.28] : [0, 0, 0, 0.23];
+            else if ( SHAPE_VALUES.includes(this.types[0])) ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.23];
             else                                           ringColor = this.node.active ? [1, 1, 1, 0.28] : [0, 0, 0, 0.25];
         }
 
@@ -521,10 +521,10 @@ extends EventTarget
                             : [1, 1, 1, 0.25]);
                 }
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ringColor = rgb_a(typeColorDark, 0.65);
-            else if (this.types[0] == TEXT_VALUE         ) ringColor = rgb_a(typeColorDark, 0.45);
-            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorDark, 0.6 );
-            else                                           ringColor = rgb_a(typeColorDark, 0.63);
+            else if (NUMBER_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorDark, 0.65);
+            else if (  TEXT_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorDark, 0.45);
+            else if ( SHAPE_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorDark, 0.6 );
+            else                                            ringColor = rgb_a(typeColorDark, 0.63);
         }
         else // light mode
         {
@@ -540,10 +540,10 @@ extends EventTarget
                        ? [0, 0, 0, 0.2 ]
                        : [1, 1, 1, 0.37]);
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ringColor = rgb_a(typeColorLight, 0.4 );
-            else if (this.types[0] == TEXT_VALUE         ) ringColor = rgb_a(typeColorLight, 0.76);
-            else if (SHAPE_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorLight, 0.45);
-            else                                           ringColor = rgb_a(typeColorLight, 0.78);
+            else if (NUMBER_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorLight, 0.4 );
+            else if (  TEXT_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorLight, 0.76);
+            else if ( SHAPE_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorLight, 0.45);
+            else                                            ringColor = rgb_a(typeColorLight, 0.78);
         }
 
 
@@ -567,11 +567,12 @@ extends EventTarget
     {
         if (this.param)
         {
-            return this.param.listTypes.length > 0
-                 ? rgbFromType(this.param.listTypes[0], true)
-                 : this.param.forceInputColorType != NULL
-                   ? rgbFromType(this.param.forceInputColorType, true)
-                   : this.param.getWireColor();
+            return this.param.listTypes
+                && this.param.listTypes.length > 0
+                ? rgbFromType(this.param.listTypes[0], true)
+                : this.param.forceInputColorType != NULL
+                  ? rgbFromType(this.param.forceInputColorType, true)
+                  : this.param.getWireColor();
         }
 
         else

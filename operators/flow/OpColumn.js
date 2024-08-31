@@ -11,6 +11,7 @@ extends OperatorBase
     {
         super(COLUMN, 'column', 'column', iconColumn);
 
+        this.outputValueType   = LIST_VALUE;
         this.iconOffsetY       = 1;
         this.showHeaderTooltip = true;
         

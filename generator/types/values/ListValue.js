@@ -107,7 +107,7 @@ extends GValue
 
         let str = '';
         
-        
+
         str += this.items.length;
 
         for (let i = 0; i < this.items.length; i++)

@@ -16,8 +16,7 @@ extends OperatorBase
     {
         super(SORT, 'sort', 'sort', iconSort);
 
-
-        // this.subscription      = true;
+        this.outputValueType   = LIST_VALUE;
         this.canDisable        = true;
         this.showHeaderTooltip = true;
         

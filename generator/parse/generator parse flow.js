@@ -721,7 +721,7 @@ function genParseSort(parse)
         sort.condition = genParse(parse);
 
         
-    sort.reverse   = genParse(parse);
+    sort.reverse = genParse(parse);
 
     
     parse.nTab--;
