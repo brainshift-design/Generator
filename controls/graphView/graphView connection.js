@@ -97,23 +97,15 @@ GraphView.prototype.cancelConnection = function(pointerId)
 
 GraphView.prototype.endConnection = function(pointerId, backInit = false, shiftKey = false)
 {
-    console.log('this.tempConn.output =', this.tempConn.output);
-    console.log('this.tempConn.input =', this.tempConn.input);
-    
-
     let savedConnInput = 
         this.savedConn
         ? this.savedConn.input
         : null;
 
 
-    console.log('this.tempConn.output =', this.tempConn.output);
-    console.log('this.tempConn._setOutFirst =', this.tempConn._setOutFirst);
     if (   this.tempConn.output // FROM OUTPUT
         && this.tempConn._setOutFirst === true) // FROM OUTPUT
     {
-        console.log('from output');
-
         const output = this.tempConn.output;
         const input  = this.overInput;
 
@@ -143,8 +135,6 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false, shiftK
           || savedConnInput) // FROM INPUT
           //&& this.tempConn._setOutFirst === false) // FROM INPUT
     {
-        console.log('from input');
-
         const input  = this.tempConn.input ?? savedConnInput;
         const output = this.overOutput;
 

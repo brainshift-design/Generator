@@ -11,10 +11,10 @@ extends OperatorBase
     {
         super(SET_VALUE_NAME, 'setValueName', 'set value name', iconSetValueName);
 
-        this.outputValueType    = ANY_VALUE;
-        this.subscription = true;
-        this.canDisable   = true;
-        this.iconOffsetY  = -1;
+        this.outputValueType = ANY_VALUE;
+        this.subscription    = true;
+        this.canDisable      = true;
+        this.iconOffsetY     = -1;
 
 
         this.addInput (new Input([ANY_VALUE]));

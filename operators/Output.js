@@ -317,7 +317,8 @@ extends EventTarget
         const connOrDiff = 
                conn 
             ||    this.node.outputValueType != NULL
-               && this.node.outputValueType != this.types[0]
+               && (   this.node.outputValueType == SHAPE_VALUE && !SHAPE_VALUES.includes(this.types[0])
+                   || this.node.outputValueType != SHAPE_VALUE && this.node.outputValueType != this.types[0])
             || this.node.isUnknown();
 
         const tc = 
@@ -330,6 +331,9 @@ extends EventTarget
         
         if (darkMode)
         {
+            if (this.node.id == 'setObjectName')
+                console.log('this.types[0] =', this.types[0]);
+
             if (isColorType(this.types[0]))
             {
                 ballColor = 
@@ -347,10 +351,10 @@ extends EventTarget
                              ? [1, 1, 1, 0.25]
                              : [0, 0, 0, 0.2 ]));
             }
-            else if (this.types[0] == NUMBER_VALUE       ) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.35] : [1, 1, 1, tc ? 0 : 0.35]);
-            else if (this.types[0] == TEXT_VALUE         ) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.25] : [1, 1, 1, tc ? 0 : 0.25]);
-            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.4 ] : [1, 1, 1, tc ? 0 : 0.4 ]);
-            else                                           ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.28] : [1, 1, 1, tc ? 0 : 0.28]);
+            else if (this.types[0] == NUMBER_VALUE       ) { if (this.node.id == 'setObjectName') console.log('connOrDiff =', connOrDiff); ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.35] : [1, 1, 1, tc ? 0 : 0.35]); }
+            else if (this.types[0] == TEXT_VALUE         ) { if (this.node.id == 'setObjectName') console.log('connOrDiff =', connOrDiff); ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.25] : [1, 1, 1, tc ? 0 : 0.25]); }
+            else if (SHAPE_VALUES.includes(this.types[0])) { if (this.node.id == 'setObjectName') console.log('connOrDiff =', connOrDiff); ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.4 ] : [1, 1, 1, tc ? 0 : 0.4 ]); }
+            else                                           { if (this.node.id == 'setObjectName') console.log('connOrDiff =', connOrDiff); ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.28] : [1, 1, 1, tc ? 0 : 0.28]); }
         }
         else // light mode
         {

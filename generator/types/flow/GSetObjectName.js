@@ -1,8 +1,7 @@
 class GSetObjectName
 extends GOperator1
 {
-    name    = null;
-  //addLogo = null;
+    name = null;
 
 
 
@@ -17,8 +16,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.name    = null;
-      //this.addLogo = null;
+        this.name = null;
     }
 
 
@@ -29,9 +27,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.value  ) copy.value   = this.value  .copy();
-        if (this.name   ) copy.name    = this.name   .copy();
-      //if (this.addLogo) copy.addLogo = this.addLogo.copy();
+        if (this.value) copy.value = this.value.copy();
+        if (this.name ) copy.name  = this.name .copy();
 
         return copy;
     }
@@ -40,18 +37,15 @@ extends GOperator1
 
     async eval(parse)
     {
-        // if (this.isCached())
-        //     return this;
+        if (this.isCached())
+            return this;
 
 
-        this.value = 
-            this.input 
-            ? (await this.input.eval(parse)).toValue() 
-            : new NullValue();
+        const input = await evalValue    (this.input, parse, () => RectangleValue.NaN.copy());
+        const name  = await evalTextValue(this.name,  parse);
 
-        
-        const name    = await evalTextValue  (this.name, parse);
-      //const addLogo = await evalNumberValue(this.addLogo, parse);
+
+        this.value = input;
 
         
         if (   this.options.enabled
@@ -62,7 +56,6 @@ extends GOperator1
             {
                 obj.nodeId     = this.nodeId;
                 obj.objectName = name.value;
-             // obj.objectName = (addLogo.value > 0 ? OBJECT_PREFIX : '') + name.value;
             }
         }
 
@@ -72,9 +65,9 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type',    this.outputType()],
-            ['name',    name             ]//,
-          //['addLogo', addLogo          ]
+            ['type',  this.outputType()],
+            ['value', this.value       ],
+            ['name',  name             ]
         ]);
 
 
@@ -97,8 +90,7 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.name    && this.name   .isValid()
-         // && this.addLogo && this.addLogo.isValid();
+            && this.name && this.name.isValid()
     }
 
 
@@ -107,8 +99,7 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.name   ) this.name   .pushValueUpdates(parse);
-     // if (this.addLogo) this.addLogo.pushValueUpdates(parse);
+        if (this.name) this.name.pushValueUpdates(parse);
     }
 
 
@@ -117,8 +108,7 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.name   ) this.name   .invalidateInputs(parse, from, force);
-     // if (this.addLogo) this.addLogo.invalidateInputs(parse, from, force);
+        if (this.name) this.name.invalidateInputs(parse, from, force);
     }
 
 
@@ -127,8 +117,7 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.name   ) this.name   .iterateLoop(parse);
-     // if (this.addLogo) this.addLogo.iterateLoop(parse);
+        if (this.name) this.name.iterateLoop(parse);
     }
 
 
@@ -137,7 +126,6 @@ extends GOperator1
     {
         super.resetLoop(parse, nodeId);
 
-        if (this.name   ) this.name   .resetLoop(parse, nodeId);
-     // if (this.addLogo) this.addLogo.resetLoop(parse, nodeId);
+        if (this.name) this.name.resetLoop(parse, nodeId);
     }
 }

@@ -3,25 +3,26 @@ extends OperatorBase
 {
     paramName;
 
+    value;
+    
 
 
     constructor()
     {
         super(SET_OBJECT_NAME, 'setObjectName', 'set object name', iconSetObjectName);
 
-        this.outputValueType = ANY_VALUE;
-
-        this.subscription = true;
-        this.canDisable   = true;
+        this.outputValueType = SHAPE_VALUE;
+        this.subscription    = true;
+        this.canDisable      = true;
 
 
         this.addInput (new Input(SHAPE_VALUES));
-        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
+        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
         this.headerOutputs[0].forceOutputColor = true;
 
         
-        this.addParam(this.paramName = new   TextParam('name',    'name',  false, true, true));
+        this.addParam(this.paramName = new TextParam('name',    'name',  false, true, true));
     }
 
 
@@ -66,11 +67,28 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-        
+        this.value = values[paramIds.findIndex(id => id == 'value')];
         const type = values[paramIds.findIndex(id => id == 'type')];
-
+        
         if (type)
             this.headerOutputs[0].types = [type.value];
+        
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    getOutputWireColor()
+    {
+        if (this.value) 
+        {
+            const rgb = rgbFromColorValue(this.value);
+
+            return !rgbIsNaN(rgb)
+                 ? rgb
+                 : super.getOutputWireColor();
+        }
+        else
+            return super.getOutputWireColor();
     }
 }
