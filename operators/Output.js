@@ -154,7 +154,11 @@ extends EventTarget
 
     endConnection()
     {
-        graphView.overOutput = null; 
+        graphView.overOutput = null;
+
+        if (   graphView.tempConn
+            && graphView.tempConn.input) 
+            graphView.tempConn.output = null;
 
         this.mouseOver = false;
         this.updateControl();
