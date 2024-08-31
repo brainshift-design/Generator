@@ -5,6 +5,8 @@ extends Parameter
 
     oldValue = null;
     
+    value;
+
 
     _warningOverlay;
     
@@ -24,9 +26,6 @@ extends Parameter
         this.controls[0].update();
     }
 
-    
-    value;
-    
 
     
     constructor(id,
@@ -38,6 +37,11 @@ extends Parameter
                 dragScale    = 0.05)
     {
         super(FILL_VALUE, id, name, showName);
+
+
+        this.defaultValue                  = defaultValue;
+        this.value                         = defaultValue;
+
 
         this.checkersHolder = createDiv();
         this.checkers       = createDiv();
@@ -65,9 +69,6 @@ extends Parameter
         this.controls[0].textbox.style.fontVariantNumeric = 'tabular-nums';
         this.controls[1].textbox.style.fontVariantNumeric = 'tabular-nums';
 
-        this.defaultValue                  = defaultValue;
-        this.value                         = defaultValue;
-
         
         this._warningOverlay               = createDiv('colorValueWarningOverlay');
         this._warningOverlay.style.zIndex  = 11;
@@ -87,11 +88,13 @@ extends Parameter
 
         this.divControls   .appendChild(this.controls[0].div);
         this.divControls   .appendChild(this.controls[1].div);
+
         
         this.checkersHolder.appendChild(this.checkers);
 
-        this.div           .insertBefore(this.checkersHolder,  this.divName);
-        this.div           .insertBefore(this._warningOverlay, this.divName);
+
+        this.div.insertBefore(this.checkersHolder,  this.divName);
+        this.div.insertBefore(this._warningOverlay, this.divName);
 
        
         if (hasInput)  this.initInput ([FILL_VALUE, COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);

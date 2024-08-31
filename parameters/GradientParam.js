@@ -8,7 +8,20 @@ extends Parameter
     value;
 
 
+    divGradient;
+
     
+    _warningOverlay;
+    
+    forceShowWarning = false;
+    warningStyle;
+
+
+    checkersHolder;
+    checkers;
+
+
+
     constructor(id,
                 name, 
                 showName,
@@ -20,6 +33,12 @@ extends Parameter
 
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
+
+
+        this.checkersHolder = createDiv();
+        this.checkers       = createDiv();
+
+        this.divGradient    = createDiv('paramGradient');
 
 
         this.controls.push(new TextControl(
@@ -34,10 +53,32 @@ extends Parameter
 
         this.controls[0].highlightText           = false;
         this.controls[0].textbox.style.textAlign = 'center';
-   
-        this.divControls.appendChild(this.controls[0].div);
 
-       
+        
+        this._warningOverlay               = createDiv('colorValueWarningOverlay');
+        this._warningOverlay.style.zIndex  = 11;
+
+        this.checkersHolder.style.position = 'absolute';
+        this.checkersHolder.style.width    = '100%';
+        this.checkersHolder.style.height   = defParamHeight;
+        this.checkersHolder.style.overflow = 'hidden';
+
+        this.checkers.style.position       = 'absolute';
+        this.checkers.style.width          = '100%';
+        this.checkers.style.height         = defParamHeight;
+
+
+        this.divControls   .appendChild(this.controls[0].div);
+        
+
+        this.checkersHolder.appendChild(this.checkers);
+
+        
+        this.div.insertBefore(this.divGradient,     this.divControls);
+        this.div.insertBefore(this.checkersHolder,  this.divGradient);
+        this.div.insertBefore(this._warningOverlay, this.divName);
+        
+
         if (hasInput)  this.initInput ([GRADIENT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([GRADIENT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
     }
@@ -173,6 +214,24 @@ extends Parameter
         super.updateControls();
 
 
+        this.checkers.style.background =
+            darkMode
+            ?   'linear-gradient(-45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+              + 'linear-gradient(-45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+            :   'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+              + 'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+
+
+        this.checkers.style.display               = this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor       = darkMode ? '#444' : '#fff';
+         
+        this.checkers.style.backgroundSize        = '22px 22px';
+        this.checkers.style.backgroundPosition    = '0 0, 11px 11px';
+         
+        this.checkers.style.left                  = '-3.5px';
+        this.checkers.style.width                 = 'calc(100% + 3.5px)';
+
+
         let gradient = 'linear-gradient(90deg';
 
 
@@ -198,11 +257,10 @@ extends Parameter
 
         gradient += ')';
 
-        console.log('param gradient =', gradient);
 
-        this._div.style.background         = gradient;
-        this._div.style.backgroundPosition = '50% 50%';
-        this._div.style.backgroundSize     = '100% 100%';
+        this.divGradient.style.background         = gradient;
+        this.divGradient.style.backgroundPosition = '50% 50%';
+        this.divGradient.style.backgroundSize     = '100% 100%';
 
 
         let rgbaBack = rgba_NaN;
@@ -228,6 +286,60 @@ extends Parameter
 
 
 
+    updateWarningOverlay() 
+    {
+        //console.log(this.id + '.updateWarningOverlay()');
+
+        const rgba = this.value.toRgba();
+
+        if (!rgbaIsNaN(rgba))
+        {
+            if (  !rgbaIsValid(rgba)
+                || this.forceShowWarning)
+            {
+                if (!this.forceShowWarning)
+                    this.warningStyle = getDefaultWarningStyle(rgba);
+
+                this.updateWarningOverlayStyle(rgba);
+            }
+            else
+                this._warningOverlay.style.display = 'none';
+        }
+        else
+        {
+            this.warningStyle = getDefaultWarningStyle(rgba);
+            this.updateWarningOverlayStyle(rgba);
+        }
+    }
+
+
+
+    updateWarningOverlayStyle(colBack, height = -1)
+    {
+        //console.log('colBack =', colBack);
+        
+        this._warningOverlay.style.height = 
+            height < 0
+            ? this.div.offsetHeight
+            : height;
+
+
+        const [warnStyle1, warnStyle2] = getWarningStyles(colBack);
+
+        this._warningOverlay.style.background =
+                rgbIsOk(colBack)
+            && !this.forceShowWarning
+            ? 'transparent'
+            : getWarningGradient(7.8, warnStyle2, warnStyle1);
+
+               
+        this._warningOverlay.style.backgroundPosition = '0 0';
+        this._warningOverlay.style.backgroundSize     = 'calc(100% + 27.6px) 100%';
+        this._warningOverlay.style.display            = 'block';
+    }
+    
+    
+    
     isDefault = () => this.value.equals(this.defaultValue);
 
 

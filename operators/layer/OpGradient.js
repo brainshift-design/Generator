@@ -396,7 +396,6 @@ extends OpColorBase
 
         gradient += ')';
 
-        console.log('op gradient =', gradient);
 
         this.header.style.background = gradient;
 
