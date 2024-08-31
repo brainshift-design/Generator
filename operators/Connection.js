@@ -12,14 +12,14 @@ class Connection
     
     _input;
 
-    _outSetFirst = null;
+    _setOutFirst = null;
 
 
     get output() { return this._output; }
     get  input() { return this._input;  }
 
-    set output(output) { this._output = output; if (this._outSetFirst === null && output) this._outSetFirst = true;  }
-    set  input(input ) { this. _input = input;  if (this._outSetFirst === null &&  input) this._outSetFirst = false; }
+    set output(output) { this._output = output; if (this._setOutFirst === null && output) this._setOutFirst = true;  }
+    set  input(input ) { this. _input = input;  if (this._setOutFirst === null &&  input) this._setOutFirst = false; }
 
     list     = false;
 

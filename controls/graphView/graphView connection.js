@@ -107,6 +107,8 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false, shiftK
         : null;
 
 
+    console.log('this.tempConn.output =', this.tempConn.output);
+    console.log('this.tempConn._setOutFirst =', this.tempConn._setOutFirst);
     if (   this.tempConn.output // FROM OUTPUT
         && this.tempConn._setOutFirst === true) // FROM OUTPUT
     {
@@ -156,7 +158,7 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false, shiftK
         else if (savedConnInput)
             actionManager.do(new DisconnectAction(savedConnInput));
 
-        
+
         this.cancelConnection(pointerId);
     }
 
