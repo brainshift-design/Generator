@@ -53,7 +53,6 @@ extends GOperator1
         let length = 0;
         
 
-        console.log('indices =', indices);
         if (   indices 
             && indices.type == TEXT_VALUE)
             indices = new ListValue(parseIndexRanges(indices.value).map(i => new NumberValue(i)));

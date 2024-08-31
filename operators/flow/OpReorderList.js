@@ -9,8 +9,7 @@ extends OperatorBase
     {
         super(REORDER_LIST, 'reorder', 'reorder', iconReorderList);
 
-
-        // this.subscription      = true;
+        this.outputValueType   = true;
         this.canDisable        = true;
         this.showHeaderTooltip = true;
         
@@ -20,8 +19,9 @@ extends OperatorBase
 
         this.addParam(this.paramIndices = new ListParam('indices', 'indices', false, true, true));
 
-        this.paramIndices.itemName = [];
-        this.paramIndices.input.types = [NUMBER_LIST_VALUE];
+        this.paramIndices.listTypes   = [NUMBER_LIST_VALUE, TEXT_VALUE];
+        this.paramIndices.outputTypes = [NUMBER_LIST_VALUE];
+        this.paramIndices.itemName    = ['index', 'indices'];
     }
 
 

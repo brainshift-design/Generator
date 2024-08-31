@@ -43,61 +43,55 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (   this.isCached())
-            //&& this.cachedValue)
+        if (this.isCached())
             return this;
 
 
         const input = await evalListValue(this.input, parse);
 
 
-        // if (this.cachedValue)
-        //     this.value = this.cachedValue.copy();
+        this.counts  = new ListValue();
+        this.indices = new ListValue();
 
-        // else
-        // {
-            this.counts  = new ListValue();
-            this.indices = new ListValue();
-
-            
-            if (input)
+        
+        if (input)
+        {
+            if (this.options.enabled)
             {
-                if (this.options.enabled)
-                {
-                    this.value = new ListValue();
-
-                    for (let i = 0; i < input.items.length; i++)
-                    {
-                        const item       = input.items[i];
-                        const foundIndex = this.value.items.findIndex(i => i.equals(item));
-
-                        if (foundIndex < 0)
-                        {
-                            this.value.items.push(item.copy());
-
-                            if (   this.value.objects
-                                && item.objects)
-                                this.value.objects.push(...item.objects);
-
-                            this.counts .items.push(new NumberValue(1));
-                            this.indices.items.push(new ListValue([new NumberValue(i)]));
-                        }
-                        else
-                        {
-                            this.counts .items[foundIndex].value++;
-                            this.indices.items[foundIndex].items.push(new NumberValue(i));
-                        }
-                    }
-                }
-                else
-                    this.value = input.copy();
-            }
-            else
                 this.value = new ListValue();
 
+                for (let i = 0, index = 0; i < input.items.length; i++)
+                {
+                    const item       = input.items[i];
+                    const foundIndex = this.value.items.findIndex(i => i.equals(item));
 
-        //     this.cachedValue = this.value.copy();
-        // }
+                    if (foundIndex < 0)
+                    {
+                        const copy = item.copy();
+
+                        copy.valueId = (index++).toString();
+                        
+                        this.value.items.push(item.copy());
+
+                        if (   this.value.objects
+                            && item.objects)
+                            this.value.objects.push(...item.objects);
+
+                        this.counts .items.push(new NumberValue(1));
+                        this.indices.items.push(new ListValue([new NumberValue(i)]));
+                    }
+                    else
+                    {
+                        this.counts .items[foundIndex].value++;
+                        this.indices.items[foundIndex].items.push(new NumberValue(i));
+                    }
+                }
+            }
+            else
+                this.value = input.copy();
+        }
+        else
+            this.value = new ListValue();
 
 
         this.updateValueObjects();

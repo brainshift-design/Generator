@@ -41,7 +41,12 @@ extends GOperator1
 
 
         const input   = await evalListValue(this.input,   parse);
-        const indices = await evalListValue(this.indices, parse);
+        let   indices = await evalValue    (this.indices, parse, () => null);
+
+
+        if (   indices 
+            && indices.type == TEXT_VALUE)
+            indices = new ListValue(parseIndexRanges(indices.value).map(i => new NumberValue(i)));
 
 
         this.value         = new ListValue();
@@ -65,12 +70,13 @@ extends GOperator1
 
                 for (let i = 0; i < this.value.items.length; i++)
                 {
-                    const item = this.value.items[i];
+                    const item      = this.value.items[i];
+                    const itemIndex = input.items.indexOf(item);
 
                     if (   item.objects
                         && this.value.objects)
                     {
-                        const objects = ordered.objects.filter(o => o.itemIndex == itemIndex).map(o => o.copy());
+                        const objects = input.objects.filter(o => o.itemIndex == itemIndex).map(o => o.copy());
                         objects.forEach(o => o.itemIndex = i);
 
                         this.value.objects.push(...objects);
@@ -78,7 +84,7 @@ extends GOperator1
                 }
             }
             else
-                this.value = input.copy();
+                this.value = new ListValue();
         }
         else
             this.value = new ListValue();

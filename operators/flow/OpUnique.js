@@ -12,7 +12,7 @@ extends OperatorBase
     {
         super(UNIQUE, 'unique', 'unique', iconUnique);
 
-        
+        this.outputValueType   = LIST_VALUE;        
         this.canDisable        = true;
         this.showHeaderTooltip = true;
         
@@ -25,6 +25,8 @@ extends OperatorBase
 
         this.paramCounts .itemName  = [];
         this.paramIndices.itemName  = [];
+
+        this.paramCounts.outputTypes = [NUMBER_LIST_VALUE];
     }
 
 

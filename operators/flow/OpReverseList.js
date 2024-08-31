@@ -9,6 +9,7 @@ extends OperatorBase
     {
         super(REVERSE_LIST, 'reverse', 'reverse', iconReverseList);
 
+        this.outputValueType   = LIST_VALUE;
         this.canDisable        = true;
         this.showHeaderTooltip = true;
         
