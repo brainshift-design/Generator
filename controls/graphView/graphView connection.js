@@ -97,8 +97,8 @@ GraphView.prototype.cancelConnection = function(pointerId)
 
 GraphView.prototype.endConnection = function(pointerId, backInit = false, shiftKey = false)
 {
-    // console.log('this.tempConn.output =', this.tempConn.output);
-    // console.log('this.tempConn.input =', this.tempConn.input);
+    console.log('this.tempConn.output =', this.tempConn.output);
+    console.log('this.tempConn.input =', this.tempConn.input);
     
 
     let savedConnInput = 
@@ -107,13 +107,13 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false, shiftK
         : null;
 
 
-    if (   this.tempConn.output) // FROM OUTPUT
-        //&& this.tempConn._setOutFirst === true) // FROM OUTPUT
+    if (   this.tempConn.output // FROM OUTPUT
+        && this.tempConn._setOutFirst === true) // FROM OUTPUT
     {
         console.log('from output');
 
-        let output = this.tempConn.output;
-        let input  = this.overInput;
+        const output = this.tempConn.output;
+        const input  = this.overInput;
 
         output.connecting = false;
         
@@ -137,22 +137,26 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false, shiftK
         this.cancelConnection(pointerId);
     }
     
-    else if (this.tempConn.input)
-          //|| savedConnInput) // FROM INPUT
+    else if (this.tempConn.input
+          || savedConnInput) // FROM INPUT
           //&& this.tempConn._setOutFirst === false) // FROM INPUT
     {
         console.log('from input');
 
-        let input  = this.tempConn.input;
-        let output = this.overOutput;
+        const input  = this.tempConn.input ?? savedConnInput;
+        const output = this.overOutput;
 
         input.connecting = false;
 
         if (   output
-            && input
-            && input.canConnectFrom(output)) //input.canConnectFrom(output)) // TO OUTPUT
-            actionManager.do(new ConnectAction(output, input, {backInit: backInit, shiftKey: shiftKey}));
+            && this.tempConn.input
+            && this.tempConn.input.canConnectFrom(output)) //input.canConnectFrom(output)) // TO OUTPUT
+            actionManager.do(new ConnectAction(output, this.tempConn.input, {backInit: backInit, shiftKey: shiftKey}));
 
+        else if (savedConnInput)
+            actionManager.do(new DisconnectAction(savedConnInput));
+
+        
         this.cancelConnection(pointerId);
     }
 

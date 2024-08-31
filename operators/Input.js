@@ -195,10 +195,11 @@ extends EventTarget
     {
         //const overInput = graphView.overInput;
 
-        const tc = graphView.tempConn;
-
         graphView.overInput = null;
-        //if (tc) tc.input = null;
+
+        // if (   graphView.tempConn
+        //     && graphView.tempConn.output) 
+        //     graphView.tempConn.input = null;
 
         this.mouseOver = false;
         this.updateControl();

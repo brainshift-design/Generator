@@ -18,8 +18,8 @@ class Connection
     get output() { return this._output; }
     get  input() { return this._input;  }
 
-    set output(output) { this._output = output; if (this._outSetFirst === null) this._outSetFirst = true;  }
-    set  input(input ) { this. _input = input;  if (this._outSetFirst === null) this._outSetFirst = false; }
+    set output(output) { this._output = output; if (this._outSetFirst === null && output) this._outSetFirst = true;  }
+    set  input(input ) { this. _input = input;  if (this._outSetFirst === null &&  input) this._outSetFirst = false; }
 
     list     = false;
 
