@@ -198,6 +198,7 @@ extends Parameter
 
         gradient += ')';
 
+        console.log('param gradient =', gradient);
 
         this._div.style.background         = gradient;
         this._div.style.backgroundPosition = '50% 50%';

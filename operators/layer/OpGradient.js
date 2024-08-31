@@ -295,11 +295,9 @@ extends OpColorBase
             updateHeaderCheckers(this, colors, true);
 
 
-        const outlineColor = darkMode ? '#000' : '#fff';
-
-
         // single-stop gradient
 
+        console.log('stops.length =', stops.length);
         if (stops.length == 1)
             this.header.style.background = rgba2style(stops[0].fill.toRgba());
 
@@ -309,18 +307,14 @@ extends OpColorBase
         else if (stops.length > 1)
         {
             if (this.value.gradType.value == 3) this.createDiamondGradient(stops.map(s => s.copy()), this.value.gradType.value);
-            else                                this.createNormalGradient(stops.map(s => s.copy()));
+            else                                this.createNormalGradient (stops.map(s => s.copy()));
         }
 
 
-        this.header.style.backgroundColor =
-            stops.length > 0 
-            ?  rgba2style(stops.at(-1).fill.toRgba())
-            : 'transparent';
-
-
-        //this.divIcon  .style.filter = 'drop-shadow(0 0 1px ' + outlineColor + ')';
-        //this.labelText.style.filter = 'drop-shadow(0 0 1px ' + outlineColor + ')';
+        // this.header.style.backgroundColor = 'transparent';
+            // stops.length > 0 
+            // ?  rgba2style(stops.at(-1).fill.toRgba())
+            // : 'transparent';
     }
 
 
@@ -402,6 +396,7 @@ extends OpColorBase
 
         gradient += ')';
 
+        console.log('op gradient =', gradient);
 
         this.header.style.background = gradient;
 
