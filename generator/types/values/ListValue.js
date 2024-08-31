@@ -15,9 +15,15 @@ extends GValue
         {
             this.items = [];
 
-            for (const item of items)
+            for (let i = 0; i < items.length; i++)
             {
-                this.items.push(item.copy());
+                const item = items[i];
+                const copy = item.copy();
+
+                if (copy.valueId == NULL)
+                    copy.valueId = i.toString();
+
+                this.items.push(copy);
 
                 if (   this.objects
                     && item.objects)

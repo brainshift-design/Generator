@@ -4632,6 +4632,48 @@ function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2,
 }
 
 
+
+function parseIndexRanges(str)
+{
+    let indices = [];
+
+
+    const _indices = str.split(',');
+    
+
+    if (_indices.length > 1)
+    {
+        for (const index of _indices)
+        {
+            if (index.includes('-'))
+            {
+                const parts = index.split('-');
+
+                if (parts.length == 2)
+                {
+                    let start = parseInt(parts[0]);
+                    let end   = parseInt(parts[1]);
+
+                    if (   !isNaN(start)
+                        && !isNaN(end  ))
+                    {
+                        for (let i = start; i <= end; i++)
+                            indices.push(i);
+                    }
+                }
+            }
+            else
+                indices.push(parseInt(index));
+        }
+    }
+    else
+        indices.push(parseInt(iteration.value));
+
+
+    return indices;
+}
+
+
 // const yamlData = `
 // Total Budget: 1000000
 // Operations: 400000
@@ -11282,7 +11324,7 @@ class GValue
     {
         this.type    = type;
         
-        this.valueId = '';
+        this.valueId = NULL;
         
         this.valid   = true;
     }
@@ -12784,9 +12826,15 @@ extends GValue
         {
             this.items = [];
 
-            for (const item of items)
+            for (let i = 0; i < items.length; i++)
             {
-                this.items.push(item.copy());
+                const item = items[i];
+                const copy = item.copy();
+
+                if (copy.valueId == NULL)
+                    copy.valueId = i.toString();
+
+                this.items.push(copy);
 
                 if (   this.objects
                     && item.objects)
@@ -19912,35 +19960,7 @@ extends GOperator1
             if (iteration.type != TEXT_VALUE)
                 iteration = new TextValue(iteration.value.toString());
 
-            const _iterations = iteration.value.split(',');
-            
-            if (_iterations.length > 1)
-            {
-                for (const iter of _iterations)
-                {
-                    if (iter.includes('-'))
-                    {
-                        const iterParts = iter.split('-');
-
-                        if (iterParts.length == 2)
-                        {
-                            let start = iterParts[0];
-                            let end   = iterParts[1];
-
-                            if (   !isNaN(Number(start))
-                                && !isNaN(Number(end  )))
-                            {
-                                for (let i = start; i <= end; i++)
-                                    iterations.push(parseInt(i));
-                            }
-                        }
-                    }
-                    else
-                        iterations.push(parseInt(iter));
-                }
-            }
-            else
-                iterations.push(parseInt(iteration.value));
+            iterations = parseIndexRanges(iteration.value);
         }
 
 
@@ -21917,7 +21937,7 @@ extends GOperator1
 
 
         const input   = await evalListValue(this.input,   parse);
-        const indices = await evalListValue(this.indices, parse);
+        let   indices = await evalValue    (this.indices, parse, () => null);
 
 
         this.value = new ListValue();
@@ -21925,39 +21945,36 @@ extends GOperator1
         let length = 0;
         
 
-        // if (this.cachedValue)
-        //     this.value = this.cachedValue.copy();
+        console.log('indices =', indices);
+        if (   indices 
+            && indices.type == TEXT_VALUE)
+            indices = new ListValue(parseIndexRanges(indices.value).map(i => new NumberValue(i)));
 
-        // else
-        // {
-            if (   input
-                && indices
-                && input.items)
+
+        if (   input
+            && indices
+            && input.items)
+        {
+            length = input.items.length;
+
+
+            if (this.options.enabled)
             {
-                length = input.items.length;
-
-
-                if (this.options.enabled)
+                for (let i = 0; i < indices.items.length; i++)
                 {
-                    for (let i = 0; i < indices.items.length; i++)
-                    {
-                        const item = input.items[Math.round(indices.items[i].value)];
-                        
-                        this.value.items.push(item ? item.copy() : new NullValue());
-                        
-                        if (   item
-                            && item.objects
-                            && this.value.objects) 
-                            this.value.objects.push(...item.objects);//input.items[i].objects);
-                    }
+                    const item = input.items[Math.round(indices.items[i].value)];
+
+                    this.value.items.push(item ? item.copy() : new NullValue());
+                    
+                    if (   item
+                        && item.objects
+                        && this.value.objects) 
+                        this.value.objects.push(...item.objects);
                 }
             }
-            else
-                this.value = ListValue.NaN.copy();
-
-
-        //     this.cachedValue = this.value.copy();
-        // }
+        }
+        else
+            this.value = ListValue.NaN.copy();
 
 
         this.updateValueObjects();
@@ -22404,8 +22421,7 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (   this.isCached())
-            // && this.cachedValue)
+        if (this.isCached())
             return this;
 
 
@@ -22417,67 +22433,58 @@ extends GOperator1
         let length = 0;
             
 
-        // if (this.cachedValue)
-        //     this.value = this.cachedValue.copy();
-
-        // else
-        // {
-            this.value = new ListValue();
-            this.value.objects = [];
+        this.value = new ListValue();
+        this.value.objects = [];
 
 
-            if (   input
-                && start
-                && end)
+        if (   input
+            && start
+            && end)
+        {
+            if (input.items)
             {
-                if (input.items)
+                length = input.items.length;
+
+
+                const _end =
+                    end.isValid()
+                    ? end
+                    : new NumberValue(input.items.length);
+
+
+                if (this.options.enabled)
                 {
-                    length = input.items.length;
+                    const endValue = 
+                        _end.value < 0
+                        ? length + _end.value
+                        : _end.value;
 
-
-                    const _end =
-                        end.isValid()
-                        ? end
-                        : new NumberValue(input.items.length);
-
-
-                    if (this.options.enabled)
+                    if (start.value < endValue)
                     {
-                        const endValue = 
-                            _end.value < 0
-                            ? length + _end.value
-                            : _end.value;
-
-                        if (start.value < endValue)
+                        for (let i = start.value, j = 0; i < endValue; i++, j++)
                         {
-                            for (let i = start.value, j = 0; i < endValue; i++, j++)
+                            const item = input.items[i];
+
+                            this.value.items.push(item ? item.copy() : new NullValue());
+                            
+                            if (   item
+                                && this.value.objects
+                                && item.objects)
                             {
-                                const item = input.items[i];
-                                
-                                this.value.items.push(item ? item.copy() : new NullValue());
-                                
-                                if (   item
-                                    && this.value.objects
-                                    && item.objects)
-                                {
-                                    item.objects.forEach(o => o.itemIndex = j);
-                                    this.value.objects.push(...item.objects);
-                                }
+                                item.objects.forEach(o => o.itemIndex = j);
+                                this.value.objects.push(...item.objects);
                             }
                         }
-                        else
-                            this.value = ListValue.NaN.copy();
                     }
                     else
-                        this.value = input.copy();
+                        this.value = ListValue.NaN.copy();
                 }
                 else
-                    this.value = ListValue.NaN.copy();
+                    this.value = input.copy();
             }
-
-
-            // this.cachedValue = this.value.copy();
-        //}
+            else
+                this.value = ListValue.NaN.copy();
+        }
 
 
         this.updateValueObjects();

@@ -16,7 +16,7 @@ class GValue
     {
         this.type    = type;
         
-        this.valueId = '';
+        this.valueId = NULL;
         
         this.valid   = true;
     }

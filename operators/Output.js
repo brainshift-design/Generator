@@ -303,10 +303,10 @@ extends EventTarget
         const typeColorDark  = rgbFromTypeMode(this.types[0], true, true );
         const typeColorLight = rgbFromTypeMode(this.types[0], true, false);
 
-        const colors       = this.node.getHeaderColors();
+        const colors         = this.node.getHeaderColors();
 
-        const outColor     = this.node.getHeaderOutputColor();
-        const outWireColor = this.node.getOutputWireColor();
+        const outColor       = this.node.getHeaderOutputColor();
+        const outWireColor   = this.node.getOutputWireColor();
 
         const conn = 
                !this.node.isUnknown()
@@ -321,6 +321,7 @@ extends EventTarget
                    || this.node.outputValueType != SHAPE_VALUE && this.node.outputValueType != this.types[0])
             || this.node.isUnknown();
 
+
         const tc = 
                graphView.tempConn 
             && graphView.tempConn.output == this;
@@ -328,12 +329,13 @@ extends EventTarget
 
         let ballColor;
 
+
+        if (this.node.id == 'repeat')
+            console.log('this.types[0] =', this.types[0]);
         
+
         if (darkMode)
         {
-            if (this.node.id == 'setObjectName')
-                console.log('this.types[0] =', this.types[0]);
-
             if (isColorType(this.types[0]))
             {
                 ballColor = 
@@ -351,10 +353,10 @@ extends EventTarget
                              ? [1, 1, 1, 0.25]
                              : [0, 0, 0, 0.2 ]));
             }
-            else if (this.types[0] == NUMBER_VALUE       ) { if (this.node.id == 'setObjectName') console.log('connOrDiff =', connOrDiff); ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.35] : [1, 1, 1, tc ? 0 : 0.35]); }
-            else if (this.types[0] == TEXT_VALUE         ) { if (this.node.id == 'setObjectName') console.log('connOrDiff =', connOrDiff); ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.25] : [1, 1, 1, tc ? 0 : 0.25]); }
-            else if (SHAPE_VALUES.includes(this.types[0])) { if (this.node.id == 'setObjectName') console.log('connOrDiff =', connOrDiff); ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.4 ] : [1, 1, 1, tc ? 0 : 0.4 ]); }
-            else                                           { if (this.node.id == 'setObjectName') console.log('connOrDiff =', connOrDiff); ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.28] : [1, 1, 1, tc ? 0 : 0.28]); }
+            else if (this.types[0] == NUMBER_VALUE       ) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.35] : [1, 1, 1, tc ? 0 : 0.35]);
+            else if (this.types[0] == TEXT_VALUE         ) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.25] : [1, 1, 1, tc ? 0 : 0.25]);
+            else if (SHAPE_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.4 ] : [1, 1, 1, tc ? 0 : 0.4 ]);
+            else                                           ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.28] : [1, 1, 1, tc ? 0 : 0.28]);
         }
         else // light mode
         {
@@ -389,8 +391,21 @@ extends EventTarget
 
     getParamBallColor()
     {
-        const typeColorDark  = rgbFromTypeMode(this.types[0], true, true );
-        const typeColorLight = rgbFromTypeMode(this.types[0], true, false);
+        const typeColorDark = 
+               (   (   this.connected 
+                ||    graphView.tempConn
+                   && graphView.tempConn.output == this)
+            && this.param.forceOutputColorType != NULL)
+            ? rgbFromType(this.param.forceOutputColorType, true)
+            : rgbFromTypeMode(this.types[0], true, true);
+
+        const typeColorLight = 
+               (   (   this.connected 
+                ||    graphView.tempConn
+                   && graphView.tempConn.output == this)
+            && this.param.forceOutputColorType != NULL)
+            ? rgbFromType(this.param.forceOutputColorType, true)
+            : rgbFromTypeMode(this.types[0], true, false);
 
         const outWireColor = 
             isColorType(this.param.type)
@@ -616,7 +631,13 @@ extends EventTarget
     getWireColor()
     {
         if (this.param)
-            return this.param.getWireColor();
+        {
+            return this.param.outputTypes.length > 0
+                 ? rgbFromType(this.param.outputTypes[0], true)
+                 : this.param.forceOutputColorType != NULL
+                   ? rgbFromType(this.param.forceOutputColorType, true)
+                   : this.param.getWireColor();
+        }
 
         else
         {

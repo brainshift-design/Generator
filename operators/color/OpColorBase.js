@@ -156,7 +156,8 @@ extends Operator
     getOutputWireColor()
     {
         if (    this.rgbaBack
-            && !rgbaIsNaN(this.rgbaBack))
+            && !rgbaIsNaN(this.rgbaBack)
+            && !this.isUnknown())
             return rgb_a(this.rgbaBack);
         else
             return darkMode

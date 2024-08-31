@@ -14,6 +14,7 @@ extends OperatorBase
     {
         super(SUBLIST, 'sublist', 'sublist', iconSublist);
 
+        this.outputValueType   = LIST_VALUE;
         this.canDisable        = true;
         this.showHeaderTooltip = true;
         

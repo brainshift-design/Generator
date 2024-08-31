@@ -78,35 +78,7 @@ extends GOperator1
             if (iteration.type != TEXT_VALUE)
                 iteration = new TextValue(iteration.value.toString());
 
-            const _iterations = iteration.value.split(',');
-            
-            if (_iterations.length > 1)
-            {
-                for (const iter of _iterations)
-                {
-                    if (iter.includes('-'))
-                    {
-                        const iterParts = iter.split('-');
-
-                        if (iterParts.length == 2)
-                        {
-                            let start = iterParts[0];
-                            let end   = iterParts[1];
-
-                            if (   !isNaN(Number(start))
-                                && !isNaN(Number(end  )))
-                            {
-                                for (let i = start; i <= end; i++)
-                                    iterations.push(parseInt(i));
-                            }
-                        }
-                    }
-                    else
-                        iterations.push(parseInt(iter));
-                }
-            }
-            else
-                iterations.push(parseInt(iteration.value));
+            iterations = parseIndexRanges(iteration.value);
         }
 
 

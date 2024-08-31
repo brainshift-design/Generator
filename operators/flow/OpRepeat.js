@@ -12,9 +12,9 @@ extends OperatorBase
     {
         super(REPEAT, 'repeat', 'repeat', iconRepeat, defNodeWidth, true);
 
-        
-        this.isMultiplier = true;
-        this.canDisable   = true;
+        this.outputValueType = LIST_VALUE;
+        this.isMultiplier    = true;
+        this.canDisable      = true;
 
         
         this.addInput (new Input([ANY_VALUE]));
@@ -36,6 +36,8 @@ extends OperatorBase
 
         this.paramIteration.input.types.push(TEXT_VALUE);
         this.paramLoop     .input.types.push(ANY_VALUE);
+
+        this.paramLoop.forceInputColorType = ANY_VALUE;
 
 
         this.paramLoop.getTooltip = () => 

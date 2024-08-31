@@ -24,6 +24,9 @@ extends OperatorBase
         this.inputs[0].addEventListener('disconnect', () => OpFeedback_onDisconnectInput(this));
 
 
+        this.paramFrom.forceOutputColorType = ANY_VALUE;
+
+
         this.paramFrom.getTooltip = () => 
         {
             if (currentTooltip) 

@@ -45,7 +45,7 @@ extends GOperator1
 
 
         const input   = await evalListValue(this.input,   parse);
-        const indices = await evalListValue(this.indices, parse);
+        let   indices = await evalValue    (this.indices, parse, () => null);
 
 
         this.value = new ListValue();
@@ -53,39 +53,36 @@ extends GOperator1
         let length = 0;
         
 
-        // if (this.cachedValue)
-        //     this.value = this.cachedValue.copy();
+        console.log('indices =', indices);
+        if (   indices 
+            && indices.type == TEXT_VALUE)
+            indices = new ListValue(parseIndexRanges(indices.value).map(i => new NumberValue(i)));
 
-        // else
-        // {
-            if (   input
-                && indices
-                && input.items)
+
+        if (   input
+            && indices
+            && input.items)
+        {
+            length = input.items.length;
+
+
+            if (this.options.enabled)
             {
-                length = input.items.length;
-
-
-                if (this.options.enabled)
+                for (let i = 0; i < indices.items.length; i++)
                 {
-                    for (let i = 0; i < indices.items.length; i++)
-                    {
-                        const item = input.items[Math.round(indices.items[i].value)];
-                        
-                        this.value.items.push(item ? item.copy() : new NullValue());
-                        
-                        if (   item
-                            && item.objects
-                            && this.value.objects) 
-                            this.value.objects.push(...item.objects);//input.items[i].objects);
-                    }
+                    const item = input.items[Math.round(indices.items[i].value)];
+
+                    this.value.items.push(item ? item.copy() : new NullValue());
+                    
+                    if (   item
+                        && item.objects
+                        && this.value.objects) 
+                        this.value.objects.push(...item.objects);
                 }
             }
-            else
-                this.value = ListValue.NaN.copy();
-
-
-        //     this.cachedValue = this.value.copy();
-        // }
+        }
+        else
+            this.value = ListValue.NaN.copy();
 
 
         this.updateValueObjects();

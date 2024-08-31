@@ -14,6 +14,7 @@ extends OperatorBase
     {
         super(EXTRACT, 'extract', 'extract', iconExtract);
 
+        this.outputValueType   = LIST_VALUE;
         this.canDisable        = true;
         this.showHeaderTooltip = true;
         
@@ -23,8 +24,9 @@ extends OperatorBase
 
         this.addParam(this.paramIndices = new ListParam('indices', 'indices', false, true, true));
 
-        this.paramIndices.input.types = [LIST_VALUE, NUMBER_LIST_VALUE];
-        this.paramIndices.itemName = ['index', 'indices'];
+        this.paramIndices.listTypes   = [NUMBER_LIST_VALUE, LIST_VALUE, TEXT_VALUE];
+        this.paramIndices.outputTypes = [NUMBER_LIST_VALUE];
+        this.paramIndices.itemName    = ['index', 'indices'];
 
         this.inputs[0].addEventListener('disconnect', () => OpExtract_onDisconnectInput(this));
     }

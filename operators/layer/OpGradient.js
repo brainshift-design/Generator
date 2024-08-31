@@ -274,12 +274,18 @@ extends OpColorBase
 
 
         if (   this.isUnknown()
+            ||    !rgbaIsNaN  (colors.back)
+               && !rgbaIsValid(colors.back)
             || stops.length == 0)
         {
             updateFillHeader(this, colors, false);
 
-            this._warningOverlay.style.height  = this.measureData.headerOffset.height;
-            this._warningOverlay.style.display = 'block';
+            if (   !rgbaIsNaN  (colors.back)
+                && !rgbaIsValid(colors.back))
+            {
+                this._warningOverlay.style.height  = this.measureData.headerOffset.height;
+                this._warningOverlay.style.display = 'block';
+            }
 
             return;
         }
@@ -297,7 +303,6 @@ extends OpColorBase
 
         // single-stop gradient
 
-        console.log('stops.length =', stops.length);
         if (stops.length == 1)
             this.header.style.background = rgba2style(stops[0].fill.toRgba());
 

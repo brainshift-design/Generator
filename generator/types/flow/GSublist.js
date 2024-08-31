@@ -43,8 +43,7 @@ extends GOperator1
 
     async eval(parse)
     {
-        if (   this.isCached())
-            // && this.cachedValue)
+        if (this.isCached())
             return this;
 
 
@@ -56,67 +55,58 @@ extends GOperator1
         let length = 0;
             
 
-        // if (this.cachedValue)
-        //     this.value = this.cachedValue.copy();
-
-        // else
-        // {
-            this.value = new ListValue();
-            this.value.objects = [];
+        this.value = new ListValue();
+        this.value.objects = [];
 
 
-            if (   input
-                && start
-                && end)
+        if (   input
+            && start
+            && end)
+        {
+            if (input.items)
             {
-                if (input.items)
+                length = input.items.length;
+
+
+                const _end =
+                    end.isValid()
+                    ? end
+                    : new NumberValue(input.items.length);
+
+
+                if (this.options.enabled)
                 {
-                    length = input.items.length;
+                    const endValue = 
+                        _end.value < 0
+                        ? length + _end.value
+                        : _end.value;
 
-
-                    const _end =
-                        end.isValid()
-                        ? end
-                        : new NumberValue(input.items.length);
-
-
-                    if (this.options.enabled)
+                    if (start.value < endValue)
                     {
-                        const endValue = 
-                            _end.value < 0
-                            ? length + _end.value
-                            : _end.value;
-
-                        if (start.value < endValue)
+                        for (let i = start.value, j = 0; i < endValue; i++, j++)
                         {
-                            for (let i = start.value, j = 0; i < endValue; i++, j++)
+                            const item = input.items[i];
+
+                            this.value.items.push(item ? item.copy() : new NullValue());
+                            
+                            if (   item
+                                && this.value.objects
+                                && item.objects)
                             {
-                                const item = input.items[i];
-                                
-                                this.value.items.push(item ? item.copy() : new NullValue());
-                                
-                                if (   item
-                                    && this.value.objects
-                                    && item.objects)
-                                {
-                                    item.objects.forEach(o => o.itemIndex = j);
-                                    this.value.objects.push(...item.objects);
-                                }
+                                item.objects.forEach(o => o.itemIndex = j);
+                                this.value.objects.push(...item.objects);
                             }
                         }
-                        else
-                            this.value = ListValue.NaN.copy();
                     }
                     else
-                        this.value = input.copy();
+                        this.value = ListValue.NaN.copy();
                 }
                 else
-                    this.value = ListValue.NaN.copy();
+                    this.value = input.copy();
             }
-
-
-            // this.cachedValue = this.value.copy();
-        //}
+            else
+                this.value = ListValue.NaN.copy();
+        }
 
 
         this.updateValueObjects();

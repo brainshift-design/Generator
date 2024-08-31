@@ -381,6 +381,12 @@ extends EventTarget
             && graphView.overInput != this)
             return transparent;
 
+        if (   (   this.connected 
+                ||    graphView.tempConn
+                   && graphView.tempConn.input == this)
+            && this.param.forceInputColorType != NULL)
+            return rgbFromType(this.param.forceInputColorType, true);
+        
         if (this.connected)
             return this.connectedOutput.getWireColor();
 
@@ -492,9 +498,6 @@ extends EventTarget
             if (   isColorType(this.types[0])
                 && this.paramTypeIsColor())
             {
-                // if (this.node.id == 'fill')
-                //     console.log('inColor =', color);
-
                 if (this.param.type == COLOR_VALUE)
                 {
                     ringColor = 
@@ -563,7 +566,13 @@ extends EventTarget
     getWireColor()
     {
         if (this.param)
-            return this.param.getWireColor();
+        {
+            return this.param.listTypes.length > 0
+                 ? rgbFromType(this.param.listTypes[0], true)
+                 : this.param.forceInputColorType != NULL
+                   ? rgbFromType(this.param.forceInputColorType, true)
+                   : this.param.getWireColor();
+        }
 
         else
         {

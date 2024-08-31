@@ -38,6 +38,10 @@ extends EventTarget
     textStyleDark   = '#eee';
 
 
+    forceInputColorType  = NULL;
+    forceOutputColorType = NULL;
+
+    
     input;
     output;
 

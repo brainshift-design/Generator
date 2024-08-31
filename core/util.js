@@ -799,3 +799,45 @@ function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2,
 
     return gradientId;
 }
+
+
+
+function parseIndexRanges(str)
+{
+    let indices = [];
+
+
+    const _indices = str.split(',');
+    
+
+    if (_indices.length > 1)
+    {
+        for (const index of _indices)
+        {
+            if (index.includes('-'))
+            {
+                const parts = index.split('-');
+
+                if (parts.length == 2)
+                {
+                    let start = parseInt(parts[0]);
+                    let end   = parseInt(parts[1]);
+
+                    if (   !isNaN(start)
+                        && !isNaN(end  ))
+                    {
+                        for (let i = start; i <= end; i++)
+                            indices.push(i);
+                    }
+                }
+            }
+            else
+                indices.push(parseInt(index));
+        }
+    }
+    else
+        indices.push(parseInt(iteration.value));
+
+
+    return indices;
+}
