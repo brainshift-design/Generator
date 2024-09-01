@@ -120,7 +120,6 @@ class Operator
     requestCache       = [];   // for nodes without an output
 
 
-     inputValueType;
     outputValueType;
 
 
@@ -221,7 +220,6 @@ class Operator
 
         this.#type             = type;
 
-        this. inputValueType   = NULL;
         this.outputValueType   = NULL;
 
         this.id                = id;

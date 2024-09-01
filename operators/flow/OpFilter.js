@@ -29,6 +29,7 @@ extends OperatorBase
         this.paramCondition.valueText = 'condition';
 
         this.paramIndices.itemName    = [];
+        this.paramIndices.outputTypes = [NUMBER_LIST_VALUE];
     }
 
 

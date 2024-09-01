@@ -356,16 +356,16 @@ extends EventTarget
         if (   this.connected
             && this.connectedOutput
             && (   isColorType(this.types[0])
-                ||    this.connectedOutput.types[0] != this.types[0]
-                   && this.types[0] != this.node.outputValueType))
+                || this.connectedOutput.types[0] != this.types[0]
+                || this.types[0] != this.node.outputValueType))
             return this.connectedOutput.getWireColor();
 
         if (   graphView.tempConn
             && graphView.tempConn.output
             && graphView.overInput == this
             && (   isColorType(this.types[0])
-                ||    graphView.tempConn.output.types[0] != this.types[0]
-                   && this.types[0] != this.node.outputValueType))
+                || graphView.tempConn.output.types[0] != this.types[0]
+                || this.types[0] != this.node.outputValueType))
             return graphView.tempConn.output.getWireColor();
 
 
