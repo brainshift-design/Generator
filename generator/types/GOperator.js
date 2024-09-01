@@ -279,12 +279,19 @@ extends GNode
 
         for (let i = 0; i < this.value.objects.length; i++)
         {
-            const obj     = this.value.objects[i];
+            const obj     =  this.value.objects[i];
 
             obj.nodeId    =  this.nodeId;
             obj.objectId +=  OBJECT_SEPARATOR + this.nodeId;
             obj.listId    = -1;
         }
+    }
+
+
+
+    updateValueFromParam(paramId, value)
+    {
+        this[paramId] = value;        
     }
 
 

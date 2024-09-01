@@ -59,7 +59,7 @@ extends GOperator1
 
         if (   input
             && this.input.type == PARAM
-            && target .isValid())
+            && target.isValid())
         {
             consoleAssert(
                  input.type == NUMBER_VALUE, 
@@ -86,7 +86,7 @@ extends GOperator1
                 parse.totalProgress += maxIter;
 
 
-                const param = this.input.node[this.input.paramId];
+                const inParamValue = this.input.node[this.input.paramId];
 
 
                 while (iter++ < maxIter)
@@ -94,10 +94,20 @@ extends GOperator1
                     _input += step;
 
 
-                    if (param)
+                    if (inParamValue)
                     {
-                        param.value = _input;
+                        if (inParamValue.parent)
+                        {
+                            inParamValue.parent.updateValueFromParam(
+                                this.input.paramId, 
+                                new NumberValue(
+                                    _input,
+                                     input.decimals));
+                        }
+                        else
+                            inParamValue.value = _input;
                         
+
                         this.input  .invalidateInputs(parse, this, true);
                         this.current.invalidateInputs(parse, this, true);
                         this.target .invalidateInputs(parse, this, true);
@@ -144,7 +154,7 @@ extends GOperator1
                     console.warn('max solve iterations');
 
 
-                this.value = param
+                this.value = inParamValue
                     ? new NumberValue(current.value, target.decimals)
                     : NumberValue.NaN.copy();
             }

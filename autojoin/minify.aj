@@ -1643,7 +1643,7 @@ genParseNull
 genParseVariable
 genParseVariableGroup
 genParseListValue
-genParseCombine
+genParseList
 genParseListAsItem
 genParseExtract
 genParseSetParam
@@ -1657,7 +1657,7 @@ genParseSort
 genParseFilter
 genParseColumn
 genParseCell
-genParseList
+genParseExpandList
 genParseSelect
 genParseListCount
 genParseListContains

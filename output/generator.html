@@ -11314,6 +11314,8 @@ class GValue
     type;
     valueId;
 
+    parent;
+
     customParams = []; // [[name, GValue]]
 
     objects      = null;
@@ -11326,6 +11328,7 @@ class GValue
     constructor(type) 
     {
         this.type    = type;
+        this.parent  = null;
         
         this.valueId = NULL;
         
@@ -11898,12 +11901,19 @@ extends GNode
 
         for (let i = 0; i < this.value.objects.length; i++)
         {
-            const obj     = this.value.objects[i];
+            const obj     =  this.value.objects[i];
 
             obj.nodeId    =  this.nodeId;
             obj.objectId +=  OBJECT_SEPARATOR + this.nodeId;
             obj.listId    = -1;
         }
+    }
+
+
+
+    updateValueFromParam(paramId, value)
+    {
+        this[paramId] = value;        
     }
 
 
@@ -29798,7 +29808,7 @@ extends GOperator1
 
         if (   input
             && this.input.type == PARAM
-            && target .isValid())
+            && target.isValid())
         {
             consoleAssert(
                  input.type == NUMBER_VALUE, 
@@ -29825,7 +29835,7 @@ extends GOperator1
                 parse.totalProgress += maxIter;
 
 
-                const param = this.input.node[this.input.paramId];
+                const inParamValue = this.input.node[this.input.paramId];
 
 
                 while (iter++ < maxIter)
@@ -29833,10 +29843,20 @@ extends GOperator1
                     _input += step;
 
 
-                    if (param)
+                    if (inParamValue)
                     {
-                        param.value = _input;
+                        if (inParamValue.parent)
+                        {
+                            inParamValue.parent.updateValueFromParam(
+                                this.input.paramId, 
+                                new NumberValue(
+                                    _input,
+                                     input.decimals));
+                        }
+                        else
+                            inParamValue.value = _input;
                         
+
                         this.input  .invalidateInputs(parse, this, true);
                         this.current.invalidateInputs(parse, this, true);
                         this.target .invalidateInputs(parse, this, true);
@@ -29883,7 +29903,7 @@ extends GOperator1
                     console.warn('max solve iterations');
 
 
-                this.value = param
+                this.value = inParamValue
                     ? new NumberValue(current.value, target.decimals)
                     : NumberValue.NaN.copy();
             }
@@ -36764,6 +36784,7 @@ extends GOperator1
                         this.value.space.value = toSpaceIndex;
                     }
 
+                    //console.log('c3 =', c3);
                     
                     if (!c1) c1 = this.value.c1;
                     if (!c2) c2 = this.value.c2;
@@ -36824,6 +36845,13 @@ extends GOperator1
                 NumberValue.NaN,
                 NumberValue.NaN);
 
+        
+        this.convert.parent = this;
+        this.space  .parent = this;
+        this.c1     .parent = this;
+        this.c2     .parent = this;
+        this.c3     .parent = this;
+
 
         this.setUpdateValues(parse,
         [
@@ -36861,6 +36889,17 @@ extends GOperator1
         color.c1.value = col[1];
         color.c2.value = col[2];
         color.c3.value = col[3];
+    }
+
+
+
+    updateValueFromParam(paramId, value)
+    {
+             if (paramId == 'c1') this._c1 = value;
+        else if (paramId == 'c2') this._c2 = value;
+        else if (paramId == 'c3') this._c3 = value;
+        else 
+            super.updateValueFromParam(paramId, value);
     }
 
 
@@ -52718,7 +52757,7 @@ function genParseListValue(parse)
 
 
 
-function genParseCombine(parse)
+function genParseList(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
@@ -53419,7 +53458,7 @@ function genParseCell(parse)
 
 
 
-function genParseList(parse)
+function genParseExpandList(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
@@ -60893,7 +60932,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SET_LIST_VALUE_NAMES   ) result = genParseSetListValueNames (parse);
     else if (parse.next == SET_OBJECT_NAME        ) result = genParseSetObjectName     (parse);
 
-    else if (parse.next == LIST                ) result = genParseCombine           (parse);
+    else if (parse.next == LIST                   ) result = genParseList              (parse);
     else if (parse.next == LIST_AS_ITEM           ) result = genParseListAsItem        (parse);
     else if (parse.next == EXTRACT                ) result = genParseExtract           (parse);
     else if (parse.next == SET_PARAM              ) result = genParseSetParam          (parse);
@@ -60908,7 +60947,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == FILTER                 ) result = genParseFilter            (parse);
     else if (parse.next == COLUMN                 ) result = genParseColumn            (parse);
     else if (parse.next == CELL                   ) result = genParseCell              (parse);
-    else if (parse.next == EXPAND                   ) result = genParseList              (parse);
+    else if (parse.next == EXPAND                 ) result = genParseExpandList        (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect            (parse);
     else if (parse.next == SELECT_FROM_LIST       ) result = genParseSelectFromList    (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
@@ -61053,7 +61092,6 @@ function genParse(parse, inParam = true)
     else if (parse.next == COLOR_STYLE            ) result = genParseColorStyle        (parse);
       
     else if (parse.next == RECTANGLE              ) result = genParseRectangle         (parse);
-    //else if (parse.next == RECTANGLE_EXT          ) result = genParseRectangleExt      (parse);
     else if (parse.next == LINE                   ) result = genParseLine              (parse);
     else if (parse.next == ELLIPSE                ) result = genParseEllipse           (parse);
     else if (parse.next == TRAPEZE                ) result = genParseTrapeze           (parse);
@@ -61118,7 +61156,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == PLACE                  ) result = genParsePlace             (parse);
     else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply        (parse);
     
-    else if (parse.next == PERSIST                 ) result = genParsePersist            (parse);
+    else if (parse.next == PERSIST                ) result = genParsePersist           (parse);
     else if (parse.next == EXPORT                 ) result = genParseExport            (parse);
  
     else if (parse.next == GROUP_NODE             ) result = genParseGroupNode         (parse);

@@ -171,7 +171,7 @@ function genParseListValue(parse)
 
 
 
-function genParseCombine(parse)
+function genParseList(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
@@ -872,7 +872,7 @@ function genParseCell(parse)
 
 
 
-function genParseList(parse)
+function genParseExpandList(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 

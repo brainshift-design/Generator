@@ -3,6 +3,8 @@ class GValue
     type;
     valueId;
 
+    parent;
+
     customParams = []; // [[name, GValue]]
 
     objects      = null;
@@ -15,6 +17,7 @@ class GValue
     constructor(type) 
     {
         this.type    = type;
+        this.parent  = null;
         
         this.valueId = NULL;
         

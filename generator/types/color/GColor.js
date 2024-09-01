@@ -109,6 +109,7 @@ extends GOperator1
                         this.value.space.value = toSpaceIndex;
                     }
 
+                    //console.log('c3 =', c3);
                     
                     if (!c1) c1 = this.value.c1;
                     if (!c2) c2 = this.value.c2;
@@ -169,6 +170,13 @@ extends GOperator1
                 NumberValue.NaN,
                 NumberValue.NaN);
 
+        
+        this.convert.parent = this;
+        this.space  .parent = this;
+        this.c1     .parent = this;
+        this.c2     .parent = this;
+        this.c3     .parent = this;
+
 
         this.setUpdateValues(parse,
         [
@@ -206,6 +214,17 @@ extends GOperator1
         color.c1.value = col[1];
         color.c2.value = col[2];
         color.c3.value = col[3];
+    }
+
+
+
+    updateValueFromParam(paramId, value)
+    {
+             if (paramId == 'c1') this._c1 = value;
+        else if (paramId == 'c2') this._c2 = value;
+        else if (paramId == 'c3') this._c3 = value;
+        else 
+            super.updateValueFromParam(paramId, value);
     }
 
 
