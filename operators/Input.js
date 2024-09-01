@@ -501,9 +501,9 @@ extends EventTarget
                 if (this.param.type == COLOR_VALUE)
                 {
                     ringColor = 
-                          !this.param.isUnknown()
-                        && rgbIsNaN(color)
-                        ? [1, 1, 1, 0.35]
+                           this.param.isUnknown()
+                        || rgbIsNaN(color)
+                        ? [1, 1, 1, 0.25]
                         : (isLight(color)
                            ? [0, 0, 0, 0.25]
                            : [1, 1, 1, 0.25]);
@@ -531,14 +531,27 @@ extends EventTarget
             if (   isColorType(this.types[0])
                 && this.paramTypeIsColor())
             {
-                ringColor = 
-                          !this.param.isUnknown()
-                       &&  rgbIsNaN(color)
-                    || color[3] < TRANSPARENT_THRESHOLD_DARK
-                    ? [0, 0, 0, 0.2]
-                    : (isLight(color)
-                       ? [0, 0, 0, 0.2 ]
-                       : [1, 1, 1, 0.37]);
+                if (this.param.type == COLOR_VALUE)
+                {
+                    ringColor = 
+                           this.param.isUnknown()
+                        || rgbIsNaN(color)
+                        ? [0, 0, 0, 0.25]
+                        : (isLight(color)
+                           ? [0, 0, 0, 0.25]
+                           : [1, 1, 1, 0.25]);
+                }
+                else
+                {
+                    ringColor = 
+                            !this.param.isUnknown()
+                        &&  rgbIsNaN(color)
+                        || color[3] < TRANSPARENT_THRESHOLD_DARK
+                        ? [0, 0, 0, 0.2]
+                        : (isLight(color)
+                        ? [0, 0, 0, 0.2 ]
+                        : [1, 1, 1, 0.37]);
+                }
             }
             else if (NUMBER_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorLight, 0.4 );
             else if (  TEXT_VALUES.includes(this.types[0])) ringColor = rgb_a(typeColorLight, 0.76);
