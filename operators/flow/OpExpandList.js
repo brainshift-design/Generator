@@ -16,6 +16,7 @@ extends ResizableBase
     {
         super(EXPAND, 'expand', 'expand', iconExpand);
 
+        this. inputValueType = LIST_VALUE;
         this.outputValueType = LIST_VALUE;
         this.iconOffsetY     = 2;
 

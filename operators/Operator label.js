@@ -124,7 +124,7 @@ Operator.prototype.updateHeaderLabelText = function()
         // ? '...' 
         // : '';
     
-    let suffix;
+    let suffix = '';
 
     const sep      = settings.showNodeId ? ' '   : '  ';
     const ellipsis = settings.showNodeId ? '...' : ' . . .';
@@ -137,21 +137,24 @@ Operator.prototype.updateHeaderLabelText = function()
 
     //     if (this.type == LIST     ) suffix = sep + '[ ' + this.length        + ' ]';
     //else 
-         if (this.type == EXTRACT         ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
-    else if (this.type == SUBLIST         ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
-    else if (this.type == COLUMN          ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.columnLength ) + ' ]';
-    else if (this.type == REVERSE_LIST    ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
-    else if (this.type == SELECT_FROM_LIST) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
-    else if (this.type == FILTER          ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
-    else if (this.type == UNIQUE          ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
-    else if (this.type == EXPAND            ) suffix = ellipsis + sep + '[ ' + (isListUnknown ? '?' : this.params.length) + ' ]';
-    else if (this.type == CACHE           ) suffix = ellipsis;
-    else
-        suffix = 
-               this.cached 
-            || this.type == FEEDBACK 
-            ? '' 
-            : ellipsis;
+    if (!settings.showNodeId)
+    {
+            if (this.type == EXTRACT         ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
+        else if (this.type == SUBLIST         ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
+        else if (this.type == COLUMN          ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.columnLength ) + ' ]';
+        else if (this.type == REVERSE_LIST    ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
+        else if (this.type == SELECT_FROM_LIST) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
+        else if (this.type == FILTER          ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
+        else if (this.type == UNIQUE          ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
+        else if (this.type == EXPAND          ) suffix = ellipsis + sep + '[ ' + (isListUnknown ? '?' : this.params.length) + ' ]';
+        else if (this.type == CACHE           ) suffix = ellipsis;
+        else
+            suffix = 
+                this.cached 
+                || this.type == FEEDBACK 
+                ? '' 
+                : ellipsis;
+    }
 
 
     suffix += this.suffix;

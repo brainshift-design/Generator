@@ -120,6 +120,10 @@ class Operator
     requestCache       = [];   // for nodes without an output
 
 
+     inputValueType;
+    outputValueType;
+
+
     // node UI
 
     div;
@@ -217,7 +221,8 @@ class Operator
 
         this.#type             = type;
 
-        this.outputValueType         = NULL;
+        this. inputValueType   = NULL;
+        this.outputValueType   = NULL;
 
         this.id                = id;
         this.id                = makeNodePath(this);
