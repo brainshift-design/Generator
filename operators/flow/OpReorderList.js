@@ -9,7 +9,7 @@ extends OperatorBase
     {
         super(REORDER_LIST, 'reorder', 'reorder', iconReorderList);
 
-        this.outputValueType   = true;
+        this.outputValueType   = LIST_VALUE;
         this.canDisable        = true;
         this.showHeaderTooltip = true;
         

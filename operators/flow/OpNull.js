@@ -8,7 +8,7 @@ extends OperatorBase
         this.outputValueType = ANY_VALUE;
 
 
-        this.addInput (new Input(ALL_VALUES));
+        this.addInput (new Input([ANY_VALUE]));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
