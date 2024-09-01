@@ -76,7 +76,7 @@ extends OperatorBase
         if (!this.paramCurrent.input.connected)
             this.paramCurrent.setValue(NumberValue.NaN, null, true, false);
 
-        this.paramCurrent.enableControlText(false, this.isUnknown());
+        this.paramCurrent.enableControlText(false, this.paramCurrent.isUnknown());
         this.paramTarget .enableControlText(true);
 
         this.updateParamControls();
