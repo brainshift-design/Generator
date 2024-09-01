@@ -41,7 +41,7 @@ extends OpColorBase
         this.addParam(this.paramBlend   = new SelectParam('blend',   'blend',   false, true, true, BlendModes.map(bm => bm[1]), 0));
 
 
-        this.paramColor.isNodeValue = true;
+        //this.paramColor.isNodeValue = true;
         this.paramColor.controls[0].textbox.style.background = 'transparent';
         
         this.paramOpacity.controls[0].suffix = '%';
