@@ -88,24 +88,28 @@ extends GOperator1
             this.fills = fills;
 
 
-        const weight = await evalNumberValue(this.weight, parse);
-        const fit    = await evalNumberValue(this.fit,    parse);
-        const join   = await evalNumberValue(this.join,   parse);
-        const miter  = await evalNumberValue(this.miter,  parse);
-        const cap    = await evalNumberValue(this.cap,    parse);
-        const dashes = await evalTextValue  (this.dashes, parse);
+        let weight = await evalNumberValue(this.weight, parse);
+        let fit    = await evalNumberValue(this.fit,    parse);
+        let join   = await evalNumberValue(this.join,   parse);
+        let miter  = await evalNumberValue(this.miter,  parse);
+        let cap    = await evalNumberValue(this.cap,    parse);
+        let dashes = await evalTextValue  (this.dashes, parse);
 
 
         if (input)
         {
-            this.value = new StrokeValue(
-                fills  ?? input.fills,
-                weight ?? input.weight,
-                fit    ?? input.fit,
-                join   ?? input.join,
-                miter  ?? input.miter,
-                cap    ?? input.cap,
-                dashes ?? input.dashes);
+            this.value        = input.toValue();
+            this.value.nodeId = this.nodeId;
+
+            this.value.copyCustomParams(input);
+
+            if (fills )  this.value.fills  = fills;   else  fills  = this.value.fills;
+            if (weight)  this.value.weight = weight;  else  weight = this.value.weight;
+            if (fit   )  this.value.fit    = fit;     else  fit    = this.value.fit;
+            if (join  )  this.value.join   = join;    else  join   = this.value.join;
+            if (miter )  this.value.miter  = miter;   else  miter  = this.value.miter;
+            if (cap   )  this.value.cap    = cap;     else  cap    = this.value.cap;
+            if (dashes)  this.value.dashes = dashes;  else  dashes = this.value.dashes;
         }
         else
         {

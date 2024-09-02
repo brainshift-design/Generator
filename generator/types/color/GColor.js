@@ -89,11 +89,14 @@ extends GOperator1
             {
                 if (this.options.enabled)
                 {
-                    this.value = input.copy();
-                    
+                    this.value        = input.copy();
+                    this.value.nodeId = this.nodeId;
+
+                    this.value.copyCustomParams(input);
+                            
 
                     const fromSpaceIndex = input.space.value;
-                    const toSpaceIndex = Math.min(Math.max(
+                    const   toSpaceIndex = Math.min(Math.max(
                         0,
                         Math.round(space.value)), // round because a value can come in with decimals
                         ColorSpaces.length-1);

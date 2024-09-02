@@ -121,12 +121,9 @@ extends Parameter
 
         this.preSetValue(value, createAction, dispatchEvents);
 
-
         this.value = value.copy();
 
-
         super.setValue(this.value, createAction, updateControl, dispatchEvents);
-
 
         this.oldValue = this.value;
     }    
@@ -191,12 +188,6 @@ extends Parameter
 
     updateControls()
     {
-        // this.div.style.background = 
-        //     darkMode 
-        //     ? this.backStyleDark 
-        //     : this.backStyleLight;
-
-
         enableElementText(this.controls[0].div, false);
 
         this.controls[0].readOnly = true;
@@ -265,7 +256,7 @@ extends Parameter
 
         let rgbaBack = rgba_NaN;
 
-        for (const stop of this.value.stops.items)
+        for (const stop of stops)
         {
             rgbaBack = 
                 rgbaIsNaN(rgbaBack)
@@ -273,11 +264,13 @@ extends Parameter
                 : rgbaMuls(rgbaAdd(rgbaBack, stop.fill.toRgba()), 0.5);
         }
 
-        const gray = this.value.stops.items.length == 0;
+        const gray = stops.length == 0;
 
         const colText = 
             gray
-            ? (darkMode ? [1, 1, 1, 1] : [0, 0, 0, 1]) 
+            ? (darkMode 
+               ? [1, 1, 1, 1] 
+               : [0, 0, 0, 1]) 
             : getTextColorFromBackColor(getStripeBackColor(rgbaBack));
 
         this.divName            .style.color = rgba2style(rgb_a(colText, 0.3));

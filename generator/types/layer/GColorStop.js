@@ -54,25 +54,24 @@ extends GOperator1
     {
         if (this.isCached())
             return this;
-
-        
         
         
         const input    = await evalColorStopValue(this.input,    parse);
         let   fill     = await evalFillValue     (this.fill,     parse);
-        const position = await evalNumberValue   (this.position, parse);
+        let   position = await evalNumberValue   (this.position, parse);
         
         fill = this.validateFill(fill);
 
 
         if (input)
         {
-            this.value = new ColorStopValue(
-                   fill 
-                && fill.type != FILL_VALUE 
-                    ? fill 
-                    : input.fill,
-                position ?? input.position);
+            this.value        = input.toValue();
+            this.value.nodeId = this.nodeId;
+
+            this.value.copyCustomParams(input);
+
+            if (fill    )  this.value.fill     = fill;      else  fill     = this.value.fill;
+            if (position)  this.value.position = position;  else  position = this.value.position;
         }
         else
         {

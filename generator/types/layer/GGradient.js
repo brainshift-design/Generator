@@ -121,6 +121,7 @@ extends GOperator
         {
             this.value        = inputs[0].toValue();
             this.value.nodeId = this.nodeId;
+            
             this.value.copyCustomParams(inputs[0]);
 
             if (gradType)  this.value.gradType = gradType;  else  gradType = this.value.gradType;      

@@ -68,10 +68,14 @@ extends GOperator1
 
         if (input)
         {
-            this.value = new FillValue(
-                color   ?? input.color,
-                opacity ?? input.opacity,
-                blend   ?? input.blend);
+            this.value        = input.toValue();
+            this.value.nodeId = this.nodeId;
+
+            this.value.copyCustomParams(input);
+
+            if (color  )  this.value.color   = color;    else  color   = this.value.color;
+            if (opacity)  this.value.opacity = opacity;  else  opacity = this.value.opacity;
+            if (blend  )  this.value.blend   = blend;    else  blend   = this.value.blend;
         }
         else if ((!color   || color  .type == COLOR_VALUE )
               && (!opacity || opacity.type == NUMBER_VALUE)
