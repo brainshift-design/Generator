@@ -223,30 +223,40 @@ extends Parameter
         this.checkers.style.width                 = 'calc(100% + 3.5px)';
 
 
-        let gradient = 'linear-gradient(90deg';
+        let gradient;
 
 
-        let minPos = Number.MAX_SAFE_INTEGER;
-        let maxPos = Number.MIN_SAFE_INTEGER;
-
-        for (const stop of stops)
+        if (stops.length == 1)
         {
-            minPos = Math.min(minPos, stop.position.value);
-            maxPos = Math.max(maxPos, stop.position.value);
+            gradient = rgba2style(stops[0].fill.toRgba());
         }
-
-        for (const stop of stops)
-            stop.position.value = (stop.position.value - minPos) / nozero(maxPos - minPos) * 100;
-
-
-        for (let i = 0; i < stops.length; i++)
+        else
         {
-            const stop = stops[i];
-            gradient += ', ' + rgba2style(stop.fill.toRgba()) + ' ' + (stop.position.value) + '%';
+            gradient = 'linear-gradient(90deg';
+
+
+            let minPos = Number.MAX_SAFE_INTEGER;
+            let maxPos = Number.MIN_SAFE_INTEGER;
+
+            for (const stop of stops)
+            {
+                minPos = Math.min(minPos, stop.position.value);
+                maxPos = Math.max(maxPos, stop.position.value);
+            }
+
+            for (const stop of stops)
+                stop.position.value = (stop.position.value - minPos) / nozero(maxPos - minPos) * 100;
+
+
+            for (let i = 0; i < stops.length; i++)
+            {
+                const stop = stops[i];
+                gradient += ', ' + rgba2style(stop.fill.toRgba()) + ' ' + (stop.position.value) + '%';
+            }
+
+
+            gradient += ')';
         }
-
-
-        gradient += ')';
 
 
         this.divGradient.style.background         = gradient;
