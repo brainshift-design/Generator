@@ -144,9 +144,6 @@ extends OpColorBase
 
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-
-        //this.updateCorrectionNames();
     }
 
 
@@ -213,15 +210,23 @@ extends OpColorBase
         switch (colorSpace)
         {
         case 'hex':
-        case 'rgb':    this.paramOrder.setOptions(makeOptions('RGB')); break;
-        case 'hsv':    this.paramOrder.setOptions(makeOptions('HSB')); break;
-        case 'hsl':    this.paramOrder.setOptions(makeOptions('HSL')); break;
+        case 'rgb':
+        case 'lin':
+        case 'p3':
+        case 'a98':
+        case 'pro':
+        case 'r2020': this.paramOrder.setOptions(makeOptions('RGB')); break;
+        case 'hsl':   this.paramOrder.setOptions(makeOptions('HSL')); break;
+        case 'hsv':   this.paramOrder.setOptions(makeOptions('HSB')); break;
         case 'hclok':
         case 'hclab':
-        case 'hcluv':  this.paramOrder.setOptions(makeOptions('HCL')); break;
-        case 'oklab':  
-        case 'lab':    this.paramOrder.setOptions(makeOptions('Lab')); break;
-        case 'luv':    this.paramOrder.setOptions(makeOptions('Luv')); break;
+        case 'hcluv': this.paramOrder.setOptions(makeOptions('HCL')); break;
+        case 'oklab':
+        case 'lab':   this.paramOrder.setOptions(makeOptions('Lab')); break;
+        case 'luv':   this.paramOrder.setOptions(makeOptions('Luv')); break;
+        case 'xyz':
+        case 'xyz50':
+        case 'xyz65': this.paramOrder.setOptions(makeOptions('XYZ')); break;
         }
 
 
@@ -341,10 +346,10 @@ extends OpColorBase
 function makeOptions(c)
 {
     return ([
-        c[0]+', '+c[1]+', '+c[2], 
-        c[1]+', '+c[0]+', '+c[2], 
-        c[1]+', '+c[2]+', '+c[0], 
-        c[0]+', '+c[2]+', '+c[1], 
-        c[2]+', '+c[0]+', '+c[1], 
-        c[2]+', '+c[1]+', '+c[0]]);
+        c[0] + ', ' + c[1] + ', ' + c[2], 
+        c[1] + ', ' + c[0] + ', ' + c[2], 
+        c[1] + ', ' + c[2] + ', ' + c[0], 
+        c[0] + ', ' + c[2] + ', ' + c[1], 
+        c[2] + ', ' + c[0] + ', ' + c[1], 
+        c[2] + ', ' + c[1] + ', ' + c[0]]);
 }

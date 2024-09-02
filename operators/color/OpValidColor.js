@@ -1,7 +1,7 @@
 class   OpValidColor
 extends OpColorBase
 {
-    paramQuality;
+    paramMethod;
 
     corrections = [];
 
@@ -30,7 +30,7 @@ extends OpColorBase
         this.alwaysSaveParams = true;
 
         
-        this.addParam(this.paramQuality = new SelectParam('quality', '', false, true, true, ['clip sRGB', 'clip chroma', 'find closest'], 1));
+        this.addParam(this.paramMethod = new SelectParam('method', '', false, true, true, ['clip sRGB', 'clip chroma', 'find closest'], 1));
 
 
         this.initCorrections('');
@@ -64,7 +64,7 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
 
-        request.push(...this.node.paramQuality.genRequest(gen));
+        request.push(...this.node.paramMethod.genRequest(gen));
 
 
         const cached = 

@@ -708,6 +708,15 @@ function handleLegacyNode(_node, genVersion)
         if (paramFrom) paramFrom[1] = 'amount';
     }
 
+    else if (_node.type == VALID_COLOR
+          && _node.params
+          && _node.params.length > 0
+          &&  genVersion < 441)
+    {
+        const paramFrom = _node.params.find(p => p[1] == 'quality');
+        if (paramFrom) paramFrom[1] = 'method';
+    }
+
     else if (_node.type == GRADIENT
           && _node.params
           && _node.params.length > 0)

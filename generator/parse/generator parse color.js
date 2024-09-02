@@ -115,8 +115,8 @@ function genParseValidColor(parse)
         valid.input = genParse(parse);
 
 
-    valid.quality = genParse(parse);
-    valid.value   = genParse(parse);
+    valid.method = genParse(parse);
+    valid.value  = genParse(parse);
 
 
     parse.nTab--;

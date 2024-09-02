@@ -1,7 +1,7 @@
 class GValidColor
 extends GOperator1
 {
-    quality      = null;
+    method       = null;
 
     corrections  = [];
 
@@ -18,7 +18,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.quality     = null;
+        this.method      = null;
         this.corrections = [];
     }
 
@@ -30,8 +30,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.value  ) copy.value   = this.value  .copy();
-        if (this.quality) copy.quality = this.quality.copy();
+        if (this.value ) copy.value  = this.value .copy();
+        if (this.method) copy.method = this.method.copy();
 
         return copy;
     }
@@ -44,8 +44,8 @@ extends GOperator1
             return this;
 
 
-        const input     = await evalColorValue (this.input,   parse);
-        const quality   = await evalNumberValue(this.quality, parse);
+        const input  = await evalColorValue (this.input,   parse);
+        const method = await evalNumberValue(this.method, parse);
 
 
         if (input)
@@ -57,10 +57,10 @@ extends GOperator1
                     this.value = new ListValue();
 
                     for (let i = 0; i < input.items.length; i++)
-                        this.value.items.push(await getValidColorValue(parse, this, input.items[i], quality));
+                        this.value.items.push(await getValidColorValue(parse, this, input.items[i], method));
                 }
                 else
-                    this.value = await getValidColorValue(parse, this, input, quality);
+                    this.value = await getValidColorValue(parse, this, input, method);
             }
             else
                 this.value = input.copy();
@@ -72,9 +72,9 @@ extends GOperator1
         
         this.setUpdateValues(parse,
         [
-            ['value',   this.value       ],
-            ['type',    this.outputType()],
-            ['quality', quality          ]
+            ['value',  this.value       ],
+            ['type',   this.outputType()],
+            ['method', method           ]
         ]);
 
         
@@ -88,7 +88,7 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.quality && this.quality.isValid();
+            && this.method && this.method.isValid();
     }
 
 
@@ -97,7 +97,7 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.quality) this.quality.pushValueUpdates(parse);
+        if (this.method) this.method.pushValueUpdates(parse);
     }
 
 
@@ -106,7 +106,7 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.quality) this.quality.invalidateInputs(parse, from, force);
+        if (this.method) this.method.invalidateInputs(parse, from, force);
     }
 
 
@@ -115,17 +115,17 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.quality) this.quality.iterateLoop(parse);
+        if (this.method) this.method.iterateLoop(parse);
     }
 }
 
 
 
-async function getValidColorValue(parse, node, input, quality)
+async function getValidColorValue(parse, node, input, method)
 {
     let rgb = input.toRgb();
 
-    if (quality.value == 0) // clip sRGB
+    if (method.value == 0) // clip sRGB
     {
         rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
         rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
@@ -133,7 +133,7 @@ async function getValidColorValue(parse, node, input, quality)
         
         return ColorValue.fromRgb(rgb);
     }
-    else if (quality.value == 1) // clip chroma
+    else if (method.value == 1) // clip chroma
     {
         rgb = clipChroma(rgb);
 
@@ -160,7 +160,7 @@ async function getValidColorValue(parse, node, input, quality)
             parse,
             node.nodeId,
             inputColor,
-            quality, null,  null,  null,
+            method, null,  null,  null,
             false,   false, false, false);
 
             

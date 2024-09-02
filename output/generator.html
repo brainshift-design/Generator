@@ -36177,20 +36177,11 @@ async function findCorrection(parse,
             let start1 = lerp(min1, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
                 start2 = lerp(min2, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
                 start3 = lerp(min3, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
-               
-            // console.log('min1 =', min1);
-            // console.log('max1 =', max1);
-            // console.log('closest1 =', closest1);
-            // console.log('locked1 =', locked1);
-            //console.log('start = %s, %s, %s', start1, start2, start3);
-            //console.log('end = %s, %s, %s', end1, end2, end3);
-            // console.log('_c1 =', _c1);
-            
+
+                 
             if (locked1) { closest1 = _c1.toNumber(); start1 = closest1; end1 = closest1+Epsilon; }
             if (locked2) { closest2 = _c2.toNumber(); start2 = closest2; end2 = closest2+Epsilon; }
             if (locked3) { closest3 = _c3.toNumber(); start3 = closest3; end3 = closest3+Epsilon; }
-            // console.log('closest1 =', closest1);
-            // console.log('');
             
 
           [ closestColor,
@@ -36966,7 +36957,7 @@ extends GOperator1
 class GValidColor
 extends GOperator1
 {
-    quality      = null;
+    method       = null;
 
     corrections  = [];
 
@@ -36983,7 +36974,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.quality     = null;
+        this.method      = null;
         this.corrections = [];
     }
 
@@ -36995,8 +36986,8 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.value  ) copy.value   = this.value  .copy();
-        if (this.quality) copy.quality = this.quality.copy();
+        if (this.value ) copy.value  = this.value .copy();
+        if (this.method) copy.method = this.method.copy();
 
         return copy;
     }
@@ -37009,8 +37000,8 @@ extends GOperator1
             return this;
 
 
-        const input     = await evalColorValue (this.input,   parse);
-        const quality   = await evalNumberValue(this.quality, parse);
+        const input  = await evalColorValue (this.input,   parse);
+        const method = await evalNumberValue(this.method, parse);
 
 
         if (input)
@@ -37022,10 +37013,10 @@ extends GOperator1
                     this.value = new ListValue();
 
                     for (let i = 0; i < input.items.length; i++)
-                        this.value.items.push(await getValidColorValue(parse, this, input.items[i], quality));
+                        this.value.items.push(await getValidColorValue(parse, this, input.items[i], method));
                 }
                 else
-                    this.value = await getValidColorValue(parse, this, input, quality);
+                    this.value = await getValidColorValue(parse, this, input, method);
             }
             else
                 this.value = input.copy();
@@ -37037,9 +37028,9 @@ extends GOperator1
         
         this.setUpdateValues(parse,
         [
-            ['value',   this.value       ],
-            ['type',    this.outputType()],
-            ['quality', quality          ]
+            ['value',  this.value       ],
+            ['type',   this.outputType()],
+            ['method', method           ]
         ]);
 
         
@@ -37053,7 +37044,7 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.quality && this.quality.isValid();
+            && this.method && this.method.isValid();
     }
 
 
@@ -37062,7 +37053,7 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.quality) this.quality.pushValueUpdates(parse);
+        if (this.method) this.method.pushValueUpdates(parse);
     }
 
 
@@ -37071,7 +37062,7 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.quality) this.quality.invalidateInputs(parse, from, force);
+        if (this.method) this.method.invalidateInputs(parse, from, force);
     }
 
 
@@ -37080,17 +37071,17 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.quality) this.quality.iterateLoop(parse);
+        if (this.method) this.method.iterateLoop(parse);
     }
 }
 
 
 
-async function getValidColorValue(parse, node, input, quality)
+async function getValidColorValue(parse, node, input, method)
 {
     let rgb = input.toRgb();
 
-    if (quality.value == 0) // clip sRGB
+    if (method.value == 0) // clip sRGB
     {
         rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
         rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
@@ -37098,7 +37089,7 @@ async function getValidColorValue(parse, node, input, quality)
         
         return ColorValue.fromRgb(rgb);
     }
-    else if (quality.value == 1) // clip chroma
+    else if (method.value == 1) // clip chroma
     {
         rgb = clipChroma(rgb);
 
@@ -37125,7 +37116,7 @@ async function getValidColorValue(parse, node, input, quality)
             parse,
             node.nodeId,
             inputColor,
-            quality, null,  null,  null,
+            method, null,  null,  null,
             false,   false, false, false);
 
             
@@ -37229,9 +37220,9 @@ extends GOperator1
 
         let   input = await evalColorValue (this. input, parse);
         let   order = await evalNumberValue(this._order, parse);
-        const c1    = await evalNumberValue(this._c1,    parse);
-        const c2    = await evalNumberValue(this._c2,    parse);
-        const c3    = await evalNumberValue(this._c3,    parse);
+        let   c1    = await evalNumberValue(this._c1,    parse);
+        let   c2    = await evalNumberValue(this._c2,    parse);
+        let   c3    = await evalNumberValue(this._c3,    parse);
 
 
         if (order) 
@@ -37239,6 +37230,12 @@ extends GOperator1
             order       = order.toInteger();
             order.value = Math.min(Math.max(0, order.value), 5);
         }
+
+
+        if (!order.isValid()) order = null;
+        if (!c1   .isValid()) c1    = null;
+        if (!c2   .isValid()) c2    = null;
+        if (!c3   .isValid()) c3    = null;
 
 
         if (input)
@@ -37273,7 +37270,7 @@ extends GOperator1
                     this.c2    != null, 
                     this.c3    != null); 
 
-                    
+                   
                 if (   /*!parse.stop()
                     &&*/ !parse.stopGenerate)
                 {
@@ -37287,7 +37284,7 @@ extends GOperator1
                             closest2,
                             closest3);
 
-                            
+
                         this.order = new NumberValue(closestOrder);
                         this.c1    = new NumberValue(closest1);
                         this.c2    = new NumberValue(closest2);
@@ -51955,8 +51952,8 @@ function genParseValidColor(parse)
         valid.input = genParse(parse);
 
 
-    valid.quality = genParse(parse);
-    valid.value   = genParse(parse);
+    valid.method = genParse(parse);
+    valid.value  = genParse(parse);
 
 
     parse.nTab--;

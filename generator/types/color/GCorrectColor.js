@@ -72,9 +72,9 @@ extends GOperator1
 
         let   input = await evalColorValue (this. input, parse);
         let   order = await evalNumberValue(this._order, parse);
-        const c1    = await evalNumberValue(this._c1,    parse);
-        const c2    = await evalNumberValue(this._c2,    parse);
-        const c3    = await evalNumberValue(this._c3,    parse);
+        let   c1    = await evalNumberValue(this._c1,    parse);
+        let   c2    = await evalNumberValue(this._c2,    parse);
+        let   c3    = await evalNumberValue(this._c3,    parse);
 
 
         if (order) 
@@ -82,6 +82,12 @@ extends GOperator1
             order       = order.toInteger();
             order.value = Math.min(Math.max(0, order.value), 5);
         }
+
+
+        if (!order.isValid()) order = null;
+        if (!c1   .isValid()) c1    = null;
+        if (!c2   .isValid()) c2    = null;
+        if (!c3   .isValid()) c3    = null;
 
 
         if (input)
@@ -116,7 +122,7 @@ extends GOperator1
                     this.c2    != null, 
                     this.c3    != null); 
 
-                    
+                   
                 if (   /*!parse.stop()
                     &&*/ !parse.stopGenerate)
                 {
@@ -130,7 +136,7 @@ extends GOperator1
                             closest2,
                             closest3);
 
-                            
+
                         this.order = new NumberValue(closestOrder);
                         this.c1    = new NumberValue(closest1);
                         this.c2    = new NumberValue(closest2);
