@@ -84,10 +84,10 @@ extends GOperator1
         }
 
 
-        if (!order.isValid()) order = null;
-        if (!c1   .isValid()) c1    = null;
-        if (!c2   .isValid()) c2    = null;
-        if (!c3   .isValid()) c3    = null;
+        if (order && !order.isValid()) order = null;
+        if (c1    && !c1   .isValid()) c1    = null;
+        if (c2    && !c2   .isValid()) c2    = null;
+        if (c3    && !c3   .isValid()) c3    = null;
 
 
         if (input)
@@ -99,13 +99,10 @@ extends GOperator1
 
             if (this.options.enabled)
             {
-                const rgb = input.toRgb();
-                
-                if (!rgbIsOk(rgb))
+                const inputColor = input.toDataColor();
+
+                if (!dataColorIsOk(inputColor))
                     genInitNodeProgress(this.nodeId);
-
-
-                const inputColor = rgb2dataColor(rgb);
 
 
                 const
@@ -117,10 +114,10 @@ extends GOperator1
                     this.nodeId,
                     inputColor, 
                     order, c1, c2, c3, 
-                    this.order != null,
-                    this.c1    != null, 
-                    this.c2    != null, 
-                    this.c3    != null); 
+                    order != null,
+                    c1    != null, 
+                    c2    != null, 
+                    c3    != null); 
 
                    
                 if (   /*!parse.stop()

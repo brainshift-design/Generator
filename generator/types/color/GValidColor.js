@@ -145,11 +145,10 @@ async function getValidColorValue(parse, node, input, method)
     }
     else // find corrections
     {
-        if (!rgbIsOk(rgb))
-            genInitNodeProgress(node.nodeId);
-        
-
         const inputColor = input.toDataColor();
+
+        if (!dataColorIsOk(inputColor))
+            genInitNodeProgress(this.nodeId);
 
 
         const
@@ -160,8 +159,8 @@ async function getValidColorValue(parse, node, input, method)
             parse,
             node.nodeId,
             inputColor,
-            method, null,  null,  null,
-            false,   false, false, false);
+            null,   null,  null,  null,
+            false,  false, false, false);
 
             
         if (!parse.stopGenerate)
