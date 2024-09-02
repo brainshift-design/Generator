@@ -36150,13 +36150,16 @@ async function findCorrection(parse,
         total    = 6 * Math.pow(2, Tau);
 
         
+    const findSteps = 1024;
+    
     let d = 1;
-        
-    parse.totalProgress += 1024;
+    
+
+    parse.totalProgress += findSteps;
 
 
     dLoop:
-    while (d > 1/1024)
+    while (d > 1/findSteps)
     {
         if (parse.stopGenerate)
             break dLoop;

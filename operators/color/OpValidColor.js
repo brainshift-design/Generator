@@ -98,7 +98,9 @@ extends OpColorBase
             ? value.toDataColor()
             : dataColor_NaN;
 
-        this.rgbaBack = value.toRgba();
+            
+        if (isColorType(value.type))
+            this.rgbaBack = value.toRgba();
         
 
         if (type) 
