@@ -147,10 +147,10 @@ async function getValidColorValue(parse, node, input, method)
     {
         const inputColor = input.toDataColor();
 
-        if (!dataColorIsOk(inputColor))
-            genInitNodeProgress(this.nodeId);
+        if (!rgbIsOk(rgb))
+            genInitNodeProgress(node.nodeId);
 
-
+        
         const
       [ closestOrder,
         closest1,

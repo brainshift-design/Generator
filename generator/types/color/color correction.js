@@ -179,7 +179,7 @@ async function findCorrectionInOrder(parse,
 
                 if (   rgbIsOk(_rgb)
                     && (  !closestOklab
-                        || rgbDistance(refOklab, _oklab) < rgbDistance(refOklab, closestOklab)))
+                        || colorDistance(refOklab, _oklab) < colorDistance(refOklab, closestOklab)))
                 {
                     closestColor = _color;
                     closestOklab = _oklab;

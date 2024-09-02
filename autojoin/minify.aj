@@ -100,12 +100,12 @@ rgb2style_a
 toRgba
 rgb_a
 isDark
-rgbDistance
+colorDistance
 col1
 col2
 rgbaMul
 rgbaDiv
-maxRgbDistance
+maxColorDistance
 rgbEqual
 style2rgba
 computedStyle2rgba

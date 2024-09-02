@@ -336,17 +336,6 @@ function isLight(rgb, threshold = 0.71)
 
 
 
-function rgbDistance(col1, col2)
-{
-    const d0 = col2[0] - col1[0];
-    const d1 = col2[1] - col1[1];
-    const d2 = col2[2] - col1[2];
-
-    return Math.sqrt(d0*d0 + d1*d1 + d2*d2);
-}
-
-
-
 function rgbaMul(rgba, v)
 {
     return [
@@ -369,7 +358,7 @@ function rgbaDiv(rgba, v)
 
 
 
-function maxRgbDistance(col1, col2)
+function maxColorDistance(col1, col2)
 {
     return Math.max(Math.max(Math.max(
         Math.abs(col2[0] - col1[0]),
@@ -656,15 +645,21 @@ function addHueHcluv(rgb, d, min = 0, max = Tau)
 
 
 
+function colorDistance(col1, col2)
+{
+    return Math.sqrt(
+        sqr(col2[0] - col1[0])
+      + sqr(col2[1] - col1[1])
+      + sqr(col2[2] - col1[2]));
+}
+
+
+
 function deltaE(rgb1, rgb2)
 {
-    const lab1 = rgb2oklab(rgb1);
-    const lab2 = rgb2oklab(rgb2);
-
-    return Math.sqrt(
-          sqr(lab2[0] - lab1[0])
-        + sqr(lab2[1] - lab1[1])
-        + sqr(lab2[2] - lab1[2]));
+    return colorDistance(
+        rgb2oklab(rgb1), 
+        rgb2oklab(rgb2));
 }
 
 
