@@ -472,10 +472,10 @@ extends EventTarget
                           ? [0, 0, 0, 0.2 ]
                           : [1, 1, 1, 0.37]));
             }
-            else if (NUMBER_VALUES.includes(this.types[0])) ringColor = this.node.active ? [1, 1, 1, 0.35] : [0, 0, 0, 0.23];
+            else if (NUMBER_VALUES.includes(this.types[0])) ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.23];
             else if (  TEXT_VALUES.includes(this.types[0])) ringColor = this.node.active ? [0, 0, 0, 0.28] : [0, 0, 0, 0.23];
             else if ( SHAPE_VALUES.includes(this.types[0])) ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.23];
-            else                                           ringColor = this.node.active ? [1, 1, 1, 0.28] : [0, 0, 0, 0.25];
+            else                                            ringColor = this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, 0.25];
         }
 
 

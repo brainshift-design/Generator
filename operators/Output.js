@@ -378,10 +378,10 @@ extends EventTarget
                            ? [0, 0, 0, 0.17]
                            : [1, 1, 1, 0.3 ]);
             }
-            else if (NUMBER_VALUES.includes(this.types[0])) ballColor = diff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.35] : [0, 0, 0, tc ? 0 : 0.2 ]);
-            else if (  TEXT_VALUES.includes(this.types[0])) ballColor = diff ? typeColorLight : (this.node.active ? [0, 0, 0, tc ? 0 : 0.25] : [0, 0, 0, tc ? 0 : 0.21]);
-            else if ( SHAPE_VALUES.includes(this.types[0])) ballColor = diff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.4 ] : [0, 0, 0, tc ? 0 : 0.2 ]);
-            else                                            ballColor = diff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.28] : [0, 0, 0, tc ? 0 : 0.2 ]);
+            else if (NUMBER_VALUES.includes(this.types[0])) ballColor = diff ? typeColorLight : (this.node.active ? [1, 1, 1, 0.35] : [0, 0, 0, tc ? 0 : 0.2 ]);
+            else if (  TEXT_VALUES.includes(this.types[0])) ballColor = diff ? typeColorLight : (this.node.active ? [0, 0, 0, 0.2 ] : [0, 0, 0, tc ? 0 : 0.21]);
+            else if ( SHAPE_VALUES.includes(this.types[0])) ballColor = diff ? typeColorLight : (this.node.active ? [1, 1, 1, 0.4 ] : [0, 0, 0, tc ? 0 : 0.2 ]);
+            else                                            ballColor = diff ? typeColorLight : (this.node.active ? [1, 1, 1, 0.35] : [0, 0, 0, tc ? 0 : 0.2 ]);
         }
 
 
