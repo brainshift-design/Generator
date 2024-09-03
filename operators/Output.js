@@ -501,10 +501,10 @@ extends EventTarget
         const outColor     = this.node.getHeaderOutputColor();
         const outWireColor = this.node.getOutputWireColor();
 
-        const type =
-            this.node.outputValueType != NULL
-            ? this.node.outputValueType
-            : this.types[0];
+        const type = this.types[0];
+            // this.node.outputValueType != NULL
+            // ? this.node.outputValueType
+            // : this.types[0];
 
 
         let ringColor;

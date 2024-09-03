@@ -14,7 +14,6 @@ extends OpColorBase
     {
         super(VALID_COLOR, 'valid', 'valid', iconValidColor, true);
 
-        // this.subscription = true;
         this.canDisable   = true;
         this.slow         = true;
         this.iconOffsetY  = -1;
@@ -98,7 +97,7 @@ extends OpColorBase
             ? value.toDataColor()
             : dataColor_NaN;
 
-            
+
         if (isColorType(value.type))
             this.rgbaBack = value.toRgba();
         

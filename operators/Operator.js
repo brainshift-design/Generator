@@ -107,6 +107,7 @@ class Operator
     showHeaderTooltip  = false;
     preview            = null;
 
+    forceIsUnknown     = false;
 
     defaultWidth;
     labelOffsetFactor;
@@ -1084,9 +1085,10 @@ class Operator
 
     isUnknown(stackOverflowProtect = 100)
     {
-        return this.isOrPrecededByUncached(stackOverflowProtect-1)
-            && (   this.hasMultipliedOutputs()
-                || this.hasSolvedOutputs());
+        return this.forceIsUnknown
+            ||    this.isOrPrecededByUncached(stackOverflowProtect-1)
+               && (   this.hasMultipliedOutputs()
+                   || this.hasSolvedOutputs());
     }
 
 
