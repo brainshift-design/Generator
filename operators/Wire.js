@@ -303,15 +303,15 @@ class Wire
         let _y2 = _y3;
     
     
-        if (   this.tempConn        == this.connection
-            && this.tempConn.output == this.overOutput)
+        if (   graphView.tempConn        == this.connection
+            && graphView.tempConn.output == graphView.overOutput)
         {
             _x1 += (_x0 - _x1) * 5/8;
             _y1 += (_y0 - _y1) * 5/8;
         }
     
-        if (   this.tempConn       == this.connection
-            && this.tempConn.input == this.overInput)
+        if (   graphView.tempConn       == this.connection
+            && graphView.tempConn.input == graphView.overInput)
         {
             _x2 += (_x3 - _x2) * 5/8;
             _y2 += (_y3 - _y2) * 5/8;

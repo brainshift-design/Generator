@@ -62,11 +62,8 @@ GraphView.prototype.updateWires = function(_wires)
 
     wires.forEach(w => 
     {
-        const ro = boundingRect(w.connection.output.div);
-        const ri = boundingRect(w.connection.input .div);
-
-        pOut.push(point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset));
-        pIn .push(point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset));
+        pOut.push(w.connection.output.getPosition());
+        pIn .push(w.connection. input.getPosition());
     });
 
        
@@ -90,7 +87,9 @@ GraphView.prototype.updateWires = function(_wires)
             if (_pOut.y > outBottom) _pOut.y = outBottom;
         }
 
-        wire.updateCurve(_pOut.x, _pOut.y, pIn[i].x, pIn[i].y);
+        wire.updateCurve(
+            _pOut .x, _pOut .y, 
+            pIn[i].x, pIn[i].y);
         
         
         wire.outBall.style.opacity = 

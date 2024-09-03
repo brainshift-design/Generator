@@ -482,7 +482,7 @@ extends EventTarget
             this.input.mouseOver = true;
             this.input.updateControl();
 
-            tc.wire.inputPos = this.input.getWirePosition();
+            tc.wire.inputPos = this.input.getPosition();
             tc.wire.update();
 
             tc.output.updateControl();
@@ -499,7 +499,7 @@ extends EventTarget
             this.output.mouseOver = true;
             this.output.updateControl();
 
-            tc.wire.outputPos = this.output.getWirePosition();
+            tc.wire.outputPos = this.output.getPosition();
             tc.wire.update();
 
             tc.input.updateControl();

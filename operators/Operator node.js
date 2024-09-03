@@ -306,7 +306,7 @@ this.header.addEventListener('pointerdown', e =>
                     input.mouseOver = true;
                     input.updateControl();
 
-                    tempConn.wire.inputPos = input.getWirePosition();
+                    tempConn.wire.inputPos = input.getPosition();
                 }
             }
             else if ( tempConn.input
@@ -324,7 +324,7 @@ this.header.addEventListener('pointerdown', e =>
 
                 const rect = boundingRect(output.div);
 
-                tempConn.wire.outputPos = output.getWirePosition();
+                tempConn.wire.outputPos = output.getPosition();
 
 
                 tempConn.input.updateControl();

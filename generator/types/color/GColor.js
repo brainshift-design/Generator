@@ -174,11 +174,11 @@ extends GOperator1
                 NumberValue.NaN);
 
         
-        this.convert.parent = this;
-        this.space  .parent = this;
-        this.c1     .parent = this;
-        this.c2     .parent = this;
-        this.c3     .parent = this;
+        if (this.convert) this.convert.parent = this;
+        if (this.space  ) this.space  .parent = this;
+        if (this.c1     ) this.c1     .parent = this;
+        if (this.c2     ) this.c2     .parent = this;
+        if (this.c3     ) this.c3     .parent = this;
 
 
         this.setUpdateValues(parse,

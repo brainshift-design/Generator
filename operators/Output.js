@@ -33,8 +33,6 @@ extends EventTarget
     colorLight;
     colorDark;
 
-    //wireColor;
-
 
     div;
     hitbox;
@@ -120,12 +118,12 @@ extends EventTarget
             if (    tc
                 &&  tc.input
                 &&  tc.input.canConnectFrom(this)
-                && !this.node.isOrFollows(tc.input.node))//this.supportsTypes(graphView.tempConn.input.types))//.includes(this.type))
+                && !this.node.isOrFollows(tc.input.node))//this.supportsTypes(graphView.tempConn.input.types))//.includes(this.types[0]))
             {
                 graphView.overOutput = this;
                 tc.output            = this;
 
-                tc.wire.outputPos = this.getWirePosition();
+                tc.wire.outputPos = this.getPosition();
 
                 tc.input.updateControl();
                 // this.node.outputs.forEach(o => o.updateControl());
@@ -218,7 +216,7 @@ extends EventTarget
     
     updateControl()
     {
-        const tc = graphView.tempConn;
+        //const tc = graphView.tempConn;
 
 
         const mouseOver =
@@ -227,7 +225,7 @@ extends EventTarget
                  && graphView.tempConn.output)
             && !(   graphView.tempConn
                  && graphView.tempConn.input
-                 && (  !graphView.tempConn.input.types.includes(this.type)
+                 && (  !graphView.tempConn.input.types.includes(this.types[0])
                      || this.node.isOrFollows(graphView.tempConn.input.node)));
 
 
@@ -249,37 +247,43 @@ extends EventTarget
                    ||     graphView.overOutput == this
                       && !graphView.tempConn.output)
                && !(    graphView.tempConn.input
-                    && !graphView.tempConn.input.types.includes(this.type));
+                    && !graphView.tempConn.input.types.includes(this.types[0]));
 
         this.div.style.transform = 
-            //  'translateX(' + (isConnected ? -1 : 0) + 'px)'
-            //+ 
-            'translateY(-50%)';
+               'translateX(' + (isConnected ? -1 : -1) + 'px)'
+            + ' translateY(-50%)';
 
+        this.div.style.width           = (isConnected ? 6 : 6) + 'px';
+        this.div.style.height          = (isConnected ? 6 : 6) + 'px';
+        this.div.style.borderRadius    = (isConnected ? 4 : 4) + 'px';
+        this.div.style.marginBottom    = (isConnected ? 4 : 6) + 'px';
         this.div.style.pointerEvents   = 'auto';
-        this.div.style.backgroundColor = ballStyle;
-
-        this.div.style.boxShadow =
-               !isEmpty(this.connectedInputs)
-            ||    graphView.tempConn
-               && (   graphView.tempConn.output == this
-                   || graphView.overOutput == this)
+        this.div.style.background      = isConnected ? 'none' : ballStyle;
+        
+        this.div.style.boxShadow = 
+               (  !isEmpty(this.connectedInputs)
+                ||    graphView.tempConn
+                   && (   graphView.tempConn.output == this
+                       || graphView.overOutput == this))
+            && isColorType(this.types[0])
             ? '0 0 0 1px ' + ringStyle
             : 'none';
 
 
         const zoom = graph.currentPage.zoom;
 
-        this.hitbox.style.left  = -3 - Math.max(0, (1 - 1*zoom) * 10);
-        this.hitbox.style.width = 12 + Math.max(0, (1 - 1*zoom) * 10);
+        this.hitbox  .style.left   = -3 - Math.max(0, (1 - 1*zoom) * 10);
+        this.hitbox  .style.width  = 12 + Math.max(0, (1 - 1*zoom) * 10);
 
-        this.hitbox.style.top    = -3 - Math.max(0, (1 - 1*zoom) * 10);
-        this.hitbox.style.height = 12 + Math.max(0, (1 - 1*zoom) * 20);
+        this.hitbox  .style.top    = -3 - Math.max(0, (1 - 1*zoom) * 10);
+        this.hitbox  .style.height = 12 + Math.max(0, (1 - 1*zoom) * 20);
         
 
+        this.wireBall.style.left   = (isConnected ? (isColorType(this.types[0]) ? 0 : -1) : 0) + 'px';
         this.wireBall.style.top    = '50%';
         this.wireBall.style.zIndex =  MAX_INT32;
-
+        this.wireBall.style.width  = (isConnected ? (isColorType(this.types[0]) ? 6 : 8) : 6) + 'px';
+        this.wireBall.style.height = (isConnected ? (isColorType(this.types[0]) ? 6 : 8) : 6) + 'px';
 
         this.wireBall.style.background = rgba2style(ballColor);
 
@@ -314,8 +318,9 @@ extends EventTarget
                 ||    graphView.tempConn 
                    && graphView.tempConn.output == this);
 
-        const connOrDiff = 
-               conn 
+        const diff = 
+                   conn
+               && !this.node.active
             ||    this.node.outputValueType != NULL
                && (   this.node.outputValueType == SHAPE_VALUE && !SHAPE_VALUES.includes(this.types[0])
                    || this.node.outputValueType != SHAPE_VALUE && this.node.outputValueType != this.types[0])
@@ -338,7 +343,7 @@ extends EventTarget
                        conn
                     || (    this.forceOutputColor
                         && !rgbIsNaN(outWireColor))
-                    ? outWireColor
+                    ? outColor
                     : rgbIsNaN(colors.back)
                       ? [1, 1, 1, 0.25]
                       : (   rgbIsNaN(outColor)
@@ -349,10 +354,10 @@ extends EventTarget
                              ? [1, 1, 1, 0.25]
                              : [0, 0, 0, 0.2 ]));
             }
-            else if (NUMBER_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.35] : [1, 1, 1, tc ? 0 : 0.35]);
-            else if (  TEXT_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.25] : [1, 1, 1, tc ? 0 : 0.25]);
-            else if ( SHAPE_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorDark : (this.node.active ? [1, 1, 1, tc ? 0 : 0.4 ] : [1, 1, 1, tc ? 0 : 0.4 ]);
-            else                                            ballColor = connOrDiff ? typeColorDark : (this.node.active ? [0, 0, 0, tc ? 0 : 0.28] : [1, 1, 1, tc ? 0 : 0.28]);
+            else if (NUMBER_VALUES.includes(this.types[0])) ballColor = diff ? typeColorDark : (this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, tc ? 0 : 0.2]);
+            else if (  TEXT_VALUES.includes(this.types[0])) ballColor = diff ? typeColorDark : (this.node.active ? [0, 0, 0, 0.23] : [1, 1, 1, tc ? 0 : 0.2]);
+            else if ( SHAPE_VALUES.includes(this.types[0])) ballColor = diff ? typeColorDark : (this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, tc ? 0 : 0.2]);
+            else                                            ballColor = diff ? typeColorDark : (this.node.active ? [0, 0, 0, 0.2 ] : [1, 1, 1, tc ? 0 : 0.2]);
         }
         else // light mode
         {
@@ -373,10 +378,10 @@ extends EventTarget
                            ? [0, 0, 0, 0.17]
                            : [1, 1, 1, 0.3 ]);
             }
-            else if (NUMBER_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.35] : [0, 0, 0, tc ? 0 : 0.2 ]);
-            else if (  TEXT_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorLight : (this.node.active ? [0, 0, 0, tc ? 0 : 0.25] : [0, 0, 0, tc ? 0 : 0.21]);
-            else if ( SHAPE_VALUES.includes(this.types[0])) ballColor = connOrDiff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.4 ] : [0, 0, 0, tc ? 0 : 0.2 ]);
-            else                                            ballColor = connOrDiff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.28] : [0, 0, 0, tc ? 0 : 0.2 ]);
+            else if (NUMBER_VALUES.includes(this.types[0])) ballColor = diff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.35] : [0, 0, 0, tc ? 0 : 0.2 ]);
+            else if (  TEXT_VALUES.includes(this.types[0])) ballColor = diff ? typeColorLight : (this.node.active ? [0, 0, 0, tc ? 0 : 0.25] : [0, 0, 0, tc ? 0 : 0.21]);
+            else if ( SHAPE_VALUES.includes(this.types[0])) ballColor = diff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.4 ] : [0, 0, 0, tc ? 0 : 0.2 ]);
+            else                                            ballColor = diff ? typeColorLight : (this.node.active ? [1, 1, 1, tc ? 0 : 0.28] : [0, 0, 0, tc ? 0 : 0.2 ]);
         }
 
 
@@ -613,7 +618,7 @@ extends EventTarget
 
 
 
-    getWirePosition()
+    getPosition()
     {
         const rect = boundingRect(this.div);
 
@@ -636,7 +641,7 @@ extends EventTarget
                   : this.param.getWireColor();
         }
 
-        else
+        else // header
         {
             let color = this.node.getOutputWireColor();
 

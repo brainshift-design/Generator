@@ -156,7 +156,7 @@ extends EventTarget
                 graphView.overInput = this;
                 if (tc) tc.input    = this;
 
-                tc.wire.inputPos = this.getWirePosition();
+                tc.wire.inputPos = this.getPosition();
                 tc.wire.update();
 
                 tc.output.updateControl();
@@ -197,9 +197,9 @@ extends EventTarget
 
         graphView.overInput = null;
 
-        // if (   graphView.tempConn
-        //     && graphView.tempConn.output) 
-        //     graphView.tempConn.input = null;
+        if (   graphView.tempConn
+            && graphView.tempConn.output) 
+            graphView.tempConn.input = null;
 
         this.mouseOver = false;
         this.updateControl();
@@ -301,9 +301,6 @@ extends EventTarget
         this.div.style.boxShadow       = '0 0 0 1px ' + ringStyle;
         this.div.style.pointerEvents   = 'auto';
        
-        this.hitbox.style.left         = isConnected ? -2 : -3;
-        this.hitbox.style.top          = isConnected ? -2 : -3;
-
 
         const zoom = graph.currentPage.zoom;
 
@@ -314,6 +311,7 @@ extends EventTarget
         this.hitbox.style.height       = 12 + Math.max(0, (1 - 1*zoom) * 20);
        
        
+        //this.wireBall.style.left       = (isColorTypeOnHeader(this.types[0], this.node) ? 0 : 1) + 'px';
         this.wireBall.style.left       = '1px';
         this.wireBall.style.top        = 'calc(50% - 3px)';
            
@@ -348,25 +346,36 @@ extends EventTarget
 
     getHeaderBallColor()
     {
-        if (   graphView.savedConn
-            && graphView.savedConn.input == this
-            && graphView.overInput != this)
+        if (      graphView.savedConn
+               && graphView.savedConn.input == this
+               && graphView.overInput != this)
             return transparent;
 
-        if (   this.connected
-            && this.connectedOutput
-            && (   isColorType(this.types[0])
-                || this.connectedOutput.types[0] != this.types[0]
-                || this.types[0] != this.node.outputValueType))
+        if (   this.connectedOutput
+            && (    isColorType(this.types[0])
+                || !this.node.active
+                ||  this.connectedOutput.types[0] != this.types[0]
+                ||     this.node.outputValueType != NULL
+                    && this.node.outputValueType != this.types[0]))
             return this.connectedOutput.getWireColor();
 
         if (   graphView.tempConn
             && graphView.tempConn.output
             && graphView.overInput == this
             && (   isColorType(this.types[0])
-                || graphView.tempConn.output.types[0] != this.types[0]
-                || this.types[0] != this.node.outputValueType))
+                || (   (   graphView.tempConn.output.types[0] != this.types[0]
+                        || this.node.outputValueType == NULL
+                        || this.node.outputValueType != this.types[0])
+                    && !this.node.active)))
             return graphView.tempConn.output.getWireColor();
+
+
+        if (    graphView.tempConn
+            &&  graphView.tempConn.input
+            && !graphView.tempConn.output
+            && (    isColorType(this.types[0])
+                || !this.node.active))
+            return graphView.tempConn.input.getWireColor();
 
 
         return this.getRingColor();
@@ -565,7 +574,7 @@ extends EventTarget
 
 
 
-    getWirePosition()
+    getPosition()
     {
         const inputRect = boundingRect(this.div);
 

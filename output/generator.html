@@ -7258,6 +7258,10 @@ const COLOR_HEADER_TYPES =
     STROKE,
     COLOR_STOP,
     GRADIENT
+    // COLOR_CONTRAST,
+    // COLOR_INTERPOLATE,
+    // COLOR_BLEND,
+    // COLORBLIND
 ];
 
 
@@ -36843,11 +36847,11 @@ extends GOperator1
                 NumberValue.NaN);
 
         
-        this.convert.parent = this;
-        this.space  .parent = this;
-        this.c1     .parent = this;
-        this.c2     .parent = this;
-        this.c3     .parent = this;
+        if (this.convert) this.convert.parent = this;
+        if (this.space  ) this.space  .parent = this;
+        if (this.c1     ) this.c1     .parent = this;
+        if (this.c2     ) this.c2     .parent = this;
+        if (this.c3     ) this.c3     .parent = this;
 
 
         this.setUpdateValues(parse,
@@ -63647,6 +63651,14 @@ function deltaE(rgb1, rgb2)
 function isColorType(type)
 {
     return COLOR_VALUES.includes(type);
+}
+
+
+
+function isColorTypeOnHeader(type, node)
+{
+    return isColorType(type)
+        && COLOR_HEADER_TYPES.includes(node.type);
 }
 
 

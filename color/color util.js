@@ -671,6 +671,14 @@ function isColorType(type)
 
 
 
+function isColorTypeOnHeader(type, node)
+{
+    return isColorType(type)
+        && COLOR_HEADER_TYPES.includes(node.type);
+}
+
+
+
 function rgbFromColorValue(value)
 {
     consoleAssert(

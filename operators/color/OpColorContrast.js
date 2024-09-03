@@ -273,8 +273,20 @@ extends OpColorBase
 
 
 
+    getHeaderOutputColor()
+    {
+        if (!rgbIsNaN(this._rgbText))
+            return this._rgbText;
+        else
+            return super.getHeaderOutputColor();
+    }
+
+
+
     getOutputWireColor()
     {
+        // if (!dataColorIsNaN(this._color))
+        //     return dataColor2rgb(this._color);
         if (!rgbIsNaN(this._rgbText))
             return this._rgbText;
         else

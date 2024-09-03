@@ -5,7 +5,6 @@ GraphView.prototype.startConnectionFromOutput = function(pointerId, output, upda
     this.tempConn          = new Connection(output, null);
     this.tempConn.backInit = backInit;
 
-    //this.tempConnected = false;
     this.addConnWires(this.tempConn, false);
 
     if (updateTempWire)
@@ -15,12 +14,6 @@ GraphView.prototype.startConnectionFromOutput = function(pointerId, output, upda
     this.hideAllOutputs(this.tempConn.output);
 
     output.updateControl();
-
-
-    // if (dragOutTimer) clearInterval(dragOutTimer);
-    // dragOutTimer = setInterval(() => checkDragOut(), 200);
-
-    //try { this.div.setPointerCapture(pointerId); } catch {}
 };
 
 
