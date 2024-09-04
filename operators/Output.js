@@ -39,10 +39,10 @@ extends EventTarget
     wireBall;
 
 
-    measureData = { divBounds: new Rect(0, 0, 0, 0) };
+    measureData      = { divBounds: new Rect(0, 0, 0, 0) };
 
 
-    connectedInputs = [];
+    connectedInputs  = [];
 
     get connectedHeaderInputs() { return this.connectedInputs.filter(i => !i.param); }
     get connected()             { return !isEmpty(this.connectedInputs); }
@@ -51,19 +51,19 @@ extends EventTarget
     get connections()           { return this.connectedInputs.map(i => i.connection); }
 
 
-    mouseOver  = false;
-    connecting = false;
+    mouseOver        = false;
+    connecting       = false;
  
-    overFactor = 1.7;
+    overFactor       = 1.7;
  
  
-    genRequest = null; // function pointer, must be implemented
-    cache      = [];
+    genRequest       = null; // function pointer, must be implemented
+    cache            = [];
 
 
     getValuesForUndo; // function pointer, return array of [index,value] tuples
 
-    backInit   = null;
+    backInit         = null;
 
 
     forceOutputColor = false;
@@ -329,7 +329,8 @@ extends EventTarget
                !this.node.isUnknown()
             && (   this.connected
                 ||    graphView.tempConn 
-                   && graphView.tempConn.output == this);
+                   && (   graphView.tempConn.output == this
+                       || graphView.overOutput == this));
 
         const diff = 
                    conn
@@ -367,10 +368,10 @@ extends EventTarget
                              ? [1, 1, 1, 0.25]
                              : [0, 0, 0, 0.2 ]));
             }
-            else if (NUMBER_VALUES.includes(this.types[0])) ballColor = diff ? rgb_a(typeColorDark, isConnected ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, tc ? 0 : 0.2]);
-            else if (  TEXT_VALUES.includes(this.types[0])) ballColor = diff ? rgb_a(typeColorDark, isConnected ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [0, 0, 0, 0.23] : [1, 1, 1, tc ? 0 : 0.2]);
-            else if ( SHAPE_VALUES.includes(this.types[0])) ballColor = diff ? rgb_a(typeColorDark, isConnected ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, tc ? 0 : 0.2]);
-            else                                            ballColor = diff ? rgb_a(typeColorDark, isConnected ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [0, 0, 0, 0.2 ] : [1, 1, 1, tc ? 0 : 0.2]);
+            else if (NUMBER_VALUES.includes(this.types[0])) ballColor = diff ? rgb_a(typeColorDark, conn ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, tc ? 0 : 0.2]);
+            else if (  TEXT_VALUES.includes(this.types[0])) ballColor = diff ? rgb_a(typeColorDark, conn ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [0, 0, 0, 0.23] : [1, 1, 1, tc ? 0 : 0.2]);
+            else if ( SHAPE_VALUES.includes(this.types[0])) ballColor = diff ? rgb_a(typeColorDark, conn ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, tc ? 0 : 0.2]);
+            else                                            ballColor = diff ? rgb_a(typeColorDark, conn ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [0, 0, 0, 0.2 ] : [1, 1, 1, tc ? 0 : 0.2]);
         }
         else // light mode
         {
