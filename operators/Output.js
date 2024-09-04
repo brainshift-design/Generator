@@ -253,12 +253,12 @@ extends EventTarget
                'translateX(' + (isConnected ? -1 : -1) + 'px)'
             + ' translateY(-50%)';
 
-        this.div.style.width           = (isConnected ? 6 : 6) + 'px';
-        this.div.style.height          = (isConnected ? 6 : 6) + 'px';
-        this.div.style.borderRadius    = (isConnected ? 4 : 4) + 'px';
-        this.div.style.marginBottom    = (isConnected ? 4 : 6) + 'px';
-        this.div.style.pointerEvents   = 'auto';
-        this.div.style.background      = isConnected ? 'none' : ballStyle;
+        this.div.style.width         = (isConnected ? 6 : 6) + 'px';
+        this.div.style.height        = (isConnected ? 6 : 6) + 'px';
+        this.div.style.borderRadius  = (isConnected ? 4 : 4) + 'px';
+        this.div.style.marginBottom  = (isConnected ? 4 : 6) + 'px';
+        this.div.style.pointerEvents = 'auto';
+        this.div.style.background    = isConnected ? 'none' : ballStyle;
         
         this.div.style.boxShadow = 
                (  !isEmpty(this.connectedInputs)
@@ -278,6 +278,13 @@ extends EventTarget
         this.hitbox  .style.top    = -3 - Math.max(0, (1 - 1*zoom) * 10);
         this.hitbox  .style.height = 12 + Math.max(0, (1 - 1*zoom) * 20);
         
+        // if (this.node.id == 'num6')
+        // {
+        //     if (graphView.tempConn)
+        //         console.log('graphView.tempConn.output =', graphView.tempConn.output);
+    
+        //     console.log('isConnected =', isConnected);
+        // }
 
         this.wireBall.style.left   = (isConnected ? (isColorType(this.types[0]) ? 0 : -1) : 0) + 'px';
         this.wireBall.style.top    = '50%';

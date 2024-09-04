@@ -193,5 +193,10 @@ function getNumberBiasValue(input, min, max, bias, spread, enabled)
     f = getSpreadBias(f, bias.value, spread.value);
     f = min.value + f * (max.value - min.value);
 
-    return new NumberValue(f);
+    return new NumberValue(
+        f, 
+        Math.max(
+            input.decimals,
+            min  .decimals,
+            max  .decimals));
 }
