@@ -318,6 +318,9 @@ this.header.addEventListener('pointerdown', e =>
                 graphView.overOutput   = output;
                 graphView.headerOutput = output;
 
+                // tempConn.output = output;
+                
+                
                 output.mouseOver = true;
                 output.updateControl();
 

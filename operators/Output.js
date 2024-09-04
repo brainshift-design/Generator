@@ -104,7 +104,6 @@ extends EventTarget
             {
                 graphView.headerOutput.updateControl();
                 graphView.headerOutput = null;
-                //console.log('headerOutput = ', graphView.headerOutput);
             }
 
 
@@ -118,15 +117,15 @@ extends EventTarget
             if (    tc
                 &&  tc.input
                 &&  tc.input.canConnectFrom(this)
-                && !this.node.isOrFollows(tc.input.node))//this.supportsTypes(graphView.tempConn.input.types))//.includes(this.types[0]))
+                && !this.node.isOrFollows(tc.input.node))
             {
                 graphView.overOutput = this;
                 tc.output            = this;
 
                 tc.wire.outputPos = this.getPosition();
 
-                tc.input.updateControl();
-                // this.node.outputs.forEach(o => o.updateControl());
+                tc.output.updateControl();
+                tc.input .updateControl();
             }
             else
                 graphView.overOutput = this; 
@@ -247,7 +246,10 @@ extends EventTarget
                    ||     graphView.overOutput == this
                       && !graphView.tempConn.output)
                && !(    graphView.tempConn.input
-                    && !graphView.tempConn.input.types.includes(this.types[0]));
+                    && !graphView.tempConn.input.types.includes(this.types[0]))
+            ||    graphView.tempConn
+               && graphView.tempConn.input
+               && graphView.overOutput == this;
 
         this.div.style.transform = 
                'translateX(' + (isConnected ? -1 : -1) + 'px)'
@@ -278,13 +280,17 @@ extends EventTarget
         this.hitbox  .style.top    = -3 - Math.max(0, (1 - 1*zoom) * 10);
         this.hitbox  .style.height = 12 + Math.max(0, (1 - 1*zoom) * 20);
         
-        // if (this.node.id == 'num6')
-        // {
-        //     if (graphView.tempConn)
-        //         console.log('graphView.tempConn.output =', graphView.tempConn.output);
-    
-        //     console.log('isConnected =', isConnected);
-        // }
+        if (this.node.id == 'num6')
+        {
+            if (graphView.tempConn)
+            {
+                console.log('graphView.tempConn.input =', graphView.tempConn.input);
+                console.log('graphView.tempConn.output =', graphView.tempConn.output);
+            }
+            
+            console.log('graphView.overOutput =', graphView.overOutput);
+            console.log('isConnected =', isConnected);
+        }
 
         this.wireBall.style.left   = (isConnected ? (isColorType(this.types[0]) ? 0 : -1) : 0) + 'px';
         this.wireBall.style.top    = '50%';
