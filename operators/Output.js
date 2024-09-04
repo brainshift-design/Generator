@@ -367,10 +367,10 @@ extends EventTarget
                              ? [1, 1, 1, 0.25]
                              : [0, 0, 0, 0.2 ]));
             }
-            else if (NUMBER_VALUES.includes(this.types[0])) ballColor = diff ? typeColorDark : (this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, tc ? 0 : 0.2]);
-            else if (  TEXT_VALUES.includes(this.types[0])) ballColor = diff ? typeColorDark : (this.node.active ? [0, 0, 0, 0.23] : [1, 1, 1, tc ? 0 : 0.2]);
-            else if ( SHAPE_VALUES.includes(this.types[0])) ballColor = diff ? typeColorDark : (this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, tc ? 0 : 0.2]);
-            else                                            ballColor = diff ? typeColorDark : (this.node.active ? [0, 0, 0, 0.2 ] : [1, 1, 1, tc ? 0 : 0.2]);
+            else if (NUMBER_VALUES.includes(this.types[0])) ballColor = diff ? rgb_a(typeColorDark, isConnected ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, tc ? 0 : 0.2]);
+            else if (  TEXT_VALUES.includes(this.types[0])) ballColor = diff ? rgb_a(typeColorDark, isConnected ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [0, 0, 0, 0.23] : [1, 1, 1, tc ? 0 : 0.2]);
+            else if ( SHAPE_VALUES.includes(this.types[0])) ballColor = diff ? rgb_a(typeColorDark, isConnected ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, tc ? 0 : 0.2]);
+            else                                            ballColor = diff ? rgb_a(typeColorDark, isConnected ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [0, 0, 0, 0.2 ] : [1, 1, 1, tc ? 0 : 0.2]);
         }
         else // light mode
         {

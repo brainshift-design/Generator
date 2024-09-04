@@ -370,6 +370,14 @@ extends EventTarget
             return graphView.tempConn.output.getWireColor();
 
 
+        if (   graphView.tempConn
+            && graphView.tempConn.input == this
+            && graphView.overOutput
+            && (    isColorType(this.types[0])
+                || !this.node.active))
+            return graphView.overOutput.getWireColor();
+
+
         if (    graphView.tempConn
             &&  graphView.tempConn.input
             && !graphView.tempConn.output
