@@ -2,8 +2,12 @@ class   OpNumberToText
 extends OperatorBase
 {
     paramBase;
+    paramTrim;
     paramDecimals;
     paramThousands;
+
+
+    menuTrim;
 
 
 
@@ -19,12 +23,16 @@ extends OperatorBase
 
         this.addParam(this.paramBase      = new SelectParam('base',      'base',      true, true, true, ['10', '16']));
         this.addParam(this.paramDecimals  = new TextParam  ('decimals',  'decimals',  true, true, true, '.'));
+        this.addParam(this.paramTrim      = new NumberParam('trim',      'trim',      true, true, true, 0, 0, 1));
         this.addParam(this.paramThousands = new TextParam  ('thousands', 'thousands', true, true, true, ''));
 
 
         this.paramBase     .divider = 0.53;
+        this.paramTrim     .divider = 0.52;
         this.paramDecimals .divider = 0.64;
         this.paramThousands.divider = 0.64;
+
+        this.menutrim = createBoolMenu(this.paramTrim);
     }
 
 
@@ -50,6 +58,7 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         request.push(...this.node.paramBase     .genRequest(gen));
+        request.push(...this.node.paramTrim     .genRequest(gen));
         request.push(...this.node.paramDecimals .genRequest(gen));
         request.push(...this.node.paramThousands.genRequest(gen));
 
@@ -92,5 +101,19 @@ extends OperatorBase
 
             
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    updateParams()
+    {
+        this.paramBase     .enableControlText(true, this.paramBase     .isUnknown());
+        this.paramTrim     .enableControlText(true);
+        this.paramDecimals .enableControlText(true, this.paramDecimals .isUnknown());
+        this.paramThousands.enableControlText(true, this.paramThousands.isUnknown());
+
+        updateParamConditionText(this.paramTrim, this.paramTrim.isUnknown(), false, 1);
+
+        this.updateParamControls();
     }
 }

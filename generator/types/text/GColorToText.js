@@ -174,23 +174,23 @@ function getColorToTextValue(input, format, trim)
 
         case 1: // rgb 0.0-1.0
             str = 
-                         getValueToText(rgba[0], dec1, trim.value > 0) 
-                + ', ' + getValueToText(rgba[1], dec2, trim.value > 0) 
-                + ', ' + getValueToText(rgba[2], dec3, trim.value > 0);
+                         getColorValueToText(rgba[0], dec1, trim.value > 0) 
+                + ', ' + getColorValueToText(rgba[1], dec2, trim.value > 0) 
+                + ', ' + getColorValueToText(rgba[2], dec3, trim.value > 0);
 
             if (input.type == FILL_VALUE)
-                str += ', ' + getValueToText(rgba[3], dec4, trim.value > 0);
+                str += ', ' + getColorValueToText(rgba[3], dec4, trim.value > 0);
 
             break;
 
         case 2: // rgb 0-255
             str = 
-                         getValueToText(rgba[0] * 255, dec1, trim.value > 0) 
-                + ', ' + getValueToText(rgba[1] * 255, dec2, trim.value > 0) 
-                + ', ' + getValueToText(rgba[2] * 255, dec3, trim.value > 0);
+                         getColorValueToText(rgba[0] * 255, dec1, trim.value > 0) 
+                + ', ' + getColorValueToText(rgba[1] * 255, dec2, trim.value > 0) 
+                + ', ' + getColorValueToText(rgba[2] * 255, dec3, trim.value > 0);
 
             if (input.type == FILL_VALUE)
-                str += ', ' + getValueToText(rgba[3] * 255, dec4, trim.value > 0);
+                str += ', ' + getColorValueToText(rgba[3] * 255, dec4, trim.value > 0);
 
             break;
 
@@ -205,12 +205,12 @@ function getColorToTextValue(input, format, trim)
         case 4: // CSS rgb
             str = 
                 'rgb('
-                      + getValueToText(rgba[0] * 255, dec1, trim.value > 0)
-                + ' ' + getValueToText(rgba[1] * 255, dec2, trim.value > 0)
-                + ' ' + getValueToText(rgba[2] * 255, dec3, trim.value > 0);
+                      + getColorValueToText(rgba[0] * 255, dec1, trim.value > 0)
+                + ' ' + getColorValueToText(rgba[1] * 255, dec2, trim.value > 0)
+                + ' ' + getColorValueToText(rgba[2] * 255, dec3, trim.value > 0);
 
                 if (input.type == FILL_VALUE)
-                    str += ' / ' + getValueToText(rgba[3], dec4, trim.value > 0);
+                    str += ' / ' + getColorValueToText(rgba[3], dec4, trim.value > 0);
     
                 str += ')';
             break;
@@ -221,12 +221,12 @@ function getColorToTextValue(input, format, trim)
 
             str = 
                 'hsl('
-                +       getValueToText(hsl[0] * 360, dec1, trim.value > 0)
-                + ' ' + getValueToText(hsl[1] * 100, dec2, trim.value > 0)
-                + ' ' + getValueToText(hsl[2] * 100, dec3, trim.value > 0);
+                +       getColorValueToText(hsl[0] * 360, dec1, trim.value > 0)
+                + ' ' + getColorValueToText(hsl[1] * 100, dec2, trim.value > 0)
+                + ' ' + getColorValueToText(hsl[2] * 100, dec3, trim.value > 0);
 
                 if (input.type == FILL_VALUE)
-                    str += ' / ' + getValueToText(rgba[3], dec4, trim.value > 0);
+                    str += ' / ' + getColorValueToText(rgba[3], dec4, trim.value > 0);
     
                 str += ')';
             break;
@@ -237,12 +237,12 @@ function getColorToTextValue(input, format, trim)
 
             str = 
                 'oklch('
-                +       getValueToText(hcl[2] * 100, dec1, trim.value > 0)
-                + ' ' + getValueToText(hcl[1],       dec2, trim.value > 0)
-                + ' ' + getValueToText(hcl[0] * 360, dec3, trim.value > 0);
+                +       getColorValueToText(hcl[2] * 100, dec1, trim.value > 0)
+                + ' ' + getColorValueToText(hcl[1],       dec2, trim.value > 0)
+                + ' ' + getColorValueToText(hcl[0] * 360, dec3, trim.value > 0);
 
             if (input.type == FILL_VALUE)
-                str += ' / ' + getValueToText(rgba[3], dec4, trim.value > 0);
+                str += ' / ' + getColorValueToText(rgba[3], dec4, trim.value > 0);
 
             str += ')';
 
@@ -254,12 +254,12 @@ function getColorToTextValue(input, format, trim)
 
             str = 
                 'lch('
-                +       getValueToText(hcl[2] * 100, dec1, trim.value > 0)
-                + ' ' + getValueToText(hcl[1] * 100, dec2, trim.value > 0)
-                + ' ' + getValueToText(hcl[0] * 360, dec3, trim.value > 0);
+                +       getColorValueToText(hcl[2] * 100, dec1, trim.value > 0)
+                + ' ' + getColorValueToText(hcl[1] * 100, dec2, trim.value > 0)
+                + ' ' + getColorValueToText(hcl[0] * 360, dec3, trim.value > 0);
 
             if (input.type == FILL_VALUE)
-                str += ' / ' + getValueToText(rgba[3], dec4, trim.value > 0);
+                str += ' / ' + getColorValueToText(rgba[3], dec4, trim.value > 0);
 
             str += ')';
 
@@ -271,12 +271,12 @@ function getColorToTextValue(input, format, trim)
 
             str = 
                 'oklab('
-                +       getValueToText(lab[0] * 100, dec1, trim.value > 0)
-                + ' ' + getValueToText(lab[1],       dec2, trim.value > 0)
-                + ' ' + getValueToText(lab[2],       dec3, trim.value > 0);
+                +       getColorValueToText(lab[0] * 100, dec1, trim.value > 0)
+                + ' ' + getColorValueToText(lab[1],       dec2, trim.value > 0)
+                + ' ' + getColorValueToText(lab[2],       dec3, trim.value > 0);
 
             if (input.type == FILL_VALUE)
-                str += ' / ' + getValueToText(rgba[3], dec4, trim.value > 0);
+                str += ' / ' + getColorValueToText(rgba[3], dec4, trim.value > 0);
 
             str += ')';
 
@@ -288,12 +288,12 @@ function getColorToTextValue(input, format, trim)
 
             str = 
                 'lab('
-                +       getValueToText(lab[0] * 100, dec1, trim.value > 0)
-                + ' ' + getValueToText(lab[1] * 100, dec2, trim.value > 0)
-                + ' ' + getValueToText(lab[2] * 100, dec3, trim.value > 0);
+                +       getColorValueToText(lab[0] * 100, dec1, trim.value > 0)
+                + ' ' + getColorValueToText(lab[1] * 100, dec2, trim.value > 0)
+                + ' ' + getColorValueToText(lab[2] * 100, dec3, trim.value > 0);
 
                 if (input.type == FILL_VALUE)
-                    str += ' / ' + getValueToText(rgba[3], dec4, trim.value > 0);
+                    str += ' / ' + getColorValueToText(rgba[3], dec4, trim.value > 0);
     
                 str += ')';
             break;
@@ -357,7 +357,7 @@ function getColorToTextValue(input, format, trim)
 
 
 
-function getValueToText(val, dec, trim)
+function getColorValueToText(val, dec, trim)
 {
     return numToString(val, (trim ? -1 : 1) * dec);
 }

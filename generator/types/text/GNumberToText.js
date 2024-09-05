@@ -2,6 +2,7 @@ class GNumberToText
 extends GOperator1
 {
     base;
+    trim;
     decimals;
     thousands;
 
@@ -19,6 +20,7 @@ extends GOperator1
         super.reset();
 
         this.base      = null;
+        this.trim      = null;
         this.decimals  = null;
         this.thousands = null;
     }
@@ -32,6 +34,7 @@ extends GOperator1
         copy.copyBase(this);
 
         if (this.base     ) copy.base      = this.base     .copy();
+        if (this.trim     ) copy.trim      = this.trim     .copy();
         if (this.decimals ) copy.decimals  = this.decimals .copy();
         if (this.thousands) copy.thousands = this.thousands.copy();
 
@@ -48,8 +51,9 @@ extends GOperator1
 
         const input     = await evalNumberValue(this.input,     parse);
         const base      = await evalNumberValue(this.base,      parse);
-        const decimals  = await evalNumberValue(this.decimals,  parse);
-        const thousands = await evalNumberValue(this.thousands, parse);
+        const trim      = await evalNumberValue(this.trim,      parse);
+        const decimals  = await evalTextValue  (this.decimals,  parse);
+        const thousands = await evalTextValue  (this.thousands, parse);
 
 
         if (input)
@@ -64,13 +68,13 @@ extends GOperator1
 
                     this.value.items.push(
                         item.type == NUMBER_VALUE
-                        ? getNumberToTextValue(item, base, decimals, thousands)
+                        ? getNumberToTextValue(item, base, trim, decimals, thousands)
                         : TextValue.NaN.copy());   
                 }
             }
             else
             {
-                this.value = getNumberToTextValue(input, base, decimals, thousands);
+                this.value = getNumberToTextValue(input, base, trim, decimals, thousands);
             }
         }
         else
@@ -79,9 +83,9 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            //['value',     this.value       ],
             ['type',      this.outputType()],
             ['base',      base             ],
+            ['trim',      trim             ],
             ['decimals',  decimals         ],
             ['thousands', thousands        ]
         ]);
@@ -98,6 +102,7 @@ extends GOperator1
     {
         return super.isValid()
             && this.base      && this.base     .isValid()
+            && this.trim      && this.trim     .isValid()
             && this.decimals  && this.decimals .isValid()
             && this.thousands && this.thousands.isValid();
     }
@@ -109,6 +114,7 @@ extends GOperator1
         super.pushValueUpdates(parse);
 
         if (this.base     ) this.base     .pushValueUpdates(parse);
+        if (this.trim     ) this.trim     .pushValueUpdates(parse);
         if (this.decimals ) this.decimals .pushValueUpdates(parse);
         if (this.thousands) this.thousands.pushValueUpdates(parse);
     }
@@ -120,6 +126,7 @@ extends GOperator1
         super.invalidateInputs(parse, from, force);
 
         if (this.base     ) this.base     .invalidateInputs(parse, from, force);
+        if (this.trim     ) this.trim     .invalidateInputs(parse, from, force);
         if (this.decimals ) this.decimals .invalidateInputs(parse, from, force);
         if (this.thousands) this.thousands.invalidateInputs(parse, from, force);
     }
@@ -131,6 +138,7 @@ extends GOperator1
         super.iterateLoop(parse);
 
         if (this.base     ) this.base     .iterateLoop(parse);
+        if (this.trim     ) this.trim     .iterateLoop(parse);
         if (this.decimals ) this.decimals .iterateLoop(parse);
         if (this.thousands) this.thousands.iterateLoop(parse);
     }
@@ -138,14 +146,14 @@ extends GOperator1
 
 
 
-function getNumberToTextValue(input, base, decimals, thousands)
+function getNumberToTextValue(input, base, trim, decimals, thousands)
 {
     return input.isValid()
          ? new TextValue(numToString(
-               input.value, 
-              -input.decimals, 
-               base.value == 1, 
-               decimals.value, 
-               thousands.value))
+              input.value, 
+              (trim.value > 0 ? -1 : 1) * input.decimals, 
+              base.value == 1, 
+              decimals.value, 
+              thousands.value))
          : new TextValue('?');
 }
