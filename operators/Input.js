@@ -404,8 +404,12 @@ extends EventTarget
             && this.param.forceInputColorType != NULL)
             return rgbFromType(this.param.forceInputColorType, true);
         
-        if (this.connected)
+        if (this.connectedOutput)
             return this.connectedOutput.getWireColor();
+
+        if (   graphView.tempConn
+            && graphView.tempConn.input == this)
+            return this.getWireColor();
 
         if (   graphView.tempConn
             && graphView.tempConn.output
