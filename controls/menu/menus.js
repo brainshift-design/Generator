@@ -588,7 +588,6 @@ function initGeneratorMenus()
                            new MenuItem('Sign',          null, false, {icon: iconSign,        createType: NUMBER_SIGN,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,          btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('Negative',      null, false, {icon: iconNegative,    createType: NUMBER_NEGATIVE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_NEGATIVE,      btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('Absolute',      null, false, {icon: iconAbsolute,    createType: NUMBER_ABSOLUTE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,      btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('',              null, false, {separator: true}),
                            new MenuItem('Precision',     null, false, {icon: iconNumberPrecision, createType: NUMBER_PRECISION, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PRECISION,     btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('',              null, false, {separator: true}),
                            new MenuItem('Round',         null, false, {icon: iconRound,       createType: NUMBER_ROUND,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,         btnNumber.div, getCreateOptions(e)))}),

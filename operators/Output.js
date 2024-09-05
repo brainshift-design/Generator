@@ -280,17 +280,6 @@ extends EventTarget
         this.hitbox  .style.top    = -3 - Math.max(0, (1 - 1*zoom) * 10);
         this.hitbox  .style.height = 12 + Math.max(0, (1 - 1*zoom) * 20);
         
-        if (this.node.id == 'num6')
-        {
-            if (graphView.tempConn)
-            {
-                console.log('graphView.tempConn.input =', graphView.tempConn.input);
-                console.log('graphView.tempConn.output =', graphView.tempConn.output);
-            }
-            
-            console.log('graphView.overOutput =', graphView.overOutput);
-            console.log('isConnected =', isConnected);
-        }
 
         this.wireBall.style.left   = (isConnected ? (isColorType(this.types[0]) ? 0 : -1) : 0) + 'px';
         this.wireBall.style.top    = '50%';

@@ -37,7 +37,7 @@ extends OperatorBase//Shape
         this.paramReplace.divider = 0.6;
 
 
-        this.menuBool = createBoolMenu(this.paramReplace);
+        this.menuReplace = createBoolMenu(this.paramReplace);
     }
 
 

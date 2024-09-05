@@ -51,15 +51,20 @@ function decDigits(num)
 {
     if (typeof num !== 'number')
         consoleError('Input must be a number');
-    
-    const strNum = num.toFixed(10);
-    const iDec   = strNum.indexOf('.');
+
+    return strDecDigits(num.toFixed(10));
+}
+
+
+
+function strDecDigits(strNum)
+{
+    const iDec = strNum.indexOf('.');
     
     if (iDec === -1)
         return 0;
     
-    let count        = strNum.length - iDec - 1;
-    let nonZeroFound = false;
+    let count = strNum.length - iDec - 1;
     
     for (let i = strNum.length-1; i > iDec; i--)
     {
@@ -122,7 +127,8 @@ function numToStringDec(num, dec, decSep = '.', thouSep = '')
 
     if (dec < 0)
     {
-        while (i >= 0 && frac[i] === '0')
+        while (i >= 0 
+            && frac[i] === '0')
             frac = frac.substring(0, i--);
     }    
 

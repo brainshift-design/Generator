@@ -2,6 +2,7 @@ class GSetPrecision
 extends GOperator1
 {
     decimals;
+    trim;
 
 
 
@@ -17,6 +18,7 @@ extends GOperator1
         super.reset();
 
         this.decimals = null;
+        this.trim     = null;
     }
 
 
@@ -28,6 +30,7 @@ extends GOperator1
         copy.copyBase(this);
 
         if (this.decimals) copy.decimals = this.decimals.copy();
+        if (this.trim    ) copy.trim     = this.trim    .copy();
 
         return copy;
     }
@@ -45,6 +48,7 @@ extends GOperator1
         
         const input    = await evalNumberOrListValue(this.input,    parse);
         const decimals = await evalNumberValue      (this.decimals, parse);
+        const trim     = await evalNumberValue      (this.trim,     parse);
 
 
         if (input)
@@ -53,7 +57,7 @@ extends GOperator1
             {
                 this.evalInputOrList(
                     input, 
-                    item => getSetPrecisionValue(item, decimals), 
+                    item => getSetPrecisionValue(item, decimals, trim), 
                     NumberValue.NaN.copy()); 
             }
             else
@@ -67,7 +71,8 @@ extends GOperator1
         [
             ['type',     this.outputType()],
             ['value',    this.value       ],
-            ['decimals', decimals         ]
+            ['decimals', decimals         ],
+            ['trim',     trim             ]
         ]);
 
 
@@ -81,7 +86,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.decimals && this.decimals.isValid();
+            && this.decimals && this.decimals.isValid()
+            && this.trim     && this.trim    .isValid();
     }
 
 
@@ -91,6 +97,7 @@ extends GOperator1
         super.pushValueUpdates(parse);
 
         if (this.decimals) this.decimals.pushValueUpdates(parse);
+        if (this.trim    ) this.trim    .pushValueUpdates(parse);
     }
 
 
@@ -100,6 +107,7 @@ extends GOperator1
         super.invalidateInputs(parse, from, force);
 
         if (this.decimals) this.decimals.invalidateInputs(parse, from, force);
+        if (this.trim    ) this.trim    .invalidateInputs(parse, from, force);
     }
 
 
@@ -109,31 +117,60 @@ extends GOperator1
         super.iterateLoop(parse);
 
         if (this.decimals) this.decimals.iterateLoop(parse);
+        if (this.trim    ) this.trim    .iterateLoop(parse);
     }
 }
 
 
 
-function getSetPrecisionValue(input, decimals)
+function getSetPrecisionValue(input, decimals, trim)
 {
     consoleAssert(
-         input == NUMBER_VALUE, 
+            input == NUMBER_VALUE
+         || input == COLOR_VALUE
+         || input == FILL_VALUE, 
         'input must be NUMBER_VALUE');
+
 
     if (input.type == COLOR_VALUE)
         return new ColorValue(
-            new NumberValue(input.c1.value, decimals),
-            new NumberValue(input.c2.value, decimals),
-            new NumberValue(input.c3.value, decimals));
+            input.space,
+            getTrimmedValue(input.c1, decimals, trim),
+            getTrimmedValue(input.c2, decimals, trim),
+            getTrimmedValue(input.c3, decimals, trim));
     
     else if (input.type == FILL_VALUE)
+    {
         return new FillValue(
             new ColorValue(
-                new NumberValue(input.color.c1.value, decimals),
-                new NumberValue(input.color.c2.value, decimals),
-                new NumberValue(input.color.c3.value, decimals)),
-            new NumberValue(input.opacity.value, decimals));
-
+                input.color.space,
+                getTrimmedValue(input.color.c1, decimals, trim),
+                getTrimmedValue(input.color.c2, decimals, trim),
+                getTrimmedValue(input.color.c3, decimals, trim)),
+            getTrimmedValue(input.opacity, decimals, trim),
+            input.blend);
+    }
     else
-        return new NumberValue(input.value, decimals.value);
+        return getTrimmedValue(input, decimals, trim);
+}
+
+
+
+function getTrimmedValue(value, decimals, trim)
+{
+    // console.log('value =', value.value);
+    // console.log('decimals =', decimals.value);
+    // console.log('trim =', trim.value);
+
+    const val    = numToString(value.value,  decimals.value);
+    const strVal = numToString(value.value, -decimals.value);
+    // console.log('val =', val);
+    // console.log('strVal =', strVal);
+    // console.log('');
+
+    return new NumberValue(
+        val,
+        trim.value > 0
+            ? strDecDigits(strVal)
+            : decimals.value);
 }
