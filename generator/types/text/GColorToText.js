@@ -2,6 +2,7 @@ class GColorToText
 extends GOperator1
 {
     format;
+    trim;
 
 
     
@@ -16,6 +17,7 @@ extends GOperator1
         super.reset();
 
         this.format = null;
+        this.trim   = null;
     }
 
 
@@ -28,6 +30,7 @@ extends GOperator1
         copy.copyBase(this);
 
         if (this.format) copy.format = this.format.copy();
+        if (this.trim  ) copy.trim   = this.trim  .copy();
 
         return copy;
     }
@@ -42,6 +45,7 @@ extends GOperator1
 
         const input  = await evalValue      (this.input,  parse);
         const format = await evalNumberValue(this.format, parse);
+        const trim   = await evalNumberValue(this.trim,   parse);
 
 
         if (input)
@@ -57,13 +61,13 @@ extends GOperator1
                     this.value.items.push(
                            item.type == COLOR_VALUE
                         || item.type == FILL_VALUE
-                        ? getColorToTextValue(item, format)
+                        ? getColorToTextValue(item, format, trim)
                         : TextValue.NaN.copy());   
                 }
             }
             else
             {
-                this.value = getColorToTextValue(input, format);
+                this.value = getColorToTextValue(input, format, trim);
             }
         }
 
@@ -74,7 +78,8 @@ extends GOperator1
         this.setUpdateValues(parse,
         [
             ['type',   this.outputType()],
-            ['format', format           ]
+            ['format', format           ],
+            ['trim',   trim             ]
         ]);
 
 
@@ -88,7 +93,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.format && this.format.isValid();
+            && this.format && this.format.isValid()
+            && this.trim   && this.trim  .isValid();
     }
 
 
@@ -98,6 +104,7 @@ extends GOperator1
         super.pushValueUpdates(parse);
 
         if (this.format) this.format.pushValueUpdates(parse);
+        if (this.trim  ) this.trim  .pushValueUpdates(parse);
     }
 
 
@@ -107,6 +114,7 @@ extends GOperator1
         super.invalidateInputs(parse, from, force);
 
         if (this.format) this.format.invalidateInputs(parse, from, force);
+        if (this.trim  ) this.trim  .invalidateInputs(parse, from, force);
     }
 
 
@@ -116,12 +124,13 @@ extends GOperator1
         super.iterateLoop(parse);
 
         if (this.format) this.format.iterateLoop(parse);
+        if (this.trim  ) this.trim  .iterateLoop(parse);
     }
 }
 
 
 
-function getColorToTextValue(input, format)
+function getColorToTextValue(input, format, trim)
 {
     if (   input.type != COLOR_VALUE
         && input.type != FILL_VALUE)
@@ -164,39 +173,24 @@ function getColorToTextValue(input, format)
             break;
 
         case 1: // rgb 0.0-1.0
-        {
-            console.log('rgba[0] =', rgba[0]);
-            console.log('rgba[1] =', rgba[1]);
-            console.log('rgba[2] =', rgba[2]);
-            console.log('dec1 =', dec1);
-            console.log('dec2 =', dec2);
-            console.log('dec3 =', dec3);
-            // numToString(rgba[0], dec1)
-            // numToString(rgba[1], dec2)
-            // numToString(rgba[2], dec3)
-            console.log('');
-
             str = 
-                         numToString(rgba[0], dec1)// > 3 ? dec1 : -Math.max(3, dec1)) 
-                + ', ' + numToString(rgba[1], dec2)// > 3 ? dec2 : -Math.max(3, dec2)) 
-                + ', ' + numToString(rgba[2], dec3);// > 3 ? dec3 : -Math.max(3, dec3));
+                         getValueToText(rgba[0], dec1, trim.value > 0) 
+                + ', ' + getValueToText(rgba[1], dec2, trim.value > 0) 
+                + ', ' + getValueToText(rgba[2], dec3, trim.value > 0);
 
             if (input.type == FILL_VALUE)
-            {
-                console.log('rgba[3] =', rgba[3]);
-                str += ', ' + numToString(rgba[3], dec4);
-            }
+                str += ', ' + getValueToText(rgba[3], dec4, trim.value > 0);
 
             break;
-        }
+
         case 2: // rgb 0-255
             str = 
-                         numToString(rgba[0] * 255, dec1) 
-                + ', ' + numToString(rgba[1] * 255, dec2) 
-                + ', ' + numToString(rgba[2] * 255, dec3);
+                         getValueToText(rgba[0] * 255, dec1, trim.value > 0) 
+                + ', ' + getValueToText(rgba[1] * 255, dec2, trim.value > 0) 
+                + ', ' + getValueToText(rgba[2] * 255, dec3, trim.value > 0);
 
             if (input.type == FILL_VALUE)
-                str += ', ' + numToString(rgba[3] * 255, dec4);
+                str += ', ' + getValueToText(rgba[3] * 255, dec4, trim.value > 0);
 
             break;
 
@@ -359,4 +353,11 @@ function getColorToTextValue(input, format)
     }
 
     return new TextValue(str);
+}
+
+
+
+function getValueToText(val, dec, trim)
+{
+    return numToString(val, (trim ? -1 : 1) * dec);
 }

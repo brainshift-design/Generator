@@ -121,7 +121,6 @@ function genParseSetPrecision(parse)
         prec.input = genParse(parse);
 
     prec.decimals = genParse(parse);
-    prec.trim     = genParse(parse);
 
     
     parse.nTab--;

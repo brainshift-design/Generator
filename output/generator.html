@@ -25500,7 +25500,6 @@ class GSetPrecision
 extends GOperator1
 {
     decimals;
-    trim;
 
 
 
@@ -25516,7 +25515,6 @@ extends GOperator1
         super.reset();
 
         this.decimals = null;
-        this.trim     = null;
     }
 
 
@@ -25528,7 +25526,6 @@ extends GOperator1
         copy.copyBase(this);
 
         if (this.decimals) copy.decimals = this.decimals.copy();
-        if (this.trim    ) copy.trim     = this.trim    .copy();
 
         return copy;
     }
@@ -25546,7 +25543,6 @@ extends GOperator1
         
         const input    = await evalNumberOrListValue(this.input,    parse);
         const decimals = await evalNumberValue      (this.decimals, parse);
-        const trim     = await evalNumberValue      (this.trim,     parse);
 
 
         if (input)
@@ -25555,7 +25551,7 @@ extends GOperator1
             {
                 this.evalInputOrList(
                     input, 
-                    item => getSetPrecisionValue(item, decimals, trim), 
+                    item => getSetPrecisionValue(item, decimals), 
                     NumberValue.NaN.copy()); 
             }
             else
@@ -25569,8 +25565,7 @@ extends GOperator1
         [
             ['type',     this.outputType()],
             ['value',    this.value       ],
-            ['decimals', decimals         ],
-            ['trim',     trim             ]
+            ['decimals', decimals         ]
         ]);
 
 
@@ -25584,8 +25579,7 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.decimals && this.decimals.isValid()
-            && this.trim     && this.trim    .isValid();
+            && this.decimals && this.decimals.isValid();
     }
 
 
@@ -25595,7 +25589,6 @@ extends GOperator1
         super.pushValueUpdates(parse);
 
         if (this.decimals) this.decimals.pushValueUpdates(parse);
-        if (this.trim    ) this.trim    .pushValueUpdates(parse);
     }
 
 
@@ -25605,7 +25598,6 @@ extends GOperator1
         super.invalidateInputs(parse, from, force);
 
         if (this.decimals) this.decimals.invalidateInputs(parse, from, force);
-        if (this.trim    ) this.trim    .invalidateInputs(parse, from, force);
     }
 
 
@@ -25615,13 +25607,12 @@ extends GOperator1
         super.iterateLoop(parse);
 
         if (this.decimals) this.decimals.iterateLoop(parse);
-        if (this.trim    ) this.trim    .iterateLoop(parse);
     }
 }
 
 
 
-function getSetPrecisionValue(input, decimals, trim)
+function getSetPrecisionValue(input, decimals)
 {
     consoleAssert(
             input == NUMBER_VALUE
@@ -25633,44 +25624,32 @@ function getSetPrecisionValue(input, decimals, trim)
     if (input.type == COLOR_VALUE)
         return new ColorValue(
             input.space,
-            getTrimmedValue(input.c1, decimals, trim),
-            getTrimmedValue(input.c2, decimals, trim),
-            getTrimmedValue(input.c3, decimals, trim));
+            getPrecisionValue(input.c1, decimals),
+            getPrecisionValue(input.c2, decimals),
+            getPrecisionValue(input.c3, decimals));
     
     else if (input.type == FILL_VALUE)
     {
         return new FillValue(
             new ColorValue(
                 input.color.space,
-                getTrimmedValue(input.color.c1, decimals, trim),
-                getTrimmedValue(input.color.c2, decimals, trim),
-                getTrimmedValue(input.color.c3, decimals, trim)),
-            getTrimmedValue(input.opacity, decimals, trim),
+                getPrecisionValue(input.color.c1, decimals),
+                getPrecisionValue(input.color.c2, decimals),
+                getPrecisionValue(input.color.c3, decimals)),
+            getPrecisionValue(input.opacity, decimals),
             input.blend);
     }
     else
-        return getTrimmedValue(input, decimals, trim);
+        return getPrecisionValue(input, decimals);
 }
 
 
 
-function getTrimmedValue(value, decimals, trim)
+function getPrecisionValue(value, decimals)
 {
-    // console.log('value =', value.value);
-    // console.log('decimals =', decimals.value);
-    // console.log('trim =', trim.value);
-
-    const val    = numToString(value.value,  decimals.value);
-    const strVal = numToString(value.value, -decimals.value);
-    // console.log('val =', val);
-    // console.log('strVal =', strVal);
-    // console.log('');
-
     return new NumberValue(
-        val,
-        trim.value > 0
-            ? strDecDigits(strVal)
-            : decimals.value);
+        value.value,
+        decimals.value);
 }
 
 
@@ -33755,6 +33734,7 @@ class GColorToText
 extends GOperator1
 {
     format;
+    trim;
 
 
     
@@ -33769,6 +33749,7 @@ extends GOperator1
         super.reset();
 
         this.format = null;
+        this.trim   = null;
     }
 
 
@@ -33781,6 +33762,7 @@ extends GOperator1
         copy.copyBase(this);
 
         if (this.format) copy.format = this.format.copy();
+        if (this.trim  ) copy.trim   = this.trim  .copy();
 
         return copy;
     }
@@ -33795,6 +33777,7 @@ extends GOperator1
 
         const input  = await evalValue      (this.input,  parse);
         const format = await evalNumberValue(this.format, parse);
+        const trim   = await evalNumberValue(this.trim,   parse);
 
 
         if (input)
@@ -33810,13 +33793,13 @@ extends GOperator1
                     this.value.items.push(
                            item.type == COLOR_VALUE
                         || item.type == FILL_VALUE
-                        ? getColorToTextValue(item, format)
+                        ? getColorToTextValue(item, format, trim)
                         : TextValue.NaN.copy());   
                 }
             }
             else
             {
-                this.value = getColorToTextValue(input, format);
+                this.value = getColorToTextValue(input, format, trim);
             }
         }
 
@@ -33827,7 +33810,8 @@ extends GOperator1
         this.setUpdateValues(parse,
         [
             ['type',   this.outputType()],
-            ['format', format           ]
+            ['format', format           ],
+            ['trim',   trim             ]
         ]);
 
 
@@ -33841,7 +33825,8 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.format && this.format.isValid();
+            && this.format && this.format.isValid()
+            && this.trim   && this.trim  .isValid();
     }
 
 
@@ -33851,6 +33836,7 @@ extends GOperator1
         super.pushValueUpdates(parse);
 
         if (this.format) this.format.pushValueUpdates(parse);
+        if (this.trim  ) this.trim  .pushValueUpdates(parse);
     }
 
 
@@ -33860,6 +33846,7 @@ extends GOperator1
         super.invalidateInputs(parse, from, force);
 
         if (this.format) this.format.invalidateInputs(parse, from, force);
+        if (this.trim  ) this.trim  .invalidateInputs(parse, from, force);
     }
 
 
@@ -33869,12 +33856,13 @@ extends GOperator1
         super.iterateLoop(parse);
 
         if (this.format) this.format.iterateLoop(parse);
+        if (this.trim  ) this.trim  .iterateLoop(parse);
     }
 }
 
 
 
-function getColorToTextValue(input, format)
+function getColorToTextValue(input, format, trim)
 {
     if (   input.type != COLOR_VALUE
         && input.type != FILL_VALUE)
@@ -33917,39 +33905,24 @@ function getColorToTextValue(input, format)
             break;
 
         case 1: // rgb 0.0-1.0
-        {
-            console.log('rgba[0] =', rgba[0]);
-            console.log('rgba[1] =', rgba[1]);
-            console.log('rgba[2] =', rgba[2]);
-            console.log('dec1 =', dec1);
-            console.log('dec2 =', dec2);
-            console.log('dec3 =', dec3);
-            // numToString(rgba[0], dec1)
-            // numToString(rgba[1], dec2)
-            // numToString(rgba[2], dec3)
-            console.log('');
-
             str = 
-                         numToString(rgba[0], dec1)// > 3 ? dec1 : -Math.max(3, dec1)) 
-                + ', ' + numToString(rgba[1], dec2)// > 3 ? dec2 : -Math.max(3, dec2)) 
-                + ', ' + numToString(rgba[2], dec3);// > 3 ? dec3 : -Math.max(3, dec3));
+                         getValueToText(rgba[0], dec1, trim.value > 0) 
+                + ', ' + getValueToText(rgba[1], dec2, trim.value > 0) 
+                + ', ' + getValueToText(rgba[2], dec3, trim.value > 0);
 
             if (input.type == FILL_VALUE)
-            {
-                console.log('rgba[3] =', rgba[3]);
-                str += ', ' + numToString(rgba[3], dec4);
-            }
+                str += ', ' + getValueToText(rgba[3], dec4, trim.value > 0);
 
             break;
-        }
+
         case 2: // rgb 0-255
             str = 
-                         numToString(rgba[0] * 255, dec1) 
-                + ', ' + numToString(rgba[1] * 255, dec2) 
-                + ', ' + numToString(rgba[2] * 255, dec3);
+                         getValueToText(rgba[0] * 255, dec1, trim.value > 0) 
+                + ', ' + getValueToText(rgba[1] * 255, dec2, trim.value > 0) 
+                + ', ' + getValueToText(rgba[2] * 255, dec3, trim.value > 0);
 
             if (input.type == FILL_VALUE)
-                str += ', ' + numToString(rgba[3] * 255, dec4);
+                str += ', ' + getValueToText(rgba[3] * 255, dec4, trim.value > 0);
 
             break;
 
@@ -34112,6 +34085,13 @@ function getColorToTextValue(input, format)
     }
 
     return new TextValue(str);
+}
+
+
+
+function getValueToText(val, dec, trim)
+{
+    return numToString(val, (trim ? -1 : 1) * dec);
 }
 
 
@@ -55470,7 +55450,6 @@ function genParseSetPrecision(parse)
         prec.input = genParse(parse);
 
     prec.decimals = genParse(parse);
-    prec.trim     = genParse(parse);
 
     
     parse.nTab--;
@@ -60574,6 +60553,7 @@ function genParseColorToText(parse)
         col2text.input = genParse(parse);
 
     col2text.format = genParse(parse);
+    col2text.trim   = genParse(parse);
 
     
     parse.nTab--;

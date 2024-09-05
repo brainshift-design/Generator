@@ -842,6 +842,7 @@ function genParseColorToText(parse)
         col2text.input = genParse(parse);
 
     col2text.format = genParse(parse);
+    col2text.trim   = genParse(parse);
 
     
     parse.nTab--;

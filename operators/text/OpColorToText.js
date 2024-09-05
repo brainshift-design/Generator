@@ -2,6 +2,10 @@ class   OpColorToText
 extends OperatorBase
 {
     paramFormat;
+    paramTrim;
+
+
+    menuTrim;
 
 
 
@@ -15,8 +19,14 @@ extends OperatorBase
         this.addInput (new Input([COLOR_VALUE, FILL_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['Hex', 'RGB 0.0 – 1.0', 'RGB 0 – 255', 'CSS # hex', 'CSS rgb ()', 'CSS hsl ()', 'CSS oklch ()', 'CSS lch ()', 'CSS oklab()', 'CSS lab()', 'CSS color ()', 'name']));
+        this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['Hex', 'RGB 0 – 1', 'RGB 0 – 255', 'CSS # hex', 'CSS rgb ()', 'CSS hsl ()', 'CSS oklch ()', 'CSS lch ()', 'CSS oklab()', 'CSS lab()', 'CSS color ()', 'name']));
+        this.addParam(this.paramTrim     = new NumberParam('trim',     'trim',     true,  true, true, 0, 0, 1));
+
         this.paramFormat.separatorsBefore.push(3, 6, 8, 10, 11);
+
+        this.paramTrim.divider = 0.51;
+
+        this.menutrim = createBoolMenu(this.paramTrim);
     }
 
 
@@ -42,6 +52,7 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         request.push(...this.node.paramFormat.genRequest(gen));
+        request.push(...this.node.paramTrim  .genRequest(gen));
 
         
         gen.scope.pop();
@@ -65,5 +76,17 @@ extends OperatorBase
 
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    updateParams()
+    {
+        this.paramFormat.enableControlText(true, this.paramFormat.isUnknown());
+        this.paramTrim  .enableControlText(true);
+
+        updateParamConditionText(this.paramTrim, this.paramTrim.isUnknown(), false, 1);
+
+        this.updateParamControls();
     }
 }

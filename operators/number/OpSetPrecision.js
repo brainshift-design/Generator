@@ -2,13 +2,9 @@ class   OpSetPrecision
 extends OperatorBase
 {
     paramDecimals;
-    paramTrim;
 
 
     value;
-
-
-    menuTrim;
 
 
 
@@ -31,16 +27,7 @@ extends OperatorBase
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        //this.headerOutputs[0].forceOutputColor = true;
-
-
         this.addParam(this.paramDecimals = new NumberParam('decimals', 'decimals', false, true, true, 0, 0, 10));
-        this.addParam(this.paramTrim     = new NumberParam('trim',     'trim',     true,  true, true, 0, 0, 1));
-
-
-        this.paramTrim.divider = 0.51;
-
-        this.menutrim = createBoolMenu(this.paramTrim);
     }
 
 
@@ -67,7 +54,6 @@ extends OperatorBase
 
         
         request.push(...this.node.paramDecimals.genRequest(gen));
-        request.push(...this.node.paramTrim    .genRequest(gen));
 
         
         gen.scope.pop();
@@ -116,10 +102,7 @@ extends OperatorBase
         const type = values[paramIds.findIndex(id => id == 'type' )];
 
         if (type)
-        {
             this.headerOutputs[0].types = [type.value];
-            // this.outputValueType = type.value;
-        }
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
@@ -129,9 +112,6 @@ extends OperatorBase
     updateParams()
     {
         this.paramDecimals.enableControlText(true, this.paramDecimals.isUnknown());
-        this.paramTrim    .enableControlText(true);
-
-        updateParamConditionText(this.paramTrim, this.paramTrim.isUnknown(), false, 1);
 
         this.updateParamControls();
     }
