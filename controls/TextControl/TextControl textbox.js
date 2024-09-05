@@ -149,6 +149,12 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
             // e.stopImmediatePropagation();
         }
 
+        // else if (e.code == 'KeyA'
+        //     && getCtrlKey(e))
+        // {
+        //     e.preventDefault();
+        // }
+
         // else if (e.code == 'KeyZ'
         //       && getCtrlKey(e)
         //       && !e.shiftKey)
