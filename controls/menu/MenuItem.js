@@ -10,11 +10,11 @@ class MenuItem
     enabled            = true;
      
     checked            = false;
-    icon               = ''; // svg
+    icon               = NULL; // svg
     name               = '';
     searchName         = '';
     showSearchName     = false;
-    shortcut           = '';
+    shortcut           = NULL;
     pro                = false;
      
     callback           = null;
@@ -23,7 +23,7 @@ class MenuItem
     childMenu          = null;
      
     separator          = false;
-    createType         = '';
+    createType         = NULL;
      
     selectOnDrag       = false;
      

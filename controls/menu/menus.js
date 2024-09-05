@@ -1529,11 +1529,11 @@ function initTextMenu(textbox)
     menuText.clearItems();
 
     menuText.addItems([
-        new MenuItem('Cut',        null, false, {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
-        new MenuItem('Copy',       null, false, {                                                        callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
-        new MenuItem('Paste',      null, false, {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
-        new MenuItem('',           null, false, {separator: true }),
-        new MenuItem('Select all', null, false, {callback: () => { hideAllMenus(); selectTextareaText(textbox); }})]);
+        new MenuItem('Cut',        null, false, { shortcut: (textbox.disabled ? NULL : osCtrl() + 'X'), enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
+        new MenuItem('Copy',       null, false, { shortcut:                            osCtrl() + 'C',                                                          callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+        new MenuItem('Paste',      null, false, { shortcut: (textbox.disabled ? NULL : osCtrl() + 'V'), enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
+        new MenuItem('',           null, false, { separator: true }),
+        new MenuItem('Select all', null, false, { shortcut: (textbox.disabled ? NULL : osCtrl() + 'A'), callback: () => { hideAllMenus(); selectTextareaText(textbox); }})]);
 }
 
 
@@ -1543,9 +1543,9 @@ function initCopyMenu()
     menuCopy.clearItems();
 
     menuCopy.addItems([
-        new MenuItem('Copy',       null, false, { shortcut: osCtrl() + 'C', enabled: elementHasSelectedText(crashDialogBody), callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+        new MenuItem('Copy',       null, false, { enabled: elementHasSelectedText(crashDialogBody), callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
         new MenuItem('',           null, false, { separator: true }),
-        new MenuItem('Select all', null, false, { shortcut: osCtrl() + 'A', callback: () => { hideAllMenus(); selectDivText(crashDetails); }})]);
+        new MenuItem('Select all', null, false, { callback: () => { hideAllMenus(); selectDivText(crashDetails); }})]);
 }
 
 
@@ -1564,11 +1564,11 @@ function initTextboxMenu(textbox)
     const param = textbox.control.param;
 
     menuTextbox.addItems([
-                          new MenuItem('Cut',          null, false, { shortcut: osCtrl() + 'X', enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
-                          new MenuItem('Copy',         null, false, { shortcut: osCtrl() + 'C', callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
-                          new MenuItem('Paste',        null, false, { shortcut: osCtrl() + 'V', enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
+                          new MenuItem('Cut',          null, false, { shortcut: (textbox.disabled ? NULL : osCtrl() + 'X'), enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
+                          new MenuItem('Copy',         null, false, { shortcut:                            osCtrl() + 'C', callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+                          new MenuItem('Paste',        null, false, { shortcut: (textbox.disabled ? NULL : osCtrl() + 'V'), enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
                           new MenuItem('',             null, false, { separator: true }),
-                          new MenuItem('Select all',   null, false, { shortcut: osCtrl() + 'A', callback: () => { hideAllMenus(); selectTextareaText(textbox); }}),
+                          new MenuItem('Select all',   null, false, { shortcut: (textbox.disabled ? NULL : osCtrl() + 'A'), callback: () => { hideAllMenus(); selectTextareaText(textbox); }}),
                           new MenuItem('',             null, false, { separator: true }),
         menuItemLeft    = new MenuItem('Align left',   null, false, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'left'   )); }}),
         menuItemCenter  = new MenuItem('Align center', null, false, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'center' )); }}),
