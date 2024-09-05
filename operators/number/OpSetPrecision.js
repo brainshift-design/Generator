@@ -27,6 +27,8 @@ extends OperatorBase
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
+        this.headerOutputs[0].forceOutputColor = true;
+        
         this.addParam(this.paramDecimals = new NumberParam('decimals', 'decimals', false, true, true, 0, 0, 10));
     }
 

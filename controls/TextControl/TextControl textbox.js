@@ -29,6 +29,21 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
         hideAllMenus();
 
 
+        if (e.button == 0)
+        {
+            this.textbox.style.cursor = 
+                this.disableAfterSelectAll
+                ? 'default'
+                : 'text';
+
+            if (this.disableAfterSelectAll !== null)
+            {
+                this.textbox.disabled = this.disableAfterSelectAll;
+                this.disableAfterSelectAll = null;
+            }
+        }
+
+
         if (      graphView.overOutput 
                && graphView.overOutput == this.param.output
             ||    graphView.overInput  

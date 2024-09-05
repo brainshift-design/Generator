@@ -103,25 +103,6 @@ TextControl.prototype.initEvents = function()
         clearTimeout(this.clickTimer);
 
   
-        // if (graphView.tempConn)
-        // {
-        //     if (    graphView.tempConn.output
-        //         && !graphView.tempConn.output.node.isOrFollows(param.node)
-        //         &&  graphView.overInput)
-        //     {
-        //         graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
-        //         graphView.overInput.endConnection();
-        //     }
-        //     else if (graphView.tempConn.input
-        //         && !param.node.isOrFollows(graphView.tempConn.input.node)
-        //         &&  graphView.overOutput)
-        //     {
-        //         graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
-        //         graphView.overOutput.endConnection();
-        //     }
-        // }
-
-
         if (e.button == 0) 
         {
             this.buttonDown0 = false;

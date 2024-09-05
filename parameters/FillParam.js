@@ -440,8 +440,8 @@ extends Parameter
         //     || !this.input.connected;
             //||  this.input.connectedOutput.supportsTypes(COLOR_TYPES);
 
-        enableElementText(this.controls[0].div, enable);
-        enableElementText(this.controls[1].div, enable);//opEnable);
+        setEnabledTextStyle(this.controls[0].div, enable);
+        setEnabledTextStyle(this.controls[1].div, enable);//opEnable);
         
         this.controls[0].readOnly = !enable;
         this.controls[1].readOnly = !enable;//opEnable;

@@ -206,7 +206,7 @@ extends Parameter
                !this.input 
             || !this.input.connected;
 
-        enableElementText(this.controls[0].textbox, enable);
+        setEnabledTextStyle(this.controls[0].textbox, enable);
         
         this.controls[0].textbox.disabled = !enable;
         //this.controls[0].readOnly         = !enable;

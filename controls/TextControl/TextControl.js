@@ -8,28 +8,29 @@ extends Control
     textbox;
     placeholder;
 
-    highlightText     = true;
-    allowTabs         = false;
+    highlightText         = true;
+    allowTabs             = false;
     
     
-    valueText         = '';
+    valueText             = '';
 
 
-    enableChangeEvent = true;
+    enableChangeEvent     = true;
     
-    successOnFocusOut = false;
-    keyBlur           = false;
+    successOnFocusOut     = false;
+    keyBlur               = false;
 
-    requireFinishCtrl = false;
+    requireFinishCtrl     = false;
 
+    disableAfterSelectAll = null;
     
-    testFunction      = null;
-    readOnly          = false;
+    testFunction          = null;
+    readOnly              = false;
     
-    tabSize           = 4;
+    tabSize               = 4;
     
 
-    confirmTimer      = null;
+    confirmTimer          = null;
     
     
 

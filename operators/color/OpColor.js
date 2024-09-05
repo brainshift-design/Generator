@@ -452,7 +452,7 @@ extends OpColorBase
         this.param3    .enableControlText(enable, (this.param3.isOnlyParamUnknown() /*|| headerConnectedUnknown*/) && !this.param3.input.connected);
 
 
-        enableElementText(this.paramColor.controls[0].div, !this.isConnected());
+        setEnabledTextStyle(this.paramColor.controls[0].div, !this.isConnected());
 
 
         const colors = this.getHeaderColors();

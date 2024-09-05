@@ -144,7 +144,7 @@ extends Parameter
         //     : this.backStyleLight;
 
 
-        enableElementText(this.controls[0].div, false);
+        setEnabledTextStyle(this.controls[0].div, false);
 
         this.controls[0].readOnly = true;
         

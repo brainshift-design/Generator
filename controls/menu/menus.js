@@ -1529,9 +1529,11 @@ function initTextMenu(textbox)
     menuText.clearItems();
 
     menuText.addItems([
-        new MenuItem('Cut',   null, false, {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
-        new MenuItem('Copy',  null, false, {                                                        callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
-        new MenuItem('Paste', null, false, {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
+        new MenuItem('Cut',        null, false, {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
+        new MenuItem('Copy',       null, false, {                                                        callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+        new MenuItem('Paste',      null, false, {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
+        new MenuItem('',           null, false, {separator: true }),
+        new MenuItem('Select all', null, false, {callback: () => { hideAllMenus(); selectTextareaText(textbox); }})]);
 }
 
 
@@ -1565,6 +1567,8 @@ function initTextboxMenu(textbox)
                           new MenuItem('Cut',          null, false, { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
                           new MenuItem('Copy',         null, false, {                                     callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
                           new MenuItem('Paste',        null, false, { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
+                          new MenuItem('',             null, false, {separator: true }),
+                          new MenuItem('Select all',   null, false, {callback: () => { hideAllMenus(); selectTextareaText(textbox); }}),
                           new MenuItem('',             null, false, { separator: true }),
         menuItemLeft    = new MenuItem('Align left',   null, false, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'left'   )); }}),
         menuItemCenter  = new MenuItem('Align center', null, false, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'center' )); }}),

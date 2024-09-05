@@ -98,7 +98,7 @@ function createCanvas(className = '')
 
 
 
-function enableElementText(elem, enable, bold = true)
+function setEnabledTextStyle(elem, enable, bold = true)
 {
     elem.style.fontStyle  = enable ? 'normal' : 'italic'; 
 
@@ -310,6 +310,23 @@ function selectDivText(div)
 
     window.getSelection().removeAllRanges();
     window.getSelection().addRange(range);    
+}
+
+
+
+function selectTextareaText(textarea)
+{
+    const disabled = textarea.disabled;
+    textarea.disabled = false;
+
+    textarea.select();
+
+    if (textarea.control)
+        textarea.control.disableAfterSelectAll = disabled;
+
+    textarea.style.cursor = 'default';
+    
+    // textarea.disabled = disabled; // this is commented out on purpose!
 }
 
 

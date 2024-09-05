@@ -110,10 +110,10 @@ extends GNode
             {
                 const item = input.items[i];
     
-                this.value.items.push(
-                    item.type == nan.type
-                    ? evalFunc(item)
-                    : nan);   
+                this.value.items.push(evalFunc(item));
+                    // item.type == nan.type
+                    // ? evalFunc(item)
+                    // : nan);   
             }
         }
         else

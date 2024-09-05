@@ -336,12 +336,12 @@ function getColorToTextValue(input, format, trim)
             str = 
                 'color('
                 +       space
-                + ' ' + numToString(color[0], dec1) 
-                + ' ' + numToString(color[1], dec2) 
-                + ' ' + numToString(color[2], dec3);
+                + ' ' + getColorValueToText(color[0], dec1, trim.value > 0) 
+                + ' ' + getColorValueToText(color[1], dec2, trim.value > 0) 
+                + ' ' + getColorValueToText(color[2], dec3, trim.value > 0);
 
             if (input.type == FILL_VALUE)
-                str += ' / ' + numToString(rgba[3], dec4);
+                str += ' / ' + getColorValueToText(rgba[3], dec4, trim.value > 0);
 
             str += ')';
 

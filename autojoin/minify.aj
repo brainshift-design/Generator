@@ -1514,7 +1514,7 @@ appendDivTo
 removeDivFrom
 createTextbox
 createTextarea
-enableElementText
+setEnabledTextStyle
 setStyle
 containsChild
 forwardEvent

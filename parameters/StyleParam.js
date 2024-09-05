@@ -175,7 +175,7 @@
 //             || !this.input.connected 
 //             ||  this.input.connectedOutput.supportsTypes([ANY_VALUE]);
 
-//         enableElementText(this.textControl, enable);
+//         setEnabledTextStyle(this.textControl, enable);
 //         this.textControl.readOnly = !enable;
 //     }
 
