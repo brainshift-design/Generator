@@ -205,12 +205,12 @@ function getColorToTextValue(input, format, trim)
         case 4: // CSS rgb
             str = 
                 'rgb('
-                      + numToString(rgba[0] * 255, dec1)
-                + ' ' + numToString(rgba[1] * 255, dec2)
-                + ' ' + numToString(rgba[2] * 255, dec3);
+                      + getValueToText(rgba[0] * 255, dec1, trim.value > 0)
+                + ' ' + getValueToText(rgba[1] * 255, dec2, trim.value > 0)
+                + ' ' + getValueToText(rgba[2] * 255, dec3, trim.value > 0);
 
                 if (input.type == FILL_VALUE)
-                    str += ' / ' + numToString(rgba[3], dec4);
+                    str += ' / ' + getValueToText(rgba[3], dec4, trim.value > 0);
     
                 str += ')';
             break;
@@ -221,12 +221,12 @@ function getColorToTextValue(input, format, trim)
 
             str = 
                 'hsl('
-                +       numToString(hsl[0] * 360, dec1)
-                + ' ' + numToString(hsl[1] * 100, dec2)
-                + ' ' + numToString(hsl[2] * 100, dec3);
+                +       getValueToText(hsl[0] * 360, dec1, trim.value > 0)
+                + ' ' + getValueToText(hsl[1] * 100, dec2, trim.value > 0)
+                + ' ' + getValueToText(hsl[2] * 100, dec3, trim.value > 0);
 
                 if (input.type == FILL_VALUE)
-                    str += ' / ' + numToString(rgba[3], dec4);
+                    str += ' / ' + getValueToText(rgba[3], dec4, trim.value > 0);
     
                 str += ')';
             break;
@@ -237,12 +237,12 @@ function getColorToTextValue(input, format, trim)
 
             str = 
                 'oklch('
-                +       numToString(hcl[2] * 100, dec1)
-                + ' ' + numToString(hcl[1],       dec2)
-                + ' ' + numToString(hcl[0] * 360, dec3);
+                +       getValueToText(hcl[2] * 100, dec1, trim.value > 0)
+                + ' ' + getValueToText(hcl[1],       dec2, trim.value > 0)
+                + ' ' + getValueToText(hcl[0] * 360, dec3, trim.value > 0);
 
             if (input.type == FILL_VALUE)
-                str += ' / ' + numToString(rgba[3], dec4);
+                str += ' / ' + getValueToText(rgba[3], dec4, trim.value > 0);
 
             str += ')';
 
@@ -254,12 +254,12 @@ function getColorToTextValue(input, format, trim)
 
             str = 
                 'lch('
-                +       numToString(hcl[2] * 100, dec1)
-                + ' ' + numToString(hcl[1] * 100, dec2)
-                + ' ' + numToString(hcl[0] * 360, dec3);
+                +       getValueToText(hcl[2] * 100, dec1, trim.value > 0)
+                + ' ' + getValueToText(hcl[1] * 100, dec2, trim.value > 0)
+                + ' ' + getValueToText(hcl[0] * 360, dec3, trim.value > 0);
 
             if (input.type == FILL_VALUE)
-                str += ' / ' + numToString(rgba[3], dec4);
+                str += ' / ' + getValueToText(rgba[3], dec4, trim.value > 0);
 
             str += ')';
 
@@ -271,12 +271,12 @@ function getColorToTextValue(input, format, trim)
 
             str = 
                 'oklab('
-                +       numToString(lab[0] * 100, dec1)
-                + ' ' + numToString(lab[1],       dec2)
-                + ' ' + numToString(lab[2],       dec3);
+                +       getValueToText(lab[0] * 100, dec1, trim.value > 0)
+                + ' ' + getValueToText(lab[1],       dec2, trim.value > 0)
+                + ' ' + getValueToText(lab[2],       dec3, trim.value > 0);
 
             if (input.type == FILL_VALUE)
-                str += ' / ' + numToString(rgba[3], dec4);
+                str += ' / ' + getValueToText(rgba[3], dec4, trim.value > 0);
 
             str += ')';
 
@@ -288,12 +288,12 @@ function getColorToTextValue(input, format, trim)
 
             str = 
                 'lab('
-                +       numToString(lab[0] * 100, dec1)
-                + ' ' + numToString(lab[1] * 100, dec2)
-                + ' ' + numToString(lab[2] * 100, dec3);
+                +       getValueToText(lab[0] * 100, dec1, trim.value > 0)
+                + ' ' + getValueToText(lab[1] * 100, dec2, trim.value > 0)
+                + ' ' + getValueToText(lab[2] * 100, dec3, trim.value > 0);
 
                 if (input.type == FILL_VALUE)
-                    str += ' / ' + numToString(rgba[3], dec4);
+                    str += ' / ' + getValueToText(rgba[3], dec4, trim.value > 0);
     
                 str += ')';
             break;
