@@ -42,11 +42,11 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
                 this.disableAfterSelectAll = null;
             }
 
-            if (this.textbox.disabled)
-            {
-                e.preventDefault();
-                return;
-            }
+            // if (this.textbox.disabled)
+            // {
+            //     e.preventDefault();
+            //     return;
+            // }
         }
 
 

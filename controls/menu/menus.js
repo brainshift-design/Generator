@@ -1210,6 +1210,7 @@ function initGeneratorMenus()
         menuSelectFromList,
         menuFlow,
         menuData,
+        menuList,
         menuItems,
         menuVariables,
         menuParams,
