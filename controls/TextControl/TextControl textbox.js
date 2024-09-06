@@ -150,15 +150,19 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
         }
 
         else if (e.code == 'KeyZ'
-            && getCtrlKey(e))
+              && getCtrlKey(e))
         {
             // e.stopImmediatePropagation();
         }
 
         // else if (e.code == 'KeyA'
-        //     && getCtrlKey(e))
+        //       && getCtrlKey(e))
         // {
-        //     e.preventDefault();
+        //     if (crashed)
+        //     {
+        //         e.preventDefault();
+        //         e.stopPropagation();
+        //     }
         // }
 
         // else if (e.code == 'KeyZ'
@@ -181,8 +185,12 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
 
 
 
-    this.textbox.addEventListener('focus', () =>
+    this.textbox.addEventListener('focus', e =>
     {
+        if (this.textbox.disabled)
+            e.preventDefault();
+
+
         hideAllMenus();
 
         if (currentTooltip) 

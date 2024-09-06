@@ -29,8 +29,8 @@ function initCrashDialog(event, error = event, showDebugButton = true)
 
     crashDetails.innerHTML += errorText + '<br/>';
         
-
-    if (!crashed)
+    
+    if (!crashed) // to prevent double creation
     {
         if (settings.shareUsageMetrics)
             //&& !ignoreUsers.includes(currentUser.id))
@@ -57,7 +57,7 @@ function initCrashDialog(event, error = event, showDebugButton = true)
         crashDialog.addEventListener('pointerdown', e => {                     hideAllMenus(); });
         crashBack  .addEventListener('pointerdown', e => { e.preventDefault(); hideAllMenus(); });
 
-        
+       
         btnCrashSaveRestart.addEventListener('click', async () => { await uiSaveToLocalFile('crashed.gen'); clearGraph(); uiRestartGenerator(false); });
         btnCrashSaveRestart.style.display = showDebugButton ? 'block' : 'none';
 
