@@ -111,6 +111,16 @@ extends GValue
 
 
 
+    // getMaxDecimals()
+    // {
+    //     return Math.max(
+    //         this.c1.decimals,
+    //         this.c2.decimals,
+    //         this.c3.decimals);
+    // }
+
+
+
     async eval(parse)
     {
         return this.copy();

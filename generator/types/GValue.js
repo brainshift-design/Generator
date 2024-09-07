@@ -66,6 +66,13 @@ class GValue
 
 
 
+    // getMaxDecimals()
+    // {
+    //     return 0;
+    // }
+
+
+
     async eval(parse)
     {
         return this;

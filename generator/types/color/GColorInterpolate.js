@@ -1,6 +1,8 @@
 class GColorInterpolate
-extends GOperator2
+extends GOperator
 {
+    inputs = [];
+
     space;
     gamma;
     amount;
@@ -19,6 +21,8 @@ extends GOperator2
     {
         super.reset();
 
+        this.inputs = [];
+
         this.space  = null;
         this.gamma  = null;
         this.amount = null;
@@ -32,6 +36,8 @@ extends GOperator2
         const copy = new GColorInterpolate(this.nodeId, this.options);
 
         copy.copyBase(this);
+
+        copy.inputs = this.inputs.map(i => i.copy());
 
         if (this.space ) copy.space  = this.space .copy();
         if (this.gamma ) copy.gamma  = this.gamma .copy();
@@ -100,25 +106,25 @@ extends GOperator2
         
         for (const _input of this.inputs)
         {
-            const input = await evalColorOrListValue(_input, parse);
+            const input = await evalColorStopOrListValue(_input, parse);
 
             if (isListValueType(input.type))
             {
                 for (const item of input.items)
                 {
-                    const value = await evalNumberValue(item, parse);
+                    const value = await evalColorStopValue(item, parse);
                     values.push(value);
                 }
             }
             else
             {
-                const value = await evalNumberValue(input, parse);
+                const value = await evalColorStopValue(input, parse);
                 values.push(value);
             }
         }
         
         
-        const maxDec = values.reduce((max, v) => Math.max(max, v.decimals), 0);
+        const maxDec = 0;//values.reduce((max, v) => Math.max(max, v.decimals), 0);
 
 
         const deg =
@@ -133,57 +139,57 @@ extends GOperator2
         if (values.length == 1)
             this.value = values[0];
 
-        else if (values.length > 0
-              && index < values.length - deg)
-        {
-            const localAmount = 
-                nSegments > 1
-                ? (amount.value/100 - index/nSegments) * nSegments
-                : amount.value/100;
+        // else if (values.length > 0
+        //       && index < values.length - deg)
+        // {
+        //     const localAmount = 
+        //         nSegments > 1
+        //         ? (amount.value/100 - index/nSegments) * nSegments
+        //         : amount.value/100;
 
 
-            if (degree.value == 0) // linear
-            {
-                const val0 = values[index*deg  ];
-                const val1 = values[index*deg+1];
+        //     if (degree.value == 0) // linear
+        //     {
+        //         const val0 = values[index*deg  ];
+        //         const val1 = values[index*deg+1];
 
-                this.value = new NumberValue(
-                    lerp(val0.value, val1.value, localAmount),
-                    maxDec);
-            }
-            else if (degree.value == 1) // quadratic
-            {
-                const val0 = values[index*deg  ];
-                const val1 = values[index*deg+1];
-                const val2 = values[index*deg+2];
+        //         this.value = new NumberValue(
+        //             lerp(val0.value, val1.value, localAmount),
+        //             maxDec);
+        //     }
+        //     else if (degree.value == 1) // quadratic
+        //     {
+        //         const val0 = values[index*deg  ];
+        //         const val1 = values[index*deg+1];
+        //         const val2 = values[index*deg+2];
 
-                this.value = new NumberValue(
-                    lerp2(val0.value, val1.value, val2.value, localAmount),
-                    maxDec);
-            }
-            else if (degree.value == 2) // cubic
-            {
-                const val0 = values[index*deg  ];
-                const val1 = values[index*deg+1];
-                const val2 = values[index*deg+2];
-                const val3 = values[index*deg+3];
+        //         this.value = new NumberValue(
+        //             lerp2(val0.value, val1.value, val2.value, localAmount),
+        //             maxDec);
+        //     }
+        //     else if (degree.value == 2) // cubic
+        //     {
+        //         const val0 = values[index*deg  ];
+        //         const val1 = values[index*deg+1];
+        //         const val2 = values[index*deg+2];
+        //         const val3 = values[index*deg+3];
 
-                this.value = new NumberValue(
-                    lerp3(val0.value, val1.value, val2.value, val3.value, localAmount),
-                    maxDec);
-            }
-            else if (degree.value == 3) // cosine
-            {
-                const val0 = values[index*deg  ];
-                const val1 = values[index*deg+1];
+        //         this.value = new NumberValue(
+        //             lerp3(val0.value, val1.value, val2.value, val3.value, localAmount),
+        //             maxDec);
+        //     }
+        //     else if (degree.value == 3) // cosine
+        //     {
+        //         const val0 = values[index*deg  ];
+        //         const val1 = values[index*deg+1];
 
-                this.value = new NumberValue(
-                    lerpCos(val0.value, val1.value, localAmount),
-                    maxDec);
-            }
-            else
-                this.value = ColorValue.NaN.copy();
-        }
+        //         this.value = new NumberValue(
+        //             lerpCos(val0.value, val1.value, localAmount),
+        //             maxDec);
+        //     }
+        //     else
+        //         this.value = ColorValue.NaN.copy();
+        // }
 
         else                  
             this.value = ColorValue.NaN.copy();
@@ -253,10 +259,12 @@ extends GOperator2
     isValid()
     {
         return super.isValid()
-            && this.space  && this.space .isValid()
-            && this.gamma  && this.gamma .isValid()
-            && this.amount && this.amount.isValid()
-            && this.degree && this.degree.isValid();
+            &&  this.inputs.length > 0
+            && !this.inputs.find(i => !i.isValid())
+            &&  this.space  && this.space .isValid()
+            &&  this.gamma  && this.gamma .isValid()
+            &&  this.amount && this.amount.isValid()
+            &&  this.degree && this.degree.isValid();
     }
 
 
@@ -264,6 +272,8 @@ extends GOperator2
     pushValueUpdates(parse)
     {
         super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
 
         if (this.space ) this.space .pushValueUpdates(parse);
         if (this.gamma ) this.gamma .pushValueUpdates(parse);
@@ -277,6 +287,8 @@ extends GOperator2
     {
         super.invalidateInputs(parse, from, force);
 
+        this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
+
         if (this.space ) this.space .invalidateInputs(parse, from, force);
         if (this.gamma ) this.gamma .invalidateInputs(parse, from, force);
         if (this.amount) this.amount.invalidateInputs(parse, from, force);
@@ -288,6 +300,8 @@ extends GOperator2
     iterateLoop(parse)
     {
         super.iterateLoop(parse);
+
+        this.inputs.forEach(i => i.iterateLoop(parse));
 
         if (this.space ) this.space .iterateLoop(parse);
         if (this.gamma ) this.gamma .iterateLoop(parse);

@@ -73,6 +73,17 @@ extends GValue
 
 
 
+    // getMaxDecimals()
+    // {
+    //     return Math.max(
+    //         this.color.c1.decimals,
+    //         this.color.c2.decimals,
+    //         this.color.c3.decimals,
+    //         this.);
+    // }
+
+
+
     async eval(parse)
     {
         return this.copy();

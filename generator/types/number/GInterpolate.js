@@ -1,5 +1,5 @@
 class GInterpolate
-extends GOperator2
+extends GOperator
 {
     inputs = [];
 

@@ -23,8 +23,6 @@ extends OpColorBase
 
 
         this.addNewInput();
-        this.addInput(new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE]));
-
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
@@ -147,6 +145,37 @@ extends OpColorBase
         super.updateHeader();
         
         const colors = this.getHeaderColors();
-        updateColorHeader(this, colors);
+        // updateColorHeader(this, colors);
+
+        
+        const inputs = this.headerInputs.filter(i => i.connected);
+
+
+        if (   this.isUnknown()
+            ||    !rgbaIsNaN  (colors.back)
+               && !rgbaIsValid(colors.back)
+            || inputs.length == 0)
+        {
+            updateFillHeader(this, colors, false);
+
+            if (   !rgbaIsNaN  (colors.back)
+                && !rgbaIsValid(colors.back))
+            {
+                this._warningOverlay.style.height  = this.measureData.headerOffset.height;
+                this._warningOverlay.style.display = 'block';
+            }
+
+            return;
+        }
+        else
+            this._warningOverlay.style.display = 'none';
+
+        
+        if (    this.isUnknown()
+            || !inputs.some(value => value.isValid()))
+            this.checkers.style.display = 'none';
+
+        else
+            updateHeaderCheckers(this, colors, true);
     }
 }
