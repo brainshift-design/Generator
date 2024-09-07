@@ -284,13 +284,6 @@ this.header.addEventListener('pointerdown', e =>
                     graphView.headerInput = savedConn.input;
 
                     graphView.overInput.updateControl();
-
-
-                    const inputRect = boundingRect(savedConn.input.div);
-
-                    // tempConn.wire.inputPos = point(
-                    //     inputRect.x + inputRect.w/2,
-                    //     inputRect.y + inputRect.h/2 - getTopHeight());
                 }
                 else
                 {
@@ -305,8 +298,6 @@ this.header.addEventListener('pointerdown', e =>
 
                     input.mouseOver = true;
                     input.updateControl();
-
-                    //tempConn.wire.inputPos = input.getPosition();
                 }
             }
             else if ( tempConn.input
@@ -318,17 +309,9 @@ this.header.addEventListener('pointerdown', e =>
                 graphView.overOutput   = output;
                 graphView.headerOutput = output;
 
-                // tempConn.output = output;
-                
                 
                 output.mouseOver = true;
                 output.updateControl();
-
-
-                const rect = boundingRect(output.div);
-
-                //tempConn.wire.outputPos = output.getPosition();
-
 
                 tempConn.input.updateControl();
             }
@@ -421,7 +404,6 @@ this.header.addEventListener('pointerdown', e =>
                     input.updateControl();
                 }
 
-                //graphView.tempConn.wire.inputPos = point_NaN;
                 graphView.tempConn.output.updateControl();
             }
             else if (graphView.tempConn.input
@@ -437,7 +419,6 @@ this.header.addEventListener('pointerdown', e =>
                     output.updateControl();
                 }
 
-                //graphView.tempConn.wire.outputPos = point_NaN;
                 graphView.tempConn.input.updateControl();
            }
 

@@ -122,8 +122,6 @@ extends EventTarget
                 graphView.overOutput = this;
                 tc.output            = this;
 
-                //tc.wire.outputPos = this.getPosition();
-
                 tc.output.updateControl();
                 tc.input .updateControl();
             }
@@ -159,10 +157,6 @@ extends EventTarget
 
         this.mouseOver = false;
         this.updateControl();
-
-        // if (   graphView.tempConn
-        //     && graphView.tempConn.input)
-        //     graphView.tempConn.wire.outputPos = point_NaN;
     }
 
 

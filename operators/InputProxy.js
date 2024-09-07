@@ -147,13 +147,6 @@
 //                 const rect = boundingRect(this.div);
 //                 const loop = tc.output.node.isOrFollows(this.node);
 
-//                 if (!loop)
-//                 {
-//                     tc.wire.inputPos = point(
-//                         rect.x + rect.w/2,
-//                         rect.y + rect.h/2 - getTopHeight());
-//                 }
-
 //                 graphView.overInput = !loop ? this : null;
 //                 this.node.inputs.forEach(i => i.updateControl());
 //             }
@@ -187,10 +180,6 @@
 
 //         this.mouseOver = false;
 //         this.updateControl();
-
-//         if (   graphView.tempConn
-//             && graphView.tempConn.output)
-//             graphView.tempConn.wire.inputPos = point_NaN;
 //     }
 
 

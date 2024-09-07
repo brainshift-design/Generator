@@ -2,9 +2,6 @@ class Wire
 {
     connection;
 
-    //outputPos = point_NaN;
-    //inputPos  = point_NaN;
-
 
     clientX;
     clientY;
@@ -229,21 +226,6 @@ class Wire
 
     updateCurve(x1, y1, x2, y2)
     {
-        // if (!pointIsNaN(this.outputPos))
-        // {
-        //     console.log('outputPos');
-        //     x1 = this.outputPos.x;
-        //     y1 = this.outputPos.y;
-        // }
-    
-        // if (!pointIsNaN(this.inputPos))
-        // {
-        //     console.log('inputPos');
-        //     x2 = this.inputPos.x;
-        //     y2 = this.inputPos.y;
-        // }
-    
-        
         // const senseElbow0 = 100;
         // const maxElbow0   = 40;
         // const nd          = Math.min(Math.max(-1, (x2 - x1) / senseElbow0), 0);
@@ -373,19 +355,6 @@ class Wire
     
     updateArrows(x0, y0, x1, y1, x2, y2, x3, y3)
     {
-        // if (!pointIsNaN(this.outputPos))
-        // {
-        //     x0 = this.outputPos.x;
-        //     y0 = this.outputPos.y;
-        // }
-    
-        // if (!pointIsNaN(this.inputPos))
-        // {
-        //     x3 = this.inputPos.x;
-        //     y3 = this.inputPos.y;
-        // }
-    
-    
         const p0 = point(x0, y0);
         const p1 = point(x1, y1);
         const p2 = point(x2, y2);

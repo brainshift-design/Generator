@@ -3063,10 +3063,8 @@ textboxHasFocus
 headerRect
 rightOfInputs
 leftOfOutputs
-inputPos
 inputRect
 getAutoOutput
-outputPos
 clickTimer
 prevSelected
 thisIndex

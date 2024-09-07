@@ -157,8 +157,6 @@ extends EventTarget
                         input.mouseOver = false;
                         input.updateControl();
                     }
-                    
-                    //tc.wire.inputPos = point_NaN;
                 }
                 else if (tc.input
                       && tc.input.node != this.node)
@@ -173,8 +171,6 @@ extends EventTarget
                         output.mouseOver = false;
                         output.updateControl();
                     }
-
-                    //tc.wire.outputPos = point_NaN;
 
                     tc.input.updateControl();
                 }
@@ -482,7 +478,6 @@ extends EventTarget
             this.input.mouseOver = true;
             this.input.updateControl();
 
-            //tc.wire.inputPos = this.input.getPosition();
             tc.wire.update();
 
             tc.output.updateControl();
@@ -499,7 +494,6 @@ extends EventTarget
             this.output.mouseOver = true;
             this.output.updateControl();
 
-            //tc.wire.outputPos = this.output.getPosition();
             tc.wire.update();
 
             tc.input.updateControl();
