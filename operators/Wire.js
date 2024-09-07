@@ -2,8 +2,8 @@ class Wire
 {
     connection;
 
-    outputPos = point_NaN;
-    inputPos  = point_NaN;
+    //outputPos = point_NaN;
+    //inputPos  = point_NaN;
 
 
     clientX;
@@ -170,10 +170,6 @@ class Wire
         const input  = graphView.overInput  ?? conn.input;
 
 
-        // console.log('output =', output);
-        // console.log('input =', input);
-        // console.log('');
-
         if (output)
         {
             const ro = boundingRect(output.div);
@@ -233,17 +229,19 @@ class Wire
 
     updateCurve(x1, y1, x2, y2)
     {
-        if (!pointIsNaN(this.outputPos))
-        {
-            x1 = this.outputPos.x;
-            y1 = this.outputPos.y;
-        }
+        // if (!pointIsNaN(this.outputPos))
+        // {
+        //     console.log('outputPos');
+        //     x1 = this.outputPos.x;
+        //     y1 = this.outputPos.y;
+        // }
     
-        if (!pointIsNaN(this.inputPos))
-        {
-            x2 = this.inputPos.x;
-            y2 = this.inputPos.y;
-        }
+        // if (!pointIsNaN(this.inputPos))
+        // {
+        //     console.log('inputPos');
+        //     x2 = this.inputPos.x;
+        //     y2 = this.inputPos.y;
+        // }
     
         
         // const senseElbow0 = 100;
@@ -375,17 +373,17 @@ class Wire
     
     updateArrows(x0, y0, x1, y1, x2, y2, x3, y3)
     {
-        if (!pointIsNaN(this.outputPos))
-        {
-            x0 = this.outputPos.x;
-            y0 = this.outputPos.y;
-        }
+        // if (!pointIsNaN(this.outputPos))
+        // {
+        //     x0 = this.outputPos.x;
+        //     y0 = this.outputPos.y;
+        // }
     
-        if (!pointIsNaN(this.inputPos))
-        {
-            x3 = this.inputPos.x;
-            y3 = this.inputPos.y;
-        }
+        // if (!pointIsNaN(this.inputPos))
+        // {
+        //     x3 = this.inputPos.x;
+        //     y3 = this.inputPos.y;
+        // }
     
     
         const p0 = point(x0, y0);

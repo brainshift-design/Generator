@@ -358,7 +358,7 @@ NumberControl.prototype.initEvents = function()
                     input.updateControl();
                 }
                 
-                graphView.tempConn.wire.inputPos = point_NaN;
+                //graphView.tempConn.wire.inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
                   && graphView.tempConn.input.node != param.node)
@@ -373,7 +373,7 @@ NumberControl.prototype.initEvents = function()
                     output.updateControl();
                 }
 
-                graphView.tempConn.wire.outputPos = point_NaN;
+                //graphView.tempConn.wire.outputPos = point_NaN;
                 graphView.tempConn.input.updateControl();
            }
         }

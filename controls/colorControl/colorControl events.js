@@ -191,7 +191,7 @@ ColorControl.prototype.initEvents = function()
                     input.updateControl();
                 }
                 
-                graphView.tempConn.wire.inputPos = point_NaN;
+                //graphView.tempConn.wire.inputPos = point_NaN;
                 //graphView.tempConn.output.updateControl();
             }
             else if (graphView.tempConn.input
@@ -207,7 +207,7 @@ ColorControl.prototype.initEvents = function()
                     output.updateControl();
                 }
 
-                graphView.tempConn.wire.outputPos = point_NaN;
+                //graphView.tempConn.wire.outputPos = point_NaN;
                 //graphView.tempConn.input.updateControl();
            }
         }

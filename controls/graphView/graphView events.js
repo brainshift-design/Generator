@@ -84,8 +84,8 @@ GraphView.prototype.createEvents = function()
 
                     this.startConnectionFromOutput(e.pointerId, this.overInput.connectedOutput, false, getCtrlKey(e));
 
-                    this.tempConn.wire.outputPos = this.overInput.connectedOutput.getPosition();
-                    this.tempConn.wire. inputPos = this.overInput                .getPosition();
+                    //this.tempConn.wire.outputPos = this.overInput.connectedOutput.getPosition();
+                    //this.tempConn.wire. inputPos = this.overInput                .getPosition();
 
                     this.tempConn.wire.update(sx, sy);
 
