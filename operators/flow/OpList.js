@@ -9,7 +9,7 @@ extends ResizableBase
     {
         super(LIST, 'list', 'list', iconList);
 
-        this.outputValueType         = LIST_VALUE;
+        this.outputValueType   = LIST_VALUE;
         this.variableInputs    = true;
         this.showHeaderTooltip = true;
         this.iconOffsetY       = 1;

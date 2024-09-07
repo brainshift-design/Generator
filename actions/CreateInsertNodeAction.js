@@ -125,7 +125,6 @@ extends Action
 
                 if (   _output
                     && _input.canConnectFrom(_output))
-                    //&& LIST_TYPES.includes(selOutput.types[0]) == LIST_TYPES.includes(_input.types[0]))
                     createNodeAction_connect(this, _output, _inputNode, _conn.inputId, _conn.outputOrder);
             }
         }
@@ -135,12 +134,8 @@ extends Action
 
     do_noInsert(node)
     {
-        //console.log('no insert');
-
         if (node.variableInputs)
         {
-            //console.log('variable inputs');
-
             const selNodes = this.prevSelectedIds.map(id => nodeFromId(id)).filter(n => n.headerOutputs.length > 0);
 
             if (selNodes.length > 0)
@@ -162,8 +157,6 @@ extends Action
         }
         else
         {
-            //console.log('regular inputs');
-
             const selNode = nodeFromId(this.prevSelectedIds[0]);
 
             if (   selNode

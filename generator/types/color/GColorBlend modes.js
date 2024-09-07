@@ -261,8 +261,10 @@ function bl_min(col)
 {
          if (col[0] <= col[1] 
           && col[0] <= col[2]) return 0;
+
     else if (col[1] <= col[1] 
           && col[1] <= col[2]) return 1;
+          
     else                       return 2;
 }
 
@@ -274,10 +276,12 @@ function bl_mid(col)
              && col[0] <= col[2]
           ||    col[0] <= col[1] 
              && col[0] >= col[2]) return 0;
+             
     else if (   col[1] >= col[0] 
              && col[1] <= col[2]
           ||    col[1] <= col[0] 
              && col[1] >= col[2]) return 1;
+
     else                          return 2;
 }
 
@@ -287,8 +291,10 @@ function bl_max(col)
 {
          if (col[0] >= col[1] 
           && col[0] >= col[2]) return 0;
+
     else if (col[1] >= col[1] 
           && col[1] >= col[2]) return 1;
+
     else                       return 2;
 }
 

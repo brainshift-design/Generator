@@ -7,7 +7,12 @@ extends OpColorBase
     paramDegree;
 
 
+    checkersHolder;
+    checkers;
     colorBack;
+
+    value;
+
 
 
 
@@ -15,11 +20,19 @@ extends OpColorBase
     {
         super(COLOR_INTERPOLATE, 'inter', 'interpolate', iconColorInterpolate);
 
-        this.iconOffsetY = -3;
+        this.iconOffsetY    = -3;
+        this.variableInputs = true;
 
         
         this.colorBack = createDiv('colorBack');
         this.inner.insertBefore(this.colorBack, this.paramHolder);
+
+
+        this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
+        this.checkers       = createDiv('nodeHeaderCheckers'      );
+        
+        this.checkersHolder.appendChild(this.checkers);
+        this.inner.insertBefore(this.checkersHolder, this.header);
 
 
         this.addNewInput();
@@ -124,16 +137,16 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        this.value = values[paramIds.findIndex(id => id == 'value')];
 
         this._color = 
-               value 
-            && value.type 
-            && value.type == COLOR_VALUE
-            ? value.toDataColor()
+               this.value 
+            && this.value.type 
+            && this.value.type == COLOR_VALUE
+            ? this.value.toDataColor()
             : dataColor_NaN;
 
-        this.rgbaBack = value.toRgba();
+        this.rgbaBack = this.value.toRgba();
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
@@ -171,11 +184,11 @@ extends OpColorBase
             this._warningOverlay.style.display = 'none';
 
         
-        if (    this.isUnknown()
-            || !inputs.some(value => value.isValid()))
-            this.checkers.style.display = 'none';
+        // if (    this.isUnknown()
+        //     || !inputs.some(value => value.isValid()))
+        //     this.checkers.style.display = 'none';
 
-        else
-            updateHeaderCheckers(this, colors, true);
+        // else
+            // updateHeaderCheckers(this, colors, true);
     }
 }

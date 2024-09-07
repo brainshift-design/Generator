@@ -31,7 +31,6 @@ extends OpColorBase
         this.inner.insertBefore(this.checkersHolder, this.header);
 
 
-
         this.addInput (new Input ([FILL_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([FILL_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
@@ -173,9 +172,6 @@ extends OpColorBase
 
 
         this.paramColor.checkers.style.display = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
-
-        if (this.paramOpacity.value.isValid())
-            this.checkersHolder.style.opacity = (100 - this.paramOpacity.value.toNumber()) + '%';
     }
 
 
@@ -194,6 +190,9 @@ extends OpColorBase
         Operator.prototype.updateHeader.call(this);
 
         const colors = this.getHeaderColors();
+
+        if (this.paramOpacity.value.isValid())
+            this.checkersHolder.style.opacity = (100 - this.paramOpacity.value.toNumber()) + '%';
 
         updateFillHeader(this, colors, this.paramOpacity.value.isValid());
     }
@@ -222,9 +221,9 @@ extends OpColorBase
 
         if (this.isUnknown())
         {
-            colors.back       = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
+            colors.back      = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
             colors.colorBack = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
-            colors.text       = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+            colors.text      = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
         }
         else
         {
