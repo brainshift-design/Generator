@@ -63,9 +63,6 @@ extends GOperator2
             {
                 for (const item of input.items)
                 {
-                    // if (item.type != NUMBER_VALUE)
-                    //     continue;
-    
                     const value = await evalNumberValue(item, parse);
                     values.push(value);
                 }

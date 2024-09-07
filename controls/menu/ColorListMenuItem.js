@@ -299,10 +299,10 @@ class ColorListMenuItem
             ? 'var(--figma-color-bg-brand)'
             : 'transparent';
 
-        this.divColor2.style.background = this.swatchType == 1 ? '#eee' : (darkMode ? '#ddd' : '#333');
+        this.divColor2.style.background = this.swatchType == 1 ? '#eee' : (darkMode ? '#ddd' : '#444');
         
         if (this.swatchType == 0)
-            this.noColorLine.style.background = darkMode ? 'transparent' : '#fff2';
+            this.noColorLine.style.background = '#fff2';
         
         this.div.style.opacity = this.enabled ? '100%' : '40%';
     }

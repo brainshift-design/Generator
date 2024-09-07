@@ -32,6 +32,7 @@ extends OperatorBase
     addNewInput()
     {
         const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]);
+        
         newInput.isNew = true;
 
 

@@ -6724,58 +6724,61 @@ function loadLocalSettings()
 }
 
 
-const LIST_VALUE           = 'EXPAND#';
+const LIST_VALUE             = 'EXPAND#';
 
-const NUMBER_LIST_VALUE    = 'NLIST#';
-const   TEXT_LIST_VALUE    = 'TLIST#';
-const  SHAPE_LIST_VALUE    = 'SLIST#';
-
-
-const NULL_NODE            = 'NULL';
-const VARIABLE_GROUP       = 'VARGRP';
-const FEEDBACK             = 'FEEDBK';
-const REPEAT               = 'REPT';
-const CACHE                = 'CACHE';
-const FREEZE               = 'FRZ';
-const TIMER                = 'TIMER';
-const GET_VALUE_NAME       = 'GVNAME';
-const SET_VALUE_NAME       = 'SVNAME';
-const GET_LIST_VALUE_NAMES = 'GVNAMES';
-const SET_LIST_VALUE_NAMES = 'SVNAMES';
-const SET_OBJECT_NAME      = 'SONAME';
+const NUMBER_LIST_VALUE      = 'NLIST#';
+const   TEXT_LIST_VALUE      = 'TLIST#';
+const  SHAPE_LIST_VALUE      = 'SLIST#';
+const  COLOR_LIST_VALUE      = 'CLIST#';
+const  FILL_LIST_VALUE       = 'FLIST#';
+const  COLOR_STOP_LIST_VALUE = 'CSLIST#';
 
 
-const VARIABLE             = 'VAR';
-const VARIABLE_VALUE       = 'VAR#';
-const VARIABLE_TYPES       = [VARIABLE_VALUE, VARIABLE];
+const NULL_NODE              = 'NULL';
+const VARIABLE_GROUP         = 'VARGRP';
+const FEEDBACK               = 'FEEDBK';
+const REPEAT                 = 'REPT';
+const CACHE                  = 'CACHE';
+const FREEZE                 = 'FRZ';
+const TIMER                  = 'TIMER';
+const GET_VALUE_NAME         = 'GVNAME';
+const SET_VALUE_NAME         = 'SVNAME';
+const GET_LIST_VALUE_NAMES   = 'GVNAMES';
+const SET_LIST_VALUE_NAMES   = 'SVNAMES';
+const SET_OBJECT_NAME        = 'SONAME';
 
 
-const LIST                 = 'LIST';
-const LIST_AS_ITEM         = 'LSASIT';
-const EXTRACT              = 'EXTR';
-const SET_PARAM            = 'SETP';
-const GET_PARAM            = 'GETP';
-const SUBLIST              = 'SUBLST';
-const UNIQUE               = 'UNIQ';
-const REORDER_LIST         = 'RORD';
-const SHIFT_LIST           = 'SHFTLST';
-const REVERSE_LIST         = 'REVLST';
-const BUCKLE_LIST          = 'BUKLST';
-const SORT                 = 'SORT';
-const COLUMN               = 'CLMN';
-const CELL                 = 'CELL';
-const EXPAND               = 'EXPAND';
-const LIST_COUNT           = 'COUNT';
-const OBJECT_COUNT         = 'OBJCOUNT';
-const LIST_CONTAINS        = 'LCONT';
-const LIST_FIND            = 'LFIND';
-const SELECT               = 'SELECT';
-const SELECT_FROM_LIST     = 'LSTSEL';
-const IF_ELSE              = 'IF';
-const FILTER               = 'LSTFLT';
+const VARIABLE               = 'VAR';
+const VARIABLE_VALUE         = 'VAR#';
+const VARIABLE_TYPES         = [VARIABLE_VALUE, VARIABLE];
 
 
-const ANY_VALUE            = 'ANY#';
+const LIST                   = 'LIST';
+const LIST_AS_ITEM           = 'LSASIT';
+const EXTRACT                = 'EXTR';
+const SET_PARAM              = 'SETP';
+const GET_PARAM              = 'GETP';
+const SUBLIST                = 'SUBLST';
+const UNIQUE                 = 'UNIQ';
+const REORDER_LIST           = 'RORD';
+const SHIFT_LIST             = 'SHFTLST';
+const REVERSE_LIST           = 'REVLST';
+const BUCKLE_LIST            = 'BUKLST';
+const SORT                   = 'SORT';
+const COLUMN                 = 'CLMN';
+const CELL                   = 'CELL';
+const EXPAND                 = 'EXPAND';
+const LIST_COUNT             = 'COUNT';
+const OBJECT_COUNT           = 'OBJCOUNT';
+const LIST_CONTAINS          = 'LCONT';
+const LIST_FIND              = 'LFIND';
+const SELECT                 = 'SELECT';
+const SELECT_FROM_LIST       = 'LSTSEL';
+const IF_ELSE                = 'IF';
+const FILTER                 = 'LSTFLT';
+
+
+const ANY_VALUE              = 'ANY#';
 
 
 const LIST_TYPES =
@@ -12109,6 +12112,57 @@ async function evalFillValue(_value, parse)
 
 async function evalStrokeValue        (_value, parse) { return await evalValue(_value, parse, () => StrokeValue        .NaN.copy()); }
 async function evalColorStopValue     (_value, parse) { return await evalValue(_value, parse, () => ColorStopValue     .NaN.copy()); }
+
+
+
+async function evalColorStopOrListValue(_value, parse) 
+{ 
+    let value = await evalValue(_value, parse, () => ColorStopValue.NaN.copy()); 
+
+
+    if (   value
+        && value.type == COLOR_VALUE)
+        value = new ColorStopValue(new FillValue(value));
+
+    else if (value
+          && value.type == FILL_VALUE)
+        value = new ColorStopValue(value);
+
+    else if (value
+          && value.type == LIST_VALUE
+          && finalListTypeFromItems(value.items) == COLOR_LIST_VALUE)
+    {
+        const condensed = value.condensed;
+
+        value = new ListValue(value.items.map(i => new ColorStopValue(new FillValue(i))));
+        value.condensed = condensed;
+    }
+
+    else if (value
+          && value.type == LIST_VALUE
+          && finalListTypeFromItems(value.items) == FILL_LIST_VALUE)
+    {
+        const condensed = value.condensed;
+
+        value = new ListValue(value.items.map(i => new ColorStopValue(i)));
+        value.condensed = condensed;
+    }
+
+    else if (value
+          && value.type == LIST_VALUE) // mixed list
+    {
+        // const condensed = value.condensed;
+
+        // value = new ListValue(value.items.map(i => new NumberValue(parseFloat(i.value))));
+        // value.condensed = condensed;
+    }
+
+
+    return value;                
+}
+
+
+
 async function evalGradientValue      (_value, parse) { return await evalValue(_value, parse, () => GradientValue      .NaN.copy()); }
 
 async function evalListValue          (_value, parse) { return await evalValue(_value, parse, () => ListValue          .NaN.copy()); }
@@ -13207,10 +13261,13 @@ function finalListTypeFromTypes(types)
 {
     let _type = finalTypeFromTypes(types);
     
-         if (  _type == NUMBER_VALUE)      return NUMBER_LIST_VALUE;
-    else if (  _type ==   TEXT_VALUE)      return   TEXT_LIST_VALUE;
-    else if (SHAPE_VALUES.includes(_type)) return  SHAPE_LIST_VALUE;
-    else                                   return        LIST_VALUE;
+         if (  _type ==     NUMBER_VALUE)  return     NUMBER_LIST_VALUE;
+    else if (  _type ==       TEXT_VALUE)  return       TEXT_LIST_VALUE;
+    else if (  _type ==      COLOR_VALUE)  return      COLOR_LIST_VALUE;
+    else if (  _type ==       FILL_VALUE)  return       FILL_LIST_VALUE;
+    else if (  _type == COLOR_STOP_VALUE)  return COLOR_STOP_LIST_VALUE;
+    else if (SHAPE_VALUES.includes(_type)) return      SHAPE_LIST_VALUE;
+    else                                   return            LIST_VALUE;
 }
 
 
@@ -29647,9 +29704,6 @@ extends GOperator2
             {
                 for (const item of input.items)
                 {
-                    // if (item.type != NUMBER_VALUE)
-                    //     continue;
-    
                     const value = await evalNumberValue(item, parse);
                     values.push(value);
                 }
@@ -38221,8 +38275,10 @@ class GColorInterpolate
 extends GOperator2
 {
     space;
-    amount;
     gamma;
+    amount;
+    degree;
+
 
 
     constructor(nodeId, options)
@@ -38237,8 +38293,9 @@ extends GOperator2
         super.reset();
 
         this.space  = null;
-        this.amount = null;
         this.gamma  = null;
+        this.amount = null;
+        this.degree = null;
     }
 
 
@@ -38250,8 +38307,9 @@ extends GOperator2
         copy.copyBase(this);
 
         if (this.space ) copy.space  = this.space .copy();
-        if (this.amount) copy.amount = this.amount.copy();
         if (this.gamma ) copy.gamma  = this.gamma .copy();
+        if (this.amount) copy.amount = this.amount.copy();
+        if (this.degree) copy.degree = this.degree.copy();
 
         return copy;
     }
@@ -38264,60 +38322,153 @@ extends GOperator2
             return this;
 
 
-        const input0 = await evalColorValue (this.input0, parse);
-        const input1 = await evalColorValue (this.input1, parse);
         let   space  = await evalNumberValue(this.space,  parse);
-        const amount = await evalNumberValue(this.amount, parse);
         const gamma  = await evalNumberValue(this.gamma,  parse);
+        const amount = await evalNumberValue(this.amount, parse);
+        const degree = await evalNumberValue(this.degree, parse);
 
         if (space) space = space.toInteger();
         
 
-        if (   input0 
-            && input1)
+        // if (   input0 
+        //     && input1)
+        // {
+        //     consoleAssert(
+        //         amount.type == NUMBER_VALUE, 
+        //         'this.result.type must be NUMBER_VALUE');
+
+        //     const f = amount.value / 100;
+
+
+        //     const spaceIndex = space.value;//Math.min(Math.max(0, space.value), colorSpaceCount()-1);
+        //     const gammaValue = Math.max(0.0001, gamma.value);
+
+        //     const _space = colorSpace(spaceIndex);
+
+        //     const _color = this.interpolate(
+        //         spaceIndex,
+        //         convertDataColorToSpace(input0.toDataColor(), _space),
+        //         convertDataColorToSpace(input1.toDataColor(), _space),
+        //         f,
+        //         gammaValue);
+
+
+        //     // allow interpolating invalid colors,
+        //     // so no valid color check here
+
+        //     this.value = ColorValue.fromDataColor(_color, spaceIndex);
+        // }
+
+        // else if (input0) 
+        //     this.value = input0;
+
+        // else if (input1) 
+        //     this.value = input1;
+            
+        // else 
+        //     this.value = ColorValue.NaN.copy();
+
+
+        const values = [];
+        
+        for (const _input of this.inputs)
         {
-            consoleAssert(
-                amount.type == NUMBER_VALUE, 
-                'this.result.type must be NUMBER_VALUE');
+            const input = await evalColorOrListValue(_input, parse);
 
-            const f = amount.value / 100;
+            if (isListValueType(input.type))
+            {
+                for (const item of input.items)
+                {
+                    const value = await evalNumberValue(item, parse);
+                    values.push(value);
+                }
+            }
+            else
+            {
+                const value = await evalNumberValue(input, parse);
+                values.push(value);
+            }
+        }
+        
+        
+        const maxDec = values.reduce((max, v) => Math.max(max, v.decimals), 0);
 
 
-            const spaceIndex = space.value;//Math.min(Math.max(0, space.value), colorSpaceCount()-1);
-            const gammaValue = Math.max(0.0001, gamma.value);
+        const deg =
+            degree.value < 3
+            ? Math.min(degree.value, 2) + 1
+            : 1;
 
-            const _space = colorSpace(spaceIndex);
-
-            const _color = this.interpolate(
-                spaceIndex,
-                convertDataColorToSpace(input0.toDataColor(), _space),
-                convertDataColorToSpace(input1.toDataColor(), _space),
-                f,
-                gammaValue);
+        const nSegments = Math.floor((values.length-1)/deg);
+        const index     = Math.min(Math.floor((values.length-1)/deg * amount.value/100), nSegments-1);
 
 
-            // allow interpolating invalid colors,
-            // so no valid color check here
+        if (values.length == 1)
+            this.value = values[0];
 
-            this.value = ColorValue.fromDataColor(_color, spaceIndex);
+        else if (values.length > 0
+              && index < values.length - deg)
+        {
+            const localAmount = 
+                nSegments > 1
+                ? (amount.value/100 - index/nSegments) * nSegments
+                : amount.value/100;
+
+
+            if (degree.value == 0) // linear
+            {
+                const val0 = values[index*deg  ];
+                const val1 = values[index*deg+1];
+
+                this.value = new NumberValue(
+                    lerp(val0.value, val1.value, localAmount),
+                    maxDec);
+            }
+            else if (degree.value == 1) // quadratic
+            {
+                const val0 = values[index*deg  ];
+                const val1 = values[index*deg+1];
+                const val2 = values[index*deg+2];
+
+                this.value = new NumberValue(
+                    lerp2(val0.value, val1.value, val2.value, localAmount),
+                    maxDec);
+            }
+            else if (degree.value == 2) // cubic
+            {
+                const val0 = values[index*deg  ];
+                const val1 = values[index*deg+1];
+                const val2 = values[index*deg+2];
+                const val3 = values[index*deg+3];
+
+                this.value = new NumberValue(
+                    lerp3(val0.value, val1.value, val2.value, val3.value, localAmount),
+                    maxDec);
+            }
+            else if (degree.value == 3) // cosine
+            {
+                const val0 = values[index*deg  ];
+                const val1 = values[index*deg+1];
+
+                this.value = new NumberValue(
+                    lerpCos(val0.value, val1.value, localAmount),
+                    maxDec);
+            }
+            else
+                this.value = ColorValue.NaN.copy();
         }
 
-        else if (input0) 
-            this.value = input0;
-
-        else if (input1) 
-            this.value = input1;
-            
-        else 
+        else                  
             this.value = ColorValue.NaN.copy();
-
-
+        
+        
         this.setUpdateValues(parse,
         [
+            ['value',  this.value],
             ['space',  space     ],
-            ['amount', amount    ],
             ['gamma',  gamma     ],
-            ['value',  this.value]
+            ['amount', amount    ],
+            ['degree', degree    ]
         ]);
         
 
@@ -38376,8 +38527,9 @@ extends GOperator2
     {
         return super.isValid()
             && this.space  && this.space .isValid()
+            && this.gamma  && this.gamma .isValid()
             && this.amount && this.amount.isValid()
-            && this.gamma  && this.gamma .isValid();
+            && this.degree && this.degree.isValid();
     }
 
 
@@ -38387,8 +38539,9 @@ extends GOperator2
         super.pushValueUpdates(parse);
 
         if (this.space ) this.space .pushValueUpdates(parse);
-        if (this.amount) this.amount.pushValueUpdates(parse);
         if (this.gamma ) this.gamma .pushValueUpdates(parse);
+        if (this.amount) this.amount.pushValueUpdates(parse);
+        if (this.degree) this.degree.pushValueUpdates(parse);
     }
 
 
@@ -38398,8 +38551,9 @@ extends GOperator2
         super.invalidateInputs(parse, from, force);
 
         if (this.space ) this.space .invalidateInputs(parse, from, force);
-        if (this.amount) this.amount.invalidateInputs(parse, from, force);
         if (this.gamma ) this.gamma .invalidateInputs(parse, from, force);
+        if (this.amount) this.amount.invalidateInputs(parse, from, force);
+        if (this.degree) this.degree.invalidateInputs(parse, from, force);
     }
 
 
@@ -38409,8 +38563,9 @@ extends GOperator2
         super.iterateLoop(parse);
 
         if (this.space ) this.space .iterateLoop(parse);
-        if (this.amount) this.amount.iterateLoop(parse);
         if (this.gamma ) this.gamma .iterateLoop(parse);
+        if (this.amount) this.amount.iterateLoop(parse);
+        if (this.degree) this.degree.iterateLoop(parse);
     }
 }
 
@@ -52388,13 +52543,10 @@ function genParseColorInterpolate(parse)
     const lerp = new GColorInterpolate(nodeId, options);
 
 
-    let nInputs = -1;
-
+    let nInputs = 0;
+    
     if (!ignore)
-    {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
-    }
 
     
     if (parse.settings.logRequests) 
@@ -52411,22 +52563,16 @@ function genParseColorInterpolate(parse)
     parse.nTab++;
 
 
-    if (nInputs == 2)
-    {
-        lerp.input0 = genParse(parse);
-        lerp.input1 = genParse(parse);
-    }
+    parse.nTab++;
 
-    else if (nInputs == 1)
-        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-
-    else if (nInputs != 0)
-        consoleError('nInputs must be [0, 2]');
+    for (let i = 0; i < nInputs; i++)
+        lerp.inputs.push(genParse(parse));
 
 
     lerp.space  = genParse(parse);
-    lerp.amount = genParse(parse);
     lerp.gamma  = genParse(parse);
+    lerp.amount = genParse(parse);
+    lerp.degree = genParse(parse);
 
 
     parse.nTab--;

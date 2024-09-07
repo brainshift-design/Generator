@@ -2,8 +2,9 @@ class   OpColorInterpolate
 extends OpColorBase
 {
     paramSpace;
-    paramAmount;
     paramGamma;
+    paramAmount;
+    paramDegree;
 
 
     colorBack;
@@ -21,16 +22,17 @@ extends OpColorBase
         this.inner.insertBefore(this.colorBack, this.paramHolder);
 
 
-        this.addInput(new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE]));
+        this.addNewInput();
         this.addInput(new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE]));
 
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramSpace  = new SelectParam('space',  '',      false, true, true, ColorSpaces.map(s => s[1]), 1));
-        this.addParam(this.paramAmount = new NumberParam('amount', '',      false, true, true, 50, 0, 100, 0));
-        this.addParam(this.paramGamma  = new NumberParam('gamma',  'gamma', true,  true, true, 1, 0.01, 4, 2));
-      
+        this.addParam(this.paramSpace  = new SelectParam('space',  '',       false, true, true, ColorSpaces.map(s => s[1]), 1));
+        this.addParam(this.paramGamma  = new NumberParam('gamma',  'gamma',  true,  true, true, 1, 0.01, 4, 2));
+        this.addParam(this.paramAmount = new NumberParam('amount', '',       false, true, true, 50, 0, 100, 0));
+        this.addParam(this.paramDegree = new SelectParam('degree', 'degree', false, true, true, ['linear', 'quadratic', 'cubic', 'cosine'], 0));
+
         this.paramSpace.separatorsBefore = [4, 9, 12, 15];
         this.paramSpace.markMenuPro      = subscribed() ? [] : [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
         this.paramSpace.minMenuWidth     = subscribed() ? 200 : 220;
@@ -59,6 +61,34 @@ extends OpColorBase
 
 
 
+    addNewInput()
+    {
+        const newInput = new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE]);
+        
+        newInput.isNew = true;
+
+
+        newInput.addEventListener('connect', e => 
+        {
+            onVariableConnectInput(e.detail.input); 
+            e.detail.input.isNew = false; 
+        });
+        
+        
+        newInput.addEventListener('disconnect', e => 
+        {
+            onVariableDisconnectInput(e.detail.input);
+        });
+
+
+        this.addInput(newInput);
+
+
+        return newInput;
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -72,24 +102,18 @@ extends OpColorBase
         if (ignore) return request;
 
 
-        const input0 = this.node.inputs[0];
-        const input1 = this.node.inputs[1];
+        const connectedInputs = this.node.inputs.filter(i => i.connected && !i.param);
 
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
         
-        if (   input0.connected
-            && input1.connected)   request.push(2,
-                                       ...pushInputOrParam(input0, gen),
-                                       ...pushInputOrParam(input1, gen));
-
-        else if (input0.connected) request.push(1, ...pushInputOrParam(input0, gen));
-        else if (input1.connected) request.push(1, ...pushInputOrParam(input1, gen));
-            
-        else                       request.push(0);
+        for (const input of connectedInputs)
+            request.push(...pushInputOrParam(input, gen));
 
 
         request.push(...this.node.paramSpace .genRequest(gen));
-        request.push(...this.node.paramAmount.genRequest(gen));
         request.push(...this.node.paramGamma .genRequest(gen));
+        request.push(...this.node.paramAmount.genRequest(gen));
+        request.push(...this.node.paramDegree.genRequest(gen));
 
 
         gen.scope.pop();

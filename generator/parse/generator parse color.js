@@ -463,13 +463,10 @@ function genParseColorInterpolate(parse)
     const lerp = new GColorInterpolate(nodeId, options);
 
 
-    let nInputs = -1;
-
+    let nInputs = 0;
+    
     if (!ignore)
-    {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
-    }
 
     
     if (parse.settings.logRequests) 
@@ -486,22 +483,16 @@ function genParseColorInterpolate(parse)
     parse.nTab++;
 
 
-    if (nInputs == 2)
-    {
-        lerp.input0 = genParse(parse);
-        lerp.input1 = genParse(parse);
-    }
+    parse.nTab++;
 
-    else if (nInputs == 1)
-        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-
-    else if (nInputs != 0)
-        consoleError('nInputs must be [0, 2]');
+    for (let i = 0; i < nInputs; i++)
+        lerp.inputs.push(genParse(parse));
 
 
     lerp.space  = genParse(parse);
-    lerp.amount = genParse(parse);
     lerp.gamma  = genParse(parse);
+    lerp.amount = genParse(parse);
+    lerp.degree = genParse(parse);
 
 
     parse.nTab--;

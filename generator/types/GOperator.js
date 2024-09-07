@@ -459,6 +459,57 @@ async function evalFillValue(_value, parse)
 
 async function evalStrokeValue        (_value, parse) { return await evalValue(_value, parse, () => StrokeValue        .NaN.copy()); }
 async function evalColorStopValue     (_value, parse) { return await evalValue(_value, parse, () => ColorStopValue     .NaN.copy()); }
+
+
+
+async function evalColorStopOrListValue(_value, parse) 
+{ 
+    let value = await evalValue(_value, parse, () => ColorStopValue.NaN.copy()); 
+
+
+    if (   value
+        && value.type == COLOR_VALUE)
+        value = new ColorStopValue(new FillValue(value));
+
+    else if (value
+          && value.type == FILL_VALUE)
+        value = new ColorStopValue(value);
+
+    else if (value
+          && value.type == LIST_VALUE
+          && finalListTypeFromItems(value.items) == COLOR_LIST_VALUE)
+    {
+        const condensed = value.condensed;
+
+        value = new ListValue(value.items.map(i => new ColorStopValue(new FillValue(i))));
+        value.condensed = condensed;
+    }
+
+    else if (value
+          && value.type == LIST_VALUE
+          && finalListTypeFromItems(value.items) == FILL_LIST_VALUE)
+    {
+        const condensed = value.condensed;
+
+        value = new ListValue(value.items.map(i => new ColorStopValue(i)));
+        value.condensed = condensed;
+    }
+
+    else if (value
+          && value.type == LIST_VALUE) // mixed list
+    {
+        // const condensed = value.condensed;
+
+        // value = new ListValue(value.items.map(i => new NumberValue(parseFloat(i.value))));
+        // value.condensed = condensed;
+    }
+
+
+    return value;                
+}
+
+
+
 async function evalGradientValue      (_value, parse) { return await evalValue(_value, parse, () => GradientValue      .NaN.copy()); }
 
 async function evalListValue          (_value, parse) { return await evalValue(_value, parse, () => ListValue          .NaN.copy()); }

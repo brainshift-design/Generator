@@ -1093,58 +1093,61 @@ function isValueListOfCondensedLists(value)
 }
 
 
-const LIST_VALUE           = 'EXPAND#';
+const LIST_VALUE             = 'EXPAND#';
 
-const NUMBER_LIST_VALUE    = 'NLIST#';
-const   TEXT_LIST_VALUE    = 'TLIST#';
-const  SHAPE_LIST_VALUE    = 'SLIST#';
-
-
-const NULL_NODE            = 'NULL';
-const VARIABLE_GROUP       = 'VARGRP';
-const FEEDBACK             = 'FEEDBK';
-const REPEAT               = 'REPT';
-const CACHE                = 'CACHE';
-const FREEZE               = 'FRZ';
-const TIMER                = 'TIMER';
-const GET_VALUE_NAME       = 'GVNAME';
-const SET_VALUE_NAME       = 'SVNAME';
-const GET_LIST_VALUE_NAMES = 'GVNAMES';
-const SET_LIST_VALUE_NAMES = 'SVNAMES';
-const SET_OBJECT_NAME      = 'SONAME';
+const NUMBER_LIST_VALUE      = 'NLIST#';
+const   TEXT_LIST_VALUE      = 'TLIST#';
+const  SHAPE_LIST_VALUE      = 'SLIST#';
+const  COLOR_LIST_VALUE      = 'CLIST#';
+const  FILL_LIST_VALUE       = 'FLIST#';
+const  COLOR_STOP_LIST_VALUE = 'CSLIST#';
 
 
-const VARIABLE             = 'VAR';
-const VARIABLE_VALUE       = 'VAR#';
-const VARIABLE_TYPES       = [VARIABLE_VALUE, VARIABLE];
+const NULL_NODE              = 'NULL';
+const VARIABLE_GROUP         = 'VARGRP';
+const FEEDBACK               = 'FEEDBK';
+const REPEAT                 = 'REPT';
+const CACHE                  = 'CACHE';
+const FREEZE                 = 'FRZ';
+const TIMER                  = 'TIMER';
+const GET_VALUE_NAME         = 'GVNAME';
+const SET_VALUE_NAME         = 'SVNAME';
+const GET_LIST_VALUE_NAMES   = 'GVNAMES';
+const SET_LIST_VALUE_NAMES   = 'SVNAMES';
+const SET_OBJECT_NAME        = 'SONAME';
 
 
-const LIST                 = 'LIST';
-const LIST_AS_ITEM         = 'LSASIT';
-const EXTRACT              = 'EXTR';
-const SET_PARAM            = 'SETP';
-const GET_PARAM            = 'GETP';
-const SUBLIST              = 'SUBLST';
-const UNIQUE               = 'UNIQ';
-const REORDER_LIST         = 'RORD';
-const SHIFT_LIST           = 'SHFTLST';
-const REVERSE_LIST         = 'REVLST';
-const BUCKLE_LIST          = 'BUKLST';
-const SORT                 = 'SORT';
-const COLUMN               = 'CLMN';
-const CELL                 = 'CELL';
-const EXPAND               = 'EXPAND';
-const LIST_COUNT           = 'COUNT';
-const OBJECT_COUNT         = 'OBJCOUNT';
-const LIST_CONTAINS        = 'LCONT';
-const LIST_FIND            = 'LFIND';
-const SELECT               = 'SELECT';
-const SELECT_FROM_LIST     = 'LSTSEL';
-const IF_ELSE              = 'IF';
-const FILTER               = 'LSTFLT';
+const VARIABLE               = 'VAR';
+const VARIABLE_VALUE         = 'VAR#';
+const VARIABLE_TYPES         = [VARIABLE_VALUE, VARIABLE];
 
 
-const ANY_VALUE            = 'ANY#';
+const LIST                   = 'LIST';
+const LIST_AS_ITEM           = 'LSASIT';
+const EXTRACT                = 'EXTR';
+const SET_PARAM              = 'SETP';
+const GET_PARAM              = 'GETP';
+const SUBLIST                = 'SUBLST';
+const UNIQUE                 = 'UNIQ';
+const REORDER_LIST           = 'RORD';
+const SHIFT_LIST             = 'SHFTLST';
+const REVERSE_LIST           = 'REVLST';
+const BUCKLE_LIST            = 'BUKLST';
+const SORT                   = 'SORT';
+const COLUMN                 = 'CLMN';
+const CELL                   = 'CELL';
+const EXPAND                 = 'EXPAND';
+const LIST_COUNT             = 'COUNT';
+const OBJECT_COUNT           = 'OBJCOUNT';
+const LIST_CONTAINS          = 'LCONT';
+const LIST_FIND              = 'LFIND';
+const SELECT                 = 'SELECT';
+const SELECT_FROM_LIST       = 'LSTSEL';
+const IF_ELSE                = 'IF';
+const FILTER                 = 'LSTFLT';
+
+
+const ANY_VALUE              = 'ANY#';
 
 
 const LIST_TYPES =
