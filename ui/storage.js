@@ -60,6 +60,7 @@ async function uiReturnFigGetLocalData(msg)
         case 'preferHtmlColorNames':
         case 'randomShiftR':
         case 'colorShiftR':
+        case 'numberShiftR':
 
         case 'showSnapshots':
         case 'showRestartInfo':

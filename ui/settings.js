@@ -16,6 +16,7 @@ const settings =
     preferHtmlColorNames:          false,
     randomShiftR:                  true,
     colorShiftR:                   false,
+    numberShiftR:                  false,
 
     showSnapshots:                 false,
     showRestartInfo:               true,
@@ -87,6 +88,7 @@ function updateSetting(settingName, value)
         case 'preferHtmlColorNames':          settings.preferHtmlColorNames          = value;  break;
         case 'randomShiftR':                  settings.randomShiftR                  = value;  break;
         case 'colorShiftR':                   settings.colorShiftR                   = value;  break;
+        case 'numberShiftR':                  settings.numberShiftR                  = value;  break;
         
         case 'showSnapshots':                 settings.showSnapshots                 = value;  break;
         case 'showRestartInfo':               settings.showRestartInfo               = value;  break;
@@ -167,6 +169,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'preferHtmlColorNames':          updateSettingAndMenu_(valid, settingName, value, menuItemPreferHtmlColorNames         ); break;
         case 'randomShiftR':                  updateSettingAndMenu_(valid, settingName, value, menuItemRandomShiftR                 ); break;
         case 'colorShiftR':                   updateSettingAndMenu_(valid, settingName, value, menuItemColorShiftR                  ); break;
+        case 'numberShiftR':                  updateSettingAndMenu_(valid, settingName, value, menuItemNumberShiftR                 ); break;
 
         case 'showSnapshots':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowSnapshots                ); break;
         case 'showRestartInfo':               updateSettingAndMenu_(valid, settingName, value, menuItemShowRestartInfo              ); break;
@@ -260,6 +263,7 @@ function updateSettingsMenus()
     menuItemPreferHtmlColorNames         .setChecked(settings.preferHtmlColorNames         );
     menuItemRandomShiftR                 .setChecked(settings.randomShiftR                 );
     menuItemColorShiftR                  .setChecked(settings. colorShiftR                 );
+    menuItemNumberShiftR                 .setChecked(settings.numberShiftR                 );
 
     menuItemShowSnapshots                .setChecked(settings.showSnapshots                );
     menuItemShowRestartInfo              .setChecked(settings.showRestartInfo              );
@@ -490,6 +494,7 @@ function loadLocalSettings()
     uiGetLocalData('preferHtmlColorNames'         );
     uiGetLocalData('randomShiftR'                 );
     uiGetLocalData('colorShiftR'                  );
+    uiGetLocalData('numberShiftR'                 );
 
     uiGetLocalData('showSnapshots'                );
     uiGetLocalData('showRestartInfo'              );

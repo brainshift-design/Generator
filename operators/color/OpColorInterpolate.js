@@ -20,8 +20,8 @@ extends OpColorBase
     {
         super(COLOR_INTERPOLATE, 'inter', 'interpolate', iconColorInterpolate);
 
-        this.iconOffsetY    = -3;
         this.variableInputs = true;
+        this.iconOffsetY    = -3;
 
         
         this.colorBack = createDiv('colorBack');

@@ -112,7 +112,7 @@ document.addEventListener('keydown', e =>
           && !e.altKey
           && !getCtrlKey(e))
     {
-        graphView.randomizeSelectedSeedsAndColors();
+        graphView.randomizeSelectedNodes();
     }    
 
     // connect seeds

@@ -10,8 +10,8 @@ extends OperatorBase
     {
         super(NUMBER_INTERPOLATE, 'inter', 'interpolate', iconInterpolate);
 
-        
-        this.iconOffsetY = -2;
+        this.variableInputs = true;
+        this.iconOffsetY    = -2;
 
 
         this.addNewInput();

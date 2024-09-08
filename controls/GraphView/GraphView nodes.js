@@ -363,18 +363,13 @@ GraphView.prototype.randomizeSelectedSeeds = function()
             || n.type == PROBABILITY)
         && !n.paramSeed.controls[0].readOnly);
      
-        
     if (randoms.length == 0)
         return;
 
-        
-    const paramSeeds = randoms.map(n => n.paramFromId('seed'));
 
-    const values = Array.from(
-        {length: randoms.length},
-        (_, index) => new NumberValue(Math.floor(Math.random() * 10000)));
+    const [params, values] = this.getRandomizedSeedValues(randoms);
 
-    actionManager.do(new SetMultipleValuesAction(paramSeeds, values, true));
+    actionManager.do(new SetMultipleValuesAction(params, values, true));
 };
 
 
@@ -387,33 +382,42 @@ GraphView.prototype.randomizeSelectedColors = function()
         && !n.param2.controls[0].readOnly
         && !n.param3.controls[0].readOnly);
         
-
     if (colors.length == 0)
         return;
 
 
-    const params = 
-    [ 
-        ...colors.map(n => n.paramFromId('c1')),
-        ...colors.map(n => n.paramFromId('c2')),
-        ...colors.map(n => n.paramFromId('c3'))
-    ];
-
-    const values = params.map(p => new NumberValue(Math.floor(p.controls[0].displayMin + Math.random() * (p.controls[0].displayMax - p.controls[0].displayMin))));
+    const [params, values] = this.getRandomizedColorValues(colors);
 
     actionManager.do(new SetMultipleValuesAction(params, values, true));
 };
 
 
 
-GraphView.prototype.randomizeSelectedSeedsAndColors = function()
+GraphView.prototype.randomizeSelectedNumbers = function()
+{
+    const numbers = graphView.selectedNodes.filter(n => 
+            n.type == NUMBER
+        && !n.paramValue.controls[0].readOnly);
+       
+    if (numbers.length == 0)
+        return;
+
+
+    const [params, values] = this.getRandomizedNumberValues(numbers);
+
+    actionManager.do(new SetMultipleValuesAction(params, values, true));
+};
+
+
+
+GraphView.prototype.randomizeSelectedNodes = function()
 {
     const params = [];
     const values = [];
 
 
     const randoms = graphView.selectedNodes.filter(n => 
-        (   n.type == NUMBER_RANDOM
+        (      n.type == NUMBER_RANDOM
             || n.type == NUMBER_NOISE
             || n.type == PROBABILITY)
         && !n.paramSeed.controls[0].readOnly);
@@ -424,43 +428,104 @@ GraphView.prototype.randomizeSelectedSeedsAndColors = function()
         && !n.param2.controls[0].readOnly
         && !n.param3.controls[0].readOnly);
 
+    const numbers = graphView.selectedNodes.filter(n => 
+            n.type == NUMBER
+        && !n.paramValue.controls[0].readOnly);
 
-    if (   settings.randomShiftR
-        ||    randoms.length >  0
-           && colors .length == 0)
+
+    if (   randoms.length > 0
+        && (   settings.randomShiftR
+            ||    colors .length == 0
+               && numbers.length == 0))
     {
-        if (randoms.length > 0)
-        {
-            const randomParams = randoms.map(n => n.paramFromId('seed'));
+        const [_params, _values] = this.getRandomizedSeedValues(randoms);
 
-            params.push(...randomParams);
-            values.push(...Array.from(
-                {length: randoms.length},
-                (_, index) => new NumberValue(Math.floor(Math.random() * 10000))));
-        }
+        params.push(..._params);
+        values.push(..._values);
     }
 
 
-    if (   settings.colorShiftR
-        ||    colors .length >  0
-           && randoms.length == 0)
+    if (   colors.length > 0
+        && (   settings.colorShiftR
+            ||    randoms.length == 0
+               && numbers.length == 0))
     {
-        if (colors.length > 0)
-        {
-            const colorParams = 
-            [ 
-                ...colors.map(n => n.paramFromId('c1')),
-                ...colors.map(n => n.paramFromId('c2')),
-                ...colors.map(n => n.paramFromId('c3'))
-            ];
+        const [_params, _values] = this.getRandomizedColorValues(colors);
 
-            params.push(...colorParams);
-            values.push(...colorParams.map(p => new NumberValue(Math.floor(p.controls[0].displayMin + Math.random() * (p.controls[0].displayMax - p.controls[0].displayMin)))));
-        }
+        params.push(..._params);
+        values.push(..._values);
+    }
+
+
+    if (   numbers.length > 0
+        && (   settings.numberShiftR
+            ||    colors .length == 0
+               && randoms.length == 0))
+    {
+        const [_params, _values] = this.getRandomizedNumberValues(numbers);
+
+        params.push(..._params);
+        values.push(..._values);
     }
     
 
     actionManager.do(new SetMultipleValuesAction(params, values, true));
+};
+
+
+
+GraphView.prototype.getRandomizedSeedValues = function(randoms)
+{
+    const params = randoms.map(n => n.paramFromId('seed'));
+
+    const values = Array.from(
+        {length: randoms.length},
+        (_, index) => new NumberValue(Math.floor(Math.random() * 10000)));
+
+    return [params, values];
+};
+
+
+
+GraphView.prototype.getRandomizedColorValues = function(colors)
+{
+    const params = 
+    [ 
+        ...colors.map(n => n.paramFromId('c1')),
+        ...colors.map(n => n.paramFromId('c2')),
+        ...colors.map(n => n.paramFromId('c3'))
+    ];
+
+    const values = params.map(p => new NumberValue(Math.floor(p.controls[0].displayMin + Math.random() * (p.controls[0].displayMax - p.controls[0].displayMin))));
+
+    return [params, values];
+};
+
+
+
+GraphView.prototype.getRandomizedNumberValues = function(numbers)
+{
+    const params = [...numbers.map(n => n.paramFromId('value'))];
+
+    const values = params.map(p => 
+    {
+        const ctrl = p.controls[0];
+
+        const min = 
+            ctrl.displayMin != ctrl.min
+            ? ctrl.displayMin
+            : 0;
+            
+        const max = 
+            ctrl.displayMax != ctrl.max
+            ? ctrl.displayMax
+            : 1000;
+
+        return new NumberValue(
+            Math.floor(min + Math.random() * (max - min)));
+    });
+
+    return [params, values];
 };
 
 
