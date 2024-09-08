@@ -771,7 +771,8 @@ menuItemNodeHighlight
 menuItemNodeSelect
 menuItemNodeActivate
 menuItemNodeSaveAsTemplate
-menuItemNodeSep4
+menuItemNodeSepRnd
+menuItemNodeSepRem
 menuItemNodeEnableDisable
 menuItemLicenseSep1
 menuItemLicenseRemove

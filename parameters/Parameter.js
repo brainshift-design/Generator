@@ -45,32 +45,36 @@ extends EventTarget
     input;
     output;
 
-    
-    onbeforechange = new Event('beforechange');
-    onchange       = new Event('change');
-    onconfirm      = new Event('confirm');
-    onchangelock   = new Event('changelock');
+
+    onbeforechange  = new Event('beforechange');
+    onchange        = new Event('change');
+    onconfirm       = new Event('confirm');
+    onchangelock    = new Event('changelock');
 
 
-    isNodeValue    = false; // helps figure out if a wire is unknown
+    isNodeValue     = false; // helps figure out if a wire is unknown
 
 
-    changing       = false;
+    changing        = false;
 
-    volatile       = false;
-    noUpdate       = false;
+    volatile        = false;
+    noUpdate        = false;
  
-    affectsHeader  = true; // indicates whether the parameter contributes to the header's result data
+    affectsHeader   = true; // indicates whether the parameter contributes to the header's result data
 
-    isResult       = false;
-    //managing       = false; // undoing or redoing
+    isResult        = false;
+  //managing        = false; // undoing or redoing
 
 
-    canShow = () => true;
+    getConnectedMin = () => Number.NaN;
+    getConnectedMax = () => Number.NaN;
 
-    alwaysRequest  = false;
 
-    showIndexName  = false;
+    canShow         = () => true;
+
+    alwaysRequest   = false;
+
+    showIndexName   = false;
 
 
     getDescription       = () => '';

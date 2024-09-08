@@ -126,8 +126,8 @@ class MenuItem
         this.setIcon(this.icon);
 
     
-        this.divShortcut .innerHTML = this.shortcut;
-        this.divPro.innerHTML = 'PRO';
+        this.divShortcut.innerHTML = this.shortcut;
+        this.divPro     .innerHTML = 'PRO';
 
     
         this.divHighlight.style.zIndex = -2;

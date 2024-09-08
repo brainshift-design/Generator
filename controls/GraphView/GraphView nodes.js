@@ -511,15 +511,31 @@ GraphView.prototype.getRandomizedNumberValues = function(numbers)
     {
         const ctrl = p.controls[0];
 
+        const connectedMin = p.getConnectedMin();
+        const connectedMax = p.getConnectedMax();
+        
         const min = 
-            ctrl.displayMin != ctrl.min
-            ? ctrl.displayMin
-            : 0;
+            !isNaN(connectedMin)
+                ? connectedMin
+                : ctrl.displayMin != Number.MIN_SAFE_INTEGER
+                    ? ctrl.displayMin
+                    : 0;
             
+        let _max = Math.random();
+
+        const m1 = 0.5;
+        const m2 = 0.9;
+
+             if (_max <  m1             ) _max = 100;
+        else if (_max >= m1 && _max < m2) _max = 1000;
+        else if (_max >= m2             ) _max = 10000;
+
         const max = 
-            ctrl.displayMax != ctrl.max
-            ? ctrl.displayMax
-            : 1000;
+            !isNaN(connectedMax)
+                ? connectedMax
+                : ctrl.displayMax != Number.MAX_SAFE_INTEGER
+                    ? ctrl.displayMax
+                    : _max;
 
         return new NumberValue(
             Math.floor(min + Math.random() * (max - min)));
