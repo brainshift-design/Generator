@@ -526,9 +526,9 @@ GraphView.prototype.getRandomizedNumberValues = function(numbers)
         const m1 = 0.5;
         const m2 = 0.9;
 
-             if (_max <  m1             ) _max = 100;
-        else if (_max >= m1 && _max < m2) _max = 1000;
-        else if (_max >= m2             ) _max = 10000;
+             if (_max <  m1              ) _max = 100;
+        else if (_max >= m1 && _max <  m2) _max = 1000;
+        else if (              _max >= m2) _max = 10000;
 
         const max = 
             !isNaN(connectedMax)
