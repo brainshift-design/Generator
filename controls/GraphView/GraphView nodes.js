@@ -523,12 +523,14 @@ GraphView.prototype.getRandomizedNumberValues = function(numbers)
             
         let _max = Math.random();
 
-        const m1 = 0.5;
-        const m2 = 0.9;
+        const m1 = 0.4;
+        const m2 = 0.8;
+        const m3 = 0.97;
 
              if (_max <  m1              ) _max = 100;
         else if (_max >= m1 && _max <  m2) _max = 1000;
-        else if (              _max >= m2) _max = 10000;
+        else if (_max >= m2 && _max <  m3) _max = 10000;
+        else if (              _max >= m3) _max = 100000;
 
         const max = 
             !isNaN(connectedMax)
