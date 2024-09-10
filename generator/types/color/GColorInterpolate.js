@@ -62,6 +62,10 @@ extends GOperator
 
         if (space) space = space.toInteger();
         
+        
+        const _gamma = Math.max(0.0001, gamma.value);
+        const _space = colorSpace(space.value);
+
 
         // if (   input0 
         //     && input1)
@@ -73,13 +77,11 @@ extends GOperator
         //     const f = amount.value / 100;
 
 
-        //     const spaceIndex = space.value;//Math.min(Math.max(0, space.value), colorSpaceCount()-1);
-        //     const gammaValue = Math.max(0.0001, gamma.value);
 
-        //     const _space = colorSpace(spaceIndex);
+        //     const _space = colorSpace(space.value);
 
         //     const _color = this.interpolate(
-        //         spaceIndex,
+        //         space.value,
         //         convertDataColorToSpace(input0.toDataColor(), _space),
         //         convertDataColorToSpace(input1.toDataColor(), _space),
         //         f,
@@ -102,6 +104,8 @@ extends GOperator
         //     this.value = ColorValue.NaN.copy();
 
 
+        /////////////////////////////////////////////////////////////////
+        
         const values = [];
         
         for (const _input of this.inputs)
@@ -124,7 +128,7 @@ extends GOperator
         }
         
         
-        const maxDec = 0;//values.reduce((max, v) => Math.max(max, v.decimals), 0);
+        //const maxDec = 0;//values.reduce((max, v) => Math.max(max, v.decimals), 0);
 
 
         const deg =
@@ -139,69 +143,81 @@ extends GOperator
         if (values.length == 1)
             this.value = values[0];
 
-        // else if (values.length > 0
-        //       && index < values.length - deg)
-        // {
-        //     const localAmount = 
-        //         nSegments > 1
-        //         ? (amount.value/100 - index/nSegments) * nSegments
-        //         : amount.value/100;
+        else if (values.length > 0
+              && index < values.length - deg)
+        {
+            const localAmount = 
+                nSegments > 1
+                ? (amount.value/100 - index/nSegments) * nSegments
+                : amount.value/100;
 
 
-        //     if (degree.value == 0) // linear
-        //     {
-        //         const val0 = values[index*deg  ];
-        //         const val1 = values[index*deg+1];
+            if (degree.value == 0) // linear
+            {
+                const val0 = values[index*deg  ];
+                const val1 = values[index*deg+1];
 
-        //         this.value = new NumberValue(
-        //             lerp(val0.value, val1.value, localAmount),
-        //             maxDec);
-        //     }
-        //     else if (degree.value == 1) // quadratic
-        //     {
-        //         const val0 = values[index*deg  ];
-        //         const val1 = values[index*deg+1];
-        //         const val2 = values[index*deg+2];
+                this.value = new FillValue(
+                    ColorValue.fromDataColor(this.interpolate(
+                        space.value, 
+                        convertDataColorToSpace(val0.fill.color.toDataColor(), _space), 
+                        convertDataColorToSpace(val1.fill.color.toDataColor(), _space),
+                        localAmount,              
+                        _gamma),
+                    space.value),
+                );
+            }
+            // else if (degree.value == 1) // quadratic
+            // {
+            //     const val0 = values[index*deg  ];
+            //     const val1 = values[index*deg+1];
+            //     const val2 = values[index*deg+2];
 
-        //         this.value = new NumberValue(
-        //             lerp2(val0.value, val1.value, val2.value, localAmount),
-        //             maxDec);
-        //     }
-        //     else if (degree.value == 2) // cubic
-        //     {
-        //         const val0 = values[index*deg  ];
-        //         const val1 = values[index*deg+1];
-        //         const val2 = values[index*deg+2];
-        //         const val3 = values[index*deg+3];
+            //     this.value = new NumberValue(
+            //         lerp2(val0.value, val1.value, val2.value, localAmount),
+            //         maxDec);
+            // }
+            // else if (degree.value == 2) // cubic
+            // {
+            //     const val0 = values[index*deg  ];
+            //     const val1 = values[index*deg+1];
+            //     const val2 = values[index*deg+2];
+            //     const val3 = values[index*deg+3];
 
-        //         this.value = new NumberValue(
-        //             lerp3(val0.value, val1.value, val2.value, val3.value, localAmount),
-        //             maxDec);
-        //     }
-        //     else if (degree.value == 3) // cosine
-        //     {
-        //         const val0 = values[index*deg  ];
-        //         const val1 = values[index*deg+1];
+            //     this.value = new NumberValue(
+            //         lerp3(val0.value, val1.value, val2.value, val3.value, localAmount),
+            //         maxDec);
+            // }
+            // else if (degree.value == 3) // cosine
+            // {
+            //     const val0 = values[index*deg  ];
+            //     const val1 = values[index*deg+1];
 
-        //         this.value = new NumberValue(
-        //             lerpCos(val0.value, val1.value, localAmount),
-        //             maxDec);
-        //     }
-        //     else
-        //         this.value = ColorValue.NaN.copy();
-        // }
+            //     this.value = new NumberValue(
+            //         lerpCos(val0.value, val1.value, localAmount),
+            //         maxDec);
+            // }
+            else
+                this.value = ColorValue.NaN.copy();
+        }
 
         else                  
             this.value = ColorValue.NaN.copy();
         
         
+        if (   this.value.type == FILL_VALUE
+            && getFinalListTypeFromValues(values) == COLOR_LIST_VALUE)
+            this.value = this.value.color;
+
+
         this.setUpdateValues(parse,
         [
-            ['value',  this.value],
-            ['space',  space     ],
-            ['gamma',  gamma     ],
-            ['amount', amount    ],
-            ['degree', degree    ]
+            ['type',   this.value          ],
+            ['value',  this.getOutputType()],
+            ['space',  space               ],
+            ['gamma',  gamma               ],
+            ['amount', amount              ],
+            ['degree', degree              ]
         ]);
         
 
@@ -212,7 +228,7 @@ extends GOperator
 
 
 
-    interpolate(space, col0, col1, f, gamma)
+    static interpolate(space, col0, col1, f, gamma)
     {
         if (   space ==  2  // hsl
             || space ==  3  // hsv

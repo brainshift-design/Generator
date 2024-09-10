@@ -3491,7 +3491,7 @@ menuItemParseJson
 menuItemNodeCopyAsJsCode
 menuItemNodeCopyAsJsFunction
 preSetValue
-finalListTypeFromItems
+finalListTypeFromValues
 itemName
 showZero
 parseListValue

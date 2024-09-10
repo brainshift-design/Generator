@@ -293,20 +293,20 @@ function parseListValue(str, i = -1)
 
 
 
-function getItemTypes(items, debug)
+function getValueTypes(values, debug)
 {
     const types = [];
 
-    for (const item of items)
+    for (const value of values)
     {
-        if (   item.type ==        LIST_VALUE
-            || item.type == NUMBER_LIST_VALUE
-            || item.type ==   TEXT_LIST_VALUE
-            || item.type ==  SHAPE_LIST_VALUE)
-            pushUnique(types, finalListTypeFromItems(item.items, debug));
+        if (   value.type ==        LIST_VALUE
+            || value.type == NUMBER_LIST_VALUE
+            || value.type ==   TEXT_LIST_VALUE
+            || value.type ==  SHAPE_LIST_VALUE)
+            pushUnique(types, finalListTypeFromValues(value.items, debug));
 
         else
-            pushUnique(types, item.type);
+            pushUnique(types, value.type);
     }
 
     return types;
@@ -314,16 +314,16 @@ function getItemTypes(items, debug)
 
 
 
-function finalTypeFromItems(items)
+function finalTypeFromValues(values)
 {
-    return finalTypeFromTypes(getItemTypes(items));
+    return finalTypeFromTypes(getValueTypes(values));
 }
 
 
 
-function finalListTypeFromItems(items)
+function finalListTypeFromValues(values)
 {
-    return finalListTypeFromTypes(getItemTypes(items));
+    return finalListTypeFromTypes(getValueTypes(values));
 }
 
 

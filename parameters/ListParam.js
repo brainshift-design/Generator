@@ -99,7 +99,7 @@ extends Parameter
         super.setValue(this.value, createAction, updateControl, dispatchEvents);
 
         if (this.output)
-            this.output.types = [finalListTypeFromItems(this.value.items)];
+            this.output.types = [finalListTypeFromValues(this.value.items)];
 
 
         this.oldValue = this.value;
@@ -203,7 +203,7 @@ extends Parameter
         {
             this.output.types = 
                 isEmpty(this.outputTypes)
-                ? [finalListTypeFromItems(this.value.items)]
+                ? [finalListTypeFromValues(this.value.items)]
                 : [...this.outputTypes];
         }
 

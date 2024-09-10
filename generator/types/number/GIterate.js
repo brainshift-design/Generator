@@ -96,7 +96,7 @@ extends GOperator
 
         const type =
                _values.length > 1
-            && finalListTypeFromItems(_values) == LIST_VALUE
+            && finalListTypeFromValues(_values) == LIST_VALUE
             ? new TextValue(ANY_VALUE)
             : this.outputType();
 

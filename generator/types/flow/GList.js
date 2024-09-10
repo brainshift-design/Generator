@@ -119,7 +119,7 @@ extends GOperator
         
 
         const length = new NumberValue(this.value.items.length);
-        const type   = new TextValue(finalListTypeFromItems(this.value.items));
+        const type   = new TextValue(finalListTypeFromValues(this.value.items));
 
 
         this.setUpdateValues(parse,

@@ -11814,7 +11814,7 @@ extends GNode
         return this.value
             ? new TextValue(
                 isListValueType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
+                ? finalListTypeFromValues(this.value.items)
                 : this.value.type)
             : new TextValue(ANY_VALUE);
     }
@@ -11825,7 +11825,7 @@ extends GNode
     {
         return this.outputType();
         //return this.value
-        //     ? new TextValue(finalListTypeFromItems(this.value.items))
+        //     ? new TextValue(finalListTypeFromValues(this.value.items))
         //     : TextValue.NaN.copy();
     }
 
@@ -12039,7 +12039,7 @@ async function evalNumberOrListValue(_value, parse)
 
     else if (value
           && value.type == LIST_VALUE
-          && finalListTypeFromItems(value.items) == TEXT_LIST_VALUE)
+          && finalListTypeFromValues(value.items) == TEXT_LIST_VALUE)
     {
         const condensed = value.condensed;
 
@@ -12075,7 +12075,7 @@ async function evalTextOrListValue(_value, parse)
 
     else if (value
           && value.type == LIST_VALUE
-          && finalListTypeFromItems(value.items) == NUMBER_LIST_VALUE)
+          && finalListTypeFromValues(value.items) == NUMBER_LIST_VALUE)
     {
         const condensed = value.condensed;
         
@@ -12142,7 +12142,7 @@ async function evalColorStopOrListValue(_value, parse)
 
     else if (value
           && value.type == LIST_VALUE
-          && finalListTypeFromItems(value.items) == COLOR_LIST_VALUE)
+          && finalListTypeFromValues(value.items) == COLOR_LIST_VALUE)
     {
         const condensed = value.condensed;
 
@@ -12152,7 +12152,7 @@ async function evalColorStopOrListValue(_value, parse)
 
     else if (value
           && value.type == LIST_VALUE
-          && finalListTypeFromItems(value.items) == FILL_LIST_VALUE)
+          && finalListTypeFromValues(value.items) == FILL_LIST_VALUE)
     {
         const condensed = value.condensed;
 
@@ -13211,20 +13211,20 @@ function parseListValue(str, i = -1)
 
 
 
-function getItemTypes(items, debug)
+function getValueTypes(values, debug)
 {
     const types = [];
 
-    for (const item of items)
+    for (const value of values)
     {
-        if (   item.type ==        LIST_VALUE
-            || item.type == NUMBER_LIST_VALUE
-            || item.type ==   TEXT_LIST_VALUE
-            || item.type ==  SHAPE_LIST_VALUE)
-            pushUnique(types, finalListTypeFromItems(item.items, debug));
+        if (   value.type ==        LIST_VALUE
+            || value.type == NUMBER_LIST_VALUE
+            || value.type ==   TEXT_LIST_VALUE
+            || value.type ==  SHAPE_LIST_VALUE)
+            pushUnique(types, finalListTypeFromValues(value.items, debug));
 
         else
-            pushUnique(types, item.type);
+            pushUnique(types, value.type);
     }
 
     return types;
@@ -13232,16 +13232,16 @@ function getItemTypes(items, debug)
 
 
 
-function finalTypeFromItems(items)
+function finalTypeFromValues(values)
 {
-    return finalTypeFromTypes(getItemTypes(items));
+    return finalTypeFromTypes(getValueTypes(values));
 }
 
 
 
-function finalListTypeFromItems(items)
+function finalListTypeFromValues(values)
 {
-    return finalListTypeFromTypes(getItemTypes(items));
+    return finalListTypeFromTypes(getValueTypes(values));
 }
 
 
@@ -21840,7 +21840,7 @@ extends GOperator
         
 
         const length = new NumberValue(this.value.items.length);
-        const type   = new TextValue(finalListTypeFromItems(this.value.items));
+        const type   = new TextValue(finalListTypeFromValues(this.value.items));
 
 
         this.setUpdateValues(parse,
@@ -22016,7 +22016,7 @@ extends GOperator1
         this.setUpdateValues(parse,
         [
             ['length', new NumberValue(length)                                ],
-            ['type',   new TextValue(finalListTypeFromItems(this.value.items))]
+            ['type',   new TextValue(finalListTypeFromValues(this.value.items))]
         ]);
         
 
@@ -27975,7 +27975,7 @@ extends GOperator
 
         const type =
                _values.length > 1
-            && finalListTypeFromItems(_values) == LIST_VALUE
+            && finalListTypeFromValues(_values) == LIST_VALUE
             ? new TextValue(ANY_VALUE)
             : this.outputType();
 
@@ -29324,7 +29324,7 @@ extends GOperator2
 
         const type =
                _values.length > 1
-            && finalListTypeFromItems(_values) == LIST_VALUE
+            && finalListTypeFromValues(_values) == LIST_VALUE
             ? new TextValue(ANY_VALUE)
             : this.outputType();
 
@@ -29771,57 +29771,9 @@ extends GOperator
         if (values.length == 1)
             this.value = values[0];
 
-        else if (values.length > 0
+        else if (values.length > 1
               && index < values.length - deg)
-        {
-            const localAmount = 
-                nSegments > 1
-                ? (amount.value/100 - index/nSegments) * nSegments
-                : amount.value/100;
-
-
-            if (degree.value == 0) // linear
-            {
-                const val0 = values[index*deg  ];
-                const val1 = values[index*deg+1];
-
-                this.value = new NumberValue(
-                    lerp(val0.value, val1.value, localAmount),
-                    maxDec);
-            }
-            else if (degree.value == 1) // quadratic
-            {
-                const val0 = values[index*deg  ];
-                const val1 = values[index*deg+1];
-                const val2 = values[index*deg+2];
-
-                this.value = new NumberValue(
-                    lerp2(val0.value, val1.value, val2.value, localAmount),
-                    maxDec);
-            }
-            else if (degree.value == 2) // cubic
-            {
-                const val0 = values[index*deg  ];
-                const val1 = values[index*deg+1];
-                const val2 = values[index*deg+2];
-                const val3 = values[index*deg+3];
-
-                this.value = new NumberValue(
-                    lerp3(val0.value, val1.value, val2.value, val3.value, localAmount),
-                    maxDec);
-            }
-            else if (degree.value == 3) // cosine
-            {
-                const val0 = values[index*deg  ];
-                const val1 = values[index*deg+1];
-
-                this.value = new NumberValue(
-                    lerpCos(val0.value, val1.value, localAmount),
-                    maxDec);
-            }
-            else
-                this.value = NumberValue.NaN.copy();
-        }
+            this.value = interpolateNumberValue(values, index, nSegments, deg, degree, amount, maxDec);
 
         else                  
             this.value = NumberValue.NaN.copy();
@@ -29888,6 +29840,58 @@ extends GOperator
     }
 }
 
+
+
+function interpolateNumberValue(values, index, nSegments, deg, degree, amount, maxDec)
+{
+    const localAmount = 
+        nSegments > 1
+            ? (amount.value/100 - index/nSegments) * nSegments
+            :  amount.value/100;
+
+
+    if (degree.value == 0) // linear
+    {
+        const val0 = values[index*deg  ];
+        const val1 = values[index*deg+1];
+
+        return new NumberValue(
+            lerp(val0.value, val1.value, localAmount),
+            maxDec);
+    }
+    else if (degree.value == 1) // quadratic
+    {
+        const val0 = values[index*deg  ];
+        const val1 = values[index*deg+1];
+        const val2 = values[index*deg+2];
+
+        return new NumberValue(
+            lerp2(val0.value, val1.value, val2.value, localAmount),
+            maxDec);
+    }
+    else if (degree.value == 2) // cubic
+    {
+        const val0 = values[index*deg  ];
+        const val1 = values[index*deg+1];
+        const val2 = values[index*deg+2];
+        const val3 = values[index*deg+3];
+
+        return new NumberValue(
+            lerp3(val0.value, val1.value, val2.value, val3.value, localAmount),
+            maxDec);
+    }
+    else if (degree.value == 3) // cosine
+    {
+        const val0 = values[index*deg  ];
+        const val1 = values[index*deg+1];
+
+        return new NumberValue(
+            lerpCos(val0.value, val1.value, localAmount),
+            maxDec);
+    }
+    else
+        return NumberValue.NaN.copy();
+}
 
 
 class GSolve
@@ -38375,6 +38379,10 @@ extends GOperator
 
         if (space) space = space.toInteger();
         
+        
+        const _gamma = Math.max(0.0001, gamma.value);
+        const _space = colorSpace(space.value);
+
 
         // if (   input0 
         //     && input1)
@@ -38386,13 +38394,11 @@ extends GOperator
         //     const f = amount.value / 100;
 
 
-        //     const spaceIndex = space.value;//Math.min(Math.max(0, space.value), colorSpaceCount()-1);
-        //     const gammaValue = Math.max(0.0001, gamma.value);
 
-        //     const _space = colorSpace(spaceIndex);
+        //     const _space = colorSpace(space.value);
 
         //     const _color = this.interpolate(
-        //         spaceIndex,
+        //         space.value,
         //         convertDataColorToSpace(input0.toDataColor(), _space),
         //         convertDataColorToSpace(input1.toDataColor(), _space),
         //         f,
@@ -38415,6 +38421,8 @@ extends GOperator
         //     this.value = ColorValue.NaN.copy();
 
 
+        /////////////////////////////////////////////////////////////////
+        
         const values = [];
         
         for (const _input of this.inputs)
@@ -38437,7 +38445,7 @@ extends GOperator
         }
         
         
-        const maxDec = 0;//values.reduce((max, v) => Math.max(max, v.decimals), 0);
+        //const maxDec = 0;//values.reduce((max, v) => Math.max(max, v.decimals), 0);
 
 
         const deg =
@@ -38452,69 +38460,81 @@ extends GOperator
         if (values.length == 1)
             this.value = values[0];
 
-        // else if (values.length > 0
-        //       && index < values.length - deg)
-        // {
-        //     const localAmount = 
-        //         nSegments > 1
-        //         ? (amount.value/100 - index/nSegments) * nSegments
-        //         : amount.value/100;
+        else if (values.length > 0
+              && index < values.length - deg)
+        {
+            const localAmount = 
+                nSegments > 1
+                ? (amount.value/100 - index/nSegments) * nSegments
+                : amount.value/100;
 
 
-        //     if (degree.value == 0) // linear
-        //     {
-        //         const val0 = values[index*deg  ];
-        //         const val1 = values[index*deg+1];
+            if (degree.value == 0) // linear
+            {
+                const val0 = values[index*deg  ];
+                const val1 = values[index*deg+1];
 
-        //         this.value = new NumberValue(
-        //             lerp(val0.value, val1.value, localAmount),
-        //             maxDec);
-        //     }
-        //     else if (degree.value == 1) // quadratic
-        //     {
-        //         const val0 = values[index*deg  ];
-        //         const val1 = values[index*deg+1];
-        //         const val2 = values[index*deg+2];
+                this.value = new FillValue(
+                    ColorValue.fromDataColor(this.interpolate(
+                        space.value, 
+                        convertDataColorToSpace(val0.fill.color.toDataColor(), _space), 
+                        convertDataColorToSpace(val1.fill.color.toDataColor(), _space),
+                        localAmount,              
+                        _gamma),
+                    space.value),
+                );
+            }
+            // else if (degree.value == 1) // quadratic
+            // {
+            //     const val0 = values[index*deg  ];
+            //     const val1 = values[index*deg+1];
+            //     const val2 = values[index*deg+2];
 
-        //         this.value = new NumberValue(
-        //             lerp2(val0.value, val1.value, val2.value, localAmount),
-        //             maxDec);
-        //     }
-        //     else if (degree.value == 2) // cubic
-        //     {
-        //         const val0 = values[index*deg  ];
-        //         const val1 = values[index*deg+1];
-        //         const val2 = values[index*deg+2];
-        //         const val3 = values[index*deg+3];
+            //     this.value = new NumberValue(
+            //         lerp2(val0.value, val1.value, val2.value, localAmount),
+            //         maxDec);
+            // }
+            // else if (degree.value == 2) // cubic
+            // {
+            //     const val0 = values[index*deg  ];
+            //     const val1 = values[index*deg+1];
+            //     const val2 = values[index*deg+2];
+            //     const val3 = values[index*deg+3];
 
-        //         this.value = new NumberValue(
-        //             lerp3(val0.value, val1.value, val2.value, val3.value, localAmount),
-        //             maxDec);
-        //     }
-        //     else if (degree.value == 3) // cosine
-        //     {
-        //         const val0 = values[index*deg  ];
-        //         const val1 = values[index*deg+1];
+            //     this.value = new NumberValue(
+            //         lerp3(val0.value, val1.value, val2.value, val3.value, localAmount),
+            //         maxDec);
+            // }
+            // else if (degree.value == 3) // cosine
+            // {
+            //     const val0 = values[index*deg  ];
+            //     const val1 = values[index*deg+1];
 
-        //         this.value = new NumberValue(
-        //             lerpCos(val0.value, val1.value, localAmount),
-        //             maxDec);
-        //     }
-        //     else
-        //         this.value = ColorValue.NaN.copy();
-        // }
+            //     this.value = new NumberValue(
+            //         lerpCos(val0.value, val1.value, localAmount),
+            //         maxDec);
+            // }
+            else
+                this.value = ColorValue.NaN.copy();
+        }
 
         else                  
             this.value = ColorValue.NaN.copy();
         
         
+        if (   this.value.type == FILL_VALUE
+            && getFinalListTypeFromValues(values) == COLOR_LIST_VALUE)
+            this.value = this.value.color;
+
+
         this.setUpdateValues(parse,
         [
-            ['value',  this.value],
-            ['space',  space     ],
-            ['gamma',  gamma     ],
-            ['amount', amount    ],
-            ['degree', degree    ]
+            ['type',   this.value          ],
+            ['value',  this.getOutputType()],
+            ['space',  space               ],
+            ['gamma',  gamma               ],
+            ['amount', amount              ],
+            ['degree', degree              ]
         ]);
         
 
@@ -38525,7 +38545,7 @@ extends GOperator
 
 
 
-    interpolate(space, col0, col1, f, gamma)
+    static interpolate(space, col0, col1, f, gamma)
     {
         if (   space ==  2  // hsl
             || space ==  3  // hsv
@@ -46012,7 +46032,7 @@ extends GShape
         }
 
 
-        const childType = new TextValue(finalListTypeFromItems(children.items));
+        const childType = new TextValue(finalListTypeFromValues(children.items));
 
         this.setUpdateValues(parse, 
         [

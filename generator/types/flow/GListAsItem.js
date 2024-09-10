@@ -74,7 +74,7 @@ extends GOperator1
         this.setUpdateValues(parse,
         [
             ['length', new NumberValue(length)                                ],
-            ['type',   new TextValue(finalListTypeFromItems(this.value.items))]
+            ['type',   new TextValue(finalListTypeFromValues(this.value.items))]
         ]);
         
 

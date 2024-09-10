@@ -149,7 +149,7 @@ extends GNode
         return this.value
             ? new TextValue(
                 isListValueType(this.value.type)
-                ? finalListTypeFromItems(this.value.items)
+                ? finalListTypeFromValues(this.value.items)
                 : this.value.type)
             : new TextValue(ANY_VALUE);
     }
@@ -160,7 +160,7 @@ extends GNode
     {
         return this.outputType();
         //return this.value
-        //     ? new TextValue(finalListTypeFromItems(this.value.items))
+        //     ? new TextValue(finalListTypeFromValues(this.value.items))
         //     : TextValue.NaN.copy();
     }
 
@@ -374,7 +374,7 @@ async function evalNumberOrListValue(_value, parse)
 
     else if (value
           && value.type == LIST_VALUE
-          && finalListTypeFromItems(value.items) == TEXT_LIST_VALUE)
+          && finalListTypeFromValues(value.items) == TEXT_LIST_VALUE)
     {
         const condensed = value.condensed;
 
@@ -410,7 +410,7 @@ async function evalTextOrListValue(_value, parse)
 
     else if (value
           && value.type == LIST_VALUE
-          && finalListTypeFromItems(value.items) == NUMBER_LIST_VALUE)
+          && finalListTypeFromValues(value.items) == NUMBER_LIST_VALUE)
     {
         const condensed = value.condensed;
         
@@ -477,7 +477,7 @@ async function evalColorStopOrListValue(_value, parse)
 
     else if (value
           && value.type == LIST_VALUE
-          && finalListTypeFromItems(value.items) == COLOR_LIST_VALUE)
+          && finalListTypeFromValues(value.items) == COLOR_LIST_VALUE)
     {
         const condensed = value.condensed;
 
@@ -487,7 +487,7 @@ async function evalColorStopOrListValue(_value, parse)
 
     else if (value
           && value.type == LIST_VALUE
-          && finalListTypeFromItems(value.items) == FILL_LIST_VALUE)
+          && finalListTypeFromValues(value.items) == FILL_LIST_VALUE)
     {
         const condensed = value.condensed;
 

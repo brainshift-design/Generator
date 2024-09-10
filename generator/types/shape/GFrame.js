@@ -118,7 +118,7 @@ extends GShape
         }
 
 
-        const childType = new TextValue(finalListTypeFromItems(children.items));
+        const childType = new TextValue(finalListTypeFromValues(children.items));
 
         this.setUpdateValues(parse, 
         [
