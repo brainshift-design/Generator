@@ -127,9 +127,9 @@ extends GOperator
             }
         }
         
-        
-        //const maxDec = 0;//values.reduce((max, v) => Math.max(max, v.decimals), 0);
 
+        const opacities = values.map(v => v.fill.opacity);
+        const maxDec    = opacities.reduce((max, o) => Math.max(max, o.decimals), 0);
 
         const deg =
             degree.value < 3
@@ -141,7 +141,7 @@ extends GOperator
 
 
         if (values.length == 1)
-            this.value = values[0];
+            this.value = values[0].fill;
 
         else if (values.length > 0
               && index < values.length - deg)
@@ -158,14 +158,13 @@ extends GOperator
                 const val1 = values[index*deg+1];
 
                 this.value = new FillValue(
-                    ColorValue.fromDataColor(this.interpolate(
+                    ColorValue.fromDataColor(GColorInterpolate.interpolate(
                         space.value, 
                         convertDataColorToSpace(val0.fill.color.toDataColor(), _space), 
                         convertDataColorToSpace(val1.fill.color.toDataColor(), _space),
-                        localAmount,              
-                        _gamma),
-                    space.value),
-                );
+                        localAmount,
+                        _gamma)),
+                    interpolateNumberValue(opacities, index, nSegments, deg, degree, amount, maxDec));
             }
             // else if (degree.value == 1) // quadratic
             // {
@@ -206,18 +205,18 @@ extends GOperator
         
         
         if (   this.value.type == FILL_VALUE
-            && getFinalListTypeFromValues(values) == COLOR_LIST_VALUE)
+            && finalListTypeFromValues(values) == COLOR_LIST_VALUE)
             this.value = this.value.color;
 
 
         this.setUpdateValues(parse,
         [
-            ['type',   this.value          ],
-            ['value',  this.getOutputType()],
-            ['space',  space               ],
-            ['gamma',  gamma               ],
-            ['amount', amount              ],
-            ['degree', degree              ]
+            ['value',  this.value       ],
+            ['type',   this.outputType()],
+            ['space',  space            ],
+            ['gamma',  gamma            ],
+            ['amount', amount           ],
+            ['degree', degree           ]
         ]);
         
 

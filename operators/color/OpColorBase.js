@@ -87,10 +87,10 @@ extends Operator
         const rgbText    = getTextColorFromBackColor(rgbStripeBack);
 
         return {
-            back:       rgb_a(rgbBack), 
+            back:      rgb_a(rgbBack), 
             colorBack: rgb_a(rgbStripeBack),
-            border:     rgbaBorder,
-            text:       rgb_a(rgbText, 0.9) };
+            border:    rgbaBorder,
+            text:      rgb_a(rgbText, 0.9) };
     }
 
 

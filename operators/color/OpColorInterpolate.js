@@ -34,14 +34,16 @@ extends OpColorBase
         this.checkersHolder.appendChild(this.checkers);
         this.inner.insertBefore(this.checkersHolder, this.header);
 
+        this.checkersHolder.style.boxShadow = '0 0 0 5px red inset';
+
 
         this.addNewInput();
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
+        this.addParam(this.paramAmount = new NumberParam('amount', '',       false, true, true, 50, 0, 100, 0));
         this.addParam(this.paramSpace  = new SelectParam('space',  '',       false, true, true, ColorSpaces.map(s => s[1]), 1));
         this.addParam(this.paramGamma  = new NumberParam('gamma',  'gamma',  true,  true, true, 1, 0.01, 4, 2));
-        this.addParam(this.paramAmount = new NumberParam('amount', '',       false, true, true, 50, 0, 100, 0));
         this.addParam(this.paramDegree = new SelectParam('degree', 'degree', false, true, true, ['linear', 'quadratic', 'cubic', 'cosine'], 0));
 
         this.paramSpace.separatorsBefore = [4, 9, 12, 15];
@@ -138,17 +140,21 @@ extends OpColorBase
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         this.value = values[paramIds.findIndex(id => id == 'value')];
+        const type = values[paramIds.findIndex(id => id == 'type' )];
+
+        if (type) 
+            this.headerOutputs[0].types = [type.value];
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         this._color = 
                this.value 
             && this.value.type 
-            && this.value.type == COLOR_VALUE
-            ? this.value.toDataColor()
+            && this.value.type == FILL_VALUE
+            ? this.value.color.toDataColor()
             : dataColor_NaN;
 
         this.rgbaBack = this.value.toRgba();
-
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
@@ -158,7 +164,6 @@ extends OpColorBase
         super.updateHeader();
         
         const colors = this.getHeaderColors();
-        // updateColorHeader(this, colors);
 
         
         const inputs = this.headerInputs.filter(i => i.connected);
@@ -169,6 +174,9 @@ extends OpColorBase
                && !rgbaIsValid(colors.back)
             || inputs.length == 0)
         {
+            if (this.value.isValid())
+                this.checkersHolder.style.opacity = (100 - this.value.opacity.toNumber()*100) + '%';
+
             updateFillHeader(this, colors, false);
 
             if (   !rgbaIsNaN  (colors.back)
@@ -185,10 +193,53 @@ extends OpColorBase
 
         
         // if (    this.isUnknown()
-        //     || !inputs.some(value => value.isValid()))
+        //     || !this.value.isValid())
         //     this.checkers.style.display = 'none';
-
         // else
-            // updateHeaderCheckers(this, colors, true);
+        //{
+//            updateHeaderCheckers(this, colors, true);
+        //    this.checkers      .style.display = 'block';
+        //    this.checkersHolder.style.opacity = (100 - this.value.opacity.toNumber()) + '%';
+        //}
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors();
+        if (!this.value) return colors;
+
+        
+        const opacity = this.value.opacity.value;
+
+
+        if (this.isUnknown())
+        {
+            colors.back      = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
+            colors.colorBack = darkMode ? hex2rgb('444' ) : hex2rgb('ccc' );
+            colors.text      = darkMode ? hex2rgb('fff8') : hex2rgb('0008');
+        }
+        else
+        {
+            colors.back = 
+                   !rgbIsNaN(colors.back)
+                && !isNaN(opacity)
+                ? rgb_a(colors.back)
+                : rgb_NaN;
+
+            colors.colorBack =
+                   !rgbIsNaN(colors.colorBack) 
+                && !isNaN(opacity) 
+                ? rgb_a(colors.colorBack)
+                : rgbDocumentBody;
+
+            colors.text = getTextColorFromBackColor(
+                colors.colorBack, 
+                this.rgbaBack ? this.rgbaBack[3] : 1);
+        }
+        
+
+        return colors;
     }
 }

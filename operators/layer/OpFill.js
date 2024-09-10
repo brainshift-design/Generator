@@ -136,25 +136,19 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
         const value = values[paramIds.findIndex(id => id == 'value')];
 
         this.paramColor  .setValue(value.color,   false, true, false);
         this.paramOpacity.setValue(value.opacity, false, true, false);
         this.paramBlend  .setValue(value.blend,   false, true, false);
  
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
         this._color = 
                 value.color.isValid()
             && !this.isUnknown()
             ? value.color.toDataColor()
             : dataColor_NaN;
-
-        this.outputs[0].types =
-               this.inputs[0].connected
-            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
-            ? [...this.inputs[0].connectedOutput.types, FILL_VALUE]
-            : [FILL_VALUE];
 
         this.rgbaBack = value.toRgba();
     }
@@ -228,12 +222,12 @@ extends OpColorBase
         else
         {
             colors.back = 
-                   !rgbIsNaN(colors.back) 
-                && !isNaN(opacity) 
+                   !rgbIsNaN(colors.back)
+                && !isNaN(opacity)
                 ? rgb_a(colors.back)
                 : rgb_NaN;
 
-            colors.colorBack = 
+            colors.colorBack =
                    !rgbIsNaN(colors.colorBack) 
                 && !isNaN(opacity) 
                 ? rgb_a(colors.colorBack)

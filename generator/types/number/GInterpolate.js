@@ -77,7 +77,6 @@ extends GOperator
         
         const maxDec = values.reduce((max, v) => Math.max(max, v.decimals), 0);
 
-
         const deg =
             degree.value < 3
             ? Math.min(degree.value, 2) + 1
