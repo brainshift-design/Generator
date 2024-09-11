@@ -67,47 +67,9 @@ extends GOperator
         const _space = colorSpace(space.value);
 
 
-        // if (   input0 
-        //     && input1)
-        // {
-        //     consoleAssert(
-        //         amount.type == NUMBER_VALUE, 
-        //         'this.result.type must be NUMBER_VALUE');
-
-        //     const f = amount.value / 100;
-
-
-
-        //     const _space = colorSpace(space.value);
-
-        //     const _color = this.interpolate(
-        //         space.value,
-        //         convertDataColorToSpace(input0.toDataColor(), _space),
-        //         convertDataColorToSpace(input1.toDataColor(), _space),
-        //         f,
-        //         gammaValue);
-
-
-        //     // allow interpolating invalid colors,
-        //     // so no valid color check here
-
-        //     this.value = ColorValue.fromDataColor(_color, spaceIndex);
-        // }
-
-        // else if (input0) 
-        //     this.value = input0;
-
-        // else if (input1) 
-        //     this.value = input1;
-            
-        // else 
-        //     this.value = ColorValue.NaN.copy();
-
-
-        /////////////////////////////////////////////////////////////////
+        let values = [];
         
-        const values = [];
-        
+
         for (const _input of this.inputs)
         {
             const input = await evalColorStopOrListValue(_input, parse);
@@ -128,6 +90,12 @@ extends GOperator
         }
         
 
+        values = validateColorStops(values);
+        
+        setColorStopPositions(values);
+        values.sort((a, b) => a.position.value - b.position.value);
+
+
         const opacities = values.map(v => v.fill.opacity);
         const maxDec    = opacities.reduce((max, o) => Math.max(max, o.decimals), 0);
 
@@ -137,7 +105,20 @@ extends GOperator
             : 1;
 
         const nSegments = Math.floor((values.length-1)/deg);
-        const index     = Math.min(Math.floor((values.length-1)/deg * amount.value/100), nSegments-1);
+
+        //const index     = Math.min(Math.floor((values.length-1)/deg * amount.value/100), nSegments-1);
+
+        let index = 0;
+
+        for (let i = 0; i < values.length-1; i++)
+        {
+            if (   amount.value/100 >= values[i  ].position.value/100
+                && amount.value/100 <= values[i+1].position.value/100)
+            {
+                index = i;
+                break;
+            }
+        }
 
 
         if (values.length == 1)
@@ -148,9 +129,15 @@ extends GOperator
         {
             const localAmount = 
                 nSegments > 1
-                ? (amount.value/100 - index/nSegments) * nSegments
+                ? (amount.value/100 - values[index*deg].position.value/100) / (values[index*deg+1].position.value/100 - values[index*deg].position.value/100) //(amount.value/100 - index/nSegments) * nSegments
                 : amount.value/100;
 
+            if (this.nodeId == 'inter4')
+            {
+                console.clear();
+                console.log('index =', index);
+                console.log('localAmount =', localAmount);
+            }
 
             if (degree.value == 0) // linear
             {
@@ -164,7 +151,11 @@ extends GOperator
                         convertDataColorToSpace(val1.fill.color.toDataColor(), _space),
                         localAmount,
                         _gamma)),
-                    interpolateNumberValue(opacities, index, nSegments, deg, degree, amount, maxDec));
+                    new NumberValue(lerp(
+                        opacities[index*deg  ].value,
+                        opacities[index*deg+1].value,
+                        localAmount)));
+                    //interpolateNumberValue(opacities, index, nSegments, deg, degree, amount, maxDec));
             }
             // else if (degree.value == 1) // quadratic
             // {
