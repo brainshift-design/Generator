@@ -181,7 +181,7 @@ extends OpColorBase
 
     updateHeader()
     {
-        Operator.prototype.updateHeader.call(this);
+        super.updateHeader();
 
         const colors = this.getHeaderColors();
 

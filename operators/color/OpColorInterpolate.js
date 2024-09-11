@@ -34,8 +34,6 @@ extends OpColorBase
         this.checkersHolder.appendChild(this.checkers);
         this.inner.insertBefore(this.checkersHolder, this.header);
 
-        this.checkersHolder.style.boxShadow = '0 0 0 5px red inset';
-
 
         this.addNewInput();
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
@@ -165,42 +163,12 @@ extends OpColorBase
         
         const colors = this.getHeaderColors();
 
-        
-        const inputs = this.headerInputs.filter(i => i.connected);
+        if (this.value.isValid())
+            this.checkersHolder.style.opacity = (100 - this.value.opacity.toNumber()) + '%';
 
+        updateFillHeader(this, colors, this.value.isValid());
 
-        if (   this.isUnknown()
-            ||    !rgbaIsNaN  (colors.back)
-               && !rgbaIsValid(colors.back)
-            || inputs.length == 0)
-        {
-            if (this.value.isValid())
-                this.checkersHolder.style.opacity = (100 - this.value.opacity.toNumber()*100) + '%';
-
-            updateFillHeader(this, colors, false);
-
-            if (   !rgbaIsNaN  (colors.back)
-                && !rgbaIsValid(colors.back))
-            {
-                this._warningOverlay.style.height  = this.measureData.headerOffset.height;
-                this._warningOverlay.style.display = 'block';
-            }
-
-            return;
-        }
-        else
-            this._warningOverlay.style.display = 'none';
-
-        
-        // if (    this.isUnknown()
-        //     || !this.value.isValid())
-        //     this.checkers.style.display = 'none';
-        // else
-        //{
-//            updateHeaderCheckers(this, colors, true);
-        //    this.checkers      .style.display = 'block';
-        //    this.checkersHolder.style.opacity = (100 - this.value.opacity.toNumber()) + '%';
-        //}
+        this._warningOverlay.style.height = this.measureData.headerOffset.height;
     }
 
 
@@ -208,7 +176,10 @@ extends OpColorBase
     getHeaderColors(options = {})
     {
         const colors = super.getHeaderColors();
-        if (!this.value) return colors;
+
+        if (   !this.value
+            || !this.value.opacity)
+            return colors;
 
         
         const opacity = this.value.opacity.value;
