@@ -165,12 +165,19 @@ extends Control
 
         for (let i = 0; i < lines.length; i++)
         {
-            // lines[i] = lines[i].replaceAll(' ', ' ');
-            
             if (i > 0)
                 highlight += '<br>';
 
-            highlight += '<span class="textBehind" style="background-color: ' + textBehindBack + '">' + lines[i] + '</span>';
+            highlight += 
+                '<span class="textBehind" style="background-color: ' 
+                + textBehindBack 
+                + ';' 
+                + (this.textbox.disabled
+                      ? ' transform: skew(-15deg, 0);' 
+                      : '') 
+                + '">' 
+                + lines[i] 
+                + '</span>';
         }
 
         this.textBehind.innerHTML = highlight;

@@ -10,7 +10,8 @@
 
 .textBehind
 {
-    color:        transparent;
+    display:       inline-block;
+    color:         transparent;
     overflow-wrap: break-word;
     word-break:    break-word;
 }
