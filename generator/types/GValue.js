@@ -275,7 +275,7 @@ function nanFromType(type)
 {
     switch (type)
     {
-        case            LIST_VALUE: return          ListValue.NaN;
+        case            LIST_VALUE: return        new ListValue();
 
         case          NUMBER_VALUE: return        NumberValue.NaN;
         case            TEXT_VALUE: return        new TextValue();

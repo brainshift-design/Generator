@@ -93,22 +93,42 @@ extends GOperator2
                 {
                     if (   input0.isValid()
                         && input1.isValid())
-                        this.value = ch < 0.5 ? input0 : input1;
+                    {
+                        this.value = 
+                            ch < 0.5 
+                                ? input0 
+                                : input1;
+                    }
                     else
-                        this.value = new NullValue();
+                    {
+                        this.value = 
+                            ch < 0.5 
+                                ? nanFromType(input0.type) 
+                                : nanFromType(input1.type);
+                    }
 
                     _values.push(input0, input1);
                 }
 
                 else if (input0)
                 {
-                    this.value = input0;
+                    this.value = 
+                           input0.isValid()
+                        && ch < 0.5
+                            ? input0
+                            : nanFromType(input0.type);
+
                     _values.push(input0);
                 }
                 
                 else if (input1)
                 {
-                    this.value = input1;
+                    this.value = 
+                           input1.isValid()
+                        && ch >= 0.5
+                            ? input1
+                            : nanFromType(input1.type);
+
                     _values.push(input1);
                 }
                 

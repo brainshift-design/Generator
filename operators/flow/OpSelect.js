@@ -21,7 +21,7 @@ extends ResizableBase
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, true, 0));
 
-        this.paramIndex.divider                       = 0.55;
+        this.paramIndex.divider                       = 0.54;
         this.paramIndex.controls[0].allowEditDecimals = false;
 
 

@@ -390,9 +390,9 @@ function initGeneratorMenus()
 
     menuShiftR = new Menu('Shift+R', false);
     menuShiftR.addItems([
-        menuItemRandomShiftR = new MenuItem('Random', null, false, {checkCallback: () => settings.randomShiftR, callback: () => { updateSettingAndMenu('randomShiftR', true, !settings.randomShiftR); }}),
-        menuItemColorShiftR  = new MenuItem('Color',  null, false, {checkCallback: () => settings.colorShiftR,  callback: () => { updateSettingAndMenu('colorShiftR',  true, !settings.colorShiftR);  }}),
-        menuItemNumberShiftR = new MenuItem('Number', null, false, {checkCallback: () => settings.numberShiftR, callback: () => { updateSettingAndMenu('numberShiftR', true, !settings.numberShiftR); }})]);
+        menuItemRandomShiftR = new MenuItem('Random',  null, false, {checkCallback: () => settings.randomShiftR, callback: () => { updateSettingAndMenu('randomShiftR', true, !settings.randomShiftR); }}),
+        menuItemColorShiftR  = new MenuItem('Colors',  null, false, {checkCallback: () => settings.colorShiftR,  callback: () => { updateSettingAndMenu('colorShiftR',  true, !settings.colorShiftR);  }}),
+        menuItemNumberShiftR = new MenuItem('Numbers', null, false, {checkCallback: () => settings.numberShiftR, callback: () => { updateSettingAndMenu('numberShiftR', true, !settings.numberShiftR); }})]);
 
 
     initPreferenceMenus();
@@ -650,7 +650,6 @@ function initGeneratorMenus()
     menuTextFunctions = new Menu('Text functions', true, false);
     menuTextFunctions.addItems([
         new MenuItem('Trim',       null, false, {icon: iconTextTrim,      createType: TEXT_TRIM,      callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Substring',  null, false, {icon: iconTextSubstring, createType: TEXT_SUBSTRING, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
         new MenuItem('Case',       null, false, {icon: iconTextCase,      createType: TEXT_CASE,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CASE,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('Replace',    null, false, {icon: iconTextReplace,   createType: TEXT_REPLACE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
         new MenuItem('Pad',        null, false, {icon: iconTextPad,       createType: TEXT_PAD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_PAD,       btnText.div, getCreateOptions(e)))})]);
@@ -667,6 +666,7 @@ function initGeneratorMenus()
         new MenuItem('',           null,            false, {separator: true}),
         new MenuItem('Add text',   null,            false, {childMenu: menuAddText, icon: iconAddText,       createType: TEXT_ADD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_ADD,       btnText.div, getCreateOptions(e)))}),
         new MenuItem('Split',      null,            false, {icon: iconTextSplit,     createType: TEXT_SPLIT,     callback: e => actionManager.do(getCreateNodeAction(TEXT_SPLIT,     btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Substring',  null,            false, {icon: iconTextSubstring, createType: TEXT_SUBSTRING, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
         new MenuItem('',           null,            false, {separator: true}),
         new MenuItem('Length',     null,            false, {icon: iconTextLength,    createType: TEXT_LENGTH,    callback: e => actionManager.do(getCreateNodeAction(TEXT_LENGTH,    btnText.div, getCreateOptions(e)))}),
         new MenuItem('Contains',   'Text contains', true,  {icon: iconTextContains,  createType: TEXT_CONTAINS,  callback: e => actionManager.do(getCreateNodeAction(TEXT_CONTAINS,  btnText.div, getCreateOptions(e)))}),
