@@ -603,10 +603,6 @@ class Wire
         this.arrow2 .style.fill = arrowStyle;
     
     
-        //if (output) output.wireBall.style.background = rgb2style(outColor);
-        //if (input ) input .wireBall.style.background = rgb2style( inColor);
-    
-    
         const isList = this.connectionIsList();
 
 

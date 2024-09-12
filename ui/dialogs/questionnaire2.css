@@ -29,7 +29,7 @@
     transform:     translateX(-50%)
                    translateY(-50%);
     width:         540px;
-    height:        280px;
+    height:        290px;
 
     overflow:      hidden;
     
@@ -46,7 +46,7 @@
 {
     height:      calc(100% - 22px);
     overflow:    hidden;
-    padding-top: 20px;
+    padding-top: 15px;
     z-index:     1;
     /* box-shadow: 0 0 0 1px red inset; */
 }

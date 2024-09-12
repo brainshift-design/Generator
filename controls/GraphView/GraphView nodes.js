@@ -112,11 +112,15 @@ GraphView.prototype.soloNode = function(node)
 
     graph.connections.forEach(c =>
     { 
-        c.wire.svg.style.opacity = 
+        const opacity = 
                c.input  && this._soloNode == c.input .node
             || c.output && this._soloNode == c.output.node
             ? 1 
             : 0.15;
+
+        c.wire.svg    .style.opacity = opacity;
+        c.wire.inBall .style.opacity = opacity;
+        c.wire.outBall.style.opacity = opacity;
     });
 
 
