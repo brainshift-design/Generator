@@ -320,8 +320,8 @@ extends EventTarget
                && !this.node.active
             ||    this.node.outputValueType != NULL
                && (   this.node.outputValueType == SHAPE_VALUE && !SHAPE_VALUES.includes(this.types[0])
-                   || this.node.outputValueType != SHAPE_VALUE && this.node.outputValueType != this.types[0])
-            || this.node.isUnknown();
+                   || this.node.outputValueType != SHAPE_VALUE && this.node.outputValueType != this.types[0]);
+            //|| this.node.isUnknown();
 
 
         const tc = 

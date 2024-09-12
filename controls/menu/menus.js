@@ -520,8 +520,8 @@ function initGeneratorMenus()
 
     menuData = new Menu('Lists', true, false);
     menuData.addItems([
-        menuItemCombine     = new MenuItem('List',              null,            false, {childMenu: menuList, icon: iconList,       createType: LIST,       callback: e => actionManager.do(getCreateNodeAction(LIST,          btnData.div, getCreateOptions(e)))}),
-        menuItemList        = new MenuItem('Expand list. . .',  'Expand list',   false, {icon: iconExpand,          createType: EXPAND,          callback: e => actionManager.do(getCreateNodeAction(EXPAND,             btnData.div, getCreateOptions(e)))}),
+        menuItemCombine     = new MenuItem('List',              null,            false, {childMenu: menuList, icon: iconData,       createType: LIST,       callback: e => actionManager.do(getCreateNodeAction(LIST,          btnData.div, getCreateOptions(e)))}),
+        menuItemList        = new MenuItem('Items. . .',        null,            false, {icon: iconExpand,          createType: EXPAND,          callback: e => actionManager.do(getCreateNodeAction(EXPAND,             btnData.div, getCreateOptions(e)))}),
                               new MenuItem('',                  null,            false, {separator: true}),     
         menuItemCount       = new MenuItem('Count',             null,            false, {icon: iconCount,         createType: LIST_COUNT,    callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,       btnData.div, getCreateOptions(e)))}),
                             //new MenuItem('Object count',      null,            false, {icon: iconObjectCount,   createType: OBJECT_COUNT,  callback: e => actionManager.do(getCreateNodeAction(OBJECT_COUNT,     btnData.div, getCreateOptions(e)))}),

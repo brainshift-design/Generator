@@ -7,7 +7,7 @@ extends ResizableBase
 
     constructor()
     {
-        super(LIST, 'list', 'list', iconList);
+        super(LIST, 'list', 'list', iconData);
 
         this.outputValueType   = LIST_VALUE;
         this.variableInputs    = true;
