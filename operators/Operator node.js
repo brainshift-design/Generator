@@ -309,6 +309,8 @@ this.header.addEventListener('pointerdown', e =>
                 graphView.overOutput   = output;
                 graphView.headerOutput = output;
 
+                tempConn.output = output;
+
                 
                 output.mouseOver = true;
                 output.updateControl();
@@ -411,7 +413,8 @@ this.header.addEventListener('pointerdown', e =>
             {
                 const output = graphView.headerOutput;
 
-                graphView.overOutput = null;
+                graphView.overOutput      = null;
+                graphView.tempConn.output = null;
 
                 if (output) // will be null if data types don't match or there's no auto output for someo other reason
                 {

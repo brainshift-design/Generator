@@ -154,7 +154,7 @@ extends EventTarget
                     || this == savedInput))
             {
                 graphView.overInput = this;
-                if (tc) tc.input    = this;
+                tc.input            = this;
 
                 tc.wire.update();
 
@@ -346,6 +346,7 @@ extends EventTarget
                && graphView.overInput != this)
             return transparent;
 
+            
         if (   this.connectedOutput
             && (    isColorType(this.types[0])
                 || !this.node.active
@@ -354,22 +355,26 @@ extends EventTarget
                     && this.node.outputValueType != this.types[0]))
             return this.connectedOutput.getWireColor();
 
+
         if (   graphView.tempConn
             && graphView.tempConn.output
             && graphView.overInput == this
             && (   isColorType(this.types[0])
                 || (   (   graphView.tempConn.output.types[0] != this.types[0]
                         || this.node.outputValueType == NULL
+                        || this.node.outputValueType == ANY_VALUE
                         || this.node.outputValueType != this.types[0])
-                    && !this.node.active)))
+                    && (  !this.node.active
+                        || this.node.outputValueType == ANY_VALUE))))
             return graphView.tempConn.output.getWireColor();
 
 
         if (   graphView.tempConn
             && graphView.tempConn.input == this
             && graphView.overOutput
-            && (    isColorType(this.types[0])
-                || !this.node.active))
+            && (   isColorType(this.types[0])
+                || (  !this.node.active
+                    || this.node.outputValueType == ANY_VALUE)))
             return graphView.overOutput.getWireColor();
 
 
