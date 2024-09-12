@@ -25327,8 +25327,8 @@ extends GOperator
 
           if (   input0 
               && input1) this.value = cond.value != 0 ? input0 : input1;
-        else if (input0) this.value = cond.value != 0 ? input0 : new NullValue();
-        else if (input1) this.value = cond.value == 0 ? input1 : new NullValue();
+        else if (input0) this.value = cond.value != 0 ? input0 : nanFromType(input0.type);
+        else if (input1) this.value = cond.value == 0 ? input1 : nanFromType(input1.type);
         else             this.value = new NullValue();
 
 
