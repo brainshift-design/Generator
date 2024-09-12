@@ -6,8 +6,8 @@ extends GValue
 
 
 
-    constructor(fill     = FillValue.NaN, 
-                position = new NumberValue(1))
+    constructor(fill     = FillValue  .NaN, 
+                position = NumberValue.NaN)
     {
         if (fill.type != FILL_VALUE)
             consoleError('fill.type is ' + fill.type + ', must be FILL_VALUE');

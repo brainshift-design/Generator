@@ -409,9 +409,7 @@ function uintToBufferAt(val, buffer, start, bufferSize)
 
 function lerpCos(a, b, t)
 {
-    return a < b
-         ? a + (b - a) * (-Math.cos(t*Tau/2)+1)/2
-         : a + (b - a) * (-Math.cos(t*Tau/2)+1)/2;
+    return a + (b - a) * (-Math.cos(t*Tau/2)+1)/2;
 }
 
 

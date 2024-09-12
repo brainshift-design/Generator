@@ -55,6 +55,7 @@ extends GOperator
             return this;
 
 
+        let   inputs = await Promise.all(this.inputs.map(async i => await evalColorStopValue(i, parse)));
         let   space  = await evalNumberValue(this.space,  parse);
         const gamma  = await evalNumberValue(this.gamma,  parse);
         const amount = await evalNumberValue(this.amount, parse);
@@ -67,53 +68,25 @@ extends GOperator
         const _space = colorSpace(space.value);
 
 
-        let values = [];
-        
+        inputs = validateColorStops(inputs);
 
-        for (const _input of this.inputs)
-        {
-            const input = await evalColorStopOrListValue(_input, parse);
-
-            if (isListValueType(input.type))
-            {
-                for (const item of input.items)
-                {
-                    const value = await evalColorStopValue(item, parse);
-                    values.push(value);
-                }
-            }
-            else
-            {
-                const value = await evalColorStopValue(input, parse);
-                values.push(value);
-            }
-        }
-        
-
-        values = validateColorStops(values);
-        
-        setColorStopPositions(values);
-        values.sort((a, b) => a.position.value - b.position.value);
+        setColorStopPositions(inputs);
+        inputs.sort((a, b) => a.position.value - b.position.value);
 
 
-        const opacities = values.map(v => v.fill.opacity);
-        const maxDec    = opacities.reduce((max, o) => Math.max(max, o.decimals), 0);
 
-        const deg =
-            degree.value < 3
-            ? Math.min(degree.value, 2) + 1
-            : 1;
+        const opacities = inputs.map(i => i.fill.opacity);
+        // const maxDec    = opacities.reduce((max, o) => Math.max(max, o.decimals), 0);
 
-        const nSegments = Math.floor((values.length-1)/deg);
+        const nSegments = Math.floor(inputs.length-1);
 
-        //const index     = Math.min(Math.floor((values.length-1)/deg * amount.value/100), nSegments-1);
 
         let index = 0;
 
-        for (let i = 0; i < values.length-1; i++)
+        for (let i = 0; i < inputs.length-1; i++)
         {
-            if (   amount.value/100 >= values[i  ].position.value/100
-                && amount.value/100 <= values[i+1].position.value/100)
+            if (   amount.value/100 >= inputs[i  ].position.value/100
+                && amount.value/100 <= inputs[i+1].position.value/100)
             {
                 index = i;
                 break;
@@ -121,28 +94,26 @@ extends GOperator
         }
 
 
-        if (values.length == 1)
-            this.value = values[0].fill;
+        if (inputs.length == 1)
+            this.value = inputs[0].fill;
 
-        else if (values.length > 0
-              && index < values.length - deg)
+        else if (inputs.length > 0
+              && index < inputs.length-1)
         {
-            const localAmount = 
+            let localAmount = 
                 nSegments > 1
-                ? (amount.value/100 - values[index*deg].position.value/100) / (values[index*deg+1].position.value/100 - values[index*deg].position.value/100) //(amount.value/100 - index/nSegments) * nSegments
+                ? (amount.value/100 - inputs[index].position.value/100) / (inputs[index+1].position.value/100 - inputs[index].position.value/100) //(amount.value/100 - index/nSegments) * nSegments
                 : amount.value/100;
 
-            if (this.nodeId == 'inter4')
-            {
-                console.clear();
-                console.log('index =', index);
-                console.log('localAmount =', localAmount);
-            }
 
-            if (degree.value == 0) // linear
+            if (   degree.value == 0  // linear
+                || degree.value == 1) // cosine
             {
-                const val0 = values[index*deg  ];
-                const val1 = values[index*deg+1];
+                const val0 = inputs[index  ];
+                const val1 = inputs[index+1];
+
+                if (degree.value == 1)
+                    localAmount = lerpCos(0, 1, localAmount);
 
                 this.value = new FillValue(
                     ColorValue.fromDataColor(GColorInterpolate.interpolate(
@@ -152,36 +123,14 @@ extends GOperator
                         localAmount,
                         _gamma)),
                     new NumberValue(lerp(
-                        opacities[index*deg  ].value,
-                        opacities[index*deg+1].value,
+                        opacities[index  ].value,
+                        opacities[index+1].value,
                         localAmount)));
-                    //interpolateNumberValue(opacities, index, nSegments, deg, degree, amount, maxDec));
             }
-            // else if (degree.value == 1) // quadratic
+            // else if (degree.value == 1) // cosine
             // {
-            //     const val0 = values[index*deg  ];
-            //     const val1 = values[index*deg+1];
-            //     const val2 = values[index*deg+2];
-
-            //     this.value = new NumberValue(
-            //         lerp2(val0.value, val1.value, val2.value, localAmount),
-            //         maxDec);
-            // }
-            // else if (degree.value == 2) // cubic
-            // {
-            //     const val0 = values[index*deg  ];
-            //     const val1 = values[index*deg+1];
-            //     const val2 = values[index*deg+2];
-            //     const val3 = values[index*deg+3];
-
-            //     this.value = new NumberValue(
-            //         lerp3(val0.value, val1.value, val2.value, val3.value, localAmount),
-            //         maxDec);
-            // }
-            // else if (degree.value == 3) // cosine
-            // {
-            //     const val0 = values[index*deg  ];
-            //     const val1 = values[index*deg+1];
+            //     const val0 = values[index  ];
+            //     const val1 = values[index+1];
 
             //     this.value = new NumberValue(
             //         lerpCos(val0.value, val1.value, localAmount),
@@ -196,7 +145,7 @@ extends GOperator
         
         
         if (   this.value.type == FILL_VALUE
-            && finalListTypeFromValues(values) == COLOR_LIST_VALUE)
+            && finalListTypeFromValues(inputs) == COLOR_LIST_VALUE)
             this.value = this.value.color;
 
 
