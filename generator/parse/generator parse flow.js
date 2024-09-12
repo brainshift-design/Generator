@@ -877,7 +877,7 @@ function genParseExpandList(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const list = new GExpandList(nodeId, options);
+    const list = new GItems(nodeId, options);
 
     
     let nInputs = -1;

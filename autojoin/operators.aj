@@ -73,7 +73,7 @@
 ../operators/flow/OpFilter.js
 ../operators/flow/OpColumn.js
 ../operators/flow/OpCell.js
-../operators/flow/OpExpandList.js
+../operators/flow/OpItems.js
 ../operators/flow/OpSelect.js
 ../operators/flow/OpSelectFromList.js
 ../operators/flow/OpListCount.js

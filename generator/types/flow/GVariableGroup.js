@@ -14,7 +14,7 @@ extends GOperator
 
     copy()
     {
-        const copy = new GExpandList(this.nodeId, this.options);
+        const copy = new GItems(this.nodeId, this.options);
         
         copy.copyBase(this);
 

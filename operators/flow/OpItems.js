@@ -1,4 +1,4 @@
-class   OpExpandList
+class   OpItems
 extends ResizableBase
 {
     scrollbar;

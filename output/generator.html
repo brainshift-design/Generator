@@ -20774,7 +20774,7 @@ extends GOperator
 
     copy()
     {
-        const copy = new GExpandList(this.nodeId, this.options);
+        const copy = new GItems(this.nodeId, this.options);
         
         copy.copyBase(this);
 
@@ -24240,7 +24240,7 @@ extends GOperator1
 }
 
 
-class GExpandList
+class GItems
 extends GOperator1
 {
     cachedValue = null;
@@ -24265,7 +24265,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GExpandList(this.nodeId, this.options);
+        const copy = new GItems(this.nodeId, this.options);
         
         copy.copyBase(this);
 
@@ -53744,7 +53744,7 @@ function genParseExpandList(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const list = new GExpandList(nodeId, options);
+    const list = new GItems(nodeId, options);
 
     
     let nInputs = -1;

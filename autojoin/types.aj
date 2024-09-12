@@ -107,7 +107,7 @@
 ../generator/types/flow/GFilter.js
 ../generator/types/flow/GColumn.js
 ../generator/types/flow/GCell.js
-../generator/types/flow/GExpandList.js
+../generator/types/flow/GItems.js
 ../generator/types/flow/GSelect.js
 ../generator/types/flow/GSelectFromList.js
 ../generator/types/flow/GListCount.js

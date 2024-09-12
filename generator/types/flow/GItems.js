@@ -1,4 +1,4 @@
-class GExpandList
+class GItems
 extends GOperator1
 {
     cachedValue = null;
@@ -23,7 +23,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GExpandList(this.nodeId, this.options);
+        const copy = new GItems(this.nodeId, this.options);
         
         copy.copyBase(this);
 

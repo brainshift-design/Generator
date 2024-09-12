@@ -1872,7 +1872,7 @@ GExtract
 GFilter
 GFreeze
 GIfElse
-GExpandList
+GItems
 GListCount
 GNull
 GRepeat
@@ -2171,7 +2171,7 @@ OpFilter
 OpForEach
 OpFreeze
 OpIfElse
-OpExpandList
+OpItems
 OpListCount
 OpNull
 OpRepeat
