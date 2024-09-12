@@ -114,7 +114,7 @@ extends GOperator2
                 {
                     this.value = 
                            input0.isValid()
-                        && ch < 0.5
+                        && ch >= 0.5
                             ? input0
                             : nanFromType(input0.type);
 
@@ -125,7 +125,7 @@ extends GOperator2
                 {
                     this.value = 
                            input1.isValid()
-                        && ch >= 0.5
+                        && ch < 0.5
                             ? input1
                             : nanFromType(input1.type);
 

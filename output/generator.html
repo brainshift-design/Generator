@@ -1060,13 +1060,15 @@ function isValueListOfLists(value)
 
 function isValueListOfCondensedLists(value)
 {
-    if (!isListValueType(value.type))
+    if (   !value
+        || !isListValueType(value.type))
         return false;
     
     for (const item of value.items)
     {
-        if (  !isListValueType(item.type)
-            || item.condensed !== true)
+        if (   !item
+            || !isListValueType(item.type)
+            ||  item.condensed !== true)
             return false;
     }
 
@@ -11988,9 +11990,10 @@ function allInputsAreCondensedLists(inputs)
 {
     for (const input of inputs)
     {
-        if (   !isValueListOfCondensedLists(input)
-            && !isListValueType(input)
-            && input.condensed !== true) 
+        if (   !input
+            ||    !isValueListOfCondensedLists(input)
+               && !isListValueType(input)
+               &&  input.condensed !== true) 
             return false;
     }
 
@@ -29314,7 +29317,7 @@ extends GOperator2
                 {
                     this.value = 
                            input0.isValid()
-                        && ch < 0.5
+                        && ch >= 0.5
                             ? input0
                             : nanFromType(input0.type);
 
@@ -29325,7 +29328,7 @@ extends GOperator2
                 {
                     this.value = 
                            input1.isValid()
-                        && ch >= 0.5
+                        && ch < 0.5
                             ? input1
                             : nanFromType(input1.type);
 

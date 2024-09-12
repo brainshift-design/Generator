@@ -1079,13 +1079,15 @@ function isValueListOfLists(value)
 
 function isValueListOfCondensedLists(value)
 {
-    if (!isListValueType(value.type))
+    if (   !value
+        || !isListValueType(value.type))
         return false;
     
     for (const item of value.items)
     {
-        if (  !isListValueType(item.type)
-            || item.condensed !== true)
+        if (   !item
+            || !isListValueType(item.type)
+            ||  item.condensed !== true)
             return false;
     }
 

@@ -323,9 +323,10 @@ function allInputsAreCondensedLists(inputs)
 {
     for (const input of inputs)
     {
-        if (   !isValueListOfCondensedLists(input)
-            && !isListValueType(input)
-            && input.condensed !== true) 
+        if (   !input
+            ||    !isValueListOfCondensedLists(input)
+               && !isListValueType(input)
+               &&  input.condensed !== true) 
             return false;
     }
 
