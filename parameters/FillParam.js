@@ -369,7 +369,7 @@ extends Parameter
               + 'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
 
-        this.checkers.style.display               = this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.display               = this.value.isValid() && !this.isUnknown() ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor       = darkMode ? '#444' : '#fff';
          
         this.checkers.style.backgroundSize        = '22px 22px';
