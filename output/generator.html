@@ -11879,17 +11879,10 @@ extends GNode
     {
         const repeatIndex = parse.repeats.findIndex(r => r.repeatId == this.loopId);
         
-        // if (this.nodeId == 'sequence')
-        // {
-        //     console.log('repeatIndex = ', repeatIndex);
-        //     console.log('this.iterated = ', this.iterated);
-        // }
-
         if (   (   repeatIndex < 0
                 || repeatIndex == parse.repeats.length-1)
             && !this.iterated)
         {
-            //console.log('iterating');
             this.currentIteration++;
             this.iterated = true;
         }
@@ -27955,8 +27948,8 @@ extends GOperator
 
         this.value = 
             _values.length > 0
-            ? _values[this.currentIteration % _values.length]
-            : new NullValue();
+                ? _values[this.currentIteration % _values.length]
+                : new NullValue();
 
 
         if (   this.value 
@@ -27985,8 +27978,8 @@ extends GOperator
         const type =
                _values.length > 1
             && finalListTypeFromValues(_values) == LIST_VALUE
-            ? new TextValue(ANY_VALUE)
-            : this.outputType();
+                ? new TextValue(ANY_VALUE)
+                : this.outputType();
 
 
         this.setUpdateValues(parse,

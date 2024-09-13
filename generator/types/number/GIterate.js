@@ -67,8 +67,8 @@ extends GOperator
 
         this.value = 
             _values.length > 0
-            ? _values[this.currentIteration % _values.length]
-            : new NullValue();
+                ? _values[this.currentIteration % _values.length]
+                : new NullValue();
 
 
         if (   this.value 
@@ -97,8 +97,8 @@ extends GOperator
         const type =
                _values.length > 1
             && finalListTypeFromValues(_values) == LIST_VALUE
-            ? new TextValue(ANY_VALUE)
-            : this.outputType();
+                ? new TextValue(ANY_VALUE)
+                : this.outputType();
 
 
         this.setUpdateValues(parse,
