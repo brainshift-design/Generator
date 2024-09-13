@@ -106,7 +106,7 @@ GraphView.prototype.soloNode = function(node)
     graph.pageNodes.forEach(n => 
         n.div.style.opacity = 
                 n == this._soloNode
-            //|| n.isConnectedTo(this._soloNode)
+            || n.isConnectedTo(this._soloNode)
             ? 1 
             : 0.2);
 

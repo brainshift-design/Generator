@@ -15,8 +15,8 @@ GraphView.prototype.createEvents = function()
 
     this.div.addEventListener('pointerleave', e => 
     {
-        if (graphView.soloMode)
-            graphView.soloNode(null);
+        // if (graphView.soloMode)
+        //     graphView.soloNode(null);
 
             
         // if (this.tempConn)
@@ -51,7 +51,10 @@ GraphView.prototype.createEvents = function()
 
 
         hideAllMenus();
-        hideSearchBox();
+
+
+        if (e.button == 0)
+            hideSearchBox();
 
 
         if (   e.button == 0

@@ -315,20 +315,14 @@ extends EventTarget
                    && (   graphView.tempConn.output == this
                        || graphView.overOutput == this));
 
-        // if (this.node.id == debugNodeId)
-        // {
-        //     console.log('this.connected =', this.connected);
-        //     console.log('conn =', conn);
-        //     console.log('');
-        // }
 
         const diff = 
-                   conn
-               && !this.node.active
-            ||    this.node.outputValueType != NULL
-               && (   this.node.outputValueType == SHAPE_VALUE && !SHAPE_VALUES.includes(this.types[0])
-                   || this.node.outputValueType != SHAPE_VALUE && this.node.outputValueType != this.types[0]);
-            //|| this.node.isUnknown();
+               !this.node.active
+            && (      conn
+                ||    this.node.outputValueType != NULL
+                   && (   this.node.outputValueType == SHAPE_VALUE && !SHAPE_VALUES.includes(this.types[0])
+                       || this.node.outputValueType != SHAPE_VALUE && this.node.outputValueType != this.types[0]));
+                //|| this.node.isUnknown();
 
 
         const tc = 
@@ -361,7 +355,7 @@ extends EventTarget
             else if (NUMBER_VALUES.includes(this.types[0])) ballColor = diff ? rgb_a(typeColorDark, conn ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, tc ? 0 : 0.2]);
             else if (  TEXT_VALUES.includes(this.types[0])) ballColor = diff ? rgb_a(typeColorDark, conn ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [0, 0, 0, 0.23] : [1, 1, 1, tc ? 0 : 0.2]);
             else if ( SHAPE_VALUES.includes(this.types[0])) ballColor = diff ? rgb_a(typeColorDark, conn ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [1, 1, 1, 0.35] : [1, 1, 1, tc ? 0 : 0.2]);
-            else                                            ballColor = diff ? rgb_a(typeColorDark, conn ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [0, 0, 0, 0.2 ] : [1, 1, 1, tc ? 0 : 0.2]);
+            else                                            ballColor = diff ? rgb_a(typeColorDark, conn ? 1 : (this.node.active ? 0.5 : 0.4)) : (this.node.active ? [0, 0, 0, 0.25] : [1, 1, 1, tc ? 0 : 0.2]);
         }
         else // light mode
         {
@@ -521,7 +515,6 @@ extends EventTarget
 
         if (darkMode)
         {
-            if (this.node.id == debugNodeId) console.log('type =', type);
             if (isColorType(type))
             {
                 ringColor = 
