@@ -14,7 +14,7 @@ const presetTableBasics = '\
             "z": "0"\
             },\
             {\
-            "type": "EXPAND",\
+            "type": "ITEMS",\
             "id": "list5",\
             "name": "list",\
             "renamed": "false",\
@@ -81,7 +81,7 @@ const presetTableBasics = '\
             ]\
             },\
             {\
-            "type": "EXPAND",\
+            "type": "ITEMS",\
             "id": "list",\
             "name": "list",\
             "renamed": "false",\
@@ -95,20 +95,20 @@ const presetTableBasics = '\
             "height": "340",\
             "params":\
             [\
-                    ["EXPAND#", "0", "5 TEXT# Fundamentals%20of%20Wavelets TEXT# Jaideva%20Goswami TEXT# signal_processing TEXT# 228 TEXT# Wiley"],\
-                    ["EXPAND#", "1", "5 TEXT# Data%20Smart TEXT# John%20Foreman TEXT# data_science TEXT# 235 TEXT# Wiley"],\
-                    ["EXPAND#", "2", "5 TEXT# God%20Created%20the%20Integers TEXT# Stephen%20Hawking TEXT# mathematics TEXT# 197 TEXT# Penguin"],\
-                    ["EXPAND#", "3", "5 TEXT# Superfreakonomics TEXT# Stephen%20Dubner TEXT# economics TEXT# 179 TEXT# HarperCollins"],\
-                    ["EXPAND#", "4", "5 TEXT# Orientalism TEXT# Edward%20Said TEXT# history TEXT# 197 TEXT# Penguin"],\
-                    ["EXPAND#", "5", "5 TEXT# The%20Nature%20of%20Statistical%20Learning%20Theory TEXT# Vladimir%20Vapnik TEXT# data_science TEXT# 230 TEXT# Springer"],\
-                    ["EXPAND#", "6", "5 TEXT# Integration%20of%20the%20Indian%20States TEXT# V%20P%20Menon TEXT# history TEXT# 217 TEXT# Orient%20Blackswan"],\
-                    ["EXPAND#", "7", "5 TEXT# The%20Drunkard\'s%20Walk TEXT# Leonard%20Mlodinow TEXT# science TEXT# 197 TEXT# Penguin"],\
-                    ["EXPAND#", "8", "5 TEXT# Image%20Processing%20%26%20Mathematical%20Morphology TEXT# Frank%20Shih TEXT# signal_processing TEXT# 241 TEXT# CRC"],\
-                    ["EXPAND#", "9", "5 TEXT# How%20to%20Think%20Like%20Sherlock%20Holmes TEXT# Maria%20Konnikova TEXT# psychology TEXT# 240 TEXT# Penguin"],\
-                    ["EXPAND#", "10", "5 TEXT# Data%20Scientists%20at%20Work TEXT# Sebastian%20Gutierrez TEXT# data_science TEXT# 230 TEXT# Apress"],\
-                    ["EXPAND#", "11", "5 TEXT# Slaughterhouse%20Five TEXT# Kurt%20Vonnegut TEXT# fiction TEXT# 198 TEXT# Random%20House"],\
-                    ["EXPAND#", "12", "5 TEXT# Birth%20of%20a%20Theorem TEXT# Cedric%20Villani TEXT# mathematics TEXT# 234 TEXT# Bodley%20Head"],\
-                    ["EXPAND#", "13", "5 TEXT# Structure%20%26%20Interpretation%20of%20Computer%20Programs TEXT# Gerald%20Sussman TEXT# computer_science TEXT# 240 TEXT# MIT%20Press"]\
+                    ["ITEMS#", "0", "5 TEXT# Fundamentals%20of%20Wavelets TEXT# Jaideva%20Goswami TEXT# signal_processing TEXT# 228 TEXT# Wiley"],\
+                    ["ITEMS#", "1", "5 TEXT# Data%20Smart TEXT# John%20Foreman TEXT# data_science TEXT# 235 TEXT# Wiley"],\
+                    ["ITEMS#", "2", "5 TEXT# God%20Created%20the%20Integers TEXT# Stephen%20Hawking TEXT# mathematics TEXT# 197 TEXT# Penguin"],\
+                    ["ITEMS#", "3", "5 TEXT# Superfreakonomics TEXT# Stephen%20Dubner TEXT# economics TEXT# 179 TEXT# HarperCollins"],\
+                    ["ITEMS#", "4", "5 TEXT# Orientalism TEXT# Edward%20Said TEXT# history TEXT# 197 TEXT# Penguin"],\
+                    ["ITEMS#", "5", "5 TEXT# The%20Nature%20of%20Statistical%20Learning%20Theory TEXT# Vladimir%20Vapnik TEXT# data_science TEXT# 230 TEXT# Springer"],\
+                    ["ITEMS#", "6", "5 TEXT# Integration%20of%20the%20Indian%20States TEXT# V%20P%20Menon TEXT# history TEXT# 217 TEXT# Orient%20Blackswan"],\
+                    ["ITEMS#", "7", "5 TEXT# The%20Drunkard\'s%20Walk TEXT# Leonard%20Mlodinow TEXT# science TEXT# 197 TEXT# Penguin"],\
+                    ["ITEMS#", "8", "5 TEXT# Image%20Processing%20%26%20Mathematical%20Morphology TEXT# Frank%20Shih TEXT# signal_processing TEXT# 241 TEXT# CRC"],\
+                    ["ITEMS#", "9", "5 TEXT# How%20to%20Think%20Like%20Sherlock%20Holmes TEXT# Maria%20Konnikova TEXT# psychology TEXT# 240 TEXT# Penguin"],\
+                    ["ITEMS#", "10", "5 TEXT# Data%20Scientists%20at%20Work TEXT# Sebastian%20Gutierrez TEXT# data_science TEXT# 230 TEXT# Apress"],\
+                    ["ITEMS#", "11", "5 TEXT# Slaughterhouse%20Five TEXT# Kurt%20Vonnegut TEXT# fiction TEXT# 198 TEXT# Random%20House"],\
+                    ["ITEMS#", "12", "5 TEXT# Birth%20of%20a%20Theorem TEXT# Cedric%20Villani TEXT# mathematics TEXT# 234 TEXT# Bodley%20Head"],\
+                    ["ITEMS#", "13", "5 TEXT# Structure%20%26%20Interpretation%20of%20Computer%20Programs TEXT# Gerald%20Sussman TEXT# computer_science TEXT# 240 TEXT# MIT%20Press"]\
             ]\
             },\
             {\
@@ -124,7 +124,7 @@ const presetTableBasics = '\
             "active": "true"\
             },\
             {\
-            "type": "EXPAND",\
+            "type": "ITEMS",\
             "id": "list4",\
             "name": "list",\
             "renamed": "false",\
@@ -179,7 +179,7 @@ const presetTableBasics = '\
             "active": "true"\
             },\
             {\
-            "type": "EXPAND",\
+            "type": "ITEMS",\
             "id": "list2",\
             "name": "list",\
             "renamed": "false",\
@@ -240,7 +240,7 @@ const presetTableBasics = '\
             "active": "true"\
             },\
             {\
-            "type": "EXPAND",\
+            "type": "ITEMS",\
             "id": "list3",\
             "name": "list",\
             "renamed": "false",\

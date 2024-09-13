@@ -203,7 +203,7 @@ extends GOperator
     {
         for (const input of this.inputs)
         {
-            if (   input.type == EXPAND
+            if (   input.type == ITEMS
                 || input.type == LIST
                 || input.type == CACHE)
                 input.iterateCache(parse, from);

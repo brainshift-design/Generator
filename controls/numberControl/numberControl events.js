@@ -538,7 +538,7 @@ NumberControl.prototype.initEvents = function()
             && dWheelY != 0)
         {
             if (  !this.readOnly
-                && this.param.node.type != EXPAND)
+                && this.param.node.type != ITEMS)
                 e.stopPropagation();
 
             if (!this.readOnly)

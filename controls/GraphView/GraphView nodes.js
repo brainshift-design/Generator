@@ -554,7 +554,7 @@ GraphView.prototype.getRandomizedNumberValues = function(numbers)
 
 GraphView.prototype.connectSelectedSeeds = function()
 {
-    const list = graphView.selectedNodes.find(n => n.type == EXPAND);
+    const list = graphView.selectedNodes.find(n => n.type == ITEMS);
 
     const randoms = graphView.selectedNodes.filter(n => 
            n.type == NUMBER_RANDOM

@@ -102,7 +102,7 @@ const presetCircleFields = '\
       "z": "4",\
       "params":\
       [\
-            ["EXPAND#", "fills", "1 FILL# 143,0 214,0 2,0 100,0 6,0"],\
+            ["ITEMS#", "fills", "1 FILL# 143,0 214,0 2,0 100,0 6,0"],\
             ["NUM#", "weight", "2,0"],\
             ["TEXT#", "dashes", "", "center"]\
       ]\
@@ -256,7 +256,7 @@ const presetCircleFields = '\
       ]\
     },\
     {\
-      "type": "EXPAND",\
+      "type": "ITEMS",\
       "created": "1709373449984",\
       "updated": "1709373449984",\
       "id": "list",\

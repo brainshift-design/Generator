@@ -146,7 +146,7 @@ Operator.prototype.updateHeaderLabelText = function()
         else if (this.type == SELECT_FROM_LIST) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
         else if (this.type == FILTER          ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
         else if (this.type == UNIQUE          ) suffix =            sep + '[ ' + (isListUnknown ? '?' : this.length       ) + ' ]';
-        else if (this.type == EXPAND          ) suffix = ellipsis + sep + '[ ' + (isListUnknown ? '?' : this.params.length) + ' ]';
+        else if (this.type == ITEMS          ) suffix = ellipsis + sep + '[ ' + (isListUnknown ? '?' : this.params.length) + ' ]';
         else if (this.type == CACHE           ) suffix = ellipsis;
         else
             suffix = 

@@ -20,7 +20,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
  
         case LIST:                 node = new OpList();            break;
         case LIST_AS_ITEM:            node = new OpListAsItem();         break;
-        case EXPAND:                    node = new OpItems();               break;
+        case ITEMS:                    node = new OpItems();               break;
         case LIST_COUNT:              node = new OpListCount();          break;
         case OBJECT_COUNT:            node = new OpObjectCount();        break;
         case SELECT:                  node = new OpSelect();             break;

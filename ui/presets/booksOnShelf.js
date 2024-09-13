@@ -245,7 +245,7 @@ const presetBooksOnShelf = '\
         ]\
         },\
         {\
-        "type": "EXPAND",\
+        "type": "ITEMS",\
         "id": "list",\
         "name": "list",\
         "renamed": "false",\
@@ -266,7 +266,7 @@ const presetBooksOnShelf = '\
         ]\
         },\
         {\
-        "type": "EXPAND",\
+        "type": "ITEMS",\
         "id": "list2",\
         "name": "list",\
         "renamed": "false",\

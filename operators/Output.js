@@ -309,11 +309,18 @@ extends EventTarget
         const outWireColor   = this.node.getOutputWireColor();
 
         const conn = 
-               !this.node.isUnknown()
+              !this.node.isUnknown()
             && (   this.connected
                 ||    graphView.tempConn 
                    && (   graphView.tempConn.output == this
                        || graphView.overOutput == this));
+
+        // if (this.node.id == debugNodeId)
+        // {
+        //     console.log('this.connected =', this.connected);
+        //     console.log('conn =', conn);
+        //     console.log('');
+        // }
 
         const diff = 
                    conn
@@ -514,6 +521,7 @@ extends EventTarget
 
         if (darkMode)
         {
+            if (this.node.id == debugNodeId) console.log('type =', type);
             if (isColorType(type))
             {
                 ringColor = 

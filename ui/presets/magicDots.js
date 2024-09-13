@@ -327,7 +327,7 @@ const presetMagicDots = '\
         ]\
         },\
         {\
-        "type": "EXPAND",\
+        "type": "ITEMS",\
         "created": "1705641043411",\
         "updated": "1706643842346",\
         "id": "list",\

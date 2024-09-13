@@ -153,7 +153,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == FILTER                 ) result = genParseFilter            (parse);
     else if (parse.next == COLUMN                 ) result = genParseColumn            (parse);
     else if (parse.next == CELL                   ) result = genParseCell              (parse);
-    else if (parse.next == EXPAND                 ) result = genParseExpandList        (parse);
+    else if (parse.next == ITEMS                 ) result = genParseExpandList        (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect            (parse);
     else if (parse.next == SELECT_FROM_LIST       ) result = genParseSelectFromList    (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);

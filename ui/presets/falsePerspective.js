@@ -195,7 +195,7 @@ const presetFalsePerspective = '\
         "z": "10",\
         "params":\
         [\
-                ["EXPAND#", "points", "2 PT# 0,0 0,0 PT# -284,0 100,0"],\
+                ["ITEMS#", "points", "2 PT# 0,0 0,0 PT# -284,0 100,0"],\
                 ["NUM#", "degree", "0,0"]\
         ]\
         },\
@@ -328,7 +328,7 @@ const presetFalsePerspective = '\
         "z": "17",\
         "params":\
         [\
-                ["EXPAND#", "fills", "1 FILL# 0,0 0,0 0,0 100,0 0,0"],\
+                ["ITEMS#", "fills", "1 FILL# 0,0 0,0 0,0 100,0 0,0"],\
                 ["TEXT#", "dashes", "", "center"]\
         ]\
         },\
@@ -520,7 +520,7 @@ const presetFalsePerspective = '\
         "z": "27",\
         "params":\
         [\
-                ["EXPAND#", "points", "2 PT# -284,0 100,0 PT# 696.0000000000001,0 100,0"]\
+                ["ITEMS#", "points", "2 PT# -284,0 100,0 PT# 696.0000000000001,0 100,0"]\
         ]\
         },\
         {\

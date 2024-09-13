@@ -434,7 +434,7 @@ const presetCairoTiles = '\
             "z": "28",\
             "params":\
             [\
-                    ["EXPAND#", "fills", "1 FILL# 255,0 255,0 255,0 100,0 0,0"],\
+                    ["ITEMS#", "fills", "1 FILL# 255,0 255,0 255,0 100,0 0,0"],\
                     ["NUM#", "weight", "4,0"]\
             ]\
             },\
@@ -464,7 +464,7 @@ const presetCairoTiles = '\
             "z": "30",\
             "params":\
             [\
-                    ["EXPAND#", "points", "5 PT# -100,0 -100,0 PT# -57,0 0,0 PT# 57,0 0,0 PT# 100,0 -100,0 PT# 0,0 -143,0"],\
+                    ["ITEMS#", "points", "5 PT# -100,0 -100,0 PT# -57,0 0,0 PT# 57,0 0,0 PT# 100,0 -100,0 PT# 0,0 -143,0"],\
                     ["NUM#", "closed", "1,0"],\
                     ["NUM#", "degree", "0,0"]\
             ]\

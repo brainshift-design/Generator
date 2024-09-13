@@ -13,7 +13,7 @@ extends Action
     {
         super(
             SCROLL_LIST_NODE_ACTION,
-           'SCROLL EXPAND NODE ' + nodeId + ' to \'' + newScroll + '\'');
+           'SCROLL ITEMS NODE ' + nodeId + ' to \'' + newScroll + '\'');
 
         this.affectsConnections = false;
 

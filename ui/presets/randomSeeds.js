@@ -271,7 +271,7 @@ const presetRandomSeeds = '\
         ]\
         },\
         {\
-        "type": "EXPAND",\
+        "type": "ITEMS",\
         "created": "1709380436973",\
         "updated": "1709380436973",\
         "id": "list",\

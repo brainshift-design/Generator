@@ -5961,6 +5961,8 @@ function getFalseDisplay(color = true)
 var showDebugInfo = false;
 
 var debugFlag1    = false;
+var debugNodeId   = 'repeat';
+
 
 
 
@@ -6729,7 +6731,7 @@ function loadLocalSettings()
 }
 
 
-const LIST_VALUE             = 'EXPAND#';
+const LIST_VALUE             = 'LIST#';
 
 const NUMBER_LIST_VALUE      = 'NLIST#';
 const   TEXT_LIST_VALUE      = 'TLIST#';
@@ -6772,7 +6774,7 @@ const BUCKLE_LIST            = 'BUKLST';
 const SORT                   = 'SORT';
 const COLUMN                 = 'CLMN';
 const CELL                   = 'CELL';
-const EXPAND                 = 'EXPAND';
+const ITEMS                 = 'ITEMS';
 const LIST_COUNT             = 'COUNT';
 const OBJECT_COUNT           = 'OBJCOUNT';
 const LIST_CONTAINS          = 'LCONT';
@@ -6792,12 +6794,15 @@ const LIST_TYPES =
     NUMBER_LIST_VALUE,
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
+    COLOR_LIST_VALUE,
+    FILL_LIST_VALUE,
+    COLOR_STOP_LIST_VALUE,
     LIST,
     EXTRACT,
     SET_PARAM,
     GET_PARAM,
     SUBLIST,
-    EXPAND,
+    ITEMS,
     LIST_COUNT,
     LIST_CONTAINS,
     LIST_FIND,
@@ -6807,10 +6812,13 @@ const LIST_TYPES =
 
 const LIST_VALUES =
 [
-           LIST_VALUE,
-    NUMBER_LIST_VALUE,
-      TEXT_LIST_VALUE,
-     SHAPE_LIST_VALUE
+                LIST_VALUE,
+         NUMBER_LIST_VALUE,
+           TEXT_LIST_VALUE,
+          SHAPE_LIST_VALUE,
+          COLOR_LIST_VALUE,
+           FILL_LIST_VALUE,
+     COLOR_STOP_LIST_VALUE
 ];
 
 
@@ -7129,7 +7137,7 @@ const FLOW_TYPES =
     COLUMN,
     SORT,
     CELL,
-    EXPAND,
+    ITEMS,
     SELECT,
     SELECT_FROM_LIST,
     IF_ELSE,
@@ -12631,174 +12639,7 @@ extends GOperator
 }
 
 
-class GParam
-extends GOperator
-{
-    paramId;
-    
-    node;
-    param;
-    
 
-
-    constructor(nodeId, paramId)
-    {
-        super(PARAM, nodeId, false);
-
-        this.paramId = paramId;
-    }
-
-
-
-    reset()
-    {
-        if (this.node)
-            this.node.reset();
-    }
-
-
-
-    copy()
-    {
-        const copy = new GParam(this.nodeId, this.paramId);
-
-        copy.copyBase(this);
-
-        copy.node = this.node;
-    
-        return copy;
-    }
-
-
-
-    getConditionNode()
-    {
-        return this.node
-             ? this.node.getConditionNode()
-             : null;
-    }
-
-
-
-    async eval(parse)
-    {
-        this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
-        consoleAssert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
-
-
-        if (    this.node.type != EXPAND
-            || !this.node.cachedValue)
-            await this.node.eval(parse);
-
-
-        this.param = this.node.paramFromId(this.paramId);
-
-
-        if (isValid(this.param))
-        {
-            if (   this.node.type != FEEDBACK
-                && this.paramId != 'from')
-                this.value = await evalValue(this.param, parse);
-            else
-                this.value = new NullValue();
-
-                
-            return this.value
-                 ? this.value.copy()
-                 : null;
-        }
-        else
-            return this.value = new NullValue();
-    }
-
-
-
-    isCached()
-    {
-        return super.isCached();
-//            && this.node.isCached();
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.node) this.node.pushValueUpdates(parse);
-    }
-    
-
-
-    invalidateInputs(parse, from, force)
-    {
-        super.invalidateInputs(parse, from, force);
-        
-        if (this.node) this.node.invalidateInputs(parse, from, force);
-    }
-
-
-
-    initLoop(parse, nodeId)
-    {
-        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
-        
-        node.initLoop(parse, nodeId);
-    }
-
-
-
-    iterateCache(parse, from)
-    {
-        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
-        //if (this.node.nodeId == 'start') console.log('node =', node);
-
-        node.iterateCache(parse, from);
-    }
-
-
-
-    invalidateLoop(parse, nodeId)
-    {
-        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
-        
-        node.invalidateLoop(parse, nodeId);
-    }
-
-
-
-    initLoop(parse, nodeId)
-    {
-        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
-        
-        node.initLoop(parse, nodeId);
-    }
-
-
-
-    iterateLoop(parse)
-    {
-        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
-        
-        node.iterateLoop(parse);
-    }
-
-
-
-    resetLoop(parse, nodeId)
-    {
-        const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
-        
-        node.resetLoop(parse, nodeId);
-    }
-}
 
 
 class NullValue
@@ -21720,225 +21561,7 @@ extends GOperator1
 
 
 
-class GList
-extends GOperator
-{
-    inputs = [];
 
-    value;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(LIST, nodeId, options);
-    }
-
-
-    
-    reset()
-    {
-        super.reset();
-
-        this.inputs = [];
-    }
-
-
-
-    copy()
-    {
-        const copy = new GList(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        copy.inputs = this.inputs.map(i => i.copy());
-
-        if (this.value) copy.value = this.value.copy();
-
-        return copy;
-    }
-
-
-
-    isCached()
-    {
-        for (const input of this.inputs)
-            if (!input.isCached())
-                return false;
-
-        return super.isCached();
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        this.value = new ListValue();
-
-        this.value.objects = [];
-
-
-        for (let i = 0; i < this.inputs.length; i++)
-        {
-            const input = await evalValue(this.inputs[i], parse);
-
-
-            if (   input
-                && input.isValid()
-                && this.options.enabled)
-            {
-                if (isListValueType(input.type))
-                {
-                    if (input.condensed === true)
-                        this.value.items.push(input);
-                    else
-                    {
-                        for (const item of input.items)
-                            this.value.items.push(item);
-                    }
-                }
-                else
-                    this.value.items.push(input);
-            }
-
-
-            const inputObjects = this.copyObjects(input, i);
-            
-            for (const obj of inputObjects)
-            {
-                obj.objectId += OBJECT_SEPARATOR + i;
-                obj.itemIndex = i;
-            }
-
-            this.value.objects.push(...inputObjects);
-        }
-
-
-        // reset object space
-
-        const bounds = getObjBounds(this.value.objects);
-
-        const singlePoint =
-               this.value.objects.length  == 1 
-            && this.value.objects[0].type == POINT;
-
-        for (const obj of this.value.objects)
-        {
-            const angle1 = anglev_(obj.sp0, obj.sp1);
-            const angle2 = anglev_(obj.sp0, obj.sp2);
-
-            obj.createDefaultSpace(obj.sp0.x, obj.sp0.y);
-            
-            obj.sp1 = addv(obj.sp0, vector(angle1, 1));
-            obj.sp2 = addv(obj.sp0, vector(angle2, 1));
-
-            //obj.resetSpace(bounds, singlePoint);
-        }
-        
-
-        const length = new NumberValue(this.value.items.length);
-        const type   = new TextValue(finalListTypeFromValues(this.value.items));
-
-
-        this.setUpdateValues(parse,
-        [
-            ['length', length],
-            ['type',   type  ]
-        ]);
-
-
-        if (parse.settings.showListTooltips)
-        {
-            this.setUpdateValues(parse,
-            [
-                ['preview', new ListValue(this.value.items.slice(0, Math.min(this.value.items.length, 11)))]
-            ],
-            true);
-        }
-
-
-        this.validate();
-
-        return this;
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
-
-
-
-    isValid()
-    {
-        return !this.inputs.find(i => !i.isValid());
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        this.inputs.forEach(i => i.pushValueUpdates(parse));
-    }
-
-
-
-    invalidateInputs(parse, from, force)
-    {
-        super.invalidateInputs(parse, from, force);
-
-        this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
-    }
-
-
-
-    initLoop(parse, loopId)
-    {
-        this.inputs.forEach(i => i.initLoop(parse, loopId));
-    }
-
-
-
-    invalidateLoop(parse, nodeId)
-    {
-        this.inputs.forEach(i => i.invalidateLoop(parse, nodeId));
-    }
-
-
-
-    iterateLoop(parse)
-    {
-        this.inputs.forEach(i => i.iterateLoop(parse));
-    }
-
-
-
-    iterateCache(parse, from)
-    {
-        for (const input of this.inputs)
-        {
-            if (   input.type == EXPAND
-                || input.type == LIST
-                || input.type == CACHE)
-                input.iterateCache(parse, from);
-        }
-    }
-
-
-
-    resetLoop(parse, nodeId)
-    {
-        this.inputs.forEach(i => i.resetLoop(parse, nodeId));
-    }
-}
 
 
 class GListAsItem
@@ -24240,160 +23863,7 @@ extends GOperator1
 }
 
 
-class GItems
-extends GOperator1
-{
-    cachedValue = null;
 
-
-
-    constructor(nodeId, options)
-    {
-        super(EXPAND, nodeId, options);
-    }
-
-
-
-    reset()
-    {
-        super.reset();
-
-        this.cachedValue = null;
-    }
-
-
-
-    copy()
-    {
-        const copy = new GItems(this.nodeId, this.options);
-        
-        copy.copyBase(this);
-
-        if (this.input) copy.input = this.input.copy();
-        
-        for (const key of this.keys())
-        {
-            if (this[key] instanceof GValue)
-                Object.assign(copy, {[key]: this[key]});
-        }
-
-        return copy;
-    }
-
-
-
-    paramFromId(paramId)
-    {
-        let param =
-               this.value
-            && this.value.items
-            && paramId != 'value'
-            ? this.value.items.find(i => i.valueId == paramId)
-            : null;
-
-        if (!param)
-            param = this[paramId];
-
-        return param;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (   this.isCached()
-            && this.cachedValue)
-            return this;
-
-
-        const input = await evalListValue(this.input, parse); 
-
-
-        if (this.cachedValue)
-           this.value = this.cachedValue.copy();
-
-        else
-        {
-            this.value = input ?? new NullValue();
-            this.cachedValue = this.value.copy();
-        }
-
-
-        this.updateValues = [];
-
-
-        if (    this.value.isValid()
-            &&  this.value.items
-            && !isEmpty(this.value.items))
-        {
-            const valueIds = [];
-
-            
-            for (let i = 0; i < this.value.items.length; i++)
-            {
-                const item = this.value.items[i];
-                
-                let valueId = 
-                    item.valueId.trim() != ''
-                    ? item.valueId
-                    : i.toString();
-
-                valueId = getNewNumberId(
-                    valueId,
-                    id => valueIds.filter(_id => _id == id).length,
-                    valueId,
-                    '',
-                    1,
-                    true);
-
-                valueIds.push(valueId);
-            }
-
-
-            for (let i = 0; i < this.value.items.length; i++)
-            {
-                let valueId = valueIds[i];
-
-                const item = this.value.items[i];
-                
-                Object.assign(this, {[valueId]: item});
-                this.setUpdateValues(parse, [[valueId, item]], true);
-
-                item.sortId = i;
-            }
-
-
-            this.updateValues.sort((a, b) => a.sortId - b.sortId);
-
-
-            this.setUpdateValues(parse, [['-type-', this.outputType()]], true);
-        }
-        else
-            this.setUpdateValues(parse, [['-type-', new TextValue(LIST_VALUE)]], true);
-
-
-        this.updateValueObjects();
-
-
-        this.validate();
-
-        return this;
-    }
-    
-    
-
-    toValue()
-    {
-        return this.value.copy();
-    }
-
-
-
-    iterateCache(parse, from)
-    {
-        this.cachedValue = null;
-    }
-}
 
 
 class GSelect
@@ -61230,7 +60700,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == FILTER                 ) result = genParseFilter            (parse);
     else if (parse.next == COLUMN                 ) result = genParseColumn            (parse);
     else if (parse.next == CELL                   ) result = genParseCell              (parse);
-    else if (parse.next == EXPAND                 ) result = genParseExpandList        (parse);
+    else if (parse.next == ITEMS                 ) result = genParseExpandList        (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect            (parse);
     else if (parse.next == SELECT_FROM_LIST       ) result = genParseSelectFromList    (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);

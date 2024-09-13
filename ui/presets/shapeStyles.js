@@ -88,7 +88,7 @@ const presetShapesStyles = '\
             "z": "5",\
             "params":\
             [\
-                    ["EXPAND#", "fills", "1 FILL# 64,0 128,0 255,0 50,0 0,0"],\
+                    ["ITEMS#", "fills", "1 FILL# 64,0 128,0 255,0 50,0 0,0"],\
                     ["NUM#", "weight", "4,0"]\
             ]\
             },\
@@ -274,7 +274,7 @@ const presetShapesStyles = '\
             "z": "17",\
             "params":\
             [\
-                    ["EXPAND#", "fills", "1 FILL# 105,0 230,0 80,0 100,0 0,0"],\
+                    ["ITEMS#", "fills", "1 FILL# 105,0 230,0 80,0 100,0 0,0"],\
                     ["NUM#", "weight", "4,0"]\
             ]\
             },\
@@ -290,7 +290,7 @@ const presetShapesStyles = '\
             "z": "18",\
             "params":\
             [\
-                    ["EXPAND#", "fills", "1 FILL# 255,0 255,0 64,0 100,0 0,0"]\
+                    ["ITEMS#", "fills", "1 FILL# 255,0 255,0 64,0 100,0 0,0"]\
             ]\
             },\
             {\

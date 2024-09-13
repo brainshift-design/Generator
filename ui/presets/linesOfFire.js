@@ -169,7 +169,7 @@ const presetLinesOfFire = '\
             ]\
         },\
         {\
-            "type": "EXPAND",\
+            "type": "ITEMS",\
             "id": "list",\
             "name": "list",\
             "renamed": "false",\

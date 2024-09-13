@@ -344,7 +344,10 @@ extends EventTarget
         if (      graphView.savedConn
                && graphView.savedConn.input == this
                && graphView.overInput != this)
+        {
+            //if (this.node.id == debugNodeId) console.log('1');
             return transparent;
+        }
 
             
         if (   this.connectedOutput
@@ -353,7 +356,10 @@ extends EventTarget
                 ||  this.connectedOutput.types[0] != this.types[0]
                 ||     this.node.outputValueType != NULL
                     && this.node.outputValueType != this.types[0]))
+        {
+            //if (this.node.id == debugNodeId) console.log('2');
             return this.connectedOutput.getWireColor();
+        }    
 
 
         if (   graphView.tempConn
@@ -366,7 +372,10 @@ extends EventTarget
                         || this.node.outputValueType != this.types[0])
                     && (  !this.node.active
                         || this.node.outputValueType == ANY_VALUE))))
+        {
+            //if (this.node.id == debugNodeId) console.log('3');
             return graphView.tempConn.output.getWireColor();
+        }
 
 
         if (   graphView.tempConn
@@ -375,7 +384,10 @@ extends EventTarget
             && (   isColorType(this.types[0])
                 || (  !this.node.active
                     || this.node.outputValueType == ANY_VALUE)))
+        {
+            //if (this.node.id == debugNodeId) console.log('4');
             return graphView.overOutput.getWireColor();
+        }
 
 
         if (    graphView.tempConn
@@ -383,7 +395,10 @@ extends EventTarget
             && !graphView.tempConn.output
             && (    isColorType(this.types[0])
                 || !this.node.active))
+        {
+            //if (this.node.id == debugNodeId) console.log('5');
             return graphView.tempConn.input.getWireColor();
+        }
 
 
         return this.getRingColor();

@@ -463,7 +463,7 @@ const presetCompositeGradients = '\
         ]\
         },\
         {\
-        "type": "EXPAND",\
+        "type": "ITEMS",\
         "created": "1704214371357",\
         "updated": "1704214371357",\
         "id": "list",\
