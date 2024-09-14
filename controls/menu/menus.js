@@ -466,9 +466,11 @@ function initGeneratorMenus()
     
     menuRepeat = new Menu('Repeat', true, false);
     menuRepeat.addItems([
-        menuItemTimer   = new MenuItem('Timer ',         null, false, {icon: iconTimer,         createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
-        menuItemAnimate = new MenuItem('Animate',        null, false, {icon: iconAnimate,       createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))})]);
-
+        //                  new MenuItem('Advance',        null,       false, {icon: iconAdvance,  createType: ADVANCE,          callback: e => actionManager.do(getCreateNodeAction(ADVANCE,         btnFlow.div, getCreateOptions(e)))}),
+        menuItemStart   = new MenuItem('Feedback . . .', 'Feedback', false, {icon: iconFeedback, createType: FEEDBACK,         callback: e => actionManager.do(getCreateNodeAction(FEEDBACK,        btnFlow.div, getCreateOptions(e)))}),
+                          new MenuItem('',               null,       false, {separator: true}),
+        menuItemTimer   = new MenuItem('Timer ',         null,       false, {icon: iconTimer,    createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
+        menuItemAnimate = new MenuItem('Animate',        null,       false, {icon: iconAnimate,  createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))})]);
 
     menuSelectFromList = new Menu('Select', true, false);
     menuSelectFromList.addItems([
@@ -481,7 +483,6 @@ function initGeneratorMenus()
         menuItemSelect     = new MenuItem('Select',            null,       false, {childMenu: menuSelectFromList, icon: iconSelect,        createType: SELECT,        callback: e => actionManager.do(getCreateNodeAction(SELECT,           btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null,       false, {separator: true}),
         menuItemRepeat     = new MenuItem('. . . Repeat',      'Repeat',   false, {icon: iconRepeat, childMenu: menuRepeat, createType: REPEAT,         callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
-        menuItemStart      = new MenuItem('Feedback . . .',    'Feedback', false, {icon: iconFeedback,      createType: FEEDBACK,       callback: e => actionManager.do(getCreateNodeAction(FEEDBACK,        btnFlow.div, getCreateOptions(e)))}),
         //menuItemVarGroup   = new MenuItem('Variable group',  null,       false, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null,       false, {separator: true}),
         menuItemCache      = new MenuItem('Cache. . .',        'Cache',    false, {icon: iconCache,         createType: CACHE,          callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),

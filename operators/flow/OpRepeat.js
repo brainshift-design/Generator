@@ -30,8 +30,8 @@ extends OperatorBase
         this.paramCount.controls[0].allowEditDecimals = false;
         this.paramCount.affectsHeader                 = false;
         
-        this.paramCount    .divider                   = 0.52;
-        this.paramIteration.divider                   = 0.52;
+        this.paramCount    .divider                   = 0.6;
+        this.paramIteration.divider                   = 0.6;
         this.paramWhile    .divider                   = 0.6;
 
         this.paramIteration.input.types.push(TEXT_VALUE);

@@ -79,6 +79,7 @@
 
 
 ../generator/types/flow/GRepeat.js
+../generator/types/flow/GAdvance.js
 ../generator/types/flow/GFeedback.js
 ../generator/types/flow/GNull.js
 ../generator/types/flow/GVariable.js

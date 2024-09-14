@@ -1109,6 +1109,7 @@ const NULL_NODE              = 'NULL';
 const VARIABLE_GROUP         = 'VARGRP';
 const FEEDBACK               = 'FEEDBK';
 const REPEAT                 = 'REPT';
+const ADVANCE                = 'ADVNC';
 const CACHE                  = 'CACHE';
 const FREEZE                 = 'FRZ';
 const TIMER                  = 'TIMER';
@@ -1138,7 +1139,7 @@ const BUCKLE_LIST            = 'BUKLST';
 const SORT                   = 'SORT';
 const COLUMN                 = 'CLMN';
 const CELL                   = 'CELL';
-const ITEMS                 = 'ITEMS';
+const ITEMS                  = 'ITEMS';
 const LIST_COUNT             = 'COUNT';
 const OBJECT_COUNT           = 'OBJCOUNT';
 const LIST_CONTAINS          = 'LCONT';
@@ -1170,7 +1171,8 @@ const LIST_TYPES =
     LIST_COUNT,
     LIST_CONTAINS,
     LIST_FIND,
-    REPEAT
+    REPEAT,
+    ADVANCE
 ];
 
 
@@ -1508,6 +1510,7 @@ const FLOW_TYPES =
     FILTER,
     FEEDBACK,
     REPEAT,
+    ADVANCE,
     ITERATE,
     PROBABILITY,
     HOLD,

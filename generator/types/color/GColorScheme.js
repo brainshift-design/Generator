@@ -152,7 +152,16 @@ extends GOperator1
                         break;
                     }
 
-                    case 10: // rectangle
+                    case 10: // rectangle -
+                    {
+                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
+                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb, 10/12, 0, 1))));
+                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  6/12, 0, 1))));
+                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  4/12, 0, 1))));
+                        break;
+                    }
+
+                    case 11: // rectangle +
                     {
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  2/12, 0, 1))));
@@ -161,7 +170,7 @@ extends GOperator1
                         break;
                     }
 
-                    case 11: // square
+                    case 12: // square
                     {
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  3/12, 0, 1))));
@@ -170,7 +179,7 @@ extends GOperator1
                         break;
                     }
 
-                    case 12: // hexagon
+                    case 13: // hexagon
                     {
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
                         this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  2/12, 0, 1))));

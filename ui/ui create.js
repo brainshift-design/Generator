@@ -9,6 +9,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case VARIABLE_GROUP:          node = new OpVariableGroup();      break;
         case FEEDBACK:                node = new OpFeedback();           break;
         case REPEAT:                  node = new OpRepeat();             break;
+        case ADVANCE:                 node = new OpAdvance();            break;
         case CACHE:                   node = new OpCache();              break;
         case FREEZE:                  node = new OpFreeze();             break;
         case TIMER:                   node = new OpTimer();              break;

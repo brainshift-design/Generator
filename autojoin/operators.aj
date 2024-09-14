@@ -45,6 +45,7 @@
 
 
 ../operators/flow/OpRepeat.js
+../operators/flow/OpAdvance.js
 ../operators/flow/OpFeedback.js
 ../operators/flow/OpNull.js
 ../operators/flow/OpVariable.js

@@ -606,6 +606,7 @@ const NULL_NODE = 'NULL';
 const VARIABLE_GROUP = 'VARGRP';
 const FEEDBACK = 'FEEDBK';
 const REPEAT = 'REPT';
+const ADVANCE = 'ADVNC';
 const CACHE = 'CACHE';
 const FREEZE = 'FRZ';
 const TIMER = 'TIMER';
@@ -658,7 +659,8 @@ const LIST_TYPES = [
     LIST_COUNT,
     LIST_CONTAINS,
     LIST_FIND,
-    REPEAT
+    REPEAT,
+    ADVANCE
 ];
 const LIST_VALUES = [
     LIST_VALUE,
@@ -919,6 +921,7 @@ const FLOW_TYPES = [
     FILTER,
     FEEDBACK,
     REPEAT,
+    ADVANCE,
     ITERATE,
     PROBABILITY,
     HOLD,

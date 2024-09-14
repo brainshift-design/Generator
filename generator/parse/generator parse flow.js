@@ -1361,6 +1361,57 @@ function genParseRepeat(parse)
 
 
 
+function genParseAdvance(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const advance = new GAdvance(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(advance, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, advance);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    // advance.isTerminal  = parseInt(parse.move()) > 0;
+    // advance.activeAfter = parseInt(parse.move()) > 0;
+    // advance.listAfter   = parseInt(parse.move()) > 0;
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        advance.input = genParse(parse);
+
+    advance.loop = genParse(parse);  // don't set target here
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, advance);
+    return advance;
+}
+
+
+
 function genParseCache(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

@@ -113,8 +113,8 @@ extends GOperator1
                 const nRepeats = 
                     this.options.enabled 
                     ? count.value 
-                    : 0;
-                
+                    : 1; 
+
 
                 let repeat =
                 {
@@ -154,6 +154,7 @@ extends GOperator1
 
 
                     repeat.currentIteration = i;
+
 
 
                     this.input.invalidateInputs(parse, this, false);
