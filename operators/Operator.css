@@ -572,6 +572,18 @@
 }
 
 
+.colorSchemeSymbol
+{
+    position:  absolute;
+    width:     auto;
+    height:    auto;
+    left:      50%;
+    top:       33%;
+    transform: translateX(-50%)
+               translateY(-50%);
+}
+
+
 .colorblindRing
 {
     position:  absolute;
