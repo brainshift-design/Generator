@@ -20,7 +20,7 @@ extends OperatorBase
         this.alwaysSaveParams = true;
 
         
-        this.addParam(this.paramType  = new SelectParam('schemeType', '',      false, true, true, ['similar', 'similar with accent', 'less similar', 'opposite', 'opposite -', 'opposite +', 'opposite split', 'double opposite -', 'double opposite +', 'triangle', 'rectangle -', 'rectangle +', 'square', 'hexagon'], 0));
+        this.addParam(this.paramType  = new SelectParam('schemeType', '',      false, true, true, ['less similar', 'similar', 'similar with accent', 'opposite', 'opposite -', 'opposite +', 'opposite split', 'triangle', 'double opposite -', 'rectangle -', 'rectangle +', 'double opposite +', 'square', 'hexagon'], 0));
         this.addParam(this.paramSpace = new SelectParam('space',      'space', false, true, true, ['HSL', 'HCL / ok', 'HCL / ab', 'HCL / uv'], 0));
     }
 
