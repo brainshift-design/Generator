@@ -306,7 +306,7 @@ function getNewNumberId(curId, countExisting, id = curId, join = '', startNum = 
         return id;
     
 
-    let numLength = getNumLength(id);
+    let numLength = getEndNumLength(id);
 
     if (numLength > 0)
     {
@@ -337,7 +337,7 @@ function getNewNumberId(curId, countExisting, id = curId, join = '', startNum = 
 
 
 
-function getNumLength(name)
+function getEndNumLength(name)
 {
     let numLength = 0;
 

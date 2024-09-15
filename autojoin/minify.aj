@@ -1493,7 +1493,7 @@ simpleIntHash
 getNewNumberId
 curId
 countExisting
-getNumLength
+getEndNumLength
 isValidFloatString
 setControlFont
 daysInMonth

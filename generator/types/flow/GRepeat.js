@@ -205,13 +205,23 @@ extends GOperator1
                                     if (  !iteration.isValid()
                                         || iterations.includes(i))
                                     {
-                                        obj.nodeId      = this.nodeId;
-                                        obj.listId      = i;
+                                        obj.nodeId     = this.nodeId;
+                                        obj.listId     = i;
 
-                                        obj.objectId   += OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
-                                        obj.objectName += ' ' + (o+1).toString();
+                                        obj.objectId  += OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
 
-                                        obj.itemIndex   = repeat.currentIteration;
+                                        obj.objectName = getNewNumberId(
+                                            obj.objectName, 
+                                            name => 
+                                            {
+                                                return this.value.objects
+                                                    ? this.value.objects.filter(o => o.objectName == name).length
+                                                    : 0;
+                                            },
+                                            obj.objectName,
+                                            ' ');
+        
+                                        obj.itemIndex = repeat.currentIteration;
 
                                         if (this.value.objects)
                                             this.value.objects.push(obj);
