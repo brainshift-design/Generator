@@ -110,8 +110,11 @@ function initSearchBox(query)
 
         search.found.sort((_a, _b) =>
         {
-            const a  = _a.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
-            const b  = _b.name.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
+            const _aName = _a.searchName != NULL ? _a.searchName : _a.name;
+            const _bName = _b.searchName != NULL ? _b.searchName : _b.name;
+
+            const a  = _aName.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
+            const b  = _bName.toLowerCase().replaceAll(' . . .', '').replaceAll('. . . ', '').replaceAll('...', '');
 
             const ea = _a.foundExact;
             const eb = _b.foundExact;
