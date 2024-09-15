@@ -578,7 +578,7 @@
     width:     auto;
     height:    auto;
     left:      50%;
-    top:       33%;
+    top:       35%;
     transform: translateX(-50%)
                translateY(-50%);
 }
