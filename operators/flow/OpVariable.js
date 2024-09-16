@@ -399,9 +399,10 @@ extends ResizableBase
             return this.variableName;
     
         
-        return parts.join('/');
-        //return parts.slice(0, -1).map(p => '<b>' + p + '</b>').join('/') 
-        //     + '/' + parts.at(-1);
+        // return parts.join('/');
+        return parts.slice(0, -2).join('/') 
+             + '/' + parts.slice(-2, -1).map(p => '<b>' + p + '</b>').join('/') 
+             + '/' + parts.at(-1);
     }
 
 
