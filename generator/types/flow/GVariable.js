@@ -53,10 +53,21 @@ extends GOperator1
         const input      = await evalValue(this.input,      parse);
         const paramValue = await evalValue(this.paramValue, parse);
 
-        console.log('input =', input);
-        console.log('paramValue =', paramValue);
+        
+        let varValue = paramValue ?? input;
 
-        const varValue = paramValue ?? input;
+        if (  !varValue
+            || varValue.type == ANY_VALUE)
+        {
+            switch (this.variableType)
+            {
+                case 'FLOAT':   varValue = NumberValue.NaN.copy(); varValue.isBool = false; break;
+                case 'BOOLEAN': varValue = NumberValue.NaN.copy(); varValue.isBool = true;  break;
+                case 'STRING':  varValue = new TextValue();                                 break;
+                case 'COLOR':   varValue = ColorValue.NaN.copy();                           break;
+                default:                                                                    break;
+            }
+        }
 
 
         this.value = new VariableValue(

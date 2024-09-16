@@ -48,7 +48,7 @@ class Operator
     promptAttributes = [];
 
     icon;
-    iconOffsetY = 0;
+    iconOffsetY        = 0;
 
 
     headerHeight;

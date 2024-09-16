@@ -116,8 +116,7 @@ extends GValue
 
     isValid()
     {
-        return super.isValid()
-            && this.variableId   != NULL
+        return this.variableId   != NULL
             && this.variableName != ''
             && this.variableValue && this.variableValue.isValid();
     }

@@ -31,7 +31,7 @@ extends ResizableBase
         this.divIcon.style.pointerEvents = 'all';
 
 
-        this.addInput (new Input([NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE, FILL_VALUE]));
+        this.addInput (new Input([ANY_VALUE, NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE, FILL_VALUE]));
         this.addOutput(new Output([VARIABLE_VALUE], this.output_genRequest));
 
         // this.inputs[0].addEventListener('connect',    () => OpVariable_onConnectInput   (this));
@@ -169,6 +169,60 @@ extends ResizableBase
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+
+        this.variableName = value.variableName;
+
+
+        this.updateValueParamFromType(
+            value.variableValue.type, 
+            value.variableValue.type == NUMBER_VALUE 
+                ? value.variableValue.isBoolean 
+                : false, 
+            this.isBool);
+
+        if (   value.variableValue
+            && value.variableValue.type != NULL
+            && value.variableValue.type != ANY_VALUE)
+            this.updateValueParamValue(value);
+
+
+        //this.updateValueParamFromResolved(value.resolvedType);
+        //this.updateValueParamValuesFromResolved(value.resolvedType, value.name, [value.value]);
+
+
+        // uiUpdateVariable(
+        //     this.linkedVariableId, 
+        //     this.linkedVariableTemp, 
+        //     getVariableValue(value));
+
+
+        // if (    this.linkedVariableId != NULL
+        //     && !this.linkedVariableTemp)
+        // {
+        //     while (this.headerInputs.length > 0)
+        //         this.removeInput(this.headerInputs[0]);
+        // }
+        // else
+        // {
+        //     if (this.headerInputs.length == 0)
+        //     {
+        //         this.addInput(new Input([NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE]));
+
+        //         this.inputs[0].addEventListener('connect',    () => OpVariable_onConnectInput   (this));
+        //         this.inputs[0].addEventListener('disconnect', () => OpVariable_onDisconnectInput(this));
+        //     }
+        // }
+    }
+
+    
+    
     updateValueParamFromResolved(resolvedType)
     {
         let type   = NULL;
@@ -191,7 +245,7 @@ extends ResizableBase
     updateValueParamFromType(type, isBool, prevIsBool)
     {
         let icon;
-        let iconOffsetY = 0;
+        let iconOffsetY;
 
         switch (type)
         {
@@ -199,7 +253,7 @@ extends ResizableBase
             case   TEXT_VALUE:  icon = iconVarText;                              iconOffsetY =  1;                break;
             case  COLOR_VALUE:   
             case   FILL_VALUE:  icon = iconVarColor;                             iconOffsetY = -2;                break;
-            default:            icon = iconVariable;                             iconOffsetY =  0;                break;
+            default:            icon = iconVariable;                             iconOffsetY =  1;                break;
         }
 
 
@@ -316,60 +370,6 @@ extends ResizableBase
 
 
 
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-
-        const value = values[paramIds.findIndex(id => id == 'value')];
-
-
-        this.variableName = value.variableName;
-
-
-        this.updateValueParamFromType(
-            value.variableValue.type, 
-            value.variableValue.type == NUMBER_VALUE 
-                ? value.variableValue.isBoolean 
-                : false, 
-            this.isBool);
-
-        if (   value.variableValue
-            && value.variableValue.type != NULL
-            && value.variableValue.type != ANY_VALUE)
-            this.updateValueParamValue(value);
-
-
-        //this.updateValueParamFromResolved(value.resolvedType);
-        //this.updateValueParamValuesFromResolved(value.resolvedType, value.name, [value.value]);
-
-
-        // uiUpdateVariable(
-        //     this.linkedVariableId, 
-        //     this.linkedVariableTemp, 
-        //     getVariableValue(value));
-
-
-        // if (    this.linkedVariableId != NULL
-        //     && !this.linkedVariableTemp)
-        // {
-        //     while (this.headerInputs.length > 0)
-        //         this.removeInput(this.headerInputs[0]);
-        // }
-        // else
-        // {
-        //     if (this.headerInputs.length == 0)
-        //     {
-        //         this.addInput(new Input([NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE]));
-
-        //         this.inputs[0].addEventListener('connect',    () => OpVariable_onConnectInput   (this));
-        //         this.inputs[0].addEventListener('disconnect', () => OpVariable_onDisconnectInput(this));
-        //     }
-        // }
-    }
-
-    
-    
     updateParams()
     {
         if (this.paramValue)
@@ -399,9 +399,18 @@ extends ResizableBase
             return this.variableName;
     
         
-        // return parts.join('/');
-        return parts.slice(0, -1).map(p => '<b>' + p + '</b>').join('/') 
-             + '/' + parts.at(-1);
+        return parts.join('/');
+        //return parts.slice(0, -1).map(p => '<b>' + p + '</b>').join('/') 
+        //     + '/' + parts.at(-1);
+    }
+
+
+
+    getInputWireColor()
+    {
+        return this.headerInputs[0].connected
+            ? rgbFromType(this.headerInputs[0].connectedOutput.types[0], true)
+            : rgbFromType(ANY_VALUE, true);
     }
 
 
