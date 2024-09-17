@@ -163,8 +163,8 @@ async function figUpdateVariableObjectAsync(genVar)
 
     }
 
-    // else // linked already
-    //     let figVar = await figLinkNodeToVariableAsync(genVar[FO_NODE_ID], genVar[FO_OBJECT_ID]);
+    else // linked already
+        figVar = await figLinkNodeToVariableAsync(genVar[FO_NODE_ID], genVar[FO_OBJECT_ID]);
 
 
     console.assert(figVar, 'variable must have been created');

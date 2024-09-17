@@ -53,11 +53,8 @@ extends GOperator1
         const input      = await evalValue(this.input,      parse);
         const paramValue = await evalValue(this.paramValue, parse);
 
-        console.log('input =', input);
-        console.log('paramValue =', paramValue);
 
-
-        let varValue = paramValue ?? input;
+        let varValue = input ?? paramValue;
 
         if (  !varValue
             || varValue.type == ANY_VALUE)

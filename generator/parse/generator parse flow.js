@@ -98,7 +98,7 @@ function genParseVariable(parse)
     const nParams = parseInt(parse.move());
 
     if (nParams == 1)
-        variable.variableValue = genParse(parse);
+        variable.paramValue = genParse(parse);
 
     
     parse.nTab--;

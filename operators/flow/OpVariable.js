@@ -374,7 +374,10 @@ extends ResizableBase
     {
         if (this.paramValue)
         {
-            this.paramValue.enableControlText(false, this.paramValue.isUnknown());
+            this.paramValue.enableControlText(
+                    this.headerInputs.length == 0
+                || !this.headerInputs[0].connected, 
+                this.paramValue.isUnknown());
 
             if (this.isBool)
                 updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true, 1);
@@ -400,8 +403,11 @@ extends ResizableBase
     
         
         // return parts.join('/');
-        return parts.slice(0, -2).join('/') 
-             + '/' + parts.slice(-2, -1).map(p => '<b>' + p + '</b>').join('/') 
+        const path = parts.slice(0, -2).join('/');
+
+        return path
+             + (path.length > 0 ? '/' : '') 
+             + parts.slice(-2, -1).map(p => '<b>' + p + '</b>').join('/') 
              + '/' + parts.at(-1);
     }
 

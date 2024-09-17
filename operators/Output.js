@@ -234,34 +234,40 @@ extends EventTarget
 
 
         const isConnected =
-               !isEmpty(this.connectedInputs)
-            ||     graphView.tempConn
-               && (   graphView.tempConn.output == this
-                   ||     graphView.overOutput == this
-                      && !graphView.tempConn.output)
-               && !(    graphView.tempConn.input
-                    && !graphView.tempConn.input.types.includes(this.types[0]))
-            ||    graphView.tempConn
-               && graphView.tempConn.input
-               && graphView.overOutput == this;
+                  this.connectedInputs.length > 0
+               ||    graphView.tempConn
+                  && graphView.tempConn.output == this;
+
+            // ||     graphView.tempConn
+            //    && (   graphView.tempConn.output == this
+            //        ||     graphView.overOutput == this
+            //           && !graphView.tempConn.output)
+            //    && !(    graphView.tempConn.input
+            //         && !graphView.tempConn.input.types.includes(this.types[0]))
+            // ||    graphView.tempConn
+            //    && graphView.tempConn.input
+            //    && graphView.overOutput == this;
 
         this.div.style.transform = 
-               'translateX(' + (isConnected ? -1 : -1) + 'px)'
+               'translateX(' + (isConnected ? 0 : -1) + 'px)'
             + ' translateY(-50%)';
 
-        this.div.style.width         = (isConnected ? 6 : 6) + 'px';
-        this.div.style.height        = (isConnected ? 6 : 6) + 'px';
+        this.div.style.width         = (isConnected ? 8 : 6) + 'px';
+        this.div.style.height        = (isConnected ? 8 : 6) + 'px';
         this.div.style.borderRadius  = (isConnected ? 4 : 4) + 'px';
         this.div.style.marginBottom  = (isConnected ? 4 : 6) + 'px';
         this.div.style.pointerEvents = 'auto';
         this.div.style.background    = isConnected ? 'none' : ballStyle;
         
         this.div.style.boxShadow = 
-               (  !isEmpty(this.connectedInputs)
-                ||    graphView.tempConn
-                   && (   graphView.tempConn.output == this
-                       || graphView.overOutput == this))
-            && isColorType(this.types[0])
+                  (  !isEmpty(this.connectedInputs)
+                   ||    graphView.tempConn
+                      && (   graphView.tempConn.output == this
+                          || graphView.overOutput == this))
+               &&     isColorType(this.types[0])
+            ||    !this.node.active
+               && this.node.outputValueType != NULL
+               && this.node.outputValueType != this.types[0]
             ? '0 0 0 1px ' + ringStyle
             : 'none';
 
@@ -275,7 +281,7 @@ extends EventTarget
         this.hitbox  .style.height = 12 + Math.max(0, (1 - 1*zoom) * 20);
         
 
-        this.wireBall.style.left   = (isConnected ? (isColorType(this.types[0]) ? 0 : -1) : 0) + 'px';
+        this.wireBall.style.left   = (isConnected ? (isColorType(this.types[0]) ? 0 : 0) : 0) + 'px';
         this.wireBall.style.top    = '50%';
         this.wireBall.style.zIndex =  MAX_INT32;
         this.wireBall.style.width  = (isConnected ? (isColorType(this.types[0]) ? 6 : 8) : 6) + 'px';
@@ -309,21 +315,27 @@ extends EventTarget
         const outWireColor   = this.node.getOutputWireColor();
 
         const conn = 
-              !this.node.isUnknown()
-            && (   this.connected
+            //  !this.node.isUnknown()
+            //&& (
+                   this.connected
                 ||    graphView.tempConn 
                    && (   graphView.tempConn.output == this
-                       || graphView.overOutput == this));
+                       || graphView.overOutput == this);//);
 
 
         const diff = 
                !this.node.active
-            && (      conn
+            && (
+                      conn
                 ||    this.node.outputValueType != NULL
                    && (   this.node.outputValueType == SHAPE_VALUE && !SHAPE_VALUES.includes(this.types[0])
-                       || this.node.outputValueType != SHAPE_VALUE && this.node.outputValueType != this.types[0]));
+                       || this.node.outputValueType != SHAPE_VALUE && this.node.outputValueType != this.types[0]))
+                ||    this.node.outputValueType != NULL
+                   && this.node.outputValueType != this.types[0];
                 //|| this.node.isUnknown();
 
+        if (this.node.id == 'repeat')
+            console.log('repeat diff =', diff);
 
         const tc = 
                graphView.tempConn 
