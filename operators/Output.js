@@ -334,9 +334,7 @@ extends EventTarget
                    && this.node.outputValueType != this.types[0];
                 //|| this.node.isUnknown();
 
-        if (this.node.id == 'repeat')
-            console.log('repeat diff =', diff);
-
+                
         const tc = 
                graphView.tempConn 
             && graphView.tempConn.output == this;

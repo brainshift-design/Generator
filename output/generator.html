@@ -6833,6 +6833,7 @@ const BOOLEAN_NUMBER          = 'BOOL';
 
 const NUMBER_VALUE            = 'NUM#';  
 const NUMBER                  = 'NUM';   
+const BOUNDED_NUMBER          = 'BNDNUM';   
 const NUMBER_PRECISION        = 'NPREC';   
 const NUMBER_SIGN             = 'NSIGN';   
 const NUMBER_ABSOLUTE         = 'ABS';   
@@ -7215,6 +7216,7 @@ const NUMBER_TYPES =
     NUMBER_VALUE,
     NUMBER_LIST_VALUE,
     NUMBER,
+    BOUNDED_NUMBER,
     BOOLEAN_NUMBER,
     NUMBER_PRECISION,
     NUMBER_SIGN,
@@ -25682,7 +25684,7 @@ extends GOperator1
         
         copy.copyBase(this);
 
-        copy.value = this.value;
+        copy.value = this.value.copy();
 
         return copy;
     }
@@ -25723,6 +25725,153 @@ extends GOperator1
     {
         return !this.input 
              || this.input.isValid();
+    }
+}
+
+
+class GBoundedNumber
+extends GOperator1
+{
+    min = null;
+    max = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(BOUNDED_NUMBER, nodeId, options);
+    }
+
+
+
+    reset()
+    {
+        super.reset();
+
+        this.min = null;
+        this.max = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GBoundedNumber(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.value) copy.value = this.value.copy();
+        if (this.min  ) copy.min   = this.min  .copy();
+        if (this.max  ) copy.max   = this.max  .copy();
+
+        return copy;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.min || this.min.isCached())
+            && (!this.max || this.max.isCached());
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input = await evalNumberValue(this.input, parse);
+        const min   = await evalNumberValue(this.min,   parse);
+        const max   = await evalNumberValue(this.max,   parse);
+
+
+        if (input)
+        {
+            const maxDecimals = Math.max(
+                input.decimals,
+                min  .decimals,
+                max  .decimals);
+
+            this.value = new NumberValue(
+                min.value <= max.value
+                    ? Math.min(Math.max(min.value, input.value), max.value)
+                    : Math.min(Math.max(max.value, input.value), min.value),
+                maxDecimals);
+        }
+        else if (this.value)
+        {
+            const value = await this.value.eval(parse);
+
+            const maxDecimals = Math.max(
+                value.decimals,
+                min  .decimals,
+                max  .decimals);
+
+            this.value = new NumberValue(
+                min.value <= max.value
+                    ? Math.min(Math.max(min.value, value.value), max.value)
+                    : Math.min(Math.max(max.value, value.value), min.value),
+                maxDecimals);
+        }
+        else
+            this.value = NumberValue.NaN.copy();
+
+
+        this.setUpdateValues(parse, 
+        [
+            ['value', this.value],
+            ['min',   min       ],
+            ['max',   max       ]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return  (  !this.input 
+                 || this.input.isValid())
+             && this.min && this.min.isValid()
+             && this.max && this.max.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.min) this.min.pushValueUpdates(parse);
+        if (this.max) this.max.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.min) this.min.invalidateInputs(parse, from, force);
+        if (this.max) this.max.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.min) this.min.iterateLoop(parse);
+        if (this.max) this.max.iterateLoop(parse);
     }
 }
 
@@ -55835,6 +55984,45 @@ function genParseNumber(parse)
 
 
 
+function genParseBoundedNumber(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const num = new GBoundedNumber(nodeId, options);
+
+    
+    if (parse.settings.logRequests) 
+        logReq(num, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, num);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+    parse.inParam = false;
+
+
+    if (parse.next == NUMBER_VALUE) num.value = genParse(parse);
+    else                            num.input = genParse(parse);
+
+    num.min = genParse(parse);
+    num.max = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, num);
+    return num;
+}
+
+
+
 function genParseBooleanNumber(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -61476,7 +61664,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == FILTER                 ) result = genParseFilter            (parse);
     else if (parse.next == COLUMN                 ) result = genParseColumn            (parse);
     else if (parse.next == CELL                   ) result = genParseCell              (parse);
-    else if (parse.next == ITEMS                 ) result = genParseExpandList        (parse);
+    else if (parse.next == ITEMS                  ) result = genParseExpandList        (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect            (parse);
     else if (parse.next == SELECT_FROM_LIST       ) result = genParseSelectFromList    (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
@@ -61486,6 +61674,7 @@ function genParse(parse, inParam = true)
      
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue          (parse);
     else if (parse.next == NUMBER                 ) result = genParseNumber            (parse);
+    else if (parse.next == BOUNDED_NUMBER         ) result = genParseBoundedNumber     (parse);
     else if (parse.next == BOOLEAN_NUMBER         ) result = genParseBooleanNumber     (parse);
     else if (parse.next == NUMBER_PRECISION       ) result = genParseSetPrecision      (parse);
     else if (parse.next == NUMBER_SIGN            ) result = genParseSign              (parse);

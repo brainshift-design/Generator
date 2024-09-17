@@ -121,6 +121,7 @@
 ../generator/types/number/arithmetic/GArithmetic.js
 
 ../generator/types/number/GNumber.js
+../generator/types/number/GBoundedNumber.js
 ../generator/types/number/GBooleanNumber.js
 ../generator/types/number/GSetPrecision.js
 ../generator/types/number/GSign.js

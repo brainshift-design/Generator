@@ -100,6 +100,7 @@ const BOOLEAN_NUMBER          = 'BOOL';
 
 const NUMBER_VALUE            = 'NUM#';  
 const NUMBER                  = 'NUM';   
+const BOUNDED_NUMBER          = 'BNDNUM';   
 const NUMBER_PRECISION        = 'NPREC';   
 const NUMBER_SIGN             = 'NSIGN';   
 const NUMBER_ABSOLUTE         = 'ABS';   
@@ -482,6 +483,7 @@ const NUMBER_TYPES =
     NUMBER_VALUE,
     NUMBER_LIST_VALUE,
     NUMBER,
+    BOUNDED_NUMBER,
     BOOLEAN_NUMBER,
     NUMBER_PRECISION,
     NUMBER_SIGN,

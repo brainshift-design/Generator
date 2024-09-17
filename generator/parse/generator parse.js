@@ -154,7 +154,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == FILTER                 ) result = genParseFilter            (parse);
     else if (parse.next == COLUMN                 ) result = genParseColumn            (parse);
     else if (parse.next == CELL                   ) result = genParseCell              (parse);
-    else if (parse.next == ITEMS                 ) result = genParseExpandList        (parse);
+    else if (parse.next == ITEMS                  ) result = genParseExpandList        (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect            (parse);
     else if (parse.next == SELECT_FROM_LIST       ) result = genParseSelectFromList    (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
@@ -164,6 +164,7 @@ function genParse(parse, inParam = true)
      
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue          (parse);
     else if (parse.next == NUMBER                 ) result = genParseNumber            (parse);
+    else if (parse.next == BOUNDED_NUMBER         ) result = genParseBoundedNumber     (parse);
     else if (parse.next == BOOLEAN_NUMBER         ) result = genParseBooleanNumber     (parse);
     else if (parse.next == NUMBER_PRECISION       ) result = genParseSetPrecision      (parse);
     else if (parse.next == NUMBER_SIGN            ) result = genParseSign              (parse);

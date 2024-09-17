@@ -73,8 +73,8 @@ extends OperatorBase
     updateParams()
     {
         //this.paramValue.enableControlText(false, this.isUnknown());
-        this.paramMin  .enableControlText(true);
-        this.paramMax  .enableControlText(true);
+        this.paramMin.enableControlText(true, this.paramMin.isUnknown());
+        this.paramMax.enableControlText(true, this.paramMax.isUnknown());
 
         this.updateParamControls();
     }

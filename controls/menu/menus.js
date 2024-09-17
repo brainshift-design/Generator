@@ -583,9 +583,10 @@ function initGeneratorMenus()
     menuNumberBase = new Menu('Numbers', true, false);
     menuNumberBase.addItems([
                            new MenuItem('Constant',       null,           false, {icon: iconConstant,        createType: NUMBER_CONSTANT,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONSTANT,  btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('Boolean',       null,                 false, {icon: iconBooleanValue,                               createType: BOOLEAN_NUMBER,            callback: e => actionManager.do(getCreateNodeAction(BOOLEAN_NUMBER,            btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Boolean',        null,           false, {icon: iconBooleanValue,    createType: BOOLEAN_NUMBER,   callback: e => actionManager.do(getCreateNodeAction(BOOLEAN_NUMBER,   btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Bounded',        null,           false, {icon: iconBoundedNumber,   createType: BOUNDED_NUMBER,   callback: e => actionManager.do(getCreateNodeAction(BOUNDED_NUMBER,   btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('',               null,           false, {separator: true}),
-        menuItemDateTime = new MenuItem('Date & time',    null,           false, {icon: iconDateTime,    createType: NUMBER_DATETIME,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME,      btnNumber.div, getCreateOptions(e)))}),
+        menuItemDateTime = new MenuItem('Date & time',    null,           false, {icon: iconDateTime,        createType: NUMBER_DATETIME,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME,  btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('',               null,           false, {separator: true}),
                            new MenuItem('NaN ⟶ Number', 'NaN to Number', false, {icon: iconNaNisNumber,     createType: NUMBER_NAN,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NAN,       btnNumber.div, getCreateOptions(e)))})]);
 
@@ -1025,7 +1026,7 @@ function initGeneratorMenus()
         const selectedColors      = graphView.selectedNodes.filter(n => n.type == COLOR);
         const canRandomizeColors  = selectedColors.length > 0;
         
-        const selectedNumbers     = graphView.selectedNodes.filter(n => n.type == NUMBER);
+        const selectedNumbers     = graphView.selectedNodes.filter(n => n.type == NUMBER || n.type == BOUNDED_NUMBER);
         const canRandomizeNumbers = selectedNumbers.length > 0;
 
         

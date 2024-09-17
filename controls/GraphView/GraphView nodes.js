@@ -400,7 +400,8 @@ GraphView.prototype.randomizeSelectedColors = function()
 GraphView.prototype.randomizeSelectedNumbers = function()
 {
     const numbers = graphView.selectedNodes.filter(n => 
-            n.type == NUMBER
+           (   n.type == NUMBER
+            || n.type == BOUNDED_NUMBER)
         && !n.paramValue.controls[0].readOnly);
        
     if (numbers.length == 0)
@@ -421,7 +422,7 @@ GraphView.prototype.randomizeSelectedNodes = function()
 
 
     const randoms = graphView.selectedNodes.filter(n => 
-        (      n.type == NUMBER_RANDOM
+           (   n.type == NUMBER_RANDOM
             || n.type == NUMBER_NOISE
             || n.type == PROBABILITY)
         && !n.paramSeed.controls[0].readOnly);
@@ -433,7 +434,8 @@ GraphView.prototype.randomizeSelectedNodes = function()
         && !n.param3.controls[0].readOnly);
 
     const numbers = graphView.selectedNodes.filter(n => 
-            n.type == NUMBER
+           (   n.type == NUMBER
+            || n.type == BOUNDED_NUMBER)
         && !n.paramValue.controls[0].readOnly);
 
 
@@ -544,7 +546,7 @@ GraphView.prototype.getRandomizedNumberValues = function(numbers)
                     : _max;
 
         return new NumberValue(
-            Math.floor(min + Math.random() * (max - min)));
+            Math.round(min + Math.random() * (max - min)));
     });
 
     return [params, values];

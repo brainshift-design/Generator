@@ -50,6 +50,45 @@ function genParseNumber(parse)
 
 
 
+function genParseBoundedNumber(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const num = new GBoundedNumber(nodeId, options);
+
+    
+    if (parse.settings.logRequests) 
+        logReq(num, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, num);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+    parse.inParam = false;
+
+
+    if (parse.next == NUMBER_VALUE) num.value = genParse(parse);
+    else                            num.input = genParse(parse);
+
+    num.min = genParse(parse);
+    num.max = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, num);
+    return num;
+}
+
+
+
 function genParseBooleanNumber(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
