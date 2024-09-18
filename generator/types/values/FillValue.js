@@ -22,6 +22,13 @@ extends GValue
 
 
     
+    static fromRgba(rgba)
+    {
+        return FillValue.create(rgba[0], rgba[1], rgba[2], rgba[3]);
+    }
+
+
+
     static create(r, g, b, opacity, blend = 0)
     {
         consoleAssert(

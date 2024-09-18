@@ -5408,12 +5408,15 @@ function figGetAllLocalVariables(nodeId, px, py)
             try
             {
                 const collection = await figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
-
+                const values     = await figGetResolvedVariableValuesAsync(_var);
+                
+                console.log('_var =', _var);
                 const variable = 
                 { 
                     id:             _var.id,
                     resolvedType:   _var.resolvedType,
                     name:           _var.name,
+                    resolvedValue:  values[1][0], //_var.resolvedValue,
                     collectionName: collection.name
                 };
 
@@ -5536,7 +5539,7 @@ async function figUpdateVariableAsync(varId, value)
     if (value !== null)
     {
         if (variable.resolvedType == 'BOOLEAN')
-            value = value != 0;
+            value = value > 0; //!= 0;
         else
             variable.setValueForMode(mode.modeId, value);
     }
@@ -5580,15 +5583,15 @@ async function figLinkNodeToVariableAsync(nodeId, varId)
     const [resolvedVar, values] = await figGetResolvedVariableValuesAsync(variable);
 
 
-    figPostMessageToUi(
-    {
-        cmd:         'uiReturnFigLinkNodeToVariable',
-        nodeId:       nodeId,
-        variableId:   resolvedVar ? resolvedVar.id           : NULL,
-        variableName: resolvedVar ? resolvedVar.name         : '',
-        resolvedType: resolvedVar ? resolvedVar.resolvedType : NULL,
-        values:       values
-    });
+    // figPostMessageToUi(
+    // {
+    //     cmd:         'uiReturnFigLinkNodeToVariable',
+    //     nodeId:       nodeId,
+    //     variableId:   resolvedVar ? resolvedVar.id           : NULL,
+    //     variableName: resolvedVar ? resolvedVar.name         : '',
+    //     resolvedType: resolvedVar ? resolvedVar.resolvedType : NULL,
+    //     values:       values
+    // });
 
 
     return resolvedVar;

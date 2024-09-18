@@ -5,14 +5,15 @@ const defaultVariableNodeName = PLUGIN_LOGO + '/variable';
 class   OpVariable
 extends ResizableBase
 {
-    paramValue   = null;
+    variableId    = NULL;
+    variableName  = '';   // must be set even if nothing is connected
+    variableType  = NULL; // this is the resolved type
+    variableValue = null;
+
+    paramValue;
 
 
-    variableId   = NULL;
-    variableName = '';   // must be set even if nothing is connected
-    variableType = NULL; // this is the resolved type
-
-    isBool       = false;
+    isBool = false;
 
     menuBoolValue;
     
@@ -153,12 +154,14 @@ extends ResizableBase
         request.push(this.node.variableId);
         request.push(this.node.name);
         request.push(this.node.variableType);
+        request.push(this.node.variableValue);
 
 
         request.push(this.node.paramValue ? 1 : 0);
         
         if (this.node.paramValue)
             request.push(...this.node.paramValue.genRequest(gen));
+
 
 
         gen.scope.pop();
@@ -289,14 +292,12 @@ extends ResizableBase
             }
             else
             {
-                this.paramValue = null;
-                this.name       = this.variableName;
+                this.paramValue   = null;
+                this.name         = this.variableName;
 
                 this.variableId   = NULL;
                 this.variableType = NULL;
-                //this.variableName = '';
 
-                //pushUpdate(null, [this]);
 
                 actionManager.clear();
                 uiShowClearUndoWarning('variables');

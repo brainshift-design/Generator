@@ -3654,10 +3654,13 @@ function figGetAllLocalVariables(nodeId, px, py) {
         for (const _var of localVars) {
             try {
                 const collection = yield figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
+                const values = yield figGetResolvedVariableValuesAsync(_var);
+                console.log('_var =', _var);
                 const variable = {
                     id: _var.id,
                     resolvedType: _var.resolvedType,
                     name: _var.name,
+                    resolvedValue: values[1][0], //_var.resolvedValue,
                     collectionName: collection.name
                 };
                 variables.push(variable);
@@ -3735,7 +3738,7 @@ function figUpdateVariableAsync(varId, value) {
         }
         if (value !== null) {
             if (variable.resolvedType == 'BOOLEAN')
-                value = value != 0;
+                value = value > 0; //!= 0;
             else
                 variable.setValueForMode(mode.modeId, value);
         }
@@ -3764,14 +3767,15 @@ function figLinkNodeToVariableAsync(nodeId, varId) {
         variable.setPluginData('sessionId', figma.currentUser.sessionId.toString());
         variable.setPluginData('nodeId', nodeId);
         const [resolvedVar, values] = yield figGetResolvedVariableValuesAsync(variable);
-        figPostMessageToUi({
-            cmd: 'uiReturnFigLinkNodeToVariable',
-            nodeId: nodeId,
-            variableId: resolvedVar ? resolvedVar.id : NULL,
-            variableName: resolvedVar ? resolvedVar.name : '',
-            resolvedType: resolvedVar ? resolvedVar.resolvedType : NULL,
-            values: values
-        });
+        // figPostMessageToUi(
+        // {
+        //     cmd:         'uiReturnFigLinkNodeToVariable',
+        //     nodeId:       nodeId,
+        //     variableId:   resolvedVar ? resolvedVar.id           : NULL,
+        //     variableName: resolvedVar ? resolvedVar.name         : '',
+        //     resolvedType: resolvedVar ? resolvedVar.resolvedType : NULL,
+        //     values:       values
+        // });
         return resolvedVar;
     });
 }

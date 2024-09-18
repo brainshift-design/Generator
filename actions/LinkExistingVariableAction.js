@@ -13,11 +13,13 @@ extends Action
     variableId;
     variableType;
     variableName;
+    variableValue;
     //variableTemp;
 
     prevVariableId;
     prevVariableType;
     prevVariableName;
+    prevVariableValue;
     //prevVariableTemp;
 
     outputValues = []; // in id,value pairs, to be restored on undo
@@ -25,16 +27,17 @@ extends Action
 
 
 
-    constructor(nodeId, variableId, resolvedType, variableName)//, variableTemp)
+    constructor(nodeId, variableId, resolvedType, variableName, variableValue)//, variableTemp)
     {
         super(
             LINK_VARIABLE_ACTION, 
             'LINK VARIABLE \'' + nodeId + ' ⟶ ' + (variableId != NULL ? variableId : 'NULL') + ')');
         
-        this.nodeId       = nodeId;
-        this.variableId   = variableId;
-        this.variableType = resolvedType;
-        this.variableName = variableName;
+        this.nodeId        = nodeId;
+        this.variableId    = variableId;
+        this.variableType  = resolvedType;
+        this.variableName  = variableName;
+        this.variableValue = variableValue;
         //this.variableTemp = variableTemp;
         this.selfUpdate   = true;
     }
@@ -43,9 +46,10 @@ extends Action
 
     do(updateNodes)
     {
-        this.prevVariableId   = this.node.variableId;
-        this.prevVariableType = this.node.variableType;
-        this.prevVariableName = this.node.variableName;
+        this.prevVariableId    = this.node.variableId;
+        this.prevVariableType  = this.node.variableType;
+        this.prevVariableName  = this.node.variableName;
+        this.prevVariableValue = this.node.variableValue;
         //this.prevVariableTemp = this.node.linkedTemp;
  
        
@@ -53,7 +57,8 @@ extends Action
             this.node,
             this.variableId,
             this.variableType,
-            this.variableName);//,
+            this.variableName,
+            this.variableValue);//,
             //this.variableTemp);
 
 

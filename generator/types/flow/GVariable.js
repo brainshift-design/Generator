@@ -4,8 +4,9 @@ extends GOperator1
     variableId    = NULL;
     variableName  = '';
     variableType  = NULL;
+    variableValue = null;//new NullValue();
 
-    variableValue = new NullValue();
+    paramValue    = null;
 
 
 
@@ -23,8 +24,9 @@ extends GOperator1
         this.variableId    = NULL;
         this.variableName  = '';
         this.variableType  = NULL;
-        
-        this.variableValue = new NullValue();
+        this.variableValue = null;//new NullValue();
+
+        this.paramValue    = null;
     }
 
 
@@ -38,6 +40,7 @@ extends GOperator1
         copy.variableType = this.variableType;
 
         if (this.variableValue) copy.variableValue = this.variableValue.copy();
+        if (this.paramValue   ) copy.paramValue    = this.paramValue   .copy();
         
         return copy;
     }
@@ -54,7 +57,45 @@ extends GOperator1
         const paramValue = await evalValue(this.paramValue, parse);
 
 
-        let varValue = input ?? paramValue;
+        let varValue;
+        
+        
+        if (input)
+            varValue = input;
+
+        else if (this.variableValue)
+        {
+            switch (this.variableType)
+            {
+                case 'FLOAT': 
+                    varValue = new NumberValue(this.variableValue);
+                    break;
+
+                case 'BOOLEAN': 
+                    varValue = new NumberValue(this.variableValue ? 1 : 0);
+                    varValue.isBool = true;
+                    break;
+
+                case 'STRING': 
+                    varValue = new TextValue(this.variableValue);
+                    break;
+
+                case 'COLOR': 
+                    varValue = FillValue.fromRgba(
+                        this.variableValue.r, 
+                        this.variableValue.g, 
+                        this.variableValue.b, 
+                        this.variableValue.a); 
+                        break;
+
+                default:
+                    break;
+            }
+        }
+
+        else if (paramValue) 
+            varValue = paramValue;
+
 
         if (  !varValue
             || varValue.type == ANY_VALUE)
@@ -125,8 +166,8 @@ extends GOperator1
 
     isValid()
     {
-        return this.variableValue 
-            && this.variableValue != NULL;
+        return this.paramValue 
+            && this.paramValue != NULL;
     }
 
 
@@ -135,7 +176,7 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.variableValue) this.variableValue.pushValueUpdates(parse);
+        if (this.paramValue) this.paramValue.pushValueUpdates(parse);
     }
 
 
@@ -144,7 +185,7 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.variableValue) this.variableValue.invalidateInputs(parse, from, force);
+        if (this.paramValue) this.paramValue.invalidateInputs(parse, from, force);
     }
 
 
@@ -153,6 +194,6 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.variableValue) this.variableValue.iterateLoop(parse);
+        if (this.paramValue) this.paramValue.iterateLoop(parse);
     }
 }

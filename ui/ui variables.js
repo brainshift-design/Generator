@@ -61,14 +61,14 @@ function uiReturnFigGetVariableUpdates(values)
 
 function uiReturnFigLinkNodeToVariable(msg)
 {
-    const node = nodeFromId(msg.nodeId);
+    //const node = nodeFromId(msg.nodeId);
 
-    node.updateValueParamValuesFromResolved(
-        msg.resolvedType, 
-        msg.variableName,
-        msg.values);
+    // node.updateValueParamValuesFromResolved(
+    //     msg.resolvedType, 
+    //     msg.variableName,
+    //     msg.values);
 
-    pushUpdate(null, [node]);
+    //pushUpdate(null, [node]);
 }
 
 
@@ -100,7 +100,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
                 variable.id,
                 variable.resolvedType,
                 variable.name,
-                false));
+                variable.resolvedValue));
 
         options.enabled = !linkedNodes.find(n => n.variableId == variable.id);
 
@@ -299,7 +299,7 @@ function updateMenuLocalVariables()
 
 
 
-function uiLinkNodeToVariable(node, varId, varType, varName)//, varTemp)
+function uiLinkNodeToVariable(node, varId, varType, varName, varValue)//, varTemp)
 {
     if (   node.variableType != NULL
         && varType == NULL
@@ -316,9 +316,10 @@ function uiLinkNodeToVariable(node, varId, varType, varName)//, varTemp)
     }
 
 
-    node.variableId   = varId;
-    node.variableType = varType;
-    node.variableName = varName;
+    node.variableId    = varId;
+    node.variableType  = varType;
+    node.variableName  = varName;
+    node.variableValue = varValue;
     //node.linkedTemp = varTemp;
     
     if (varName != NULL)
@@ -328,14 +329,17 @@ function uiLinkNodeToVariable(node, varId, varType, varName)//, varTemp)
     node.updateValueParamFromResolved(varType);
 
 
-    uiQueueMessageToFigma(
-    {
-        cmd:         'figLinkNodeToVariable',
-        nodeId:       node.id,
-        variableId:   varId,
-        variableType: varType,
-        variableName: varName
-    });
+    pushUpdate(null, [node]);
+
+
+    // uiQueueMessageToFigma(
+    // {
+    //     cmd:         'figLinkNodeToVariable',
+    //     nodeId:       node.id,
+    //     variableId:   varId,
+    //     variableType: varType,
+    //     variableName: varName
+    // });
 }
 
 
