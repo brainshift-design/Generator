@@ -22,9 +22,16 @@ extends GValue
 
 
     
-    static fromRgba(rgba)
+    static fromRgb(rgb, opacity, blend = 0)
     {
-        return FillValue.create(rgba[0], rgba[1], rgba[2], rgba[3]);
+        consoleAssert(
+            typeof opacity == 'number',
+            'opacity must be a number');
+
+        return new FillValue(
+            ColorValue.fromRgb(rgb),
+            new NumberValue(opacity),
+            new NumberValue(blend));
     }
 
 
@@ -37,20 +44,6 @@ extends GValue
 
         return new FillValue(
             ColorValue.create(1, r, g, b),
-            new NumberValue(opacity),
-            new NumberValue(blend));
-    }
-
-
-
-    static fromRgb(rgb, opacity, blend = 0)
-    {
-        consoleAssert(
-            typeof opacity == 'number',
-            'opacity must be a number');
-
-        return new FillValue(
-            ColorValue.fromRgb(rgb),
             new NumberValue(opacity),
             new NumberValue(blend));
     }

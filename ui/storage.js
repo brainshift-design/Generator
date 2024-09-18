@@ -416,12 +416,18 @@ async function loadNodesAndConnsAsync(_nodes, _conns, setProgress, pasting = fal
             uiGetValueFromFigma('getVariableData', varNodes.map(n => n.variableId))
                 .then(response =>
                 {
-                    for (const value of response.value)
+                    for (const variable of response.value)
                     {
-                        const node = varNodes.find(n => n.variableId == value.id);
+                        const node = varNodes.find(n => n.variableId == variable.id);
 
-                        node.updateValueParamFromResolved(value.resolvedType);
-                        node.updateValueParamValuesFromResolved(value.resolvedType, value.name, [value.value]);
+                        node.updateValueParamFromResolved(
+                            variable.resolvedType, 
+                            variable.resolvedValue);
+
+                        node.updateValueParamValuesFromResolved(
+                            variable.resolvedType, 
+                            variable.name, 
+                            [variable.resolvedValue]);
                     }
 
                     loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    

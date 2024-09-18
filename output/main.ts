@@ -5410,7 +5410,6 @@ function figGetAllLocalVariables(nodeId, px, py)
                 const collection = await figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
                 const values     = await figGetResolvedVariableValuesAsync(_var);
                 
-                console.log('_var =', _var);
                 const variable = 
                 { 
                     id:             _var.id,
@@ -5486,19 +5485,19 @@ async function getVariableValuesAsync(varIds)
 
             values.push(
             {
-                id:           varIds[i],
-                name:         variable.name, 
-                resolvedType: variable.resolvedType,
-                value:        vals[0]
+                id:            varIds[i],
+                name:          variable.name, 
+                resolvedType:  variable.resolvedType,
+                resolvedValue: vals[0]
             });
         }
         else
         {
             values.push(
             {
-                id:           varIds[i], 
-                resolvedType: NULL, 
-                value:        null
+                id:            varIds[i], 
+                resolvedType:  NULL, 
+                resolvedValue: null
             });
         }
     }

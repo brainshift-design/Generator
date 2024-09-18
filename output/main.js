@@ -3655,7 +3655,6 @@ function figGetAllLocalVariables(nodeId, px, py) {
             try {
                 const collection = yield figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
                 const values = yield figGetResolvedVariableValuesAsync(_var);
-                console.log('_var =', _var);
                 const variable = {
                     id: _var.id,
                     resolvedType: _var.resolvedType,
@@ -3705,14 +3704,14 @@ function getVariableValuesAsync(varIds) {
                     id: varIds[i],
                     name: variable.name,
                     resolvedType: variable.resolvedType,
-                    value: vals[0]
+                    resolvedValue: vals[0]
                 });
             }
             else {
                 values.push({
                     id: varIds[i],
                     resolvedType: NULL,
-                    value: null
+                    resolvedValue: null
                 });
             }
         }

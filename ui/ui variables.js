@@ -26,20 +26,22 @@ function uiReturnFigGetAllLocalVariables(msg)
 
 
 
-function uiReturnFigGetVariableUpdates(values)
+function uiReturnFigGetVariableUpdates(variables)
 {
     const varNodes = graph.currentPage.nodes.filter(n => 
-               n.type     == VARIABLE 
+               n.type       == VARIABLE 
             && n.variableId != NULL);
 
 
-    for (let value of values)
+    for (let variable of variables)
     {
-        const node = varNodes.find(n => n.variableId == value.id);
+        const node = varNodes.find(n => n.variableId == variable.id);
 
         if (node)
         {
-            node.updateValueParamFromResolved(value.resolvedType);
+            node.updateValueParamFromResolved(
+                variable.resolvedType, 
+                variable.resolvedValue);
 
             if (node.paramValue)
             {
@@ -51,7 +53,10 @@ function uiReturnFigGetVariableUpdates(values)
                     //     getVariableValue(node.paramValue.value));
                 }
                 else
-                    node.updateValueParamValuesFromResolved(value.resolvedType, value.name, [value.value], true);
+                {
+                    console.log('variable =', variable);
+                    node.updateValueParamValuesFromResolved(variable.resolvedType, variable.name, [variable.resolvedValue], true);
+                }
             }
         }
     }
@@ -326,7 +331,7 @@ function uiLinkNodeToVariable(node, varId, varType, varName, varValue)//, varTem
         node.name = varName;
 
 
-    node.updateValueParamFromResolved(varType);
+    node.updateValueParamFromResolved(varType, varValue);
 
 
     pushUpdate(null, [node]);
@@ -361,16 +366,22 @@ function getValueFromVariable(resolvedType, val)
 
     switch (resolvedType)
     {
-        case 'FLOAT':   value = new NumberValue(val);            break;
-        case 'BOOLEAN': value = new NumberValue(val ? 1 : 0, 0); break;
-        case 'STRING':  value = new TextValue(val);              break;
+        case 'FLOAT':   value = new NumberValue(val);                  break;
+        case 'BOOLEAN': value = new NumberValue(val ? 1 : 0, 0, true); break;
+        case 'STRING':  value = new TextValue(val);                    break;
 
         case 'COLOR':
-            value = ColorValue.create(
-                1, 
-                Math.round(val.r * 0xff), 
-                Math.round(val.g * 0xff), 
-                Math.round(val.b * 0xff)); 
+            value = 
+                val.a == 1
+                    ? ColorValue.fromRgb(
+                        [Math.round(val.r * 0xff), 
+                        Math.round(val.g * 0xff), 
+                        Math.round(val.b * 0xff)])
+                    : FillValue.fromRgb(
+                        [Math.round(val.r * 0xff), 
+                        Math.round(val.g * 0xff), 
+                        Math.round(val.b * 0xff)],
+                        val.a * 100);
             
             break;
     }

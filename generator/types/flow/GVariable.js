@@ -81,11 +81,17 @@ extends GOperator1
                     break;
 
                 case 'COLOR': 
-                    varValue = FillValue.fromRgba(
-                        this.variableValue.r, 
-                        this.variableValue.g, 
-                        this.variableValue.b, 
-                        this.variableValue.a); 
+                    varValue = 
+                        this.variableValue.a == 1
+                            ? ColorValue.fromRgb(
+                                [this.variableValue.r * 0xff, 
+                                this.variableValue.g * 0xff, 
+                                this.variableValue.b * 0xff]) 
+                            : FillValue.fromRgb(
+                                [this.variableValue.r * 0xff, 
+                                this.variableValue.g * 0xff, 
+                                this.variableValue.b * 0xff], 
+                                this.variableValue.a * 100); 
                         break;
 
                 default:
@@ -105,7 +111,7 @@ extends GOperator1
                 case 'FLOAT':   varValue = NumberValue.NaN.copy(); varValue.isBool = false; break;
                 case 'BOOLEAN': varValue = NumberValue.NaN.copy(); varValue.isBool = true;  break;
                 case 'STRING':  varValue = new TextValue();                                 break;
-                case 'COLOR':   varValue = ColorValue.NaN.copy();                           break;
+                case 'COLOR':   varValue = FillValue.NaN.copy();//ColorValue.NaN.copy();                           break;
                 default:                                                                    break;
             }
         }

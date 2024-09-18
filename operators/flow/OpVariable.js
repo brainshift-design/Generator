@@ -156,6 +156,8 @@ extends ResizableBase
         request.push(this.node.variableType);
         request.push(this.node.variableValue);
 
+        this.node.variableValue = null; // only needs to be sent once
+
 
         request.push(this.node.paramValue ? 1 : 0);
         
@@ -197,7 +199,7 @@ extends ResizableBase
 
 
         //this.updateValueParamFromResolved(value.resolvedType);
-        //this.updateValueParamValuesFromResolved(value.resolvedType, value.name, [value.value]);
+        //this.updateValueParamValuesFromResolved(value.resolvedType, value.name, [value.resolvedValue]);
 
 
         // uiUpdateVariable(
@@ -226,7 +228,7 @@ extends ResizableBase
 
     
     
-    updateValueParamFromResolved(resolvedType)
+    updateValueParamFromResolved(resolvedType, resolvedValue)
     {
         let type   = NULL;
         let isBool = false;
@@ -235,9 +237,19 @@ extends ResizableBase
         {
             case 'FLOAT':   type = NUMBER_VALUE; isBool = false; break;
             case 'BOOLEAN': type = NUMBER_VALUE; isBool = true;  break;
-            case 'STRING':  type = TEXT_VALUE;   isBool = false; break;
-            case 'COLOR':   type = COLOR_VALUE;  isBool = false; break;
-            default:                                             break;
+            case 'STRING':  type =   TEXT_VALUE; isBool = false; break;
+    
+            case 'COLOR':   
+                type = 
+                    resolvedValue.a == 1 
+                        ? COLOR_VALUE
+                        : FILL_VALUE; 
+
+                isBool = false; 
+                break;
+
+            default:
+                break;
         }
 
         this.updateValueParamFromType(type, isBool, this.isBool);
@@ -311,7 +323,7 @@ extends ResizableBase
 
 
 
-    updateValueParamValuesFromResolved(resolvedType, varName, values, update = false)
+    updateValueParamValuesFromResolved(resolvedType, varName, resolvedValues, update = false)
     {
         if (this.variableName != varName)
         {
@@ -320,9 +332,9 @@ extends ResizableBase
         }
 
 
-        if (values.length > 0)
+        if (resolvedValues.length > 0)
         {
-            let val = values[0];
+            let val = resolvedValues[0];
 
             if (val)
             {
