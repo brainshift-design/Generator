@@ -2808,7 +2808,7 @@ function figUpdateVariableObjectAsync(genVar) {
         else // linked already
             figVar = yield figLinkNodeToVariableAsync(genVar[FO_NODE_ID], genVar[FO_OBJECT_ID]);
         console.assert(figVar, 'variable must have been created');
-        console.log('figVar =', figVar);
+        // console.log('figVar =', figVar);
         yield figUpdateVariableAsync(figVar.id, varValue);
     });
 }

@@ -4212,7 +4212,7 @@ async function figUpdateVariableObjectAsync(genVar)
 
 
     console.assert(figVar, 'variable must have been created');
-    console.log('figVar =', figVar);
+    // console.log('figVar =', figVar);
 
 
     await figUpdateVariableAsync(figVar.id, varValue);

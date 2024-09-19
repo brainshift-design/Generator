@@ -406,7 +406,8 @@ extends EventTarget
     {
         if (dispatchEvents)
         {
-            if (!value.equals(this.oldValue))
+            if (   !this.oldValue
+                || !value.equals(this.oldValue))
                 this.dispatchEvent(this.onbeforechange);
         }
     }

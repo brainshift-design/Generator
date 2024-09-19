@@ -2,7 +2,9 @@ var variableTimer = setInterval(() =>
 {
     if (!graph.currentPage)
         return;
-    
+ 
+    // this is variable polling
+
     const varNodes = graph.currentPage.nodes.filter(n => 
            n.type     == VARIABLE 
         && n.variableId != NULL);
@@ -54,7 +56,6 @@ function uiReturnFigGetVariableUpdates(variables)
                 }
                 else
                 {
-                    console.log('variable =', variable);
                     node.updateValueParamValuesFromResolved(variable.resolvedType, variable.name, [variable.resolvedValue], true);
                 }
             }
@@ -375,12 +376,12 @@ function getValueFromVariable(resolvedType, val)
                 val.a == 1
                     ? ColorValue.fromRgb(
                         [Math.round(val.r * 0xff), 
-                        Math.round(val.g * 0xff), 
-                        Math.round(val.b * 0xff)])
+                         Math.round(val.g * 0xff), 
+                         Math.round(val.b * 0xff)])
                     : FillValue.fromRgb(
                         [Math.round(val.r * 0xff), 
-                        Math.round(val.g * 0xff), 
-                        Math.round(val.b * 0xff)],
+                         Math.round(val.g * 0xff), 
+                         Math.round(val.b * 0xff)],
                         val.a * 100);
             
             break;
