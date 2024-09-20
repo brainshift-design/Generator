@@ -646,6 +646,7 @@ function initGeneratorMenus()
         menuItemSolve = new MenuItem('Solve',         null,                 true,  {icon: iconSolve,                                      createType: NUMBER_SOLVE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))}),
                         new MenuItem('',              null,                 false, {separator: true}),
                         new MenuItem('Functions',     null,                 false, {icon: iconRound,        childMenu: menuFunctions}),
+                        new MenuItem('',              null,                 false, {separator: true}),
                         new MenuItem('Convert',       null,                 false, {icon: iconConvert,      childMenu: menuConvertNumber})]);
 
 
@@ -676,6 +677,7 @@ function initGeneratorMenus()
         new MenuItem('Compare',    null,            false, {icon: iconTextCompare,   createType: TEXT_COMPARE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_COMPARE,   btnText.div, getCreateOptions(e)))}),
         new MenuItem('',           null,            false, {separator: true}),
         new MenuItem('Functions',  null,            false, {icon: iconTextFunctions, childMenu: menuTextFunctions}),
+        new MenuItem('',           null,            false, {separator: true}),
         new MenuItem('Convert',    null,            false, {icon: iconConvert,      childMenu: menuConvertText})]);
 
 
