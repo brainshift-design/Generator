@@ -455,7 +455,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
         {
             if (c1.inputNodeId != c2.inputNodeId ) return c1.inputNodeId < c2.inputNodeId ? -1 : 1;
             if (c1.inputId     != c2.inputId     ) return c1.inputId     < c2.inputId     ? -1 : 1;
-            
+
             if (c1.inputNodeId == c2.outputNodeId) return -1;
             if (c2.inputNodeId == c1.outputNodeId) return  1;
 

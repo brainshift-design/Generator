@@ -155,7 +155,7 @@ extends ResizableBase
 
         request.push(this.node.variableId);
 
-        noUpdatePrecisionIds.push(this.node.variableId); // not part of request
+        //noUpdatePrecisionIds.push(this.node.variableId); // not part of request
 
         
         request.push(
@@ -353,9 +353,14 @@ extends ResizableBase
             {
                 const value = getValueFromVariable(resolvedType, val);
               
-                if (!this.paramValue.value.equals(value))
+                if (!(      this.paramValue.value.type == NUMBER_VALUE
+                         && value.type == NUMBER_VALUE
+                         && this.paramValue.value.value == value.value
+                      || this.paramValue.value.equals(value)))
                 {
-                    this.checkNoUpdateDecimals(value);
+                    if (value.decimals <= this.paramValue.value.decimals)
+                        this.checkNoUpdateDecimals(value);
+
                     this.paramValue.setValue(value, update, true, update);
 
                     actionManager.clear();
@@ -383,7 +388,9 @@ extends ResizableBase
 
             if (!this.paramValue.value.equals(varValue.variableValue))
             {
-                this.checkNoUpdateDecimals(varValue.variableValue);
+                // console.log('1 varValue.variableValue =', varValue.variableValue.copy());
+                // this.checkNoUpdateDecimals(varValue.variableValue);
+                // console.log('2 varValue.variableValue =', varValue.variableValue.copy());
                 this.paramValue.setValue(varValue.variableValue, update, true, update);
 
                 actionManager.clear();
@@ -403,7 +410,7 @@ extends ResizableBase
         const foundIndex = noUpdatePrecisionIds.indexOf(this.variableId);
 
         if (   value.type == NUMBER_VALUE
-            && foundIndex > -1)
+            && foundIndex < 0)
         {
             noUpdatePrecisionIds.splice(foundIndex, 1);
             value.decimals = this.paramValue.value.decimals;
