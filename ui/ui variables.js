@@ -96,6 +96,92 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     menuLocalVariables.itemIndex = -1;
 
 
+    let prevPath = '';
+
+
+    // variables.sort(function(a, b) 
+    // {
+    //     const aName = a.collectionName + '/' + a.name;
+    //     const bName = b.collectionName + '/' + b.name;
+
+    //     let result = aName.localeCompare(bName);
+
+    //     // if (result == 0)
+    //     //     result = aName.length - bName.length;
+
+    //     return result;
+    // });
+
+
+    const collator = new Intl.Collator(
+        undefined, 
+        { 
+            numeric:      true, 
+            sensitivity: 'base' 
+        });
+    
+
+    variables.sort((a, b) => 
+    {
+        const aName  = a.collectionName + '/' + a.name;
+        const bName  = b.collectionName + '/' + b.name;
+
+        const aParts = aName.split('/');
+        const bParts = bName.split('/');
+
+      
+        // compare the first part (e.g., "Collection 1")
+        const firstPartComparison = collator.compare(aParts[0], bParts[0]);
+
+        if (firstPartComparison !== 0) 
+            return firstPartComparison;
+
+
+        // if first parts are equal, sort by number of parts (shorter paths first)
+        if (aParts.length !== bParts.length)
+            return aParts.length - bParts.length;
+        
+
+        // compare remaining parts except the last one
+        for (let i = 1; i < aParts.length - 1; i++) 
+        {
+            const aPart = aParts[i];
+            const bPart = bParts[i];
+        
+            const comparison = collator.compare(aPart, bPart);
+        
+            if (comparison !== 0)
+                return comparison;
+        }
+
+
+        // compare the last part with special logic
+        const aLast        = aParts[aParts.length - 1];
+        const bLast        = bParts[bParts.length - 1];
+
+        const aNumberMatch = aLast.match(/\d+/);
+        const bNumberMatch = bLast.match(/\d+/);
+
+        const aHasNumber   = aNumberMatch !== null;
+        const bHasNumber   = bNumberMatch !== null;
+
+
+        if (aHasNumber && bHasNumber) // both have numbers, compare numerically in descending order
+        {
+            const aNumber = parseInt(aNumberMatch[0], 10);
+            const bNumber = parseInt(bNumberMatch[0], 10);
+
+            return bNumber - aNumber; // higher numbers come first
+        }
+        else if (aHasNumber) // only 'a' has a number, it comes before 'b'
+            return -1;
+        else if (bHasNumber) // only 'b' has a number, it comes before 'a'
+            return 1;
+        else                 // neither has a number, compare normally
+            return collator.compare(aLast, bLast);
+    });
+
+
     for (const variable of variables)
     {
         const options = {};
@@ -126,6 +212,14 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
             name += variable.collectionName + '/';
         
         name += variable.name;
+
+
+        const path = name.split('/').slice(0, -1).join('/');
+
+        if (path != prevPath)
+            menuLocalVariables.menuItems.push(new MenuItem('', null, false, {separator: true}));
+
+        prevPath = path;
 
 
         const item = new MenuItem(name.replaceAll('/', ' / '), null, false, options);
