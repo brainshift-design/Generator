@@ -68,7 +68,10 @@ extends GOperator1
             switch (this.variableType)
             {
                 case 'FLOAT': 
-                    varValue = new NumberValue(this.variableValue);
+                    varValue = new NumberValue(
+                        this.variableValue, 
+                        Math.min(decDigits(this.variableValue), 2));
+
                     break;
 
                 case 'BOOLEAN': 
