@@ -121,6 +121,8 @@ extends ResizableBase
 
     output_genRequest(gen)
     {
+        console.trace();
+        
         // 'this' is the output
 
         gen.scope.push({
@@ -152,7 +154,12 @@ extends ResizableBase
 
 
         request.push(this.node.variableId);
-        request.push(this.node.name);
+
+        request.push(
+            this.node.variableName != '' 
+                ? this.node.variableName 
+                : this.node.name);
+        
         request.push(this.node.variableType);
         request.push(this.node.variableValue);
 
@@ -184,8 +191,10 @@ extends ResizableBase
 
         this.variableName = value.variableName;
 
+        noUpdateVariableIds.push(this.variableId);
 
-        this.updateValueParamFromType(
+        
+        this.updateValueParamFromType( 
             value.variableValue.type, 
             value.variableValue.type == NUMBER_VALUE 
                 ? value.variableValue.isBoolean 
@@ -328,6 +337,8 @@ extends ResizableBase
         if (this.variableName != varName)
         {
             this.variableName = varName;
+            this.name         = varName;
+
             this.updateNode();
         }
 

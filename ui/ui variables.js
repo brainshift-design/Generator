@@ -1,3 +1,7 @@
+var noUpdateVariableIds = [];
+
+
+
 var variableTimer = setInterval(() =>
 {
     if (!graph.currentPage)
@@ -37,6 +41,15 @@ function uiReturnFigGetVariableUpdates(variables)
 
     for (let variable of variables)
     {
+        const foundIndex = noUpdateVariableIds.indexOf(variable.id); 
+
+        if (foundIndex > -1)
+        {
+            noUpdateVariableIds = noUpdateVariableIds.splice(foundIndex, 1);
+            continue;
+        }
+
+
         const node = varNodes.find(n => n.variableId == variable.id);
 
         if (node)
@@ -56,7 +69,11 @@ function uiReturnFigGetVariableUpdates(variables)
                 }
                 else
                 {
-                    node.updateValueParamValuesFromResolved(variable.resolvedType, variable.name, [variable.resolvedValue], true);
+                    node.updateValueParamValuesFromResolved(
+                        variable.resolvedType, 
+                        variable.name, 
+                        [variable.resolvedValue], 
+                        true);
                 }
             }
         }
