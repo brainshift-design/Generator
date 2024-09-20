@@ -329,9 +329,9 @@ extends EventTarget
                       conn
                 ||    this.node.outputValueType != NULL
                    && (   this.node.outputValueType == SHAPE_VALUE && !SHAPE_VALUES.includes(this.types[0])
-                       || this.node.outputValueType != SHAPE_VALUE && this.node.outputValueType != this.types[0]))
+                       || this.node.outputValueType != SHAPE_VALUE && this.node.outputValueType != this.types[0])
                 ||    this.node.outputValueType != NULL
-                   && this.node.outputValueType != this.types[0];
+                   && this.node.outputValueType != this.types[0]);
                 //|| this.node.isUnknown();
 
                 
