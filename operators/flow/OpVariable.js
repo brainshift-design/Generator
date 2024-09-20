@@ -192,6 +192,7 @@ extends ResizableBase
 
 
         this.variableName = value.variableName;
+        this._name        = value.variableName;
 
         noUpdateVariableIds.push(this.variableId);
 
@@ -316,7 +317,7 @@ extends ResizableBase
             else
             {
                 this.paramValue   = null;
-                this.name         = this.variableName;
+                this._name        = this.variableName;
 
                 this.variableId   = NULL;
                 this.variableType = NULL;
@@ -339,7 +340,7 @@ extends ResizableBase
         if (this.variableName != varName)
         {
             this.variableName = varName;
-            this.name         = varName;
+            this._name        = varName;
 
             this.updateNode();
         }
