@@ -1,4 +1,5 @@
-var noUpdateVariableIds = [];
+const noUpdateVariableIds  = [];
+const noUpdatePrecisionIds = [];
 
 
 
@@ -34,18 +35,18 @@ function uiReturnFigGetAllLocalVariables(msg)
 
 function uiReturnFigGetVariableUpdates(variables)
 {
-    const varNodes = graph.currentPage.nodes.filter(n => 
-               n.type       == VARIABLE 
+    const varNodes = graph.currentPage.nodes.filter(n =>
+               n.type       == VARIABLE
             && n.variableId != NULL);
 
 
     for (let variable of variables)
     {
-        const foundIndex = noUpdateVariableIds.indexOf(variable.id); 
+        const foundIndex = noUpdateVariableIds.indexOf(variable.id);
 
         if (foundIndex > -1)
         {
-            noUpdateVariableIds = noUpdateVariableIds.splice(foundIndex, 1);
+            noUpdateVariableIds.splice(foundIndex, 1);
             continue;
         }
 
@@ -55,7 +56,7 @@ function uiReturnFigGetVariableUpdates(variables)
         if (node)
         {
             node.updateValueParamFromResolved(
-                variable.resolvedType, 
+                variable.resolvedType,
                 variable.resolvedValue);
 
             if (node.paramValue)
@@ -63,16 +64,16 @@ function uiReturnFigGetVariableUpdates(variables)
                 if (node.paramValue.input.connected)
                 {
                     // uiUpdateVariable(
-                    //     value.id, 
-                    //     node.linkedTemp, 
+                    //     value.id,
+                    //     node.linkedTemp,
                     //     getVariableValue(node.paramValue.value));
                 }
                 else
                 {
                     node.updateValueParamValuesFromResolved(
-                        variable.resolvedType, 
-                        variable.name, 
-                        [variable.resolvedValue], 
+                        variable.resolvedType,
+                        variable.name,
+                        [variable.resolvedValue],
                         true);
                 }
             }
@@ -478,9 +479,9 @@ function getValueFromVariable(resolvedType, val)
 
     switch (resolvedType)
     {
-        case 'FLOAT':   value = new NumberValue(val, Math.min(decDigits(val), 2)); break;
-        case 'BOOLEAN': value = new NumberValue(val ? 1 : 0, 0, true);             break;
-        case 'STRING':  value = new TextValue(val);                                break;
+        case 'FLOAT':   value = new NumberValue(roundTo(val, 2), Math.min(decDigits(roundTo(val, 2)), 2)); break;
+        case 'BOOLEAN': value = new NumberValue(val ? 1 : 0, 0, true);                         break;
+        case 'STRING':  value = new TextValue(val);                                            break;
 
         case 'COLOR':
             value = 
@@ -508,8 +509,8 @@ function getVariableValue(value)
     switch (value.type)
     {
         case NUMBER_VALUE: return value.value;
-        case   TEXT_VALUE:   return value.value;
-        case  COLOR_VALUE:  return value.toRgbObject(true);
-        case   FILL_VALUE:  return value.toRgbaObject(true);
+        case   TEXT_VALUE: return value.value;
+        case  COLOR_VALUE: return value.toRgbObject(true);
+        case   FILL_VALUE: return value.toRgbaObject(true);
     }
 }

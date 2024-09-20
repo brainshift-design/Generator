@@ -155,12 +155,15 @@ extends ResizableBase
 
         request.push(this.node.variableId);
 
+        noUpdatePrecisionIds.push(this.node.variableId); // not part of request
+
+        
         request.push(
             this.node.variableName != '' 
                 ? this.node.variableName 
                 : this.node.name);
         
-        request.push(this.node.variableType);
+        request.push(this.node.variableType );
         request.push(this.node.variableValue);
 
         this.node.variableValue = null; // only needs to be sent once
@@ -170,7 +173,6 @@ extends ResizableBase
         
         if (this.node.paramValue)
             request.push(...this.node.paramValue.genRequest(gen));
-
 
 
         gen.scope.pop();
@@ -193,12 +195,12 @@ extends ResizableBase
 
         noUpdateVariableIds.push(this.variableId);
 
-        
-        this.updateValueParamFromType( 
-            value.variableValue.type, 
-            value.variableValue.type == NUMBER_VALUE 
-                ? value.variableValue.isBoolean 
-                : false, 
+
+        this.updateValueParamFromType(
+            value.variableValue.type,
+            value.variableValue.type == NUMBER_VALUE
+                ? value.variableValue.isBoolean
+                : false,
             this.isBool);
 
         if (   value.variableValue
@@ -353,6 +355,7 @@ extends ResizableBase
               
                 if (!this.paramValue.value.equals(value))
                 {
+                    this.checkNoUpdateDecimals(value);
                     this.paramValue.setValue(value, update, true, update);
 
                     actionManager.clear();
@@ -380,6 +383,7 @@ extends ResizableBase
 
             if (!this.paramValue.value.equals(varValue.variableValue))
             {
+                this.checkNoUpdateDecimals(varValue.variableValue);
                 this.paramValue.setValue(varValue.variableValue, update, true, update);
 
                 actionManager.clear();
@@ -390,6 +394,20 @@ extends ResizableBase
 
         if (updateNode)
             this.updateNode();
+    }
+
+
+
+    checkNoUpdateDecimals(value)
+    {
+        const foundIndex = noUpdatePrecisionIds.indexOf(this.variableId);
+
+        if (   value.type == NUMBER_VALUE
+            && foundIndex > -1)
+        {
+            noUpdatePrecisionIds.splice(foundIndex, 1);
+            value.decimals = this.paramValue.value.decimals;
+        }
     }
 
 

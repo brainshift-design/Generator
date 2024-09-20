@@ -70,7 +70,7 @@ extends GOperator1
                 case 'FLOAT': 
                     varValue = new NumberValue(
                         this.variableValue, 
-                        Math.min(decDigits(this.variableValue), 2));
+                        Math.min(decDigits(roundTo(this.variableValue, 2)), 2));
 
                     break;
 
