@@ -255,7 +255,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == VALID_COLOR            ) result = genParseValidColor        (parse);
     else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor      (parse);
     else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast     (parse);
-    else if (parse.next == COLOR_DELTA_E          ) result = genParseColorDeltaE       (parse);
+    else if (parse.next == COLOR_DIFFERENCE          ) result = genParseColorDifference       (parse);
     else if (parse.next == COLORBLIND             ) result = genParseColorBlind        (parse);
     else if (parse.next == COLOR_SCHEME           ) result = genParseColorScheme       (parse);
     else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate  (parse);

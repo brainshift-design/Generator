@@ -209,7 +209,7 @@
 ../generator/types/color/GValidColor.js
 ../generator/types/color/GCorrectColor.js
 ../generator/types/color/GColorContrast.js
-../generator/types/color/GColorDeltaE.js
+../generator/types/color/GColorDifference.js
 ../generator/types/color/GColorBlind.js
 ../generator/types/color/GColorScheme.js
 ../generator/types/color/GColorInterpolate.js

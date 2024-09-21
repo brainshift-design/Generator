@@ -1287,7 +1287,7 @@ const COLOR                   = 'COL';
 const VALID_COLOR             = 'CVAL';  
 const CORRECT_COLOR           = 'CCOR';  
 const COLOR_CONTRAST          = 'CCNT';  
-const COLOR_DELTA_E           = 'CDLTE';  
+const COLOR_DIFFERENCE           = 'CDLTE';  
 const COLORBLIND              = 'BLND';  
 const COLOR_SCHEME            = 'CPAL'; 
 const COLOR_INTERPOLATE       = 'CLERP'; 
@@ -1525,7 +1525,7 @@ const FLOW_TYPES =
     GET_LIST_VALUE_NAMES,
     SET_LIST_VALUE_NAMES,
     COLOR_SCHEME,
-    COLOR_DELTA_E,
+    COLOR_DIFFERENCE,
     COLOR_TO_TEXT
 ];
 
@@ -1653,7 +1653,7 @@ const COLOR_TYPES =
     CORRECT_COLOR,
     COLORBLIND,
     COLOR_CONTRAST,
-    COLOR_DELTA_E,
+    COLOR_DIFFERENCE,
     COLOR_INTERPOLATE,
     COLOR_BLEND,
     COLOR_TO_TEXT

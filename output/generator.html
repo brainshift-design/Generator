@@ -3796,8 +3796,8 @@ class Random2
 
 
     get(x, y)
-    {
-          if (   x >= this.width 
+    {          
+if (   x >= this.width 
               && y >= this.height) this.updateCache(nextPow2(x+1), nextPow2(y+1));
         else if (x >= this.width ) this.updateCache(nextPow2(x+1), this.height  );
         else if (y >= this.height) this.updateCache(this.width,    nextPow2(y+1));
@@ -6923,7 +6923,7 @@ const COLOR                   = 'COL';
 const VALID_COLOR             = 'CVAL';  
 const CORRECT_COLOR           = 'CCOR';  
 const COLOR_CONTRAST          = 'CCNT';  
-const COLOR_DELTA_E           = 'CDLTE';  
+const COLOR_DIFFERENCE           = 'CDLTE';  
 const COLORBLIND              = 'BLND';  
 const COLOR_SCHEME            = 'CPAL'; 
 const COLOR_INTERPOLATE       = 'CLERP'; 
@@ -7161,7 +7161,7 @@ const FLOW_TYPES =
     GET_LIST_VALUE_NAMES,
     SET_LIST_VALUE_NAMES,
     COLOR_SCHEME,
-    COLOR_DELTA_E,
+    COLOR_DIFFERENCE,
     COLOR_TO_TEXT
 ];
 
@@ -7289,7 +7289,7 @@ const COLOR_TYPES =
     CORRECT_COLOR,
     COLORBLIND,
     COLOR_CONTRAST,
-    COLOR_DELTA_E,
+    COLOR_DIFFERENCE,
     COLOR_INTERPOLATE,
     COLOR_BLEND,
     COLOR_TO_TEXT
@@ -38205,21 +38205,48 @@ extends GOperator2
 
 
 
-class GColorDeltaE
+class GColorDifference
 extends GOperator2
 {
+    deltaE = null;
+    space  = null;
+    param1 = null;
+    param2 = null;
+    param3 = null;
+
+
+
     constructor(nodeId, options)
     {
-        super(COLOR_DELTA_E, nodeId, options);
+        super(COLOR_DIFFERENCE, nodeId, options);
+    }
+
+
+
+    reset()
+    {
+        super.reset();
+
+        this.deltaE = null;
+        this.space  = null;
+        this.param1 = null;
+        this.param2 = null;
+        this.param3 = null;
     }
 
 
 
     copy()
     {
-        const copy = new GColorDeltaE(this.nodeId, this.options);
+        const copy = new GColorDifference(this.nodeId, this.options);
 
         copy.copyBase(this);
+
+        if (this.deltaE) copy.deltaE = this.deltaE.copy();
+        if (this.space ) copy.space  = this.space .copy();
+        if (this.param1) copy.param1 = this.param1.copy();
+        if (this.param2) copy.param2 = this.param2.copy();
+        if (this.param3) copy.param3 = this.param3.copy();
 
         return copy;
     }
@@ -38234,6 +38261,11 @@ extends GOperator2
 
         const input0 = await evalColorValue(this.input0, parse);
         const input1 = await evalColorValue(this.input1, parse);
+        const deltaE = await evalColorValue(this.deltaE, parse);
+        const space  = await evalColorValue(this.space , parse);
+        const param1 = await evalColorValue(this.param1, parse);
+        const param2 = await evalColorValue(this.param2, parse);
+        const param3 = await evalColorValue(this.param3, parse);
 
         
         if (   input0 && input0.type == COLOR_VALUE 
@@ -38241,7 +38273,67 @@ extends GOperator2
         {
             if (   input0.isValid()
                 && input1.isValid())
-                this.value = new NumberValue(deltaE(input0.toRgb(), input1.toRgb()) * 100, 1);
+            {
+                let _rgb2lab, dE;
+                
+                switch (space.value)
+                {
+                    case 0: _rgb2lab = rgb2oklab; break;
+                    case 1: _rgb2lab = rgb2lab;   break;
+                }
+
+                switch (deltaE.value)
+                {
+                    case 0: 
+                        dE = deltaE76(
+                            input0.toRgb(), 
+                            input1.toRgb(),
+                            _rgb2lab);
+
+                        break;
+                        
+                    case 1: 
+                        dE = deltaE94(
+                            input0.toRgb(), 
+                            input1.toRgb(),
+                            param1.value/100,
+                            param2.value/100,
+                            param3.value/100,
+                            _rgb2lab);
+
+                        break;
+
+                    case 2: 
+                        dE = deltaE00(
+                            input0.toRgb(), 
+                            input1.toRgb(),
+                            param1.value/100,
+                            param2.value/100,
+                            param3.value/100,
+                            _rgb2lab);
+
+                        break;
+
+                    case 3: 
+                        dE = deltaECMC(
+                            input0.toRgb(), 
+                            input1.toRgb(),
+                            param1.value/100,
+                            param2.value/100,
+                            _rgb2lab);
+
+                        break;
+
+                    case 4: 
+                        dE = deltaEITU(
+                            input0.toRgb(), 
+                            input1.toRgb());
+
+                        break;
+                }
+
+                this.value = new NumberValue(dE * 100, 1);
+            }
             else
                 this.value = NumberValue.NaN.copy();
         }
@@ -38251,8 +38343,13 @@ extends GOperator2
 
         this.setUpdateValues(parse,
         [
-            ['type',  this.outputType()],
-            ['value', this.value       ]
+            ['type',   this.outputType()],
+            ['value',  this.value       ],
+            ['deltaE', deltaE           ],
+            ['space',  space            ],
+            ['param1', param1           ],
+            ['param2', param2           ],
+            ['param3', param3           ]
         ],
         true);
 
@@ -38268,8 +38365,11 @@ extends GOperator2
     isValid()
     {
         return super.isValid()
-            && this.standard && this.standard.isValid()
-            && (!this.contrast || this.contrast.isValid());
+            && this.deltaE && this.deltaE.isValid()
+            && this.space  && this.space .isValid()
+            && this.param1 && this.param1.isValid()
+            && this.param2 && this.param2.isValid()
+            && this.param3 && this.param3.isValid();
     }
 
 
@@ -38278,8 +38378,11 @@ extends GOperator2
     {
         super.pushValueUpdates(parse);
 
-        if (this.standard) this.standard.pushValueUpdates(parse);
-        if (this.contrast) this.contrast.pushValueUpdates(parse);
+        if (this.deltaE) this.deltaE.pushValueUpdates(parse);
+        if (this.space ) this.space .pushValueUpdates(parse);
+        if (this.param1) this.param1.pushValueUpdates(parse);
+        if (this.param2) this.param2.pushValueUpdates(parse);
+        if (this.param3) this.param3.pushValueUpdates(parse);
     }
 
 
@@ -38288,8 +38391,11 @@ extends GOperator2
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.standard) this.standard.invalidateInputs(parse, from, force);
-        if (this.contrast) this.contrast.invalidateInputs(parse, from, force);
+        if (this.deltaE) this.deltaE.invalidateInputs(parse, from, force);
+        if (this.space ) this.space .invalidateInputs(parse, from, force);
+        if (this.param1) this.param1.invalidateInputs(parse, from, force);
+        if (this.param2) this.param2.invalidateInputs(parse, from, force);
+        if (this.param3) this.param3.invalidateInputs(parse, from, force);
     }
 
 
@@ -38298,8 +38404,11 @@ extends GOperator2
     {
         super.iterateLoop(parse);
 
-        if (this.standard) this.standard.iterateLoop(parse);
-        if (this.contrast) this.contrast.iterateLoop(parse);
+        if (this.deltaE) this.deltaE.iterateLoop(parse);
+        if (this.space ) this.space .iterateLoop(parse);
+        if (this.param1) this.param1.iterateLoop(parse);
+        if (this.param2) this.param2.iterateLoop(parse);
+        if (this.param3) this.param3.iterateLoop(parse);
     }
 }
 
@@ -52766,12 +52875,12 @@ function genParseColorContrast(parse)
 
 
 
-function genParseColorDeltaE(parse)
+function genParseColorDifference(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const deltaE = new GColorDeltaE(nodeId, options);
+    const diff = new GColorDifference(nodeId, options);
 
 
     let nInputs = -1;
@@ -52790,12 +52899,12 @@ function genParseColorDeltaE(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqColorContrast(deltaE, nInputs, valueIndex, parse, ignore);
+        logReqColorContrast(diff, nInputs, valueIndex, parse, ignore);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, deltaE);
+        genParseNodeEnd(parse, diff);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -52805,21 +52914,28 @@ function genParseColorDeltaE(parse)
 
     if (nInputs == 2)
     {
-        deltaE.input0 = genParse(parse);
-        deltaE.input1 = genParse(parse);
+        diff.input0 = genParse(parse);
+        diff.input1 = genParse(parse);
     }
     else if (nInputs == 1)
     {
-             if (valueIndex == 0) deltaE.input0 = genParse(parse); 
-        else if (valueIndex == 1) deltaE.input1 = genParse(parse); 
+             if (valueIndex == 0) diff.input0 = genParse(parse); 
+        else if (valueIndex == 1) diff.input1 = genParse(parse); 
     }
   
+
+    diff.deltaE = genParse(parse);
+    diff.space  = genParse(parse);
+    diff.param1 = genParse(parse);
+    diff.param2 = genParse(parse);
+    diff.param3 = genParse(parse);
+
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, deltaE);
-    return deltaE;
+    genParseNodeEnd(parse, diff);
+    return diff;
 }
 
 
@@ -61816,7 +61932,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == VALID_COLOR            ) result = genParseValidColor        (parse);
     else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor      (parse);
     else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast     (parse);
-    else if (parse.next == COLOR_DELTA_E          ) result = genParseColorDeltaE       (parse);
+    else if (parse.next == COLOR_DIFFERENCE          ) result = genParseColorDifference       (parse);
     else if (parse.next == COLORBLIND             ) result = genParseColorBlind        (parse);
     else if (parse.next == COLOR_SCHEME           ) result = genParseColorScheme       (parse);
     else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate  (parse);
@@ -64399,9 +64515,129 @@ function colorDistance(col1, col2)
 
 function deltaE(rgb1, rgb2)
 {
-    return colorDistance(
-        rgb2oklab(rgb1), 
-        rgb2oklab(rgb2));
+    return deltaE00(rgb1, rgb2);
+}
+
+
+
+function deltaE76(rgb1, rgb2, _rgb2lab = rgb2oklab) 
+{
+    const lab1 = _rgb2lab(rgb1);
+    const lab2 = _rgb2lab(rgb2);
+
+    return colorDistance(lab1, lab2);
+}
+
+
+
+function deltaE94(rgb1, rgb2, kH = 1, kC = 1, kL = 1, _rgb2lab = rgb2oklab) 
+{
+    const [L1, a1, b1] = _rgb2lab(rgb1);
+    const [L2, a2, b2] = _rgb2lab(rgb2);
+    
+    const C1 = Math.sqrt(a1*a1 + b1*b1);
+    const C2 = Math.sqrt(a2*a2 + b2*b2);
+    const dL = L2 - L1;
+    const dC = C2 - C1;
+    const da = a2 - a1;
+    const db = b2 - b1;
+    const dH = Math.sqrt(da*da + db*db - dC*dC);
+    
+    const SL = 1;
+    const SC = 1 + 0.045 * C1;
+    const SH = 1 + 0.015 * C1;
+    
+    const deltaE = Math.sqrt(
+        sqr(dL / (kL * SL)) +
+        sqr(dC / (kC * SC)) +
+        sqr(dH / (kH * SH)));
+    
+    return deltaE;
+}
+
+
+
+function deltaE00(rgb1, rgb2, kH = 1, kC = 1, kL = 1, _rgb2lab = rgb2oklab)
+{
+    const lab1        = _rgb2lab(rgb1);
+    const lab2        = _rgb2lab(rgb2);
+
+    const L1          = lab1[0], a1 = lab1[1], b1 = lab1[2];
+    const L2          = lab2[0], a2 = lab2[1], b2 = lab2[2];
+
+    const avgLPrime   = (L1 + L2) / 2;
+    const C1          = Math.sqrt(a1 * a1 + b1 * b1);
+    const C2          = Math.sqrt(a2 * a2 + b2 * b2);
+    const avgC        = (C1 + C2) / 2;
+    const G           = 0.5 * (1 - Math.sqrt(Math.pow(avgC, 7) / (Math.pow(avgC, 7) + Math.pow(25, 7))));
+    
+    const a1Prime     = a1 * (1 + G);
+    const a2Prime     = a2 * (1 + G);
+    const C1Prime     = Math.sqrt(a1Prime * a1Prime + b1 * b1);
+    const C2Prime     = Math.sqrt(a2Prime * a2Prime + b2 * b2);
+    
+    const h1Prime     = Math.atan2(b1, a1Prime) * (180 / Math.PI);
+    const h2Prime     = Math.atan2(b2, a2Prime) * (180 / Math.PI);
+    
+    const deltaLPrime = L2 - L1;
+    const deltaCPrime = C2Prime - C1Prime;
+    const deltahPrime = 2 * Math.sqrt(C1Prime * C2Prime) * Math.sin(((h2Prime - h1Prime) / 2) * (Math.PI / 180));
+
+    const avgCPrime = (C1Prime + C2Prime) / 2;
+    const avghPrime =
+        Math.abs(h1Prime - h2Prime) > 180
+            ? (h1Prime + h2Prime + 360) / 2
+            : (h1Prime + h2Prime) / 2;
+    
+
+    const SL = 1 + (0.015 * sqr(avgLPrime - 50)) / Math.sqrt(20 + sqr(avgLPrime - 50));
+    const SC = 1 + 0.045 * avgCPrime;
+    const SH = 1 + 0.015 * avgCPrime * (1 - 0.17 * Math.cos(avghPrime - 30) + 0.24 * Math.cos(2 * avghPrime) + 0.32 * Math.cos(3 * avghPrime + 6) - 0.20 * Math.cos(4 * avghPrime - 63));
+
+    const RT = -2 * Math.sqrt(Math.pow(avgCPrime, 7) / (Math.pow(avgCPrime, 7) + Math.pow(25, 7))) * Math.sin(60 * Math.exp(-sqr((avghPrime - 275) / 25)) * (Math.PI / 180));
+    
+    const deltaE = Math.sqrt(
+          sqr(deltaLPrime / (kL * SL)) +
+          sqr(deltaCPrime / (kC * SC)) +
+          sqr(deltahPrime / (kH * SH)) +
+        RT * (deltaCPrime / (kC * SC)) * (deltahPrime / (kH * SH)));
+    
+    return deltaE;
+}
+
+
+
+function deltaECMC(rgb1, rgb2, kC = 1, kL = 2, _rgb2lab = rgb2oklab) 
+{
+    const [L1, a1, b1] = _rgb2lab(rgb1);
+    const [L2, a2, b2] = _rgb2lab(rgb2);
+    
+    const C1     = Math.sqrt(a1*a1 + b1*b1);
+    const C2     = Math.sqrt(a2*a2 + b2*b2);
+    const deltaL = L2 - L1;
+    const deltaC = C2 - C1;
+    const da     = a2 - a1;
+    const db     = b2 - b1;
+    const deltaH = Math.sqrt(da*da + db*db - deltaC*deltaC);
+
+    const SL     = L1 < 16 ? 0.511 : (0.040975 * L1) / (1 + 0.01765 * L1);
+    const SC     = 0.0638 * C1 / (1 + 0.0131 * C1) + 0.638;
+    const SH     = SC * (1 + 0.0131 * C1);
+
+    return Math.sqrt(
+          sqr(deltaL / (kL * SL))
+        + sqr(deltaC / (kC * SC))
+        + sqr(deltaH / SH));
+}
+
+
+
+function deltaEITU(rgb1, rgb2) 
+{
+    const linear1 = rgb1.map(v => sRGB.degamma(v));
+    const linear2 = rgb2.map(v => sRGB.degamma(v));
+
+    return colorDistance(linear1, linear2);
 }
 
 

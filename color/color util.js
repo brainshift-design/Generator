@@ -657,9 +657,129 @@ function colorDistance(col1, col2)
 
 function deltaE(rgb1, rgb2)
 {
-    return colorDistance(
-        rgb2oklab(rgb1), 
-        rgb2oklab(rgb2));
+    return deltaE00(rgb1, rgb2);
+}
+
+
+
+function deltaE76(rgb1, rgb2, _rgb2lab = rgb2oklab) 
+{
+    const lab1 = _rgb2lab(rgb1);
+    const lab2 = _rgb2lab(rgb2);
+
+    return colorDistance(lab1, lab2);
+}
+
+
+
+function deltaE94(rgb1, rgb2, kH = 1, kC = 1, kL = 1, _rgb2lab = rgb2oklab) 
+{
+    const [L1, a1, b1] = _rgb2lab(rgb1);
+    const [L2, a2, b2] = _rgb2lab(rgb2);
+    
+    const C1 = Math.sqrt(a1*a1 + b1*b1);
+    const C2 = Math.sqrt(a2*a2 + b2*b2);
+    const dL = L2 - L1;
+    const dC = C2 - C1;
+    const da = a2 - a1;
+    const db = b2 - b1;
+    const dH = Math.sqrt(da*da + db*db - dC*dC);
+    
+    const SL = 1;
+    const SC = 1 + 0.045 * C1;
+    const SH = 1 + 0.015 * C1;
+    
+    const deltaE = Math.sqrt(
+        sqr(dL / (kL * SL)) +
+        sqr(dC / (kC * SC)) +
+        sqr(dH / (kH * SH)));
+    
+    return deltaE;
+}
+
+
+
+function deltaE00(rgb1, rgb2, kH = 1, kC = 1, kL = 1, _rgb2lab = rgb2oklab)
+{
+    const lab1        = _rgb2lab(rgb1);
+    const lab2        = _rgb2lab(rgb2);
+
+    const L1          = lab1[0], a1 = lab1[1], b1 = lab1[2];
+    const L2          = lab2[0], a2 = lab2[1], b2 = lab2[2];
+
+    const avgLPrime   = (L1 + L2) / 2;
+    const C1          = Math.sqrt(a1 * a1 + b1 * b1);
+    const C2          = Math.sqrt(a2 * a2 + b2 * b2);
+    const avgC        = (C1 + C2) / 2;
+    const G           = 0.5 * (1 - Math.sqrt(Math.pow(avgC, 7) / (Math.pow(avgC, 7) + Math.pow(25, 7))));
+    
+    const a1Prime     = a1 * (1 + G);
+    const a2Prime     = a2 * (1 + G);
+    const C1Prime     = Math.sqrt(a1Prime * a1Prime + b1 * b1);
+    const C2Prime     = Math.sqrt(a2Prime * a2Prime + b2 * b2);
+    
+    const h1Prime     = Math.atan2(b1, a1Prime) * (180 / Math.PI);
+    const h2Prime     = Math.atan2(b2, a2Prime) * (180 / Math.PI);
+    
+    const deltaLPrime = L2 - L1;
+    const deltaCPrime = C2Prime - C1Prime;
+    const deltahPrime = 2 * Math.sqrt(C1Prime * C2Prime) * Math.sin(((h2Prime - h1Prime) / 2) * (Math.PI / 180));
+
+    const avgCPrime = (C1Prime + C2Prime) / 2;
+    const avghPrime =
+        Math.abs(h1Prime - h2Prime) > 180
+            ? (h1Prime + h2Prime + 360) / 2
+            : (h1Prime + h2Prime) / 2;
+    
+
+    const SL = 1 + (0.015 * sqr(avgLPrime - 50)) / Math.sqrt(20 + sqr(avgLPrime - 50));
+    const SC = 1 + 0.045 * avgCPrime;
+    const SH = 1 + 0.015 * avgCPrime * (1 - 0.17 * Math.cos(avghPrime - 30) + 0.24 * Math.cos(2 * avghPrime) + 0.32 * Math.cos(3 * avghPrime + 6) - 0.20 * Math.cos(4 * avghPrime - 63));
+
+    const RT = -2 * Math.sqrt(Math.pow(avgCPrime, 7) / (Math.pow(avgCPrime, 7) + Math.pow(25, 7))) * Math.sin(60 * Math.exp(-sqr((avghPrime - 275) / 25)) * (Math.PI / 180));
+    
+    const deltaE = Math.sqrt(
+          sqr(deltaLPrime / (kL * SL)) +
+          sqr(deltaCPrime / (kC * SC)) +
+          sqr(deltahPrime / (kH * SH)) +
+        RT * (deltaCPrime / (kC * SC)) * (deltahPrime / (kH * SH)));
+    
+    return deltaE;
+}
+
+
+
+function deltaECMC(rgb1, rgb2, kC = 1, kL = 2, _rgb2lab = rgb2oklab) 
+{
+    const [L1, a1, b1] = _rgb2lab(rgb1);
+    const [L2, a2, b2] = _rgb2lab(rgb2);
+    
+    const C1     = Math.sqrt(a1*a1 + b1*b1);
+    const C2     = Math.sqrt(a2*a2 + b2*b2);
+    const deltaL = L2 - L1;
+    const deltaC = C2 - C1;
+    const da     = a2 - a1;
+    const db     = b2 - b1;
+    const deltaH = Math.sqrt(da*da + db*db - deltaC*deltaC);
+
+    const SL     = L1 < 16 ? 0.511 : (0.040975 * L1) / (1 + 0.01765 * L1);
+    const SC     = 0.0638 * C1 / (1 + 0.0131 * C1) + 0.638;
+    const SH     = SC * (1 + 0.0131 * C1);
+
+    return Math.sqrt(
+          sqr(deltaL / (kL * SL))
+        + sqr(deltaC / (kC * SC))
+        + sqr(deltaH / SH));
+}
+
+
+
+function deltaEITU(rgb1, rgb2) 
+{
+    const linear1 = rgb1.map(v => sRGB.degamma(v));
+    const linear2 = rgb2.map(v => sRGB.degamma(v));
+
+    return colorDistance(linear1, linear2);
 }
 
 

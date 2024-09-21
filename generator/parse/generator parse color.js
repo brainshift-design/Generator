@@ -254,12 +254,12 @@ function genParseColorContrast(parse)
 
 
 
-function genParseColorDeltaE(parse)
+function genParseColorDifference(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const deltaE = new GColorDeltaE(nodeId, options);
+    const diff = new GColorDifference(nodeId, options);
 
 
     let nInputs = -1;
@@ -278,12 +278,12 @@ function genParseColorDeltaE(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqColorContrast(deltaE, nInputs, valueIndex, parse, ignore);
+        logReqColorContrast(diff, nInputs, valueIndex, parse, ignore);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, deltaE);
+        genParseNodeEnd(parse, diff);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -293,21 +293,28 @@ function genParseColorDeltaE(parse)
 
     if (nInputs == 2)
     {
-        deltaE.input0 = genParse(parse);
-        deltaE.input1 = genParse(parse);
+        diff.input0 = genParse(parse);
+        diff.input1 = genParse(parse);
     }
     else if (nInputs == 1)
     {
-             if (valueIndex == 0) deltaE.input0 = genParse(parse); 
-        else if (valueIndex == 1) deltaE.input1 = genParse(parse); 
+             if (valueIndex == 0) diff.input0 = genParse(parse); 
+        else if (valueIndex == 1) diff.input1 = genParse(parse); 
     }
   
+
+    diff.deltaE = genParse(parse);
+    diff.space  = genParse(parse);
+    diff.param1 = genParse(parse);
+    diff.param2 = genParse(parse);
+    diff.param3 = genParse(parse);
+
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, deltaE);
-    return deltaE;
+    genParseNodeEnd(parse, diff);
+    return diff;
 }
 
 

@@ -61,8 +61,8 @@ class Random2
 
 
     get(x, y)
-    {
-          if (   x >= this.width 
+    {          
+if (   x >= this.width 
               && y >= this.height) this.updateCache(nextPow2(x+1), nextPow2(y+1));
         else if (x >= this.width ) this.updateCache(nextPow2(x+1), this.height  );
         else if (y >= this.height) this.updateCache(this.width,    nextPow2(y+1));
