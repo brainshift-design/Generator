@@ -6,6 +6,7 @@ const settings =
     minZoomForParams:              0.35,
     objectCenterSize:              18,
     objectBatchSize:               500,
+    maxSolveIterations:            1000,
     showPages:                     false,
     showAllColorSpaces:            false,
     showNodeIcons:                 true,
@@ -78,6 +79,7 @@ function updateSetting(settingName, value)
         case 'minZoomForParams':              settings.minZoomForParams              = value;  break;
         case 'objectCenterSize':              settings.objectCenterSize              = value;  break;
         case 'objectBatchSize':               settings.objectBatchSize               = value;  break;
+        case 'maxSolveIterations':            settings.maxSolveIterations            = value;  break;
         case 'showPages':                     settings.showPages                     = value;  break;
         case 'showAllColorSpaces':            settings.showAllColorSpaces            = value;  break;
         case 'showNodeIcons':                 settings.showNodeIcons                 = value;  break;
@@ -485,6 +487,7 @@ function loadLocalSettings()
     uiGetLocalData('minZoomForParams'             );
     uiGetLocalData('objectCenterSize'             );
     uiGetLocalData('objectBatchSize'              );
+    uiGetLocalData('maxSolveIterations'           );
     uiGetLocalData('showAllColorSpaces'           );
     uiGetLocalData('showNodeIcons'                );
     uiGetLocalData('showBoolValues'               );

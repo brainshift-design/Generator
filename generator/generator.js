@@ -42,10 +42,11 @@ function initFonts(fonts, uniqueFontNames)
 
 function genRequest(request, save)
 {
-    const requestId       = parseInt(request[0]);
-    const actionId        = parseInt(request[1]);
-    const set             = parseInt(request[2]);
-    const objectBatchSize = parseInt(request[3]);
+    const requestId          = parseInt(request[0]);
+    const actionId           = parseInt(request[1]);
+    const set                = parseInt(request[2]);
+    const objectBatchSize    = parseInt(request[3]);
+    const maxSolveIterations = parseInt(request[4]);
 
 
     const settings =
@@ -55,19 +56,20 @@ function genRequest(request, save)
         showTransformPoints: ((set >> 2) & 1) != 0,
         loadingNodes:        ((set >> 3) & 1) != 0,
         showTextTooltips:    ((set >> 4) & 1) != 0,
-        showListTooltips:    ((set >> 5) & 1) != 0
+        showListTooltips:    ((set >> 5) & 1) != 0,
+        maxSolveIterations
     };
 
 
-    const updateNodeId  = request[4];
-    const updateParamId = request[5];
+    const updateNodeId  = request[5];
+    const updateParamId = request[6];
 
-    const viewportZoom  = request[6];
+    const viewportZoom  = request[7];
 
 
     const parse = new Parse(
         request, 
-        7,
+        8,
         requestId,
         updateNodeId, 
         updateParamId, 

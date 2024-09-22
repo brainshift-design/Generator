@@ -158,6 +158,7 @@ var menuItemEnableZoomedOutParams;
 var menuItemMinZoomForParams;
 var menuItemObjectCenterSize;
 var menuItemObjectBatchSize;
+var menuItemMaxSolveIterations;
 var menuItemShowPages;
 var menuPrefSep1;
 
@@ -1332,7 +1333,8 @@ function initPreferenceMenus()
      // menuItemEnableMultiplayer          = new MenuItem('Enable multiplayer on this canvas',        null, false, {checkCallback: () => multiplayerEnabled,                                 callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  enableMultiplayer(!multiplayerEnabled);     }}),
       //                                     new MenuItem('',                                         null, false, {separator: true}),    
         menuItemObjectCenterSize           = new MenuItem('Object center size . . .',                 null, false, {callback: () => showObjectCenterSizeDialog()}),
-        menuItemObjectBatchSize            = new MenuItem('Update batch size . . .',                  null, false, {callback: () => showObjectBatchDialog()})]);
+        menuItemObjectBatchSize            = new MenuItem('Update batch size . . .',                  null, false, {callback: () => showObjectBatchDialog()}),
+        menuItemMaxSolveIterations         = new MenuItem('Maximum solve iterations. . .',            null, false, {callback: () => showMaxSolveIterationsDialog()})]);
         
 
     menuItemShowBoolValues.divName.innerHTML = 'Show boolean values as   <span style="position: relative; top: 1px;">' + TRUE_DISPLAY_MENU + '</span>  <span>' + FALSE_DISPLAY_MENU + '</span>';

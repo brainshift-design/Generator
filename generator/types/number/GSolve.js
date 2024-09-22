@@ -77,7 +77,7 @@ extends GOperator1
 
 
                 let   iter     = 0;
-                const maxIter  = 1000;
+                const maxIter  = parse.settings.maxSolveIterations;
                 
 
                 genInitNodeProgress(this.nodeId);

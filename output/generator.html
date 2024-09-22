@@ -6193,6 +6193,7 @@ const settings =
     minZoomForParams:              0.35,
     objectCenterSize:              18,
     objectBatchSize:               500,
+    maxSolveIterations:            1000,
     showPages:                     false,
     showAllColorSpaces:            false,
     showNodeIcons:                 true,
@@ -6265,6 +6266,7 @@ function updateSetting(settingName, value)
         case 'minZoomForParams':              settings.minZoomForParams              = value;  break;
         case 'objectCenterSize':              settings.objectCenterSize              = value;  break;
         case 'objectBatchSize':               settings.objectBatchSize               = value;  break;
+        case 'maxSolveIterations':            settings.maxSolveIterations            = value;  break;
         case 'showPages':                     settings.showPages                     = value;  break;
         case 'showAllColorSpaces':            settings.showAllColorSpaces            = value;  break;
         case 'showNodeIcons':                 settings.showNodeIcons                 = value;  break;
@@ -6672,6 +6674,7 @@ function loadLocalSettings()
     uiGetLocalData('minZoomForParams'             );
     uiGetLocalData('objectCenterSize'             );
     uiGetLocalData('objectBatchSize'              );
+    uiGetLocalData('maxSolveIterations'           );
     uiGetLocalData('showAllColorSpaces'           );
     uiGetLocalData('showNodeIcons'                );
     uiGetLocalData('showBoolValues'               );
@@ -30377,7 +30380,7 @@ extends GOperator1
 
 
                 let   iter     = 0;
-                const maxIter  = 1000;
+                const maxIter  = parse.settings.maxSolveIterations;
                 
 
                 genInitNodeProgress(this.nodeId);
@@ -52051,10 +52054,11 @@ function initFonts(fonts, uniqueFontNames)
 
 function genRequest(request, save)
 {
-    const requestId       = parseInt(request[0]);
-    const actionId        = parseInt(request[1]);
-    const set             = parseInt(request[2]);
-    const objectBatchSize = parseInt(request[3]);
+    const requestId          = parseInt(request[0]);
+    const actionId           = parseInt(request[1]);
+    const set                = parseInt(request[2]);
+    const objectBatchSize    = parseInt(request[3]);
+    const maxSolveIterations = parseInt(request[4]);
 
 
     const settings =
@@ -52064,19 +52068,20 @@ function genRequest(request, save)
         showTransformPoints: ((set >> 2) & 1) != 0,
         loadingNodes:        ((set >> 3) & 1) != 0,
         showTextTooltips:    ((set >> 4) & 1) != 0,
-        showListTooltips:    ((set >> 5) & 1) != 0
+        showListTooltips:    ((set >> 5) & 1) != 0,
+        maxSolveIterations
     };
 
 
-    const updateNodeId  = request[4];
-    const updateParamId = request[5];
+    const updateNodeId  = request[5];
+    const updateParamId = request[6];
 
-    const viewportZoom  = request[6];
+    const viewportZoom  = request[7];
 
 
     const parse = new Parse(
         request, 
-        7,
+        8,
         requestId,
         updateNodeId, 
         updateParamId, 
@@ -64669,20 +64674,20 @@ function rgbFromColorValue(value)
         return value.toRgb();
 
     else if ( value.type == FILL_VALUE 
-                && !rgbIsNaN(value.color.toRgb())) 
+          && !rgbIsNaN(value.color.toRgb())) 
         return value.color.toRgb();
 
     else if ( value.type == STROKE_VALUE 
-                &&  value.fills.items.length > 0
-                && !rgbIsNaN(value.fills.items.at(-1).color.toRgb())) 
+          &&  value.fills.items.length > 0
+          && !rgbIsNaN(value.fills.items.at(-1).color.toRgb())) 
         return value.fills.items.at(-1).color.toRgb();
 
     else if ( value.type == GRADIENT_VALUE 
-                && !rgbaIsNaN(value.toRgba())) 
+          && !rgbaIsNaN(value.toRgba())) 
         return rgb_a(value.toRgba());
 
     else if ( value.type == COLOR_STOP_VALUE 
-                && !rgbIsNaN(value.fill.color.toRgb())) 
+          && !rgbIsNaN(value.fill.color.toRgb())) 
         return rgb_a(value.fill.color.toRgb());
 
 

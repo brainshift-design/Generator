@@ -42,6 +42,7 @@ async function uiReturnFigGetLocalData(msg)
             break;
 
         case 'objectBatchSize':
+        case 'maxSolveIterations':
             if (!isNaN(msg.value))
                 updateSetting(msg.key, parseInt(msg.value));
     

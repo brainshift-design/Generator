@@ -654,6 +654,7 @@ menuItemEnableZoomedOutParams
 menuItemMinZoomForParams
 menuItemObjectCenterSize
 menuItemObjectBatchSize
+menuItemMaxSolveIterations
 menuItemShowPages
 menuPrefSep1
 menuItemShowAllColorSpaces
@@ -4035,6 +4036,7 @@ genRequest
 updateNodeId
 updateParamId
 objectBatchSize
+maxSolveIterations
 updateSavedPages
 pageIndex
 OpColumn
