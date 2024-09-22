@@ -6,7 +6,7 @@ const settings =
     minZoomForParams:              0.35,
     objectCenterSize:              18,
     objectBatchSize:               500,
-    maxSolveIterations:            1000,
+    maxSolveIterations:            100,
     showPages:                     false,
     showAllColorSpaces:            false,
     showNodeIcons:                 true,

@@ -79,6 +79,27 @@ extends OperatorBase
         this.paramCurrent.enableControlText(false, this.paramCurrent.isUnknown());
         this.paramTarget .enableControlText(true);
 
+
+        const maxDec = Math.max(
+            this.paramCurrent.value.decimals,
+            this.paramTarget .value.decimals);
+        
+        const decFactor = 1 / Math.pow(10, maxDec);
+
+
+        if (    this.paramCurrent.value.isValid()
+            && !equal(this.paramCurrent.value.value, this.paramTarget.value.value, decFactor))
+        {
+            this.paramCurrent.controls[0].showExtRanges = true;
+            this.paramCurrent.controls[0].ranges = [new NumberControlRange(0, 1, getWarningRangeStyle(), 0.8)];
+        }
+        else
+        {
+            this.paramCurrent.controls[0].showExtRanges = false;
+            this.paramCurrent.controls[0].ranges = [];
+            this.paramCurrent.controls[0].resetRanges();
+        }
+
         this.updateParamControls();
     }
 
