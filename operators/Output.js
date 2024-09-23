@@ -281,7 +281,7 @@ extends EventTarget
         this.hitbox  .style.height = 12 + Math.max(0, (1 - 1*zoom) * 20);
         
 
-        this.wireBall.style.left   = (isConnected ? (isColorType(this.types[0]) ? 0 : 0) : 0) + 'px';
+        this.wireBall.style.left   = (isConnected ? (isColorType(this.types[0]) ? 1 : 0) : 0) + 'px';
         this.wireBall.style.top    = '50%';
         this.wireBall.style.zIndex =  MAX_INT32;
         this.wireBall.style.width  = (isConnected ? (isColorType(this.types[0]) ? 6 : 8) : 6) + 'px';

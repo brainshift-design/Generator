@@ -429,7 +429,8 @@ const FLOW_TYPES =
     SET_LIST_VALUE_NAMES,
     COLOR_SCHEME,
     COLOR_DIFFERENCE,
-    COLOR_TO_TEXT
+    COLOR_TO_TEXT,
+    PERSIST
 ];
 
 
@@ -736,7 +737,6 @@ const SHAPE_TYPES =
 
     SET_OBJECT_NAME,
 
-    PERSIST,
     EXPORT
 ];
 

@@ -16,10 +16,12 @@ extends OpShapeBase
     {
         super(PERSIST, 'persist', 'persist', '');
 
-        this.subscription   = true;
-        this.variableInputs = true;
-        this.canDisable     = true;
-        this.iconOffsetY    = -1;
+
+        this.outputValueType = ANY_VALUE;
+        this.subscription    = true;
+        this.variableInputs  = true;
+        this.canDisable      = true;
+        this.iconOffsetY     = -1;
 
 
         this.addNewInput();
@@ -77,20 +79,7 @@ extends OpShapeBase
                 this.updateHeader(); 
             },
             200);
-
-
-            // if (this.enabled)
-            // {
-
-            // }
         });
-
-
-        // this.divIcon.addEventListener('pointerup',  e => 
-        // { 
-        //     console.log('up');
-        //     e.stopPropagation();
-        // });
 
 
         this.label.insertBefore(this.btnFinal, this.labelText);

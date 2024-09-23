@@ -7165,7 +7165,8 @@ const FLOW_TYPES =
     SET_LIST_VALUE_NAMES,
     COLOR_SCHEME,
     COLOR_DIFFERENCE,
-    COLOR_TO_TEXT
+    COLOR_TO_TEXT,
+    PERSIST
 ];
 
 
@@ -7472,7 +7473,6 @@ const SHAPE_TYPES =
 
     SET_OBJECT_NAME,
 
-    PERSIST,
     EXPORT
 ];
 
@@ -20767,7 +20767,8 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type', this.outputType()]
+            ['type',  this.outputType()],
+            ['value', this.value       ]
         ]);
 
 
@@ -21167,7 +21168,6 @@ extends GOperator1
         copy.copyBase(this);
 
         if (this.value) copy.value = this.value.copy();
-        // if (this.cachedValue) copy.cachedValue = this.cachedValue.copy();
 
         return copy;
     }
@@ -21197,8 +21197,6 @@ extends GOperator1
             if (   this.options.enabled
                 && this.value)
                 this.cachedValue = this.value.copy();
-
-            // this.updateValueObjects();//FromInput(input);
         }
 
 
@@ -21207,7 +21205,8 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type', this.outputType()]
+            ['type',  this.outputType()],
+            ['value', this.value       ]
         ]);
 
 
@@ -21305,7 +21304,8 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type', this.outputType()]
+            ['type',  this.outputType()],
+            ['value', this.value       ]
         ]);
 
 
@@ -24554,7 +24554,7 @@ extends GOperator1
 
         else
         {
-            this.value = input ?? new NullValue();
+            this.value       = input ?? new NullValue();
             this.cachedValue = this.value.copy();
         }
 
@@ -24568,7 +24568,7 @@ extends GOperator1
         {
             const valueIds = [];
 
-            
+
             for (let i = 0; i < this.value.items.length; i++)
             {
                 const item = this.value.items[i];
@@ -25576,6 +25576,7 @@ extends GOperator
         this.setUpdateValues(parse,
         [
             ['type',      this.outputType()],
+            ['value',     this.value       ],
             ['condition', cond             ]
         ]);
         

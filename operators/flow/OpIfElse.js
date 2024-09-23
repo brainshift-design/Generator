@@ -1,5 +1,5 @@
 class   OpIfElse
-extends OperatorBase
+extends OpFlowBase
 {
     paramCondition;
 
@@ -19,9 +19,10 @@ extends OperatorBase
         this.addInput (new Input ([ANY_VALUE]));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
+        this.headerOutputs[0].forceOutputColor = true;
+
 
         this.addParam(this.paramCondition = new NumberParam('condition', 'condition', true, true, true, 1, 0, 1));
-
 
         this.paramCondition.divider = 0.62;
         this.paramCondition.controls[0].allowEditDecimals = false;
@@ -98,17 +99,6 @@ extends OperatorBase
 
 
 
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-        const type = values[paramIds.findIndex(id => id == 'type')];
-
-        this.headerOutputs[0].types = [type.value];
-    }
-
-
-
     updateParams()
     {
         this.paramCondition.enableControlText(true);
@@ -116,16 +106,5 @@ extends OperatorBase
         updateParamConditionText(this.paramCondition, this.paramCondition.isUnknown(), true, 1);
 
         this.updateParamControls();
-    }
-
-
-
-    getHeaderColors(options = {})
-    {
-        const colors = super.getHeaderColors(options);
-
-        colors.text = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
-        
-        return colors;
     }
 }

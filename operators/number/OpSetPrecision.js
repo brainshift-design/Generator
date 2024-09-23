@@ -12,8 +12,10 @@ extends OperatorBase
     {
         super(NUMBER_PRECISION, 'precision', 'precision', iconNumberPrecision);
 
+        
         //this.outputValueType = NUMBER_VALUE;
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = 1;
         
 
         this.addInput(new Input([

@@ -72,7 +72,7 @@ extends GOperator1
 
         else
         {
-            this.value = input ?? new NullValue();
+            this.value       = input ?? new NullValue();
             this.cachedValue = this.value.copy();
         }
 
@@ -86,7 +86,7 @@ extends GOperator1
         {
             const valueIds = [];
 
-            
+
             for (let i = 0; i < this.value.items.length; i++)
             {
                 const item = this.value.items[i];

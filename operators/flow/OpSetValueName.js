@@ -1,9 +1,7 @@
 class   OpSetValueName
-extends OperatorBase
+extends OpFlowBase
 {
     paramName;
-
-    value;
 
 
 
@@ -62,34 +60,5 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
-    }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        this.value = values[paramIds.findIndex(id => id == 'value')];
-        const type = values[paramIds.findIndex(id => id == 'type' )];
-
-        if (type)
-            this.headerOutputs[0].types = [type.value];
-
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    }
-
-
-
-    getOutputWireColor()
-    {
-        if (this.value) 
-        {
-            const rgb = rgbFromColorValue(this.value);
-
-            return !rgbIsNaN(rgb)
-                 ? rgb
-                 : super.getOutputWireColor();
-        }
-        else
-            return super.getOutputWireColor();
     }
 }

@@ -12,12 +12,15 @@ extends ResizableBase
     {
         super(SELECT, 'select', 'select', iconSelect);
 
-        this.outputValueType        = ANY_VALUE;
+
+        this.outputValueType  = ANY_VALUE;
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
 
+
         this.addNewInput();
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
+
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, true, 0));
 
@@ -110,6 +113,38 @@ extends ResizableBase
         pushUnique(gen.passedNodes, this);
 
         return request;
+    }
+
+
+
+    getHeaderOutputColor()
+    {
+        if (!this.value)
+            return super.getHeaderOutputColor();
+
+
+        switch (this.value.type)
+        {
+            case COLOR_VALUE: return this.value.toRgb();
+            case FILL_VALUE:  return this.value.color.toRgb();
+            default:          return super.getHeaderOutputColor();
+        }
+    }
+
+
+
+    getOutputWireColor()
+    {
+        if (!this.value)
+            return super.getOutputWireColor();
+
+
+        switch (this.value.type)
+        {
+            case COLOR_VALUE: return this.value.toRgb();
+            case FILL_VALUE:  return this.value.color.toRgb();
+            default:          return super.getOutputWireColor();
+        }
     }
 
 

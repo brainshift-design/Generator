@@ -1,9 +1,8 @@
 class   OpSelectFromList
-extends OperatorBase
+extends OpFlowBase
 {
     paramIndex;
 
-    value;
     length;
 
 
@@ -12,7 +11,8 @@ extends OperatorBase
     {
         super(SELECT_FROM_LIST, 'select', 'select', iconSelectFromList);
 
-        this.outputValueType         = ANY_VALUE;
+
+        this.outputValueType   = ANY_VALUE;
         this.alwaysSaveParams  = true;
         this.showHeaderTooltip = true;
         this.iconOffsetY       = -2.5;
@@ -20,6 +20,9 @@ extends OperatorBase
 
         this.addInput (new Input (LIST_VALUES, getNodeInputValuesForUndo));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
+
+        this.headerOutputs[0].forceOutputColor = true;
+
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, true, 0));
 
@@ -78,12 +81,7 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        const type  = values[paramIds.findIndex(id => id == 'type'  )];
-        this.value  = values[paramIds.findIndex(id => id == 'value' )];
         this.length = values[paramIds.findIndex(id => id == 'length')].value;
-
-        if (type)
-            this.headerOutputs[0].types = [type.value];
     }
 
 

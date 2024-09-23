@@ -1,21 +1,19 @@
 class   OpFreeze
-extends OperatorBase
+extends OpFlowBase
 {
     constructor()
     {
         super(FREEZE, 'freeze', 'freeze', iconFreeze);
 
-        this.outputValueType   = ANY_VALUE;
-        this.canDisable  = true;
-        this.iconOffsetY = 1;
+        this.outputValueType = ANY_VALUE;
+        this.canDisable      = true;
+        this.iconOffsetY     = 1;
 
 
         this.addInput (new Input([ANY_VALUE]));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
-
-        this.inputs[0].addEventListener('connect',    () => OpFreeze_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpFreeze_onDisconnectInput(this));
+        this.headerOutputs[0].forceOutputColor = true;
     }
 
 
@@ -67,41 +65,4 @@ extends OperatorBase
 
         return request;
     }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-        
-        const type = values[paramIds.findIndex(id => id == 'type')];
-
-        if (type)
-            this.headerOutputs[0].types = [type.value];
-    }
-
-
-
-    getHeaderColors(options = {})
-    {
-        const colors = super.getHeaderColors(options);
-
-        colors.text = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
-
-        return colors;
-    }
-}
-
-
-
-function OpFreeze_onConnectInput(node)
-{
-    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
-}
-
-
-
-function OpFreeze_onDisconnectInput(node)
-{
-    node.outputs[0].types = [ANY_VALUE];
 }

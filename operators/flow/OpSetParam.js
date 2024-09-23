@@ -1,9 +1,8 @@
 class   OpSetParam
-extends ResizableBase
+extends ResizableFlowBase
 {
     paramName;
 
-    value;
     length;
 
     _connected = false;
@@ -14,8 +13,8 @@ extends ResizableBase
     {
         super(SET_PARAM, 'setParam', 'set param', iconSetParam);
 
-        this.outputValueType  = ANY_VALUE;
-        this.canDisable = true;
+        this.outputValueType = ANY_VALUE;
+        this.canDisable      = true;
         
 
         this.addInput (new Input ([ANY_VALUE]));
@@ -91,35 +90,6 @@ extends ResizableBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
-    }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        this.value = values[paramIds.findIndex(id => id == 'value')];
-        const type = values[paramIds.findIndex(id => id == 'type' )];
-
-        if (type)
-            this.headerOutputs[0].types = [type.value];
-
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    }
-
-
-
-    getOutputWireColor()
-    {
-        if (this.value) 
-        {
-            const rgb = rgbFromColorValue(this.value);
-
-            return !rgbIsNaN(rgb)
-                 ? rgb
-                 : super.getOutputWireColor();
-        }
-        else
-            return super.getOutputWireColor();
     }
 
 

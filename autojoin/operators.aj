@@ -44,6 +44,10 @@
 ../operators/ResizableBase.js
 
 
+../operators/flow/OpFlowBase.js
+../operators/flow/ResizableFlowBase.js
+
+
 ../operators/flow/OpRepeat.js
 ../operators/flow/OpAdvance.js
 ../operators/flow/OpFeedback.js

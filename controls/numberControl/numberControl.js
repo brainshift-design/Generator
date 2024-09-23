@@ -305,7 +305,6 @@ extends Control
 
     getDimensions = () => 
     {
-        console.log('this.param.node =', this.param.node);
         return [
             this.param.div.offsetLeft,
             this.param.node.width ];//div.offsetWidth ];
@@ -355,19 +354,6 @@ extends Control
 
     updateBar(sx, cx, v, sw, sh)
     {
-        if (   this.param.node.id == 'colorDiff'
-            && this.param.id      == 'param3')
-        {
-            console.log('sx =', sx);
-            console.log('cx =', cx);
-            console.log('v  =', v );
-            console.log('sw =', sw);
-            console.log('sh =', sh);
-            console.log('');
-        }
-
-
-
         if (this.dragReverse)
             v *= -1;
 

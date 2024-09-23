@@ -1,21 +1,19 @@
 class   OpCache
-extends OperatorBase
+extends OpFlowBase
 {
     constructor()
     {
         super(CACHE, 'cache', 'cache', iconCache);
 
-        this.outputValueType   = ANY_VALUE;
-        this.canDisable  = true;
-        this.iconOffsetY = 2;
+        this.outputValueType = ANY_VALUE;
+        this.canDisable      = true;
+        this.iconOffsetY     = 2;
 
 
         this.addInput (new Input([ANY_VALUE]));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
-
-        this.inputs[0].addEventListener('connect',    () => OpCache_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpCache_onDisconnectInput(this));
+        this.headerOutputs[0].forceOutputColor = true;
     }
 
 
@@ -53,41 +51,4 @@ extends OperatorBase
 
         return request;
     }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-        
-        const type = values[paramIds.findIndex(id => id == 'type')];
-
-        if (type)
-            this.headerOutputs[0].types = [type.value];
-    }
-
-
-
-    getHeaderColors(options = {})
-    {
-        const colors = super.getHeaderColors(options);
-
-        colors.text = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
-
-        return colors;
-    }
-}
-
-
-
-function OpCache_onConnectInput(node)
-{
-    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
-}
-
-
-
-function OpCache_onDisconnectInput(node)
-{
-    node.outputs[0].types = [ANY_VALUE];
 }

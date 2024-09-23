@@ -13,7 +13,15 @@ extends OperatorBase
         this.iconOffsetY  = -1;
 
 
-        this.addInput(new Input([LIST_VALUE, NUMBER_LIST_VALUE, TEXT_LIST_VALUE, SHAPE_LIST_VALUE]));
+        this.addInput(new Input([
+                       LIST_VALUE, 
+                NUMBER_LIST_VALUE, 
+                  TEXT_LIST_VALUE, 
+                 COLOR_LIST_VALUE, 
+                  FILL_LIST_VALUE, 
+            COLOR_STOP_LIST_VALUE, 
+                 SHAPE_LIST_VALUE]));
+
         this.addInput(new Input([TEXT_LIST_VALUE]));
 
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));

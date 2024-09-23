@@ -1,9 +1,7 @@
 class   OpGetParam
-extends ResizableBase
+extends ResizableFlowBase
 {
     paramName;
-
-    value;
 
     _connected = false;
 
@@ -79,50 +77,7 @@ extends ResizableBase
         return request;
     }
 
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        this.value = values[paramIds.findIndex(id => id == 'value')];
-        const type = values[paramIds.findIndex(id => id == 'type' )];
-
-        if (type)
-            this.headerOutputs[0].types = [type.value];
-
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    }
-
-
-
-    getHeaderColors(options = {})
-    {
-        const colors = super.getHeaderColors(options);
-
-        colors.text = 
-            isDark(colors.back) 
-            ? [1, 1, 1, 1] 
-            : [0, 0, 0, 1]; 
-
-        return colors;
-    }
-
-
-
-    getOutputWireColor()
-    {
-        if (this.value) 
-        {
-            const rgb = rgbFromColorValue(this.value);
-
-            return !rgbIsNaN(rgb)
-                 ? rgb
-                 : super.getOutputWireColor();
-        }
-        else
-            return super.getOutputWireColor();
-    }
-
-
+    
 
     toJsonBase(nTab = 0) 
     {
