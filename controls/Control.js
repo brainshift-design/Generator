@@ -23,9 +23,8 @@ extends EventTarget
 
 
     measureData = { divBounds: new Rect(0, 0, 0, 0) };
- 
 
-    
+
     constructor(divValue, param, id, name, width = defNodeWidth, height = defParamHeight)
     {
         super();

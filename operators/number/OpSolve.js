@@ -26,6 +26,16 @@ extends OperatorBase
 
         this.paramCurrent.divider = 0.5;
         this.paramTarget .divider = 0.5;
+
+        // this.paramTarget.pushUpdate = () =>
+        // {
+        //     const terminals =
+        //         this.inputs[0].connected
+        //             ? getTerminalsAfterNode(this.inputs[0].connectedOutput.node)
+        //             : [];
+
+        //     pushUpdateFromParam(null, terminals, this.paramTarget);
+        // };
     }
 
 

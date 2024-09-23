@@ -157,23 +157,23 @@ function getTerminalsInNodes(nodes)
 
 
 
-function getTerminalsAfterNode(node, stackOverflowProtect = 100)
+function getTerminalsAfterNode(node, except = [], stackOverflowProtect = 100)
 {
+    if (stackOverflowProtect <= 0)
+        return [];
+    
+    
     let after = [];
 
-
-    if (stackOverflowProtect <= 0)
-        return after;
-
-
+    
     if (node.type == GROUP_NODE)
     {
         for (const input of node.inputs)
-            pushUnique(after, getTerminalsAfterNode(input.paramNode, stackOverflowProtect-1));
+            pushUnique(after, getTerminalsAfterNode(input.paramNode, except, stackOverflowProtect-1));
             
         for (const output of node.outputs) 
             for (const input of output.connectedInputs) 
-                pushUnique(after, getTerminalsAfterNode(input.node, stackOverflowProtect-1));//input.node);
+                pushUnique(after, getTerminalsAfterNode(input.node, except, stackOverflowProtect-1));//input.node);
     }
 
     else if (node.type == GROUP_PARAM)
@@ -192,7 +192,7 @@ function getTerminalsAfterNode(node, stackOverflowProtect = 100)
             for (const output of node.outputs)
             {
                 for (const input of output.connectedInputs)
-                    pushUnique(afterNode, getTerminalsAfterNode(input.node, stackOverflowProtect-1));
+                    pushUnique(afterNode, getTerminalsAfterNode(input.node, except, stackOverflowProtect-1));
             }
 
             if (isEmpty(afterNode))
@@ -209,7 +209,7 @@ function getTerminalsAfterNode(node, stackOverflowProtect = 100)
             for (const output of node.groupNode.outputs)
             {
                 for (const input of output.connectedInputs)
-                    pushUnique(afterGroupNode, getTerminalsAfterNode(input.node, stackOverflowProtect-1));
+                    pushUnique(afterGroupNode, getTerminalsAfterNode(input.node, except, stackOverflowProtect-1));
             }
 
             if (isEmpty(afterGroupNode))
@@ -224,20 +224,26 @@ function getTerminalsAfterNode(node, stackOverflowProtect = 100)
         for (const output of node.outputs)
         {
             for (const input of output.connectedInputs)
-                pushUnique(after, getTerminalsAfterNode(input.node, stackOverflowProtect-1));
+                if (!except.includes(input.node.id))
+                    pushUnique(after, getTerminalsAfterNode(input.node, except, stackOverflowProtect-1));
         }
     }
+
+
+    if (    node.type == NUMBER_SOLVE
+        &&  node.headerInputs[0].connected
+        && !except.includes(node.headerInputs[0].connectedOutput.node.id))
+        pushUnique(
+            after, 
+            getTerminalsAfterNode(
+                node.headerInputs[0].connectedOutput.node, 
+                [node.headerInputs[0].connectedOutput.node.id], 
+                stackOverflowProtect-1));
 
 
     return !isEmpty(after) 
           ? after 
           : [node];
-            //   node.active
-            // || graphView.loadingNodes
-            // || graphView.pastingNodes
-            // || graphView.restoringNodes
-            // ? [node]
-            // : [];
 }
 
 

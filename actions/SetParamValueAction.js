@@ -48,8 +48,9 @@ extends Action
 
         if (this.setValue)
             this.param.setValue(this.newValue, false, true);
-
-        pushUpdateFromParam(this, [this.param.node], this.param);
+        
+        if (this.param.pushUpdate) this.param.pushUpdate();
+        else                       pushUpdateFromParam(this, [this.param.node], this.param);
     }
 
 
@@ -57,7 +58,9 @@ extends Action
     undo(updateNodes)
     {
         this.param.setValue(this.oldValue, false, true);
-        pushUpdateFromParam(this, [this.param.node], this.param);
+
+        if (param.pushUpdate) param.pushUpdate();
+        else                  pushUpdateFromParam(this, [this.param.node], this.param);
     }
 
 
@@ -65,6 +68,8 @@ extends Action
     redo(updateNodes)
     {
         this.param.setValue(this.newValue);
-        pushUpdateFromParam(this, [this.param.node], this.param);
+
+        if (this.param.pushUpdate) this.param.pushUpdate();
+        else                       pushUpdateFromParam(this, [this.param.node], this.param);
     }
 }
