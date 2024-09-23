@@ -345,7 +345,7 @@ extends EventTarget
                && graphView.savedConn.input == this
                && graphView.overInput != this)
         {
-            //if (this.node.id == debugNodeId) console.log('1');
+            // if (this.node.id == debugNodeId) console.log('1');
             return transparent;
         }
 
@@ -355,9 +355,12 @@ extends EventTarget
                 || !this.node.active
                 ||  this.connectedOutput.types[0] != this.types[0]
                 ||     this.node.outputValueType != NULL
-                    && this.node.outputValueType != this.types[0]))
+                    && this.node.outputValueType != this.types[0])
+            && !(this.connectedOutput.types[0] ==      COLOR_LIST_VALUE && this.node.active)
+            && !(this.connectedOutput.types[0] ==       FILL_LIST_VALUE && this.node.active)
+            && !(this.connectedOutput.types[0] == COLOR_STOP_LIST_VALUE && this.node.active))
         {
-            //if (this.node.id == debugNodeId) console.log('2');
+            // if (this.node.id == debugNodeId) console.log('2');
             return this.connectedOutput.getWireColor();
         }    
 
@@ -373,7 +376,7 @@ extends EventTarget
                     && (  !this.node.active
                         || this.node.outputValueType == ANY_VALUE))))
         {
-            //if (this.node.id == debugNodeId) console.log('3');
+            // if (this.node.id == debugNodeId) console.log('3');
             return graphView.tempConn.output.getWireColor();
         }
 
@@ -385,7 +388,7 @@ extends EventTarget
                 || (  !this.node.active
                     || this.node.outputValueType == ANY_VALUE)))
         {
-            //if (this.node.id == debugNodeId) console.log('4');
+            // if (this.node.id == debugNodeId) console.log('4');
             return graphView.overOutput.getWireColor();
         }
 
@@ -396,7 +399,7 @@ extends EventTarget
             && (    isColorType(this.types[0])
                 || !this.node.active))
         {
-            //if (this.node.id == debugNodeId) console.log('5');
+            // if (this.node.id == debugNodeId) console.log('5');
             return graphView.tempConn.input.getWireColor();
         }
 
