@@ -1,6 +1,22 @@
 class OperatorBase
 extends Operator
 {
+    width;
+    height;
+
+
+
+    constructor(type, id, name, icon, defWidth = defNodeWidth, progressBar = false)
+    {
+        super(type, id, name, icon, defWidth, progressBar);
+
+        
+        this.width  = defWidth;
+        this.height = defHeaderHeight;
+    }
+
+
+
     canAutoConnectFrom(output)
     {
         return this.inputs[0].canConnectFrom(output);

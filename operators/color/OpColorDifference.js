@@ -130,19 +130,14 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const type  = values[paramIds.findIndex(id => id == 'type')];
+        const type  = values[paramIds.findIndex(id => id == 'type'  )];
+        const deltaE = values[paramIds.findIndex(id => id == 'deltaE')];
         
         if (type)
             this.headerOutputs[0].types = [type.value];
 
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    }
 
-
-
-    updateParams()
-    {
-        switch (this.paramDeltaE.value.value)
+        switch (deltaE.value)
         {
             case 0:
                 if (!this.paramHolder.contains(this.paramSpace.div)) this.paramHolder.appendChild(this.paramSpace.div);
@@ -153,17 +148,6 @@ extends OperatorBase
                 break;
 
             case 1:
-                this.param1.setName('× H');
-                this.param2.setName('× C');
-                this.param3.setName('× L');
-
-                if (!this.paramHolder.contains(this.paramSpace.div)) this.paramHolder.appendChild(this.paramSpace.div);
-                if (!this.paramHolder.contains(this.param1    .div)) this.paramHolder.appendChild(this.param1    .div);
-                if (!this.paramHolder.contains(this.param2    .div)) this.paramHolder.appendChild(this.param2    .div);
-                if (!this.paramHolder.contains(this.param3    .div)) this.paramHolder.appendChild(this.param3    .div);
-
-                break;
-                
             case 2:
                 this.param1.setName('× H');
                 this.param2.setName('× C');
@@ -196,6 +180,9 @@ extends OperatorBase
         }
 
 
-        super.updateParams();
+        // super.updateParamControls();
+
+        
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 }

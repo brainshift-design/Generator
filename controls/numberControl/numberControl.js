@@ -303,11 +303,12 @@ extends Control
 
 
 
-    formatValue = () => 
+    getDimensions = () => 
     {
+        console.log('this.param.node =', this.param.node);
         return [
             this.param.div.offsetLeft,
-            this.param.div.offsetWidth ];
+            this.param.node.width ];//div.offsetWidth ];
     };
 
 
@@ -324,7 +325,7 @@ extends Control
             return;
 
             
-        const [sx, sw] = this.formatValue();
+        const [sx, sw] = this.getDimensions();
 
         const sh =  this.measureData.clientRect.height;
         const cx = -this.displayMin / (this.displayMax - this.displayMin) * sw;
@@ -354,6 +355,19 @@ extends Control
 
     updateBar(sx, cx, v, sw, sh)
     {
+        if (   this.param.node.id == 'colorDiff'
+            && this.param.id      == 'param3')
+        {
+            console.log('sx =', sx);
+            console.log('cx =', cx);
+            console.log('v  =', v );
+            console.log('sw =', sw);
+            console.log('sh =', sh);
+            console.log('');
+        }
+
+
+
         if (this.dragReverse)
             v *= -1;
 

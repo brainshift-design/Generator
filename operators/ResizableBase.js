@@ -6,10 +6,6 @@ const sizeBorderWidth   = 4;
 class   ResizableBase
 extends OperatorBase
 {
-    width;
-    height;
-
-
     sizerL;
     sizerR;
     sizerT;
@@ -29,8 +25,7 @@ extends OperatorBase
     {
         super(type, id, name, icon, defWidth, progressBar);
 
-        this.width            = defWidth;
-        this.height           = defHeaderHeight;
+        
         this.alwaysLoadParams = true;
 
         this.resizedX         = false;
