@@ -116,9 +116,10 @@ extends GOperator1
                         target  = await evalNumberValue(this.target,  parse);
 
 
-                        if (current.isValid())
+                        if (   current.isValid()
+                            && target.isValid())
                         {
-                            diff = target.value - current.value;
+                            diff = target.toNumber() - current.value;
 
                             if (Math.abs(diff) < 0.00001)
                                 break;
@@ -147,6 +148,10 @@ extends GOperator1
                 current = await evalNumberValue(this.current, parse);
 
 
+                if (current && target)
+                    current.decimals = target.decimals;
+
+                
                 if (   iter < maxIter
                     && Math.abs(diff) < 0.0000001)
                     parse.currentProgress += maxIter - iter;
