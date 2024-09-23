@@ -427,7 +427,7 @@ const presetPieChart = '\
         "z": "20",\
         "params":\
         [\
-                ["ITEMS#", "indices", "7 NUM# 6,0 NUM# 2,0 NUM# 3,0 NUM# 4,0 NUM# 5,0 NUM# 0,0 NUM# 1,0"]\
+                ["LIST#", "indices", "7 NUM# 6,0 NUM# 2,0 NUM# 3,0 NUM# 4,0 NUM# 5,0 NUM# 0,0 NUM# 1,0"]\
         ]\
         },\
         {\
@@ -837,8 +837,8 @@ const presetPieChart = '\
         "z": "42",\
         "params":\
         [\
-                ["ITEMS#", "counts", "7 NUM# 7,0 NUM# 7,0 NUM# 2,0 NUM# 3,0 NUM# 4,0 NUM# 6,0 NUM# 1,0"],\
-                ["ITEMS#", "indices", "7 ITEMS# 7 NUM# 0,0 NUM# 2,0 NUM# 7,0 NUM# 18,0 NUM# 20,0 NUM# 26,0 NUM# 28,0 ITEMS# 7 NUM# 1,0 NUM# 4,0 NUM# 9,0 NUM# 12,0 NUM# 13,0 NUM# 23,0 NUM# 24,0 ITEMS# 2 NUM# 3,0 NUM# 15,0 ITEMS# 3 NUM# 5,0 NUM# 8,0 NUM# 14,0 ITEMS# 4 NUM# 6,0 NUM# 10,0 NUM# 21,0 NUM# 27,0 ITEMS# 6 NUM# 11,0 NUM# 16,0 NUM# 19,0 NUM# 22,0 NUM# 25,0 NUM# 29,0 ITEMS# 1 NUM# 17,0"]\
+                ["LIST#", "counts", "7 NUM# 7,0 NUM# 7,0 NUM# 2,0 NUM# 3,0 NUM# 4,0 NUM# 6,0 NUM# 1,0"],\
+                ["LIST#", "indices", "7 LIST# 7 NUM# 0,0 NUM# 2,0 NUM# 7,0 NUM# 18,0 NUM# 20,0 NUM# 26,0 NUM# 28,0 LIST# 7 NUM# 1,0 NUM# 4,0 NUM# 9,0 NUM# 12,0 NUM# 13,0 NUM# 23,0 NUM# 24,0 LIST# 2 NUM# 3,0 NUM# 15,0 LIST# 3 NUM# 5,0 NUM# 8,0 NUM# 14,0 LIST# 4 NUM# 6,0 NUM# 10,0 NUM# 21,0 NUM# 27,0 LIST# 6 NUM# 11,0 NUM# 16,0 NUM# 19,0 NUM# 22,0 NUM# 25,0 NUM# 29,0 LIST# 1 NUM# 17,0"]\
         ]\
         },\
         {\

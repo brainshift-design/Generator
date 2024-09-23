@@ -673,7 +673,7 @@ const presetClock = '\
             "z": "41",\
             "params":\
             [\
-                    ["ITEMS#", "fills", "1 FILL# 68,0 68,0 68,0 100,0 0,0"],\
+                    ["LIST#", "fills", "1 FILL# 68,0 68,0 68,0 100,0 0,0"],\
                     ["NUM#", "weight", "15,0"],\
                     ["NUM#", "fit", "2,0"]\
             ]\

@@ -337,7 +337,7 @@ const presetRainbowStrips = '\
         "z": "17",\
         "params":\
         [\
-                ["ITEMS#", "fills", "1 FILL# 62,0 0,0 156,0 100,0 0,0"],\
+                ["LIST#", "fills", "1 FILL# 62,0 0,0 156,0 100,0 0,0"],\
                 ["NUM#", "weight", "30,0"],\
                 ["TEXT#", "dashes", "", "center"]\
         ]\

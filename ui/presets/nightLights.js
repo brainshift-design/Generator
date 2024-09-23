@@ -141,7 +141,7 @@ const presetNightLights = '\
         "z": "6",\
         "params":\
         [\
-                ["ITEMS#", "fills", "1 FILL# 148,0 77,0 1,0 100,0 0,0"],\
+                ["LIST#", "fills", "1 FILL# 148,0 77,0 1,0 100,0 0,0"],\
                 ["NUM#", "weight", "2,0"],\
                 ["TEXT#", "dashes", "", "center"]\
         ]\

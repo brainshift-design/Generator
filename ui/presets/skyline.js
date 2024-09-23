@@ -1263,7 +1263,7 @@ const presetSkyline ='\
       "z": "65",\
       "params":\
       [\
-            ["ITEMS#", "fills", "1 FILL# 0,0 4,0 255,0 100,0 0,0"],\
+            ["LIST#", "fills", "1 FILL# 0,0 4,0 255,0 100,0 0,0"],\
             ["TEXT#", "dashes", "", "center"]\
       ]\
     },\

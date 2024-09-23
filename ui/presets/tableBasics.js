@@ -95,20 +95,20 @@ const presetTableBasics = '\
             "height": "340",\
             "params":\
             [\
-                    ["ITEMS#", "0", "5 TEXT# Fundamentals%20of%20Wavelets TEXT# Jaideva%20Goswami TEXT# signal_processing TEXT# 228 TEXT# Wiley"],\
-                    ["ITEMS#", "1", "5 TEXT# Data%20Smart TEXT# John%20Foreman TEXT# data_science TEXT# 235 TEXT# Wiley"],\
-                    ["ITEMS#", "2", "5 TEXT# God%20Created%20the%20Integers TEXT# Stephen%20Hawking TEXT# mathematics TEXT# 197 TEXT# Penguin"],\
-                    ["ITEMS#", "3", "5 TEXT# Superfreakonomics TEXT# Stephen%20Dubner TEXT# economics TEXT# 179 TEXT# HarperCollins"],\
-                    ["ITEMS#", "4", "5 TEXT# Orientalism TEXT# Edward%20Said TEXT# history TEXT# 197 TEXT# Penguin"],\
-                    ["ITEMS#", "5", "5 TEXT# The%20Nature%20of%20Statistical%20Learning%20Theory TEXT# Vladimir%20Vapnik TEXT# data_science TEXT# 230 TEXT# Springer"],\
-                    ["ITEMS#", "6", "5 TEXT# Integration%20of%20the%20Indian%20States TEXT# V%20P%20Menon TEXT# history TEXT# 217 TEXT# Orient%20Blackswan"],\
-                    ["ITEMS#", "7", "5 TEXT# The%20Drunkard\'s%20Walk TEXT# Leonard%20Mlodinow TEXT# science TEXT# 197 TEXT# Penguin"],\
-                    ["ITEMS#", "8", "5 TEXT# Image%20Processing%20%26%20Mathematical%20Morphology TEXT# Frank%20Shih TEXT# signal_processing TEXT# 241 TEXT# CRC"],\
-                    ["ITEMS#", "9", "5 TEXT# How%20to%20Think%20Like%20Sherlock%20Holmes TEXT# Maria%20Konnikova TEXT# psychology TEXT# 240 TEXT# Penguin"],\
-                    ["ITEMS#", "10", "5 TEXT# Data%20Scientists%20at%20Work TEXT# Sebastian%20Gutierrez TEXT# data_science TEXT# 230 TEXT# Apress"],\
-                    ["ITEMS#", "11", "5 TEXT# Slaughterhouse%20Five TEXT# Kurt%20Vonnegut TEXT# fiction TEXT# 198 TEXT# Random%20House"],\
-                    ["ITEMS#", "12", "5 TEXT# Birth%20of%20a%20Theorem TEXT# Cedric%20Villani TEXT# mathematics TEXT# 234 TEXT# Bodley%20Head"],\
-                    ["ITEMS#", "13", "5 TEXT# Structure%20%26%20Interpretation%20of%20Computer%20Programs TEXT# Gerald%20Sussman TEXT# computer_science TEXT# 240 TEXT# MIT%20Press"]\
+                    ["LIST#", "0", "5 TEXT# Fundamentals%20of%20Wavelets TEXT# Jaideva%20Goswami TEXT# signal_processing TEXT# 228 TEXT# Wiley"],\
+                    ["LIST#", "1", "5 TEXT# Data%20Smart TEXT# John%20Foreman TEXT# data_science TEXT# 235 TEXT# Wiley"],\
+                    ["LIST#", "2", "5 TEXT# God%20Created%20the%20Integers TEXT# Stephen%20Hawking TEXT# mathematics TEXT# 197 TEXT# Penguin"],\
+                    ["LIST#", "3", "5 TEXT# Superfreakonomics TEXT# Stephen%20Dubner TEXT# economics TEXT# 179 TEXT# HarperCollins"],\
+                    ["LIST#", "4", "5 TEXT# Orientalism TEXT# Edward%20Said TEXT# history TEXT# 197 TEXT# Penguin"],\
+                    ["LIST#", "5", "5 TEXT# The%20Nature%20of%20Statistical%20Learning%20Theory TEXT# Vladimir%20Vapnik TEXT# data_science TEXT# 230 TEXT# Springer"],\
+                    ["LIST#", "6", "5 TEXT# Integration%20of%20the%20Indian%20States TEXT# V%20P%20Menon TEXT# history TEXT# 217 TEXT# Orient%20Blackswan"],\
+                    ["LIST#", "7", "5 TEXT# The%20Drunkard\'s%20Walk TEXT# Leonard%20Mlodinow TEXT# science TEXT# 197 TEXT# Penguin"],\
+                    ["LIST#", "8", "5 TEXT# Image%20Processing%20%26%20Mathematical%20Morphology TEXT# Frank%20Shih TEXT# signal_processing TEXT# 241 TEXT# CRC"],\
+                    ["LIST#", "9", "5 TEXT# How%20to%20Think%20Like%20Sherlock%20Holmes TEXT# Maria%20Konnikova TEXT# psychology TEXT# 240 TEXT# Penguin"],\
+                    ["LIST#", "10", "5 TEXT# Data%20Scientists%20at%20Work TEXT# Sebastian%20Gutierrez TEXT# data_science TEXT# 230 TEXT# Apress"],\
+                    ["LIST#", "11", "5 TEXT# Slaughterhouse%20Five TEXT# Kurt%20Vonnegut TEXT# fiction TEXT# 198 TEXT# Random%20House"],\
+                    ["LIST#", "12", "5 TEXT# Birth%20of%20a%20Theorem TEXT# Cedric%20Villani TEXT# mathematics TEXT# 234 TEXT# Bodley%20Head"],\
+                    ["LIST#", "13", "5 TEXT# Structure%20%26%20Interpretation%20of%20Computer%20Programs TEXT# Gerald%20Sussman TEXT# computer_science TEXT# 240 TEXT# MIT%20Press"]\
             ]\
             },\
             {\

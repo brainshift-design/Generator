@@ -195,7 +195,7 @@ const presetTwistedTower = '\
             "z": "12",\
             "params":\
             [\
-                ["ITEMS#", "points", "4 PT# 0,0 78,0 PT# 200,0 0,0 PT# 200,0 10,0 PT# 0,0 88,0"],\
+                ["LIST#", "points", "4 PT# 0,0 78,0 PT# 200,0 0,0 PT# 200,0 10,0 PT# 0,0 88,0"],\
                 ["NUM#", "closed", "1,0"],\
                 ["NUM#", "degree", "0,0"]\
             ]\
@@ -212,7 +212,7 @@ const presetTwistedTower = '\
             "z": "13",\
             "params":\
             [\
-                ["ITEMS#", "fills", "1 FILL# 0,0 0,0 0,0 100,0 0,0"],\
+                ["LIST#", "fills", "1 FILL# 0,0 0,0 0,0 100,0 0,0"],\
                 ["TEXT#", "dashes", "", "center"]\
             ]\
         },\
@@ -289,7 +289,7 @@ const presetTwistedTower = '\
             "z": "18",\
             "params":\
             [\
-                ["ITEMS#", "points", "4 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0"],\
+                ["LIST#", "points", "4 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0"],\
                 ["NUM#", "closed", "1,0"],\
                 ["NUM#", "degree", "0,0"]\
             ]\
@@ -526,7 +526,7 @@ const presetTwistedTower = '\
             "z": "34",\
             "params":\
             [\
-                ["ITEMS#", "points", "4 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0"],\
+                ["LIST#", "points", "4 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0 PT# 0,0 0,0"],\
                 ["NUM#", "closed", "1,0"],\
                 ["NUM#", "degree", "0,0"]\
             ]\

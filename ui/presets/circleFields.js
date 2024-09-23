@@ -102,7 +102,7 @@ const presetCircleFields = '\
       "z": "4",\
       "params":\
       [\
-            ["ITEMS#", "fills", "1 FILL# 143,0 214,0 2,0 100,0 6,0"],\
+            ["LIST#", "fills", "1 FILL# 143,0 214,0 2,0 100,0 6,0"],\
             ["NUM#", "weight", "2,0"],\
             ["TEXT#", "dashes", "", "center"]\
       ]\

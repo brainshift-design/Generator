@@ -357,7 +357,7 @@ const presetRandomCircles = '\
         "z": "16",\
         "params":\
         [\
-                ["ITEMS#", "fills", "1 FILL# 255,0 64,0 0,0 20,0 7,0"],\
+                ["LIST#", "fills", "1 FILL# 255,0 64,0 0,0 20,0 7,0"],\
                 ["NUM#", "weight", "55.06433462279758,0"],\
                 ["TEXT#", "dashes", "", "center"]\
         ]\
@@ -419,7 +419,7 @@ const presetRandomCircles = '\
         "z": "19",\
         "params":\
         [\
-                ["ITEMS#", "fills", "1 FILL# 0,0 43,0 255,0 15,0 6,0"],\
+                ["LIST#", "fills", "1 FILL# 0,0 43,0 255,0 15,0 6,0"],\
                 ["NUM#", "weight", "25.54672611714554,0"],\
                 ["TEXT#", "dashes", "", "center"]\
         ]\

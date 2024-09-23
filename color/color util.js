@@ -645,6 +645,39 @@ function addHueHcluv(rgb, d, min = 0, max = Tau)
 
 
 
+function addHclok(rgb, hcl_chan, d)
+{
+    const hcl = rgb2hclok(rgb);
+
+    if (hcl_chan == 0)
+        hcl[0] = trimAngle(hcl[0] + d, 0, Tau);
+    else
+        hcl[hcl_chan] += d;
+
+    return hclok2rgb(hcl);
+}
+
+
+
+function multHclok(rgb, hcl_chan, f)
+{
+    const hcl = rgb2hclok(rgb);
+
+    if (hcl_chan == 0)
+        hcl[0] = trimAngle(hcl[0] * f, 0, Tau);
+    else
+        hcl[hcl_chan] *= f;
+
+    return hclok2rgb(hcl);
+}
+
+
+
+function rgbSaturate(rgb, l) { return multHclok(rgb, 1, l); }
+function rgbLighten (rgb, l) { return multHclok(rgb, 2, l); }
+
+
+
 function colorDistance(col1, col2)
 {
     return Math.sqrt(
@@ -829,4 +862,74 @@ function rgbFromColorValue(value)
 
 
     return rgb_NaN;
+}
+
+
+
+function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2, contrast = 0) 
+{
+    if (!(svg instanceof SVGElement))
+        throw new Error('\'svg\' must be an SVG element');
+
+    
+    let defs = svg.querySelector('defs');
+
+    if (!defs) 
+    {
+        defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        svg.insertBefore(defs, svg.firstChild);
+    }
+
+
+    const existingGradients = defs.querySelectorAll('linearGradient');
+    const gradientId        = `svgLinearGradient-${target.curveId}`;
+    
+    existingGradients.forEach(gradient => 
+    {
+        if (gradient.id == gradientId)
+            gradient.remove();
+    });
+
+
+    const linearGradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+
+    linearGradient.setAttribute('id', gradientId);
+
+    linearGradient.setAttribute('x1', x1 + '%');
+    linearGradient.setAttribute('y1', y1 + '%');
+    linearGradient.setAttribute('x2', x2 + '%');
+    linearGradient.setAttribute('y2', y2 + '%');
+
+    
+    const contrastDist = 35;
+
+    const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop1.setAttribute('offset', '0%');
+    stop1.setAttribute('stop-color', color1);
+
+    const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop2.setAttribute('offset', roundTo(contrastDist*contrast, 2) + '%');
+    stop2.setAttribute('stop-color', color1);
+
+    const stop3 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop3.setAttribute('offset', roundTo(100 - contrastDist*contrast, 2) + '%');
+    stop3.setAttribute('stop-color', color2);
+
+    const stop4 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop4.setAttribute('offset', '100%');
+    stop4.setAttribute('stop-color', color2);
+
+ 
+    linearGradient.appendChild(stop1);
+    linearGradient.appendChild(stop2);
+    linearGradient.appendChild(stop3);
+    linearGradient.appendChild(stop4);
+
+    defs.appendChild(linearGradient);
+
+
+    target.style.stroke = `url(#${gradientId})`;
+
+
+    return gradientId;
 }

@@ -754,7 +754,7 @@ const presetLineGraph = '\
         "z": "39",\
         "params":\
         [\
-                ["ITEMS#", "fills", "1 FILL# 136,0 136,0 136,0 100,0 0,0"],\
+                ["LIST#", "fills", "1 FILL# 136,0 136,0 136,0 100,0 0,0"],\
                 ["NUM#", "weight", "0.5,1"],\
                 ["TEXT#", "dashes", "", "center"]\
         ]\
@@ -774,7 +774,7 @@ const presetLineGraph = '\
         "z": "40",\
         "params":\
         [\
-                ["ITEMS#", "fills", "1 FILL# 14,0 204,0 21,0 100,0 0,0"],\
+                ["LIST#", "fills", "1 FILL# 14,0 204,0 21,0 100,0 0,0"],\
                 ["TEXT#", "dashes", "", "center"]\
         ]\
         },\
@@ -811,7 +811,7 @@ const presetLineGraph = '\
         "z": "42",\
         "params":\
         [\
-                ["ITEMS#", "points", "12 PT# 0,0 -60,0 PT# 20,0 -53,0 PT# 40,0 -38,0 PT# 60,0 -45,0 PT# 80,0 -28,0 PT# 100,0 -16,0 PT# 120,0 -4,0 PT# 140,0 -6,0 PT# 160,0 -26,0 PT# 180,0 -57,0 PT# 200,0 -67,0 PT# 220,0 -74,0"],\
+                ["LIST#", "points", "12 PT# 0,0 -60,0 PT# 20,0 -53,0 PT# 40,0 -38,0 PT# 60,0 -45,0 PT# 80,0 -28,0 PT# 100,0 -16,0 PT# 120,0 -4,0 PT# 140,0 -6,0 PT# 160,0 -26,0 PT# 180,0 -57,0 PT# 200,0 -67,0 PT# 220,0 -74,0"],\
                 ["NUM#", "degree", "0,0"]\
         ]\
         },\
@@ -848,7 +848,7 @@ const presetLineGraph = '\
         "z": "44",\
         "params":\
         [\
-                ["ITEMS#", "fills", "1 FILL# 136,0 136,0 136,0 100,0 0,0"],\
+                ["LIST#", "fills", "1 FILL# 136,0 136,0 136,0 100,0 0,0"],\
                 ["NUM#", "weight", "0.5,1"],\
                 ["TEXT#", "dashes", "", "center"]\
         ]\

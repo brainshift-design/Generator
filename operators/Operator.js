@@ -515,7 +515,11 @@ class Operator
         else if (type ==   LAYER_BLUR_VALUE) return this.addParam(new   LayerBlurParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==    BACK_BLUR_VALUE) return this.addParam(new    BackBlurParam(id, id, showName, hasInput, hasOutput), volatile);
 
-        else consoleError('cannot add parameter of type \'' + type + '\'');
+        else 
+        {
+            console.trace();
+            consoleError('cannot add parameter of type \'' + type + '\'');
+        }
 
         return null;
     }

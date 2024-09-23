@@ -99,7 +99,7 @@ const presetBasicTransform = '\
             "z": "6",\
             "params":\
             [\
-                    ["ITEMS#", "fills", "1 FILL# 255,0 131,0 53,0 100,0 0,0"]\
+                    ["LIST#", "fills", "1 FILL# 255,0 131,0 53,0 100,0 0,0"]\
             ]\
             },\
             {\
