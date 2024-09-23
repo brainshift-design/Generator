@@ -58,5 +58,5 @@ function initThemeColors()
 {
     rgbDocumentBody = computedStyle2rgba(document.body, 'background-color');
 
-    darkMode = isDarkMode();
+    darkMode        = isDarkMode();
 }

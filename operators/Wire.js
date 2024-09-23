@@ -590,25 +590,25 @@ class Wire
             : outColor;
 
 
-        const dx = x2 - x1;
-        const dy = y2 - y1;
+        // const dx = x2 - x1;
+        // const dy = y2 - y1;
 
         //const wireLength   = distv(point(x1, y1), point(x2, y2)) / graph.currentPage.zoom;
         //const gradContrast = 1 - Math.min(Math.max(0, wireLength / 100 - 0.5), 1);
 
-        setSvgLinearGradientStroke(
-            this.curve.closest('svg'),
-            this.curve,
-            rgba2style(outColor),
-            rgba2style(rgbLighten(outColor, 0.5)),
-            -dx > Math.abs(dy) ? 100 : 0,
-            -dy > Math.abs(dx) ? 100 : 0,
-             dx > Math.abs(dy) ? 100 : 0,
-             dy > Math.abs(dx) ? 100 : 0);//,
-             //gradContrast);
+        // setSvgLinearGradientStroke(
+        //     this.curve.closest('svg'),
+        //     this.curve,
+        //     rgba2style(outColor),
+        //     rgba2style(rgbLighten(outColor, darkMode ? 0.75 : 1.5)),
+        //     -dx > Math.abs(dy) ? 100 : 0,
+        //     -dy > Math.abs(dx) ? 100 : 0,
+        //      dx > Math.abs(dy) ? 100 : 0,
+        //      dy > Math.abs(dx) ? 100 : 0);//,
+        //      //gradContrast);
 
 
-        //this.curve .style.stroke = rgb2style(color);
+        this.curve .style.stroke = rgb2style(color);
         this.curve2.style.stroke = rgb2style(rgbDocumentBody);
      
 

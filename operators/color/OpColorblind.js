@@ -25,7 +25,8 @@ extends OpColorBase
     {
         super(COLORBLIND, 'colorblind', 'colorblind', NULL);
 
-        this.canDisable = true;
+        this.subscription = true;
+        this.canDisable   = true;
         
 
         this.colorBack = createDiv('colorBack');

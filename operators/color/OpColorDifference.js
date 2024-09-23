@@ -13,6 +13,7 @@ extends OperatorBase
         super(COLOR_DIFFERENCE, 'colorDiff', 'color difference', iconColorDeltaE);
 
         this.outputValueType = ANY_VALUE;
+        this.subscription    = true;
 
 
         this.addInput(new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE]));

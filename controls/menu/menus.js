@@ -259,6 +259,7 @@ var menuItemColorSep1;
 var menuItemColorblind;
 var menuItemColorBlend;
 var menuItemColorScheme;
+var menuItemColorDifference;
 
 
 var menuItemLayerFill;
@@ -713,22 +714,22 @@ function initGeneratorMenus()
 
     menuColor = new Menu('Colors', true, false);
     menuColor.addItems([
-        menuItemColor        = new MenuItem('Color',            null,                false, {icon: iconColor,            childMenu: menuCreateColor,  callback: e => actionManager.do(getCreateNodeAction(COLOR, btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
-                               new MenuItem('',                 null,                false, {separator: true}),
-        menuItemLayerFill    = new MenuItem('Fill',             null,                false, {icon: iconFill,             callback: e => actionManager.do(getCreateNodeAction(FILL,              btnColor.div, getCreateOptions(e)))}),
-        menuItemLayerStroke  = new MenuItem('Stroke',           null,                false, {icon: iconStroke,           childMenu: menuStroke, callback: e => actionManager.do(getCreateNodeAction(STROKE,            btnColor.div, getCreateOptions(e)))}),
-                               new MenuItem('Color stop',       null,                false, {icon: iconColorStop,        callback: e => actionManager.do(getCreateNodeAction(COLOR_STOP,        btnColor.div, getCreateOptions(e)))}),
-                               new MenuItem('Gradient',         null,                false, {icon: iconGradient,         callback: e => actionManager.do(getCreateNodeAction(GRADIENT,          btnColor.div, getCreateOptions(e)))}),
-        menuItemColorScheme  = new MenuItem('Scheme',           null,                false, {icon: iconColorScheme,      callback: e => actionManager.do(getCreateNodeAction(COLOR_SCHEME,      btnColor.div, getCreateOptions(e)))}),
-        menuItemLayerSep1    = new MenuItem('',                 null,                false, {separator: true}),
-        menuItemValidColor   = new MenuItem('Valid sRGB',       null,                false, {childMenu: menuValidColor, icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
-        menuItemColorblind   = new MenuItem('Colorblind',       null,                false, {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
-                               new MenuItem('',                 null,                false, {separator: true}),
-                               new MenuItem('Web contrast',     null,                false, {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
-                               new MenuItem('Color difference', null,                false, {icon: iconColorDeltaE,      callback: e => actionManager.do(getCreateNodeAction(COLOR_DIFFERENCE,     btnColor.div, getCreateOptions(e)))}),
-                               new MenuItem('',                 null,                false, {separator: true}),
-                               new MenuItem('Interpolate',      'Interpolate color', true,  {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))}),
-        menuItemColorBlend   = new MenuItem('Blend',            null,                false, {icon: iconColorBlend,       callback: e => actionManager.do(getCreateNodeAction(COLOR_BLEND,       btnColor.div, getCreateOptions(e)))})]);
+        menuItemColor           = new MenuItem('Color',            null,                false, {icon: iconColor,            childMenu: menuCreateColor,  callback: e => actionManager.do(getCreateNodeAction(COLOR, btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
+                                  new MenuItem('',                 null,                false, {separator: true}),
+        menuItemLayerFill       = new MenuItem('Fill',             null,                false, {icon: iconFill,             callback: e => actionManager.do(getCreateNodeAction(FILL,              btnColor.div, getCreateOptions(e)))}),
+        menuItemLayerStroke     = new MenuItem('Stroke',           null,                false, {icon: iconStroke,           childMenu: menuStroke, callback: e => actionManager.do(getCreateNodeAction(STROKE,            btnColor.div, getCreateOptions(e)))}),
+                                  new MenuItem('Color stop',       null,                false, {icon: iconColorStop,        callback: e => actionManager.do(getCreateNodeAction(COLOR_STOP,        btnColor.div, getCreateOptions(e)))}),
+                                  new MenuItem('Gradient',         null,                false, {icon: iconGradient,         callback: e => actionManager.do(getCreateNodeAction(GRADIENT,          btnColor.div, getCreateOptions(e)))}),
+        menuItemColorScheme     = new MenuItem('Scheme',           null,                false, {icon: iconColorScheme,      callback: e => actionManager.do(getCreateNodeAction(COLOR_SCHEME,      btnColor.div, getCreateOptions(e)))}),
+        menuItemLayerSep1       = new MenuItem('',                 null,                false, {separator: true}),
+        menuItemValidColor      = new MenuItem('Valid sRGB',       null,                false, {childMenu: menuValidColor, icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
+        menuItemColorblind      = new MenuItem('Colorblind',       null,                false, {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
+                                  new MenuItem('',                 null,                false, {separator: true}),
+                                  new MenuItem('Web contrast',     null,                false, {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
+        menuItemColorDifference = new MenuItem('Color difference', null,                false, {icon: iconColorDeltaE,      callback: e => actionManager.do(getCreateNodeAction(COLOR_DIFFERENCE,     btnColor.div, getCreateOptions(e)))}),
+                                  new MenuItem('',                 null,                false, {separator: true}),
+                                  new MenuItem('Interpolate',      'Interpolate color', true,  {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))}),
+        menuItemColorBlend      = new MenuItem('Blend',            null,                false, {icon: iconColorBlend,       callback: e => actionManager.do(getCreateNodeAction(COLOR_BLEND,       btnColor.div, getCreateOptions(e)))})]);
 
     menuColor.init = () => 
     {

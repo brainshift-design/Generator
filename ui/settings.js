@@ -412,7 +412,8 @@ function enableFeatures(pro)
     enableMenuItem(menuItemSolve,              true, pro);
     enableMenuItem(menuItemParseJson,          true, pro);
     enableMenuItem(menuItemCorrectColor,       true, pro);
-    enableMenuItem(menuItemConvertToP3,        true, pro);
+    enableMenuItem(menuItemColorblind,         true, pro);
+    enableMenuItem(menuItemColorDifference,    true, pro);
     enableMenuItem(menuItemPersist,            true, pro);
     enableMenuItem(menuItemVectorNetwork,      true, pro, true);
     enableMenuItem(menuItemVectorVertex,       true, pro, true);
