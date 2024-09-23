@@ -80,8 +80,6 @@ extends EventTarget
     getDescription       = () => '';
     getDescriptionPrompt = () => this.getDescription();
 
-    pushUpdate = null;
-
 
 
     constructor(type, id, name, showName)

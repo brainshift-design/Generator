@@ -292,12 +292,7 @@ NumberControl.prototype.initEvents = function()
 
 
                     if (this.value != this.prevValue)
-                    {
-                        if (param.pushUpdate)
-                            param.pushUpdate();
-                        else
-                            pushUpdateFromParam(null, [param.node], param);
-                    }
+                        pushUpdateFromParam(null, [param.node], param);
 
                     this.prevValue = this.value;
                 }
@@ -452,10 +447,7 @@ NumberControl.prototype.initEvents = function()
 
             this.update();
 
-            if (param.pushUpdate)
-                param.pushUpdate();
-            else
-                pushUpdateFromParam(null, [param.node], param);
+            pushUpdateFromParam(null, [param.node], param);
 
 
             return;            

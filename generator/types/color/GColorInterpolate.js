@@ -63,7 +63,7 @@ extends GOperator
 
         if (space) space = space.toInteger();
         
-        
+
         const _gamma = Math.max(0.0001, gamma.value);
         const _space = colorSpace(space.value);
 
