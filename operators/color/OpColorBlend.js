@@ -34,9 +34,6 @@ extends OpColorBase
         this.paramMode.input.outputMustBeCached = true;
 
         
-        // this.paramAmount.controls[0].min = Number.MIN_SAFE_INTEGER; // allow
-        // this.paramAmount.controls[0].max = Number.MAX_SAFE_INTEGER; // extrapolation
-
         this.paramAmount.controls[0].setSuffix('%', true);
         
 

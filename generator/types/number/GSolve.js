@@ -89,6 +89,9 @@ extends GOperator1
                 const inParamValue = this.input.node[this.input.paramId];
 
 
+                parse.solvers.push(this);
+
+
                 while (iter++ < maxIter)
                 {
                     _input += step;
@@ -110,10 +113,8 @@ extends GOperator1
 
                         this.input  .invalidateInputs(parse, this, true);
                         this.current.invalidateInputs(parse, this, true);
-                        this.target .invalidateInputs(parse, this, true);
 
                         current = await evalNumberValue(this.current, parse);
-                        target  = await evalNumberValue(this.target,  parse);
 
 
                         if (   current.isValid()
@@ -144,6 +145,9 @@ extends GOperator1
                 }
 
 
+                parse.solvers.pop();
+
+
                 this.current.invalidateInputs(parse, this, true);
                 current = await evalNumberValue(this.current, parse);
 
@@ -151,7 +155,7 @@ extends GOperator1
                 if (current && target)
                     current.decimals = target.decimals;
 
-                
+
                 if (   iter < maxIter
                     && Math.abs(diff) < 0.0000001)
                     parse.currentProgress += maxIter - iter;

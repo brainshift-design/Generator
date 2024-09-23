@@ -38,6 +38,7 @@ class Parse
   
   
     repeats         = [];
+    solvers         = [];
   
     stopGenerate    = false;
   
