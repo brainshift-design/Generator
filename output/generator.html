@@ -30401,8 +30401,8 @@ extends GOperator1
                 if (   iter < maxIter
                     && Math.abs(diff) < 0.0000001)
                     parse.currentProgress += maxIter - iter;
-                else
-                    console.warn('max solve iterations');
+                // else
+                //     console.warn('max solve iterations');
 
 
                 this.value = inParamValue
@@ -30426,7 +30426,12 @@ extends GOperator1
         this.validate();
 
 
-        pushUnique(parse.terminalIds, this.terminalIds);
+        if (this.input)
+        {
+            //this.input.invalidate(); //Inputs(parse, this, true);
+            pushUnique(parse.terminalIds, this.terminalIds);
+            // console.log('parse.terminalIds =', parse.terminalIds);
+        }
 
 
         return this;
@@ -52078,11 +52083,13 @@ function genRequest(request, save)
 
         for (const terminalId of parse.terminalIds)
         {
-            const terminal = parse.parsedNodes.find(n => n.id == terminalId);
+            const terminal = parse.parsedNodes.find(n => n.nodeId == terminalId);
 
             if (terminal)
             {
                 if (await checkStop(parse.requestId)) { stop = true; break; }
+
+                terminal.invalidate();
                 await terminal.eval(parse);
             }
         }
@@ -57753,7 +57760,6 @@ function genParseSolve(parse)
 
     nTerminals = parseInt(parse.move());
     consoleAssert(nTerminals >= 0, 'nTerminals must be >= 0');
-    console.log('nTerminals =', nTerminals);
 
     for (let i = 0; i < nTerminals; i++)
         solve.terminalIds.push(parse.move());
@@ -62420,7 +62426,7 @@ function logReqSolve(node, parse, ignore, nInputs = -1)
     if (node.terminalIds.length > 0)
     {
         parse.log += ' ';
-        parse.log += node.terminalIds.join(', ');
+        parse.log += node.terminalIds.join(' ');
     }
 
 

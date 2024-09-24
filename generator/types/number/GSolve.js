@@ -165,8 +165,8 @@ extends GOperator1
                 if (   iter < maxIter
                     && Math.abs(diff) < 0.0000001)
                     parse.currentProgress += maxIter - iter;
-                else
-                    console.warn('max solve iterations');
+                // else
+                //     console.warn('max solve iterations');
 
 
                 this.value = inParamValue
@@ -190,7 +190,12 @@ extends GOperator1
         this.validate();
 
 
-        pushUnique(parse.terminalIds, this.terminalIds);
+        if (this.input)
+        {
+            //this.input.invalidate(); //Inputs(parse, this, true);
+            pushUnique(parse.terminalIds, this.terminalIds);
+            // console.log('parse.terminalIds =', parse.terminalIds);
+        }
 
 
         return this;

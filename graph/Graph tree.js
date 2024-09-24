@@ -230,15 +230,17 @@ function getTerminalsAfterNode(node, except = [], stackOverflowProtect = 100)
     }
 
 
-    // if (    node.type == NUMBER_SOLVE
-    //     &&  node.headerInputs[0].connected
-    //     && !except.includes(node.headerInputs[0].connectedOutput.node.id))
-    //     pushUnique(
-    //         after, 
-    //         getTerminalsAfterNode(
-    //             node.headerInputs[0].connectedOutput.node, 
-    //             [node.headerInputs[0].connectedOutput.node.id], 
-    //             stackOverflowProtect-1));
+    if (    node.type == NUMBER_SOLVE
+        &&  node.headerInputs[0].connected
+        && !except.includes(node.headerInputs[0].connectedOutput.node.id))
+    {
+        const terminals = getTerminalsAfterNode(
+            node.headerInputs[0].connectedOutput.node, 
+            [node.headerInputs[0].connectedOutput.node.id], 
+            stackOverflowProtect-1);
+
+        pushUnique(after, terminals);
+    }
 
 
     return !isEmpty(after) 

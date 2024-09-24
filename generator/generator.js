@@ -121,11 +121,13 @@ function genRequest(request, save)
 
         for (const terminalId of parse.terminalIds)
         {
-            const terminal = parse.parsedNodes.find(n => n.id == terminalId);
+            const terminal = parse.parsedNodes.find(n => n.nodeId == terminalId);
 
             if (terminal)
             {
                 if (await checkStop(parse.requestId)) { stop = true; break; }
+
+                terminal.invalidate();
                 await terminal.eval(parse);
             }
         }

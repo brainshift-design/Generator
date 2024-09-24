@@ -39,7 +39,7 @@ function logReqSolve(node, parse, ignore, nInputs = -1)
     if (node.terminalIds.length > 0)
     {
         parse.log += ' ';
-        parse.log += node.terminalIds.join(', ');
+        parse.log += node.terminalIds.join(' ');
     }
 
 

@@ -1690,7 +1690,6 @@ function genParseSolve(parse)
 
     nTerminals = parseInt(parse.move());
     consoleAssert(nTerminals >= 0, 'nTerminals must be >= 0');
-    console.log('nTerminals =', nTerminals);
 
     for (let i = 0; i < nTerminals; i++)
         solve.terminalIds.push(parse.move());

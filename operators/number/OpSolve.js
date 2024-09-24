@@ -51,9 +51,7 @@ extends OperatorBase
                 this.node.headerInputs[0].connectedOutput.node, 
                 [this.id]);
 
-            removeFromArrayWhere(terminals, item => item.id == this.id);
-
-            console.log('terminals =', terminals);
+            removeFromArray(terminals, this.node);
 
             request.push(terminals.length);
             terminals.forEach(t => request.push(t.id));
