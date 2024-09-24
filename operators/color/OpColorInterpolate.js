@@ -20,6 +20,7 @@ extends OpColorBase
     {
         super(COLOR_INTERPOLATE, 'inter', 'interpolate', iconColorInterpolate);
 
+        
         this.variableInputs = true;
         this.iconOffsetY    = -3;
 

@@ -148,12 +148,23 @@ extends OpColorBase
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
+        const items = value.fills.items;
 
-        this._color = 
-               value
-            && value.fills.items.length > 0
-            ? value.fills.items[0].color.toDataColor()
-            : dataColor_NaN;
+
+        if (   value
+            && items.length > 0)
+        {
+            switch (items[0].type)
+            {
+                case COLOR_VALUE:    this._color = items[0]      .toDataColor();     break;
+                case FILL_VALUE:     this._color = items[0].color.toDataColor();     break;
+                case GRADIENT_VALUE: this._color = rgb2dataColor(items[0].toRgba()); break;
+            }
+        }
+        else
+        {
+            this._color = dataColor_NaN;
+        }
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
