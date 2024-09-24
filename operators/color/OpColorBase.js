@@ -10,12 +10,16 @@ extends Operator
     forceShowWarning = false;
     warningStyle;
     
+    width;
+
 
 
     constructor(type, id, name, icon, progressBar = false, defWidth = defNodeWidth)
     {
         super(type, id, name, icon, defWidth, progressBar);
 
+        
+        this.width           = defWidth;
         this.showActiveArrow = true;
         
 

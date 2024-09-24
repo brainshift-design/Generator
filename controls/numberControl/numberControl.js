@@ -364,8 +364,9 @@ extends Control
                && (   this.param.isUnknown()
                    ||    this.param.isNodeValue
                       && this.param.node.isUnknown()))
+        {
             this.divBar.style.display = 'none';
-
+        }
         else
         {
             this.divBar.style.display = 'block';
