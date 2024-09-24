@@ -550,8 +550,8 @@ function initGeneratorMenus()
                            new MenuItem('Noise. . .',       null, false, {icon: iconNoise,       createType: NUMBER_NOISE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOISE,       btnSets.div, getCreateOptions(e)))}),
                            new MenuItem('Probability. . .', null, false, {icon: iconProbability, createType: PROBABILITY,        callback: e => actionManager.do(getCreateNodeAction(PROBABILITY,        btnSets.div, getCreateOptions(e)))}),
                            new MenuItem('',                 null, false, {separator: true}),
-                           new MenuItem('Accumulate. . .',  null, false, {icon: iconAccumulate,  createType: NUMBER_ACCUMULATE,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_ACCUMULATE,  btnSets.div, getCreateOptions(e)))}),
-                           new MenuItem('Hold. . .',        null, false, {icon: iconHold,        createType: HOLD,               callback: e => actionManager.do(getCreateNodeAction(HOLD,               btnSets.div, getCreateOptions(e)))})]);
+                           new MenuItem('Accumulate. . .',  null, false, {icon: iconAccumulate,  createType: NUMBER_ACCUMULATE,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_ACCUMULATE,  btnSets.div, getCreateOptions(e)))})]);
+                           //new MenuItem('Hold. . .',        null, false, {icon: iconHold,        createType: HOLD,               callback: e => actionManager.do(getCreateNodeAction(HOLD,               btnSets.div, getCreateOptions(e)))})]);
         
     
     menuMath = new Menu('Math', true, false);

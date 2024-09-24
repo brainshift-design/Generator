@@ -348,7 +348,10 @@ extends EventTarget
 
         if (darkMode)
         {
-            if (isColorType(this.types[0]))
+            if (   isColorType(this.types[0])
+                && this.node.type != ITERATE
+                && this.node.type != PROBABILITY
+                && this.node.type != HOLD)
             {
                 ballColor = 
                        conn
