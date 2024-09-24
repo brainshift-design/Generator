@@ -765,6 +765,32 @@ function handleLegacyNode(_node, genVersion)
         if (!_node.useWavelength)
             _node.useWavelength = false;
     }
+
+    else if (_node.type == IF_ELSE
+          && genVersion < 441
+    )
+    {
+        const paramCondition = _node.params.find(p => p[1] == 'condition');
+        
+        if (paramCondition) 
+        {
+            const value = parseNumberValue(paramCondition[2]);
+
+            if (value.value > 0) value.value = 0;
+            else                 value.value = 1;
+
+            paramCondition[2] = value.toString();
+        }
+        else
+        {
+            _node.params.push(
+            [
+                NUMBER_VALUE,
+                'condition',
+                '1,0'
+            ]);
+        }
+    }
 }
 
 

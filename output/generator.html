@@ -25489,17 +25489,17 @@ extends GOperator
             return this;
 
         
-        const input0 = await evalValue(this.input0, parse);
-        const input1 = await evalValue(this.input1, parse);
+        const inputFalse = await evalValue(this.input0, parse);
+        const inputTrue  = await evalValue(this.input1, parse);
         
-        const cond   = await evalNumberValue(this.condition, parse);
+        const cond       = await evalNumberValue(this.condition, parse);
 
 
-          if (   input0 
-              && input1) this.value = cond.value != 0 ? input0 : input1;
-        else if (input0) this.value = cond.value != 0 ? input0 : nanFromType(input0.type);
-        else if (input1) this.value = cond.value == 0 ? input1 : nanFromType(input1.type);
-        else             this.value = new NullValue();
+          if (   inputFalse 
+              && inputTrue ) this.value = cond.value >  0 ? inputTrue  : inputFalse;
+        else if (inputFalse) this.value = cond.value == 0 ? inputFalse : nanFromType(inputFalse.type);
+        else if (inputTrue ) this.value = cond.value >  0 ? inputTrue  : nanFromType(inputTrue .type);
+        else                 this.value = new NullValue();
 
 
         this.updateValueObjects();
