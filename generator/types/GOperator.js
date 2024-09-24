@@ -452,14 +452,14 @@ async function evalFillValue(_value, parse)
 
 
 
-async function evalStrokeValue        (_value, parse) { return await evalValue(_value, parse, () => StrokeValue        .NaN.copy()); }
-async function evalColorStopValue     (_value, parse) { return await evalValue(_value, parse, () => ColorStopValue     .NaN.copy()); }
+async function evalStrokeValue   (_value, parse) { return await evalValue(_value, parse, () => StrokeValue   .NaN.copy()); }
+async function evalColorStopValue(_value, parse) { return await evalValue(_value, parse, () => ColorStopValue.NaN.copy()); }
 
 
 
-async function evalColorStopOrListValue(_value, parse) 
-{ 
-    let value = await evalValue(_value, parse, () => ColorStopValue.NaN.copy()); 
+async function evalColorStopOrListValue(_value, parse)
+{
+    let value = await evalValue(_value, parse, () => ColorStopValue.NaN.copy());
 
 
     if (   value

@@ -68,6 +68,15 @@ extends GOperator
         const _space = colorSpace(space.value);
 
 
+        let maxInputColorType = COLOR_VALUE;
+        
+        for (const input of inputs)
+        {
+            if (input.type == FILL_VALUE)
+                maxInputColorType = FILL_VALUE;
+        }
+
+
         inputs = validateColorStops(inputs);
 
         setColorStopPositions(inputs);
@@ -76,7 +85,7 @@ extends GOperator
 
 
         const opacities = inputs.map(i => i.fill.opacity);
-        // const maxDec    = opacities.reduce((max, o) => Math.max(max, o.decimals), 0);
+        // const maxDec = opacities.reduce((max, o) => Math.max(max, o.decimals), 0);
 
         const nSegments = Math.floor(inputs.length-1);
 
@@ -106,46 +115,30 @@ extends GOperator
                 : amount.value/100;
 
 
-            if (   degree.value == 0  // linear
-                || degree.value == 1) // cosine
-            {
-                const val0 = inputs[index  ];
-                const val1 = inputs[index+1];
+            const val0 = inputs[index  ];
+            const val1 = inputs[index+1];
 
-                if (degree.value == 1)
-                    localAmount = lerpCos(0, 1, localAmount);
+            if (degree.value == 1)
+                localAmount = lerpCos(0, 1, localAmount);
 
-                this.value = new FillValue(
-                    ColorValue.fromDataColor(GColorInterpolate.interpolate(
-                        space.value, 
-                        convertDataColorToSpace(val0.fill.color.toDataColor(), _space), 
-                        convertDataColorToSpace(val1.fill.color.toDataColor(), _space),
-                        localAmount,
-                        _gamma)),
-                    new NumberValue(lerp(
-                        opacities[index  ].value,
-                        opacities[index+1].value,
-                        localAmount)));
-            }
-            // else if (degree.value == 1) // cosine
-            // {
-            //     const val0 = values[index  ];
-            //     const val1 = values[index+1];
-
-            //     this.value = new NumberValue(
-            //         lerpCos(val0.value, val1.value, localAmount),
-            //         maxDec);
-            // }
-            else
-                this.value = ColorValue.NaN.copy();
+            this.value = new FillValue(
+                ColorValue.fromDataColor(GColorInterpolate.interpolate(
+                    space.value, 
+                    convertDataColorToSpace(val0.fill.color.toDataColor(), _space), 
+                    convertDataColorToSpace(val1.fill.color.toDataColor(), _space),
+                    localAmount,
+                    _gamma)),
+                new NumberValue(lerp(
+                    opacities[index  ].value,
+                    opacities[index+1].value,
+                    localAmount)));
         }
-
         else                  
             this.value = ColorValue.NaN.copy();
         
         
-        if (   this.value.type == FILL_VALUE
-            && finalListTypeFromValues(inputs) == COLOR_LIST_VALUE)
+        if (   this.value.type   == FILL_VALUE
+            && maxInputColorType == COLOR_VALUE) //finalListTypeFromValues(inputs) == COLOR_LIST_VALUE)
             this.value = this.value.color;
 
 

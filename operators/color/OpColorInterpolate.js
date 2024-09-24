@@ -138,7 +138,12 @@ extends OpColorBase
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         this.value = values[paramIds.findIndex(id => id == 'value')];
-        const type = values[paramIds.findIndex(id => id == 'type' )];
+
+        if (this.value.type == COLOR_VALUE)
+            this.value = new FillValue(this.value);
+
+
+        const type = values[paramIds.findIndex(id => id == 'type')];
 
         if (type) 
             this.headerOutputs[0].types = [type.value];
