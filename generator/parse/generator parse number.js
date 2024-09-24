@@ -1686,6 +1686,16 @@ function genParseSolve(parse)
     const solve = new GSolve(nodeId, options);
    
 
+    let nTerminals = -1;
+
+    nTerminals = parseInt(parse.move());
+    consoleAssert(nTerminals >= 0, 'nTerminals must be >= 0');
+    console.log('nTerminals =', nTerminals);
+
+    for (let i = 0; i < nTerminals; i++)
+        solve.terminalIds.push(parse.move());
+
+
     let nInputs = -1;
     
     if (!ignore)
@@ -1696,7 +1706,7 @@ function genParseSolve(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(solve, parse, ignore, nInputs);
+        logReqSolve(solve, parse, ignore, nInputs);
 
 
     if (ignore) 

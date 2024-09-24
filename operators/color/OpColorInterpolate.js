@@ -169,10 +169,11 @@ extends OpColorBase
         
         const colors = this.getHeaderColors();
 
-        if (this.value.isValid())
+        if (   this.value
+            && this.value.isValid())
             this.checkersHolder.style.opacity = (100 - this.value.opacity.toNumber()) + '%';
 
-        updateFillHeader(this, colors, this.value.isValid());
+        updateFillHeader(this, colors, this.value && this.value.isValid());
 
         this._warningOverlay.style.height = this.measureData.headerOffset.height;
     }

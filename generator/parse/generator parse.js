@@ -50,6 +50,9 @@ class Parse
     updateObjects   = [];
     updateStyles    = [];
 
+
+    terminalIds     = [];
+
     
 
     get next() { return this.request[this.pos]; }

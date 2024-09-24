@@ -30237,8 +30237,10 @@ function interpolateNumberValue(values, index, nSegments, deg, degree, amount, m
 class GSolve
 extends GOperator1
 {
-    current = null;
-    target  = null;
+    current     = null;
+    target      = null;
+
+    terminalIds = [];
 
 
     
@@ -30253,8 +30255,10 @@ extends GOperator1
     {
         super.reset();
 
-        this.current = null;
-        this.target  = null;
+        this.current     = null;
+        this.target      = null;
+
+        this.terminalIds = [];
     }
 
 
@@ -30267,6 +30271,8 @@ extends GOperator1
 
         if (this.current) copy.current = this.current.copy();
         if (this.target ) copy.target  = this.target .copy();
+
+        copy.terminalIds = [...this.terminalIds];
 
         return copy;
     }
@@ -30418,6 +30424,10 @@ extends GOperator1
 
 
         this.validate();
+
+
+        pushUnique(parse.terminalIds, this.terminalIds);
+
 
         return this;
     }
@@ -52056,12 +52066,24 @@ function genRequest(request, save)
         let stop = false;
 
 
-        for (const nodes of [paramNodes, topLevelNodes])//, otherNodes])
+        for (const nodes of [paramNodes, topLevelNodes])
         {
             for (const node of nodes)
             {
                 if (await checkStop(parse.requestId)) { stop = true; break; }
                 await node.eval(parse);
+            }
+        }
+
+
+        for (const terminalId of parse.terminalIds)
+        {
+            const terminal = parse.parsedNodes.find(n => n.id == terminalId);
+
+            if (terminal)
+            {
+                if (await checkStop(parse.requestId)) { stop = true; break; }
+                await terminal.eval(parse);
             }
         }
 
@@ -57727,6 +57749,16 @@ function genParseSolve(parse)
     const solve = new GSolve(nodeId, options);
    
 
+    let nTerminals = -1;
+
+    nTerminals = parseInt(parse.move());
+    consoleAssert(nTerminals >= 0, 'nTerminals must be >= 0');
+    console.log('nTerminals =', nTerminals);
+
+    for (let i = 0; i < nTerminals; i++)
+        solve.terminalIds.push(parse.move());
+
+
     let nInputs = -1;
     
     if (!ignore)
@@ -57737,7 +57769,7 @@ function genParseSolve(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(solve, parse, ignore, nInputs);
+        logReqSolve(solve, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -61667,6 +61699,9 @@ class Parse
     updateObjects   = [];
     updateStyles    = [];
 
+
+    terminalIds     = [];
+
     
 
     get next() { return this.request[this.pos]; }
@@ -62366,6 +62401,28 @@ function logReq(node, parse, ignore, nInputs = -1)
 {
     parse.log += parse.tab + node.type;
     parse.log += logReqNodeId(node, ignore);
+
+    if (    nInputs > -1
+        && !ignore)
+        parse.log += ' ' + nInputs;
+}
+
+
+
+function logReqSolve(node, parse, ignore, nInputs = -1)
+{
+    parse.log += parse.tab + node.type;
+    parse.log += logReqNodeId(node, ignore);
+
+
+    parse.log += ' ' + node.terminalIds.length;
+
+    if (node.terminalIds.length > 0)
+    {
+        parse.log += ' ';
+        parse.log += node.terminalIds.join(', ');
+    }
+
 
     if (    nInputs > -1
         && !ignore)

@@ -28,6 +28,28 @@ function logReq(node, parse, ignore, nInputs = -1)
 
 
 
+function logReqSolve(node, parse, ignore, nInputs = -1)
+{
+    parse.log += parse.tab + node.type;
+    parse.log += logReqNodeId(node, ignore);
+
+
+    parse.log += ' ' + node.terminalIds.length;
+
+    if (node.terminalIds.length > 0)
+    {
+        parse.log += ' ';
+        parse.log += node.terminalIds.join(', ');
+    }
+
+
+    if (    nInputs > -1
+        && !ignore)
+        parse.log += ' ' + nInputs;
+}
+
+
+
 function logReqNodeId(node, ignore = false)
 {
     return ' ' 

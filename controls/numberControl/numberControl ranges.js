@@ -52,8 +52,8 @@ NumberControl.prototype.updateRanges = function(controlWidth, controlHeight)
 
             const val = (this.value - this.displayMin) / (this.displayMax - this.displayMin);
 
-            if (this.value < this.displayMin) this.ranges.push(new NumberControlRange(0, Math.min(-val, 1), warnLineStyle, 0.8));
-            if (this.value > this.displayMax) this.ranges.push(new NumberControlRange(2-Math.min(val, 2), 1, warnLineStyle, 0.8));    
+            if (this.value > this.displayMax) this.ranges.push(new NumberControlRange(0, Math.min(val-1, 1), warnLineStyle, 0.8));
+            if (this.value < this.displayMin) this.ranges.push(new NumberControlRange(1-Math.max(0, -val), 1, warnLineStyle, 0.8));    
         }
 
 

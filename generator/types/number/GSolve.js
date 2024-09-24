@@ -1,8 +1,10 @@
 class GSolve
 extends GOperator1
 {
-    current = null;
-    target  = null;
+    current     = null;
+    target      = null;
+
+    terminalIds = [];
 
 
     
@@ -17,8 +19,10 @@ extends GOperator1
     {
         super.reset();
 
-        this.current = null;
-        this.target  = null;
+        this.current     = null;
+        this.target      = null;
+
+        this.terminalIds = [];
     }
 
 
@@ -31,6 +35,8 @@ extends GOperator1
 
         if (this.current) copy.current = this.current.copy();
         if (this.target ) copy.target  = this.target .copy();
+
+        copy.terminalIds = [...this.terminalIds];
 
         return copy;
     }
@@ -182,6 +188,10 @@ extends GOperator1
 
 
         this.validate();
+
+
+        pushUnique(parse.terminalIds, this.terminalIds);
+
 
         return this;
     }

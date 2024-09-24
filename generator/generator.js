@@ -109,12 +109,24 @@ function genRequest(request, save)
         let stop = false;
 
 
-        for (const nodes of [paramNodes, topLevelNodes])//, otherNodes])
+        for (const nodes of [paramNodes, topLevelNodes])
         {
             for (const node of nodes)
             {
                 if (await checkStop(parse.requestId)) { stop = true; break; }
                 await node.eval(parse);
+            }
+        }
+
+
+        for (const terminalId of parse.terminalIds)
+        {
+            const terminal = parse.parsedNodes.find(n => n.id == terminalId);
+
+            if (terminal)
+            {
+                if (await checkStop(parse.requestId)) { stop = true; break; }
+                await terminal.eval(parse);
             }
         }
 

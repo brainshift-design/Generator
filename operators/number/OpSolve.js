@@ -45,6 +45,25 @@ extends OperatorBase
         const input = this.node.inputs[0];
 
 
+        if (this.node.headerInputs[0].connected)
+        {
+            const terminals = getTerminalsAfterNode(
+                this.node.headerInputs[0].connectedOutput.node, 
+                [this.id]);
+
+            removeFromArrayWhere(terminals, item => item.id == this.id);
+
+            console.log('terminals =', terminals);
+
+            request.push(terminals.length);
+            terminals.forEach(t => request.push(t.id));
+        }
+        else
+        {
+            request.push(0);
+        }
+
+
         request.push(input.connected ? 1 : 0);
         
         if (input.connected)
