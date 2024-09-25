@@ -31,16 +31,16 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
 
         if (e.button == 0)
         {
-            this.textbox.style.cursor = 
-                this.disableAfterSelectAll
-                ? 'default'
-                : 'text';
+            // this.textbox.style.cursor = 
+            //     this.disableAfterSelectAll
+            //     ? 'default'
+            //     : 'text';
 
-            if (this.disableAfterSelectAll !== null)
-            {
-                this.textbox.disabled = this.disableAfterSelectAll;
-                this.disableAfterSelectAll = null;
-            }
+            // if (this.disableAfterSelectAll !== null)
+            // {
+            //     this.textbox.disabled = this.disableAfterSelectAll;
+            //     this.disableAfterSelectAll = null;
+            // }
 
             // if (this.textbox.disabled)
             // {
@@ -67,12 +67,12 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
         }
 
 
-        if (this.readOnly)
-        {
-            e.preventDefault();
-            e.stopPropagation();
-            return;
-        }
+        // if (this.readOnly)
+        // {
+        //     e.preventDefault();
+        //     e.stopPropagation();
+        //     return;
+        // }
 
 
         if (!this.canReact(e))
@@ -187,8 +187,8 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
 
     this.textbox.addEventListener('focus', e =>
     {
-        if (this.textbox.disabled)
-            e.preventDefault();
+        //if (this.textbox.readOnly) //disabled)
+        //    e.preventDefault();
 
 
         hideAllMenus();
@@ -241,6 +241,14 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
     
 
 
+    this.textbox.addEventListener('beforeinput', e => 
+    {
+        if (this.readOnly)
+            e.preventDefault();
+    });
+      
+    
+    
     this.textbox.finish = (success, focusControl = true) =>
     {
         let   value      = this.textbox.value;

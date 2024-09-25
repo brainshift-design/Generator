@@ -316,8 +316,8 @@ function selectDivText(div)
 
 function selectTextareaText(textarea)
 {
-    const disabled = textarea.disabled;
-    textarea.disabled = false;
+    // const disabled = textarea.disabled;
+    // textarea.disabled = false;
 
     textarea.select();
 

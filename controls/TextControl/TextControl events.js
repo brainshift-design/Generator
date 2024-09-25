@@ -63,12 +63,12 @@ TextControl.prototype.initEvents = function()
         this.clientX = e.clientX;
 
         
-        if (    this.buttonDown0
-            && !this.readOnly)
-        {
+        //if (    this.buttonDown0
+        //    && !this.readOnly)
+        //{
             //forwardEvent(e, this.textbox);
             // ...
-        }
+        //}
     });
 
 

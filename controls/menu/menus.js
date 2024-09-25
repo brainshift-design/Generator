@@ -1548,22 +1548,28 @@ function initDebugModeMenus()
 
 function initTextMenu(textbox)
 {
-    menuText.clearItems();
+    const readOnly = () =>
+           textbox.readOnly
+        ||    textbox.control
+           && textbox.control.readOnly;
 
-    if (!textbox.disabled)
+
+    menuText.clearItems();
+       
+    if (!readOnly)
         menuText.addItems([
-            new MenuItem('Cut', null, false, { shortcut: (textbox.disabled ? NULL : osCtrl() + 'X'), enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }})]);
+            new MenuItem('Cut', null, false, { shortcut: (readOnly() ? NULL : osCtrl() + 'X'), enabled: !textbox.control || !readOnly(), callback: () => { hideAllMenus(); document.execCommand('cut'); }})]);
 
     menuText.addItems([
         new MenuItem('Copy', null, false, { shortcut: osCtrl() + 'C', callback: () => { hideAllMenus(); document.execCommand('copy'); }})]);
 
-    if (!textbox.disabled)
+    if (!readOnly)
         menuText.addItems([
-            new MenuItem('Paste', null, false, { shortcut: (textbox.disabled ? NULL : osCtrl() + 'V'), enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
+            new MenuItem('Paste', null, false, { shortcut: (readOnly() ? NULL : osCtrl() + 'V'), enabled: !textbox.control || !readOnly(), callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
 
     menuText.addItems([
         new MenuItem('',           null, false, { separator: true }),
-        new MenuItem('Select all', null, false, { shortcut: (textbox.disabled ? NULL : osCtrl() + 'A'), callback: () => { hideAllMenus(); selectTextareaText(textbox); }})]);
+        new MenuItem('Select all', null, false, { shortcut: (readOnly() ? NULL : osCtrl() + 'A'), callback: () => { hideAllMenus(); selectTextareaText(textbox); }})]);
 }
 
 
@@ -1582,7 +1588,13 @@ function initCopyMenu()
 
 function initTextboxMenu(textbox)
 {
-    menuTextbox.clearItems();
+    const readOnly = () =>
+           textbox.readOnly
+        ||    textbox.control
+           && textbox.control.readOnly;
+
+
+           menuTextbox.clearItems();
 
 
     let menuItemLeft,
@@ -1593,20 +1605,20 @@ function initTextboxMenu(textbox)
 
     const param = textbox.control.param;
 
-    if (!textbox.disabled)
+    if (!readOnly()) //disabled)
         menuTextbox.addItems([
-            new MenuItem('Cut', null, false, { shortcut: osCtrl() + 'X', enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }})]);
+            new MenuItem('Cut', null, false, { shortcut: osCtrl() + 'X', enabled: !readOnly(), callback: () => { hideAllMenus(); document.execCommand('cut'); }})]);
 
     menuTextbox.addItems([
         new MenuItem('Copy', null, false, { shortcut: osCtrl() + 'C', callback: () => { hideAllMenus(); document.execCommand('copy'); }})]);
 
-    if (!textbox.disabled)
+    if (!readonly()) //disabled)
         menuTextbox.addItems([
-            new MenuItem('Paste', null, false, { shortcut: osCtrl() + 'V', enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
+            new MenuItem('Paste', null, false, { shortcut: osCtrl() + 'V', enabled: !readOnly(), callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
 
     menuTextbox.addItems([
                           new MenuItem('',             null, false, { separator: true }),
-                          new MenuItem('Select all',   null, false, { shortcut: (textbox.disabled ? NULL : osCtrl() + 'A'), callback: () => { hideAllMenus(); selectTextareaText(textbox); }}),
+                          new MenuItem('Select all',   null, false, { shortcut: (readOnly() ? NULL : osCtrl() + 'A'), callback: () => { hideAllMenus(); selectTextareaText(textbox); }}),
                           new MenuItem('',             null, false, { separator: true }),
         menuItemLeft    = new MenuItem('Align left',   null, false, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'left'   )); }}),
         menuItemCenter  = new MenuItem('Align center', null, false, { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'center' )); }}),

@@ -106,6 +106,12 @@
 }
 
 
+/* .textControlTextarea[readonly] 
+{
+    caret-color: auto;
+} */
+
+
 .textControlTextarea:focus
 {
     outline: 2px solid var(--figma-color-bg-brand);

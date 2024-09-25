@@ -172,7 +172,7 @@ extends Control
                 '<span class="textBehind" style="background-color: ' 
                 + textBehindBack 
                 + ';' 
-                + (this.textbox.disabled
+                + (this.readOnly //textbox.disabled
                       ? ' transform: skew(-15deg, 0);' 
                       : '') 
                 + '">' 
