@@ -767,8 +767,7 @@ function handleLegacyNode(_node, genVersion)
     }
 
     else if (_node.type == IF_ELSE
-          && genVersion < 441
-    )
+          && genVersion < 441)
     {
         const paramCondition = _node.params.find(p => p[1] == 'condition');
         
@@ -788,6 +787,38 @@ function handleLegacyNode(_node, genVersion)
                 NUMBER_VALUE,
                 'condition',
                 '1,0'
+            ]);
+        }
+    }
+
+    else if (_node.type == REPEAT
+          && genVersion < 441)
+    {
+        const paramCount = _node.params.find(p => p[1] == 'count');
+        
+        if (!paramCount) 
+        {
+            _node.params.push(
+            [
+                NUMBER_VALUE,
+                'count',
+                '5,0'
+            ]);
+        }
+    }
+
+    else if (_node.type == NUMBER_SEQUENCE
+          && genVersion < 441)
+    {
+        const paramAdd = _node.params.find(p => p[1] == 'add');
+        
+        if (!paramAdd) 
+        {
+            _node.params.push(
+            [
+                NUMBER_VALUE,
+                'add',
+                '10,0'
             ]);
         }
     }

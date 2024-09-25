@@ -576,25 +576,29 @@ function altCopyNodes(_this, e)
         graphView.selectedNodes.length == prevSelected.length,
         'different quantities of source and copied nodes');
 
-    graphView.selectedNodes[thisIndex].sx = prevSelected[thisIndex].sx;
-    graphView.selectedNodes[thisIndex].sy = prevSelected[thisIndex].sy;
-
-    prevSelected           [thisIndex].div.dragging = false;
-    graphView.selectedNodes[thisIndex].div.dragging = true;
-
-    prevSelected           [thisIndex].header.releasePointerCapture(e.pointerId);
-
-    try
+    if (   thisIndex >= 0
+        && thisIndex < graphView.selectedNodes.length)
     {
-        graphView.selectedNodes[thisIndex].header.setPointerCapture(e.pointerId);
+        graphView.selectedNodes[thisIndex].sx = prevSelected[thisIndex].sx;
+        graphView.selectedNodes[thisIndex].sy = prevSelected[thisIndex].sy;
 
-        for (let i = 0; i < prevSelected.length; i++)
+        prevSelected           [thisIndex].div.dragging = false;
+        graphView.selectedNodes[thisIndex].div.dragging = true;
+
+        prevSelected           [thisIndex].header.releasePointerCapture(e.pointerId);
+
+        try
         {
-            graphView.selectedNodes[i].slx = prevSelected[i].div.offsetLeft;
-            graphView.selectedNodes[i].sly = prevSelected[i].div.offsetTop;
-        }
+            graphView.selectedNodes[thisIndex].header.setPointerCapture(e.pointerId);
 
-        nodesAltCopied = true;
+            for (let i = 0; i < prevSelected.length; i++)
+            {
+                graphView.selectedNodes[i].slx = prevSelected[i].div.offsetLeft;
+                graphView.selectedNodes[i].sly = prevSelected[i].div.offsetTop;
+            }
+
+            nodesAltCopied = true;
+        }
+        catch {}
     }
-    catch {}
 }

@@ -176,7 +176,11 @@ extends Control
                       ? ' transform: skew(-15deg, 0);' 
                       : '') 
                 + '">' 
-                + lines[i] 
+                + (   lines[i].length > 0
+                   ||    this.textbox.value       == ''
+                      && this.textbox.placeholder != ''
+                       ? lines[i]
+                       : '&hairsp;')
                 + '</span>';
         }
 

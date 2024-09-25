@@ -21,7 +21,7 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramCount     = new NumberParam('count',     'count',     true,  true, true, 5, 0, Number.MAX_SAFE_INTEGER, 0));
+        this.addParam(this.paramCount     = new NumberParam('count',     'count',     true,  true, true, 1, 0, Number.MAX_SAFE_INTEGER, 0));
         this.addParam(this.paramIteration = new NumberParam('iteration', 'iteration', true,  true, true, Number.NaN, 0));
         this.addParam(this.paramWhile     = new NumberParam('while',     'while',     true,  true, true, 1, 0, 1));
         this.addParam(this.paramLoop      = new NumberParam('loop',      '',          false, true, false));

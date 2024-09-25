@@ -588,10 +588,9 @@ function initGeneratorMenus()
                            new MenuItem('Boolean',        null,           false, {icon: iconBooleanValue,    createType: BOOLEAN_NUMBER,   callback: e => actionManager.do(getCreateNodeAction(BOOLEAN_NUMBER,   btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('Bounded',        null,           false, {icon: iconBoundedNumber,   createType: BOUNDED_NUMBER,   callback: e => actionManager.do(getCreateNodeAction(BOUNDED_NUMBER,   btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('',               null,           false, {separator: true}),
-        menuItemDateTime = new MenuItem('Date & time',    null,           false, {icon: iconDateTime,        createType: NUMBER_DATETIME,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME,  btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('',               null,           false, {separator: true}),
-                           new MenuItem('NaN ⟶ Number', 'NaN to Number', false, {icon: iconNaNisNumber,     createType: NUMBER_NAN,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NAN,       btnNumber.div, getCreateOptions(e)))})]);
+        menuItemDateTime = new MenuItem('Date & time',    null,           false, {icon: iconDateTime,        createType: NUMBER_DATETIME,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME,  btnNumber.div, getCreateOptions(e)))})]);
 
+        
     menuFunctions = new Menu('Functions', true, false);
     menuFunctions.addItems([
                            new MenuItem('Sign',          null, false, {icon: iconSign,        createType: NUMBER_SIGN,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,          btnNumber.div, getCreateOptions(e)))}),
@@ -609,7 +608,9 @@ function initGeneratorMenus()
                            new MenuItem('',              null, false, {separator: true}),
                            new MenuItem('Curve',         null, false, {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,         btnNumber.div, getCreateOptions(e)))}), 
                            new MenuItem('Bias',          null, false, {icon: iconNumberBias,  createType: NUMBER_BIAS,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_BIAS,          btnNumber.div, getCreateOptions(e)))}), 
-                           new MenuItem('Remap',         null, false, {icon: iconNumberMap,   createType: NUMBER_MAP,           callback: e => actionManager.do(getCreateNodeAction(NUMBER_MAP,           btnNumber.div, getCreateOptions(e)))})]);
+                           new MenuItem('Remap',         null, false, {icon: iconNumberMap,   createType: NUMBER_MAP,           callback: e => actionManager.do(getCreateNodeAction(NUMBER_MAP,           btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('',              null, false, {separator: true}),
+                           new MenuItem('NaN ⟶ Number', 'NaN to Number', false, {icon: iconNaNisNumber,     createType: NUMBER_NAN,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NAN,       btnNumber.div, getCreateOptions(e)))})]);
         
 
     menuTrig = new Menu('Trigonometric', true, false);
@@ -656,27 +657,27 @@ function initGeneratorMenus()
     menuTextFunctions.addItems([
         new MenuItem('Trim',       null, false, {icon: iconTextTrim,      createType: TEXT_TRIM,      callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('Case',       null, false, {icon: iconTextCase,      createType: TEXT_CASE,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CASE,      btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Replace',    null, false, {icon: iconTextReplace,   createType: TEXT_REPLACE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
         new MenuItem('Pad',        null, false, {icon: iconTextPad,       createType: TEXT_PAD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_PAD,       btnText.div, getCreateOptions(e)))})]);
 
 
     menuAddText = new Menu('Add text', true, false);
     menuAddText.addItems([
-        new MenuItem('Join (many)', null, false, {icon: iconMulti, createType: TEXT_JOIN, callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))})]);
+        new MenuItem('Join text', null, false, {icon: iconMulti, createType: TEXT_JOIN, callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))})]);
         
 
     menuString = new Menu('Text', true, false);
     menuString.addItems([
         new MenuItem('Text',       null,            false, {icon: iconText,          createType: TEXT,           callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
         new MenuItem('',           null,            false, {separator: true}),
-        new MenuItem('Add text',   null,            false, {childMenu: menuAddText, icon: iconAddText,       createType: TEXT_ADD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_ADD,       btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Split',      null,            false, {icon: iconTextSplit,     createType: TEXT_SPLIT,     callback: e => actionManager.do(getCreateNodeAction(TEXT_SPLIT,     btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Substring',  null,            false, {icon: iconTextSubstring, createType: TEXT_SUBSTRING, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
-        new MenuItem('',           null,            false, {separator: true}),
         new MenuItem('Length',     null,            false, {icon: iconTextLength,    createType: TEXT_LENGTH,    callback: e => actionManager.do(getCreateNodeAction(TEXT_LENGTH,    btnText.div, getCreateOptions(e)))}),
         new MenuItem('Contains',   'Text contains', true,  {icon: iconTextContains,  createType: TEXT_CONTAINS,  callback: e => actionManager.do(getCreateNodeAction(TEXT_CONTAINS,  btnText.div, getCreateOptions(e)))}),
         new MenuItem('Find',       'Find in text',  true,  {icon: iconTextFind,      createType: TEXT_FIND,      callback: e => actionManager.do(getCreateNodeAction(TEXT_FIND,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('Compare',    null,            false, {icon: iconTextCompare,   createType: TEXT_COMPARE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_COMPARE,   btnText.div, getCreateOptions(e)))}),
+        new MenuItem('',           null,            false, {separator: true}),
+        new MenuItem('Add text',   null,            false, {childMenu: menuAddText, icon: iconAddText,       createType: TEXT_ADD,       callback: e => actionManager.do(getCreateNodeAction(TEXT_ADD,       btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Split',      null,            false, {icon: iconTextSplit,     createType: TEXT_SPLIT,     callback: e => actionManager.do(getCreateNodeAction(TEXT_SPLIT,     btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Substring',  null,            false, {icon: iconTextSubstring, createType: TEXT_SUBSTRING, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Replace',    null,            false, {icon: iconTextReplace,   createType: TEXT_REPLACE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
         new MenuItem('',           null,            false, {separator: true}),
         new MenuItem('Functions',  null,            false, {icon: iconTextFunctions, childMenu: menuTextFunctions}),
         new MenuItem('',           null,            false, {separator: true}),
