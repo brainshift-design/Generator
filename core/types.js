@@ -173,6 +173,7 @@ const TEXT_PAD                = 'TPAD';
 const TEXT_COMPARE            = 'TCMP';
 const TEXT_CHAR               = 'TCHAR';
 const TEXT_UNICODE            = 'TUNI';
+const TEXT_ESCAPE             = 'TESC';
 const INDEX_TO_NAME           = 'INDEX';
 const NUMBER_TO_TEXT          = 'N2T';
 const COLOR_TO_TEXT           = 'C2T';
@@ -540,6 +541,7 @@ const TEXT_TYPES =
     TEXT_REPLACE,
     TEXT_COMPARE,
     TEXT_UNICODE,
+    TEXT_ESCAPE,
     INDEX_TO_NAME,
     TEXT_TO_NUMBER,
     TEXT_TO_COLOR,

@@ -123,6 +123,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_ADD:                node = new OpAddText();            break;
         case TEXT_JOIN:               node = new OpTextJoin();           break;
         case TEXT_PAD:                node = new OpTextPad();            break;
+        case TEXT_ESCAPE:             node = new OpTextEscape();         break;
         case TEXT_COMPARE:            node = new OpTextCompare();        break;
         case TEXT_TO_NUMBER:          node = new OpTextToNumber();       break;
         case TEXT_TO_COLOR:           node = new OpTextToColor();        break;

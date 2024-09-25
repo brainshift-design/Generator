@@ -247,10 +247,11 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_ADD               ) result = genParseAddText           (parse);
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin          (parse);
     else if (parse.next == TEXT_PAD               ) result = genParseTextPad           (parse);
+    else if (parse.next == TEXT_ESCAPE            ) result = genParseTextEscape        (parse);
     else if (parse.next == TEXT_COMPARE           ) result = genParseTextCompare       (parse);
     else if (parse.next == TEXT_SPLIT             ) result = genParseTextSplit         (parse);
-    else if (parse.next == PARSE_CSV              ) result = genParseParseCSV           (parse);
-    else if (parse.next == PARSE_JSON             ) result = genParseParseJson          (parse);
+    else if (parse.next == PARSE_CSV              ) result = genParseParseCSV          (parse);
+    else if (parse.next == PARSE_JSON             ) result = genParseParseJson         (parse);
     else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch         (parse);
     else if (parse.next == TEXT_FILE              ) result = genParseTextFile          (parse);
  
@@ -259,7 +260,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == VALID_COLOR            ) result = genParseValidColor        (parse);
     else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor      (parse);
     else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast     (parse);
-    else if (parse.next == COLOR_DIFFERENCE          ) result = genParseColorDifference       (parse);
+    else if (parse.next == COLOR_DIFFERENCE       ) result = genParseColorDifference   (parse);
     else if (parse.next == COLORBLIND             ) result = genParseColorBlind        (parse);
     else if (parse.next == COLOR_SCHEME           ) result = genParseColorScheme       (parse);
     else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate  (parse);

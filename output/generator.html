@@ -6840,6 +6840,7 @@ const TEXT_PAD                = 'TPAD';
 const TEXT_COMPARE            = 'TCMP';
 const TEXT_CHAR               = 'TCHAR';
 const TEXT_UNICODE            = 'TUNI';
+const TEXT_ESCAPE             = 'TESC';
 const INDEX_TO_NAME           = 'INDEX';
 const NUMBER_TO_TEXT          = 'N2T';
 const COLOR_TO_TEXT           = 'C2T';
@@ -7207,6 +7208,7 @@ const TEXT_TYPES =
     TEXT_REPLACE,
     TEXT_COMPARE,
     TEXT_UNICODE,
+    TEXT_ESCAPE,
     INDEX_TO_NAME,
     TEXT_TO_NUMBER,
     TEXT_TO_COLOR,
@@ -35680,10 +35682,12 @@ extends GOperator1
 
 function evalAddText(input, text, prefix)
 {
+    const textValue = unescapeString(text.value);
+
     return new TextValue(
         prefix.value > 0
-        ? text .value + input.value
-        : input.value + text .value);
+            ? textValue + input.value
+            : input.value + textValue);
 }
 
 
@@ -35861,6 +35865,88 @@ function getPadValue(input, startPad, startCount, endPad, endCount, enabled)
             .padEnd  (  endCount.value, endPad.value != '' ? unescapeString(endPad.value) : unescapeString(startPad.value));
 
     return value;
+}
+
+
+class GTextEscape
+extends GOperator1
+{
+    constructor(nodeId, options)
+    {
+        super(TEXT_ESCAPE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextEscape(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input = await evalTextOrListValue(this.input, parse);
+
+
+        if (input)
+        {
+            if (this.options.enabled)
+            {
+                if (isListValueType(input.type))
+                {
+                    this.value = new ListValue();
+
+                    for (let i = 0; i < input.items.length; i++)
+                    {
+                        const item = input.items[i];
+
+                        this.value.items.push(
+                            item.type == TEXT_VALUE
+                            ? getTextEscapeValue(item)
+                            : new TextValue());   
+                    }
+                }
+                else
+                {
+                    this.value = getTextEscapeValue(input);
+                }
+            }
+            else
+                this.value = input.copy();
+        }
+        else
+            this.value = new TextValue();
+
+
+        this.setUpdateValues(parse,
+        [
+            ['type', this.outputType()]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function getTextEscapeValue(input)
+{
+    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+
+    return new TextValue(unescapeString(input.value));
 }
 
 
@@ -61073,6 +61159,50 @@ function genParseTextPad(parse)
 
 
 
+function genParseTextEscape(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const escape = new GTextEscape(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(escape, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, escape);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        escape.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, escape);
+    return escape;
+}
+
+
+
 function genParseTextCompare(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -61902,10 +62032,11 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_ADD               ) result = genParseAddText           (parse);
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin          (parse);
     else if (parse.next == TEXT_PAD               ) result = genParseTextPad           (parse);
+    else if (parse.next == TEXT_ESCAPE            ) result = genParseTextEscape        (parse);
     else if (parse.next == TEXT_COMPARE           ) result = genParseTextCompare       (parse);
     else if (parse.next == TEXT_SPLIT             ) result = genParseTextSplit         (parse);
-    else if (parse.next == PARSE_CSV              ) result = genParseParseCSV           (parse);
-    else if (parse.next == PARSE_JSON             ) result = genParseParseJson          (parse);
+    else if (parse.next == PARSE_CSV              ) result = genParseParseCSV          (parse);
+    else if (parse.next == PARSE_JSON             ) result = genParseParseJson         (parse);
     else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch         (parse);
     else if (parse.next == TEXT_FILE              ) result = genParseTextFile          (parse);
  
@@ -61914,7 +62045,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == VALID_COLOR            ) result = genParseValidColor        (parse);
     else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor      (parse);
     else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast     (parse);
-    else if (parse.next == COLOR_DIFFERENCE          ) result = genParseColorDifference       (parse);
+    else if (parse.next == COLOR_DIFFERENCE       ) result = genParseColorDifference   (parse);
     else if (parse.next == COLORBLIND             ) result = genParseColorBlind        (parse);
     else if (parse.next == COLOR_SCHEME           ) result = genParseColorScheme       (parse);
     else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate  (parse);

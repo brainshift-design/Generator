@@ -167,6 +167,7 @@
 ../operators/text/OpTextJoin.js
 ../operators/text/OpAddText.js
 ../operators/text/OpTextPad.js
+../operators/text/OpTextEscape.js
 ../operators/text/OpTextSplit.js
 ../operators/text/OpTextCompare.js
 ../operators/text/OpParseCSV.js

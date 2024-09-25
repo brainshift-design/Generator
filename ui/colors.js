@@ -2,22 +2,36 @@ const colFigmaBlue         = '#0c8ce9';
 
 
 
-const rgbActiveNumberLight = hex2rgb('#369fe5');
-const rgbNumberLight = hex2rgb('#b9d5ef');
-const rgbActiveTextLight = hex2rgb('#f6c953');
-const rgbTextLight = hex2rgb('#f6e4bd');
-const rgbActiveShapeLight = hex2rgb('#e1765f');
-const rgbShapeLight = hex2rgb('#f0c7bf');
-const rgbActiveFlowLight = hex2rgb('#969696');
-const rgbFlowLight = hex2rgb('#d2d2d2');
-const rgbActiveNumberDark = hex2rgb('#1785ce');
-const rgbNumberDark = hex2rgb('#2a4a66');
-const rgbActiveTextDark = hex2rgb('#f4c855');
-const rgbTextDark = hex2rgb('#756339');
-const rgbActiveShapeDark = hex2rgb('#e1765f');
-const rgbShapeDark = hex2rgb('#6e443b');
-const rgbActiveFlowDark = hex2rgb('#cccccc');
-const rgbFlowDark = hex2rgb('#656565');
+const rgbActiveNumberLight = hex2rgb('#369FE5');
+const rgbNumberLight       = hex2rgb('#B8D4F2');
+
+const rgbActiveTextLight   = hex2rgb('#F6C953');
+const rgbTextLight         = hex2rgb('#FBE6BE');
+
+const rgbActiveGroupLight  = hex2rgb('#3AAB5A');
+const rgbGroupLight        = hex2rgb('#B9D9BF');
+
+const rgbActiveShapeLight  = hex2rgb('#E1765F');
+const rgbShapeLight        = hex2rgb('#F0C7C0');
+
+const rgbActiveFlowLight   = hex2rgb('#969696');
+const rgbFlowLight         = hex2rgb('#D1D1D1');
+  
+
+const rgbActiveNumberDark  = hex2rgb('#1785CE');
+const rgbNumberDark        = hex2rgb('#2B4E6E');
+
+const rgbActiveTextDark    = hex2rgb('#F4C855');
+const rgbTextDark          = hex2rgb('#7E6E48');
+
+const rgbActiveGroupDark   = hex2rgb('#33AD55');
+const rgbGroupDark         = hex2rgb('#365E3F');
+
+const rgbActiveShapeDark   = hex2rgb('#E1765F');
+const rgbShapeDark         = hex2rgb('#734B43');
+
+const rgbActiveFlowDark    = hex2rgb('#ccc');
+const rgbFlowDark          = hex2rgb('#777');
 
 
 const rgbColor             = hex2rgb('#c38fc5');   
