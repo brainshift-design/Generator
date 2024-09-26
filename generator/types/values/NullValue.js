@@ -97,7 +97,7 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
         return this;
     }

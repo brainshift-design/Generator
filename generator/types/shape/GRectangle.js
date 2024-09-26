@@ -59,7 +59,7 @@ extends GShape
         const input = await evalRectangleValue(this.input, parse);
         let   round = await evalNumberValue   (this.round, parse);
 
-        if (round && !round.isValid()) round = NumberValue.NaN.copy();
+        if (round && !round.isValid()) round = NumberValue.NaN();
 
         
         let [x, y, width, height] = await this.evalBaseParams(parse);

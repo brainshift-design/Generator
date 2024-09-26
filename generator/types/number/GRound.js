@@ -66,14 +66,14 @@ extends GOperator1
                     this.value.items.push(
                         item.type == NUMBER_VALUE
                         ? getRoundValue(item, type, dec, this.options.enabled)
-                        : NumberValue.NaN.copy());   
+                        : NumberValue.NaN());   
                 }
             }
             else
                 this.value = getRoundValue(input, type, dec, this.options.enabled);
 }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse,

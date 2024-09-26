@@ -84,7 +84,7 @@ extends GOperator2
             this.value.uniqueId = this.uniqueId;
         }
         else
-            this.value = VectorEdgeValue.NaN.copy();
+            this.value = VectorEdgeValue.NaN();
         
         
         await this.evalObjects(parse);
@@ -155,8 +155,8 @@ extends GOperator2
     // {
     //     const edge = new VectorEdgeValue(
     //         this.nodeId,
-    //         this.input0 ? this.input0.toValue() : VectorVertexValue.NaN,
-    //         this.input1 ? this.input1.toValue() : VectorVertexValue.NaN,
+    //         this.input0 ? this.input0.toValue() : VectorVertexValue.NaN(),
+    //         this.input1 ? this.input1.toValue() : VectorVertexValue.NaN(),
     //         this.startTangent.toValue(),
     //         this.endTangent  .toValue());
 

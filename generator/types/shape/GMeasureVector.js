@@ -60,12 +60,12 @@ extends GOperator1
             this.angle = 
                 len > 0 
                 ? new NumberValue(ang/Tau * 360, -2) 
-                : NumberValue.NaN.copy();
+                : NumberValue.NaN();
         }
         else
         {
-            this.length = NumberValue.NaN.copy();
-            this.angle  = NumberValue.NaN.copy();
+            this.length = NumberValue.NaN();
+            this.angle  = NumberValue.NaN();
         }
 
 

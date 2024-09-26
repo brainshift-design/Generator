@@ -171,20 +171,16 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return VectorVertexValue.NaN.copy();
+        return new VectorVertexValue(
+            '',
+            NumberValue.NaN(), 
+            NumberValue.NaN(), 
+            NumberValue.NaN(), 
+            NumberValue.NaN(), 
+            NumberValue.NaN());
     }
-
-
-
-    static NaN = Object.freeze(new VectorVertexValue(
-        '',
-        NumberValue.NaN, 
-        NumberValue.NaN, 
-        NumberValue.NaN, 
-        NumberValue.NaN, 
-        NumberValue.NaN));
 }
 
 
@@ -193,7 +189,7 @@ function parseVectorVertexValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [VectorVertexValue.NaN, 1];
+        return [VectorVertexValue.NaN(), 1];
 
 
     if (i < 0)

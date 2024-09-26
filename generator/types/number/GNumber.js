@@ -35,7 +35,7 @@ extends GOperator1
         else if (this.value)
             await this.value.eval(parse);
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse, 

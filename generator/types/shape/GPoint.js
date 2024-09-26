@@ -97,7 +97,7 @@ extends GOperator1
                 y);
         }
         else
-            this.value = PointValue.NaN.copy();
+            this.value = PointValue.NaN();
 
 
         this.value.uniqueId = this.uniqueId;

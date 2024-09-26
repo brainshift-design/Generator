@@ -55,7 +55,7 @@ extends GOperator1
 async function evalSine(input, arc)
 {
     if (!input)
-        return NumberValue.NaN.copy();
+        return NumberValue.NaN();
 
     const val = 
         !arc 

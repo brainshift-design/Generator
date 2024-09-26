@@ -25,7 +25,7 @@ extends OperatorBase
         this.inert = true;
 
 
-        this.addParam(this.paramValue = new FillParam('value', '', false, true, true, FillValue.NaN));
+        this.addParam(this.paramValue = new FillParam('value', '', false, true, true, FillValue.NaN()));
 
         this.paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
         this.paramValue.input.addEventListener('disconnect', e => OpColorStyle_value_onDisconnectInput(this, e.detail.input));
@@ -34,7 +34,7 @@ extends OperatorBase
         if (!!options.existing)
         {
             this.existing = true;
-            this.paramValue.setValue(FillValue.NaN, false, false, false);
+            this.paramValue.setValue(FillValue.NaN(), false, false, false);
         }
 
 
@@ -298,5 +298,5 @@ function OpColorStyle_value_onDisconnectInput(node, input)
 {
     if (   node.existing
         && node.linkedStyleId == NULL)
-        node.paramValue.setValue(FillValue.NaN, false, false, false);
+        node.paramValue.setValue(FillValue.NaN(), false, false, false);
 }

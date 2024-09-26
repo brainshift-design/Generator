@@ -133,7 +133,7 @@ extends GOperator
                 this.value = new NumberValue((min.value + max.value) / 2);
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         if (this.value.isValid())

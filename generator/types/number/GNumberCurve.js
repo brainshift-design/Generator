@@ -75,14 +75,14 @@ extends GOperator1
                     this.value.items.push(
                         item.type == NUMBER_VALUE
                         ? getNumberCurveValue(item, min, max, power, this.options.enabled)
-                        : NumberValue.NaN.copy());   
+                        : NumberValue.NaN());   
                 }
             }
             else
                 this.value = getNumberCurveValue(input, min, max, power, this.options.enabled);
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse,

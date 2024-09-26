@@ -72,14 +72,14 @@ extends GOperator1
                     this.value.items.push(
                         item.type == NUMBER_VALUE
                         ? getQuantizeValue(item, type, base, step, amount, this.options.enabled)
-                        : NumberValue.NaN.copy());   
+                        : NumberValue.NaN());   
                 }
             }
             else
                 this.value = getQuantizeValue(input, type, base, step, amount, this.options.enabled);
 }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse,

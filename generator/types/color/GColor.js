@@ -126,11 +126,11 @@ extends GOperator1
                     this.value = input.copy();
             }
             else
-                this.value = ColorValue.NaN.copy();
+                this.value = ColorValue.NaN();
 
                 
             if (!this.convert)
-                this.convert = NumberValue.NaN.copy();
+                this.convert = NumberValue.NaN();
         }
         else if (space
               && c1
@@ -163,15 +163,15 @@ extends GOperator1
             }
         }
         else
-            this.value = ColorValue.NaN.copy();
+            this.value = ColorValue.NaN();
 
 
         if (!this.value.space.isValid())
             this.value = new ColorValue(
-                this.space ? this.space.toValue() : NumberValue.NaN,
-                NumberValue.NaN,
-                NumberValue.NaN,
-                NumberValue.NaN);
+                this.space ? this.space.toValue() : NumberValue.NaN(),
+                NumberValue.NaN(),
+                NumberValue.NaN(),
+                NumberValue.NaN());
 
         
         if (this.convert) this.convert.parent = this;
@@ -236,7 +236,7 @@ extends GOperator1
     {
         return this.options.enabled
              ? this.value.copy()
-             : ColorValue.NaN.copy();
+             : ColorValue.NaN();
     }
 
 

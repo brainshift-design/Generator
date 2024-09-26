@@ -91,10 +91,13 @@ extends ShapeValue
 
 
     
-    static NaN = new ShapeBooleanValue(
-        '',
-        ListValue  .NaN,
-        NumberValue.NaN);
+    static NaN()
+    {
+        return new ShapeBooleanValue(
+            '',
+            ListValue  .NaN(),
+            NumberValue.NaN());
+    }
 }
 
 
@@ -103,7 +106,7 @@ function parseShapeBooleanValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [ShapeBooleanValue.NaN, 1];
+        return [ShapeBooleanValue.NaN(), 1];
 
 
     if (i < 0)

@@ -368,7 +368,7 @@ extends OpColorBase
             }
             else
             {
-                this.paramColor.setValue(ColorValue.NaN, false, true, false);
+                this.paramColor.setValue(ColorValue.NaN(), false, true, false);
 
                 this._color    = dataColor_NaN;
                 this.prevSpace = NAN_DISPLAY;
@@ -376,7 +376,7 @@ extends OpColorBase
         }
         else if (space)
         {
-            this.paramSpace.setValue(NumberValue.NaN, false, true, false);
+            this.paramSpace.setValue(NumberValue.NaN(), false, true, false);
             removeParamDivs(this);
 
             this._color    = dataColor_NaN;

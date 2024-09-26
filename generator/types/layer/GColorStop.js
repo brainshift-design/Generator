@@ -117,7 +117,7 @@ extends GOperator1
         return new ColorStopValue(
             this.options.enabled
             ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
-            : FillValue.NaN,
+            : FillValue.NaN(),
             this.position ? this.position.toValue() : this.input.position.toValue());
     }                 
 

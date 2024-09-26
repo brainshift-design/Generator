@@ -123,7 +123,7 @@ class GValue
 
 
 
-    getNaN()
+    static NaN()
     {
         consoleError('invalid abstract method');
         return null;
@@ -275,39 +275,39 @@ function nanFromType(type)
 {
     switch (type)
     {
-        case            LIST_VALUE: return        new ListValue();
+        case            LIST_VALUE: return          ListValue.NaN();
 
-        case          NUMBER_VALUE: return        NumberValue.NaN;
-        case            TEXT_VALUE: return        new TextValue();
-        case           COLOR_VALUE: return         ColorValue.NaN;
-        case            FILL_VALUE: return          FillValue.NaN;
-        case      COLOR_STOP_VALUE: return     ColorStopValue.NaN;
-        case        GRADIENT_VALUE: return      GradientValue.NaN;
-        case          STROKE_VALUE: return        StrokeValue.NaN;
-        case     DROP_SHADOW_VALUE: return    DropShadowValue.NaN;
-        case    INNER_SHADOW_VALUE: return   InnerShadowValue.NaN;
-        case      LAYER_BLUR_VALUE: return     LayerBlurValue.NaN;
-        case       BACK_BLUR_VALUE: return      BackBlurValue.NaN;
-        case     LAYER_BLEND_VALUE: return    LayerBlendValue.NaN;
-        case      LAYER_MASK_VALUE: return     LayerMaskValue.NaN;
+        case          NUMBER_VALUE: return        NumberValue.NaN();
+        case            TEXT_VALUE: return          TextValue.NaN();
+        case           COLOR_VALUE: return         ColorValue.NaN();
+        case            FILL_VALUE: return          FillValue.NaN();
+        case      COLOR_STOP_VALUE: return     ColorStopValue.NaN();
+        case        GRADIENT_VALUE: return      GradientValue.NaN();
+        case          STROKE_VALUE: return        StrokeValue.NaN();
+        case     DROP_SHADOW_VALUE: return    DropShadowValue.NaN();
+        case    INNER_SHADOW_VALUE: return   InnerShadowValue.NaN();
+        case      LAYER_BLUR_VALUE: return     LayerBlurValue.NaN();
+        case       BACK_BLUR_VALUE: return      BackBlurValue.NaN();
+        case     LAYER_BLEND_VALUE: return    LayerBlendValue.NaN();
+        case      LAYER_MASK_VALUE: return     LayerMaskValue.NaN();
 
-        case       RECTANGLE_VALUE: return     RectangleValue.NaN;
-        case            LINE_VALUE: return          LineValue.NaN;
-        case         ELLIPSE_VALUE: return       EllipseValue.NaN;
-        case         POLYGON_VALUE: return       PolygonValue.NaN;
-        case            STAR_VALUE: return          StarValue.NaN;
-        case      TEXT_SHAPE_VALUE: return     TextShapeValue.NaN;
-        case           POINT_VALUE: return         PointValue.NaN;
-        case     VECTOR_PATH_VALUE: return    VectorPathValue.NaN;
-        case   VECTOR_VERTEX_VALUE: return  VectorVertexValue.NaN;
-        case     VECTOR_EDGE_VALUE: return    VectorEdgeValue.NaN;
-        case   VECTOR_REGION_VALUE: return  VectorRegionValue.NaN;
-        case  VECTOR_NETWORK_VALUE: return VectorNetworkValue.NaN;
-        case   SHAPE_BOOLEAN_VALUE: return  ShapeBooleanValue.NaN;
-        case     SHAPE_GROUP_VALUE: return    ShapeGroupValue.NaN;
-        case           FRAME_VALUE: return         FrameValue.NaN;
+        case       RECTANGLE_VALUE: return     RectangleValue.NaN();
+        case            LINE_VALUE: return          LineValue.NaN();
+        case         ELLIPSE_VALUE: return       EllipseValue.NaN();
+        case         POLYGON_VALUE: return       PolygonValue.NaN();
+        case            STAR_VALUE: return          StarValue.NaN();
+        case      TEXT_SHAPE_VALUE: return     TextShapeValue.NaN();
+        case           POINT_VALUE: return         PointValue.NaN();
+        case     VECTOR_PATH_VALUE: return    VectorPathValue.NaN();
+        case   VECTOR_VERTEX_VALUE: return  VectorVertexValue.NaN();
+        case     VECTOR_EDGE_VALUE: return    VectorEdgeValue.NaN();
+        case   VECTOR_REGION_VALUE: return  VectorRegionValue.NaN();
+        case  VECTOR_NETWORK_VALUE: return VectorNetworkValue.NaN();
+        case   SHAPE_BOOLEAN_VALUE: return  ShapeBooleanValue.NaN();
+        case     SHAPE_GROUP_VALUE: return    ShapeGroupValue.NaN();
+        case           FRAME_VALUE: return         FrameValue.NaN();
 
-        case        VARIABLE_VALUE: return      VariableValue.NaN;
+        case        VARIABLE_VALUE: return      VariableValue.NaN();
 
         case            NULL_VALUE: return        new NullValue();
     }

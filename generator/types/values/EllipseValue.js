@@ -186,17 +186,20 @@ extends ShapeValue
 
 
 
-    static NaN = new EllipseValue(
-        '',
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN);
+    static NaN()
+    {
+        return new EllipseValue(
+            '',
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN());
+    }
 }
 
 
@@ -205,7 +208,7 @@ function parseEllipseValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [EllipseValue.NaN, 1];
+        return [EllipseValue.NaN(), 1];
 
 
     if (i < 0)

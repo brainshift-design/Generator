@@ -66,7 +66,7 @@ extends GOperator1
                 this.value = input.copy();
         }
         else
-            this.value = ColorValue.NaN.copy();
+            this.value = ColorValue.NaN();
 
 
         
@@ -179,11 +179,11 @@ async function getValidColorValue(parse, node, input, method)
             }
             else
             {
-                return ColorValue.NaN.copy();
+                return ColorValue.NaN();
             }
         }
     }    
 
 
-    return ColorValue.NaN.copy();
+    return ColorValue.NaN();
 }

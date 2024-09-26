@@ -85,7 +85,7 @@ extends GOperator2
             this.value.objects[0].sp2 = sp2;
         }
         else
-            this.value = PointValue.NaN.copy();
+            this.value = PointValue.NaN();
 
 
         this.setUpdateValues(parse,

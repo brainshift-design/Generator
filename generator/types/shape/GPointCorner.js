@@ -61,7 +61,7 @@ extends GOperator1
             }
         }
         else
-            this.value = PointValue.NaN.copy();
+            this.value = PointValue.NaN();
 
 
         await this.evalObjects(parse);

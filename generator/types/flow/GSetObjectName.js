@@ -41,7 +41,7 @@ extends GOperator1
             return this;
 
 
-        const input = await evalValue    (this.input, parse, () => RectangleValue.NaN.copy());
+        const input = await evalValue    (this.input, parse, () => RectangleValue.NaN());
         const name  = await evalTextValue(this.name,  parse);
 
 

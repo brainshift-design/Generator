@@ -174,16 +174,19 @@ extends ShapeValue
 
 
 
-    static NaN = new StarValue(
-        '',
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN);
+    static NaN()
+    {
+        return new StarValue(
+            '',
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN());
+    }
 }
 
 
@@ -192,7 +195,7 @@ function parseStarValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [StarValue.NaN, 1];
+        return [StarValue.NaN(), 1];
 
 
     if (i < 0)

@@ -48,7 +48,7 @@ extends GOperator1
 async function evalCosine(input, arc)
 {
     if (!input)
-        return NumberValue.NaN.copy();
+        return NumberValue.NaN();
 
     const val = 
         !arc 

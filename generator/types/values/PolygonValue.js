@@ -163,15 +163,18 @@ extends ShapeValue
 
 
 
-    static NaN = new PolygonValue(
-        '',
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN);
+    static NaN()
+    {
+        return new PolygonValue(
+            '',
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN());
+    }
 }
 
 
@@ -180,7 +183,7 @@ function parsePolygonValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [PolygonValue.NaN, 1];
+        return [PolygonValue.NaN(), 1];
 
 
     if (i < 0)

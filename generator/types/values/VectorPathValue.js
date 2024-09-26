@@ -141,13 +141,16 @@ extends ShapeValue
 
 
     
-    static NaN = new VectorPathValue(
-        '',
-        ListValue  .NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN);
+    static NaN()
+    {
+        return new VectorPathValue(
+            '',
+            ListValue  .NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN());
+    }
 }
 
 
@@ -156,7 +159,7 @@ function parseVectorPathValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [VectorPathValue.NaN, 1];
+        return [VectorPathValue.NaN(), 1];
 
 
     if (i < 0)

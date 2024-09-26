@@ -142,13 +142,16 @@ extends ShapeValue
 
 
     
-    static NaN = new RectangleValue(
-        '',
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN);
+    static NaN()
+    {
+        return  RectangleValue(
+            '',
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN());
+    }
 }
 
 
@@ -157,7 +160,7 @@ function parseRectangleValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [RectangleValue.NaN, 1];
+        return [RectangleValue.NaN(), 1];
 
 
     if (i < 0)

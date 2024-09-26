@@ -80,10 +80,10 @@ extends GOperator
                 this.value = getSequenceValue(start, mult, add, this.currentIteration, this.options.enabled);
 
             else
-                this.value = NumberValue.NaN.copy();
+                this.value = NumberValue.NaN();
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse,

@@ -73,7 +73,7 @@ extends GShape
         }
         else
         {
-            this.value = VectorPathValue.NaN.copy();
+            this.value = VectorPathValue.NaN();
         }
 
 

@@ -68,7 +68,7 @@ extends GOperator1
             this.length = new NumberValue(length, -2);
         }
         else
-            this.length = NumberValue.NaN.copy();
+            this.length = NumberValue.NaN();
     
 
         this.setUpdateValues(parse,

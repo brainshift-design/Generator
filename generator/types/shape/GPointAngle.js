@@ -42,7 +42,7 @@ extends GOperator1
                     this.value.items.push(
                         item.type == POINT_VALUE
                         ? new NumberValue(anglev2(obj.sp0, obj.sp1) / Tau * 360)
-                        : NumberValue.NaN.copy());   
+                        : NumberValue.NaN());   
                 }
             }
             else
@@ -55,7 +55,7 @@ extends GOperator1
             }
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse,
@@ -77,5 +77,5 @@ extends GOperator1
 // {
 //     return input.value.length > 0
 //          ? new NumberValue(input.value.charCodeAt(0))
-//          : NumberValue.NaN.copy();
+//          : NumberValue.NaN();
 // }

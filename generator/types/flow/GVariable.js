@@ -111,10 +111,10 @@ extends GOperator1
         {
             switch (this.variableType)
             {
-                case 'FLOAT':   varValue = NumberValue.NaN.copy(); varValue.isBool = false; break;
-                case 'BOOLEAN': varValue = NumberValue.NaN.copy(); varValue.isBool = true;  break;
+                case 'FLOAT':   varValue = NumberValue.NaN(); varValue.isBool = false; break;
+                case 'BOOLEAN': varValue = NumberValue.NaN(); varValue.isBool = true;  break;
                 case 'STRING':  varValue = new TextValue();                                 break;
-                case 'COLOR':   varValue = FillValue.NaN.copy();//ColorValue.NaN.copy();                           break;
+                case 'COLOR':   varValue = FillValue.NaN();//ColorValue.NaN();                           break;
                 default:                                                                    break;
             }
         }

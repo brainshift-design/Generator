@@ -159,16 +159,12 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return NumberValue.NaN.copy();
+        return new NumberValue(
+            Number.NaN, 
+            Number.NaN);
     }
-
-
-
-    static NaN = Object.freeze(new NumberValue(
-        Number.NaN, 
-        Number.NaN));
 }
 
 
@@ -206,7 +202,7 @@ function parseSimpleNumberValue(str)
 
     const num = 
         str == NAN_DISPLAY
-        ? NumberValue.NaN.copy()
+        ? NumberValue.NaN()
         : NumberValue.fromString(str);
 
     return [num, 1];

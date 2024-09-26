@@ -16,7 +16,7 @@ extends GValue
                 y       = new NumberValue(0), 
                 blur    = new NumberValue(0), 
                 spread  = new NumberValue(0), 
-                fill    = FillValue.NaN,
+                fill    = FillValue.NaN(),
                 blend   = new NumberValue(0),
                 behind  = new NumberValue(0),
                 visible = true)
@@ -138,25 +138,18 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return DropShadowValue.NaN.copy();
+        return new DropShadowValue(
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+              FillValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            false);
     }
-
-
-
-    static NaN = Object.freeze(new DropShadowValue(
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        FillValue .NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        false));
-
-
-    // static default = Object.freeze(DropShadowValue.create(217, 217, 217, 100));
 }
 
 
@@ -165,7 +158,7 @@ function parseDropShadowValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [DropShadowValue.NaN, 1];
+        return [DropShadowValue.NaN(), 1];
 
 
     if (i < 0)

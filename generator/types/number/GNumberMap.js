@@ -78,7 +78,7 @@ extends GOperator1
                             this.value.items.push(
                                 item.type == NUMBER_VALUE
                                 ? getNumberMapValue(item, from, to)
-                                : NumberValue.NaN.copy());   
+                                : NumberValue.NaN());   
                         }
                     }
                     else
@@ -92,14 +92,14 @@ extends GOperator1
                         nanList = true;
                     }
                     else
-                        this.value = NumberValue.NaN.copy();
+                        this.value = NumberValue.NaN();
                 }
             }
             else
                 this.value = input;
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse,

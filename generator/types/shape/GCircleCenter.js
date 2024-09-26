@@ -50,7 +50,7 @@ extends GOperator3
         }
         else
         {
-            this.value = PointValue.NaN.copy();
+            this.value = PointValue.NaN();
         }
 
 

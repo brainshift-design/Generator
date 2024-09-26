@@ -33,7 +33,7 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                defaultValue = FillValue.NaN,
+                defaultValue = FillValue.NaN(),
                 dragScale    = 0.05)
     {
         super(FILL_VALUE, id, name, showName);

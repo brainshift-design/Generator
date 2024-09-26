@@ -142,16 +142,19 @@ extends ShapeValue
 
 
     
-    static NaN = new FrameValue(
-        '',
-        ListValue  .NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN);
+    static NaN()
+    {
+        return new FrameValue(
+            '',
+            ListValue  .NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN());
+    }
 }
 
 
@@ -160,7 +163,7 @@ function parseFrameValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [FrameValue.NaN, 1];
+        return [FrameValue.NaN(), 1];
 
 
     if (i < 0)

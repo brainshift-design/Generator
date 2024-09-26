@@ -75,7 +75,7 @@ extends GOperator2
             this.value = PointValue.fromPoint(this.nodeId, closest);
         }
         else
-            this.value = PointValue.NaN.copy();
+            this.value = PointValue.NaN();
 
 
         this.setUpdateValues(parse,

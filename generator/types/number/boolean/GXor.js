@@ -45,7 +45,7 @@ extends GArithmetic
 async function evalXorInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN.copy();
+        return NumberValue.NaN();
 
 
     const value = new NumberValue(0);
@@ -56,7 +56,7 @@ async function evalXorInputs(inputs, parse)
     if (!isEmpty(inputs))
     {
         const val0 = await evalNumberOrListValue(inputs[0], parse);
-        if (!val0.isValid()) return NumberValue.NaN.copy();
+        if (!val0.isValid()) return NumberValue.NaN();
 
         if (    isListValueType(val0.type)
             && !isEmpty(val0.items))
@@ -77,7 +77,7 @@ async function evalXorInputs(inputs, parse)
         else
         {
             if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN.copy();
+                return NumberValue.NaN();
 
             flipped = val0.toNumber() != 0;
         }
@@ -86,7 +86,7 @@ async function evalXorInputs(inputs, parse)
         for (let i = 1; i < inputs.length; i++)
         {
             const val = await evalNumberOrListValue(inputs[i], parse);
-            if (!val.isValid()) return NumberValue.NaN.copy();
+            if (!val.isValid()) return NumberValue.NaN();
 
             if (isListValueType(val.type))
             {

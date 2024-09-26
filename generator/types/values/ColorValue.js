@@ -8,10 +8,10 @@ extends GValue
 
 
 
-    constructor(space = NumberValue.NaN, 
-                c1    = NumberValue.NaN, 
-                c2    = NumberValue.NaN, 
-                c3    = NumberValue.NaN)
+    constructor(space = NumberValue.NaN(), 
+                c1    = NumberValue.NaN(), 
+                c2    = NumberValue.NaN(), 
+                c3    = NumberValue.NaN())
     {
         super(COLOR_VALUE);
 
@@ -234,18 +234,14 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return ColorValue.NaN.copy();
+        return new ColorValue(
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN());
     }
-
-
-
-    static NaN = Object.freeze(new ColorValue(
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN));
 }
 
 

@@ -41,14 +41,14 @@ extends GOperator1
                     this.value.items.push(
                         item.type == NUMBER_VALUE
                         ? getSignValue(item)
-                        : NumberValue.NaN.copy());   
+                        : NumberValue.NaN());   
                 }
             }
             else
                 this.value = getSignValue(input);
 }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse, 

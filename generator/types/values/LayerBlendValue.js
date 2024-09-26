@@ -82,14 +82,12 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return LayerBlendValue.NaN.copy();
+        return new LayerBlendValue(
+            NumberValue.NaN(), 
+            NumberValue.NaN());
     }
-
-
-
-    static NaN = Object.freeze(new LayerBlendValue(NumberValue.NaN, NumberValue.NaN));
 }
 
 
@@ -98,7 +96,7 @@ function parseLayerBlendValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [LayerBlendValue.NaN, 1];
+        return [LayerBlendValue.NaN(), 1];
 
 
     if (i < 0)

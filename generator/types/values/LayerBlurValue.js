@@ -98,20 +98,12 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return LayerBlurValue.NaN.copy();
+        return new LayerBlurValue(
+            NumberValue.NaN(),
+            false);
     }
-
-
-
-    static NaN = Object.freeze(new LayerBlurValue(
-        NumberValue.NaN,
-        false));
-
-
-
-    // static default = Object.freeze(LayerBlurValue.create(217, 217, 217, 100));
 }
 
 
@@ -120,7 +112,7 @@ function parseLayerBlurValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [LayerBlurValue.NaN, 1];
+        return [LayerBlurValue.NaN(), 1];
 
 
     if (i < 0)

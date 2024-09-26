@@ -54,13 +54,13 @@ extends GOperator1
                 this.evalInputOrList(
                     input, 
                     item => getSetPrecisionValue(item, decimals), 
-                    NumberValue.NaN.copy()); 
+                    NumberValue.NaN()); 
             }
             else
                 this.value = input;
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse,

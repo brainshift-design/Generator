@@ -134,7 +134,7 @@ extends GOperator
                     localAmount)));
         }
         else                  
-            this.value = ColorValue.NaN.copy();
+            this.value = ColorValue.NaN();
         
         
         if (   this.value.type   == FILL_VALUE

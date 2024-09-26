@@ -263,13 +263,13 @@ function validateColorStops(_stops)
         {
             stops.push(new ColorStopValue(
                 FillValue.fromRgb(scaleRgb(stop.toRgb()), 100),
-                NumberValue.NaN));
+                NumberValue.NaN()));
         }
 
         else if (stop.type == FILL_VALUE)
             stops.push(new ColorStopValue(
                 stop,
-                NumberValue.NaN));
+                NumberValue.NaN()));
 
         else if (stop.type == LIST_VALUE)
             stops.push(...validateColorStops(stop.items));

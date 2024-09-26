@@ -94,7 +94,7 @@ extends GOperator
             this.value = interpolateNumberValue(values, index, nSegments, deg, degree, amount, maxDec);
 
         else                  
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse,
@@ -208,5 +208,5 @@ function interpolateNumberValue(values, index, nSegments, deg, degree, amount, m
             maxDec);
     }
     else
-        return NumberValue.NaN.copy();
+        return NumberValue.NaN();
 }

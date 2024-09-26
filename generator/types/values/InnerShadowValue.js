@@ -15,7 +15,7 @@ extends GValue
                 y       = new NumberValue(0), 
                 blur    = new NumberValue(0), 
                 spread  = new NumberValue(0), 
-                fill    = FillValue.NaN,
+                fill    = FillValue.NaN(),
                 blend   = new NumberValue(0),
                 visible = true)
     {
@@ -143,21 +143,17 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return InnerShadowValue.NaN.copy();
+        return new InnerShadowValue(
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            FillValue  .NaN(),
+            NumberValue.NaN(),
+            false);
     }
-
-
-
-    static NaN = Object.freeze(new InnerShadowValue(
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        FillValue .NaN,
-        NumberValue.NaN,
-        false));
 
 
 
@@ -170,7 +166,7 @@ function parseInnerShadowValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [InnerShadowValue.NaN, 1];
+        return [InnerShadowValue.NaN(), 1];
 
 
     if (i < 0)

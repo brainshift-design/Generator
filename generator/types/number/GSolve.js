@@ -171,13 +171,17 @@ extends GOperator1
 
                 this.value = inParamValue
                     ? new NumberValue(current.value, target.decimals)
-                    : NumberValue.NaN.copy();
+                    : NumberValue.NaN();
             }
             else
-                this.value = NumberValue.NaN.copy();
+                this.value = NumberValue.NaN();
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
+
+
+        if (!this.current)
+            current = NumberValue.NaN();
 
 
         this.setUpdateValues(parse,

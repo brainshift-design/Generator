@@ -119,11 +119,14 @@ extends ShapeValue
 
 
 
-    static NaN = new LineValue(
-        '',
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN);
+    static NaN()
+    {
+        return new LineValue(
+            '',
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN());
+    }
 }
 
 
@@ -132,7 +135,7 @@ function parseLineValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [LineValue.NaN, 1];
+        return [LineValue.NaN(), 1];
 
 
     if (i < 0)

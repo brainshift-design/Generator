@@ -78,7 +78,7 @@ extends GOperator1
                         this.value.items.push(
                             item.type == NUMBER_VALUE
                             ? getSimpleMathValue(item, operand, op, invert, this.options.enabled)
-                            : NumberValue.NaN.copy());   
+                            : NumberValue.NaN());   
                     }
                 }
                 else
@@ -90,7 +90,7 @@ extends GOperator1
                 this.value = input.copy();
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse,
@@ -178,7 +178,7 @@ function getSimpleMathValue(input, operand, op, invert, enabled)
                        && invert .value == 0
                     ||    input  .value == 0
                        && invert .value == 1)
-                    return NumberValue.NaN.copy();
+                    return NumberValue.NaN();
                 else
                     return invert.value == 0
                         ? new NumberValue(input.value / operand.value, maxDecimals)

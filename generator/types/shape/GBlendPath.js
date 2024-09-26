@@ -113,11 +113,11 @@ extends GShape
             //         maxDec);
             // }
             // else
-                this.value = VectorPathValue.NaN.copy();
+                this.value = VectorPathValue.NaN();
         }
 
         else                  
-            this.value = VectorPathValue.NaN.copy();
+            this.value = VectorPathValue.NaN();
 
 
         await this.evalObjects(parse);

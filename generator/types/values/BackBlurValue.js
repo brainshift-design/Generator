@@ -98,20 +98,12 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return BackBlurValue.NaN.copy();
+        return new BackBlurValue(
+            NumberValue.NaN(),
+            false);
     }
-
-
-
-    static NaN = Object.freeze(new BackBlurValue(
-        NumberValue.NaN,
-        false));
-
-
-
-    // static default = Object.freeze(BackBlurValue.create(217, 217, 217, 100));
 }
 
 
@@ -120,7 +112,7 @@ function parseBackBlurValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [BackBlurValue.NaN, 1];
+        return [BackBlurValue.NaN(), 1];
 
 
     if (i < 0)

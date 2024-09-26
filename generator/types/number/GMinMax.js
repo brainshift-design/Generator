@@ -109,7 +109,7 @@ extends GArithmetic
 async function evalMinMaxInputs(inputs, op, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN.copy();
+        return NumberValue.NaN();
 
 
     const allAreLists = allInputsAreCondensedLists(inputs);
@@ -148,7 +148,7 @@ async function evalMinMaxListInputs(inputs, op, parse)
 async function evalMinMaxItemInputs(inputs, op, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN.copy();
+        return NumberValue.NaN();
 
 
     let value = new NumberValue(0);
@@ -178,7 +178,7 @@ async function evalMinMaxItemInputs(inputs, op, parse)
     else
     {
         if (input0.type != NUMBER_VALUE)
-            return NumberValue.NaN.copy();
+            return NumberValue.NaN();
 
         value = input0;
     }

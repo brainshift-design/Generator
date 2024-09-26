@@ -64,7 +64,7 @@ extends GOperator2
                     this.value.items.push(
                         item.type == TEXT_VALUE
                         ? new NumberValue(item.value.includes(input1.value) ? 1 : 0, 0, true)
-                        : NumberValue.NaN.copy());
+                        : NumberValue.NaN());
                 }
             }
             else
@@ -74,7 +74,7 @@ extends GOperator2
         }
         else                  
         {
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
         }
     
 

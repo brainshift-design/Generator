@@ -82,7 +82,7 @@ extends GOperator2
             this.value = input1;
             
         else 
-            this.value = ColorValue.NaN.copy();
+            this.value = ColorValue.NaN();
 
 
         this.setUpdateValues(parse,

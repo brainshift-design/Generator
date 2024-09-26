@@ -62,7 +62,7 @@ extends GOperator1
                            item.type == COLOR_VALUE
                         || item.type == FILL_VALUE
                         ? getColorToTextValue(item, format, trim)
-                        : TextValue.NaN.copy());   
+                        : TextValue.NaN());   
                 }
             }
             else
@@ -72,7 +72,7 @@ extends GOperator1
         }
 
         else
-            this.value = TextValue.NaN.copy();
+            this.value = TextValue.NaN();
 
 
         this.setUpdateValues(parse,

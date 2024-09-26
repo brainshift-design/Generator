@@ -136,7 +136,7 @@ function parseVariableValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [VariableValue.NaN, 1];
+        return [VariableValue.NaN(), 1];
 
 
     let _str;

@@ -114,16 +114,12 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return VectorNetworkValue.NaN.copy();
+        return new VectorNetworkValue(
+            '',
+            ListValue.NaN());
     }
-
-
-
-    static NaN = Object.freeze(new VectorNetworkValue(
-        '',
-        ListValue.NaN));
 }
 
 
@@ -132,7 +128,7 @@ function parseVectorNetworkValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [VectorNetworkValue.NaN, 1];
+        return [VectorNetworkValue.NaN(), 1];
 
 
     if (i < 0)

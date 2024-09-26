@@ -112,7 +112,7 @@ extends GArithmetic
 async function evalMathInputs(inputs, op, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN.copy();
+        return NumberValue.NaN();
 
 
     const allAreLists = allInputsAreCondensedLists(inputs);
@@ -166,7 +166,7 @@ async function evalMathItemInputs(inputs, op, parse)
 async function evalAddInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN.copy();
+        return NumberValue.NaN();
 
 
     const value = new NumberValue(0);
@@ -179,14 +179,14 @@ async function evalAddInputs(inputs, parse)
 
         if (   !input
             || !input.isValid())
-            return NumberValue.NaN.copy();
+            return NumberValue.NaN();
 
 
         if (isListValueType(input.type))
         {
             if (   isEmpty(input.items)
                 || input.items[0].type != NUMBER_VALUE)
-                return NumberValue.NaN.copy();
+                return NumberValue.NaN();
 
             for (const item of input.items)
             {
@@ -217,7 +217,7 @@ async function evalAddInputs(inputs, parse)
 async function evalSubtractInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN.copy();
+        return NumberValue.NaN();
 
 
     let value = new NumberValue(0);
@@ -229,7 +229,7 @@ async function evalSubtractInputs(inputs, parse)
 
         if (   !input0
             || !input0.isValid())
-            return NumberValue.NaN.copy();
+            return NumberValue.NaN();
 
 
         if (     isListValueType(input0.type)
@@ -239,7 +239,7 @@ async function evalSubtractInputs(inputs, parse)
 
             if (   !item0
                 || !item0.isValid())
-                return NumberValue.NaN.copy();
+                return NumberValue.NaN();
 
 
             value = item0;
@@ -251,7 +251,7 @@ async function evalSubtractInputs(inputs, parse)
 
                 if (   !item
                     || !item.isValid())
-                    return NumberValue.NaN.copy();
+                    return NumberValue.NaN();
 
                 if (item.type == NUMBER_VALUE)
                 {
@@ -263,7 +263,7 @@ async function evalSubtractInputs(inputs, parse)
         else
         {
             if (input0.type != NUMBER_VALUE)
-                return NumberValue.NaN.copy();
+                return NumberValue.NaN();
 
             value = input0;
         }
@@ -275,7 +275,7 @@ async function evalSubtractInputs(inputs, parse)
 
             if (   !input
                 || !input.isValid())
-                return NumberValue.NaN.copy();
+                return NumberValue.NaN();
 
 
             if (isListValueType(input.type))
@@ -310,7 +310,7 @@ async function evalSubtractInputs(inputs, parse)
 async function evalMultiplyInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN.copy();
+        return NumberValue.NaN();
 
 
     const value = new NumberValue(0);
@@ -326,14 +326,14 @@ async function evalMultiplyInputs(inputs, parse)
 
             if (   !input
                 || !input.isValid())
-                return NumberValue.NaN.copy();
+                return NumberValue.NaN();
 
 
             if (isListValueType(input.type))
             {
                 if (   isEmpty(input.items)
                     || input.items[0].type != NUMBER_VALUE)
-                    return NumberValue.NaN.copy();
+                    return NumberValue.NaN();
 
                 for (const item of input.items)
                 {
@@ -362,7 +362,7 @@ async function evalMultiplyInputs(inputs, parse)
 async function evalDivideInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN.copy();
+        return NumberValue.NaN();
 
         
     let value = new NumberValue(0);
@@ -374,7 +374,7 @@ async function evalDivideInputs(inputs, parse)
 
         if (   !input0
             || !input0.isValid())
-            return NumberValue.NaN.copy();
+            return NumberValue.NaN();
 
 
         if (    isListValueType(input0.type)
@@ -384,7 +384,7 @@ async function evalDivideInputs(inputs, parse)
 
             if (   !item0
                 || !item0.isValid())
-                return NumberValue.NaN.copy();
+                return NumberValue.NaN();
 
 
             value = item0;
@@ -396,7 +396,7 @@ async function evalDivideInputs(inputs, parse)
 
                 if (   !item
                     || !item.isValid())
-                    return NumberValue.NaN.copy();
+                    return NumberValue.NaN();
 
                     
                 if (item.type == NUMBER_VALUE)
@@ -416,7 +416,7 @@ async function evalDivideInputs(inputs, parse)
         else
         {
             if (input0.type != NUMBER_VALUE)
-                return NumberValue.NaN.copy();
+                return NumberValue.NaN();
 
             value = input0;
         }
@@ -428,7 +428,7 @@ async function evalDivideInputs(inputs, parse)
 
             if (   !input
                 || !input.isValid())
-                return NumberValue.NaN.copy();
+                return NumberValue.NaN();
 
 
             if (isListValueType(input.type))
@@ -437,7 +437,7 @@ async function evalDivideInputs(inputs, parse)
                 {
                     if (   !item
                         || !item.isValid())
-                        return NumberValue.NaN.copy();
+                        return NumberValue.NaN();
 
 
                     if (item.type == NUMBER_VALUE)
@@ -483,7 +483,7 @@ async function evalDivideInputs(inputs, parse)
 async function evalModuloInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN.copy();
+        return NumberValue.NaN();
 
         
     let value = new NumberValue(0);
@@ -495,7 +495,7 @@ async function evalModuloInputs(inputs, parse)
 
         if (   !input0
             || !input0.isValid())
-            return NumberValue.NaN.copy();
+            return NumberValue.NaN();
 
 
         if (    isListValueType(input0.type)
@@ -505,7 +505,7 @@ async function evalModuloInputs(inputs, parse)
 
             if (   !item0
                 || !item0.isValid())
-                return NumberValue.NaN.copy();
+                return NumberValue.NaN();
 
 
             value = item0;
@@ -517,7 +517,7 @@ async function evalModuloInputs(inputs, parse)
                 
                 if (   !item
                     || !item.isValid())
-                    return NumberValue.NaN.copy();
+                    return NumberValue.NaN();
 
 
                 if (item.type == NUMBER_VALUE)
@@ -537,7 +537,7 @@ async function evalModuloInputs(inputs, parse)
         else
         {
             if (input0.type != NUMBER_VALUE)
-                return NumberValue.NaN.copy();
+                return NumberValue.NaN();
 
             value = input0;
         }
@@ -549,7 +549,7 @@ async function evalModuloInputs(inputs, parse)
 
             if (   !input
                 || !input.isValid())
-                return NumberValue.NaN.copy();
+                return NumberValue.NaN();
 
 
             if (isListValueType(input.type))
@@ -558,7 +558,7 @@ async function evalModuloInputs(inputs, parse)
                 {
                     if (   !item
                         || !item.isValid())
-                        return NumberValue.NaN.copy();
+                        return NumberValue.NaN();
 
 
                     if (item.type == NUMBER_VALUE)
@@ -603,7 +603,7 @@ async function evalModuloInputs(inputs, parse)
 async function evalExponentInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN.copy();
+        return NumberValue.NaN();
 
 
     let value = new NumberValue(0);
@@ -615,7 +615,7 @@ async function evalExponentInputs(inputs, parse)
 
         if (   !input0
             || !input0.isValid())
-            return NumberValue.NaN.copy();
+            return NumberValue.NaN();
 
 
         if (    isListValueType(input0.type)
@@ -625,7 +625,7 @@ async function evalExponentInputs(inputs, parse)
 
             if (   !item0
                 || !item0.isValid())
-                return NumberValue.NaN.copy();
+                return NumberValue.NaN();
 
 
             value = item0;
@@ -637,7 +637,7 @@ async function evalExponentInputs(inputs, parse)
                 
                 if (   !item
                     || !item.isValid())
-                    return NumberValue.NaN.copy();
+                    return NumberValue.NaN();
 
 
                 if (item.type == NUMBER_VALUE)
@@ -650,7 +650,7 @@ async function evalExponentInputs(inputs, parse)
         else
         {
             if (input0.type != NUMBER_VALUE)
-                return NumberValue.NaN.copy();
+                return NumberValue.NaN();
 
             value = input0;
         }
@@ -662,7 +662,7 @@ async function evalExponentInputs(inputs, parse)
 
             if (   !input
                 || !input.isValid())
-                return NumberValue.NaN.copy();
+                return NumberValue.NaN();
 
 
             if (isListValueType(input.type))
@@ -671,7 +671,7 @@ async function evalExponentInputs(inputs, parse)
                 {
                     if (   !item
                         || !item.isValid())
-                        return NumberValue.NaN.copy();
+                        return NumberValue.NaN();
 
                     if (item.type == NUMBER_VALUE)
                     {

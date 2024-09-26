@@ -112,32 +112,32 @@ extends GShape
 
 
         if (text          && !text         .isValid()) text          = new TextValue();
-        if (x             && !x            .isValid()) x             = NumberValue.NaN.copy();
-        if (y             && !y            .isValid()) y             = NumberValue.NaN.copy();
-        if (width         && !width        .isValid()) width         = NumberValue.NaN.copy();
-        if (height        && !height       .isValid()) height        = NumberValue.NaN.copy();
-        if (font          && !font         .isValid()) font          = NumberValue.NaN.copy();
-        if (style         && !style        .isValid()) style         = NumberValue.NaN.copy();
-        if (size          && !size         .isValid()) size          = NumberValue.NaN.copy();
-        if (alignX        && !alignX       .isValid()) alignX        = NumberValue.NaN.copy();
-        if (alignY        && !alignY       .isValid()) alignY        = NumberValue.NaN.copy();
-        if (lineHeight    && !lineHeight   .isValid()) lineHeight    = NumberValue.NaN.copy();
-        if (letterSpacing && !letterSpacing.isValid()) letterSpacing = NumberValue.NaN.copy();
+        if (x             && !x            .isValid()) x             = NumberValue.NaN();
+        if (y             && !y            .isValid()) y             = NumberValue.NaN();
+        if (width         && !width        .isValid()) width         = NumberValue.NaN();
+        if (height        && !height       .isValid()) height        = NumberValue.NaN();
+        if (font          && !font         .isValid()) font          = NumberValue.NaN();
+        if (style         && !style        .isValid()) style         = NumberValue.NaN();
+        if (size          && !size         .isValid()) size          = NumberValue.NaN();
+        if (alignX        && !alignX       .isValid()) alignX        = NumberValue.NaN();
+        if (alignY        && !alignY       .isValid()) alignY        = NumberValue.NaN();
+        if (lineHeight    && !lineHeight   .isValid()) lineHeight    = NumberValue.NaN();
+        if (letterSpacing && !letterSpacing.isValid()) letterSpacing = NumberValue.NaN();
 
 
         // for incorrect incoming types
         if (text          && text         .type !=   TEXT_VALUE) text          = new TextValue();
-        if (x             && x            .type != NUMBER_VALUE) x             = NumberValue.NaN.copy();
-        if (y             && y            .type != NUMBER_VALUE) y             = NumberValue.NaN.copy();
-        if (width         && width        .type != NUMBER_VALUE) width         = NumberValue.NaN.copy();
-        if (height        && height       .type != NUMBER_VALUE) height        = NumberValue.NaN.copy();
-        if (font          && font         .type != NUMBER_VALUE) font          = NumberValue.NaN.copy();
-        if (style         && style        .type != NUMBER_VALUE) style         = NumberValue.NaN.copy();
-        if (size          && size         .type != NUMBER_VALUE) size          = NumberValue.NaN.copy();
-        if (alignX        && alignX       .type != NUMBER_VALUE) alignX        = NumberValue.NaN.copy();
-        if (alignY        && alignY       .type != NUMBER_VALUE) alignY        = NumberValue.NaN.copy();
-        if (lineHeight    && lineHeight   .type != NUMBER_VALUE) lineHeight    = NumberValue.NaN.copy();
-        if (letterSpacing && letterSpacing.type != NUMBER_VALUE) letterSpacing = NumberValue.NaN.copy();
+        if (x             && x            .type != NUMBER_VALUE) x             = NumberValue.NaN();
+        if (y             && y            .type != NUMBER_VALUE) y             = NumberValue.NaN();
+        if (width         && width        .type != NUMBER_VALUE) width         = NumberValue.NaN();
+        if (height        && height       .type != NUMBER_VALUE) height        = NumberValue.NaN();
+        if (font          && font         .type != NUMBER_VALUE) font          = NumberValue.NaN();
+        if (style         && style        .type != NUMBER_VALUE) style         = NumberValue.NaN();
+        if (size          && size         .type != NUMBER_VALUE) size          = NumberValue.NaN();
+        if (alignX        && alignX       .type != NUMBER_VALUE) alignX        = NumberValue.NaN();
+        if (alignY        && alignY       .type != NUMBER_VALUE) alignY        = NumberValue.NaN();
+        if (lineHeight    && lineHeight   .type != NUMBER_VALUE) lineHeight    = NumberValue.NaN();
+        if (letterSpacing && letterSpacing.type != NUMBER_VALUE) letterSpacing = NumberValue.NaN();
 
         
         if (input)

@@ -161,7 +161,7 @@ extends GNode
         return this.outputType();
         //return this.value
         //     ? new TextValue(finalListTypeFromValues(this.value.items))
-        //     : TextValue.NaN.copy();
+        //     : TextValue.NaN();
     }
 
 
@@ -348,7 +348,7 @@ async function evalValue(_value, parse, nan = () => new NullValue())
 
 async function evalNumberValue(_value, parse) 
 { 
-    let value = await evalValue(_value, parse, () => NumberValue.NaN.copy()); 
+    let value = await evalValue(_value, parse, () => NumberValue.NaN()); 
 
     if (   value
         && value.type == TEXT_VALUE)
@@ -361,7 +361,7 @@ async function evalNumberValue(_value, parse)
 
 async function evalNumberOrListValue(_value, parse) 
 { 
-    let value = await evalValue(_value, parse, () => NumberValue.NaN.copy()); 
+    let value = await evalValue(_value, parse, () => NumberValue.NaN()); 
 
     if (   value
         && value.type == TEXT_VALUE)
@@ -420,7 +420,7 @@ async function evalTextOrListValue(_value, parse)
 
 async function evalColorValue(_value, parse)
 { 
-    let value = await evalValue(_value, parse, () => ColorValue.NaN.copy()); 
+    let value = await evalValue(_value, parse, () => ColorValue.NaN()); 
 
     if (   value
         && value.type == FILL_VALUE)
@@ -437,7 +437,7 @@ async function evalColorValue(_value, parse)
 
 async function evalFillValue(_value, parse)
 { 
-    let value = await evalValue(_value, parse, () => FillValue.NaN.copy());
+    let value = await evalValue(_value, parse, () => FillValue.NaN());
     
     if (   value
         && value.type == COLOR_VALUE)
@@ -452,14 +452,14 @@ async function evalFillValue(_value, parse)
 
 
 
-async function evalStrokeValue   (_value, parse) { return await evalValue(_value, parse, () => StrokeValue   .NaN.copy()); }
-async function evalColorStopValue(_value, parse) { return await evalValue(_value, parse, () => ColorStopValue.NaN.copy()); }
+async function evalStrokeValue   (_value, parse) { return await evalValue(_value, parse, () => StrokeValue   .NaN()); }
+async function evalColorStopValue(_value, parse) { return await evalValue(_value, parse, () => ColorStopValue.NaN()); }
 
 
 
 async function evalColorStopOrListValue(_value, parse)
 {
-    let value = await evalValue(_value, parse, () => ColorStopValue.NaN.copy());
+    let value = await evalValue(_value, parse, () => ColorStopValue.NaN());
 
 
     if (   value
@@ -505,26 +505,26 @@ async function evalColorStopOrListValue(_value, parse)
 
 
 
-async function evalGradientValue      (_value, parse) { return await evalValue(_value, parse, () => GradientValue      .NaN.copy()); }
+async function evalGradientValue      (_value, parse) { return await evalValue(_value, parse, () => GradientValue      .NaN()); }
 
-async function evalListValue          (_value, parse) { return await evalValue(_value, parse, () => ListValue          .NaN.copy()); }
+async function evalListValue          (_value, parse) { return await evalValue(_value, parse, () => ListValue          .NaN()); }
 
-async function evalRectangleValue     (_value, parse) { return await evalValue(_value, parse, () => RectangleValue     .NaN.copy()); }
-async function evalLineValue          (_value, parse) { return await evalValue(_value, parse, () => LineValue          .NaN.copy()); }
-async function evalPolygonValue       (_value, parse) { return await evalValue(_value, parse, () => PolygonValue       .NaN.copy()); }
-async function evalTextShapeValue     (_value, parse) { return await evalValue(_value, parse, () => TextShapeValue     .NaN.copy()); }
+async function evalRectangleValue     (_value, parse) { return await evalValue(_value, parse, () => RectangleValue     .NaN()); }
+async function evalLineValue          (_value, parse) { return await evalValue(_value, parse, () => LineValue          .NaN()); }
+async function evalPolygonValue       (_value, parse) { return await evalValue(_value, parse, () => PolygonValue       .NaN()); }
+async function evalTextShapeValue     (_value, parse) { return await evalValue(_value, parse, () => TextShapeValue     .NaN()); }
 
-async function evalPointValue         (_value, parse) { return await evalValue(_value, parse, () => PointValue         .NaN.copy()); }
-async function evalVectorPathValue    (_value, parse) { return await evalValue(_value, parse, () => VectorPathValue    .NaN.copy()); }
-async function evalArcPathValue       (_value, parse) { return await evalValue(_value, parse, () => ArcPathValue       .NaN.copy()); }
-async function evalWavePathValue      (_value, parse) { return await evalValue(_value, parse, () => WavePathValue      .NaN.copy()); }
-async function evalVectorVertexValue  (_value, parse) { return await evalValue(_value, parse, () => VectorVertexValue  .NaN.copy()); }
-async function evalVectorEdgeValue    (_value, parse) { return await evalValue(_value, parse, () => VectorEdgeValue    .NaN.copy()); }
-async function evalVectorRegionValue  (_value, parse) { return await evalValue(_value, parse, () => VectorRegionValue  .NaN.copy()); }
+async function evalPointValue         (_value, parse) { return await evalValue(_value, parse, () => PointValue         .NaN()); }
+async function evalVectorPathValue    (_value, parse) { return await evalValue(_value, parse, () => VectorPathValue    .NaN()); }
+async function evalArcPathValue       (_value, parse) { return await evalValue(_value, parse, () => ArcPathValue       .NaN()); }
+async function evalWavePathValue      (_value, parse) { return await evalValue(_value, parse, () => WavePathValue      .NaN()); }
+async function evalVectorVertexValue  (_value, parse) { return await evalValue(_value, parse, () => VectorVertexValue  .NaN()); }
+async function evalVectorEdgeValue    (_value, parse) { return await evalValue(_value, parse, () => VectorEdgeValue    .NaN()); }
+async function evalVectorRegionValue  (_value, parse) { return await evalValue(_value, parse, () => VectorRegionValue  .NaN()); }
 
-async function evalFrameValue         (_value, parse) { return await evalValue(_value, parse, () => FrameValue         .NaN.copy()); }
+async function evalFrameValue         (_value, parse) { return await evalValue(_value, parse, () => FrameValue         .NaN()); }
 
-async function evalInnerShadowValue   (_value, parse) { return await evalValue(_value, parse, () => InnerShadowValue   .NaN.copy()); }
-async function evalLayerBlurValue     (_value, parse) { return await evalValue(_value, parse, () => LayerBlurValue     .NaN.copy()); }
-async function evalStrokeSidesValue   (_value, parse) { return await evalValue(_value, parse, () => StrokeSidesValue   .NaN.copy()); }
-async function evalRoundedCornersValue(_value, parse) { return await evalValue(_value, parse, () => RoundedCornersValue.NaN.copy()); }
+async function evalInnerShadowValue   (_value, parse) { return await evalValue(_value, parse, () => InnerShadowValue   .NaN()); }
+async function evalLayerBlurValue     (_value, parse) { return await evalValue(_value, parse, () => LayerBlurValue     .NaN()); }
+async function evalStrokeSidesValue   (_value, parse) { return await evalValue(_value, parse, () => StrokeSidesValue   .NaN()); }
+async function evalRoundedCornersValue(_value, parse) { return await evalValue(_value, parse, () => RoundedCornersValue.NaN()); }

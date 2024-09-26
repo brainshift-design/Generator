@@ -66,7 +66,7 @@ extends GOperator1
             this.value = new NumberValue(count - (start.value == 0 ? 1 : 0));
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse,

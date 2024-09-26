@@ -90,7 +90,7 @@
 //         let   round  = await evalNumberValue   (this.round,  parse);
 //         let   props  = await evalListValue     (this.props,  parse);
 
-//         if (round && !round.isValid()) round = NumberValue.NaN.copy();
+//         if (round && !round.isValid()) round = NumberValue.NaN();
 
 //         if (   props
 //             && STYLE_VALUES.includes(props.type))

@@ -100,19 +100,15 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return RoundCornersValue.NaN.copy();
+        return new RoundCornersValue(
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            false);
     }
-
-
-
-    static NaN = Object.freeze(new RoundCornersValue(
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        false));
 }
 
 
@@ -121,7 +117,7 @@ function parseRoundCornersValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [RoundCornersValue.NaN, 1];
+        return [RoundCornersValue.NaN(), 1];
 
 
     if (i < 0)

@@ -48,14 +48,14 @@ extends GOperator1
                     this.value.items.push(
                         item.type == TEXT_VALUE
                         ? new NumberValue(item.value.length)
-                        : NumberValue.NaN.copy());
+                        : NumberValue.NaN());
                 }
             }
             else
                 this.value = new NumberValue(input.value.length);
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
     
 
         this.setUpdateValues(parse,

@@ -90,10 +90,10 @@ extends GOperator1
                 this.value = PointValue.fromPoint(this.nodeId, pt);
             }
             else
-                this.value = PointValue.NaN.copy();
+                this.value = PointValue.NaN();
         }
         else
-            this.value = PointValue.NaN.copy();
+            this.value = PointValue.NaN();
 
 
         this.setUpdateValues(parse,

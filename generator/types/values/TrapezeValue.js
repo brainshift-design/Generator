@@ -153,14 +153,17 @@ extends ShapeValue
 
 
     
-    static NaN = new TrapezeValue(
-        '',
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN);
+    static NaN()
+    {
+        return new TrapezeValue(
+            '',
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN());
+    }
 }
 
 
@@ -169,7 +172,7 @@ function parseTrapezeValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [TrapezeValue.NaN, 1];
+        return [TrapezeValue.NaN(), 1];
 
 
     if (i < 0)

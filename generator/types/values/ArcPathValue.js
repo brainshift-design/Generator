@@ -153,15 +153,18 @@ extends ShapeValue
 
 
 
-    static NaN = Object.freeze(new ArcPathValue(
-        '',
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN));
+    static NaN()
+    {
+        return new ArcPathValue(
+            '',
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN());
+    }
 }
 
 
@@ -170,7 +173,7 @@ function parseArcPathValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [ArcPathValue.NaN, 1];
+        return [ArcPathValue.NaN(), 1];
 
 
     if (i < 0)

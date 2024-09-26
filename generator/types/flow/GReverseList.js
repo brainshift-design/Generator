@@ -55,7 +55,7 @@ extends GOperator1
                 this.value = input.copy();//.copy();
         }
         else
-            this.value = ListValue.NaN.copy();
+            this.value = ListValue.NaN();
     
 
         this.updateValueObjects();

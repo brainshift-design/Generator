@@ -91,7 +91,7 @@ extends GOperator1
                 this.value = input;
         }
         else
-            this.value = ListValue.NaN.copy();
+            this.value = ListValue.NaN();
     
 
         this.setUpdateValues(parse, 

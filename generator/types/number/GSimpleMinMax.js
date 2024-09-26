@@ -66,7 +66,7 @@ extends GOperator1
                         this.value.items.push(
                             item.type == NUMBER_VALUE
                             ? getSimpleMinMaxValue(item, operand, op, this.options.enabled)
-                            : NumberValue.NaN.copy());   
+                            : NumberValue.NaN());   
                     }
                 }
                 else
@@ -78,7 +78,7 @@ extends GOperator1
                 this.value = input.copy();
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse,

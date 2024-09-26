@@ -40,7 +40,7 @@ extends GOperator1
                     this.value.items.push(
                         item.type == TEXT_VALUE
                         ? getTextToColorValue(item)
-                        : NumberValue.NaN.copy());   
+                        : NumberValue.NaN());   
                 }
             }
             else
@@ -49,7 +49,7 @@ extends GOperator1
             }
         }
         else
-            this.value = ColorValue.NaN.copy();
+            this.value = ColorValue.NaN();
 
 
         this.setUpdateValues(parse,

@@ -141,9 +141,12 @@ extends GValue
 
 
     
-    static NaN = new ShapeGroupValue(
-        '',
-        ListValue.NaN);
+    static NaN()
+    {
+        return new ShapeGroupValue(
+            '',
+            ListValue.NaN());
+        }
 }
 
 

@@ -138,19 +138,15 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return VectorEdgeValue.NaN.copy();
+        return new VectorEdgeValue(
+            '',
+            VectorVertexValue.NaN(), 
+            VectorVertexValue.NaN(), 
+            PointValue.NaN(), 
+            PointValue.NaN());
     }
-
-
-
-    static NaN = Object.freeze(new VectorEdgeValue(
-        '',
-        VectorVertexValue.NaN, 
-        VectorVertexValue.NaN, 
-        PointValue.NaN, 
-        PointValue.NaN));
 }
 
 
@@ -159,7 +155,7 @@ function parseVectorEdgeValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [VectorEdgeValue.NaN, 1];
+        return [VectorEdgeValue.NaN(), 1];
 
 
     if (i < 0)

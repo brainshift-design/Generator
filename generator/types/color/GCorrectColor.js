@@ -158,10 +158,10 @@ extends GOperator1
                     }
                     else
                     {
-                        this.order = NumberValue.NaN.copy();
-                        this.c1    = NumberValue.NaN.copy();
-                        this.c2    = NumberValue.NaN.copy();
-                        this.c3    = NumberValue.NaN.copy();
+                        this.order = NumberValue.NaN();
+                        this.c1    = NumberValue.NaN();
+                        this.c2    = NumberValue.NaN();
+                        this.c3    = NumberValue.NaN();
                         this.value = input.copy();
         
                         this.setUpdateValues(parse,
@@ -176,10 +176,10 @@ extends GOperator1
                 }
                 else
                 {
-                    this.order = NumberValue.NaN.copy();
-                    this.c1    = NumberValue.NaN.copy();
-                    this.c2    = NumberValue.NaN.copy();
-                    this.c3    = NumberValue.NaN.copy();
+                    this.order = NumberValue.NaN();
+                    this.c1    = NumberValue.NaN();
+                    this.c2    = NumberValue.NaN();
+                    this.c3    = NumberValue.NaN();
                     this.value = input.copy();
     
                     this.setUpdateValues(parse,
@@ -194,10 +194,10 @@ extends GOperator1
             }
             else
             {
-                this.order = NumberValue.NaN.copy();
-                this.c1    = NumberValue.NaN.copy();
-                this.c2    = NumberValue.NaN.copy();
-                this.c3    = NumberValue.NaN.copy();
+                this.order = NumberValue.NaN();
+                this.c1    = NumberValue.NaN();
+                this.c2    = NumberValue.NaN();
+                this.c3    = NumberValue.NaN();
                 this.value = input.copy();
 
                 this.setUpdateValues(parse,
@@ -212,19 +212,19 @@ extends GOperator1
         }
         else
         {
-            this.order = NumberValue.NaN.copy();
-            this.c1    = NumberValue.NaN.copy();
-            this.c2    = NumberValue.NaN.copy();
-            this.c3    = NumberValue.NaN.copy();
-            this.value = ColorValue .NaN.copy();
+            this.order = NumberValue.NaN();
+            this.c1    = NumberValue.NaN();
+            this.c2    = NumberValue.NaN();
+            this.c3    = NumberValue.NaN();
+            this.value = ColorValue .NaN();
 
             this.setUpdateValues(parse,
             [
-                ['order', NumberValue.NaN],
-                ['c1',    NumberValue.NaN],
-                ['c2',    NumberValue.NaN],
-                ['c3',    NumberValue.NaN],
-                ['value', ColorValue .NaN]
+                ['order', NumberValue.NaN()],
+                ['c1',    NumberValue.NaN()],
+                ['c2',    NumberValue.NaN()],
+                ['c3',    NumberValue.NaN()],
+                ['value', ColorValue .NaN()]
             ]);
         }
 

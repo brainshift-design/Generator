@@ -100,19 +100,15 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return StrokeSidesValue.NaN.copy();
+        return new StrokeSidesValue(
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            false);
     }
-
-
-
-    static NaN = Object.freeze(new StrokeSidesValue(
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        false));
 }
 
 
@@ -121,7 +117,7 @@ function parseStrokeSidesValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [StrokeSidesValue.NaN, 1];
+        return [StrokeSidesValue.NaN(), 1];
 
 
     if (i < 0)

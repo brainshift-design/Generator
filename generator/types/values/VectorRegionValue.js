@@ -126,17 +126,13 @@ extends ShapeValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return VectorEdgeValue.NaN.copy();
+        return new VectorRegionValue(
+            '',
+            ListValue  .NaN(), 
+            NumberValue.NaN());
     }
-
-
-
-    static NaN = Object.freeze(new VectorRegionValue(
-        '',
-        ListValue  .NaN, 
-        NumberValue.NaN));
 }
 
 
@@ -145,7 +141,7 @@ function parseVectorRegionValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [VectorRegionValue.NaN, 1];
+        return [VectorRegionValue.NaN(), 1];
 
 
     if (i < 0)

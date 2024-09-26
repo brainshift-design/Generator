@@ -6,8 +6,8 @@ extends GValue
 
 
 
-    constructor(fill     = FillValue  .NaN, 
-                position = NumberValue.NaN)
+    constructor(fill     = FillValue  .NaN(), 
+                position = NumberValue.NaN())
     {
         if (fill.type != FILL_VALUE)
             consoleError('fill.type is ' + fill.type + ', must be FILL_VALUE');
@@ -98,16 +98,12 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return ColorStopValue.NaN.copy();
+        return new ColorStopValue(
+            FillValue  .NaN(),
+            NumberValue.NaN());
     }
-
-
-
-    static NaN = Object.freeze(new ColorStopValue(
-        FillValue  .NaN,
-        NumberValue.NaN));
 }
 
 
@@ -116,7 +112,7 @@ function parseColorStopValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [ColorStopValue.NaN, 1];
+        return [ColorStopValue.NaN(), 1];
 
 
     if (i < 0)

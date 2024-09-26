@@ -81,6 +81,8 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
+        this.current = values[paramIds.findIndex(id => id == 'current')];
+
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
         
         this.endProgress();
@@ -90,9 +92,6 @@ extends OperatorBase
 
     updateParams()
     {
-        if (!this.paramCurrent.input.connected)
-            this.paramCurrent.setValue(NumberValue.NaN, null, true, false);
-
         this.paramCurrent.enableControlText(false, this.paramCurrent.isUnknown());
         this.paramTarget .enableControlText(true);
 

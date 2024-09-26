@@ -222,7 +222,7 @@ extends GOperator
         }
         else
         {
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
         }
 
 

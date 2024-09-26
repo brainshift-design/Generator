@@ -66,7 +66,7 @@ extends GOperator1
                     this.value.items.push(
                         item.type == TEXT_VALUE
                         ? getTextToNumberValue(item, base, decimals, thousands)
-                        : NumberValue.NaN.copy());   
+                        : NumberValue.NaN());   
                 }
             }
             else
@@ -74,7 +74,7 @@ extends GOperator1
         }
 
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse,

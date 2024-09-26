@@ -216,14 +216,10 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return ListValue.NaN.copy();
+        return new ListValue();//null);
     }
-
-
-
-    static NaN = Object.freeze(new ListValue(null));
 }
 
 

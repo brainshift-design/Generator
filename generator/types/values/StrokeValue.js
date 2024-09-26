@@ -162,21 +162,17 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return StrokeValue.NaN.copy();
+        return new StrokeValue(
+         new ListValue(),
+         NumberValue.NaN(),
+         NumberValue.NaN(),
+         NumberValue.NaN(),
+         NumberValue.NaN(),
+         NumberValue.NaN(),
+         new TextValue());
     }
-
-
-
-    static NaN = Object.freeze(new StrokeValue(
-        new ListValue(),
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        new TextValue()));
 
 
 
@@ -196,7 +192,7 @@ function parseStrokeValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [StrokeValue.NaN, 1];
+        return [StrokeValue.NaN(), 1];
 
 
     if (i < 0)

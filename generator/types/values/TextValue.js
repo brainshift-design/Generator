@@ -114,14 +114,10 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return TextValue.NaN.copy();
+        return new TextValue();
     }
-
-
-
-    static NaN = Object.freeze(new TextValue());
 }
 
 

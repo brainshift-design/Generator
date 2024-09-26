@@ -186,25 +186,21 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return GradientValue.NaN.copy();
+        return new GradientValue(
+            ListValue  .NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN(),
+            false,
+            NumberValue.NaN(),
+            NumberValue.NaN());
     }
-
-
-
-    static NaN = Object.freeze(new GradientValue(
-        ListValue  .NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        false,
-        NumberValue.NaN,
-        NumberValue.NaN));
 }
 
 
@@ -213,7 +209,7 @@ function parseGradientValue(str, i = -1)
 {
     if (   i <  0 && str    == NAN_DISPLAY
         || i >= 0 && str[i] == NAN_DISPLAY)
-        return [GradientValue.NaN, 1];
+        return [GradientValue.NaN(), 1];
 
 
     if (i < 0)

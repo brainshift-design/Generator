@@ -96,7 +96,7 @@ extends GOperator
                 Math.max(start.decimals, end.decimals));
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse,

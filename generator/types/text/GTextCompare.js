@@ -61,7 +61,7 @@ extends GOperator2
                     this.value.items.push(
                         item.type == TEXT_VALUE
                         ? await evalCompareTextInputs(item, input1, op, parse)
-                        : NumberValue.NaN.copy());
+                        : NumberValue.NaN());
                 }
             }
             else
@@ -70,7 +70,7 @@ extends GOperator2
             }
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse,

@@ -70,14 +70,12 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return LayerMaskValue.NaN.copy();
+        return new LayerMaskValue(
+            NumberValue.NaN(),
+            false);
     }
-
-
-
-    static NaN = Object.freeze(new LayerMaskValue(NumberValue.NaN, false));
 }
 
 
@@ -86,7 +84,7 @@ function parseLayerMaskValue(str)
 {
     const mask = 
         str == NAN_DISPLAY
-        ? LayerMaskValue.NaN
+        ? LayerMaskValue.NaN()
         : new LayerMaskValue(new NumberValue(parseInt(str)), true);
 
     return [mask, 1];

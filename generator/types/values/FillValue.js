@@ -7,7 +7,7 @@ extends GValue
 
 
 
-    constructor(color   = ColorValue.NaN, 
+    constructor(color   = ColorValue.NaN(), 
                 opacity = new NumberValue(100),
                 blend   = new NumberValue(0))
     {
@@ -179,17 +179,13 @@ extends GValue
 
 
 
-    getNaN()
+    static NaN()
     {
-        return FillValue.NaN.copy();
+        return new FillValue(
+            ColorValue .NaN(),
+            NumberValue.NaN(),
+            NumberValue.NaN());
     }
-
-
-
-    static NaN = Object.freeze(new FillValue(
-        ColorValue .NaN,
-        NumberValue.NaN,
-        NumberValue.NaN));
 
 
 

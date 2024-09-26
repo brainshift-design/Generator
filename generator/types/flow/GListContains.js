@@ -79,7 +79,7 @@ extends GOperator2
                         this.value.items.push(
                             isListValueType(item.type)
                             ? new NumberValue(item.items.find(i => i.equals(input1)) ? 1 : 0, 0, true)
-                            : NumberValue.NaN.copy());
+                            : NumberValue.NaN());
                     }
                 }
             }
@@ -90,7 +90,7 @@ extends GOperator2
         }
         else                  
         {
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
         }
     
 

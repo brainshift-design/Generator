@@ -20,8 +20,8 @@ extends OpShapeBase
         this.addInput (new Input ([POINT_VALUE, VECTOR_VERTEX_VALUE], getNodeInputValuesForUndo));//, this.input_getBackInitValue));
         this.addOutput(new Output([VECTOR_EDGE_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));//, this.output_backInit));
 
-        this.addParam(this.paramStartTangent = new PointParam('startTangent', 'start', true, true, true, PointValue.NaN));
-        this.addParam(this.paramEndTangent   = new PointParam('endTangent',   'end',   true, true, true, PointValue.NaN));
+        this.addParam(this.paramStartTangent = new PointParam('startTangent', 'start', true, true, true, PointValue.NaN()));
+        this.addParam(this.paramEndTangent   = new PointParam('endTangent',   'end',   true, true, true, PointValue.NaN()));
 
         this.paramStartTangent.divider = 0.4;
         this.paramEndTangent  .divider = 0.4;

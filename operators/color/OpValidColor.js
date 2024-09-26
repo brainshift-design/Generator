@@ -75,7 +75,7 @@ extends OpColorBase
         request.push(COLOR_VALUE, (
             cached
             ? ColorValue.fromDataColor(this.node._color)
-            : ColorValue.NaN).toString()); // value
+            : ColorValue.NaN()).toString()); // value
 
 
         gen.scope.pop();

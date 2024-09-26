@@ -115,7 +115,7 @@ extends OpColorBase
         request.push(COLOR_VALUE, (
             cached
             ? ColorValue.fromDataColor(this.node._color)
-            : ColorValue.NaN).toString()); // value
+            : ColorValue.NaN()).toString()); // value
 
 
         gen.scope.pop();
@@ -198,10 +198,10 @@ extends OpColorBase
     {
         if (colorSpace == '')
         {
-            this.paramOrder.setValue(NumberValue.NaN);
-            this.param1    .setValue(NumberValue.NaN);
-            this.param2    .setValue(NumberValue.NaN);
-            this.param3    .setValue(NumberValue.NaN);
+            this.paramOrder.setValue(NumberValue.NaN());
+            this.param1    .setValue(NumberValue.NaN());
+            this.param2    .setValue(NumberValue.NaN());
+            this.param3    .setValue(NumberValue.NaN());
 
             return;
         }

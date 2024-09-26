@@ -128,10 +128,10 @@ extends GOperator2
                 this.value = new NumberValue(dE * 100, 1);
             }
             else
-                this.value = NumberValue.NaN.copy();
+                this.value = NumberValue.NaN();
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
         
 
         this.setUpdateValues(parse,

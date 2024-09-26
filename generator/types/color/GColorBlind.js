@@ -74,7 +74,7 @@ extends GOperator1
                 this.value = input.copy();
         }
         else
-            this.value = ColorValue.NaN.copy();
+            this.value = ColorValue.NaN();
 
 
         this.setUpdateValues(parse,
@@ -160,5 +160,5 @@ function getColorBlindValue(input, l, m, s)
         return ColorValue.fromDataColor(validCol);
     }
     else
-        return ColorValue.NaN.copy();
+        return ColorValue.NaN();
 }

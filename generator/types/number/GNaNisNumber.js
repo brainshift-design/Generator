@@ -57,7 +57,7 @@ extends GOperator1
                     this.value.items.push(
                         item.type == NUMBER_VALUE
                         ? getNaNisNumberValue(item, _value, this.options.enabled)
-                        : TextValue.NaN.copy());   
+                        : TextValue.NaN());   
                 }
             }
             else
@@ -67,7 +67,7 @@ extends GOperator1
         }
 
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse,

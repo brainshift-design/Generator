@@ -87,7 +87,7 @@ extends GOperator1
                 maxDecimals);
         }
         else
-            this.value = NumberValue.NaN.copy();
+            this.value = NumberValue.NaN();
 
 
         this.setUpdateValues(parse, 

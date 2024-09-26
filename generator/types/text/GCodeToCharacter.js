@@ -41,7 +41,7 @@ extends GOperator1
                     this.value.items.push(
                         item.type == NUMBER_VALUE
                         ? getCodeToCharacterValue(item)
-                        : TextValue.NaN.copy());   
+                        : TextValue.NaN());   
                 }
             }
             else
@@ -50,7 +50,7 @@ extends GOperator1
             }
         }
         else
-            this.value = TextValue.NaN.copy();
+            this.value = TextValue.NaN();
 
 
         this.setUpdateValues(parse,
