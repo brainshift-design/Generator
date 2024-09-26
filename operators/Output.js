@@ -325,7 +325,9 @@ extends EventTarget
 
 
         const diff = 
-               !this.node.active
+               (   !this.node.active
+                ||    this.node.outputValueType != NULL
+                   && this.node.outputValueType != this.types[0])
             && !(this.types[0] ==      COLOR_LIST_VALUE && this.node.active)
             && !(this.types[0] ==       FILL_LIST_VALUE && this.node.active)
             && !(this.types[0] == COLOR_STOP_LIST_VALUE && this.node.active)
