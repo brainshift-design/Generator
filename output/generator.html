@@ -4263,15 +4263,17 @@ const escapeReplacements =
 
 function escapeString(str) 
 {
-    return str.replace(/\\(u\{([0-9a-fA-F]+)\}|u([0-9a-fA-F]{4})|x([0-9a-fA-F]{2})|([0bfnrtv\\'"`]))/g, (match, p1, p2, p3, p4, p5) => 
-    {
-            if (p2 !== undefined) return String.fromCodePoint(parseInt(p2, 16)); // Unicode code point escape sequence \u{N...}
-        else if (p3 !== undefined) return String.fromCharCode (parseInt(p3, 16)); // Unicode escape sequence \uNNNN
-        else if (p4 !== undefined) return String.fromCharCode (parseInt(p4, 16)); // Hexadecimal escape sequence \xNN
-        else if (p5 !== undefined) return escapeReplacements[p5] || match;        // Single character escape sequence
-        else
-            return match;
-    });
+    return str.replace(
+        /\\(u\{([0-9a-fA-F]+)\}|u([0-9a-fA-F]{4})|x([0-9a-fA-F]{2})|([0bfnrtv\\'"`]))/g, 
+        (match, p1, p2, p3, p4, p5) => 
+        {
+                 if (p2 !== undefined) return String.fromCodePoint(parseInt(p2, 16)); // Unicode code point escape sequence \u{N...}
+            else if (p3 !== undefined) return String.fromCharCode (parseInt(p3, 16)); // Unicode escape sequence \uNNNN
+            else if (p4 !== undefined) return String.fromCharCode (parseInt(p4, 16)); // Hexadecimal escape sequence \xNN
+            else if (p5 !== undefined) return escapeReplacements[p5] || match;        // Single character escape sequence
+            else
+                return match;
+        });
 }
 
 
@@ -4291,6 +4293,8 @@ const unescapeReplacements =
     '`': '\\`'
 };
   
+
+
 function unescapeString(str) 
 {
     return str
@@ -4301,8 +4305,8 @@ function unescapeString(str)
      
             const code = char.codePointAt(0);
 
-                 if (code <= 0xFF  ) return '\\x' + code.toString(16).padStart(2, '0');
-            else if (code <= 0xFFFF) return '\\u' + code.toString(16).padStart(4, '0');
+                 if (code <= 0xFF  ) return '\\x'  + code.toString(16).padStart(2, '0');
+            else if (code <= 0xFFFF) return '\\u'  + code.toString(16).padStart(4, '0');
             else                     return '\\u{' + code.toString(16) + '}';
         });
 }

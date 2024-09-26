@@ -1550,8 +1550,9 @@ function initDebugModeMenus()
 function initTextMenu(textbox)
 {
     const readOnly = () =>
-           textbox.readOnly
-        ||    textbox.control
+        //   textbox.readOnly
+        //||    
+              textbox.control
            && textbox.control.readOnly;
 
 

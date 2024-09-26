@@ -222,7 +222,7 @@ extends Control
 
 
         this.textbox.style.height        = '100%';
-        this.textbox.style.pointerEvents =  this.readOnly ? 'none' : 'all';
+        //this.textbox.style.pointerEvents =  this.readOnly ? 'none' : 'all';
 
 
         if (this.param.showName)
