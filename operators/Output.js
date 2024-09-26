@@ -66,6 +66,7 @@ extends EventTarget
     backInit         = null;
 
 
+    allowOutputColor = true;
     forceOutputColor = false;
 
 
@@ -324,8 +325,8 @@ extends EventTarget
 
 
         const diff = 
-            //   !this.node.active
-               !(this.types[0] ==      COLOR_LIST_VALUE && this.node.active)
+               !this.node.active
+            && !(this.types[0] ==      COLOR_LIST_VALUE && this.node.active)
             && !(this.types[0] ==       FILL_LIST_VALUE && this.node.active)
             && !(this.types[0] == COLOR_STOP_LIST_VALUE && this.node.active)
             && (
@@ -348,10 +349,12 @@ extends EventTarget
 
         if (darkMode)
         {
-            if (   isColorType(this.types[0])
-                && this.node.type != ITERATE
-                && this.node.type != PROBABILITY
-                && this.node.type != HOLD)
+            if (    isColorType(this.types[0])
+                && !this.node.isUnknown()
+                &&  this.allowOutputColor
+                &&  this.node.type != ITERATE
+                &&  this.node.type != PROBABILITY
+                &&  this.node.type != HOLD)
             {
                 ballColor = 
                        conn
@@ -375,7 +378,12 @@ extends EventTarget
         }
         else // light mode
         {
-            if (isColorType(this.types[0]))
+            if (    isColorType(this.types[0])
+                && !this.node.isUnknown()
+                &&  this.allowOutputColor
+                &&  this.node.type != ITERATE
+                &&  this.node.type != PROBABILITY
+                &&  this.node.type != HOLD)
             {
                 ballColor = 
                        conn 

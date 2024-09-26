@@ -19,6 +19,8 @@ extends OperatorBase
         
         this.addNewInput();
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
+
+        this.headerOutputs[0].allowOutputColor = false;
     }
 
 

@@ -58,7 +58,7 @@ extends GOperator1
         if (this.input)
         {
             const input = await evalTextOrListValue(this.input, parse);
-            console.log('input =', input);
+
             
             if (isListValueType(input.type))
             {
