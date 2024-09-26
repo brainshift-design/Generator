@@ -137,8 +137,8 @@ function getTrimValue(input, start, end, enabled)
 
     if (enabled)
     {
-        if (start.value.length > 0) value.value = trimCharFromStart(value.value, unescapeString(start.value));
-        if (end  .value.length > 0) value.value = trimCharFromEnd  (value.value, unescapeString(end  .value));
+        if (start.value.length > 0) value.value = trimCharFromStart(value.value, escapeString(start.value));
+        if (end  .value.length > 0) value.value = trimCharFromEnd  (value.value, escapeString(end  .value));
     }
 
     return value;

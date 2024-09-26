@@ -407,23 +407,67 @@ function getFontStyles(fontName)
 
 
 
-function unescapeString(str)
+const escapeReplacements = 
 {
-    return str.replaceAll(/\\(.)/g, (match, char) => 
+    '0': '\0',
+    'b': '\b',
+    'f': '\f',
+    'n': '\n',
+    'r': '\r',
+    't': '\t',
+    'v': '\v',
+    '\\': '\\',
+    "'": "'",
+    '"': '"',
+    '`': '`'
+};
+
+
+
+function escapeString(str) 
+{
+    return str.replace(/\\(u\{([0-9a-fA-F]+)\}|u([0-9a-fA-F]{4})|x([0-9a-fA-F]{2})|([0bfnrtv\\'"`]))/g, (match, p1, p2, p3, p4, p5) => 
     {
-        const replacements = 
-        {
-            'n':  '\n',
-            'r':  '\r',
-            't':  '\t',
-            '\\': '\\',
-            '\'': '\'',
-            '\"': '\"',
-            '\`': '\`'
-        };
-      
-        return replacements[char] || match;
+            if (p2 !== undefined) return String.fromCodePoint(parseInt(p2, 16)); // Unicode code point escape sequence \u{N...}
+        else if (p3 !== undefined) return String.fromCharCode (parseInt(p3, 16)); // Unicode escape sequence \uNNNN
+        else if (p4 !== undefined) return String.fromCharCode (parseInt(p4, 16)); // Hexadecimal escape sequence \xNN
+        else if (p5 !== undefined) return escapeReplacements[p5] || match;        // Single character escape sequence
+        else
+            return match;
     });
+}
+
+
+
+const unescapeReplacements = 
+{
+    '\0': '\\0',
+    '\b': '\\b',
+    '\f': '\\f',
+    '\n': '\\n',
+    '\r': '\\r',
+    '\t': '\\t',
+    '\v': '\\v',
+    '\\': '\\\\',
+    "'": "\\'",
+    '"': '\\"',
+    '`': '\\`'
+};
+  
+function unescapeString(str) 
+{
+    return str
+        .replace(/[\0\b\f\n\r\t\v\\'"`]/g, (char) => unescapeReplacements[char] || char)
+        .replace(/([\u0000-\u001F\u007F-\uFFFF])/g, (char) => 
+        {
+            // control and non-ASCII characters
+     
+            const code = char.codePointAt(0);
+
+                 if (code <= 0xFF  ) return '\\x' + code.toString(16).padStart(2, '0');
+            else if (code <= 0xFFFF) return '\\u' + code.toString(16).padStart(4, '0');
+            else                     return '\\u{' + code.toString(16) + '}';
+        });
 }
 
 

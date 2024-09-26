@@ -68,7 +68,7 @@ extends GOperator1
             const rows = 
                    input
                 && input.value            
-                ? input.value.split(unescapeString(rowSeparator.value))
+                ? input.value.split(escapeString(rowSeparator.value))
                 : [];
 
 
@@ -76,7 +76,7 @@ extends GOperator1
             {
                 const cells = 
                     _row
-                    ? _row.split(unescapeString(columnSeparator.value))
+                    ? _row.split(escapeString(columnSeparator.value))
                     : [];
 
 

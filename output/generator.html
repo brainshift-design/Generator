@@ -4244,23 +4244,67 @@ function getFontStyles(fontName)
 
 
 
-function unescapeString(str)
+const escapeReplacements = 
 {
-    return str.replaceAll(/\\(.)/g, (match, char) => 
+    '0': '\0',
+    'b': '\b',
+    'f': '\f',
+    'n': '\n',
+    'r': '\r',
+    't': '\t',
+    'v': '\v',
+    '\\': '\\',
+    "'": "'",
+    '"': '"',
+    '`': '`'
+};
+
+
+
+function escapeString(str) 
+{
+    return str.replace(/\\(u\{([0-9a-fA-F]+)\}|u([0-9a-fA-F]{4})|x([0-9a-fA-F]{2})|([0bfnrtv\\'"`]))/g, (match, p1, p2, p3, p4, p5) => 
     {
-        const replacements = 
-        {
-            'n':  '\n',
-            'r':  '\r',
-            't':  '\t',
-            '\\': '\\',
-            '\'': '\'',
-            '\"': '\"',
-            '\`': '\`'
-        };
-      
-        return replacements[char] || match;
+            if (p2 !== undefined) return String.fromCodePoint(parseInt(p2, 16)); // Unicode code point escape sequence \u{N...}
+        else if (p3 !== undefined) return String.fromCharCode (parseInt(p3, 16)); // Unicode escape sequence \uNNNN
+        else if (p4 !== undefined) return String.fromCharCode (parseInt(p4, 16)); // Hexadecimal escape sequence \xNN
+        else if (p5 !== undefined) return escapeReplacements[p5] || match;        // Single character escape sequence
+        else
+            return match;
     });
+}
+
+
+
+const unescapeReplacements = 
+{
+    '\0': '\\0',
+    '\b': '\\b',
+    '\f': '\\f',
+    '\n': '\\n',
+    '\r': '\\r',
+    '\t': '\\t',
+    '\v': '\\v',
+    '\\': '\\\\',
+    "'": "\\'",
+    '"': '\\"',
+    '`': '\\`'
+};
+  
+function unescapeString(str) 
+{
+    return str
+        .replace(/[\0\b\f\n\r\t\v\\'"`]/g, (char) => unescapeReplacements[char] || char)
+        .replace(/([\u0000-\u001F\u007F-\uFFFF])/g, (char) => 
+        {
+            // control and non-ASCII characters
+     
+            const code = char.codePointAt(0);
+
+                 if (code <= 0xFF  ) return '\\x' + code.toString(16).padStart(2, '0');
+            else if (code <= 0xFFFF) return '\\u' + code.toString(16).padStart(4, '0');
+            else                     return '\\u{' + code.toString(16) + '}';
+        });
 }
 
 
@@ -6841,6 +6885,7 @@ const TEXT_COMPARE            = 'TCMP';
 const TEXT_CHAR               = 'TCHAR';
 const TEXT_UNICODE            = 'TUNI';
 const TEXT_ESCAPE             = 'TESC';
+const TEXT_UNESCAPE           = 'TUNESC';
 const INDEX_TO_NAME           = 'INDEX';
 const NUMBER_TO_TEXT          = 'N2T';
 const COLOR_TO_TEXT           = 'C2T';
@@ -7209,6 +7254,7 @@ const TEXT_TYPES =
     TEXT_COMPARE,
     TEXT_UNICODE,
     TEXT_ESCAPE,
+    TEXT_UNESCAPE,
     INDEX_TO_NAME,
     TEXT_TO_NUMBER,
     TEXT_TO_COLOR,
@@ -33487,8 +33533,8 @@ function getTrimValue(input, start, end, enabled)
 
     if (enabled)
     {
-        if (start.value.length > 0) value.value = trimCharFromStart(value.value, unescapeString(start.value));
-        if (end  .value.length > 0) value.value = trimCharFromEnd  (value.value, unescapeString(end  .value));
+        if (start.value.length > 0) value.value = trimCharFromStart(value.value, escapeString(start.value));
+        if (end  .value.length > 0) value.value = trimCharFromEnd  (value.value, escapeString(end  .value));
     }
 
     return value;
@@ -35345,8 +35391,8 @@ function getReplaceValue(input, _what, _with, _regex)
     else if (input.value)
     {
         value.value = input.value.replaceAll(
-            unescapeString(_what.value),
-            unescapeString(_with.value));
+            escapeString(_what.value),
+            escapeString(_with.value));
     }
 
 
@@ -35481,7 +35527,7 @@ async function evalJoinInputs(inputs, _with, parse)
 
 
     const allAreLists = allInputsAreCondensedLists(inputs);
-    const w           = unescapeString(_with.value);
+    const w           = escapeString(_with.value);
 
     if (allAreLists) return await evalJoinListInputs(inputs, w, parse);
     else             return await evalJoinItemInputs(inputs, w, parse);
@@ -35682,7 +35728,7 @@ extends GOperator1
 
 function evalAddText(input, text, prefix)
 {
-    const textValue = unescapeString(text.value);
+    const textValue = escapeString(text.value);
 
     return new TextValue(
         prefix.value > 0
@@ -35861,8 +35907,8 @@ function getPadValue(input, startPad, startCount, endPad, endCount, enabled)
     
     if (enabled)
         value.value = input.value
-            .padStart(startCount.value, unescapeString(startPad.value))
-            .padEnd  (  endCount.value, endPad.value != '' ? unescapeString(endPad.value) : unescapeString(startPad.value));
+            .padStart(startCount.value, escapeString(startPad.value))
+            .padEnd  (  endCount.value, endPad.value != '' ? escapeString(endPad.value) : escapeString(startPad.value));
 
     return value;
 }
@@ -35871,6 +35917,10 @@ function getPadValue(input, startPad, startCount, endPad, endCount, enabled)
 class GTextEscape
 extends GOperator1
 {
+    method;
+
+
+
     constructor(nodeId, options)
     {
         super(TEXT_ESCAPE, nodeId, options);
@@ -35878,11 +35928,22 @@ extends GOperator1
 
 
     
+    reset()
+    {
+        super.reset();
+
+        this.method = null;
+    }
+
+
+
     copy()
     {
         const copy = new GTextEscape(this.nodeId, this.options);
 
         copy.copyBase(this);
+
+        if (this.method) copy.method = this.method.copy();
 
         return copy;
     }
@@ -35895,7 +35956,8 @@ extends GOperator1
             return this;
 
 
-        const input = await evalTextOrListValue(this.input, parse);
+        const input  = await evalTextOrListValue(this.input,  parse);
+        const method = await evalNumberValue    (this.method, parse);
 
 
         if (input)
@@ -35912,13 +35974,13 @@ extends GOperator1
 
                         this.value.items.push(
                             item.type == TEXT_VALUE
-                            ? getTextEscapeValue(item)
+                            ? getTextEscapeValue(item, method)
                             : new TextValue());   
                     }
                 }
                 else
                 {
-                    this.value = getTextEscapeValue(input);
+                    this.value = getTextEscapeValue(input, method);
                 }
             }
             else
@@ -35930,7 +35992,8 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type', this.outputType()]
+            ['type',   this.outputType()],
+            ['invert', method           ]
         ]);
 
 
@@ -35938,15 +36001,198 @@ extends GOperator1
 
         return this;
     }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.method && this.method.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.method) this.method.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.method) this.method.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.method) this.method.iterateLoop(parse);
+    }
 }
 
 
 
-function getTextEscapeValue(input)
+function getTextEscapeValue(input, method)
 {
     consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
 
-    return new TextValue(unescapeString(input.value));
+    switch (method.value)
+    {
+        case 0: return new TextValue(escapeString(input.value));
+        case 1: return new TextValue(decodeURIComponent(input.value));
+    }
+
+    consoleAssert(false, 'invalid escape method');
+    return input;
+}
+
+
+class GTextUnescape
+extends GOperator1
+{
+    method;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(TEXT_UNESCAPE, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.method = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GTextUnescape(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.method) copy.method = this.method.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input  = await evalTextOrListValue(this.input,  parse);
+        const method = await evalNumberValue    (this.method, parse);
+
+
+        if (input)
+        {
+            if (this.options.enabled)
+            {
+                if (isListValueType(input.type))
+                {
+                    this.value = new ListValue();
+
+                    for (let i = 0; i < input.items.length; i++)
+                    {
+                        const item = input.items[i];
+
+                        this.value.items.push(
+                            item.type == TEXT_VALUE
+                            ? getTextUnescapeValue(item, method)
+                            : new TextValue());   
+                    }
+                }
+                else
+                {
+                    this.value = getTextUnescapeValue(input, method);
+                }
+            }
+            else
+                this.value = input.copy();
+        }
+        else
+            this.value = new TextValue();
+
+
+        this.setUpdateValues(parse,
+        [
+            ['type',   this.outputType()],
+            ['invert', method           ]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.method && this.method.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.method) this.method.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.method) this.method.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.method) this.method.iterateLoop(parse);
+    }
+}
+
+
+
+function getTextUnescapeValue(input, method)
+{
+    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+
+    switch (method.value)
+    {
+        case 0: return new TextValue(unescapeString    (input.value));
+        case 1: return new TextValue(encodeURIComponent(input.value));
+    }
+
+    consoleAssert(false, 'invalid escape method');
+    return input;
 }
 
 
@@ -36008,7 +36254,7 @@ extends GOperator1
                 {
                     const itemList = new ListValue(
                         item.value
-                            .split(unescapeString(separator.value))
+                            .split(escapeString(separator.value))
                             .map(s => new TextValue(s)));
 
                     this.value.items.push(itemList);
@@ -36019,7 +36265,7 @@ extends GOperator1
                 consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
 
                 this.value.items = input.value
-                    .split(unescapeString(separator.value))
+                    .split(escapeString(separator.value))
                     .map(s => new TextValue(s));
             }
         }
@@ -36293,7 +36539,7 @@ extends GOperator1
             const rows = 
                    input
                 && input.value            
-                ? input.value.split(unescapeString(rowSeparator.value))
+                ? input.value.split(escapeString(rowSeparator.value))
                 : [];
 
 
@@ -36301,7 +36547,7 @@ extends GOperator1
             {
                 const cells = 
                     _row
-                    ? _row.split(unescapeString(columnSeparator.value))
+                    ? _row.split(escapeString(columnSeparator.value))
                     : [];
 
 
@@ -61193,12 +61439,60 @@ function genParseTextEscape(parse)
     if (nInputs == 1)
         escape.input = genParse(parse);
 
+    escape.method = genParse(parse);
+
     
     parse.nTab--;
 
 
     genParseNodeEnd(parse, escape);
     return escape;
+}
+
+
+
+function genParseTextUnescape(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const unescape = new GTextUnescape(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(unescape, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, unescape);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        unescape.input = genParse(parse);
+
+    unescape.method = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, unescape);
+    return unescape;
 }
 
 
@@ -62033,6 +62327,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin          (parse);
     else if (parse.next == TEXT_PAD               ) result = genParseTextPad           (parse);
     else if (parse.next == TEXT_ESCAPE            ) result = genParseTextEscape        (parse);
+    else if (parse.next == TEXT_UNESCAPE          ) result = genParseTextUnescape      (parse);
     else if (parse.next == TEXT_COMPARE           ) result = genParseTextCompare       (parse);
     else if (parse.next == TEXT_SPLIT             ) result = genParseTextSplit         (parse);
     else if (parse.next == PARSE_CSV              ) result = genParseParseCSV          (parse);

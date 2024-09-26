@@ -56,7 +56,7 @@ extends GOperator1
                 {
                     const itemList = new ListValue(
                         item.value
-                            .split(unescapeString(separator.value))
+                            .split(escapeString(separator.value))
                             .map(s => new TextValue(s)));
 
                     this.value.items.push(itemList);
@@ -67,7 +67,7 @@ extends GOperator1
                 consoleAssert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
 
                 this.value.items = input.value
-                    .split(unescapeString(separator.value))
+                    .split(escapeString(separator.value))
                     .map(s => new TextValue(s));
             }
         }

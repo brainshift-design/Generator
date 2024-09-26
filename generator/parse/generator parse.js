@@ -248,6 +248,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin          (parse);
     else if (parse.next == TEXT_PAD               ) result = genParseTextPad           (parse);
     else if (parse.next == TEXT_ESCAPE            ) result = genParseTextEscape        (parse);
+    else if (parse.next == TEXT_UNESCAPE          ) result = genParseTextUnescape      (parse);
     else if (parse.next == TEXT_COMPARE           ) result = genParseTextCompare       (parse);
     else if (parse.next == TEXT_SPLIT             ) result = genParseTextSplit         (parse);
     else if (parse.next == PARSE_CSV              ) result = genParseParseCSV          (parse);

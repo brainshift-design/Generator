@@ -125,7 +125,7 @@ async function evalJoinInputs(inputs, _with, parse)
 
 
     const allAreLists = allInputsAreCondensedLists(inputs);
-    const w           = unescapeString(_with.value);
+    const w           = escapeString(_with.value);
 
     if (allAreLists) return await evalJoinListInputs(inputs, w, parse);
     else             return await evalJoinItemInputs(inputs, w, parse);

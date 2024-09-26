@@ -168,8 +168,8 @@ function getReplaceValue(input, _what, _with, _regex)
     else if (input.value)
     {
         value.value = input.value.replaceAll(
-            unescapeString(_what.value),
-            unescapeString(_with.value));
+            escapeString(_what.value),
+            escapeString(_with.value));
     }
 
 

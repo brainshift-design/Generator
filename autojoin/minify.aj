@@ -1498,7 +1498,7 @@ getEndNumLength
 isValidFloatString
 setControlFont
 daysInMonth
-unescapeString
+escapeString
 getEditDistance
 skipRandom
 includesSimilar

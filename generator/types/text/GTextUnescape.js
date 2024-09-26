@@ -1,4 +1,4 @@
-class GTextEscape
+class GTextUnescape
 extends GOperator1
 {
     method;
@@ -7,7 +7,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(TEXT_ESCAPE, nodeId, options);
+        super(TEXT_UNESCAPE, nodeId, options);
     }
 
 
@@ -23,7 +23,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GTextEscape(this.nodeId, this.options);
+        const copy = new GTextUnescape(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -58,13 +58,13 @@ extends GOperator1
 
                         this.value.items.push(
                             item.type == TEXT_VALUE
-                            ? getTextEscapeValue(item, method)
+                            ? getTextUnescapeValue(item, method)
                             : new TextValue());   
                     }
                 }
                 else
                 {
-                    this.value = getTextEscapeValue(input, method);
+                    this.value = getTextUnescapeValue(input, method);
                 }
             }
             else
@@ -124,14 +124,14 @@ extends GOperator1
 
 
 
-function getTextEscapeValue(input, method)
+function getTextUnescapeValue(input, method)
 {
     consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
 
     switch (method.value)
     {
-        case 0: return new TextValue(escapeString(input.value));
-        case 1: return new TextValue(decodeURIComponent(input.value));
+        case 0: return new TextValue(unescapeString    (input.value));
+        case 1: return new TextValue(encodeURIComponent(input.value));
     }
 
     consoleAssert(false, 'invalid escape method');

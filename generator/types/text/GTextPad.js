@@ -168,8 +168,8 @@ function getPadValue(input, startPad, startCount, endPad, endCount, enabled)
     
     if (enabled)
         value.value = input.value
-            .padStart(startCount.value, unescapeString(startPad.value))
-            .padEnd  (  endCount.value, endPad.value != '' ? unescapeString(endPad.value) : unescapeString(startPad.value));
+            .padStart(startCount.value, escapeString(startPad.value))
+            .padEnd  (  endCount.value, endPad.value != '' ? escapeString(endPad.value) : escapeString(startPad.value));
 
     return value;
 }

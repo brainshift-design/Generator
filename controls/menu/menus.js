@@ -655,11 +655,12 @@ function initGeneratorMenus()
 
     menuTextFunctions = new Menu('Text functions', true, false);
     menuTextFunctions.addItems([
-        new MenuItem('Trim',   null, false, {icon: iconTextTrim,   createType: TEXT_TRIM,   callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Case',   null, false, {icon: iconTextCase,   createType: TEXT_CASE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_CASE,      btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Pad',    null, false, {icon: iconTextPad,    createType: TEXT_PAD,    callback: e => actionManager.do(getCreateNodeAction(TEXT_PAD,       btnText.div, getCreateOptions(e)))}),
-        new MenuItem('',       null, false, {separator: true}),
-        new MenuItem('Escape', null, false, {icon: iconTextEscape, createType: TEXT_ESCAPE, callback: e => actionManager.do(getCreateNodeAction(TEXT_ESCAPE,    btnText.div, getCreateOptions(e)))})]);
+        new MenuItem('Trim',     null, false, {icon: iconTextTrim,     createType: TEXT_TRIM,     callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Case',     null, false, {icon: iconTextCase,     createType: TEXT_CASE,     callback: e => actionManager.do(getCreateNodeAction(TEXT_CASE,      btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Pad',      null, false, {icon: iconTextPad,      createType: TEXT_PAD,      callback: e => actionManager.do(getCreateNodeAction(TEXT_PAD,       btnText.div, getCreateOptions(e)))}),
+        new MenuItem('',         null, false, {separator: true}),
+        new MenuItem('Escape',   null, false, {icon: iconTextEscape,   createType: TEXT_ESCAPE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_ESCAPE,    btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Unescape', null, false, {icon: iconTextUnescape, createType: TEXT_UNESCAPE, callback: e => actionManager.do(getCreateNodeAction(TEXT_UNESCAPE,  btnText.div, getCreateOptions(e)))})]);
 
 
     menuAddText = new Menu('Add text', true, false);

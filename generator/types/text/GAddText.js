@@ -124,7 +124,7 @@ extends GOperator1
 
 function evalAddText(input, text, prefix)
 {
-    const textValue = unescapeString(text.value);
+    const textValue = escapeString(text.value);
 
     return new TextValue(
         prefix.value > 0

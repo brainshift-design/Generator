@@ -1,4 +1,4 @@
-class   OpTextEscape
+class   OpTextUnescape
 extends OperatorBase
 {
     paramMethod;
@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(TEXT_ESCAPE, 'escape', 'escape', iconTextEscape);
+        super(TEXT_UNESCAPE, 'unescape', 'unescape', iconTextUnescape);
 
 
         this.canDisable  = true;

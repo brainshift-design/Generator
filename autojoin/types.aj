@@ -196,6 +196,7 @@
 ../generator/types/text/GAddText.js
 ../generator/types/text/GTextPad.js
 ../generator/types/text/GTextEscape.js
+../generator/types/text/GTextUnescape.js
 ../generator/types/text/GTextSplit.js
 ../generator/types/text/GTextCompare.js
 ../generator/types/text/GParseCSV.js
