@@ -121,7 +121,7 @@ extends ResizableBase
         
         this.paramValue.enableControlText(!input.connected);
 
-        updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true, 1);
+        updateParamConditionText(this.paramValue, this.isUnknown(), true, 1);
 
         // this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         // this.paramValue.controls[0].showBar   = !this.isUnknown();

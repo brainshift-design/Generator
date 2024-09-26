@@ -7,7 +7,8 @@ extends OperatorBase
 
     getHeaderOutputColor()
     {
-        if (!this.value)
+        if (  !this.value
+            || this.isUnknown())
             return super.getHeaderOutputColor();
 
 
@@ -23,7 +24,8 @@ extends OperatorBase
 
     getOutputWireColor()
     {
-        if (!this.value)
+        if (  !this.value
+            || this.isUnknown())
             return super.getOutputWireColor();
 
 
