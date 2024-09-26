@@ -1,10 +1,12 @@
 class GSolve
 extends GOperator1
 {
-    current     = null;
-    target      = null;
+    current          = null;
+    target           = null;
 
-    terminalIds = [];
+    currentConnected = false;
+
+    terminalIds      = [];
 
 
     
@@ -19,10 +21,12 @@ extends GOperator1
     {
         super.reset();
 
-        this.current     = null;
-        this.target      = null;
+        this.current          = null;
+        this.target           = null;
 
-        this.terminalIds = [];
+        this.currentConnected = false;
+
+        this.terminalIds      = [];
     }
 
 
@@ -180,7 +184,7 @@ extends GOperator1
             this.value = NumberValue.NaN();
 
 
-        if (!this.current)
+        if (!this.currentConnected)
             current = NumberValue.NaN();
 
 

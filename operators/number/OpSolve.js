@@ -10,6 +10,7 @@ extends OperatorBase
     {
         super(NUMBER_SOLVE, 'solve', 'solve', iconSolve, defNodeWidth, true);
 
+        
         this.subscription = true;
         this.canDisable   = true;
         
@@ -62,6 +63,9 @@ extends OperatorBase
         }
 
 
+        request.push(this.node.paramCurrent.input.connected ? 1 : 0);
+
+
         request.push(input.connected ? 1 : 0);
         
         if (input.connected)
@@ -70,7 +74,7 @@ extends OperatorBase
         request.push(...this.node.paramCurrent.genRequest(gen));
         request.push(...this.node.paramTarget .genRequest(gen));
 
-        
+
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
@@ -81,10 +85,11 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        this.current = values[paramIds.findIndex(id => id == 'current')];
-
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
         
+        const current = values[paramIds.findIndex(id => id == 'current')];
+        this.paramCurrent.setValue(current, false, true, false);
+
         this.endProgress();
     }
 
@@ -93,7 +98,7 @@ extends OperatorBase
     updateParams()
     {
         this.paramCurrent.enableControlText(false, this.paramCurrent.isUnknown());
-        this.paramTarget .enableControlText(true);
+        this.paramTarget .enableControlText(true,  this.paramTarget .isUnknown());
 
 
         const maxDec = Math.max(

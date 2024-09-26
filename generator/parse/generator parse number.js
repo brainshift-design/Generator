@@ -1695,6 +1695,9 @@ function genParseSolve(parse)
         solve.terminalIds.push(parse.move());
 
 
+    solve.currentConnected = parseInt(parse.move()) > 0;
+
+
     let nInputs = -1;
     
     if (!ignore)
@@ -1721,6 +1724,7 @@ function genParseSolve(parse)
     if (nInputs == 1)
         solve.input = genParse(parse);
 
+    
     solve.current = genParse(parse);
     solve.target  = genParse(parse);
 

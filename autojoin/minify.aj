@@ -3371,7 +3371,6 @@ nodeOutputs
 columnLength
 
 assertVolatile
-NaN
 copyBase
 pagesBar
 btnAddPage

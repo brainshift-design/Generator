@@ -30237,10 +30237,12 @@ function interpolateNumberValue(values, index, nSegments, deg, degree, amount, m
 class GSolve
 extends GOperator1
 {
-    current     = null;
-    target      = null;
+    current          = null;
+    target           = null;
 
-    terminalIds = [];
+    currentConnected = false;
+
+    terminalIds      = [];
 
 
     
@@ -30255,10 +30257,12 @@ extends GOperator1
     {
         super.reset();
 
-        this.current     = null;
-        this.target      = null;
+        this.current          = null;
+        this.target           = null;
 
-        this.terminalIds = [];
+        this.currentConnected = false;
+
+        this.terminalIds      = [];
     }
 
 
@@ -30416,7 +30420,7 @@ extends GOperator1
             this.value = NumberValue.NaN();
 
 
-        if (!this.current)
+        if (!this.currentConnected)
             current = NumberValue.NaN();
 
 
@@ -58053,6 +58057,9 @@ function genParseSolve(parse)
         solve.terminalIds.push(parse.move());
 
 
+    solve.currentConnected = parseInt(parse.move()) > 0;
+
+
     let nInputs = -1;
     
     if (!ignore)
@@ -58079,6 +58086,7 @@ function genParseSolve(parse)
     if (nInputs == 1)
         solve.input = genParse(parse);
 
+    
     solve.current = genParse(parse);
     solve.target  = genParse(parse);
 
@@ -62812,6 +62820,9 @@ function logReqSolve(node, parse, ignore, nInputs = -1)
     }
 
 
+    parse.log += node.currentConnected ? ' 1' : ' 0';
+
+    
     if (    nInputs > -1
         && !ignore)
         parse.log += ' ' + nInputs;

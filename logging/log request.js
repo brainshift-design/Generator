@@ -43,6 +43,9 @@ function logReqSolve(node, parse, ignore, nInputs = -1)
     }
 
 
+    parse.log += node.currentConnected ? ' 1' : ' 0';
+
+    
     if (    nInputs > -1
         && !ignore)
         parse.log += ' ' + nInputs;
