@@ -847,6 +847,13 @@ function handleLegacyConnection(_conn, outputNode, inputNode, genVersion)
          && _conn.outputId == 'value'
          && genVersion < 441)
         _conn.outputId = 'h0';
+
+    else if (inputNode.type == IF_ELSE
+          && genVersion < 441)
+    {
+             if (_conn.inputId == 'h0') _conn.inputId = 'h1';
+        else if (_conn.inputId == 'h1') _conn.inputId = 'h0';
+    }
 }
 
 
