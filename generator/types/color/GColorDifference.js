@@ -143,8 +143,7 @@ extends GOperator2
             ['param1', param1           ],
             ['param2', param2           ],
             ['param3', param3           ]
-        ],
-        true);
+        ]);
 
 
         this.validate();
