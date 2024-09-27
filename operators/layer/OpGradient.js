@@ -78,7 +78,7 @@ extends OpColorBase
     
     addNewInput()
     {
-        const input = new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, GRADIENT_VALUE, LIST_VALUE]);
+        const input = new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, GRADIENT_VALUE, COLOR_LIST_VALUE, FILL_LIST_VALUE, COLOR_STOP_LIST_VALUE, LIST_VALUE]);
         input.isNew = true;
 
 
