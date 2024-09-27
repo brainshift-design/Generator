@@ -22,7 +22,7 @@ extends OperatorBase
         super(NUMBER_WAVE, 'wave', 'wave', iconWave);
 
         this.cached      = false;
-        this.canDisable  = true;
+        //this.canDisable  = true;
         this.iconOffsetY = 1;
         
 

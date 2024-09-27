@@ -126,7 +126,7 @@ extends GOperator
             if (base) t = t + base.value;
 
 
-            return new NumberValue(
+            this.value = new NumberValue(
                 t, 
                 Math.max(
                     base  .decimals, 
@@ -136,7 +136,7 @@ extends GOperator
                     bias  .decimals));
         }
         else
-            this.value = base;
+            this.value = base.copy();
         
 
         this.setUpdateValues(parse,

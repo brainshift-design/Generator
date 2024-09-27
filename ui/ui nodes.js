@@ -847,7 +847,6 @@ function handleLegacyNode(_node, genVersion)
 
 function handleLegacyConnection(_conn, outputNode, inputNode, genVersion)
 {
-    console.log('genVersion =', genVersion);
     if (_conn.outputId == 'parts')
         _conn.outputId = 'h0';
     
