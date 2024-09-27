@@ -816,6 +816,13 @@ function handleLegacyNode(_node, genVersion)
         }
     }
 
+    else if (_node.type == ITEM_COUNT
+          && genVersion < 441)
+    {
+        if (_node.params)
+            removeFromArrayWhere(_node.params, p => p[1] == 'value');
+    }
+
     else if (_node.type == NUMBER_SEQUENCE
           && genVersion < 441)
     {
@@ -840,6 +847,7 @@ function handleLegacyNode(_node, genVersion)
 
 function handleLegacyConnection(_conn, outputNode, inputNode, genVersion)
 {
+    console.log('genVersion =', genVersion);
     if (_conn.outputId == 'parts')
         _conn.outputId = 'h0';
     

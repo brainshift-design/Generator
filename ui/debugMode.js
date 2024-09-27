@@ -123,8 +123,8 @@ function loadNodesAndConnsData(_pages, _nodes, _conns)
 
 function updateDebugModeInfo()
 {
-    let nodeSortParam;
-    let connSortParam;
+    let nodeSortParam = '';
+    let connSortParam = '';
 
 
     switch (nodeSortOrder)
@@ -141,7 +141,7 @@ function updateDebugModeInfo()
     {
         case 'outputId':        connSortParam = 'output ID';         break;
         case 'outputNodeId':    connSortParam = 'output node ID';    break;
-        case 'outputNodeName':  connSortParam = 'output node Name';  break;
+        case 'outputNodeName':  connSortParam = 'output node name';  break;
         case 'created':         connSortParam = 'creation time';     break;
     }
 
@@ -155,8 +155,8 @@ function updateDebugModeInfo()
     const _sortIcon = '<svg width="11" height="9" viewBox="0 0 11 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" width="3" height="1" fill="white"/><rect x="2" y="4" width="7" height="1" fill="white"/><rect y="8" width="11" height="1" fill="white"/></svg>';
 
     debugModePagesTitle.innerHTML = debugModePages.children.length + '&thinsp;&nbsp;' + countString(debugModePages.children.length, 'page'      );
-    debugModeNodesTitle.innerHTML = debugModeNodes.children.length + '&thinsp;&nbsp;' + countString(debugModeNodes.children.length, 'node'      ) + '&nbsp;&emsp;<span style="position: relative; top: 1px;">' + _sortIcon + '</span>&ensp;sorted by ' + nodeSortParam;
-    debugModeConnsTitle.innerHTML = debugModeConns.children.length + '&thinsp;&nbsp;' + countString(debugModeConns.children.length, 'connection') + '&nbsp;&emsp;<span style="position: relative; top: 1px;">' + _sortIcon + '</span>&ensp;sorted by ' + connSortParam;
+    debugModeNodesTitle.innerHTML = debugModeNodes.children.length + '&thinsp;&nbsp;' + countString(debugModeNodes.children.length, 'node'      ) + '&nbsp;&emsp;<span style="position: relative; top: 1px;">' + _sortIcon + '</span>&ensp;sort' + (nodeSortParam != '' ? 'ed by ' + nodeSortParam : '');
+    debugModeConnsTitle.innerHTML = debugModeConns.children.length + '&thinsp;&nbsp;' + countString(debugModeConns.children.length, 'connection') + '&nbsp;&emsp;<span style="position: relative; top: 1px;">' + _sortIcon + '</span>&ensp;sort' + (connSortParam != '' ? 'ed by ' + connSortParam : '');
 }
 
 

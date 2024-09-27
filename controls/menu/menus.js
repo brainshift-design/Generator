@@ -1524,11 +1524,11 @@ function initDebugModeMenus()
     menuConnDataSort = new Menu('Sort connections menu', false);
     menuConnDataSort.addItems([
         menuItemSortConnsOutputNodeId   = new MenuItem('Output node ID',   null, false, { checkCallback: () => connSortOrderOut == 'outputNodeId',   callback: () => { hideAllMenus(); sortConnDivs('outputNodeId'  ); }}),
-        menuItemSortConnsOutputNodeName = new MenuItem('Output node name', null, false, { checkCallback: () => connSortOrderOut == 'outputNodeName', callback: () => { hideAllMenus(); sortConnDivs('outputNodeName'); }}),
+        //menuItemSortConnsOutputNodeName = new MenuItem('Output node name', null, false, { checkCallback: () => connSortOrderOut == 'outputNodeName', callback: () => { hideAllMenus(); sortConnDivs('outputNodeName'); }}),
         menuItemSortConnsOutputId       = new MenuItem('Output ID',        null, false, { checkCallback: () => connSortOrderOut == 'outputId',       callback: () => { hideAllMenus(); sortConnDivs('outputId'      ); }}),
                                           new MenuItem('',                 null, false, { separator: true }),
         menuItemSortConnsInputNodeId    = new MenuItem('Input node ID',    null, false, { checkCallback: () => connSortOrderIn == 'inputNodeId',    callback: () => { hideAllMenus(); sortConnDivs('inputNodeId'  ); }}),
-        menuItemSortConnsInputNodeName  = new MenuItem('Input node name',  null, false, { checkCallback: () => connSortOrderIn == 'inputNodeName',  callback: () => { hideAllMenus(); sortConnDivs('inputNodeName'); }}),
+        //menuItemSortConnsInputNodeName  = new MenuItem('Input node name',  null, false, { checkCallback: () => connSortOrderIn == 'inputNodeName',  callback: () => { hideAllMenus(); sortConnDivs('inputNodeName'); }}),
         menuItemSortConnsInputId        = new MenuItem('Input ID',         null, false, { checkCallback: () => connSortOrderIn == 'inputId',        callback: () => { hideAllMenus(); sortConnDivs('inputId'      ); }}),
                                           new MenuItem('',                 null, false, { separator: true }),
         menuItemSortConnsCreated        = new MenuItem('Creation time',    null, false, { checkCallback: () => connSortOrderOut == 'created',        callback: () => { hideAllMenus(); sortConnDivs('created'); }})]);

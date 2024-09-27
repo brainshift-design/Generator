@@ -14,10 +14,10 @@ extends OperatorBase
         this.iconOffsetY     = 1;
 
 
-        this.addInput(new Input(LIST_VALUES));
+        this.addInput (new Input(LIST_VALUES));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramStart = new NumberParam('start', 'start', true,  true,  true, 1, 0, 1));
-        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
 
         this.paramStart.divider = 0.54;
