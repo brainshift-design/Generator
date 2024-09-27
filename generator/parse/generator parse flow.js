@@ -1011,7 +1011,7 @@ function genParseListCount(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const count = new GListCount(nodeId, options);
+    const count = new GItemCount(nodeId, options);
 
     
     let nInputs = -1;

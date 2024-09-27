@@ -7,7 +7,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(LIST_COUNT, nodeId, options);
+        super(ITEM_COUNT, nodeId, options);
     }
 
 
@@ -23,7 +23,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GListCount(this.nodeId, this.options);
+        const copy = new GItemCount(this.nodeId, this.options);
         
         copy.copyBase(this);
 

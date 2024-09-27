@@ -652,6 +652,9 @@ function handleLegacyNode(_node, genVersion)
     else if (_node.type == TEXT_SPLIT
           && genVersion == 0)
     {
+        if (!_node.params)
+            _node.params = [];
+
         let parts = _node.params.find(p => p[1] == 'parts');
 
         if (parts)
@@ -769,6 +772,9 @@ function handleLegacyNode(_node, genVersion)
     else if (_node.type == IF_ELSE
           && genVersion < 441)
     {
+        if (!_node.params)
+            _node.params = [];
+
         const paramCondition = _node.params.find(p => p[1] == 'condition');
         
         if (paramCondition) 
@@ -794,6 +800,9 @@ function handleLegacyNode(_node, genVersion)
     else if (_node.type == REPEAT
           && genVersion < 441)
     {
+        if (!_node.params)
+            _node.params = [];
+
         const paramCount = _node.params.find(p => p[1] == 'count');
         
         if (!paramCount) 
@@ -810,6 +819,9 @@ function handleLegacyNode(_node, genVersion)
     else if (_node.type == NUMBER_SEQUENCE
           && genVersion < 441)
     {
+        if (!_node.params)
+            _node.params = [];
+
         const paramAdd = _node.params.find(p => p[1] == 'add');
         
         if (!paramAdd) 
@@ -826,9 +838,14 @@ function handleLegacyNode(_node, genVersion)
 
 
 
-function handleLegacyConnection(_conn)
+function handleLegacyConnection(_conn, outputNode, inputNode, genVersion)
 {
     if (_conn.outputId == 'parts')
+        _conn.outputId = 'h0';
+    
+    else if (outputNode.type == ITEM_COUNT
+         && _conn.outputId == 'value'
+         && genVersion < 441)
         _conn.outputId = 'h0';
 }
 
@@ -885,9 +902,18 @@ function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
     for (let i = 0; i < data.connections.length; i++)
     {
         const _conn = data.connections[i];
+
+        const outputNode = data.nodes.find(n => (n.newId ?? n.id) == _conn.outputNodeId);
+        const  inputNode = data.nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId);
+
+
+        if (   outputNode
+            && inputNode)
+            handleLegacyConnection(_conn, outputNode, inputNode, data.generatorVersion);
+
         
-        if (      data.nodes.find(n => (n.newId ?? n.id) == _conn.outputNodeId)
-               && data.nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId)
+        if (      outputNode
+               && inputNode
             || pasteConnected)
         {
             parseConnectionJsonAndConnect(_conn, pasteConnected, createTime);

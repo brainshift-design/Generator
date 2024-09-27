@@ -111,7 +111,7 @@
 ../generator/types/flow/GItems.js
 ../generator/types/flow/GSelect.js
 ../generator/types/flow/GSelectFromList.js
-../generator/types/flow/GListCount.js
+../generator/types/flow/GItemCount.js
 ../generator/types/flow/GObjectCount.js
 ../generator/types/flow/GListContains.js
 ../generator/types/flow/GListFind.js

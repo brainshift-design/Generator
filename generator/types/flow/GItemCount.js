@@ -1,4 +1,4 @@
-class GListCount
+class GItemCount
 extends GOperator1
 {
     start = null;
@@ -7,7 +7,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(LIST_COUNT, nodeId, options);
+        super(ITEM_COUNT, nodeId, options);
     }
 
 
@@ -23,7 +23,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GListCount(this.nodeId, this.options);
+        const copy = new GItemCount(this.nodeId, this.options);
         
         copy.copyBase(this);
 
@@ -67,8 +67,9 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
-            ['start', start     ]
+            ['type',  this.outputType()],
+            //['value', this.value       ],
+            ['start', start            ]
         ]);
 
 

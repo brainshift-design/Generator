@@ -1140,7 +1140,7 @@ const SORT                   = 'SORT';
 const COLUMN                 = 'CLMN';
 const CELL                   = 'CELL';
 const ITEMS                  = 'ITEMS';
-const LIST_COUNT             = 'COUNT';
+const ITEM_COUNT             = 'COUNT';
 const OBJECT_COUNT           = 'OBJCOUNT';
 const LIST_CONTAINS          = 'LCONT';
 const LIST_FIND              = 'LFIND';
@@ -1168,7 +1168,7 @@ const LIST_TYPES =
     GET_PARAM,
     SUBLIST,
     ITEMS,
-    LIST_COUNT,
+    ITEM_COUNT,
     LIST_CONTAINS,
     LIST_FIND,
     REPEAT,

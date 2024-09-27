@@ -1087,7 +1087,7 @@ SORT
 COLUMN
 CELL
 ITEMS
-LIST_COUNT
+ITEM_COUNT
 LIST_CONTAINS
 SELECT
 IF_ELSE
@@ -1874,7 +1874,7 @@ GFilter
 GFreeze
 GIfElse
 GItems
-GListCount
+GItemCount
 GNull
 GRepeat
 GReorderList
@@ -2173,7 +2173,7 @@ OpForEach
 OpFreeze
 OpIfElse
 OpItems
-OpListCount
+OpItemCount
 OpNull
 OpRepeat
 OpReorderList

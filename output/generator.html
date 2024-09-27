@@ -6758,7 +6758,7 @@ const SORT                   = 'SORT';
 const COLUMN                 = 'CLMN';
 const CELL                   = 'CELL';
 const ITEMS                  = 'ITEMS';
-const LIST_COUNT             = 'COUNT';
+const ITEM_COUNT             = 'COUNT';
 const OBJECT_COUNT           = 'OBJCOUNT';
 const LIST_CONTAINS          = 'LCONT';
 const LIST_FIND              = 'LFIND';
@@ -6786,7 +6786,7 @@ const LIST_TYPES =
     GET_PARAM,
     SUBLIST,
     ITEMS,
-    LIST_COUNT,
+    ITEM_COUNT,
     LIST_CONTAINS,
     LIST_FIND,
     REPEAT,
@@ -24967,7 +24967,7 @@ extends GOperator1
 }
 
 
-class GListCount
+class GItemCount
 extends GOperator1
 {
     start = null;
@@ -24976,7 +24976,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(LIST_COUNT, nodeId, options);
+        super(ITEM_COUNT, nodeId, options);
     }
 
 
@@ -24992,7 +24992,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GListCount(this.nodeId, this.options);
+        const copy = new GItemCount(this.nodeId, this.options);
         
         copy.copyBase(this);
 
@@ -25036,8 +25036,9 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['value', this.value],
-            ['start', start     ]
+            ['type',  this.outputType()],
+            //['value', this.value       ],
+            ['start', start            ]
         ]);
 
 
@@ -25092,7 +25093,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(LIST_COUNT, nodeId, options);
+        super(ITEM_COUNT, nodeId, options);
     }
 
 
@@ -25108,7 +25109,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GListCount(this.nodeId, this.options);
+        const copy = new GItemCount(this.nodeId, this.options);
         
         copy.copyBase(this);
 
@@ -54640,7 +54641,7 @@ function genParseListCount(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const count = new GListCount(nodeId, options);
+    const count = new GItemCount(nodeId, options);
 
     
     let nInputs = -1;
@@ -62196,7 +62197,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == ITEMS                  ) result = genParseExpandList        (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect            (parse);
     else if (parse.next == SELECT_FROM_LIST       ) result = genParseSelectFromList    (parse);
-    else if (parse.next == LIST_COUNT             ) result = genParseListCount         (parse);
+    else if (parse.next == ITEM_COUNT             ) result = genParseListCount         (parse);
     else if (parse.next == OBJECT_COUNT           ) result = genParseObjectCount       (parse);
     else if (parse.next == LIST_CONTAINS          ) result = genParseListContains      (parse);
     else if (parse.next == LIST_FIND              ) result = genParseListFind          (parse);

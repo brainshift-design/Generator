@@ -81,7 +81,7 @@
 ../operators/flow/OpItems.js
 ../operators/flow/OpSelect.js
 ../operators/flow/OpSelectFromList.js
-../operators/flow/OpListCount.js
+../operators/flow/OpItemCount.js
 ../operators/flow/OpObjectCount.js
 ../operators/flow/OpListContains.js
 ../operators/flow/OpListFind.js

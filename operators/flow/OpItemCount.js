@@ -1,16 +1,27 @@
-class   OpTextLength
+class   OpItemCount
 extends OperatorBase
 {
+    paramStart;
+
+
+    
     constructor()
     {
-        super(TEXT_LENGTH, 'length', 'text length', iconTextLength);
+        super(ITEM_COUNT, 'itemCount', 'item count', iconCount);
 
-        
-        this.outputValueType = TEXT_VALUE;
 
-        
-        this.addInput (new Input ([TEXT_VALUE, TEXT_LIST_VALUE, NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
+        this.outputValueType = ANY_VALUE;
+        this.iconOffsetY     = 1;
+
+
+        this.addInput(new Input(LIST_VALUES));
+
+        this.addParam(this.paramStart = new NumberParam('start', 'start', true,  true,  true, 1, 0, 1));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+
+
+        this.paramStart.divider = 0.54;
+        this.paramStart.controls[0].allowEditDecimals = false;
     }
 
 
@@ -27,16 +38,18 @@ extends OperatorBase
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
-        
+
         const input = this.node.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
-        
-        if (input.connected)
+
+        if (input.connected) 
             request.push(...pushInputOrParam(input, gen));
 
-        
+        request.push(...this.node.paramStart.genRequest(gen));
+
+
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
@@ -54,4 +67,13 @@ extends OperatorBase
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
+
+
+
+    // updateParams()
+    // {
+    //     this.paramStart.enableControlText(true,  this.paramStart.isUnknown());
+
+    //     this.updateParamControls();
+    // }
 }
