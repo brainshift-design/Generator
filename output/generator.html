@@ -8373,14 +8373,14 @@ function addGradientProp(obj, prop, target = obj.fills)
     
     const bounds   = obj.getBounds();
 
-    bounds.w = Math.max(1, bounds.w); // this is necessary
-    bounds.h = Math.max(1, bounds.h); // for proportionality
+    // bounds.w = Math.max(1, bounds.w); // this is necessary
+    // bounds.h = Math.max(1, bounds.h); // for proportionality
 
 
     if (pos > 0)
     {
         if (   pos == 1
-            || pos == 2) 
+            || pos == 2)
         {
             x = x / 100 * bounds.width;
             y = y / 100 * bounds.height;
@@ -8404,6 +8404,7 @@ function addGradientProp(obj, prop, target = obj.fills)
     let   p0 = point(x, y);
     let   p1 = addv(p0, vector(a, diag === true ? s : s * nozero(asp)));
     let   p2 = addv(p0, vector(a + Tau/4, s));
+
 
     const a1 = anglev2(p0, p1);
     const a2 = anglev2(p0, p2);
@@ -8451,7 +8452,6 @@ function addGradientProp(obj, prop, target = obj.fills)
         p2 = addv(p2, dv);
     }
 
-    console.log('p2 =', p2.x + ', ' + p2.y);
 
     // handles outside range
 
@@ -30251,7 +30251,7 @@ extends GOperator1
     
     constructor(nodeId, options)
     {
-        super(NUMBER_LIMITS, nodeId, options);
+        super(NUMBER_SOLVE, nodeId, options);
     }
 
 
@@ -53523,16 +53523,6 @@ function genParseGradient(parse)
         case 'blend':    grad.blend    = genParse(parse); break;
         }
     }
-
-    // grad.gradType   = genParse(parse); 
-    // grad.position   = genParse(parse); 
-    // grad.x          = genParse(parse); 
-    // grad.y          = genParse(parse); 
-    // grad.size       = genParse(parse); 
-    // grad.angle      = genParse(parse); 
-    // grad.aspect     = genParse(parse); 
-    // grad.skew       = genParse(parse); 
-    // grad.blend      = genParse(parse);
 
     
     grad.diagAspect = parseInt(parse.move()) > 0;

@@ -101,14 +101,14 @@ function addGradientProp(obj, prop, target = obj.fills)
     
     const bounds   = obj.getBounds();
 
-    bounds.w = Math.max(1, bounds.w); // this is necessary
-    bounds.h = Math.max(1, bounds.h); // for proportionality
+    // bounds.w = Math.max(1, bounds.w); // this is necessary
+    // bounds.h = Math.max(1, bounds.h); // for proportionality
 
 
     if (pos > 0)
     {
         if (   pos == 1
-            || pos == 2) 
+            || pos == 2)
         {
             x = x / 100 * bounds.width;
             y = y / 100 * bounds.height;
@@ -132,6 +132,7 @@ function addGradientProp(obj, prop, target = obj.fills)
     let   p0 = point(x, y);
     let   p1 = addv(p0, vector(a, diag === true ? s : s * nozero(asp)));
     let   p2 = addv(p0, vector(a + Tau/4, s));
+
 
     const a1 = anglev2(p0, p1);
     const a2 = anglev2(p0, p2);
@@ -179,7 +180,6 @@ function addGradientProp(obj, prop, target = obj.fills)
         p2 = addv(p2, dv);
     }
 
-    console.log('p2 =', p2.x + ', ' + p2.y);
 
     // handles outside range
 

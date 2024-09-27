@@ -155,17 +155,6 @@ extends OpColorBase
             request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));
 
 
-        // request.push(...this.node.paramType    .genRequest(gen));
-        // request.push(...this.node.paramPosition.genRequest(gen));
-        // request.push(...this.node.paramX       .genRequest(gen));
-        // request.push(...this.node.paramY       .genRequest(gen));
-        // request.push(...this.node.paramSize    .genRequest(gen));
-        // request.push(...this.node.paramAngle   .genRequest(gen));
-        // request.push(...this.node.paramAspect  .genRequest(gen));
-        // request.push(...this.node.paramSkew    .genRequest(gen));
-        // request.push(...this.node.paramBlend   .genRequest(gen));
-
-
         request.push(this.node.diagAspect ? 1 : 0);
 
         

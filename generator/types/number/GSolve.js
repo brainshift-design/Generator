@@ -12,7 +12,7 @@ extends GOperator1
     
     constructor(nodeId, options)
     {
-        super(NUMBER_LIMITS, nodeId, options);
+        super(NUMBER_SOLVE, nodeId, options);
     }
 
 
