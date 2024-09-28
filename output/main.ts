@@ -5418,9 +5418,8 @@ function figGetAllLocalVariables(nodeId, px, py)
                 { 
                     id:             _var.id,
                     resolvedType:   _var.resolvedType,
-                    name:           _var.name,
-                    resolvedValue:  values[1][0], //_var.resolvedValue,
-                    collectionName: collection.name
+                    name:           collection.name + '/' + _var.name,
+                    resolvedValue:  values[1][0]
                 };
 
                 variables.push(variable);
@@ -5490,7 +5489,7 @@ async function getVariableValuesAsync(varIds)
             values.push(
             {
                 id:            varIds[i],
-                name:          variable.name, 
+                name:          collection.name + '/' + variable.name, 
                 resolvedType:  variable.resolvedType,
                 resolvedValue: vals[0]
             });

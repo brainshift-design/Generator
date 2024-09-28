@@ -117,20 +117,6 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     let prevPath = '';
 
 
-    // variables.sort(function(a, b) 
-    // {
-    //     const aName = a.collectionName + '/' + a.name;
-    //     const bName = b.collectionName + '/' + b.name;
-
-    //     let result = aName.localeCompare(bName);
-
-    //     // if (result == 0)
-    //     //     result = aName.length - bName.length;
-
-    //     return result;
-    // });
-
-
     const collator = new Intl.Collator(
         undefined, 
         { 
@@ -141,11 +127,8 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
 
     variables.sort((a, b) => 
     {
-        const aName  = a.collectionName + '/' + a.name;
-        const bName  = b.collectionName + '/' + b.name;
-
-        const aParts = aName.split('/');
-        const bParts = bName.split('/');
+        const aParts = a.name.split('/');
+        const bParts = b.name.split('/');
 
       
         // compare the first part (e.g., "Collection 1")
@@ -224,12 +207,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
         }
 
 
-        let name = '';
-        
-        if (nCollections > 1)
-            name += variable.collectionName + '/';
-        
-        name += variable.name;
+        let name = variable.name;
 
 
         const path = name.split('/').slice(0, -1).join('/');

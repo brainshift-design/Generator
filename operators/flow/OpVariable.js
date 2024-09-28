@@ -121,8 +121,6 @@ extends ResizableBase
 
     output_genRequest(gen)
     {
-        console.trace();
-        
         // 'this' is the output
 
         gen.scope.push({
