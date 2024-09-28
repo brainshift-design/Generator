@@ -418,8 +418,10 @@ function uiLinkNodeToVariable(node, varId, varType, varName, varValue)//, varTem
     node.variableValue = varValue;
     //node.linkedTemp = varTemp;
     
-    if (varName != NULL)
-        node.name = varName;
+    node.name =
+        varName != NULL
+            ? varName
+            : defaultVariableNodeName;
 
 
     node.updateValueParamFromResolved(varType, varValue);
