@@ -274,11 +274,11 @@ extends ResizableBase
 
         switch (type)
         {
-            case NUMBER_VALUE:  icon = isBool ? iconVarBoolean : iconVarNumber;  iconOffsetY =  isBool ? 0 : -1;  break;
-            case   TEXT_VALUE:  icon = iconVarText;                              iconOffsetY =  1;                break;
+            case NUMBER_VALUE:  icon = isBool ? iconVarBoolean : iconVarNumber;  iconOffsetY =  isBool ? 0 : 1;  break;
+            case   TEXT_VALUE:  icon = iconVarText;                              iconOffsetY =  1;               break;
             case  COLOR_VALUE:   
-            case   FILL_VALUE:  icon = iconVarColor;                             iconOffsetY = -2;                break;
-            default:            icon = iconVariable;                             iconOffsetY =  1;                break;
+            case   FILL_VALUE:  icon = iconVarColor;                             iconOffsetY = -2;               break;
+            default:            icon = iconVariable;                             iconOffsetY =  1;               break;
         }
 
 
