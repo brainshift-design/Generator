@@ -2048,7 +2048,6 @@ figma.ui.onmessage = function (msg) {
         case 'figGetAllLocalVariables':
             figGetAllLocalVariables(msg.nodeId, msg.px, msg.py);
             break;
-        //case 'figUpdateVariable':                     figUpdateVariableAsync               (msg.variableId, msg.value);                   break;
         case 'figGetAllLocalColorStyles':
             figGetAllLocalColorStyles(msg.nodeId, msg.px, msg.py);
             break;
@@ -2794,26 +2793,30 @@ function figUpdateObjectsAsync(figParent_1, genObjects_1, batchSize_1) {
 }
 function figUpdateVariableObjectAsync(genVar) {
     return __awaiter(this, void 0, void 0, function* () {
+        const nodeId = genVar[FO_NODE_ID];
         const varId = genVar[FO_OBJECT_ID];
+        const varName = genVar[FO_OBJECT_NAME];
         const varValue = genVar[FO_VARIABLE_VALUE];
+        const nameParts = varName.split('/');
+        console.assert(nameParts.length > 1, 'nameParts must be > 1');
         let figVar;
+        let collection;
         if (varId == NULL) // not linked yet
          {
-            const varName = genVar[FO_OBJECT_NAME];
-            const nameParts = varName.split('/');
-            console.assert(nameParts.length > 1, 'nameParts must be > 1');
-            let collection;
-            if (nameParts.length > 1) {
-                collection = yield figGetVariableCollectionByNameAsync(nameParts[0]);
-                if (!collection)
-                    collection = yield figCreateVariableCollectionAsync(nameParts[0]);
-            }
+            // if (nameParts.length > 1)
+            // {
+            collection = yield figGetVariableCollectionByNameAsync(nameParts[0]);
+            if (!collection)
+                collection = yield figCreateVariableCollectionAsync(nameParts[0]);
+            // }
         }
         else // linked already
-            figVar = yield figLinkNodeToVariableAsync(genVar[FO_NODE_ID], genVar[FO_OBJECT_ID]);
+         {
+            figVar = yield figLinkNodeToVariableAsync(nodeId, varId);
+            collection = yield figma.variables.getVariableCollectionByIdAsync(figVar.variableCollectionId);
+        }
         console.assert(figVar, 'variable must have been created');
-        // console.log('figVar =', figVar);
-        yield figUpdateVariableAsync(figVar.id, varValue);
+        yield figUpdateVariableAsync(figVar.id, varName, varValue);
     });
 }
 function figUpdateGeometricObjectAsync(genObj, updateObjects, updateObjectCount, batchSize, abort, figParent, addProps, transform) {
@@ -3015,7 +3018,7 @@ function figUpdateObjectAsync(figObj, genObj, addProps, transform) {
                 figUpdateFrame(figObj, genObj, addProps, transform);
                 break;
             case VARIABLE:
-                yield figUpdateVariableAsync(figObj, genObj);
+                yield figUpdateVariableObjectAsync(genObj);
                 break;
         }
         if (figObj != undefined
@@ -3721,7 +3724,7 @@ function getVariableValuesAsync(varIds) {
         return values;
     });
 }
-function figUpdateVariableAsync(varId, value) {
+function figUpdateVariableAsync(varId, varName, value) {
     return __awaiter(this, void 0, void 0, function* () {
         let variable = yield figma.variables.getVariableByIdAsync(varId);
         if (!variable)
@@ -3738,6 +3741,9 @@ function figUpdateVariableAsync(varId, value) {
             collection = yield figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
             mode = collection.modes[0];
         }
+        const _varName = varName.split('/').slice(1).join('/');
+        if (variable.name != _varName)
+            variable.name = _varName;
         if (value !== null) {
             if (variable.resolvedType == 'BOOLEAN')
                 value = value > 0; //!= 0;

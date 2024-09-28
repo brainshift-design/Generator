@@ -213,7 +213,7 @@ async function getVariableValuesAsync(varIds)
 
 
 
-async function figUpdateVariableAsync(varId, value)
+async function figUpdateVariableAsync(varId, varName, value)
 {
     let variable = await figma.variables.getVariableByIdAsync(varId);
     if (!variable) return;
@@ -238,6 +238,12 @@ async function figUpdateVariableAsync(varId, value)
         collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
         mode       = collection.modes[0];
     }
+
+
+    const _varName = varName.split('/').slice(1).join('/');
+
+    if (variable.name != _varName)
+        variable.name = _varName;
 
 
     if (value !== null)

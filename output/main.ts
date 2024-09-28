@@ -2977,7 +2977,6 @@ figma.ui.onmessage = function(msg)
         case 'figRemovePluginDataFromAllLocalStyles': figRemovePluginDataFromAllLocalStyles();                                            break;
 
         case 'figGetAllLocalVariables':               figGetAllLocalVariables              (msg.nodeId, msg.px, msg.py);                  break;
-        //case 'figUpdateVariable':                     figUpdateVariableAsync               (msg.variableId, msg.value);                   break;
 
         case 'figGetAllLocalColorStyles':             figGetAllLocalColorStyles            (msg.nodeId, msg.px, msg.py);                  break;
         case 'figLinkNodeToExistingColorStyle':       figLinkNodeToExistingColorStyle      (msg.nodeId, msg.styleId);                     break;
@@ -4181,45 +4180,43 @@ async function figUpdateObjectsAsync(figParent, genObjects, batchSize, totalObje
 
 async function figUpdateVariableObjectAsync(genVar)
 {
-    const varId    = genVar[FO_OBJECT_ID     ];
-    const varValue = genVar[FO_VARIABLE_VALUE];
+    const nodeId    = genVar[FO_NODE_ID       ];
+    const varId     = genVar[FO_OBJECT_ID     ];
+    const varName   = genVar[FO_OBJECT_NAME   ];
+    const varValue  = genVar[FO_VARIABLE_VALUE];
+    
+    const nameParts = varName.split('/');
+    console.assert(nameParts.length > 1, 'nameParts must be > 1');
 
 
     let figVar;
-
+    let collection;
 
 
     if (varId == NULL) // not linked yet
     {
-        const varName   = genVar[FO_OBJECT_NAME];
-        const nameParts = varName.split('/');
-
-        console.assert(nameParts.length > 1, 'nameParts must be > 1');
-
-        
-        let collection;
-        
-        if (nameParts.length > 1)
-        {
+        // if (nameParts.length > 1)
+        // {
             collection = await figGetVariableCollectionByNameAsync(nameParts[0]);
 
             if (!collection)
                 collection = await figCreateVariableCollectionAsync(nameParts[0]);
-        }
-
-
-
+        // }
     }
-
     else // linked already
-        figVar = await figLinkNodeToVariableAsync(genVar[FO_NODE_ID], genVar[FO_OBJECT_ID]);
+    {
+        figVar     = await figLinkNodeToVariableAsync(nodeId, varId);
+        collection = await figma.variables.getVariableCollectionByIdAsync(figVar.variableCollectionId);
+    }
 
 
     console.assert(figVar, 'variable must have been created');
-    // console.log('figVar =', figVar);
 
 
-    await figUpdateVariableAsync(figVar.id, varValue);
+    await figUpdateVariableAsync(
+        figVar.id,
+        varName,
+        varValue);
 }
 
 
@@ -4441,7 +4438,7 @@ async function figUpdateObjectAsync(figObj, genObj, addProps, transform)
         case SHAPE_GROUP:          figUpdateShapeGroup   (figObj, genObj);                       break;
         case FRAME:                figUpdateFrame        (figObj, genObj, addProps, transform);  break;
 
-        case VARIABLE:       await figUpdateVariableAsync(figObj, genObj);                       break;
+        case VARIABLE:       await figUpdateVariableObjectAsync(genObj);                       break;
     }
 
 
@@ -5511,7 +5508,7 @@ async function getVariableValuesAsync(varIds)
 
 
 
-async function figUpdateVariableAsync(varId, value)
+async function figUpdateVariableAsync(varId, varName, value)
 {
     let variable = await figma.variables.getVariableByIdAsync(varId);
     if (!variable) return;
@@ -5536,6 +5533,12 @@ async function figUpdateVariableAsync(varId, value)
         collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
         mode       = collection.modes[0];
     }
+
+
+    const _varName = varName.split('/').slice(1).join('/');
+
+    if (variable.name != _varName)
+        variable.name = _varName;
 
 
     if (value !== null)

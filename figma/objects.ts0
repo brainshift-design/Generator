@@ -133,45 +133,43 @@ async function figUpdateObjectsAsync(figParent, genObjects, batchSize, totalObje
 
 async function figUpdateVariableObjectAsync(genVar)
 {
-    const varId    = genVar[FO_OBJECT_ID     ];
-    const varValue = genVar[FO_VARIABLE_VALUE];
+    const nodeId    = genVar[FO_NODE_ID       ];
+    const varId     = genVar[FO_OBJECT_ID     ];
+    const varName   = genVar[FO_OBJECT_NAME   ];
+    const varValue  = genVar[FO_VARIABLE_VALUE];
+    
+    const nameParts = varName.split('/');
+    console.assert(nameParts.length > 1, 'nameParts must be > 1');
 
 
     let figVar;
-
+    let collection;
 
 
     if (varId == NULL) // not linked yet
     {
-        const varName   = genVar[FO_OBJECT_NAME];
-        const nameParts = varName.split('/');
-
-        console.assert(nameParts.length > 1, 'nameParts must be > 1');
-
-        
-        let collection;
-        
-        if (nameParts.length > 1)
-        {
+        // if (nameParts.length > 1)
+        // {
             collection = await figGetVariableCollectionByNameAsync(nameParts[0]);
 
             if (!collection)
                 collection = await figCreateVariableCollectionAsync(nameParts[0]);
-        }
-
-
-
+        // }
     }
-
     else // linked already
-        figVar = await figLinkNodeToVariableAsync(genVar[FO_NODE_ID], genVar[FO_OBJECT_ID]);
+    {
+        figVar     = await figLinkNodeToVariableAsync(nodeId, varId);
+        collection = await figma.variables.getVariableCollectionByIdAsync(figVar.variableCollectionId);
+    }
 
 
     console.assert(figVar, 'variable must have been created');
-    // console.log('figVar =', figVar);
 
 
-    await figUpdateVariableAsync(figVar.id, varValue);
+    await figUpdateVariableAsync(
+        figVar.id,
+        varName,
+        varValue);
 }
 
 
@@ -393,7 +391,7 @@ async function figUpdateObjectAsync(figObj, genObj, addProps, transform)
         case SHAPE_GROUP:          figUpdateShapeGroup   (figObj, genObj);                       break;
         case FRAME:                figUpdateFrame        (figObj, genObj, addProps, transform);  break;
 
-        case VARIABLE:       await figUpdateVariableAsync(figObj, genObj);                       break;
+        case VARIABLE:       await figUpdateVariableObjectAsync(genObj);                       break;
     }
 
 
