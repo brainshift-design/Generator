@@ -278,7 +278,7 @@ function figNotifyMsg(msg)
 
 
 
-function figNotify(text, prefix = 'Generator ', delay = 400, error = false, buttonText = '', buttonAction = NULL)
+function figNotify(text, prefix = '', delay = 4000, error = false, buttonText = '', buttonAction = NULL)
 {
     const options = {
         timeout:   delay,

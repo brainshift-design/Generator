@@ -443,6 +443,10 @@ extends ResizableBase
         //     return defaultVariableNodeName;
         
 
+        if (!this.variableName)
+            return defaultVariableNodeName;
+
+
         const parts = this.variableName.split('/');
 
         

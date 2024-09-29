@@ -2670,7 +2670,7 @@ function figDockWindow(dock) {
 function figNotifyMsg(msg) {
     figNotify(msg.text, msg.prefix, msg.delay, msg.error, msg.buttonText, msg.buttonAction);
 }
-function figNotify(text, prefix = 'Generator ', delay = 400, error = false, buttonText = '', buttonAction = NULL) {
+function figNotify(text, prefix = '', delay = 4000, error = false, buttonText = '', buttonAction = NULL) {
     const options = {
         timeout: delay,
         error: error,
@@ -3631,16 +3631,6 @@ function figCreateVariableCollectionAsync(name) {
         return collection;
     });
 }
-function figGetVariableCollectionByNameAsync(name) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const collections = yield figma.variables.getLocalVariableCollectionsAsync();
-        for (const collection of collections) {
-            if (collection.name == name)
-                return collection;
-        }
-        return null;
-    });
-}
 function figGetVariableFromData(nodeId, varName) {
     return __awaiter(this, void 0, void 0, function* () {
         const collections = yield figma.variables.getLocalVariableCollectionsAsync();
@@ -3741,16 +3731,16 @@ function figUpdateVariableAsync(varId, varName, value) {
             collection = yield figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
             mode = collection.modes[0];
         }
+        const _varCollectionName = varName.split('/')[0];
+        if (collection.name != _varCollectionName) {
+            let newCollection = yield figGetVariableCollectionByNameAsync(_varCollectionName);
+            if (!newCollection)
+                newCollection = yield figCreateVariableCollectionAsync(_varCollectionName);
+            variable = yield figMoveVariableToCollectionAsync(variable, newCollection);
+        }
         const _varName = varName.split('/').slice(1).join('/');
         if (variable.name != _varName)
             variable.name = _varName;
-        const _varCollectionName = varName.split('/')[0];
-        if (collection.name != _varCollectionName) {
-            let newCollection = figGetVariableCollectionByName(_varCollectionName);
-            if (!newCollection)
-                newCollection = figCreateVariableCollectionAsync(_varCollectionName);
-            variable = figMoveVariableToCollection(variable, newCollection);
-        }
         if (value !== null) {
             if (variable.resolvedType == 'BOOLEAN')
                 value = value > 0; //!= 0;
@@ -3759,52 +3749,88 @@ function figUpdateVariableAsync(varId, varName, value) {
         }
     });
 }
-function figGetVariableCollectionByName(name) {
+function figGetVariableByNameAsync(name_1) {
+    return __awaiter(this, arguments, void 0, function* (name, collectionId = '') {
+        const localVars = yield figma.variables.getLocalVariablesAsync();
+        return collectionId != ''
+            ? localVars.find(v => v.name == name
+                && v.variableCollectionId == collectionId)
+            : localVars.find(v => v.name == name);
+    });
+}
+function figGetVariableCollectionByIdAsync(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const collections = yield figma.variables.getLocalVariableCollectionsAsync();
+        return collections.find(c => c.id === id);
+    });
+}
+function figGetVariableCollectionByNameAsync(name) {
     return __awaiter(this, void 0, void 0, function* () {
         const collections = yield figma.variables.getLocalVariableCollectionsAsync();
         return collections.find(c => c.name === name);
     });
 }
-function figMoveVariableToCollection(variable, collection) {
+function figMoveVariableToCollectionAsync(oldVariable, newCollection) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (!variable || !collection)
+        if (!oldVariable || !newCollection)
             throw new Error('both variable and collection must be provided');
-        const newVariable = figma.variables.createVariable(variable.name, collection.id, variable.resolvedType);
+        const existing = yield figGetVariableByNameAsync(oldVariable.name, newCollection.id);
+        if (existing) {
+            figNotify('Variable names must be unique within a collection', '');
+            return oldVariable;
+        }
+        const newVariable = figma.variables.createVariable(oldVariable.name, newCollection, oldVariable.resolvedType);
         // copy modes and values
-        for (const mode of variable.modes) {
-            // ensure the mode exists in the target collection
-            let targetMode = collection.modes.find((m) => m.name === mode.name);
-            if (!targetMode)
-                targetMode = collection.addMode(mode.name);
-            const value = variable.getValueForMode(mode); // get the value for the mode from the old variable
-            newVariable.setValueForMode(targetMode, value); // set the value for the mode in the new variable
+        const oldCollection = yield figGetVariableCollectionByIdAsync(oldVariable.variableCollectionId);
+        for (const oldMode of oldCollection.modes) {
+            let newMode = newCollection.modes.find(m => m.name == oldMode.name);
+            if (!newMode)
+                newCollection.addMode(oldMode.name);
+        }
+        for (const newMode of newCollection.modes)
+            console.log('1 newMode =', newMode);
+        console.log('');
+        for (const oldMode of oldCollection.modes) {
+            const newMode = newCollection.modes.find(m => m.name == oldMode.name);
+            const value = oldVariable.valuesByMode[oldMode.modeId];
+            console.log('2 oldMode =', oldMode);
+            console.log('2 newMode =', newMode);
+            console.log('2 newMode.modeId =', newMode.modeId);
+            console.log('2 newVariable =', newVariable);
+            newVariable.setValueForMode(newMode.modeId, value);
         }
         // relink existing objects to the new variable
-        function traverse(node) {
-            // update bound variables on the node
-            if (node.boundVariables) {
-                for (const property in node.boundVariables) {
-                    const binding = node.boundVariables[property];
-                    if (binding && binding.id === variable.id)
-                        node.setBoundVariable(property, newVariable.id);
-                }
-            }
-            // update text node variable bindings
-            if (node.type === 'TEXT') {
-                const numChars = node.characters.length;
-                for (let i = 0; i < numChars; i++) {
-                    const boundVariable = node.getVariableForCharacterRange(i, i + 1);
-                    if (boundVariable && boundVariable.id === variable.id)
-                        node.setRangeVariableID(i, i + 1, newVariable.id);
-                }
-            }
-            if ('children' in node) {
-                for (const child of node.children)
-                    traverse(child);
-            }
-        }
-        traverse(figma.root);
-        variable.remove();
+        // function traverse(node)
+        // {
+        //     // update bound variables on the node
+        //     if (node.boundvariables) 
+        //     {
+        //         for (const property in node.boundvariables) 
+        //         {
+        //             const binding = node.boundvariables[property];
+        //             if (binding && binding.id === variable.id)
+        //                 node.setboundvariable(property, newvariable.id);
+        //         }
+        //     }
+        //     // update text node variable bindings
+        //     if (node.type === 'text') 
+        //     {
+        //         const numchars = node.characters.length;
+        //         for (let i = 0; i < numchars; i++) 
+        //         {
+        //             const boundvariable = node.getvariableforcharacterrange(i, i + 1);
+        //             if (boundvariable && boundvariable.id === variable.id)
+        //                 node.setrangevariableid(i, i + 1, newvariable.id);
+        //         }
+        //     }
+        //     if ('children' in node) 
+        //     {
+        //         for (const child of node.children) 
+        //             traverse(child);
+        //     }
+        // }
+        //traverse(figma.root);
+        oldVariable.remove();
         return newVariable;
     });
 }
