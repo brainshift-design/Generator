@@ -2,23 +2,42 @@ const noUpdateVariableIds  = [];
 const noUpdatePrecisionIds = [];
 
 
+var variableTimer = null;
 
-var variableTimer = setInterval(() =>
+startVariablePolling();
+
+
+
+function startVariablePolling()
 {
-    if (!graph.currentPage)
+    variableTimer = setInterval(() =>
+    {
+        if (!graph.currentPage)
+            return;
+    
+        // this is variable polling
+
+        const varNodes = graph.currentPage.nodes.filter(n => 
+            n.type     == VARIABLE 
+            && n.variableId != NULL);
+
+        uiQueueMessageToFigma({
+            cmd:         'figGetVariableUpdates',
+            linkedVarIds: varNodes.map(n => n.variableId)});
+    },
+    333);
+}
+
+
+
+function stopVariablePolling()
+{
+    if (!variableTimer)
         return;
- 
-    // this is variable polling
 
-    const varNodes = graph.currentPage.nodes.filter(n => 
-           n.type     == VARIABLE 
-        && n.variableId != NULL);
-
-    uiQueueMessageToFigma({
-        cmd:         'figGetVariableUpdates',
-        linkedVarIds: varNodes.map(n => n.variableId)});
-},
-333);
+    clearInterval(variableTimer);
+    variableTimer = null;
+}
 
 
 

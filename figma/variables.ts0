@@ -246,10 +246,19 @@ async function figUpdateVariableAsync(varId, varName, value)
     
     if (value !== null)
     {
-        if (variable.resolvedType == 'BOOLEAN')
-            value = value > 0; //!= 0;
-        else
-            variable.setValueForMode(mode.modeId, value);
+        try
+        {
+            if (variable.resolvedType == 'BOOLEAN')
+                value = value > 0; //!= 0;
+            else
+                variable.setValueForMode(mode.modeId, value);
+        }
+        catch (ex)
+        {
+            // this is to catch the misfire from variable polling
+            // during the short period when the variables have been relinked,
+            // but the node's linked variableId hasn't been updated yet
+        }
     }
 }
 
