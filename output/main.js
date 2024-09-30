@@ -3779,60 +3779,67 @@ function figMoveVariableToCollectionAsync(oldVariable, newCollection) {
             figNotify('Variable names must be unique within a collection', '');
             return oldVariable;
         }
-        const newVariable = figma.variables.createVariable(oldVariable.name, newCollection, oldVariable.resolvedType);
-        // copy modes and values
+        // copy modes
         const oldCollection = yield figGetVariableCollectionByIdAsync(oldVariable.variableCollectionId);
         for (const oldMode of oldCollection.modes) {
             let newMode = newCollection.modes.find(m => m.name == oldMode.name);
             if (!newMode)
                 newCollection.addMode(oldMode.name);
         }
-        for (const newMode of newCollection.modes)
-            console.log('1 newMode =', newMode);
-        console.log('');
-        for (const oldMode of oldCollection.modes) {
-            const newMode = newCollection.modes.find(m => m.name == oldMode.name);
+        const newVariable = figma.variables.createVariable(oldVariable.name, newCollection, oldVariable.resolvedType);
+        // copy values by mode
+        for (const newMode of newCollection.modes) {
+            const oldMode = oldCollection.modes.find(m => m.name == newMode.name);
             const value = oldVariable.valuesByMode[oldMode.modeId];
-            console.log('2 oldMode =', oldMode);
-            console.log('2 newMode =', newMode);
-            console.log('2 newMode.modeId =', newMode.modeId);
-            console.log('2 newVariable =', newVariable);
             newVariable.setValueForMode(newMode.modeId, value);
         }
-        // relink existing objects to the new variable
-        // function traverse(node)
-        // {
-        //     // update bound variables on the node
-        //     if (node.boundvariables) 
-        //     {
-        //         for (const property in node.boundvariables) 
-        //         {
-        //             const binding = node.boundvariables[property];
-        //             if (binding && binding.id === variable.id)
-        //                 node.setboundvariable(property, newvariable.id);
-        //         }
-        //     }
-        //     // update text node variable bindings
-        //     if (node.type === 'text') 
-        //     {
-        //         const numchars = node.characters.length;
-        //         for (let i = 0; i < numchars; i++) 
-        //         {
-        //             const boundvariable = node.getvariableforcharacterrange(i, i + 1);
-        //             if (boundvariable && boundvariable.id === variable.id)
-        //                 node.setrangevariableid(i, i + 1, newvariable.id);
-        //         }
-        //     }
-        //     if ('children' in node) 
-        //     {
-        //         for (const child of node.children) 
-        //             traverse(child);
-        //     }
-        // }
-        //traverse(figma.root);
+        figRelinkObjectVariables(oldVariable, newVariable);
+        figPostMessageToUi({
+            cmd: 'uiReturnFigRelinkVariable',
+            oldVariableId: oldVariable.id,
+            newVariableId: newVariable.id
+        });
         oldVariable.remove();
         return newVariable;
     });
+}
+function figRelinkObjectVariables(oldVariable, newVariable) {
+    figTraverseNode(figma.root, oldVariable, newVariable);
+}
+function figTraverseNode(node, oldVariable, newVariable) {
+    // update bound variables on the node
+    if (node.boundVariables) {
+        for (const property in node.boundVariables) {
+            const binding = node.boundVariables[property];
+            if (binding
+                && binding.id == oldVariable.id)
+                node.setBoundVariable(property, newVariable);
+        }
+    }
+    // update text node variable bindings
+    if (node.type == 'TEXT') {
+        for (let i = 0; i < node.characters.length; i++) {
+            const boundVariable = node.getVariableForCharacterRange(i, i + 1);
+            if (boundVariable
+                && boundVariable.id == oldVariable.id)
+                node.setRangeVariableId(i, i + 1, newVariable.id);
+        }
+    }
+    if ('children' in node) {
+        for (const child of node.children)
+            figTraverseNode(child, oldVariable, newVariable);
+    }
+}
+function figMakeValue(value, resolvedType) {
+    switch (resolvedType) {
+        case 'NUMBER': return Number(value);
+        case 'BOOLEAN': return Boolean(value);
+        case 'STRING': return String(value);
+        case 'COLOR': return { r: value.r, g: value.g, b: value.b, a: value.a };
+        default:
+            console.error(`Unsupported resolved type: ${resolvedType}`);
+            return value;
+    }
 }
 // async function figLinkNodeToVariableAsync(nodeId, varId, varType, varName, collection = null)
 // {

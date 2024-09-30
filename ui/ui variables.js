@@ -97,6 +97,17 @@ function uiReturnFigLinkNodeToVariable(msg)
 
 
 
+function uiReturnFigRelinkVariable(msg)
+{
+    const node = graph.currentPage.nodes.find(n => 
+           n.type == VARIABLE 
+        && n.variableId == msg.oldVariableId);
+
+    node.variableId = msg.newVariableId;
+}
+
+
+
 function initLocalVariablesMenu(variables, nodeId, nCollections)
 {
     const node = nodeFromId(nodeId);
@@ -104,7 +115,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
 
 
     const linkedNodes = graph.currentPage.nodes.filter(n => 
-           n.type     == VARIABLE
+           n.type       == VARIABLE
         && n.variableId != NULL);
 
 

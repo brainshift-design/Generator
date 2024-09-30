@@ -64,6 +64,8 @@ onmessage = e =>
 
         case 'uiReturnFigSaveSnapshot':           uiReturnFigSaveSnapshot          (msg);               break;
         
+        case 'uiReturnFigRelinkVariable':         uiReturnFigRelinkVariable        (msg);               break;
+
         case 'uiSetStyleId':                      uiSetStyleId                     (msg);               break;
         case 'uiHideClearUndoWarning':            uiHideClearUndoWarning           ();                  break;
 

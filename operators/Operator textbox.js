@@ -172,9 +172,14 @@ Operator.prototype.initLabelTextbox = function()
                     || this.allowEmptyName) 
                 && enteredValue != savedValue)
             {
-                const newName = this.textbox.value;
+                let newName = this.textbox.value;
+
+                newName = newName
+                    .split('/')
+                    .map(part => part.trim())
+                    .join('/');
+                    
                 this.labelText.innerHTML = newName;
-                //setTimeout(() => this.setName(newName));
                 actionManager.do(new RenameNodeAction(this.id, newName));
             }
         }
