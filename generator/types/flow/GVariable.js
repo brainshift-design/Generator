@@ -59,11 +59,12 @@ extends GOperator1
 
         let varValue;
         
+        console.log('input =', input);
         
         if (input)
             varValue = input;
 
-        else if (this.variableValue)
+        else if (isValid(this.variableValue))
         {
             switch (this.variableType)
             {
@@ -75,7 +76,8 @@ extends GOperator1
                     break;
 
                 case 'BOOLEAN': 
-                    varValue = new NumberValue(this.variableValue ? 1 : 0, 0, true);
+                    varValue = new BooleanValue(this.variableValue);
+                    console.log('varValue =', varValue);
                     break;
 
                 case 'STRING': 
@@ -110,11 +112,11 @@ extends GOperator1
         {
             switch (this.variableType)
             {
-                case 'FLOAT':   varValue = NumberValue.NaN(); varValue.isBoolean = false; break;
-                case 'BOOLEAN': varValue = NumberValue.NaN(); varValue.isBoolean = true;  break;
-                case 'STRING':  varValue = TextValue.NaN();                               break;
-                case 'COLOR':   varValue = FillValue.NaN();/*ColorValue.NaN();*/          break;
-                default:                                                                  break;
+                case 'FLOAT':   varValue =  NumberValue.NaN(); break;
+                case 'BOOLEAN': varValue = BooleanValue.NaN(); break;
+                case 'STRING':  varValue =    TextValue.NaN(); break;
+                case 'COLOR':   varValue =    FillValue.NaN(); break;
+                default:                                       break;
             }
         }
 
@@ -126,6 +128,7 @@ extends GOperator1
             varValue);
 
 
+        console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
             ['value', this.value]

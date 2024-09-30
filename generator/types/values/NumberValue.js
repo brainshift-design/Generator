@@ -33,8 +33,8 @@ extends GValue
 
     static fromString(str)
     {
-             if (str === 'true' ) return new NumberValue(1, 0, true);
-        else if (str === 'false') return new NumberValue(0, 0, true);
+             if (str === 'true' ) return new BooleanValue(true );
+        else if (str === 'false') return new BooleanValue(false);
 
         else
             return new NumberValue(
@@ -115,7 +115,7 @@ extends GValue
     toString()
     {
         if (this.isBoolean)
-            return this.value == 1 ? 'true' : 'false';
+            return this.value > 0 ? 'true' : 'false';
     
         else
             return printNum(this.value) 
@@ -128,7 +128,7 @@ extends GValue
     toPreviewString()
     {
         if (this.isBoolean)
-            return this.value == 1 ? 'true' : 'false';
+            return this.value > 0 ? 'true' : 'false';
     
         else
             return this.isValid()
@@ -141,7 +141,7 @@ extends GValue
     toDisplayString()
     {
         if (this.isBoolean)
-            return this.value == 1 ? 'true' : 'false';
+            return this.value > 0 ? 'true' : 'false';
     
         else
             return printNum(this.value) 
@@ -169,10 +169,34 @@ extends GValue
 
 
 
+class BooleanValue
+extends NumberValue
+{
+    constructor(value)
+    {
+        if (!isValid(value))
+        {
+            console.assert(false, 'must specify a boolean value');
+            console.trace();
+        }
+        
+        super(value ? 1 : 0, 0, true);
+    }
+
+
+
+    static NaN()
+    {
+        return new BooleanValue(Number.NaN);
+    }
+}
+
+
+
 function parseNumberValue(str)
 {
-         if (str === 'true' ) return [new NumberValue(1, 0, true), 1];
-    else if (str === 'false') return [new NumberValue(0, 0, true), 1];
+         if (str === 'true' ) return [new BooleanValue(true ), 1];
+    else if (str === 'false') return [new BooleanValue(false), 1];
 
     else
     {
@@ -197,8 +221,8 @@ function parseNumberValue(str)
 
 function parseSimpleNumberValue(str)
 {
-         if (str === 'true' ) return [new NumberValue(1, 0, true), 1];
-    else if (str === 'false') return [new NumberValue(0, 0, true), 1];
+         if (str === 'true' ) return [new BooleanValue(true ), 1];
+    else if (str === 'false') return [new BooleanValue(false), 1];
 
     const num = 
         str == NAN_DISPLAY

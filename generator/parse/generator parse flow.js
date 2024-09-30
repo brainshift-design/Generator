@@ -90,9 +90,10 @@ function genParseVariable(parse)
 
     if (parse.settings.logRequests) 
     {
-        logReqString(variable.variableId   != NULL ? variable.variableId   : 'NULL', parse);
-        logReqString(variable.variableName != ''   ? variable.variableName : '\'\'', parse);
-        logReqString(variable.variableType != NULL ? variable.variableType : 'NULL', parse);
+        logReqString(variable.variableId    != NULL ? variable.variableId   : 'NULL', parse);
+        logReqString(variable.variableName  != ''   ? variable.variableName : '\'\'', parse);
+        logReqString(variable.variableType  != NULL ? variable.variableType : 'NULL', parse);
+        logReqString(variable.variableValue ?? 'null', parse);
     }
 
 

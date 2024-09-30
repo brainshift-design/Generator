@@ -68,7 +68,7 @@ extends GOperator2
                         }
                     }
 
-                    this.value = new NumberValue(result ? 1 : 0, 0, true);
+                    this.value = new BooleanValue(result);
                 }
                 else // non-list value
                 {
@@ -78,19 +78,19 @@ extends GOperator2
                     {
                         this.value.items.push(
                             isListValueType(item.type)
-                            ? new NumberValue(item.items.find(i => i.equals(input1)) ? 1 : 0, 0, true)
-                            : NumberValue.NaN());
+                            ? new BooleanValue(item.items.find(i => i.equals(input1)))
+                            : BooleanValue.NaN());
                     }
                 }
             }
             else
             {
-                this.value = new NumberValue(input0.items.find(i => i.equals(input1)) ? 1 : 0, 0, true);
+                this.value = new BooleanValue(input0.items.find(i => i.equals(input1)));
             }
         }
         else                  
         {
-            this.value = NumberValue.NaN();
+            this.value = BooleanValue.NaN();
         }
     
 

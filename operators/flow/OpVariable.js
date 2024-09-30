@@ -35,10 +35,6 @@ extends ResizableBase
         this.addInput (new Input([ANY_VALUE, NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE, FILL_VALUE]));
         this.addOutput(new Output([VARIABLE_VALUE], this.output_genRequest));
 
-        // this.inputs[0].addEventListener('connect',    () => OpVariable_onConnectInput   (this));
-        // this.inputs[0].addEventListener('disconnect', () => OpVariable_onDisconnectInput(this));
-
-
 
         this.divIcon.addEventListener('pointerenter', e => 
         { 
@@ -150,11 +146,11 @@ extends ResizableBase
         if (hasInput)
             request.push(...pushInputOrParam(input, gen));
 
-
-        request.push(this.node.variableId);
-
+        
         //noUpdatePrecisionIds.push(this.node.variableId); // not part of request
 
+
+        request.push(this.node.variableId);
         
         request.push(
             this.node.variableName != '' 
@@ -195,8 +191,6 @@ extends ResizableBase
         noUpdateVariableIds.push(this.variableId);
 
 
-        // console.log('value.variableValue.type =', value.variableValue.type);
-        // console.log('value.variableValue.isBoolean =', value.variableValue.isBoolean);
         this.updateValueParamFromType(
             value.variableValue.type,
             value.variableValue.type == NUMBER_VALUE
@@ -208,34 +202,6 @@ extends ResizableBase
             && value.variableValue.type != NULL
             && value.variableValue.type != ANY_VALUE)
             this.updateValueParamValue(value);
-
-
-        //this.updateValueParamFromResolved(value.resolvedType);
-        //this.updateValueParamValuesFromResolved(value.resolvedType, value.name, [value.resolvedValue]);
-
-
-        // uiUpdateVariable(
-        //     this.linkedVariableId, 
-        //     this.linkedVariableTemp, 
-        //     getVariableValue(value));
-
-
-        // if (    this.linkedVariableId != NULL
-        //     && !this.linkedVariableTemp)
-        // {
-        //     while (this.headerInputs.length > 0)
-        //         this.removeInput(this.headerInputs[0]);
-        // }
-        // else
-        // {
-        //     if (this.headerInputs.length == 0)
-        //     {
-        //         this.addInput(new Input([NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE]));
-
-        //         this.inputs[0].addEventListener('connect',    () => OpVariable_onConnectInput   (this));
-        //         this.inputs[0].addEventListener('disconnect', () => OpVariable_onDisconnectInput(this));
-        //     }
-        // }
     }
 
     
@@ -247,17 +213,15 @@ extends ResizableBase
 
         switch (resolvedType)
         {
-            case 'FLOAT':   type = NUMBER_VALUE; isBool = false; break;
-            case 'BOOLEAN': type = NUMBER_VALUE; isBool = true;  break;
-            case 'STRING':  type =   TEXT_VALUE; isBool = false; break;
+            case 'FLOAT':   type = NUMBER_VALUE;                break;
+            case 'BOOLEAN': type = NUMBER_VALUE; isBool = true; break;
+            case 'STRING':  type =   TEXT_VALUE;                break;
     
             case 'COLOR':   
                 type = 
                     resolvedValue.a == 1 
                         ? COLOR_VALUE
                         : FILL_VALUE; 
-
-                isBool = false; 
                 break;
 
             default:
@@ -303,9 +267,11 @@ extends ResizableBase
                 this.paramValue = this.createAndAddParamByType(type, 'value', false, true, true);
                 this.paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
 
-                console.log('this.isBool =', this.isBool);
+
                 if (this.isBool)
                 {
+                    this.paramValue.isBoolean = true;
+
                     this.paramValue.controls[0].setMin(0);
                     this.paramValue.controls[0].setMax(1);
 
@@ -525,27 +491,3 @@ extends ResizableBase
         }
     }
 }
-
-
-
-// function OpVariable_onConnectInput(node)
-// {
-//     actionManager.do(new LinkExistingVariableAction(
-//         node.id,
-//         NULL,
-//         NULL,
-//         '',
-//         true));
-// }
-
-
-
-// function OpVariable_onDisconnectInput(node)
-// {
-//     actionManager.do(new LinkExistingVariableAction(
-//         node.id,
-//         NULL,
-//         NULL,
-//         '',
-//         false));
-// }

@@ -63,18 +63,18 @@ extends GOperator2
 
                     this.value.items.push(
                         item.type == TEXT_VALUE
-                        ? new NumberValue(item.value.includes(input1.value) ? 1 : 0, 0, true)
-                        : NumberValue.NaN());
+                        ? new BooleanValue(item.value.includes(input1.value))
+                        : BooleanValue.NaN());
                 }
             }
             else
             {
-                this.value = new NumberValue(input0.value.includes(input1.value) ? 1 : 0, 0, true);
+                this.value = new BooleanValue(input0.value.includes(input1.value));
             }
         }
         else                  
         {
-            this.value = NumberValue.NaN();
+            this.value = BooleanValue.NaN();
         }
     
 

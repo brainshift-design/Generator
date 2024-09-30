@@ -33,9 +33,6 @@ extends Action
             LINK_VARIABLE_ACTION, 
             'LINK VARIABLE \'' + nodeId + ' ⟶ ' + (variableId != NULL ? variableId : 'NULL') + ')');
         
-        console.log('resolvedType =', resolvedType);
-        console.log('resolvedValue =', resolvedValue);
-
         this.nodeId        = nodeId;
         this.variableId    = variableId;
         this.variableType  = resolvedType;

@@ -123,11 +123,19 @@ extends Parameter
               && this.output.paramNode.inputs[0].connected)
             request.push(...pushInputOrParam(this.output.paramNode.inputs[0], gen));
 
-        else request.push(
-            NUMBER_VALUE, 
-            new NumberValue(
-                this.controls[0].value, 
-                this.controls[0].displayDec).toString());
+        else 
+        {
+            if (this.isBoolean === true)
+                request.push(
+                    NUMBER_VALUE, 
+                    new BooleanValue(this.controls[0].value > 0).toString());
+            else
+                request.push(
+                    NUMBER_VALUE, 
+                    new NumberValue(
+                        this.controls[0].value, 
+                        this.controls[0].displayDec).toString());
+        }
 
 
         return request;

@@ -4,7 +4,7 @@ const noUpdatePrecisionIds = [];
 
 var variableTimer = null;
 
-//startVariablePolling();
+startVariablePolling();
 
 
 
@@ -217,7 +217,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     {
         const options = {};
 
-        
+
         options.callback = () => actionManager.do(
             new LinkExistingVariableAction(
                 nodeId,
@@ -491,7 +491,7 @@ function getValueFromVariable(resolvedType, val)
     switch (resolvedType)
     {
         case 'FLOAT':   value = new NumberValue(roundTo(val, 2), Math.min(decDigits(roundTo(val, 2)), 2)); break;
-        case 'BOOLEAN': value = new NumberValue(val ? 1 : 0, 0, true);                         break;
+        case 'BOOLEAN': value = new BooleanValue(val);                         break;
         case 'STRING':  value = new TextValue(val);                                            break;
 
         case 'COLOR':
