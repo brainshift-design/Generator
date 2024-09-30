@@ -195,6 +195,8 @@ extends ResizableBase
         noUpdateVariableIds.push(this.variableId);
 
 
+        // console.log('value.variableValue.type =', value.variableValue.type);
+        // console.log('value.variableValue.isBoolean =', value.variableValue.isBoolean);
         this.updateValueParamFromType(
             value.variableValue.type,
             value.variableValue.type == NUMBER_VALUE
@@ -301,6 +303,7 @@ extends ResizableBase
                 this.paramValue = this.createAndAddParamByType(type, 'value', false, true, true);
                 this.paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
 
+                console.log('this.isBool =', this.isBool);
                 if (this.isBool)
                 {
                     this.paramValue.controls[0].setMin(0);
@@ -387,9 +390,6 @@ extends ResizableBase
 
             if (!this.paramValue.value.equals(varValue.variableValue))
             {
-                // console.log('1 varValue.variableValue =', varValue.variableValue.copy());
-                // this.checkNoUpdateDecimals(varValue.variableValue);
-                // console.log('2 varValue.variableValue =', varValue.variableValue.copy());
                 this.paramValue.setValue(varValue.variableValue, update, true, update);
 
                 actionManager.clear();

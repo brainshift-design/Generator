@@ -3744,9 +3744,8 @@ function figUpdateVariableAsync(varId, varName, value) {
         if (value !== null) {
             try {
                 if (variable.resolvedType == 'BOOLEAN')
-                    value = value > 0; //!= 0;
-                else
-                    variable.setValueForMode(mode.modeId, value);
+                    value = value > 0;
+                variable.setValueForMode(mode.modeId, value);
             }
             catch (ex) {
                 // this is to catch the misfire from variable polling

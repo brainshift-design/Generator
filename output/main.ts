@@ -5544,9 +5544,9 @@ async function figUpdateVariableAsync(varId, varName, value)
         try
         {
             if (variable.resolvedType == 'BOOLEAN')
-                value = value > 0; //!= 0;
-            else
-                variable.setValueForMode(mode.modeId, value);
+                value = value > 0;
+
+            variable.setValueForMode(mode.modeId, value);
         }
         catch (ex)
         {

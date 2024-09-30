@@ -75,8 +75,7 @@ extends GOperator1
                     break;
 
                 case 'BOOLEAN': 
-                    varValue = new NumberValue(this.variableValue ? 1 : 0);
-                    varValue.isBool = true;
+                    varValue = new NumberValue(this.variableValue ? 1 : 0, 0, true);
                     break;
 
                 case 'STRING': 
@@ -88,13 +87,13 @@ extends GOperator1
                         this.variableValue.a == 1
                             ? ColorValue.fromRgb(
                                 [this.variableValue.r * 0xff, 
-                                this.variableValue.g * 0xff, 
-                                this.variableValue.b * 0xff]) 
+                                 this.variableValue.g * 0xff, 
+                                 this.variableValue.b * 0xff]) 
                             : FillValue.fromRgb(
                                 [this.variableValue.r * 0xff, 
-                                this.variableValue.g * 0xff, 
-                                this.variableValue.b * 0xff], 
-                                this.variableValue.a * 100); 
+                                 this.variableValue.g * 0xff, 
+                                 this.variableValue.b * 0xff], 
+                                 this.variableValue.a * 100); 
                         break;
 
                 default:
@@ -111,11 +110,11 @@ extends GOperator1
         {
             switch (this.variableType)
             {
-                case 'FLOAT':   varValue = NumberValue.NaN(); varValue.isBool = false; break;
-                case 'BOOLEAN': varValue = NumberValue.NaN(); varValue.isBool = true;  break;
-                case 'STRING':  varValue = new TextValue();                                 break;
-                case 'COLOR':   varValue = FillValue.NaN();//ColorValue.NaN();                           break;
-                default:                                                                    break;
+                case 'FLOAT':   varValue = NumberValue.NaN(); varValue.isBoolean = false; break;
+                case 'BOOLEAN': varValue = NumberValue.NaN(); varValue.isBoolean = true;  break;
+                case 'STRING':  varValue = TextValue.NaN();                               break;
+                case 'COLOR':   varValue = FillValue.NaN();/*ColorValue.NaN();*/          break;
+                default:                                                                  break;
             }
         }
 

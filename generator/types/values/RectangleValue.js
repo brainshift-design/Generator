@@ -144,7 +144,7 @@ extends ShapeValue
     
     static NaN()
     {
-        return  RectangleValue(
+        return new RectangleValue(
             '',
             NumberValue.NaN(),
             NumberValue.NaN(),

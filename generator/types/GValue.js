@@ -309,7 +309,7 @@ function nanFromType(type)
 
         case        VARIABLE_VALUE: return      VariableValue.NaN();
 
-        case            NULL_VALUE: return        new NullValue();
+        case            NULL_VALUE: return          new NullValue();
     }
 
     consoleError('cannot determine null value from type \'' + type + '\'');

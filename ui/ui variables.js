@@ -4,7 +4,7 @@ const noUpdatePrecisionIds = [];
 
 var variableTimer = null;
 
-startVariablePolling();
+//startVariablePolling();
 
 
 
@@ -217,6 +217,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     {
         const options = {};
 
+        
         options.callback = () => actionManager.do(
             new LinkExistingVariableAction(
                 nodeId,
