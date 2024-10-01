@@ -110,11 +110,10 @@ function convert2rgb(fromColor, allowHex = false)
 
     let color = rgb2dataColor(rgb);
 
-    if (   fromColor[0] == 'hex'
-        && allowHex)
-        color[0] = fromColor[0];
+    if (allowHex)
+        color[0] = 'hex';
 
-        
+
     return color;
 }
 

@@ -72,10 +72,11 @@ extends GOperator1
 
                 function getColor(rgb)
                 {
-                    return ColorValue.fromDataColor(
-                        convertDataColorToSpace(
-                            rgb2dataColor(rgb), 
-                            colorSpace(input.space.value)));
+                    const color = convertDataColorToSpace(
+                        rgb2dataColor(rgb), 
+                        colorSpace(input.space.value));
+
+                    return ColorValue.fromDataColor(color);
                 }
 
 
@@ -208,7 +209,6 @@ extends GOperator1
             this.value = new ListValue();
 
 
-        
         this.setUpdateValues(parse,
         [
             ['value',      this.value       ],

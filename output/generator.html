@@ -13814,7 +13814,7 @@ extends GValue
     static fromDataColor(_color, spaceIndex = -1)
     {
         if (spaceIndex < 0)
-            spaceIndex = colorSpaceIndex (_color[0]);
+            spaceIndex = colorSpaceIndex(_color[0]);
 
         const space  = colorSpace(spaceIndex);
         const factor = colorSpaceFactor(space);
@@ -39349,10 +39349,11 @@ extends GOperator1
 
                 function getColor(rgb)
                 {
-                    return ColorValue.fromDataColor(
-                        convertDataColorToSpace(
-                            rgb2dataColor(rgb), 
-                            colorSpace(input.space.value)));
+                    const color = convertDataColorToSpace(
+                        rgb2dataColor(rgb), 
+                        colorSpace(input.space.value));
+
+                    return ColorValue.fromDataColor(color);
                 }
 
 
@@ -39485,7 +39486,6 @@ extends GOperator1
             this.value = new ListValue();
 
 
-        
         this.setUpdateValues(parse,
         [
             ['value',      this.value       ],
@@ -66913,11 +66913,10 @@ function convert2rgb(fromColor, allowHex = false)
 
     let color = rgb2dataColor(rgb);
 
-    if (   fromColor[0] == 'hex'
-        && allowHex)
-        color[0] = fromColor[0];
+    if (allowHex)
+        color[0] = 'hex';
 
-        
+
     return color;
 }
 

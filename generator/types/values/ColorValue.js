@@ -51,7 +51,7 @@ extends GValue
     static fromDataColor(_color, spaceIndex = -1)
     {
         if (spaceIndex < 0)
-            spaceIndex = colorSpaceIndex (_color[0]);
+            spaceIndex = colorSpaceIndex(_color[0]);
 
         const space  = colorSpace(spaceIndex);
         const factor = colorSpaceFactor(space);
