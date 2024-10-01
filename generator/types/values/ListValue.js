@@ -233,8 +233,8 @@ extends GValue
         }
 
 
-        const OB = hasNamed ? '{' : '[';
-        const CB = hasNamed ? '}' : ']';
+        const OB = hasNamed || options.forceBraces === true ? '{' : '[';
+        const CB = hasNamed || options.forceBraces === true ? '}' : ']';
 
 
         if (this.items.length > 0)
@@ -262,8 +262,9 @@ extends GValue
                 if (hasNamed)
                     json += '"' + item.valueId + '": ';
 
-                
-                json += item.toJsonText({...options});
+
+                json += item.toJsonText(options);
+
 
                 if (i < this.items.length-1)
                     json += ',';
@@ -281,7 +282,9 @@ extends GValue
             options.named = oldNamed;
         }
         else
-            json += TAB(options.tab) + OB + CB;
+        {
+            json += OB + CB;
+        }
 
 
         return json;

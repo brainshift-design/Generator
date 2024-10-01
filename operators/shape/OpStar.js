@@ -23,7 +23,7 @@ extends OpShape
         this.addInput (this.createInputForObjects([STAR_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([STAR_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramPosition = new SelectParam('position', 'position', false, true, true, ['top-left', 'center'], 0));
+        this.addParam(this.paramPosition = new SelectParam('position', 'position', false, true, true, EllipsePositions, 0));
         this.addParam(this.paramX        = new NumberParam('x',        'X',        true,  true, true, 0));
         this.addParam(this.paramY        = new NumberParam('y',        'Y',        true,  true, true, 0));
         this.addParam(this.paramWidth    = new NumberParam('width',    'width',    true,  true, true, 100, 0.01));

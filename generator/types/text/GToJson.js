@@ -52,13 +52,14 @@ extends GOperator1
             {
                 tab:         0,
                 named:       false,
-                quoteValues: quoteValues.value > 0
+                quoteValues: quoteValues.value > 0,
+                forceBraces: false
             });
 
             this.value = new TextValue(json);
         }
         else
-            this.value = new TextValue('{}');
+            this.value = new TextValue('');
 
 
         this.setUpdateValues(parse,

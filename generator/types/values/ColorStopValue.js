@@ -114,8 +114,8 @@ extends GValue
         options.named = true;
 
 
-        json += TAB(options.tab) + '"fill": '     + this.fill    .toJsonText({...options}) + ',\n';
-        json += TAB(options.tab) + '"position": ' + this.position.toJsonText({...options}) + '\n';
+        json += TAB(options.tab) + '"fill": '     + this.fill    .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"position": ' + this.position.toJsonText(options) + '\n';
 
 
         options.named = oldNamed;

@@ -188,8 +188,16 @@ extends GValue
         options.named = true;
 
 
-        json += TAB(options.tab) + '"x": ' + this.x.toJsonText({...options}) + ',\n';
-        json += TAB(options.tab) + '"y": ' + this.y.toJsonText({...options}) + '\n';
+        json += TAB(options.tab) + '"x": ' + this.x.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": ' + this.y.toJsonText(options);
+
+        if (  !this.smooth
+            || this.smooth.value == 100)
+            json += '\n';
+        else
+            json += 
+                  ',\n' 
+                + TAB(options.tab) + '"smooth": ' + this.smooth.toJsonText(options) + '\n';
 
 
         options.named = oldNamed;

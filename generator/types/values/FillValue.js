@@ -177,8 +177,8 @@ extends GValue
         options.named = true;
 
 
-        json += TAB(options.tab) + '"color": '   + this.color  .toJsonText({...options}) + ',\n';
-        json += TAB(options.tab) + '"opacity": ' + this.opacity.toJsonText({...options}) + ',\n';
+        json += TAB(options.tab) + '"color": '   + this.color  .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"opacity": ' + this.opacity.toJsonText(options) + ',\n';
         json += TAB(options.tab) + '"blend": "'  + BlendModes[this.blend.value][1]  + '"\n';
 
 

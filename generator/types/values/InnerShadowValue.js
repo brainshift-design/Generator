@@ -131,6 +131,41 @@ extends GValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"x": '      + this.x     .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": '      + this.y     .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"blur": '   + this.blur  .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"spread": ' + this.spread.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"fill": '   + this.fill  .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"blend": "' + BlendModes[this.blend.value][1] + '"\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     isValid()
     {
         return this.x     .isValid()

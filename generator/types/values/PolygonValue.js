@@ -163,6 +163,45 @@ extends ShapeValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"position": "' + EllipsePositions[this.position.value] + '",\n';
+        json += TAB(options.tab) + '"x": '         + this.x      .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": '         + this.y      .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"width": '     + this.width  .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"height": '    + this.height .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"round": '     + this.round  .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"corners": '   + this.corners.toJsonText(options) + ',\n';
+
+
+        json += this.toBaseJsonText(options);
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     static NaN()
     {
         return new PolygonValue(

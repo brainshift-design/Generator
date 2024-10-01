@@ -90,6 +90,17 @@ extends GValue
 
 
 
+    toJsonText(options = {})
+    {
+        let json = '';
+
+        json += 'null';
+
+        return json;
+    }
+
+
+
     toJsCode(gen)
     {
         return this.toPreviewString();

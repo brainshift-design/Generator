@@ -7708,6 +7708,25 @@ const BlendModes =
 
 
 
+const EllipsePositions =
+[
+    'top-left',
+    'center'
+];
+
+
+
+const TextAlignX = ['left', 'center', 'right', 'justify'];
+const TextAlignY = ['bottom', 'middle', 'top'];
+
+
+
+const PathDegrees     = ['linear', 'quadratic', 'cubic', 'smooth', 'sine X', 'sine Y'];
+const PathJoinDegrees = ['linear', 'cubic', 'smooth', 'sine X', 'sine Y'];
+const PathWindings    = ['even-odd', 'non-zero'];
+
+
+
 const FONT_WEIGHTS =
 [
     ['thin',        100],
@@ -12923,6 +12942,17 @@ extends GValue
 
 
 
+    toJsonText(options = {})
+    {
+        let json = '';
+
+        json += 'null';
+
+        return json;
+    }
+
+
+
     toJsCode(gen)
     {
         return this.toPreviewString();
@@ -13182,8 +13212,8 @@ extends GValue
         }
 
 
-        const OB = hasNamed ? '{' : '[';
-        const CB = hasNamed ? '}' : ']';
+        const OB = hasNamed || options.forceBraces === true ? '{' : '[';
+        const CB = hasNamed || options.forceBraces === true ? '}' : ']';
 
 
         if (this.items.length > 0)
@@ -13211,8 +13241,9 @@ extends GValue
                 if (hasNamed)
                     json += '"' + item.valueId + '": ';
 
-                
-                json += item.toJsonText({...options});
+
+                json += item.toJsonText(options);
+
 
                 if (i < this.items.length-1)
                     json += ',';
@@ -13230,7 +13261,9 @@ extends GValue
             options.named = oldNamed;
         }
         else
-            json += TAB(options.tab) + OB + CB;
+        {
+            json += OB + CB;
+        }
 
 
         return json;
@@ -14024,9 +14057,9 @@ extends GValue
 
             const [c1, c2, c3] = getChannelNamesFromSpace(colorSpace(this.space.value));
 
-            json += TAB(options.tab) + '"' + c1 + '": ' + this.c1.toJsonText({...options}) + ',\n';
-            json += TAB(options.tab) + '"' + c2 + '": ' + this.c2.toJsonText({...options}) + ',\n';
-            json += TAB(options.tab) + '"' + c3 + '": ' + this.c3.toJsonText({...options}) + '\n';
+            json += TAB(options.tab) + '"' + c1 + '": ' + this.c1.toJsonText(options) + ',\n';
+            json += TAB(options.tab) + '"' + c2 + '": ' + this.c2.toJsonText(options) + ',\n';
+            json += TAB(options.tab) + '"' + c3 + '": ' + this.c3.toJsonText(options) + '\n';
 
 
             options.named = oldNamed;
@@ -14254,8 +14287,8 @@ extends GValue
         options.named = true;
 
 
-        json += TAB(options.tab) + '"color": '   + this.color  .toJsonText({...options}) + ',\n';
-        json += TAB(options.tab) + '"opacity": ' + this.opacity.toJsonText({...options}) + ',\n';
+        json += TAB(options.tab) + '"color": '   + this.color  .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"opacity": ' + this.opacity.toJsonText(options) + ',\n';
         json += TAB(options.tab) + '"blend": "'  + BlendModes[this.blend.value][1]  + '"\n';
 
 
@@ -14460,8 +14493,8 @@ extends GValue
         options.named = true;
 
 
-        json += TAB(options.tab) + '"fill": '     + this.fill    .toJsonText({...options}) + ',\n';
-        json += TAB(options.tab) + '"position": ' + this.position.toJsonText({...options}) + '\n';
+        json += TAB(options.tab) + '"fill": '     + this.fill    .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"position": ' + this.position.toJsonText(options) + '\n';
 
 
         options.named = oldNamed;
@@ -15274,6 +15307,39 @@ extends GValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"topLeft": '     + this.tl.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"topRight": '    + this.tr.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"bottomLeft": '  + this.bl.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"bottomRight": ' + this.br.toJsonText(options) + '\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     isValid()
     {
         return this.tl.isValid()
@@ -15454,6 +15520,42 @@ extends GValue
             + ' ' + this.fill  .toDisplayString()
             + ' ' + this.blend .toDisplayString()
             + ' ' + this.behind.toDisplayString();
+    }
+
+
+
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"x": '      + this.x     .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": '      + this.y     .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"blur": '   + this.blur  .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"spread": ' + this.spread.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"fill": '   + this.fill  .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"blend": "' + BlendModes[this.blend.value][1] + '",\n';
+        json += TAB(options.tab) + '"behind": ' + this.behind.toJsonText(options) + '\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
     }
 
 
@@ -15660,6 +15762,41 @@ extends GValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"x": '      + this.x     .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": '      + this.y     .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"blur": '   + this.blur  .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"spread": ' + this.spread.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"fill": '   + this.fill  .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"blend": "' + BlendModes[this.blend.value][1] + '"\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     isValid()
     {
         return this.x     .isValid()
@@ -15822,6 +15959,36 @@ extends GValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"radius": ' + this.radius .toJsonText(options) + '\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     isValid()
     {
         return this.radius.isValid();
@@ -15960,6 +16127,36 @@ extends GValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"radius": ' + this.radius.toJsonText(options) + '\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     isValid()
     {
         return this.radius.isValid();
@@ -16069,6 +16266,37 @@ extends GValue
     {
         return      this.opacity.toDisplayString()
             + ' ' + this.blend  .toDisplayString();
+    }
+
+
+
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"opacity": ' + this.opacity.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"blend": "'  + BlendModes[this.blend.value][1] + '"\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
     }
 
 
@@ -16448,6 +16676,47 @@ extends GValue
         return !this.props
             ||  this.props.isValid();
     }
+
+
+
+    toBaseJsonText(options = {})
+    {
+        for (const prop of this.props.items)
+        {
+            let valueId = '';
+
+            switch (prop.type)
+            {
+                case COLOR_VALUE:         valueId = 'color';          break;
+                case FILL_VALUE:          valueId = 'fill';           break;
+                case STROKE_VALUE:        valueId = 'stroke';         break;
+                case COLOR_STOP_VALUE:    valueId = 'colorStop';      break;
+                case GRADIENT_VALUE:      valueId = 'gradient';       break;
+                case ROUND_CORNERS_VALUE: valueId = 'roundCorners';   break;
+                case LAYER_BLEND_VALUE:   valueId = 'layerBlend';     break;
+                case DROP_SHADOW_VALUE:   valueId = 'dropShadow';     break;
+                case INNER_SHADOW_VALUE:  valueId = 'innerShadow';    break;
+                case LAYER_BLUR_VALUE:    valueId = 'layerBlur';      break;
+                case BACK_BLUR_VALUE:     valueId = 'backgroundBlur'; break;
+            }
+        
+            prop.valueId = valueId;
+        }
+
+
+        const oldForceBraces = options.forceBraces;
+        options.forceBraces = true;
+
+
+        let json = '';
+
+        json += TAB(options.tab) + '"props": ' + this.props.toJsonText(options) + '\n';
+
+        return json;
+
+
+        options.forceBraces = oldForceBraces;
+    }
 }
 
 
@@ -16571,6 +16840,43 @@ extends ShapeValue
             + ' ' + this.width .toDisplayString()
             + ' ' + this.height.toDisplayString()
             + ' ' + this.round .toDisplayString();
+    }
+
+
+
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"x": '      + this.x     .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": '      + this.y     .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"width": '  + this.width .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"height": ' + this.height.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"round": '  + this.round .toJsonText(options) + ',\n';
+
+
+        json += this.toBaseJsonText(options);
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
     }
 
 
@@ -16777,6 +17083,41 @@ extends ShapeValue
         return      this.x    .toDisplayString()
             + ' ' + this.y    .toDisplayString()
             + ' ' + this.width.toDisplayString();
+    }
+
+
+
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"x": '      + this.x     .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": '      + this.y     .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"width": '  + this.width .toJsonText(options) + ',\n';
+
+
+        json += this.toBaseJsonText(options);
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
     }
 
 
@@ -17017,6 +17358,47 @@ extends ShapeValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"position": "' + EllipsePositions[this.position.value] + '",\n';
+        json += TAB(options.tab) + '"x": '         + this.x     .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": '         + this.y     .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"width": '     + this.width .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"height": '    + this.height.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"round": '     + this.round .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"start": '     + this.start .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"sweep": '     + this.sweep .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"inner": '     + this.inner .toJsonText(options) + ',\n';
+
+
+        json += this.toBaseJsonText(options);
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     static NaN()
     {
         return new EllipseValue(
@@ -17201,6 +17583,44 @@ extends ShapeValue
             + ' ' + this.height.toDisplayString()
             + ' ' + this.round .toDisplayString()
             + ' ' + this.bias  .toDisplayString();
+    }
+
+
+
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"x": '      + this.x     .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": '      + this.y     .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"width": '  + this.width .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"height": ' + this.height.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"round": '  + this.round .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"bias": '   + this.bias  .toJsonText(options) + ',\n';
+
+
+        json += this.toBaseJsonText(options);
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
     }
 
 
@@ -17460,6 +17880,45 @@ extends ShapeValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"position": "' + EllipsePositions[this.position.value] + '",\n';
+        json += TAB(options.tab) + '"x": '         + this.x      .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": '         + this.y      .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"width": '     + this.width  .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"height": '    + this.height .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"round": '     + this.round  .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"corners": '   + this.corners.toJsonText(options) + ',\n';
+
+
+        json += this.toBaseJsonText(options);
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     static NaN()
     {
         return new PolygonValue(
@@ -17692,6 +18151,46 @@ extends ShapeValue
             + ' ' + this.round   .toDisplayString()
             + ' ' + this.points  .toDisplayString()
             + ' ' + this.convex  .toDisplayString();
+    }
+
+
+
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"position": "' + EllipsePositions[this.position.value] + '",\n';
+        json += TAB(options.tab) + '"x": '         + this.x     .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": '         + this.y     .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"width": '     + this.width .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"height": '    + this.height.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"round": '     + this.round .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"points": '    + this.points.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"convex": '    + this.convex.toJsonText(options) + ',\n';
+
+
+        json += this.toBaseJsonText(options);
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
     }
 
 
@@ -18000,6 +18499,53 @@ extends ShapeValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        const fontName   = figUniqueFontNames[this.font.value];
+        const fontStyles = getFontStyles(fontName);
+        
+        json += TAB(options.tab) + '"text": '          + this.text         .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"x": '             + this.x            .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": '             + this.y            .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"width": '         + this.width        .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"height": '        + this.height       .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"font": "'         + fontName                               + '",\n';
+        json += TAB(options.tab) + '"style": "'        + fontStyles[this.style.value]           + '",\n';
+        json += TAB(options.tab) + '"size": '          + this.size         .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"alignX": "'       + TextAlignX[this.alignX.value] + '",\n';
+        json += TAB(options.tab) + '"alignY": "'       + TextAlignY[this.alignY.value] + '",\n';
+        json += TAB(options.tab) + '"lineHeight": '    + this.lineHeight   .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"letterSpacing": ' + this.letterSpacing.toJsonText(options) + ',\n';
+
+
+        json += this.toBaseJsonText(options);
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     static NaN()
     {
         return new TextShapeValue(
@@ -18263,8 +18809,16 @@ extends GValue
         options.named = true;
 
 
-        json += TAB(options.tab) + '"x": ' + this.x.toJsonText({...options}) + ',\n';
-        json += TAB(options.tab) + '"y": ' + this.y.toJsonText({...options}) + '\n';
+        json += TAB(options.tab) + '"x": ' + this.x.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": ' + this.y.toJsonText(options);
+
+        if (  !this.smooth
+            || this.smooth.value == 100)
+            json += '\n';
+        else
+            json += 
+                  ',\n' 
+                + TAB(options.tab) + '"smooth": ' + this.smooth.toJsonText(options) + '\n';
 
 
         options.named = oldNamed;
@@ -18485,7 +19039,47 @@ extends ShapeValue
     }
 
 
-    
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+       
+        const quote = options.quoteValues ? '"' : '';
+
+        json += TAB(options.tab) + '"points ": '  + this.points .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"closed ": '  + quote + boolToString(this.closed.value > 0) + quote + ',\n';
+        json += TAB(options.tab) + '"degree ": "' + PathDegrees [this.degree .value] + '",\n';
+        json += TAB(options.tab) + '"winding": "' + PathWindings[this.winding.value] + '",\n';
+        json += TAB(options.tab) + '"round  ": '  + this.round  .toJsonText(options) + ',\n';
+
+
+        json += this.toBaseJsonText(options);
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
+   
     static NaN()
     {
         return new VectorPathValue(
@@ -37084,13 +37678,14 @@ extends GOperator1
             {
                 tab:         0,
                 named:       false,
-                quoteValues: quoteValues.value > 0
+                quoteValues: quoteValues.value > 0,
+                forceBraces: false
             });
 
             this.value = new TextValue(json);
         }
         else
-            this.value = new TextValue('{}');
+            this.value = new TextValue('');
 
 
         this.setUpdateValues(parse,

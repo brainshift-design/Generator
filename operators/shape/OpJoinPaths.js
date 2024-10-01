@@ -6,6 +6,8 @@ extends OpShape
     paramWinding;
     paramRound;
 
+    menuClosed;
+
 
     
     constructor()
@@ -22,12 +24,18 @@ extends OpShape
         this.addOutput(new Output([VECTOR_PATH_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramDegree  = new SelectParam('degree',  'degree',  false, true, true, ['linear', 'cubic', 'smooth', 'sine X', 'sine Y'], 0));
-        this.addParam(this.paramClosed  = new SelectParam('closed',  'closed',  false, true, true, ['open', 'closed'], 0));
-        this.addParam(this.paramWinding = new SelectParam('winding', 'wind',    true,  true, true, ['even-odd', 'non-zero']));
+        this.addParam(this.paramDegree  = new SelectParam('degree',  'degree',  false, true, true, PathJoinDegrees, 0));
+        this.addParam(this.paramClosed  = new NumberParam('closed',  'closed',  true,  true, true, 0, 0, 1));
+        this.addParam(this.paramWinding = new SelectParam('winding', 'wind',    true,  true, true, PathWindings));
         this.addParam(this.paramRound   = new NumberParam('round',   'round',   true,  true, true, 0, 0));
 
+
+        this.paramClosed.divider = 0.57;
+        this.paramClosed.controls[0].allowEditDecimals = false;
+
+        this.menuClosed = createBoolMenu(this.paramClosed);
         
+
         this.paramWinding.divider = 0.38;
         this.paramRound  .divider = 0.565;
 
@@ -119,8 +127,13 @@ extends OpShape
 
     updateParams()
     {
-        for (const param of this.params)
-            param.enableControlText(true);
+        this.paramDegree .enableControlText(true, this.paramDegree .isUnknown());
+        this.paramWinding.enableControlText(true, this.paramWinding.isUnknown());
+        this.paramRound  .enableControlText(true, this.paramRound  .isUnknown());
+
+        this.paramClosed.enableControlText(true);
+
+        updateParamConditionText(this.paramClosed, this.paramClosed.isUnknown(), false, 1);
 
         this.updateParamControls();
     }

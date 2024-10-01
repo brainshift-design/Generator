@@ -47,6 +47,47 @@ extends GValue
         return !this.props
             ||  this.props.isValid();
     }
+
+
+
+    toBaseJsonText(options = {})
+    {
+        for (const prop of this.props.items)
+        {
+            let valueId = '';
+
+            switch (prop.type)
+            {
+                case COLOR_VALUE:         valueId = 'color';          break;
+                case FILL_VALUE:          valueId = 'fill';           break;
+                case STROKE_VALUE:        valueId = 'stroke';         break;
+                case COLOR_STOP_VALUE:    valueId = 'colorStop';      break;
+                case GRADIENT_VALUE:      valueId = 'gradient';       break;
+                case ROUND_CORNERS_VALUE: valueId = 'roundCorners';   break;
+                case LAYER_BLEND_VALUE:   valueId = 'layerBlend';     break;
+                case DROP_SHADOW_VALUE:   valueId = 'dropShadow';     break;
+                case INNER_SHADOW_VALUE:  valueId = 'innerShadow';    break;
+                case LAYER_BLUR_VALUE:    valueId = 'layerBlur';      break;
+                case BACK_BLUR_VALUE:     valueId = 'backgroundBlur'; break;
+            }
+        
+            prop.valueId = valueId;
+        }
+
+
+        const oldForceBraces = options.forceBraces;
+        options.forceBraces = true;
+
+
+        let json = '';
+
+        json += TAB(options.tab) + '"props": ' + this.props.toJsonText(options) + '\n';
+
+        return json;
+
+
+        options.forceBraces = oldForceBraces;
+    }
 }
 
 

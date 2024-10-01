@@ -90,6 +90,39 @@ extends GValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"topLeft": '     + this.tl.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"topRight": '    + this.tr.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"bottomLeft": '  + this.bl.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"bottomRight": ' + this.br.toJsonText(options) + '\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     isValid()
     {
         return this.tl.isValid()

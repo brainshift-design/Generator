@@ -38,8 +38,8 @@ extends OpShape
         this.addParam(this.paramFont          = new SelectParam('font',          'font',     false, true, true, figUniqueFontNames, interIndex));
         this.addParam(this.paramSize          = new NumberParam('size',          'size',     true,  true, true,  12, 1));
         this.addParam(this.paramStyle         = new SelectParam('style',         'style',    false, true, true, [''], 0));
-        this.addParam(this.paramAlignX        = new SelectParam('alignX',        'align X',  true,  true, true, ['left', 'center', 'right', 'justify'], 0));
-        this.addParam(this.paramAlignY        = new SelectParam('alignY',        'align Y',  true,  true, true, ['bottom', 'middle', 'top'], 1));
+        this.addParam(this.paramAlignX        = new SelectParam('alignX',        'align X',  true,  true, true, TextAlignX, 0));
+        this.addParam(this.paramAlignY        = new SelectParam('alignY',        'align Y',  true,  true, true, TextAlignY, 1));
         this.addParam(this.paramLineHeight    = new NumberParam('lineHeight',    'line ↕',   true,  true, true, 100));
         this.addParam(this.paramLetterSpacing = new NumberParam('letterSpacing', 'letter ↔', true,  true, true, 0));
 

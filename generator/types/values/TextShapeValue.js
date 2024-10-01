@@ -239,6 +239,53 @@ extends ShapeValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        const fontName   = figUniqueFontNames[this.font.value];
+        const fontStyles = getFontStyles(fontName);
+        
+        json += TAB(options.tab) + '"text": '          + this.text         .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"x": '             + this.x            .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": '             + this.y            .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"width": '         + this.width        .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"height": '        + this.height       .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"font": "'         + fontName                               + '",\n';
+        json += TAB(options.tab) + '"style": "'        + fontStyles[this.style.value]           + '",\n';
+        json += TAB(options.tab) + '"size": '          + this.size         .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"alignX": "'       + TextAlignX[this.alignX.value] + '",\n';
+        json += TAB(options.tab) + '"alignY": "'       + TextAlignY[this.alignY.value] + '",\n';
+        json += TAB(options.tab) + '"lineHeight": '    + this.lineHeight   .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"letterSpacing": ' + this.letterSpacing.toJsonText(options) + ',\n';
+
+
+        json += this.toBaseJsonText(options);
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     static NaN()
     {
         return new TextShapeValue(

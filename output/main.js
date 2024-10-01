@@ -1383,6 +1383,15 @@ const BlendModes = [
     [BLEND_COLOR, 'color', 'COLOR'],
     [BLEND_LUMINOSITY, 'luminosity', 'LUMINOSITY']
 ];
+const EllipsePositions = [
+    'top-left',
+    'center'
+];
+const TextAlignX = ['left', 'center', 'right', 'justify'];
+const TextAlignY = ['bottom', 'middle', 'top'];
+const PathDegrees = ['linear', 'quadratic', 'cubic', 'smooth', 'sine X', 'sine Y'];
+const PathJoinDegrees = ['linear', 'cubic', 'smooth', 'sine X', 'sine Y'];
+const PathWindings = ['even-odd', 'non-zero'];
 const FONT_WEIGHTS = [
     ['thin', 100],
     ['extra light', 200],

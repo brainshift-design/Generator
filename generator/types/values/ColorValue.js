@@ -261,9 +261,9 @@ extends GValue
 
             const [c1, c2, c3] = getChannelNamesFromSpace(colorSpace(this.space.value));
 
-            json += TAB(options.tab) + '"' + c1 + '": ' + this.c1.toJsonText({...options}) + ',\n';
-            json += TAB(options.tab) + '"' + c2 + '": ' + this.c2.toJsonText({...options}) + ',\n';
-            json += TAB(options.tab) + '"' + c3 + '": ' + this.c3.toJsonText({...options}) + '\n';
+            json += TAB(options.tab) + '"' + c1 + '": ' + this.c1.toJsonText(options) + ',\n';
+            json += TAB(options.tab) + '"' + c2 + '": ' + this.c2.toJsonText(options) + ',\n';
+            json += TAB(options.tab) + '"' + c3 + '": ' + this.c3.toJsonText(options) + '\n';
 
 
             options.named = oldNamed;

@@ -66,6 +66,37 @@ extends GValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"opacity": ' + this.opacity.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"blend": "'  + BlendModes[this.blend.value][1] + '"\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     hasInitValue()
     {
         return this.opacity.hasInitValue()

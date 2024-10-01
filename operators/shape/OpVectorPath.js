@@ -7,6 +7,8 @@ extends OpShape
     paramWinding;
     paramRound;
 
+    menuClosed;
+
 
     
     constructor()
@@ -23,9 +25,9 @@ extends OpShape
 
 
         this.addParam(this.paramPoints  = new ListParam  ('points',  'points',  false, true, true));
-        this.addParam(this.paramDegree  = new SelectParam('degree',  'degree',  false, true, true, ['linear', 'quadratic', 'cubic', 'smooth', 'sine X', 'sine Y'], 3));
-        this.addParam(this.paramClosed  = new SelectParam('closed',  'closed',  false, true, true, ['open', 'closed'], 0));
-        this.addParam(this.paramWinding = new SelectParam('winding', 'wind',    true,  true, true, ['even-odd', 'non-zero']));
+        this.addParam(this.paramDegree  = new SelectParam('degree',  'degree',  false, true, true, PathDegrees, 3));
+        this.addParam(this.paramClosed  = new NumberParam('closed',  'closed',  true,  true, true, 0, 0, 1));
+        this.addParam(this.paramWinding = new SelectParam('winding', 'wind',    true,  true, true, PathWindings));
         this.addParam(this.paramRound   = new NumberParam('round',   'round',   true,  true, true, 0, 0));
 
         
@@ -34,6 +36,12 @@ extends OpShape
 
         this.paramPoints.itemName  = ['point'];
         this.paramPoints.showZero  =  false;
+
+
+        this.paramClosed.divider = 0.57;
+        this.paramClosed.controls[0].allowEditDecimals = false;
+
+        this.menuClosed = createBoolMenu(this.paramClosed);
 
         
         this.paramWinding.divider = 0.38;
@@ -58,5 +66,21 @@ extends OpShape
         this.paramDegree .setValue(degree,  false, true, false);
         this.paramWinding.setValue(winding, false, true, false);
         this.paramRound  .setValue(round,   false, true, false);
+    }
+
+
+
+    updateParams()
+    {
+        this.paramPoints   .enableControlText(true, this.paramPoints .isUnknown());
+        this.paramDegree   .enableControlText(true, this.paramDegree .isUnknown());
+        this.paramWinding  .enableControlText(true, this.paramWinding.isUnknown());
+        this.paramRound    .enableControlText(true, this.paramRound  .isUnknown());
+
+        this.paramClosed.enableControlText(true);
+
+        updateParamConditionText(this.paramClosed, this.paramClosed.isUnknown(), false, 1);
+
+        this.updateParamControls();
     }
 }
