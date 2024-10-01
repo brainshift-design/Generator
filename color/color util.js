@@ -933,3 +933,33 @@ function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2,
 
     return gradientId;
 }
+
+
+
+function getChannelNamesFromSpace(space)
+{
+    switch (space)
+    {
+    case 'hex':   return ['r', 'g', 'b'];
+    case 'rgb':   return ['r', 'g', 'b'];
+    case 'lin':   return ['r', 'g', 'b'];
+    case 'p3':    return ['r', 'g', 'b'];
+    case 'a98':   return ['r', 'g', 'b'];
+    case 'pro':   return ['r', 'g', 'b'];
+    case 'r2020': return ['r', 'g', 'b'];
+    case 'hsl':   return ['h', 's', 'l'];
+    case 'hsv':   return ['h', 's', 'b'];
+    case 'hclok': return ['h', 'c', 'l'];
+    case 'hclab': return ['h', 'c', 'l'];
+    case 'hcluv': return ['h', 'c', 'l'];
+    case 'oklab': return ['l', 'a', 'b'];
+    case 'lab':   return ['l', 'a', 'b'];
+    case 'luv':   return ['l', 'u', 'v'];
+    case 'xyz':   return ['x', 'y', 'z'];
+    case 'xyz50': return ['x', 'y', 'z'];
+    case 'xyz65': return ['x', 'y', 'z'];
+    }
+
+    console.error('invalid color space \'' + space + '\'');
+    return ['c1', 'c2', 'c3'];
+}

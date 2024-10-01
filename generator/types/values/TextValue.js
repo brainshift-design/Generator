@@ -80,7 +80,7 @@ extends GValue
     {
         let json = '';
 
-        json += '"' + this.toPreviewString() + '"';
+        json += '"' + unescapeString(this.toPreviewString()) + '"';
 
         return json;
     }

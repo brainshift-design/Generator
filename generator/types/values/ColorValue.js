@@ -234,6 +234,49 @@ extends GValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (this.space.value == 0) // hex
+        {
+            json += '"' + this.toPreviewString() + '"';
+        }
+        else
+        {
+            if (options.named)
+                json += '\n' + TAB(options.tab);
+
+
+            json += '{\n';
+            options.tab++;
+
+            const oldNamed = options.named;
+            options.named = true;
+
+
+            if (this.space.value > 3)
+                json += TAB(options.tab) + '"space": "' + colorSpaceName(this.space.value).replaceAll(' ', '') + '",\n';
+
+            const [c1, c2, c3] = getChannelNamesFromSpace(colorSpace(this.space.value));
+
+            json += TAB(options.tab) + '"' + c1 + '": ' + this.c1.toJsonText({...options}) + ',\n';
+            json += TAB(options.tab) + '"' + c2 + '": ' + this.c2.toJsonText({...options}) + ',\n';
+            json += TAB(options.tab) + '"' + c3 + '": ' + this.c3.toJsonText({...options}) + '\n';
+
+
+            options.named = oldNamed;
+
+            options.tab--;
+            json += TAB(options.tab) + '}';
+        }
+
+        return json;
+    }
+
+
+
     static NaN()
     {
         return new ColorValue(

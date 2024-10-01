@@ -46,7 +46,7 @@ function convertDataColorToSpace(color, toSpace)
 {
     switch (toSpace)
     {
-        case 'hex':    
+        case 'hex':   return convert2rgb    (color, true); 
         case 'rgb':   return convert2rgb    (color);
 
         case 'lin':   return convert2lin    (color);
@@ -74,7 +74,7 @@ function convertDataColorToSpace(color, toSpace)
 
 
 
-function convert2rgb(fromColor)
+function convert2rgb(fromColor, allowHex = false)
 {
     const col = dataColor2array(fromColor);
 
@@ -107,7 +107,15 @@ function convert2rgb(fromColor)
         case 'xyz65': rgb = xyz2rgb  (col, sRGB_D65); break;
     }
 
-    return rgb2dataColor(rgb);
+
+    let color = rgb2dataColor(rgb);
+
+    if (   fromColor[0] == 'hex'
+        && allowHex)
+        color[0] = fromColor[0];
+
+        
+    return color;
 }
 
 

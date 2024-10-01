@@ -23,6 +23,7 @@ const ColorSpaces =
 
 
 function colorSpace     (index) { return ColorSpaces[index][0]; }
+function colorSpaceName (index) { return ColorSpaces[index][1]; }
 function colorSpaceIndex(space) { return ColorSpaces.findIndex(s => s[0] == space); }
 
 

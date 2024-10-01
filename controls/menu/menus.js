@@ -250,6 +250,7 @@ var menuItemIndexToName;
 var menuItemSolve;  
 
 var menuItemParseJson;
+var menuItemToJson;
 
 var menuItemColor;
 var menuItemValidColor;
@@ -465,7 +466,7 @@ function initGeneratorMenus()
                             new MenuItem('Parse CSV',  null, false, {icon: iconParseCSV,  createType: PARSE_CSV,  callback: e => actionManager.do(getCreateNodeAction(PARSE_CSV,  btnFlow.div, getCreateOptions(e)))}),
         menuItemParseJson = new MenuItem('Parse JSON', null, false, {icon: iconParseJson, createType: PARSE_JSON, callback: e => actionManager.do(getCreateNodeAction(PARSE_JSON, btnFlow.div, getCreateOptions(e)))}),
         menuTextDataSep1  = new MenuItem('',           null, false, {separator: true}),
-        menuItemParseJson = new MenuItem('To JSON',    null, false, {icon: iconToJson,    createType: TO_JSON,    callback: e => actionManager.do(getCreateNodeAction(TO_JSON,    btnFlow.div, getCreateOptions(e)))})]);
+        menuItemToJson    = new MenuItem('To JSON',    null, false, {icon: iconToJson,    createType: TO_JSON,    callback: e => actionManager.do(getCreateNodeAction(TO_JSON,    btnFlow.div, getCreateOptions(e)))})]);
     
     
     menuRepeat = new Menu('Repeat', true, false);

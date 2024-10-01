@@ -6583,6 +6583,7 @@ function enableFeatures(pro)
     // enableMenuItem(menuItemDateTime,           true, pro);
     enableMenuItem(menuItemSolve,              true, pro);
     enableMenuItem(menuItemParseJson,          true, pro);
+    enableMenuItem(menuItemToJson,             true, pro);
     enableMenuItem(menuItemCorrectColor,       true, pro);
     enableMenuItem(menuItemColorblind,         true, pro);
     enableMenuItem(menuItemColorDifference,    true, pro);
@@ -13187,11 +13188,16 @@ extends GValue
 
         if (this.items.length > 0)
         {
+            if (options.named)
+                json += '\n' + TAB(options.tab);
+    
+
+            json += OB + '\n';
+
+
             const oldNamed = options.named;
             options.named = hasNamed;
 
-
-            json += TAB(options.tab) + OB + '\n';
 
             for (let i = 0; i < this.items.length; i++)
             {
@@ -13206,7 +13212,7 @@ extends GValue
                     json += '"' + item.valueId + '": ';
 
                 
-                json += item.toJsonText(options);
+                json += item.toJsonText({...options});
 
                 if (i < this.items.length-1)
                     json += ',';
@@ -13216,6 +13222,7 @@ extends GValue
 
                 options.tab--;
             }
+
 
             json += TAB(options.tab) + CB;
 
@@ -13693,7 +13700,7 @@ extends GValue
     {
         let json = '';
 
-        json += '"' + this.toPreviewString() + '"';
+        json += '"' + unescapeString(this.toPreviewString()) + '"';
 
         return json;
     }
@@ -13990,6 +13997,49 @@ extends GValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (this.space.value == 0) // hex
+        {
+            json += '"' + this.toPreviewString() + '"';
+        }
+        else
+        {
+            if (options.named)
+                json += '\n' + TAB(options.tab);
+
+
+            json += '{\n';
+            options.tab++;
+
+            const oldNamed = options.named;
+            options.named = true;
+
+
+            if (this.space.value > 3)
+                json += TAB(options.tab) + '"space": "' + colorSpaceName(this.space.value).replaceAll(' ', '') + '",\n';
+
+            const [c1, c2, c3] = getChannelNamesFromSpace(colorSpace(this.space.value));
+
+            json += TAB(options.tab) + '"' + c1 + '": ' + this.c1.toJsonText({...options}) + ',\n';
+            json += TAB(options.tab) + '"' + c2 + '": ' + this.c2.toJsonText({...options}) + ',\n';
+            json += TAB(options.tab) + '"' + c3 + '": ' + this.c3.toJsonText({...options}) + '\n';
+
+
+            options.named = oldNamed;
+
+            options.tab--;
+            json += TAB(options.tab) + '}';
+        }
+
+        return json;
+    }
+
+
+
     static NaN()
     {
         return new ColorValue(
@@ -14188,6 +14238,38 @@ extends GValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"color": '   + this.color  .toJsonText({...options}) + ',\n';
+        json += TAB(options.tab) + '"opacity": ' + this.opacity.toJsonText({...options}) + ',\n';
+        json += TAB(options.tab) + '"blend": "'  + BlendModes[this.blend.value][1]  + '"\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     hasInitValue()
     {
         return this.color  .hasInitValue()
@@ -14358,6 +14440,37 @@ extends GValue
     {
         return      this.fill    .toDisplayString()
             + ' ' + this.position.toDisplayString();
+    }
+
+
+
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"fill": '     + this.fill    .toJsonText({...options}) + ',\n';
+        json += TAB(options.tab) + '"position": ' + this.position.toJsonText({...options}) + '\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
     }
 
 
@@ -14582,6 +14695,45 @@ extends GValue
             + ' ' + (this.diagAspect ? '1' : '0')
             + ' ' + this.skew    .toDisplayString()
             + ' ' + this.blend   .toDisplayString();
+    }
+
+
+
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+        
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"stops": '    + this.stops   .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"gradType": ' + this.gradType.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"position": ' + this.position.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"x": '        + this.x       .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": '        + this.y       .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"size": '     + this.size    .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"angle": '    + this.angle   .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"aspect": '   + this.aspect  .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"skew": '     + this.skew    .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"blend": "'   + BlendModes[this.blend.value][1]   + '"\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
     }
 
 
@@ -18107,8 +18259,15 @@ extends GValue
         json += '{\n';
         options.tab++;
 
-        json += TAB(options.tab) + '"x": ' + this.x.toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"y": ' + this.y.toJsonText(options) + '\n';
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"x": ' + this.x.toJsonText({...options}) + ',\n';
+        json += TAB(options.tab) + '"y": ' + this.y.toJsonText({...options}) + '\n';
+
+
+        options.named = oldNamed;
 
         options.tab--;
         json += TAB(options.tab) + '}';
@@ -39188,123 +39347,133 @@ extends GOperator1
                 }
 
 
+                function getColor(rgb)
+                {
+                    return ColorValue.fromDataColor(
+                        convertDataColorToSpace(
+                            rgb2dataColor(rgb), 
+                            colorSpace(input.space.value)));
+                }
+
+
+
                 switch (schemeType.value)
                 {
                     case 0: // less similar
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb, 10/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  2/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb, 10/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  2/12, 0, 1)));
                         break;
                     }
 
                     case 1: // similar
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb, 11/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  1/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb, 11/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  1/12, 0, 1)));
                         break;
                     }
 
                     case 2: // similar with accent
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb, 11/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  1/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  6/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb, 11/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  1/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  6/12, 0, 1)));
                         break;
                     }
 
                     case 3: // opposite
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  6/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  6/12, 0, 1)));
                         break;
                     }
 
                     case 4: // opposite -
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  5/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  5/12, 0, 1)));
                         break;
                     }
 
                     case 5: // opposite +
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  7/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  7/12, 0, 1)));
                         break;
                     }
 
                     case 6: // opposite split
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  5/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  7/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  5/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  7/12, 0, 1)));
                         break;
                     }
 
                     case 7: // triangle
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  4/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  8/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  4/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  8/12, 0, 1)));
                         break;
                     }
 
                     case 8: // double opposite -
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,   0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  11/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,   6/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,   5/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,   0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  11/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,   6/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,   5/12, 0, 1)));
                         break;
                     }
 
                     case 9: // rectangle -
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb, 10/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  6/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  4/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb, 10/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  6/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  4/12, 0, 1)));
                         break;
                     }
 
                     case 10: // rectangle +
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  2/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  6/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  8/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  2/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  6/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  8/12, 0, 1)));
                         break;
                     }
 
                     case 11: // double opposite +
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  1/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  6/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  7/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  1/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  6/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  7/12, 0, 1)));
                         break;
                     }
 
                     case 12: // square
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  3/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  6/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  9/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  3/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  6/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  9/12, 0, 1)));
                         break;
                     }
 
                     case 13: // hexagon
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  2/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  4/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  6/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  8/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb, 10/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  2/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  4/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  6/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  8/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb, 10/12, 0, 1)));
                         break;
                     }
                 }
@@ -64454,6 +64623,7 @@ const ColorSpaces =
 
 
 function colorSpace     (index) { return ColorSpaces[index][0]; }
+function colorSpaceName (index) { return ColorSpaces[index][1]; }
 function colorSpaceIndex(space) { return ColorSpaces.findIndex(s => s[0] == space); }
 
 
@@ -65509,6 +65679,36 @@ function setSvgLinearGradientStroke(svg, target, color1, color2, x1, y1, x2, y2,
 
 
     return gradientId;
+}
+
+
+
+function getChannelNamesFromSpace(space)
+{
+    switch (space)
+    {
+    case 'hex':   return ['r', 'g', 'b'];
+    case 'rgb':   return ['r', 'g', 'b'];
+    case 'lin':   return ['r', 'g', 'b'];
+    case 'p3':    return ['r', 'g', 'b'];
+    case 'a98':   return ['r', 'g', 'b'];
+    case 'pro':   return ['r', 'g', 'b'];
+    case 'r2020': return ['r', 'g', 'b'];
+    case 'hsl':   return ['h', 's', 'l'];
+    case 'hsv':   return ['h', 's', 'b'];
+    case 'hclok': return ['h', 'c', 'l'];
+    case 'hclab': return ['h', 'c', 'l'];
+    case 'hcluv': return ['h', 'c', 'l'];
+    case 'oklab': return ['l', 'a', 'b'];
+    case 'lab':   return ['l', 'a', 'b'];
+    case 'luv':   return ['l', 'u', 'v'];
+    case 'xyz':   return ['x', 'y', 'z'];
+    case 'xyz50': return ['x', 'y', 'z'];
+    case 'xyz65': return ['x', 'y', 'z'];
+    }
+
+    console.error('invalid color space \'' + space + '\'');
+    return ['c1', 'c2', 'c3'];
 }
 
 
@@ -66649,7 +66849,7 @@ function convertDataColorToSpace(color, toSpace)
 {
     switch (toSpace)
     {
-        case 'hex':    
+        case 'hex':   return convert2rgb    (color, true); 
         case 'rgb':   return convert2rgb    (color);
 
         case 'lin':   return convert2lin    (color);
@@ -66677,7 +66877,7 @@ function convertDataColorToSpace(color, toSpace)
 
 
 
-function convert2rgb(fromColor)
+function convert2rgb(fromColor, allowHex = false)
 {
     const col = dataColor2array(fromColor);
 
@@ -66710,7 +66910,15 @@ function convert2rgb(fromColor)
         case 'xyz65': rgb = xyz2rgb  (col, sRGB_D65); break;
     }
 
-    return rgb2dataColor(rgb);
+
+    let color = rgb2dataColor(rgb);
+
+    if (   fromColor[0] == 'hex'
+        && allowHex)
+        color[0] = fromColor[0];
+
+        
+    return color;
 }
 
 

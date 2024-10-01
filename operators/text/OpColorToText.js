@@ -16,7 +16,7 @@ extends OperatorBase
         this.outputValueType = COLOR_VALUE;
 
 
-        this.addInput (new Input([COLOR_VALUE, FILL_VALUE, LIST_VALUE]));
+        this.addInput (new Input([COLOR_VALUE, FILL_VALUE, COLOR_LIST_VALUE, FILL_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['Hex', 'RGB 0 – 1', 'RGB 0 – 255', 'CSS # hex', 'CSS rgb ()', 'CSS hsl ()', 'CSS oklch ()', 'CSS lch ()', 'CSS oklab()', 'CSS lab()', 'CSS color ()', 'name']));

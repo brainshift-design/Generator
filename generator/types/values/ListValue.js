@@ -239,11 +239,16 @@ extends GValue
 
         if (this.items.length > 0)
         {
+            if (options.named)
+                json += '\n' + TAB(options.tab);
+    
+
+            json += OB + '\n';
+
+
             const oldNamed = options.named;
             options.named = hasNamed;
 
-
-            json += TAB(options.tab) + OB + '\n';
 
             for (let i = 0; i < this.items.length; i++)
             {
@@ -258,7 +263,7 @@ extends GValue
                     json += '"' + item.valueId + '": ';
 
                 
-                json += item.toJsonText(options);
+                json += item.toJsonText({...options});
 
                 if (i < this.items.length-1)
                     json += ',';
@@ -268,6 +273,7 @@ extends GValue
 
                 options.tab--;
             }
+
 
             json += TAB(options.tab) + CB;
 

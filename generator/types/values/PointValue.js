@@ -184,8 +184,15 @@ extends GValue
         json += '{\n';
         options.tab++;
 
-        json += TAB(options.tab) + '"x": ' + this.x.toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"y": ' + this.y.toJsonText(options) + '\n';
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"x": ' + this.x.toJsonText({...options}) + ',\n';
+        json += TAB(options.tab) + '"y": ' + this.y.toJsonText({...options}) + '\n';
+
+
+        options.named = oldNamed;
 
         options.tab--;
         json += TAB(options.tab) + '}';

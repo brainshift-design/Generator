@@ -70,123 +70,133 @@ extends GOperator1
                 }
 
 
+                function getColor(rgb)
+                {
+                    return ColorValue.fromDataColor(
+                        convertDataColorToSpace(
+                            rgb2dataColor(rgb), 
+                            colorSpace(input.space.value)));
+                }
+
+
+
                 switch (schemeType.value)
                 {
                     case 0: // less similar
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb, 10/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  2/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb, 10/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  2/12, 0, 1)));
                         break;
                     }
 
                     case 1: // similar
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb, 11/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  1/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb, 11/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  1/12, 0, 1)));
                         break;
                     }
 
                     case 2: // similar with accent
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb, 11/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  1/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  6/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb, 11/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  1/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  6/12, 0, 1)));
                         break;
                     }
 
                     case 3: // opposite
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  6/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  6/12, 0, 1)));
                         break;
                     }
 
                     case 4: // opposite -
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  5/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  5/12, 0, 1)));
                         break;
                     }
 
                     case 5: // opposite +
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  7/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  7/12, 0, 1)));
                         break;
                     }
 
                     case 6: // opposite split
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  5/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  7/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  5/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  7/12, 0, 1)));
                         break;
                     }
 
                     case 7: // triangle
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  4/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  8/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  4/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  8/12, 0, 1)));
                         break;
                     }
 
                     case 8: // double opposite -
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,   0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  11/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,   6/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,   5/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,   0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  11/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,   6/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,   5/12, 0, 1)));
                         break;
                     }
 
                     case 9: // rectangle -
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb, 10/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  6/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  4/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb, 10/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  6/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  4/12, 0, 1)));
                         break;
                     }
 
                     case 10: // rectangle +
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  2/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  6/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  8/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  2/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  6/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  8/12, 0, 1)));
                         break;
                     }
 
                     case 11: // double opposite +
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  1/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  6/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  7/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  1/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  6/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  7/12, 0, 1)));
                         break;
                     }
 
                     case 12: // square
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  3/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  6/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  9/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  3/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  6/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  9/12, 0, 1)));
                         break;
                     }
 
                     case 13: // hexagon
                     {
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  0,    0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  2/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  4/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  6/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb,  8/12, 0, 1))));
-                        this.value.items.push(ColorValue.fromRgb(scaleRgb(addHue(rgb, 10/12, 0, 1))));
+                        this.value.items.push(getColor(addHue(rgb,  0,    0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  2/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  4/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  6/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb,  8/12, 0, 1)));
+                        this.value.items.push(getColor(addHue(rgb, 10/12, 0, 1)));
                         break;
                     }
                 }

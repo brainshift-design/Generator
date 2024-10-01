@@ -13,6 +13,7 @@ extends OperatorBase
 
 
         this.outputValueType = ANY_VALUE;
+        this.subscription    = true;
         this.iconOffsetY     = 1;
 
 
