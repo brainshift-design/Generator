@@ -7,7 +7,7 @@ extends GValue
 
     constructor(nodeId, items = [])
     {
-        super(SHAPE_GROUP_VALUE, nodeId);
+        super(SHAPE_GROUP_VALUE, 'group');
 
         this.items = items;
 
@@ -141,6 +141,82 @@ extends GValue
 
 
     
+    toJsonText(options = {})
+    {
+        let json = '';
+
+
+        let hasNamed = false;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            if (this.items[i].valueId != i)
+            {
+                hasNamed = true;
+                break;
+            }
+        }
+
+
+        const OB = hasNamed || options.forceBraces === true ? '{' : '[';
+        const CB = hasNamed || options.forceBraces === true ? '}' : ']';
+
+
+        if (this.items.length > 0)
+        {
+            if (options.named)
+                json += '\n' + TAB(options.tab);
+    
+
+            json += OB + '\n';
+
+
+            const oldNamed = options.named;
+            options.named = hasNamed;
+
+
+            for (let i = 0; i < this.items.length; i++)
+            {
+                const item = this.items[i];
+
+                options.tab++;
+
+
+                json += TAB(options.tab);
+
+                if (hasNamed)
+                    json += '"' + item.valueId + '": ';
+
+
+                json += item.toJsonText(options);
+
+
+                if (i < this.items.length-1)
+                    json += ',';
+
+                json += '\n';
+
+
+                options.tab--;
+            }
+
+
+            json += TAB(options.tab) + CB;
+
+
+            options.named = oldNamed;
+        }
+        else
+        {
+            json += OB + CB;
+        }
+
+
+        return json;
+    }
+
+
+
     static NaN()
     {
         return new ShapeGroupValue(

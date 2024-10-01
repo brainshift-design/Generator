@@ -15,7 +15,7 @@ extends GValue
                 bottom  = new NumberValue(0), 
                 visible = true)
     {
-        super(STROKE_SIDES_VALUE);
+        super(STROKE_SIDES_VALUE, 'strokeSides');
 
         this.top     = top;
         this.left    = left;

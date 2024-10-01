@@ -12,7 +12,7 @@ extends ShapeValue
                 loops   = new ListValue(), 
                 winding = new NumberValue(0))
     {
-        super(VECTOR_REGION_VALUE, nodeId);
+        super(VECTOR_REGION_VALUE, nodeId, 'vectorRegion');
 
         this.loops   = loops;  
         this.winding = winding;

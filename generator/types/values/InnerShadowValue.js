@@ -19,7 +19,7 @@ extends GValue
                 blend   = new NumberValue(0),
                 visible = true)
     {
-        super(INNER_SHADOW_VALUE);
+        super(INNER_SHADOW_VALUE, 'innerShadow');
 
         this.x       = x;
         this.y       = y;

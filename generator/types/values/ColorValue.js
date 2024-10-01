@@ -13,7 +13,7 @@ extends GValue
                 c2    = NumberValue.NaN(), 
                 c3    = NumberValue.NaN())
     {
-        super(COLOR_VALUE);
+        super(COLOR_VALUE, 'color');
 
         this.space  = space.copy();
         this.c1     = c1   .copy();

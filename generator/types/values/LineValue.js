@@ -12,7 +12,7 @@ extends ShapeValue
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0))
     {
-        super(LINE_VALUE, nodeId);
+        super(LINE_VALUE, nodeId, 'line');
 
         this.x     = x;
         this.y     = y;

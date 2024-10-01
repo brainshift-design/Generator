@@ -22,7 +22,7 @@ extends ShapeValue
                 start    = new NumberValue(0),
                 sweep    = new NumberValue(0))
     {
-        super(ARC_PATH_VALUE, nodeId);
+        super(ARC_PATH_VALUE, nodeId, 'arcPath');
 
         this.position = position;
         this.x        = x;

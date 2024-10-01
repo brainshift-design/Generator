@@ -16,7 +16,9 @@ extends ShapeValue
                 winding = new NumberValue(0), 
                 round   = new NumberValue(0))
     {
-        super(VECTOR_PATH_VALUE, nodeId);
+        super(VECTOR_PATH_VALUE, nodeId, 'vectorPath');
+
+        this.valueId = 'vectorPath';
 
         this.points  = points ?? new ListValue();
         this.closed  = closed;
@@ -138,6 +140,7 @@ extends ShapeValue
             && this.winding && this.winding.isValid()
             && this.round   && this.round  .isValid();
     }
+
 
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson

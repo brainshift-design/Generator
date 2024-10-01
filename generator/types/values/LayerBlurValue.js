@@ -9,7 +9,7 @@ extends GValue
     constructor(radius  = new NumberValue(0), 
                 visible = true)
     {
-        super(LAYER_BLUR_VALUE);
+        super(LAYER_BLUR_VALUE, 'layerBlur');
 
         this.radius  = radius;
         this.visible = visible;

@@ -29,7 +29,7 @@ extends GValue
                 skew       = new NumberValue(0),
                 blend      = new NumberValue(0))
     {
-        super(GRADIENT_VALUE);
+        super(GRADIENT_VALUE, 'gradient');
 
         this.stops      = stops   .copy();
         this.gradType   = gradType.copy();

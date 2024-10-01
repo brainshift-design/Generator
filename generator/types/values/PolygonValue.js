@@ -20,7 +20,7 @@ extends ShapeValue
                 round    = new NumberValue(0), 
                 corners  = new NumberValue(0))
     {
-        super(POLYGON_VALUE, nodeId);
+        super(POLYGON_VALUE, nodeId, 'polygon');
 
         this.position = position;
         this.x        = x;

@@ -993,14 +993,14 @@ const EllipsePositions =
 
 
 
-const TextAlignX = ['left', 'center', 'right', 'justify'];
-const TextAlignY = ['bottom', 'middle', 'top'];
-
-
+const TextAlignX      = ['left', 'center', 'right', 'justify'];
+const TextAlignY      = ['bottom', 'middle', 'top'];
 
 const PathDegrees     = ['linear', 'quadratic', 'cubic', 'smooth', 'sine X', 'sine Y'];
 const PathJoinDegrees = ['linear', 'cubic', 'smooth', 'sine X', 'sine Y'];
 const PathWindings    = ['even-odd', 'non-zero'];
+
+const LayerMaskTypes  = ['alpha', 'vector', 'luminance'];
 
 
 

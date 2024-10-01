@@ -14,7 +14,7 @@ extends ShapeValue
 
     constructor(nodeId, children, position, x, y, width, height, round, clip)
     {
-        super(FRAME_VALUE, nodeId);
+        super(FRAME_VALUE, nodeId, 'frame');
 
         this.children = children;
         this.position = position;

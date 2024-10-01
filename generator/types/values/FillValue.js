@@ -11,7 +11,7 @@ extends GValue
                 opacity = new NumberValue(100),
                 blend   = new NumberValue(0))
     {
-        super(FILL_VALUE);
+        super(FILL_VALUE, 'fill');
 
         this.color   = color  .copy();
         this.opacity = opacity.copy();

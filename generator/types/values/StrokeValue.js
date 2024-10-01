@@ -23,7 +23,7 @@ extends GValue
             consoleError('fill.type is ' + fills.type + ', must be LIST_VALUE');
 
 
-        super(STROKE_VALUE);
+        super(STROKE_VALUE, 'stroke');
 
         this.fills  = fills .copy();
         this.weight = weight.copy();

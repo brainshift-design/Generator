@@ -18,7 +18,7 @@ extends GValue
                 cap   = new NumberValue(0),
                 round = new NumberValue(0))
     {
-        super(VECTOR_VERTEX_VALUE);
+        super(VECTOR_VERTEX_VALUE, 'vectorVertex');
 
         this.nodeId = nodeId;
 

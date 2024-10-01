@@ -7716,14 +7716,14 @@ const EllipsePositions =
 
 
 
-const TextAlignX = ['left', 'center', 'right', 'justify'];
-const TextAlignY = ['bottom', 'middle', 'top'];
-
-
+const TextAlignX      = ['left', 'center', 'right', 'justify'];
+const TextAlignY      = ['bottom', 'middle', 'top'];
 
 const PathDegrees     = ['linear', 'quadratic', 'cubic', 'smooth', 'sine X', 'sine Y'];
 const PathJoinDegrees = ['linear', 'cubic', 'smooth', 'sine X', 'sine Y'];
 const PathWindings    = ['even-odd', 'non-zero'];
+
+const LayerMaskTypes  = ['alpha', 'vector', 'luminance'];
 
 
 
@@ -11392,12 +11392,12 @@ class GValue
 
 
 
-    constructor(type) 
+    constructor(type, valueId = NULL) 
     {
         this.type    = type;
         this.parent  = null;
         
-        this.valueId = NULL;
+        this.valueId = valueId;
         
         this.valid   = true;
     }
@@ -13429,11 +13429,12 @@ extends GValue
 
     constructor(val = Number.NaN, dec = -1, isBoolean = false)
     {
-        super(NUMBER_VALUE);
+        super(NUMBER_VALUE, 'number');
+
 
         if (typeof val !== 'number')
             consoleError('NumberValue(value) is ' + typeof val + ', must be a number');
-
+        
 
         this.value     = val;
         this.initValue = val;
@@ -13661,7 +13662,7 @@ extends GValue
 
     constructor(val = '')
     {
-        super(TEXT_VALUE);
+        super(TEXT_VALUE, 'string');
 
 
         if (   val !== null
@@ -13671,9 +13672,9 @@ extends GValue
             consoleError('TextValue('+val+') is ' + typeof val + ', must be a string');
         }
 
-        
-        this.value        = val;
-        this.initValue    = val;
+
+        this.value     = val;
+        this.initValue = val;
 
         // this.updateValues = [];
     }
@@ -13809,7 +13810,7 @@ extends GValue
                 c2    = NumberValue.NaN(), 
                 c3    = NumberValue.NaN())
     {
-        super(COLOR_VALUE);
+        super(COLOR_VALUE, 'color');
 
         this.space  = space.copy();
         this.c1     = c1   .copy();
@@ -14121,7 +14122,7 @@ extends GValue
                 opacity = new NumberValue(100),
                 blend   = new NumberValue(0))
     {
-        super(FILL_VALUE);
+        super(FILL_VALUE, 'fill');
 
         this.color   = color  .copy();
         this.opacity = opacity.copy();
@@ -14392,7 +14393,7 @@ extends GValue
             consoleError('fill.type is ' + fill.type + ', must be FILL_VALUE');
 
 
-        super(COLOR_STOP_VALUE);
+        super(COLOR_STOP_VALUE, 'colorStop');
 
         this.fill     = fill    .copy();
         this.position = position.copy();
@@ -14575,7 +14576,7 @@ extends GValue
                 skew       = new NumberValue(0),
                 blend      = new NumberValue(0))
     {
-        super(GRADIENT_VALUE);
+        super(GRADIENT_VALUE, 'gradient');
 
         this.stops      = stops   .copy();
         this.gradType   = gradType.copy();
@@ -14861,7 +14862,7 @@ extends GValue
             consoleError('fill.type is ' + fills.type + ', must be LIST_VALUE');
 
 
-        super(STROKE_VALUE);
+        super(STROKE_VALUE, 'stroke');
 
         this.fills  = fills .copy();
         this.weight = weight.copy();
@@ -15083,7 +15084,7 @@ extends GValue
                 bottom  = new NumberValue(0), 
                 visible = true)
     {
-        super(STROKE_SIDES_VALUE);
+        super(STROKE_SIDES_VALUE, 'strokeSides');
 
         this.top     = top;
         this.left    = left;
@@ -15232,7 +15233,7 @@ extends GValue
                 br = new NumberValue(0), 
                 visible = true)
     {
-        super(ROUND_CORNERS_VALUE);
+        super(ROUND_CORNERS_VALUE, 'roundCorners');
 
         this.tl      = tl;
         this.tr      = tr;
@@ -15420,7 +15421,7 @@ extends GValue
                 behind  = new NumberValue(0),
                 visible = true)
     {
-        super(DROP_SHADOW_VALUE);
+        super(DROP_SHADOW_VALUE, 'dropShadow');
 
         this.x       = x;
         this.y       = y;
@@ -15650,7 +15651,7 @@ extends GValue
                 blend   = new NumberValue(0),
                 visible = true)
     {
-        super(INNER_SHADOW_VALUE);
+        super(INNER_SHADOW_VALUE, 'innerShadow');
 
         this.x       = x;
         this.y       = y;
@@ -15877,7 +15878,7 @@ extends GValue
     constructor(radius  = new NumberValue(0), 
                 visible = true)
     {
-        super(LAYER_BLUR_VALUE);
+        super(LAYER_BLUR_VALUE, 'layerBlur');
 
         this.radius  = radius;
         this.visible = visible;
@@ -16045,7 +16046,7 @@ extends GValue
     constructor(radius  = new NumberValue(0),
                 visible = true)
     {
-        super(BACK_BLUR_VALUE);
+        super(BACK_BLUR_VALUE, 'backgroundBlur');
 
         this.radius  = radius;
         this.visible = visible;
@@ -16212,7 +16213,7 @@ extends GValue
 
     constructor(opacity, blend)
     {
-        super(LAYER_BLEND_VALUE);
+        super(LAYER_BLEND_VALUE, 'layerBlend');
 
         this.opacity = opacity.copy();
         this.blend   = blend  .copy();
@@ -16367,7 +16368,7 @@ extends GValue
 
     constructor(maskType, visible = true)
     {
-        super(LAYER_MASK_VALUE);
+        super(LAYER_MASK_VALUE, 'layerMask');
 
         this.visible  = visible;
         this.maskType = maskType.copy();
@@ -16429,6 +16430,36 @@ extends GValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"type": "' + LayerMaskTypes[this.maskType.value] + '"\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     static NaN()
     {
         return new LayerMaskValue(
@@ -16467,7 +16498,7 @@ extends GValue
                 variableName  = '', 
                 variableValue = new NullValue())
     {
-        super(VARIABLE_VALUE, nodeId);
+        super(VARIABLE_VALUE, nodeId, 'variable');
 
         this.variableId    = variableId;
         this.variableName  = variableName;
@@ -16639,9 +16670,9 @@ extends GValue
 
 
 
-    constructor(type, nodeId)
+    constructor(type, nodeId, valueId)
     {
-        super(type);
+        super(type, valueId);
 
         this.nodeId = nodeId; 
 
@@ -16698,6 +16729,7 @@ extends GValue
                 case INNER_SHADOW_VALUE:  valueId = 'innerShadow';    break;
                 case LAYER_BLUR_VALUE:    valueId = 'layerBlur';      break;
                 case BACK_BLUR_VALUE:     valueId = 'backgroundBlur'; break;
+                case LAYER_MASK_VALUE:    valueId = 'layerMask';      break;
             }
         
             prop.valueId = valueId;
@@ -16749,7 +16781,7 @@ extends ShapeValue
                 height = new NumberValue(0), 
                 round  = new NumberValue(0))
     {
-        super(RECTANGLE_VALUE, nodeId);
+        super(RECTANGLE_VALUE, nodeId, 'rectangle');
 
         this.x      = x;
         this.y      = y;
@@ -16980,7 +17012,7 @@ extends ShapeValue
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0))
     {
-        super(LINE_VALUE, nodeId);
+        super(LINE_VALUE, nodeId, 'line');
 
         this.x     = x;
         this.y     = y;
@@ -17196,7 +17228,7 @@ extends ShapeValue
                 sweep    = new NumberValue(0),
                 inner    = new NumberValue(0))
     {
-        super(ELLIPSE_VALUE, nodeId);
+        super(ELLIPSE_VALUE, nodeId, 'ellipse');
 
         this.position = position;
         this.x        = x;
@@ -17485,7 +17517,7 @@ extends ShapeValue
                 round  = new NumberValue(0),
                 bias   = new NumberValue(0))
     {
-        super(TRAPEZE_VALUE, nodeId);
+        super(TRAPEZE_VALUE, nodeId, 'trapeze');
 
         this.x      = x;
         this.y      = y;
@@ -17737,7 +17769,7 @@ extends ShapeValue
                 round    = new NumberValue(0), 
                 corners  = new NumberValue(0))
     {
-        super(POLYGON_VALUE, nodeId);
+        super(POLYGON_VALUE, nodeId, 'polygon');
 
         this.position = position;
         this.x        = x;
@@ -18003,7 +18035,7 @@ extends ShapeValue
                 points   = new NumberValue(0),
                 convex   = new NumberValue(0))
     {
-        super(STAR_VALUE, nodeId);
+        super(STAR_VALUE, nodeId, 'star');
 
         this.position = position;
         this.x        = x;
@@ -18290,7 +18322,7 @@ extends ShapeValue
                 lineHeight    = new NumberValue(0),
                 letterSpacing = new NumberValue(0))
     {
-        super(TEXT_SHAPE_VALUE, nodeId);
+        super(TEXT_SHAPE_VALUE, nodeId, 'text');
 
         this.text          = text;
         this.x             = x;
@@ -18640,7 +18672,7 @@ extends GValue
                 y = new NumberValue(0),
                 smooth = null)
     {
-        super(POINT_VALUE);
+        super(POINT_VALUE, 'point');
 
         this.nodeId  = nodeId;
 
@@ -18915,7 +18947,9 @@ extends ShapeValue
                 winding = new NumberValue(0), 
                 round   = new NumberValue(0))
     {
-        super(VECTOR_PATH_VALUE, nodeId);
+        super(VECTOR_PATH_VALUE, nodeId, 'vectorPath');
+
+        this.valueId = 'vectorPath';
 
         this.points  = points ?? new ListValue();
         this.closed  = closed;
@@ -19039,6 +19073,7 @@ extends ShapeValue
     }
 
 
+
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
         let json = '';
@@ -19153,7 +19188,7 @@ extends GValue
                 cap   = new NumberValue(0),
                 round = new NumberValue(0))
     {
-        super(VECTOR_VERTEX_VALUE);
+        super(VECTOR_VERTEX_VALUE, 'vectorVertex');
 
         this.nodeId = nodeId;
 
@@ -19375,7 +19410,7 @@ extends GValue
                 startTangent = PointValue.create(nodeId, 0, 0),
                 endTangent   = PointValue.create(nodeId, 0, 0))
     {
-        super(VECTOR_EDGE_VALUE);
+        super(VECTOR_EDGE_VALUE, 'vectorEdge');
 
         this.nodeId = nodeId;
 
@@ -19559,7 +19594,7 @@ extends ShapeValue
                 loops   = new ListValue(), 
                 winding = new NumberValue(0))
     {
-        super(VECTOR_REGION_VALUE, nodeId);
+        super(VECTOR_REGION_VALUE, nodeId, 'vectorRegion');
 
         this.loops   = loops;  
         this.winding = winding;
@@ -19730,7 +19765,7 @@ extends GValue
     constructor(nodeId,
                 regions = new ListValue())
     {
-        super(VECTOR_NETWORK_VALUE);
+        super(VECTOR_NETWORK_VALUE, 'vectorNetwork');
 
         this.nodeId  = nodeId;
 
@@ -19883,7 +19918,7 @@ extends ShapeValue
 
     constructor(nodeId, children, operation)
     {
-        super(SHAPE_BOOLEAN_VALUE, nodeId);
+        super(SHAPE_BOOLEAN_VALUE, nodeId, 'boolean');
 
         this.children  = children;
         this.operation = operation;
@@ -20038,7 +20073,7 @@ extends ShapeValue
                 alignX    = new NumberValue(0),
                 alignY    = new NumberValue(0))
     {
-        super(WAVE_PATH_VALUE, nodeId);
+        super(WAVE_PATH_VALUE, nodeId, 'wavePath');
 
         this.shape     = shape;
         this.x         = x;
@@ -20275,7 +20310,7 @@ extends ShapeValue
                 start    = new NumberValue(0),
                 sweep    = new NumberValue(0))
     {
-        super(ARC_PATH_VALUE, nodeId);
+        super(ARC_PATH_VALUE, nodeId, 'arcPath');
 
         this.position = position;
         this.x        = x;
@@ -20475,7 +20510,7 @@ extends GValue
 
     constructor(nodeId, items = [])
     {
-        super(SHAPE_GROUP_VALUE, nodeId);
+        super(SHAPE_GROUP_VALUE, 'group');
 
         this.items = items;
 
@@ -20609,6 +20644,82 @@ extends GValue
 
 
     
+    toJsonText(options = {})
+    {
+        let json = '';
+
+
+        let hasNamed = false;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            if (this.items[i].valueId != i)
+            {
+                hasNamed = true;
+                break;
+            }
+        }
+
+
+        const OB = hasNamed || options.forceBraces === true ? '{' : '[';
+        const CB = hasNamed || options.forceBraces === true ? '}' : ']';
+
+
+        if (this.items.length > 0)
+        {
+            if (options.named)
+                json += '\n' + TAB(options.tab);
+    
+
+            json += OB + '\n';
+
+
+            const oldNamed = options.named;
+            options.named = hasNamed;
+
+
+            for (let i = 0; i < this.items.length; i++)
+            {
+                const item = this.items[i];
+
+                options.tab++;
+
+
+                json += TAB(options.tab);
+
+                if (hasNamed)
+                    json += '"' + item.valueId + '": ';
+
+
+                json += item.toJsonText(options);
+
+
+                if (i < this.items.length-1)
+                    json += ',';
+
+                json += '\n';
+
+
+                options.tab--;
+            }
+
+
+            json += TAB(options.tab) + CB;
+
+
+            options.named = oldNamed;
+        }
+        else
+        {
+            json += OB + CB;
+        }
+
+
+        return json;
+    }
+
+
+
     static NaN()
     {
         return new ShapeGroupValue(
@@ -20684,7 +20795,7 @@ extends ShapeValue
 
     constructor(nodeId, children, position, x, y, width, height, round, clip)
     {
-        super(FRAME_VALUE, nodeId);
+        super(FRAME_VALUE, nodeId, 'frame');
 
         this.children = children;
         this.position = position;

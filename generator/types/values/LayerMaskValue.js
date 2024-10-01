@@ -8,7 +8,7 @@ extends GValue
 
     constructor(maskType, visible = true)
     {
-        super(LAYER_MASK_VALUE);
+        super(LAYER_MASK_VALUE, 'layerMask');
 
         this.visible  = visible;
         this.maskType = maskType.copy();
@@ -66,6 +66,36 @@ extends GValue
     isValid()
     {
         return this.maskType.isValid();
+    }
+
+
+
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"type": "' + LayerMaskTypes[this.maskType.value] + '"\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
     }
 
 

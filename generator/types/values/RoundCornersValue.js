@@ -15,7 +15,7 @@ extends GValue
                 br = new NumberValue(0), 
                 visible = true)
     {
-        super(ROUND_CORNERS_VALUE);
+        super(ROUND_CORNERS_VALUE, 'roundCorners');
 
         this.tl      = tl;
         this.tr      = tr;

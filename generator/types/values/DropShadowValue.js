@@ -21,7 +21,7 @@ extends GValue
                 behind  = new NumberValue(0),
                 visible = true)
     {
-        super(DROP_SHADOW_VALUE);
+        super(DROP_SHADOW_VALUE, 'dropShadow');
 
         this.x       = x;
         this.y       = y;

@@ -11,11 +11,12 @@ extends GValue
 
     constructor(val = Number.NaN, dec = -1, isBoolean = false)
     {
-        super(NUMBER_VALUE);
+        super(NUMBER_VALUE, 'number');
+
 
         if (typeof val !== 'number')
             consoleError('NumberValue(value) is ' + typeof val + ', must be a number');
-
+        
 
         this.value     = val;
         this.initValue = val;

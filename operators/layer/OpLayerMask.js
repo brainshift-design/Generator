@@ -15,7 +15,7 @@ extends OperatorBase
 
         this.addOutput(new Output([LAYER_MASK_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));
 
-        this.addParam(this.paramMaskType = new SelectParam('maskType', 'type', false, true, true, ['alpha', 'vector', 'luminance'], 0));
+        this.addParam(this.paramMaskType = new SelectParam('maskType', 'type', false, true, true, LayerMaskTypes, 0));
     }
     
     

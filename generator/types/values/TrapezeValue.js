@@ -18,7 +18,7 @@ extends ShapeValue
                 round  = new NumberValue(0),
                 bias   = new NumberValue(0))
     {
-        super(TRAPEZE_VALUE, nodeId);
+        super(TRAPEZE_VALUE, nodeId, 'trapeze');
 
         this.x      = x;
         this.y      = y;

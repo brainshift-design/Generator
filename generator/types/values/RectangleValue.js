@@ -16,7 +16,7 @@ extends ShapeValue
                 height = new NumberValue(0), 
                 round  = new NumberValue(0))
     {
-        super(RECTANGLE_VALUE, nodeId);
+        super(RECTANGLE_VALUE, nodeId, 'rectangle');
 
         this.x      = x;
         this.y      = y;

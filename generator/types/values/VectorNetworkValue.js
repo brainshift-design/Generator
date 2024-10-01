@@ -10,7 +10,7 @@ extends GValue
     constructor(nodeId,
                 regions = new ListValue())
     {
-        super(VECTOR_NETWORK_VALUE);
+        super(VECTOR_NETWORK_VALUE, 'vectorNetwork');
 
         this.nodeId  = nodeId;
 

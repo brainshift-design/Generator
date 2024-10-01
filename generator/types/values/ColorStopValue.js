@@ -13,7 +13,7 @@ extends GValue
             consoleError('fill.type is ' + fill.type + ', must be FILL_VALUE');
 
 
-        super(COLOR_STOP_VALUE);
+        super(COLOR_STOP_VALUE, 'colorStop');
 
         this.fill     = fill    .copy();
         this.position = position.copy();

@@ -30,7 +30,7 @@ extends ShapeValue
                 lineHeight    = new NumberValue(0),
                 letterSpacing = new NumberValue(0))
     {
-        super(TEXT_SHAPE_VALUE, nodeId);
+        super(TEXT_SHAPE_VALUE, nodeId, 'text');
 
         this.text          = text;
         this.x             = x;

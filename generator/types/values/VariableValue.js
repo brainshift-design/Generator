@@ -14,7 +14,7 @@ extends GValue
                 variableName  = '', 
                 variableValue = new NullValue())
     {
-        super(VARIABLE_VALUE, nodeId);
+        super(VARIABLE_VALUE, nodeId, 'variable');
 
         this.variableId    = variableId;
         this.variableName  = variableName;

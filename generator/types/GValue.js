@@ -14,12 +14,12 @@ class GValue
 
 
 
-    constructor(type) 
+    constructor(type, valueId = NULL) 
     {
         this.type    = type;
         this.parent  = null;
         
-        this.valueId = NULL;
+        this.valueId = valueId;
         
         this.valid   = true;
     }

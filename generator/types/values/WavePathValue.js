@@ -26,7 +26,7 @@ extends ShapeValue
                 alignX    = new NumberValue(0),
                 alignY    = new NumberValue(0))
     {
-        super(WAVE_PATH_VALUE, nodeId);
+        super(WAVE_PATH_VALUE, nodeId, 'wavePath');
 
         this.shape     = shape;
         this.x         = x;

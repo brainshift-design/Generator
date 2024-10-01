@@ -19,7 +19,7 @@ extends GValue
                 y = new NumberValue(0),
                 smooth = null)
     {
-        super(POINT_VALUE);
+        super(POINT_VALUE, 'point');
 
         this.nodeId  = nodeId;
 

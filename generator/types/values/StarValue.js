@@ -22,7 +22,7 @@ extends ShapeValue
                 points   = new NumberValue(0),
                 convex   = new NumberValue(0))
     {
-        super(STAR_VALUE, nodeId);
+        super(STAR_VALUE, nodeId, 'star');
 
         this.position = position;
         this.x        = x;

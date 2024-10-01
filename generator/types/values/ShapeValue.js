@@ -10,9 +10,9 @@ extends GValue
 
 
 
-    constructor(type, nodeId)
+    constructor(type, nodeId, valueId)
     {
-        super(type);
+        super(type, valueId);
 
         this.nodeId = nodeId; 
 
@@ -69,6 +69,7 @@ extends GValue
                 case INNER_SHADOW_VALUE:  valueId = 'innerShadow';    break;
                 case LAYER_BLUR_VALUE:    valueId = 'layerBlur';      break;
                 case BACK_BLUR_VALUE:     valueId = 'backgroundBlur'; break;
+                case LAYER_MASK_VALUE:    valueId = 'layerMask';      break;
             }
         
             prop.valueId = valueId;

@@ -8,7 +8,7 @@ extends GValue
 
     constructor(opacity, blend)
     {
-        super(LAYER_BLEND_VALUE);
+        super(LAYER_BLEND_VALUE, 'layerBlend');
 
         this.opacity = opacity.copy();
         this.blend   = blend  .copy();

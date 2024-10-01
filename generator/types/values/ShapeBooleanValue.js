@@ -8,7 +8,7 @@ extends ShapeValue
 
     constructor(nodeId, children, operation)
     {
-        super(SHAPE_BOOLEAN_VALUE, nodeId);
+        super(SHAPE_BOOLEAN_VALUE, nodeId, 'boolean');
 
         this.children  = children;
         this.operation = operation;

@@ -16,7 +16,7 @@ extends GValue
                 startTangent = PointValue.create(nodeId, 0, 0),
                 endTangent   = PointValue.create(nodeId, 0, 0))
     {
-        super(VECTOR_EDGE_VALUE);
+        super(VECTOR_EDGE_VALUE, 'vectorEdge');
 
         this.nodeId = nodeId;
 

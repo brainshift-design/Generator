@@ -24,7 +24,7 @@ extends ShapeValue
                 sweep    = new NumberValue(0),
                 inner    = new NumberValue(0))
     {
-        super(ELLIPSE_VALUE, nodeId);
+        super(ELLIPSE_VALUE, nodeId, 'ellipse');
 
         this.position = position;
         this.x        = x;

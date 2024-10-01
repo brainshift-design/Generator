@@ -8,7 +8,7 @@ extends GValue
 
     constructor(val = '')
     {
-        super(TEXT_VALUE);
+        super(TEXT_VALUE, 'string');
 
 
         if (   val !== null
@@ -18,9 +18,9 @@ extends GValue
             consoleError('TextValue('+val+') is ' + typeof val + ', must be a string');
         }
 
-        
-        this.value        = val;
-        this.initValue    = val;
+
+        this.value     = val;
+        this.initValue = val;
 
         // this.updateValues = [];
     }
