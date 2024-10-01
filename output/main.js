@@ -24,7 +24,7 @@ const MAX_INT32 = 2147483647;
 const NULL = '';
 const NULL_VALUE = 'NULL';
 const HTAB = '  '; // half-tab
-const TAB = '    ';
+const CTAB = '    '; // character tab
 const NL = '\n';
 const PLUGIN_LOGO = '◦ G •';
 const PLUGIN_NAME = 'Generator';
@@ -751,10 +751,11 @@ const COLOR_TO_TEXT = 'C2T';
 const TEXT_TO_NUMBER = 'T2N';
 const TEXT_TO_COLOR = 'T2C';
 const TEXT_SPLIT = 'TSPLT';
-const PARSE_JSON = 'TJSON';
-const PARSE_CSV = 'TCSV';
+const PARSE_JSON = 'PRJSON';
+const PARSE_CSV = 'PRCSV';
 const TEXT_FETCH = 'FETCH';
 const TEXT_FILE = 'TFILE';
+const TO_JSON = 'TOJSON';
 const COLOR_VALUE = 'COL#';
 const COLOR = 'COL';
 const VALID_COLOR = 'CVAL';
@@ -932,6 +933,7 @@ const FLOW_TYPES = [
     FREEZE,
     PARSE_JSON,
     PARSE_CSV,
+    TO_JSON,
     TIMER,
     GET_VALUE_NAME,
     SET_VALUE_NAME,

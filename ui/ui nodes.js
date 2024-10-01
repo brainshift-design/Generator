@@ -607,6 +607,8 @@ function handleLegacyNode(_node, genVersion)
     else if (_node.type == 'LIST'   && genVersion <  441) _node.type = ITEMS;
     else if (_node.type == 'EXPAND' && genVersion == 441) _node.type = ITEMS;
     else if (_node.type == 'CMB'    && genVersion <  441) _node.type = LIST;
+    else if (_node.type == 'TJSON'  && genVersion <  441) _node.type = PARSE_JSON;
+    else if (_node.type == 'TCSV'   && genVersion <  441) _node.type = PARSE_CSV;
 
 
     // remove 'showCenter' param from everything

@@ -13,7 +13,7 @@ const NULL                 = '';
 const NULL_VALUE           = 'NULL';
   
 const HTAB                 = '  '; // half-tab
-const TAB                  = '    ';
+const CTAB                 = '    '; // character tab
 const NL                   = '\n';
   
 const PLUGIN_LOGO          = '◦ G •';
@@ -4658,6 +4658,13 @@ function parseIndexRanges(str)
 }
 
 
+
+function TAB(nTabs)
+{
+    return '\t'.repeat(nTabs);
+}
+
+
 // const yamlData = `
 // Total Budget: 1000000
 // Operations: 400000
@@ -6713,62 +6720,62 @@ function loadLocalSettings()
 }
 
 
-const LIST_VALUE             = 'LIST#';
+const LIST_VALUE              = 'LIST#';
 
-const NUMBER_LIST_VALUE      = 'NLIST#';
-const   TEXT_LIST_VALUE      = 'TLIST#';
-const  SHAPE_LIST_VALUE      = 'SLIST#';
-const  COLOR_LIST_VALUE      = 'CLIST#';
-const  FILL_LIST_VALUE       = 'FLIST#';
-const  COLOR_STOP_LIST_VALUE = 'CSLIST#';
-
-
-const NULL_NODE              = 'NULL';
-const VARIABLE_GROUP         = 'VARGRP';
-const FEEDBACK               = 'FEEDBK';
-const REPEAT                 = 'REPT';
-const ADVANCE                = 'ADVNC';
-const CACHE                  = 'CACHE';
-const FREEZE                 = 'FRZ';
-const TIMER                  = 'TIMER';
-const GET_VALUE_NAME         = 'GVNAME';
-const SET_VALUE_NAME         = 'SVNAME';
-const GET_LIST_VALUE_NAMES   = 'GVNAMES';
-const SET_LIST_VALUE_NAMES   = 'SVNAMES';
-const SET_OBJECT_NAME        = 'SONAME';
+const NUMBER_LIST_VALUE       = 'NLIST#';
+const   TEXT_LIST_VALUE       = 'TLIST#';
+const  SHAPE_LIST_VALUE       = 'SLIST#';
+const  COLOR_LIST_VALUE       = 'CLIST#';
+const  FILL_LIST_VALUE        = 'FLIST#';
+const  COLOR_STOP_LIST_VALUE  = 'CSLIST#';
 
 
-const VARIABLE               = 'VAR';
-const VARIABLE_VALUE         = 'VAR#';
-const VARIABLE_TYPES         = [VARIABLE_VALUE, VARIABLE];
+const NULL_NODE               = 'NULL';
+const VARIABLE_GROUP          = 'VARGRP';
+const FEEDBACK                = 'FEEDBK';
+const REPEAT                  = 'REPT';
+const ADVANCE                 = 'ADVNC';
+const CACHE                   = 'CACHE';
+const FREEZE                  = 'FRZ';
+const TIMER                   = 'TIMER';
+const GET_VALUE_NAME          = 'GVNAME';
+const SET_VALUE_NAME          = 'SVNAME';
+const GET_LIST_VALUE_NAMES    = 'GVNAMES';
+const SET_LIST_VALUE_NAMES    = 'SVNAMES';
+const SET_OBJECT_NAME         = 'SONAME';
 
 
-const LIST                   = 'LIST';
-const LIST_AS_ITEM           = 'LSASIT';
-const EXTRACT                = 'EXTR';
-const SET_PARAM              = 'SETP';
-const GET_PARAM              = 'GETP';
-const SUBLIST                = 'SUBLST';
-const UNIQUE                 = 'UNIQ';
-const REORDER_LIST           = 'RORD';
-const SHIFT_LIST             = 'SHFTLST';
-const REVERSE_LIST           = 'REVLST';
-const BUCKLE_LIST            = 'BUKLST';
-const SORT                   = 'SORT';
-const COLUMN                 = 'CLMN';
-const CELL                   = 'CELL';
-const ITEMS                  = 'ITEMS';
-const ITEM_COUNT             = 'COUNT';
-const OBJECT_COUNT           = 'OBJCOUNT';
-const LIST_CONTAINS          = 'LCONT';
-const LIST_FIND              = 'LFIND';
-const SELECT                 = 'SELECT';
-const SELECT_FROM_LIST       = 'LSTSEL';
-const IF_ELSE                = 'IF';
-const FILTER                 = 'LSTFLT';
+const VARIABLE                = 'VAR';
+const VARIABLE_VALUE          = 'VAR#';
+const VARIABLE_TYPES          = [VARIABLE_VALUE, VARIABLE];
 
 
-const ANY_VALUE              = 'ANY#';
+const LIST                    = 'LIST';
+const LIST_AS_ITEM            = 'LSASIT';
+const EXTRACT                 = 'EXTR';
+const SET_PARAM               = 'SETP';
+const GET_PARAM               = 'GETP';
+const SUBLIST                 = 'SUBLST';
+const UNIQUE                  = 'UNIQ';
+const REORDER_LIST            = 'RORD';
+const SHIFT_LIST              = 'SHFTLST';
+const REVERSE_LIST            = 'REVLST';
+const BUCKLE_LIST             = 'BUKLST';
+const SORT                    = 'SORT';
+const COLUMN                  = 'CLMN';
+const CELL                    = 'CELL';
+const ITEMS                   = 'ITEMS';
+const ITEM_COUNT              = 'COUNT';
+const OBJECT_COUNT            = 'OBJCOUNT';
+const LIST_CONTAINS           = 'LCONT';
+const LIST_FIND               = 'LFIND';
+const SELECT                  = 'SELECT';
+const SELECT_FROM_LIST        = 'LSTSEL';
+const IF_ELSE                 = 'IF';
+const FILTER                  = 'LSTFLT';
+
+
+const ANY_VALUE               = 'ANY#';
 
 
 const LIST_TYPES =
@@ -6896,10 +6903,11 @@ const COLOR_TO_TEXT           = 'C2T';
 const TEXT_TO_NUMBER          = 'T2N';
 const TEXT_TO_COLOR           = 'T2C';
 const TEXT_SPLIT              = 'TSPLT';
-const PARSE_JSON              = 'TJSON';
-const PARSE_CSV               = 'TCSV';
+const PARSE_JSON              = 'PRJSON';
+const PARSE_CSV               = 'PRCSV';
 const TEXT_FETCH              = 'FETCH';
 const TEXT_FILE               = 'TFILE';
+const TO_JSON                 = 'TOJSON';
 
 
 const COLOR_VALUE             = 'COL#';  
@@ -6907,202 +6915,202 @@ const COLOR                   = 'COL';
 const VALID_COLOR             = 'CVAL';  
 const CORRECT_COLOR           = 'CCOR';  
 const COLOR_CONTRAST          = 'CCNT';  
-const COLOR_DIFFERENCE           = 'CDLTE';  
+const COLOR_DIFFERENCE        = 'CDLTE';  
 const COLORBLIND              = 'BLND';  
 const COLOR_SCHEME            = 'CPAL'; 
 const COLOR_INTERPOLATE       = 'CLERP'; 
 const COLOR_BLEND             = 'CBLND';
 
 
-const FILL_VALUE          = 'FILL#';
-const FILL                = 'FILL';
-const FILL_TYPES          = [FILL_VALUE, FILL];
+const FILL_VALUE              = 'FILL#';
+const FILL                    = 'FILL';
+const FILL_TYPES              = [FILL_VALUE, FILL];
 
-const STROKE_VALUE        = 'STRK#';
-const STROKE              = 'STRK';
-const STROKE_TYPES        = [STROKE_VALUE, STROKE];
+const STROKE_VALUE            = 'STRK#';
+const STROKE                  = 'STRK';
+const STROKE_TYPES            = [STROKE_VALUE, STROKE];
 
-const STROKE_SIDES_VALUE  = 'STRKSD#';
-const STROKE_SIDES        = 'STRKSD';
-const STROKE_SIDES_TYPES  = [STROKE_SIDES_VALUE, STROKE_SIDES];
+const STROKE_SIDES_VALUE      = 'STRKSD#';
+const STROKE_SIDES            = 'STRKSD';
+const STROKE_SIDES_TYPES      = [STROKE_SIDES_VALUE, STROKE_SIDES];
 
-const COLOR_STOP_VALUE    = 'CSTOP#';
-const COLOR_STOP          = 'CSTOP';
-const COLOR_STOP_TYPES    = [COLOR_STOP_VALUE, COLOR_STOP];
+const COLOR_STOP_VALUE        = 'CSTOP#';
+const COLOR_STOP              = 'CSTOP';
+const COLOR_STOP_TYPES        = [COLOR_STOP_VALUE, COLOR_STOP];
 
-const GRADIENT_VALUE      = 'GRAD#';
-const GRADIENT            = 'GRAD';
-const GRADIENT_TYPES      = [GRADIENT_VALUE, GRADIENT];
-
-
-const ROUND_CORNERS_VALUE = 'RCRN#';
-const ROUND_CORNERS       = 'RCRN';
-const ROUND_CORNERS_TYPES = [ROUND_CORNERS_VALUE, ROUND_CORNERS];
-
-const DROP_SHADOW_VALUE   = 'DRSH#';
-const DROP_SHADOW         = 'DRSH';
-const DROP_SHADOW_TYPES   = [DROP_SHADOW_VALUE, DROP_SHADOW];
-
-const INNER_SHADOW_VALUE  = 'INSH#';
-const INNER_SHADOW        = 'INSH';
-const INNER_SHADOW_TYPES  = [INNER_SHADOW_VALUE, INNER_SHADOW];
-
-const LAYER_BLUR_VALUE    = 'LBLR#';
-const LAYER_BLUR          = 'LBLR';
-const LAYER_BLUR_TYPES    = [LAYER_BLUR_VALUE, LAYER_BLUR];
-
-const BACK_BLUR_VALUE     = 'BBLR#';
-const BACK_BLUR           = 'BBLR';
-const BACK_BLUR_TYPES     = [BACK_BLUR_VALUE, BACK_BLUR];
-
-const LAYER_MASK_VALUE    = 'MASK#';
-const LAYER_MASK          = 'MASK';
-const LAYER_MASK_TYPES    = [LAYER_MASK_VALUE, LAYER_MASK];
-
-const LAYER_BLEND_VALUE   = 'BLEND#';
-const LAYER_BLEND         = 'BLEND';
-const LAYER_BLEND_TYPES   = [LAYER_BLEND_VALUE, LAYER_BLEND];
+const GRADIENT_VALUE          = 'GRAD#';
+const GRADIENT                = 'GRAD';
+const GRADIENT_TYPES          = [GRADIENT_VALUE, GRADIENT];
 
 
-const COLOR_STYLE           = 'CSTL';
+const ROUND_CORNERS_VALUE     = 'RCRN#';
+const ROUND_CORNERS           = 'RCRN';
+const ROUND_CORNERS_TYPES     = [ROUND_CORNERS_VALUE, ROUND_CORNERS];
+
+const DROP_SHADOW_VALUE       = 'DRSH#';
+const DROP_SHADOW             = 'DRSH';
+const DROP_SHADOW_TYPES       = [DROP_SHADOW_VALUE, DROP_SHADOW];
+
+const INNER_SHADOW_VALUE      = 'INSH#';
+const INNER_SHADOW            = 'INSH';
+const INNER_SHADOW_TYPES      = [INNER_SHADOW_VALUE, INNER_SHADOW];
+
+const LAYER_BLUR_VALUE        = 'LBLR#';
+const LAYER_BLUR              = 'LBLR';
+const LAYER_BLUR_TYPES        = [LAYER_BLUR_VALUE, LAYER_BLUR];
+
+const BACK_BLUR_VALUE         = 'BBLR#';
+const BACK_BLUR               = 'BBLR';
+const BACK_BLUR_TYPES         = [BACK_BLUR_VALUE, BACK_BLUR];
+
+const LAYER_MASK_VALUE        = 'MASK#';
+const LAYER_MASK              = 'MASK';
+const LAYER_MASK_TYPES        = [LAYER_MASK_VALUE, LAYER_MASK];
+
+const LAYER_BLEND_VALUE       = 'BLEND#';
+const LAYER_BLEND             = 'BLEND';
+const LAYER_BLEND_TYPES       = [LAYER_BLEND_VALUE, LAYER_BLEND];
 
 
-const SHAPE_VALUE           = 'SHP#'; // abstract placeholder
+const COLOR_STYLE             = 'CSTL';
 
-const RECTANGLE_VALUE       = 'RECT#';
-const RECTANGLE             = 'RECT'; 
+
+const SHAPE_VALUE             = 'SHP#'; // abstract placeholder
+
+const RECTANGLE_VALUE         = 'RECT#';
+const RECTANGLE               = 'RECT'; 
 //const RECTANGLE_EXT         = 'RECTEXT'; 
-const RECTANGLE_TYPES       = [RECTANGLE_VALUE, RECTANGLE];//, RECTANGLE_EXT];
+const RECTANGLE_TYPES         = [RECTANGLE_VALUE, RECTANGLE];//, RECTANGLE_EXT];
 
-const LINE_VALUE            = 'LINE#';
-const LINE                  = 'LINE'; 
-const LINE_TYPES            = [LINE_VALUE, LINE];
+const LINE_VALUE              = 'LINE#';
+const LINE                    = 'LINE'; 
+const LINE_TYPES              = [LINE_VALUE, LINE];
 
-const ELLIPSE_VALUE         = 'ELPS#';
-const ELLIPSE               = 'ELPS'; 
-const ELLIPSE_TYPES         = [ELLIPSE_VALUE, ELLIPSE];
+const ELLIPSE_VALUE           = 'ELPS#';
+const ELLIPSE                 = 'ELPS'; 
+const ELLIPSE_TYPES           = [ELLIPSE_VALUE, ELLIPSE];
 
-const TRAPEZE_VALUE         = 'TRPZ#';
-const TRAPEZE               = 'TRPZ';
-const TRAPEZE_TYPES         = [TRAPEZE_VALUE, TRAPEZE];
+const TRAPEZE_VALUE           = 'TRPZ#';
+const TRAPEZE                 = 'TRPZ';
+const TRAPEZE_TYPES           = [TRAPEZE_VALUE, TRAPEZE];
 
-const POLYGON_VALUE         = 'POLY#';
-const POLYGON               = 'POLY'; 
-const POLYGON_TYPES         = [POLYGON_VALUE, POLYGON];
+const POLYGON_VALUE           = 'POLY#';
+const POLYGON                 = 'POLY'; 
+const POLYGON_TYPES           = [POLYGON_VALUE, POLYGON];
 
-const STAR_VALUE            = 'STAR#';
-const STAR                  = 'STAR'; 
-const STAR_TYPES            = [STAR_VALUE, STAR];
+const STAR_VALUE              = 'STAR#';
+const STAR                    = 'STAR'; 
+const STAR_TYPES              = [STAR_VALUE, STAR];
 
-const TEXT_SHAPE_VALUE      = 'TXTS#';
-const TEXT_SHAPE            = 'TXTS'; 
-const TEXT_SHAPE_TYPES      = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
+const TEXT_SHAPE_VALUE        = 'TXTS#';
+const TEXT_SHAPE              = 'TXTS'; 
+const TEXT_SHAPE_TYPES        = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
 
-const POINT_VALUE           = 'PT#';
-const POINT                 = 'PT';
-const POINT_TYPES           = [POINT_VALUE, POINT];
+const POINT_VALUE             = 'PT#';
+const POINT                   = 'PT';
+const POINT_TYPES             = [POINT_VALUE, POINT];
 
-const POINT_CORNER          = 'PCORN';
+const POINT_CORNER            = 'PCORN';
 
-const VECTOR_PATH_VALUE     = 'VPATH#';
-const VECTOR_PATH           = 'VPATH'; 
-const VECTOR_PATH_TYPES     = [VECTOR_PATH_VALUE, VECTOR_PATH];
+const VECTOR_PATH_VALUE       = 'VPATH#';
+const VECTOR_PATH             = 'VPATH'; 
+const VECTOR_PATH_TYPES       = [VECTOR_PATH_VALUE, VECTOR_PATH];
 
-const VECTOR_VERTEX_VALUE   = 'VPT#';
-const VECTOR_VERTEX         = 'VPT'; 
-const VECTOR_VERTEX_TYPES   = [VECTOR_VERTEX_VALUE, VECTOR_VERTEX];
+const VECTOR_VERTEX_VALUE     = 'VPT#';
+const VECTOR_VERTEX           = 'VPT'; 
+const VECTOR_VERTEX_TYPES     = [VECTOR_VERTEX_VALUE, VECTOR_VERTEX];
 
-const VECTOR_EDGE_VALUE     = 'VEDGE#';
-const VECTOR_EDGE           = 'VEDGE'; 
-const VECTOR_EDGE_TYPES     = [VECTOR_EDGE_VALUE, VECTOR_EDGE];
+const VECTOR_EDGE_VALUE       = 'VEDGE#';
+const VECTOR_EDGE             = 'VEDGE'; 
+const VECTOR_EDGE_TYPES       = [VECTOR_EDGE_VALUE, VECTOR_EDGE];
 
-const VECTOR_REGION_VALUE   = 'VREG#';
-const VECTOR_REGION         = 'VREG'; 
-const VECTOR_REGION_TYPES   = [VECTOR_REGION_VALUE, VECTOR_REGION];
+const VECTOR_REGION_VALUE     = 'VREG#';
+const VECTOR_REGION           = 'VREG'; 
+const VECTOR_REGION_TYPES     = [VECTOR_REGION_VALUE, VECTOR_REGION];
 
-const VECTOR_NETWORK_VALUE  = 'VNET#';
-const VECTOR_NETWORK        = 'VNET'; 
-const VECTOR_NETWORK_TYPES  = [VECTOR_NETWORK_VALUE, VECTOR_NETWORK];
+const VECTOR_NETWORK_VALUE    = 'VNET#';
+const VECTOR_NETWORK          = 'VNET'; 
+const VECTOR_NETWORK_TYPES    = [VECTOR_NETWORK_VALUE, VECTOR_NETWORK];
 
-const SHAPE_GROUP_VALUE     = 'SGRP#';
-const SHAPE_GROUP           = 'SGRP';
-const SHAPE_GROUP_TYPES     = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+const SHAPE_GROUP_VALUE       = 'SGRP#';
+const SHAPE_GROUP             = 'SGRP';
+const SHAPE_GROUP_TYPES       = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
 
-const FRAME_VALUE           = 'FRM#';
-const FRAME                 = 'FRM';
-const FRAME_TYPES           = [FRAME_VALUE, FRAME];
+const FRAME_VALUE             = 'FRM#';
+const FRAME                   = 'FRM';
+const FRAME_TYPES             = [FRAME_VALUE, FRAME];
  
-const ARC_PATH_VALUE        = 'ARC#';
-const ARC_PATH              = 'ARC';
-const ARC_PATH_TYPES        = [ARC_PATH_VALUE, ARC_PATH];
+const ARC_PATH_VALUE          = 'ARC#';
+const ARC_PATH                = 'ARC';
+const ARC_PATH_TYPES          = [ARC_PATH_VALUE, ARC_PATH];
 
-const WAVE_PATH_VALUE       = 'WAVEP#';
-const WAVE_PATH             = 'WAVEP';
-const WAVE_PATH_TYPES       = [WAVE_PATH_VALUE, WAVE_PATH];
+const WAVE_PATH_VALUE         = 'WAVEP#';
+const WAVE_PATH               = 'WAVEP';
+const WAVE_PATH_TYPES         = [WAVE_PATH_VALUE, WAVE_PATH];
 
-const MOVE                  = 'MOVE';
-const ROTATE                = 'ROT';
-const SCALE                 = 'SCALE';
-const SKEW                  = 'SKEW';
+const MOVE                    = 'MOVE';
+const ROTATE                  = 'ROT';
+const SCALE                   = 'SCALE';
+const SKEW                    = 'SKEW';
 
-const SHOW_CENTER           = 'SHOWCNTR';
-const SET_CENTER            = 'SCENTR';
-const RESET_XFORM           = 'RSTX';
+const SHOW_CENTER             = 'SHOWCNTR';
+const SET_CENTER              = 'SCENTR';
+const RESET_XFORM             = 'RSTX';
 
-const PLACE                 = 'PLACE';
-const SHAPE_APPLY           = 'APPLY';
+const PLACE                   = 'PLACE';
+const SHAPE_APPLY             = 'APPLY';
 
-const PATH_LENGTH           = 'PTHLEN';
-const JOIN_PATHS            = 'JOINPTH';
-const REORIENT_PATHS        = 'REORPTH';
-const POINT_ALONG_PATH      = 'PTALPATH';
-const CLOSEST_POINT_ON_PATH = 'CPTONPATH';
-const MEASURE_VECTOR        = 'MESPT';
-const POINT_ANGLE           = 'PTANGLE';
-const VECTOR                = 'VECLEN';
-const CIRCLE_CENTER         = 'CIRCEN';
-const ARC_FROM_POINTS       = 'ARCPT';
-const INTERSECT_LINES       = 'INTLIN';
-const INTERPOLATE_POINT     = 'PTLERP';
-const REVERSE_PATH          = 'REVPTH';
-const BLEND_PATH            = 'BLENDPTH';
-
-
-const SHAPE_BOOLEAN         = 'SBOOL';
-const SHAPE_BOOLEAN_VALUE   = 'SBOOL#';
-
-const BOOL_UNION            = 'SBOOLU';
-const BOOL_SUBTRACT         = 'SBOOLS';
-const BOOL_INTERSECT        = 'SBOOLI';
-const BOOL_EXCLUDE          = 'SBOOLE';
+const PATH_LENGTH             = 'PTHLEN';
+const JOIN_PATHS              = 'JOINPTH';
+const REORIENT_PATHS          = 'REORPTH';
+const POINT_ALONG_PATH        = 'PTALPATH';
+const CLOSEST_POINT_ON_PATH   = 'CPTONPATH';
+const MEASURE_VECTOR          = 'MESPT';
+const POINT_ANGLE             = 'PTANGLE';
+const VECTOR                  = 'VECLEN';
+const CIRCLE_CENTER           = 'CIRCEN';
+const ARC_FROM_POINTS         = 'ARCPT';
+const INTERSECT_LINES         = 'INTLIN';
+const INTERPOLATE_POINT       = 'PTLERP';
+const REVERSE_PATH            = 'REVPTH';
+const BLEND_PATH              = 'BLENDPTH';
 
 
-const PERSIST               = 'PERSIST';
-const EXPORT                = 'EXPORT';
+const SHAPE_BOOLEAN           = 'SBOOL';
+const SHAPE_BOOLEAN_VALUE     = 'SBOOL#';
+
+const BOOL_UNION              = 'SBOOLU';
+const BOOL_SUBTRACT           = 'SBOOLS';
+const BOOL_INTERSECT          = 'SBOOLI';
+const BOOL_EXCLUDE            = 'SBOOLE';
 
 
-const GROUP_NODE            = 'GROUP';
-const GROUP_PARAM           = 'GPARAM';
+const PERSIST                 = 'PERSIST';
+const EXPORT                  = 'EXPORT';
 
 
-const COMMENT               = 'CMNT';
-const COMMENT_ARROW         = 'CMNTARR';
-const PANEL                 = 'PANEL';
+const GROUP_NODE              = 'GROUP';
+const GROUP_PARAM             = 'GPARAM';
 
 
-const ACTIVE                = 'ACT';
-const BEFORE_ACTIVE         = 'BFACT';
-const BEFORE_LIST           = 'BFLST';
-const DISABLED              = 'DIS';
-const NOCACHE               = 'NOC';
-
-const PARAM                 = 'PARAM'; // nodeId paramId
+const COMMENT                 = 'CMNT';
+const COMMENT_ARROW           = 'CMNTARR';
+const PANEL                   = 'PANEL';
 
 
-const LOG                   = 'LOG';
+const ACTIVE                  = 'ACT';
+const BEFORE_ACTIVE           = 'BFACT';
+const BEFORE_LIST             = 'BFLST';
+const DISABLED                = 'DIS';
+const NOCACHE                 = 'NOC';
+
+const PARAM                   = 'PARAM'; // nodeId paramId
 
 
-const GRAPH                 = 'GRAPH';
+const LOG                     = 'LOG';
+
+
+const GRAPH                   = 'GRAPH';
 
 
 
@@ -7139,6 +7147,7 @@ const FLOW_TYPES =
     FREEZE,
     PARSE_JSON,
     PARSE_CSV,
+    TO_JSON,
     TIMER,
     GET_VALUE_NAME,
     SET_VALUE_NAME,
@@ -11450,9 +11459,33 @@ class GValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        if (options.quoteValues === true)
+            json += '"';
+
+        json += this.toPreviewString();
+
+        if (options.quoteValues === true)
+            json += '"';
+
+        return json;
+    }
+
+
+
     toString() 
     { 
         return this.type; 
+    }
+
+
+
+    toPreviewString()
+    {
+        return this.toString();
     }
 
 
@@ -13131,6 +13164,73 @@ extends GValue
 
 
 
+    toJsonText(options = {})
+    {
+        let json = '';
+
+
+        let hasNamed = false;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            if (this.items[i].valueId != i)
+            {
+                hasNamed = true;
+                break;
+            }
+        }
+
+
+        const OB = hasNamed ? '{' : '[';
+        const CB = hasNamed ? '}' : ']';
+
+
+        if (this.items.length > 0)
+        {
+            const oldNamed = options.named;
+            options.named = hasNamed;
+
+
+            json += TAB(options.tab) + OB + '\n';
+
+            for (let i = 0; i < this.items.length; i++)
+            {
+                const item = this.items[i];
+
+                options.tab++;
+
+
+                json += TAB(options.tab);
+
+                if (hasNamed)
+                    json += '"' + item.valueId + '": ';
+
+                
+                json += item.toJsonText(options);
+
+                if (i < this.items.length-1)
+                    json += ',';
+
+                json += '\n';
+
+
+                options.tab--;
+            }
+
+            json += TAB(options.tab) + CB;
+
+
+            options.named = oldNamed;
+        }
+        else
+            json += TAB(options.tab) + OB + CB;
+
+
+        return json;
+    }
+
+
+
     static NaN()
     {
         return new ListValue();//null);
@@ -13585,6 +13685,17 @@ extends GValue
     toJson()
     {
         return encodeURIComponent(this.value);
+    }
+
+
+
+    toJsonText(options = {})
+    {
+        let json = '';
+
+        json += '"' + this.toPreviewString() + '"';
+
+        return json;
     }
 
 
@@ -17980,6 +18091,30 @@ extends GValue
             ?         this.x.toDisplayString()
               + ' ' + this.y.toDisplayString()
             : NAN_DISPLAY;
+    }
+
+
+
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        json += TAB(options.tab) + '"x": ' + this.x.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": ' + this.y.toJsonText(options) + '\n';
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
     }
 
 
@@ -36731,6 +36866,127 @@ extends GOperator1
 
         
         return list;
+    }
+}
+
+
+
+class GToJson
+extends GOperator1
+{
+    quoteValues;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(TO_JSON, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.quoteValues = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GToJson(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.quoteValues) copy.quoteValues = this.quoteValues.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input       = await evalValue      (this.input,       parse);
+        const quoteValues = await evalNumberValue(this.quoteValues, parse);
+
+
+        if (input)
+        {
+            let json = '';
+            
+            json += input.toJsonText(
+            {
+                tab:         0,
+                named:       false,
+                quoteValues: quoteValues.value > 0
+            });
+
+            this.value = new TextValue(json);
+        }
+        else
+            this.value = new TextValue('{}');
+
+
+        this.setUpdateValues(parse,
+        [
+            ['type',        this.outputType()],
+            ['quoteValues', quoteValues      ]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy()
+             : null;
+    }
+
+
+
+    isValid()
+    {
+        return this.quoteValues && this.quoteValues.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.quoteValues) this.quoteValues.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.quoteValues) this.quoteValues.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.quoteValues) this.quoteValues.iterateLoop(parse);
     }
 }
 
@@ -61991,6 +62247,52 @@ function genParseParseJson(parse)
 
 
 
+function genParseToJson(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const json = new GToJson(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(json, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, json);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        json.input = genParse(parse);
+
+    json.quoteValues = genParse(parse);
+    
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, json);
+    return json;
+}
+
+
+
 function genParseTextFetch(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -62315,6 +62617,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_SPLIT             ) result = genParseTextSplit         (parse);
     else if (parse.next == PARSE_CSV              ) result = genParseParseCSV          (parse);
     else if (parse.next == PARSE_JSON             ) result = genParseParseJson         (parse);
+    else if (parse.next == TO_JSON                ) result = genParseToJson            (parse);
     else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch         (parse);
     else if (parse.next == TEXT_FILE              ) result = genParseTextFile          (parse);
  

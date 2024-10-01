@@ -219,7 +219,7 @@ class GenJS
 
     nTab = 0;
     
-    get tab() { return TAB.repeat(this.nTab); }
+    get tab() { return CTAB.repeat(this.nTab); }
     get NL () { return '\n' + this.tab; }
 
 

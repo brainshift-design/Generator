@@ -819,3 +819,10 @@ function parseIndexRanges(str)
 
     return indices;
 }
+
+
+
+function TAB(nTabs)
+{
+    return '\t'.repeat(nTabs);
+}

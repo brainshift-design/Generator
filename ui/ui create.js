@@ -93,7 +93,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_OR:               node = new OpOr();                 break;
         case NUMBER_XOR:              node = new OpXor();                break;
  
-        case NUMBER_CONDITION:        node = new OpCompare();          break;
+        case NUMBER_CONDITION:        node = new OpCompare();            break;
         case NUMBER_EQUAL:            node = new OpEqual();              break;
         case NUMBER_NOT_EQUAL:        node = new OpNotEqual();           break;
         case NUMBER_LESS:             node = new OpLess();               break;
@@ -133,12 +133,13 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case PARSE_JSON:              node = new OpParseJson();          break;
         case TEXT_FETCH:              node = new OpTextFetch();          break;
         case TEXT_FILE:               node = new OpTextFile();           break;
+        case TO_JSON:                 node = new OpToJson();             break;
  
         case COLOR:                   node = new OpColor(options);       break;
         case VALID_COLOR:             node = new OpValidColor();         break;
         case CORRECT_COLOR:           node = new OpCorrectColor();       break;
         case COLOR_CONTRAST:          node = new OpColorContrast();      break;
-        case COLOR_DIFFERENCE:           node = new OpColorDifference();        break;
+        case COLOR_DIFFERENCE:        node = new OpColorDifference();    break;
         case COLORBLIND:              node = new OpColorBlind();         break;
         case COLOR_SCHEME:            node = new OpColorScheme();        break;
         case COLOR_INTERPOLATE:       node = new OpColorInterpolate();   break;

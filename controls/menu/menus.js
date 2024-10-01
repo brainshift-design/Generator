@@ -459,11 +459,13 @@ function initGeneratorMenus()
 
     menuComplexData = new Menu('Data', true, false);
     menuComplexData.addItems([
-        menuItemFetch     = new MenuItem('Fetch',      null, false, {icon: iconTextFetch, createType: TEXT_FETCH,       callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,      btnFlow.div, getCreateOptions(e)))}),
-        menuItemTextFile  = new MenuItem('Text file',  null, false, {icon: iconTextFile,  createType: TEXT_FILE,        callback: e => actionManager.do(getCreateNodeAction(TEXT_FILE,       btnFlow.div, getCreateOptions(e)))}),
+        menuItemFetch     = new MenuItem('Fetch',      null, false, {icon: iconTextFetch, createType: TEXT_FETCH, callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH, btnFlow.div, getCreateOptions(e)))}),
+        menuItemTextFile  = new MenuItem('Text file',  null, false, {icon: iconTextFile,  createType: TEXT_FILE,  callback: e => actionManager.do(getCreateNodeAction(TEXT_FILE,  btnFlow.div, getCreateOptions(e)))}),
         menuTextDataSep1  = new MenuItem('',           null, false, {separator: true}),
-                            new MenuItem('Parse CSV',  null, false, {icon: iconParseCSV,       createType: PARSE_CSV,       callback: e => actionManager.do(getCreateNodeAction(PARSE_CSV,      btnFlow.div, getCreateOptions(e)))}),
-        menuItemParseJson = new MenuItem('Parse JSON', null, false, {icon: iconParseJson,      createType: PARSE_JSON,      callback: e => actionManager.do(getCreateNodeAction(PARSE_JSON,     btnFlow.div, getCreateOptions(e)))})]);
+                            new MenuItem('Parse CSV',  null, false, {icon: iconParseCSV,  createType: PARSE_CSV,  callback: e => actionManager.do(getCreateNodeAction(PARSE_CSV,  btnFlow.div, getCreateOptions(e)))}),
+        menuItemParseJson = new MenuItem('Parse JSON', null, false, {icon: iconParseJson, createType: PARSE_JSON, callback: e => actionManager.do(getCreateNodeAction(PARSE_JSON, btnFlow.div, getCreateOptions(e)))}),
+        menuTextDataSep1  = new MenuItem('',           null, false, {separator: true}),
+        menuItemParseJson = new MenuItem('To JSON',    null, false, {icon: iconToJson,    createType: TO_JSON,    callback: e => actionManager.do(getCreateNodeAction(TO_JSON,    btnFlow.div, getCreateOptions(e)))})]);
     
     
     menuRepeat = new Menu('Repeat', true, false);
@@ -1614,7 +1616,7 @@ function initTextboxMenu(textbox)
     menuTextbox.addItems([
         new MenuItem('Copy', null, false, { shortcut: osCtrl() + 'C', callback: () => { hideAllMenus(); document.execCommand('copy'); }})]);
 
-    if (!readonly()) //disabled)
+    if (!readOnly()) //disabled)
         menuTextbox.addItems([
             new MenuItem('Paste', null, false, { shortcut: osCtrl() + 'V', enabled: !readOnly(), callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
 

@@ -76,6 +76,17 @@ extends GValue
 
 
 
+    toJsonText(options = {})
+    {
+        let json = '';
+
+        json += '"' + this.toPreviewString() + '"';
+
+        return json;
+    }
+
+
+
     toString()
     {
         return this.value;

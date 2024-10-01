@@ -201,6 +201,7 @@
 ../generator/types/text/GTextCompare.js
 ../generator/types/text/GParseCSV.js
 ../generator/types/text/GParseJson.js
+../generator/types/text/GToJson.js
 ../generator/types/text/GTextFetch.js
 ../generator/types/text/GTextFile.js
 

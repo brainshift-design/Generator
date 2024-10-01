@@ -172,6 +172,30 @@ extends GValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        json += TAB(options.tab) + '"x": ' + this.x.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"y": ' + this.y.toJsonText(options) + '\n';
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     toValue()
     {
         return this.copy();

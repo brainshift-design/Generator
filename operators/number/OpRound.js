@@ -115,9 +115,9 @@ extends OperatorBase
             js += '\n';
             js += gen.NL + 'switch (' + this.paramType.toJsCode(gen) + ')';
             js += gen.NL + '{ ';
-            js += gen.NL + TAB + 'case 0: return Math.floor(input);';
-            js += gen.NL + TAB + 'case 1: return Math.round(input);';
-            js += gen.NL + TAB + 'case 2: return Math.ceil (input);';
+            js += gen.NL + CTAB + 'case 0: return Math.floor(input);';
+            js += gen.NL + CTAB + 'case 1: return Math.round(input);';
+            js += gen.NL + CTAB + 'case 2: return Math.ceil (input);';
             js += gen.NL + '}';
         }
         else

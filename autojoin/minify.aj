@@ -874,6 +874,7 @@ writeTextToClipboard
 readTextFromClipboard
 MAX_INT32
 HTAB
+CTAB
 TAB
 NL
 PLUGIN_LOGO

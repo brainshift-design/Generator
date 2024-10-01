@@ -173,6 +173,7 @@
 ../operators/text/OpTextCompare.js
 ../operators/text/OpParseCSV.js
 ../operators/text/OpParseJson.js
+../operators/text/OpToJson.js
 ../operators/text/OpTextFetch.js
 ../operators/text/OpTextFile.js
 ../operators/text/OpTextToNumber.js

@@ -32,7 +32,7 @@ const NULL                 = '';
 const NULL_VALUE           = 'NULL';
   
 const HTAB                 = '  '; // half-tab
-const TAB                  = '    ';
+const CTAB                 = '    '; // character tab
 const NL                   = '\n';
   
 const PLUGIN_LOGO          = '◦ G •';
@@ -1095,62 +1095,62 @@ function isValueListOfCondensedLists(value)
 }
 
 
-const LIST_VALUE             = 'LIST#';
+const LIST_VALUE              = 'LIST#';
 
-const NUMBER_LIST_VALUE      = 'NLIST#';
-const   TEXT_LIST_VALUE      = 'TLIST#';
-const  SHAPE_LIST_VALUE      = 'SLIST#';
-const  COLOR_LIST_VALUE      = 'CLIST#';
-const  FILL_LIST_VALUE       = 'FLIST#';
-const  COLOR_STOP_LIST_VALUE = 'CSLIST#';
-
-
-const NULL_NODE              = 'NULL';
-const VARIABLE_GROUP         = 'VARGRP';
-const FEEDBACK               = 'FEEDBK';
-const REPEAT                 = 'REPT';
-const ADVANCE                = 'ADVNC';
-const CACHE                  = 'CACHE';
-const FREEZE                 = 'FRZ';
-const TIMER                  = 'TIMER';
-const GET_VALUE_NAME         = 'GVNAME';
-const SET_VALUE_NAME         = 'SVNAME';
-const GET_LIST_VALUE_NAMES   = 'GVNAMES';
-const SET_LIST_VALUE_NAMES   = 'SVNAMES';
-const SET_OBJECT_NAME        = 'SONAME';
+const NUMBER_LIST_VALUE       = 'NLIST#';
+const   TEXT_LIST_VALUE       = 'TLIST#';
+const  SHAPE_LIST_VALUE       = 'SLIST#';
+const  COLOR_LIST_VALUE       = 'CLIST#';
+const  FILL_LIST_VALUE        = 'FLIST#';
+const  COLOR_STOP_LIST_VALUE  = 'CSLIST#';
 
 
-const VARIABLE               = 'VAR';
-const VARIABLE_VALUE         = 'VAR#';
-const VARIABLE_TYPES         = [VARIABLE_VALUE, VARIABLE];
+const NULL_NODE               = 'NULL';
+const VARIABLE_GROUP          = 'VARGRP';
+const FEEDBACK                = 'FEEDBK';
+const REPEAT                  = 'REPT';
+const ADVANCE                 = 'ADVNC';
+const CACHE                   = 'CACHE';
+const FREEZE                  = 'FRZ';
+const TIMER                   = 'TIMER';
+const GET_VALUE_NAME          = 'GVNAME';
+const SET_VALUE_NAME          = 'SVNAME';
+const GET_LIST_VALUE_NAMES    = 'GVNAMES';
+const SET_LIST_VALUE_NAMES    = 'SVNAMES';
+const SET_OBJECT_NAME         = 'SONAME';
 
 
-const LIST                   = 'LIST';
-const LIST_AS_ITEM           = 'LSASIT';
-const EXTRACT                = 'EXTR';
-const SET_PARAM              = 'SETP';
-const GET_PARAM              = 'GETP';
-const SUBLIST                = 'SUBLST';
-const UNIQUE                 = 'UNIQ';
-const REORDER_LIST           = 'RORD';
-const SHIFT_LIST             = 'SHFTLST';
-const REVERSE_LIST           = 'REVLST';
-const BUCKLE_LIST            = 'BUKLST';
-const SORT                   = 'SORT';
-const COLUMN                 = 'CLMN';
-const CELL                   = 'CELL';
-const ITEMS                  = 'ITEMS';
-const ITEM_COUNT             = 'COUNT';
-const OBJECT_COUNT           = 'OBJCOUNT';
-const LIST_CONTAINS          = 'LCONT';
-const LIST_FIND              = 'LFIND';
-const SELECT                 = 'SELECT';
-const SELECT_FROM_LIST       = 'LSTSEL';
-const IF_ELSE                = 'IF';
-const FILTER                 = 'LSTFLT';
+const VARIABLE                = 'VAR';
+const VARIABLE_VALUE          = 'VAR#';
+const VARIABLE_TYPES          = [VARIABLE_VALUE, VARIABLE];
 
 
-const ANY_VALUE              = 'ANY#';
+const LIST                    = 'LIST';
+const LIST_AS_ITEM            = 'LSASIT';
+const EXTRACT                 = 'EXTR';
+const SET_PARAM               = 'SETP';
+const GET_PARAM               = 'GETP';
+const SUBLIST                 = 'SUBLST';
+const UNIQUE                  = 'UNIQ';
+const REORDER_LIST            = 'RORD';
+const SHIFT_LIST              = 'SHFTLST';
+const REVERSE_LIST            = 'REVLST';
+const BUCKLE_LIST             = 'BUKLST';
+const SORT                    = 'SORT';
+const COLUMN                  = 'CLMN';
+const CELL                    = 'CELL';
+const ITEMS                   = 'ITEMS';
+const ITEM_COUNT              = 'COUNT';
+const OBJECT_COUNT            = 'OBJCOUNT';
+const LIST_CONTAINS           = 'LCONT';
+const LIST_FIND               = 'LFIND';
+const SELECT                  = 'SELECT';
+const SELECT_FROM_LIST        = 'LSTSEL';
+const IF_ELSE                 = 'IF';
+const FILTER                  = 'LSTFLT';
+
+
+const ANY_VALUE               = 'ANY#';
 
 
 const LIST_TYPES =
@@ -1278,10 +1278,11 @@ const COLOR_TO_TEXT           = 'C2T';
 const TEXT_TO_NUMBER          = 'T2N';
 const TEXT_TO_COLOR           = 'T2C';
 const TEXT_SPLIT              = 'TSPLT';
-const PARSE_JSON              = 'TJSON';
-const PARSE_CSV               = 'TCSV';
+const PARSE_JSON              = 'PRJSON';
+const PARSE_CSV               = 'PRCSV';
 const TEXT_FETCH              = 'FETCH';
 const TEXT_FILE               = 'TFILE';
+const TO_JSON                 = 'TOJSON';
 
 
 const COLOR_VALUE             = 'COL#';  
@@ -1289,202 +1290,202 @@ const COLOR                   = 'COL';
 const VALID_COLOR             = 'CVAL';  
 const CORRECT_COLOR           = 'CCOR';  
 const COLOR_CONTRAST          = 'CCNT';  
-const COLOR_DIFFERENCE           = 'CDLTE';  
+const COLOR_DIFFERENCE        = 'CDLTE';  
 const COLORBLIND              = 'BLND';  
 const COLOR_SCHEME            = 'CPAL'; 
 const COLOR_INTERPOLATE       = 'CLERP'; 
 const COLOR_BLEND             = 'CBLND';
 
 
-const FILL_VALUE          = 'FILL#';
-const FILL                = 'FILL';
-const FILL_TYPES          = [FILL_VALUE, FILL];
+const FILL_VALUE              = 'FILL#';
+const FILL                    = 'FILL';
+const FILL_TYPES              = [FILL_VALUE, FILL];
 
-const STROKE_VALUE        = 'STRK#';
-const STROKE              = 'STRK';
-const STROKE_TYPES        = [STROKE_VALUE, STROKE];
+const STROKE_VALUE            = 'STRK#';
+const STROKE                  = 'STRK';
+const STROKE_TYPES            = [STROKE_VALUE, STROKE];
 
-const STROKE_SIDES_VALUE  = 'STRKSD#';
-const STROKE_SIDES        = 'STRKSD';
-const STROKE_SIDES_TYPES  = [STROKE_SIDES_VALUE, STROKE_SIDES];
+const STROKE_SIDES_VALUE      = 'STRKSD#';
+const STROKE_SIDES            = 'STRKSD';
+const STROKE_SIDES_TYPES      = [STROKE_SIDES_VALUE, STROKE_SIDES];
 
-const COLOR_STOP_VALUE    = 'CSTOP#';
-const COLOR_STOP          = 'CSTOP';
-const COLOR_STOP_TYPES    = [COLOR_STOP_VALUE, COLOR_STOP];
+const COLOR_STOP_VALUE        = 'CSTOP#';
+const COLOR_STOP              = 'CSTOP';
+const COLOR_STOP_TYPES        = [COLOR_STOP_VALUE, COLOR_STOP];
 
-const GRADIENT_VALUE      = 'GRAD#';
-const GRADIENT            = 'GRAD';
-const GRADIENT_TYPES      = [GRADIENT_VALUE, GRADIENT];
-
-
-const ROUND_CORNERS_VALUE = 'RCRN#';
-const ROUND_CORNERS       = 'RCRN';
-const ROUND_CORNERS_TYPES = [ROUND_CORNERS_VALUE, ROUND_CORNERS];
-
-const DROP_SHADOW_VALUE   = 'DRSH#';
-const DROP_SHADOW         = 'DRSH';
-const DROP_SHADOW_TYPES   = [DROP_SHADOW_VALUE, DROP_SHADOW];
-
-const INNER_SHADOW_VALUE  = 'INSH#';
-const INNER_SHADOW        = 'INSH';
-const INNER_SHADOW_TYPES  = [INNER_SHADOW_VALUE, INNER_SHADOW];
-
-const LAYER_BLUR_VALUE    = 'LBLR#';
-const LAYER_BLUR          = 'LBLR';
-const LAYER_BLUR_TYPES    = [LAYER_BLUR_VALUE, LAYER_BLUR];
-
-const BACK_BLUR_VALUE     = 'BBLR#';
-const BACK_BLUR           = 'BBLR';
-const BACK_BLUR_TYPES     = [BACK_BLUR_VALUE, BACK_BLUR];
-
-const LAYER_MASK_VALUE    = 'MASK#';
-const LAYER_MASK          = 'MASK';
-const LAYER_MASK_TYPES    = [LAYER_MASK_VALUE, LAYER_MASK];
-
-const LAYER_BLEND_VALUE   = 'BLEND#';
-const LAYER_BLEND         = 'BLEND';
-const LAYER_BLEND_TYPES   = [LAYER_BLEND_VALUE, LAYER_BLEND];
+const GRADIENT_VALUE          = 'GRAD#';
+const GRADIENT                = 'GRAD';
+const GRADIENT_TYPES          = [GRADIENT_VALUE, GRADIENT];
 
 
-const COLOR_STYLE           = 'CSTL';
+const ROUND_CORNERS_VALUE     = 'RCRN#';
+const ROUND_CORNERS           = 'RCRN';
+const ROUND_CORNERS_TYPES     = [ROUND_CORNERS_VALUE, ROUND_CORNERS];
+
+const DROP_SHADOW_VALUE       = 'DRSH#';
+const DROP_SHADOW             = 'DRSH';
+const DROP_SHADOW_TYPES       = [DROP_SHADOW_VALUE, DROP_SHADOW];
+
+const INNER_SHADOW_VALUE      = 'INSH#';
+const INNER_SHADOW            = 'INSH';
+const INNER_SHADOW_TYPES      = [INNER_SHADOW_VALUE, INNER_SHADOW];
+
+const LAYER_BLUR_VALUE        = 'LBLR#';
+const LAYER_BLUR              = 'LBLR';
+const LAYER_BLUR_TYPES        = [LAYER_BLUR_VALUE, LAYER_BLUR];
+
+const BACK_BLUR_VALUE         = 'BBLR#';
+const BACK_BLUR               = 'BBLR';
+const BACK_BLUR_TYPES         = [BACK_BLUR_VALUE, BACK_BLUR];
+
+const LAYER_MASK_VALUE        = 'MASK#';
+const LAYER_MASK              = 'MASK';
+const LAYER_MASK_TYPES        = [LAYER_MASK_VALUE, LAYER_MASK];
+
+const LAYER_BLEND_VALUE       = 'BLEND#';
+const LAYER_BLEND             = 'BLEND';
+const LAYER_BLEND_TYPES       = [LAYER_BLEND_VALUE, LAYER_BLEND];
 
 
-const SHAPE_VALUE           = 'SHP#'; // abstract placeholder
+const COLOR_STYLE             = 'CSTL';
 
-const RECTANGLE_VALUE       = 'RECT#';
-const RECTANGLE             = 'RECT'; 
+
+const SHAPE_VALUE             = 'SHP#'; // abstract placeholder
+
+const RECTANGLE_VALUE         = 'RECT#';
+const RECTANGLE               = 'RECT'; 
 //const RECTANGLE_EXT         = 'RECTEXT'; 
-const RECTANGLE_TYPES       = [RECTANGLE_VALUE, RECTANGLE];//, RECTANGLE_EXT];
+const RECTANGLE_TYPES         = [RECTANGLE_VALUE, RECTANGLE];//, RECTANGLE_EXT];
 
-const LINE_VALUE            = 'LINE#';
-const LINE                  = 'LINE'; 
-const LINE_TYPES            = [LINE_VALUE, LINE];
+const LINE_VALUE              = 'LINE#';
+const LINE                    = 'LINE'; 
+const LINE_TYPES              = [LINE_VALUE, LINE];
 
-const ELLIPSE_VALUE         = 'ELPS#';
-const ELLIPSE               = 'ELPS'; 
-const ELLIPSE_TYPES         = [ELLIPSE_VALUE, ELLIPSE];
+const ELLIPSE_VALUE           = 'ELPS#';
+const ELLIPSE                 = 'ELPS'; 
+const ELLIPSE_TYPES           = [ELLIPSE_VALUE, ELLIPSE];
 
-const TRAPEZE_VALUE         = 'TRPZ#';
-const TRAPEZE               = 'TRPZ';
-const TRAPEZE_TYPES         = [TRAPEZE_VALUE, TRAPEZE];
+const TRAPEZE_VALUE           = 'TRPZ#';
+const TRAPEZE                 = 'TRPZ';
+const TRAPEZE_TYPES           = [TRAPEZE_VALUE, TRAPEZE];
 
-const POLYGON_VALUE         = 'POLY#';
-const POLYGON               = 'POLY'; 
-const POLYGON_TYPES         = [POLYGON_VALUE, POLYGON];
+const POLYGON_VALUE           = 'POLY#';
+const POLYGON                 = 'POLY'; 
+const POLYGON_TYPES           = [POLYGON_VALUE, POLYGON];
 
-const STAR_VALUE            = 'STAR#';
-const STAR                  = 'STAR'; 
-const STAR_TYPES            = [STAR_VALUE, STAR];
+const STAR_VALUE              = 'STAR#';
+const STAR                    = 'STAR'; 
+const STAR_TYPES              = [STAR_VALUE, STAR];
 
-const TEXT_SHAPE_VALUE      = 'TXTS#';
-const TEXT_SHAPE            = 'TXTS'; 
-const TEXT_SHAPE_TYPES      = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
+const TEXT_SHAPE_VALUE        = 'TXTS#';
+const TEXT_SHAPE              = 'TXTS'; 
+const TEXT_SHAPE_TYPES        = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
 
-const POINT_VALUE           = 'PT#';
-const POINT                 = 'PT';
-const POINT_TYPES           = [POINT_VALUE, POINT];
+const POINT_VALUE             = 'PT#';
+const POINT                   = 'PT';
+const POINT_TYPES             = [POINT_VALUE, POINT];
 
-const POINT_CORNER          = 'PCORN';
+const POINT_CORNER            = 'PCORN';
 
-const VECTOR_PATH_VALUE     = 'VPATH#';
-const VECTOR_PATH           = 'VPATH'; 
-const VECTOR_PATH_TYPES     = [VECTOR_PATH_VALUE, VECTOR_PATH];
+const VECTOR_PATH_VALUE       = 'VPATH#';
+const VECTOR_PATH             = 'VPATH'; 
+const VECTOR_PATH_TYPES       = [VECTOR_PATH_VALUE, VECTOR_PATH];
 
-const VECTOR_VERTEX_VALUE   = 'VPT#';
-const VECTOR_VERTEX         = 'VPT'; 
-const VECTOR_VERTEX_TYPES   = [VECTOR_VERTEX_VALUE, VECTOR_VERTEX];
+const VECTOR_VERTEX_VALUE     = 'VPT#';
+const VECTOR_VERTEX           = 'VPT'; 
+const VECTOR_VERTEX_TYPES     = [VECTOR_VERTEX_VALUE, VECTOR_VERTEX];
 
-const VECTOR_EDGE_VALUE     = 'VEDGE#';
-const VECTOR_EDGE           = 'VEDGE'; 
-const VECTOR_EDGE_TYPES     = [VECTOR_EDGE_VALUE, VECTOR_EDGE];
+const VECTOR_EDGE_VALUE       = 'VEDGE#';
+const VECTOR_EDGE             = 'VEDGE'; 
+const VECTOR_EDGE_TYPES       = [VECTOR_EDGE_VALUE, VECTOR_EDGE];
 
-const VECTOR_REGION_VALUE   = 'VREG#';
-const VECTOR_REGION         = 'VREG'; 
-const VECTOR_REGION_TYPES   = [VECTOR_REGION_VALUE, VECTOR_REGION];
+const VECTOR_REGION_VALUE     = 'VREG#';
+const VECTOR_REGION           = 'VREG'; 
+const VECTOR_REGION_TYPES     = [VECTOR_REGION_VALUE, VECTOR_REGION];
 
-const VECTOR_NETWORK_VALUE  = 'VNET#';
-const VECTOR_NETWORK        = 'VNET'; 
-const VECTOR_NETWORK_TYPES  = [VECTOR_NETWORK_VALUE, VECTOR_NETWORK];
+const VECTOR_NETWORK_VALUE    = 'VNET#';
+const VECTOR_NETWORK          = 'VNET'; 
+const VECTOR_NETWORK_TYPES    = [VECTOR_NETWORK_VALUE, VECTOR_NETWORK];
 
-const SHAPE_GROUP_VALUE     = 'SGRP#';
-const SHAPE_GROUP           = 'SGRP';
-const SHAPE_GROUP_TYPES     = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+const SHAPE_GROUP_VALUE       = 'SGRP#';
+const SHAPE_GROUP             = 'SGRP';
+const SHAPE_GROUP_TYPES       = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
 
-const FRAME_VALUE           = 'FRM#';
-const FRAME                 = 'FRM';
-const FRAME_TYPES           = [FRAME_VALUE, FRAME];
+const FRAME_VALUE             = 'FRM#';
+const FRAME                   = 'FRM';
+const FRAME_TYPES             = [FRAME_VALUE, FRAME];
  
-const ARC_PATH_VALUE        = 'ARC#';
-const ARC_PATH              = 'ARC';
-const ARC_PATH_TYPES        = [ARC_PATH_VALUE, ARC_PATH];
+const ARC_PATH_VALUE          = 'ARC#';
+const ARC_PATH                = 'ARC';
+const ARC_PATH_TYPES          = [ARC_PATH_VALUE, ARC_PATH];
 
-const WAVE_PATH_VALUE       = 'WAVEP#';
-const WAVE_PATH             = 'WAVEP';
-const WAVE_PATH_TYPES       = [WAVE_PATH_VALUE, WAVE_PATH];
+const WAVE_PATH_VALUE         = 'WAVEP#';
+const WAVE_PATH               = 'WAVEP';
+const WAVE_PATH_TYPES         = [WAVE_PATH_VALUE, WAVE_PATH];
 
-const MOVE                  = 'MOVE';
-const ROTATE                = 'ROT';
-const SCALE                 = 'SCALE';
-const SKEW                  = 'SKEW';
+const MOVE                    = 'MOVE';
+const ROTATE                  = 'ROT';
+const SCALE                   = 'SCALE';
+const SKEW                    = 'SKEW';
 
-const SHOW_CENTER           = 'SHOWCNTR';
-const SET_CENTER            = 'SCENTR';
-const RESET_XFORM           = 'RSTX';
+const SHOW_CENTER             = 'SHOWCNTR';
+const SET_CENTER              = 'SCENTR';
+const RESET_XFORM             = 'RSTX';
 
-const PLACE                 = 'PLACE';
-const SHAPE_APPLY           = 'APPLY';
+const PLACE                   = 'PLACE';
+const SHAPE_APPLY             = 'APPLY';
 
-const PATH_LENGTH           = 'PTHLEN';
-const JOIN_PATHS            = 'JOINPTH';
-const REORIENT_PATHS        = 'REORPTH';
-const POINT_ALONG_PATH      = 'PTALPATH';
-const CLOSEST_POINT_ON_PATH = 'CPTONPATH';
-const MEASURE_VECTOR        = 'MESPT';
-const POINT_ANGLE           = 'PTANGLE';
-const VECTOR                = 'VECLEN';
-const CIRCLE_CENTER         = 'CIRCEN';
-const ARC_FROM_POINTS       = 'ARCPT';
-const INTERSECT_LINES       = 'INTLIN';
-const INTERPOLATE_POINT     = 'PTLERP';
-const REVERSE_PATH          = 'REVPTH';
-const BLEND_PATH            = 'BLENDPTH';
-
-
-const SHAPE_BOOLEAN         = 'SBOOL';
-const SHAPE_BOOLEAN_VALUE   = 'SBOOL#';
-
-const BOOL_UNION            = 'SBOOLU';
-const BOOL_SUBTRACT         = 'SBOOLS';
-const BOOL_INTERSECT        = 'SBOOLI';
-const BOOL_EXCLUDE          = 'SBOOLE';
+const PATH_LENGTH             = 'PTHLEN';
+const JOIN_PATHS              = 'JOINPTH';
+const REORIENT_PATHS          = 'REORPTH';
+const POINT_ALONG_PATH        = 'PTALPATH';
+const CLOSEST_POINT_ON_PATH   = 'CPTONPATH';
+const MEASURE_VECTOR          = 'MESPT';
+const POINT_ANGLE             = 'PTANGLE';
+const VECTOR                  = 'VECLEN';
+const CIRCLE_CENTER           = 'CIRCEN';
+const ARC_FROM_POINTS         = 'ARCPT';
+const INTERSECT_LINES         = 'INTLIN';
+const INTERPOLATE_POINT       = 'PTLERP';
+const REVERSE_PATH            = 'REVPTH';
+const BLEND_PATH              = 'BLENDPTH';
 
 
-const PERSIST               = 'PERSIST';
-const EXPORT                = 'EXPORT';
+const SHAPE_BOOLEAN           = 'SBOOL';
+const SHAPE_BOOLEAN_VALUE     = 'SBOOL#';
+
+const BOOL_UNION              = 'SBOOLU';
+const BOOL_SUBTRACT           = 'SBOOLS';
+const BOOL_INTERSECT          = 'SBOOLI';
+const BOOL_EXCLUDE            = 'SBOOLE';
 
 
-const GROUP_NODE            = 'GROUP';
-const GROUP_PARAM           = 'GPARAM';
+const PERSIST                 = 'PERSIST';
+const EXPORT                  = 'EXPORT';
 
 
-const COMMENT               = 'CMNT';
-const COMMENT_ARROW         = 'CMNTARR';
-const PANEL                 = 'PANEL';
+const GROUP_NODE              = 'GROUP';
+const GROUP_PARAM             = 'GPARAM';
 
 
-const ACTIVE                = 'ACT';
-const BEFORE_ACTIVE         = 'BFACT';
-const BEFORE_LIST           = 'BFLST';
-const DISABLED              = 'DIS';
-const NOCACHE               = 'NOC';
-
-const PARAM                 = 'PARAM'; // nodeId paramId
+const COMMENT                 = 'CMNT';
+const COMMENT_ARROW           = 'CMNTARR';
+const PANEL                   = 'PANEL';
 
 
-const LOG                   = 'LOG';
+const ACTIVE                  = 'ACT';
+const BEFORE_ACTIVE           = 'BFACT';
+const BEFORE_LIST             = 'BFLST';
+const DISABLED                = 'DIS';
+const NOCACHE                 = 'NOC';
+
+const PARAM                   = 'PARAM'; // nodeId paramId
 
 
-const GRAPH                 = 'GRAPH';
+const LOG                     = 'LOG';
+
+
+const GRAPH                   = 'GRAPH';
 
 
 
@@ -1521,6 +1522,7 @@ const FLOW_TYPES =
     FREEZE,
     PARSE_JSON,
     PARSE_CSV,
+    TO_JSON,
     TIMER,
     GET_VALUE_NAME,
     SET_VALUE_NAME,

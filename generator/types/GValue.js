@@ -101,9 +101,33 @@ class GValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        if (options.quoteValues === true)
+            json += '"';
+
+        json += this.toPreviewString();
+
+        if (options.quoteValues === true)
+            json += '"';
+
+        return json;
+    }
+
+
+
     toString() 
     { 
         return this.type; 
+    }
+
+
+
+    toPreviewString()
+    {
+        return this.toString();
     }
 
 

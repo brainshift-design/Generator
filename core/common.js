@@ -7,7 +7,7 @@ const NULL                 = '';
 const NULL_VALUE           = 'NULL';
   
 const HTAB                 = '  '; // half-tab
-const TAB                  = '    ';
+const CTAB                 = '    '; // character tab
 const NL                   = '\n';
   
 const PLUGIN_LOGO          = '◦ G •';

@@ -216,6 +216,73 @@ extends GValue
 
 
 
+    toJsonText(options = {})
+    {
+        let json = '';
+
+
+        let hasNamed = false;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            if (this.items[i].valueId != i)
+            {
+                hasNamed = true;
+                break;
+            }
+        }
+
+
+        const OB = hasNamed ? '{' : '[';
+        const CB = hasNamed ? '}' : ']';
+
+
+        if (this.items.length > 0)
+        {
+            const oldNamed = options.named;
+            options.named = hasNamed;
+
+
+            json += TAB(options.tab) + OB + '\n';
+
+            for (let i = 0; i < this.items.length; i++)
+            {
+                const item = this.items[i];
+
+                options.tab++;
+
+
+                json += TAB(options.tab);
+
+                if (hasNamed)
+                    json += '"' + item.valueId + '": ';
+
+                
+                json += item.toJsonText(options);
+
+                if (i < this.items.length-1)
+                    json += ',';
+
+                json += '\n';
+
+
+                options.tab--;
+            }
+
+            json += TAB(options.tab) + CB;
+
+
+            options.named = oldNamed;
+        }
+        else
+            json += TAB(options.tab) + OB + CB;
+
+
+        return json;
+    }
+
+
+
     static NaN()
     {
         return new ListValue();//null);
