@@ -8,13 +8,6 @@ extends GOperator1
 
 
     
-    reset()
-    {
-        super.reset();
-    }
-
-
-
     copy()
     {
         const copy = new GTextLength(this.nodeId, this.options);

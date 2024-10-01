@@ -159,11 +159,11 @@ extends ShapeValue
        
         const quote = options.quoteValues ? '"' : '';
 
-        json += TAB(options.tab) + '"points ": '  + this.points .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"closed ": '  + quote + boolToString(this.closed.value > 0) + quote + ',\n';
-        json += TAB(options.tab) + '"degree ": "' + PathDegrees [this.degree .value] + '",\n';
+        json += TAB(options.tab) + '"points": '   + this.points .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"closed": '   + quote + boolToString(this.closed.value > 0) + quote + ',\n';
+        json += TAB(options.tab) + '"degree": "'  + PathDegrees [this.degree .value] + '",\n';
         json += TAB(options.tab) + '"winding": "' + PathWindings[this.winding.value] + '",\n';
-        json += TAB(options.tab) + '"round  ": '  + this.round  .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"round": '    + this.round  .toJsonText(options) + ',\n';
 
 
         json += this.toBaseJsonText(options);

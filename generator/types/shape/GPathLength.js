@@ -1,10 +1,6 @@
 class GPathLength
 extends GOperator1
 {
-    length;
-
-
-
     constructor(nodeId, options)
     {
         super(PATH_LENGTH, nodeId, options);
@@ -12,22 +8,11 @@ extends GOperator1
 
 
     
-    reset()
-    {
-        super.reset();
-
-        this.length = null;
-    }
-
-
-
     copy()
     {
         const copy = new GPathLength(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.length) copy.length = this.length.copy();
 
         return copy;
     }
@@ -65,15 +50,15 @@ extends GOperator1
                 length += curveLength(degree, [...endPoints, points[0]]);
             }
 
-            this.length = new NumberValue(length, -2);
+            this.value = new NumberValue(length, -2);
         }
         else
-            this.length = NumberValue.NaN();
+            this.value = NumberValue.NaN();
     
 
         this.setUpdateValues(parse,
         [
-            ['length', this.length]
+            ['type', this.outputType()]
         ]);
 
 
