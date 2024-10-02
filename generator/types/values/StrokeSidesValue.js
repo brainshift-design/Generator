@@ -100,6 +100,39 @@ extends GValue
 
 
 
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"top": '    + this.top   .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"left": '   + this.left  .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"right": '  + this.right .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"bottom": ' + this.bottom.toJsonText(options) + '\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     static NaN()
     {
         return new StrokeSidesValue(

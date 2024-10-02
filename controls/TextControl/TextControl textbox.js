@@ -7,7 +7,9 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
     this.textbox.defPlaceholder     = '...';//' . . .';
     this.textbox.placeholder        = this.textbox.defPlaceholder;
     this.textbox.style.textAlign    = 'center';
-    this.textbox.style.tabSize      = 4;
+
+    this.textBehind.style.tabSize   = 4;
+    this.textbox   .style.tabSize   = 4;
 
     this.textbox.savedValue         = this.textbox.value;
 

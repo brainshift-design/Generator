@@ -64,6 +64,7 @@ extends GValue
                 case COLOR_STOP_VALUE:    valueId = 'colorStop';      break;
                 case GRADIENT_VALUE:      valueId = 'gradient';       break;
                 case ROUND_CORNERS_VALUE: valueId = 'roundCorners';   break;
+                case STROKE_SIDES_VALUE:  valueId = 'strokeSides';    break;
                 case LAYER_BLEND_VALUE:   valueId = 'layerBlend';     break;
                 case DROP_SHADOW_VALUE:   valueId = 'dropShadow';     break;
                 case INNER_SHADOW_VALUE:  valueId = 'innerShadow';    break;
@@ -79,7 +80,7 @@ extends GValue
         const oldForceBraces = options.forceBraces;
         const oldShowNames   = options.showNames;
 
-        options.forceBraces = true;
+        //options.forceBraces = true;
         options.showNames   = true;
 
 
@@ -88,14 +89,14 @@ extends GValue
         if (   options.whiteSpace
             && this.props.items.length > 0)
             json += '\n';
-            
+
         json += TAB(options.tab) + '"props": ' + this.props.toJsonText(options) + '\n';
-
-        return json;
-
+        
 
         options.forceBraces = oldForceBraces;
         options.showNames   = oldShowNames;
+        
+        return json;
     }
 }
 

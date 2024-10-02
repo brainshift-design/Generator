@@ -185,6 +185,8 @@ extends ShapeValue
         json += TAB(options.tab) + '}';
 
 
+        options.lastExpanded = true;
+
         return json;
     }
 

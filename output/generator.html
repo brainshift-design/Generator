@@ -14314,7 +14314,9 @@ extends GValue
         let json = '';
 
         
-        if (options.named)
+        if (    options.named
+            ||     options.whiteSpace
+               && !options.lastExpanded)
             json += '\n' + TAB(options.tab);
 
 
@@ -14336,6 +14338,8 @@ extends GValue
         options.tab--;
         json += TAB(options.tab) + '}';
 
+
+        options.lastExpanded = true;
 
         return json;
     }
@@ -14518,6 +14522,9 @@ extends GValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
+        const WS = s => options.whiteSpace ? s : '';
+
+
         let json = '';
 
         
@@ -14533,6 +14540,7 @@ extends GValue
 
 
         json += TAB(options.tab) + '"fill": '     + this.fill    .toJsonText(options) + ',\n';
+        json += WS('\n');
         json += TAB(options.tab) + '"position": ' + this.position.toJsonText(options) + '\n';
 
 
@@ -14541,6 +14549,8 @@ extends GValue
         options.tab--;
         json += TAB(options.tab) + '}';
 
+
+        options.lastExpanded = true;
 
         return json;
     }
@@ -14804,6 +14814,8 @@ extends GValue
         options.tab--;
         json += TAB(options.tab) + '}';
 
+
+        options.lastExpanded = true;
 
         return json;
     }
@@ -15078,6 +15090,8 @@ extends GValue
         json += TAB(options.tab) + '}';
 
 
+        options.lastExpanded = true;
+
         return json;
     }
 
@@ -15247,6 +15261,39 @@ extends GValue
             && this.left  .isValid()
             && this.right .isValid()
             && this.bottom.isValid();
+    }
+
+
+
+    toJsonText(options = {}) // for formatting values as JSON for OpToJson
+    {
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"top": '    + this.top   .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"left": '   + this.left  .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"right": '  + this.right .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"bottom": ' + this.bottom.toJsonText(options) + '\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
     }
 
 
@@ -15643,6 +15690,8 @@ extends GValue
         json += TAB(options.tab) + '}';
 
 
+        options.lastExpanded = true;
+        
         return json;
     }
 
@@ -16839,6 +16888,7 @@ extends GValue
                 case COLOR_STOP_VALUE:    valueId = 'colorStop';      break;
                 case GRADIENT_VALUE:      valueId = 'gradient';       break;
                 case ROUND_CORNERS_VALUE: valueId = 'roundCorners';   break;
+                case STROKE_SIDES_VALUE:  valueId = 'strokeSides';    break;
                 case LAYER_BLEND_VALUE:   valueId = 'layerBlend';     break;
                 case DROP_SHADOW_VALUE:   valueId = 'dropShadow';     break;
                 case INNER_SHADOW_VALUE:  valueId = 'innerShadow';    break;
@@ -16854,7 +16904,7 @@ extends GValue
         const oldForceBraces = options.forceBraces;
         const oldShowNames   = options.showNames;
 
-        options.forceBraces = true;
+        //options.forceBraces = true;
         options.showNames   = true;
 
 
@@ -16863,14 +16913,14 @@ extends GValue
         if (   options.whiteSpace
             && this.props.items.length > 0)
             json += '\n';
-            
+
         json += TAB(options.tab) + '"props": ' + this.props.toJsonText(options) + '\n';
-
-        return json;
-
+        
 
         options.forceBraces = oldForceBraces;
         options.showNames   = oldShowNames;
+        
+        return json;
     }
 }
 
@@ -18950,21 +19000,24 @@ extends GValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
-        let json = '';
-
-        
         const SL  = s => options.singleLine ? ''  : s;
         const SL_ = s => options.singleLine ? ' ' : s;
 
-        const WS = s => 
-               options.whiteSpace 
-            && options.lastExpanded 
-                ? s 
-                : '';
+        // const WS = s => 
+        //        options.whiteSpace 
+        //     && options.lastExpanded 
+        //         ? s 
+        //         : '';
 
 
-        if (options.named)
-            json += SL('\n' + TAB(options.tab));
+        let json = '';
+
+        
+        if (   options.named
+            ||     options.whiteSpace
+               && !options.lastExpanded
+               && !options.singleLine)
+            json += '\n' + TAB(options.tab);
 
 
         json += '{' + SL('\n');
@@ -18987,6 +19040,8 @@ extends GValue
         options.tab--;
         json += SL_('\n' + TAB(options.tab)) + '}';
 
+
+        options.lastExpanded = !options.singleLine;
 
         return json;
     }
@@ -21111,6 +21166,8 @@ extends ShapeValue
         options.tab--;
         json += TAB(options.tab) + '}';
 
+
+        options.lastExpanded = true;
 
         return json;
     }

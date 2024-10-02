@@ -173,7 +173,9 @@ extends GValue
         let json = '';
 
         
-        if (options.named)
+        if (    options.named
+            ||     options.whiteSpace
+               && !options.lastExpanded)
             json += '\n' + TAB(options.tab);
 
 
@@ -195,6 +197,8 @@ extends GValue
         options.tab--;
         json += TAB(options.tab) + '}';
 
+
+        options.lastExpanded = true;
 
         return json;
     }

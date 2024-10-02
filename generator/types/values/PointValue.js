@@ -174,21 +174,24 @@ extends GValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
-        let json = '';
-
-        
         const SL  = s => options.singleLine ? ''  : s;
         const SL_ = s => options.singleLine ? ' ' : s;
 
-        const WS = s => 
-               options.whiteSpace 
-            && options.lastExpanded 
-                ? s 
-                : '';
+        // const WS = s => 
+        //        options.whiteSpace 
+        //     && options.lastExpanded 
+        //         ? s 
+        //         : '';
 
 
-        if (options.named)
-            json += SL('\n' + TAB(options.tab));
+        let json = '';
+
+        
+        if (   options.named
+            ||     options.whiteSpace
+               && !options.lastExpanded
+               && !options.singleLine)
+            json += '\n' + TAB(options.tab);
 
 
         json += '{' + SL('\n');
@@ -211,6 +214,8 @@ extends GValue
         options.tab--;
         json += SL_('\n' + TAB(options.tab)) + '}';
 
+
+        options.lastExpanded = !options.singleLine;
 
         return json;
     }
