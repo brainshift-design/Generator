@@ -162,6 +162,50 @@ extends GValue
 
 
 
+    toJsonText(options = {})
+    {
+        const WS = s => 
+               options.whiteSpace 
+            && options.lastExpanded
+                ? s 
+                : '';
+
+
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"fills": '   + this.fills  .toJsonText(options) + ',\n';
+        json += WS('\n');
+        json += TAB(options.tab) + '"weight": ' + this.weight.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"align": "' + StrokeAlign[this.fit .value]    + '",\n';
+        json += TAB(options.tab) + '"join": "'  + StrokeJoin [this.join.value]    + '",\n';
+        json += TAB(options.tab) + '"miter": '  + this.miter .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"cap": "'   + StrokeCap[this.cap.value]       + '",\n';
+        json += TAB(options.tab) + '"dashes": ' + this.dashes.toJsonText(options) + '\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     static NaN()
     {
         return new StrokeValue(

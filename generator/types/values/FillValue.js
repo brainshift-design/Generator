@@ -163,6 +163,13 @@ extends GValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
+        const WS = s => 
+               options.whiteSpace 
+            && options.lastExpanded 
+                ? s 
+                : '';
+
+
         let json = '';
 
         
@@ -178,6 +185,7 @@ extends GValue
 
 
         json += TAB(options.tab) + '"color": '   + this.color  .toJsonText(options) + ',\n';
+        json += WS('\n');
         json += TAB(options.tab) + '"opacity": ' + this.opacity.toJsonText(options) + ',\n';
         json += TAB(options.tab) + '"blend": "'  + BlendModes[this.blend.value][1]  + '"\n';
 

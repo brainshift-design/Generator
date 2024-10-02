@@ -180,6 +180,12 @@ extends GValue
         const SL  = s => options.singleLine ? ''  : s;
         const SL_ = s => options.singleLine ? ' ' : s;
 
+        const WS = s => 
+               options.whiteSpace 
+            && options.lastExpanded 
+                ? s 
+                : '';
+
 
         if (options.named)
             json += SL('\n' + TAB(options.tab));

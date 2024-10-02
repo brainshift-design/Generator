@@ -255,7 +255,11 @@ extends GValue
             options.named = hasNamed;
 
 
-            const WS  = s => options.whiteSpace && options.lastExpanded ? s : '';
+            const WS = s => 
+                   options.whiteSpace 
+                && options.lastExpanded 
+                    ? s 
+                    : '';
 
 
             for (let i = 0; i < this.items.length; i++)
@@ -289,11 +293,12 @@ extends GValue
 
             options.named = oldNamed;
 
-            //options.lastExpanded = !options.singleLine;
+            options.lastExpanded = !options.singleLine;
         }
         else
         {
             json += OB + CB;
+            options.lastExpanded = false;
         }
 
 

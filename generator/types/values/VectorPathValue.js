@@ -145,6 +145,13 @@ extends ShapeValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
+        const WS = s => 
+               options.whiteSpace 
+            && options.lastExpanded
+                ? s 
+                : '';
+
+
         let json = '';
 
         
@@ -155,14 +162,18 @@ extends ShapeValue
         json += '{\n';
         options.tab++;
 
-        const oldNamed = options.named;
-        options.named = true;
-
+        const oldNamed     = options.named;
+        options.named     = true;
 
        
         const quote = options.quoteValues ? '"' : '';
 
+        const oldShowNames = options.showNames;
+        options.showNames = false;
         json += TAB(options.tab) + '"points": '   + this.points .toJsonText(options) + ',\n';
+        options.showNames = oldShowNames;
+
+        json += WS('\n');
         json += TAB(options.tab) + '"closed": '   + quote + boolToString(this.closed.value > 0) + quote + ',\n';
         json += TAB(options.tab) + '"degree": "'  + PathDegrees [this.degree .value] + '",\n';
         json += TAB(options.tab) + '"winding": "' + PathWindings[this.winding.value] + '",\n';
@@ -172,7 +183,7 @@ extends ShapeValue
         json += this.toBaseJsonText(options);
 
 
-        options.named = oldNamed;
+        options.named     = oldNamed;
 
         options.tab--;
         json += TAB(options.tab) + '}';

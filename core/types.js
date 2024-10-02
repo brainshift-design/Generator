@@ -1000,8 +1000,13 @@ const PathDegrees     = ['linear', 'quadratic', 'cubic', 'smooth', 'sine X', 'si
 const PathJoinDegrees = ['linear', 'cubic', 'smooth', 'sine X', 'sine Y'];
 const PathWindings    = ['even-odd', 'non-zero'];
 
+const StrokeAlign     = ['inside', 'center', 'outside'];
+const StrokeJoin      = ['miter', 'bevel', 'round'];
+const StrokeCap       = ['none', 'square', 'round'];
+
 const LayerMaskTypes  = ['alpha', 'vector', 'luminance'];
 
+const FramePositions  = ['relative', 'absolute'];
 
 
 const FONT_WEIGHTS =

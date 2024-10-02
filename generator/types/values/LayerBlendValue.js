@@ -81,7 +81,7 @@ extends GValue
 
         json += '{' + SL('\n');
         options.tab++;
-
+    
         const oldNamed = options.named;
         options.named = true;
 

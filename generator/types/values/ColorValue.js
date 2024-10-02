@@ -242,6 +242,7 @@ extends GValue
         if (this.space.value == 0) // hex
         {
             json += '"' + this.toPreviewString() + '"';
+            options.lastExpanded = false;
         }
         else
         {

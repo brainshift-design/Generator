@@ -7723,8 +7723,13 @@ const PathDegrees     = ['linear', 'quadratic', 'cubic', 'smooth', 'sine X', 'si
 const PathJoinDegrees = ['linear', 'cubic', 'smooth', 'sine X', 'sine Y'];
 const PathWindings    = ['even-odd', 'non-zero'];
 
+const StrokeAlign     = ['inside', 'center', 'outside'];
+const StrokeJoin      = ['miter', 'bevel', 'round'];
+const StrokeCap       = ['none', 'square', 'round'];
+
 const LayerMaskTypes  = ['alpha', 'vector', 'luminance'];
 
+const FramePositions  = ['relative', 'absolute'];
 
 
 const FONT_WEIGHTS =
@@ -13236,7 +13241,11 @@ extends GValue
             options.named = hasNamed;
 
 
-            const WS  = s => options.whiteSpace && options.lastExpanded ? s : '';
+            const WS = s => 
+                   options.whiteSpace 
+                && options.lastExpanded 
+                    ? s 
+                    : '';
 
 
             for (let i = 0; i < this.items.length; i++)
@@ -13270,11 +13279,12 @@ extends GValue
 
             options.named = oldNamed;
 
-            //options.lastExpanded = !options.singleLine;
+            options.lastExpanded = !options.singleLine;
         }
         else
         {
             json += OB + CB;
+            options.lastExpanded = false;
         }
 
 
@@ -14051,6 +14061,7 @@ extends GValue
         if (this.space.value == 0) // hex
         {
             json += '"' + this.toPreviewString() + '"';
+            options.lastExpanded = false;
         }
         else
         {
@@ -14293,6 +14304,13 @@ extends GValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
+        const WS = s => 
+               options.whiteSpace 
+            && options.lastExpanded 
+                ? s 
+                : '';
+
+
         let json = '';
 
         
@@ -14308,6 +14326,7 @@ extends GValue
 
 
         json += TAB(options.tab) + '"color": '   + this.color  .toJsonText(options) + ',\n';
+        json += WS('\n');
         json += TAB(options.tab) + '"opacity": ' + this.opacity.toJsonText(options) + ',\n';
         json += TAB(options.tab) + '"blend": "'  + BlendModes[this.blend.value][1]  + '"\n';
 
@@ -15020,6 +15039,50 @@ extends GValue
 
 
 
+    toJsonText(options = {})
+    {
+        const WS = s => 
+               options.whiteSpace 
+            && options.lastExpanded
+                ? s 
+                : '';
+
+
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"fills": '   + this.fills  .toJsonText(options) + ',\n';
+        json += WS('\n');
+        json += TAB(options.tab) + '"weight": ' + this.weight.toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"align": "' + StrokeAlign[this.fit .value]    + '",\n';
+        json += TAB(options.tab) + '"join": "'  + StrokeJoin [this.join.value]    + '",\n';
+        json += TAB(options.tab) + '"miter": '  + this.miter .toJsonText(options) + ',\n';
+        json += TAB(options.tab) + '"cap": "'   + StrokeCap[this.cap.value]       + '",\n';
+        json += TAB(options.tab) + '"dashes": ' + this.dashes.toJsonText(options) + '\n';
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     static NaN()
     {
         return new StrokeValue(
@@ -15546,6 +15609,9 @@ extends GValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
+        const WS = s => options.whiteSpace ? s : '';
+
+
         let json = '';
 
         
@@ -15564,7 +15630,9 @@ extends GValue
         json += TAB(options.tab) + '"y": '      + this.y     .toJsonText(options) + ',\n';
         json += TAB(options.tab) + '"blur": '   + this.blur  .toJsonText(options) + ',\n';
         json += TAB(options.tab) + '"spread": ' + this.spread.toJsonText(options) + ',\n';
+        json += WS('\n');
         json += TAB(options.tab) + '"fill": '   + this.fill  .toJsonText(options) + ',\n';
+        json += WS('\n');
         json += TAB(options.tab) + '"blend": "' + BlendModes[this.blend.value][1] + '",\n';
         json += TAB(options.tab) + '"behind": ' + this.behind.toJsonText(options) + '\n';
 
@@ -16319,7 +16387,7 @@ extends GValue
 
         json += '{' + SL('\n');
         options.tab++;
-
+    
         const oldNamed = options.named;
         options.named = true;
 
@@ -16792,6 +16860,10 @@ extends GValue
 
         let json = '';
 
+        if (   options.whiteSpace
+            && this.props.items.length > 0)
+            json += '\n';
+            
         json += TAB(options.tab) + '"props": ' + this.props.toJsonText(options) + '\n';
 
         return json;
@@ -18884,6 +18956,12 @@ extends GValue
         const SL  = s => options.singleLine ? ''  : s;
         const SL_ = s => options.singleLine ? ' ' : s;
 
+        const WS = s => 
+               options.whiteSpace 
+            && options.lastExpanded 
+                ? s 
+                : '';
+
 
         if (options.named)
             json += SL('\n' + TAB(options.tab));
@@ -19127,6 +19205,13 @@ extends ShapeValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
+        const WS = s => 
+               options.whiteSpace 
+            && options.lastExpanded
+                ? s 
+                : '';
+
+
         let json = '';
 
         
@@ -19137,14 +19222,18 @@ extends ShapeValue
         json += '{\n';
         options.tab++;
 
-        const oldNamed = options.named;
-        options.named = true;
-
+        const oldNamed     = options.named;
+        options.named     = true;
 
        
         const quote = options.quoteValues ? '"' : '';
 
+        const oldShowNames = options.showNames;
+        options.showNames = false;
         json += TAB(options.tab) + '"points": '   + this.points .toJsonText(options) + ',\n';
+        options.showNames = oldShowNames;
+
+        json += WS('\n');
         json += TAB(options.tab) + '"closed": '   + quote + boolToString(this.closed.value > 0) + quote + ',\n';
         json += TAB(options.tab) + '"degree": "'  + PathDegrees [this.degree .value] + '",\n';
         json += TAB(options.tab) + '"winding": "' + PathWindings[this.winding.value] + '",\n';
@@ -19154,7 +19243,7 @@ extends ShapeValue
         json += this.toBaseJsonText(options);
 
 
-        options.named = oldNamed;
+        options.named     = oldNamed;
 
         options.tab--;
         json += TAB(options.tab) + '}';
@@ -20980,6 +21069,54 @@ extends ShapeValue
 
 
     
+    toJsonText(options = {})
+    {
+        const WS = s => 
+               options.whiteSpace 
+            && options.lastExpanded
+                ? s 
+                : '';
+
+
+        let json = '';
+
+        
+        if (options.named)
+            json += '\n' + TAB(options.tab);
+
+
+        json += '{\n';
+        options.tab++;
+
+        const oldNamed = options.named;
+        options.named = true;
+
+
+        json += TAB(options.tab) + '"children": '  + this.children.toJsonText(options)   + ',\n';
+        json += WS('\n');
+        json += TAB(options.tab) + '"position": "' + FramePositions[this.position.value] + '",\n';
+        json += TAB(options.tab) + '"x": '         + this.x       .toJsonText(options)   + ',\n';
+        json += TAB(options.tab) + '"y": '         + this.y       .toJsonText(options)   + ',\n';
+        json += TAB(options.tab) + '"width": '     + this.width   .toJsonText(options)   + ',\n';
+        json += TAB(options.tab) + '"height": '    + this.height  .toJsonText(options)   + ',\n';
+        json += TAB(options.tab) + '"round": '     + this.round   .toJsonText(options)   + ',\n';
+        json += TAB(options.tab) + '"clip": '      + this.clip    .toJsonText(options)   + ',\n';
+
+
+        json += this.toBaseJsonText(options);
+
+
+        options.named = oldNamed;
+
+        options.tab--;
+        json += TAB(options.tab) + '}';
+
+
+        return json;
+    }
+
+
+
     static NaN()
     {
         return new FrameValue(

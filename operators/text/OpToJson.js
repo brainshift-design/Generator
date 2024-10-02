@@ -28,9 +28,9 @@ extends OperatorBase
 
 
         this.addParam(this.paramShowNames   = new NumberParam('showNames',   'object names', true, true, true, 0, 0, 1));
-        this.addParam(this.paramQuoteValues = new NumberParam('quoteValues', 'quote values', true, true, true, 0, 0, 1));
         this.addParam(this.paramSingleLine  = new NumberParam('singleLine',  'single line',  true, true, true, 0, 0, 1));
         this.addParam(this.paramWhiteSpace  = new NumberParam('whiteSpace',  'white space',  true, true, true, 0, 0, 1));
+        this.addParam(this.paramQuoteValues = new NumberParam('quoteValues', 'value quotes', true, true, true, 0, 0, 1));
 
 
         this.setAllParamDividers(0.695);

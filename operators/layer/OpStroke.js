@@ -39,10 +39,10 @@ extends OpColorBase
 
         this.addParam(this.paramFills  = new   ListParam('fills',  'fills',  false, true, true));
         this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
-        this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, true, ['inside', 'center', 'outside'], 1));
-        this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, true, StrokeAlign, 1));
+        this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, StrokeJoin,  0));
         this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
-        this.addParam(this.paramCap    = new SelectParam('cap',    'cap',    true,  true, true, ['none', 'square', 'round'], 0));
+        this.addParam(this.paramCap    = new SelectParam('cap',    'cap',    true,  true, true, StrokeCap,   0));
         this.addParam(this.paramDashes = new   TextParam('dashes', 'dashes', false, true, true));
 
         this.paramFills.itemName    = ['fill'];

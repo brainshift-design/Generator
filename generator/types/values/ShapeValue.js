@@ -85,6 +85,10 @@ extends GValue
 
         let json = '';
 
+        if (   options.whiteSpace
+            && this.props.items.length > 0)
+            json += '\n';
+            
         json += TAB(options.tab) + '"props": ' + this.props.toJsonText(options) + '\n';
 
         return json;
