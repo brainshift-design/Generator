@@ -11491,6 +11491,8 @@ class GValue
         if (options.quoteValues === true)
             json += '"';
 
+        options.lastExpanded = false;
+        
         return json;
     }
 
@@ -12990,24 +12992,27 @@ extends GValue
     {
         super(LIST_VALUE);
 
-        if (items)
+
+        if (!items)
+            return;
+
+
+        this.items = [];
+
+
+        for (let i = 0; i < items.length; i++)
         {
-            this.items = [];
+            const item = items[i];
+            const copy = item.copy();
 
-            for (let i = 0; i < items.length; i++)
-            {
-                const item = items[i];
-                const copy = item.copy();
+            if (copy.valueId == NULL)
+                copy.valueId = i.toString();
 
-                if (copy.valueId == NULL)
-                    copy.valueId = i.toString();
+            this.items.push(copy);
 
-                this.items.push(copy);
-
-                if (   this.objects
-                    && item.objects)
-                    this.objects.push(...item.objects.map(o => o.copy()));
-            }
+            if (   this.objects
+                && item.objects)
+                this.objects.push(...item.objects.map(o => o.copy()));
         }
     }
 
@@ -13148,7 +13153,6 @@ extends GValue
             const item = this.items[i];
 
             if (isListValueType(item.type))
-                // str += 'list [' + item.items.length + ']';
             {
                 for (let j = 0; j < item.items.length; j++)
                 {
@@ -13202,12 +13206,15 @@ extends GValue
 
         let hasNamed = false;
 
-        for (let i = 0; i < this.items.length; i++)
+        if (options.showNames === true)
         {
-            if (this.items[i].valueId != i)
+            for (let i = 0; i < this.items.length; i++)
             {
-                hasNamed = true;
-                break;
+                if (this.items[i].valueId != i)
+                {
+                    hasNamed = true;
+                    break;
+                }
             }
         }
 
@@ -13229,6 +13236,9 @@ extends GValue
             options.named = hasNamed;
 
 
+            const WS  = s => options.whiteSpace && options.lastExpanded ? s : '';
+
+
             for (let i = 0; i < this.items.length; i++)
             {
                 const item = this.items[i];
@@ -13246,7 +13256,7 @@ extends GValue
 
 
                 if (i < this.items.length-1)
-                    json += ',';
+                    json += ',' + WS('\n');
 
                 json += '\n';
 
@@ -13259,6 +13269,8 @@ extends GValue
 
 
             options.named = oldNamed;
+
+            //options.lastExpanded = !options.singleLine;
         }
         else
         {
@@ -14042,11 +14054,15 @@ extends GValue
         }
         else
         {
+            const SL  = s => options.singleLine ? ''  : s;
+            const SL_ = s => options.singleLine ? ' ' : s;
+
+
             if (options.named)
-                json += '\n' + TAB(options.tab);
+                json += SL('\n' + TAB(options.tab));
 
 
-            json += '{\n';
+            json += '{' + SL('\n');
             options.tab++;
 
             const oldNamed = options.named;
@@ -14054,19 +14070,22 @@ extends GValue
 
 
             if (this.space.value > 3)
-                json += TAB(options.tab) + '"space": "' + colorSpaceName(this.space.value).replaceAll(' ', '') + '",\n';
+                json += SL_(TAB(options.tab)) + '"space": "' + colorSpaceName(this.space.value).replaceAll(' ', '') + '",' + SL('\n');
 
             const [c1, c2, c3] = getChannelNamesFromSpace(colorSpace(this.space.value));
 
-            json += TAB(options.tab) + '"' + c1 + '": ' + this.c1.toJsonText(options) + ',\n';
-            json += TAB(options.tab) + '"' + c2 + '": ' + this.c2.toJsonText(options) + ',\n';
-            json += TAB(options.tab) + '"' + c3 + '": ' + this.c3.toJsonText(options) + '\n';
+            json += SL_(TAB(options.tab)) + '"' + c1 + '": ' + this.c1.toJsonText(options) + ',' + SL('\n');
+            json += SL_(TAB(options.tab)) + '"' + c2 + '": ' + this.c2.toJsonText(options) + ',' + SL('\n');
+            json += SL_(TAB(options.tab)) + '"' + c3 + '": ' + this.c3.toJsonText(options)       + SL('\n');
 
 
             options.named = oldNamed;
 
             options.tab--;
-            json += TAB(options.tab) + '}';
+            json += SL_(TAB(options.tab)) + '}';
+
+
+            options.lastExpanded = !options.singleLine;
         }
 
         return json;
@@ -15965,24 +15984,31 @@ extends GValue
         let json = '';
 
         
+        const SL  = s => options.singleLine ? ''  : s;
+        const SL_ = s => options.singleLine ? ' ' : s;
+
+
         if (options.named)
-            json += '\n' + TAB(options.tab);
+        json += SL('\n' + TAB(options.tab));
 
 
-        json += '{\n';
+        json += '{' + SL('\n');
         options.tab++;
 
         const oldNamed = options.named;
         options.named = true;
 
 
-        json += TAB(options.tab) + '"radius": ' + this.radius .toJsonText(options) + '\n';
+        json += SL_(TAB(options.tab)) + '"radius": ' + this.radius.toJsonText(options) + SL('\n');
 
 
         options.named = oldNamed;
 
         options.tab--;
-        json += TAB(options.tab) + '}';
+        json += SL_(TAB(options.tab)) + '}';
+
+
+        options.lastExpanded = !options.singleLine;
 
 
         return json;
@@ -16133,24 +16159,31 @@ extends GValue
         let json = '';
 
         
+        const SL  = s => options.singleLine ? ''  : s;
+        const SL_ = s => options.singleLine ? ' ' : s;
+
+
         if (options.named)
-            json += '\n' + TAB(options.tab);
+            json += SL('\n' + TAB(options.tab));
 
 
-        json += '{\n';
+        json += '{' + SL('\n');
         options.tab++;
 
         const oldNamed = options.named;
         options.named = true;
 
 
-        json += TAB(options.tab) + '"radius": ' + this.radius.toJsonText(options) + '\n';
+        json += SL_(TAB(options.tab)) + '"radius": ' + this.radius.toJsonText(options) + SL('\n');
 
 
         options.named = oldNamed;
 
         options.tab--;
-        json += TAB(options.tab) + '}';
+        json += SL_(TAB(options.tab)) + '}';
+
+
+        options.lastExpanded = !options.singleLine;
 
 
         return json;
@@ -16276,25 +16309,32 @@ extends GValue
         let json = '';
 
         
+        const SL  = s => options.singleLine ? ''  : s;
+        const SL_ = s => options.singleLine ? ' ' : s;
+
+
         if (options.named)
-            json += '\n' + TAB(options.tab);
+            json += SL('\n' + TAB(options.tab));
 
 
-        json += '{\n';
+        json += '{' + SL('\n');
         options.tab++;
 
         const oldNamed = options.named;
         options.named = true;
 
 
-        json += TAB(options.tab) + '"opacity": ' + this.opacity.toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"blend": "'  + BlendModes[this.blend.value][1] + '"\n';
+        json += SL_(TAB(options.tab)) + '"opacity": ' + this.opacity.toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"blend": "'  + BlendModes[this.blend.value][1] + '"'  + SL('\n');
 
 
         options.named = oldNamed;
 
         options.tab--;
-        json += TAB(options.tab) + '}';
+        json += SL_(TAB(options.tab)) + '}';
+
+
+        options.lastExpanded = !options.singleLine;
 
 
         return json;
@@ -16435,24 +16475,31 @@ extends GValue
         let json = '';
 
         
+        const SL  = s => options.singleLine ? ''  : s;
+        const SL_ = s => options.singleLine ? ' ' : s;
+
+
         if (options.named)
-            json += '\n' + TAB(options.tab);
+            json += SL('\n' + TAB(options.tab));
 
 
-        json += '{\n';
+        json += '{' + SL('\n');
         options.tab++;
 
         const oldNamed = options.named;
         options.named = true;
 
 
-        json += TAB(options.tab) + '"type": "' + LayerMaskTypes[this.maskType.value] + '"\n';
+        json += SL_(TAB(options.tab)) + '"type": "' + LayerMaskTypes[this.maskType.value] + '"' + SL('\n');
 
 
         options.named = oldNamed;
 
         options.tab--;
-        json += TAB(options.tab) + '}';
+        json += SL_(TAB(options.tab)) + '}';
+
+
+        options.lastExpanded = !options.singleLine;
 
 
         return json;
@@ -16737,7 +16784,10 @@ extends GValue
 
 
         const oldForceBraces = options.forceBraces;
+        const oldShowNames   = options.showNames;
+
         options.forceBraces = true;
+        options.showNames   = true;
 
 
         let json = '';
@@ -16748,6 +16798,7 @@ extends GValue
 
 
         options.forceBraces = oldForceBraces;
+        options.showNames   = oldShowNames;
     }
 }
 
@@ -18830,33 +18881,33 @@ extends GValue
         let json = '';
 
         
+        const SL  = s => options.singleLine ? ''  : s;
+        const SL_ = s => options.singleLine ? ' ' : s;
+
+
         if (options.named)
-            json += '\n' + TAB(options.tab);
+            json += SL('\n' + TAB(options.tab));
 
 
-        json += '{\n';
+        json += '{' + SL('\n');
         options.tab++;
 
         const oldNamed = options.named;
         options.named = true;
 
 
-        json += TAB(options.tab) + '"x": ' + this.x.toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"y": ' + this.y.toJsonText(options);
+        json += SL_(TAB(options.tab)) + '"x": ' + this.x.toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"y": ' + this.y.toJsonText(options);
 
-        if (  !this.smooth
-            || this.smooth.value == 100)
-            json += '\n';
-        else
-            json += 
-                  ',\n' 
-                + TAB(options.tab) + '"smooth": ' + this.smooth.toJsonText(options) + '\n';
+        if (   this.smooth
+            && this.smooth.value != 100)
+            json += ',' + SL_('\n' + TAB(options.tab)) + '"smooth": ' + this.smooth.toJsonText(options);
 
 
         options.named = oldNamed;
 
         options.tab--;
-        json += TAB(options.tab) + '}';
+        json += SL_('\n' + TAB(options.tab)) + '}';
 
 
         return json;
@@ -20651,12 +20702,15 @@ extends GValue
 
         let hasNamed = false;
 
-        for (let i = 0; i < this.items.length; i++)
+        if (options.showNames === true)
         {
-            if (this.items[i].valueId != i)
+            for (let i = 0; i < this.items.length; i++)
             {
-                hasNamed = true;
-                break;
+                if (this.items[i].valueId != i)
+                {
+                    hasNamed = true;
+                    break;
+                }
             }
         }
 
@@ -20678,6 +20732,9 @@ extends GValue
             options.named = hasNamed;
 
 
+            const WS  = s => options.whiteSpace ? s : '';
+
+
             for (let i = 0; i < this.items.length; i++)
             {
                 const item = this.items[i];
@@ -20695,7 +20752,7 @@ extends GValue
 
 
                 if (i < this.items.length-1)
-                    json += ',';
+                    json += ',' + WS('\n');
 
                 json += '\n';
 
@@ -37731,7 +37788,10 @@ extends GOperator1
 class GToJson
 extends GOperator1
 {
-    quoteValues;
+    quoteValues = null;
+    snowNames   = null;
+    singleLine  = null;
+    whiteSpace  = null;
 
 
 
@@ -37747,6 +37807,9 @@ extends GOperator1
         super.reset();
 
         this.quoteValues = null;
+        this.showNames   = null;
+        this.singleLine  = null;
+        this.whiteSpace  = null;
     }
 
 
@@ -37758,6 +37821,9 @@ extends GOperator1
         copy.copyBase(this);
 
         if (this.quoteValues) copy.quoteValues = this.quoteValues.copy();
+        if (this.showNames  ) copy.showNames   = this.showNames  .copy();
+        if (this.singleLine ) copy.singleLine  = this.singleLine .copy();
+        if (this.whiteSpace ) copy.whiteSpace  = this.whiteSpace .copy();
 
         return copy;
     }
@@ -37772,6 +37838,9 @@ extends GOperator1
 
         const input       = await evalValue      (this.input,       parse);
         const quoteValues = await evalNumberValue(this.quoteValues, parse);
+        const showNames   = await evalNumberValue(this.showNames,   parse);
+        const singleLine  = await evalNumberValue(this.singleLine,  parse);
+        const whiteSpace  = await evalNumberValue(this.whiteSpace,  parse);
 
 
         if (input)
@@ -37780,10 +37849,14 @@ extends GOperator1
             
             json += input.toJsonText(
             {
-                tab:         0,
-                named:       false,
-                quoteValues: quoteValues.value > 0,
-                forceBraces: false
+                tab:          0,
+                named:        false,
+                forceBraces:  false,
+                lastExpanded: false,
+                quoteValues:  quoteValues.value > 0,
+                showNames:    showNames  .value > 0,
+                singleLine:   singleLine .value > 0,
+                whiteSpace:   whiteSpace .value > 0
             });
 
             this.value = new TextValue(json);
@@ -37795,7 +37868,10 @@ extends GOperator1
         this.setUpdateValues(parse,
         [
             ['type',        this.outputType()],
-            ['quoteValues', quoteValues      ]
+            ['quoteValues', quoteValues      ],
+            ['showNames',   showNames        ],
+            ['singleLine',  singleLine       ],
+            ['whiteSpace',  whiteSpace       ]
         ]);
 
 
@@ -37817,7 +37893,10 @@ extends GOperator1
 
     isValid()
     {
-        return this.quoteValues && this.quoteValues.isValid();
+        return this.quoteValues && this.quoteValues.isValid()
+            && this.showNames   && this.showNames  .isValid()
+            && this.singleLine  && this.singleLine .isValid()
+            && this.whiteSpace  && this.whiteSpace .isValid();
     }
 
 
@@ -37827,6 +37906,9 @@ extends GOperator1
         super.pushValueUpdates(parse);
 
         if (this.quoteValues) this.quoteValues.pushValueUpdates(parse);
+        if (this.showNames  ) this.showNames  .pushValueUpdates(parse);
+        if (this.singleLine ) this.singleLine .pushValueUpdates(parse);
+        if (this.whiteSpace ) this.whiteSpace .pushValueUpdates(parse);
     }
 
 
@@ -37836,6 +37918,9 @@ extends GOperator1
         super.invalidateInputs(parse, from, force);
 
         if (this.quoteValues) this.quoteValues.invalidateInputs(parse, from, force);
+        if (this.showNames  ) this.showNames  .invalidateInputs(parse, from, force);
+        if (this.singleLine ) this.singleLine .invalidateInputs(parse, from, force);
+        if (this.whiteSpace ) this.whiteSpace .invalidateInputs(parse, from, force);
     }
 
 
@@ -37845,6 +37930,9 @@ extends GOperator1
         super.iterateLoop(parse);
 
         if (this.quoteValues) this.quoteValues.iterateLoop(parse);
+        if (this.showNames  ) this.showNames  .iterateLoop(parse);
+        if (this.singleLine ) this.singleLine .iterateLoop(parse);
+        if (this.whiteSpace ) this.whiteSpace .iterateLoop(parse);
     }
 }
 
@@ -63135,6 +63223,9 @@ function genParseToJson(parse)
         json.input = genParse(parse);
 
     json.quoteValues = genParse(parse);
+    json.showNames   = genParse(parse);
+    json.singleLine  = genParse(parse);
+    json.whiteSpace  = genParse(parse);
     
     
     parse.nTab--;

@@ -77,7 +77,10 @@ extends GValue
 
 
         const oldForceBraces = options.forceBraces;
+        const oldShowNames   = options.showNames;
+
         options.forceBraces = true;
+        options.showNames   = true;
 
 
         let json = '';
@@ -88,6 +91,7 @@ extends GValue
 
 
         options.forceBraces = oldForceBraces;
+        options.showNames   = oldShowNames;
     }
 }
 

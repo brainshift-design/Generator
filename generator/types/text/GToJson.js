@@ -1,7 +1,10 @@
 class GToJson
 extends GOperator1
 {
-    quoteValues;
+    quoteValues = null;
+    snowNames   = null;
+    singleLine  = null;
+    whiteSpace  = null;
 
 
 
@@ -17,6 +20,9 @@ extends GOperator1
         super.reset();
 
         this.quoteValues = null;
+        this.showNames   = null;
+        this.singleLine  = null;
+        this.whiteSpace  = null;
     }
 
 
@@ -28,6 +34,9 @@ extends GOperator1
         copy.copyBase(this);
 
         if (this.quoteValues) copy.quoteValues = this.quoteValues.copy();
+        if (this.showNames  ) copy.showNames   = this.showNames  .copy();
+        if (this.singleLine ) copy.singleLine  = this.singleLine .copy();
+        if (this.whiteSpace ) copy.whiteSpace  = this.whiteSpace .copy();
 
         return copy;
     }
@@ -42,6 +51,9 @@ extends GOperator1
 
         const input       = await evalValue      (this.input,       parse);
         const quoteValues = await evalNumberValue(this.quoteValues, parse);
+        const showNames   = await evalNumberValue(this.showNames,   parse);
+        const singleLine  = await evalNumberValue(this.singleLine,  parse);
+        const whiteSpace  = await evalNumberValue(this.whiteSpace,  parse);
 
 
         if (input)
@@ -50,10 +62,14 @@ extends GOperator1
             
             json += input.toJsonText(
             {
-                tab:         0,
-                named:       false,
-                quoteValues: quoteValues.value > 0,
-                forceBraces: false
+                tab:          0,
+                named:        false,
+                forceBraces:  false,
+                lastExpanded: false,
+                quoteValues:  quoteValues.value > 0,
+                showNames:    showNames  .value > 0,
+                singleLine:   singleLine .value > 0,
+                whiteSpace:   whiteSpace .value > 0
             });
 
             this.value = new TextValue(json);
@@ -65,7 +81,10 @@ extends GOperator1
         this.setUpdateValues(parse,
         [
             ['type',        this.outputType()],
-            ['quoteValues', quoteValues      ]
+            ['quoteValues', quoteValues      ],
+            ['showNames',   showNames        ],
+            ['singleLine',  singleLine       ],
+            ['whiteSpace',  whiteSpace       ]
         ]);
 
 
@@ -87,7 +106,10 @@ extends GOperator1
 
     isValid()
     {
-        return this.quoteValues && this.quoteValues.isValid();
+        return this.quoteValues && this.quoteValues.isValid()
+            && this.showNames   && this.showNames  .isValid()
+            && this.singleLine  && this.singleLine .isValid()
+            && this.whiteSpace  && this.whiteSpace .isValid();
     }
 
 
@@ -97,6 +119,9 @@ extends GOperator1
         super.pushValueUpdates(parse);
 
         if (this.quoteValues) this.quoteValues.pushValueUpdates(parse);
+        if (this.showNames  ) this.showNames  .pushValueUpdates(parse);
+        if (this.singleLine ) this.singleLine .pushValueUpdates(parse);
+        if (this.whiteSpace ) this.whiteSpace .pushValueUpdates(parse);
     }
 
 
@@ -106,6 +131,9 @@ extends GOperator1
         super.invalidateInputs(parse, from, force);
 
         if (this.quoteValues) this.quoteValues.invalidateInputs(parse, from, force);
+        if (this.showNames  ) this.showNames  .invalidateInputs(parse, from, force);
+        if (this.singleLine ) this.singleLine .invalidateInputs(parse, from, force);
+        if (this.whiteSpace ) this.whiteSpace .invalidateInputs(parse, from, force);
     }
 
 
@@ -115,5 +143,8 @@ extends GOperator1
         super.iterateLoop(parse);
 
         if (this.quoteValues) this.quoteValues.iterateLoop(parse);
+        if (this.showNames  ) this.showNames  .iterateLoop(parse);
+        if (this.singleLine ) this.singleLine .iterateLoop(parse);
+        if (this.whiteSpace ) this.whiteSpace .iterateLoop(parse);
     }
 }

@@ -11,24 +11,27 @@ extends GValue
     {
         super(LIST_VALUE);
 
-        if (items)
+
+        if (!items)
+            return;
+
+
+        this.items = [];
+
+
+        for (let i = 0; i < items.length; i++)
         {
-            this.items = [];
+            const item = items[i];
+            const copy = item.copy();
 
-            for (let i = 0; i < items.length; i++)
-            {
-                const item = items[i];
-                const copy = item.copy();
+            if (copy.valueId == NULL)
+                copy.valueId = i.toString();
 
-                if (copy.valueId == NULL)
-                    copy.valueId = i.toString();
+            this.items.push(copy);
 
-                this.items.push(copy);
-
-                if (   this.objects
-                    && item.objects)
-                    this.objects.push(...item.objects.map(o => o.copy()));
-            }
+            if (   this.objects
+                && item.objects)
+                this.objects.push(...item.objects.map(o => o.copy()));
         }
     }
 
@@ -169,7 +172,6 @@ extends GValue
             const item = this.items[i];
 
             if (isListValueType(item.type))
-                // str += 'list [' + item.items.length + ']';
             {
                 for (let j = 0; j < item.items.length; j++)
                 {
@@ -223,12 +225,15 @@ extends GValue
 
         let hasNamed = false;
 
-        for (let i = 0; i < this.items.length; i++)
+        if (options.showNames === true)
         {
-            if (this.items[i].valueId != i)
+            for (let i = 0; i < this.items.length; i++)
             {
-                hasNamed = true;
-                break;
+                if (this.items[i].valueId != i)
+                {
+                    hasNamed = true;
+                    break;
+                }
             }
         }
 
@@ -250,6 +255,9 @@ extends GValue
             options.named = hasNamed;
 
 
+            const WS  = s => options.whiteSpace && options.lastExpanded ? s : '';
+
+
             for (let i = 0; i < this.items.length; i++)
             {
                 const item = this.items[i];
@@ -267,7 +275,7 @@ extends GValue
 
 
                 if (i < this.items.length-1)
-                    json += ',';
+                    json += ',' + WS('\n');
 
                 json += '\n';
 
@@ -280,6 +288,8 @@ extends GValue
 
 
             options.named = oldNamed;
+
+            //options.lastExpanded = !options.singleLine;
         }
         else
         {

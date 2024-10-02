@@ -75,24 +75,31 @@ extends GValue
         let json = '';
 
         
+        const SL  = s => options.singleLine ? ''  : s;
+        const SL_ = s => options.singleLine ? ' ' : s;
+
+
         if (options.named)
-            json += '\n' + TAB(options.tab);
+            json += SL('\n' + TAB(options.tab));
 
 
-        json += '{\n';
+        json += '{' + SL('\n');
         options.tab++;
 
         const oldNamed = options.named;
         options.named = true;
 
 
-        json += TAB(options.tab) + '"type": "' + LayerMaskTypes[this.maskType.value] + '"\n';
+        json += SL_(TAB(options.tab)) + '"type": "' + LayerMaskTypes[this.maskType.value] + '"' + SL('\n');
 
 
         options.named = oldNamed;
 
         options.tab--;
-        json += TAB(options.tab) + '}';
+        json += SL_(TAB(options.tab)) + '}';
+
+
+        options.lastExpanded = !options.singleLine;
 
 
         return json;

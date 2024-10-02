@@ -113,6 +113,8 @@ class GValue
         if (options.quoteValues === true)
             json += '"';
 
+        options.lastExpanded = false;
+        
         return json;
     }
 

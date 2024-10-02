@@ -245,11 +245,15 @@ extends GValue
         }
         else
         {
+            const SL  = s => options.singleLine ? ''  : s;
+            const SL_ = s => options.singleLine ? ' ' : s;
+
+
             if (options.named)
-                json += '\n' + TAB(options.tab);
+                json += SL('\n' + TAB(options.tab));
 
 
-            json += '{\n';
+            json += '{' + SL('\n');
             options.tab++;
 
             const oldNamed = options.named;
@@ -257,19 +261,22 @@ extends GValue
 
 
             if (this.space.value > 3)
-                json += TAB(options.tab) + '"space": "' + colorSpaceName(this.space.value).replaceAll(' ', '') + '",\n';
+                json += SL_(TAB(options.tab)) + '"space": "' + colorSpaceName(this.space.value).replaceAll(' ', '') + '",' + SL('\n');
 
             const [c1, c2, c3] = getChannelNamesFromSpace(colorSpace(this.space.value));
 
-            json += TAB(options.tab) + '"' + c1 + '": ' + this.c1.toJsonText(options) + ',\n';
-            json += TAB(options.tab) + '"' + c2 + '": ' + this.c2.toJsonText(options) + ',\n';
-            json += TAB(options.tab) + '"' + c3 + '": ' + this.c3.toJsonText(options) + '\n';
+            json += SL_(TAB(options.tab)) + '"' + c1 + '": ' + this.c1.toJsonText(options) + ',' + SL('\n');
+            json += SL_(TAB(options.tab)) + '"' + c2 + '": ' + this.c2.toJsonText(options) + ',' + SL('\n');
+            json += SL_(TAB(options.tab)) + '"' + c3 + '": ' + this.c3.toJsonText(options)       + SL('\n');
 
 
             options.named = oldNamed;
 
             options.tab--;
-            json += TAB(options.tab) + '}';
+            json += SL_(TAB(options.tab)) + '}';
+
+
+            options.lastExpanded = !options.singleLine;
         }
 
         return json;

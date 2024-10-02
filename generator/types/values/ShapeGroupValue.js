@@ -148,12 +148,15 @@ extends GValue
 
         let hasNamed = false;
 
-        for (let i = 0; i < this.items.length; i++)
+        if (options.showNames === true)
         {
-            if (this.items[i].valueId != i)
+            for (let i = 0; i < this.items.length; i++)
             {
-                hasNamed = true;
-                break;
+                if (this.items[i].valueId != i)
+                {
+                    hasNamed = true;
+                    break;
+                }
             }
         }
 
@@ -175,6 +178,9 @@ extends GValue
             options.named = hasNamed;
 
 
+            const WS  = s => options.whiteSpace ? s : '';
+
+
             for (let i = 0; i < this.items.length; i++)
             {
                 const item = this.items[i];
@@ -192,7 +198,7 @@ extends GValue
 
 
                 if (i < this.items.length-1)
-                    json += ',';
+                    json += ',' + WS('\n');
 
                 json += '\n';
 

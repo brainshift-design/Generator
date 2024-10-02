@@ -177,33 +177,33 @@ extends GValue
         let json = '';
 
         
+        const SL  = s => options.singleLine ? ''  : s;
+        const SL_ = s => options.singleLine ? ' ' : s;
+
+
         if (options.named)
-            json += '\n' + TAB(options.tab);
+            json += SL('\n' + TAB(options.tab));
 
 
-        json += '{\n';
+        json += '{' + SL('\n');
         options.tab++;
 
         const oldNamed = options.named;
         options.named = true;
 
 
-        json += TAB(options.tab) + '"x": ' + this.x.toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"y": ' + this.y.toJsonText(options);
+        json += SL_(TAB(options.tab)) + '"x": ' + this.x.toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"y": ' + this.y.toJsonText(options);
 
-        if (  !this.smooth
-            || this.smooth.value == 100)
-            json += '\n';
-        else
-            json += 
-                  ',\n' 
-                + TAB(options.tab) + '"smooth": ' + this.smooth.toJsonText(options) + '\n';
+        if (   this.smooth
+            && this.smooth.value != 100)
+            json += ',' + SL_('\n' + TAB(options.tab)) + '"smooth": ' + this.smooth.toJsonText(options);
 
 
         options.named = oldNamed;
 
         options.tab--;
-        json += TAB(options.tab) + '}';
+        json += SL_('\n' + TAB(options.tab)) + '}';
 
 
         return json;

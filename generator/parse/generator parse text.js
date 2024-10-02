@@ -1211,6 +1211,9 @@ function genParseToJson(parse)
         json.input = genParse(parse);
 
     json.quoteValues = genParse(parse);
+    json.showNames   = genParse(parse);
+    json.singleLine  = genParse(parse);
+    json.whiteSpace  = genParse(parse);
     
     
     parse.nTab--;
