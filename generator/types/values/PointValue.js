@@ -186,11 +186,8 @@ extends GValue
 
         let json = '';
 
-        
-        if (   options.named
-            ||     options.whiteSpace
-               && !options.lastExpanded
-               && !options.singleLine)
+
+        if (options.named)
             json += '\n' + TAB(options.tab);
 
 

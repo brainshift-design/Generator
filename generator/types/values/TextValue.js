@@ -82,6 +82,8 @@ extends GValue
 
         json += '"' + unescapeString(this.toPreviewString()) + '"';
 
+        options.lastExpanded = false;
+        
         return json;
     }
 

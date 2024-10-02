@@ -269,13 +269,20 @@ extends GValue
                 options.tab++;
 
 
+                const itemJson = item.toJsonText(options);
+
+                if (    options.whiteSpace
+                    && !options.lastExpanded
+                    &&  itemJson.includes('\n'))
+                    json += '\n';
+
                 json += TAB(options.tab);
 
                 if (hasNamed)
                     json += '"' + item.valueId + '": ';
 
 
-                json += item.toJsonText(options);
+                json += itemJson;
 
 
                 if (i < this.items.length-1)

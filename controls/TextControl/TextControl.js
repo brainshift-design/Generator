@@ -159,7 +159,7 @@ extends Control
 
         const textBehindBack =
             darkMode
-            ? '#fff1'
+            ? '#ffffff0f'
             : rgba2style([0, 0, 0, 0.07 - tf * 0.03]);
 
 

@@ -13255,13 +13255,20 @@ extends GValue
                 options.tab++;
 
 
+                const itemJson = item.toJsonText(options);
+
+                if (    options.whiteSpace
+                    && !options.lastExpanded
+                    &&  itemJson.includes('\n'))
+                    json += '\n';
+
                 json += TAB(options.tab);
 
                 if (hasNamed)
                     json += '"' + item.valueId + '": ';
 
 
-                json += item.toJsonText(options);
+                json += itemJson;
 
 
                 if (i < this.items.length-1)
@@ -13758,6 +13765,8 @@ extends GValue
 
         json += '"' + unescapeString(this.toPreviewString()) + '"';
 
+        options.lastExpanded = false;
+        
         return json;
     }
 
@@ -19012,11 +19021,8 @@ extends GValue
 
         let json = '';
 
-        
-        if (   options.named
-            ||     options.whiteSpace
-               && !options.lastExpanded
-               && !options.singleLine)
+
+        if (options.named)
             json += '\n' + TAB(options.tab);
 
 
