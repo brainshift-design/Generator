@@ -294,6 +294,9 @@ class Menu
         if (hidePrev)
             hideAllMenus();
 
+        if (currentTooltip)
+            hideTooltip(currentTooltip);
+
         hideSearchBox();
 
 
