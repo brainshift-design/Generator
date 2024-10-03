@@ -20,11 +20,11 @@ async function findCorrection(parse,
                               order, _c1, _c2, _c3,
                               lockedOrder, locked1, locked2, locked3) 
 {
-    const refOklab = dataColor2array(dataColor2oklab(color));
+    const refRgb = dataColor2rgb(color);
 
     
     let closestColor = [...color],
-        closestOklab = null, 
+        closestRgb   = null, 
         closestOrder = order ? order.value : -1,
         closest1     = -1,
         closest2     = -1,
@@ -62,9 +62,9 @@ async function findCorrection(parse,
             const [min1, min2, min3] = getMinCorrections(color[0], _order);
             const [max1, max2, max3] = getMaxCorrections(color[0], _order);
 
-            let start1 = lerp(min1, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
-                start2 = lerp(min2, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
-                start3 = lerp(min3, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
+            let start1 = lerp(min1, closest1, 1-d), end1 = lerp(max1, closest1, 1-d),
+                start2 = lerp(min2, closest2, 1-d), end2 = lerp(max2, closest2, 1-d),
+                start3 = lerp(min3, closest3, 1-d), end3 = lerp(max3, closest3, 1-d);
 
                  
             if (locked1) { closest1 = _c1.toNumber(); start1 = closest1; end1 = closest1+Epsilon; }
@@ -73,7 +73,7 @@ async function findCorrection(parse,
             
 
           [ closestColor,
-            closestOklab,
+            closestRgb,
             closestOrder,
             closest1,
             closest2,
@@ -81,7 +81,7 @@ async function findCorrection(parse,
             progress ] = await findCorrectionInOrder(
                 parse,
                 nodeId,
-                refOklab,
+                refRgb,
                 _order, 
                 lockedOrder, 
                 locked1,  locked2,  locked3,
@@ -89,7 +89,7 @@ async function findCorrection(parse,
                 start1,   start2,   start3, 
                 end1,     end2,     end3,
                 [...closestColor],
-                closestOklab, 
+                closestRgb, 
                 closestOrder,
                 progress,
                 total);
@@ -115,15 +115,15 @@ async function findCorrection(parse,
     {
         // reduce closest to necessary minimums
 
-        const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[2];
+        const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[1];
 
         let c1 = closest1;
         let c2 = closest2;
         let c3 = closest3;
 
-        while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-1, closest2, closest3)[2], closestRgb)) c1--;
-        while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-1, closest3)[2], closestRgb)) c2--;
-        while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-1)[2], closestRgb)) c3--;
+        while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-1, closest2, closest3)[1], closestRgb)) c1--;
+        while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-1, closest3)[1], closestRgb)) c2--;
+        while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-1)[1], closestRgb)) c3--;
 
         closest1 = Math.max(0, c1);
         closest2 = Math.max(0, c2);
@@ -142,7 +142,7 @@ async function findCorrection(parse,
 
 async function findCorrectionInOrder(parse,
                                      nodeId,
-                                     refOklab,
+                                     refRgb,
                                      order, 
                                      lockedOrder, 
                                      locked1,  locked2,  locked3,
@@ -150,7 +150,7 @@ async function findCorrectionInOrder(parse,
                                      start1,   start2,   start3, 
                                      end1,     end2,     end3,
                                      closestColor,
-                                     closestOklab,
+                                     closestRgb,
                                      closestOrder,
                                      progress,
                                      total)
@@ -178,14 +178,14 @@ async function findCorrectionInOrder(parse,
                 if (parse.stopGenerate)
                     break cLoop;
 
-                const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
+                const [_color, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
                 if (   rgbIsOk(_rgb)
-                    && (  !closestOklab
-                        || colorDistance(refOklab, _oklab) < colorDistance(refOklab, closestOklab)))
+                    && (  !closestRgb
+                        || deltaE(refRgb, _rgb) < deltaE(refRgb, closestRgb)))
                 {
                     closestColor = _color;
-                    closestOklab = _oklab;
+                    closestRgb   = _rgb;
                     
                     if (!lockedOrder)
                         closestOrder = order;
@@ -206,7 +206,7 @@ async function findCorrectionInOrder(parse,
     
     return [
         closestColor,
-        closestOklab,
+        closestRgb,
         closestOrder,
         closest1,
         closest2,
@@ -219,10 +219,9 @@ async function findCorrectionInOrder(parse,
 function getCorrectedColor(color, order, m1, m2, m3)
 {
     const _color = correctColor(color, order, m1, m2, m3);
-    const oklab  = dataColor2array(dataColor2oklab(_color));
-    const rgb    = oklab2rgb(oklab);
+    const rgb    = dataColor2rgb(_color);
 
-    return [_color, oklab, rgb];
+    return [_color, rgb];
 }
 
 

@@ -148,6 +148,7 @@ var menuItemSortConnsCreated;
 var menuItemShowTooltipLongText;
 var menuItemShowTooltipLists;
 var menuItemShowTooltipColorInterpolation;
+var menuItemShowTooltipValidateMethod;
 var menuItemShowTooltipColorBlindness;
 var menuItemShowTooltipColorContrast;
 var menuItemShowTooltipColorNames;
@@ -373,6 +374,7 @@ function initGeneratorMenus()
         menuItemShowTooltipColorNames         = new MenuItem('Color names',         null, false, {checkCallback: () => settings.showTooltipColorNames,         callback: () => { updateSettingAndMenu('showTooltipColorNames',         true, !settings.showTooltipColorNames        ); }}),
         menuItemShowTooltipColorContrast      = new MenuItem('Color contrast',      null, false, {checkCallback: () => settings.showTooltipColorContrast,      callback: () => { updateSettingAndMenu('showTooltipColorContrast',      true, !settings.showTooltipColorContrast     ); }}),
         menuItemShowTooltipColorInterpolation = new MenuItem('Color interpolation', null, false, {checkCallback: () => settings.showTooltipColorInterpolation, callback: () => { updateSettingAndMenu('showTooltipColorInterpolation', true, !settings.showTooltipColorInterpolation); }}),
+        menuItemShowTooltipValidateMethod     = new MenuItem('Validation method',   null, false, {checkCallback: () => settings.showTooltipValidateMethod,     callback: () => { updateSettingAndMenu('showTooltipValidateMethod',     true, !settings.showTooltipValidateMethod    ); }}),
         menuItemShowTooltipColorBlindness     = new MenuItem('Color blindness',     null, false, {checkCallback: () => settings.showTooltipColorBlindness,     callback: () => { updateSettingAndMenu('showTooltipColorBlindness',     true, !settings.showTooltipColorBlindness    ); }})]);
 
 

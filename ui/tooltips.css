@@ -19,6 +19,36 @@
 }    
 
 
+#ttValidateMethod
+{
+    width:  250px;
+    height: 128px;
+}    
+
+#ttValidateMethod p
+{
+    margin-bottom: 8px;
+}
+
+#ttValidateMethod table
+{
+    font:  inherit;
+    color: inherit;
+}
+
+#ttValidateMethod table.tr
+{
+    margin-bottom: 5px;
+}
+
+.tooltipTableHighlight
+{
+    width:          80px;
+    font-weight:    600;
+    vertical-align: top;
+}
+
+
 #ttWcag2
 {
     width:  240px;

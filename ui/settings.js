@@ -34,6 +34,7 @@ const settings =
     showTooltipLongText:           false,
     showTooltipLists:              false,
     showTooltipColorInterpolation: true,
+    showTooltipValidateMethod:     true,
     showTooltipColorBlindness:     true,
     showTooltipColorContrast:      true,
     showTooltipColorNames:         true,
@@ -107,6 +108,7 @@ function updateSetting(settingName, value)
         case 'showTooltipLists':              settings.showTooltipLists              = value;  break;
         case 'showTooltipLongText':           settings.showTooltipLongText           = value;  break;
         case 'showTooltipColorInterpolation': settings.showTooltipColorInterpolation = value;  break;
+        case 'showTooltipValidateMethod':     settings.showTooltipValidateMethod     = value;  break;
         case 'showTooltipColorBlindness':     settings.showTooltipColorBlindness     = value;  break;
         case 'showTooltipColorContrast':      settings.showTooltipColorContrast      = value;  break;
         case 'showTooltipColorNames':         settings.showTooltipColorNames         = value;  break;
@@ -188,6 +190,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showTooltipLists':              updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipLists             ); break;
         case 'showTooltipLongText':           updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipLongText          ); break;
         case 'showTooltipColorInterpolation': updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorInterpolation); break;
+        case 'showTooltipValidateMethod':     updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipValidateMethod    ); break;
         case 'showTooltipColorBlindness':     updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorBlindness    ); break;
         case 'showTooltipColorContrast':      updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorContrast     ); break;
         case 'showTooltipColorNames':         updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorNames        ); break;
@@ -282,6 +285,7 @@ function updateSettingsMenus()
     menuItemShowTooltipLists             .setChecked(settings.showTooltipLists             );
     menuItemShowTooltipLongText          .setChecked(settings.showTooltipLongText          );
     menuItemShowTooltipColorInterpolation.setChecked(settings.showTooltipColorInterpolation);
+    menuItemShowTooltipValidateMethod    .setChecked(settings.showTooltipValidateMethod    );
     menuItemShowTooltipColorBlindness    .setChecked(settings.showTooltipColorBlindness    );
     menuItemShowTooltipColorContrast     .setChecked(settings.showTooltipColorContrast     );
     menuItemShowTooltipColorNames        .setChecked(settings.showTooltipColorNames        );
@@ -517,6 +521,7 @@ function loadLocalSettings()
     uiGetLocalData('showTooltipLists'             );
     uiGetLocalData('showTooltipLongText'          );
     uiGetLocalData('showTooltipColorInterpolation');
+    uiGetLocalData('showTooltipValidateMethod');
     uiGetLocalData('showTooltipColorBlindness'    );
     uiGetLocalData('showTooltipColorContrast'     );
     uiGetLocalData('showTooltipColorNames'        );

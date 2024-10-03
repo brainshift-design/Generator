@@ -37,6 +37,12 @@ extends OpColorBase
 
 
         this.header.connectionPadding = 18;
+
+
+        this.paramMethod.getTooltip = () => 
+            settings.showTooltipValidateMethod
+            ? ttValidateMethod 
+            : null;
     }
 
 
