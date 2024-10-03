@@ -58,14 +58,14 @@
 
 <div id="ttValidateMethod" class="tooltip">
 
-    <table>
+    <table style="position: absolute; top: 10px;">
         <colgroup>
             <col span="1" class="tooltipTableHighlight">
             <col span="1">
           </colgroup>
-        <tr><td><b>clip sRGB</b></td><td>keeps each individual RGB channel within limits.</td></tr>
-        <tr><td><b>clip chroma</b></td><td>keeps overall color saturation within sRGB limits.</td></tr>
-        <tr><td><b>find closest</b></td><td>finds the perceptually closest color that is within sRGB limits.</td></tr>
+        <tr><td><b>clip sRGB</b></td><td>Stops individual RGB channels from exceeding their limits.</td></tr>
+        <tr><td><b>clip chroma</b></td><td>Preserves hue and clamps saturation to stay inside sRGB limits.</td></tr>
+        <tr><td><b>find closest</b></td><td>Finds the perceptually closest color within sRGB limits.</td></tr>
     </table>
 
     <div class="tooltipBottom"><div class="ignoreButton" id="ignoreValidateMethod" onclick="updateSettingAndMenu('showTooltipValidateMethod', true, false); hideTooltip(ttValidateMethod);">Don't show</div></div>

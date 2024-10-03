@@ -21,8 +21,8 @@
 
 #ttValidateMethod
 {
-    width:  250px;
-    height: 128px;
+    width:  280px;
+    height: 150px;
 }    
 
 #ttValidateMethod p
@@ -36,16 +36,20 @@
     color: inherit;
 }
 
-#ttValidateMethod table.tr
+#ttValidateMethod table tr
 {
-    margin-bottom: 5px;
+    vertical-align: top;
+}
+
+#ttValidateMethod table td
+{
+    padding-bottom: 10px;
 }
 
 .tooltipTableHighlight
 {
     width:          80px;
-    font-weight:    600;
-    vertical-align: top;
+    font-weight:    500;
 }
 
 
