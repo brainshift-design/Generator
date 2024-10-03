@@ -2,6 +2,7 @@ var autoScrollTimer  = null;
 var dragScrollOffset = point(0, 0);
 
 
+
 GraphView.prototype.createEvents = function()
 {
     this.div.addEventListener('pointerenter', e => 
@@ -280,7 +281,7 @@ GraphView.prototype.createEvents = function()
         const dragging = graph.currentPage.nodes.find(n => n.div.dragging === true);
 
 
-        if (   e.ctrlKey //getCtrlKey(e)
+        if (   getCtrlKey(e)
             ||     panMode
                && !touchpad)
         {
@@ -321,7 +322,9 @@ GraphView.prototype.createEvents = function()
 
             this.updateWheelTimer();
         }
-        else
+        else if (!overNumberControl
+              || this.panTimer
+              || Math.abs(dWheelY) > Math.abs(dWheelX))
         {
             const dPanX = (e.shiftKey ? dWheelY : dWheelX) * 20 / Math.pow(graph.currentPage.zoom, 0.1);
             const dPanY = (e.shiftKey ? dWheelX : dWheelY) * 20 / Math.pow(graph.currentPage.zoom, 0.1);
@@ -329,6 +332,8 @@ GraphView.prototype.createEvents = function()
             graph.currentPage.pan = point(
                 graph.currentPage.pan.x - dPanX,
                 graph.currentPage.pan.y - dPanY);
+
+            this.updatePanTimer();
 
             
             if (this.selecting)
@@ -465,6 +470,20 @@ GraphView.prototype.updateWheelTimer = function()
         setAutoCursor();
 
         graph.updateSavedPages();
+    }, 
+    340);
+};
+
+
+
+GraphView.prototype.updatePanTimer = function()
+{
+    if (this.panTimer) 
+        clearTimeout(this.panTimer);
+
+    this.panTimer = setTimeout(() => 
+    {
+        this.panTimer = null;
     }, 
     340);
 };

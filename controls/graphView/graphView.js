@@ -65,6 +65,7 @@ class GraphView
 
 
     wheelTimer         = null;
+    panTimer           = null;
 
 
     measureData        = {};
@@ -90,6 +91,8 @@ class GraphView
 
 
     panZoomTimer       = null;
+
+    hScrollFromControl = null; // the control where the scroll started, or null if it started in the graphView
 
 
 

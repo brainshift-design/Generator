@@ -520,26 +520,29 @@ NumberControl.prototype.initEvents = function()
             return;
 
 
-        //const dWheelX = e.deltaX /  20 * (this.dragReverse ? -1 : 1);
+        const dWheelX = e.deltaX /  20 * (this.dragReverse ? -1 : 1);
         const dWheelY = e.deltaY / 100 * (this.dragReverse ? -1 : 1);
 
 
         const touchpad = isTouchpad(e);
 
-        if (touchpad)
-        {
-            e.preventDefault();
-            return;
-        }
-
 
         if (   !getCtrlKey(e)
             && !this.buttonDown1
-            && dWheelY != 0)
+            && (  !touchpad && dWheelY != 0
+                || touchpad && dWheelX != 0))
         {
             if (  !this.readOnly
                 && this.param.node.type != ITEMS)
                 e.stopPropagation();
+
+
+            if (touchpad)
+            {
+                //e.stopImmediatePropagation();
+                //e.preventDefault();
+            }
+
 
             if (!this.readOnly)
             {
@@ -554,15 +557,16 @@ NumberControl.prototype.initEvents = function()
                 const dec = Math.pow(10, -this.decimals);
 
                 const val =
-                    //touchpad
-                    //? this.value -  dWheelX               * this.wheelScale * dec
-                    //: 
-                    this.value + (dWheelY > 0 ? -1 : 1) * this.wheelScale * dec;
+                    touchpad
+                    ? this.value -  dWheelX               * this.wheelScale * dec
+                    : this.value + (dWheelY > 0 ? -1 : 1) * this.wheelScale * dec;
 
 
                 this.setValue(val, dec, true, true, false, true, e.shiftKey);
 
+
                 if (this.param) this.param.changing = true;
+                
                 if (this.confirmTimer) clearTimeout(this.confirmTimer);
                 this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 300);
             }
