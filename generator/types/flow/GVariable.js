@@ -59,7 +59,7 @@ extends GOperator1
 
         let varValue;
         
-        console.log('input =', input);
+        //console.log('input =', input);
         
         if (input)
             varValue = input;
@@ -77,7 +77,6 @@ extends GOperator1
 
                 case 'BOOLEAN': 
                     varValue = new BooleanValue(this.variableValue);
-                    console.log('varValue =', varValue);
                     break;
 
                 case 'STRING': 

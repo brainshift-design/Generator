@@ -317,7 +317,7 @@ extends ResizableBase
         {
             let val = resolvedValues[0];
 
-            if (val)
+            if (isValid(val))
             {
                 const value = getValueFromVariable(resolvedType, val);
               
