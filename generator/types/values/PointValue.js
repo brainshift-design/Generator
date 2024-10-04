@@ -188,7 +188,7 @@ extends GValue
 
 
         if (options.named)
-            json += '\n' + TAB(options.tab);
+            json += SL('\n' + TAB(options.tab));
 
 
         json += '{' + SL('\n');

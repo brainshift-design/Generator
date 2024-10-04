@@ -262,6 +262,8 @@ extends GValue
                     : '';
 
 
+            let lastItemExpanded = null;
+
             for (let i = 0; i < this.items.length; i++)
             {
                 const item = this.items[i];
@@ -270,13 +272,18 @@ extends GValue
 
 
                 const itemJson = item.toJsonText(options);
+                const expanded = itemJson.includes('\n');
+                
 
-                if (    options.whiteSpace
-                    && !options.lastExpanded
-                    &&  itemJson.includes('\n'))
+                if (   i > 0
+                    && options.whiteSpace
+                    && (   expanded
+                        || lastItemExpanded))
                     json += '\n';
 
+                    
                 json += TAB(options.tab);
+
 
                 if (hasNamed)
                     json += '"' + item.valueId + '": ';
@@ -286,12 +293,14 @@ extends GValue
 
 
                 if (i < this.items.length-1)
-                    json += ',' + WS('\n');
+                    json += ',';
 
                 json += '\n';
 
 
                 options.tab--;
+
+                lastItemExpanded = expanded;
             }
 
 
@@ -300,7 +309,7 @@ extends GValue
 
             options.named = oldNamed;
 
-            options.lastExpanded = !options.singleLine;
+            options.lastExpanded = json.includes('\n');
         }
         else
         {

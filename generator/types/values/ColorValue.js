@@ -236,6 +236,10 @@ extends GValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
+        const SL  = s => options.singleLine ? ''  : s;
+        const SL_ = s => options.singleLine ? ' ' : s;
+
+
         let json = '';
 
         
@@ -246,10 +250,6 @@ extends GValue
         }
         else
         {
-            const SL  = s => options.singleLine ? ''  : s;
-            const SL_ = s => options.singleLine ? ' ' : s;
-
-
             if (options.named)
                 json += SL('\n' + TAB(options.tab));
 

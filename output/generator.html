@@ -13253,6 +13253,8 @@ extends GValue
                     : '';
 
 
+            let lastItemExpanded = null;
+
             for (let i = 0; i < this.items.length; i++)
             {
                 const item = this.items[i];
@@ -13261,13 +13263,18 @@ extends GValue
 
 
                 const itemJson = item.toJsonText(options);
+                const expanded = itemJson.includes('\n');
+                
 
-                if (    options.whiteSpace
-                    && !options.lastExpanded
-                    &&  itemJson.includes('\n'))
+                if (   i > 0
+                    && options.whiteSpace
+                    && (   expanded
+                        || lastItemExpanded))
                     json += '\n';
 
+                    
                 json += TAB(options.tab);
+
 
                 if (hasNamed)
                     json += '"' + item.valueId + '": ';
@@ -13277,12 +13284,14 @@ extends GValue
 
 
                 if (i < this.items.length-1)
-                    json += ',' + WS('\n');
+                    json += ',';
 
                 json += '\n';
 
 
                 options.tab--;
+
+                lastItemExpanded = expanded;
             }
 
 
@@ -13291,7 +13300,7 @@ extends GValue
 
             options.named = oldNamed;
 
-            options.lastExpanded = !options.singleLine;
+            options.lastExpanded = json.includes('\n');
         }
         else
         {
@@ -14069,6 +14078,10 @@ extends GValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
+        const SL  = s => options.singleLine ? ''  : s;
+        const SL_ = s => options.singleLine ? ' ' : s;
+
+
         let json = '';
 
         
@@ -14079,10 +14092,6 @@ extends GValue
         }
         else
         {
-            const SL  = s => options.singleLine ? ''  : s;
-            const SL_ = s => options.singleLine ? ' ' : s;
-
-
             if (options.named)
                 json += SL('\n' + TAB(options.tab));
 
@@ -19028,7 +19037,7 @@ extends GValue
 
 
         if (options.named)
-            json += '\n' + TAB(options.tab);
+            json += SL('\n' + TAB(options.tab));
 
 
         json += '{' + SL('\n');
@@ -20890,6 +20899,8 @@ extends GValue
             const WS  = s => options.whiteSpace ? s : '';
 
 
+            let lastItemExpanded = null;
+
             for (let i = 0; i < this.items.length; i++)
             {
                 const item = this.items[i];
@@ -20897,22 +20908,36 @@ extends GValue
                 options.tab++;
 
 
+                const itemJson = item.toJsonText(options);
+                const expanded = itemJson.includes('\n');
+                
+
+                if (   i > 0
+                    && options.whiteSpace
+                    && (   expanded
+                        || lastItemExpanded))
+                    json += '\n';
+
+
                 json += TAB(options.tab);
+
 
                 if (hasNamed)
                     json += '"' + item.valueId + '": ';
 
 
-                json += item.toJsonText(options);
+                json += itemJson;
 
 
                 if (i < this.items.length-1)
-                    json += ',' + WS('\n');
+                    json += ',';
 
                 json += '\n';
 
 
                 options.tab--;
+
+                lastItemExpanded = expanded;
             }
 
 
@@ -20920,10 +20945,13 @@ extends GValue
 
 
             options.named = oldNamed;
+
+            options.lastExpanded = json.includes('\n');
         }
         else
         {
             json += OB + CB;
+            options.lastExpanded = false;
         }
 
 

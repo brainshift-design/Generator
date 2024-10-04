@@ -181,6 +181,8 @@ extends GValue
             const WS  = s => options.whiteSpace ? s : '';
 
 
+            let lastItemExpanded = null;
+
             for (let i = 0; i < this.items.length; i++)
             {
                 const item = this.items[i];
@@ -188,22 +190,36 @@ extends GValue
                 options.tab++;
 
 
+                const itemJson = item.toJsonText(options);
+                const expanded = itemJson.includes('\n');
+                
+
+                if (   i > 0
+                    && options.whiteSpace
+                    && (   expanded
+                        || lastItemExpanded))
+                    json += '\n';
+
+
                 json += TAB(options.tab);
+
 
                 if (hasNamed)
                     json += '"' + item.valueId + '": ';
 
 
-                json += item.toJsonText(options);
+                json += itemJson;
 
 
                 if (i < this.items.length-1)
-                    json += ',' + WS('\n');
+                    json += ',';
 
                 json += '\n';
 
 
                 options.tab--;
+
+                lastItemExpanded = expanded;
             }
 
 
@@ -211,10 +227,13 @@ extends GValue
 
 
             options.named = oldNamed;
+
+            options.lastExpanded = json.includes('\n');
         }
         else
         {
             json += OB + CB;
+            options.lastExpanded = false;
         }
 
 
