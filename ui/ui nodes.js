@@ -609,6 +609,7 @@ function handleLegacyNode(_node, genVersion)
     else if (_node.type == 'CMB'    && genVersion <  441) _node.type = LIST;
     else if (_node.type == 'TJSON'  && genVersion <  441) _node.type = PARSE_JSON;
     else if (_node.type == 'TCSV'   && genVersion <  441) _node.type = PARSE_CSV;
+    else if (_node.type == 'COND'   && genVersion <  441) _node.type = NUMBER_COMPARE;
 
 
     // remove 'showCenter' param from everything
@@ -856,6 +857,11 @@ function handleLegacyConnection(_conn, outputNode, inputNode, genVersion)
          && _conn.outputId == 'value'
          && genVersion < 441)
         _conn.outputId = 'h0';
+
+    else if (inputNode.type == NUMBER_COMPARE
+         && _conn.inputId == 'h1'
+         && genVersion < 441)
+        _conn.inputId = 'operand';
 
     else if (inputNode.type == IF_ELSE
           && genVersion < 441)

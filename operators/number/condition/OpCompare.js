@@ -8,14 +8,13 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_CONDITION, 'compare', 'compare', '');
+        super(NUMBER_COMPARE, 'compare', 'compare', '');
         
 
         this.iconOffsetY = -1;
 
 
         this.addInput(new Input([NUMBER_VALUE, TEXT_VALUE, NUMBER_LIST_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
-
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, CONDITION_OPS.map(s => s[1]), 3));

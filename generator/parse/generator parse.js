@@ -212,7 +212,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_OR              ) result = genParseArithmetic        (parse, (nodeId, options) => new GOr            (nodeId, options));
     else if (parse.next == NUMBER_XOR             ) result = genParseArithmetic        (parse, (nodeId, options) => new GXor           (nodeId, options));
      
-    else if (parse.next == NUMBER_CONDITION       ) result = genParseCondition         (parse);
+    else if (parse.next == NUMBER_COMPARE         ) result = genParseCompare           (parse);
     else if (parse.next == NUMBER_EQUAL           ) result = genParseConditionBase     (parse, (nodeId, options) => new GEqual         (nodeId, options));
     else if (parse.next == NUMBER_NOT_EQUAL       ) result = genParseConditionBase     (parse, (nodeId, options) => new GNotEqual      (nodeId, options));
     else if (parse.next == NUMBER_LESS            ) result = genParseConditionBase     (parse, (nodeId, options) => new GLess          (nodeId, options));

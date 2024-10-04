@@ -2,6 +2,7 @@ class GTextCompare
 extends GOperator2
 {
     operation;
+    operand;
 
 
 
@@ -17,6 +18,7 @@ extends GOperator2
         super.reset();
 
         this.operation = null;
+        this.operand   = null;
     }
 
 
@@ -28,6 +30,7 @@ extends GOperator2
         copy.copyBase(this);
 
         if (this.operation) copy.operation = this.operation.copy();
+        if (this.operand  ) copy.operand   = this.operand  .copy();
 
         return copy;
     }
@@ -40,33 +43,31 @@ extends GOperator2
             return this;
 
 
-        const input0 = await evalTextOrListValue(this.input0,    parse);
-        const input1 = await evalTextValue      (this.input1,    parse);
-
-        const op     = await evalNumberValue    (this.operation, parse);
+        const input   = await evalNumberOrListValue(this.input,     parse);
+        const op      = await evalNumberValue    (this.operation, parse);
+        const operand = await evalTextValue      (this.operand,   parse);
 
         
-        if (   input0
-            && input1
+        if (   input
             && op)
         {
             op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
 
-            if (isListValueType(input0.type))
+            if (isListValueType(input.type))
             {
                 this.value = new ListValue();
 
-                for (const item of input0.items)
+                for (const item of input.items)
                 {
                     this.value.items.push(
                         item.type == TEXT_VALUE
-                        ? await evalCompareTextInputs(item, input1, op, parse)
+                        ? await evalCompareTextInputs(item, operand, op, parse)
                         : NumberValue.NaN());
                 }
             }
             else
             {
-                this.value = await evalCompareTextInputs(input0, input1, op, parse);
+                this.value = await evalCompareTextInputs(input, operand, op, parse);
             }
         }
         else
@@ -76,6 +77,7 @@ extends GOperator2
         this.setUpdateValues(parse,
         [
             ['type',      this.outputType()],
+            ['operand',   operand          ],
             ['operation', op               ]
         ]);
 
@@ -90,7 +92,8 @@ extends GOperator2
     isValid()
     {
         return super.isValid()
-            && this.operation && this.operation.isValid();
+            && this.operation && this.operation.isValid()
+            && this.operand   && this.operand  .isValid();
     }
 
 
@@ -100,6 +103,7 @@ extends GOperator2
         super.pushValueUpdates(parse);
 
         if (this.operation) this.operation.pushValueUpdates(parse);
+        if (this.operand  ) this.operand  .pushValueUpdates(parse);
     }
 
 
@@ -109,6 +113,7 @@ extends GOperator2
         super.invalidateInputs(parse, from, force);
 
         if (this.operation) this.operation.invalidateInputs(parse, from, force);
+        if (this.operand  ) this.operand  .invalidateInputs(parse, from, force);
     }
 
 
@@ -118,6 +123,7 @@ extends GOperator2
         super.iterateLoop(parse);
 
         if (this.operation) this.operation.iterateLoop(parse);
+        if (this.operand  ) this.operand  .iterateLoop(parse);
     }
 }
 

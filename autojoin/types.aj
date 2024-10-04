@@ -186,8 +186,10 @@
 ../generator/types/text/GTextFind.js
 ../generator/types/text/GTextCase.js
 ../generator/types/text/GNumberToText.js
+../generator/types/text/GBooleanToText.js
 ../generator/types/text/GColorToText.js
 ../generator/types/text/GTextToNumber.js
+../generator/types/text/GTextToBoolean.js
 ../generator/types/text/GTextToColor.js
 ../generator/types/text/GCodeToCharacter.js
 ../generator/types/text/GCharacterToCode.js

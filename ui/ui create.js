@@ -93,7 +93,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_OR:               node = new OpOr();                 break;
         case NUMBER_XOR:              node = new OpXor();                break;
  
-        case NUMBER_CONDITION:        node = new OpCompare();            break;
+        case NUMBER_COMPARE:        node = new OpCompare();            break;
         case NUMBER_EQUAL:            node = new OpEqual();              break;
         case NUMBER_NOT_EQUAL:        node = new OpNotEqual();           break;
         case NUMBER_LESS:             node = new OpLess();               break;

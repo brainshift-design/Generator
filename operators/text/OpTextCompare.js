@@ -2,6 +2,7 @@ class   OpTextCompare
 extends OperatorBase
 {
     paramOperation;
+    paramOperand;
 
 
 
@@ -17,10 +18,10 @@ extends OperatorBase
         
 
         this.addInput (new Input([TEXT_VALUE, TEXT_LIST_VALUE, NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
-        this.addInput (new Input([TEXT_VALUE, NUMBER_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true,  true, CONDITION_OPS.map(s => s[1]), 3));
+        this.addParam(this.paramOperation = new SelectParam('operation', '',        false, true,  true, CONDITION_OPS.map(s => s[1]), 3));
+        this.addParam(this.paramOperand   = new   TextParam('operand',   'operand', false, true, true));
 
         this.paramOperation.reverseMenu = true;
     }
@@ -39,43 +40,23 @@ extends OperatorBase
         if (ignore) return request;
 
         
-        const input0 = this.node.inputs[0];
-        const input1 = this.node.inputs[1];
+        const input = this.node.inputs[0];
 
         
-        if (   input0.connected
-            && input1.connected)   request.push(2,
-                                       ...pushInputOrParam(input0, gen),
-                                       ...pushInputOrParam(input1, gen));
-
-        else if (input0.connected) request.push(1, ...pushInputOrParam(input0, gen));
-        else if (input1.connected) request.push(1, ...pushInputOrParam(input1, gen));
-            
-        else                       request.push(0);
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
 
 
         request.push(...this.node.paramOperation.genRequest(gen));
+        request.push(...this.node.paramOperand  .genRequest(gen));
 
         
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
         return request;
-    }
-
-
-
-    updateParams()
-    {
-        this.paramOperation.enableControlText(true );
-
-        if (this.hasConditionOutputs())
-        {
-            this.headerInputs[0].types = [ANY_VALUE];
-            this.headerInputs[1].types = [ANY_VALUE];
-        }
-
-        this.updateParamControls();
     }
 
 
@@ -88,5 +69,23 @@ extends OperatorBase
             this.headerOutputs[0].types = [type.value];
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    updateParams()
+    {
+        this.paramOperation.enableControlText(true, this.paramOperation.isUnknown());
+        this.paramOperand  .enableControlText(true, this.paramOperand  .isUnknown());
+
+
+        if (this.hasConditionOutputs())
+        {
+            this.headerInputs[0].types = [ANY_VALUE];
+            this.headerInputs[1].types = [ANY_VALUE];
+        }
+
+        
+        this.updateParamControls();
     }
 }

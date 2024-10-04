@@ -6892,7 +6892,7 @@ const NUMBER_AND              = 'AND';
 const NUMBER_OR               = 'OR';
 const NUMBER_XOR              = 'XOR';
 
-const NUMBER_CONDITION        = 'COND';
+const NUMBER_COMPARE          = 'CMP';
 const NUMBER_EQUAL            = 'EQ';
 const NUMBER_NOT_EQUAL        = 'NE';
 const NUMBER_LESS             = 'LT';
@@ -6928,8 +6928,10 @@ const TEXT_ESCAPE             = 'TESC';
 const TEXT_UNESCAPE           = 'TUNESC';
 const INDEX_TO_NAME           = 'INDEX';
 const NUMBER_TO_TEXT          = 'N2T';
+const BOOLEAN_TO_TEXT         = 'B2T';
 const COLOR_TO_TEXT           = 'C2T';
 const TEXT_TO_NUMBER          = 'T2N';
+const TEXT_TO_BOOLEAN         = 'T2B';
 const TEXT_TO_COLOR           = 'T2C';
 const TEXT_SPLIT              = 'TSPLT';
 const PARSE_JSON              = 'PRJSON';
@@ -7214,7 +7216,7 @@ const NUMBER_BOOLEAN_TYPES =
 
 const CONDITION_TYPES =
 [
-    NUMBER_CONDITION,
+    NUMBER_COMPARE,
     NUMBER_EQUAL,
     NUMBER_NOT_EQUAL,
     NUMBER_LESS,
@@ -7266,6 +7268,7 @@ const NUMBER_TYPES =
     NUMBER_SOLVE,
     NUMBER_ANIMATE,
     NUMBER_TO_TEXT,
+    BOOLEAN_TO_TEXT,
     TEXT_CHAR,
 
     ...MATH_TYPES,
@@ -7299,6 +7302,7 @@ const TEXT_TYPES =
     TEXT_UNESCAPE,
     INDEX_TO_NAME,
     TEXT_TO_NUMBER,
+    TEXT_TO_BOOLEAN,
     TEXT_TO_COLOR,
     TEXT_SPLIT,
     TEXT_FETCH,
@@ -33553,7 +33557,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(NUMBER_CONDITION, nodeId, options);
+        super(NUMBER_COMPARE, nodeId, options);
     }
 
 
@@ -33592,13 +33596,13 @@ extends GOperator1
         const op      = await evalNumberValue      (this.operation, parse);
         const operand = await evalNumberValue      (this.operand,   parse);
 
-        op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
-
         
         if (   input
             && operand
             && op)
         {
+            op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
+
             if (isListValueType(input.type))
             {
                 this.value = new ListValue();
@@ -35584,6 +35588,167 @@ function getNumberToTextValue(input, base, trim, decimals, thousands)
 }
 
 
+class GNumberToText
+extends GOperator1
+{
+    base;
+    trim;
+    decimals;
+    thousands;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(NUMBER_TO_TEXT, nodeId, options);
+    }
+
+
+    
+    reset()
+    {
+        super.reset();
+
+        this.base      = null;
+        this.trim      = null;
+        this.decimals  = null;
+        this.thousands = null;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GNumberToText(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.base     ) copy.base      = this.base     .copy();
+        if (this.trim     ) copy.trim      = this.trim     .copy();
+        if (this.decimals ) copy.decimals  = this.decimals .copy();
+        if (this.thousands) copy.thousands = this.thousands.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input     = await evalNumberValue(this.input,     parse);
+        const base      = await evalNumberValue(this.base,      parse);
+        const trim      = await evalNumberValue(this.trim,      parse);
+        const decimals  = await evalTextValue  (this.decimals,  parse);
+        const thousands = await evalTextValue  (this.thousands, parse);
+
+
+        if (input)
+        {
+            if (isListValueType(input.type))
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == NUMBER_VALUE
+                        ? getNumberToTextValue(item, base, trim, decimals, thousands)
+                        : TextValue.NaN());   
+                }
+            }
+            else
+            {
+                this.value = getNumberToTextValue(input, base, trim, decimals, thousands);
+            }
+        }
+        else
+            this.value = TextValue.NaN();
+
+
+        this.setUpdateValues(parse,
+        [
+            ['type',      this.outputType()],
+            ['base',      base             ],
+            ['trim',      trim             ],
+            ['decimals',  decimals         ],
+            ['thousands', thousands        ]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.base      && this.base     .isValid()
+            && this.trim      && this.trim     .isValid()
+            && this.decimals  && this.decimals .isValid()
+            && this.thousands && this.thousands.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.base     ) this.base     .pushValueUpdates(parse);
+        if (this.trim     ) this.trim     .pushValueUpdates(parse);
+        if (this.decimals ) this.decimals .pushValueUpdates(parse);
+        if (this.thousands) this.thousands.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.base     ) this.base     .invalidateInputs(parse, from, force);
+        if (this.trim     ) this.trim     .invalidateInputs(parse, from, force);
+        if (this.decimals ) this.decimals .invalidateInputs(parse, from, force);
+        if (this.thousands) this.thousands.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.base     ) this.base     .iterateLoop(parse);
+        if (this.trim     ) this.trim     .iterateLoop(parse);
+        if (this.decimals ) this.decimals .iterateLoop(parse);
+        if (this.thousands) this.thousands.iterateLoop(parse);
+    }
+}
+
+
+
+function getNumberToTextValue(input, base, trim, decimals, thousands)
+{
+    return input.isValid()
+         ? new TextValue(numToString(
+              input.value, 
+              (trim.value > 0 ? -1 : 1) * input.decimals, 
+              base.value == 1, 
+              decimals.value, 
+              thousands.value))
+         : new TextValue('?');
+}
+
+
 class GColorToText
 extends GOperator1
 {
@@ -36138,6 +36303,9 @@ function getTextToNumberValue(input, base, decimals, thousands)
 
     return new NumberValue(num, decDigits(num));
 }
+
+
+
 
 
 class GTextToColor
@@ -37643,6 +37811,7 @@ class GTextCompare
 extends GOperator2
 {
     operation;
+    operand;
 
 
 
@@ -37658,6 +37827,7 @@ extends GOperator2
         super.reset();
 
         this.operation = null;
+        this.operand   = null;
     }
 
 
@@ -37669,6 +37839,7 @@ extends GOperator2
         copy.copyBase(this);
 
         if (this.operation) copy.operation = this.operation.copy();
+        if (this.operand  ) copy.operand   = this.operand  .copy();
 
         return copy;
     }
@@ -37681,33 +37852,31 @@ extends GOperator2
             return this;
 
 
-        const input0 = await evalTextOrListValue(this.input0,    parse);
-        const input1 = await evalTextValue      (this.input1,    parse);
-
-        const op     = await evalNumberValue    (this.operation, parse);
+        const input   = await evalNumberOrListValue(this.input,     parse);
+        const op      = await evalNumberValue    (this.operation, parse);
+        const operand = await evalTextValue      (this.operand,   parse);
 
         
-        if (   input0
-            && input1
+        if (   input
             && op)
         {
             op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
 
-            if (isListValueType(input0.type))
+            if (isListValueType(input.type))
             {
                 this.value = new ListValue();
 
-                for (const item of input0.items)
+                for (const item of input.items)
                 {
                     this.value.items.push(
                         item.type == TEXT_VALUE
-                        ? await evalCompareTextInputs(item, input1, op, parse)
+                        ? await evalCompareTextInputs(item, operand, op, parse)
                         : NumberValue.NaN());
                 }
             }
             else
             {
-                this.value = await evalCompareTextInputs(input0, input1, op, parse);
+                this.value = await evalCompareTextInputs(input, operand, op, parse);
             }
         }
         else
@@ -37717,6 +37886,7 @@ extends GOperator2
         this.setUpdateValues(parse,
         [
             ['type',      this.outputType()],
+            ['operand',   operand          ],
             ['operation', op               ]
         ]);
 
@@ -37731,7 +37901,8 @@ extends GOperator2
     isValid()
     {
         return super.isValid()
-            && this.operation && this.operation.isValid();
+            && this.operation && this.operation.isValid()
+            && this.operand   && this.operand  .isValid();
     }
 
 
@@ -37741,6 +37912,7 @@ extends GOperator2
         super.pushValueUpdates(parse);
 
         if (this.operation) this.operation.pushValueUpdates(parse);
+        if (this.operand  ) this.operand  .pushValueUpdates(parse);
     }
 
 
@@ -37750,6 +37922,7 @@ extends GOperator2
         super.invalidateInputs(parse, from, force);
 
         if (this.operation) this.operation.invalidateInputs(parse, from, force);
+        if (this.operand  ) this.operand  .invalidateInputs(parse, from, force);
     }
 
 
@@ -37759,6 +37932,7 @@ extends GOperator2
         super.iterateLoop(parse);
 
         if (this.operation) this.operation.iterateLoop(parse);
+        if (this.operand  ) this.operand  .iterateLoop(parse);
     }
 }
 
@@ -59314,12 +59488,12 @@ function genParseBoolean(parse)
 
 
 
-function genParseCondition(parse)
+function genParseCompare(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cond = new GCompare(nodeId, options);
+    const cmp = new GCompare(nodeId, options);
 
 
     let nInputs = -1;
@@ -59332,12 +59506,12 @@ function genParseCondition(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(cond, parse, ignore, nInputs);
+        logReq(cmp, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, cond);
+        genParseNodeEnd(parse, cmp);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -59346,18 +59520,18 @@ function genParseCondition(parse)
 
 
     if (nInputs == 1)
-        cond.input = genParse(parse);
+        cmp.input = genParse(parse);
   
     
-    cond.operation = genParse(parse);
-    cond.operand   = genParse(parse);
+    cmp.operation = genParse(parse);
+    cmp.operand   = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, cond);
-    return cond;
+    genParseNodeEnd(parse, cmp);
+    return cmp;
 }
 
 
@@ -62965,11 +63139,11 @@ function genParseTextCompare(parse)
    
 
     let nInputs = -1;
-
+    
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -62987,18 +63161,12 @@ function genParseTextCompare(parse)
     parse.nTab++;
 
 
-    if (nInputs == 2)
-    {
-        cmp.input0 = genParse(parse);
-        cmp.input1 = genParse(parse);
-    }
-    else if (nInputs == 1)
-    {
-        cmp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-    }
+    if (nInputs == 1)
+        cmp.input = genParse(parse);
   
     
     cmp.operation = genParse(parse);
+    cmp.operand   = genParse(parse);
 
     
     parse.nTab--;
@@ -63799,7 +63967,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_OR              ) result = genParseArithmetic        (parse, (nodeId, options) => new GOr            (nodeId, options));
     else if (parse.next == NUMBER_XOR             ) result = genParseArithmetic        (parse, (nodeId, options) => new GXor           (nodeId, options));
      
-    else if (parse.next == NUMBER_CONDITION       ) result = genParseCondition         (parse);
+    else if (parse.next == NUMBER_COMPARE         ) result = genParseCompare           (parse);
     else if (parse.next == NUMBER_EQUAL           ) result = genParseConditionBase     (parse, (nodeId, options) => new GEqual         (nodeId, options));
     else if (parse.next == NUMBER_NOT_EQUAL       ) result = genParseConditionBase     (parse, (nodeId, options) => new GNotEqual      (nodeId, options));
     else if (parse.next == NUMBER_LESS            ) result = genParseConditionBase     (parse, (nodeId, options) => new GLess          (nodeId, options));

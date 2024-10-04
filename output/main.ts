@@ -1261,7 +1261,7 @@ const NUMBER_AND              = 'AND';
 const NUMBER_OR               = 'OR';
 const NUMBER_XOR              = 'XOR';
 
-const NUMBER_CONDITION        = 'COND';
+const NUMBER_COMPARE          = 'CMP';
 const NUMBER_EQUAL            = 'EQ';
 const NUMBER_NOT_EQUAL        = 'NE';
 const NUMBER_LESS             = 'LT';
@@ -1297,8 +1297,10 @@ const TEXT_ESCAPE             = 'TESC';
 const TEXT_UNESCAPE           = 'TUNESC';
 const INDEX_TO_NAME           = 'INDEX';
 const NUMBER_TO_TEXT          = 'N2T';
+const BOOLEAN_TO_TEXT         = 'B2T';
 const COLOR_TO_TEXT           = 'C2T';
 const TEXT_TO_NUMBER          = 'T2N';
+const TEXT_TO_BOOLEAN         = 'T2B';
 const TEXT_TO_COLOR           = 'T2C';
 const TEXT_SPLIT              = 'TSPLT';
 const PARSE_JSON              = 'PRJSON';
@@ -1583,7 +1585,7 @@ const NUMBER_BOOLEAN_TYPES =
 
 const CONDITION_TYPES =
 [
-    NUMBER_CONDITION,
+    NUMBER_COMPARE,
     NUMBER_EQUAL,
     NUMBER_NOT_EQUAL,
     NUMBER_LESS,
@@ -1635,6 +1637,7 @@ const NUMBER_TYPES =
     NUMBER_SOLVE,
     NUMBER_ANIMATE,
     NUMBER_TO_TEXT,
+    BOOLEAN_TO_TEXT,
     TEXT_CHAR,
 
     ...MATH_TYPES,
@@ -1668,6 +1671,7 @@ const TEXT_TYPES =
     TEXT_UNESCAPE,
     INDEX_TO_NAME,
     TEXT_TO_NUMBER,
+    TEXT_TO_BOOLEAN,
     TEXT_TO_COLOR,
     TEXT_SPLIT,
     TEXT_FETCH,

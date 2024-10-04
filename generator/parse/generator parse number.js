@@ -1457,12 +1457,12 @@ function genParseBoolean(parse)
 
 
 
-function genParseCondition(parse)
+function genParseCompare(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cond = new GCompare(nodeId, options);
+    const cmp = new GCompare(nodeId, options);
 
 
     let nInputs = -1;
@@ -1475,12 +1475,12 @@ function genParseCondition(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(cond, parse, ignore, nInputs);
+        logReq(cmp, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, cond);
+        genParseNodeEnd(parse, cmp);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -1489,18 +1489,18 @@ function genParseCondition(parse)
 
 
     if (nInputs == 1)
-        cond.input = genParse(parse);
+        cmp.input = genParse(parse);
   
     
-    cond.operation = genParse(parse);
-    cond.operand   = genParse(parse);
+    cmp.operation = genParse(parse);
+    cmp.operand   = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, cond);
-    return cond;
+    genParseNodeEnd(parse, cmp);
+    return cmp;
 }
 
 

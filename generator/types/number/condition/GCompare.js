@@ -8,7 +8,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(NUMBER_CONDITION, nodeId, options);
+        super(NUMBER_COMPARE, nodeId, options);
     }
 
 
@@ -47,13 +47,13 @@ extends GOperator1
         const op      = await evalNumberValue      (this.operation, parse);
         const operand = await evalNumberValue      (this.operand,   parse);
 
-        op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
-
         
         if (   input
             && operand
             && op)
         {
+            op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
+
             if (isListValueType(input.type))
             {
                 this.value = new ListValue();

@@ -117,6 +117,7 @@
 ../operators/number/OpHold.js
 ../operators/number/OpInterpolate.js
 ../operators/number/OpNumberToText.js
+../operators/number/OpBooleanToText.js
 ../operators/number/OpSolve.js
 ../operators/number/OpAnimate.js
 
@@ -177,6 +178,7 @@
 ../operators/text/OpTextFetch.js
 ../operators/text/OpTextFile.js
 ../operators/text/OpTextToNumber.js
+../operators/text/OpTextToBoolean.js
 ../operators/text/OpTextToColor.js
 ../operators/text/OpColorToText.js
 

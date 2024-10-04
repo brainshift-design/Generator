@@ -674,11 +674,11 @@ function genParseTextCompare(parse)
    
 
     let nInputs = -1;
-
+    
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -696,18 +696,12 @@ function genParseTextCompare(parse)
     parse.nTab++;
 
 
-    if (nInputs == 2)
-    {
-        cmp.input0 = genParse(parse);
-        cmp.input1 = genParse(parse);
-    }
-    else if (nInputs == 1)
-    {
-        cmp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-    }
+    if (nInputs == 1)
+        cmp.input = genParse(parse);
   
     
     cmp.operation = genParse(parse);
+    cmp.operand   = genParse(parse);
 
     
     parse.nTab--;

@@ -630,16 +630,17 @@ function initGeneratorMenus()
 
     menuConvertText = new Menu('Convert text', true, false);
     menuConvertText.addItems([
-                              new MenuItem('Text ⟶ Number',    'Text to Number',    false, {icon: iconTextToNumber,    createType: TEXT_TO_NUMBER, callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_NUMBER, btnText.div, getCreateOptions(e)))}),
-                              new MenuItem('Text ⟶ Color',     'Text to Color',     false, {icon: iconTextToColor,     createType: TEXT_TO_COLOR,  callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_COLOR,  btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('Text ⟶ Number',    'Text to Number',    false, {icon: iconTextToNumber,    createType: TEXT_TO_NUMBER,  callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_NUMBER,  btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('Text ⟶ Boolean',   'Text to Boolean',   false, {icon: iconTextToBoolean,   createType: TEXT_TO_BOOLEAN, callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_BOOLEAN, btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('Text ⟶ Color',     'Text to Color',     false, {icon: iconTextToColor,     createType: TEXT_TO_COLOR,   callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_COLOR,   btnText.div, getCreateOptions(e)))}),
                               new MenuItem('',                   null,               true,  {separator: true}),
-                              new MenuItem('Number ⟶ Text',    'Number to Text',    false, {icon: iconNumberToText,    createType: NUMBER_TO_TEXT, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT, btnText.div, getCreateOptions(e)))}),
-                              new MenuItem('Color ⟶ Text',     'Color to Text',     false, {icon: iconColorToText,     createType: COLOR_TO_TEXT,  callback: e => actionManager.do(getCreateNodeAction(COLOR_TO_TEXT,  btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('Number ⟶ Text',    'Number to Text',    false, {icon: iconNumberToText,    createType: NUMBER_TO_TEXT,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT,  btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('Color ⟶ Text',     'Color to Text',     false, {icon: iconColorToText,     createType: COLOR_TO_TEXT,   callback: e => actionManager.do(getCreateNodeAction(COLOR_TO_TEXT,   btnText.div, getCreateOptions(e)))}),
                               new MenuItem('',                   null,               true,  {separator: true}),
-                              new MenuItem('Code ⟶ Character', 'Code to Character', false, {icon: iconCodeToCharacter, createType: TEXT_CHAR,      callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))}),
-                              new MenuItem('Character ⟶ Code', 'Character to Code', false, {icon: iconCharacterToCode, createType: TEXT_UNICODE,   callback: e => actionManager.do(getCreateNodeAction(TEXT_UNICODE,   btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('Code ⟶ Character', 'Code to Character', false, {icon: iconCodeToCharacter, createType: TEXT_CHAR,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,       btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('Character ⟶ Code', 'Character to Code', false, {icon: iconCharacterToCode, createType: TEXT_UNICODE,    callback: e => actionManager.do(getCreateNodeAction(TEXT_UNICODE,    btnText.div, getCreateOptions(e)))}),
                               new MenuItem('',                   null,               true,  {separator: true}),
-        menuItemIndexToName = new MenuItem('Index ⟶ Name',     'Index to Name',     false, {icon: iconIndexToName,     createType: INDEX_TO_NAME,  callback: e => actionManager.do(getCreateNodeAction(INDEX_TO_NAME,  btnText.div, getCreateOptions(e)))})]);
+        menuItemIndexToName = new MenuItem('Index ⟶ Name',     'Index to Name',     false, {icon: iconIndexToName,     createType: INDEX_TO_NAME,   callback: e => actionManager.do(getCreateNodeAction(INDEX_TO_NAME,   btnText.div, getCreateOptions(e)))})]);
     
 
     menuNumber = new Menu('Numbers', true, false);
@@ -648,7 +649,7 @@ function initGeneratorMenus()
                         new MenuItem('',              null,                 false, {separator: true}),
                         new MenuItem('Math',          null,                 false, {icon: iconMath,         childMenu: menuMath,          createType: NUMBER_SIMPLE_MATH, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MATH, btnNumber.div, getCreateOptions(e)))}),
                         new MenuItem('Logic',         null,                 false, {icon: iconBoolean,      /*childMenu: menuBoolean,  */ createType: NUMBER_BOOLEAN,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
-                        new MenuItem('Compare',       null,                 false, {icon: iconCondition,    /*childMenu: menuCondition,*/ createType: NUMBER_CONDITION,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
+                        new MenuItem('Compare',       null,                 false, {icon: iconCondition,    /*childMenu: menuCondition,*/ createType: NUMBER_COMPARE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_COMPARE,   btnNumber.div, getCreateOptions(e)))}),
                         new MenuItem('',              null,                 false, {separator: true}),
                         new MenuItem('Interpolate',   'Interpolate number', true,  {icon: iconInterpolate,                                createType: NUMBER_INTERPOLATE, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
         menuItemSolve = new MenuItem('Solve',         null,                 true,  {icon: iconSolve,                                      createType: NUMBER_SOLVE,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))}),
