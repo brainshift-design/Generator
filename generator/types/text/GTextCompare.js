@@ -1,5 +1,5 @@
 class GTextCompare
-extends GOperator2
+extends GOperator1
 {
     operation;
     operand;
@@ -43,9 +43,9 @@ extends GOperator2
             return this;
 
 
-        const input   = await evalNumberOrListValue(this.input,     parse);
-        const op      = await evalNumberValue    (this.operation, parse);
-        const operand = await evalTextValue      (this.operand,   parse);
+        const input   = await evalTextOrListValue(this.input,     parse);
+        const op      = await evalNumberValue      (this.operation, parse);
+        const operand = await evalTextValue        (this.operand,   parse);
 
         
         if (   input
@@ -61,13 +61,13 @@ extends GOperator2
                 {
                     this.value.items.push(
                         item.type == TEXT_VALUE
-                        ? await evalCompareTextInputs(item, operand, op, parse)
+                        ? await evalCompareTextInputs(item, operand, op)
                         : NumberValue.NaN());
                 }
             }
             else
             {
-                this.value = await evalCompareTextInputs(input, operand, op, parse);
+                this.value = await evalCompareTextInputs(input, operand, op);
             }
         }
         else
@@ -77,8 +77,8 @@ extends GOperator2
         this.setUpdateValues(parse,
         [
             ['type',      this.outputType()],
-            ['operand',   operand          ],
-            ['operation', op               ]
+            ['operation', op               ],
+            ['operand',   operand          ]
         ]);
 
 
@@ -129,7 +129,7 @@ extends GOperator2
 
 
 
-async function evalCompareTextInputs(input0, input1, op, parse) 
+async function evalCompareTextInputs(input, operand, op) 
 {
     let opFunc = null;
 
@@ -143,10 +143,12 @@ async function evalCompareTextInputs(input0, input1, op, parse)
         case CONDITION_GREATER:           opFunc = (a, b) => a >  b;  break;
     }
 
+    console.log('input =', input);
+    console.log('operand =', operand);
 
-    if (   input0 && input0.isValid() 
-        && input1 && input1.isValid())
-        return new NumberValue(opFunc(input0.value, input1.value) ? 1 : 0, 0, true);
+    if (   input   && input  .isValid() 
+        && operand && operand.isValid())
+        return new NumberValue(opFunc(input.value, operand.value) ? 1 : 0, 0, true);
     else                  
         return new NullValue();
 }

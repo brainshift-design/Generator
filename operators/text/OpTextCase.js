@@ -15,7 +15,7 @@ extends OperatorBase
         this.addInput (new Input ([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramCase = new SelectParam('case', 'case', false, true, true, ['lower', 'First capital', 'All Capitals', 'UPPER'], 1));
+        this.addParam(this.paramCase = new SelectParam('case', 'case', false, true, true, ['lower', 'First capital', 'All Capitals', 'UPPER'], 0));
     }
 
 

@@ -35588,165 +35588,165 @@ function getNumberToTextValue(input, base, trim, decimals, thousands)
 }
 
 
-class GNumberToText
-extends GOperator1
-{
-    base;
-    trim;
-    decimals;
-    thousands;
+// class GNumberToText
+// extends GOperator1
+// {
+//     base;
+//     trim;
+//     decimals;
+//     thousands;
 
 
     
-    constructor(nodeId, options)
-    {
-        super(NUMBER_TO_TEXT, nodeId, options);
-    }
+//     constructor(nodeId, options)
+//     {
+//         super(NUMBER_TO_TEXT, nodeId, options);
+//     }
 
 
     
-    reset()
-    {
-        super.reset();
+//     reset()
+//     {
+//         super.reset();
 
-        this.base      = null;
-        this.trim      = null;
-        this.decimals  = null;
-        this.thousands = null;
-    }
-
-
-
-    copy()
-    {
-        const copy = new GNumberToText(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.base     ) copy.base      = this.base     .copy();
-        if (this.trim     ) copy.trim      = this.trim     .copy();
-        if (this.decimals ) copy.decimals  = this.decimals .copy();
-        if (this.thousands) copy.thousands = this.thousands.copy();
-
-        return copy;
-    }
+//         this.base      = null;
+//         this.trim      = null;
+//         this.decimals  = null;
+//         this.thousands = null;
+//     }
 
 
 
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
+//     copy()
+//     {
+//         const copy = new GNumberToText(this.nodeId, this.options);
 
+//         copy.copyBase(this);
 
-        const input     = await evalNumberValue(this.input,     parse);
-        const base      = await evalNumberValue(this.base,      parse);
-        const trim      = await evalNumberValue(this.trim,      parse);
-        const decimals  = await evalTextValue  (this.decimals,  parse);
-        const thousands = await evalTextValue  (this.thousands, parse);
+//         if (this.base     ) copy.base      = this.base     .copy();
+//         if (this.trim     ) copy.trim      = this.trim     .copy();
+//         if (this.decimals ) copy.decimals  = this.decimals .copy();
+//         if (this.thousands) copy.thousands = this.thousands.copy();
 
-
-        if (input)
-        {
-            if (isListValueType(input.type))
-            {
-                this.value = new ListValue();
-
-                for (let i = 0; i < input.items.length; i++)
-                {
-                    const item = input.items[i];
-
-                    this.value.items.push(
-                        item.type == NUMBER_VALUE
-                        ? getNumberToTextValue(item, base, trim, decimals, thousands)
-                        : TextValue.NaN());   
-                }
-            }
-            else
-            {
-                this.value = getNumberToTextValue(input, base, trim, decimals, thousands);
-            }
-        }
-        else
-            this.value = TextValue.NaN();
-
-
-        this.setUpdateValues(parse,
-        [
-            ['type',      this.outputType()],
-            ['base',      base             ],
-            ['trim',      trim             ],
-            ['decimals',  decimals         ],
-            ['thousands', thousands        ]
-        ]);
-
-
-        this.validate();
-
-        return this;
-    }
+//         return copy;
+//     }
 
 
 
-    isValid()
-    {
-        return super.isValid()
-            && this.base      && this.base     .isValid()
-            && this.trim      && this.trim     .isValid()
-            && this.decimals  && this.decimals .isValid()
-            && this.thousands && this.thousands.isValid();
-    }
+//     async eval(parse)
+//     {
+//         if (this.isCached())
+//             return this;
+
+
+//         const input     = await evalNumberValue(this.input,     parse);
+//         const base      = await evalNumberValue(this.base,      parse);
+//         const trim      = await evalNumberValue(this.trim,      parse);
+//         const decimals  = await evalTextValue  (this.decimals,  parse);
+//         const thousands = await evalTextValue  (this.thousands, parse);
+
+
+//         if (input)
+//         {
+//             if (isListValueType(input.type))
+//             {
+//                 this.value = new ListValue();
+
+//                 for (let i = 0; i < input.items.length; i++)
+//                 {
+//                     const item = input.items[i];
+
+//                     this.value.items.push(
+//                         item.type == NUMBER_VALUE
+//                         ? getNumberToTextValue(item, base, trim, decimals, thousands)
+//                         : TextValue.NaN());   
+//                 }
+//             }
+//             else
+//             {
+//                 this.value = getNumberToTextValue(input, base, trim, decimals, thousands);
+//             }
+//         }
+//         else
+//             this.value = TextValue.NaN();
+
+
+//         this.setUpdateValues(parse,
+//         [
+//             ['type',      this.outputType()],
+//             ['base',      base             ],
+//             ['trim',      trim             ],
+//             ['decimals',  decimals         ],
+//             ['thousands', thousands        ]
+//         ]);
+
+
+//         this.validate();
+
+//         return this;
+//     }
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.base     ) this.base     .pushValueUpdates(parse);
-        if (this.trim     ) this.trim     .pushValueUpdates(parse);
-        if (this.decimals ) this.decimals .pushValueUpdates(parse);
-        if (this.thousands) this.thousands.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(parse, from, force)
-    {
-        super.invalidateInputs(parse, from, force);
-
-        if (this.base     ) this.base     .invalidateInputs(parse, from, force);
-        if (this.trim     ) this.trim     .invalidateInputs(parse, from, force);
-        if (this.decimals ) this.decimals .invalidateInputs(parse, from, force);
-        if (this.thousands) this.thousands.invalidateInputs(parse, from, force);
-    }
+//     isValid()
+//     {
+//         return super.isValid()
+//             && this.base      && this.base     .isValid()
+//             && this.trim      && this.trim     .isValid()
+//             && this.decimals  && this.decimals .isValid()
+//             && this.thousands && this.thousands.isValid();
+//     }
 
 
 
-    iterateLoop(parse)
-    {
-        super.iterateLoop(parse);
+//     pushValueUpdates(parse)
+//     {
+//         super.pushValueUpdates(parse);
 
-        if (this.base     ) this.base     .iterateLoop(parse);
-        if (this.trim     ) this.trim     .iterateLoop(parse);
-        if (this.decimals ) this.decimals .iterateLoop(parse);
-        if (this.thousands) this.thousands.iterateLoop(parse);
-    }
-}
-
+//         if (this.base     ) this.base     .pushValueUpdates(parse);
+//         if (this.trim     ) this.trim     .pushValueUpdates(parse);
+//         if (this.decimals ) this.decimals .pushValueUpdates(parse);
+//         if (this.thousands) this.thousands.pushValueUpdates(parse);
+//     }
 
 
-function getNumberToTextValue(input, base, trim, decimals, thousands)
-{
-    return input.isValid()
-         ? new TextValue(numToString(
-              input.value, 
-              (trim.value > 0 ? -1 : 1) * input.decimals, 
-              base.value == 1, 
-              decimals.value, 
-              thousands.value))
-         : new TextValue('?');
-}
+
+//     invalidateInputs(parse, from, force)
+//     {
+//         super.invalidateInputs(parse, from, force);
+
+//         if (this.base     ) this.base     .invalidateInputs(parse, from, force);
+//         if (this.trim     ) this.trim     .invalidateInputs(parse, from, force);
+//         if (this.decimals ) this.decimals .invalidateInputs(parse, from, force);
+//         if (this.thousands) this.thousands.invalidateInputs(parse, from, force);
+//     }
+
+
+
+//     iterateLoop(parse)
+//     {
+//         super.iterateLoop(parse);
+
+//         if (this.base     ) this.base     .iterateLoop(parse);
+//         if (this.trim     ) this.trim     .iterateLoop(parse);
+//         if (this.decimals ) this.decimals .iterateLoop(parse);
+//         if (this.thousands) this.thousands.iterateLoop(parse);
+//     }
+// }
+
+
+
+// function getNumberToTextValue(input, base, trim, decimals, thousands)
+// {
+//     return input.isValid()
+//          ? new TextValue(numToString(
+//               input.value, 
+//               (trim.value > 0 ? -1 : 1) * input.decimals, 
+//               base.value == 1, 
+//               decimals.value, 
+//               thousands.value))
+//          : new TextValue('?');
+// }
 
 
 class GColorToText
@@ -37808,7 +37808,7 @@ extends GOperator1
 
 
 class GTextCompare
-extends GOperator2
+extends GOperator1
 {
     operation;
     operand;
@@ -37852,9 +37852,9 @@ extends GOperator2
             return this;
 
 
-        const input   = await evalNumberOrListValue(this.input,     parse);
-        const op      = await evalNumberValue    (this.operation, parse);
-        const operand = await evalTextValue      (this.operand,   parse);
+        const input   = await evalTextOrListValue(this.input,     parse);
+        const op      = await evalNumberValue      (this.operation, parse);
+        const operand = await evalTextValue        (this.operand,   parse);
 
         
         if (   input
@@ -37870,13 +37870,13 @@ extends GOperator2
                 {
                     this.value.items.push(
                         item.type == TEXT_VALUE
-                        ? await evalCompareTextInputs(item, operand, op, parse)
+                        ? await evalCompareTextInputs(item, operand, op)
                         : NumberValue.NaN());
                 }
             }
             else
             {
-                this.value = await evalCompareTextInputs(input, operand, op, parse);
+                this.value = await evalCompareTextInputs(input, operand, op);
             }
         }
         else
@@ -37886,8 +37886,8 @@ extends GOperator2
         this.setUpdateValues(parse,
         [
             ['type',      this.outputType()],
-            ['operand',   operand          ],
-            ['operation', op               ]
+            ['operation', op               ],
+            ['operand',   operand          ]
         ]);
 
 
@@ -37938,7 +37938,7 @@ extends GOperator2
 
 
 
-async function evalCompareTextInputs(input0, input1, op, parse) 
+async function evalCompareTextInputs(input, operand, op) 
 {
     let opFunc = null;
 
@@ -37952,10 +37952,12 @@ async function evalCompareTextInputs(input0, input1, op, parse)
         case CONDITION_GREATER:           opFunc = (a, b) => a >  b;  break;
     }
 
+    console.log('input =', input);
+    console.log('operand =', operand);
 
-    if (   input0 && input0.isValid() 
-        && input1 && input1.isValid())
-        return new NumberValue(opFunc(input0.value, input1.value) ? 1 : 0, 0, true);
+    if (   input   && input  .isValid() 
+        && operand && operand.isValid())
+        return new NumberValue(opFunc(input.value, operand.value) ? 1 : 0, 0, true);
     else                  
         return new NullValue();
 }
