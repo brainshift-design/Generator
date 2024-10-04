@@ -183,6 +183,7 @@ extends ResizableBase
 
 
         const value = values[paramIds.findIndex(id => id == 'value')];
+        console.log('value =', value);
 
 
         this.variableName = value.variableName;
@@ -345,7 +346,8 @@ extends ResizableBase
         let updateNode = false;
 
         
-        if (this.variableName != varValue.variableName)
+        if (   this.variableValue != varValue
+            || this.variableName  != varValue.variableName)
         {
             this.variableName = varValue.variableName;
             updateNode = true;

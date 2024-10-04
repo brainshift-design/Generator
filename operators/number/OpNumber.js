@@ -11,14 +11,13 @@ extends ResizableBase
 
 
         this.showIcon = false;
+        this.alwaysLoadParams = true;
 
         
         this.addInput (new Input ([NUMBER_VALUE, TEXT_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
         this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, false, 1));
-
-        this.alwaysLoadParams = true;
 
 
         this.paramValue.getConnectedMin = () => 
@@ -137,7 +136,6 @@ extends ResizableBase
     updateNode()
     {
         super.updateNode();
-
 
         this.div   .style.borderRadius = 
         this.inner .style.borderRadius = 

@@ -27,7 +27,7 @@ extends GOperator1
             return this;
 
 
-        const input = await evalNumberValue(this.input, parse);
+        const input = await evalBooleanNumberValue(this.input, parse);
 
 
         if (input)
@@ -46,6 +46,7 @@ extends GOperator1
                 0,
                 true);
         }
+
 
         this.setUpdateValues(parse, 
         [

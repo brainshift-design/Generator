@@ -359,6 +359,30 @@ async function evalNumberValue(_value, parse)
 
 
 
+async function evalBooleanNumberValue(_value, parse) 
+{ 
+    let value = await evalValue(_value, parse, () => NumberValue.NaN()); 
+
+    if (   value
+        && value.type == TEXT_VALUE)
+    {
+        console.log('stringIsNumber(value.value) =', stringIsNumber(value.value));
+        
+        if (stringIsNumber(value.value)) 
+            value = new BooleanValue(parseBool(value.value) > 0);
+        else        
+        {
+                 if (value.value.trim().toLowerCase() == 'true' ) value = new BooleanValue(true);
+            else if (value.value.trim().toLowerCase() == 'false') value = new BooleanValue(false);
+            else                                                  value = BooleanValue.NaN();
+        }
+    }
+
+    return value;                
+}
+
+
+
 async function evalNumberOrListValue(_value, parse) 
 { 
     let value = await evalValue(_value, parse, () => NumberValue.NaN()); 

@@ -80,14 +80,7 @@ function uiReturnFigGetVariableUpdates(variables)
 
             if (node.paramValue)
             {
-                if (node.paramValue.input.connected)
-                {
-                    // uiUpdateVariable(
-                    //     value.id,
-                    //     node.linkedTemp,
-                    //     getVariableValue(node.paramValue.value));
-                }
-                else
+                if (!node.paramValue.input.connected)
                 {
                     node.updateValueParamValuesFromResolved(
                         variable.resolvedType,

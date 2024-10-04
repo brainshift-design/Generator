@@ -503,10 +503,33 @@ function pageNameForStorage(name)   { return pageTag + ' ' + name;   }
 
 function parseBool(str) 
 { 
-    return str.toLowerCase() == 'true'
-        || str == '1';
+    if (str.trim().toLowerCase() == 'true' ) return true;
+    if (str.trim().toLowerCase() == 'false') return false;
+
+
+    const num = parseFloat(str);
+
+    if (!isNaN(num))
+        return num > 0;
+
+
+    console.error('invalid bool string "' + str + '"');
+    return false;
 }
 
+
+
+function stringIsNumber(str)
+{
+    const num = Number(str);
+    
+    if (   isNaN(num) 
+        || parseFloat(str).toString() !== str.trim()
+        || Object.is(num, -0))
+        return false;
+    
+    return true;
+}
 
 
 function connToString(_conn, logSpace = false)
@@ -12091,6 +12114,30 @@ async function evalNumberValue(_value, parse)
 
 
 
+async function evalBooleanNumberValue(_value, parse) 
+{ 
+    let value = await evalValue(_value, parse, () => NumberValue.NaN()); 
+
+    if (   value
+        && value.type == TEXT_VALUE)
+    {
+        console.log('stringIsNumber(value.value) =', stringIsNumber(value.value));
+        
+        if (stringIsNumber(value.value)) 
+            value = new BooleanValue(parseBool(value.value) > 0);
+        else        
+        {
+                 if (value.value.trim().toLowerCase() == 'true' ) value = new BooleanValue(true);
+            else if (value.value.trim().toLowerCase() == 'false') value = new BooleanValue(false);
+            else                                                  value = BooleanValue.NaN();
+        }
+    }
+
+    return value;                
+}
+
+
+
 async function evalNumberOrListValue(_value, parse) 
 { 
     let value = await evalValue(_value, parse, () => NumberValue.NaN()); 
@@ -13649,7 +13696,7 @@ extends NumberValue
 
     static NaN()
     {
-        return new BooleanValue(Number.NaN);
+        return NumberValue.NaN();
     }
 }
 
@@ -22142,7 +22189,7 @@ extends GOperator1
         }
 
         else if (paramValue) 
-            varValue = paramValue;
+            varValue = paramValue.copy();
 
 
         if (  !varValue
@@ -22166,7 +22213,7 @@ extends GOperator1
             varValue);
 
 
-        console.log('this.value =', this.value);
+        //console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
             ['value', this.value]
@@ -27208,7 +27255,7 @@ extends GOperator1
             return this;
 
 
-        const input = await evalNumberValue(this.input, parse);
+        const input = await evalBooleanNumberValue(this.input, parse);
 
 
         if (input)
@@ -27227,6 +27274,7 @@ extends GOperator1
                 0,
                 true);
         }
+
 
         this.setUpdateValues(parse, 
         [

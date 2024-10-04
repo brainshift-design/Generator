@@ -16,7 +16,7 @@ extends ResizableBase
         this.alwaysLoadParams = true;
 
         
-        this.addInput (new Input ([NUMBER_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
+        this.addInput (new Input ([NUMBER_VALUE, TEXT_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
         this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, false, 1, 0, 1));
@@ -103,7 +103,6 @@ extends ResizableBase
     {
         super.updateNode();
 
-
         this.div   .style.borderRadius = 
         this.inner .style.borderRadius = 
         this.header.style.borderRadius = 
@@ -122,9 +121,6 @@ extends ResizableBase
         this.paramValue.enableControlText(!input.connected);
 
         updateParamConditionText(this.paramValue, this.isUnknown(), true, 1);
-
-        // this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
-        // this.paramValue.controls[0].showBar   = !this.isUnknown();
 
         this.updateParamControls();
 

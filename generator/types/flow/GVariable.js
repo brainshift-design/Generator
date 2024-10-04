@@ -103,7 +103,7 @@ extends GOperator1
         }
 
         else if (paramValue) 
-            varValue = paramValue;
+            varValue = paramValue.copy();
 
 
         if (  !varValue
@@ -127,7 +127,7 @@ extends GOperator1
             varValue);
 
 
-        console.log('this.value =', this.value);
+        //console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
             ['value', this.value]

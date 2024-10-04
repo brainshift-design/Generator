@@ -497,10 +497,33 @@ function pageNameForStorage(name)   { return pageTag + ' ' + name;   }
 
 function parseBool(str) 
 { 
-    return str.toLowerCase() == 'true'
-        || str == '1';
+    if (str.trim().toLowerCase() == 'true' ) return true;
+    if (str.trim().toLowerCase() == 'false') return false;
+
+
+    const num = parseFloat(str);
+
+    if (!isNaN(num))
+        return num > 0;
+
+
+    console.error('invalid bool string "' + str + '"');
+    return false;
 }
 
+
+
+function stringIsNumber(str)
+{
+    const num = Number(str);
+    
+    if (   isNaN(num) 
+        || parseFloat(str).toString() !== str.trim()
+        || Object.is(num, -0))
+        return false;
+    
+    return true;
+}
 
 
 function connToString(_conn, logSpace = false)
