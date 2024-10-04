@@ -455,8 +455,8 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
         _conns.sort((c1, c2) => 
         {
-            if (c1.inputNodeId != c2.inputNodeId ) return c1.inputNodeId < c2.inputNodeId ? -1 : 1;
-            if (c1.inputId     != c2.inputId     ) return c1.inputId     < c2.inputId     ? -1 : 1;
+            if (c1.inputNodeId != c2.inputNodeId ) return c1.inputNodeId.localeCompare(c2.inputNodeId, undefined, { numeric: true });// ? -1 : 1;
+            if (c1.inputId     != c2.inputId     ) return c1.inputId    .localeCompare(c2.inputId,     undefined, { numeric: true });// ? -1 : 1;
 
             if (c1.inputNodeId == c2.outputNodeId) return -1;
             if (c2.inputNodeId == c1.outputNodeId) return  1;
@@ -593,8 +593,8 @@ function resolveConnections(nodes, _connections, first, last)
 {
     _connections.sort((c1, c2) =>
     {
-        if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
-        if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
+        if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId.localeCompare(c2.inputNodeId, undefined, { numeric: true });
+        if (c1.inputId     != c2.inputId    ) return c1.inputId    .localeCompare(c2.inputId,     undefined, { numeric: true });
 
         // if (c1.inputNodeId == c2.outputNodeId) return -1;
         // if (c2.inputNodeId == c1.outputNodeId) return  1;
