@@ -19,7 +19,7 @@ extends OperatorBase
 
         this.addParam(this.paramBase      = new SelectParam('base',      'base',      true, true, true, ['10', '16']));
         this.addParam(this.paramDecimals  = new TextParam  ('decimals',  'decimals',  true, true, true, '.'));
-        this.addParam(this.paramThousands = new TextParam  ('thousands', 'thousands', true, true, true, ''));
+        this.addParam(this.paramThousands = new TextParam  ('thousands', 'thousands', true, true, true, '_'));
 
 
         this.paramBase     .divider = 0.53;

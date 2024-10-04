@@ -35999,7 +35999,7 @@ extends GOperator1
 
         const input     = await evalTextOrListValue(this.input,     parse);
         const base      = await evalNumberValue    (this.base,      parse);
-        const decimals  = await evalNumberValue    (this.decimals,  parse);
+        const decimals  = await evalTextValue      (this.decimals,  parse);
         const thousands = await evalTextValue      (this.thousands, parse);
 
 
@@ -36103,13 +36103,13 @@ function getTextToNumberValue(input, base, decimals, thousands)
         {
             case 0: // dec
             {
-                if (value.lastIndexOf(decimals.value) < 0)
-                    num = parseInt(value.replace(/[^\d-]/g, ''), 10);
-                else
+                if (value.lastIndexOf(decimals.value) > -1)
                 {
                     value = replaceLast(value, decimals.value, '.');
                     num   = parseFloat(value);
                 }
+                else
+                    num = parseInt(value.replace(/[^\d-]/g, ''), 10);
         
                 break;
             }
