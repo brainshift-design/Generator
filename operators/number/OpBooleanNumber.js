@@ -31,6 +31,48 @@ extends ResizableBase
         this.getDescription = () => `defines a boolean value`;
 
         this.paramValue.getDescription = () => `node value`;
+
+
+        this.paramValue.getConnectedMin = () => 
+        {
+            const connectedInputs = this.outputs[0].connectedInputs.filter(i => i.param);
+
+            if (   connectedInputs.length == 1
+                && connectedInputs[0].param
+                && connectedInputs[0].param.type == NUMBER_VALUE)
+            {
+                const ctrl = connectedInputs[0].param.controls[0];
+
+                return ctrl.displayMin != Number.MIN_SAFE_INTEGER
+                        ? ctrl.displayMin
+                        : ctrl.min != Number.MIN_SAFE_INTEGER
+                        ? ctrl.min
+                        : Number.NaN;
+            }
+
+            return Number.NaN;
+        }
+
+
+        this.paramValue.getConnectedMax = () => 
+        {
+            const connectedInputs = this.outputs[0].connectedInputs.filter(i => i.param);
+
+            if (   connectedInputs.length == 1
+                && connectedInputs[0].param
+                && connectedInputs[0].param.type == NUMBER_VALUE)
+            {
+                const ctrl = connectedInputs[0].param.controls[0];
+
+                return ctrl.displayMax != Number.MAX_SAFE_INTEGER
+                        ? ctrl.displayMax
+                        : ctrl.max != Number.MAX_SAFE_INTEGER
+                        ? ctrl.max
+                        : Number.NaN;
+            }
+
+            return Number.NaN;
+        }
     }
 
 

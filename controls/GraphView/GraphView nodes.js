@@ -435,6 +435,7 @@ GraphView.prototype.randomizeSelectedNodes = function()
 
     const numbers = graphView.selectedNodes.filter(n => 
            (   n.type == NUMBER
+            || n.type == BOOLEAN_NUMBER
             || n.type == BOUNDED_NUMBER)
         && !n.paramValue.controls[0].readOnly);
 
