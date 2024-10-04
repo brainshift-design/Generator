@@ -102,7 +102,7 @@
 ../operators/number/OpNumberCurve.js
 ../operators/number/OpNumberMap.js
 ../operators/number/OpNumberBias.js
-../operators/number/OpNaNisNumber.js
+../operators/number/OpNumberIsNaN.js
 ../operators/number/OpConstant.js
 
 ../operators/number/OpDateTime.js

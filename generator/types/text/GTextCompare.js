@@ -143,9 +143,6 @@ async function evalCompareTextInputs(input, operand, op)
         case CONDITION_GREATER:           opFunc = (a, b) => a >  b;  break;
     }
 
-    console.log('input =', input);
-    console.log('operand =', operand);
-
     if (   input   && input  .isValid() 
         && operand && operand.isValid())
         return new NumberValue(opFunc(input.value, operand.value) ? 1 : 0, 0, true);

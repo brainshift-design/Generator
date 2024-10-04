@@ -523,9 +523,9 @@ function stringIsNumber(str)
 {
     const num = Number(str);
     
-    if (   isNaN(num) 
-        || parseFloat(str).toString() !== str.trim()
-        || Object.is(num, -0))
+    if (   (    isNaN(num) 
+            ||  parseFloat(str).toString() !== str.trim())
+        && !Object.is(num, -0))
         return false;
     
     return true;
@@ -6864,7 +6864,7 @@ const NUMBER_LIMITS           = 'LIM';
 const NUMBER_CURVE            = 'NCURVE';   
 const NUMBER_MAP              = 'NMAP';   
 const NUMBER_BIAS             = 'NBIAS';   
-const NUMBER_NAN              = 'NANISNUM';
+const NUMBER_IS_NAN           = 'ISNAN';
 const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DATETIME         = 'DATE';  
 const NUMBER_SEQUENCE         = 'SEQ';  
@@ -7255,7 +7255,7 @@ const NUMBER_TYPES =
     NUMBER_CURVE,
     NUMBER_MAP,
     NUMBER_BIAS,
-    NUMBER_NAN,
+    NUMBER_IS_NAN,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
     NUMBER_SEQUENCE,
@@ -12125,10 +12125,8 @@ async function evalBooleanNumberValue(_value, parse)
     if (   value
         && value.type == TEXT_VALUE)
     {
-        console.log('stringIsNumber(value.value) =', stringIsNumber(value.value));
-        
         if (stringIsNumber(value.value)) 
-            value = new BooleanValue(parseBool(value.value) > 0);
+            value = new BooleanValue(parseFloat(value.value) > 0);
         else        
         {
                  if (value.value.trim().toLowerCase() == 'true' ) value = new BooleanValue(true);
@@ -29154,36 +29152,21 @@ function getNumberBiasValue(input, min, max, bias, spread, enabled)
 }
 
 
-class GNaNisNumber
+class GNumberIsNaN
 extends GOperator1
 {
-    _value = null;
-
-
-
     constructor(nodeId, options)
     {
-        super(NUMBER_NAN, nodeId, options);
+        super(NUMBER_IS_NAN, nodeId, options);
     }
 
 
     
-    reset()
-    {
-        super.reset();
-
-        this._value = null;
-    }
-
-
-
     copy()
     {
-        const copy = new GNaNisNumber(this.nodeId, this.options);
+        const copy = new GNumberIsNaN(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this._value) copy._value = this._value.copy();
 
         return copy;
     }
@@ -29196,8 +29179,7 @@ extends GOperator1
             return this;
 
 
-        const  input = await evalNumberOrListValue(this. input, parse);
-        const _value = await evalNumberValue      (this._value, parse);
+        const input = await evalNumberOrListValue(this. input, parse);
 
 
         if (input)
@@ -29212,18 +29194,18 @@ extends GOperator1
 
                     this.value.items.push(
                         item.type == NUMBER_VALUE
-                        ? getNaNisNumberValue(item, _value, this.options.enabled)
+                        ? getNumberIsNaN(item)
                         : TextValue.NaN());   
                 }
             }
             else
             {
-                this.value = getNaNisNumberValue(input, _value, this.options.enabled);
+                this.value = getNumberIsNaN(input);
             }
         }
 
         else
-            this.value = NumberValue.NaN();
+            this.value = BooleanValue.NaN();
 
 
         this.setUpdateValues(parse,
@@ -29236,52 +29218,15 @@ extends GOperator1
 
         return this;
     }
-
-
-
-    isValid()
-    {
-        return super.isValid()
-            && this.value && this.value.isValid();
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.value) this.value.pushValueUpdates(parse);
-    }
-
-
-
-    invalidateInputs(parse, from, force)
-    {
-        super.invalidateInputs(parse, from, force);
-
-        if (this.value) this.value.invalidateInputs(parse, from, force);
-    }
-
-
-
-    iterateLoop(parse)
-    {
-        super.iterateLoop(parse);
-
-        if (this.value) this.value.iterateLoop(parse);
-    }
 }
 
 
 
-function getNaNisNumberValue(input, value, enabled)
+function getNumberIsNaN(input)
 {
-    if (    enabled
-        && !input.isValid())
-        return value;
-    else
-        return input;
+    return !input.isValid()
+        ? new BooleanValue(true )
+        : new BooleanValue(false);
 }
 
 
@@ -36305,7 +36250,86 @@ function getTextToNumberValue(input, base, decimals, thousands)
 }
 
 
+class GTextToBoolean
+extends GOperator1
+{
+    constructor(nodeId, options)
+    {
+        super(TEXT_TO_BOOLEAN, nodeId, options);
+    }
 
+
+    
+    copy()
+    {
+        const copy = new GTextToBoolean(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input = await evalTextOrListValue(this.input, parse);
+
+
+        if (   input
+            && input.isValid())
+        {
+            if (isListValueType(input.type))
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                        item.type == TEXT_VALUE
+                        ? getTextToBooleanValue(item)
+                        : NumberValue.NaN());   
+                }
+            }
+            else
+                this.value = getTextToBooleanValue(input);
+        }
+
+        else
+            this.value = NumberValue.NaN();
+
+
+        this.setUpdateValues(parse,
+        [
+            ['type', this.outputType()]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function getTextToBooleanValue(input)
+{
+    if (stringIsNumber(input.value)) 
+        return new BooleanValue(parseFloat(input.value) > 0);
+    else        
+    {
+             if (input.value.trim().toLowerCase() == 'true' ) return new BooleanValue(true);
+        else if (input.value.trim().toLowerCase() == 'false') return new BooleanValue(false);
+        else                                                  return BooleanValue.NaN();
+    }
+}
 
 
 class GTextToColor
@@ -37951,9 +37975,6 @@ async function evalCompareTextInputs(input, operand, op)
         case CONDITION_GREATER_OR_EQUAL:  opFunc = (a, b) => a >= b;  break;
         case CONDITION_GREATER:           opFunc = (a, b) => a >  b;  break;
     }
-
-    console.log('input =', input);
-    console.log('operand =', operand);
 
     if (   input   && input  .isValid() 
         && operand && operand.isValid())
@@ -58787,12 +58808,12 @@ function genParseNumberBias(parse)
 
 
 
-function genParseNaNisNumber(parse)
+function genParseNumberIsNaN(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const nanIsNum = new GNaNisNumber(nodeId, options);
+    const nanIsNum = new GNumberIsNaN(nodeId, options);
 
 
     let nInputs = -1;
@@ -58821,7 +58842,6 @@ function genParseNaNisNumber(parse)
     if (nInputs == 1)
         nanIsNum.input = genParse(parse);
 
-    nanIsNum._value = genParse(parse);
 
     parse.nTab--;
 
@@ -63456,6 +63476,50 @@ function genParseTextToNumber(parse)
 
 
 
+function genParseTextToBoolean(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const text2bool = new GTextToBoolean(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(text2bool, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, text2bool);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        text2bool.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, text2bool);
+    return text2bool;
+}
+
+
+
 function genParseTextToColor(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -63939,7 +64003,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_CURVE           ) result = genParseNumberCurve       (parse);
     else if (parse.next == NUMBER_MAP             ) result = genParseNumberMap         (parse);
     else if (parse.next == NUMBER_BIAS            ) result = genParseNumberBias        (parse);
-    else if (parse.next == NUMBER_NAN             ) result = genParseNaNisNumber       (parse);
+    else if (parse.next == NUMBER_IS_NAN          ) result = genParseNumberIsNaN       (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant          (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime          (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence          (parse);
@@ -63999,6 +64063,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText      (parse);
     else if (parse.next == COLOR_TO_TEXT          ) result = genParseColorToText       (parse);
     else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber      (parse);
+    else if (parse.next == TEXT_TO_BOOLEAN        ) result = genParseTextToBoolean     (parse);
     else if (parse.next == TEXT_TO_COLOR          ) result = genParseTextToColor       (parse);
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace       (parse);
     else if (parse.next == TEXT_ADD               ) result = genParseAddText           (parse);

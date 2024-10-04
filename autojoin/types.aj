@@ -136,7 +136,7 @@
 ../generator/types/number/GNumberCurve.js
 ../generator/types/number/GNumberMap.js
 ../generator/types/number/GNumberBias.js
-../generator/types/number/GNaNisNumber.js
+../generator/types/number/GNumberIsNaN.js
 ../generator/types/number/GConstant.js
 ../generator/types/number/GDateTime.js
 ../generator/types/number/GIterate.js

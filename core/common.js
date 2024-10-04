@@ -517,9 +517,9 @@ function stringIsNumber(str)
 {
     const num = Number(str);
     
-    if (   isNaN(num) 
-        || parseFloat(str).toString() !== str.trim()
-        || Object.is(num, -0))
+    if (   (    isNaN(num) 
+            ||  parseFloat(str).toString() !== str.trim())
+        && !Object.is(num, -0))
         return false;
     
     return true;

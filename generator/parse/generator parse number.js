@@ -754,12 +754,12 @@ function genParseNumberBias(parse)
 
 
 
-function genParseNaNisNumber(parse)
+function genParseNumberIsNaN(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const nanIsNum = new GNaNisNumber(nodeId, options);
+    const nanIsNum = new GNumberIsNaN(nodeId, options);
 
 
     let nInputs = -1;
@@ -788,7 +788,6 @@ function genParseNaNisNumber(parse)
     if (nInputs == 1)
         nanIsNum.input = genParse(parse);
 
-    nanIsNum._value = genParse(parse);
 
     parse.nTab--;
 

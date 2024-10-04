@@ -403,7 +403,7 @@ iconRound
 iconMinMax
 iconLimits
 iconNumberCurve
-iconNaNisNumber
+iconIsNaN
 iconTrigonometric
 iconSine
 iconCosine
@@ -1107,7 +1107,7 @@ NUMBER_SIMPLE_MINMAX
 NUMBER_MINMAX
 NUMBER_LIMITS
 NUMBER_CURVE
-NUMBER_NAN
+NUMBER_IS_NAN
 NUMBER_CONSTANT
 NUMBER_DATETIME
 NUMBER_SEQUENCE
@@ -1944,7 +1944,7 @@ GIterate
 GInterpolate
 GLimits
 GMinMax
-GNaNisNumber
+GNumberIsNaN
 GNoise
 GNumber
 GNumberCurve
@@ -2245,7 +2245,7 @@ OpIterate
 OpInterpolate
 OpLimits
 OpMinMax
-OpNaNisNumber
+OpNumberIsNaN
 OpNoise
 OpNumber
 OpNumberCurve

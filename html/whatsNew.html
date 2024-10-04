@@ -35,10 +35,12 @@
                 <p>•  added color spaces: sRGB (Linear, P3, Adobe98, ProPhoto, Rec. 2020), XYZ (D50, D65)</p>
                 <p>•  added CSS colors to [Color ⟶ Text]</p>
                 <p>•  added trim parameter to [Number ⟶ Text] and [Color ⟶ Text]</p>
+                <p>•  added [Text ⟶ Boolean] node</p>
                 <p>•  added [Solve] node for fitting parameters to results</p>
                 <p>•  added [To JSON] node</p>
                 <p>•  BREAKING CHANGE: reversed shift direction in [Shift list]</p>
                 <p>•  BREAKING CHANGE: reversed true & false in [If/else], true is now below</p>
+                <p>•  BREAKING CHANGE: replaced [NaN ⟶ Number] with [Is NaN]</p>
                 <p>•  renamed [Combine] ⟶ [List] and [List...] ⟶ [Items...]</p>
                 <p>•  [Precision] now works with colors and fills</p>
                 <p>•  [Extract items] and [Reorder list] now take a text range (ex. "1-3, 4, 6-9") as indices</p>
@@ -59,6 +61,7 @@
                 <p>•  fixed bug in radial gradients in orthogonal lines</p>
                 <p>•  fixed HCL ⟶ RGB conversion bug</p>
                 <p>•  fixed [Text ⟶ Number] not converting negative values correctly</p>
+                <p>•  fixed [Text compare] not returning the correct type</p>
                 <p>•  fixed incorrect results in [Color blend]</p>
                 <p>•  fixed incorrect precision in several nodes</p>
                 <p>•  fixed [Wave...] not passing generated value properly</p>

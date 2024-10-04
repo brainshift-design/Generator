@@ -113,7 +113,7 @@ const NUMBER_LIMITS           = 'LIM';
 const NUMBER_CURVE            = 'NCURVE';   
 const NUMBER_MAP              = 'NMAP';   
 const NUMBER_BIAS             = 'NBIAS';   
-const NUMBER_NAN              = 'NANISNUM';
+const NUMBER_IS_NAN           = 'ISNAN';
 const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DATETIME         = 'DATE';  
 const NUMBER_SEQUENCE         = 'SEQ';  
@@ -504,7 +504,7 @@ const NUMBER_TYPES =
     NUMBER_CURVE,
     NUMBER_MAP,
     NUMBER_BIAS,
-    NUMBER_NAN,
+    NUMBER_IS_NAN,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
     NUMBER_SEQUENCE,

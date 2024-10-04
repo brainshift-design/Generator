@@ -366,10 +366,8 @@ async function evalBooleanNumberValue(_value, parse)
     if (   value
         && value.type == TEXT_VALUE)
     {
-        console.log('stringIsNumber(value.value) =', stringIsNumber(value.value));
-        
         if (stringIsNumber(value.value)) 
-            value = new BooleanValue(parseBool(value.value) > 0);
+            value = new BooleanValue(parseFloat(value.value) > 0);
         else        
         {
                  if (value.value.trim().toLowerCase() == 'true' ) value = new BooleanValue(true);

@@ -68,7 +68,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_CURVE:            node = new OpNumberCurve();        break;
         case NUMBER_MAP:              node = new OpNumberMap();          break;
         case NUMBER_BIAS:             node = new OpNumberBias();         break;
-        case NUMBER_NAN:              node = new OpNaNisNumber();        break;
+        case NUMBER_IS_NAN:              node = new OpNumberIsNaN();        break;
         case NUMBER_CONSTANT:         node = new OpConstant();           break;
         case NUMBER_DATETIME:         node = new OpDateTime();           break;
  
@@ -127,6 +127,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_UNESCAPE:           node = new OpTextUnescape();       break;
         case TEXT_COMPARE:            node = new OpTextCompare();        break;
         case TEXT_TO_NUMBER:          node = new OpTextToNumber();       break;
+        case TEXT_TO_BOOLEAN:         node = new OpTextToBoolean();      break;
         case TEXT_TO_COLOR:           node = new OpTextToColor();        break;
         case TEXT_SPLIT:              node = new OpTextSplit();          break;
         case PARSE_CSV:               node = new OpParseCSV();           break;

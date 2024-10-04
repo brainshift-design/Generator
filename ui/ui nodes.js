@@ -592,24 +592,25 @@ function handleLegacyNode(_node, genVersion)
 {
     // update legacy node names
 
-         if (_node.type == 'CDENSE'                     ) _node.type = LIST_AS_ITEM;
-    else if (_node.type == 'SEL'                        ) _node.type = SELECT_FROM_LIST;
-    else if (_node.type == 'EXTRP'                      ) _node.type = GET_PARAM;
-    else if (_node.type == 'CENTR'                      ) _node.type = SET_CENTER;
-    else if (_node.type == 'DEFINE'                     ) _node.type = ITERATE;
-    else if (_node.type == 'START'                      ) _node.type = FEEDBACK;
-    else if (_node.type == 'RENDER'                     ) _node.type = PERSIST;
-    else if (_node.type == 'VNAME'                      ) _node.type = SET_VALUE_NAME;
-    else if (_node.type == 'VNAMES'                     ) _node.type = SET_LIST_VALUE_NAMES;
-    else if (_node.type == 'ONAME'                      ) _node.type = SET_OBJECT_NAME;
-    else if (_node.type == 'TCONT'  && genVersion <  441) _node.type = TEXT_FIND;
-    else if (_node.type == 'LCONT'  && genVersion <  441) _node.type = LIST_FIND;
-    else if (_node.type == 'LIST'   && genVersion <  441) _node.type = ITEMS;
-    else if (_node.type == 'EXPAND' && genVersion == 441) _node.type = ITEMS;
-    else if (_node.type == 'CMB'    && genVersion <  441) _node.type = LIST;
-    else if (_node.type == 'TJSON'  && genVersion <  441) _node.type = PARSE_JSON;
-    else if (_node.type == 'TCSV'   && genVersion <  441) _node.type = PARSE_CSV;
-    else if (_node.type == 'COND'   && genVersion <  441) _node.type = NUMBER_COMPARE;
+         if (_node.type == 'CDENSE'                       ) _node.type = LIST_AS_ITEM;
+    else if (_node.type == 'SEL'                          ) _node.type = SELECT_FROM_LIST;
+    else if (_node.type == 'EXTRP'                        ) _node.type = GET_PARAM;
+    else if (_node.type == 'CENTR'                        ) _node.type = SET_CENTER;
+    else if (_node.type == 'DEFINE'                       ) _node.type = ITERATE;
+    else if (_node.type == 'START'                        ) _node.type = FEEDBACK;
+    else if (_node.type == 'RENDER'                       ) _node.type = PERSIST;
+    else if (_node.type == 'VNAME'                        ) _node.type = SET_VALUE_NAME;
+    else if (_node.type == 'VNAMES'                       ) _node.type = SET_LIST_VALUE_NAMES;
+    else if (_node.type == 'ONAME'                        ) _node.type = SET_OBJECT_NAME;
+    else if (_node.type == 'TCONT'    && genVersion <  441) _node.type = TEXT_FIND;
+    else if (_node.type == 'LCONT'    && genVersion <  441) _node.type = LIST_FIND;
+    else if (_node.type == 'LIST'     && genVersion <  441) _node.type = ITEMS;
+    else if (_node.type == 'EXPAND'   && genVersion == 441) _node.type = ITEMS;
+    else if (_node.type == 'CMB'      && genVersion <  441) _node.type = LIST;
+    else if (_node.type == 'TJSON'    && genVersion <  441) _node.type = PARSE_JSON;
+    else if (_node.type == 'TCSV'     && genVersion <  441) _node.type = PARSE_CSV;
+    else if (_node.type == 'COND'     && genVersion <  441) _node.type = NUMBER_COMPARE;
+    else if (_node.type == 'NANISNUM' && genVersion <  441) _node.type = NUMBER_IS_NAN;
 
 
     // remove 'showCenter' param from everything

@@ -615,7 +615,7 @@ function initGeneratorMenus()
                            new MenuItem('Bias',          null, false, {icon: iconNumberBias,  createType: NUMBER_BIAS,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_BIAS,          btnNumber.div, getCreateOptions(e)))}), 
                            new MenuItem('Remap',         null, false, {icon: iconNumberMap,   createType: NUMBER_MAP,           callback: e => actionManager.do(getCreateNodeAction(NUMBER_MAP,           btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('',              null, false, {separator: true}),
-                           new MenuItem('NaN ⟶ Number', 'NaN to Number', false, {icon: iconNaNisNumber,     createType: NUMBER_NAN,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NAN,       btnNumber.div, getCreateOptions(e)))})]);
+                           new MenuItem('Is NaN',        null, false, {icon: iconIsNaN,       createType: NUMBER_IS_NAN,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_IS_NAN,       btnNumber.div, getCreateOptions(e)))})]);
         
 
     menuTrig = new Menu('Trigonometric', true, false);
@@ -631,7 +631,7 @@ function initGeneratorMenus()
     menuConvertText = new Menu('Convert text', true, false);
     menuConvertText.addItems([
                               new MenuItem('Text ⟶ Number',    'Text to Number',    false, {icon: iconTextToNumber,    createType: TEXT_TO_NUMBER,  callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_NUMBER,  btnText.div, getCreateOptions(e)))}),
-                              //new MenuItem('Text ⟶ Boolean',   'Text to Boolean',   false, {icon: iconTextToBoolean,   createType: TEXT_TO_BOOLEAN, callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_BOOLEAN, btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('Text ⟶ Boolean',   'Text to Boolean',   false, {icon: iconTextToBoolean,   createType: TEXT_TO_BOOLEAN, callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_BOOLEAN, btnText.div, getCreateOptions(e)))}),
                               new MenuItem('Text ⟶ Color',     'Text to Color',     false, {icon: iconTextToColor,     createType: TEXT_TO_COLOR,   callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_COLOR,   btnText.div, getCreateOptions(e)))}),
                               new MenuItem('',                   null,               true,  {separator: true}),
                               new MenuItem('Number ⟶ Text',    'Number to Text',    false, {icon: iconNumberToText,    createType: NUMBER_TO_TEXT,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT,  btnText.div, getCreateOptions(e)))}),

@@ -182,7 +182,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_CURVE           ) result = genParseNumberCurve       (parse);
     else if (parse.next == NUMBER_MAP             ) result = genParseNumberMap         (parse);
     else if (parse.next == NUMBER_BIAS            ) result = genParseNumberBias        (parse);
-    else if (parse.next == NUMBER_NAN             ) result = genParseNaNisNumber       (parse);
+    else if (parse.next == NUMBER_IS_NAN          ) result = genParseNumberIsNaN       (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant          (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime          (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence          (parse);
@@ -242,6 +242,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText      (parse);
     else if (parse.next == COLOR_TO_TEXT          ) result = genParseColorToText       (parse);
     else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber      (parse);
+    else if (parse.next == TEXT_TO_BOOLEAN        ) result = genParseTextToBoolean     (parse);
     else if (parse.next == TEXT_TO_COLOR          ) result = genParseTextToColor       (parse);
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace       (parse);
     else if (parse.next == TEXT_ADD               ) result = genParseAddText           (parse);
