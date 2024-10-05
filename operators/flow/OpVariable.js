@@ -183,7 +183,7 @@ extends ResizableBase
 
 
         const value = values[paramIds.findIndex(id => id == 'value')];
-        console.log('value =', value);
+        //console.log('value =', value);
 
 
         this.variableName = value.variableName;

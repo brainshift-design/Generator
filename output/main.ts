@@ -5561,10 +5561,15 @@ async function figUpdateVariableAsync(varId, varName, value)
     let curValue = variable.valuesByMode[mode.modeId];
 
     
+    console.log('variable =', variable);
+    console.log('variable.hasOwnProperty(\'type\') =', variable.hasOwnProperty('type'));
+    console.log('curValue =', curValue);
+    console.log('curValue.hasOwnProperty(\'type\') =', curValue.hasOwnProperty('type'));
     while (curValue
         && curValue.hasOwnProperty('type')
         && curValue['type'] === 'VARIABLE_ALIAS')
     {
+        console.log('resolved alias');
         variable   = await figma.variables.getVariableByIdAsync(curValue['id']);
         curValue   = variable.valuesByMode[mode.modeId];
     

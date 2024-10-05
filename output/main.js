@@ -3758,9 +3758,14 @@ function figUpdateVariableAsync(varId, varName, value) {
         let mode = collection.modes[0];
         // resolve if alias
         let curValue = variable.valuesByMode[mode.modeId];
+        console.log('variable =', variable);
+        console.log('variable.hasOwnProperty(\'type\') =', variable.hasOwnProperty('type'));
+        console.log('curValue =', curValue);
+        console.log('curValue.hasOwnProperty(\'type\') =', curValue.hasOwnProperty('type'));
         while (curValue
             && curValue.hasOwnProperty('type')
             && curValue['type'] === 'VARIABLE_ALIAS') {
+            console.log('resolved alias');
             variable = yield figma.variables.getVariableByIdAsync(curValue['id']);
             curValue = variable.valuesByMode[mode.modeId];
             collection = yield figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
