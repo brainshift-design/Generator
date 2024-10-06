@@ -102,8 +102,14 @@ extends GOperator1
             }
         }
 
-        else if (paramValue) 
-            varValue = paramValue.copy();
+        else if (paramValue)
+        {
+            if (   paramValue.type   ==  NUMBER_VALUE
+                && this.variableType == 'BOOLEAN')
+                varValue = new BooleanValue(paramValue.value > 0);
+            else
+                varValue = paramValue.copy();
+        }
 
 
         if (  !varValue
