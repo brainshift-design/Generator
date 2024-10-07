@@ -1,37 +1,23 @@
-var maxSolveIterationsDialogVisible = false;
-
-
-
 function showMaxSolveIterationsDialog()
 {
-    if (minZoomDialogVisible)
-        hideMinZoomDialog();
-
-
     maxSolveIterationsDialog.style.left      = '50%';
     maxSolveIterationsDialog.style.top       = '50%';
     maxSolveIterationsDialog.style.transform = 'translateX(-50%) translateY(-50%)';
 
-    maxSolveIterationsDialog.style.display   = 'block';
-    maxSolveIterationsDialogVisible          = true;
-  
+
     maxSolveIterationsTitle.buttonDown0      = false;
-       
+    
     maxSolveIterationsTitle.moveStart        = point_NaN;
     maxSolveIterationsTitle.pStart           = point_NaN;
     
     maxSolveIterationsInput.value = numToString(settings.maxSolveIterations);
     maxSolveIterationsInput.select();
+    
 
+    showDialog(maxSolveIterationsDialog);
+    
+    
     window.setTimeout(() => document.getElementById("maxSolveIterationsInput").focus(), 0);
-}
-
-
-
-function hideMaxSolveIterationsDialog()
-{
-    maxSolveIterationsDialog.style.display = 'none';
-    maxSolveIterationsDialogVisible        = false;
 }
 
 
@@ -98,7 +84,7 @@ maxSolveIterationsInput.addEventListener('keydown', e =>
                 uiSetLocalData('maxSolveIterations', settings.maxSolveIterations);
             }
 
-            hideMaxSolveIterationsDialog();
+            hideDialog(maxSolveIterationsDialog);
             break;
         }
     }

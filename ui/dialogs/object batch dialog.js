@@ -1,37 +1,23 @@
-var objectBatchDialogVisible = false;
-
-
-
 function showObjectBatchDialog()
 {
-    if (minZoomDialogVisible)
-        hideMinZoomDialog();
-
-
     objectBatchDialog.style.left      = '50%';
     objectBatchDialog.style.top       = '50%';
     objectBatchDialog.style.transform = 'translateX(-50%) translateY(-50%)';
 
-    objectBatchDialog.style.display   = 'block';
-    objectBatchDialogVisible          = true;
-  
+    
     objectBatchTitle.buttonDown0      = false;
-       
+    
     objectBatchTitle.moveStart        = point_NaN;
     objectBatchTitle.pStart           = point_NaN;
     
     objectBatchInput.value = numToString(settings.objectBatchSize);
     objectBatchInput.select();
+    
+
+    showDialog(objectBatchDialog);
+
 
     window.setTimeout(() => document.getElementById("objectBatchInput").focus(), 0);
-}
-
-
-
-function hideObjectBatchDialog()
-{
-    objectBatchDialog.style.display = 'none';
-    objectBatchDialogVisible        = false;
 }
 
 
@@ -98,7 +84,7 @@ objectBatchInput.addEventListener('keydown', e =>
                 uiSetLocalData('objectBatchSize', settings.objectBatchSize);
             }
 
-            hideObjectBatchDialog();
+            hideDialog(objectBatchDialog);
             break;
         }
     }

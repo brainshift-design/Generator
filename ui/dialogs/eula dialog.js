@@ -3,7 +3,7 @@ function initEulaDialog()
     eulaBack.addEventListener('pointerdown', e => 
     {
         e.preventDefault();
-        hideEulaDialog();
+        hideDialog(eulaDialog);
     });
 
         
@@ -90,22 +90,8 @@ function initEulaDialog()
 
 function showEulaDialog()
 {
-    eulaBack  .style.display = 'block';
-    eulaDialog.style.display = 'block';
-
+    showDialog(eulaDialog, eulaBack);
     updateEulaScroll();
-
-    dialogShown = true;
-}
-
-
-
-function hideEulaDialog()
-{
-    eulaBack  .style.display = 'none';
-    eulaDialog.style.display = 'none';
-
-    dialogShown = false;
 }
 
 
@@ -181,7 +167,7 @@ function btnStartTrial_onclick()
     hideAllMenus(); 
     
     uiSetLocalData('eula', 'true');
-    hideEulaDialog();
+    hideDialog(eulaDialog);
 
     validateInit();
 }

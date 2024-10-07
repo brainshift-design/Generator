@@ -1,37 +1,23 @@
-var objectCenterSizeDialogVisible = false;
-
-
-
 function showObjectCenterSizeDialog()
 {
-    if (minZoomDialogVisible)
-        hideMinZoomDialog();
-
-
     objectCenterSizeDialog.style.left      = '50%';
     objectCenterSizeDialog.style.top       = '50%';
     objectCenterSizeDialog.style.transform = 'translateX(-50%) translateY(-50%)';
 
-    objectCenterSizeDialog.style.display   = 'block';
-    objectCenterSizeDialogVisible          = true;
-  
+    
     objectCenterSizeTitle.buttonDown0      = false;
-       
+    
     objectCenterSizeTitle.moveStart        = point_NaN;
     objectCenterSizeTitle.pStart           = point_NaN;
     
     objectCenterSizeInput.value = numToString(settings.objectCenterSize);
     objectCenterSizeInput.select();
 
+
+    showDialog(objectCenterSizeDialog);
+
+
     window.setTimeout(() => document.getElementById("objectCenterSizeInput").focus(), 0);
-}
-
-
-
-function hideObjectCenterSizeDialog()
-{
-    objectCenterSizeDialog.style.display = 'none';
-    objectCenterSizeDialogVisible        = false;
 }
 
 
@@ -107,7 +93,7 @@ objectCenterSizeInput.addEventListener('keydown', e =>
                 pushUpdate(null, graph.nodes.filter(n => n.active));
             }
 
-            hideObjectCenterSizeDialog();
+            hideDialog(objectCenterSizeDialog);
             break;
         }
     }

@@ -5,7 +5,7 @@ function initRestartDialog()
     chkHideRestart.addEventListener('change', () => updateSettingAndMenu('showRestartInfo', true, !chkHideRestart.checked));
 
     restartBack .addEventListener('pointerdown', e  => e.preventDefault());
-    restartBack .addEventListener('pointerdown', () => hideRestartDialog());
+    restartBack .addEventListener('pointerdown', () => hideDialog(restartDialog));
     restartClose.addEventListener('pointerdown', e  => e.stopPropagation());
 }
 
@@ -13,27 +13,14 @@ function initRestartDialog()
 
 function showRestartDialog()
 {
-    restartBack  .style.display = 'block';
-    restartDialog.style.display = 'block';
+    showDialog(restartDialog);
 
     chkHideRestart.checked = false;
-    
-    dialogShown = true;
-}
-
-
-
-function hideRestartDialog()
-{
-    restartBack  .style.display = 'none';
-    restartDialog.style.display = 'none';
-
-    dialogShown = false;
 }
 
 
 
 restartBack.addEventListener('pointerdown', () =>
 {
-    hideRestartDialog();
+    hideDialog(restartDialog);
 });

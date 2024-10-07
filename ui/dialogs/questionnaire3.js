@@ -29,22 +29,8 @@ function initQuestion3Dialog()
 
 function showQuestion3Dialog()
 {
-    question3Back  .style.display = 'block';
-    question3Dialog.style.display = 'block';
-
+    showDialog(question3Dialog, question3Back);
     setTimeout(() => questionEmail.focus(), 100);
-
-    dialogShown = true;
-}
-
-
-
-function hideQuestion3Dialog()
-{
-    question3Back  .style.display = 'none';
-    question3Dialog.style.display = 'none';
-
-    dialogShown = false;
 }
 
 

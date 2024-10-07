@@ -295,14 +295,9 @@ function finalizeInit(activate)
         {
             if (!ignoreUsers.includes(currentUser.id))
             {
-                if (!response.hasQuestionnaire)
-                    showQuestionDialog();
-
-                else if (response.nSessions == 5)
-                    showQuestion2Dialog();
-
-                else if (response.nSessions == 13)
-                    showQuestion3Dialog();
+                     if (!response.hasQuestionnaire) showQuestionDialog ();
+                else if (response.nSessions ==  5  ) showQuestion2Dialog();
+                else if (response.nSessions == 13  ) showQuestion3Dialog();
             }
         })
         .catch(e =>

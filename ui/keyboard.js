@@ -321,12 +321,8 @@ document.addEventListener('keydown', e =>
             graphView.cancelConnection(graphView.connPointerId);
         }
 
-
-        else if (isVisible(whatsNewDialog         )) hideWhatsNewDialog();
-        else if (isVisible(minZoomDialog          )) hideMinZoomDialog();
-        //else if (isVisible(subscriptionDialog   )) hideSubscriptionDialog(); // no escape for subscriptions
-        else if (isVisible(aboutDialog            )) hideAboutDialog();
-        else if (isVisible(deleteConnectionsDialog)) hideDeleteConnectionsDialog();
+        else if (currentDialog) 
+            hideCurrentDialog();
 
         else if (!isEmpty(graphView.selectedNodes))
             graphView.deselectAllNodes(e.shiftKey);

@@ -8,6 +8,9 @@ var   overNumberControlCtrl = null;
 var   numberControlChanging = null;
 
 
+var   currentDialog         = null;
+
+
 const graph                 = new Graph();
 var   graphView             = new GraphView(_graphView);
          
@@ -144,4 +147,42 @@ function hideTutorialsArrow()
 
     findTutorials.style.display = 'none';
     uiSetLocalData('tutorials', 'true');
+}
+
+
+
+function showDialog(dialog, back = null, hideCurrent = true)
+{
+    if (hideCurrent)
+        hideCurrentDialog();
+
+    dialog.style.display = 'block';
+    dialog.back          =  back;
+
+    if (dialog.back)
+        dialog.back.style.display = 'block';
+
+    currentDialog = dialog;
+}
+
+
+
+function hideDialog(dialog, hideBack = true)
+{
+    dialog.style.display = 'none';
+
+    if (   dialog.back
+        && hideBack   )
+        dialog.back.style.display = 'none';
+
+    if (currentDialog == dialog)
+        currentDialog = null;
+}
+
+
+
+function hideCurrentDialog()
+{
+    if (currentDialog)
+        hideDialog(currentDialog);
 }

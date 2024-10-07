@@ -100,25 +100,11 @@ function initWhatsNewDialog()
 
 function showWhatsNewDialog()
 {
-    whatsNewBack  .style.display = 'block';
-    whatsNewDialog.style.display = 'block';
-    //whatsNewClose .style.display = 'block';
+    showDialog(whatsNewDialog, whatsNewBack);
 
     whatsNewSuggestUpgrade.style.display = subscribed() ? 'none' : 'inline';
 
     updateWhatsNewScroll();
-
-    dialogShown = true;
-}
-
-
-
-function hideWhatsNewDialog()
-{
-    whatsNewBack  .style.display = 'none';
-    whatsNewDialog.style.display = 'none';
-
-    dialogShown = false;
 }
 
 
@@ -129,7 +115,7 @@ whatsNewClose.addEventListener('pointerdown', e => e.stopPropagation());
 
 whatsNewBack.addEventListener('pointerdown', () =>
 {
-    hideWhatsNewDialog();
+    hideDialog(whatsNewDialog);
 });
 
 

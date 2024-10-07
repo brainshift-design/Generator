@@ -1,7 +1,6 @@
-var subscription              = NULL;
+var subscription  = NULL;
 
-var checkoutTimer           = -1;
-var subscriptionDialogShown = false;
+var checkoutTimer = -1;
 
 
 
@@ -108,16 +107,15 @@ function onValidateClick()
 
 function showSubscriptionDialog(activate, showBack = true)
 {
-    subscriptionBack  .style.display = 'block';
-    subscriptionDialog.style.display = 'block';
+    showDialog(subscriptionDialog);
 
     subscriptionBack.style.backgroundColor = showBack ? '#0005' : 'transparent';
     
     //subscriptionUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
     
-    
     updateSubscriptionDialog();
 
+    
     //subscriptionInputBack.innerHTML = license ? '' : '•'.repeat(13);
     
     // subscriptionInput.value         = subscription;
@@ -144,9 +142,6 @@ function showSubscriptionDialog(activate, showBack = true)
     //     dialogShown             = true;
     //     subscriptionDialogShown = true;
     // });
-
-    dialogShown             = true;
-    subscriptionDialogShown = true;
 
     //subscribeWebsite.style.display = 'block';//activate || !subscriptionActive || subscribed() ? 'none' : 'block';
 }
@@ -187,11 +182,7 @@ function hideSubscriptionDialog()
     if (checkoutTimer >= 0)
         clearInterval(checkoutTimer);
 
-    subscriptionBack  .style.display = 'none';
-    subscriptionDialog.style.display = 'none';
-
-    dialogShown             = false;
-    subscriptionDialogShown = false;
+    hideDialog(subscriptionDialog);
 }
 
 

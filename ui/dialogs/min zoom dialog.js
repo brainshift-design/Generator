@@ -1,37 +1,23 @@
-var minZoomDialogVisible = false;
-
-
-
 function showMinZoomDialog()
 {
-    if (objectBatchDialogVisible)
-        hideObjectBatchDialog();
-
-        
     minZoomDialog.style.left      = '50%';
     minZoomDialog.style.top       = '50%';
     minZoomDialog.style.transform = 'translateX(-50%) translateY(-50%)';
 
-    minZoomDialog.style.display   = 'block';
-    minZoomDialogVisible          = true;
-  
+    
     minZoomTitle.buttonDown0      = false;
-       
+    
     minZoomTitle.moveStart        = point_NaN;
     minZoomTitle.pStart           = point_NaN;
     
     minZoomInput.value = numToString(settings.minZoomForParams * 100, -1) + '%';
     minZoomInput.select();
 
+
+    showDialog(minZoomDialog);
+
+
     window.setTimeout(() => document.getElementById("minZoomInput").focus(), 0);
-}
-
-
-
-function hideMinZoomDialog()
-{
-    minZoomDialog.style.display = 'none';
-    minZoomDialogVisible        = false;
 }
 
 
@@ -102,7 +88,7 @@ minZoomInput.addEventListener('keydown', e =>
                 updateZoomIcon();
             }
 
-            hideMinZoomDialog();
+            hideDialog(minZoomDialog);
             break;
         }
     }

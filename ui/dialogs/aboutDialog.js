@@ -6,7 +6,7 @@ function initAboutDialog()
     aboutBack.addEventListener('pointerdown', e => 
     {
         e.preventDefault();
-        hideAboutDialog();
+        hideDialog(aboutDialog);
     });
 
     aboutClose.addEventListener('pointerdown', e  => e.stopPropagation());
@@ -18,22 +18,9 @@ function initAboutDialog()
 
 function showAboutDialog()
 {
-    aboutBack  .style.display = 'block';
-    aboutDialog.style.display = 'block';
+    showDialog(aboutDialog, aboutBack);
 
     //aboutUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">Your Figma user ID:&nbsp;&nbsp;</span>' + currentUser.id;
-
-    dialogShown = true;
-}
-
-
-
-function hideAboutDialog()
-{
-    aboutBack  .style.display = 'none';
-    aboutDialog.style.display = 'none';
-
-    dialogShown = false;
 }
 
 
@@ -49,5 +36,5 @@ function copyUserId()
 
 aboutBack.addEventListener('pointerdown', () =>
 {
-    hideAboutDialog();
+    hideDialog(aboutDialog);
 });

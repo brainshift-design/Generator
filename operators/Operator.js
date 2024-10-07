@@ -733,10 +733,6 @@ class Operator
         this._selected = sel;
 
         this.updateBorder();
-
-        //if (deleteConnectionsDialogVisible)
-        //if (minZoomDialogVisible)
-        //    hideMinZoomDialog();
     }
     
 

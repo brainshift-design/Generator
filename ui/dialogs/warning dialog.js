@@ -1,7 +1,3 @@
-var warningDialogVisible = false;
-
-
-
 function checkFileWarningDialog(success)
 {
     if (graph.currentPage.nodes.length > 0)
@@ -31,24 +27,14 @@ function showWarningDialog(title, message, yes, no, success)
     warningDialog.style.top          = '50%';
     warningDialog.style.transform    = 'translateX(-50%) translateY(-50%)';
  
-    warningDialogBack.style.display  = 'block';
-    warningDialog    .style.display  = 'block';
-     
-    warningDialogVisible             = true;
-    
+
     warningDialogTitle.buttonDown0   = false;
          
     warningDialogTitle.moveStart     = point_NaN;
     warningDialogTitle.pStart        = point_NaN;
-}
 
 
-
-function hideWarningDialog()
-{
-    warningDialogBack.style.display = 'none';
-    warningDialog    .style.display = 'none';
-    warningDialogVisible            = false;
+    showDialog(warningDialog);
 }
 
 
@@ -97,5 +83,5 @@ function warningDialogToNodes(str)
     uiRemoveConnsToNodes(nodeIds);
 
     if (!isEmpty(nodeIds))
-        hideWarningDialog();
+        hideDialog(warningDialog);
 }

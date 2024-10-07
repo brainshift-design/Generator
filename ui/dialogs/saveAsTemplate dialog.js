@@ -1,9 +1,8 @@
-var saveAsTemplateDialogVisible = false;
-
-
-
 function showSaveAsTemplateDialog()
 {
+    hideCurrentDialog();
+
+
     saveAsTemplateDialog.copiedJson      = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
     saveAsTemplateDialog.nameToDelete    = '';
 
@@ -15,34 +14,25 @@ function showSaveAsTemplateDialog()
     saveAsTemplateDialog.style.top       = '50%';
     saveAsTemplateDialog.style.transform = 'translateX(-50%) translateY(-50%)';
 
-    saveAsTemplateBack  .style.display   = 'block';
-    saveAsTemplateDialog.style.display   = 'block';
-    saveAsTemplateDialogVisible          =  true;
-  
+
     saveAsTemplateTitle.buttonDown0      = false;
-       
+    
     saveAsTemplateTitle.moveStart        = point_NaN;
     saveAsTemplateTitle.pStart           = point_NaN;
     
     // TODO suggest correct template name with increment
-
+    
     saveAsTemplateInput.value            = 'template';
     saveAsTemplateInput.select();
+    
 
     updateSaveAsTemplateInputBack();
+ 
+    
+    showDialog(saveAsTemplateDialog, saveAsTemplateBack);
 
 
     window.setTimeout(() => document.getElementById("saveAsTemplateInput").focus(), 0);
-}
-
-
-
-function hideSaveAsTemplateDialog()
-{
-    saveAsTemplateDialog.style.display = 'none';
-    saveAsTemplateBack  .style.display = 'none';
-
-    saveAsTemplateDialogVisible = false;
 }
 
 
@@ -88,10 +78,10 @@ saveAsTemplateInput.addEventListener('keydown', e =>
         || e.code == 'NumpadEnter')
     {
         saveSelectedAsTemplate(saveAsTemplateInput.value); 
-        hideSaveAsTemplateDialog();
+        hideDialog(saveAsTemplateDialog);
     }
     else if (e.code == 'Escape')
-        hideSaveAsTemplateDialog();
+        hideDialog(saveAsTemplateDialog);
 });
 
 

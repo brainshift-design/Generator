@@ -90,28 +90,11 @@ function showCrashDialog()
 {
     crashed = true;
 
-
     if (loadRestartTimer) 
     {
         clearTimeout(loadRestartTimer);
         loadRestartTimer = null;
     }
 
-
-    crashBack  .style.display = 'block';
-    crashDialog.style.display = 'block';
-
-    dialogShown = true;
-}
-
-
-
-function hideCrashDialog(hideBack = true)
-{
-    if (hideBack)
-        crashBack.style.display = 'none';
-    
-    crashDialog.style.display = 'none';
-
-    dialogShown = false;
+    showDialog(crashDialog, crashBack);
 }

@@ -22,9 +22,7 @@ window.addEventListener('gestureend',    e => e.preventDefault());
 
 
 
-var crashed     = false;
-var dialogShown = false;
-
+var crashed = false;
 var darkMode;
 
 
@@ -38,9 +36,9 @@ function checkResize(x, y)
     }
 
 
-    // document.canResizeL = false;//!dialogShown &&                      x <= resizeEdgeWidth;
-    // document.canResizeR = !dialogShown && window.innerWidth  - x <= resizeEdgeWidth;
-    // document.canResizeB = !dialogShown && window.innerHeight - y <= resizeEdgeWidth;
+    // document.canResizeL = false;//!currentDialog &&                      x <= resizeEdgeWidth;
+    // document.canResizeR = !currentDialog && window.innerWidth  - x <= resizeEdgeWidth;
+    // document.canResizeB = !currentDialog && window.innerHeight - y <= resizeEdgeWidth;
 
     
     // if (     document.canResizeR

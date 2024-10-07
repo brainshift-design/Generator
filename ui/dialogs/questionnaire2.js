@@ -24,18 +24,5 @@ function initQuestion2Dialog()
 
 function showQuestion2Dialog()
 {
-    question2Back  .style.display = 'block';
-    question2Dialog.style.display = 'block';
-
-    dialogShown = true;
-}
-
-
-
-function hideQuestion2Dialog()
-{
-    question2Back  .style.display = 'none';
-    question2Dialog.style.display = 'none';
-
-    dialogShown = false;
+    showDialog(question2Dialog, question2Back);
 }

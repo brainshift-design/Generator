@@ -4,20 +4,7 @@ function showDebugWarningDialog(crash = false)
     
     window.getSelection().removeAllRanges();
 
-    debugWarningBack  .style.display = 'block';
-    debugWarningDialog.style.display = 'block';
-
-    dialogShown = true;
-}
-
-
-
-function hideDebugWarningDialog()
-{
-    debugWarningBack  .style.display = 'none';
-    debugWarningDialog.style.display = 'none';
-
-    dialogShown = false;
+    showDialog(debugWarningDialog, debugWarningBack);
 }
 
 
@@ -32,7 +19,7 @@ function btnAcceptDebugWarning_onclick()
     hideAllMenus(); 
     
     uiSetLocalData('debugWarning', 'true');
-    hideDebugWarningDialog();
+    hideDialog(debugWarningDialog);
 
     updateSettingAndMenu('showDebugMenu', true, !settings.showDebugMenu); updateMenuItemShowDebugMenu();
 }

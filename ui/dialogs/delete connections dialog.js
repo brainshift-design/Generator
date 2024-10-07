@@ -1,35 +1,25 @@
-var deleteConnectionsDialogVisible = false;
-
-
-
 function showDeleteConnectionsDialog()
 {
     deleteConnectionsDialog.style.left      = '50%';
     deleteConnectionsDialog.style.top       = '50%';
     deleteConnectionsDialog.style.transform = 'translateX(-50%) translateY(-50%)';
 
-    deleteConnectionsDialog.style.display   = 'block';
-    deleteConnectionsDialogVisible          = true;
-  
+    
     deleteConnectionsTitle.buttonDown0      = false;
-       
+    
     deleteConnectionsTitle.moveStart        = point_NaN;
     deleteConnectionsTitle.pStart           = point_NaN;
     
     deleteConnectionsInput.value            = graphView.selectedNodes.map(n => n.id).join(', ');
-
+    
+    
     updateDeleteConnectionsInputBack();
 
+    
+    showDialog(deleteConnectionsDialog);
+    
 
     window.setTimeout(() => document.getElementById("deleteConnectionsInput").focus(), 0);
-}
-
-
-
-function hideDeleteConnectionsDialog()
-{
-    deleteConnectionsDialog.style.display = 'none';
-    deleteConnectionsDialogVisible        = false;
 }
 
 
@@ -99,5 +89,5 @@ function deleteConnectionsToNodes(str)
     uiRemoveConnsToNodes(nodeIds);
 
     if (!isEmpty(nodeIds))
-        hideDeleteConnectionsDialog();
+        hideDialog(deleteConnectionsDialog);
 }

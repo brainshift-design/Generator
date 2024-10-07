@@ -40,18 +40,5 @@ function initMultiplayerDialog(event, error, showDebugButton = true)
 
 function showMultiplayerDialog()
 {
-    multiplayerBack  .style.display = 'block';
-    multiplayerDialog.style.display = 'block';
-
-    dialogShown = true;
-}
-
-
-
-function hideMultiplayerDialog()
-{
-    multiplayerBack  .style.display = 'none';
-    multiplayerDialog.style.display = 'none';
-
-    dialogShown = false;
+    showDialog(multiplayerDialog, multiplayerBack);
 }
