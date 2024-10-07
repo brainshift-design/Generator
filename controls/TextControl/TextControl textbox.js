@@ -4,7 +4,7 @@ TextControl.prototype.initTextarea = function(textbox, textBehind)
     this.textbox                    = textbox;
 
     this.textbox.control            = this;
-    this.textbox.defPlaceholder     = '...';//' . . .';
+    this.textbox.defPlaceholder     = '...';
     this.textbox.placeholder        = this.textbox.defPlaceholder;
     this.textbox.style.textAlign    = 'center';
 
