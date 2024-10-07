@@ -35,6 +35,7 @@
 ../html/eula.html
 ../html/minZoom.html
 ../html/objectBatch.html
+../html/variableNullsDialog.html
 ../html/maxSolveIterations.html
 ../html/objectCenterSize.html
 ../html/whatsNew.html

@@ -1,0 +1,131 @@
+#variableNullsDialog
+{
+    display:       none;
+
+    font-family:   Inter, sans-serif;
+
+    z-index:       2;
+    position:      absolute;
+    width:         200px;
+    height:        206px;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border-radius: 4px;
+}
+
+
+.figma-light #variableNullsDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #variableNullsDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#variableNullsTitle
+{
+    height:         40px;
+    font-weight:    900;
+    border-top:     1px solid var(--figma-color-bg-tertiary);
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
+}
+
+
+#variableNullsTitleText
+{
+    position:       absolute;
+    left:           16px;
+    top:            12px;
+    
+    font-style:     normal;
+    font-weight:    600;
+    font-size:      11px;
+    line-height:    16px;
+    
+    display:        flex;
+    align-items:    center;
+    letter-spacing: 0.005em;
+    
+    color:          var(--figma-color-text);
+}
+
+
+#numberVarNullContainer,
+#booleanVarNullContainer,
+#stringVarNullContainer,
+#colorVarNullContainer
+{
+    background:     transparent;
+    font-size:      11px;
+      
+    width:          170px;
+    height:         26px;
+ 
+    padding-left:   6px;
+    padding-right:  6px;
+    padding-top:   -2px;
+    padding-bottom: 2px;
+
+    margin-top:     12px;
+    margin-bottom: -3px;
+
+    position:       absolute;
+    left:           12px;
+}
+
+
+#numberVarNullInput,
+#booleanVarNullInput,
+#stringVarNullInput,
+#colorVarNullInput
+{
+    background:     transparent;
+    font-size:      11px;
+      
+    width:          110px;
+    height:         26px;
+ 
+    padding-left:   6px;
+    padding-top:   -2px;
+    padding-bottom: 2px;
+
+    margin-bottom: -3px;
+
+    position:       absolute;
+    left:           65px;
+}
+
+
+#numberVarNullContainer  { top:  42px; }
+#booleanVarNullContainer { top:  80px; }
+#stringVarNullContainer  { top: 118px; }
+#colorVarNullContainer   { top: 156px; }
+
+
+/* .varNullContainer 
+{
+    box-shadow: 0 0 0 1px red inset;
+} */
+
+
+.varNullContainer label 
+{
+    font-family:  Inter;
+    font-size:    11px;
+    color:        var(--figma-color-text-secondary);
+    margin-right: 10px;
+    position:     relative;
+    top:          6px;
+}
+
+.figma-dark  .varNullContainer label { font-weight: 500; }
+.figma-light .varNullContainer label { font-weight: 400; }

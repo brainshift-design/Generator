@@ -30,7 +30,7 @@
     height:        234px;
     
     color:         var(--figma-color-text);
-    background:    var(--figma-color-bg);
+    background:    var(--figma-color-bg  );
     
     border:        0.5px solid rgba(0, 0, 0, 0.2);
 

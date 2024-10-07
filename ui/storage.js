@@ -42,11 +42,12 @@ async function uiReturnFigGetLocalData(msg)
             break;
 
         case 'objectBatchSize':
-        case 'maxSolveIterations':
-            if (!isNaN(msg.value))
-                updateSetting(msg.key, parseInt(msg.value));
-    
-            break;
+        case 'maxSolveIterations':  if (!isNaN(msg.value)) updateSetting(msg.key, parseInt  (msg.value)); break;
+        case 'numberVarNullValue':  if (!isNaN(msg.value)) updateSetting(msg.key, parseFloat(msg.value)); break;
+        case 'booleanVarNullValue': if (!isNaN(msg.value)) updateSetting(msg.key, parseBool (msg.value)); break;
+        case 'stringVarNullValue':  if (!isNaN(msg.value)) updateSetting(msg.key,            msg.value ); break;
+        case 'colorVarNullValue':   if (!isNaN(msg.value)) updateSetting(msg.key,            msg.value ); break;
+
 
         case 'debugMode':
 

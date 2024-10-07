@@ -6202,6 +6202,10 @@ const settings =
     objectCenterSize:              18,
     objectBatchSize:               500,
     maxSolveIterations:            100,
+    numberVarNullValue:            0,
+    booleanVarNullValue:           false,
+    stringVarNullValue:            '',
+    colorVarNullValue:             '#FF00FF',
     showPages:                     false,
     showAllColorSpaces:            false,
     showNodeIcons:                 true,
@@ -6276,6 +6280,10 @@ function updateSetting(settingName, value)
         case 'objectCenterSize':              settings.objectCenterSize              = value;  break;
         case 'objectBatchSize':               settings.objectBatchSize               = value;  break;
         case 'maxSolveIterations':            settings.maxSolveIterations            = value;  break;
+        case 'numberVarNullValue':            settings.numberVarNullValue            = value;  break;
+        case 'booleanVarNullValue':           settings.booleanVarNullValue           = value;  break;
+        case 'stringVarNullValue':            settings.stringVarNullValue            = value;  break;
+        case 'colorVarNullValue':             settings.colorVarNullValue             = value;  break;
         case 'showPages':                     settings.showPages                     = value;  break;
         case 'showAllColorSpaces':            settings.showAllColorSpaces            = value;  break;
         case 'showNodeIcons':                 settings.showNodeIcons                 = value;  break;
@@ -6689,6 +6697,10 @@ function loadLocalSettings()
     uiGetLocalData('objectCenterSize'             );
     uiGetLocalData('objectBatchSize'              );
     uiGetLocalData('maxSolveIterations'           );
+    uiGetLocalData('numberVarNullValue'           );
+    uiGetLocalData('booleanVarNullValue'           );
+    uiGetLocalData('stringVarNullValue'           );
+    uiGetLocalData('colorVarNullValue'           );
     uiGetLocalData('showAllColorSpaces'           );
     uiGetLocalData('showNodeIcons'                );
     uiGetLocalData('showBoolValues'               );

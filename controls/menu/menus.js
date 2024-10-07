@@ -159,6 +159,7 @@ var menuItemEnableZoomedOutParams;
 var menuItemMinZoomForParams;
 var menuItemObjectCenterSize;
 var menuItemObjectBatchSize;
+var menuItemVariableNulls;
 var menuItemMaxSolveIterations;
 var menuItemShowPages;
 var menuPrefSep1;
@@ -1345,7 +1346,8 @@ function initPreferenceMenus()
       //                                     new MenuItem('',                                         null, false, {separator: true}),    
         menuItemObjectCenterSize           = new MenuItem('Object center size . . .',                 null, false, {callback: () => showObjectCenterSizeDialog()}),
         menuItemObjectBatchSize            = new MenuItem('Update batch size . . .',                  null, false, {callback: () => showObjectBatchDialog()}),
-        menuItemMaxSolveIterations         = new MenuItem('Maximum solve iterations. . .',            null, false, {callback: () => showMaxSolveIterationsDialog()})]);
+        menuItemMaxSolveIterations         = new MenuItem('Maximum solve iterations. . .',            null, false, {callback: () => showMaxSolveIterationsDialog()}),
+        menuItemVariableNulls              = new MenuItem('Variable null values . . .',               null, false, {callback: () => showVariableNullsDialog()})]);
         
 
     menuItemShowBoolValues.divName.innerHTML = 'Show boolean values as   <span style="position: relative; top: 1px;">' + TRUE_DISPLAY_MENU + '</span>  <span>' + FALSE_DISPLAY_MENU + '</span>';
