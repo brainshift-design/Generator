@@ -11,21 +11,25 @@ function showVariableNullsDialog()
     variableNullsTitle.pStart           = point_NaN;
     
 
-     numberVarNullInput.value = numToString (settings.numberVarNullValue );
-    booleanVarNullInput.value = boolToString(settings.booleanVarNullValue);
-     stringVarNullInput.value = settings.stringVarNullValue;
-      colorVarNullInput.value = settings.colorVarNullValue;
-    
-
-    initVarNullInput( numberVarNullInput);
-    initVarNullInput(booleanVarNullInput);
-    initVarNullInput( stringVarNullInput);
-    initVarNullInput(  colorVarNullInput);
-
      numberVarNullIcon.innerHTML = iconSmallVarNumber .replaceAll('white', 'var(--figma-color-text-secondary)');
     booleanVarNullIcon.innerHTML = iconSmallVarBoolean.replaceAll('white', 'var(--figma-color-text-secondary)');
      stringVarNullIcon.innerHTML = iconSmallVarText   .replaceAll('white', 'var(--figma-color-text-secondary)');
       colorVarNullIcon.innerHTML = iconSmallVarColor  .replaceAll('white', 'var(--figma-color-text-secondary)');
+
+      numberVarNullInput.value   = numToString (settings.numberVarNullValue );
+     booleanVarNullInput.value   = boolToString(settings.booleanVarNullValue);
+      stringVarNullInput.value   = settings.stringVarNullValue;
+       colorVarNullInput.value   = settings.colorVarNullValue;
+
+    numberVarNullInput.parseFunc = str => parseFloat(str).toString();
+    stringVarNullInput.parseFunc = str => str.trim();
+     colorVarNullInput.parseFunc = str => rgb2hex(hex2rgb(str));
+
+
+    initVarNullInput( numberVarNullInput, 'numberVarNullValue');
+  //initVarNullInput(booleanVarNullInput, 'booleanVarNullValue');
+    initVarNullInput( stringVarNullInput, 'stringVarNullValue');
+    initVarNullInput(  colorVarNullInput, 'colorVarNullValue');
 
     showDialog(variableNullsDialog);
       
@@ -70,42 +74,26 @@ variableNullsTitle.addEventListener('pointerup', e =>
 
 
 
-function initVarNullInput(input)
+function initVarNullInput(input, setting)
 {
     input.addEventListener('keydown', e => 
     {
         e.stopPropagation();
 
-        
-        if (   (   e.key < '0' 
-                || e.key > '9')
-            &&  e.code != 'Backspace'
-            &&  e.code != 'Delete'
-            &&  e.code != 'Enter'
-            &&  e.code != 'NumpadEnter'
-            && !isArrowKey(e.code))
-            e.preventDefault();    
-            
-            
-        // switch (e.code)
-        // {
-        //     case 'Enter':
-        //     case 'NumpadEnter':
-        //     {
-        //         const variableNullsSize = parseInt(input.value);
-
-        //         if (!isNaN(variableNullsSize))
-        //         {
-        //             updateSetting('variableNullsSize', variableNullsSize);
-        //             uiSetLocalData('variableNullsSize', settings.variableNullsSize);
-        //         }
-
-        //         hideDialog(variableNullsDialog);
-        //         break;
-        //     }
-        // }
+        switch (e.code)
+        {
+            case 'Enter':
+            case 'NumpadEnter':
+                input.blur();
+                break;
+        }
     });
     
+    
+    input.addEventListener('focusout', e => 
+    {
+        variableNullSave(input, setting);
+    });
     
     
     input.addEventListener('pointerup', e =>
@@ -118,4 +106,17 @@ function initVarNullInput(input)
             menuText.showAt(e.clientX, e.clientY, false, false);
         }
     });
+}
+
+
+
+function variableNullSave(input, setting)
+{
+    const inputValue = input.parseFunc(input.value);
+
+    if (!isNaN(inputValue))
+    {
+        updateSetting(setting, inputValue);
+        uiSetLocalData(setting, settings[setting]);
+    }
 }
