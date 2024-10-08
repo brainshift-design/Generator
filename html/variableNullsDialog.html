@@ -1,7 +1,7 @@
 <div id="variableNullsDialog">
 
     <div id="variableNullsTitle">
-        <div id="variableNullsTitleText">Variable null values</div>
+        <div id="variableNullsTitleText">Defaults for  ?  variables</div>
         <div class="panelButton dialogButtonClose" id="variableNullsClose" onclick="hideAllMenus(); variableNullsClose.blur(); hideDialog(variableNullsDialog);">
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
@@ -10,10 +10,10 @@
     </div>
     
     <div id="variableNullsBody">
-        <div class="varNullContainer" id="numberVarNullContainer"><label for="numberVarNullInput"> Number</label><input type="text" spellcheck="false" id="numberVarNullInput" /></div>
-        <div class="varNullContainer" id="booleanVarNullContainer"><label>Boolean</label><label for="booleanVarNullInput"><input type="checkbox" id="booleanVarNullInput" /><div class="checkmark" id="booleanVarNullCheckbox"><div class="checkmarkFill"></div><div class="checkmarkBall"></div></div></label></div>
-        <div class="varNullContainer" id="stringVarNullContainer"><label for="stringVarNullInput"> String</label><input type="text" spellcheck="false" placeholder=" . . ." id="stringVarNullInput" /></div>
-        <div class="varNullContainer" id="colorVarNullContainer"><label for="colorVarNullInput">  Color</label><input type="text" spellcheck="false" id="colorVarNullInput" /></div>
+        <div class="varNullContainer" id="numberVarNullContainer"><div class="nullVarIcon"><div class="nullVarInner" id="numberVarNullIcon"></div></div><label for="numberVarNullInput">Number</label><input type="text" tabindex="0" spellcheck="false" id="numberVarNullInput" /></div>
+        <div class="varNullContainer" id="booleanVarNullContainer"><div class="nullVarIcon"><div class="nullVarInner" id="booleanVarNullIcon"></div></div><label>Boolean</label><label for="booleanVarNullInput"><input type="checkbox" tabindex="1" id="booleanVarNullInput" /><div class="checkmark" id="booleanVarNullCheckbox"><div class="checkmarkFill"></div><div class="checkmarkBall"></div></div></label></div>
+        <div class="varNullContainer" id="stringVarNullContainer"><div class="nullVarIcon"><div class="nullVarInner" id="stringVarNullIcon"></div></div><label for="stringVarNullInput">String</label><input type="text" tabindex="2" spellcheck="false" placeholder=" . . ." id="stringVarNullInput" /></div>
+        <div class="varNullContainer" id="colorVarNullContainer"><div class="nullVarIcon"><div class="nullVarInner" id="colorVarNullIcon"></div></div><label for="colorVarNullInput">Color</label><input type="text" tabindex="3" spellcheck="false" id="colorVarNullInput" /></div>
     </div>
 
 </div>
