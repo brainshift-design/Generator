@@ -7,7 +7,8 @@
     z-index:       2;
     position:      absolute;
     width:         220px;
-    height:        206px;
+    height:        168px;
+    /* height:        206px; */
     
     color:         var(--figma-color-text);
     background:    var(--figma-color-bg);
@@ -85,7 +86,7 @@
 
 #numberVarNullInput,
 #booleanVarNullInput,
-#stringVarNullInput,
+/*#stringVarNullInput,*/
 #colorVarNullInput
 {
     background:     transparent;
@@ -97,7 +98,7 @@
 
 
 #numberVarNullInput,
-#stringVarNullInput,
+/*#stringVarNullInput,*/
 #colorVarNullInput
 {
     width:          110px;
@@ -171,8 +172,9 @@
 
 #numberVarNullContainer  { top:  42px; }
 #booleanVarNullContainer { top:  80px; }
-#stringVarNullContainer  { top: 118px; }
-#colorVarNullContainer   { top: 156px; }
+#colorVarNullContainer   { top: 118px; }
+/* #stringVarNullContainer  { top: 118px; }
+#colorVarNullContainer   { top: 156px; } */
 
 
 #booleanVarNullContainer input 

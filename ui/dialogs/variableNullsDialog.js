@@ -13,22 +13,42 @@ function showVariableNullsDialog()
 
      numberVarNullIcon.innerHTML = iconSmallVarNumber .replaceAll('white', 'var(--figma-color-text-secondary)');
     booleanVarNullIcon.innerHTML = iconSmallVarBoolean.replaceAll('white', 'var(--figma-color-text-secondary)');
-     stringVarNullIcon.innerHTML = iconSmallVarText   .replaceAll('white', 'var(--figma-color-text-secondary)');
+    // stringVarNullIcon.innerHTML = iconSmallVarText   .replaceAll('white', 'var(--figma-color-text-secondary)');
       colorVarNullIcon.innerHTML = iconSmallVarColor  .replaceAll('white', 'var(--figma-color-text-secondary)');
 
       numberVarNullInput.value   = numToString (settings.numberVarNullValue );
      booleanVarNullInput.value   = boolToString(settings.booleanVarNullValue);
-      stringVarNullInput.value   = settings.stringVarNullValue;
+    //  stringVarNullInput.value   = settings.stringVarNullValue;
        colorVarNullInput.value   = settings.colorVarNullValue;
 
-    numberVarNullInput.parseFunc = str => parseFloat(str).toString();
-    stringVarNullInput.parseFunc = str => str.trim();
-     colorVarNullInput.parseFunc = str => rgb2hex(hex2rgb(str));
+
+    numberVarNullInput.parseFunc = str => 
+    {
+        const num = parseFloat(str);
+
+        return !isNaN(num) 
+             ? num.toString() 
+             : null;
+    };
+
+    // stringVarNullInput.parseFunc = str => 
+    // {
+    //     return str.trim();
+    // }
+
+    colorVarNullInput.parseFunc = str => 
+    {
+        const rgb = getTextToColorValue(str).toRgb();
+        
+        return rgb 
+             ? '#' + rgb2hex(rgb) 
+             : null;
+    }
 
 
     initVarNullInput( numberVarNullInput, 'numberVarNullValue');
   //initVarNullInput(booleanVarNullInput, 'booleanVarNullValue');
-    initVarNullInput( stringVarNullInput, 'stringVarNullValue');
+  //initVarNullInput( stringVarNullInput, 'stringVarNullValue');
     initVarNullInput(  colorVarNullInput, 'colorVarNullValue');
 
     showDialog(variableNullsDialog);
@@ -114,9 +134,11 @@ function variableNullSave(input, setting)
 {
     const inputValue = input.parseFunc(input.value);
 
-    if (!isNaN(inputValue))
+    if (inputValue)
     {
         updateSetting(setting, inputValue);
         uiSetLocalData(setting, settings[setting]);
+
+        input.value = inputValue;
     }
 }

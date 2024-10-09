@@ -1,6 +1,9 @@
 function chan2hex(c)
 {
-    return Math.round(c * 0xff).toString(16).padStart(2, '0').toUpperCase();    
+    return Math.round(c * 0xff)
+        .toString(16)
+        .padStart(2, '0')
+        .toUpperCase();    
 }
 
 function rgb2hex(rgb)
@@ -84,15 +87,20 @@ function hex2rgb(hex)
     }
     else if (hex.length == 0)
     {
-        rgb[0] = 0; 
-        rgb[1] = 0; 
-        rgb[2] = 0;         
+        rgb = null;
+
+        // rgb[0] = 0; 
+        // rgb[1] = 0; 
+        // rgb[2] = 0;         
     }
 
 
-    rgb[0] /= 0xff;
-    rgb[1] /= 0xff;
-    rgb[2] /= 0xff;
+    if (rgb)
+    {
+        rgb[0] /= 0xff;
+        rgb[1] /= 0xff;
+        rgb[2] /= 0xff;
+    }
 
     
     return rgb;
@@ -156,17 +164,22 @@ function hex2rgba(hex)
     }
     else if (hex.length == 0)
     {
-        rgba[0] = 0; 
-        rgba[1] = 0; 
-        rgba[2] = 0;         
-        rgba[3] = 0; 
+        rgba = null;
+
+        // rgba[0] = 0; 
+        // rgba[1] = 0; 
+        // rgba[2] = 0;         
+        // rgba[3] = 0; 
     }
 
 
-    rgba[0] /= 0xff;
-    rgba[1] /= 0xff;
-    rgba[2] /= 0xff;
-    rgba[3] /= 0xff;
+    if (rgba)
+    {
+        rgba[0] /= 0xff;
+        rgba[1] /= 0xff;
+        rgba[2] /= 0xff;
+        rgba[3] /= 0xff;
+    }
 
 
     return rgba;

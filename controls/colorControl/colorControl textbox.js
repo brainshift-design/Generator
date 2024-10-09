@@ -303,12 +303,6 @@ ColorControl.prototype.initTextbox = function()
         this.dispatchEvent(e);
             
         
-        // const webColor = htmlColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
-
-        // const rgb = validHex2rgb(webColor ? webColor.color : e.detail.value);
-        // const val = ColorValue.fromRgb(scaleRgb(rgb));
-
-
         let rgb      = validHex2rgb(value);
         let savedRgb = validHex2rgb(savedValue);
 

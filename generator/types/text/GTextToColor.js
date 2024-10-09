@@ -39,13 +39,13 @@ extends GOperator1
 
                     this.value.items.push(
                         item.type == TEXT_VALUE
-                        ? getTextToColorValue(item)
+                        ? getTextToColorValue(item.value.trim())
                         : NumberValue.NaN());   
                 }
             }
             else
             {
-                this.value = getTextToColorValue(input);
+                this.value = getTextToColorValue(input.value.trim());
             }
         }
         else
@@ -67,11 +67,8 @@ extends GOperator1
 
 
 
-function getTextToColorValue(input)
+function getTextToColorValue(str)
 {
-    const str = input.value.trim();
-
-
     let rgb; 
 
 
@@ -94,5 +91,7 @@ function getTextToColorValue(input)
     }
 
     
-    return ColorValue.fromRgb(scaleRgb(rgb));
+    return rgb
+         ? ColorValue.fromRgb(scaleRgb(rgb))
+         : ColorValue.NaN();
 }
