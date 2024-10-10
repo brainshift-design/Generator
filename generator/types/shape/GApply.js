@@ -148,7 +148,7 @@ extends GOperator1//Shape
 
 
 
-    toValue()
+    toNewValue()
     {
         return this.value
              ? this.value.copy()

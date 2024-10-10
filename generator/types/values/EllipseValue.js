@@ -132,7 +132,7 @@ extends ShapeValue
 
 
 
-    toValue()
+    toNewValue()
     {
         return this.copy();
     }

@@ -219,7 +219,7 @@ extends GShape
     }
 
 
-    toValue()
+    toNewValue()
     {
         return this.value.copy();
     }

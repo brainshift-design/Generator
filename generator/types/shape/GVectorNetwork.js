@@ -159,11 +159,11 @@ extends GShape
 
 
 
-    // toValue()
+    // toNewValue()
     // {
     //     const network = new VectorNetworkValue(
     //         this.nodeId,
-    //         this.regions.toValue());
+    //         this.regions.toNewValue());
 
     //     network.copyCustomParams(this.value);
 

@@ -112,8 +112,6 @@ extends GOperator1
                         this.value.space.value = toSpaceIndex;
                     }
 
-                    //console.log('c3 =', c3);
-                    
                     if (!c1) c1 = this.value.c1;
                     if (!c2) c2 = this.value.c2;
                     if (!c3) c3 = this.value.c3;
@@ -168,7 +166,7 @@ extends GOperator1
 
         if (!this.value.space.isValid())
             this.value = new ColorValue(
-                this.space ? this.space.toValue() : NumberValue.NaN(),
+                this.space ? this.space.toNewValue() : NumberValue.NaN(),
                 NumberValue.NaN(),
                 NumberValue.NaN(),
                 NumberValue.NaN());
@@ -190,11 +188,6 @@ extends GOperator1
             ['c2',      this.value.c2   ],
             ['c3',      this.value.c3   ]
         ]);
-
-
-        // if (!this.c1) this.c1 = this.value.c1.copy();
-        // if (!this.c2) this.c2 = this.value.c2.copy();
-        // if (!this.c3) this.c3 = this.value.c3.copy();
 
 
         this.validate();
@@ -232,7 +225,7 @@ extends GOperator1
 
 
 
-    toValue()
+    toNewValue()
     {
         return this.options.enabled
              ? this.value.copy()

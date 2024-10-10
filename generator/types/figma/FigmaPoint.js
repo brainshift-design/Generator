@@ -68,7 +68,7 @@ extends FigmaShape
 
 
 
-    toValue()
+    toNewValue()
     {
         return PointValue.fromObject(this);
     }

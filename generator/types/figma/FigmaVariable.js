@@ -69,7 +69,7 @@ extends FigmaObject
 
 
 
-    toValue()
+    toNewValue()
     {
         return VariableValue.fromObject(this);
     }

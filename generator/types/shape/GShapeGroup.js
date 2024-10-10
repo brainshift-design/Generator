@@ -185,7 +185,7 @@ extends GShapeBase
 
 
 
-    toValue()
+    toNewValue()
     {
         return this.value.copy();
     }

@@ -50,7 +50,7 @@ extends GOperator
             if (!this.input.value)
                 await this.input.eval(parse);
 
-            this.value = this.input.toValue();
+            this.value = this.input.toNewValue();
         }
 
         else if (this.dataType != NULL)
@@ -82,7 +82,7 @@ extends GOperator
 
 
 
-    toValue()
+    toNewValue()
     {
         return this.value.copy();
     }

@@ -245,13 +245,13 @@ extends GShape
 
 
 
-    // toValue()
+    // toNewValue()
     // {
     //     const region = new VectorRegionValue(
     //         this.nodeId,
-    //         this.loops  .toValue(),
-    //         this.winding.toValue(),
-    //         this.props  .toValue());
+    //         this.loops  .toNewValue(),
+    //         this.winding.toNewValue(),
+    //         this.props  .toNewValue());
 
     //     region.copyCustomParams(this.value);
 

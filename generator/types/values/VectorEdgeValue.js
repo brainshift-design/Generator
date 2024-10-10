@@ -124,7 +124,7 @@ extends GValue
 
 
 
-    toValue()
+    toNewValue()
     {
         return this.copy();
     }

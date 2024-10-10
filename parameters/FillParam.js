@@ -134,31 +134,12 @@ extends Parameter
             {
                 const colorName = e.detail.value.toLowerCase();
 
-                if (   colorName == 'rnd'
-                    || colorName == 'rndo'
-                    || colorName == 'rndom'
-                    || colorName == 'rand'
-                    || colorName == 'rando'
-                    || colorName == 'random')
-                {
-                    rgb = [
-                        Math.random(), 
-                        Math.random(), 
-                        Math.random()];
-                }
-                else
-                {
-                    const webColor = htmlColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
-                    if (webColor) e.detail.value = webColor.color;
-
-                    rgb = validHex2rgb(e.detail.value);
-                }
-
-
+                const  rgb = parseColorName(colorName);
                 const _rgb = scaleRgb(rgb);
 
                 this.setValue(FillValue.fromRgb(_rgb, this.controls[1].value), true);
                 
+                e.detail.value    = rgb2hex(rgb);
                 e.preventSetValue = true;
             }
         });

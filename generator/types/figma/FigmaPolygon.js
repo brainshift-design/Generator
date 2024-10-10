@@ -54,7 +54,7 @@ extends FigmaShape
 
 
 
-    toValue()
+    toNewValue()
     {
         return PolygonValue.fromObject(this);
     }

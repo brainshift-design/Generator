@@ -42,11 +42,14 @@ function initFonts(fonts, uniqueFontNames)
 
 function genRequest(request, save)
 {
-    const requestId          = parseInt(request[0]);
-    const actionId           = parseInt(request[1]);
-    const set                = parseInt(request[2]);
-    const objectBatchSize    = parseInt(request[3]);
-    const maxSolveIterations = parseInt(request[4]);
+    const requestId          = parseInt  (request[0]);
+    const actionId           = parseInt  (request[1]);
+    const set                = parseInt  (request[2]);
+    const objectBatchSize    = parseInt  (request[3]);
+    const maxSolveIterations = parseInt  (request[4]);
+    const numberVarNullValue = parseFloat(request[5]);
+    const boolVarNullValue   = parseBool (request[6]);
+    const colorVarNullValue  = hex2rgb   (request[7]);
 
 
     const settings =
@@ -57,19 +60,22 @@ function genRequest(request, save)
         loadingNodes:        ((set >> 3) & 1) != 0,
         showTextTooltips:    ((set >> 4) & 1) != 0,
         showListTooltips:    ((set >> 5) & 1) != 0,
-        maxSolveIterations
+        maxSolveIterations:  maxSolveIterations,
+        numberVarNullValue:  numberVarNullValue,
+        boolVarNullValue:    boolVarNullValue,
+        colorVarNullValue:   colorVarNullValue 
     };
 
 
-    const updateNodeId  = request[5];
-    const updateParamId = request[6];
+    const updateNodeId  = request[8];
+    const updateParamId = request[9];
 
-    const viewportZoom  = request[7];
+    const viewportZoom  = request[10];
 
 
     const parse = new Parse(
         request, 
-        8,
+        11,
         requestId,
         updateNodeId, 
         updateParamId, 

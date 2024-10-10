@@ -67,7 +67,7 @@ extends GShape
 
         if (input)
         {
-            this.value        = input.toValue();
+            this.value        = input.toNewValue();
             this.value.nodeId = this.nodeId;
             
             this.value.copyCustomParams(input);
@@ -168,19 +168,19 @@ extends GShape
 
 
 
-    // toValue()
+    // toNewValue()
     // {
     //     const rect = new RectangleValue(
     //         this.nodeId,
-    //         this.x     .toValue(),
-    //         this.y     .toValue(),
-    //         this.width .toValue(),
-    //         this.height.toValue(),
-    //         this.round .toValue());
+    //         this.x     .toNewValue(),
+    //         this.y     .toNewValue(),
+    //         this.width .toNewValue(),
+    //         this.height.toNewValue(),
+    //         this.round .toNewValue());
 
     //     rect.copyCustomParams(this.value);
 
-    //     rect.props   = this.props.toValue();
+    //     rect.props   = this.props.toNewValue();
     //     rect.objects = this.value.objects.map(o => o.copy());
 
     //     return rect;

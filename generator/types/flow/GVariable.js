@@ -4,7 +4,7 @@ extends GOperator1
     variableId    = NULL;
     variableName  = '';
     variableType  = NULL;
-    variableValue = null;//new NullValue();
+    variableValue = null;
 
     paramValue    = null;
 
@@ -24,7 +24,7 @@ extends GOperator1
         this.variableId    = NULL;
         this.variableName  = '';
         this.variableType  = NULL;
-        this.variableValue = null;//new NullValue();
+        this.variableValue = null;
 
         this.paramValue    = null;
     }
@@ -65,52 +65,12 @@ extends GOperator1
             varValue = input;
 
         else if (isValid(this.variableValue))
-        {
-            switch (this.variableType)
-            {
-                case 'FLOAT': 
-                    varValue = new NumberValue(
-                        this.variableValue, 
-                        Math.min(decDigits(roundTo(this.variableValue, 2)), 2));
-
-                    break;
-
-                case 'BOOLEAN': 
-                    varValue = new BooleanValue(this.variableValue);
-                    break;
-
-                case 'STRING': 
-                    varValue = new TextValue(this.variableValue);
-                    break;
-
-                case 'COLOR': 
-                    varValue = 
-                        this.variableValue.a == 1
-                            ? ColorValue.fromRgb(
-                                [this.variableValue.r * 0xff, 
-                                 this.variableValue.g * 0xff, 
-                                 this.variableValue.b * 0xff]) 
-                            : FillValue.fromRgb(
-                                [this.variableValue.r * 0xff, 
-                                 this.variableValue.g * 0xff, 
-                                 this.variableValue.b * 0xff], 
-                                 this.variableValue.a * 100); 
-                        break;
-
-                default:
-                    break;
-            }
-        }
+            varValue = getVariableValue(this.variableType, this.variableValue, true, parse);
 
         else if (paramValue)
         {
-            if (   paramValue.type   ==  NUMBER_VALUE
-                && this.variableType == 'BOOLEAN')
-                varValue = new BooleanValue(paramValue.value > 0);
-            else
-                varValue = paramValue.copy();
+            varValue = getVariableValue(this.variableType, paramValue.toValue(), false, parse);
         }
-
 
         if (  !varValue
             || varValue.type == ANY_VALUE)
@@ -159,11 +119,8 @@ extends GOperator1
         this.value.objects = [];
 
 
-        if (//   this.value.variableId   != NULL
-            //&& this.value.variableName != ''
-            //&&  
-                  this.value.variableValue 
-               && this.value.variableValue.isValid())
+        if (   this.value.variableValue 
+            && this.value.variableValue.isValid())
         {
             const _var = new FigmaVariable(
                 this.nodeId,
@@ -211,5 +168,84 @@ extends GOperator1
         super.iterateLoop(parse);
 
         if (this.paramValue) this.paramValue.iterateLoop(parse);
+    }
+}
+
+
+
+function getVariableValue(type, value, colorFromFigma, parse)
+{
+    switch (type)
+    {
+        case 'FLOAT':
+        {
+            console.log('number value =', value);
+            const _value = 
+                   value
+                && !isNaN(value)
+                    ? value
+                    : parse.settings.numberVarNullValue;
+
+            // two decimals is Figma's precision limit
+            return new NumberValue(
+                _value, 
+                Math.min(decDigits(roundTo(_value, 2)), 2));
+        }
+
+        case 'BOOLEAN': 
+        {
+            console.log('bool value =', value);
+            const _value = 
+                   value
+                && !isNaN(value)
+                    ? value
+                    : parse.settings.boolVarNullValue;
+
+            return new BooleanValue(_value > 0);
+        }
+
+        case 'STRING': 
+            return new TextValue(value);
+
+        case 'COLOR': 
+        {
+            console.log('color value =', value);
+            const _value =
+                   value
+                && !rgbIsNaN(value)
+                    ? value
+                    : rgb_a(parse.settings.colorVarNullValue);
+
+            if (colorFromFigma)
+            {
+                return _value.a == 1
+                    ? ColorValue.fromRgb(
+                        [_value.r * 0xff, 
+                         _value.g * 0xff, 
+                         _value.b * 0xff]) 
+                    : FillValue.fromRgb(
+                        [_value.r * 0xff, 
+                         _value.g * 0xff, 
+                         _value.b * 0xff], 
+                         _value.a * 100); 
+            }
+            else
+            {
+                return _value.a == 1
+                    ? ColorValue.fromRgb(
+                        [_value[0] * 0xff, 
+                         _value[1] * 0xff, 
+                         _value[2] * 0xff]) 
+                    : FillValue.fromRgb(
+                        [_value[0] * 0xff, 
+                         _value[1] * 0xff, 
+                         _value[2] * 0xff], 
+                         _value[3] * 100); 
+            }
+        }
+
+        default:
+            console.error('invalid variable type \'' + type + '\'');
+            return null;
     }
 }

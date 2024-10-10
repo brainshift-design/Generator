@@ -44,7 +44,7 @@ extends GOperator1
 
 
 
-    toValue()
+    toNewValue()
     {
         return this.value.copy();
     }

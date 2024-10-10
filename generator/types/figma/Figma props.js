@@ -58,7 +58,7 @@ function addFillProp(obj, prop, target = obj.fills)
             rgb[0], 
             rgb[1], 
             rgb[2], 
-            prop.opacity.toValue().value,//.toNumber(),
+            prop.opacity.toNewValue().value,//.toNumber(),
             BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2]]);
     }
 }
@@ -346,32 +346,32 @@ function addStrokeProp(obj, prop)
     }
     else
     {
-        obj.strokeWeight = prop.weight.toValue().value;//.toNumber();
+        obj.strokeWeight = prop.weight.toNewValue().value;//.toNumber();
 
-        switch (prop.fit.toValue().value)
+        switch (prop.fit.toNewValue().value)
         {
             case 0: obj.strokeAlign = 'INSIDE';  break;
             case 1: obj.strokeAlign = 'CENTER';  break;
             case 2: obj.strokeAlign = 'OUTSIDE'; break;
         }
 
-        switch (prop.join.toValue().value)
+        switch (prop.join.toNewValue().value)
         {
             case 0: obj.strokeJoin = 'MITER'; break;
             case 1: obj.strokeJoin = 'BEVEL'; break;
             case 2: obj.strokeJoin = 'ROUND'; break;
         }
 
-        switch (prop.cap.toValue().value)
+        switch (prop.cap.toNewValue().value)
         {
             case 0: obj.strokeCap = 'NONE';   break;
             case 1: obj.strokeCap = 'SQUARE'; break;
             case 2: obj.strokeCap = 'ROUND';  break;
         }
 
-        obj.strokeDashes     = prop.dashes.toValue().value.trim();
+        obj.strokeDashes     = prop.dashes.toNewValue().value.trim();
         
-        obj.strokeMiterLimit = prop.miter .toValue().value;
+        obj.strokeMiterLimit = prop.miter .toNewValue().value;
     }
 }
 

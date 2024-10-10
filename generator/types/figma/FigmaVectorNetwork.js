@@ -132,7 +132,7 @@ extends FigmaShape
 
 
 
-    toValue()
+    toNewValue()
     {
         return FigmaVectorNetwork.fromObject(this);
     }

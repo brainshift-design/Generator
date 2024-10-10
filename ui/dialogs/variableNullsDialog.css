@@ -8,7 +8,6 @@
     position:      absolute;
     width:         220px;
     height:        168px;
-    /* height:        206px; */
     
     color:         var(--figma-color-text);
     background:    var(--figma-color-bg);
@@ -61,7 +60,7 @@
 
 
 #numberVarNullContainer,
-#booleanVarNullContainer,
+#boolVarNullContainer,
 #stringVarNullContainer,
 #colorVarNullContainer
 {
@@ -85,7 +84,7 @@
 
 
 #numberVarNullInput,
-#booleanVarNullInput,
+#boolVarNullInput,
 /*#stringVarNullInput,*/
 #colorVarNullInput
 {
@@ -165,19 +164,17 @@
 }
 
 
-#booleanVarNullContainer input:checked ~ .checkmark::after         { content: " True"; }
-#booleanVarNullContainer input:checked ~ .checkmark .checkmarkFill { width: 100%; }
-#booleanVarNullContainer input:checked ~ .checkmark .checkmarkBall { left: 13px;  }
+#boolVarNullContainer input:checked ~ .checkmark::after         { content: " True"; }
+#boolVarNullContainer input:checked ~ .checkmark .checkmarkFill { width: 100%; }
+#boolVarNullContainer input:checked ~ .checkmark .checkmarkBall { left: 13px;  }
 
 
 #numberVarNullContainer  { top:  42px; }
-#booleanVarNullContainer { top:  80px; }
+#boolVarNullContainer { top:  80px; }
 #colorVarNullContainer   { top: 118px; }
-/* #stringVarNullContainer  { top: 118px; }
-#colorVarNullContainer   { top: 156px; } */
 
 
-#booleanVarNullContainer input 
+#boolVarNullContainer input 
 {
     position: absolute;
     opacity:  0;

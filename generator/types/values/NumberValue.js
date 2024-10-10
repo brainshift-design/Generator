@@ -106,6 +106,13 @@ extends GValue
 
 
 
+    toValue()
+    {
+        return this.toNumber();//this.value;
+    }
+
+
+
     toNumber()
     {
         return roundTo(this.value, this.decimals);

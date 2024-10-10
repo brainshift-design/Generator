@@ -87,7 +87,16 @@ class GValue
 
 
 
-    toValue()
+    toValue() // returns a value directly usable by JS
+    {
+        console.error('cannot call abstract method GValue.toValue()');
+        console.trace();
+        return null;
+    }
+
+
+
+    toNewValue()
     {
         return this.copy();
     }

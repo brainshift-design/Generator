@@ -19,12 +19,12 @@ extends OperatorBase
         this.addInput (new Input([COLOR_VALUE, FILL_VALUE, COLOR_LIST_VALUE, FILL_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['Hex', 'RGB 0 – 1', 'RGB 0 – 255', 'CSS # hex', 'CSS rgb ()', 'CSS hsl ()', 'CSS oklch ()', 'CSS lch ()', 'CSS oklab()', 'CSS lab()', 'CSS color ()', 'name']));
-        this.addParam(this.paramTrim   = new NumberParam('trim',   'trim',   true,  true, true, 0, 0, 1));
+        this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['Hex', 'RGB 0 – 1', 'RGB 0 – 255', 'CSS # hex', 'CSS rgb ()', 'CSS hsl ()', 'CSS oklch ()', 'CSS lch ()', 'CSS oklab()', 'CSS lab()', 'CSS color ()', 'HTML name', 'structured name']));
+        this.addParam(this.paramTrim   = new NumberParam('trim',   'trim zeroes',   true,  true, true, 0, 0, 1));
 
         this.paramFormat.separatorsBefore.push(3, 6, 8, 10, 11);
 
-        this.paramTrim.divider = 0.51;
+        this.paramTrim.divider = 0.66;
 
         this.menutrim = createBoolMenu(this.paramTrim);
     }

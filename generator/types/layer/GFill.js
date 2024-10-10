@@ -68,7 +68,7 @@ extends GOperator1
 
         if (input)
         {
-            this.value        = input.toValue();
+            this.value        = input.toNewValue();
             this.value.nodeId = this.nodeId;
 
             this.value.copyCustomParams(input);
@@ -111,13 +111,13 @@ extends GOperator1
 
 
 
-    toValue()
+    toNewValue()
     {
         return this.options.enabled
             ? new FillValue(
-                this.color   ? this.color  .toValue() : this.input.value.color  .toValue(),
-                this.opacity ? this.opacity.toValue() : this.input.value.opacity.toValue(),
-                this.blend   ? this.blend  .toValue() : this.input.value.blend  .toValue())
+                this.color   ? this.color  .toNewValue() : this.input.value.color  .toNewValue(),
+                this.opacity ? this.opacity.toNewValue() : this.input.value.opacity.toNewValue(),
+                this.blend   ? this.blend  .toNewValue() : this.input.value.blend  .toNewValue())
             : FillValue.NaN();
     }
 

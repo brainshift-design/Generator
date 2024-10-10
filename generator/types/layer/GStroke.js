@@ -98,7 +98,7 @@ extends GOperator1
 
         if (input)
         {
-            this.value        = input.toValue();
+            this.value        = input.toNewValue();
             this.value.nodeId = this.nodeId;
 
             this.value.copyCustomParams(input);
@@ -171,18 +171,18 @@ extends GOperator1
 
 
 
-    toValue()
+    toNewValue()
     {
         return new StrokeValue(
             this.options.enabled
-            ? this.validateFills(this.fills ? this.fills.toValue() : this.input.fills.toValue())
+            ? this.validateFills(this.fills ? this.fills.toNewValue() : this.input.fills.toNewValue())
             : new ListValue(),
-            this.weight ? this.weight.toValue() : this.input.weight.toValue(),
-            this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
-            this.join   ? this.join  .toValue() : this.input.join  .toValue(),
-            this.miter  ? this.miter .toValue() : this.input.miter .toValue(),
-            this.cap    ? this.cap   .toValue() : this.input.cap   .toValue(),
-            this.dashes ? this.dashes.toValue() : this.input.dashes.toValue());
+            this.weight ? this.weight.toNewValue() : this.input.weight.toNewValue(),
+            this.fit    ? this.fit   .toNewValue() : this.input.fit   .toNewValue(),
+            this.join   ? this.join  .toNewValue() : this.input.join  .toNewValue(),
+            this.miter  ? this.miter .toNewValue() : this.input.miter .toNewValue(),
+            this.cap    ? this.cap   .toNewValue() : this.input.cap   .toNewValue(),
+            this.dashes ? this.dashes.toNewValue() : this.input.dashes.toNewValue());
     }                 
 
 

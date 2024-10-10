@@ -81,9 +81,10 @@ extends Parameter
 
        
         this.getTooltip = () => 
-            settings.showTooltipColorNames
-            ? ttColorNames
-            : null;
+                settings.showTooltipColorNames
+            && !settings.preferHtmlColorNames
+                ? ttColorNames
+                : null;
 
 
         createTooltipSrc(this.controls[0].div, this.controls[0].div, () => 
@@ -118,49 +119,17 @@ extends Parameter
                 return;
 
             
-            let rgb;
-
             if (   e.detail.value.trim() != ''
                 && e.detail.value != e.detail.oldValue)
             {
                 const colorName = e.detail.value.toLowerCase();
-
-                if (   colorName == 'rnd'
-                    || colorName == 'random'
-                    || getEditDistance(colorName, 'random') <= 1)
-                {
-                    skipRandom(Date.now() % 10);  const r = Math.random();
-                    skipRandom(Date.now() % 10);  const g = Math.random();
-                    skipRandom(Date.now() % 10);  const b = Math.random();
-
-                    rgb = [r, g, b];
-                }
-                else
-                {
-                    if (settings.preferHtmlColorNames)
-                    {
-                                   let webColor = htmlColors.find(wc => wc.name.toLowerCase() == colorName);
-                        if (!webColor) webColor = htmlColors.find(wc => getEditDistance(wc.name.toLowerCase(), colorName) <= 1);
-                        
-                        if (webColor) e.detail.value = webColor.color;
-
-                        rgb = validHex2rgb(e.detail.value);
-                    }
-                    else
-                    {
-                        const hsl = parseColorName(colorName);
-
-                        rgb = 
-                            hsl 
-                            ? hsl2rgb(hsl) 
-                            : validHex2rgb(colorName);
-                    }
-                }
-
-
+ 
+                const rgb = parseColorName(colorName);
                 const val = ColorValue.fromRgb(scaleRgb(rgb));
-
+                
                 this.setValue(val, true);
+
+                e.detail.value    = rgb2hex(rgb);
                 e.preventSetValue = true;
             }
         });

@@ -142,7 +142,7 @@ extends GShape
         
         if (input)
         {
-            this.value        = input.toValue();
+            this.value        = input.toNewValue();
             this.value.nodeId = this.nodeId;
             this.value.copyCustomParams(input);
             

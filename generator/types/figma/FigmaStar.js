@@ -56,7 +56,7 @@ extends FigmaShape
 
 
 
-    toValue()
+    toNewValue()
     {
         return StarValue.fromObject(this);
     }

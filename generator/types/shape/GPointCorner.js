@@ -115,13 +115,13 @@ extends GOperator1
 
 
 
-    toValue()
+    toNewValue()
     {
         return this.value.copy();
     //     const point = new PointValue(
     //         this.nodeId,
-    //         this.x.toValue(),
-    //         this.y.toValue());
+    //         this.x.toNewValue(),
+    //         this.y.toNewValue());
 
     //     point.objects = 
     //         this.value.objects

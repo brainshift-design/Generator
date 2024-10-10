@@ -59,7 +59,10 @@ function pushUpdateFromParam(action, nodes, param, save = true)
         action ? action.id : -1,
         set.toString(),
         settings.objectBatchSize   .toString(),
-        settings.maxSolveIterations.toString()
+        settings.maxSolveIterations.toString(),
+        settings.numberVarNullValue.toString(),
+        boolToString(settings.boolVarNullValue),
+        settings.colorVarNullValue .toString()
     ];
 
 

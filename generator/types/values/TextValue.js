@@ -89,6 +89,13 @@ extends GValue
 
 
 
+    toValue()
+    {
+        return this.value;
+    }
+
+
+
     toString()
     {
         return this.value;

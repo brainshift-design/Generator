@@ -229,7 +229,7 @@ async function asyncSort(parse, unsorted, conditionNode, node, condition, revers
                     unsorted.keys().map(k => new NumberValue(k))];
         }
         
-        const condValue = cond.toValue();
+        const condValue = cond.toNewValue();
         //console.log('condValue =', condValue.value);
 
         if (   condValue.type != NUMBER_VALUE

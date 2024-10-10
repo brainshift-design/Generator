@@ -175,15 +175,15 @@ extends GOperator1
 
 
 
-    toValue()
+    toNewValue()
     {
         const point = new VectorVertexValue(
             this.nodeId,
-            this.x    .toValue(),
-            this.y    .toValue(),
-            this.join .toValue(),
-            this.cap  .toValue(),
-            this.round.toValue());
+            this.x    .toNewValue(),
+            this.y    .toNewValue(),
+            this.join .toNewValue(),
+            this.cap  .toNewValue(),
+            this.round.toNewValue());
 
         point.copyCustomParams(this.value);
 

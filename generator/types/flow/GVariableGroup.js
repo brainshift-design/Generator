@@ -96,7 +96,7 @@ extends GOperator
 
 
 
-    toValue()
+    toNewValue()
     {
         return this.value.copy();
     }

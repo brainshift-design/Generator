@@ -166,7 +166,7 @@ extends GNode
 
 
 
-    toValue()
+    toNewValue()
     {
         return this.value
              ? this.value.copy()
@@ -333,7 +333,7 @@ async function evalValue(_value, parse, nan = () => new NullValue())
 {
     let value = 
         _value 
-        ? (await _value.eval(parse)).toValue() 
+        ? (await _value.eval(parse)).toNewValue() 
         : null;
 
     if (   (    value 

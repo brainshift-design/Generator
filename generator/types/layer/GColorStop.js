@@ -65,7 +65,7 @@ extends GOperator1
 
         if (input)
         {
-            this.value        = input.toValue();
+            this.value        = input.toNewValue();
             this.value.nodeId = this.nodeId;
 
             this.value.copyCustomParams(input);
@@ -112,13 +112,13 @@ extends GOperator1
 
 
 
-    toValue()
+    toNewValue()
     {
         return new ColorStopValue(
             this.options.enabled
-            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
+            ? this.validateFill(this.fill ? this.fill.toNewValue() : this.input.fill.toNewValue())
             : FillValue.NaN(),
-            this.position ? this.position.toValue() : this.input.position.toValue());
+            this.position ? this.position.toNewValue() : this.input.position.toNewValue());
     }                 
 
 

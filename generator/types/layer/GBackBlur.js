@@ -74,10 +74,10 @@ extends GOperator1
 
 
 
-    toValue()
+    toNewValue()
     {
         return new BackBlurValue(
-            this.radius ? this.radius.toValue() : this.input.radius.toValue(),
+            this.radius ? this.radius.toNewValue() : this.input.radius.toNewValue(),
             this.options.enabled);
     }
 

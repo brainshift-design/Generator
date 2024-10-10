@@ -146,6 +146,13 @@ extends GValue
 
 
 
+    toValue()
+    {
+        return this.toRgb();
+    }
+
+
+
     toRgb()
     {
         return dataColor2rgb(this.toDataColor());

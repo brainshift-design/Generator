@@ -90,7 +90,7 @@ extends GOperator1
         if (feedback)
         {
             for (const obj of this.from.iterationObjects)
-                this.value.items.push(obj.toValue());
+                this.value.items.push(obj.toNewValue());
 
             if (this.from.iterationObjects)
                 this.value.objects = this.from.iterationObjects.map(o => o.copy());
@@ -130,7 +130,7 @@ extends GOperator1
 
 
 
-    toValue()
+    toNewValue()
     {
         return this.value.copy();
     }

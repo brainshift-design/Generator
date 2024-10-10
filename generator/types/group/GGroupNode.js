@@ -47,7 +47,7 @@ extends GOperator
             for (let i = 0; i < this.params.length; i++)
             {
                 const param = await this.params[i].eval(parse);
-                this.setUpdateValues(parse, [[this.paramIds[i], param.toValue()]], true);
+                this.setUpdateValues(parse, [[this.paramIds[i], param.toNewValue()]], true);
             }
         }
         else
@@ -61,7 +61,7 @@ extends GOperator
 
 
 
-    toValue()
+    toNewValue()
     {
         return this.value
              ? this.value.copy() 

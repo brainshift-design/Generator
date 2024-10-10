@@ -80,7 +80,7 @@ class GNode
 
     
 
-    toValue()
+    toNewValue()
     {
         return null;
     }

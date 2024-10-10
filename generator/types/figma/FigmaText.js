@@ -92,7 +92,7 @@ extends FigmaShape
 
 
 
-    toValue()
+    toNewValue()
     {
         return TextShapeValue.fromObject(this);
     }

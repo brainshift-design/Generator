@@ -119,7 +119,7 @@ extends GOperator1
 
 
 
-    toValue()
+    toNewValue()
     {
         return this.value
              ? this.value.copy()

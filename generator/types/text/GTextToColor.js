@@ -78,11 +78,11 @@ function getTextToColorValue(str)
         if (!webColor) webColor = htmlColors.find(wc => getEditDistance(wc.name.toLowerCase(), str) <= 1);
         
         if (webColor) 
-            rgb = validHex2rgb(webColor.color);
+            rgb = webColor.color;
     }
     else
     {
-        const hsl = parseColorName(str);
+        const hsl = parseStructuredColorName(str);
 
         rgb = 
             hsl 

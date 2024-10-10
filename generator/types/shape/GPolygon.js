@@ -74,7 +74,7 @@ extends GShape
 
         if (input)
         {
-            this.value        = input.toValue();
+            this.value        = input.toNewValue();
             this.value.nodeId = this.nodeId;
             this.value.copyCustomParams(input);
 
@@ -195,21 +195,21 @@ extends GShape
 
 
 
-    // toValue()
+    // toNewValue()
     // {
     //     const poly = new PolygonValue(
     //         this.nodeId,
-    //         this.position.toValue(),
-    //         this.x       .toValue(),
-    //         this.y       .toValue(),
-    //         this.width   .toValue(),
-    //         this.height  .toValue(),
-    //         this.round   .toValue(),
-    //         this.corners .toValue());
+    //         this.position.toNewValue(),
+    //         this.x       .toNewValue(),
+    //         this.y       .toNewValue(),
+    //         this.width   .toNewValue(),
+    //         this.height  .toNewValue(),
+    //         this.round   .toNewValue(),
+    //         this.corners .toNewValue());
 
     //     poly.copyCustomParams(this.value);
 
-    //     poly.props   = this.props.toValue();
+    //     poly.props   = this.props.toNewValue();
     //     poly.objects = this.value.objects.map(o => o.copy());
 
     //     return poly;

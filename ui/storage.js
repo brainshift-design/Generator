@@ -42,11 +42,38 @@ async function uiReturnFigGetLocalData(msg)
             break;
 
         case 'objectBatchSize':
-        case 'maxSolveIterations':  updateSetting(msg.key, parseInt  (msg.value)); break;
-        case 'numberVarNullValue':  updateSetting(msg.key, parseFloat(msg.value)); break;
-        case 'booleanVarNullValue': updateSetting(msg.key, msg.value); break;
-        case 'stringVarNullValue':  updateSetting(msg.key, msg.value); break;
-        case 'colorVarNullValue':   updateSetting(msg.key, '#' + rgb2hex(getTextToColorValue(msg.value).toRgb())); break;
+        case 'maxSolveIterations':  
+            updateSetting(
+                msg.key,
+                msg.value
+                    ? parseInt(msg.value)
+                    : settings[msg.key]); 
+            break;
+ 
+        case 'numberVarNullValue':
+            updateSetting(
+                msg.key, 
+                msg.value
+                    ? parseFloat(msg.value)
+                    : settings[msg.key]); 
+            break;
+ 
+        case 'boolVarNullValue': 
+            updateSetting(
+                msg.key, 
+                msg.value
+                    ? msg.value
+                    : settings[msg.key]); 
+            break;
+ 
+        case 'colorVarNullValue':   
+            updateSetting(
+                msg.key,
+                msg.value
+                    ? '#' + rgb2hex(getTextToColorValue(msg.value).toRgb())
+                    : settings[msg.key]); 
+            
+            break;
 
 
         case 'debugMode':

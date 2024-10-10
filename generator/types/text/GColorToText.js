@@ -334,7 +334,7 @@ function getColorToTextValue(input, format, trim)
             }
 
             str = 
-                'color('
+                  'color('
                 +       space
                 + ' ' + getColorValueToText(color[0], dec1, trim.value > 0) 
                 + ' ' + getColorValueToText(color[1], dec2, trim.value > 0) 
@@ -347,7 +347,11 @@ function getColorToTextValue(input, format, trim)
 
             break;
         }
-        case 11: // name
+        case 11: // HTML name
+            str = getClosestHtmlName(rgba);
+            break;
+
+        case 12: // structured name
             str = createColorName(rgba);
             break;
     }

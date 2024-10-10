@@ -29,7 +29,7 @@ extends GOperator1
 
         this.value = new TextValue(
             this.input 
-            ? (await this.input.eval(parse)).toValue().valueId
+            ? (await this.input.eval(parse)).toNewValue().valueId
             : '');
 
         
@@ -46,7 +46,7 @@ extends GOperator1
 
 
 
-    toValue()
+    toNewValue()
     {
         return this.value
              ? this.value.copy()

@@ -5,21 +5,19 @@ function showVariableNullsDialog()
     variableNullsDialog.style.transform = 'translateX(-50%) translateY(-50%)';
 
     
-    variableNullsTitle.buttonDown0      = false;
+    variableNullsTitle.buttonDown0 = false;
     
-    variableNullsTitle.moveStart        = point_NaN;
-    variableNullsTitle.pStart           = point_NaN;
+    variableNullsTitle.moveStart   = point_NaN;
+    variableNullsTitle.pStart      = point_NaN;
     
 
      numberVarNullIcon.innerHTML = iconSmallVarNumber .replaceAll('white', 'var(--figma-color-text-secondary)');
-    booleanVarNullIcon.innerHTML = iconSmallVarBoolean.replaceAll('white', 'var(--figma-color-text-secondary)');
-    // stringVarNullIcon.innerHTML = iconSmallVarText   .replaceAll('white', 'var(--figma-color-text-secondary)');
+    boolVarNullIcon.innerHTML = iconSmallVarBoolean.replaceAll('white', 'var(--figma-color-text-secondary)');
       colorVarNullIcon.innerHTML = iconSmallVarColor  .replaceAll('white', 'var(--figma-color-text-secondary)');
 
-      numberVarNullInput.value   = numToString (settings.numberVarNullValue );
-     booleanVarNullInput.value   = boolToString(settings.booleanVarNullValue);
-    //  stringVarNullInput.value   = settings.stringVarNullValue;
-       colorVarNullInput.value   = settings.colorVarNullValue;
+     numberVarNullInput.value   = numToString(settings.numberVarNullValue);
+    boolVarNullInput.checked = settings.boolVarNullValue;
+      colorVarNullInput.value   = settings.colorVarNullValue;
 
 
     numberVarNullInput.parseFunc = str => 
@@ -31,10 +29,6 @@ function showVariableNullsDialog()
              : null;
     };
 
-    // stringVarNullInput.parseFunc = str => 
-    // {
-    //     return str.trim();
-    // }
 
     colorVarNullInput.parseFunc = str => 
     {
@@ -46,16 +40,12 @@ function showVariableNullsDialog()
     }
 
 
-    initVarNullInput( numberVarNullInput, 'numberVarNullValue');
-  //initVarNullInput(booleanVarNullInput, 'booleanVarNullValue');
-  //initVarNullInput( stringVarNullInput, 'stringVarNullValue');
-    initVarNullInput(  colorVarNullInput, 'colorVarNullValue');
+    initVarNullInput  ( numberVarNullInput, 'numberVarNullValue' );
+    initVarNullBoolean(boolVarNullInput, 'boolVarNullValue');
+    initVarNullInput  (  colorVarNullInput, 'colorVarNullValue'  );
+
 
     showDialog(variableNullsDialog);
-      
-      
-    //numberVarNullInput.select();
-    //window.setTimeout(() => document.getElementById("numberVarNullInput").focus(), 0);
 }
 
 
@@ -130,6 +120,42 @@ function initVarNullInput(input, setting)
 
 
 
+function initVarNullBoolean(input, setting)
+{
+    // input.addEventListener('keydown', e => 
+    // {
+    //     e.stopPropagation();
+
+    //     switch (e.code)
+    //     {
+    //         case 'Enter':
+    //         case 'NumpadEnter':
+    //             input.blur();
+    //             break;
+    //     }
+    // });
+    
+    
+    input.addEventListener('change', e => 
+    {
+        boolVarNullSave(input, setting);
+    });
+    
+    
+    // input.addEventListener('pointerup', e =>
+    // {
+    //     e.stopPropagation();
+    
+    //     if (e.button == 2)
+    //     {
+    //         initTextMenu(input);
+    //         menuText.showAt(e.clientX, e.clientY, false, false);
+    //     }
+    // });
+}
+
+
+
 function variableNullSave(input, setting)
 {
     const inputValue = input.parseFunc(input.value);
@@ -141,4 +167,12 @@ function variableNullSave(input, setting)
 
         input.value = inputValue;
     }
+}
+
+
+
+function boolVarNullSave(input, setting)
+{
+    updateSetting(setting, input.checked);
+    uiSetLocalData(setting, settings[setting]);
 }

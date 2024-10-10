@@ -8,7 +8,7 @@ const settings =
     objectBatchSize:               500,
     maxSolveIterations:            100,
     numberVarNullValue:            0,
-    booleanVarNullValue:           false,
+    boolVarNullValue:              false,
     stringVarNullValue:            '',
     colorVarNullValue:             '#FF00FF',
     showPages:                     false,
@@ -18,7 +18,7 @@ const settings =
     separateThousands:             true,
     allowInvertParams:             true,
     activateDeactiatesOthers:      true,
-    preferHtmlColorNames:          false,
+    preferHtmlColorNames:          true,
     randomShiftR:                  true,
     colorShiftR:                   false,
     numberShiftR:                  false,
@@ -86,7 +86,7 @@ function updateSetting(settingName, value)
         case 'objectBatchSize':               settings.objectBatchSize               = value;  break;
         case 'maxSolveIterations':            settings.maxSolveIterations            = value;  break;
         case 'numberVarNullValue':            settings.numberVarNullValue            = value;  break;
-        case 'booleanVarNullValue':           settings.booleanVarNullValue           = value;  break;
+        case 'boolVarNullValue':              settings.boolVarNullValue              = value;  break;
         case 'stringVarNullValue':            settings.stringVarNullValue            = value;  break;
         case 'colorVarNullValue':             settings.colorVarNullValue             = value;  break;
         case 'showPages':                     settings.showPages                     = value;  break;
@@ -420,7 +420,7 @@ function enableFeatures(pro)
     enableMenuItem(menuItemSaveToFile,         true, pro);
     enableMenuItem(menuItemSaveSelected,       true, pro);
     enableMenuItem(menuItemFetch,              true, pro);
-    // enableMenuItem(menuItemDateTime,           true, pro);
+  //enableMenuItem(menuItemDateTime,           true, pro);
     enableMenuItem(menuItemSolve,              true, pro);
     enableMenuItem(menuItemParseJson,          true, pro);
     enableMenuItem(menuItemToJson,             true, pro);
@@ -503,9 +503,9 @@ function loadLocalSettings()
     uiGetLocalData('objectBatchSize'              );
     uiGetLocalData('maxSolveIterations'           );
     uiGetLocalData('numberVarNullValue'           );
-    uiGetLocalData('booleanVarNullValue'           );
+    uiGetLocalData('boolVarNullValue'             );
     uiGetLocalData('stringVarNullValue'           );
-    uiGetLocalData('colorVarNullValue'           );
+    uiGetLocalData('colorVarNullValue'            );
     uiGetLocalData('showAllColorSpaces'           );
     uiGetLocalData('showNodeIcons'                );
     uiGetLocalData('showBoolValues'               );
@@ -533,7 +533,7 @@ function loadLocalSettings()
     uiGetLocalData('showTooltipLists'             );
     uiGetLocalData('showTooltipLongText'          );
     uiGetLocalData('showTooltipColorInterpolation');
-    uiGetLocalData('showTooltipValidateMethod');
+    uiGetLocalData('showTooltipValidateMethod'    );
     uiGetLocalData('showTooltipColorBlindness'    );
     uiGetLocalData('showTooltipColorContrast'     );
     uiGetLocalData('showTooltipColorNames'        );

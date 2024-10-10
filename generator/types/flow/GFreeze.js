@@ -55,7 +55,7 @@ extends GOperator1
         {
             this.value = 
                 this.input 
-                ? (await this.input.eval(parse)).toValue()
+                ? (await this.input.eval(parse)).toNewValue()
                 : new NullValue();
 
             this.frozen = true;
@@ -78,7 +78,7 @@ extends GOperator1
 
 
 
-    toValue()
+    toNewValue()
     {
         return this.value
              ? this.value.copy()

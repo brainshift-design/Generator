@@ -345,7 +345,7 @@ class FigmaObject
 
 
 
-    toValue()
+    toNewValue()
     {
         return new NullValue();
     }

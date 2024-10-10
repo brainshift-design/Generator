@@ -51,7 +51,7 @@ extends FigmaShape
 
 
 
-    toValue()
+    toNewValue()
     {
         return RectangleValue.fromObject(this);
     }

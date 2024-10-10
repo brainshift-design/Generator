@@ -57,6 +57,13 @@ extends GValue
 
     toValue()
     {
+        return this.value;
+    }
+
+
+
+    toNewValue()
+    {
         return this.copy();
     }
 

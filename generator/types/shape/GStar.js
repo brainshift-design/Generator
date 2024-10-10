@@ -80,7 +80,7 @@ extends GShape
 
         if (input)
         {
-            this.value        = input.toValue();
+            this.value        = input.toNewValue();
             this.value.nodeId = this.nodeId;
             this.value.copyCustomParams(input);
 
@@ -205,22 +205,22 @@ extends GShape
 
 
 
-    // toValue()
+    // toNewValue()
     // {
     //     const star = new StarValue(
     //         this.nodeId,
-    //         this.position.toValue(),
-    //         this.x       .toValue(),
-    //         this.y       .toValue(),
-    //         this.width   .toValue(),
-    //         this.height  .toValue(),
-    //         this.round   .toValue(),
-    //         this.points  .toValue(),
-    //         this.convex  .toValue());
+    //         this.position.toNewValue(),
+    //         this.x       .toNewValue(),
+    //         this.y       .toNewValue(),
+    //         this.width   .toNewValue(),
+    //         this.height  .toNewValue(),
+    //         this.round   .toNewValue(),
+    //         this.points  .toNewValue(),
+    //         this.convex  .toNewValue());
 
     //     star.copyCustomParams(this.value);
 
-    //     star.props   = this.props.toValue();
+    //     star.props   = this.props.toNewValue();
     //     star.objects = this.value.objects.map(o => o.copy());
  
     //     return star;

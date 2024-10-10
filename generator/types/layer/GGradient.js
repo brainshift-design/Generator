@@ -119,7 +119,7 @@ extends GOperator
         if (   inputs.length == 1
             && inputs[0].type == GRADIENT_VALUE)
         {
-            this.value        = inputs[0].toValue();
+            this.value        = inputs[0].toNewValue();
             this.value.nodeId = this.nodeId;
             
             this.value.copyCustomParams(inputs[0]);
@@ -218,7 +218,7 @@ extends GOperator
 
     
     
-    toValue()
+    toNewValue()
     {
         return this.value.copy();
     }                 

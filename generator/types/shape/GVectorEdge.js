@@ -151,14 +151,14 @@ extends GOperator2
 
 
 
-    // toValue()
+    // toNewValue()
     // {
     //     const edge = new VectorEdgeValue(
     //         this.nodeId,
-    //         this.input0 ? this.input0.toValue() : VectorVertexValue.NaN(),
-    //         this.input1 ? this.input1.toValue() : VectorVertexValue.NaN(),
-    //         this.startTangent.toValue(),
-    //         this.endTangent  .toValue());
+    //         this.input0 ? this.input0.toNewValue() : VectorVertexValue.NaN(),
+    //         this.input1 ? this.input1.toNewValue() : VectorVertexValue.NaN(),
+    //         this.startTangent.toNewValue(),
+    //         this.endTangent  .toNewValue());
 
     //     edge.copyCustomParams(this.value);
 

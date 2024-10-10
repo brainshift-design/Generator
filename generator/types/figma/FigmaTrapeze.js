@@ -83,7 +83,7 @@ extends FigmaVectorPath
 
 
 
-    toValue()
+    toNewValue()
     {
         return TrapezeValue.fromObject(this);
     }

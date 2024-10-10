@@ -272,7 +272,7 @@ extends FigmaShape
 
 
 
-    toValue()
+    toNewValue()
     {
         return VectorPathValue.fromObject(this);
     }

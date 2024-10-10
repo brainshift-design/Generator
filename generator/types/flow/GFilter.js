@@ -196,7 +196,7 @@ async function asyncFilter(parse, array, conditionNode, node, condition)
         const cond = await getFilterCondition(parse, conditionNode, node, condition, item);
         if (!cond) return array;
         
-        const condValue = cond.toValue();
+        const condValue = cond.toNewValue();
         //console.log('cond =', cond)
 
         if (   condValue.type == NUMBER_VALUE
@@ -222,7 +222,7 @@ async function getFilterCondition(parse, conditionNode, node, condition, item)
     
     conditionNode.reset();
 
-    const value = conditionNode.toValue();
+    const value = conditionNode.toNewValue();
     if (!value) return item;
 
     if (   value.type == item.type

@@ -43,7 +43,7 @@ extends FigmaShape
 
 
 
-    toValue()
+    toNewValue()
     {
         return LineValue.fromObject(this);
     }

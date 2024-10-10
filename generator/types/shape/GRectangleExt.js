@@ -100,10 +100,10 @@
 
 //         if (input)
 //         {
-//             this.value        = input.toValue();
+//             this.value        = input.toNewValue();
 //             this.value.nodeId = this.nodeId;
 //             this.value.copyCustomParams(input);
-//             this.value.props = props ?? this.input.toValue().props;
+//             this.value.props = props ?? this.input.toNewValue().props;
 
 //             if (left  )  this.value.x      = left;          else  left   = this.value.x;      
 //             if (top   )  this.value.y      = top;           else  top    = this.value.y;      
