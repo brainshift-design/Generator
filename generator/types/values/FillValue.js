@@ -91,6 +91,13 @@ extends GValue
 
 
 
+    toValue()
+    {
+        return this.toRgba();
+    }
+
+
+
     toRgba()
     {
         return [

@@ -13069,7 +13069,9 @@ extends GOperator
 
     toNewValue()
     {
-        return this.value.copy();
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 
@@ -14564,6 +14566,13 @@ extends GValue
     async eval(parse)
     {
         return this.copy();
+    }
+
+
+
+    toValue()
+    {
+        return this.toRgba();
     }
 
 
