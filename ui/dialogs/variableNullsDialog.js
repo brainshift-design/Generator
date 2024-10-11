@@ -87,6 +87,12 @@ function initVarNullInput(input, setting, saveFunc)
     });
     
     
+    input.addEventListener('pointerdown', e => 
+    {
+        hideAllMenus();
+    });
+    
+    
     input.addEventListener('pointerup', e =>
     {
         e.stopPropagation();
