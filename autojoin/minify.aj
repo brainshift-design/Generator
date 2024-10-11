@@ -161,7 +161,7 @@ backColor
 getContrastRating2
 getContrastRatio3
 sRGBtoY
-APCAcontrast
+getApcaContrast
 txtY
 bgY
 initCheckbox

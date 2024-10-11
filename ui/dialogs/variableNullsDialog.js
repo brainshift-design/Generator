@@ -11,38 +11,19 @@ function showVariableNullsDialog()
     variableNullsTitle.pStart      = point_NaN;
     
 
-     numberVarNullIcon.innerHTML = iconSmallVarNumber .replaceAll('white', 'var(--figma-color-text-secondary)');
-    boolVarNullIcon.innerHTML = iconSmallVarBoolean.replaceAll('white', 'var(--figma-color-text-secondary)');
-      colorVarNullIcon.innerHTML = iconSmallVarColor  .replaceAll('white', 'var(--figma-color-text-secondary)');
-
-     numberVarNullInput.value   = numToString(settings.numberVarNullValue);
-    boolVarNullInput.checked = settings.boolVarNullValue;
-      colorVarNullInput.value   = settings.colorVarNullValue;
+    numberVarNullIcon.innerHTML = iconSmallVarNumber .replaceAll('white', 'var(--figma-color-text-secondary)');
+      boolVarNullIcon.innerHTML = iconSmallVarBoolean.replaceAll('white', 'var(--figma-color-text-secondary)');
+     colorVarNullIcon.innerHTML = iconSmallVarColor  .replaceAll('white', 'var(--figma-color-text-secondary)');
 
 
-    numberVarNullInput.parseFunc = str => 
-    {
-        const num = parseFloat(str);
-
-        return !isNaN(num) 
-             ? num.toString() 
-             : null;
-    };
+    numberVarNullInput.value   = numToString(settings.numberVarNullValue);
+      boolVarNullInput.checked = settings.boolVarNullValue;
+     colorVarNullInput.value   = rgb2hex(settings.colorVarNullValue, true);
 
 
-    colorVarNullInput.parseFunc = str => 
-    {
-        const rgb = getTextToColorValue(str).toRgb();
-        
-        return rgb 
-             ? '#' + rgb2hex(rgb) 
-             : null;
-    }
-
-
-    initVarNullInput  ( numberVarNullInput, 'numberVarNullValue' );
-    initVarNullBoolean(boolVarNullInput, 'boolVarNullValue');
-    initVarNullInput  (  colorVarNullInput, 'colorVarNullValue'  );
+    initVarNullInput  (numberVarNullInput, 'numberVarNullValue', numberVarNullSave);
+    initVarNullBoolean(  boolVarNullInput,   'boolVarNullValue');
+    initVarNullInput  ( colorVarNullInput,  'colorVarNullValue',  colorVarNullSave);
 
 
     showDialog(variableNullsDialog);
@@ -84,7 +65,7 @@ variableNullsTitle.addEventListener('pointerup', e =>
 
 
 
-function initVarNullInput(input, setting)
+function initVarNullInput(input, setting, saveFunc)
 {
     input.addEventListener('keydown', e => 
     {
@@ -102,7 +83,7 @@ function initVarNullInput(input, setting)
     
     input.addEventListener('focusout', e => 
     {
-        variableNullSave(input, setting);
+        saveFunc(input, setting);
     });
     
     
@@ -122,51 +103,23 @@ function initVarNullInput(input, setting)
 
 function initVarNullBoolean(input, setting)
 {
-    // input.addEventListener('keydown', e => 
-    // {
-    //     e.stopPropagation();
-
-    //     switch (e.code)
-    //     {
-    //         case 'Enter':
-    //         case 'NumpadEnter':
-    //             input.blur();
-    //             break;
-    //     }
-    // });
-    
-    
     input.addEventListener('change', e => 
     {
         boolVarNullSave(input, setting);
     });
-    
-    
-    // input.addEventListener('pointerup', e =>
-    // {
-    //     e.stopPropagation();
-    
-    //     if (e.button == 2)
-    //     {
-    //         initTextMenu(input);
-    //         menuText.showAt(e.clientX, e.clientY, false, false);
-    //     }
-    // });
 }
 
 
 
-function variableNullSave(input, setting)
+function numberVarNullSave(input, setting)
 {
-    const inputValue = input.parseFunc(input.value);
+    const inputValue = parseFloat(input.value);
+    if (isNaN(inputValue)) return;
 
-    if (inputValue)
-    {
-        updateSetting(setting, inputValue);
-        uiSetLocalData(setting, settings[setting]);
+    updateSetting(setting, inputValue);
+    uiSetLocalData(setting, settings[setting]);
 
-        input.value = inputValue;
-    }
+    input.value = inputValue.toString();
 }
 
 
@@ -175,4 +128,17 @@ function boolVarNullSave(input, setting)
 {
     updateSetting(setting, input.checked);
     uiSetLocalData(setting, settings[setting]);
+}
+
+
+
+function colorVarNullSave(input, setting)
+{
+    const inputValue = getTextToColorValue(input.value).toRgb();
+    if (rgbIsNaN(inputValue)) return;
+
+    updateSetting(setting, inputValue);
+    uiSetLocalData(setting, settings[setting]);
+
+    input.value = rgb2hex(inputValue, true);
 }

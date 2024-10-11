@@ -195,7 +195,7 @@ function getColorToTextValue(input, format, trim)
             break;
 
         case 3: // CSS hex
-            str = '#' + rgb2hex(rgba);
+            str = rgb2hex(rgba, true);
 
             if (input.type == FILL_VALUE)
                 str += chan2hex(rgba[3]);

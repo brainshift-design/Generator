@@ -30,7 +30,7 @@ function getContrastRatio3(textColor, backColor)
     if (!rgbIsOk(textColor))
         return Number.NaN;
 
-    return APCAcontrast(
+    return getApcaContrast(
         sRGBtoY(textColor),
         sRGBtoY(backColor));
 }
@@ -40,19 +40,19 @@ function getContrastRatio3(textColor, backColor)
 // I copied the code below from https://github.com/Myndex/SAPC-APCA/blob/master/WEBTOOLS/APCA/JS/DEV.0.1.2.G_SAPCsRGB.js
 // and refactored it to fit my code style.
 
-const mainTRC     = 2.4; // 2.4 exponent emulates actual monitor perception
+const mainTrc     = 2.4; // 2.4 exponent emulates actual monitor perception
        
 const sRco        = 0.2126729, 
       sGco        = 0.7151522, 
       sBco        = 0.0721750; // sRGB coefficients
    
-const normBG      = 0.56, 
-      normTXT     = 0.57,
-      revTXT      = 0.62,
-      revBG       = 0.65; // G-4g constants for use with 2.4 exponent
+const normBg      = 0.56, 
+      normTxt     = 0.57,
+      revTxt      = 0.62,
+      revBg       = 0.65; // G-4g constants for use with 2.4 exponent
    
 const blkThrs     = 0.022,
-      blkClmp     = 1.414, 
+      blkClip     = 1.414, 
       scaleBoW    = 1.14,
       scaleWoB    = 1.14,
       loBoWthresh = 0.035991,
@@ -72,27 +72,27 @@ function sRGBtoY(rgb)
     // ignores the straight section. Using actual sRGB
     // luminance gives a slightly different contrast score.
 
-    return sRco * Math.pow(rgb[0], mainTRC) 
-         + sGco * Math.pow(rgb[1], mainTRC)
-         + sBco * Math.pow(rgb[2], mainTRC);
+    return sRco * Math.pow(rgb[0], mainTrc) 
+         + sGco * Math.pow(rgb[1], mainTrc)
+         + sBco * Math.pow(rgb[2], mainTrc);
 }
 
 
 
-function APCAcontrast(txtY, bgY)
+function getApcaContrast(txtY, bgY)
 {
-    let SAPC           = 0; // For raw SAPC values
+    let sapc           = 0; // For raw SAPC values
     let outputContrast = 0; // For weighted final values
 
     txtY = 
         txtY > blkThrs 
         ? txtY 
-        : txtY + Math.pow(blkThrs - txtY, blkClmp);
+        : txtY + Math.pow(blkThrs - txtY, blkClip);
         
     bgY = 
         bgY > blkThrs 
         ? bgY 
-        : bgY + Math.pow(blkThrs - bgY, blkClmp);
+        : bgY + Math.pow(blkThrs - bgY, blkClip);
 
     if (Math.abs(bgY - txtY) < deltaYmin)  
         return 0; 
@@ -100,25 +100,25 @@ function APCAcontrast(txtY, bgY)
 
     if (bgY > txtY) 
     {  
-        SAPC = (Math.pow(bgY, normBG) - Math.pow(txtY, normTXT)) * scaleBoW;
+        sapc = (Math.pow(bgY, normBg) - Math.pow(txtY, normTxt)) * scaleBoW;
 
         outputContrast = 
-            SAPC < loClip 
+            sapc < loClip 
             ? 0 
-            : SAPC < loBoWthresh
-              ? SAPC - SAPC * loBoWfactor * loBoWoffset 
-              : SAPC - loBoWoffset;
+            : sapc < loBoWthresh
+              ? sapc - sapc * loBoWfactor * loBoWoffset 
+              : sapc - loBoWoffset;
     } 
     else 
     {  
-        SAPC = (Math.pow(bgY, revBG) - Math.pow(txtY, revTXT)) * scaleWoB;
+        sapc = (Math.pow(bgY, revBg) - Math.pow(txtY, revTxt)) * scaleWoB;
 
         outputContrast = 
-            SAPC > -loClip 
+            sapc > -loClip 
             ? 0 
-            : SAPC > -loWoBthresh 
-              ? SAPC - SAPC * loWoBfactor * loWoBoffset 
-              : SAPC + loWoBoffset;
+            : sapc > -loWoBthresh 
+              ? sapc - sapc * loWoBfactor * loWoBoffset 
+              : sapc + loWoBoffset;
     }
 
 

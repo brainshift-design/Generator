@@ -56,17 +56,7 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
         return;
 
 
-    // const wndRect = new Rect(
-    //     1,
-    //     getTopHeight() + 1,
-    //     this.measureData.clientRect.width  - 2,
-    //     this.measureData.clientRect.height - 5);
-
-
     let selection = validateRect(this.selectionRect);
-    // let selection = clipRect(
-    //     validateRect(this.selectionRect), 
-    //     wndRect);
     
 
     if (!selection.isNaN)

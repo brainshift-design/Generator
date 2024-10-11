@@ -10,7 +10,7 @@ const settings =
     numberVarNullValue:            0,
     boolVarNullValue:              false,
     stringVarNullValue:            '',
-    colorVarNullValue:             '#FF00FF',
+    colorVarNullValue:             [1, 0, 1],
     showPages:                     false,
     showAllColorSpaces:            false,
     showNodeIcons:                 true,

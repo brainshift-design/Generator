@@ -222,7 +222,7 @@ extends GValue
 
         const rgb = this.toRgb();
 
-        return '#' + rgb2hex(rgb);
+        return rgb2hex(rgb, true);
     }
 
 

@@ -55,7 +55,7 @@ async function uiReturnFigGetLocalData(msg)
                 msg.key, 
                 msg.value
                     ? parseFloat(msg.value)
-                    : settings[msg.key]); 
+                    : 0); 
             break;
  
         case 'boolVarNullValue': 
@@ -63,15 +63,13 @@ async function uiReturnFigGetLocalData(msg)
                 msg.key, 
                 msg.value
                     ? msg.value
-                    : settings[msg.key]); 
+                    : false); 
             break;
  
-        case 'colorVarNullValue':   
+        case 'colorVarNullValue':
             updateSetting(
                 msg.key,
-                msg.value
-                    ? '#' + rgb2hex(getTextToColorValue(msg.value).toRgb())
-                    : settings[msg.key]); 
+                msg.value ?? [1, 0, 1]); 
             
             break;
 

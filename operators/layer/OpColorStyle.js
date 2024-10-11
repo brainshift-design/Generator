@@ -214,7 +214,7 @@ extends OperatorBase
                   'linear-gradient(45deg, #'+rgb2hex(rgb0)+' 25%, transparent 25%, transparent 75%, #'+rgb2hex(rgb0)+' 75%), '
                 + 'linear-gradient(45deg, #'+rgb2hex(rgb0)+' 25%, transparent 25%, transparent 75%, #'+rgb2hex(rgb0)+' 75%)';
 
-            this.circleCheckers.style.backgroundColor    = '#'+rgb2hex(rgb1);
+            this.circleCheckers.style.backgroundColor    = rgb2hex(rgb1, true);
             this.circleCheckers.style.opacity            = 1 - this.paramValue.value.opacity.value / 100;
             this.circleCheckers.style.backgroundSize     = '6px 6px';
             this.circleCheckers.style.backgroundPosition = '0 0, 3px 3px';

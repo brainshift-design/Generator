@@ -927,7 +927,7 @@ function initGeneratorMenus()
     wholeMenu.addItems([
         new MenuItem('Flow',      null, false, {icon: iconFlow,     childMenu: menuFlow  }),
         new MenuItem('Data',      null, false, {icon: iconCombine,  childMenu: menuData  }),
-        new MenuItem('Sets. . .', null, false, {icon: iconSequence, childMenu: menuSets  }),
+        new MenuItem('Sets. . .', null, false, {icon: iconSets,     childMenu: menuSets  }),
         new MenuItem('Number',    null, false, {icon: iconNumber,   childMenu: menuNumber}),
         new MenuItem('Text',      null, false, {icon: iconText,     childMenu: menuString}),
         new MenuItem('Color',     null, false, {icon: iconVarColor, childMenu: menuColor }),
@@ -1237,7 +1237,7 @@ function initGeneratorMenus()
 
     btnFlow      .setIcon(iconFlow);
     btnData      .setIcon(iconData);
-    btnSets      .setIcon(iconSequence);
+    btnSets      .setIcon(iconSets);
     btnMain      .setIcon(iconGenerator);
     btnColor     .setIcon(iconVarColor);
     //btnLayer   .setIcon(iconEffects);

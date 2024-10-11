@@ -6,19 +6,21 @@ function chan2hex(c)
         .toUpperCase();    
 }
 
-function rgb2hex(rgb)
+
+
+function rgb2hex(rgb, hash = false)
 {
     let hex =
           chan2hex(rgb[0])
         + chan2hex(rgb[1])
         + chan2hex(rgb[2]);
 
-    return hex;
+    return (hash ? '#' : '') + hex;
 }
 
 
 
-function rgba2hex(rgba)
+function rgba2hex(rgba, hash = false)
 {
     let hex =
           chan2hex(rgba[0])
@@ -26,7 +28,7 @@ function rgba2hex(rgba)
         + chan2hex(rgba[2])
         + chan2hex(rgba[3]);
 
-    return hex;
+    return (hash ? '#' : '') + hex;
 }
 
 
