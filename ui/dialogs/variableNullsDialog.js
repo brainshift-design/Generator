@@ -22,7 +22,7 @@ function showVariableNullsDialog()
 
 
     initVarNullInput  (numberVarNullInput, 'numberVarNullValue', numberVarNullSave);
-    initVarNullBoolean(  boolVarNullInput,   'boolVarNullValue');
+    initVarNullBoolean(  boolVarNullInput,   'boolVarNullValue',   boolVarNullSave);
     initVarNullInput  ( colorVarNullInput,  'colorVarNullValue',  colorVarNullSave);
 
 
@@ -126,6 +126,8 @@ function numberVarNullSave(input, setting)
     uiSetLocalData(setting, settings[setting]);
 
     input.value = inputValue.toString();
+
+    pushUpdate(null, graph.currentPage.nodes.filter(n => n.type == VARIABLE));
 }
 
 
@@ -134,6 +136,8 @@ function boolVarNullSave(input, setting)
 {
     updateSetting(setting, input.checked);
     uiSetLocalData(setting, settings[setting]);
+
+    pushUpdate(null, graph.currentPage.nodes.filter(n => n.type == VARIABLE));
 }
 
 
@@ -147,4 +151,6 @@ function colorVarNullSave(input, setting)
     uiSetLocalData(setting, settings[setting]);
 
     input.value = rgb2hex(inputValue, true);
+
+    pushUpdate(null, graph.currentPage.nodes.filter(n => n.type == VARIABLE));
 }
