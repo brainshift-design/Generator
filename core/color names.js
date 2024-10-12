@@ -381,7 +381,13 @@ function getClosestHtmlName(rgb)
 
 function parseColorName(name)
 {
-    if (   name == 'rnd'
+    name = name.trim();
+
+
+    if (name == '?')
+        return rgb_NaN;
+
+    else if (   name == 'rnd'
         || name == 'random'
         || getEditDistance(name, 'random') <= 1)
     {
@@ -398,7 +404,9 @@ function parseColorName(name)
                        let webColor = htmlColors.find(wc => wc.name.toLowerCase() == name);
             if (!webColor) webColor = htmlColors.find(wc => getEditDistance(wc.name.toLowerCase(), name) <= 1);
             
-            return webColor.color;//validHex2rgb(e.detail.value);
+            return webColor
+                ? webColor.color
+                : hex2rgb(name);
         }
         else
         {
