@@ -182,7 +182,8 @@ extends ResizableBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const value      = values[paramIds.findIndex(id => id == 'value')];
+        const paramValue = values[paramIds.findIndex(id => id == 'paramValue')];
         //console.log('value =', value);
 
 
@@ -294,7 +295,7 @@ extends ResizableBase
             if (   type != NULL
                 && type != ANY_VALUE)
             {
-                this.paramValue = this.createAndAddParamByType(type, 'value', false, true, true);
+                this.paramValue = this.createAndAddParamByType(type, 'paramValue', false, true, true);
                 this.paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
 
                 if (type == COLOR_VALUE)

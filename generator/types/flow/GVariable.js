@@ -93,10 +93,10 @@ extends GOperator1
             varValue);
 
 
-        //console.log('this.value =', this.value);
         this.setUpdateValues(parse,
         [
-            ['value', this.value]
+            ['value',      this.value],
+            ['paramValue', paramValue]
         ]);
 
 
@@ -179,7 +179,6 @@ function getVariableValue(type, value, colorFromFigma, parse)
     {
         case 'FLOAT':
         {
-            console.log('number value =', value);
             const _value = 
                    value
                 && !isNaN(value)
@@ -194,7 +193,6 @@ function getVariableValue(type, value, colorFromFigma, parse)
 
         case 'BOOLEAN': 
         {
-            console.log('bool value =', value);
             const _value = 
                    value
                 && !isNaN(value)
@@ -209,7 +207,6 @@ function getVariableValue(type, value, colorFromFigma, parse)
 
         case 'COLOR': 
         {
-            console.log('parse.settings.colorVarNullValue =', parse.settings.colorVarNullValue);
             let _value =
                    value
                 && !rgbIsNaN(value)

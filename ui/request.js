@@ -64,7 +64,6 @@ function pushUpdateFromParam(action, nodes, param, save = true)
         boolToString(settings.boolVarNullValue),
         rgb2hex(settings.colorVarNullValue)
     ];
-    console.log('request =', request);
 
 
     if (param) request.push(param.node.id, param.id);
