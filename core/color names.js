@@ -387,9 +387,9 @@ function parseColorName(name)
     if (name == '?')
         return rgb_NaN;
 
-    else if (   name == 'rnd'
-        || name == 'random'
-        || getEditDistance(name, 'random') <= 1)
+    else if (name == 'rnd'
+          || name == 'random'
+          || getEditDistance(name, 'random') <= 1)
     {
         skipRandom(Date.now() % 10);  const r = Math.random();
         skipRandom(Date.now() % 10);  const g = Math.random();

@@ -106,15 +106,8 @@ extends GNode
         {
             this.value = new ListValue();
     
-            for (let i = 0; i < input.items.length; i++)
-            {
-                const item = input.items[i];
-    
+            for (const item of input.items)
                 this.value.items.push(evalFunc(item));
-                    // item.type == nan.type
-                    // ? evalFunc(item)
-                    // : nan);   
-            }
         }
         else
             this.value = evalFunc(input);
@@ -159,9 +152,6 @@ extends GNode
     outputListType()
     {
         return this.outputType();
-        //return this.value
-        //     ? new TextValue(finalListTypeFromValues(this.value.items))
-        //     : TextValue.NaN();
     }
 
 
@@ -258,7 +248,6 @@ extends GNode
         for (const value of this.updateValues)
             genPushUpdateValue(parse, this.nodeId, value[0], value[1]);
 
-        //if (this.isValid())
         this.updateValues = [];
     }
 
@@ -290,21 +279,6 @@ extends GNode
 
 
 
-    // updateValueObjectsFromInput(input)
-    // {
-    //     const inputObjects = this.copyObjects(input);
-            
-    //     for (const obj of inputObjects)
-    //     {
-    //         obj.objectId += OBJECT_SEPARATOR + i;
-    //         obj.itemIndex = i;
-    //     }
-
-    //     this.value.objects.push(...inputObjects);
-    // }
-
-
-
     setConditionInput(input)
     {
 
@@ -333,8 +307,8 @@ async function evalValue(_value, parse, nan = () => new NullValue())
 {
     let value = 
         _value 
-        ? (await _value.eval(parse)).toNewValue() 
-        : null;
+            ? (await _value.eval(parse)).toNewValue() 
+            : null;
 
     if (   (    value 
             && !value.isValid())
@@ -459,7 +433,7 @@ async function evalColorValue(_value, parse)
 
 async function evalFillValue(_value, parse)
 { 
-    let value = await evalValue(_value, parse, () => FillValue.NaN());
+    let value = await evalValue(_value, parse, null); //() => FillValue.NaN());
     
     if (   value
         && value.type == COLOR_VALUE)
