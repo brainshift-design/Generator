@@ -256,6 +256,35 @@ extends ResizableBase
             || this.paramValue.type != type
             || this.isBool != prevIsBool)
         {
+            const connections = [];
+
+            for (const input of this.connectedInputs)
+            {
+                const conn = input.connection;
+                if (!conn) continue;
+
+                connections.push([
+                    conn.output.node.id, 
+                    conn.output.id,
+                    conn.input.node.id, 
+                    conn.input.id]);
+            }
+
+            for (const output of this.connectedOutputs)
+            {
+                for (const conn of output.connections)
+                {
+                    if (!conn) continue;
+
+                    connections.push([
+                        conn.outputNodeId, 
+                        conn.outputId, 
+                        conn.inputNodeId, 
+                        conn.inputId]);
+                }
+            }
+
+
             this.connectedInputs .forEach(i => uiDisconnect(i, false));
             this.connectedOutputs.forEach(o => o.connectedInputs.forEach(i => uiDisconnect(i, false)));
 
@@ -268,6 +297,8 @@ extends ResizableBase
                 this.paramValue = this.createAndAddParamByType(type, 'value', false, true, true);
                 this.paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
 
+                if (type == COLOR_VALUE)
+                    this.paramValue.input.types.push(FILL_VALUE);
 
                 if (this.isBool)
                 {
@@ -280,6 +311,21 @@ extends ResizableBase
                     this.paramValue.controls[0].allowEditDecimals = false;
 
                     this.menuBoolValue = createBoolMenu(this.paramValue);
+                }
+
+
+                for (const conn of connections)
+                {
+                    const outputNode = nodeFromId(conn[0]);
+                    const output     = outputNode ? outputNode.outputFromId(conn[1]) : null;
+
+                    const inputNode  = nodeFromId(conn[2]);
+                    const input      = inputNode ? inputNode.inputFromId(conn[3]) : null;
+
+                    if (   output
+                        && input
+                        && input.canConnectFrom(output))
+                        uiConnect(output, input);
                 }
             }
             else
