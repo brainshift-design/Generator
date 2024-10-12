@@ -62,10 +62,9 @@ function pushUpdateFromParam(action, nodes, param, save = true)
         settings.maxSolveIterations.toString(),
         settings.numberVarNullValue.toString(),
         boolToString(settings.boolVarNullValue),
-        settings.colorVarNullValue .toString()
+        rgb2hex(settings.colorVarNullValue)
     ];
-
-
+    console.log('request =', request);
 
 
     if (param) request.push(param.node.id, param.id);
