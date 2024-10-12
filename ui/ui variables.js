@@ -137,9 +137,6 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     menuLocalVariables.itemIndex = -1;
 
 
-    let prevPath = '';
-
-
     const collator = new Intl.Collator(
         undefined, 
         { 
@@ -231,17 +228,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
         }
 
 
-        let name = variable.name;
-
-
-        const path = name.split('/').slice(0, -1).join('/');
-
-        if (path != prevPath)
-            menuLocalVariables.menuItems.push(new MenuItem('', null, false, {separator: true}));
-
-        prevPath = path;
-
-
+        const name = variable.name;
         const item = new MenuItem(name.replaceAll('/', ' / '), null, false, options);
 
         item.setChecked(variable.id == node.variableId);
@@ -291,16 +278,6 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     {
         menuLocalVariables.divSearch.style.width = menuLocalVariables.divItems.offsetWidth;
         menuLocalVariables.divSearchText.focus();
-
-        // if (menuLocalVariables.items.length > 0)
-        // {
-        //     if (menuLocalVariables.itemIndex < 0)
-        //         menuLocalVariables.itemIndex = 0;
-        //     else
-        //         menuLocalVariables.itemIndex = Math.min(menuLocalVariables.itemIndex, menuLocalVariables.items.length-1);
-        
-        //     menuLocalVariables.updateItem(menuLocalVariables.items[menuLocalVariables.itemIndex], true);
-        // }
     };
 
 
@@ -389,26 +366,47 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
 
 function updateMenuLocalVariables()
 {
+    const search = menuLocalVariables.divSearchText.value.toLowerCase();
+
     const items = menuLocalVariables.menuItems.filter(item => 
-           includesSimilar(item.name.toLowerCase(), menuLocalVariables.divSearchText.value.toLowerCase(), 0.5)
+           includesSimilar(item.name.toLowerCase(), search, 0.5)
         || item.name == 'None');
         
+
     menuLocalVariables.clearItems();
     
 
-    menuLocalVariables.addItems(
-    [
-        new MenuItem('None', null, false,
-        {
-            callback: e => actionManager.do(new LinkExistingVariableAction(menuLocalVariables.node.nodeId, NULL, NULL, '', false)),
-            enabled:  menuLocalVariables.node.variableId != NULL
-        })
-    ]);
+    if (search.trim() == '')
+    {
+        menuLocalVariables.addItems(
+        [
+            new MenuItem('None', null, false,
+            {
+                callback: e => actionManager.do(new LinkExistingVariableAction(menuLocalVariables.node.nodeId, NULL, NULL, '', false)),
+                enabled:  menuLocalVariables.node.variableId != NULL
+            })
+        ]);
 
-    // if (!isEmpty(items))
-    //     menuLocalVariables.addItems([new MenuItem('', null, false, {separator: true})]);
+        if (items.length > 0)
+            menuLocalVariables.addItems([new MenuItem('', null, false, {separator: true})]);
+    }
 
-    menuLocalVariables.addItems(items);
+
+    let prevPath;
+    
+    for (const item of items)
+    {
+        const path = item.name.split('/').slice(0, -1).join('/');
+
+        if (   prevPath
+            && path != prevPath)
+            menuLocalVariables.addItems([new MenuItem('', null, false, {separator: true})]);
+
+        prevPath = path;
+
+
+        menuLocalVariables.addItems([item]);
+    }
 
 
     menuLocalVariables.showAt(
