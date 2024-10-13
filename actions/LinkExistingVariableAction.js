@@ -7,19 +7,19 @@ extends Action
     get  inputNode() { return this.node; } // dummy for ConnectAction_...
     get outputNode() { return this.node; } // dummy for ConnectAction_...
 
-    get  input() { return this.node.paramValue ? this.node.paramValue. input : null; } // dummy for ConnectAction_...
-    get output() { return this.node.paramValue ? this.node.paramValue.output : null; } // dummy for ConnectAction_...
+    get  inputs() { return this.node.paramValues.map(p => p. input); } // dummy for ConnectAction_...
+    get outputs() { return this.node.paramValues.map(p => p.output); } // dummy for ConnectAction_...
 
     variableId;
     variableType;
     variableName;
-    variableValue;
+    variableValues;
     //variableTemp;
 
     prevVariableId;
     prevVariableType;
     prevVariableName;
-    prevVariableValue;
+    prevVariableValues;
     //prevVariableTemp;
 
     outputValues = []; // in id,value pairs, to be restored on undo
@@ -27,29 +27,29 @@ extends Action
 
 
 
-    constructor(nodeId, variableId, resolvedType, variableName, variableValue)//, variableTemp)
+    constructor(nodeId, variableId, resolvedType, variableName, variableValues)//, variableTemp)
     {
         super(
             LINK_VARIABLE_ACTION, 
             'LINK VARIABLE \'' + nodeId + ' ⟶ ' + (variableId != NULL ? variableId : 'NULL') + ')');
         
-        this.nodeId        = nodeId;
-        this.variableId    = variableId;
-        this.variableType  = resolvedType;
-        this.variableName  = variableName;
-        this.variableValue = variableValue;
+        this.nodeId         = nodeId;
+        this.variableId     = variableId;
+        this.variableType   = resolvedType;
+        this.variableName   = variableName;
+        this.variableValues = [...variableValues];
         //this.variableTemp = variableTemp;
-        this.selfUpdate   = true;
+        this.selfUpdate     = true;
     }
 
 
 
     do(updateNodes)
     {
-        this.prevVariableId    = this.node.variableId;
-        this.prevVariableType  = this.node.variableType;
-        this.prevVariableName  = this.node.variableName;
-        this.prevVariableValue = this.node.variableValue;
+        this.prevVariableId     = this.node.variableId;
+        this.prevVariableType   = this.node.variableType;
+        this.prevVariableName   = this.node.variableName;
+        this.prevVariableValues = [...this.node.variableValue];
         //this.prevVariableTemp = this.node.linkedTemp;
  
        
@@ -58,7 +58,7 @@ extends Action
             this.variableId,
             this.variableType,
             this.variableName,
-            this.variableValue);//,
+            this.variableValues);//,
             //this.variableTemp);
 
 
@@ -80,7 +80,7 @@ extends Action
 
         uiSaveNodes([this.nodeId]);
 
-        if (this.node.paramValue.input.connected)
+        if (this.node.paramValues.some(p => p.input.connected))
             uiTriggerUndo();
     }    
 }

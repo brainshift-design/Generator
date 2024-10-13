@@ -2873,6 +2873,7 @@ indexPad
 MenuItem
 setChecked
 paramValue
+paramValues
 enableControlText
 passedNodes
 addNewInput

@@ -5453,7 +5453,7 @@ function figGetAllLocalVariables(nodeId, px, py)
                     id:             _var.id,
                     resolvedType:   _var.resolvedType,
                     name:           collection.name + '/' + _var.name,
-                    resolvedValue:  values[1][0]
+                    resolvedValues: values
                 };
 
                 variables.push(variable);
@@ -5522,19 +5522,19 @@ async function getVariableValuesAsync(varIds)
 
             values.push(
             {
-                id:            varIds[i],
-                name:          collection.name + '/' + variable.name, 
-                resolvedType:  variable.resolvedType,
-                resolvedValue: vals[0]
+                id:             varIds[i],
+                name:           collection.name + '/' + variable.name, 
+                resolvedType:   variable.resolvedType,
+                resolvedValues: [...vals]
             });
         }
         else
         {
             values.push(
             {
-                id:            varIds[i], 
-                resolvedType:  NULL, 
-                resolvedValue: null
+                id:             varIds[i], 
+                resolvedType:   NULL, 
+                resolvedValues: []
             });
         }
     }

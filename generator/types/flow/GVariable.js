@@ -1,12 +1,12 @@
 class GVariable
 extends GOperator1
 {
-    variableId    = NULL;
-    variableName  = '';
-    variableType  = NULL;
-    variableValue = null;
+    variableId     = NULL;
+    variableName   = '';
+    variableType   = NULL;
+    variableValues = [];
 
-    paramValue    = null;
+    paramValues    = [];
 
 
 
@@ -21,12 +21,12 @@ extends GOperator1
     {
         super.reset();
 
-        this.variableId    = NULL;
-        this.variableName  = '';
-        this.variableType  = NULL;
-        this.variableValue = null;
+        this.variableId     = NULL;
+        this.variableName   = '';
+        this.variableType   = NULL;
+        this.variableValues = [];
 
-        this.paramValue    = null;
+        this.paramValues    = [];
     }
 
 
@@ -35,12 +35,12 @@ extends GOperator1
     {
         const copy = new GVariable(this.nodeId, this.options);
 
-        copy.variableId   = this.variableId;
-        copy.variableName = this.variableName;
-        copy.variableType = this.variableType;
+        copy.variableId     = this.variableId;
+        copy.variableName   = this.variableName;
+        copy.variableType   = this.variableType;
 
-        if (this.variableValue) copy.variableValue = this.variableValue.copy();
-        if (this.paramValue   ) copy.paramValue    = this.paramValue   .copy();
+        copy.variableValues = this.variableValues.map(v => v.copy());
+        copy.paramValues    = this.paramValues   .map(p => p.copy());
         
         return copy;
     }
@@ -53,35 +53,41 @@ extends GOperator1
             return this;
 
         
-        const input      = await evalValue(this.input,      parse);
-        const paramValue = await evalValue(this.paramValue, parse);
+        const input       = await evalValue(this.input, parse);
+        let   paramValues = await Promise.all(this.paramValues.map(async p => await evalValue(p, parse)));
 
 
-        let varValue;
+        let varValues;
         
-        //console.log('input =', input);
-        
+       
         if (input)
-            varValue = input;
+            varValues = [input];
 
-        else if (isValid(this.variableValue))
-            varValue = getVariableValue(this.variableType, this.variableValue, true, parse);
-
-        else if (paramValue)
+        else if (this.variableValues.all(v => isValid(v)))
         {
-            varValue = getVariableValue(this.variableType, paramValue.toValue(), false, parse);
+            for (const varVal of this.variableValues)
+                varValues.push(getVariableValue(this.variableType, varVal, true, parse));
+        }
+        else if (paramValues)
+        {
+            for (const paramVal of paramValues)
+                varValues.push(getVariableValue(this.variableType, paramVal.toValue(), false, parse));
         }
 
-        if (  !varValue
-            || varValue.type == ANY_VALUE)
+
+        for (let i = 0; i < varValues.length; i++)
         {
-            switch (this.variableType)
+            if (  !varValues[i]
+                || varValues[i].type == ANY_VALUE)
             {
-                case 'FLOAT':   varValue =  NumberValue.NaN(); break;
-                case 'BOOLEAN': varValue = BooleanValue.NaN(); break;
-                case 'STRING':  varValue =    TextValue.NaN(); break;
-                case 'COLOR':   varValue =    FillValue.NaN(); break;
-                default:                                       break;
+                switch (this.variableType)
+                {
+                    case 'FLOAT':   varValues[i] =  NumberValue.NaN(); break;
+                    case 'BOOLEAN': varValues[i] = BooleanValue.NaN(); break;
+                    case 'STRING':  varValues[i] =    TextValue.NaN(); break;
+                    case 'COLOR':   varValues[i] =    FillValue.NaN(); break;
+                    default:                                           break;
+                }
             }
         }
 
@@ -90,14 +96,23 @@ extends GOperator1
             this.nodeId, 
             this.variableId,
             this.variableName,
-            varValue);
+            varValues);
 
 
         this.setUpdateValues(parse,
         [
-            ['value',      this.value],
-            ['paramValue', paramValue]
+            ['value', this.value]
         ]);
+
+
+        for (let i = 0; i < paramValues.length; i++)
+        {
+            this.setUpdateValues(parse,
+            [
+                ['paramValue' + i, paramValues[i]]
+            ],
+            true);
+        }
 
 
         await this.evalVariable(parse);
@@ -139,8 +154,7 @@ extends GOperator1
 
     isValid()
     {
-        return this.paramValue 
-            && this.paramValue != NULL;
+        return !this.paramValues.any(p => p == NULL); 
     }
 
 
@@ -149,7 +163,7 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.paramValue) this.paramValue.pushValueUpdates(parse);
+        this.paramValues.forEach(p => p.pushValueUpdates(parse));
     }
 
 
@@ -158,7 +172,7 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.paramValue) this.paramValue.invalidateInputs(parse, from, force);
+        this.paramValues.forEach(p => p.invalidateInputs(parse, from, force));
     }
 
 
@@ -167,7 +181,7 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.paramValue) this.paramValue.iterateLoop(parse);
+        this.paramValues.forEach(p => p.iterateLoop(parse));
     }
 }
 

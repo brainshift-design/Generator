@@ -448,14 +448,14 @@ async function loadNodesAndConnsAsync(_nodes, _conns, setProgress, pasting = fal
                     {
                         const node = varNodes.find(n => n.variableId == variable.id);
 
-                        node.updateValueParamFromResolved(
+                        node.updateValueParamsFromResolved(
                             variable.resolvedType, 
-                            variable.resolvedValue);
+                            variable.resolvedValues);
 
                         node.updateValueParamValuesFromResolved(
                             variable.resolvedType, 
                             variable.name, 
-                            [variable.resolvedValue]);
+                            variable.resolvedValues);
                     }
 
                     loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    

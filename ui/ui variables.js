@@ -74,20 +74,20 @@ function uiReturnFigGetVariableUpdates(variables)
 
         if (node)
         {
-            node.updateValueParamFromResolved(
+            node.updateValueParamsFromResolved(
                 variable.resolvedType,
-                variable.resolvedValue);
+                variable.resolvedValues);
 
-            if (node.paramValue)
+            if (node.paramValues.length > 0)
             {
-                if (!node.paramValue.input.connected)
-                {
+                // if (!node.paramValue.input.connected)
+                // {
                     node.updateValueParamValuesFromResolved(
                         variable.resolvedType,
                         variable.name,
-                        [variable.resolvedValue],
+                        variable.resolvedValues,
                         true);
-                }
+                // }
             }
         }
     }
@@ -214,7 +214,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
                 variable.id,
                 variable.resolvedType,
                 variable.name,
-                variable.resolvedValue));
+                variable.resolvedValues));
 
         options.enabled = !linkedNodes.find(n => n.variableId == variable.id);
 
@@ -417,27 +417,30 @@ function updateMenuLocalVariables()
 
 
 
-function uiLinkNodeToVariable(node, varId, varType, varName, varValue)//, varTemp)
+function uiLinkNodeToVariable(node, varId, varType, varName, varValues)//, varTemp)
 {
     if (   node.variableType != NULL
         && varType == NULL
-        && node.paramValue)
+        && node.paramValues.length > 0)
     {
-        if (node.paramValue.input.connected)
-            uiDeleteSavedConn(node.paramValue.input.connection);
-
-        if (node.paramValue.output.connected)
+        for (const paramValue of node.paramValues)
         {
-            for (const input of node.paramValue.output.connectedInputs)
-                uiDeleteSavedConn(input.connection);
+            if (paramValue.input.connected)
+                uiDeleteSavedConn(paramValue.input.connection);
+
+            if (paramValue.output.connected)
+            {
+                for (const input of paramValue.output.connectedInputs)
+                    uiDeleteSavedConn(input.connection);
+            }
         }
     }
 
 
-    node.variableId    = varId;
-    node.variableType  = varType;
-    node.variableName  = varName;
-    node.variableValue = varValue;
+    node.variableId     = varId;
+    node.variableType   = varType;
+    node.variableName   = varName;
+    node.variableValues = [...varValues];
     //node.linkedTemp = varTemp;
     
     node.name =
@@ -446,7 +449,7 @@ function uiLinkNodeToVariable(node, varId, varType, varName, varValue)//, varTem
             : defaultVariableNodeName;
 
 
-    node.updateValueParamFromResolved(varType, varValue);
+    node.updateValueParamsFromResolved(varType, varValues);
 
 
     pushUpdate(null, [node]);

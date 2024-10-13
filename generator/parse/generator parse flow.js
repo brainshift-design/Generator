@@ -82,25 +82,34 @@ function genParseVariable(parse)
         variable.input = genParse(parse);
 
     
-    variable.variableId    = parse.move();
-    variable.variableName  = parse.move();
-    variable.variableType  = parse.move();
-    variable.variableValue = parse.move();
+    variable.variableId   = parse.move();
+    variable.variableName = parse.move();
+    variable.variableType = parse.move();
+
+
+    const nVars = parseInt(parse.move());
+
+    for (let i = 0; i < nVars; i++)
+        variable.variableValues.push(parse.move());
+
     //variable.linkedVariableTemp = parseInt(parse.move()) == 1;
+
 
     if (parse.settings.logRequests) 
     {
-        logReqString(variable.variableId    != NULL ? variable.variableId   : 'NULL', parse);
-        logReqString(variable.variableName  != ''   ? variable.variableName : '\'\'', parse);
-        logReqString(variable.variableType  != NULL ? variable.variableType : 'NULL', parse);
-        logReqString(variable.variableValue ?? 'null', parse);
+        logReqString(variable.variableId   != NULL ? variable.variableId   : 'NULL', parse);
+        logReqString(variable.variableName != ''   ? variable.variableName : '\'\'', parse);
+        logReqString(variable.variableType != NULL ? variable.variableType : 'NULL', parse);
+        
+        for (const varVal of variable.variableValues)
+            logReqString(varVal ?? 'null', parse);
     }
 
 
     const nParams = parseInt(parse.move());
 
-    if (nParams == 1)
-        variable.paramValue = genParse(parse);
+    for (let i = 0; i < nParams; i++)
+        variable.paramValues.push(variable['paramValue'+i] = genParse(parse));
 
     
     parse.nTab--;

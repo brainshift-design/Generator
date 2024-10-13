@@ -5,17 +5,16 @@ const defaultVariableNodeName = PLUGIN_LOGO + '/variable';
 class   OpVariable
 extends ResizableBase
 {
-    variableId    = NULL;
-    variableName  = '';   // must be set even if nothing is connected
-    variableType  = NULL; // this is the resolved type
-    variableValue = null;
+    variableId     = NULL;
+    variableName   = '';   // must be set even if nothing is connected
+    variableType   = NULL; // this is the resolved type
+    variableValues = [];
 
-    paramValue;
+    paramValues    = [];
+    menuBoolValues = [];
 
+    isBool         = false;
 
-    isBool = false;
-
-    menuBoolValue;
     
     
 
@@ -97,7 +96,7 @@ extends ResizableBase
     {
         // const headerHeight = Math.max(defHeaderHeight, boundingRect(this.header).height / graph.currentPage.zoom);
 
-        const height = defHeaderHeight + (this.paramValue ? defParamHeight : 0);
+        const height = defHeaderHeight + (this.paramValues.length * defParamHeight);
 
 
         this.height             = height;
@@ -158,15 +157,19 @@ extends ResizableBase
                 : this.node.name);
         
         request.push(this.node.variableType );
-        request.push(this.node.variableValue);
-
-        this.node.variableValue = null; // only needs to be sent once
 
 
-        request.push(this.node.paramValue ? 1 : 0);
+        request.push(this.node.variableValues.length);
+        request.push(...this.node.variableValues);
+
+
+        this.node.variableValues = []; // only needs to be sent once
+
+
+        request.push(this.node.paramValues.length);
         
-        if (this.node.paramValue)
-            request.push(...this.node.paramValue.genRequest(gen));
+        for (const paramValue of this.paramValues)
+            request.push(...paramValue.genRequest(gen));
 
 
         gen.scope.pop();
@@ -182,9 +185,7 @@ extends ResizableBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const value      = values[paramIds.findIndex(id => id == 'value')];
-        const paramValue = values[paramIds.findIndex(id => id == 'paramValue')];
-        //console.log('value =', value);
+        const value = values[paramIds.findIndex(id => id == 'value')];
 
 
         this.variableName = value.variableName;
@@ -193,7 +194,7 @@ extends ResizableBase
         noUpdateVariableIds.push(this.variableId);
 
 
-        this.updateValueParamFromType(
+        this.updateValueParamsFromType(
             value.variableValue.type,
             value.variableValue.type == NUMBER_VALUE
                 ? value.variableValue.isBoolean
@@ -203,12 +204,12 @@ extends ResizableBase
         if (   value.variableValue
             && value.variableValue.type != NULL
             && value.variableValue.type != ANY_VALUE)
-            this.updateValueParamValue(value);
+            this.updateValueParamValues(value);
     }
 
     
     
-    updateValueParamFromResolved(resolvedType, resolvedValue)
+    updateValueParamsFromResolved(resolvedType, resolvedValues)
     {
         let type   = NULL;
         let isBool = false;
@@ -221,7 +222,7 @@ extends ResizableBase
     
             case 'COLOR':   
                 type = 
-                    resolvedValue.a == 1 
+                    resolvedValues[0].a == 1 
                         ? COLOR_VALUE
                         : FILL_VALUE; 
                 break;
@@ -230,12 +231,12 @@ extends ResizableBase
                 break;
         }
 
-        this.updateValueParamFromType(type, isBool, this.isBool);
+        this.updateValueParamsFromType(resolvedValues.length, type, isBool, this.isBool);
     }
 
 
 
-    updateValueParamFromType(type, isBool, prevIsBool)
+    updateValueParamsFromType(nParams, type, isBool, prevIsBool)
     {
         let icon;
         let iconOffsetY;
@@ -253,8 +254,8 @@ extends ResizableBase
         this.isBool = isBool;
 
 
-        if (  !this.paramValue
-            || this.paramValue.type != type
+        if (   this.paramValues.length == 0
+            || this.paramValues.some(p => p.type != type)
             || this.isBool != prevIsBool)
         {
             const connections = [];
@@ -289,29 +290,38 @@ extends ResizableBase
             this.connectedInputs .forEach(i => uiDisconnect(i, false));
             this.connectedOutputs.forEach(o => o.connectedInputs.forEach(i => uiDisconnect(i, false)));
 
+
             this.removeAllParams();
+            this.menuBoolValues = [];
 
 
             if (   type != NULL
                 && type != ANY_VALUE)
             {
-                this.paramValue = this.createAndAddParamByType(type, 'paramValue', false, true, true);
-                this.paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
-
-                if (type == COLOR_VALUE)
-                    this.paramValue.input.types.push(FILL_VALUE);
-
-                if (this.isBool)
+                for (let i = 0; i < nParams; i++)
                 {
-                    this.paramValue.isBoolean = true;
+                    const paramValue = this.createAndAddParamByType(type, 'paramValue'+i, false, true, true);
 
-                    this.paramValue.controls[0].setMin(0);
-                    this.paramValue.controls[0].setMax(1);
+                    paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
 
-                    this.paramValue.divider = 0.62;
-                    this.paramValue.controls[0].allowEditDecimals = false;
+                    if (type == COLOR_VALUE)
+                        paramValue.input.types.push(FILL_VALUE);
 
-                    this.menuBoolValue = createBoolMenu(this.paramValue);
+                    if (this.isBool)
+                    {
+                        paramValue.isBoolean = true;
+
+                        paramValue.controls[0].setMin(0);
+                        paramValue.controls[0].setMax(1);
+
+                        paramValue.divider = 0.62;
+                        paramValue.controls[0].allowEditDecimals = false;
+                    }
+
+                    if (this.isBool)
+                        this.menuBoolValues.push(createBoolMenu(paramValue));
+
+                    this.paramValues.push(paramValue);
                 }
 
 
@@ -329,13 +339,16 @@ extends ResizableBase
                         uiConnect(output, input);
                 }
             }
+            
             else
             {
-                this.paramValue   = null;
-                this._name        = this.variableName;
+                this.paramValues    = [];
+                this.menuBoolValues = [];
 
-                this.variableId   = NULL;
-                this.variableType = NULL;
+                this._name          = this.variableName;
+
+                this.variableId     = NULL;
+                this.variableType   = NULL;
 
 
                 actionManager.clear();
@@ -361,65 +374,96 @@ extends ResizableBase
         }
 
 
-        if (resolvedValues.length > 0)
+        console.assert(
+            resolvedValues.length == this.paramValues.length, 
+            'value count must equal param count');
+        
+
+        for (let i = 0; i < resolvedValues.length; i++)
         {
-            let val = resolvedValues[0];
+            if (!isValid(resolvedValues[i]))
+                continue;
 
-            if (isValid(val))
+
+            const resolvedValue = resolvedValues[i];
+            const    paramValue =    paramValues[i];
+
+
+            const value = getValueFromVariable(resolvedType, resolvedValue);
+   
+            
+            if (!(      paramValue.value.type  == NUMBER_VALUE
+                     && paramValue.value.value == value.value
+                     && value.type == NUMBER_VALUE
+                  || paramValue.value.equals(value)))
             {
-                const value = getValueFromVariable(resolvedType, val);
-              
-                if (!(      this.paramValue.value.type == NUMBER_VALUE
-                         && value.type == NUMBER_VALUE
-                         && this.paramValue.value.value == value.value
-                      || this.paramValue.value.equals(value)))
-                {
-                    if (value.decimals <= this.paramValue.value.decimals)
-                        this.checkNoUpdateDecimals(value);
+                if (value.decimals <= paramValue.value.decimals)
+                    this.checkNoUpdateDecimals(value, paramValue);
 
-                    this.paramValue.setValue(value, update, true, update);
-
-                    actionManager.clear();
-                    uiShowClearUndoWarning('variables');
-                }
+                paramValue.setValue(value, update, true, update);
             }
         }
+
+
+        actionManager.clear();
+        uiShowClearUndoWarning('variables');
     }
 
 
 
-    updateValueParamValue(varValue, update = false)
+    updateValueParamValues(varValues, update = false)
     {
-        let updateNode = false;
+        let updateNode   = false;
+        let valueChanged = false;
 
         
-        if (   this.variableValue != varValue
-            || this.variableName  != varValue.variableName)
+        if (this.variableName != varValues.variableName)
         {
-            this.variableName = varValue.variableName;
+            this.variableName = varValues.variableName;
             updateNode = true;
+        }
 
 
-            consoleAssert(varValue.variableValue, 'a valid variable value is required here');
+        
+        consoleAssert(
+            varValues.length == this.paramValues.length, 
+            'value count must match param count');
 
 
-            if (!this.paramValue.value.equals(varValue.variableValue))
+        for (let i = 0; i < varValues.length; i++)
+        {
+            if (this.variableValues[i] == varValues[i])
+                continue;
+
+
+            consoleAssert(
+                varValues.variableValues[i], 
+                'a valid variable value is required here');
+
+            if (!this.paramValues[i].value.equals(varValues[i].variableValue))
             {
-                this.paramValue.setValue(varValue.variableValue, update, true, update);
-
-                actionManager.clear();
-                uiShowClearUndoWarning('variables');
+                this.paramValues[i].setValue(varValues[i].variableValue, update, true, update);
+                valueChanged = true;
             }
+
+            updateNode = true;
         }
 
 
         if (updateNode)
             this.updateNode();
+
+
+        if (valueChanged)
+        {
+            actionManager.clear();
+            uiShowClearUndoWarning('variables');
+        }
     }
 
 
 
-    checkNoUpdateDecimals(value)
+    checkNoUpdateDecimals(value, paramValue)
     {
         const foundIndex = noUpdatePrecisionIds.indexOf(this.variableId);
 
@@ -427,7 +471,7 @@ extends ResizableBase
             && foundIndex < 0)
         {
             noUpdatePrecisionIds.splice(foundIndex, 1);
-            value.decimals = this.paramValue.value.decimals;
+            value.decimals = paramValue.value.decimals;
         }
     }
 
@@ -435,15 +479,15 @@ extends ResizableBase
 
     updateParams()
     {
-        if (this.paramValue)
+        for (const paramValue of this.paramValues)
         {
-            this.paramValue.enableControlText(
+            paramValue.enableControlText(
                     this.headerInputs.length == 0
                 || !this.headerInputs[0].connected, 
-                this.paramValue.isUnknown());
+                paramValue.isUnknown());
 
             if (this.isBool)
-                updateParamConditionText(this.paramValue, this.paramValue.isUnknown(), true, 1);
+                updateParamConditionText(paramValue, paramValue.isUnknown(), true, 1);
         }
 
 
