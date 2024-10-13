@@ -5,20 +5,20 @@ extends GValue
 
     variableId;
     variableName;
-    variableValue;
+    variableValues;
 
 
 
     constructor(nodeId,
-                variableId    = NULL, 
-                variableName  = '', 
-                variableValue = new NullValue())
+                variableId     = NULL, 
+                variableName   = '', 
+                variableValues = [])
     {
         super(VARIABLE_VALUE, nodeId, 'variable');
 
-        this.variableId    = variableId;
-        this.variableName  = variableName;
-        this.variableValue = variableValue ? variableValue.copy() : new NullValue();
+        this.variableId     = variableId;
+        this.variableName   = variableName;
+        this.variableValues = variableValues;
     }
 
 
@@ -29,7 +29,7 @@ extends GValue
             obj.nodeId,
             obj.objectId, 
             obj.objectName, 
-            new NullValue()); //NumberValue(obj.variableValue));
+            []); //NumberValue(obj.variableValue));
     }
 
 
@@ -40,7 +40,7 @@ extends GValue
             this.nodeId,
             this.variableId, 
             this.variableName, 
-            this.variableValue ? this.variableValue.copy() : new NullValue());
+            this.variableValues.map(v => v.copy()));
 
         copy.copyBase(this);
 
@@ -51,12 +51,23 @@ extends GValue
 
     equals(_var)
     {
-        return _var
+        let result =
+              _var
             && this.variableId   == _var.variableId  
-            && this.variableName == _var.variableName
-            &&    this.variableValue
-               && _var.variableValue
-               && this.variableValue.equals(_var.variableValue);
+            && this.variableName == _var.variableName;
+
+        for (let i = 0; i < this.variableValues.length; i++)
+        {
+            if (   !this.variableValues[i]
+                || !_var.variableValues[i]
+                || !this.variableValues[i].equals(_var.variableValues[i]))
+            {
+                result = false;
+                break;
+            }
+        }
+
+        return result;
     }
 
 
@@ -72,8 +83,9 @@ extends GValue
     {
         return      (this.variableId   != NULL ? this.variableId  : NULL_VALUE)
             + ' ' + (this.variableName != ''   ? encodeURIComponent(this.variableName)  : NULL_VALUE)
-            + ' ' + (this.variableValue ? this.variableValue.type : NULL_VALUE)
-            + ' ' + (this.variableValue ? this.variableValue.toString() : NULL_VALUE);
+            + ' ' + (this.variableValues.length > 0 ? this.variableValues[0].type : NULL_VALUE)
+            + ' ' +  this.variableValues.length
+            + ' ' +  this.variableValues.map(v => v.toString()).join(' ');
     }
 
 
@@ -93,8 +105,8 @@ extends GValue
     {
         return      (this.variableId   != NULL ? this.variableId   : NULL_VALUE)
             + ' ' + (this.variableName != ''   ? this.variableName : NULL_VALUE)
-            + ' ' + (this.variableValue ? this.variableValue.type : NULL_VALUE)
-            + ' ' + (this.variableValue ? this.variableValue.toDisplayString() : NULL_VALUE);
+            + ' ' + (this.variableValues.length > 0 ? this.variableValues[0].type : NULL_VALUE)
+            + ' ' +  this.variableValues.map(v => v.toDisplayString()).join(' ');
     }
 
 
@@ -109,7 +121,7 @@ extends GValue
     hasInitValue()
     {
         return super.hasInitValue()
-            && this.variableValue.hasInitValue();
+            && this.variableValues.some(v => v.hasInitValue());
     }
 
 
@@ -118,7 +130,7 @@ extends GValue
     {
         return this.variableId   != NULL
             && this.variableName != ''
-            && this.variableValue && this.variableValue.isValid();
+            && this.variableValues.every(v => v.isValid());
     }
 
 
@@ -127,7 +139,7 @@ extends GValue
         NULL,
         NULL,
         '',
-        null);
+        []);
 }
 
 
@@ -153,20 +165,33 @@ function parseVariableValue(str, i = -1)
     const iStart = i;
     let   length = 0;
 
-    const variableId    = _str[i] != NULL_VALUE ? _str[i] : NULL;               length += _str[i].length + 1;  i++;
+    const variableId      = _str[i] != NULL_VALUE ? _str[i] : NULL;               length += _str[i].length + 1;  i++;
 
-    const strName       = decodeURIComponent(_str[i]);
-    const variableName  = strName != NULL_VALUE ? strName : NULL;               length += _str[i].length + 1;  i++;
+    const strName         = decodeURIComponent(_str[i]);
+    const variableName    = strName != NULL_VALUE ? strName : NULL;               length += _str[i].length + 1;  i++;
 
-    const variableType  = _str[i] != NULL_VALUE ? _str[i] : NULL;               length += _str[i].length + 1;  i++;
-    const variableValue = parseValueFromType(variableType, str.slice(length));                                 i += variableValue ? variableValue[1] : 1;
+    const variableType    = _str[i] != NULL_VALUE ? _str[i] : NULL;               length += _str[i].length + 1;  i++;
+    
+    const nVariableValues = _str[i] != NULL_VALUE ? parseInt(_str[i]) : NULL;     length += _str[i].length + 1;  i++;
+    
+
+    const variableValues = [];
+
+    for (let j = 0; j < nVariableValues; j++)
+    {
+        const variableValue = parseValueFromType(variableType, str.slice(length));
+
+        variableValues.push(variableValue);
+
+        i += variableValue ? variableValue[1] : 1;
+    }
 
 
     const _var = new VariableValue(
         NULL, // set node ID elsewhere
         variableId,
         variableName,
-        variableValue);
+        variableValues);
 
 
     return [_var, i - iStart];

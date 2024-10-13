@@ -49,7 +49,7 @@ extends Action
         this.prevVariableId     = this.node.variableId;
         this.prevVariableType   = this.node.variableType;
         this.prevVariableName   = this.node.variableName;
-        this.prevVariableValues = [...this.node.variableValue];
+        this.prevVariableValues = [...this.node.variableValues];
         //this.prevVariableTemp = this.node.linkedTemp;
  
        

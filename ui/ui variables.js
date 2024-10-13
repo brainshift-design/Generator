@@ -207,7 +207,6 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     {
         const options = {};
 
-
         options.callback = () => actionManager.do(
             new LinkExistingVariableAction(
                 nodeId,
@@ -382,7 +381,7 @@ function updateMenuLocalVariables()
         [
             new MenuItem('None', null, false,
             {
-                callback: e => actionManager.do(new LinkExistingVariableAction(menuLocalVariables.node.nodeId, NULL, NULL, '', false)),
+                callback: e => actionManager.do(new LinkExistingVariableAction(menuLocalVariables.node.nodeId, NULL, NULL, '', [])),
                 enabled:  menuLocalVariables.node.variableId != NULL
             })
         ]);

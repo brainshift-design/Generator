@@ -156,9 +156,10 @@ extends ResizableBase
                 ? this.node.variableName 
                 : this.node.name);
         
-        request.push(this.node.variableType );
+        request.push(this.node.variableType);
 
 
+        console.log('this.node.variableValues =', this.node.variableValues);
         request.push(this.node.variableValues.length);
         request.push(...this.node.variableValues);
 
@@ -168,7 +169,7 @@ extends ResizableBase
 
         request.push(this.node.paramValues.length);
         
-        for (const paramValue of this.paramValues)
+        for (const paramValue of this.node.paramValues)
             request.push(...paramValue.genRequest(gen));
 
 
@@ -194,17 +195,21 @@ extends ResizableBase
         noUpdateVariableIds.push(this.variableId);
 
 
-        this.updateValueParamsFromType(
-            value.variableValue.type,
-            value.variableValue.type == NUMBER_VALUE
-                ? value.variableValue.isBoolean
-                : false,
-            this.isBool);
+        if (value.variableValues[0])
+        {
+            this.updateValueParamsFromType(
+                value.variableValues.length,
+                value.variableValues[0].type,
+                value.variableValues[0].type == NUMBER_VALUE
+                    ? value.variableValues[0].isBoolean
+                    : false,
+                this.isBool);
 
-        if (   value.variableValue
-            && value.variableValue.type != NULL
-            && value.variableValue.type != ANY_VALUE)
-            this.updateValueParamValues(value);
+            if (   value.variableValues[0]
+                && value.variableValues[0].type != NULL
+                && value.variableValues[0].type != ANY_VALUE)
+                this.updateValueParamValues(value);
+        }
     }
 
     
@@ -386,7 +391,7 @@ extends ResizableBase
 
 
             const resolvedValue = resolvedValues[i];
-            const    paramValue =    paramValues[i];
+            const    paramValue = this.paramValues[i];
 
 
             const value = getValueFromVariable(resolvedType, resolvedValue);
@@ -411,38 +416,38 @@ extends ResizableBase
 
 
 
-    updateValueParamValues(varValues, update = false)
+    updateValueParamValues(varValue, update = false)
     {
         let updateNode   = false;
         let valueChanged = false;
 
         
-        if (this.variableName != varValues.variableName)
+        if (this.variableName != varValue.variableName)
         {
-            this.variableName = varValues.variableName;
+            this.variableName = varValue.variableName;
             updateNode = true;
         }
 
 
         
         consoleAssert(
-            varValues.length == this.paramValues.length, 
+            varValue.variableValues.length == this.paramValues.length, 
             'value count must match param count');
 
 
-        for (let i = 0; i < varValues.length; i++)
+        for (let i = 0; i < varValue.variableValues.length; i++)
         {
-            if (this.variableValues[i] == varValues[i])
-                continue;
+            const varVal = varValue.variableValues[i];
+            if (varVal == this.variableValues[i]) continue;
 
 
             consoleAssert(
-                varValues.variableValues[i], 
+                varVal, 
                 'a valid variable value is required here');
 
-            if (!this.paramValues[i].value.equals(varValues[i].variableValue))
+            if (!this.paramValues[i].value.equals(varVal))
             {
-                this.paramValues[i].setValue(varValues[i].variableValue, update, true, update);
+                this.paramValues[i].setValue(varVal, update, true, update);
                 valueChanged = true;
             }
 

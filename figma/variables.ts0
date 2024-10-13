@@ -106,7 +106,7 @@ function figGetAllLocalVariables(nodeId, px, py)
                     id:             _var.id,
                     resolvedType:   _var.resolvedType,
                     name:           collection.name + '/' + _var.name,
-                    resolvedValues: values
+                    resolvedValues: [...values[1]]
                 };
 
                 variables.push(variable);

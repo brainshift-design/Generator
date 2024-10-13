@@ -4261,14 +4261,16 @@ async function figUpdateVariableObjectAsync(genVar)
     }
 
 
-    console.assert(figVar, 'variable must have been created');
+    //console.assert(figVar, 'variable must have been created');
 
-
-    await figUpdateVariableAsync(
-        figVar.id,
-        resolvedVar.id,
-        varName,
-        varValue);
+    if (figVar)
+    {
+        await figUpdateVariableAsync(
+            figVar.id,
+            resolvedVar.id,
+            varName,
+            varValue);
+    }
 }
 
 
@@ -5453,7 +5455,7 @@ function figGetAllLocalVariables(nodeId, px, py)
                     id:             _var.id,
                     resolvedType:   _var.resolvedType,
                     name:           collection.name + '/' + _var.name,
-                    resolvedValues: values
+                    resolvedValues: [...values[1]]
                 };
 
                 variables.push(variable);

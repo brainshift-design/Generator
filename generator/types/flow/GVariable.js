@@ -57,13 +57,13 @@ extends GOperator1
         let   paramValues = await Promise.all(this.paramValues.map(async p => await evalValue(p, parse)));
 
 
-        let varValues;
+        let varValues = [];
         
        
         if (input)
             varValues = [input];
 
-        else if (this.variableValues.all(v => isValid(v)))
+        else if (this.variableValues.every(v => isValid(v)))
         {
             for (const varVal of this.variableValues)
                 varValues.push(getVariableValue(this.variableType, varVal, true, parse));
@@ -105,11 +105,11 @@ extends GOperator1
         ]);
 
 
-        for (let i = 0; i < paramValues.length; i++)
+        for (let i = 0; i < varValues.length; i++)
         {
             this.setUpdateValues(parse,
             [
-                ['paramValue' + i, paramValues[i]]
+                ['paramValue' + i, varValues[i]]
             ],
             true);
         }
@@ -134,14 +134,13 @@ extends GOperator1
         this.value.objects = [];
 
 
-        if (   this.value.variableValue 
-            && this.value.variableValue.isValid())
+        if (this.value.variableValues.every(v => v.isValid()))
         {
             const _var = new FigmaVariable(
                 this.nodeId,
                 this.value.variableId,
                 this.value.variableName,
-                this.value.variableValue);
+                this.value.variableValues.map(v => v.copy()));
 
             this.value.objects.push(_var);
         }

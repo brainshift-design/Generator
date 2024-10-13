@@ -2848,8 +2848,10 @@ function figUpdateVariableObjectAsync(genVar) {
             [figVar, resolvedVar] = yield figLinkNodeToVariableAsync(nodeId, varId);
             collection = yield figma.variables.getVariableCollectionByIdAsync(figVar.variableCollectionId);
         }
-        console.assert(figVar, 'variable must have been created');
-        yield figUpdateVariableAsync(figVar.id, resolvedVar.id, varName, varValue);
+        //console.assert(figVar, 'variable must have been created');
+        if (figVar) {
+            yield figUpdateVariableAsync(figVar.id, resolvedVar.id, varName, varValue);
+        }
     });
 }
 function figUpdateGeometricObjectAsync(genObj, updateObjects, updateObjectCount, batchSize, abort, figParent, addProps, transform) {
@@ -3689,7 +3691,7 @@ function figGetAllLocalVariables(nodeId, px, py) {
                     id: _var.id,
                     resolvedType: _var.resolvedType,
                     name: collection.name + '/' + _var.name,
-                    resolvedValues: values
+                    resolvedValues: [...values[1]]
                 };
                 variables.push(variable);
             }
