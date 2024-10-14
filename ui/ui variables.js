@@ -210,7 +210,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
                 variable.id,
                 variable.resolvedType,
                 variable.name,
-                variable.resolvedValues));
+                variable.resolvedValues[1]));
 
         options.enabled = !linkedNodes.find(n => n.variableId == variable.id);
 
