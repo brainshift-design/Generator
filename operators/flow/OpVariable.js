@@ -294,6 +294,7 @@ extends ResizableBase
             this.removeAllParams();
             this.menuBoolValues = [];
 
+            console.log('params DELETED');
 
             if (   type != NULL
                 && type != ANY_VALUE)
@@ -406,7 +407,7 @@ extends ResizableBase
                     this.checkNoUpdateDecimals(value, paramValue);
             }
 
-            
+
             paramValue.setName(resolvedMode);
             paramValue.setValue(value, update, true, update);
     }
