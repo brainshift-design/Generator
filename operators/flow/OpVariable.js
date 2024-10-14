@@ -363,7 +363,7 @@ extends ResizableBase
 
 
 
-    updateValueParamValuesFromResolved(resolvedType, varName, resolvedValues, update = false)
+    updateValueParamValuesFromResolved(resolvedType, varName, resolvedValues, resolvedModes, update = false)
     {
         if (this.variableName != varName)
         {
@@ -378,6 +378,10 @@ extends ResizableBase
             resolvedValues.length == this.paramValues.length, 
             'value count must equal param count');
         
+        console.assert(
+            resolvedValues.length == resolvedModes.length, 
+            'value count must equal mode count');
+        
 
         for (let i = 0; i < resolvedValues.length; i++)
         {
@@ -385,12 +389,13 @@ extends ResizableBase
                 continue;
 
 
-            const resolvedValue = resolvedValues[i];
+            const resolvedValue = resolvedValues  [i];
+            const resolvedMode  = resolvedModes   [i];
             const    paramValue = this.paramValues[i];
 
 
             const value = getValueFromVariable(resolvedType, resolvedValue);
-   
+  
             
             if (!(      paramValue.value.type  == NUMBER_VALUE
                      && paramValue.value.value == value.value
@@ -399,10 +404,12 @@ extends ResizableBase
             {
                 if (value.decimals <= paramValue.value.decimals)
                     this.checkNoUpdateDecimals(value, paramValue);
-
-                paramValue.setValue(value, update, true, update);
             }
-        }
+
+            
+            paramValue.setName(resolvedMode);
+            paramValue.setValue(value, update, true, update);
+    }
 
 
         actionManager.clear();

@@ -84,6 +84,7 @@ function uiReturnFigGetVariableUpdates(variables)
                     variable.resolvedType,
                     variable.name,
                     variable.resolvedValues,
+                    variable.resolvedModes,
                     true);
             }
         }
@@ -99,7 +100,8 @@ function uiReturnFigLinkNodeToVariable(msg)
     // node.updateValueParamValuesFromResolved(
     //     msg.resolvedType, 
     //     msg.variableName,
-    //     msg.values);
+    //     msg.values,
+    //     msg.modes);
 
     //pushUpdate(null, [node]);
 }

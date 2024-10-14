@@ -5511,7 +5511,8 @@ async function getVariableValuesAsync(varIds)
             
         if (collection)
         {
-            const vals = [];
+            const vals  = [];
+            const modes = [];
 
 
             for (const mode of collection.modes)
@@ -5519,13 +5520,15 @@ async function getVariableValuesAsync(varIds)
                 let _var  = variable;
                 let value = _var.valuesByMode[mode.modeId];
                 
-                while (value && value.type === 'VARIABLE_ALIAS')
+                while (value 
+                    && value.type === 'VARIABLE_ALIAS')
                 {
                     _var  = await figma.variables.getVariableByIdAsync(value.id);
                     value = _var.valuesByMode[mode.modeId];
                 }
 
-                vals.push(value);
+                vals .push(value);
+                modes.push(mode.name);
             }
 
 
@@ -5534,7 +5537,8 @@ async function getVariableValuesAsync(varIds)
                 id:             varIds[i],
                 name:           collection.name + '/' + variable.name, 
                 resolvedType:   variable.resolvedType,
-                resolvedValues: [...vals]
+                resolvedValues: vals,
+                resolvedModes:  modes
             });
         }
         else
@@ -5543,7 +5547,8 @@ async function getVariableValuesAsync(varIds)
             {
                 id:             varIds[i], 
                 resolvedType:   NULL, 
-                resolvedValues: []
+                resolvedValues: [],
+                resolvedModes:  []
             });
         }
     }
