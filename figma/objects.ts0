@@ -133,11 +133,18 @@ async function figUpdateObjectsAsync(figParent, genObjects, batchSize, totalObje
 
 async function figUpdateVariableObjectAsync(genVar)
 {
-    const nodeId   = genVar[FO_NODE_ID       ];
-    const varId    = genVar[FO_OBJECT_ID     ];
-    const varName  = genVar[FO_OBJECT_NAME   ];
-    const varValue = genVar[FO_VARIABLE_VALUE];
+    const nodeId        = genVar[FO_NODE_ID       ];
+    const varId         = genVar[FO_OBJECT_ID     ];
+    const varName       = genVar[FO_OBJECT_NAME   ];
+    const varValueCount = genVar[FO_VARIABLE_COUNT];
     
+
+    const varValues = [];
+
+    for (let i = 0; i < varValueCount; i++)
+        varValues.push(genVar[FO_VARIABLE_COUNT + 1 + i]);
+
+
     const nameParts = varName.split('/');
     console.assert(nameParts.length > 1, 'nameParts must be > 1');
 
@@ -169,7 +176,7 @@ async function figUpdateVariableObjectAsync(genVar)
             figVar.id,
             resolvedVar.id,
             varName,
-            varValue);
+            varValues);
     }
 }
 

@@ -1443,7 +1443,7 @@ const FO_SCALE = 9;
 const FO_FILLS = 10;
 const FO_VARIABLE_TYPE = 10;
 const FO_STROKES = 11;
-const FO_VARIABLE_VALUE = 11;
+const FO_VARIABLE_COUNT = 11;
 const FO_STROKE_WEIGHT = 12;
 const FO_STROKE_ALIGN = 13;
 const FO_STROKE_JOIN = 14;
@@ -2831,7 +2831,10 @@ function figUpdateVariableObjectAsync(genVar) {
         const nodeId = genVar[FO_NODE_ID];
         const varId = genVar[FO_OBJECT_ID];
         const varName = genVar[FO_OBJECT_NAME];
-        const varValue = genVar[FO_VARIABLE_VALUE];
+        const varValueCount = genVar[FO_VARIABLE_COUNT];
+        const varValues = [];
+        for (let i = 0; i < varValueCount; i++)
+            varValues.push(genVar[FO_VARIABLE_COUNT + 1 + i]);
         const nameParts = varName.split('/');
         console.assert(nameParts.length > 1, 'nameParts must be > 1');
         let figVar;
@@ -2850,7 +2853,7 @@ function figUpdateVariableObjectAsync(genVar) {
         }
         //console.assert(figVar, 'variable must have been created');
         if (figVar) {
-            yield figUpdateVariableAsync(figVar.id, resolvedVar.id, varName, varValue);
+            yield figUpdateVariableAsync(figVar.id, resolvedVar.id, varName, varValues);
         }
     });
 }
@@ -3626,7 +3629,7 @@ function setStylePaints(figStyle, genStyle) {
 }
 function genVariableIsValid(genVariable) {
     return genVariable[FO_VARIABLE_TYPE] != null
-        && genVariable[FO_VARIABLE_VALUE] != null;
+        && genVariable[FO_VARIABLE_COUNT] != null;
 }
 function figCreateVariableAsync(genVariable) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -3691,7 +3694,7 @@ function figGetAllLocalVariables(nodeId, px, py) {
                     id: _var.id,
                     resolvedType: _var.resolvedType,
                     name: collection.name + '/' + _var.name,
-                    resolvedValues: [...values[1]]
+                    resolvedValues: values
                 };
                 variables.push(variable);
             }
@@ -3749,7 +3752,7 @@ function getVariableValuesAsync(varIds) {
         return values;
     });
 }
-function figUpdateVariableAsync(varId, resolvedVarId, newName, newValue) {
+function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues) {
     return __awaiter(this, void 0, void 0, function* () {
         let variable = yield figma.variables.getVariableByIdAsync(varId);
         let resolvedVar = yield figma.variables.getVariableByIdAsync(resolvedVarId);
@@ -3758,7 +3761,6 @@ function figUpdateVariableAsync(varId, resolvedVarId, newName, newValue) {
             return;
         const collection = yield figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
         const resolvedCollection = yield figma.variables.getVariableCollectionByIdAsync(resolvedVar.variableCollectionId);
-        let resolvedMode = resolvedCollection.modes[0];
         // if necessary, move the variable to a new collection, create it if necessary
         const newCollectionName = newName.split('/')[0];
         if (collection.name != newCollectionName) {
@@ -3770,16 +3772,19 @@ function figUpdateVariableAsync(varId, resolvedVarId, newName, newValue) {
         const newVarName = newName.split('/').slice(1).join('/');
         if (variable.name != newVarName)
             variable.name = newVarName;
-        if (newValue !== null) {
-            try {
-                if (resolvedVar.resolvedType == 'BOOLEAN')
-                    newValue = newValue > 0;
-                resolvedVar.setValueForMode(resolvedMode.modeId, newValue);
-            }
-            catch (ex) {
-                // this is to catch the misfire from variable polling
-                // during the short period when the variables have been relinked,
-                // but the node's linked variableId hasn't been updated yet
+        for (let i = 0; i < newValues.length; i++) {
+            let newValue = newValues[i];
+            if (newValue !== null) {
+                try {
+                    if (resolvedVar.resolvedType == 'BOOLEAN')
+                        newValue = newValue > 0;
+                    resolvedVar.setValueForMode(resolvedCollection.modes[i].modeId, newValue);
+                }
+                catch (ex) {
+                    // this is to catch the misfire from variable polling
+                    // during the short period when the variables have been relinked,
+                    // but the node's linked variableId hasn't been updated yet
+                }
             }
         }
     });

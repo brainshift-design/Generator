@@ -159,7 +159,6 @@ extends ResizableBase
         request.push(this.node.variableType);
 
 
-        console.log('this.node.variableValues =', this.node.variableValues);
         request.push(this.node.variableValues.length);
         request.push(...this.node.variableValues);
 
@@ -195,7 +194,8 @@ extends ResizableBase
         noUpdateVariableIds.push(this.variableId);
 
 
-        if (value.variableValues[0])
+        if (   value.variableValues.length > 0
+            && value.variableValues[0])
         {
             this.updateValueParamsFromType(
                 value.variableValues.length,
@@ -305,7 +305,7 @@ extends ResizableBase
             {
                 for (let i = 0; i < nParams; i++)
                 {
-                    const paramValue = this.createAndAddParamByType(type, 'paramValue'+i, false, true, true);
+                    const paramValue = this.createAndAddParamByType(type, 'paramValue'+i, 'paramValue'+i, nParams > 1, true, true);
 
                     paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
 

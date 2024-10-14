@@ -1,7 +1,7 @@
 function genVariableIsValid(genVariable)
 {
     return genVariable[FO_VARIABLE_TYPE ] != null
-        && genVariable[FO_VARIABLE_VALUE] != null;
+        && genVariable[FO_VARIABLE_COUNT] != null;
 }
 
 
@@ -106,7 +106,7 @@ function figGetAllLocalVariables(nodeId, px, py)
                     id:             _var.id,
                     resolvedType:   _var.resolvedType,
                     name:           collection.name + '/' + _var.name,
-                    resolvedValues: [...values[1]]
+                    resolvedValues: values
                 };
 
                 variables.push(variable);
@@ -198,7 +198,7 @@ async function getVariableValuesAsync(varIds)
 
 
 
-async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValue)
+async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues)
 {
     let variable    = await figma.variables.getVariableByIdAsync(varId);
     let resolvedVar = await figma.variables.getVariableByIdAsync(resolvedVarId);
@@ -210,9 +210,6 @@ async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValue)
 
     const collection         = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);    
     const resolvedCollection = await figma.variables.getVariableCollectionByIdAsync(resolvedVar.variableCollectionId);    
-
-
-    let resolvedMode = resolvedCollection.modes[0];
 
 
     // if necessary, move the variable to a new collection, create it if necessary
@@ -236,20 +233,25 @@ async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValue)
         variable.name = newVarName;
 
     
-    if (newValue !== null)
+    for (let i = 0; i < newValues.length; i++)
     {
-        try
-        {
-            if (resolvedVar.resolvedType == 'BOOLEAN')
-                newValue = newValue > 0;
+        let newValue = newValues[i];
 
-            resolvedVar.setValueForMode(resolvedMode.modeId, newValue);
-        }
-        catch (ex)
+        if (newValue !== null)
         {
-            // this is to catch the misfire from variable polling
-            // during the short period when the variables have been relinked,
-            // but the node's linked variableId hasn't been updated yet
+            try
+            {
+                if (resolvedVar.resolvedType == 'BOOLEAN')
+                    newValue = newValue > 0;
+
+                resolvedVar.setValueForMode(resolvedCollection.modes[i].modeId, newValue);
+            }
+            catch (ex)
+            {
+                // this is to catch the misfire from variable polling
+                // during the short period when the variables have been relinked,
+                // but the node's linked variableId hasn't been updated yet
+            }
         }
     }
 }

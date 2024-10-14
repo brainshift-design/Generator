@@ -2165,7 +2165,7 @@ const FO_XP2            =  8;
 const FO_SCALE          =  9;
 
 const FO_FILLS          = 10;   const FO_VARIABLE_TYPE   = 10;
-const FO_STROKES        = 11;   const FO_VARIABLE_VALUE  = 11;
+const FO_STROKES        = 11;   const FO_VARIABLE_COUNT  = 11;
 
 const FO_STROKE_WEIGHT  = 12;
 const FO_STROKE_ALIGN   = 13;
@@ -4233,11 +4233,18 @@ async function figUpdateObjectsAsync(figParent, genObjects, batchSize, totalObje
 
 async function figUpdateVariableObjectAsync(genVar)
 {
-    const nodeId   = genVar[FO_NODE_ID       ];
-    const varId    = genVar[FO_OBJECT_ID     ];
-    const varName  = genVar[FO_OBJECT_NAME   ];
-    const varValue = genVar[FO_VARIABLE_VALUE];
+    const nodeId        = genVar[FO_NODE_ID       ];
+    const varId         = genVar[FO_OBJECT_ID     ];
+    const varName       = genVar[FO_OBJECT_NAME   ];
+    const varValueCount = genVar[FO_VARIABLE_COUNT];
     
+
+    const varValues = [];
+
+    for (let i = 0; i < varValueCount; i++)
+        varValues.push(genVar[FO_VARIABLE_COUNT + 1 + i]);
+
+
     const nameParts = varName.split('/');
     console.assert(nameParts.length > 1, 'nameParts must be > 1');
 
@@ -4269,7 +4276,7 @@ async function figUpdateVariableObjectAsync(genVar)
             figVar.id,
             resolvedVar.id,
             varName,
-            varValue);
+            varValues);
     }
 }
 
@@ -5350,7 +5357,7 @@ function setStylePaints(figStyle, genStyle)
 function genVariableIsValid(genVariable)
 {
     return genVariable[FO_VARIABLE_TYPE ] != null
-        && genVariable[FO_VARIABLE_VALUE] != null;
+        && genVariable[FO_VARIABLE_COUNT] != null;
 }
 
 
@@ -5455,7 +5462,7 @@ function figGetAllLocalVariables(nodeId, px, py)
                     id:             _var.id,
                     resolvedType:   _var.resolvedType,
                     name:           collection.name + '/' + _var.name,
-                    resolvedValues: [...values[1]]
+                    resolvedValues: values
                 };
 
                 variables.push(variable);
@@ -5547,7 +5554,7 @@ async function getVariableValuesAsync(varIds)
 
 
 
-async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValue)
+async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues)
 {
     let variable    = await figma.variables.getVariableByIdAsync(varId);
     let resolvedVar = await figma.variables.getVariableByIdAsync(resolvedVarId);
@@ -5559,9 +5566,6 @@ async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValue)
 
     const collection         = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);    
     const resolvedCollection = await figma.variables.getVariableCollectionByIdAsync(resolvedVar.variableCollectionId);    
-
-
-    let resolvedMode = resolvedCollection.modes[0];
 
 
     // if necessary, move the variable to a new collection, create it if necessary
@@ -5585,20 +5589,25 @@ async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValue)
         variable.name = newVarName;
 
     
-    if (newValue !== null)
+    for (let i = 0; i < newValues.length; i++)
     {
-        try
-        {
-            if (resolvedVar.resolvedType == 'BOOLEAN')
-                newValue = newValue > 0;
+        let newValue = newValues[i];
 
-            resolvedVar.setValueForMode(resolvedMode.modeId, newValue);
-        }
-        catch (ex)
+        if (newValue !== null)
         {
-            // this is to catch the misfire from variable polling
-            // during the short period when the variables have been relinked,
-            // but the node's linked variableId hasn't been updated yet
+            try
+            {
+                if (resolvedVar.resolvedType == 'BOOLEAN')
+                    newValue = newValue > 0;
+
+                resolvedVar.setValueForMode(resolvedCollection.modes[i].modeId, newValue);
+            }
+            catch (ex)
+            {
+                // this is to catch the misfire from variable polling
+                // during the short period when the variables have been relinked,
+                // but the node's linked variableId hasn't been updated yet
+            }
         }
     }
 }

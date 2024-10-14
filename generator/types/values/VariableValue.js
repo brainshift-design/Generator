@@ -18,7 +18,7 @@ extends GValue
 
         this.variableId     = variableId;
         this.variableName   = variableName;
-        this.variableValues = variableValues;
+        this.variableValues = [...variableValues];
     }
 
 
@@ -179,11 +179,13 @@ function parseVariableValue(str, i = -1)
 
     for (let j = 0; j < nVariableValues; j++)
     {
-        const variableValue = parseValueFromType(variableType, str.slice(length));
+        const variableValue = parseValueFromType(variableType, _str[i]);
 
         variableValues.push(variableValue);
 
-        i += variableValue ? variableValue[1] : 1;
+        length += _str[i].length + 1;
+        i++;
+        // i += variableValue ? variableValue[1] : 1;
     }
 
 

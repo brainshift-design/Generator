@@ -1045,7 +1045,7 @@ const FO_XP2            =  8;
 const FO_SCALE          =  9;
 
 const FO_FILLS          = 10;   const FO_VARIABLE_TYPE   = 10;
-const FO_STROKES        = 11;   const FO_VARIABLE_VALUE  = 11;
+const FO_STROKES        = 11;   const FO_VARIABLE_COUNT  = 11;
 
 const FO_STROKE_WEIGHT  = 12;
 const FO_STROKE_ALIGN   = 13;

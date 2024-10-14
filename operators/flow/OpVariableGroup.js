@@ -262,7 +262,7 @@ extends ResizableBase
         //         }
 
         //         if (!param)
-        //             this.createAndAddParamByType(value.type, valueId, true, false, true, true);
+        //             this.createAndAddParamByType(value.type, valueId, valueId, true, false, true, true);
         //     }
         // }
 

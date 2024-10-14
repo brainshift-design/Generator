@@ -80,14 +80,11 @@ function uiReturnFigGetVariableUpdates(variables)
 
             if (node.paramValues.length > 0)
             {
-                // if (!node.paramValue.input.connected)
-                // {
-                    node.updateValueParamValuesFromResolved(
-                        variable.resolvedType,
-                        variable.name,
-                        variable.resolvedValues,
-                        true);
-                // }
+                node.updateValueParamValuesFromResolved(
+                    variable.resolvedType,
+                    variable.name,
+                    variable.resolvedValues,
+                    true);
             }
         }
     }

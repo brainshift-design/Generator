@@ -8031,7 +8031,7 @@ const FO_XP2            =  8;
 const FO_SCALE          =  9;
 
 const FO_FILLS          = 10;   const FO_VARIABLE_TYPE   = 10;
-const FO_STROKES        = 11;   const FO_VARIABLE_VALUE  = 11;
+const FO_STROKES        = 11;   const FO_VARIABLE_COUNT  = 11;
 
 const FO_STROKE_WEIGHT  = 12;
 const FO_STROKE_ALIGN   = 13;
@@ -11338,46 +11338,35 @@ class FigmaVariable
 extends FigmaObject
 {
     variableType;
-    variableValue;
+    variableValues = [];
 
     
 
-    constructor(nodeId, variableId, variableName, variableValue)
+    constructor(nodeId, variableId, variableName, variableValues)
     {
         super(VARIABLE, nodeId, variableId, variableName);
         
 
-        if (variableValue)
+        if (variableValues.length > 0)
+        {
+            switch (variableValues[0].type)
+            {
+                case NUMBER_VALUE: this.variableType = variableValues[0].isBoolean ? 'BOOLEAN' : 'FLOAT'; break;
+                case TEXT_VALUE:   this.variableType = 'STRING'; break;
+                case COLOR_VALUE: 
+                case FILL_VALUE:   this.variableType = 'COLOR';  break;
+            }
+        }
+
+
+        for (const variableValue of variableValues)
         {
             switch (variableValue.type)
             {
-                case NUMBER_VALUE: 
-                    this.variableType = 
-                        variableValue.isBoolean 
-                        ? 'BOOLEAN' 
-                        : 'FLOAT'; 
-
-                    this.variableValue = variableValue.toNumber();
-                    
-                    break;
-
-
-                case TEXT_VALUE: 
-                    this.variableType  = 'STRING';
-                    this.variableValue = variableValue.toString();
-                    break;
-
-
-                case COLOR_VALUE: 
-                    this.variableType  = 'COLOR';
-                    this.variableValue = variableValue.toRgbObject();
-                    break;
-
-
-                case FILL_VALUE: 
-                    this.variableType  = 'COLOR';
-                    this.variableValue = variableValue.toRgbaObject();
-                    break;
+                case NUMBER_VALUE: this.variableValues.push(variableValue.toNumber());     break;
+                case TEXT_VALUE:   this.variableValues.push(variableValue.toString());     break;
+                case COLOR_VALUE:  this.variableValues.push(variableValue.toRgbObject());  break;
+                case FILL_VALUE:   this.variableValues.push(variableValue.toRgbaObject()); break;
             }
         }
     }
@@ -11390,11 +11379,11 @@ extends FigmaObject
             this.nodeId,
             this.variableId,
             this.objectName,
-            null);
+            []);
 
 
-        copy.variableType  = this.variableType;
-        copy.variableValue = this.variableValue;
+        copy.variableType   =  this.variableType;
+        copy.variableValues = [...this.variableValues];
 
 
         copy.copyBase(this);
@@ -11414,12 +11403,18 @@ extends FigmaObject
 
     toData()
     {
-        return [
+        const data = 
+        [
             ...super.toData(),
    
             /* 10 */ this.variableType,
-            /* 11 */ this.variableValue
+            /* 11 */ this.variableValues.length
         ];
+
+        for (const val of this.variableValues)
+            data.push(val);
+
+        return data;
     }
 }
 
@@ -16993,7 +16988,7 @@ extends GValue
 
         this.variableId     = variableId;
         this.variableName   = variableName;
-        this.variableValues = variableValues;
+        this.variableValues = [...variableValues];
     }
 
 
@@ -17154,11 +17149,13 @@ function parseVariableValue(str, i = -1)
 
     for (let j = 0; j < nVariableValues; j++)
     {
-        const variableValue = parseValueFromType(variableType, str.slice(length));
+        const variableValue = parseValueFromType(variableType, _str[i]);
 
         variableValues.push(variableValue);
 
-        i += variableValue ? variableValue[1] : 1;
+        length += _str[i].length + 1;
+        i++;
+        // i += variableValue ? variableValue[1] : 1;
     }
 
 
@@ -22431,12 +22428,13 @@ extends GOperator1
         if (input)
             varValues = [input];
 
-        else if (this.variableValues.every(v => isValid(v)))
+        else if (this.variableValues.length > 0
+              && this.variableValues.every(v => isValid(v)))
         {
             for (const varVal of this.variableValues)
                 varValues.push(getVariableValue(this.variableType, varVal, true, parse));
         }
-        else if (paramValues)
+        else if (paramValues.length > 0)
         {
             for (const paramVal of paramValues)
                 varValues.push(getVariableValue(this.variableType, paramVal.toValue(), false, parse));
@@ -22473,14 +22471,14 @@ extends GOperator1
         ]);
 
 
-        for (let i = 0; i < varValues.length; i++)
-        {
-            this.setUpdateValues(parse,
-            [
-                ['paramValue' + i, varValues[i]]
-            ],
-            true);
-        }
+        // for (let i = 0; i < varValues.length; i++)
+        // {
+        //     this.setUpdateValues(parse,
+        //     [
+        //         ['paramValue' + i, varValues[i]]
+        //     ],
+        //     true);
+        // }
 
 
         await this.evalVariable(parse);

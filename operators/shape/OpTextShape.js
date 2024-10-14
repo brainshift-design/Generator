@@ -140,7 +140,7 @@ extends OpShape
 
             if (index < 0)
             {
-                this.createAndAddParamByType(_param[0], _param[1], true, false, true, true);
+                this.createAndAddParamByType(_param[0], _param[1], _param[1], true, false, true, true);
                 index = this.params.length-1;
             }
         }

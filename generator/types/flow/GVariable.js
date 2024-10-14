@@ -63,12 +63,13 @@ extends GOperator1
         if (input)
             varValues = [input];
 
-        else if (this.variableValues.every(v => isValid(v)))
+        else if (this.variableValues.length > 0
+              && this.variableValues.every(v => isValid(v)))
         {
             for (const varVal of this.variableValues)
                 varValues.push(getVariableValue(this.variableType, varVal, true, parse));
         }
-        else if (paramValues)
+        else if (paramValues.length > 0)
         {
             for (const paramVal of paramValues)
                 varValues.push(getVariableValue(this.variableType, paramVal.toValue(), false, parse));
@@ -105,14 +106,14 @@ extends GOperator1
         ]);
 
 
-        for (let i = 0; i < varValues.length; i++)
-        {
-            this.setUpdateValues(parse,
-            [
-                ['paramValue' + i, varValues[i]]
-            ],
-            true);
-        }
+        // for (let i = 0; i < varValues.length; i++)
+        // {
+        //     this.setUpdateValues(parse,
+        //     [
+        //         ['paramValue' + i, varValues[i]]
+        //     ],
+        //     true);
+        // }
 
 
         await this.evalVariable(parse);
