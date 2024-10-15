@@ -279,7 +279,7 @@ function getCreateNodeAction(type, creatingButton, options = {})
     return options.insert      === true
         && options.autoConnect !== true
         ? new CreateInsertNodeAction(type, creatingButton, options)
-        : new CreateNodeAction      (type, creatingButton, options, options.autoConnect != undefined && options.autoConnect);
+        : new CreateNodeAction      (type, creatingButton, options, options.autoConnect === true);
 }
 
 
@@ -295,8 +295,8 @@ function getNewNumberId(curId, countExisting, id = curId, join = '', startNum = 
 {
     if (   addZero
         && (    id.length == 0
-            || !isDigit(id.at(-1)))
-        && countExisting(id) > 1)
+            || !isDigit(id.at(-1))))
+        //&& countExisting(id) > 1)
         id += '0';
 
 

@@ -20,7 +20,7 @@ class GValue
         this.parent  = null;
         
         this.valueId = valueId;
-        
+    
         this.valid   = true;
     }
 

@@ -10,7 +10,7 @@ extends ResizableBase
         super(NUMBER, 'num', 'number', iconNumber);
 
 
-        this.showIcon = false;
+        this.showIcon         = false;
         this.alwaysLoadParams = true;
 
         

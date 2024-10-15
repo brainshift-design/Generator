@@ -166,7 +166,7 @@ extends ResizableBase
                 actionManager.do(new SetListDividerAction(
                     this.id, 
                     this.separator.spx,
-                    this.scroll));
+                    this.divider));
             }
         });
     }

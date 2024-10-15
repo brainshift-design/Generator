@@ -144,13 +144,16 @@ extends EventTarget
         {
             e.stopPropagation();
             
-            if (getCtrlKey(e))
+            if (   getCtrlKey(e)
+                && this.connectedInputs.length == 0)
             {
                 const options = 
                 {
-                    insert:      false,
-                    autoConnect: true,
-                    fromSearch:  false
+                    insert:       false,
+                    autoConnect:  true,
+                    fromNodeId:   this.node.id,
+                    fromOutputId: this.id,
+                    fromSearch:   false
                 };
 
                 switch (this.types[0])

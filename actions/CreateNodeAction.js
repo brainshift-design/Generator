@@ -43,14 +43,26 @@ extends Action
         this.node = createNode(this.nodeType, this.creatingButton, this.createdId, this.options);
 
 
+        const canAutoConnect =
+            canAutoConnectNode(
+                this.node, 
+                true, 
+                   this.options.fromNodeId
+                && this.options.fromOutputId
+                    ? nodeFromId(this.options.fromNodeId)
+                          .outputFromId(this.options.fromOutputId)
+                    : null);
+
+
         const autoConnect = 
                 this.autoConnect
-            && !isEmpty(this.prevSelectedIds)
-            &&  canAutoConnectNode(this.node, true)
+            && (   !isEmpty(this.prevSelectedIds)
+                || this.options.fromNodeId)
+            && canAutoConnect
             && this.options.autoConnect != undefined
             && this.options.autoConnect;
 
-            
+          
         graph.addNode(
             this.node, 
             !autoConnect, 
@@ -61,16 +73,28 @@ extends Action
         this.createdNodeId = this.node.id;
         
 
+        const selNodeId = 
+            this.options.fromNodeId
+                ? this.options.fromNodeId
+                : this.prevSelectedIds[0];
+
+
         if (autoConnect)
         {
-            this.oldInputActiveNodeId = idFromNode(getActiveFromNodeId(this.prevSelectedIds[0]));
+            this.oldInputActiveNodeId = idFromNode(getActiveFromNodeId(selNodeId));
 
-            const selNode = nodeFromId(this.prevSelectedIds[0]);
-            const inputs  = this.node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
+            const selNode = nodeFromId(selNodeId);
+
+            const output =
+                this.options.fromOutputId
+                    ? selNode.outputFromId(this.options.fromOutputId)
+                    : selNode.headerOutputs[0];
+
+            const inputs = this.node.headerInputs.filter(i => i.canConnectFrom(output));
             
             if (!isEmpty(inputs))
             {
-                const conn = createNodeAction_connect(this, selNode.outputs[0], this.node, inputs[0].id);
+                const conn = createNodeAction_connect(this, output, this.node, inputs[0].id);
                 graphView.autoPlaceNewNode(conn.output, conn.input);
             }
         }
