@@ -17,7 +17,7 @@ extends Action
 
         this.affectsConnections = false;
 
-        this.nodeId    = nodeId;
+        this.nodeId     = nodeId;
 
         this.oldDivider = oldDivider;
         this.newDivider = newDivider;
@@ -36,7 +36,7 @@ extends Action
     {
         this.node.divider = this.oldDivider;
 
-        for (const param of this.params)
+        for (const param of this.node.params)
             param.divider = this.node.divider;
 
         this.node.updateParamControls();
@@ -50,7 +50,7 @@ extends Action
     {
         this.node.divider = this.newDivider;
 
-        for (const param of this.params)
+        for (const param of this.node.params)
             param.divider = this.node.divider;
 
         this.node.updateParamControls();

@@ -140,8 +140,37 @@ extends EventTarget
 
 
 
+        this.hitbox.addEventListener('dblclick', e => 
+        {
+            e.stopPropagation();
+            
+            if (getCtrlKey(e))
+            {
+                const options = 
+                {
+                    insert:      false,
+                    autoConnect: true,
+                    fromSearch:  false
+                };
+
+                switch (this.types[0])
+                {
+                    case NUMBER_VALUE: actionManager.do(getCreateNodeAction(NUMBER, btnData.div, options)); break;
+                    case   TEXT_VALUE: actionManager.do(getCreateNodeAction(TEXT,   btnData.div, options)); break;
+                    case  COLOR_VALUE: actionManager.do(getCreateNodeAction(COLOR,  btnData.div, options)); break;
+                    case   FILL_VALUE: actionManager.do(getCreateNodeAction(FILL,   btnData.div, options)); break;
+
+                    default:
+                        if (isListValueType(this.types[0]))
+                            actionManager.do(getCreateNodeAction(ITEMS, btnData.div, options));
+                }
+            }
+        });
+
+
+
         this.hitbox.addEventListener('pointerleave', e => 
-    { 
+        { 
             this.endConnection();
         });
     }

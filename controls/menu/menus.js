@@ -529,19 +529,19 @@ function initGeneratorMenus()
 
     menuData = new Menu('Lists', true, false);
     menuData.addItems([
-        menuItemCombine     = new MenuItem('List',              null,            false, {childMenu: menuList, icon: iconData,       createType: LIST,       callback: e => actionManager.do(getCreateNodeAction(LIST,          btnData.div, getCreateOptions(e)))}),
-        menuItemList        = new MenuItem('Items. . .',        null,            false, {icon: iconExpand,          createType: ITEMS,          callback: e => actionManager.do(getCreateNodeAction(ITEMS,             btnData.div, getCreateOptions(e)))}),
-                              new MenuItem('',                  null,            false, {separator: true}),     
-        menuItemCount       = new MenuItem('Count',             null,            false, {icon: iconCount,         createType: ITEM_COUNT,    callback: e => actionManager.do(getCreateNodeAction(ITEM_COUNT,       btnData.div, getCreateOptions(e)))}),
-                            //new MenuItem('Object count',      null,            false, {icon: iconObjectCount,   createType: OBJECT_COUNT,  callback: e => actionManager.do(getCreateNodeAction(OBJECT_COUNT,     btnData.div, getCreateOptions(e)))}),
-                            //new MenuItem('',                  null,            false, {separator: true}),     
-                              new MenuItem('Contains',          'List contains', true,  {icon: iconListContains,  createType: LIST_CONTAINS, callback: e => actionManager.do(getCreateNodeAction(LIST_CONTAINS,    btnData.div, getCreateOptions(e))), disambiguate: true}),
-                              new MenuItem('Find',              'Find in list',  true,  {icon: iconListFind,      createType: LIST_FIND,     callback: e => actionManager.do(getCreateNodeAction(LIST_FIND,        btnData.div, getCreateOptions(e))), disambiguate: true}),
-                              new MenuItem('',                  null,            false, {separator: true}),     
-                              new MenuItem('Column',            null,            false, {icon: iconColumn,        createType: COLUMN,        callback: e => actionManager.do(getCreateNodeAction(COLUMN,           btnData.div, getCreateOptions(e)))}),
-                              new MenuItem('Cell',              null,            false, {icon: iconCell,          createType: CELL,          callback: e => actionManager.do(getCreateNodeAction(CELL,             btnData.div, getCreateOptions(e)))}),
-                              new MenuItem('',                  null,            false, {separator: true}),     
-                              new MenuItem('Functions',         null,            false, {icon: iconListFunctions, childMenu: menuItems})]);
+        menuItemCombine = new MenuItem('List',         null,            false, {childMenu: menuList, icon: iconData, createType: LIST,          callback: e => actionManager.do(getCreateNodeAction(LIST,             btnData.div, getCreateOptions(e)))}),
+        menuItemList    = new MenuItem('Items. . .',   null,            false, {icon: iconExpand,                    createType: ITEMS,         callback: e => actionManager.do(getCreateNodeAction(ITEMS,            btnData.div, getCreateOptions(e)))}),
+                          new MenuItem('',             null,            false, {separator: true}),     
+        menuItemCount   = new MenuItem('Count',        null,            false, {icon: iconCount,                     createType: ITEM_COUNT,    callback: e => actionManager.do(getCreateNodeAction(ITEM_COUNT,       btnData.div, getCreateOptions(e)))}),
+                        //new MenuItem('Object count', null,            false, {icon: iconObjectCount,               createType: OBJECT_COUNT,  callback: e => actionManager.do(getCreateNodeAction(OBJECT_COUNT,     btnData.div, getCreateOptions(e)))}),
+                        //new MenuItem('',             null,            false, {separator: true}),     
+                          new MenuItem('Contains',     'List contains', true,  {icon: iconListContains,              createType: LIST_CONTAINS, callback: e => actionManager.do(getCreateNodeAction(LIST_CONTAINS,    btnData.div, getCreateOptions(e))), disambiguate: true}),
+                          new MenuItem('Find',         'Find in list',  true,  {icon: iconListFind,                  createType: LIST_FIND,     callback: e => actionManager.do(getCreateNodeAction(LIST_FIND,        btnData.div, getCreateOptions(e))), disambiguate: true}),
+                          new MenuItem('',             null,            false, {separator: true}),     
+                          new MenuItem('Column',       null,            false, {icon: iconColumn,                    createType: COLUMN,        callback: e => actionManager.do(getCreateNodeAction(COLUMN,           btnData.div, getCreateOptions(e)))}),
+                          new MenuItem('Cell',         null,            false, {icon: iconCell,                      createType: CELL,          callback: e => actionManager.do(getCreateNodeAction(CELL,             btnData.div, getCreateOptions(e)))}),
+                          new MenuItem('',             null,            false, {separator: true}),     
+                          new MenuItem('Functions',    null,            false, {icon: iconListFunctions, childMenu: menuItems})]);
 
 
     menuSets = new Menu('Sets...', true, false);
@@ -1671,8 +1671,8 @@ function updateSoloMode(enabled)
 function getCreateOptions(e, options = {})
 {
     return {
-        insert:      e.ctrlKey,
-        autoConnect:    e.ctrlKey 
+        insert:      getCtrlKey(e),
+        autoConnect:    getCtrlKey(e)
                      && e.altKey,
         fromSearch:  e.fromSearch === true,
         ...options

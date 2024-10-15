@@ -182,6 +182,13 @@ extends EventTarget
 
 
 
+        this.hitbox.addEventListener('dblclick', e => 
+        {
+            e.stopPropagation();
+        });
+
+
+
         this.hitbox.addEventListener('pointerleave', e => 
         {
             this.endConnection();

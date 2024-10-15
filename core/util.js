@@ -274,12 +274,10 @@ function osCtrlShift(plus = true) { return isMac ? osShift(plus) + osCtrl(plus) 
 
 
 
-function getCreateNodeAction(type, creatingButton, options)
+function getCreateNodeAction(type, creatingButton, options = {})
 {
-    return  options.insert != undefined
-        &&  options.insert
-        && (    options.autoConnect == undefined
-            || !options.autoConnect)
+    return options.insert      === true
+        && options.autoConnect !== true
         ? new CreateInsertNodeAction(type, creatingButton, options)
         : new CreateNodeAction      (type, creatingButton, options, options.autoConnect != undefined && options.autoConnect);
 }
