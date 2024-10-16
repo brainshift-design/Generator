@@ -152,10 +152,41 @@ extends ResizableBase
                 : this.node.name);
         
         request.push(this.node.variableType);
-
-
         request.push(this.node.variableValues.length);
-        request.push(...this.node.variableValues);
+
+
+        for (const variableValue of this.node.variableValues)
+        {
+            let strValue;
+
+            console.log('this.node.variableType =', this.node.variableType);
+            switch (this.node.variableType)
+            {
+            case 'FLOAT':   
+                strValue = variableValue.toString();    
+                break;
+
+            case 'BOOLEAN': 
+                strValue = boolToString(variableValue); 
+                break;
+
+            case 'STRING':  
+                strValue = encodeURIComponent(variableValue);
+                break;
+    
+            case 'COLOR':
+                strValue = 
+                            variableValue.r.toString()
+                    + ' ' + variableValue.g.toString()
+                    + ' ' + variableValue.b.toString()
+                    + ' ' + variableValue.a.toString();
+                break;
+            }
+
+
+            console.log('strValue =', strValue);
+            request.push(strValue);
+        }
 
 
         this.node.variableValues = []; // only needs to be sent once
@@ -225,9 +256,6 @@ extends ResizableBase
                     resolvedValues[0].a == 1 
                         ? COLOR_VALUE
                         : FILL_VALUE; 
-                break;
-
-            default:
                 break;
         }
 
@@ -405,11 +433,10 @@ extends ResizableBase
             {
                 if (value.decimals <= paramValue.value.decimals)
                     this.checkNoUpdateDecimals(value, paramValue);
+
+                paramValue.setName(resolvedMode);
+                paramValue.setValue(value, update, true, update);
             }
-
-
-            paramValue.setName(resolvedMode);
-            paramValue.setValue(value, update, true, update);
     }
 
 

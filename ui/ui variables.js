@@ -18,7 +18,7 @@ function startVariablePolling()
         // this is variable polling
 
         const varNodes = graph.currentPage.nodes.filter(n => 
-            n.type     == VARIABLE 
+               n.type       == VARIABLE 
             && n.variableId != NULL);
 
         uiQueueMessageToFigma({
@@ -447,32 +447,12 @@ function uiLinkNodeToVariable(node, varId, varType, varName, varValues)//, varTe
             : defaultVariableNodeName;
 
 
+    console.log('varValues =', varValues);
     node.updateValueParamsFromResolved(varType, varValues);
 
 
     pushUpdate(null, [node]);
-
-
-    // uiQueueMessageToFigma(
-    // {
-    //     cmd:         'figLinkNodeToVariable',
-    //     nodeId:       node.id,
-    //     variableId:   varId,
-    //     variableType: varType,
-    //     variableName: varName
-    // });
 }
-
-
-
-// function uiUpdateVariable(variableId, variableTemp, value)
-// {
-//     uiQueueMessageToFigma({
-//         cmd:         'figUpdateVariable',
-//         variableId:   variableId,
-//         //variableTemp: variableTemp,
-//         value:        value});
-// }
 
 
 

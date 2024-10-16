@@ -90,7 +90,39 @@ function genParseVariable(parse)
     const nVars = parseInt(parse.move());
 
     for (let i = 0; i < nVars; i++)
-        variable.variableValues.push(parse.move());
+    {
+        switch (variable.variableType)
+        {
+            case 'FLOAT':   
+                variable.variableValues.push(parseFloat(parse.move()));
+                break;
+                
+            case 'BOOLEAN': 
+                variable.variableValues.push(parseBool(parse.move()));
+                break;
+                
+            case 'STRING':  
+                variable.variableValues.push(decodeURIComponent(parse.move()));
+                break;
+                
+            case 'COLOR':
+            {
+                const color = parse.move()
+                    .split(' ')
+                    .map(s => parseFloat(s));
+
+                variable.variableValues.push(
+                {
+                    r: color[0],
+                    g: color[1],
+                    b: color[2],
+                    a: color[3]
+                });
+                break;
+            }
+        }
+    }
+
 
     //variable.linkedVariableTemp = parseInt(parse.move()) == 1;
 
@@ -102,7 +134,31 @@ function genParseVariable(parse)
         logReqString(variable.variableType != NULL ? variable.variableType : 'NULL', parse);
         
         for (const varVal of variable.variableValues)
-            logReqString(varVal ?? 'null', parse);
+        {
+            switch (variable.variableType)
+            {
+                case 'FLOAT':   
+                    logReqString(varVal ? varVal.toString() : 'null', parse);
+                    break;
+                    
+                case 'BOOLEAN': 
+                    logReqString(varVal ? boolToString(varVal) : 'null', parse);
+                    break;
+                    
+                case 'STRING':  
+                    logReqString(varVal ?? 'null', parse);
+                    break;
+                    
+                case 'COLOR':
+                    logReqString(
+                                varVal.r.toString()
+                        + ' ' + varVal.g.toString()
+                        + ' ' + varVal.b.toString()
+                        + ' ' + varVal.a.toString(),
+                        parse);
+                    break;
+            }
+        }
     }
 
 
