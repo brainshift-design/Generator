@@ -85,7 +85,7 @@ extends GValue
             + ' ' + (this.variableName != ''   ? encodeURIComponent(this.variableName)  : NULL_VALUE)
             + ' ' + (this.variableValues.length > 0 ? this.variableValues[0].type : NULL_VALUE)
             + ' ' +  this.variableValues.length
-            + ' ' +  this.variableValues.map(v => v.toString()).join(' ');
+            + ' ' +  this.variableValues.map(v => encodeURIComponent(v.toString())).join(' ');
     }
 
 
@@ -106,7 +106,7 @@ extends GValue
         return      (this.variableId   != NULL ? this.variableId   : NULL_VALUE)
             + ' ' + (this.variableName != ''   ? this.variableName : NULL_VALUE)
             + ' ' + (this.variableValues.length > 0 ? this.variableValues[0].type : NULL_VALUE)
-            + ' ' +  this.variableValues.map(v => v.toDisplayString()).join(' ');
+            + ' ' + this.variableValues.map(v => encodeURIComponent(v.toDisplayString())).join(' ');
     }
 
 
@@ -179,13 +179,13 @@ function parseVariableValue(str, i = -1)
 
     for (let j = 0; j < nVariableValues; j++)
     {
-        const variableValue = parseValueFromType(variableType, _str[i]);
+        console.log('decodeURIComponent(_str[i]) =', decodeURIComponent(_str[i]));
+        const variableValue = parseValueFromType(variableType, decodeURIComponent(_str[i]));
 
         variableValues.push(variableValue);
 
         length += _str[i].length + 1;
         i++;
-        // i += variableValue ? variableValue[1] : 1;
     }
 
 
