@@ -1358,10 +1358,11 @@ function initPreferenceMenus()
         menuItemLogRequests       = new MenuItem('Requests',          null, false, {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
         menuItemLogValueUpdates   = new MenuItem('Values',            null, false, {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
         menuItemLogObjectUpdates  = new MenuItem('Objects',           null, false, {checkCallback: () => settings.logObjectUpdates,      callback: () => updateSettingAndMenu('logObjectUpdates',      true, !settings.logObjectUpdates     ), setting: true}),
-        menuItemLogStyleUpdates   = new MenuItem('Styles',            null, false, {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
                                     new MenuItem('',                  null, false, {separator: true}),                   
         menuItemLogRawRequests    = new MenuItem('Raw\u2008requests', null, false, {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
-        menuItemLogRawValues      = new MenuItem('Raw\u2008values',   null, false, {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true})]);
+        menuItemLogRawValues      = new MenuItem('Raw\u2008values',   null, false, {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true}),
+                                    new MenuItem('',                  null, false, {separator: true}),                   
+        menuItemLogStyleUpdates   = new MenuItem('Styles',            null, false, {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true})]);
                      
 
 

@@ -159,7 +159,7 @@ extends ResizableBase
         {
             let strValue;
 
-            console.log('this.node.variableType =', this.node.variableType);
+            
             switch (this.node.variableType)
             {
             case 'FLOAT':   
@@ -184,7 +184,6 @@ extends ResizableBase
             }
 
 
-            console.log('strValue =', strValue);
             request.push(strValue);
         }
 

@@ -222,7 +222,6 @@ function getVariableValue(type, value, colorFromFigma, parse)
         case 'COLOR': 
         {
             let _value = value;
-            console.log('1 _value =', _value);
 
             if (_value.r)
             {
@@ -235,7 +234,6 @@ function getVariableValue(type, value, colorFromFigma, parse)
                 ];
             }
 
-            console.log('2 _value =', _value);
 
             if (rgbIsNaN(_value))
                 _value = parse.settings.colorVarNullValue;

@@ -447,7 +447,6 @@ function uiLinkNodeToVariable(node, varId, varType, varName, varValues)//, varTe
             : defaultVariableNodeName;
 
 
-    console.log('varValues =', varValues);
     node.updateValueParamsFromResolved(varType, varValues);
 
 
