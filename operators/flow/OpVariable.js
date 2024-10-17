@@ -472,7 +472,8 @@ extends ResizableBase
                 varVal, 
                 'a valid variable value is required here');
 
-            if (!this.paramValues[i].value.equals(varVal))
+            if (    this.paramValues[i].type == varVal.type
+                && !this.paramValues[i].value.equals(varVal))
             {
                 this.paramValues[i].setValue(varVal, update, true, update);
                 valueChanged = true;
