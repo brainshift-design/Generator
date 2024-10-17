@@ -179,7 +179,6 @@ function parseVariableValue(str, i = -1)
 
     for (let j = 0; j < nVariableValues; j++)
     {
-        console.log('decodeURIComponent(_str[i]) =', decodeURIComponent(_str[i]));
         const variableValue = parseValueFromType(variableType, decodeURIComponent(_str[i]));
 
         variableValues.push(variableValue);

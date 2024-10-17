@@ -28,7 +28,7 @@ extends OperatorBase
         this.addParam(this.paramIteration   = new NumberParam('iteration',   'iteration', true,  true, true, Number.NaN, 0));
         this.addParam(this.paramMin         = new NumberParam('min',         'min',       true,  true, true,   0));
         this.addParam(this.paramMax         = new NumberParam('max',         'max',       true,  true, true, 100));
-        this.addParam(this.paramScale       = new NumberParam('scale',       'scale',     true,  true, true, 1, 1));
+        this.addParam(this.paramScale       = new NumberParam('scale',       'scale',     true,  true, true, 1, 0.0001));
         this.addParam(this.paramOffset      = new NumberParam('offset',      'offset',    true,  true, true, 0, 0));
         this.addParam(this.paramEvolve      = new NumberParam('evolve',      'evolve',    true,  true, true, 0, 0));
         this.addParam(this.paramInterpolate = new SelectParam('interpolate', 'blend',     true,  true, true, ['step', 'linear', 'cosine'], 2));

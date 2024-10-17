@@ -207,9 +207,6 @@ extends ResizableBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-
         const value = values[paramIds.findIndex(id => id == 'value')];
 
 
@@ -230,6 +227,7 @@ extends ResizableBase
                     : false,
                 this.isBool);
 
+            console.log('this.params =', [...this.params]);
             if (   value.variableValues[0]
                 && value.variableValues[0].type != NULL
                 && value.variableValues[0].type != ANY_VALUE)
@@ -323,12 +321,14 @@ extends ResizableBase
 
             console.log('params DELETED');
 
+
             if (   type != NULL
                 && type != ANY_VALUE)
             {
                 for (let i = 0; i < nParams; i++)
                 {
                     const paramValue = this.createAndAddParamByType(type, 'paramValue'+i, 'paramValue'+i, nParams > 1, true, true);
+                    this.paramValues.push(paramValue);
 
                     paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
 
@@ -348,8 +348,6 @@ extends ResizableBase
 
                     if (this.isBool)
                         this.menuBoolValues.push(createBoolMenu(paramValue));
-
-                    this.paramValues.push(paramValue);
                 }
 
 

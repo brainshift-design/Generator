@@ -61,7 +61,7 @@ function initQuestionDialog()
 
     questionOtherReason.addEventListener('input', e =>
     {
-        updateEmailValidate();
+        updateOtherAnswerValidate()
     });
 
     questionOtherReason.addEventListener('keydown', e =>
@@ -74,12 +74,12 @@ function initQuestionDialog()
     });
 
 
-    updateQuestionValidate();
+    updateOtherAnswerValidate();
 }
 
 
 
-function updateQuestionValidate()
+function updateOtherAnswerValidate()
 {
     if (questionOtherReason.value.length > 0)
     {

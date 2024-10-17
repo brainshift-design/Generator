@@ -74,19 +74,19 @@ function uiReturnFigGetVariableUpdates(variables)
 
         if (node)
         {
-            node.updateValueParamsFromResolved(
-                variable.resolvedType,
-                variable.resolvedValues);
+            // node.updateValueParamsFromResolved(
+            //     variable.resolvedType,
+            //     variable.resolvedValues);
 
-            if (node.paramValues.length > 0)
-            {
-                node.updateValueParamValuesFromResolved(
-                    variable.resolvedType,
-                    variable.name,
-                    variable.resolvedValues,
-                    variable.resolvedModes,
-                    true);
-            }
+            // if (node.paramValues.length > 0)
+            // {
+            //     node.updateValueParamValuesFromResolved(
+            //         variable.resolvedType,
+            //         variable.name,
+            //         variable.resolvedValues,
+            //         variable.resolvedModes,
+            //         true);
+            // }
         }
     }
 }

@@ -568,16 +568,6 @@ class Operator
 
 
 
-    // removeParamById(paramId)
-    // {
-    //     const param = this.params.find(p => p.id == paramId);
-
-    //     if (param)
-    //         this.removeParam(param);
-    // }
-
-
-
     removeParam(param)
     {
         if (param.input)
@@ -604,6 +594,7 @@ class Operator
     
         removeFromArray(this.params, param);
 
+        
         param._node = null;
     }
 

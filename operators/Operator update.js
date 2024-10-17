@@ -147,6 +147,26 @@ Operator.prototype.updateHeader = function()
 
 
 
+Operator.prototype.updateValues = function(requestId, actionId, updateParamId, paramIds, values) // virtual
+{
+    for (let i = 0; i < paramIds.length; i++)
+    {
+        const index = this.params.findIndex(p => p.id == paramIds[i]);
+
+        if (   paramIds[index] != updateParamId
+            && index > -1
+            && this.params[index].type == values[i].type)
+        {
+            this.params[index].setValue(values[i], false, true, false);
+        }
+    }
+
+
+    this.preview = values[paramIds.findIndex(id => id == 'preview')];
+};
+
+
+
 Operator.prototype.updateParams = function()
 {
     for (const param of this.params)
@@ -378,26 +398,6 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
 
     
     return height;
-};
-
-
-
-Operator.prototype.updateValues = function(requestId, actionId, updateParamId, paramIds, values) // virtual
-{
-    for (let i = 0; i < paramIds.length; i++)
-    {
-        const index = this.params.findIndex(p => p.id == paramIds[i]);
-
-        if (   paramIds[index] != updateParamId
-            && index > -1
-            && this.params[index].type == values[i].type)
-        {
-            this.params[index].setValue(values[i], false, true, false);
-        }
-    }
-
-
-    this.preview = values[paramIds.findIndex(id => id == 'preview')];
 };
 
 

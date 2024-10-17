@@ -136,6 +136,8 @@ extends GOperator
                 && offset && offset.isValid()
                 && evolve && evolve.isValid())
             {
+                scale.decimals = Math.min(scale.decimals, 4);
+                
                 r = avg;
                 
                 if (this.currentIteration >= 0)

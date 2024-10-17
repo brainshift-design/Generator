@@ -230,7 +230,7 @@ function getVariableValue(type, value, colorFromFigma, parse)
                     _value.r,
                     _value.g,
                     _value.b,
-                    _value.a ?? 1
+                    _value.a
                 ];
             }
 
@@ -240,24 +240,29 @@ function getVariableValue(type, value, colorFromFigma, parse)
 
 
             if (_value.length == 3)
-                _value.push(1);
+            {
+                if (colorFromFigma)
+                    _value.a = 1;
+                else
+                    _value.push(1);
+            }
 
 
-            // if (colorFromFigma)
-            // {
-            //     return _value.a == 1
-            //         ? ColorValue.fromRgb(
-            //             [_value.r * 0xff, 
-            //              _value.g * 0xff, 
-            //              _value.b * 0xff]) 
-            //         : FillValue.fromRgb(
-            //             [_value.r * 0xff, 
-            //              _value.g * 0xff, 
-            //              _value.b * 0xff], 
-            //              _value.a * 100); 
-            // }
-            // else
-            // {
+            if (colorFromFigma)
+            {
+                return _value.a == 1
+                    ? ColorValue.fromRgb(
+                        [_value.r * 0xff, 
+                         _value.g * 0xff, 
+                         _value.b * 0xff]) 
+                    : FillValue.fromRgb(
+                        [_value.r * 0xff, 
+                         _value.g * 0xff, 
+                         _value.b * 0xff], 
+                         _value.a * 100); 
+            }
+            else
+            {
                 return _value[3] == 1
                     ? ColorValue.fromRgb(
                         [_value[0] * 0xff, 
@@ -268,7 +273,7 @@ function getVariableValue(type, value, colorFromFigma, parse)
                          _value[1] * 0xff, 
                          _value[2] * 0xff], 
                          _value[3] * 100); 
-            // }
+            }
         }
 
         default:
