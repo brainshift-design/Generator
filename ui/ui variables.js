@@ -441,15 +441,28 @@ function uiLinkNodeToVariable(node, varId, varType, varName, varValues)//, varTe
     node.variableValues = [...varValues];
     //node.linkedTemp = varTemp;
     
+
     node.name =
         varName != NULL
             ? varName
             : defaultVariableNodeName;
 
 
+    if (varType != NULL)
+    {
+        if (node.headerInputs .length > 0) node.removeInput (node.headerInputs [0]);
+        if (node.headerOutputs.length > 0) node.removeOutput(node.headerOutputs[0]);
+    }
+    else
+    {
+        if (node.headerInputs .length == 0) node.addInput (new Input([ANY_VALUE, NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE, FILL_VALUE]));
+        if (node.headerOutputs.length == 0) node.addOutput(new Output([VARIABLE_VALUE], node.output_genRequest));
+    }
+
+
     node.updateValueParamsFromResolved(varType, varValues);
 
-
+        
     pushUpdate(null, [node]);
 }
 

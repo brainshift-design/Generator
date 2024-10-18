@@ -15,6 +15,10 @@ extends ResizableBase
 
     isBool         = false;
 
+    divider;
+    separator;
+
+
     
     
 
@@ -33,6 +37,11 @@ extends ResizableBase
 
         this.addInput (new Input([ANY_VALUE, NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE, FILL_VALUE]));
         this.addOutput(new Output([VARIABLE_VALUE], this.output_genRequest));
+
+
+        this.divider = 0.5;
+
+        this.createSeparator();
 
 
         this.divIcon.addEventListener('pointerenter', e => 
@@ -72,6 +81,82 @@ extends ResizableBase
 
 
 
+    createSeparator()
+    {
+        this.separator = createDiv('itemsSeparator');
+
+        this.separator.down         = false;
+        this.separator.sy           = Number.NaN;
+        this.separator.spy          = Number.NaN;
+        this.separator.style.top    = defHeaderHeight + 'px';
+        this.separator.style.height = 'calc(100% - ' + defHeaderHeight + 'px)';
+
+        this.div.appendChild(this.separator);
+
+
+
+        this.separator.addEventListener('pointerdown', e =>
+        {
+            if (e.button == 0)
+            {
+                e.stopPropagation();
+
+                try
+                {
+                    this.separator.setPointerCapture(e.pointerId);
+
+                    this.separator.down = true;
+
+                    this.separator.sx  = e.clientX;
+                    this.separator.spx = this.divider;
+                }
+                catch {}
+            }
+        });
+
+
+
+        this.separator.addEventListener('pointermove', e =>
+        {
+            if (this.separator.down)
+            {
+                this.divider = 
+                      this.separator.spx 
+                    +   (e.clientX - this.separator.sx) / graph.currentPage.zoom
+                      / this.measureData.divOffset.width;
+
+                this.divider = Math.min(Math.max(0.1, this.divider), 0.9);
+
+                for (const param of this.params)
+                    param.divider = this.divider;
+
+                this.separator.style.left = (this.divider * this.measureData.divOffset.width) + 'px';
+
+                this.updateParamControls();
+            }
+        });
+
+
+
+        this.separator.addEventListener('pointerup', e =>
+        {
+            if (e.button == 0)
+            {
+                e.stopPropagation();
+
+                this.separator.down = false;
+                this.separator.releasePointerCapture(e.pointerId);
+
+                actionManager.do(new SetListDividerAction(
+                    this.id, 
+                    this.separator.spx,
+                    this.divider));
+            }
+        });
+    }
+
+
+
     setName(newName, options = {})
     {
         if (newName.split('/').length < 2)
@@ -105,29 +190,41 @@ extends ResizableBase
             w, 
             height, 
             updateTransform);
+
+
+        this.separator.style.left = (this.divider * w) + 'px';
     }
 
 
 
     output_genRequest(gen)
     {
-        // 'this' is the output
+        // 'this' is the output        
+
+        return this.node.genRequest(gen);
+    }
+
+
+
+    genRequest(gen)
+    {
+        // 'this' is the node
 
         gen.scope.push({
-            nodeId:  this.node.id, 
+            nodeId:  this.id, 
             paramId: NULL });
 
 
         const options = 0;//(this.existing ? 1 : 0) << 21;
 
 
-        const [request, ignore] = this.node.genRequestStart(gen, options);
+        const [request, ignore] = this.genRequestStart(gen, options);
         if (ignore) return request;
 
                 
         const input = 
-            this.node.inputs.length > 0
-            ? this.node.inputs[0]
+            this.inputs.length > 0
+            ? this.inputs[0]
             : null;
 
         const hasInput = 
@@ -141,26 +238,26 @@ extends ResizableBase
             request.push(...pushInputOrParam(input, gen));
 
         
-        //noUpdatePrecisionIds.push(this.node.variableId); // not part of request
+        //noUpdatePrecisionIds.push(this.variableId); // not part of request
 
 
-        request.push(this.node.variableId);
+        request.push(this.variableId);
         
         request.push(
-            this.node.variableName != '' 
-                ? this.node.variableName 
-                : this.node.name);
+            this.variableName != '' 
+                ? this.variableName 
+                : this.name);
         
-        request.push(this.node.variableType);
-        request.push(this.node.variableValues.length);
+        request.push(this.variableType);
+        request.push(this.variableValues.length);
 
 
-        for (const variableValue of this.node.variableValues)
+        for (const variableValue of this.variableValues)
         {
             let strValue;
 
             
-            switch (this.node.variableType)
+            switch (this.variableType)
             {
             case 'FLOAT':   
                 strValue = variableValue.toString();    
@@ -188,19 +285,28 @@ extends ResizableBase
         }
 
 
-        this.node.variableValues = []; // only needs to be sent once
+        this.variableValues = []; // only needs to be sent once
 
 
-        request.push(this.node.paramValues.length);
+        request.push(this.paramValues.length);
         
-        for (const paramValue of this.node.paramValues)
+        for (const paramValue of this.paramValues)
             request.push(...paramValue.genRequest(gen));
 
 
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
+        pushUnique(gen.passedNodes, this);
 
         return request;
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
+
+        this.separator.style.left = (this.divider * this.measureData.divOffset.width) + 'px';
     }
 
 
@@ -233,6 +339,10 @@ extends ResizableBase
                 && value.variableValues[0].type != ANY_VALUE)
                 this.updateValueParamValues(value);
         }
+
+
+        for (const param of this.params)
+            param.divider = this.divider;
     }
 
     
@@ -590,7 +700,8 @@ extends ResizableBase
         return super.toJsonBase(nTab)
              + ',\n' + pos + tab + '"variableId": "'   + this.variableId   + '"'
              + ',\n' + pos + tab + '"variableType": "' + this.variableType + '"'
-             + ',\n' + pos + tab + '"variableName": "' + encodeURIComponent(this.variableName) + '"';
+             + ',\n' + pos + tab + '"variableName": "' + encodeURIComponent(this.variableName) + '"'
+             + ',\n' + pos + tab + '"divider": "' + this.divider + '"';
     }
 
 
@@ -599,10 +710,12 @@ extends ResizableBase
     {
         const found = graph.currentPage.nodes.find(n => n.variableId == _node.variableId);
 
+
+        super.loadParams(_node, pasting);
+
+
         if (!found)
         {
-            super.loadParams(_node, pasting);
-            
             this.variableId   = _node.variableId;
             this.variableType = _node.variableType;
             this.variableName = decodeURIComponent(_node.variableName);
@@ -615,5 +728,8 @@ extends ResizableBase
             this.variableType = NULL;
             this.variableName = '';
         }
+
+
+        if (_node.divider) this.divider = parseFloat(_node.divider); else this.divider = 0.25;
     }
 }
