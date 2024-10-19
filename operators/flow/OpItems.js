@@ -138,10 +138,10 @@ extends ResizableBase
             {
                 this.divider = 
                       this.separator.spx 
-                    +   (e.clientX - this.separator.sx) 
+                    +   (e.clientX - this.separator.sx) / graph.currentPage.zoom 
                       / this.measureData.divOffset.width;
 
-                this.divider = Math.min(Math.max(0.1, this.divider), 0.5);
+                this.divider = Math.min(Math.max(0.1, this.divider), 0.9);
 
                 for (const param of this.params)
                     param.divider = this.divider;

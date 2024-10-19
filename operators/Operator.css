@@ -711,6 +711,19 @@
 }
 
 
+.itemsSeparator:hover::after 
+{
+    content:    '';
+    position:   absolute;
+    top:        0;
+    bottom:     0;
+    left:       50%;
+    width:      2px;
+    background: var(--figma-color-bg-tertiary);
+    transform:  translateX(-50%);
+}
+
+
 .gradient-part 
 {
     position: absolute;
