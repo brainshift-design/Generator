@@ -6,19 +6,22 @@ extends GValue
     variableId;
     variableName;
     variableValues;
+    variableTemp;
 
 
 
     constructor(nodeId,
                 variableId     = NULL, 
                 variableName   = '', 
-                variableValues = [])
+                variableValues = [],
+                variableTemp = false)
     {
         super(VARIABLE_VALUE, nodeId, 'variable');
 
         this.variableId     = variableId;
         this.variableName   = variableName;
         this.variableValues = [...variableValues];
+        this.variableTemp   = variableTemp;
     }
 
 
@@ -29,7 +32,8 @@ extends GValue
             obj.nodeId,
             obj.objectId, 
             obj.objectName, 
-            []); //NumberValue(obj.variableValue));
+            [],
+            true);
     }
 
 
@@ -40,7 +44,8 @@ extends GValue
             this.nodeId,
             this.variableId, 
             this.variableName, 
-            this.variableValues.map(v => v.copy()));
+            this.variableValues.map(v => v.copy()),
+            this.variableTemp);
 
         copy.copyBase(this);
 
@@ -85,7 +90,8 @@ extends GValue
             + ' ' + (this.variableName != ''   ? encodeURIComponent(this.variableName)  : NULL_VALUE)
             + ' ' + (this.variableValues.length > 0 ? this.variableValues[0].type : NULL_VALUE)
             + ' ' +  this.variableValues.length
-            + ' ' +  this.variableValues.map(v => encodeURIComponent(v.toString())).join(' ');
+            + ' ' +  this.variableValues.map(v => encodeURIComponent(v.toString())).join(' ')
+            + ' ' + (this.variableTemp ? 'T' : 'X'); // T = temp, X = existing
     }
 
 
@@ -106,7 +112,8 @@ extends GValue
         return      (this.variableId   != NULL ? this.variableId   : NULL_VALUE)
             + ' ' + (this.variableName != ''   ? this.variableName : NULL_VALUE)
             + ' ' + (this.variableValues.length > 0 ? this.variableValues[0].type : NULL_VALUE)
-            + ' ' + this.variableValues.map(v => encodeURIComponent(v.toDisplayString())).join(' ');
+            + ' ' +  this.variableValues.map(v => encodeURIComponent(v.toDisplayString())).join(' ')
+            + ' ' + (this.variableTemp ? 'T' : 'X'); // T = temp, X = existing
     }
 
 
@@ -188,11 +195,15 @@ function parseVariableValue(str, i = -1)
     }
 
 
+    const variableTemp = _str[i] == 'T';  length += _str[i].length + 1;  i++;
+
+
     const _var = new VariableValue(
         NULL, // set node ID elsewhere
         variableId,
         variableName,
-        variableValues);
+        variableValues,
+        variableTemp);
 
 
     return [_var, i - iStart];

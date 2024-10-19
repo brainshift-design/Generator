@@ -16974,19 +16974,22 @@ extends GValue
     variableId;
     variableName;
     variableValues;
+    variableTemp;
 
 
 
     constructor(nodeId,
                 variableId     = NULL, 
                 variableName   = '', 
-                variableValues = [])
+                variableValues = [],
+                variableTemp = false)
     {
         super(VARIABLE_VALUE, nodeId, 'variable');
 
         this.variableId     = variableId;
         this.variableName   = variableName;
         this.variableValues = [...variableValues];
+        this.variableTemp   = variableTemp;
     }
 
 
@@ -16997,7 +17000,8 @@ extends GValue
             obj.nodeId,
             obj.objectId, 
             obj.objectName, 
-            []); //NumberValue(obj.variableValue));
+            [],
+            true);
     }
 
 
@@ -17008,7 +17012,8 @@ extends GValue
             this.nodeId,
             this.variableId, 
             this.variableName, 
-            this.variableValues.map(v => v.copy()));
+            this.variableValues.map(v => v.copy()),
+            this.variableTemp);
 
         copy.copyBase(this);
 
@@ -17053,7 +17058,8 @@ extends GValue
             + ' ' + (this.variableName != ''   ? encodeURIComponent(this.variableName)  : NULL_VALUE)
             + ' ' + (this.variableValues.length > 0 ? this.variableValues[0].type : NULL_VALUE)
             + ' ' +  this.variableValues.length
-            + ' ' +  this.variableValues.map(v => encodeURIComponent(v.toString())).join(' ');
+            + ' ' +  this.variableValues.map(v => encodeURIComponent(v.toString())).join(' ')
+            + ' ' + (this.variableTemp ? 'T' : 'X'); // T = temp, X = existing
     }
 
 
@@ -17074,7 +17080,8 @@ extends GValue
         return      (this.variableId   != NULL ? this.variableId   : NULL_VALUE)
             + ' ' + (this.variableName != ''   ? this.variableName : NULL_VALUE)
             + ' ' + (this.variableValues.length > 0 ? this.variableValues[0].type : NULL_VALUE)
-            + ' ' + this.variableValues.map(v => encodeURIComponent(v.toDisplayString())).join(' ');
+            + ' ' +  this.variableValues.map(v => encodeURIComponent(v.toDisplayString())).join(' ')
+            + ' ' + (this.variableTemp ? 'T' : 'X'); // T = temp, X = existing
     }
 
 
@@ -17156,11 +17163,15 @@ function parseVariableValue(str, i = -1)
     }
 
 
+    const variableTemp = _str[i] == 'T';  length += _str[i].length + 1;  i++;
+
+
     const _var = new VariableValue(
         NULL, // set node ID elsewhere
         variableId,
         variableName,
-        variableValues);
+        variableValues,
+        variableTemp);
 
 
     return [_var, i - iStart];
@@ -22367,6 +22378,7 @@ extends GOperator1
     variableName   = '';
     variableType   = NULL;
     variableValues = [];
+    variableTemp   = false;
 
     paramValues    = [];
 
@@ -22387,6 +22399,7 @@ extends GOperator1
         this.variableName   = '';
         this.variableType   = NULL;
         this.variableValues = [];
+        this.variableTemp   = false;
 
         this.paramValues    = [];
     }
@@ -22400,8 +22413,9 @@ extends GOperator1
         copy.variableId     = this.variableId;
         copy.variableName   = this.variableName;
         copy.variableType   = this.variableType;
-
         copy.variableValues = this.variableValues.map(v => v.copy());
+        copy.variableTemp   = this.variableTemp;
+
         copy.paramValues    = this.paramValues   .map(p => p.copy());
         
         return copy;
@@ -22459,23 +22473,14 @@ extends GOperator1
             this.nodeId, 
             this.variableId,
             this.variableName,
-            varValues);
+            varValues,
+            this.variableTemp);
 
 
         this.setUpdateValues(parse,
         [
             ['value', this.value]
         ]);
-
-
-        // for (let i = 0; i < varValues.length; i++)
-        // {
-        //     this.setUpdateValues(parse,
-        //     [
-        //         ['paramValue' + i, varValues[i]]
-        //     ],
-        //     true);
-        // }
 
 
         await this.evalVariable(parse);
@@ -55730,9 +55735,6 @@ function genParseVariable(parse)
     const variable = new GVariable(nodeId, options);
 
 
-    //variable.existing = options.existing;
-
-
     let nInputs = -1;
     
 
@@ -55804,7 +55806,7 @@ function genParseVariable(parse)
     }
 
 
-    //variable.linkedVariableTemp = parseInt(parse.move()) == 1;
+    variable.variableTemp = parseInt(parse.move()) > 0;
 
 
     if (parse.settings.logRequests) 
@@ -55839,6 +55841,8 @@ function genParseVariable(parse)
                     break;
             }
         }
+
+        logReqString(variable.variableTemp ? 'temp' : 'existing', parse);
     }
 
 
@@ -55851,9 +55855,6 @@ function genParseVariable(parse)
     parse.nTab--;
 
     
-    //variable.linked = variable.id != NULL;
-
-
     genParseNodeEnd(parse, variable);
     return variable;
 }
@@ -64689,8 +64690,7 @@ function genParseNodeOptions(parse)
         cached:       ((opt >>  4) & 1) != 0,
         unknown:      ((opt >>  5) & 1) != 0,
         notCondition: ((opt >>  6) & 1) != 0,
-        hasInputs:    ((opt >> 20) & 1) != 0,
-        existing:     ((opt >> 21) & 1) != 0
+        hasInputs:    ((opt >> 20) & 1) != 0
     };
 
     return options;

@@ -5,6 +5,7 @@ extends GOperator1
     variableName   = '';
     variableType   = NULL;
     variableValues = [];
+    variableTemp   = false;
 
     paramValues    = [];
 
@@ -25,6 +26,7 @@ extends GOperator1
         this.variableName   = '';
         this.variableType   = NULL;
         this.variableValues = [];
+        this.variableTemp   = false;
 
         this.paramValues    = [];
     }
@@ -38,8 +40,9 @@ extends GOperator1
         copy.variableId     = this.variableId;
         copy.variableName   = this.variableName;
         copy.variableType   = this.variableType;
-
         copy.variableValues = this.variableValues.map(v => v.copy());
+        copy.variableTemp   = this.variableTemp;
+
         copy.paramValues    = this.paramValues   .map(p => p.copy());
         
         return copy;
@@ -97,23 +100,14 @@ extends GOperator1
             this.nodeId, 
             this.variableId,
             this.variableName,
-            varValues);
+            varValues,
+            this.variableTemp);
 
 
         this.setUpdateValues(parse,
         [
             ['value', this.value]
         ]);
-
-
-        // for (let i = 0; i < varValues.length; i++)
-        // {
-        //     this.setUpdateValues(parse,
-        //     [
-        //         ['paramValue' + i, varValues[i]]
-        //     ],
-        //     true);
-        // }
 
 
         await this.evalVariable(parse);

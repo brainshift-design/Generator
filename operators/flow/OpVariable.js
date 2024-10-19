@@ -5,22 +5,23 @@ const defaultVariableNodeName = PLUGIN_LOGO + '/variable';
 class   OpVariable
 extends ResizableBase
 {
-    variableId     = NULL;
-    variableName   = '';   // must be set even if nothing is connected
-    variableType   = NULL; // this is the resolved type
-    variableValues = [];
+    variableId         = NULL;
+    variableName       = '';   // must be set even if nothing is connected
+    variableType       = NULL; // this is the resolved type
+    variableValues     = [];
+    variableTemp       = false;
 
-    paramValues    = [];
-    menuBoolValues = [];
+    paramValues        = [];
+    menuBoolValues     = [];
 
-    isBool         = false;
+    isBool             = false;
 
     divider;
     separator;
 
+    loadInputAndOutput = true;
 
-    
-    
+
 
     constructor()
     {
@@ -215,10 +216,7 @@ extends ResizableBase
             paramId: NULL });
 
 
-        const options = 0;//(this.existing ? 1 : 0) << 21;
-
-
-        const [request, ignore] = this.genRequestStart(gen, options);
+        const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;
 
                 
@@ -288,6 +286,9 @@ extends ResizableBase
         this.variableValues = []; // only needs to be sent once
 
 
+        request.push(this.variableTemp ? 1 : 0);
+
+
         request.push(this.paramValues.length);
         
         for (const paramValue of this.paramValues)
@@ -333,7 +334,6 @@ extends ResizableBase
                     : false,
                 this.isBool);
 
-            console.log('this.params =', [...this.params]);
             if (   value.variableValues[0]
                 && value.variableValues[0].type != NULL
                 && value.variableValues[0].type != ANY_VALUE)

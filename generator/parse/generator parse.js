@@ -451,8 +451,7 @@ function genParseNodeOptions(parse)
         cached:       ((opt >>  4) & 1) != 0,
         unknown:      ((opt >>  5) & 1) != 0,
         notCondition: ((opt >>  6) & 1) != 0,
-        hasInputs:    ((opt >> 20) & 1) != 0,
-        existing:     ((opt >> 21) & 1) != 0
+        hasInputs:    ((opt >> 20) & 1) != 0
     };
 
     return options;

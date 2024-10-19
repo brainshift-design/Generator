@@ -10,24 +10,27 @@ extends Action
     get  inputs() { return this.node.paramValues.map(p => p. input); } // dummy for ConnectAction_...
     get outputs() { return this.node.paramValues.map(p => p.output); } // dummy for ConnectAction_...
 
+
     variableId;
     variableType;
     variableName;
     variableValues;
-    //variableTemp;
+    variableTemp;
+
 
     prevVariableId;
     prevVariableType;
     prevVariableName;
     prevVariableValues;
-    //prevVariableTemp;
+    prevVariableTemp;
+
 
     outputValues = []; // in id,value pairs, to be restored on undo
     inputValues  = []; // in id,value pairs, to be restored on undo
 
 
 
-    constructor(nodeId, variableId, resolvedType, variableName, variableValues)//, variableTemp)
+    constructor(nodeId, variableId, resolvedType, variableName, variableValues, variableTemp)
     {
         super(
             LINK_VARIABLE_ACTION, 
@@ -38,7 +41,7 @@ extends Action
         this.variableType   = resolvedType;
         this.variableName   = variableName;
         this.variableValues = [...variableValues];
-        //this.variableTemp = variableTemp;
+        this.variableTemp   = variableTemp;
         this.selfUpdate     = true;
     }
 
@@ -50,7 +53,7 @@ extends Action
         this.prevVariableType   = this.node.variableType;
         this.prevVariableName   = this.node.variableName;
         this.prevVariableValues = [...this.node.variableValues];
-        //this.prevVariableTemp = this.node.linkedTemp;
+        this.prevVariableTemp   = this.node.variableTemp;
  
        
         uiLinkNodeToVariable(
@@ -58,8 +61,8 @@ extends Action
             this.variableId,
             this.variableType,
             this.variableName,
-            this.variableValues);//,
-            //this.variableTemp);
+            this.variableValues,
+            this.variableTemp);
 
 
         uiSaveNodes([this.nodeId]);
@@ -73,8 +76,8 @@ extends Action
             this.node,
             this.prevVariableId,
             this.prevVariableType,
-            this.prevVariableName);//,
-            //this.prevVariableTemp);
+            this.prevVariableName,
+            this.prevVariableTemp);
 
         this.node.updateNode();
 

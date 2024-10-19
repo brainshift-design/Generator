@@ -151,6 +151,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
 
       
         // compare the first part (e.g., "Collection 1")
+        
         const firstPartComparison = collator.compare(aParts[0], bParts[0]);
 
         if (firstPartComparison !== 0) 
@@ -158,11 +159,13 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
 
 
         // if first parts are equal, sort by number of parts (shorter paths first)
+        
         if (aParts.length !== bParts.length)
             return aParts.length - bParts.length;
         
 
         // compare remaining parts except the last one
+
         for (let i = 1; i < aParts.length - 1; i++) 
         {
             const aPart = aParts[i];
@@ -176,6 +179,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
 
 
         // compare the last part with special logic
+
         const aLast        = aParts[aParts.length - 1];
         const bLast        = bParts[bParts.length - 1];
 
@@ -186,16 +190,17 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
         const bHasNumber   = bNumberMatch !== null;
 
 
-        if (aHasNumber && bHasNumber) // both have numbers, compare numerically in descending order
+        if (   aHasNumber 
+            && bHasNumber) // both have numbers, compare numerically in descending order
         {
             const aNumber = parseInt(aNumberMatch[0], 10);
             const bNumber = parseInt(bNumberMatch[0], 10);
 
             return bNumber - aNumber; // higher numbers come first
         }
-        else if (aHasNumber) // only 'a' has a number, it comes before 'b'
+        else if (aHasNumber) // only a has a number, it comes before b
             return -1;
-        else if (bHasNumber) // only 'b' has a number, it comes before 'a'
+        else if (bHasNumber) // only b has a number, it comes before a
             return 1;
         else                 // neither has a number, compare normally
             return collator.compare(aLast, bLast);
@@ -212,7 +217,8 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
                 variable.id,
                 variable.resolvedType,
                 variable.name,
-                variable.resolvedValues[1]));
+                variable.resolvedValues[1]),
+                true);
 
         options.enabled = !linkedNodes.find(n => n.variableId == variable.id);
 
@@ -236,9 +242,11 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
 
 
     for (const child of menuLocalVariables.div.children)
+    {
         if (   child != menuLocalVariables.divItems
             && child != menuLocalVariables.divArrow)
             menuLocalVariables.div.removeChild(child);
+    }
 
 
     menuLocalVariables.divSearch     = createDiv    ('variableSearch'    );
@@ -380,7 +388,7 @@ function updateMenuLocalVariables()
         [
             new MenuItem('None', null, false,
             {
-                callback: e => actionManager.do(new LinkExistingVariableAction(menuLocalVariables.node.nodeId, NULL, NULL, '', [])),
+                callback: e => actionManager.do(new LinkExistingVariableAction(menuLocalVariables.node.nodeId, NULL, NULL, '', [], false)),
                 enabled:  menuLocalVariables.node.variableId != NULL
             })
         ]);
@@ -415,7 +423,7 @@ function updateMenuLocalVariables()
 
 
 
-function uiLinkNodeToVariable(node, varId, varType, varName, varValues)//, varTemp)
+function uiLinkNodeToVariable(node, varId, varType, varName, varValues, varTemp)
 {
     if (   node.variableType != NULL
         && varType == NULL
@@ -439,7 +447,7 @@ function uiLinkNodeToVariable(node, varId, varType, varName, varValues)//, varTe
     node.variableType   = varType;
     node.variableName   = varName;
     node.variableValues = [...varValues];
-    //node.linkedTemp = varTemp;
+    node.variableTemp   = varTemp;
     
 
     node.name =

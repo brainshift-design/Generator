@@ -3819,8 +3819,8 @@ function figMoveVariableToCollectionAsync(oldVariable, newCollection) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!oldVariable || !newCollection)
             throw new Error('both variable and collection must be provided');
-        const existing = yield figGetVariableByNameAsync(oldVariable.name, newCollection.id);
-        if (existing) {
+        const existingVar = yield figGetVariableByNameAsync(oldVariable.name, newCollection.id);
+        if (existingVar) {
             figNotify('Variable names must be unique within a collection', '');
             return oldVariable;
         }

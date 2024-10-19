@@ -50,9 +50,6 @@ function genParseVariable(parse)
     const variable = new GVariable(nodeId, options);
 
 
-    //variable.existing = options.existing;
-
-
     let nInputs = -1;
     
 
@@ -124,7 +121,7 @@ function genParseVariable(parse)
     }
 
 
-    //variable.linkedVariableTemp = parseInt(parse.move()) == 1;
+    variable.variableTemp = parseInt(parse.move()) > 0;
 
 
     if (parse.settings.logRequests) 
@@ -159,6 +156,8 @@ function genParseVariable(parse)
                     break;
             }
         }
+
+        logReqString(variable.variableTemp ? 'temp' : 'existing', parse);
     }
 
 
@@ -171,9 +170,6 @@ function genParseVariable(parse)
     parse.nTab--;
 
     
-    //variable.linked = variable.id != NULL;
-
-
     genParseNodeEnd(parse, variable);
     return variable;
 }
