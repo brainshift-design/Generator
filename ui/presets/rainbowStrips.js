@@ -1,5 +1,5 @@
 const presetRainbowStrips = '\
-    {\
+{\
     "generatorVersion": "433",\
     "nodes":\
     [\

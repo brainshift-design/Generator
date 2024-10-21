@@ -465,7 +465,7 @@ function uiCopyNodes(nodeIds, keepVarsConnected = true)
 
 function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes, zoomToFitNodes = false, zoomToFitObjects = false)
 {
-    graphView.pastingNodes      = true;
+    graphView.pastingNodes = true;
     
     graphView._zoomToFitNodes   = zoomToFitNodes;
     graphView._zoomToFitObjects = zoomToFitObjects;
@@ -540,10 +540,10 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes, zoo
     }
     catch (e)
     {
-        initCrashDialog(e);
-        showCrashDialog();
+        // initCrashDialog(e);
+        // showCrashDialog();
 
-        addMetricsEvent('CRASH', e);
+        // addMetricsEvent('CRASH', e);
 
         return [[], []];
     }

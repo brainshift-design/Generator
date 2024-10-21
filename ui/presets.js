@@ -142,6 +142,7 @@ const presetGraphs =
     { id: 'invalidColors',        graph: presetInvalidColors      },
     { id: 'textFromBackground',   graph: presetTextFromBackground },
 
+    { id: 'gradientSpiral',       graph: presetGradientSpiral     },
     { id: 'compositeGradients',   graph: presetCompositeGradients },
     { id: 'nightLights',          graph: presetNightLights        },
     { id: 'rainbowStrips',        graph: presetRainbowStrips      },
