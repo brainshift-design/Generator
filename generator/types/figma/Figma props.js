@@ -201,10 +201,11 @@ function addGradientProp(obj, prop, target = obj.fills)
             minPos = Math.max(0, minPos);
 
 
-        const dpos  = Math.min(0, minPos) / 100;
-        const dsize = Math.max(100, maxPos - Math.min(minPos, 0)) / 100;
+        const dpos  = Math.min(minPos, 0) / 100;
+        const dsize = Math.max(100, 100 + Math.max(0, maxPos - 100) - Math.min(minPos, 0)) / 100;
 
         const dv    = subv(p0, p1);
+
 
         p0 = addv(p0, mulvs(dv, Math.max(0, -dpos)));
         p1 = addv(p1, mulvs(dv, Math.max(0, -dpos)));
@@ -218,7 +219,12 @@ function addGradientProp(obj, prop, target = obj.fills)
 
 
         for (const stop of prop.stops.items)
-            stop.position.value = stop.position.value * 100 / maxPos;
+        {
+            stop.position.value = Math.min(Math.max(
+                0, 
+                stop.position.value * 100 / nozero(maxPos - minPos)), 
+                100);
+        }
     }
 
 
@@ -319,8 +325,8 @@ function setColorStopPositions(stops)
                     && !stops[nextValid].position.isValid()) 
                     nextValid++;
                         
-                const pv = stops[prevValid].position.value;//toNumber();
-                const nv = stops[nextValid].position.value;//toNumber();
+                const pv = stops[prevValid].position.value;
+                const nv = stops[nextValid].position.value;
 
                 stop.position = new NumberValue((pv + (nv - pv) * ((i - prevValid) / (nextValid - prevValid)))); 
             }
