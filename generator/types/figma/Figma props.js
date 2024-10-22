@@ -218,20 +218,17 @@ function addGradientProp(obj, prop, target = obj.fills)
         const pos0      = minPos/100;//positions.at( 0);
         const pos1      = maxPos/100;//positions.at(-1);
 
-        console.log('minPos =', minPos);
-        console.log('maxPos =', maxPos);
-
-        for (let i = 0; i < positions.length; i++)
+        
+        if (positions.some(p => p < 0))
         {
-            const stop = prop.stops.items[i];
-            let   pos  = positions[i];
-            console.log('1 pos =', pos);
-            
-                 if (pos < 0) pos = (pos - pos0) / dsize;
-            else if (pos > 1) pos = 1 - (pos1 - pos) / dsize;
-
-            console.log('2 pos =', pos);
-            stop.position.value = pos * 100;
+            for (let i = 0; i < positions.length; i++)
+                prop.stops.items[i].position.value = (positions[i] - pos0) / dsize * 100;
+        }
+        
+        if (positions.some(p => p > 1))
+        {
+            for (let i = 0; i < positions.length; i++)
+                prop.stops.items[i].position.value = (1 - (pos1 - positions[i]) / dsize) * 100;
         }
     }
 
