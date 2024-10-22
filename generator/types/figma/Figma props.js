@@ -188,14 +188,9 @@ function addGradientProp(obj, prop, target = obj.fills)
             && (   i.position.value < 0 
                 || i.position.value > 100)))
     {
-        let minPos = Number.MAX_SAFE_INTEGER;
-        let maxPos = Number.MIN_SAFE_INTEGER;
+        let minPos = prop.stops.items.reduce((min, stop) => Math.min(min, stop.position.value), Number.MAX_SAFE_INTEGER);
+        let maxPos = prop.stops.items.reduce((max, stop) => Math.max(max, stop.position.value), Number.MIN_SAFE_INTEGER);
 
-        for (const stop of prop.stops.items)
-        {
-            minPos = Math.min(minPos, stop.position.value);
-            maxPos = Math.max(maxPos, stop.position.value);
-        }
 
         if (!isLinear)
             minPos = Math.max(0, minPos);
@@ -218,12 +213,25 @@ function addGradientProp(obj, prop, target = obj.fills)
         }
 
 
-        for (const stop of prop.stops.items)
+        const positions = prop.stops.items.map(s => s.position.value/100);
+        
+        const pos0      = minPos/100;//positions.at( 0);
+        const pos1      = maxPos/100;//positions.at(-1);
+
+        console.log('minPos =', minPos);
+        console.log('maxPos =', maxPos);
+
+        for (let i = 0; i < positions.length; i++)
         {
-            stop.position.value = Math.min(Math.max(
-                0, 
-                stop.position.value * 100 / nozero(maxPos - minPos)), 
-                100);
+            const stop = prop.stops.items[i];
+            let   pos  = positions[i];
+            console.log('1 pos =', pos);
+            
+                 if (pos < 0) pos = (pos - pos0) / dsize;
+            else if (pos > 1) pos = 1 - (pos1 - pos) / dsize;
+
+            console.log('2 pos =', pos);
+            stop.position.value = pos * 100;
         }
     }
 
@@ -246,7 +254,7 @@ function addGradientProp(obj, prop, target = obj.fills)
                 rgba[1], 
                 rgba[2], 
                 rgba[3],
-                Math.min(Math.max(0, stop.position.value / 100), 1)]);
+                stop.position.value / 100]);
         }
     }
 

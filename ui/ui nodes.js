@@ -540,11 +540,6 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes, zoo
     }
     catch (e)
     {
-        // initCrashDialog(e);
-        // showCrashDialog();
-
-        // addMetricsEvent('CRASH', e);
-
         return [[], []];
     }
 }
