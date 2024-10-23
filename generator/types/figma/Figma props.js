@@ -247,6 +247,10 @@ function addGradientProp(obj, prop, target = obj.fills)
             for (let i = 0; i < positions.length; i++)
                 prop.stops.items[i].position.value = (1 - (pos1 - positions[i]) / dsize) * 100;
         }
+
+        
+        for (const stop of prop.stops.items)
+            stop.position.value = Math.min(Math.max(0, stop.position.value), 1);
     }
 
 
