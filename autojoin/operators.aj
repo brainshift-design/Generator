@@ -42,6 +42,7 @@
 ../operators/Operator update.js
 ../operators/OperatorBase.js
 ../operators/ResizableBase.js
+../operators/ResizableBaseWithSeparator.js
 
 
 ../operators/flow/OpFlowBase.js

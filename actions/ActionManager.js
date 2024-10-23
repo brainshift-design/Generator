@@ -63,15 +63,12 @@ class ActionManager
 
     undo()
     {
-        console.log('1');
         if (isEmpty(this.actions))
             return;
 
-        console.log('2');
             
         this.undoing = true;
 
-        console.log('3');
 
         for (;;)
         {
@@ -79,9 +76,7 @@ class ActionManager
             this.redoActions.push(last);
 
 
-            console.log('11');
             this.undoAction(last);
-            console.log('12');
 
             addMetricsEvent(METRICS_ACTION_UNDO, last.name);
 

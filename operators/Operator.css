@@ -718,7 +718,7 @@
     top:        0;
     bottom:     0;
     left:       50%;
-    width:      2px;
+    width:      4px;
     background: var(--figma-color-bg-tertiary);
     transform:  translateX(-50%);
 }

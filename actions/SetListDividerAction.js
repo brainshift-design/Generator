@@ -11,9 +11,6 @@ extends Action
 
     constructor(nodeId, oldDivider, newDivider)
     {
-        console.log('oldDivider =', oldDivider);
-        console.log('newDivider =', newDivider);
-        
         super(
             SET_LIST_DIVIDER_ACTION,
            'SET ITEMS DIVIDER ' + nodeId + ' to \'' + newDivider + '\'');
@@ -43,6 +40,7 @@ extends Action
             param.divider = this.node.divider;
 
         this.node.updateParamControls();
+        this.node.updateSeparator();
 
         uiSaveNodes([this.nodeId]);
     }
@@ -57,6 +55,7 @@ extends Action
             param.divider = this.node.divider;
 
         this.node.updateParamControls();
+        this.node.updateSeparator();
 
         uiSaveNodes([this.nodeId]);
     }

@@ -3,7 +3,7 @@ const defaultVariableNodeName = PLUGIN_LOGO + '/variable';
 
 
 class   OpVariable
-extends ResizableBase
+extends ResizableBaseWithSeparator
 {
     variableId         = NULL;
     variableName       = '';   // must be set even if nothing is connected
@@ -15,9 +15,6 @@ extends ResizableBase
     menuBoolValues     = [];
 
     isBool             = false;
-
-    divider;
-    separator;
 
     loadInputAndOutput = true;
 
@@ -38,11 +35,6 @@ extends ResizableBase
 
         this.addInput (new Input([ANY_VALUE, NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE, FILL_VALUE]));
         this.addOutput(new Output([VARIABLE_VALUE], this.output_genRequest));
-
-
-        this.divider = 0.5;
-
-        this.createSeparator();
 
 
         this.divIcon.addEventListener('pointerenter', e => 
@@ -82,82 +74,6 @@ extends ResizableBase
 
 
 
-    createSeparator()
-    {
-        this.separator = createDiv('itemsSeparator');
-
-        this.separator.down         = false;
-        this.separator.sy           = Number.NaN;
-        this.separator.spy          = Number.NaN;
-        this.separator.style.top    = defHeaderHeight + 'px';
-        this.separator.style.height = 'calc(100% - ' + defHeaderHeight + 'px)';
-
-        this.div.appendChild(this.separator);
-
-
-
-        this.separator.addEventListener('pointerdown', e =>
-        {
-            if (e.button == 0)
-            {
-                e.stopPropagation();
-
-                try
-                {
-                    this.separator.setPointerCapture(e.pointerId);
-
-                    this.separator.down = true;
-
-                    this.separator.sx  = e.clientX;
-                    this.separator.spx = this.divider;
-                }
-                catch {}
-            }
-        });
-
-
-
-        this.separator.addEventListener('pointermove', e =>
-        {
-            if (this.separator.down)
-            {
-                this.divider = 
-                      this.separator.spx 
-                    +   (e.clientX - this.separator.sx) / graph.currentPage.zoom
-                      / this.measureData.divOffset.width;
-
-                this.divider = Math.min(Math.max(0.1, this.divider), 0.9);
-
-                for (const param of this.params)
-                    param.divider = this.divider;
-
-                this.separator.style.left = (this.divider * this.measureData.divOffset.width) + 'px';
-
-                this.updateParamControls();
-            }
-        });
-
-
-
-        this.separator.addEventListener('pointerup', e =>
-        {
-            if (e.button == 0)
-            {
-                e.stopPropagation();
-
-                this.separator.down = false;
-                this.separator.releasePointerCapture(e.pointerId);
-
-                actionManager.do(new SetListDividerAction(
-                    this.id, 
-                    this.separator.spx,
-                    this.divider));
-            }
-        });
-    }
-
-
-
     setName(newName, options = {})
     {
         if (newName.split('/').length < 2)
@@ -191,9 +107,6 @@ extends ResizableBase
             w, 
             height, 
             updateTransform);
-
-
-        this.separator.style.left = (this.divider * w) + 'px';
     }
 
 
@@ -299,15 +212,6 @@ extends ResizableBase
         pushUnique(gen.passedNodes, this);
 
         return request;
-    }
-
-
-
-    updateNode()
-    {
-        super.updateNode();
-
-        this.separator.style.left = (this.divider * this.measureData.divOffset.width) + 'px';
     }
 
 
@@ -700,8 +604,7 @@ extends ResizableBase
         return super.toJsonBase(nTab)
              + ',\n' + pos + tab + '"variableId": "'   + this.variableId   + '"'
              + ',\n' + pos + tab + '"variableType": "' + this.variableType + '"'
-             + ',\n' + pos + tab + '"variableName": "' + encodeURIComponent(this.variableName) + '"'
-             + ',\n' + pos + tab + '"divider": "' + this.divider + '"';
+             + ',\n' + pos + tab + '"variableName": "' + encodeURIComponent(this.variableName) + '"';
     }
 
 
@@ -728,8 +631,5 @@ extends ResizableBase
             this.variableType = NULL;
             this.variableName = '';
         }
-
-
-        if (_node.divider) this.divider = parseFloat(_node.divider); else this.divider = 0.25;
     }
 }
