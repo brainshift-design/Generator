@@ -1125,9 +1125,11 @@ class Operator
     setAllParamDividers(divider)
     {
         for (const param of this.params)
-            if (   param instanceof NumberParamBase
-                || param instanceof TextParam)
+        {
+            // if (   param instanceof NumberParamBase
+            //     || param instanceof TextParam)
                 param.divider = divider;
+        }
     }
 
 

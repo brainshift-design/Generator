@@ -11,6 +11,9 @@ extends Action
 
     constructor(nodeId, oldDivider, newDivider)
     {
+        console.log('oldDivider =', oldDivider);
+        console.log('newDivider =', newDivider);
+        
         super(
             SET_LIST_DIVIDER_ACTION,
            'SET ITEMS DIVIDER ' + nodeId + ' to \'' + newDivider + '\'');

@@ -38,12 +38,13 @@ function pushUpdateFromParam(action, nodes, param, save = true)
 
     
     const set =
-          ((settings .showAllColorSpaces  ? 1 : 0) << 0)
-        | ((settings .logRequests         ? 1 : 0) << 1)
-        | ((settings .showTransformPoints ? 1 : 0) << 2)
-        | ((graphView.loadingNodes        ? 1 : 0) << 3)
-        | ((settings .showTooltipLongText ? 1 : 0) << 4)
-        | ((settings .showTooltipLists    ? 1 : 0) << 5);
+          ((settings .showAllColorSpaces   ? 1 : 0) << 0)
+        | ((settings .logRequests          ? 1 : 0) << 1)
+        | ((settings .showTransformPoints  ? 1 : 0) << 2)
+        | ((graphView.loadingNodes         ? 1 : 0) << 3)
+        | ((settings .showTooltipLongText  ? 1 : 0) << 4)
+        | ((settings .showTooltipLists     ? 1 : 0) << 5)
+        | ((settings .preferHtmlColorNames ? 1 : 0) << 6);
 
 
     if (action)

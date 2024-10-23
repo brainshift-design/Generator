@@ -1,6 +1,9 @@
 class   OpTextToColor
 extends OperatorBase
 {
+    paramFormat;
+
+
     _color = dataColor_NaN;
 
 
@@ -18,6 +21,8 @@ extends OperatorBase
 
         this.addInput(new Input([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
+    
+        this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['Hex', 'RGB 0 – 1', 'RGB 0 – 255', 'HTML name', 'structured name']));
     }
 
 
@@ -43,6 +48,9 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         
+        request.push(...this.node.paramFormat.genRequest(gen));
+
+
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 

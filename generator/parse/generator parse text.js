@@ -1067,6 +1067,9 @@ function genParseTextToColor(parse)
     if (nInputs == 1)
         text2col.input = genParse(parse);
 
+
+    text2col.format = genParse(parse);
+
     
     parse.nTab--;
 

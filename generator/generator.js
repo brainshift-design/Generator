@@ -54,16 +54,17 @@ function genRequest(request, save)
 
     const settings =
     {
-        showAllColorSpaces:  ((set >> 0) & 1) != 0,
-        logRequests:         ((set >> 1) & 1) != 0,
-        showTransformPoints: ((set >> 2) & 1) != 0,
-        loadingNodes:        ((set >> 3) & 1) != 0,
-        showTextTooltips:    ((set >> 4) & 1) != 0,
-        showListTooltips:    ((set >> 5) & 1) != 0,
-        maxSolveIterations:  maxSolveIterations,
-        numberVarNullValue:  numberVarNullValue,
-        boolVarNullValue:    boolVarNullValue,
-        colorVarNullValue:   colorVarNullValue 
+        showAllColorSpaces:   ((set >> 0) & 1) != 0,
+        logRequests:          ((set >> 1) & 1) != 0,
+        showTransformPoints:  ((set >> 2) & 1) != 0,
+        loadingNodes:         ((set >> 3) & 1) != 0,
+        showTextTooltips:     ((set >> 4) & 1) != 0,
+        showListTooltips:     ((set >> 5) & 1) != 0,
+        preferHtmlColorNames: ((set >> 6) & 1) != 0,
+        maxSolveIterations:   maxSolveIterations,
+        numberVarNullValue:   numberVarNullValue,
+        boolVarNullValue:     boolVarNullValue,
+        colorVarNullValue:    colorVarNullValue 
     };
 
 
