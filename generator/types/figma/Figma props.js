@@ -87,19 +87,20 @@ function addGradientProp(obj, prop, target = obj.fills)
     }
 
     
-    let   x        =        prop.x     .value / 100;
-    let   y        =        prop.y     .value / 100;
-    let   s        = nozero(prop.size  .value / 100);
-    let   a        =        prop.angle .value / 360*Tau;
-    let   asp      = nozero(prop.aspect.value / 100);
-    const diag     =        prop.diagAspect;
-    let   sk       =        prop.skew  .value / 100;
+    let   x         =        prop.x     .value / 100;
+    let   y         =        prop.y     .value / 100;
+    let   s         = nozero(prop.size  .value / 100);
+    let   a         =        prop.angle .value / 360*Tau;
+    let   asp       = nozero(prop.aspect.value / 100);
+    const diag      =        prop.diagAspect;
+    let   sk        =        prop.skew  .value / 100;
 
     
-    const pos      = prop.position.value;
-    const isLinear = prop.gradType.value == 0;
+    const pos       = prop.position.value;
+    const isLinear  = prop.gradType.value == 0;
+    const isAngular = prop.gradType.value == 2;
     
-    const bounds   = obj.getBounds();
+    const bounds    = obj.getBounds();
 
     // bounds.w = Math.max(1, bounds.w); // this is necessary
     // bounds.h = Math.max(1, bounds.h); // for proportionality
@@ -193,7 +194,12 @@ function addGradientProp(obj, prop, target = obj.fills)
 
 
         if (!isLinear)
+        {
             minPos = Math.max(0, minPos);
+
+            if (isAngular)
+                maxPos = Math.min(maxPos, 1);
+        }
 
 
         const dpos  = Math.min(minPos, 0) / 100;
@@ -202,13 +208,22 @@ function addGradientProp(obj, prop, target = obj.fills)
         const dv    = subv(p0, p1);
 
 
-        console.log('1 p0 =', p0.x + ', ' + p0.y);
         p0 = addv(p0, mulvs(dv, Math.max(0, -dpos)));
         p1 = addv(p1, mulvs(dv, Math.max(0, -dpos)));
         p2 = addv(p2, mulvs(dv, Math.max(0, -dpos)));
-        console.log('2 p0 =', p0.x + ', ' + p0.y);
 
-        if (prop.gradType.value != 2) // not angular
+
+        if (!isLinear)
+        {
+            const dx = mulvs(dv, (dsize - 1) / 2);
+
+            p0 = addv(p0, dx);
+            p1 = addv(p1, dx);
+            p2 = addv(p2, dx);
+        }
+
+
+        if (!isAngular)
         {
             p1 = subv(p0, mulvs(dv, dsize));
             p2 = addv(p0, mulvs(subv(p2, p0), dsize));
