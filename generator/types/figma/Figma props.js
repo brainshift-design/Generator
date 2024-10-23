@@ -202,9 +202,11 @@ function addGradientProp(obj, prop, target = obj.fills)
         const dv    = subv(p0, p1);
 
 
+        console.log('1 p0 =', p0.x + ', ' + p0.y);
         p0 = addv(p0, mulvs(dv, Math.max(0, -dpos)));
         p1 = addv(p1, mulvs(dv, Math.max(0, -dpos)));
         p2 = addv(p2, mulvs(dv, Math.max(0, -dpos)));
+        console.log('2 p0 =', p0.x + ', ' + p0.y);
 
         if (prop.gradType.value != 2) // not angular
         {
@@ -215,8 +217,8 @@ function addGradientProp(obj, prop, target = obj.fills)
 
         const positions = prop.stops.items.map(s => s.position.value/100);
         
-        const pos0      = minPos/100;//positions.at( 0);
-        const pos1      = maxPos/100;//positions.at(-1);
+        const pos0      = minPos/100;
+        const pos1      = maxPos/100;
 
         
         if (positions.some(p => p < 0))
