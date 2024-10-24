@@ -6,8 +6,8 @@ class   OpVariable
 extends ResizableBaseWithSeparator
 {
     variableId         = NULL;
-    variableName       = '';   // must be set even if nothing is connected
     variableType       = NULL; // this is the resolved type
+    variableName       = '';   // must be set even if nothing is connected
     variableValues     = [];
     variableTemp       = false;
 
@@ -36,7 +36,7 @@ extends ResizableBaseWithSeparator
 
 
         this.addInput (new Input([ANY_VALUE, NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE, FILL_VALUE]));
-        this.addOutput(new Output([VARIABLE_VALUE], this.output_genRequest));
+        //this.addOutput(new Output([VARIABLE_VALUE], this.output_genRequest));
 
 
         this.divIcon.addEventListener('pointerenter', e => 
@@ -341,7 +341,7 @@ extends ResizableBaseWithSeparator
             {
                 for (let i = 0; i < nParams; i++)
                 {
-                    const paramValue = this.createAndAddParamByType(type, 'paramValue'+i, '', nParams > 1, true, true);
+                    const paramValue = this.createAndAddParamByType(type, 'value'+i, '', nParams > 1, true, true);
                     this.paramValues.push(paramValue);
 
                     paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
@@ -491,7 +491,6 @@ extends ResizableBaseWithSeparator
             if (    this.paramValues[i].type == varVal.type
                 && !this.paramValues[i].value.equals(varVal))
             {
-                //this.paramValues[i].setName(resolvedModes[i]);
                 this.paramValues[i].setValue(varVal, update, true, update);
                 valueChanged = true;
             }
@@ -503,6 +502,69 @@ extends ResizableBaseWithSeparator
         if (updateNode)
             this.updateNode();
 
+    }
+
+
+
+    updateInputsAndOutputs(linked, temp)
+    {
+        if (linked)
+        {
+            if (temp)
+            {
+                this.addHeaderInput();
+                this.addHeaderOutput();
+            }
+            else
+            {
+                this.removeHeaderInput();
+                this.removeHeaderOutput();
+            }
+        }
+        else
+        {
+            this.addHeaderInput();
+            this.removeHeaderOutput();
+        }
+    }
+
+
+
+    addHeaderInput()
+    {
+        if (this.headerInputs .length == 0) 
+            this.addInput(new Input(
+                [
+                       ANY_VALUE, 
+                    NUMBER_VALUE, 
+                      TEXT_VALUE, 
+                     COLOR_VALUE, 
+                      FILL_VALUE
+                ]));
+    }
+
+
+    
+    addHeaderOutput()
+    {
+        if (this.headerOutputs.length == 0) 
+            this.addOutput(new Output([VARIABLE_VALUE], this.output_genRequest));
+    }
+
+
+
+    removeHeaderInput()
+    {
+        if (this.headerInputs.length > 0) 
+            this.removeInput(this.headerInputs[0]);
+    }
+
+
+
+    removeHeaderOutput()
+    {
+        if (this.headerOutputs.length > 0) 
+            this.removeOutput(this.headerOutputs[0]);
     }
 
 
@@ -542,22 +604,16 @@ extends ResizableBaseWithSeparator
 
     getLabelText()
     {
-        // if (this.variableId == NULL)
-        //     return defaultVariableNodeName;
-        
-
         if (!this.variableName)
             return defaultVariableNodeName;
 
 
         const parts = this.variableName.split('/');
-
         
         if (parts.length == 1)
             return this.variableName;
     
         
-        // return parts.join('/');
         const path = parts.slice(0, -2).join('/');
 
         return path
@@ -601,7 +657,8 @@ extends ResizableBaseWithSeparator
         return super.toJsonBase(nTab)
              + ',\n' + pos + tab + '"variableId": "'   + this.variableId   + '"'
              + ',\n' + pos + tab + '"variableType": "' + this.variableType + '"'
-             + ',\n' + pos + tab + '"variableName": "' + encodeURIComponent(this.variableName) + '"';
+             + ',\n' + pos + tab + '"variableName": "' + encodeURIComponent(this.variableName) + '"'
+             + ',\n' + pos + tab + '"variableTemp": "' + boolToString(this.variableTemp) + '"';
     }
 
 
@@ -619,6 +676,7 @@ extends ResizableBaseWithSeparator
             this.variableId   = _node.variableId;
             this.variableType = _node.variableType;
             this.variableName = decodeURIComponent(_node.variableName);
+            this.variableTemp = parseBool(_node.variableTemp);
         }
         else
         {
@@ -627,6 +685,12 @@ extends ResizableBaseWithSeparator
             this.variableId   = NULL;
             this.variableType = NULL;
             this.variableName = '';
+            this.variableTem  = false;
         }
+
+
+        this.updateInputsAndOutputs(
+            this.variableType != NULL, 
+            this.variableTemp);
     }
 }

@@ -164,7 +164,7 @@ function genParseVariable(parse)
     const nParams = parseInt(parse.move());
 
     for (let i = 0; i < nParams; i++)
-        variable.paramValues.push(variable['paramValue'+i] = genParse(parse));
+        variable.paramValues.push(variable['value'+i] = genParse(parse));
 
     
     parse.nTab--;
