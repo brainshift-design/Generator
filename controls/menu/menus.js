@@ -379,10 +379,10 @@ function initGeneratorMenus()
         menuItemShowTooltipColorBlindness     = new MenuItem('Color blindness',     null, false, {checkCallback: () => settings.showTooltipColorBlindness,     callback: () => { updateSettingAndMenu('showTooltipColorBlindness',     true, !settings.showTooltipColorBlindness    ); }})]);
 
 
-    menuShowWarnings = new Menu('Show warnings', false);
-    menuShowWarnings.addItems([
-        menuItemShowClearUndoWarning = new MenuItem('Show clear undo warning', null, false, {checkCallback: () => settings.showClearUndoWarning, callback: () => { updateSettingAndMenu('showClearUndoWarning',       true, !settings.showClearUndoWarning); }}),
-        menuItemShowRestartInfo      = new MenuItem('Show restart warning',    null, false, {checkCallback: () => settings.showRestartInfo,      callback: () => { updateSettingAndMenu('showRestartInfo',            true, !settings.showRestartInfo);      }})]);
+    // menuShowWarnings = new Menu('Show warnings', false);
+    // menuShowWarnings.addItems([
+    //     //menuItemShowClearUndoWarning = new MenuItem('Show clear undo warning', null, false, {checkCallback: () => settings.showClearUndoWarning, callback: () => { updateSettingAndMenu('showClearUndoWarning',       true, !settings.showClearUndoWarning); }}),
+    //     menuItemShowRestartInfo      = new MenuItem('Show restart warning',    null, false, {checkCallback: () => settings.showRestartInfo,      callback: () => { updateSettingAndMenu('showRestartInfo',            true, !settings.showRestartInfo);      }})]);
 
 
     menuMainFile = new Menu('File', false);
@@ -1333,7 +1333,8 @@ function initPreferenceMenus()
         //menuItemShowColorLegendInMenus   = new MenuItem('Show color legend in menus',               null, false, {checkCallback: () => settings.showColorLegendInMenus,                    callback: () => { updateSettingAndMenu('showColorLegendInMenus',     true, !settings.showColorLegendInMenus);     updateMenuItemShowColorLegendInMenus();     }}),
                                              new MenuItem('',                                         null, false, {separator: true}),    
         menuItemShowTooltips               = new MenuItem('Show tooltips',                            null, false, {childMenu: menuShowTooltips}),
-        menuItemShowWarnings               = new MenuItem('Show warnings',                            null, false, {childMenu: menuShowWarnings}),
+        menuItemShowRestartInfo            = new MenuItem('Show restart warning',    null, false, {checkCallback: () => settings.showRestartInfo,                                            callback: () => { updateSettingAndMenu('showRestartInfo',            true, !settings.showRestartInfo);                                                        }}),
+        //menuItemShowWarnings               = new MenuItem('Show warnings',                            null, false, {childMenu: menuShowWarnings}),
         menuItemShowObjectCount            = new MenuItem('Show canvas object count',                 null, false, {checkCallback: () => settings.showObjectCount,                           callback: () => { updateSettingAndMenu('showObjectCount',            true, !settings.showObjectCount);            updateObjectCountDisplay();                 }}),
                                              new MenuItem('',                                         null, false, {separator: true}),
         menuItemShareUsageMetrics          = new MenuItem('Share usage metrics',                      null, false, {checkCallback: () => settings.shareUsageMetrics,                         callback: () => { updateSettingAndMenu('shareUsageMetrics',          true, !settings.shareUsageMetrics);                                                      }}),

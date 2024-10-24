@@ -391,8 +391,8 @@ extends ResizableBaseWithSeparator
                 this.variableType   = NULL;
 
 
-                actionManager.clear();
-                uiShowClearUndoWarning('variables');
+                //actionManager.clear();
+                //uiShowClearUndoWarning('variables');
             }
 
 
@@ -451,8 +451,8 @@ extends ResizableBaseWithSeparator
     }
 
 
-        actionManager.clear();
-        uiShowClearUndoWarning('variables');
+        //actionManager.clear();
+        //uiShowClearUndoWarning('variables');
     }
 
 
@@ -503,8 +503,8 @@ extends ResizableBaseWithSeparator
 
         if (valueChanged)
         {
-            actionManager.clear();
-            uiShowClearUndoWarning('variables');
+            //actionManager.clear();
+            //uiShowClearUndoWarning('variables');
         }
     }
 
