@@ -22,7 +22,7 @@ extends OperatorBase
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramDeltaE = new SelectParam('deltaE', '', false, true,  true, ['ΔE76', 'ΔE94', 'ΔE00', 'ΔE CMC', 'ΔE ITU'], 2));
+        this.addParam(this.paramDeltaE = new SelectParam('deltaE', '', false, true,  true, ['ΔE 76', 'ΔE 94', 'ΔE 00', 'ΔE CMC', 'ΔE ITU'], 2));
         this.addParam(this.paramSpace  = new SelectParam('space',  '', false, true,  true, ['okLab', 'Lab'], 0));
         this.addParam(this.param1      = new NumberParam('param1', '', true,  true,  true, 100, 0, 100));
         this.addParam(this.param2      = new NumberParam('param2', '', true,  true,  true, 100, 0, 100));
