@@ -8,7 +8,7 @@ extends GValue
 
     constructor(val = '')
     {
-        super(TEXT_VALUE, 'string');
+        super(TEXT_VALUE, 'text');
 
 
         if (   val !== null

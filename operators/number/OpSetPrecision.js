@@ -13,7 +13,7 @@ extends OperatorBase
         super(NUMBER_PRECISION, 'precision', 'precision', iconNumberPrecision);
 
         
-        //this.outputValueType = NUMBER_VALUE;
+        //this.outputValueType = ANY_VALUE;
         this.canDisable  = true;
         this.iconOffsetY = 1;
         
@@ -30,6 +30,7 @@ extends OperatorBase
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.headerOutputs[0].forceOutputColor = true;
+        
         
         this.addParam(this.paramDecimals = new NumberParam('decimals', 'decimals', false, true, true, 0, 0, 10));
     }
@@ -86,7 +87,8 @@ extends OperatorBase
 
     getOutputWireColor()
     {
-        if (!this.value)
+        if (  !this.value
+            || this.isUnknown())
             return super.getOutputWireColor();
 
 
