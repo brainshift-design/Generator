@@ -10,22 +10,23 @@ startVariablePolling();
 
 function startVariablePolling()
 {
-    variableTimer = setInterval(() =>
-    {
-        if (!graph.currentPage)
-            return;
-    
-        // this is variable polling
+    variableTimer = setInterval(() => pollVariables(), 333);
+}
 
-        const varNodes = graph.currentPage.nodes.filter(n => 
-               n.type       == VARIABLE 
-            && n.variableId != NULL);
 
-        uiQueueMessageToFigma({
-            cmd:         'figGetVariableUpdates',
-            linkedVarIds: varNodes.map(n => n.variableId)});
-    },
-    333);
+
+function pollVariables()
+{
+    if (!graph.currentPage)
+        return;
+
+    const varNodes = graph.currentPage.nodes.filter(n => 
+           n.type       == VARIABLE 
+        && n.variableId != NULL);
+
+    uiQueueMessageToFigma({
+        cmd:         'figGetVariableUpdates',
+        linkedVarIds: varNodes.map(n => n.variableId)});
 }
 
 

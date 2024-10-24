@@ -2683,6 +2683,7 @@ uiEndGlobalProgress
 uiGetValueForGenerator
 uiGetValueForFigma
 variableTimer
+updateValueParamValuesFromResolved
 uiReturnFigGetAllLocalVariables
 uiReturnFigGetVariableUpdates
 uiReturnFigLinkNodeToVariable

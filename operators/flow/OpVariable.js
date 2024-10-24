@@ -28,6 +28,8 @@ extends ResizableBaseWithSeparator
         this.iconOffsetY    = 1;
         this.alwaysShowIcon = true;
 
+        this.divider        = 0.5;
+
 
         this.divIcon.style.opacity       = 0.5;
         this.divIcon.style.pointerEvents = 'all';
@@ -333,15 +335,13 @@ extends ResizableBaseWithSeparator
             this.removeAllParams();
             this.menuBoolValues = [];
 
-            console.log('params DELETED');
-
 
             if (   type != NULL
                 && type != ANY_VALUE)
             {
                 for (let i = 0; i < nParams; i++)
                 {
-                    const paramValue = this.createAndAddParamByType(type, 'paramValue'+i, 'paramValue'+i, nParams > 1, true, true);
+                    const paramValue = this.createAndAddParamByType(type, 'paramValue'+i, '', nParams > 1, true, true);
                     this.paramValues.push(paramValue);
 
                     paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
@@ -360,9 +360,13 @@ extends ResizableBaseWithSeparator
                         paramValue.controls[0].allowEditDecimals = false;
                     }
 
+
                     if (this.isBool)
                         this.menuBoolValues.push(createBoolMenu(paramValue));
                 }
+
+
+                pollVariables();
 
 
                 for (const conn of connections)
@@ -389,10 +393,6 @@ extends ResizableBaseWithSeparator
 
                 this.variableId     = NULL;
                 this.variableType   = NULL;
-
-
-                //actionManager.clear();
-                //uiShowClearUndoWarning('variables');
             }
 
 
@@ -427,12 +427,12 @@ extends ResizableBaseWithSeparator
         {
             if (!isValid(resolvedValues[i]))
                 continue;
-
-
+            
+            
             const resolvedValue = resolvedValues  [i];
             const resolvedMode  = resolvedModes   [i];
             const    paramValue = this.paramValues[i];
-
+            
 
             const value = getValueFromVariable(resolvedType, resolvedValue);
   
@@ -445,14 +445,16 @@ extends ResizableBaseWithSeparator
                 if (value.decimals <= paramValue.value.decimals)
                     this.checkNoUpdateDecimals(value, paramValue);
 
-                paramValue.setName(resolvedMode);
                 paramValue.setValue(value, update, true, update);
             }
-    }
 
 
-        //actionManager.clear();
-        //uiShowClearUndoWarning('variables');
+            if (paramValue.name != resolvedMode)
+                paramValue.setName(resolvedMode);
+        }
+
+
+        this.updateNode();
     }
 
 
@@ -489,6 +491,7 @@ extends ResizableBaseWithSeparator
             if (    this.paramValues[i].type == varVal.type
                 && !this.paramValues[i].value.equals(varVal))
             {
+                //this.paramValues[i].setName(resolvedModes[i]);
                 this.paramValues[i].setValue(varVal, update, true, update);
                 valueChanged = true;
             }
@@ -500,12 +503,6 @@ extends ResizableBaseWithSeparator
         if (updateNode)
             this.updateNode();
 
-
-        if (valueChanged)
-        {
-            //actionManager.clear();
-            //uiShowClearUndoWarning('variables');
-        }
     }
 
 
