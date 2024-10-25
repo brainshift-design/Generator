@@ -403,7 +403,7 @@ function genParseNodeStart(parse)
 {
     const type     = parse.move();
     const nodeId   = parse.move();
-    const nodeName = parse.move();
+    const nodeName = decodeURIComponent(parse.move());
 
     
     parse.scope.push(nodeId);

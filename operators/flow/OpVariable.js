@@ -9,6 +9,7 @@ extends ResizableBaseWithSeparator
     variableType       = NULL; // this is the resolved type
     variableName       = '';   // must be set even if nothing is connected
     variableValues     = [];
+    aliasIds           = [];
     variableTemp       = false;
 
     paramValues        = [];
@@ -35,8 +36,8 @@ extends ResizableBaseWithSeparator
         this.divIcon.style.pointerEvents = 'all';
 
 
-        this.addInput (new Input([ANY_VALUE, NUMBER_VALUE, TEXT_VALUE, COLOR_VALUE, FILL_VALUE]));
-        //this.addOutput(new Output([VARIABLE_VALUE], this.output_genRequest));
+        this.addHeaderInput();
+        this.addHeaderOutput();
 
 
         this.divIcon.addEventListener('pointerenter', e => 
@@ -155,13 +156,13 @@ extends ResizableBaseWithSeparator
 
 
         request.push(this.variableId);
+        request.push(this.variableType);
         
-        request.push(
+        request.push(encodeURIComponent(
             this.variableName != '' 
                 ? this.variableName 
-                : this.name);
+                : this.name));
         
-        request.push(this.variableType);
         request.push(this.variableValues.length);
 
 
@@ -196,6 +197,10 @@ extends ResizableBaseWithSeparator
 
             request.push(strValue);
         }
+
+
+        for (const aliasId of this.aliasIds)
+            request.push(aliasId);
 
 
         this.variableValues = []; // only needs to be sent once

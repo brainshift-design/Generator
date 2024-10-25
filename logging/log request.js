@@ -57,7 +57,7 @@ function logReqNodeId(node, ignore = false)
 {
     return ' ' 
          + logReqId(node.nodeId) 
-         + ' ' + logReqId(node.nodeName)
+         + ' \'' + logReqId(node.nodeName) + '\''
          + (!ignore
             ? logReqOptions(node)
             : '');

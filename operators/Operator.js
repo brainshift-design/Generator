@@ -1179,7 +1179,7 @@ class Operator
         const request = [
             this.type, 
             this.id,
-            this.name ];
+            encodeURIComponent(this.name) ];
 
 
         const ignore = gen.passedNodes.includes(this);

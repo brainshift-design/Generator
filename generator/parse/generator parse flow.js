@@ -80,8 +80,8 @@ function genParseVariable(parse)
 
     
     variable.variableId   = parse.move();
-    variable.variableName = parse.move();
     variable.variableType = parse.move();
+    variable.variableName = decodeURIComponent(parse.move());
 
 
     const nVars = parseInt(parse.move());
@@ -121,15 +121,20 @@ function genParseVariable(parse)
     }
 
 
+    for (let i = 0; i < nVars; i++)
+        variable.aliasIds.push(parse.move());
+
+
     variable.variableTemp = parseInt(parse.move()) > 0;
 
 
     if (parse.settings.logRequests) 
     {
         logReqString(variable.variableId   != NULL ? variable.variableId   : 'NULL', parse);
-        logReqString(variable.variableName != ''   ? variable.variableName : '\'\'', parse);
         logReqString(variable.variableType != NULL ? variable.variableType : 'NULL', parse);
+        logReqString(variable.variableName != ''   ? '\'' + variable.variableName + '\'' : '\'\'', parse);
         
+
         for (const varVal of variable.variableValues)
         {
             switch (variable.variableType)
@@ -156,6 +161,14 @@ function genParseVariable(parse)
                     break;
             }
         }
+
+
+        if (variable.aliasIds.length > 0)
+        {
+            for (const aliasId of variable.aliasIds)
+                logReqString(aliasId, parse);
+        }
+
 
         logReqString(variable.variableTemp ? 'temp' : 'existing', parse);
     }

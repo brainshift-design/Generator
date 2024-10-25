@@ -22434,9 +22434,10 @@ class GVariable
 extends GOperator1
 {
     variableId     = NULL;
-    variableName   = '';
     variableType   = NULL;
+    variableName   = '';
     variableValues = [];
+    aliasIds       = [];
     variableTemp   = false;
 
     paramValues    = [];
@@ -22455,9 +22456,10 @@ extends GOperator1
         super.reset();
 
         this.variableId     = NULL;
-        this.variableName   = '';
         this.variableType   = NULL;
+        this.variableName   = '';
         this.variableValues = [];
+        this.aliasIds       = [];
         this.variableTemp   = false;
 
         this.paramValues    = [];
@@ -22470,9 +22472,10 @@ extends GOperator1
         const copy = new GVariable(this.nodeId, this.options);
 
         copy.variableId     = this.variableId;
-        copy.variableName   = this.variableName;
         copy.variableType   = this.variableType;
+        copy.variableName   = this.variableName;
         copy.variableValues = this.variableValues.map(v => v.copy());
+        copy.aliasIds       = [...this.aliasIds];
         copy.variableTemp   = this.variableTemp;
 
         copy.paramValues    = this.paramValues   .map(p => p.copy());
@@ -22533,7 +22536,7 @@ extends GOperator1
             this.variableId,
             this.variableName,
             varValues,
-            [],
+            [...this.aliasIds],
             this.variableTemp);
 
 
@@ -55917,8 +55920,8 @@ function genParseVariable(parse)
 
     
     variable.variableId   = parse.move();
-    variable.variableName = parse.move();
     variable.variableType = parse.move();
+    variable.variableName = decodeURIComponent(parse.move());
 
 
     const nVars = parseInt(parse.move());
@@ -55958,15 +55961,20 @@ function genParseVariable(parse)
     }
 
 
+    for (let i = 0; i < nVars; i++)
+        variable.aliasIds.push(parse.move());
+
+
     variable.variableTemp = parseInt(parse.move()) > 0;
 
 
     if (parse.settings.logRequests) 
     {
         logReqString(variable.variableId   != NULL ? variable.variableId   : 'NULL', parse);
-        logReqString(variable.variableName != ''   ? variable.variableName : '\'\'', parse);
         logReqString(variable.variableType != NULL ? variable.variableType : 'NULL', parse);
+        logReqString(variable.variableName != ''   ? '\'' + variable.variableName + '\'' : '\'\'', parse);
         
+
         for (const varVal of variable.variableValues)
         {
             switch (variable.variableType)
@@ -55993,6 +56001,14 @@ function genParseVariable(parse)
                     break;
             }
         }
+
+
+        if (variable.aliasIds.length > 0)
+        {
+            for (const aliasId of variable.aliasIds)
+                logReqString(aliasId, parse);
+        }
+
 
         logReqString(variable.variableTemp ? 'temp' : 'existing', parse);
     }
@@ -64797,7 +64813,7 @@ function genParseNodeStart(parse)
 {
     const type     = parse.move();
     const nodeId   = parse.move();
-    const nodeName = parse.move();
+    const nodeName = decodeURIComponent(parse.move());
 
     
     parse.scope.push(nodeId);
@@ -65186,7 +65202,7 @@ function logReqNodeId(node, ignore = false)
 {
     return ' ' 
          + logReqId(node.nodeId) 
-         + ' ' + logReqId(node.nodeName)
+         + ' \'' + logReqId(node.nodeName) + '\''
          + (!ignore
             ? logReqOptions(node)
             : '');

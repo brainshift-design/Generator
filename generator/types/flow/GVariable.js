@@ -2,9 +2,10 @@ class GVariable
 extends GOperator1
 {
     variableId     = NULL;
-    variableName   = '';
     variableType   = NULL;
+    variableName   = '';
     variableValues = [];
+    aliasIds       = [];
     variableTemp   = false;
 
     paramValues    = [];
@@ -23,9 +24,10 @@ extends GOperator1
         super.reset();
 
         this.variableId     = NULL;
-        this.variableName   = '';
         this.variableType   = NULL;
+        this.variableName   = '';
         this.variableValues = [];
+        this.aliasIds       = [];
         this.variableTemp   = false;
 
         this.paramValues    = [];
@@ -38,9 +40,10 @@ extends GOperator1
         const copy = new GVariable(this.nodeId, this.options);
 
         copy.variableId     = this.variableId;
-        copy.variableName   = this.variableName;
         copy.variableType   = this.variableType;
+        copy.variableName   = this.variableName;
         copy.variableValues = this.variableValues.map(v => v.copy());
+        copy.aliasIds       = [...this.aliasIds];
         copy.variableTemp   = this.variableTemp;
 
         copy.paramValues    = this.paramValues   .map(p => p.copy());
@@ -101,7 +104,7 @@ extends GOperator1
             this.variableId,
             this.variableName,
             varValues,
-            [],
+            [...this.aliasIds],
             this.variableTemp);
 
 
