@@ -25,7 +25,10 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
 
     if (settings.logRawValues)  
-        console.log('raw values = ', values);
+        console.log(
+            '%craw values = %o', 
+            'background: #e70; color: white;', 
+            values);
 
     if (settings.logValueUpdates)  
         logValueUpdates(updateNodeId, updateParamId, values);

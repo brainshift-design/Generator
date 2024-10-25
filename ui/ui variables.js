@@ -208,9 +208,10 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
     });
 
 
-    for (const variable of variables)
+    for (let i = 0; i < variables.length; i++)
     {
-        const options = {};
+        const variable = variables[i];
+        const options  = {};
 
         options.callback = () => actionManager.do(
             new LinkExistingVariableAction(
@@ -218,8 +219,11 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
                 variable.id,
                 variable.resolvedType,
                 variable.name,
-                variable.resolvedValues[1]),
-                true);
+                variable.resolvedValues[1],
+                [],
+                false),
+            i > 0);
+
 
         options.enabled = !linkedNodes.find(n => n.variableId == variable.id);
 
@@ -389,7 +393,7 @@ function updateMenuLocalVariables()
         [
             new MenuItem('None', null, false,
             {
-                callback: e => actionManager.do(new LinkExistingVariableAction(menuLocalVariables.node.nodeId, NULL, NULL, '', [], false)),
+                callback: e => actionManager.do(new LinkExistingVariableAction(menuLocalVariables.node.nodeId, NULL, NULL, '', [], [], false)),
                 enabled:  menuLocalVariables.node.variableId != NULL
             })
         ]);
@@ -424,7 +428,7 @@ function updateMenuLocalVariables()
 
 
 
-function uiLinkNodeToVariable(node, varId, varType, varName, varValues, varTemp)
+function uiLinkNodeToVariable(node, varId, varType, varName, varValues, aliasIds, varTemp)
 {
     if (   node.variableType != NULL
         && varType == NULL
@@ -448,6 +452,7 @@ function uiLinkNodeToVariable(node, varId, varType, varName, varValues, varTemp)
     node.variableType   = varType;
     node.variableName   = varName;
     node.variableValues = [...varValues];
+    node.aliasIds       = [...aliasIds ];
     node.variableTemp   = varTemp;
     
 

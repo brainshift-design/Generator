@@ -15,6 +15,7 @@ extends Action
     variableType;
     variableName;
     variableValues;
+    aliasIds;
     variableTemp;
 
 
@@ -22,6 +23,7 @@ extends Action
     prevVariableType;
     prevVariableName;
     prevVariableValues;
+    prevAliasIds;
     prevVariableTemp;
 
 
@@ -30,7 +32,7 @@ extends Action
 
 
 
-    constructor(nodeId, variableId, resolvedType, variableName, variableValues, variableTemp)
+    constructor(nodeId, variableId, resolvedType, variableName, variableValues, aliasIds, variableTemp)
     {
         super(
             LINK_VARIABLE_ACTION, 
@@ -41,6 +43,7 @@ extends Action
         this.variableType   = resolvedType;
         this.variableName   = variableName;
         this.variableValues = [...variableValues];
+        this.aliasIds       = [...aliasIds];
         this.variableTemp   = variableTemp;
         this.selfUpdate     = true;
     }
@@ -53,6 +56,7 @@ extends Action
         this.prevVariableType   = this.node.variableType;
         this.prevVariableName   = this.node.variableName;
         this.prevVariableValues = [...this.node.variableValues];
+        this.prevAliasIds       = [...this.node.aliasIds];
         this.prevVariableTemp   = this.node.variableTemp;
  
        
@@ -62,6 +66,7 @@ extends Action
             this.variableType,
             this.variableName,
             this.variableValues,
+            this.aliasIds,
             this.variableTemp);
 
 
@@ -77,10 +82,14 @@ extends Action
             this.prevVariableId,
             this.prevVariableType,
             this.prevVariableName,
+            this.prevVariableValues,
+            this.prevAliasIds,
             this.prevVariableTemp);
+
 
         this.node.updateNode();
 
+        
         uiSaveNodes([this.nodeId]);
 
         if (this.node.paramValues.some(p => p.input.connected))

@@ -169,21 +169,12 @@ extends ResizableBaseWithSeparator
         for (const variableValue of this.variableValues)
         {
             let strValue;
-
             
             switch (this.variableType)
             {
-            case 'FLOAT':   
-                strValue = variableValue.toString();    
-                break;
-
-            case 'BOOLEAN': 
-                strValue = boolToString(variableValue); 
-                break;
-
-            case 'STRING':  
-                strValue = encodeURIComponent(variableValue);
-                break;
+            case 'FLOAT':   strValue = variableValue.toString();          break;
+            case 'BOOLEAN': strValue = boolToString(variableValue);       break;
+            case 'STRING':  strValue = encodeURIComponent(variableValue); break;
     
             case 'COLOR':
                 strValue = 
@@ -193,7 +184,6 @@ extends ResizableBaseWithSeparator
                     + ' ' + variableValue.a.toString();
                 break;
             }
-
 
             request.push(strValue);
         }
