@@ -455,6 +455,7 @@ async function loadNodesAndConnsAsync(_nodes, _conns, setProgress, pasting = fal
                         node.updateValueParamValuesFromResolved(
                             variable.resolvedType, 
                             variable.name, 
+                            variable.values,
                             variable.resolvedValues,
                             variable.resolvedModes);
                     }

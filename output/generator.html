@@ -8821,7 +8821,7 @@ function addGradientProp(obj, prop, target = obj.fills)
 
         
         for (const stop of prop.stops.items)
-            stop.position.value = Math.min(Math.max(0, stop.position.value), 1);
+            stop.position.value = Math.min(Math.max(0, stop.position.value), 100);
     }
 
 

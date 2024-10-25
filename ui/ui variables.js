@@ -84,6 +84,7 @@ function uiReturnFigGetVariableUpdates(variables)
                 node.updateValueParamValuesFromResolved(
                     variable.resolvedType,
                     variable.name,
+                    variable.values,
                     variable.resolvedValues,
                     variable.resolvedModes,
                     true);
@@ -220,7 +221,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
                 variable.resolvedType,
                 variable.name,
                 variable.resolvedValues[1],
-                [],
+                [...variable.aliasIds],
                 false),
             i > 0);
 

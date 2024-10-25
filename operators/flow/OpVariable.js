@@ -398,7 +398,7 @@ extends ResizableBaseWithSeparator
 
 
 
-    updateValueParamValuesFromResolved(resolvedType, varName, resolvedValues, resolvedModes, update = false)
+    updateValueParamValuesFromResolved(resolvedType, varName, values, resolvedValues, resolvedModes, update = false)
     {
         if (this.variableName != varName)
         {
@@ -425,22 +425,32 @@ extends ResizableBaseWithSeparator
             
             
             const resolvedValue = resolvedValues  [i];
+            const value         = values          [i];
             const resolvedMode  = resolvedModes   [i];
-            const    paramValue = this.paramValues[i];
+            const paramValue    = this.paramValues[i];
             
 
-            const value = getValueFromVariable(resolvedType, resolvedValue);
+            const varValue = getValueFromVariable(resolvedType, resolvedValue);
   
             
-            if (!(      paramValue.value.type  == NUMBER_VALUE
-                     && paramValue.value.value == value.value
-                     && value.type == NUMBER_VALUE
-                  || paramValue.value.equals(value)))
+            if (   value.type
+                && value.type == 'VARIABLE_ALIAS')
             {
-                if (value.decimals <= paramValue.value.decimals)
-                    this.checkNoUpdateDecimals(value, paramValue);
+                
+            }
+            else
+            {
+                console.log('varValue =', varValue);
+                if (  !(   paramValue.value.type  == NUMBER_VALUE
+                        && paramValue.value.value == varValue.value
+                        && varValue.type == NUMBER_VALUE
+                    || paramValue.value.equals(varValue)))
+                {
+                    if (varValue.decimals <= paramValue.value.decimals)
+                        this.checkNoUpdateDecimals(varValue, paramValue);
 
-                paramValue.setValue(value, update, true, update);
+                    paramValue.setValue(varValue, update, true, update);
+                }
             }
 
 
@@ -653,6 +663,7 @@ extends ResizableBaseWithSeparator
              + ',\n' + pos + tab + '"variableId": "'   + this.variableId   + '"'
              + ',\n' + pos + tab + '"variableType": "' + this.variableType + '"'
              + ',\n' + pos + tab + '"variableName": "' + encodeURIComponent(this.variableName) + '"'
+             + ',\n' + pos + tab + '"aliasIds": "'     + this.aliasIds.join(' ') + '"'
              + ',\n' + pos + tab + '"variableTemp": "' + boolToString(this.variableTemp) + '"';
     }
 
@@ -671,15 +682,21 @@ extends ResizableBaseWithSeparator
             this.variableId   = _node.variableId;
             this.variableType = _node.variableType;
             this.variableName = decodeURIComponent(_node.variableName);
+            this.aliasIds     = _node.aliasIds 
+                                    ? _node.aliasIds
+                                        .split(' ')
+                                        .map(id => id == NULL_VALUE ? NULL : id)
+                                    : [];
             this.variableTemp = parseBool(_node.variableTemp);
         }
         else
         {
-            this.name       = this.defName;
+            this.name         = this.defName;
 
             this.variableId   = NULL;
             this.variableType = NULL;
             this.variableName = '';
+            this.aliasIds     = [];
             this.variableTem  = false;
         }
 
