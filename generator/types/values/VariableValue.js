@@ -6,7 +6,11 @@ extends GValue
     variableId;
     variableName;
     variableValues;
+    
+    aliasIds;
+
     variableTemp;
+
 
 
 
@@ -14,13 +18,17 @@ extends GValue
                 variableId     = NULL, 
                 variableName   = '', 
                 variableValues = [],
-                variableTemp = false)
+                aliasIds       = [],
+                variableTemp   = false)
     {
         super(VARIABLE_VALUE, nodeId, 'variable');
 
         this.variableId     = variableId;
         this.variableName   = variableName;
         this.variableValues = [...variableValues];
+        this.aliasIds       = aliasIds.length == variableValues.length 
+                                ? [...aliasIds]
+                                : Array(variableValues.length).fill(NULL_VALUE); 
         this.variableTemp   = variableTemp;
     }
 
@@ -32,6 +40,7 @@ extends GValue
             obj.nodeId,
             obj.objectId, 
             obj.objectName, 
+            [],
             [],
             true);
     }
@@ -45,6 +54,7 @@ extends GValue
             this.variableId, 
             this.variableName, 
             this.variableValues.map(v => v.copy()),
+            [...this.aliasIds],
             this.variableTemp);
 
         copy.copyBase(this);
@@ -86,12 +96,13 @@ extends GValue
 
     toString()
     {
-        return      (this.variableId   != NULL ? this.variableId  : NULL_VALUE)
-            + ' ' + (this.variableName != ''   ? encodeURIComponent(this.variableName)  : NULL_VALUE)
-            + ' ' + (this.variableValues.length > 0 ? this.variableValues[0].type : NULL_VALUE)
+        return      (this.variableId   != NULL      ? this.variableId                       : NULL_VALUE)
+            + ' ' + (this.variableName != ''        ? encodeURIComponent(this.variableName) : NULL_VALUE)
+            + ' ' + (this.variableValues.length > 0 ? this.variableValues[0].type           : NULL_VALUE)
             + ' ' +  this.variableValues.length
             + ' ' +  this.variableValues.map(v => encodeURIComponent(v.toString())).join(' ')
-            + ' ' + (this.variableTemp ? 'T' : 'X'); // T = temp, X = existing
+            + ' ' +  this.aliasIds.join(' ')
+            + ' ' + (this.variableTemp ? 'T' : 'E'); // T = temp, E = existing
     }
 
 
@@ -109,11 +120,17 @@ extends GValue
 
     toDisplayString()
     {
-        return      (this.variableId   != NULL ? this.variableId   : NULL_VALUE)
-            + ' ' + (this.variableName != ''   ? this.variableName : NULL_VALUE)
-            + ' ' + (this.variableValues.length > 0 ? this.variableValues[0].type : NULL_VALUE)
-            + ' ' +  this.variableValues.map(v => encodeURIComponent(v.toDisplayString())).join(' ')
-            + ' ' + (this.variableTemp ? 'T' : 'X'); // T = temp, X = existing
+        const aliasIds = this.aliasIds.filter(id => id != NULL_VALUE);
+
+        return        (this.variableId   != NULL      ? this.variableId             : NULL_VALUE)
+            + ' \'' + (this.variableName != ''        ? this.variableName           : NULL_VALUE) + '\''
+            + ' '   + (this.variableValues.length > 0 ? this.variableValues[0].type : NULL_VALUE)
+            + ' '   +  this.variableValues.length
+            + ' '   +  this.variableValues.map(v => v.toDisplayString()).join(' ')
+            + (aliasIds.length > 0 
+                 ? ' ' + aliasIds.join(' ')
+                 : '')
+            + ' '   + (this.variableTemp ? 'T' : 'E'); // T = temp, E = existing
     }
 
 
@@ -142,11 +159,7 @@ extends GValue
 
 
     
-    static NaN = new VariableValue(
-        NULL,
-        NULL,
-        '',
-        []);
+    static NaN = new VariableValue(NULL);
 }
 
 
@@ -195,6 +208,19 @@ function parseVariableValue(str, i = -1)
     }
 
 
+    const aliasIds = [];
+
+    for (let j = 0; j < nVariableValues; j++)
+    {
+        const aliasId = _str[i];
+
+        aliasIds.push(aliasId);
+
+        length += _str[i].length + 1;
+        i++;
+    }
+
+
     const variableTemp = _str[i] == 'T';  length += _str[i].length + 1;  i++;
 
 
@@ -203,6 +229,7 @@ function parseVariableValue(str, i = -1)
         variableId,
         variableName,
         variableValues,
+        aliasIds,
         variableTemp);
 
 

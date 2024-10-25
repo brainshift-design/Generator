@@ -101,6 +101,7 @@ extends GOperator1
             this.variableId,
             this.variableName,
             varValues,
+            [],
             this.variableTemp);
 
 
