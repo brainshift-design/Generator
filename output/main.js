@@ -3906,18 +3906,20 @@ function figLinkNodeToVariableAsync(nodeId, varId) {
 function figGetResolvedVariableValuesAsync(variable) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!variable)
-            return [];
+            return [null, []];
         const values = [];
         const collection = yield figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
+        let _var = variable;
         for (const mode of collection.modes) {
-            let value = variable.valuesByMode[mode.modeId];
+            let value = _var.valuesByMode[mode.modeId];
             while (value
                 && value['type'] === 'VARIABLE_ALIAS') {
-                variable = yield figma.variables.getVariableByIdAsync(value.id);
-                value = variable.valuesByMode[mode.modeId];
+                _var = yield figma.variables.getVariableByIdAsync(value.id);
+                value = _var.valuesByMode[mode.modeId];
             }
             values.push(value);
         }
+        console.log(variable.name + ' values =', values);
         return [variable, values];
     });
 }

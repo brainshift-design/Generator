@@ -304,8 +304,8 @@ extends ResizableBaseWithSeparator
                 connections.push([
                     conn.output.node.id, 
                     conn.output.id,
-                    conn.input.node.id, 
-                    conn.input.id]);
+                    conn. input.node.id, 
+                    conn. input.id]);
             }
 
             for (const output of this.connectedOutputs)
@@ -317,8 +317,8 @@ extends ResizableBaseWithSeparator
                     connections.push([
                         conn.outputNodeId, 
                         conn.outputId, 
-                        conn.inputNodeId, 
-                        conn.inputId]);
+                        conn. inputNodeId, 
+                        conn. inputId]);
                 }
             }
 
@@ -331,6 +331,8 @@ extends ResizableBaseWithSeparator
             this.menuBoolValues = [];
 
 
+            console.log('type =', type);
+            console.log('nParams =', nParams);
             if (   type != NULL
                 && type != ANY_VALUE)
             {
@@ -440,7 +442,6 @@ extends ResizableBaseWithSeparator
             }
             else
             {
-                console.log('varValue =', varValue);
                 if (  !(   paramValue.value.type  == NUMBER_VALUE
                         && paramValue.value.value == varValue.value
                         && varValue.type == NUMBER_VALUE
@@ -663,7 +664,7 @@ extends ResizableBaseWithSeparator
              + ',\n' + pos + tab + '"variableId": "'   + this.variableId   + '"'
              + ',\n' + pos + tab + '"variableType": "' + this.variableType + '"'
              + ',\n' + pos + tab + '"variableName": "' + encodeURIComponent(this.variableName) + '"'
-             + ',\n' + pos + tab + '"aliasIds": "'     + this.aliasIds.join(' ') + '"'
+             + ',\n' + pos + tab + '"aliasIds": "'     + this.aliasIds.map(id => id == NULL ? NULL_VALUE : id).join(' ') + '"'
              + ',\n' + pos + tab + '"variableTemp": "' + boolToString(this.variableTemp) + '"';
     }
 

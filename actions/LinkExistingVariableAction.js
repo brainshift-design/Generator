@@ -59,7 +59,7 @@ extends Action
         this.prevAliasIds       = [...this.node.aliasIds];
         this.prevVariableTemp   = this.node.variableTemp;
  
-       
+ 
         uiLinkNodeToVariable(
             this.node,
             this.variableId,
