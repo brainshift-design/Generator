@@ -448,8 +448,6 @@ async function loadNodesAndConnsAsync(_nodes, _conns, setProgress, pasting = fal
                     {
                         const node = varNodes.find(n => n.variableId == variable.id);
 
-                        console.log('loadNodesAndConnsAsync() variable.resolvedValues = ', [...variable.resolvedValues]);
-
                         node.updateValueParamsFromResolved(
                             variable.resolvedType, 
                             variable.resolvedValues);

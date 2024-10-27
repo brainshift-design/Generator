@@ -61,7 +61,7 @@ extends GOperator1
                     new TextValue());
             }
             else
-                this.value = input.copy();
+                this.value = input;
         }
         else
             this.value = new TextValue();

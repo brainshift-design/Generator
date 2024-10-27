@@ -67,8 +67,9 @@ extends GOperator1
         
        
         if (input)
+        {
             varValues = [input];
-
+        }
         else if (this.variableValues.length > 0
               && this.variableValues.every(v => isValid(v)))
         {

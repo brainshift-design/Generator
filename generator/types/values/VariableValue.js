@@ -96,12 +96,15 @@ extends GValue
 
     toString()
     {
+        const varValues = this.variableValues.map(v => encodeURIComponent(v.toString()));
+        const aliasIds  = this.aliasIds.map(id => id == NULL ? NULL_VALUE : id);
+
         return      (this.variableId   != NULL      ? this.variableId                       : NULL_VALUE)
             + ' ' + (this.variableName != ''        ? encodeURIComponent(this.variableName) : NULL_VALUE)
             + ' ' + (this.variableValues.length > 0 ? this.variableValues[0].type           : NULL_VALUE)
             + ' ' +  this.variableValues.length
-            + ' ' +  this.variableValues.map(v => encodeURIComponent(v.toString())).join(' ')
-            + ' ' +  this.aliasIds.join(' ')
+            + (varValues.length > 0 ? ' ' + varValues.join(' ') : '')
+            + (aliasIds .length > 0 ? ' ' + aliasIds .join(' ') : '')
             + ' ' + (this.variableTemp ? 'T' : 'E'); // T = temp, E = existing
     }
 
@@ -120,16 +123,15 @@ extends GValue
 
     toDisplayString()
     {
-        const aliasIds = this.aliasIds.filter(id => id != NULL_VALUE);
-
+        const varValues = this.variableValues.map(v => v.toDisplayString());
+        const aliasIds  = this.aliasIds.map(id => id == NULL ? NULL_VALUE : id);
+        
         return        (this.variableId   != NULL      ? this.variableId             : NULL_VALUE)
             + ' \'' + (this.variableName != ''        ? this.variableName           : NULL_VALUE) + '\''
             + ' '   + (this.variableValues.length > 0 ? this.variableValues[0].type : NULL_VALUE)
             + ' '   +  this.variableValues.length
-            + ' '   +  this.variableValues.map(v => v.toDisplayString()).join(' ')
-            + (aliasIds.length > 0 
-                 ? ' ' + aliasIds.join(' ')
-                 : '')
+            + (varValues.length > 0 ? ' ' + varValues.join(' ') : '')
+            + (aliasIds .length > 0 ? ' ' + aliasIds .join(' ') : '')
             + ' '   + (this.variableTemp ? 'T' : 'E'); // T = temp, E = existing
     }
 

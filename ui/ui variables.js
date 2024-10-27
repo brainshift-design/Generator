@@ -124,7 +124,6 @@ function uiReturnFigRelinkVariable(msg)
 
 function initLocalVariablesMenu(variables, nodeId, nCollections)
 {
-    console.log('variables =', variables);
     const node = nodeFromId(nodeId);
     consoleAssert(node.type == VARIABLE, 'node must be VARIABLE');
 
@@ -222,7 +221,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
                 variable.id,
                 variable.resolvedType,
                 variable.name,
-                variable.resolvedValues,
+                [...variable.resolvedValues],
                 [...variable.aliasIds],
                 false),
             i > 0);

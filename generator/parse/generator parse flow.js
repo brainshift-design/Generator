@@ -125,7 +125,7 @@ function genParseVariable(parse)
         variable.aliasIds.push(parse.move());
 
 
-    variable.variableTemp = parseInt(parse.move()) > 0;
+    variable.variableTemp = parseBool(parse.move());
 
 
     if (parse.settings.logRequests) 

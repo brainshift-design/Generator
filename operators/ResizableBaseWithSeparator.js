@@ -11,7 +11,7 @@ extends ResizableBase
         super(type, id, name, icon, defWidth, progressBar);
 
         
-        this.divider = 0.25;
+        this.divider = 0.5;
 
         this.createSeparator();
     }
@@ -133,6 +133,6 @@ extends ResizableBase
     {
         super.loadParams(_node, pasting);
 
-        if (_node.divider) this.divider = parseFloat(_node.divider); else this.divider = 0.25;
+        if (_node.divider) this.divider = parseFloat(_node.divider); else this.divider = 0.5;
     }
 }

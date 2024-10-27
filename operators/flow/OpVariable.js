@@ -137,8 +137,8 @@ extends ResizableBaseWithSeparator
 
                 
         const input = 
-            this.inputs.length > 0
-            ? this.inputs[0]
+            this.headerInputs.length > 0
+            ? this.headerInputs[0]
             : null;
 
         const hasInput = 
@@ -166,22 +166,27 @@ extends ResizableBaseWithSeparator
         request.push(this.variableValues.length);
 
 
-        for (const variableValue of this.variableValues)
+        const nVarValues = this.variableValues.length;
+
+
+        for (let i = 0; i < nVarValues; i++)
         {
+            const varValue = this.variableValues[i];
+
             let strValue;
             
             switch (this.variableType)
             {
-            case 'FLOAT':   strValue = variableValue.toString();          break;
-            case 'BOOLEAN': strValue = boolToString(variableValue);       break;
-            case 'STRING':  strValue = encodeURIComponent(variableValue); break;
+            case 'FLOAT':   strValue = varValue.toString();          break;
+            case 'BOOLEAN': strValue = boolToString(varValue);       break;
+            case 'STRING':  strValue = encodeURIComponent(varValue); break;
     
             case 'COLOR':
                 strValue = 
-                            variableValue.r.toString()
-                    + ' ' + variableValue.g.toString()
-                    + ' ' + variableValue.b.toString()
-                    + ' ' + variableValue.a.toString();
+                            varValue.r.toString()
+                    + ' ' + varValue.g.toString()
+                    + ' ' + varValue.b.toString()
+                    + ' ' + varValue.a.toString();
                 break;
             }
 
@@ -189,14 +194,14 @@ extends ResizableBaseWithSeparator
         }
 
 
-        for (const aliasId of this.aliasIds)
-            request.push(aliasId);
+        for (let i = 0; i < nVarValues; i++)
+            request.push(this.aliasIds[i]);
 
 
         this.variableValues = []; // only needs to be sent once
 
 
-        request.push(this.variableTemp ? 1 : 0);
+        request.push(boolToString(this.variableTemp));
 
 
         request.push(this.paramValues.length);
@@ -331,8 +336,6 @@ extends ResizableBaseWithSeparator
             this.menuBoolValues = [];
 
 
-            console.log('type =', type);
-            console.log('nParams =', nParams);
             if (   type != NULL
                 && type != ANY_VALUE)
             {
@@ -435,13 +438,13 @@ extends ResizableBaseWithSeparator
             const varValue = getValueFromVariable(resolvedType, resolvedValue);
   
             
-            if (   value.type
-                && value.type == 'VARIABLE_ALIAS')
-            {
+            // if (   value.type
+            //     && value.type == 'VARIABLE_ALIAS')
+            // {
                 
-            }
-            else
-            {
+            // }
+            // else
+            // {
                 if (  !(   paramValue.value.type  == NUMBER_VALUE
                         && paramValue.value.value == varValue.value
                         && varValue.type == NUMBER_VALUE
@@ -452,7 +455,7 @@ extends ResizableBaseWithSeparator
 
                     paramValue.setValue(varValue, update, true, update);
                 }
-            }
+            // }
 
 
             if (paramValue.name != resolvedMode)

@@ -41,16 +41,24 @@ extends GOperator1
             return this;
 
 
-        const input = await evalValue    (this.input, parse);
-        const name  = await evalTextValue(this.name,  parse);
+        const input = await evalValueOrList(this.input, parse);
+        const name  = await evalTextValue  (this.name,  parse);
 
 
-        this.value = input ?? new NullValue();
-
-
-        if (   this.options.enabled
-            && this.value.isValid())
-            this.value.valueId = name.value;
+        if (input)
+        {
+            if (this.options.enabled)
+            {
+                this.evalInputOrList(
+                    input, 
+                    item => evalSetValueName(item, name),
+                    new NullValue());
+            }
+            else
+                this.value = input;
+        }
+        else
+            this.value = new NullValue();
 
 
         this.updateValueObjects();
@@ -121,4 +129,13 @@ extends GOperator1
 
         if (this.name) this.name.resetLoop(parse, nodeId);
     }
+}
+
+
+
+function evalSetValueName(input, name)
+{
+    input.valueId = name.value;
+
+    return input;
 }

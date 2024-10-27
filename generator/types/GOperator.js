@@ -320,6 +320,24 @@ async function evalValue(_value, parse, nan = () => new NullValue())
 
 
 
+async function evalValueOrList(_value, parse) 
+{ 
+    let value = await evalValue(_value, parse);
+
+    if (   value
+        && value.type == LIST_VALUE)
+    {
+        const condensed = value.condensed;
+        
+        value = new ListValue(value.items);
+        value.condensed = condensed;
+    }
+    
+    return value;                
+}
+
+
+
 async function evalNumberValue(_value, parse) 
 { 
     let value = await evalValue(_value, parse, () => NumberValue.NaN()); 

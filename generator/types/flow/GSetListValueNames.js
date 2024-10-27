@@ -31,19 +31,26 @@ extends GOperator2
         const input1 = await evalListValue(this.input1, parse);
 
         
-        if (   this.options.enabled
-            && input0
+        if (   input0
             && input1
             && input0.items
             && input1.items)
         {
-            for (let i = 0; i < input0.items.length && i < input1.items.length; i++)
-                input0.items[i].valueId = input1.items[i].value;
+            if (this.options.enabled)
+            {
+                for (let i = 0; 
+                        i < input0.items.length 
+                     && i < input1.items.length; 
+                     i++)
+                    input0.items[i].valueId = input1.items[i].value;
+            }
 
             this.value = input0;
         }
+    
         else if (input0)
             this.value = input0;
+        
         else
             this.value = new ListValue();
 

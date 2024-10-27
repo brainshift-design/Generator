@@ -522,7 +522,7 @@ function initGeneratorMenus()
                               new MenuItem('Blend edges',   null,         false, {icon: iconBuckleList,     createType: BUCKLE_LIST,      callback: e => actionManager.do(getCreateNodeAction(BUCKLE_LIST,      btnData.div, getCreateOptions(e)))})]);
     
 
-    menuList = new Menu('List menu', false, false);
+    menuList = new Menu('List menu', true, false);
     menuList.addItems([
         new MenuItem('List as item', null, false, {icon: iconListAsItem, createType: LIST_AS_ITEM, callback: e => actionManager.do(getCreateNodeAction(LIST_AS_ITEM, btnData.div, getCreateOptions(e)))})]);
 

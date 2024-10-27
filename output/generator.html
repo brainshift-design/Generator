@@ -12348,6 +12348,24 @@ async function evalValue(_value, parse, nan = () => new NullValue())
 
 
 
+async function evalValueOrList(_value, parse) 
+{ 
+    let value = await evalValue(_value, parse);
+
+    if (   value
+        && value.type == LIST_VALUE)
+    {
+        const condensed = value.condensed;
+        
+        value = new ListValue(value.items);
+        value.condensed = condensed;
+    }
+    
+    return value;                
+}
+
+
+
 async function evalNumberValue(_value, parse) 
 { 
     let value = await evalValue(_value, parse, () => NumberValue.NaN()); 
@@ -17096,12 +17114,15 @@ extends GValue
 
     toString()
     {
+        const varValues = this.variableValues.map(v => encodeURIComponent(v.toString()));
+        const aliasIds  = this.aliasIds.map(id => id == NULL ? NULL_VALUE : id);
+
         return      (this.variableId   != NULL      ? this.variableId                       : NULL_VALUE)
             + ' ' + (this.variableName != ''        ? encodeURIComponent(this.variableName) : NULL_VALUE)
             + ' ' + (this.variableValues.length > 0 ? this.variableValues[0].type           : NULL_VALUE)
             + ' ' +  this.variableValues.length
-            + ' ' +  this.variableValues.map(v => encodeURIComponent(v.toString())).join(' ')
-            + ' ' +  this.aliasIds.join(' ')
+            + (varValues.length > 0 ? ' ' + varValues.join(' ') : '')
+            + (aliasIds .length > 0 ? ' ' + aliasIds .join(' ') : '')
             + ' ' + (this.variableTemp ? 'T' : 'E'); // T = temp, E = existing
     }
 
@@ -17120,16 +17141,15 @@ extends GValue
 
     toDisplayString()
     {
-        const aliasIds = this.aliasIds.filter(id => id != NULL_VALUE);
-
+        const varValues = this.variableValues.map(v => v.toDisplayString());
+        const aliasIds  = this.aliasIds.map(id => id == NULL ? NULL_VALUE : id);
+        
         return        (this.variableId   != NULL      ? this.variableId             : NULL_VALUE)
             + ' \'' + (this.variableName != ''        ? this.variableName           : NULL_VALUE) + '\''
             + ' '   + (this.variableValues.length > 0 ? this.variableValues[0].type : NULL_VALUE)
             + ' '   +  this.variableValues.length
-            + ' '   +  this.variableValues.map(v => v.toDisplayString()).join(' ')
-            + (aliasIds.length > 0 
-                 ? ' ' + aliasIds.join(' ')
-                 : '')
+            + (varValues.length > 0 ? ' ' + varValues.join(' ') : '')
+            + (aliasIds .length > 0 ? ' ' + aliasIds .join(' ') : '')
             + ' '   + (this.variableTemp ? 'T' : 'E'); // T = temp, E = existing
     }
 
@@ -22499,8 +22519,9 @@ extends GOperator1
         
        
         if (input)
+        {
             varValues = [input];
-
+        }
         else if (this.variableValues.length > 0
               && this.variableValues.every(v => isValid(v)))
         {
@@ -23291,16 +23312,24 @@ extends GOperator1
             return this;
 
 
-        const input = await evalValue    (this.input, parse);
-        const name  = await evalTextValue(this.name,  parse);
+        const input = await evalValueOrList(this.input, parse);
+        const name  = await evalTextValue  (this.name,  parse);
 
 
-        this.value = input ?? new NullValue();
-
-
-        if (   this.options.enabled
-            && this.value.isValid())
-            this.value.valueId = name.value;
+        if (input)
+        {
+            if (this.options.enabled)
+            {
+                this.evalInputOrList(
+                    input, 
+                    item => evalSetValueName(item, name),
+                    new NullValue());
+            }
+            else
+                this.value = input;
+        }
+        else
+            this.value = new NullValue();
 
 
         this.updateValueObjects();
@@ -23373,6 +23402,14 @@ extends GOperator1
     }
 }
 
+
+
+function evalSetValueName(input, name)
+{
+    input.valueId = name.value;
+
+    return input;
+}
 
 
 class GGetListValueNames
@@ -23506,19 +23543,26 @@ extends GOperator2
         const input1 = await evalListValue(this.input1, parse);
 
         
-        if (   this.options.enabled
-            && input0
+        if (   input0
             && input1
             && input0.items
             && input1.items)
         {
-            for (let i = 0; i < input0.items.length && i < input1.items.length; i++)
-                input0.items[i].valueId = input1.items[i].value;
+            if (this.options.enabled)
+            {
+                for (let i = 0; 
+                        i < input0.items.length 
+                     && i < input1.items.length; 
+                     i++)
+                    input0.items[i].valueId = input1.items[i].value;
+            }
 
             this.value = input0;
         }
+    
         else if (input0)
             this.value = input0;
+        
         else
             this.value = new ListValue();
 
@@ -37687,7 +37731,7 @@ extends GOperator1
                     new TextValue());
             }
             else
-                this.value = input.copy();
+                this.value = input;
         }
         else
             this.value = new TextValue();
@@ -55965,7 +56009,7 @@ function genParseVariable(parse)
         variable.aliasIds.push(parse.move());
 
 
-    variable.variableTemp = parseInt(parse.move()) > 0;
+    variable.variableTemp = parseBool(parse.move());
 
 
     if (parse.settings.logRequests) 
