@@ -295,8 +295,8 @@ function getNewNumberId(curId, countExisting, id = curId, join = '', startNum = 
 {
     if (   addZero
         && (    id.length == 0
-            || !isDigit(id.at(-1))))
-        //&& countExisting(id) > 1)
+            || !isDigit(id.at(-1)))
+        && countExisting(id) > 1)
         id += '0';
 
 
