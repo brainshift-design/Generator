@@ -3569,12 +3569,12 @@ async function figGetValue(key, spec)
 
 function figGetVariableUpdates(varIds)
 {
-    getVariableValuesAsync(varIds).then(values =>
+    getVariableValuesAsync(varIds).then(variables =>
     {
         figPostMessageToUi(
         {
-            cmd:   'uiReturnFigGetVariableUpdates',
-            values: values
+            cmd:      'uiReturnFigGetVariableUpdates',
+            variables: variables
         });
     });
 }
@@ -5497,8 +5497,8 @@ async function getVariableValuesAsync(varIds)
 {
     const localVars = await figma.variables.getLocalVariablesAsync();
 
-    const variables = varIds.map(id => localVars.find(v => v.id == id));
-    let   values    = [];
+    const variables      = varIds.map(id => localVars.find(v => v.id == id));
+    let   variableValues = [];
 
 
     for (let i = 0; i < varIds.length; i++)
@@ -5515,13 +5515,15 @@ async function getVariableValuesAsync(varIds)
         {
             const  varValues      = [];
             const  resolvedValues = [];
+            const  resolvedNames  = [];
             const  modes          = [];
 
 
             for (const mode of collection.modes)
             {
-                let _var  = variable;
-                let value = _var.valuesByMode[mode.modeId];
+                let _var         = variable;
+                let value        = _var.valuesByMode[mode.modeId];
+                let resolvedName = '';
                 
                 varValues.push(value);
 
@@ -5529,42 +5531,46 @@ async function getVariableValuesAsync(varIds)
                 while (value 
                     && value['type'] === 'VARIABLE_ALIAS')
                 {
-                    _var  = await figma.variables.getVariableByIdAsync(value.id);
-                    value = _var.valuesByMode[mode.modeId];
+                    _var         = await figma.variables.getVariableByIdAsync(value.id);
+                    value        = _var.valuesByMode[mode.modeId];
+                    resolvedName = _var.name;
                 }
 
 
                 resolvedValues.push(value);
+                resolvedNames .push(resolvedName);
                 modes         .push(mode.name);
             }
 
 
-            values.push(
+            variableValues.push(
             {
                 id:             varIds[i],
                 name:           collection.name + '/' + variable.name, 
                 resolvedType:   variable.resolvedType,
                 values:         varValues,
                 resolvedValues: resolvedValues,
-                resolvedModes:  modes
+                resolvedModes:  modes,
+                resolvedNames:  resolvedNames
             });
         }
         else
         {
-            values.push(
+            variableValues.push(
             {
                 id:             varIds[i], 
                 name:           '',
                 resolvedType:   NULL, 
                 values:         [],
                 resolvedValues: [],
-                resolvedModes:  []
+                resolvedModes:  [],
+                resolvedNames:  []
             });
         }
     }
 
 
-    return values;
+    return variableValues;
 }
 
 
@@ -5773,7 +5779,7 @@ function figMakeValue(value, resolvedType)
 {
     switch (resolvedType) 
     {
-        case 'NUMBER':  return Number (value);
+        case 'FLOAT':   return Number (value);
         case 'BOOLEAN': return Boolean(value);
         case 'STRING':  return String (value);
         case 'COLOR':   return { r: value.r, g: value.g, b: value.b, a: value.a };

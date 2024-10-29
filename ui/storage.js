@@ -457,7 +457,8 @@ async function loadNodesAndConnsAsync(_nodes, _conns, setProgress, pasting = fal
                             variable.name, 
                             variable.values,
                             variable.resolvedValues,
-                            variable.resolvedModes);
+                            variable.resolvedModes,
+                            variable.resolvedNames);
                     }
 
                     loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    

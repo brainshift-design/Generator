@@ -229,8 +229,23 @@ extends Control
             this.textbox.style.textAlign = 'left';
 
 
-             if (this.valueText != '')   this.textbox.value = this.valueText;
-        else if (this.value == NAN_CHAR) this.textbox.value = '';
+        if (this.overrideText != '')
+        {
+            this.divValue.innerHTML = this.overrideText;
+        }
+        else
+        {
+            // const valueText = this.getValueText();
+
+            this.divValue.innerHTML = '';
+                //   valueText 
+                // + (valueText == UNKNOWN_DISPLAY
+                //    ? ''
+                //    : formatParamSuffix(this.suffix, this.suffixOffsetY));
+
+                 if (this.valueText    != '') this.textbox.value = this.valueText;
+            else if (this.value == NAN_CHAR ) this.textbox.value = '';
+        }
 
 
         this.updateTextBehind();

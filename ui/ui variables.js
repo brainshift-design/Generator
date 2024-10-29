@@ -88,6 +88,7 @@ function uiReturnFigGetVariableUpdates(variables)
                     variable.values,
                     variable.resolvedValues,
                     variable.resolvedModes,
+                    variable.resolvedNames,
                     true);
             }
         }

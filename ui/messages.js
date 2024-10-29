@@ -50,7 +50,7 @@ onmessage = e =>
         case 'uiReturnFigGetLocalData':           uiReturnFigGetLocalData          (msg);               break;
         case 'uiReturnFigGetPageData':            uiReturnFigGetPageData           (msg);               break;
                                                    
-        case 'uiReturnFigGetVariableUpdates':     uiReturnFigGetVariableUpdates    (msg.values);        break;
+        case 'uiReturnFigGetVariableUpdates':     uiReturnFigGetVariableUpdates    (msg.variables);     break;
 
         case 'uiReturnFigResizeWindow':           uiReturnFigResizeWindow          (msg);               break;
                            

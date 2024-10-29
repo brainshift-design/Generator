@@ -459,12 +459,12 @@ async function figGetValue(key, spec)
 
 function figGetVariableUpdates(varIds)
 {
-    getVariableValuesAsync(varIds).then(values =>
+    getVariableValuesAsync(varIds).then(variables =>
     {
         figPostMessageToUi(
         {
-            cmd:   'uiReturnFigGetVariableUpdates',
-            values: values
+            cmd:      'uiReturnFigGetVariableUpdates',
+            variables: variables
         });
     });
 }

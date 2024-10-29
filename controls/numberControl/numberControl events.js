@@ -453,7 +453,8 @@ NumberControl.prototype.initEvents = function()
             return;            
         }
 
-        else if (this.buttonDown0_)
+        else if (this.buttonDown0_
+              && this.showValue)
         {
             this.clicked = true;
             this.showTextbox();

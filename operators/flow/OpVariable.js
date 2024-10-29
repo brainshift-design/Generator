@@ -403,7 +403,7 @@ extends ResizableBaseWithSeparator
 
 
 
-    updateValueParamValuesFromResolved(resolvedType, varName, values, resolvedValues, resolvedModes, update = false)
+    updateValueParamValuesFromResolved(resolvedType, varName, values, resolvedValues, resolvedModes, resolvedNames, update = false)
     {
         if (this.variableName != varName)
         {
@@ -438,13 +438,42 @@ extends ResizableBaseWithSeparator
             const varValue = getValueFromVariable(resolvedType, resolvedValue);
   
             
-            // if (   value.type
-            //     && value.type == 'VARIABLE_ALIAS')
-            // {
-                
-            // }
-            // else
-            // {
+            if (value.type == 'VARIABLE_ALIAS')
+            {
+                let icon;
+                let iconOffsetY;
+        
+                switch (resolvedType)
+                {
+                    case 'FLOAT':   icon = iconVarNumber;  iconOffsetY = 2; break;
+                    case 'BOOLEAN': icon = iconVarBoolean; iconOffsetY = 2; break;
+                    case 'STRING':  icon = iconVarText;    iconOffsetY = 2; break;
+                    case 'COLOR':   icon = iconVarColor;   iconOffsetY = 2; break;
+                }
+        
+                paramValue.controls[0].overrideText = `
+                    <div 
+                        style="
+                            background-color: ${darkMode ? '#ffffff18' : '#0002'}; 
+                            padding:          1px 3px;
+                            border-radius:    3px;">
+                        <div 
+                            style="
+                                display:  inline-block; 
+                                position: relative; 
+                                top:      ${iconOffsetY}px;">
+                                ${icon}
+                        </div> 
+                        ${resolvedNames[i]}
+                    </div>
+                `;
+                //paramValue.enable                   = false;
+            }
+            else
+            {
+                paramValue.controls[0].overrideText = NULL;
+                //paramValue.enable                   = true;
+
                 if (  !(   paramValue.value.type  == NUMBER_VALUE
                         && paramValue.value.value == varValue.value
                         && varValue.type == NUMBER_VALUE
@@ -455,7 +484,7 @@ extends ResizableBaseWithSeparator
 
                     paramValue.setValue(varValue, update, true, update);
                 }
-            // }
+            }
 
 
             if (paramValue.name != resolvedMode)
@@ -597,8 +626,9 @@ extends ResizableBaseWithSeparator
         for (const paramValue of this.paramValues)
         {
             paramValue.enableControlText(
-                    this.headerInputs.length == 0
-                || !this.headerInputs[0].connected, 
+                   (    this.headerInputs.length == 0
+                    || !this.headerInputs[0].connected),
+                //&& paramValue.enable, 
                 paramValue.isUnknown());
 
             if (this.isBool)

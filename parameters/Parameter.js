@@ -28,6 +28,8 @@ extends EventTarget
 
  // proxy           = null;
 
+    enabled         = true;
+
 
     backStyleLight  = 'rgba(255, 255, 255, 0.95)';
     valueStyleLight = '#7772';
