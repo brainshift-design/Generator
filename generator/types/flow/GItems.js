@@ -104,8 +104,6 @@ extends GOperator1
                     1,
                     true);
 
-                console.log('valueId =', valueId);
-
                 valueIds.push(valueId);
             }
 

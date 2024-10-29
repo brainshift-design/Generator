@@ -478,7 +478,7 @@ async function figGetResolvedVariableValuesAsync(variable)
     }
 
 
-    return [variable, values];
+    return [_var, values];
 }
 
 

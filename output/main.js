@@ -903,7 +903,7 @@ const BOOL_UNION = 'SBOOLU';
 const BOOL_SUBTRACT = 'SBOOLS';
 const BOOL_INTERSECT = 'SBOOLI';
 const BOOL_EXCLUDE = 'SBOOLE';
-const PERSIST = 'PERSIST';
+const RETAIN = 'RETAIN';
 const EXPORT = 'EXPORT';
 const GROUP_NODE = 'GROUP';
 const GROUP_PARAM = 'GPARAM';
@@ -959,7 +959,7 @@ const FLOW_TYPES = [
     COLOR_SCHEME,
     COLOR_DIFFERENCE,
     COLOR_TO_TEXT,
-    PERSIST
+    RETAIN
 ];
 const MATH_TYPES = [
     NUMBER_MATH,
@@ -1789,7 +1789,7 @@ function figDeleteAllObjects(forceDelete = false) {
             continue;
         if (figObj.getPluginData('objectId') != ''
             && figObj.getPluginData('userId') == figma.currentUser.id
-            && (parseInt(figObj.getPluginData('persist')) == 0
+            && (parseInt(figObj.getPluginData('retain')) == 0
                 || forceDelete))
             figObj.remove();
     }
@@ -1812,7 +1812,7 @@ function figDeleteObjectsExcept(nodeIds, genIgnoreObjects) {
                     removeFromArray(figEmptyObjects, figObj);
             }
             if (!figObj.removed) {
-                if (parseInt(figObj.getPluginData('persist')) == 2)
+                if (parseInt(figObj.getPluginData('retain')) == 2)
                     clearObjectData(figObj);
             }
         }
@@ -1834,7 +1834,7 @@ function findObject(figObj, genIgnoreObjects) {
             && figObj.getPluginData('userId') == figma.currentUser.id
             //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
             || o[FO_PERSIST] == 2
-                && o[FO_PERSIST] == figObj.getPluginData('persist'));
+                && o[FO_PERSIST] == figObj.getPluginData('retain'));
         if (found)
             return found;
     }
@@ -2986,7 +2986,7 @@ function figCreateObject(genObj_1) {
                 || !!figObj, 'no Figma object created');
             if (figObj != undefined
                 && figObj != null) {
-                figObj.setPluginData('persist', genObj[FO_PERSIST].toString());
+                figObj.setPluginData('retain', genObj[FO_PERSIST].toString());
                 if (genObj[FO_PERSIST] < 2) {
                     figObj.setPluginData('userId', figma.currentUser.id);
                     figObj.setPluginData('sessionId', figma.currentUser.sessionId.toString());
@@ -3017,7 +3017,7 @@ function figUpdateObjectAsync(figObj, genObj, addProps, transform) {
             || figObj.removed)
             return;
         figObj.name = makeObjectName(genObj);
-        figObj.setPluginData('persist', genObj[FO_PERSIST].toString());
+        figObj.setPluginData('retain', genObj[FO_PERSIST].toString());
         switch (genObj[FO_TYPE]) {
             case RECTANGLE:
                 figUpdateRect(figObj, genObj, addProps, transform);
@@ -3116,7 +3116,7 @@ function clearObjectData(figObj) {
     figObj.setPluginData('sessionId', '');
     figObj.setPluginData('objectId', '');
     figObj.setPluginData('isCenter', '');
-    figObj.setPluginData('persist', '');
+    figObj.setPluginData('retain', '');
 }
 function figGetObjectBounds(objects) {
     const bounds = {
@@ -3920,7 +3920,7 @@ function figGetResolvedVariableValuesAsync(variable) {
             }
             values.push(value);
         }
-        return [variable, values];
+        return [_var, values];
     });
 }
 function figGetVariableAliasIdsAsync(variable) {

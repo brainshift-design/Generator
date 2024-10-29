@@ -4171,8 +4171,8 @@ function getNewNumberId(curId, countExisting, id = curId, join = '', startNum = 
         const len = id.length - numLength;
         let   num = parseInt(id.substring(len));
 
-        let newId = '';
-        while (newId == '' || countExisting(newId) > 0)
+        let newId = NULL;
+        while (newId == NULL || countExisting(newId) > 0)
             newId = id.substring(0, len + join.length) + join + (++num);
 
         return newId;
@@ -6843,7 +6843,7 @@ function enableFeatures(pro)
     enableMenuItem(menuItemCorrectColor,       true, pro);
     enableMenuItem(menuItemColorblind,         true, pro);
     enableMenuItem(menuItemColorDifference,    true, pro);
-    enableMenuItem(menuItemPersist,            true, pro);
+    enableMenuItem(menuItemRetain,            true, pro);
     enableMenuItem(menuItemVectorNetwork,      true, pro, true);
     enableMenuItem(menuItemVectorVertex,       true, pro, true);
     enableMenuItem(menuItemVectorEdge,         true, pro, true);
@@ -7349,7 +7349,7 @@ const BOOL_INTERSECT          = 'SBOOLI';
 const BOOL_EXCLUDE            = 'SBOOLE';
 
 
-const PERSIST                 = 'PERSIST';
+const RETAIN                  = 'RETAIN';
 const EXPORT                  = 'EXPORT';
 
 
@@ -7420,7 +7420,7 @@ const FLOW_TYPES =
     COLOR_SCHEME,
     COLOR_DIFFERENCE,
     COLOR_TO_TEXT,
-    PERSIST
+    RETAIN
 ];
 
 
@@ -8079,7 +8079,7 @@ class FigmaObject
 
     itemIndex  = -1; // for linking objects to list items
 
-    persist    = 0;
+    retain    = 0;
     feedback   = false;
 
 
@@ -8120,7 +8120,7 @@ class FigmaObject
         this.itemIndex    = base.itemIndex;
         
         this.feedback     = base.feedback;
-        this.persist      = base.persist;
+        this.retain      = base.retain;
 
         this.showCenter   = base.showCenter;
 
@@ -8402,7 +8402,7 @@ class FigmaObject
         /* 3 */ this.objectName,
             
         /* 4 */ this.feedback,
-        /* 5 */ this.persist,
+        /* 5 */ this.retain,
         
         /* 6 */ this.xp0 ? this.xp0 : null,
         /* 7 */ this.xp1 ? this.xp1 : null,
@@ -26343,8 +26343,6 @@ extends GOperator1
                     '',
                     1,
                     true);
-
-                console.log('valueId =', valueId);
 
                 valueIds.push(valueId);
             }
@@ -49665,12 +49663,12 @@ extends GShape
 
 
 
-class GPersist
+class GRetain
 extends GShapeBase
 {
     inputs  = [];
 
-    persist = null;
+    retain = null;
 
     finalize;
 
@@ -49678,7 +49676,7 @@ extends GShapeBase
 
     constructor(nodeId, options)
     {
-        super(PERSIST, nodeId, options);
+        super(RETAIN, nodeId, options);
     }
 
 
@@ -49688,14 +49686,14 @@ extends GShapeBase
         super.reset();
 
         this.inputs  = [];
-        this.persist = null;
+        this.retain = null;
     }
 
 
 
     copy()
     {
-        const copy = new GPersist(this.nodeId, this.options);
+        const copy = new GRetain(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -49711,7 +49709,7 @@ extends GShapeBase
         if (this.isCached())
             return this;
 
-        const persist  = await evalNumberValue(this.persist, parse);
+        const retain  = await evalNumberValue(this.retain, parse);
         const finalize = this.finalize.value > 0;
 
 
@@ -49729,7 +49727,7 @@ extends GShapeBase
             
             if (   this.options.enabled
                 && (   finalize
-                    || persist.value == 1))
+                    || retain.value == 1))
             {
                 for (let j = 0; j < objects.length; j++, o++)
                 {
@@ -49744,7 +49742,7 @@ extends GShapeBase
                     if (  (   !isEmpty(obj.fills  )
                            || !isEmpty(obj.strokes))
                         && !obj.isDeco)
-                            obj.persist = finalize ? 2 : 1;
+                            obj.retain = finalize ? 2 : 1;
                             
                     this.value.objects.push(obj);
                 }
@@ -49775,7 +49773,7 @@ extends GShapeBase
     {
         return super.isValid()
             && !this.inputs.find(i => !i.isValid())
-            && this.persist && this.persist.isValid();
+            && this.retain && this.retain.isValid();
     }
 
 
@@ -49786,7 +49784,7 @@ extends GShapeBase
 
         this.inputs.forEach(i => i.pushValueUpdates(parse));
 
-        if (this.persist) this.persist.pushValueUpdates(parse);
+        if (this.retain) this.retain.pushValueUpdates(parse);
     }
 
 
@@ -49797,7 +49795,7 @@ extends GShapeBase
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
 
-        if (this.persist) this.persist.invalidateInputs(parse, from, force);
+        if (this.retain) this.retain.invalidateInputs(parse, from, force);
     }
 
 
@@ -49808,7 +49806,7 @@ extends GShapeBase
 
         this.inputs.forEach(i => i.iterateLoop(parse));
 
-        if (this.persist) this.persist.iterateLoop(parse);
+        if (this.retain) this.retain.iterateLoop(parse);
     }
 }
 
@@ -62957,12 +62955,12 @@ function genParseShapeApply(parse)
 
 
 
-function genParsePersist(parse)
+function genParseRetain(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const persist = new GPersist(nodeId, options);
+    const retain = new GRetain(nodeId, options);
 
 
     let nInputs = 0;
@@ -62972,12 +62970,12 @@ function genParsePersist(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(persist, parse, ignore, nInputs);
+        logReq(retain, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, persist);
+        genParseNodeEnd(parse, retain);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -62986,17 +62984,17 @@ function genParsePersist(parse)
 
 
     for (let i = 0; i < nInputs; i++)
-        persist.inputs.push(genParse(parse));
+        retain.inputs.push(genParse(parse));
 
-    persist.persist  = genParse(parse);
-    persist.finalize = genParse(parse);
+    retain.retain  = genParse(parse);
+    retain.finalize = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, persist);
-    return persist;
+    genParseNodeEnd(parse, retain);
+    return retain;
 }
 
 
@@ -64828,7 +64826,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == PLACE                  ) result = genParsePlace             (parse);
     else if (parse.next == SHAPE_APPLY            ) result = genParseShapeApply        (parse);
     
-    else if (parse.next == PERSIST                ) result = genParsePersist           (parse);
+    else if (parse.next == RETAIN                ) result = genParseRetain           (parse);
     else if (parse.next == EXPORT                 ) result = genParseExport            (parse);
  
     else if (parse.next == GROUP_NODE             ) result = genParseGroupNode         (parse);

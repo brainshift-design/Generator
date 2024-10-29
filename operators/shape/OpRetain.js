@@ -1,4 +1,4 @@
-class OpPersist
+class OpRetain
 extends OpShapeBase
 {
     btnFinal;
@@ -6,15 +6,15 @@ extends OpShapeBase
     finalize = false;
     
 
-    paramPersist;
+    paramRetain;
 
-    menuPersist;
+    menuRetain;
 
 
 
     constructor()
     {
-        super(PERSIST, 'persist', 'persist', '');
+        super(RETAIN, 'retain', 'retain', '');
 
 
         this.outputValueType = ANY_VALUE;
@@ -27,18 +27,18 @@ extends OpShapeBase
         this.addNewInput();
 
 
-        this.addParam(this.paramPersist = new NumberParam('persist', 'persist', false, true, true, 1, 0, 1));
+        this.addParam(this.paramRetain = new NumberParam('retain', 'retain', false, true, true, 1, 0, 1));
 
-        this.paramPersist.divider = 0.62;
-        this.paramPersist.controls[0].allowEditDecimals = false;
+        this.paramRetain.divider = 0.62;
+        this.paramRetain.controls[0].allowEditDecimals = false;
 
-        this.menuPersist = createBoolMenu(this.paramPersist);
+        this.menuRetain = createBoolMenu(this.paramRetain);
 
 
         this.addBaseParamsAfter();
 
 
-        this.btnFinal      = createDiv('btnPersistFinal');
+        this.btnFinal      = createDiv('btnRetainFinal');
         this.btnFinal.over = false;
         this.btnFinal.down = false;
 
@@ -123,7 +123,7 @@ extends OpShapeBase
         for (const input of connectedInputs)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.paramPersist.genRequest(gen));
+        request.push(...this.paramRetain.genRequest(gen));
 
         
         request.push(
@@ -152,9 +152,9 @@ extends OpShapeBase
 
     updateParams()
     {
-        this.paramPersist.enableControlText(true);
+        this.paramRetain.enableControlText(true);
 
-        updateParamConditionText(this.paramPersist, this.paramPersist.isUnknown(), true, 1);
+        updateParamConditionText(this.paramRetain, this.paramRetain.isUnknown(), true, 1);
 
         this.updateParamControls();
     }
@@ -184,8 +184,8 @@ extends OpShapeBase
         this.btnFinal.style.top                = '-1px';
         this.btnFinal.style.display            = 'inline-block';
         this.btnFinal.style.background         =  this.btnFinal.down
-                                                  ? 'url(\'data:image/svg+xml;utf8,' + iconPersist    .replaceAll('white', headerStyle) + '\')'
-                                                  : 'url(\'data:image/svg+xml;utf8,' + iconPersistDown.replaceAll('white', headerStyle) + '\')';
+                                                  ? 'url(\'data:image/svg+xml;utf8,' + iconRetain    .replaceAll('white', headerStyle) + '\')'
+                                                  : 'url(\'data:image/svg+xml;utf8,' + iconRetainDown.replaceAll('white', headerStyle) + '\')';
 
         this.btnFinal.style.backgroundPosition = '50% 50%';
         this.btnFinal.style.backgroundRepeat   = 'no-repeat';

@@ -365,7 +365,7 @@ const BOOL_INTERSECT          = 'SBOOLI';
 const BOOL_EXCLUDE            = 'SBOOLE';
 
 
-const PERSIST                 = 'PERSIST';
+const RETAIN                  = 'RETAIN';
 const EXPORT                  = 'EXPORT';
 
 
@@ -436,7 +436,7 @@ const FLOW_TYPES =
     COLOR_SCHEME,
     COLOR_DIFFERENCE,
     COLOR_TO_TEXT,
-    PERSIST
+    RETAIN
 ];
 
 

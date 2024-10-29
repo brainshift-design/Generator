@@ -311,8 +311,8 @@ function getNewNumberId(curId, countExisting, id = curId, join = '', startNum = 
         const len = id.length - numLength;
         let   num = parseInt(id.substring(len));
 
-        let newId = '';
-        while (newId == '' || countExisting(newId) > 0)
+        let newId = NULL;
+        while (newId == NULL || countExisting(newId) > 0)
             newId = id.substring(0, len + join.length) + join + (++num);
 
         return newId;

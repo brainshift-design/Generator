@@ -279,7 +279,7 @@ var menuItemBooleanSep;
 var menuItemBooleanShape;
 var menuItemShapeSep1;
 var menuItemShapeSelected;
-var menuItemPersist;
+var menuItemRetain;
 var menuItemShapeExport;
 
 
@@ -495,7 +495,7 @@ function initGeneratorMenus()
                              new MenuItem('',                  null,       false, {separator: true}),
         menuItemCache      = new MenuItem('Cache. . .',        'Cache',    false, {icon: iconCache,         createType: CACHE,          callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
         menuItemFreeze     = new MenuItem('Freeze',            null,       false, {icon: iconFreeze,        createType: FREEZE,         callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
-        menuItemPersist    = new MenuItem('Persist',           null,       false, {icon: iconPersist,   createType: PERSIST,        callback: e => actionManager.do(getCreateNodeAction(PERSIST,         btnFlow.div, getCreateOptions(e)))}),
+        menuItemRetain    = new MenuItem('Retain',            null,       false, {icon: iconRetain,   createType: RETAIN,        callback: e => actionManager.do(getCreateNodeAction(RETAIN,         btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null,       false, {separator: true}),
                              new MenuItem('Variable',          null,       false, {icon: iconVariable,      createType: VARIABLE,       callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null,       false, {separator: true}),

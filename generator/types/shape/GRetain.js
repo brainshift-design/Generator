@@ -1,9 +1,9 @@
-class GPersist
+class GRetain
 extends GShapeBase
 {
     inputs  = [];
 
-    persist = null;
+    retain = null;
 
     finalize;
 
@@ -11,7 +11,7 @@ extends GShapeBase
 
     constructor(nodeId, options)
     {
-        super(PERSIST, nodeId, options);
+        super(RETAIN, nodeId, options);
     }
 
 
@@ -21,14 +21,14 @@ extends GShapeBase
         super.reset();
 
         this.inputs  = [];
-        this.persist = null;
+        this.retain = null;
     }
 
 
 
     copy()
     {
-        const copy = new GPersist(this.nodeId, this.options);
+        const copy = new GRetain(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -44,7 +44,7 @@ extends GShapeBase
         if (this.isCached())
             return this;
 
-        const persist  = await evalNumberValue(this.persist, parse);
+        const retain  = await evalNumberValue(this.retain, parse);
         const finalize = this.finalize.value > 0;
 
 
@@ -62,7 +62,7 @@ extends GShapeBase
             
             if (   this.options.enabled
                 && (   finalize
-                    || persist.value == 1))
+                    || retain.value == 1))
             {
                 for (let j = 0; j < objects.length; j++, o++)
                 {
@@ -77,7 +77,7 @@ extends GShapeBase
                     if (  (   !isEmpty(obj.fills  )
                            || !isEmpty(obj.strokes))
                         && !obj.isDeco)
-                            obj.persist = finalize ? 2 : 1;
+                            obj.retain = finalize ? 2 : 1;
                             
                     this.value.objects.push(obj);
                 }
@@ -108,7 +108,7 @@ extends GShapeBase
     {
         return super.isValid()
             && !this.inputs.find(i => !i.isValid())
-            && this.persist && this.persist.isValid();
+            && this.retain && this.retain.isValid();
     }
 
 
@@ -119,7 +119,7 @@ extends GShapeBase
 
         this.inputs.forEach(i => i.pushValueUpdates(parse));
 
-        if (this.persist) this.persist.pushValueUpdates(parse);
+        if (this.retain) this.retain.pushValueUpdates(parse);
     }
 
 
@@ -130,7 +130,7 @@ extends GShapeBase
 
         this.inputs.forEach(i => i.invalidateInputs(parse, from, force));
 
-        if (this.persist) this.persist.invalidateInputs(parse, from, force);
+        if (this.retain) this.retain.invalidateInputs(parse, from, force);
     }
 
 
@@ -141,6 +141,6 @@ extends GShapeBase
 
         this.inputs.forEach(i => i.iterateLoop(parse));
 
-        if (this.persist) this.persist.iterateLoop(parse);
+        if (this.retain) this.retain.iterateLoop(parse);
     }
 }

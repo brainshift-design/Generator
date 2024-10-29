@@ -12,7 +12,7 @@ extends OperatorBase
     {
         super(TEXT_ADD, 'addText', 'add text', iconAddText);
 
-        this.iconOffsetY      = -1;
+        this.iconOffsetY      = 0;
         this.alwaysLoadParams = true;
         this.canDisable       = true;
         

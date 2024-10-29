@@ -1485,7 +1485,7 @@ const BOOL_INTERSECT          = 'SBOOLI';
 const BOOL_EXCLUDE            = 'SBOOLE';
 
 
-const PERSIST                 = 'PERSIST';
+const RETAIN                  = 'RETAIN';
 const EXPORT                  = 'EXPORT';
 
 
@@ -1556,7 +1556,7 @@ const FLOW_TYPES =
     COLOR_SCHEME,
     COLOR_DIFFERENCE,
     COLOR_TO_TEXT,
-    PERSIST
+    RETAIN
 ];
 
 
@@ -2716,7 +2716,7 @@ function figDeleteAllObjects(forceDelete = false)
 
         if (    figObj.getPluginData('objectId') != ''
             &&  figObj.getPluginData('userId'  ) == figma.currentUser.id
-            && (   parseInt(figObj.getPluginData('persist')) == 0
+            && (   parseInt(figObj.getPluginData('retain')) == 0
                 || forceDelete)) 
             figObj.remove();
     }
@@ -2756,7 +2756,7 @@ function figDeleteObjectsExcept(nodeIds, genIgnoreObjects)
             
             if (  !figObj.removed)
             {
-                if (parseInt(figObj.getPluginData('persist')) == 2)
+                if (parseInt(figObj.getPluginData('retain')) == 2)
                     clearObjectData(figObj);
             }
         }
@@ -2788,7 +2788,7 @@ function findObject(figObj, genIgnoreObjects)
                && figObj.getPluginData('userId'   ) == figma.currentUser.id
                //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
             ||    o[FO_PERSIST] == 2
-               && o[FO_PERSIST] == figObj.getPluginData('persist'));
+               && o[FO_PERSIST] == figObj.getPluginData('retain'));
 
         if (found) 
             return found;
@@ -4435,7 +4435,7 @@ async function figCreateObject(genObj, addObject = null, addProps = true, transf
         if (   figObj != undefined
             && figObj != null)
         {
-            figObj.setPluginData('persist', genObj[FO_PERSIST].toString());
+            figObj.setPluginData('retain', genObj[FO_PERSIST].toString());
 
             if (genObj[FO_PERSIST] < 2)
             {
@@ -4481,7 +4481,7 @@ async function figUpdateObjectAsync(figObj, genObj, addProps, transform)
         
     figObj.name = makeObjectName(genObj);
     
-    figObj.setPluginData('persist', genObj[FO_PERSIST].toString());
+    figObj.setPluginData('retain', genObj[FO_PERSIST].toString());
 
 
     switch (genObj[FO_TYPE])
@@ -4583,7 +4583,7 @@ function clearObjectData(figObj)
     figObj.setPluginData('sessionId', '');
     figObj.setPluginData('objectId',  '');
     figObj.setPluginData('isCenter',  '');
-    figObj.setPluginData('persist',   '');
+    figObj.setPluginData('retain',   '');
 }
 
 
@@ -5834,7 +5834,7 @@ async function figGetResolvedVariableValuesAsync(variable)
     }
 
 
-    return [variable, values];
+    return [_var, values];
 }
 
 

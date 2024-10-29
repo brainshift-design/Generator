@@ -505,8 +505,8 @@ iconCircleCenter
 iconIntersectLines
 iconInterpolatePoint
 iconPointOnPath
-iconPersist
-iconPersistDown
+iconRetain
+iconRetainDown
 iconGroup
 iconGroupNode
 iconGroupParam
@@ -723,7 +723,7 @@ menuItemLayerBackBlur
 menuItemStyleSep2
 menuItemShapeSep1
 menuItemShapeSelected
-menuItemPersist
+menuItemRetain
 menuItemDebugMode
 menuItemLogThreadMessages
 menuItemLogDataMessages
@@ -1300,7 +1300,7 @@ BOOL_SUBTRACT
 BOOL_INTERSECT
 BOOL_EXCLUDE
 BOOLEAN_TYPES
-PERSIST
+RETAIN
 SHAPE_VALUES
 AFFINE_TYPES
 SHAPE_TYPES
@@ -1410,7 +1410,7 @@ FO_OBJECT_NAME
 FO_STYLE_NAME
 FO_FEEDBACK
 FO_STYLE_PAINTS
-FO_PERSIST
+FO_RETAIN
 FO_XP0
 FO_XP1
 FO_XP2
@@ -1772,7 +1772,7 @@ genParseInterpolatePoint
 genParsePointOnPath
 genParsePlace
 genParseShapeApply
-genParsePersist
+genParseRetain
 genParseColorStyle
 genParseTextValue
 genParseText
@@ -1980,7 +1980,7 @@ GPointAlongPath
 GClosestPointOnPath
 GPolygon
 GRectangle
-GPersist
+GRetain
 GResetTransform
 GRotate
 GScale
@@ -2283,7 +2283,7 @@ OpPointAlongPath
 OpClosestPointOnPath
 OpPolygon
 OpRectangle
-OpPersist
+OpRetain
 OpResetTransform
 OpRotate
 OpRow
@@ -3336,7 +3336,7 @@ paramMeasure
 getItemCount
 nObjects
 btnFinal
-paramPersist
+paramRetain
 updateFinalIcon
 groupParam
 groupInput

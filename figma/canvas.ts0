@@ -55,7 +55,7 @@ function figDeleteAllObjects(forceDelete = false)
 
         if (    figObj.getPluginData('objectId') != ''
             &&  figObj.getPluginData('userId'  ) == figma.currentUser.id
-            && (   parseInt(figObj.getPluginData('persist')) == 0
+            && (   parseInt(figObj.getPluginData('retain')) == 0
                 || forceDelete)) 
             figObj.remove();
     }
@@ -95,7 +95,7 @@ function figDeleteObjectsExcept(nodeIds, genIgnoreObjects)
             
             if (  !figObj.removed)
             {
-                if (parseInt(figObj.getPluginData('persist')) == 2)
+                if (parseInt(figObj.getPluginData('retain')) == 2)
                     clearObjectData(figObj);
             }
         }
@@ -127,7 +127,7 @@ function findObject(figObj, genIgnoreObjects)
                && figObj.getPluginData('userId'   ) == figma.currentUser.id
                //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()
             ||    o[FO_PERSIST] == 2
-               && o[FO_PERSIST] == figObj.getPluginData('persist'));
+               && o[FO_PERSIST] == figObj.getPluginData('retain'));
 
         if (found) 
             return found;

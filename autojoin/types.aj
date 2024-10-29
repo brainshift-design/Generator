@@ -267,7 +267,7 @@
 ../generator/types/shape/boolean/GShapeIntersect.js
 ../generator/types/shape/boolean/GShapeExclude.js
 
-../generator/types/shape/GPersist.js
+../generator/types/shape/GRetain.js
 ../generator/types/shape/GExport.js
 
 

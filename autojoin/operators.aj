@@ -268,7 +268,7 @@
 
 ../operators/shape/OpPlace.js
 
-../operators/shape/OpPersist.js
+../operators/shape/OpRetain.js
 ../operators/shape/OpExport.js
 
 

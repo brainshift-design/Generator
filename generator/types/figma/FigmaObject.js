@@ -10,7 +10,7 @@ class FigmaObject
 
     itemIndex  = -1; // for linking objects to list items
 
-    persist    = 0;
+    retain    = 0;
     feedback   = false;
 
 
@@ -51,7 +51,7 @@ class FigmaObject
         this.itemIndex    = base.itemIndex;
         
         this.feedback     = base.feedback;
-        this.persist      = base.persist;
+        this.retain      = base.retain;
 
         this.showCenter   = base.showCenter;
 
@@ -333,7 +333,7 @@ class FigmaObject
         /* 3 */ this.objectName,
             
         /* 4 */ this.feedback,
-        /* 5 */ this.persist,
+        /* 5 */ this.retain,
         
         /* 6 */ this.xp0 ? this.xp0 : null,
         /* 7 */ this.xp1 ? this.xp1 : null,

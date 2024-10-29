@@ -1,4 +1,4 @@
-const presetPersist = '\
+const presetRetain = '\
     {\
         "nodes":\
         [\
@@ -455,9 +455,9 @@ const presetPersist = '\
             ]\
         },\
         {\
-            "type": "PERSIST",\
-            "id": "persist",\
-            "name": "persist",\
+            "type": "RETAIN",\
+            "id": "retain",\
+            "name": "retain",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
@@ -469,7 +469,7 @@ const presetPersist = '\
         {\
             "type": "CMNT",\
             "id": "comment3",\
-            "name": "The%20Persist%20node%20makes%20things%20move%20flexible.",\
+            "name": "The%20Retain%20node%20makes%20things%20move%20flexible.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
@@ -496,7 +496,7 @@ const presetPersist = '\
         {\
             "type": "CMNT",\
             "id": "comment9",\
-            "name": "In%20this%20case%20Persist%20is%20used%20to%20leave%20a%20time%20stamp",\
+            "name": "In%20this%20case%20Retain%20is%20used%20to%20leave%20a%20time%20stamp",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
@@ -506,9 +506,9 @@ const presetPersist = '\
             "active": "true"\
         },\
         {\
-            "type": "PERSIST",\
-            "id": "persist2",\
-            "name": "persist",\
+            "type": "RETAIN",\
+            "id": "retain2",\
+            "name": "retain",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
@@ -744,7 +744,7 @@ const presetPersist = '\
             "outputNodeId": "repeat2",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "persist",\
+            "inputNodeId": "retain",\
             "inputId": "h0",\
             "list": "true"\
         },\
@@ -768,7 +768,7 @@ const presetPersist = '\
             "outputNodeId": "text2",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "persist2",\
+            "inputNodeId": "retain2",\
             "inputId": "h0",\
             "list": "false"\
         }\

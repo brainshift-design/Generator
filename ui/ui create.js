@@ -213,7 +213,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
 
         case PLACE:                   node = new OpPlace();              break;
  
-        case PERSIST:                 node = new OpPersist();            break;
+        case RETAIN:                 node = new OpRetain();            break;
         case EXPORT:                  node = new OpExport();             break;
  
         case GROUP_NODE:              node = new OpGroupNode();          break;

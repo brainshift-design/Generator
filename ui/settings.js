@@ -427,7 +427,7 @@ function enableFeatures(pro)
     enableMenuItem(menuItemCorrectColor,       true, pro);
     enableMenuItem(menuItemColorblind,         true, pro);
     enableMenuItem(menuItemColorDifference,    true, pro);
-    enableMenuItem(menuItemPersist,            true, pro);
+    enableMenuItem(menuItemRetain,            true, pro);
     enableMenuItem(menuItemVectorNetwork,      true, pro, true);
     enableMenuItem(menuItemVectorVertex,       true, pro, true);
     enableMenuItem(menuItemVectorEdge,         true, pro, true);
