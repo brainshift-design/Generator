@@ -462,14 +462,15 @@ extends ResizableBaseWithSeparator
                 let icon;
                 let iconOffsetY;
                 let topPadding;
+                let topMargin;
                 let sideMargin;
         
                 switch (resolvedType)
                 {
-                    case 'FLOAT':   icon = iconVarNumber;  iconOffsetY = 2; topPadding = 0; sideMargin = 1; break;
-                    case 'BOOLEAN': icon = iconVarBoolean; iconOffsetY = 2; topPadding = 1; sideMargin = 0; break;
-                    case 'STRING':  icon = iconVarText;    iconOffsetY = 2; topPadding = 0; sideMargin = 1; break;
-                    case 'COLOR':   icon = iconVarColor;   iconOffsetY = 2; topPadding = 0; sideMargin = 1; break;
+                    case 'FLOAT':   icon = iconVarNumber;  iconOffsetY = 2; topPadding = 0; topMargin = 0; sideMargin = 1; break;
+                    case 'BOOLEAN': icon = iconVarBoolean; iconOffsetY = 2; topPadding = 1; topMargin = 0; sideMargin = 0; break;
+                    case 'STRING':  icon = iconVarText;    iconOffsetY = 2; topPadding = 0; topMargin = 3; sideMargin = 1; break;
+                    case 'COLOR':   icon = iconVarColor;   iconOffsetY = 2; topPadding = 0; topMargin = 0; sideMargin = 1; break;
                 }
         
                 paramValue.controls[0].overrideText = `
@@ -477,14 +478,16 @@ extends ResizableBaseWithSeparator
                         style="
                             box-shadow:    0 0 0 1px inset ${darkMode ? '#ffffff2b' : '#00000028'}; 
                             padding:       ${topPadding}px 4px 1px 4px;
-                            border-radius: 4px;">
+                            margin:        ${topMargin}px 0 0 0;
+                            border-radius: 4px;
+                            width:         fit-content;">
                         <div 
                             style="
                                 display:  inline-block; 
                                 position: relative; 
                                 opacity:  0.65;
                                 top:      ${iconOffsetY}px;
-                                margin:   0 ${sideMargin}px; 0 0">
+                                margin:   0 ${sideMargin}px 0 0">
                                 ${icon.replaceAll('white', 'var(--figma-color-text)')}
                         </div> 
                         ${resolvedAliasNames[i]}

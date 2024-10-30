@@ -6,6 +6,7 @@ extends Control
 
     textBehind;
     textbox;
+    divAlias;
     placeholder;
 
     highlightText         = true;
@@ -37,11 +38,15 @@ extends Control
     constructor(param, id, name, defaultValue = '', font = {})
     {
         const divTextValue = createDiv     ('textControlValue'    );
+        const divAlias     = createDiv     ('textControlAlias'    );
         const textBehind   = createDiv     ('textControlHighlight');
         const textbox      = createTextarea('textControlTextarea' );
 
 
         super(divTextValue, param, id, name);
+
+
+        this.divAlias = divAlias;
 
 
         this.value = defaultValue;
@@ -59,16 +64,17 @@ extends Control
         }
 
         
-        divTextValue.appendChild(textBehind);
-        divTextValue.appendChild(textbox);
-
-        this.div.appendChild(divTextValue);
-        
-
         this.initTextarea(textbox, textBehind);
         this.initEvents();
 
         
+        divTextValue.appendChild(textBehind);
+        divTextValue.appendChild(textbox);
+        divTextValue.appendChild(divAlias);
+
+        this.div.appendChild(divTextValue);
+        
+
         createTooltipSrc(this.div, this.div, () => 
                 settings.showTooltipLongText
             &&  scrollbarVisible(this.textbox)
@@ -77,7 +83,7 @@ extends Control
             : null);
 
 
-        this.div.style.position  = 'relative';
+        //this.div.style.position  = 'relative';
         // this.div.style.boxShadow = '0 0 0 2px orange inset';
     }    
 
@@ -231,23 +237,19 @@ extends Control
 
         if (this.overrideText != NULL)
         {
-            this.divValue.innerHTML = this.overrideText;
-
+            this.divAlias.innerHTML = this.overrideText;
+            
             this.textbox   .style.display = 'none';
             this.textBehind.style.display = 'none';
+            this.divAlias  .style.display = 'inline-block';
         }
         else
         {
-            // const valueText = this.getValueText();
-
-            this.divValue.innerHTML = '';
-                //   valueText 
-                // + (valueText == UNKNOWN_DISPLAY
-                //    ? ''
-                //    : formatParamSuffix(this.suffix, this.suffixOffsetY));
+            this.divAlias.innerHTML = '';
 
             this.textbox   .style.display = 'inline-block';
             this.textBehind.style.display = 'inline-block';
+            this.divAlias  .style.display = 'none';
 
                  if (this.valueText    != '') this.textbox.value = this.valueText;
             else if (this.value == NAN_CHAR ) this.textbox.value = '';
