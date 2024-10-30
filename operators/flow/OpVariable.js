@@ -491,12 +491,14 @@ extends ResizableBaseWithSeparator
                     </div>
                 `;
 
-                paramValue.enable = false;
+                paramValue.enabled  = false;
+                paramValue.noItalic = true;
             }
             else
             {
                 paramValue.controls[0].overrideText = NULL;
-                paramValue.enable                   = true;
+                paramValue.enabled                  = true;
+                paramValue.noItalic                 = false;
 
                 if (  !(   paramValue.value.type  == NUMBER_VALUE
                         && paramValue.value.value == varValue.value
@@ -652,7 +654,7 @@ extends ResizableBaseWithSeparator
             paramValue.enableControlText(
                    (    this.headerInputs.length == 0
                     || !this.headerInputs[0].connected)
-                && paramValue.enable, 
+                && paramValue.enabled, 
                 paramValue.isUnknown());
 
             if (this.isBool)

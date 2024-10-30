@@ -175,7 +175,7 @@
 //             || !this.input.connected 
 //             ||  this.input.connectedOutput.supportsTypes([ANY_VALUE]);
 
-//         setEnabledTextStyle(this.textControl, enable);
+//         setEnabledTextStyle(this.textControl, enable, this.noItalic);
 //         this.textControl.readOnly = !enable;
 //     }
 

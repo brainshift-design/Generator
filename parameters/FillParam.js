@@ -421,8 +421,8 @@ extends Parameter
         //     || !this.input.connected;
             //||  this.input.connectedOutput.supportsTypes(COLOR_TYPES);
 
-        setEnabledTextStyle(this.controls[0].div, enable);
-        setEnabledTextStyle(this.controls[1].div, enable);//opEnable);
+        setEnabledTextStyle(this.controls[0].div, enable, this.noItalic);
+        setEnabledTextStyle(this.controls[1].div, enable, this.noItalic);//opEnable);
         
         this.controls[0].readOnly = !enable;
         this.controls[1].readOnly = !enable;//opEnable;

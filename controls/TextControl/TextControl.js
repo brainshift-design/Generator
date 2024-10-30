@@ -36,15 +36,12 @@ extends Control
 
     constructor(param, id, name, defaultValue = '', font = {})
     {
-        const textBehind = createDiv     ('textControlHighlight');
-        const textbox    = createTextarea('textControlTextarea');
+        const divTextValue = createDiv     ('textControlValue'    );
+        const textBehind   = createDiv     ('textControlHighlight');
+        const textbox      = createTextarea('textControlTextarea' );
 
 
-        // textbox   .spellcheck = false;
-        // textBehind.spellcheck = false;
-
-
-        super(textbox, param, id, name);
+        super(divTextValue, param, id, name);
 
 
         this.value = defaultValue;
@@ -62,8 +59,11 @@ extends Control
         }
 
         
-        this.div.appendChild(textBehind);
-        this.div.appendChild(textbox);
+        divTextValue.appendChild(textBehind);
+        divTextValue.appendChild(textbox);
+
+        this.div.appendChild(divTextValue);
+        
 
         this.initTextarea(textbox, textBehind);
         this.initEvents();
@@ -229,9 +229,12 @@ extends Control
             this.textbox.style.textAlign = 'left';
 
 
-        if (this.overrideText != '')
+        if (this.overrideText != NULL)
         {
             this.divValue.innerHTML = this.overrideText;
+
+            this.textbox   .style.display = 'none';
+            this.textBehind.style.display = 'none';
         }
         else
         {
@@ -242,6 +245,9 @@ extends Control
                 // + (valueText == UNKNOWN_DISPLAY
                 //    ? ''
                 //    : formatParamSuffix(this.suffix, this.suffixOffsetY));
+
+            this.textbox   .style.display = 'inline-block';
+            this.textBehind.style.display = 'inline-block';
 
                  if (this.valueText    != '') this.textbox.value = this.valueText;
             else if (this.value == NAN_CHAR ) this.textbox.value = '';

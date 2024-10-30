@@ -317,7 +317,7 @@ extends Parameter
             || !this.input.connected;
 
         //setEnabledTextStyle(this.divName, enable, false);
-        setEnabledTextStyle(this.controls[0].div, enable);
+        setEnabledTextStyle(this.controls[0].div, enable, this.noItalic);
         
         this.controls[0].readOnly = !enable;
 

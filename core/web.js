@@ -98,12 +98,12 @@ function createCanvas(className = '')
 
 
 
-function setEnabledTextStyle(elem, enable, bold = true)
+function setEnabledTextStyle(elem, enable, noItalic = false, bold = true)
 {
-    elem.style.fontStyle  = enable ? 'normal' : 'italic'; 
+    elem.style.fontStyle  = enable || noItalic ? 'normal' : 'italic'; 
 
     if (bold)
-        elem.style.fontWeight = enable ? 'normal' : 'bold';
+        elem.style.fontWeight = enable || noItalic ? 'normal' : 'bold';
 }
 
 

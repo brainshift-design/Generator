@@ -29,6 +29,7 @@ extends EventTarget
  // proxy           = null;
 
     enabled         = true;
+    noItalic        = false;
 
 
     backStyleLight  = 'rgba(255, 255, 255, 0.95)';
