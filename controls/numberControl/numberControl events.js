@@ -455,7 +455,8 @@ NumberControl.prototype.initEvents = function()
         }
 
         else if (this.buttonDown0_
-              && this.showValue)
+              && this.param
+              && this.param.showValue)
         {
             this.clicked = true;
             this.showTextbox();
