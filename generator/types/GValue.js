@@ -207,7 +207,7 @@ function parseValueFromType(type, value)
         case     SHAPE_LIST_VALUE: return parseListValue         (value)[0];
 
         case         NUMBER_VALUE: return parseNumberValue       (value)[0];
-        case           TEXT_VALUE: return decodeURIComponent(parseTextValue(value)[0]);
+        case           TEXT_VALUE: return parseTextValue         (value)[0];
         case          COLOR_VALUE: return parseColorValue        (value)[0];
 
         case           FILL_VALUE: return parseFillValue         (value)[0];

@@ -613,7 +613,7 @@ function handleLegacyNode(_node, genVersion)
     if (_node.type == 'TCSV'     && genVersion <  441) _node.type = PARSE_CSV;
     if (_node.type == 'COND'     && genVersion <  441) _node.type = NUMBER_COMPARE;
     if (_node.type == 'NANISNUM' && genVersion <  441) _node.type = NUMBER_IS_NAN;
-    if (_node.type == 'RETAIN'  && genVersion <  441) _node.type = RETAIN;
+    if (_node.type == 'RETAIN'   && genVersion <  441) _node.type = RETAIN;
 
 
     // remove 'showCenter' param from everything

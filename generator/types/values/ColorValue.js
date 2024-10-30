@@ -185,32 +185,50 @@ extends GValue
 
 
 
-    toString()
+    toString(includeSpace = true)
     {
-        return      this.space.toString()
-            + ' ' + this.c1   .toString()
-            + ' ' + this.c2   .toString()
-            + ' ' + this.c3   .toString();
+        let str = '';
+
+        if (includeSpace)
+            str += this.space.toString() + ' ';
+        
+        str +=      this.c1.toString()
+            + ' ' + this.c2.toString()
+            + ' ' + this.c3.toString();
+
+        return str;
     }
 
 
 
-    toPreviewString()
+    toPreviewString(includeSpace = true)
     {
-        return      this.space.toPreviewString()
-            + ' ' + this.c1   .toPreviewString()
-            + ' ' + this.c2   .toPreviewString()
-            + ' ' + this.c3   .toPreviewString();
+        let str = '';
+
+        if (includeSpace)
+            str += this.space.toPreviewString() + ' ';
+        
+        str +=      this.c1.toPreviewString()
+            + ' ' + this.c2.toPreviewString()
+            + ' ' + this.c3.toPreviewString();
+
+        return str;
     }
 
 
 
-    toDisplayString()
+    toDisplayString(includeSpace)
     {
-        return      this.space.toDisplayString()
-            + ' ' + this.c1   .toDisplayString()
-            + ' ' + this.c2   .toDisplayString()
-            + ' ' + this.c3   .toDisplayString();
+        let str = '';
+
+        if (includeSpace)
+            str += this.space.toDisplayString() + ' ';
+        
+        str +=      this.c1.toDisplayString()
+            + ' ' + this.c2.toDisplayString()
+            + ' ' + this.c3.toDisplayString();
+
+        return str;
     }
 
 
@@ -243,7 +261,7 @@ extends GValue
 
     toJson()
     {
-        return encodeURIComponent(this.toString());
+        return this.toString();
     }
 
 
@@ -311,7 +329,7 @@ extends GValue
 
 
 
-function parseColorValue(str, i = -1)
+function parseColorValue(str, i = -1, parseSpace = true)
 {
     if (i < 0)
     {
@@ -322,13 +340,19 @@ function parseColorValue(str, i = -1)
 
     const iStart = i;
 
-    const space = parseNumberValue(str[i]); i += space[1];
-    const c1    = parseNumberValue(str[i]); i += c1   [1];
-    const c2    = parseNumberValue(str[i]); i += c2   [1];
-    const c3    = parseNumberValue(str[i]); i += c3   [1];
+    let space = null;
+    
+    if (parseSpace)
+    {
+        space = parseNumberValue(str[i]); i += space[1];
+    }
+
+    const c1 = parseNumberValue(str[i]); i += c1[1];
+    const c2 = parseNumberValue(str[i]); i += c2[1];
+    const c3 = parseNumberValue(str[i]); i += c3[1];
 
 
     return [
-        new ColorValue(space[0], c1[0], c2[0], c3[0]), 
+        new ColorValue(space ? space[0] : new NumberValue(1), c1[0], c2[0], c3[0]), 
         i - iStart ];
 }
