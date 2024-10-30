@@ -124,6 +124,9 @@ function genParseVariable(parse)
     for (let i = 0; i < nVars; i++)
         variable.aliasIds.push(parse.move());
 
+    for (let i = 0; i < nVars; i++)
+        variable.aliasNames.push(parse.move());
+
 
     variable.variableTemp = parseBool(parse.move());
 

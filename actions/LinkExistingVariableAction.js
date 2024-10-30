@@ -16,6 +16,7 @@ extends Action
     variableName;
     variableValues;
     aliasIds;
+    aliasNames;
     variableTemp;
 
 
@@ -24,6 +25,7 @@ extends Action
     prevVariableName;
     prevVariableValues;
     prevAliasIds;
+    prevAliasNames;
     prevVariableTemp;
 
 
@@ -32,7 +34,7 @@ extends Action
 
 
 
-    constructor(nodeId, variableId, resolvedType, variableName, variableValues, aliasIds, variableTemp)
+    constructor(nodeId, variableId, resolvedType, variableName, variableValues, aliasIds, aliasNames, variableTemp)
     {
         super(
             LINK_VARIABLE_ACTION, 
@@ -44,6 +46,7 @@ extends Action
         this.variableName   = variableName;
         this.variableValues = [...variableValues];
         this.aliasIds       = [...aliasIds];
+        this.aliasNames     = [...aliasNames];
         this.variableTemp   = variableTemp;
         this.selfUpdate     = true;
     }
@@ -57,6 +60,7 @@ extends Action
         this.prevVariableName   = this.node.variableName;
         this.prevVariableValues = [...this.node.variableValues];
         this.prevAliasIds       = [...this.node.aliasIds];
+        this.prevAliasNames     = [...this.node.aliasNames];
         this.prevVariableTemp   = this.node.variableTemp;
  
  
@@ -67,6 +71,7 @@ extends Action
             this.variableName,
             this.variableValues,
             this.aliasIds,
+            this.aliasNames,
             this.variableTemp);
 
 
@@ -84,6 +89,7 @@ extends Action
             this.prevVariableName,
             this.prevVariableValues,
             this.prevAliasIds,
+            this.prevAliasNames,
             this.prevVariableTemp);
 
 

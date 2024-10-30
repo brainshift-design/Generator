@@ -8,6 +8,7 @@ extends GValue
     variableValues;
     
     aliasIds;
+    aliasNames;
 
     variableTemp;
 
@@ -19,6 +20,7 @@ extends GValue
                 variableName   = '', 
                 variableValues = [],
                 aliasIds       = [],
+                aliasNames     = [],
                 variableTemp   = false)
     {
         super(VARIABLE_VALUE, nodeId, 'variable');
@@ -28,6 +30,9 @@ extends GValue
         this.variableValues = [...variableValues];
         this.aliasIds       = aliasIds.length == variableValues.length 
                                 ? [...aliasIds]
+                                : Array(variableValues.length).fill(NULL_VALUE); 
+        this.aliasNames     = aliasNames.length == variableValues.length 
+                                ? [...aliasNames]
                                 : Array(variableValues.length).fill(NULL_VALUE); 
         this.variableTemp   = variableTemp;
     }
@@ -40,6 +45,7 @@ extends GValue
             obj.nodeId,
             obj.objectId, 
             obj.objectName, 
+            [],
             [],
             [],
             true);
@@ -55,6 +61,7 @@ extends GValue
             this.variableName, 
             this.variableValues.map(v => v.copy()),
             [...this.aliasIds],
+            [...this.aliasNames],
             this.variableTemp);
 
         copy.copyBase(this);
@@ -96,15 +103,17 @@ extends GValue
 
     toString()
     {
-        const varValues = this.variableValues.map(v => encodeURIComponent(v.toString()));
-        const aliasIds  = this.aliasIds.map(id => id == NULL ? NULL_VALUE : id);
+        const varValues  = this.variableValues.map(v    => encodeURIComponent(v.toString()));
+        const aliasIds   = this.aliasIds      .map(id   => id   == NULL ? NULL_VALUE : id  );
+        const aliasNames = this.aliasNames    .map(name => name == NULL ? NULL_VALUE : encodeURIComponent(name));
 
         return      (this.variableId   != NULL      ? this.variableId                       : NULL_VALUE)
             + ' ' + (this.variableName != ''        ? encodeURIComponent(this.variableName) : NULL_VALUE)
             + ' ' + (this.variableValues.length > 0 ? this.variableValues[0].type           : NULL_VALUE)
             + ' ' +  this.variableValues.length
-            + (varValues.length > 0 ? ' ' + varValues.join(' ') : '')
-            + (aliasIds .length > 0 ? ' ' + aliasIds .join(' ') : '')
+                  + (varValues .length > 0 ? ' ' + varValues .join(' ') : '')
+                  + (aliasIds  .length > 0 ? ' ' + aliasIds  .join(' ') : '')
+                  + (aliasNames.length > 0 ? ' ' + aliasNames.join(' ') : '')
             + ' ' + (this.variableTemp ? 'T' : 'E'); // T = temp, E = existing
     }
 
@@ -123,15 +132,17 @@ extends GValue
 
     toDisplayString()
     {
-        const varValues = this.variableValues.map(v => v.toDisplayString());
-        const aliasIds  = this.aliasIds.map(id => id == NULL ? NULL_VALUE : id);
+        const varValues  = this.variableValues.map(v => v.toDisplayString());
+        const aliasIds   = this.aliasIds.map(id => id == NULL ? NULL_VALUE : id);
+        const aliasNames = this.aliasNames    .map(name => name == NULL ? NULL_VALUE : encodeURIComponent(name));
         
         return        (this.variableId   != NULL      ? this.variableId             : NULL_VALUE)
             + ' \'' + (this.variableName != ''        ? this.variableName           : NULL_VALUE) + '\''
             + ' '   + (this.variableValues.length > 0 ? this.variableValues[0].type : NULL_VALUE)
             + ' '   +  this.variableValues.length
-            + (varValues.length > 0 ? ' ' + varValues.join(' ') : '')
-            + (aliasIds .length > 0 ? ' ' + aliasIds .join(' ') : '')
+                    + (varValues .length > 0 ? ' ' + varValues .join(' ') : '')
+                    + (aliasIds  .length > 0 ? ' ' + aliasIds  .join(' ') : '')
+                    + (aliasNames.length > 0 ? ' ' + aliasNames.join(' ') : '')
             + ' '   + (this.variableTemp ? 'T' : 'E'); // T = temp, E = existing
     }
 
@@ -223,6 +234,19 @@ function parseVariableValue(str, i = -1)
     }
 
 
+    const aliasNames = [];
+
+    for (let j = 0; j < nVariableValues; j++)
+    {
+        const aliasName = decodeURIComponent(_str[i]);
+
+        aliasIds.push(aliasName);
+
+        length += _str[i].length + 1;
+        i++;
+    }
+
+
     const variableTemp = _str[i] == 'T';  length += _str[i].length + 1;  i++;
 
 
@@ -232,6 +256,7 @@ function parseVariableValue(str, i = -1)
         variableName,
         variableValues,
         aliasIds,
+        aliasNames,
         variableTemp);
 
 

@@ -98,9 +98,9 @@ function figGetAllLocalVariables(nodeId, px, py)
         {
             try
             {
-                const collection         = await figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
-                const [, resolvedValues] = await figGetResolvedVariableValuesAsync(_var);
-                const aliasIds           = await figGetVariableAliasIdsAsync(_var);
+                const collection             = await figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
+                const [, resolvedValues]     = await figGetResolvedVariableValuesAsync(_var);
+                const [aliasIds, aliasNames] = await figGetVariableAliasIdsAsync(_var);
                 
                 const variable = 
                 { 
@@ -108,7 +108,8 @@ function figGetAllLocalVariables(nodeId, px, py)
                     resolvedType:   _var.resolvedType,
                     name:           collection.name + '/' + _var.name,
                     resolvedValues: resolvedValues,
-                    aliasIds:       aliasIds
+                    aliasIds:       aliasIds,
+                    aliasNames:     aliasNames
                 };
 
                 variables.push(variable);
@@ -139,15 +140,15 @@ function figGetAllLocalVariables(nodeId, px, py)
 
 async function getVariableValuesAsync(varIds)
 {
-    const localVars = await figma.variables.getLocalVariablesAsync();
+    const localVars   = await figma.variables.getLocalVariablesAsync();
+    const varsFromIds = varIds.map(id => localVars.find(v => v.id == id));
 
-    const variables      = varIds.map(id => localVars.find(v => v.id == id));
-    let   variableValues = [];
+    let   variables   = [];
 
 
     for (let i = 0; i < varIds.length; i++)
     {
-        const variable = variables[i];
+        const variable = varsFromIds[i];
         
         const collection = 
             variable != undefined // deleted
@@ -157,10 +158,10 @@ async function getVariableValuesAsync(varIds)
             
         if (collection)
         {
-            const  varValues      = [];
-            const  resolvedValues = [];
-            const  resolvedNames  = [];
-            const  modes          = [];
+            const  varValues          = [];
+            const  resolvedValues     = [];
+            const  resolvedAliasNames = [];
+            const  modes              = [];
 
 
             for (const mode of collection.modes)
@@ -182,39 +183,39 @@ async function getVariableValuesAsync(varIds)
 
 
                 resolvedValues.push(value);
-                resolvedNames .push(resolvedName);
+                resolvedAliasNames .push(resolvedName);
                 modes         .push(mode.name);
             }
 
 
-            variableValues.push(
+            variables.push(
             {
-                id:             varIds[i],
-                name:           collection.name + '/' + variable.name, 
-                resolvedType:   variable.resolvedType,
-                values:         varValues,
-                resolvedValues: resolvedValues,
-                resolvedModes:  modes,
-                resolvedNames:  resolvedNames
+                id:                 varIds[i],
+                name:               collection.name + '/' + variable.name, 
+                resolvedType:       variable.resolvedType,
+                values:             varValues,
+                resolvedValues:     resolvedValues,
+                resolvedModes:      modes,
+                resolvedAliasNames: resolvedAliasNames
             });
         }
         else
         {
-            variableValues.push(
+            variables.push(
             {
-                id:             varIds[i], 
-                name:           '',
-                resolvedType:   NULL, 
-                values:         [],
-                resolvedValues: [],
-                resolvedModes:  [],
-                resolvedNames:  []
+                id:                 varIds[i], 
+                name:               '',
+                resolvedType:       NULL, 
+                values:             [],
+                resolvedValues:     [],
+                resolvedModes:      [],
+                resolvedAliasNames: []
             });
         }
     }
 
 
-    return variableValues;
+    return variables;
 }
 
 
@@ -495,7 +496,8 @@ async function figGetVariableAliasIdsAsync(variable)
         return [];
 
 
-    const aliasIds = [];
+    const aliasIds   = [];
+    const aliasNames = [];
 
 
     const collection = await figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
@@ -504,15 +506,21 @@ async function figGetVariableAliasIdsAsync(variable)
     {
         const value = variable.valuesByMode[mode.modeId];
 
-        aliasIds.push(
-               value
-            && value['type'] === 'VARIABLE_ALIAS'
-                ? value['id']
-                : NULL_VALUE);
+        if (   value
+            && value['type'] === 'VARIABLE_ALIAS')
+        {
+            aliasIds  .push(value['id']);
+            aliasNames.push((await figma.variables.getVariableByIdAsync(value['id'])).name);
+        }
+        else
+        {
+            aliasIds  .push('');
+            aliasNames.push('');
+        }
     }
 
 
-    return aliasIds;
+    return [aliasIds, aliasNames];
 }
 
 

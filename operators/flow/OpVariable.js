@@ -10,6 +10,7 @@ extends ResizableBaseWithSeparator
     variableName       = '';   // must be set even if nothing is connected
     variableValues     = [];
     aliasIds           = [];
+    aliasNames         = [];
     variableTemp       = false;
 
     paramValues        = [];
@@ -197,6 +198,9 @@ extends ResizableBaseWithSeparator
         for (let i = 0; i < nVarValues; i++)
             request.push(this.aliasIds[i]);
 
+        for (let i = 0; i < nVarValues; i++)
+            request.push(this.aliasNames[i]);
+
 
         this.variableValues = []; // only needs to be sent once
 
@@ -238,7 +242,8 @@ extends ResizableBaseWithSeparator
                 value.variableValues[0].type == NUMBER_VALUE
                     ? value.variableValues[0].isBoolean
                     : false,
-                this.isBool);
+                this.isBool,
+                value.aliasNames);
 
             if (   value.variableValues[0]
                 && value.variableValues[0].type != NULL
@@ -253,7 +258,7 @@ extends ResizableBaseWithSeparator
 
     
     
-    updateValueParamsFromResolved(resolvedType, resolvedValues)
+    updateValueParamsFromResolved(resolvedType, resolvedValues, aliasNames)
     {
         let type   = NULL;
         let isBool = false;
@@ -272,12 +277,12 @@ extends ResizableBaseWithSeparator
                 break;
         }
 
-        this.updateValueParamsFromType(resolvedValues.length, type, isBool, this.isBool);
+        this.updateValueParamsFromType(resolvedValues.length, type, isBool, this.isBool, aliasNames);
     }
 
 
 
-    updateValueParamsFromType(nParams, type, isBool, prevIsBool)
+    updateValueParamsFromType(nParams, type, isBool, prevIsBool, aliasNames)
     {
         let icon;
         let iconOffsetY;
@@ -341,13 +346,27 @@ extends ResizableBaseWithSeparator
             {
                 for (let i = 0; i < nParams; i++)
                 {
-                    const paramValue = this.createAndAddParamByType(type, 'value'+i, '', nParams > 1, true, true);
+                    const showIO = aliasNames[i] == NULL;
+
+                    const paramValue = this.createAndAddParamByType(
+                        type, 
+                        'value'+i, 
+                        '', 
+                        nParams > 1, 
+                        showIO, 
+                        showIO);
+
                     this.paramValues.push(paramValue);
 
-                    paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
+                    
+                    if (paramValue.input)
+                    {
+                        paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
 
-                    if (type == COLOR_VALUE)
-                        paramValue.input.types.push(FILL_VALUE);
+                        if (type == COLOR_VALUE)
+                            paramValue.input.types.push(FILL_VALUE);
+                    }
+
 
                     if (this.isBool)
                     {
@@ -403,7 +422,7 @@ extends ResizableBaseWithSeparator
 
 
 
-    updateValueParamValuesFromResolved(resolvedType, varName, values, resolvedValues, resolvedModes, resolvedNames, update = false)
+    updateValueParamValuesFromResolved(resolvedType, varName, values, resolvedValues, resolvedModes, resolvedAliasNames, update = false)
     {
         if (this.variableName != varName)
         {
@@ -414,6 +433,8 @@ extends ResizableBaseWithSeparator
         }
 
 
+        console.log('resolvedValues =', resolvedValues);
+        console.log('this.paramValues =', this.paramValues);
         console.assert(
             resolvedValues.length == this.paramValues.length, 
             'value count must equal param count');
@@ -443,35 +464,35 @@ extends ResizableBaseWithSeparator
                 let icon;
                 let iconOffsetY;
                 let topPadding;
+                let sideMargin;
         
                 switch (resolvedType)
                 {
-                    case 'FLOAT':   icon = iconVarNumber;  iconOffsetY = 2; topPadding = 0; break;
-                    case 'BOOLEAN': icon = iconVarBoolean; iconOffsetY = 2; topPadding = 1; break;
-                    case 'STRING':  icon = iconVarText;    iconOffsetY = 2; topPadding = 0; break;
-                    case 'COLOR':   icon = iconVarColor;   iconOffsetY = 2; topPadding = 0; break;
+                    case 'FLOAT':   icon = iconVarNumber;  iconOffsetY = 2; topPadding = 0; sideMargin = 1; break;
+                    case 'BOOLEAN': icon = iconVarBoolean; iconOffsetY = 2; topPadding = 1; sideMargin = 0; break;
+                    case 'STRING':  icon = iconVarText;    iconOffsetY = 2; topPadding = 0; sideMargin = 1; break;
+                    case 'COLOR':   icon = iconVarColor;   iconOffsetY = 2; topPadding = 0; sideMargin = 1; break;
                 }
         
                 paramValue.controls[0].overrideText = `
                     <div 
                         style="
-                            box-shadow:    0 0 0 1px inset ${darkMode ? '#ffffff24' : '#0002'}; 
-                            padding:       ${topPadding}px 2px 1px 2px;
+                            box-shadow:    0 0 0 1px inset ${darkMode ? '#ffffff2b' : '#00000028'}; 
+                            padding:       ${topPadding}px 4px 1px 4px;
                             border-radius: 4px;">
                         <div 
                             style="
                                 display:  inline-block; 
                                 position: relative; 
-                                opacity:  0.75;
-                                top:      ${iconOffsetY}px;">
-                                ${icon}
+                                opacity:  0.65;
+                                top:      ${iconOffsetY}px;
+                                margin:   0 ${sideMargin}px; 0 0">
+                                ${icon.replaceAll('white', 'var(--figma-color-text)')}
                         </div> 
-                        ${resolvedNames[i]}
+                        ${resolvedAliasNames[i]}
                     </div>
                 `;
 
-                //if (paramValue.input ) paramValue.removeInput ();
-                //if (paramValue.output) paramValue.removeOutput();
                 //paramValue.enable = false;
             }
             else
@@ -702,7 +723,8 @@ extends ResizableBaseWithSeparator
              + ',\n' + pos + tab + '"variableId": "'   + this.variableId   + '"'
              + ',\n' + pos + tab + '"variableType": "' + this.variableType + '"'
              + ',\n' + pos + tab + '"variableName": "' + encodeURIComponent(this.variableName) + '"'
-             + ',\n' + pos + tab + '"aliasIds": "'     + this.aliasIds.map(id => id == NULL ? NULL_VALUE : id).join(' ') + '"'
+             + ',\n' + pos + tab + '"aliasIds": "'     + this.aliasIds  .map(id   => id   == NULL ? NULL_VALUE : id).join(' ') + '"'
+             + ',\n' + pos + tab + '"aliasNames": "'   + this.aliasNames.map(name => name == NULL ? NULL_VALUE : encodeURIComponent(name)).join(' ') + '"'
              + ',\n' + pos + tab + '"variableTemp": "' + boolToString(this.variableTemp) + '"';
     }
 
@@ -726,6 +748,11 @@ extends ResizableBaseWithSeparator
                                         .split(' ')
                                         .map(id => id == NULL_VALUE ? NULL : id)
                                     : [];
+            this.aliasNames   = _node.aliasNames 
+                                    ? _node.aliasNames
+                                        .split(' ')
+                                        .map(name => name == NULL_VALUE ? NULL : encodeURIComponent(name))
+                                    : [];
             this.variableTemp = parseBool(_node.variableTemp);
         }
         else
@@ -736,6 +763,7 @@ extends ResizableBaseWithSeparator
             this.variableType = NULL;
             this.variableName = '';
             this.aliasIds     = [];
+            this.aliasNames   = [];
             this.variableTem  = false;
         }
 

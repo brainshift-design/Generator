@@ -77,7 +77,8 @@ function uiReturnFigGetVariableUpdates(variables)
         {
             node.updateValueParamsFromResolved(
                 variable.resolvedType,
-                variable.resolvedValues);
+                variable.resolvedValues,
+                variable.resolvedAliasNames);
                 
 
             if (node.paramValues.length > 0)
@@ -88,7 +89,7 @@ function uiReturnFigGetVariableUpdates(variables)
                     variable.values,
                     variable.resolvedValues,
                     variable.resolvedModes,
-                    variable.resolvedNames,
+                    variable.resolvedAliasNames,
                     true);
             }
         }
@@ -224,6 +225,7 @@ function initLocalVariablesMenu(variables, nodeId, nCollections)
                 variable.name,
                 [...variable.resolvedValues],
                 [...variable.aliasIds],
+                [...variable.aliasNames],
                 false),
             i > 0);
 
@@ -396,7 +398,7 @@ function updateMenuLocalVariables()
         [
             new MenuItem('None', null, false,
             {
-                callback: e => actionManager.do(new LinkExistingVariableAction(menuLocalVariables.node.nodeId, NULL, NULL, '', [], [], false)),
+                callback: e => actionManager.do(new LinkExistingVariableAction(menuLocalVariables.node.nodeId, NULL, NULL, '', [], [], [], false)),
                 enabled:  menuLocalVariables.node.variableId != NULL
             })
         ]);
@@ -431,7 +433,7 @@ function updateMenuLocalVariables()
 
 
 
-function uiLinkNodeToVariable(node, varId, varType, varName, varValues, aliasIds, varTemp)
+function uiLinkNodeToVariable(node, varId, varType, varName, varValues, aliasIds, aliasNames, varTemp)
 {
     if (   node.variableType != NULL
         && varType == NULL
@@ -454,8 +456,9 @@ function uiLinkNodeToVariable(node, varId, varType, varName, varValues, aliasIds
     node.variableId     = varId;
     node.variableType   = varType;
     node.variableName   = varName;
-    node.variableValues = [...varValues];
-    node.aliasIds       = [...aliasIds ];
+    node.variableValues = [...varValues ];
+    node.aliasIds       = [...aliasIds  ];
+    node.aliasNames     = [...aliasNames];
     node.variableTemp   = varTemp;
     
 
@@ -465,7 +468,7 @@ function uiLinkNodeToVariable(node, varId, varType, varName, varValues, aliasIds
             : defaultVariableNodeName;
 
 
-    node.updateValueParamsFromResolved(varType, varValues);
+    node.updateValueParamsFromResolved(varType, varValues, aliasNames);
     node.updateInputsAndOutputs(varType != NULL, varTemp);
 
         
@@ -481,8 +484,8 @@ function getValueFromVariable(resolvedType, val)
     switch (resolvedType)
     {
         case 'FLOAT':   value = new NumberValue(roundTo(val, 2), Math.min(decDigits(roundTo(val, 2)), 2)); break;
-        case 'BOOLEAN': value = new BooleanValue(val);                         break;
-        case 'STRING':  value = new TextValue(val);                                            break;
+        case 'BOOLEAN': value = new BooleanValue(val);                                                     break;
+        case 'STRING':  value = new TextValue(val);                                                        break;
 
         case 'COLOR':
             value = 

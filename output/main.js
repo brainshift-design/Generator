@@ -3690,13 +3690,14 @@ function figGetAllLocalVariables(nodeId, px, py) {
             try {
                 const collection = yield figma.variables.getVariableCollectionByIdAsync(_var.variableCollectionId);
                 const [, resolvedValues] = yield figGetResolvedVariableValuesAsync(_var);
-                const aliasIds = yield figGetVariableAliasIdsAsync(_var);
+                const [aliasIds, aliasNames] = yield figGetVariableAliasIdsAsync(_var);
                 const variable = {
                     id: _var.id,
                     resolvedType: _var.resolvedType,
                     name: collection.name + '/' + _var.name,
                     resolvedValues: resolvedValues,
-                    aliasIds: aliasIds
+                    aliasIds: aliasIds,
+                    aliasNames: aliasNames
                 };
                 variables.push(variable);
             }
@@ -3718,17 +3719,17 @@ function figGetAllLocalVariables(nodeId, px, py) {
 function getVariableValuesAsync(varIds) {
     return __awaiter(this, void 0, void 0, function* () {
         const localVars = yield figma.variables.getLocalVariablesAsync();
-        const variables = varIds.map(id => localVars.find(v => v.id == id));
-        let variableValues = [];
+        const varsFromIds = varIds.map(id => localVars.find(v => v.id == id));
+        let variables = [];
         for (let i = 0; i < varIds.length; i++) {
-            const variable = variables[i];
+            const variable = varsFromIds[i];
             const collection = variable != undefined // deleted
                 ? (yield figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId))
                 : null;
             if (collection) {
                 const varValues = [];
                 const resolvedValues = [];
-                const resolvedNames = [];
+                const resolvedAliasNames = [];
                 const modes = [];
                 for (const mode of collection.modes) {
                     let _var = variable;
@@ -3742,32 +3743,32 @@ function getVariableValuesAsync(varIds) {
                         resolvedName = _var.name;
                     }
                     resolvedValues.push(value);
-                    resolvedNames.push(resolvedName);
+                    resolvedAliasNames.push(resolvedName);
                     modes.push(mode.name);
                 }
-                variableValues.push({
+                variables.push({
                     id: varIds[i],
                     name: collection.name + '/' + variable.name,
                     resolvedType: variable.resolvedType,
                     values: varValues,
                     resolvedValues: resolvedValues,
                     resolvedModes: modes,
-                    resolvedNames: resolvedNames
+                    resolvedAliasNames: resolvedAliasNames
                 });
             }
             else {
-                variableValues.push({
+                variables.push({
                     id: varIds[i],
                     name: '',
                     resolvedType: NULL,
                     values: [],
                     resolvedValues: [],
                     resolvedModes: [],
-                    resolvedNames: []
+                    resolvedAliasNames: []
                 });
             }
         }
-        return variableValues;
+        return variables;
     });
 }
 function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues) {
@@ -3934,15 +3935,21 @@ function figGetVariableAliasIdsAsync(variable) {
         if (!variable)
             return [];
         const aliasIds = [];
+        const aliasNames = [];
         const collection = yield figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
         for (const mode of collection.modes) {
             const value = variable.valuesByMode[mode.modeId];
-            aliasIds.push(value
-                && value['type'] === 'VARIABLE_ALIAS'
-                ? value['id']
-                : NULL_VALUE);
+            if (value
+                && value['type'] === 'VARIABLE_ALIAS') {
+                aliasIds.push(value['id']);
+                aliasNames.push((yield figma.variables.getVariableByIdAsync(value['id'])).name);
+            }
+            else {
+                aliasIds.push('');
+                aliasNames.push('');
+            }
         }
-        return aliasIds;
+        return [aliasIds, aliasNames];
     });
 }
 function figDeleteTempVariableCollection(forceDelete = false) {

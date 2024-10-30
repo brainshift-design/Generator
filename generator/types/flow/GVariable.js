@@ -6,6 +6,7 @@ extends GOperator1
     variableName   = '';
     variableValues = [];
     aliasIds       = [];
+    aliasNames     = [];
     variableTemp   = false;
 
     paramValues    = [];
@@ -28,6 +29,7 @@ extends GOperator1
         this.variableName   = '';
         this.variableValues = [];
         this.aliasIds       = [];
+        this.aliasNames     = [];
         this.variableTemp   = false;
 
         this.paramValues    = [];
@@ -44,6 +46,7 @@ extends GOperator1
         copy.variableName   = this.variableName;
         copy.variableValues = this.variableValues.map(v => v.copy());
         copy.aliasIds       = [...this.aliasIds];
+        copy.aliasNames     = [...this.aliasNames];
         copy.variableTemp   = this.variableTemp;
 
         copy.paramValues    = this.paramValues   .map(p => p.copy());
@@ -106,6 +109,7 @@ extends GOperator1
             this.variableName,
             varValues,
             [...this.aliasIds],
+            [...this.aliasNames],
             this.variableTemp);
 
 
