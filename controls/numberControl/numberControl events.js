@@ -81,7 +81,8 @@ NumberControl.prototype.initEvents = function()
 
     
         if (   graphView.overOutput && graphView.overOutput == this.param.output
-            || graphView.overInput  && graphView.overInput  == this.param.input )
+            || graphView.overInput  && graphView.overInput  == this.param.input 
+            || this.readOnly)
         {
             e.preventDefault();
             return;

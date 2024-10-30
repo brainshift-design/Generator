@@ -358,7 +358,7 @@ extends ResizableBaseWithSeparator
 
                     this.paramValues.push(paramValue);
 
-                    
+
                     if (paramValue.input)
                     {
                         paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
@@ -433,8 +433,6 @@ extends ResizableBaseWithSeparator
         }
 
 
-        console.log('resolvedValues =', resolvedValues);
-        console.log('this.paramValues =', this.paramValues);
         console.assert(
             resolvedValues.length == this.paramValues.length, 
             'value count must equal param count');
@@ -493,12 +491,12 @@ extends ResizableBaseWithSeparator
                     </div>
                 `;
 
-                //paramValue.enable = false;
+                paramValue.enable = false;
             }
             else
             {
                 paramValue.controls[0].overrideText = NULL;
-                //paramValue.enable                   = true;
+                paramValue.enable                   = true;
 
                 if (  !(   paramValue.value.type  == NUMBER_VALUE
                         && paramValue.value.value == varValue.value
@@ -653,8 +651,8 @@ extends ResizableBaseWithSeparator
         {
             paramValue.enableControlText(
                    (    this.headerInputs.length == 0
-                    || !this.headerInputs[0].connected),
-                //&& paramValue.enable, 
+                    || !this.headerInputs[0].connected)
+                && paramValue.enable, 
                 paramValue.isUnknown());
 
             if (this.isBool)
