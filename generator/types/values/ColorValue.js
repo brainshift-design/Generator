@@ -241,6 +241,13 @@ extends GValue
 
 
 
+    toJson()
+    {
+        return encodeURIComponent(this.toString());
+    }
+
+
+
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
         const SL  = s => options.singleLine ? ''  : s;

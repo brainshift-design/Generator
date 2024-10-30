@@ -441,10 +441,12 @@ function uiLinkNodeToVariable(node, varId, varType, varName, varValues, aliasIds
     {
         for (const paramValue of node.paramValues)
         {
-            if (paramValue.input.connected)
+            if (   paramValue.input
+                && paramValue.input.connected)
                 uiDeleteSavedConn(paramValue.input.connection);
 
-            if (paramValue.output.connected)
+            if (   paramValue.output
+                && paramValue.output.connected)
             {
                 for (const input of paramValue.output.connectedInputs)
                     uiDeleteSavedConn(input.connection);

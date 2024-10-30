@@ -103,7 +103,7 @@ extends GValue
 
     toString()
     {
-        const varValues  = this.variableValues.map(v    => encodeURIComponent(v.toString()));
+        const varValues  = this.variableValues.map(v    => v.toString());
         const aliasIds   = this.aliasIds      .map(id   => id   == NULL ? NULL_VALUE : id  );
         const aliasNames = this.aliasNames    .map(name => name == NULL ? NULL_VALUE : encodeURIComponent(name));
 
@@ -133,7 +133,7 @@ extends GValue
     toDisplayString()
     {
         const varValues  = this.variableValues.map(v => v.toDisplayString());
-        const aliasIds   = this.aliasIds.map(id => id == NULL ? NULL_VALUE : id);
+        const aliasIds   = this.aliasIds      .map(id => id == NULL ? NULL_VALUE : id);
         const aliasNames = this.aliasNames    .map(name => name == NULL ? NULL_VALUE : encodeURIComponent(name));
         
         return        (this.variableId   != NULL      ? this.variableId             : NULL_VALUE)
@@ -212,7 +212,7 @@ function parseVariableValue(str, i = -1)
 
     for (let j = 0; j < nVariableValues; j++)
     {
-        const variableValue = parseValueFromType(variableType, decodeURIComponent(_str[i]));
+        const variableValue = parseValueFromType(variableType, _str[i]);
 
         variableValues.push(variableValue);
 
@@ -225,7 +225,10 @@ function parseVariableValue(str, i = -1)
 
     for (let j = 0; j < nVariableValues; j++)
     {
-        const aliasId = _str[i];
+        const aliasId = 
+            _str[i] == NULL_VALUE 
+                ? NULL 
+                : _str[i];
 
         aliasIds.push(aliasId);
 
@@ -238,9 +241,12 @@ function parseVariableValue(str, i = -1)
 
     for (let j = 0; j < nVariableValues; j++)
     {
-        const aliasName = decodeURIComponent(_str[i]);
+        const aliasName = 
+            _str[i] == NULL_VALUE 
+                ? NULL 
+                : decodeURIComponent(_str[i]);
 
-        aliasIds.push(aliasName);
+        aliasNames.push(aliasName);
 
         length += _str[i].length + 1;
         i++;
