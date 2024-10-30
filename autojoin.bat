@@ -4,5 +4,6 @@ TITLE Generator
     autojoin/figma.aj     ../output/main.ts ^
     autojoin/generator.aj ../output/generator.html ^
     autojoin/ui.aj        ../output/ui.html ^
+    ^
     -watch
 @echo on

@@ -215,7 +215,7 @@ extends Control
             return;
             
 
-        this.textbox.placeholder = 
+        this.textbox.placeholder =
             this.value == NAN_CHAR
             ? UNKNOWN_DISPLAY
             : this.textbox.defPlaceholder;
@@ -255,7 +255,7 @@ extends Control
 
     updateCursor()
     {
-        this.textbox.style.cursor = 
+        this.textbox.style.cursor =
                hasFocus(this.textbox)
             && graph.currentPage.zoom >= settings.minZoomForParams
             ? 'text'

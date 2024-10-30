@@ -85,6 +85,13 @@ extends NumberParamBase
 
 
 
+    initInputAndOutput()
+    {
+
+    }
+
+
+
     getTooltip = () => null;
 
 

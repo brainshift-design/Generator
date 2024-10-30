@@ -284,7 +284,7 @@ extends ResizableBaseWithSeparator
 
         switch (type)
         {
-            case NUMBER_VALUE:  icon = isBool ? iconVarBoolean : iconVarNumber;  iconOffsetY =  isBool ? 0 : 1;  break;
+            case NUMBER_VALUE:  icon = isBool ? iconVarBoolean : iconVarNumber;  iconOffsetY =  isBool ? 2 : 1;  break;
             case   TEXT_VALUE:  icon = iconVarText;                              iconOffsetY =  1;               break;
             case  COLOR_VALUE:   
             case   FILL_VALUE:  icon = iconVarColor;                             iconOffsetY = -2;               break;
@@ -442,32 +442,37 @@ extends ResizableBaseWithSeparator
             {
                 let icon;
                 let iconOffsetY;
+                let topPadding;
         
                 switch (resolvedType)
                 {
-                    case 'FLOAT':   icon = iconVarNumber;  iconOffsetY = 2; break;
-                    case 'BOOLEAN': icon = iconVarBoolean; iconOffsetY = 2; break;
-                    case 'STRING':  icon = iconVarText;    iconOffsetY = 2; break;
-                    case 'COLOR':   icon = iconVarColor;   iconOffsetY = 2; break;
+                    case 'FLOAT':   icon = iconVarNumber;  iconOffsetY = 2; topPadding = 0; break;
+                    case 'BOOLEAN': icon = iconVarBoolean; iconOffsetY = 2; topPadding = 1; break;
+                    case 'STRING':  icon = iconVarText;    iconOffsetY = 2; topPadding = 0; break;
+                    case 'COLOR':   icon = iconVarColor;   iconOffsetY = 2; topPadding = 0; break;
                 }
         
                 paramValue.controls[0].overrideText = `
                     <div 
                         style="
-                            background-color: ${darkMode ? '#ffffff18' : '#0002'}; 
-                            padding:          1px 3px;
-                            border-radius:    3px;">
+                            box-shadow:    0 0 0 1px inset ${darkMode ? '#ffffff24' : '#0002'}; 
+                            padding:       ${topPadding}px 2px 1px 2px;
+                            border-radius: 4px;">
                         <div 
                             style="
                                 display:  inline-block; 
                                 position: relative; 
+                                opacity:  0.75;
                                 top:      ${iconOffsetY}px;">
                                 ${icon}
                         </div> 
                         ${resolvedNames[i]}
                     </div>
                 `;
-                //paramValue.enable                   = false;
+
+                //if (paramValue.input ) paramValue.removeInput ();
+                //if (paramValue.output) paramValue.removeOutput();
+                //paramValue.enable = false;
             }
             else
             {
