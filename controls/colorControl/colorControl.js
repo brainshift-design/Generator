@@ -196,7 +196,7 @@ extends Control
             this.divValue.innerHTML = this.getValueText();
         }
 
-        this.textbox.value = this.divValue.innerText;
+        //this.textbox.value = this.divValue.innerText;
         
         this.divValue.style.position = 'static';    
         this.divValue.style.width    = 'fit-content';    

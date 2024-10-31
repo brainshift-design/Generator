@@ -478,10 +478,10 @@ extends ResizableBaseWithSeparator
                 paramValue.controls[0].overrideText = `
                     <div 
                         style="
-                            box-shadow:    0 0 0 1px inset ${darkMode ? '#ffffff2b' : '#00000028'}; 
+                            background:    ${darkMode ? '#ffffff1c' : '#00000028'}; 
                             padding:       ${topPadding}px 4px 1px 4px;
                             margin:        ${topMargin}px 0 0 0;
-                            border-radius: 4px;
+                            border-radius: 3.5px;
                             width:         fit-content;
                             color:         var(--figma-color-text);">
                         <div 
@@ -506,10 +506,10 @@ extends ResizableBaseWithSeparator
                 paramValue.enabled                  = true;
                 paramValue.noItalic                 = false;
 
-                if (  !(   paramValue.value.type  == NUMBER_VALUE
-                        && varValue.type == NUMBER_VALUE
+                if (  !(   paramValue.value.type == NUMBER_VALUE
+                        && varValue        .type == NUMBER_VALUE
                         && paramValue.value.value == varValue.value)
-                    || paramValue.value.equals(varValue))
+                    || !paramValue.value.equals(varValue))
                 {
                     if (varValue.decimals <= paramValue.value.decimals)
                         this.checkNoUpdateDecimals(varValue, paramValue);

@@ -83,13 +83,6 @@ Operator.prototype.initLabelTextbox = function()
     });
 
 
-    
-    // this.textbox.addEventListener('input', function()
-    // {
-    //     this.setValue(parseFloat(this.textbox.value));
-    // });
-
-
 
     this.textbox.addEventListener('pointerdown', e => e.stopPropagation());
     this.textbox.addEventListener('pointermove', e => this.textbox.style.cursor = 'default');
