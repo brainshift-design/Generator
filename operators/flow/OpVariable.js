@@ -482,7 +482,8 @@ extends ResizableBaseWithSeparator
                             padding:       ${topPadding}px 4px 1px 4px;
                             margin:        ${topMargin}px 0 0 0;
                             border-radius: 4px;
-                            width:         fit-content;">
+                            width:         fit-content;
+                            color:         var(--figma-color-text);">
                         <div 
                             style="
                                 display:  inline-block; 

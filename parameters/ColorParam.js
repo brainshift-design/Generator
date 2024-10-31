@@ -266,10 +266,10 @@ extends Parameter
                 || !this.isNodeValue);
 
 
-        const noColor = 
-            darkMode
-            ? rgbNoColorDark
-            : rgbNoColorLight;
+        // const noColor = 
+        //     darkMode
+        //     ? rgbNoColorDark
+        //     : rgbNoColorLight;
 
 
         const rgb       = this.value.toRgb();
@@ -292,7 +292,8 @@ extends Parameter
 
 
         this.div.style.background =
-            showColorBack
+               showColorBack
+            && this.controls[0].overrideText == NULL
             ? (!rgbIsNaN(rgbBack)
                ? rgb2style(rgbBack)
                : rgb2style(rgbDocumentBody))

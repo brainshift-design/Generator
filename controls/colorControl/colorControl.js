@@ -153,13 +153,26 @@ extends Control
 
     updateColors()
     {
-        // this.param.div.style.background = 
-        //     darkMode 
-        //     ? this.backStyleDark 
-        //     : this.backStyleLight;
-        
-        this.param.divName.style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
-        this.param.divName.style.opacity = 0.5;
+        if (this.overrideText != NULL)
+        {
+            this.param.divName.style.color = 
+                darkMode
+                ? '#fff4'
+                : '#0006';
+
+            this.param.divName.style.opacity = 1;
+        }
+        else
+        {
+            this.param.divName.style.color = 
+                isLight(this.value.toRgb()) 
+                ? this.textStyleDark 
+                : this.textStyleLight;
+
+            this.param.divName.style.opacity = 0.5;
+        }
+
+
         
         this.textbox.style.background = 'transparent';
 
