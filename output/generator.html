@@ -14647,27 +14647,39 @@ extends GValue
 
     toString()
     {
-        return        this.color  .toString()
-              + ' ' + this.opacity.toString()
-              + ' ' + this.blend  .toString();
+        const rgb = scaleRgb(this.color.toRgb());
+
+        return        new NumberValue(rgb[0]).toString()
+              + ' ' + new NumberValue(rgb[1]).toString()
+              + ' ' + new NumberValue(rgb[2]).toString()
+              + ' ' + this.opacity           .toString()
+              + ' ' + this.blend             .toString();
     }
 
 
 
     toPreviewString()
     {
-        return        this.color  .toPreviewString()
-              + ' ' + this.opacity.toPreviewString()
-              + ' ' + this.blend  .toPreviewString();
+        const rgb = scaleRgb(this.color.toRgb());
+
+        return        new NumberValue(rgb[0]).toPreviewString()
+              + ' ' + new NumberValue(rgb[1]).toPreviewString()
+              + ' ' + new NumberValue(rgb[2]).toPreviewString()
+              + ' ' + this.opacity           .toPreviewString()
+              + ' ' + this.blend             .toPreviewString();
     }
 
 
 
     toDisplayString()
     {
-        return        this.color  .toDisplayString()
-              + ' ' + this.opacity.toDisplayString()
-              + ' ' + this.blend  .toDisplayString();
+        const rgb = scaleRgb(this.color.toRgb());
+
+        return        new NumberValue(rgb[0]).toDisplayString()
+              + ' ' + new NumberValue(rgb[1]).toDisplayString()
+              + ' ' + new NumberValue(rgb[2]).toDisplayString()
+              + ' ' + this.opacity           .toDisplayString()
+              + ' ' + this.blend             .toDisplayString();
     }
 
 
@@ -14760,13 +14772,18 @@ function parseFillValue(str, i = -1)
 
     const iStart = i;
 
-    const col = parseColorValue (str, i); i += col[1];
+    const r   = parseNumberValue(str[i]); i += r  [1];
+    const g   = parseNumberValue(str[i]); i += g  [1];
+    const b   = parseNumberValue(str[i]); i += b  [1];
     const a   = parseNumberValue(str[i]); i += a  [1];
     const bl  = parseNumberValue(str[i]); i += bl [1];
 
     
     return [
-        new FillValue(col[0], a[0], bl[0]),
+        new FillValue(
+            new ColorValue(new NumberValue(1), r[0], g[0], b[0]), 
+            a [0], 
+            bl[0]),
         i - iStart ];
 }
 
