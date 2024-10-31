@@ -719,9 +719,12 @@
     bottom:     0;
     left:       50%;
     width:      4px;
-    background: var(--figma-color-bg-tertiary);
     transform:  translateX(-50%);
 }
+
+
+.figma-dark  .itemsSeparator:hover::after { background: #fff2; }
+.figma-light .itemsSeparator:hover::after { background: #0002; }
 
 
 .gradient-part 

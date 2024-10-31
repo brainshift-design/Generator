@@ -131,7 +131,7 @@ extends GValue
 
     toString()
     {
-        return        this.color  .toString(false)
+        return        this.color  .toString()
               + ' ' + this.opacity.toString()
               + ' ' + this.blend  .toString();
     }
@@ -244,9 +244,9 @@ function parseFillValue(str, i = -1)
 
     const iStart = i;
 
-    const col = parseColorValue (str, i, false); i += col[1];
-    const a   = parseNumberValue(str[i]);        i += a  [1];
-    const bl  = parseNumberValue(str[i]);        i += bl [1];
+    const col = parseColorValue (str, i); i += col[1];
+    const a   = parseNumberValue(str[i]); i += a  [1];
+    const bl  = parseNumberValue(str[i]); i += bl [1];
 
     
     return [
