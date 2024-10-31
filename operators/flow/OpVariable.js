@@ -338,6 +338,8 @@ extends ResizableBaseWithSeparator
 
 
             this.removeAllParams();
+
+            this.paramValues    = [];
             this.menuBoolValues = [];
 
 
@@ -504,9 +506,9 @@ extends ResizableBaseWithSeparator
                 paramValue.noItalic                 = false;
 
                 if (  !(   paramValue.value.type  == NUMBER_VALUE
-                        && paramValue.value.value == varValue.value
                         && varValue.type == NUMBER_VALUE
-                    || paramValue.value.equals(varValue)))
+                        && paramValue.value.value == varValue.value)
+                    || paramValue.value.equals(varValue))
                 {
                     if (varValue.decimals <= paramValue.value.decimals)
                         this.checkNoUpdateDecimals(varValue, paramValue);

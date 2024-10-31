@@ -103,7 +103,7 @@ extends GValue
 
     toString()
     {
-        const varValues  = this.variableValues.map(v    => v.toString());
+        const varValues  = this.variableValues.map(v    => encodeURIComponent(v.toString()));
         const aliasIds   = this.aliasIds      .map(id   => id   == NULL ? NULL_VALUE : id  );
         const aliasNames = this.aliasNames    .map(name => name == NULL ? NULL_VALUE : encodeURIComponent(name));
 
@@ -212,7 +212,7 @@ function parseVariableValue(str, i = -1)
 
     for (let j = 0; j < nVariableValues; j++)
     {
-        const variableValue = parseValueFromType(variableType, _str[i]);
+        const variableValue = parseValueFromType(variableType, decodeURIComponent(_str[i]));
 
         variableValues.push(variableValue);
 
