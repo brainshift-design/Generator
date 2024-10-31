@@ -331,7 +331,7 @@ const presetTextFromBackground = '\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "ifElse2",\
-            "inputId": "h0",\
+            "inputId": "h1",\
             "list": "false"\
             },\
             {\
@@ -339,7 +339,7 @@ const presetTextFromBackground = '\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "ifElse2",\
-            "inputId": "h1",\
+            "inputId": "h0",\
             "list": "false"\
             },\
             {\
@@ -379,7 +379,7 @@ const presetTextFromBackground = '\
             "outputId": "h0",\
             "outputOrder": "1",\
             "inputNodeId": "ifElse",\
-            "inputId": "h0",\
+            "inputId": "h1",\
             "list": "false"\
             },\
             {\
@@ -387,7 +387,7 @@ const presetTextFromBackground = '\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "ifElse",\
-            "inputId": "h1",\
+            "inputId": "h0",\
             "list": "false"\
             },\
             {\
