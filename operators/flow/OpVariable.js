@@ -469,10 +469,10 @@ extends ResizableBaseWithSeparator
         
                 switch (resolvedType)
                 {
-                    case 'FLOAT':   icon = iconVarNumber;  iconOffsetY = 2; topPadding = 0; topMargin = 0; sideMargin = 1; break;
-                    case 'BOOLEAN': icon = iconVarBoolean; iconOffsetY = 2; topPadding = 1; topMargin = 0; sideMargin = 0; break;
-                    case 'STRING':  icon = iconVarText;    iconOffsetY = 2; topPadding = 0; topMargin = 3; sideMargin = 1; break;
-                    case 'COLOR':   icon = iconVarColor;   iconOffsetY = 2; topPadding = 0; topMargin = 0; sideMargin = 1; break;
+                    case 'FLOAT':   icon = iconVarNumber;       iconOffsetY = 2; topPadding = 0; topMargin =  0; sideMargin = 1; break;
+                    case 'BOOLEAN': icon = iconVarBoolean;      iconOffsetY = 2; topPadding = 1; topMargin =  0; sideMargin = 0; break;
+                    case 'STRING':  icon = iconVarText;         iconOffsetY = 2; topPadding = 0; topMargin =  3; sideMargin = 1; break;
+                    case 'COLOR':   icon = iconVarColorSmaller; iconOffsetY = 2; topPadding = 0; topMargin = -2; sideMargin = 1; break;
                 }
         
                 paramValue.controls[0].overrideText = `

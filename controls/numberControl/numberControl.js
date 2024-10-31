@@ -429,7 +429,7 @@ extends Control
 
     updateText()
     {
-        if (this.overrideText != '')
+        if (this.overrideText != NULL)
         {
             this.divValue.innerHTML = this.overrideText;
         }

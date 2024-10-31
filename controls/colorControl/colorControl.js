@@ -174,7 +174,14 @@ extends Control
 
     updateText()
     {
-        this.divValue.innerHTML = this.getValueText();
+        if (this.overrideText != NULL)
+        {
+            this.divValue.innerHTML = this.overrideText;
+        }
+        else
+        {
+            this.divValue.innerHTML = this.getValueText();
+        }
 
         this.textbox.value = this.divValue.innerText;
         
