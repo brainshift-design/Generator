@@ -1445,6 +1445,7 @@ const FO_VARIABLE_TYPE = 10;
 const FO_STROKES = 11;
 const FO_VARIABLE_COUNT = 11;
 const FO_STROKE_WEIGHT = 12;
+const FO_VARIABLE_IS_ALIAS = 12;
 const FO_STROKE_ALIGN = 13;
 const FO_STROKE_JOIN = 14;
 const FO_STROKE_MITER = 15;
@@ -2834,7 +2835,7 @@ function figUpdateVariableObjectAsync(genVar) {
         const varValueCount = genVar[FO_VARIABLE_COUNT];
         const varValues = [];
         for (let i = 0; i < varValueCount; i++)
-            varValues.push(genVar[FO_VARIABLE_COUNT + 1 + i]);
+            varValues.push(genVar[FO_VARIABLE_VALID + 1 + i]);
         const nameParts = varName.split('/');
         console.assert(nameParts.length > 1, 'nameParts must be > 1');
         let figVar;
@@ -2853,7 +2854,7 @@ function figUpdateVariableObjectAsync(genVar) {
         }
         //console.assert(figVar, 'variable must have been created');
         if (figVar) {
-            yield figUpdateVariableAsync(figVar.id, resolvedVar.id, varName, varValues);
+            yield figUpdateVariableAsync(figVar.id, resolvedVar.id, varName, varValues, genVar[FO_VARIABLE_IS_ALIAS]);
         }
     });
 }
@@ -3771,7 +3772,7 @@ function getVariableValuesAsync(varIds) {
         return variables;
     });
 }
-function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues) {
+function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues, isAlias) {
     return __awaiter(this, void 0, void 0, function* () {
         let variable = yield figma.variables.getVariableByIdAsync(varId);
         let resolvedVar = yield figma.variables.getVariableByIdAsync(resolvedVarId);
@@ -3791,9 +3792,11 @@ function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues) {
         const newVarName = newName.split('/').slice(1).join('/');
         if (variable.name != newVarName)
             variable.name = newVarName;
+        console.log('isAlias =', isAlias);
         for (let i = 0; i < newValues.length; i++) {
             let newValue = newValues[i];
-            if (newValue !== null) {
+            if (newValue !== null
+                && isAlias[i] === false) {
                 try {
                     if (resolvedVar.resolvedType == 'BOOLEAN')
                         newValue = newValue > 0;

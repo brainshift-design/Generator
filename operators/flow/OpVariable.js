@@ -462,25 +462,27 @@ extends ResizableBaseWithSeparator
             if (value.type == 'VARIABLE_ALIAS')
             {
                 let icon;
-                let iconOffsetY;
-                let topPadding;
-                let topMargin;
-                let sideMargin;
+                let oy; // offset-y
+                let pt; // padding-top
+                let mt; // margin-top
+                let mr; // margin-right
         
                 switch (resolvedType)
                 {
-                    case 'FLOAT':   icon = iconVarNumber;       iconOffsetY = 2; topPadding = 0; topMargin =  0; sideMargin = 1; break;
-                    case 'BOOLEAN': icon = iconVarBoolean;      iconOffsetY = 2; topPadding = 1; topMargin =  0; sideMargin = 0; break;
-                    case 'STRING':  icon = iconVarText;         iconOffsetY = 2; topPadding = 0; topMargin =  3; sideMargin = 1; break;
-                    case 'COLOR':   icon = iconVarColorSmaller; iconOffsetY = 2; topPadding = 0; topMargin = -2; sideMargin = 1; break;
+                    case 'FLOAT':   icon = iconVarNumber;       oy = 2; pt = 0; mt =  0; mr = 2; break;
+                    case 'BOOLEAN': icon = iconVarBoolean;      oy = 2; pt = 1; mt =  0; mr = 1; break;
+                    case 'STRING':  icon = iconVarText;         oy = 2; pt = 0; mt =  3; mr = 2; break;
+                    case 'COLOR':   icon = iconVarColorSmaller; oy = 2; pt = 0; mt = -2; mr = 2; break;
                 }
         
+                //background:    ${darkMode ? '#fff2' : '#0000001b'}; 
+                
                 paramValue.controls[0].overrideText = `
                     <div 
                         style="
-                            background:    ${darkMode ? '#ffffff1c' : '#00000028'}; 
-                            padding:       ${topPadding}px 4px 1px 4px;
-                            margin:        ${topMargin}px 0 0 0;
+                            box-shadow:    0 0 0 1px inset ${darkMode ? '#ffffff2b' : '#00000028'}; 
+                            padding:       ${pt}px 4px 1px 4px;
+                            margin:        ${mt}px 0 0 0;
                             border-radius: 3.5px;
                             width:         fit-content;
                             color:         var(--figma-color-text);">
@@ -489,8 +491,8 @@ extends ResizableBaseWithSeparator
                                 display:  inline-block; 
                                 position: relative; 
                                 opacity:  0.65;
-                                top:      ${iconOffsetY}px;
-                                margin:   0 ${sideMargin}px 0 0">
+                                top:      ${oy}px;
+                                margin:   0 ${mr}px 0 0">
                                 ${icon.replaceAll('white', 'var(--figma-color-text)')}
                         </div> 
                         ${resolvedAliasNames[i]}
@@ -506,14 +508,24 @@ extends ResizableBaseWithSeparator
                 paramValue.enabled                  = true;
                 paramValue.noItalic                 = false;
 
-                if (  !(   paramValue.value.type == NUMBER_VALUE
-                        && varValue        .type == NUMBER_VALUE
-                        && paramValue.value.value == varValue.value)
-                    || !paramValue.value.equals(varValue))
+                if (   paramValue.value.type == NUMBER_VALUE
+                    && varValue        .type == NUMBER_VALUE
+                    && paramValue.value.value !== varValue.value)
                 {
                     if (varValue.decimals <= paramValue.value.decimals)
                         this.checkNoUpdateDecimals(varValue, paramValue);
 
+                    paramValue.setValue(varValue, update, true, update);
+                }
+                else if (paramValue.oldValue
+                      && paramValue.oldValue.type == TEXT_VALUE
+                      && varValue           .type == TEXT_VALUE
+                      && paramValue.oldValue.value !== varValue.value)
+                {
+                    paramValue.setValue(varValue, update, true, update);
+                }
+                else if (!paramValue.value.equals(varValue))
+                {
                     paramValue.setValue(varValue, update, true, update);
                 }
             }

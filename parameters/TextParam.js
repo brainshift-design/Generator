@@ -32,6 +32,7 @@ extends Parameter
 
 
         this.defaultValue = new TextValue(defaultValue);
+        this.oldValue     = this.defaultValue.copy();
 
 
         this.controls[0] = new TextControl(
@@ -131,7 +132,7 @@ extends Parameter
         super.setValue(value, createAction, updateControl, dispatchEvents);
 
 
-        this.oldValue = this.value;
+        this.oldValue = this.value.copy();
     }    
 
 

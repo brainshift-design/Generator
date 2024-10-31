@@ -2164,10 +2164,10 @@ const FO_XP2            =  8;
 
 const FO_SCALE          =  9;
 
-const FO_FILLS          = 10;   const FO_VARIABLE_TYPE   = 10;
-const FO_STROKES        = 11;   const FO_VARIABLE_COUNT  = 11;
+const FO_FILLS          = 10;   const FO_VARIABLE_TYPE     = 10;
+const FO_STROKES        = 11;   const FO_VARIABLE_COUNT    = 11;
 
-const FO_STROKE_WEIGHT  = 12;
+const FO_STROKE_WEIGHT  = 12;   const FO_VARIABLE_IS_ALIAS = 12;
 const FO_STROKE_ALIGN   = 13;
 const FO_STROKE_JOIN    = 14;                                    
 const FO_STROKE_MITER   = 15;
@@ -4242,7 +4242,7 @@ async function figUpdateVariableObjectAsync(genVar)
     const varValues = [];
 
     for (let i = 0; i < varValueCount; i++)
-        varValues.push(genVar[FO_VARIABLE_COUNT + 1 + i]);
+        varValues.push(genVar[FO_VARIABLE_VALID + 1 + i]);
 
 
     const nameParts = varName.split('/');
@@ -4276,7 +4276,8 @@ async function figUpdateVariableObjectAsync(genVar)
             figVar.id,
             resolvedVar.id,
             varName,
-            varValues);
+            varValues,
+            genVar[FO_VARIABLE_IS_ALIAS]);
     }
 }
 
@@ -5576,7 +5577,7 @@ async function getVariableValuesAsync(varIds)
 
 
 
-async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues)
+async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues, isAlias)
 {
     let variable    = await figma.variables.getVariableByIdAsync(varId);
     let resolvedVar = await figma.variables.getVariableByIdAsync(resolvedVarId);
@@ -5610,12 +5611,14 @@ async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues)
     if (variable.name != newVarName)
         variable.name = newVarName;
 
-    
+
+    console.log('isAlias =', isAlias);
     for (let i = 0; i < newValues.length; i++)
     {
         let newValue = newValues[i];
 
-        if (newValue !== null)
+        if (   newValue   !== null
+            && isAlias[i] === false)
         {
             try
             {

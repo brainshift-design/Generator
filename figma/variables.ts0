@@ -220,7 +220,7 @@ async function getVariableValuesAsync(varIds)
 
 
 
-async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues)
+async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues, isAlias)
 {
     let variable    = await figma.variables.getVariableByIdAsync(varId);
     let resolvedVar = await figma.variables.getVariableByIdAsync(resolvedVarId);
@@ -254,12 +254,14 @@ async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues)
     if (variable.name != newVarName)
         variable.name = newVarName;
 
-    
+
+    console.log('isAlias =', isAlias);
     for (let i = 0; i < newValues.length; i++)
     {
         let newValue = newValues[i];
 
-        if (newValue !== null)
+        if (   newValue   !== null
+            && isAlias[i] === false)
         {
             try
             {

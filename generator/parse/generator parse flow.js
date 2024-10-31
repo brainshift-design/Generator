@@ -131,6 +131,10 @@ function genParseVariable(parse)
     variable.variableTemp = parseBool(parse.move());
 
 
+    variable.aliasIds   = variable.aliasIds  .map(id   => id   == NULL_VALUE ? NULL : id  );
+    variable.aliasNames = variable.aliasNames.map(name => name == NULL_VALUE ? NULL : name);
+
+
     if (parse.settings.logRequests) 
     {
         logReqString(variable.variableId   != NULL ? variable.variableId   : 'NULL', parse);

@@ -8028,10 +8028,10 @@ const FO_XP2            =  8;
 
 const FO_SCALE          =  9;
 
-const FO_FILLS          = 10;   const FO_VARIABLE_TYPE   = 10;
-const FO_STROKES        = 11;   const FO_VARIABLE_COUNT  = 11;
+const FO_FILLS          = 10;   const FO_VARIABLE_TYPE     = 10;
+const FO_STROKES        = 11;   const FO_VARIABLE_COUNT    = 11;
 
-const FO_STROKE_WEIGHT  = 12;
+const FO_STROKE_WEIGHT  = 12;   const FO_VARIABLE_IS_ALIAS = 12;
 const FO_STROKE_ALIGN   = 13;
 const FO_STROKE_JOIN    = 14;                                    
 const FO_STROKE_MITER   = 15;
@@ -11369,13 +11369,15 @@ extends FigmaObject
 {
     variableType;
     variableValues = [];
+    aliasIds       = [];
 
     
 
-    constructor(nodeId, variableId, variableName, variableValues)
+    constructor(nodeId, variableId, variableName, variableValues, aliasIds)
     {
         super(VARIABLE, nodeId, variableId, variableName);
         
+        this.aliasIds = aliasIds;
 
         if (variableValues.length > 0)
         {
@@ -11409,12 +11411,13 @@ extends FigmaObject
             this.nodeId,
             this.variableId,
             this.objectName,
+            [],
             []);
 
 
-        copy.variableType   =  this.variableType;
+        copy.variableType   = this.variableType;
         copy.variableValues = [...this.variableValues];
-
+        copy.aliasIds       = [...this.aliasIds];
 
         copy.copyBase(this);
 
@@ -11433,12 +11436,14 @@ extends FigmaObject
 
     toData()
     {
+        console.log('this.aliasIds =', this.aliasIds);
         const data = 
         [
             ...super.toData(),
    
             /* 10 */ this.variableType,
-            /* 11 */ this.variableValues.length
+            /* 11 */ this.variableValues.length,
+            /* 12 */ this.aliasIds.map(a => a !== NULL)
         ];
 
         for (const val of this.variableValues)
@@ -17063,10 +17068,10 @@ extends GValue
         this.variableValues = [...variableValues];
         this.aliasIds       = aliasIds.length == variableValues.length 
                                 ? [...aliasIds]
-                                : Array(variableValues.length).fill(NULL_VALUE); 
+                                : Array(variableValues.length).fill(NULL); 
         this.aliasNames     = aliasNames.length == variableValues.length 
                                 ? [...aliasNames]
-                                : Array(variableValues.length).fill(NULL_VALUE); 
+                                : Array(variableValues.length).fill(NULL); 
         this.variableTemp   = variableTemp;
     }
 
@@ -22642,7 +22647,8 @@ extends GOperator1
                 this.nodeId,
                 this.value.variableId,
                 this.value.variableName,
-                this.value.variableValues.map(v => v.copy()));
+                this.value.variableValues.map(v => v.copy()),
+                [...this.value.aliasIds]);
 
             this.value.objects.push(_var);
         }
@@ -56063,6 +56069,10 @@ function genParseVariable(parse)
 
 
     variable.variableTemp = parseBool(parse.move());
+
+
+    variable.aliasIds   = variable.aliasIds  .map(id   => id   == NULL_VALUE ? NULL : id  );
+    variable.aliasNames = variable.aliasNames.map(name => name == NULL_VALUE ? NULL : name);
 
 
     if (parse.settings.logRequests) 

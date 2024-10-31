@@ -3,13 +3,15 @@ extends FigmaObject
 {
     variableType;
     variableValues = [];
+    aliasIds       = [];
 
     
 
-    constructor(nodeId, variableId, variableName, variableValues)
+    constructor(nodeId, variableId, variableName, variableValues, aliasIds)
     {
         super(VARIABLE, nodeId, variableId, variableName);
         
+        this.aliasIds = aliasIds;
 
         if (variableValues.length > 0)
         {
@@ -43,12 +45,13 @@ extends FigmaObject
             this.nodeId,
             this.variableId,
             this.objectName,
+            [],
             []);
 
 
-        copy.variableType   =  this.variableType;
+        copy.variableType   = this.variableType;
         copy.variableValues = [...this.variableValues];
-
+        copy.aliasIds       = [...this.aliasIds];
 
         copy.copyBase(this);
 
@@ -67,12 +70,14 @@ extends FigmaObject
 
     toData()
     {
+        console.log('this.aliasIds =', this.aliasIds);
         const data = 
         [
             ...super.toData(),
    
             /* 10 */ this.variableType,
-            /* 11 */ this.variableValues.length
+            /* 11 */ this.variableValues.length,
+            /* 12 */ this.aliasIds.map(a => a !== NULL)
         ];
 
         for (const val of this.variableValues)

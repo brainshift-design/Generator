@@ -30,10 +30,10 @@ extends GValue
         this.variableValues = [...variableValues];
         this.aliasIds       = aliasIds.length == variableValues.length 
                                 ? [...aliasIds]
-                                : Array(variableValues.length).fill(NULL_VALUE); 
+                                : Array(variableValues.length).fill(NULL); 
         this.aliasNames     = aliasNames.length == variableValues.length 
                                 ? [...aliasNames]
-                                : Array(variableValues.length).fill(NULL_VALUE); 
+                                : Array(variableValues.length).fill(NULL); 
         this.variableTemp   = variableTemp;
     }
 

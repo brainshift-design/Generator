@@ -144,7 +144,8 @@ extends GOperator1
                 this.nodeId,
                 this.value.variableId,
                 this.value.variableName,
-                this.value.variableValues.map(v => v.copy()));
+                this.value.variableValues.map(v => v.copy()),
+                [...this.value.aliasIds]);
 
             this.value.objects.push(_var);
         }
