@@ -20,10 +20,10 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramMoveType    = new SelectParam('moveType',    'type',        false, true, true, ['position', 'vector'], 0));
+        this.addParam(this.paramMoveType    = new OptionParam('moveType',    'type',        false, true, true, ['position', 'vector'], 0));
         this.addParam(this.paramX           = new NumberParam('x',           'X',           true,  true, true));
         this.addParam(this.paramY           = new NumberParam('y',           'Y',           true,  true, true));
-        this.addParam(this.paramAffectSpace = new SelectParam('affectSpace', 'move space',  false, true, true, ['space', 'object', 'object & space'], 1));
+        this.addParam(this.paramAffectSpace = new OptionParam('affectSpace', 'move space',  false, true, true, ['space', 'object', 'object & space'], 1));
 
 
         this.paramAffectSpace.controls[0].allowEditDecimals = false;

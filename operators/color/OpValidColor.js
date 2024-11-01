@@ -29,7 +29,7 @@ extends OpColorBase
         this.alwaysSaveParams = true;
 
         
-        this.addParam(this.paramMethod = new SelectParam('method', '', false, true, true, ['clip sRGB', 'clip chroma', 'find closest'], 1));
+        this.addParam(this.paramMethod = new OptionParam('method', '', false, true, true, ['clip sRGB', 'clip chroma', 'find closest'], 1));
 
 
         this.initCorrections('');

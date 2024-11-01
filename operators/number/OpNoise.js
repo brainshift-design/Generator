@@ -31,7 +31,7 @@ extends OperatorBase
         this.addParam(this.paramScale       = new NumberParam('scale',       'scale',     true,  true, true, 1, 0.0001));
         this.addParam(this.paramOffset      = new NumberParam('offset',      'offset',    true,  true, true, 0, 0));
         this.addParam(this.paramEvolve      = new NumberParam('evolve',      'evolve',    true,  true, true, 0, 0));
-        this.addParam(this.paramInterpolate = new SelectParam('interpolate', 'blend',     true,  true, true, ['step', 'linear', 'cosine'], 2));
+        this.addParam(this.paramInterpolate = new OptionParam('interpolate', 'blend',     true,  true, true, ['step', 'linear', 'cosine'], 2));
         this.addParam(this.paramDetail      = new NumberParam('detail',      'detail',    true,  true, true, 1, 1));
 
 

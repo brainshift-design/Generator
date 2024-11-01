@@ -21,7 +21,7 @@
 //         this.addInput (new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
 //         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-//         this.addParam(this.paramBase      = new SelectParam('base',      'base',      true, true, true, ['10', '16']));
+//         this.addParam(this.paramBase      = new OptionParam('base',      'base',      true, true, true, ['10', '16']));
 //         this.addParam(this.paramDecimals  = new TextParam  ('decimals',  'decimals',  true, true, true, '.'));
 //         this.addParam(this.paramTrim      = new NumberParam('trim',      'trim',      true, true, true, 0, 0, 1));
 //         this.addParam(this.paramThousands = new TextParam  ('thousands', 'thousands', true, true, true, ''));

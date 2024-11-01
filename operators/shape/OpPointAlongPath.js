@@ -20,7 +20,7 @@ extends OpShapeBase
         this.addOutput(new Output([POINT_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramPosition   = new SelectParam('position',   'position',    true, true, true, ['relative', 'absolute'], 0));
+        this.addParam(this.paramPosition   = new OptionParam('position',   'position',    true, true, true, ['relative', 'absolute'], 0));
         this.addParam(this.paramDistance   = new NumberParam('distance',   'distance',    true, true, true, 0, 0));
         this.addParam(this.paramOffset     = new NumberParam('offset',     'offset',      true, true, true, 0));
         this.addParam(this.paramTransform  = new NumberParam('transform',  'transform',   true, true, true, 1, 0, 1));

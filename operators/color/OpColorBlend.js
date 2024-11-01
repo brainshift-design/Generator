@@ -26,7 +26,7 @@ extends OpColorBase
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramMode   = new SelectParam('mode',   '',       false, true, true, BlendModes.map(bm => bm[1]), 0));
+        this.addParam(this.paramMode   = new OptionParam('mode',   '',       false, true, true, BlendModes.map(bm => bm[1]), 0));
         this.addParam(this.paramAmount = new NumberParam('amount', 'amount', false, true, true, 50, 0,  100, 0));
       
         

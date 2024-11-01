@@ -33,7 +33,7 @@ extends OpShape
         this.addOutput(new Output([ARC_PATH_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramPosition = new SelectParam('position', 'position', false, true, true, ['top-left', 'center'], 0));
+        this.addParam(this.paramPosition = new OptionParam('position', 'position', false, true, true, ['top-left', 'center'], 0));
         this.addParam(this.paramX        = new NumberParam('x',        'X',        true,  true, true,   0));
         this.addParam(this.paramY        = new NumberParam('y',        'Y',        true,  true, true,   0));
         this.addParam(this.paramWidth    = new NumberParam('width',    'width',    true,  true, true, 100));

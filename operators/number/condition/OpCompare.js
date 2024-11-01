@@ -17,7 +17,7 @@ extends OperatorBase
         this.addInput(new Input([NUMBER_VALUE, TEXT_VALUE, NUMBER_LIST_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, CONDITION_OPS.map(s => s[1]), 3));
+        this.addParam(this.paramOperation = new OptionParam('operation', '', false, true, true, CONDITION_OPS.map(s => s[1]), 3));
         this.addParam(this.paramOperand   = new NumberParam('operand',   'operand', false, true, true, 0));
 
         this.paramOperation.reverseMenu = true;

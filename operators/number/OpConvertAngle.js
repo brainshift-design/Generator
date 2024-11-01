@@ -16,7 +16,7 @@ extends OperatorBase
         this.addInput (new Input ([NUMBER_VALUE, NUMBER_LIST_VALUE, TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramFrom = new SelectParam('from', '', false, true,  true, ['deg ⟶ rad', 'rad ⟶ deg'], 0));
+        this.addParam(this.paramFrom = new OptionParam('from', '', false, true,  true, ['deg ⟶ rad', 'rad ⟶ deg'], 0));
     }
 
 

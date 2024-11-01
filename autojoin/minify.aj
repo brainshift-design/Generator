@@ -633,7 +633,7 @@ menuNodeHighlight
 menuNodeSelect
 menuLocalStyles
 menuLocalVariables
-menuSelectParam
+menuOptionParam
 menuRemoveLicense
 menuText
 menuTextbox
@@ -2356,7 +2356,7 @@ PointParam
 PolygonParam
 RectangleParam
 RoundCornersParam
-SelectParam
+OptionParam
 ShapeGroupParam
 StarParam
 StrokeParam
@@ -2869,7 +2869,7 @@ _param
 parseTextValue
 parseColorValue
 parseColorStopValue
-initSelectParamMenu
+initOptionParamMenu
 indexPad
 MenuItem
 setChecked

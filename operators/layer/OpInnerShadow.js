@@ -26,7 +26,7 @@ extends OperatorBase
         this.addParam(this.paramBlur   = new NumberParam('blur',   'blur',   true,  true, true, 4, 0));
         this.addParam(this.paramSpread = new NumberParam('spread', 'spread', true,  true, true, 0));
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, new FillValue(ColorValue.fromRgb([0, 0, 0]), new NumberValue(25))));
-        this.addParam(this.paramBlend  = new SelectParam('blend',  'blend',  false, true, true, BlendModes.map(bm => bm[1]), 0));
+        this.addParam(this.paramBlend  = new OptionParam('blend',  'blend',  false, true, true, BlendModes.map(bm => bm[1]), 0));
 
 
         this.setAllParamDividers(0.55);

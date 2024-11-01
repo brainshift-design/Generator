@@ -34,7 +34,7 @@ extends OpColorBase
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [0, 1, 2, 3, 4, 5], 2));
+        this.addParam(this.paramOrder = new OptionParam('order', '', false, true, true, [0, 1, 2, 3, 4, 5], 2));
         
         this.paramOrder.addEventListener('change', () => this.updateCorrections());
         

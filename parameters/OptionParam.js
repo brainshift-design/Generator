@@ -1,4 +1,4 @@
-class   SelectParam
+class   OptionParam
 extends NumberParamBase
 {
     options           = [];
@@ -196,9 +196,9 @@ extends NumberParamBase
 
 
 
-function initSelectParamMenu(param)
+function initOptionParamMenu(param)
 {
-    menuSelectParam.clearItems();
+    menuOptionParam.clearItems();
 
 
     const s = !param.reverseMenu ? 0 : param.controls[0].displayMax;
@@ -217,7 +217,7 @@ function initSelectParamMenu(param)
 
 
         if (param.separatorsBefore.includes(i))
-            menuSelectParam.addItems([new MenuItem(option, null, false, {separator: true})]);
+            menuOptionParam.addItems([new MenuItem(option, null, false, {separator: true})]);
         
 
         const options = { 
@@ -244,9 +244,9 @@ function initSelectParamMenu(param)
 
         item.setChecked(i == param.value.toNumber());
 
-        menuSelectParam.addItems([item]);
+        menuOptionParam.addItems([item]);
     }
 
 
-    menuSelectParam.minWidth = param.minMenuWidth;
+    menuOptionParam.minWidth = param.minMenuWidth;
 }

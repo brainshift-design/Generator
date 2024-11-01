@@ -37,7 +37,7 @@ extends OpColorBase
 
         this.addParam(this.paramColor   = new ColorParam ('color',   'color',   false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
-        this.addParam(this.paramBlend   = new SelectParam('blend',   'blend',   false, true, true, BlendModes.map(bm => bm[1]), 0));
+        this.addParam(this.paramBlend   = new OptionParam('blend',   'blend',   false, true, true, BlendModes.map(bm => bm[1]), 0));
 
 
         //this.paramColor.isNodeValue = true;

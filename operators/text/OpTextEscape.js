@@ -17,7 +17,7 @@ extends OperatorBase
         this.addInput (new Input ([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramMethod = new SelectParam('method', 'method', true, true, true, ['\\', '%'], 0));
+        this.addParam(this.paramMethod = new OptionParam('method', 'method', true, true, true, ['\\', '%'], 0));
 
 
         this.paramMethod.divider = 0.59;

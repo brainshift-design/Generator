@@ -26,8 +26,8 @@ extends OpShapeBase
 
         this.addParam(this.paramX     = new NumberParam('x',     'X',     true, true, true, 0));
         this.addParam(this.paramY     = new NumberParam('y',     'Y',     true, true, true, 0));
-        this.addParam(this.paramJoin  = new SelectParam('join',  'join',  true, true, true, ['miter', 'bevel', 'round'], 0));
-        this.addParam(this.paramCap   = new SelectParam('cap',   'cap',   true, true, true, ['none', 'square', 'round'], 0));
+        this.addParam(this.paramJoin  = new OptionParam('join',  'join',  true, true, true, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramCap   = new OptionParam('cap',   'cap',   true, true, true, ['none', 'square', 'round'], 0));
         this.addParam(this.paramRound = new NumberParam('round', 'round', true, true, true, 0, 0));
 
 

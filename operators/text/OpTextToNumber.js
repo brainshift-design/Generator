@@ -17,7 +17,7 @@ extends OperatorBase
         this.addInput(new Input([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramBase      = new SelectParam('base',      'base',      true, true, true, ['10', '16']));
+        this.addParam(this.paramBase      = new OptionParam('base',      'base',      true, true, true, ['10', '16']));
         this.addParam(this.paramDecimals  = new TextParam  ('decimals',  'decimals',  true, true, true, '.'));
         this.addParam(this.paramThousands = new TextParam  ('thousands', 'thousands', true, true, true, '_'));
 

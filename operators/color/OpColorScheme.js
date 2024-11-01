@@ -42,8 +42,8 @@ extends OperatorBase
         this.alwaysSaveParams = true;
 
         
-        this.addParam(this.paramType  = new SelectParam('schemeType', '',      false, true, true, ['less similar', 'similar', 'similar with accent', 'opposite', 'opposite -', 'opposite +', 'opposite split', 'triangle', 'double opposite -', 'rectangle -', 'rectangle +', 'double opposite +', 'square', 'hexagon'], 0));
-        this.addParam(this.paramSpace = new SelectParam('space',      'space', false, true, true, ['HSL', 'HCL / ok', 'HCL / ab', 'HCL / uv'], 0));
+        this.addParam(this.paramType  = new OptionParam('schemeType', '',      false, true, true, ['less similar', 'similar', 'similar with accent', 'opposite', 'opposite -', 'opposite +', 'opposite split', 'triangle', 'double opposite -', 'rectangle -', 'rectangle +', 'double opposite +', 'square', 'hexagon'], 0));
+        this.addParam(this.paramSpace = new OptionParam('space',      'space', false, true, true, ['HSL', 'HCL / ok', 'HCL / ab', 'HCL / uv'], 0));
 
 
         this.header.connectionPadding = 18;

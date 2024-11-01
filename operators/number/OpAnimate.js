@@ -34,8 +34,8 @@ extends OperatorBase //WithValue
         //this.addParam(this.paramValue);
         this.addParam(this.paramFrom   = new NumberParam('from',   'from',   true,  true, true, 0, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0));
         this.addParam(this.paramTo     = new NumberParam('to',     'to',     true,  true, true, 1, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 0));
-        this.addParam(this.paramRepeat = new SelectParam('repeat', 'repeat', false, true, true, ['once', 'repeat', 'ping-pong']));
-        this.addParam(this.paramCurve  = new SelectParam('curve',  'curve',  true,  true, true, ['step', 'linear', 'ease in', 'ease out', 'smooth'], 1));
+        this.addParam(this.paramRepeat = new OptionParam('repeat', 'repeat', false, true, true, ['once', 'repeat', 'ping-pong']));
+        this.addParam(this.paramCurve  = new OptionParam('curve',  'curve',  true,  true, true, ['step', 'linear', 'ease in', 'ease out', 'smooth'], 1));
         this.addParam(this.paramLength = new NumberParam('length', 'length', true,  true, true, 5, 0, Number.MAX_SAFE_INTEGER, 0));
         this.addParam(this.paramTime   = new NumberParam('time',   'time',   true,  true, true, 0, 0, Number.MAX_SAFE_INTEGER, 1));
 

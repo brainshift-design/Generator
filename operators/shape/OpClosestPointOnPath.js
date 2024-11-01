@@ -19,7 +19,7 @@ extends OpShapeBase
         this.addOutput(new Output([POINT_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramConstrain = new SelectParam('constrain', 'constrain',   false, true, true, ['X & Y', 'only X', 'only Y'], 0));
+        this.addParam(this.paramConstrain = new OptionParam('constrain', 'constrain',   false, true, true, ['X & Y', 'only X', 'only Y'], 0));
         this.addParam(this.paramTransform = new NumberParam('transform', 'transform',   true, true, true, 1, 0, 1));
 
 

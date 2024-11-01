@@ -19,7 +19,7 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramUnits      = new SelectParam('units',      'units',       false, true, true, ['object', 'relative', 'absolute'], 0));
+        this.addParam(this.paramUnits      = new OptionParam('units',      'units',       false, true, true, ['object', 'relative', 'absolute'], 0));
         this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center X',    true,  true, true, 50, 0, 100));
         this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center Y',    true,  true, true, 50, 0, 100));
 

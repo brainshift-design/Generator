@@ -27,11 +27,11 @@ extends OpShapeBase
 
  
         this.addParam(this.paramScale    = new NumberParam('scale',   'scale',         true, true, true, 1, 0.01));
-        this.addParam(this.paramFormat   = new SelectParam('format',  'format',        true, true, true, ['PNG', 'JPG', 'SVG', 'PDF'], 0));
+        this.addParam(this.paramFormat   = new OptionParam('format',  'format',        true, true, true, ['PNG', 'JPG', 'SVG', 'PDF'], 0));
      // this.addParam(this.paramContents = new NumberParam('contents','contents only', true, true, true, 1, 0, 1));
      // this.addParam(this.paramCrop     = new NumberParam('crop',    'crop',          true, true, true, 1, 0, 1));
         this.addParam(this.paramSuffix   = new   TextParam('suffix',  'suffix',        true, true, true));
-     // this.addParam(this.paramProfile  = new SelectParam('profile', 'colors',        true, true, true, ['current', 'sRGB', 'P3'], 0));
+     // this.addParam(this.paramProfile  = new OptionParam('profile', 'colors',        true, true, true, ['current', 'sRGB', 'P3'], 0));
 
 
         this.setAllParamDividers(0.47);

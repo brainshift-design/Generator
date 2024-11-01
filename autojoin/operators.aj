@@ -2,7 +2,7 @@
 
 ../parameters/NumberParamBase.js
 ../parameters/NumberParam.js
-../parameters/SelectParam.js
+../parameters/OptionParam.js
 ../parameters/TextParam.js
 ../parameters/ColorParam.js
 ../parameters/FillParam.js

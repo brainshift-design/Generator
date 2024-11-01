@@ -24,9 +24,9 @@ extends OpShape
         this.addOutput(new Output([VECTOR_PATH_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramDegree  = new SelectParam('degree',  'degree',  false, true, true, PathJoinDegrees, 0));
+        this.addParam(this.paramDegree  = new OptionParam('degree',  'degree',  false, true, true, PathJoinDegrees, 0));
         this.addParam(this.paramClosed  = new NumberParam('closed',  'closed',  true,  true, true, 0, 0, 1));
-        this.addParam(this.paramWinding = new SelectParam('winding', 'wind',    true,  true, true, PathWindings));
+        this.addParam(this.paramWinding = new OptionParam('winding', 'wind',    true,  true, true, PathWindings));
         this.addParam(this.paramRound   = new NumberParam('round',   'round',   true,  true, true, 0, 0));
 
 

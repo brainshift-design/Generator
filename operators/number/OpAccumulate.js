@@ -17,7 +17,7 @@ extends OperatorBase
         this.addInput (new Input ([NUMBER_VALUE, TEXT_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramWhen = new SelectParam('when', 'when', false, true, true, ['before', 'after'], 0));
+        this.addParam(this.paramWhen = new OptionParam('when', 'when', false, true, true, ['before', 'after'], 0));
     }
 
 

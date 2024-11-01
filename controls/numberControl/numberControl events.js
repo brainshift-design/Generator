@@ -201,8 +201,8 @@ NumberControl.prototype.initEvents = function()
             if (    param
                 && !isEmpty(this.options))
             {
-                initSelectParamMenu(param);
-                menuSelectParam.showAt(e.clientX, e.clientY, false);
+                initOptionParamMenu(param);
+                menuOptionParam.showAt(e.clientX, e.clientY, false);
             }
         }
     });

@@ -107,7 +107,7 @@ var menuNodeRandomize;
 
 var menuLocalStyles;
 var menuLocalVariables;
-var menuSelectParam;
+var menuOptionParam;
 
 var menuRemoveLicense;
 
@@ -1110,7 +1110,7 @@ function initGeneratorMenus()
 
     menuLocalStyles    = new Menu('Local styles',    true,  true);
     menuLocalVariables = new Menu('Local variables', true,  true);
-    menuSelectParam    = new Menu('Select options',  false, true);
+    menuOptionParam    = new Menu('Select options',  false, true);
 
     
     btnMain     = new MenuButton('', menuMain,     {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});

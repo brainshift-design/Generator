@@ -120,8 +120,8 @@ extends EventTarget
         //             &&  this.controls[0] instanceof NumberControl
         //             && !isEmpty(this.controls[0].options))
         //         {
-        //             initSelectParamMenu(this);
-        //             menuSelectParam.showAt(e.clientX, e.clientY, false);
+        //             initOptionParamMenu(this);
+        //             menuOptionParam.showAt(e.clientX, e.clientY, false);
         //         }
         //     }
         // });

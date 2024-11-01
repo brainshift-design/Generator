@@ -18,7 +18,7 @@ extends OpShape
         this.addNewInput();
         this.addOutput(new Output([VECTOR_REGION_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));//, this.output_backInit));
 
-        this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
+        this.addParam(this.paramWinding = new OptionParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
 
         this.addBaseParamsAfter();
 

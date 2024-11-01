@@ -18,7 +18,7 @@ extends OperatorBase
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramAmount = new NumberParam('amount', 'amount', false, true, true, 50, 0, 100, 0));
-        this.addParam(this.paramDegree = new SelectParam('degree', 'degree', false, true, true, ['linear', 'quadratic', 'cubic', 'cosine'], 0));
+        this.addParam(this.paramDegree = new OptionParam('degree', 'degree', false, true, true, ['linear', 'quadratic', 'cubic', 'cosine'], 0));
 
         
         this.paramAmount.controls[0].min = Number.MIN_SAFE_INTEGER; // allow

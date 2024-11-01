@@ -28,7 +28,7 @@ extends OpShape
 
 
         this.addParam(this.paramChildren = new ListParam  ('children', 'objects',  false, true, true));
-        this.addParam(this.paramPosition = new SelectParam('position', 'position', true,  true, true, FramePositions, 0));
+        this.addParam(this.paramPosition = new OptionParam('position', 'position', true,  true, true, FramePositions, 0));
         this.addParam(this.paramX        = new NumberParam('x',        'X',        true,  true, true, 0));
         this.addParam(this.paramY        = new NumberParam('y',        'Y',        true,  true, true, 0));
         this.addParam(this.paramWidth    = new NumberParam('width',    'width',    true,  true, true, 100, 0.01));

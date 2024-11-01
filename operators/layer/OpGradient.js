@@ -51,15 +51,15 @@ extends OpColorBase
         this.addOutput(new Output([GRADIENT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
         
 
-        this.addParam(this.paramType     = new SelectParam('gradType', '',         false, true, true, ['linear', 'radial', 'angular', 'diamond'], 0));
-        this.addParam(this.paramPosition = new SelectParam('position', 'position', false, true, true, ['proportional', 'relative W', 'relative H', 'absolute', 'canvas'], 1));
+        this.addParam(this.paramType     = new OptionParam('gradType', '',         false, true, true, ['linear', 'radial', 'angular', 'diamond'], 0));
+        this.addParam(this.paramPosition = new OptionParam('position', 'position', false, true, true, ['proportional', 'relative W', 'relative H', 'absolute', 'canvas'], 1));
         this.addParam(this.paramX        = new NumberParam('x',        'x',        true,  true, true,   0));
         this.addParam(this.paramY        = new NumberParam('y',        'y',        true,  true, true,  50));
         this.addParam(this.paramSize     = new NumberParam('size',     'size',     true,  true, true, 100));
         this.addParam(this.paramAngle    = new NumberParam('angle',    'angle',    true,  true, true,   0));
         this.addParam(this.paramAspect   = new NumberParam('aspect',   'aspect',   true,  true, true, 100));
         this.addParam(this.paramSkew     = new NumberParam('skew',     'skew',     true,  true, true,   0));
-        this.addParam(this.paramBlend    = new SelectParam('blend',    'blend',    false, true, true, BlendModes.map(bm => bm[1]), 0));
+        this.addParam(this.paramBlend    = new OptionParam('blend',    'blend',    false, true, true, BlendModes.map(bm => bm[1]), 0));
 
 
         this.paramX     .controls[0].suffix        = '%';

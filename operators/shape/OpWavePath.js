@@ -32,15 +32,15 @@ extends OpShape
         this.addOutput(new Output([WAVE_PATH_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramShape     = new SelectParam('shape',     'shape',     false, true, true, ['square', 'saw', 'back saw', 'triangle', 'sine'], 4));
+        this.addParam(this.paramShape     = new OptionParam('shape',     'shape',     false, true, true, ['square', 'saw', 'back saw', 'triangle', 'sine'], 4));
         this.addParam(this.paramX         = new NumberParam('x',         'X',         true,  true, true,   0));
         this.addParam(this.paramY         = new NumberParam('y',         'Y',         true,  true, true,   0));
         this.addParam(this.paramWidth     = new NumberParam('width',     'width',     true,  true, true, 100));
         this.addParam(this.paramAmplitude = new NumberParam('amplitude', 'amplitude', true,  true, true, 100));
         this.addParam(this.paramFrequency = new NumberParam('frequency', 'frequency', true,  true, true, 1, 0));
         this.addParam(this.paramOffset    = new NumberParam('offset',    'offset',    true,  true, true, 0));
-        this.addParam(this.paramAlignX    = new SelectParam('alignX',    'align X',   true,  true, true, ['left', 'center', 'right'], 0));
-        this.addParam(this.paramAlignY    = new SelectParam('alignY',    'align Y',   true,  true, true, ['bottom', 'middle', 'top'], 1));
+        this.addParam(this.paramAlignX    = new OptionParam('alignX',    'align X',   true,  true, true, ['left', 'center', 'right'], 0));
+        this.addParam(this.paramAlignY    = new OptionParam('alignY',    'align Y',   true,  true, true, ['bottom', 'middle', 'top'], 1));
 
 
         this.setAllParamDividers(0.55);
