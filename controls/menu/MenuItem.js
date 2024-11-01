@@ -108,7 +108,7 @@ class MenuItem
         this.divName      = createDiv('menuItemName'     );
         this.divExpand    = createDiv('menuItemExpand'   );
         this.divShortcut  = createDiv('menuItemShortcut' );
-        this.divPro       = createDiv('menuItemSubscribe');
+        this.divPro       = createDiv('menuItemPro'      );
 
         this.divSeparator = createDiv('menuSeparator'    );
 

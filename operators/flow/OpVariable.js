@@ -350,7 +350,10 @@ extends ResizableBaseWithSeparator
             {
                 for (let i = 0; i < nParams; i++)
                 {
-                    const showIO = aliasNames[i] == NULL;
+                    const showIO = 
+                           aliasNames[i] == NULL
+                        && (   i == 0
+                            || subscribed());
 
                     const paramValue = this.createAndAddParamByType(
                         type, 
@@ -410,7 +413,7 @@ extends ResizableBaseWithSeparator
                 this.updateParams();
                 this.separator.style.display = this.paramValues.length > 1 ? 'block' : 'none';
                 
-                
+
                 if (diffParamCount)
                 {
                     graphView.updateNodes([this]);
@@ -474,7 +477,37 @@ extends ResizableBaseWithSeparator
             const varValue = getValueFromVariable(resolvedType, resolvedValue);
   
             
-            if (value.type == 'VARIABLE_ALIAS')
+            if (    i > 0
+                && !subscribed())
+            {
+                paramValue.controls[0].overrideText = `
+                    <div 
+                        class="menuItemPro"
+                        style="
+                            display:        inline-block;
+                            position:       relative;
+                            left:           0px;
+                            top:           -2px;
+                            font-family:    Inter, sans-serif;
+                            font-size:      9.5px;
+                            font-weight:    700;
+                            color:          var(--figma-color-bg-brand);
+                            box-shadoW:     0 0 0 1px var(--figma-color-bg-brand) inset;
+                            background:     transparent;
+                            margin-top:     1px;
+                            padding-left:   5px;
+                            padding-right:  5px;
+                            padding-top:    2px;
+                            padding-bottom: 2px;
+                            border-radius:  3px;">
+                        PRO
+                    </div>
+                `;
+
+                paramValue.enabled  = false;
+                paramValue.noItalic = true;
+            }
+            else if (value.type == 'VARIABLE_ALIAS')
             {
                 let icon;
                 let oy; // offset-y
