@@ -377,54 +377,69 @@ NumberControl.prototype.initTextbox = function()
         let   value      = this.textbox.value;
         const savedValue = this.textbox.savedValue;
 
-        value = value.replace(this.suffix, '');
 
-        value = replaceLast(value, ',', '.');
-        value = replaceLast(value, '٫', '.');
+        let val, savedVal, isHex;
+        
+
+        const valueIndex = this.textValues.findIndex(v => v[1].toLowerCase() == value.trim().toLowerCase());
 
 
-        let sepCount = 0;
-
-        for (let i = 0; i < value.length; i++)
+        if (valueIndex > -1)
         {
-            if (   value[i] == '.'
-                || value[i] == ','
-                || value[i] == '٫')
-                sepCount++;
+            val   = this.textValues[valueIndex][0];
+            isHex = false;
         }
 
-        if (sepCount > 1)
-            success = false;
-                
-        
-        let isHex = this.showHex;
-
-        if (   value.length >= 2
-            && value.substring(0, 2) == '0x')
+        else
         {
-            isHex = true;
-            value = value.substring(2);   
+            value = value.replace(this.suffix, '');
+
+            value = replaceLast(value, ',', '.');
+            value = replaceLast(value, '٫', '.');
+
+
+            let sepCount = 0;
+
+            for (let i = 0; i < value.length; i++)
+            {
+                if (   value[i] == '.'
+                    || value[i] == ','
+                    || value[i] == '٫')
+                    sepCount++;
+            }
+
+            if (sepCount > 1)
+                success = false;
+                    
+            
+            isHex = this.showHex;
+
+            if (   value.length >= 2
+                && value.substring(0, 2) == '0x')
+            {
+                isHex = true;
+                value = value.substring(2);   
+            }
+
+            
+            val = 
+                value.trim() == NAN_DISPLAY 
+                ? Number.NaN 
+                : (isHex
+                ? parseInt(value, 16) 
+                : parseFloat(value));
+
+            if (!isNaN(val))
+                val /= this.valueScale;
         }
 
-        
-        let val = 
-            value.trim() == NAN_DISPLAY 
-            ? Number.NaN 
-            : (isHex
-               ? parseInt(value, 16) 
-               : parseFloat(value));
 
-
-        let savedVal = 
+        savedVal = 
             savedValue.trim() == NAN_DISPLAY  
             ? Number.NaN 
             : (isHex
                ? parseInt(savedValue, 16) 
                : parseFloat(savedValue));
-
-        
-        if (!isNaN(val))
-            val /= this.valueScale;
 
 
         const e = new CustomEvent('finishedit', { 'detail': {
@@ -459,7 +474,7 @@ NumberControl.prototype.initTextbox = function()
         if (   this.inFocus
             && focusControl)
             this.param.div.focus();
-    };    
+    };
 };
 
 

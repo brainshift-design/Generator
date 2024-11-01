@@ -57,6 +57,10 @@ extends NumberParamBase
         this.controls[0].barTop            = 0.8;
 
 
+        for (let i = 0; i < options.length; i++)
+            this.controls[0].textValues.push([i, options[i]]);
+
+
         if (hasInput)  this.initInput([NUMBER_VALUE, TEXT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 

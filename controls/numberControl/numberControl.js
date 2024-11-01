@@ -54,6 +54,9 @@ extends Control
     textStyleDark         = '#eee';
                 
             
+    textValues            = [];
+
+    
     enableChangeEvent     = true;
     
     successOnFocusOut     = false;

@@ -23,6 +23,16 @@ extends OperatorBase
         this.paramOperation.controls[0].allowEditDecimals = false;
         this.paramOperation.reverseMenu = true;
     
+        this.paramOperation.controls[0].textValues =
+        [
+            [0, '%'],
+            [1, '/'],
+            [2, '-'],
+            [3, '+'],
+            [4, '*'],
+            [5, '^'] 
+        ];
+        
     
         this.getDescription = () => `performs arithmetic on all inputs in their order`;
 

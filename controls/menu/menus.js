@@ -1258,7 +1258,7 @@ function initGeneratorMenus()
         menuData,
         menuList,
         menuItems,
-        menuVariables,
+        //menuVariables,
         menuParams,
         menuNames,
         menuSets,
