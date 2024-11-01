@@ -769,7 +769,7 @@ extends ResizableBaseWithSeparator
             this.aliasNames   = _node.aliasNames 
                                     ? _node.aliasNames
                                         .split(' ')
-                                        .map(name => name == NULL_VALUE ? NULL : encodeURIComponent(name))
+                                        .map(name => name == NULL_VALUE ? NULL : decodeURIComponent(name))
                                     : [];
             this.variableTemp = parseBool(_node.variableTemp);
         }
