@@ -132,7 +132,7 @@ extends Parameter
         super.setValue(value, createAction, updateControl, dispatchEvents);
 
 
-        this.oldValue = this.value.copy();
+        this.oldValue = value;
     }    
 
 

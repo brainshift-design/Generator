@@ -142,7 +142,7 @@ async function figUpdateVariableObjectAsync(genVar)
     const varValues = [];
 
     for (let i = 0; i < varValueCount; i++)
-        varValues.push(genVar[FO_VARIABLE_VALID + 1 + i]);
+        varValues.push(genVar[FO_VARIABLE_IS_ALIAS + 1 + i]);
 
 
     const nameParts = varName.split('/');

@@ -2835,7 +2835,7 @@ function figUpdateVariableObjectAsync(genVar) {
         const varValueCount = genVar[FO_VARIABLE_COUNT];
         const varValues = [];
         for (let i = 0; i < varValueCount; i++)
-            varValues.push(genVar[FO_VARIABLE_VALID + 1 + i]);
+            varValues.push(genVar[FO_VARIABLE_IS_ALIAS + 1 + i]);
         const nameParts = varName.split('/');
         console.assert(nameParts.length > 1, 'nameParts must be > 1');
         let figVar;
