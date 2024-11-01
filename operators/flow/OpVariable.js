@@ -299,6 +299,7 @@ extends ResizableBaseWithSeparator
 
 
         if (   this.paramValues.length == 0
+            || this.paramValues.length != nParams
             || this.paramValues.some(p => p.type != type)
             || this.isBool != prevIsBool)
         {
@@ -401,6 +402,12 @@ extends ResizableBaseWithSeparator
                         && input.canConnectFrom(output))
                         uiConnect(output, input);
                 }
+
+
+                this.updateParams();
+                graphView.updateNodes([this]);
+
+                this.separator.style.display = this.paramValues.length > 1 ? 'block' : 'none';
             }
             
             else
