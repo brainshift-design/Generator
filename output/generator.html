@@ -17143,6 +17143,7 @@ extends GValue
             + ' ' + (this.variableValues.length > 0 ? this.variableValues[0].type           : NULL_VALUE)
             + ' ' +  this.variableValues.length
                   + (varValues .length > 0 ? ' ' + varValues .join(' ') : '')
+            + ' ' +  this.aliasIds.length
                   + (aliasIds  .length > 0 ? ' ' + aliasIds  .join(' ') : '')
                   + (aliasNames.length > 0 ? ' ' + aliasNames.join(' ') : '')
             + ' ' + (this.variableTemp ? 'T' : 'E'); // T = temp, E = existing
@@ -17172,6 +17173,7 @@ extends GValue
             + ' '   + (this.variableValues.length > 0 ? this.variableValues[0].type : NULL_VALUE)
             + ' '   +  this.variableValues.length
                     + (varValues .length > 0 ? ' ' + varValues .join(' ') : '')
+            + ' '   +  this.aliasIds.length
                     + (aliasIds  .length > 0 ? ' ' + aliasIds  .join(' ') : '')
                     + (aliasNames.length > 0 ? ' ' + aliasNames.join(' ') : '')
             + ' '   + (this.variableTemp ? 'T' : 'E'); // T = temp, E = existing
@@ -17252,9 +17254,12 @@ function parseVariableValue(str, i = -1)
     }
 
 
+    const nAliases = _str[i] != NULL_VALUE ? parseInt(_str[i]) : NULL;     length += _str[i].length + 1;  i++;
+
+
     const aliasIds = [];
 
-    for (let j = 0; j < nVariableValues; j++)
+    for (let j = 0; j < nAliases; j++)
     {
         const aliasId = 
             _str[i] == NULL_VALUE 
@@ -17270,7 +17275,7 @@ function parseVariableValue(str, i = -1)
 
     const aliasNames = [];
 
-    for (let j = 0; j < nVariableValues; j++)
+    for (let j = 0; j < nAliases; j++)
     {
         const aliasName = 
             _str[i] == NULL_VALUE 
@@ -22723,7 +22728,8 @@ function getVariableValue(type, value, colorFromFigma, parse)
         {
             let _value = value;
 
-            if (_value.r)
+            if (   _value
+                && _value.r)
             {
                 _value = 
                 [
@@ -22735,7 +22741,8 @@ function getVariableValue(type, value, colorFromFigma, parse)
             }
 
 
-            if (rgbIsNaN(_value))
+            if (  !_value
+                || rgbIsNaN(_value))
                 _value = parse.settings.colorVarNullValue;
 
 
@@ -56054,10 +56061,12 @@ function genParseVariable(parse)
     }
 
 
-    for (let i = 0; i < nVars; i++)
+    const nAliases = parseInt(parse.move());
+
+    for (let i = 0; i < nAliases; i++)
         variable.aliasIds.push(parse.move());
 
-    for (let i = 0; i < nVars; i++)
+    for (let i = 0; i < nAliases; i++)
         variable.aliasNames.push(parse.move());
 
 
@@ -56070,8 +56079,8 @@ function genParseVariable(parse)
 
     if (parse.settings.logRequests) 
     {
-        logReqString(variable.variableId   != NULL ? variable.variableId   : 'NULL', parse);
-        logReqString(variable.variableType != NULL ? variable.variableType : 'NULL', parse);
+        logReqString(variable.variableId   == NULL ? NULL_VALUE : variable.variableId,   parse);
+        logReqString(variable.variableType == NULL ? NULL_VALUE : variable.variableType, parse);
         logReqString(variable.variableName != ''   ? '\'' + variable.variableName + '\'' : '\'\'', parse);
         
 
@@ -56080,15 +56089,15 @@ function genParseVariable(parse)
             switch (variable.variableType)
             {
                 case 'FLOAT':   
-                    logReqString(varVal ? varVal.toString() : 'null', parse);
+                    logReqString(varVal ? varVal.toString() : NULL_VALUE, parse);
                     break;
                     
                 case 'BOOLEAN': 
-                    logReqString(varVal ? boolToString(varVal) : 'null', parse);
+                    logReqString(varVal ? boolToString(varVal) : NULL_VALUE, parse);
                     break;
                     
                 case 'STRING':  
-                    logReqString(varVal ?? 'null', parse);
+                    logReqString(varVal ?? NULL_VALUE, parse);
                     break;
                     
                 case 'COLOR':
@@ -56106,7 +56115,14 @@ function genParseVariable(parse)
         if (variable.aliasIds.length > 0)
         {
             for (const aliasId of variable.aliasIds)
-                logReqString(aliasId, parse);
+                logReqString(aliasId == NULL ? NULL_VALUE : aliasId, parse);
+        }
+
+
+        if (variable.aliasNames.length > 0)
+        {
+            for (const aliasName of variable.aliasNames)
+                logReqString(aliasName == NULL ? NULL_VALUE : aliasName, parse);
         }
 
 

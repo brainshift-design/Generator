@@ -112,6 +112,7 @@ extends GValue
             + ' ' + (this.variableValues.length > 0 ? this.variableValues[0].type           : NULL_VALUE)
             + ' ' +  this.variableValues.length
                   + (varValues .length > 0 ? ' ' + varValues .join(' ') : '')
+            + ' ' +  this.aliasIds.length
                   + (aliasIds  .length > 0 ? ' ' + aliasIds  .join(' ') : '')
                   + (aliasNames.length > 0 ? ' ' + aliasNames.join(' ') : '')
             + ' ' + (this.variableTemp ? 'T' : 'E'); // T = temp, E = existing
@@ -141,6 +142,7 @@ extends GValue
             + ' '   + (this.variableValues.length > 0 ? this.variableValues[0].type : NULL_VALUE)
             + ' '   +  this.variableValues.length
                     + (varValues .length > 0 ? ' ' + varValues .join(' ') : '')
+            + ' '   +  this.aliasIds.length
                     + (aliasIds  .length > 0 ? ' ' + aliasIds  .join(' ') : '')
                     + (aliasNames.length > 0 ? ' ' + aliasNames.join(' ') : '')
             + ' '   + (this.variableTemp ? 'T' : 'E'); // T = temp, E = existing
@@ -221,9 +223,12 @@ function parseVariableValue(str, i = -1)
     }
 
 
+    const nAliases = _str[i] != NULL_VALUE ? parseInt(_str[i]) : NULL;     length += _str[i].length + 1;  i++;
+
+
     const aliasIds = [];
 
-    for (let j = 0; j < nVariableValues; j++)
+    for (let j = 0; j < nAliases; j++)
     {
         const aliasId = 
             _str[i] == NULL_VALUE 
@@ -239,7 +244,7 @@ function parseVariableValue(str, i = -1)
 
     const aliasNames = [];
 
-    for (let j = 0; j < nVariableValues; j++)
+    for (let j = 0; j < nAliases; j++)
     {
         const aliasName = 
             _str[i] == NULL_VALUE 

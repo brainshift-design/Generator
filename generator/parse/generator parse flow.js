@@ -121,10 +121,12 @@ function genParseVariable(parse)
     }
 
 
-    for (let i = 0; i < nVars; i++)
+    const nAliases = parseInt(parse.move());
+
+    for (let i = 0; i < nAliases; i++)
         variable.aliasIds.push(parse.move());
 
-    for (let i = 0; i < nVars; i++)
+    for (let i = 0; i < nAliases; i++)
         variable.aliasNames.push(parse.move());
 
 
@@ -137,8 +139,8 @@ function genParseVariable(parse)
 
     if (parse.settings.logRequests) 
     {
-        logReqString(variable.variableId   != NULL ? variable.variableId   : 'NULL', parse);
-        logReqString(variable.variableType != NULL ? variable.variableType : 'NULL', parse);
+        logReqString(variable.variableId   == NULL ? NULL_VALUE : variable.variableId,   parse);
+        logReqString(variable.variableType == NULL ? NULL_VALUE : variable.variableType, parse);
         logReqString(variable.variableName != ''   ? '\'' + variable.variableName + '\'' : '\'\'', parse);
         
 
@@ -147,15 +149,15 @@ function genParseVariable(parse)
             switch (variable.variableType)
             {
                 case 'FLOAT':   
-                    logReqString(varVal ? varVal.toString() : 'null', parse);
+                    logReqString(varVal ? varVal.toString() : NULL_VALUE, parse);
                     break;
                     
                 case 'BOOLEAN': 
-                    logReqString(varVal ? boolToString(varVal) : 'null', parse);
+                    logReqString(varVal ? boolToString(varVal) : NULL_VALUE, parse);
                     break;
                     
                 case 'STRING':  
-                    logReqString(varVal ?? 'null', parse);
+                    logReqString(varVal ?? NULL_VALUE, parse);
                     break;
                     
                 case 'COLOR':
@@ -173,7 +175,14 @@ function genParseVariable(parse)
         if (variable.aliasIds.length > 0)
         {
             for (const aliasId of variable.aliasIds)
-                logReqString(aliasId, parse);
+                logReqString(aliasId == NULL ? NULL_VALUE : aliasId, parse);
+        }
+
+
+        if (variable.aliasNames.length > 0)
+        {
+            for (const aliasName of variable.aliasNames)
+                logReqString(aliasName == NULL ? NULL_VALUE : aliasName, parse);
         }
 
 

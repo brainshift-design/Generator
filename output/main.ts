@@ -4233,10 +4233,11 @@ async function figUpdateObjectsAsync(figParent, genObjects, batchSize, totalObje
 
 async function figUpdateVariableObjectAsync(genVar)
 {
-    const nodeId        = genVar[FO_NODE_ID       ];
-    const varId         = genVar[FO_OBJECT_ID     ];
-    const varName       = genVar[FO_OBJECT_NAME   ];
-    const varValueCount = genVar[FO_VARIABLE_COUNT];
+    const nodeId        = genVar[FO_NODE_ID          ];
+    const varId         = genVar[FO_OBJECT_ID        ];
+    const varName       = genVar[FO_OBJECT_NAME      ];
+    const varValueCount = genVar[FO_VARIABLE_COUNT   ];
+    const varIsAlias    = genVar[FO_VARIABLE_IS_ALIAS];
     
 
     const varValues = [];
@@ -4250,7 +4251,6 @@ async function figUpdateVariableObjectAsync(genVar)
 
 
     let figVar;
-    let resolvedVar;
     let collection;
 
 
@@ -4263,7 +4263,7 @@ async function figUpdateVariableObjectAsync(genVar)
     }
     else // linked already
     {
-        [figVar, resolvedVar] = await figLinkNodeToVariableAsync(nodeId, varId);
+        [figVar, ] = await figLinkNodeToVariableAsync(nodeId, varId);
         collection = await figma.variables.getVariableCollectionByIdAsync(figVar.variableCollectionId);
     }
 
@@ -4272,12 +4272,12 @@ async function figUpdateVariableObjectAsync(genVar)
 
     if (figVar)
     {
+        console.log('varIsAlias =', varIsAlias);
         await figUpdateVariableAsync(
             figVar.id,
-            resolvedVar.id,
             varName,
             varValues,
-            genVar[FO_VARIABLE_IS_ALIAS]);
+            varIsAlias);
     }
 }
 
@@ -5577,18 +5577,15 @@ async function getVariableValuesAsync(varIds)
 
 
 
-async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues, isAlias)
+async function figUpdateVariableAsync(varId, newName, newValues, isAlias)
 {
-    let variable    = await figma.variables.getVariableByIdAsync(varId);
-    let resolvedVar = await figma.variables.getVariableByIdAsync(resolvedVarId);
+    let variable = await figma.variables.getVariableByIdAsync(varId);
 
-    if (   !variable
-        || !resolvedVar) 
+    if (!variable) 
         return;
 
 
-    const collection         = await figma.variables.getVariableCollectionByIdAsync(variable   .variableCollectionId);    
-    const resolvedCollection = await figma.variables.getVariableCollectionByIdAsync(resolvedVar.variableCollectionId);    
+    const collection = await figma.variables.getVariableCollectionByIdAsync(variable   .variableCollectionId);    
 
 
     // if necessary, move the variable to a new collection, create it if necessary
@@ -5612,7 +5609,6 @@ async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues, 
         variable.name = newVarName;
 
 
-    console.log('isAlias =', isAlias);
     for (let i = 0; i < newValues.length; i++)
     {
         let newValue = newValues[i];
@@ -5622,10 +5618,10 @@ async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues, 
         {
             try
             {
-                if (resolvedVar.resolvedType == 'BOOLEAN')
+                if (variable.resolvedType == 'BOOLEAN')
                     newValue = newValue > 0;
 
-                resolvedVar.setValueForMode(resolvedCollection.modes[i].modeId, newValue);
+                variable.setValueForMode(collection.modes[i].modeId, newValue);
             }
             catch (ex)
             {

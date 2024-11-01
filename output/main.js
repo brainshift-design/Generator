@@ -2833,13 +2833,13 @@ function figUpdateVariableObjectAsync(genVar) {
         const varId = genVar[FO_OBJECT_ID];
         const varName = genVar[FO_OBJECT_NAME];
         const varValueCount = genVar[FO_VARIABLE_COUNT];
+        const varIsAlias = genVar[FO_VARIABLE_IS_ALIAS];
         const varValues = [];
         for (let i = 0; i < varValueCount; i++)
             varValues.push(genVar[FO_VARIABLE_IS_ALIAS + 1 + i]);
         const nameParts = varName.split('/');
         console.assert(nameParts.length > 1, 'nameParts must be > 1');
         let figVar;
-        let resolvedVar;
         let collection;
         if (varId == NULL) // not linked yet
          {
@@ -2849,12 +2849,13 @@ function figUpdateVariableObjectAsync(genVar) {
         }
         else // linked already
          {
-            [figVar, resolvedVar] = yield figLinkNodeToVariableAsync(nodeId, varId);
+            [figVar,] = yield figLinkNodeToVariableAsync(nodeId, varId);
             collection = yield figma.variables.getVariableCollectionByIdAsync(figVar.variableCollectionId);
         }
         //console.assert(figVar, 'variable must have been created');
         if (figVar) {
-            yield figUpdateVariableAsync(figVar.id, resolvedVar.id, varName, varValues, genVar[FO_VARIABLE_IS_ALIAS]);
+            console.log('varIsAlias =', varIsAlias);
+            yield figUpdateVariableAsync(figVar.id, varName, varValues, varIsAlias);
         }
     });
 }
@@ -3772,15 +3773,12 @@ function getVariableValuesAsync(varIds) {
         return variables;
     });
 }
-function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues, isAlias) {
+function figUpdateVariableAsync(varId, newName, newValues, isAlias) {
     return __awaiter(this, void 0, void 0, function* () {
         let variable = yield figma.variables.getVariableByIdAsync(varId);
-        let resolvedVar = yield figma.variables.getVariableByIdAsync(resolvedVarId);
-        if (!variable
-            || !resolvedVar)
+        if (!variable)
             return;
         const collection = yield figma.variables.getVariableCollectionByIdAsync(variable.variableCollectionId);
-        const resolvedCollection = yield figma.variables.getVariableCollectionByIdAsync(resolvedVar.variableCollectionId);
         // if necessary, move the variable to a new collection, create it if necessary
         const newCollectionName = newName.split('/')[0];
         if (collection.name != newCollectionName) {
@@ -3792,15 +3790,14 @@ function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues, isAlia
         const newVarName = newName.split('/').slice(1).join('/');
         if (variable.name != newVarName)
             variable.name = newVarName;
-        console.log('isAlias =', isAlias);
         for (let i = 0; i < newValues.length; i++) {
             let newValue = newValues[i];
             if (newValue !== null
                 && isAlias[i] === false) {
                 try {
-                    if (resolvedVar.resolvedType == 'BOOLEAN')
+                    if (variable.resolvedType == 'BOOLEAN')
                         newValue = newValue > 0;
-                    resolvedVar.setValueForMode(resolvedCollection.modes[i].modeId, newValue);
+                    variable.setValueForMode(collection.modes[i].modeId, newValue);
                 }
                 catch (ex) {
                     // this is to catch the misfire from variable polling

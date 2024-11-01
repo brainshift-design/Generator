@@ -227,7 +227,8 @@ function getVariableValue(type, value, colorFromFigma, parse)
         {
             let _value = value;
 
-            if (_value.r)
+            if (   _value
+                && _value.r)
             {
                 _value = 
                 [
@@ -239,7 +240,8 @@ function getVariableValue(type, value, colorFromFigma, parse)
             }
 
 
-            if (rgbIsNaN(_value))
+            if (  !_value
+                || rgbIsNaN(_value))
                 _value = parse.settings.colorVarNullValue;
 
 

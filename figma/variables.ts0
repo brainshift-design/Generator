@@ -220,18 +220,15 @@ async function getVariableValuesAsync(varIds)
 
 
 
-async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues, isAlias)
+async function figUpdateVariableAsync(varId, newName, newValues, isAlias)
 {
-    let variable    = await figma.variables.getVariableByIdAsync(varId);
-    let resolvedVar = await figma.variables.getVariableByIdAsync(resolvedVarId);
+    let variable = await figma.variables.getVariableByIdAsync(varId);
 
-    if (   !variable
-        || !resolvedVar) 
+    if (!variable) 
         return;
 
 
-    const collection         = await figma.variables.getVariableCollectionByIdAsync(variable   .variableCollectionId);    
-    const resolvedCollection = await figma.variables.getVariableCollectionByIdAsync(resolvedVar.variableCollectionId);    
+    const collection = await figma.variables.getVariableCollectionByIdAsync(variable   .variableCollectionId);    
 
 
     // if necessary, move the variable to a new collection, create it if necessary
@@ -255,7 +252,6 @@ async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues, 
         variable.name = newVarName;
 
 
-    console.log('isAlias =', isAlias);
     for (let i = 0; i < newValues.length; i++)
     {
         let newValue = newValues[i];
@@ -265,10 +261,10 @@ async function figUpdateVariableAsync(varId, resolvedVarId, newName, newValues, 
         {
             try
             {
-                if (resolvedVar.resolvedType == 'BOOLEAN')
+                if (variable.resolvedType == 'BOOLEAN')
                     newValue = newValue > 0;
 
-                resolvedVar.setValueForMode(resolvedCollection.modes[i].modeId, newValue);
+                variable.setValueForMode(collection.modes[i].modeId, newValue);
             }
             catch (ex)
             {

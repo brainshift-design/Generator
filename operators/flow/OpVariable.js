@@ -37,8 +37,7 @@ extends ResizableBaseWithSeparator
         this.divIcon.style.pointerEvents = 'all';
 
 
-        this.addHeaderInput();
-        this.addHeaderOutput();
+        this.updateInputsAndOutputs();
 
 
         this.divIcon.addEventListener('pointerenter', e => 
@@ -167,10 +166,7 @@ extends ResizableBaseWithSeparator
         request.push(this.variableValues.length);
 
 
-        const nVarValues = this.variableValues.length;
-
-
-        for (let i = 0; i < nVarValues; i++)
+        for (let i = 0; i < this.variableValues.length; i++)
         {
             const varValue = this.variableValues[i];
 
@@ -195,10 +191,12 @@ extends ResizableBaseWithSeparator
         }
 
 
-        for (let i = 0; i < nVarValues; i++)
+        request.push(this.aliasIds.length);
+        
+        for (let i = 0; i < this.aliasIds.length; i++)
             request.push(this.aliasIds[i]);
 
-        for (let i = 0; i < nVarValues; i++)
+        for (let i = 0; i < this.aliasIds.length; i++)
             request.push(this.aliasNames[i]);
 
 
@@ -475,8 +473,6 @@ extends ResizableBaseWithSeparator
                     case 'COLOR':   icon = iconVarColorSmaller; oy = 2; pt = 0; mt = -2; mr = 2; break;
                 }
         
-                //background:    ${darkMode ? '#fff2' : '#0000001b'}; 
-                
                 paramValue.controls[0].overrideText = `
                     <div 
                         style="
@@ -605,7 +601,7 @@ extends ResizableBaseWithSeparator
         }
         else
         {
-            this.addHeaderInput();
+            this.removeHeaderInput();
             this.removeHeaderOutput();
         }
     }
@@ -738,51 +734,55 @@ extends ResizableBaseWithSeparator
         const tab = HTAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"variableId": "'   + this.variableId   + '"'
-             + ',\n' + pos + tab + '"variableType": "' + this.variableType + '"'
-             + ',\n' + pos + tab + '"variableName": "' + encodeURIComponent(this.variableName) + '"'
-             + ',\n' + pos + tab + '"aliasIds": "'     + this.aliasIds  .map(id   => id   == NULL ? NULL_VALUE : id).join(' ') + '"'
-             + ',\n' + pos + tab + '"aliasNames": "'   + this.aliasNames.map(name => name == NULL ? NULL_VALUE : encodeURIComponent(name)).join(' ') + '"'
-             + ',\n' + pos + tab + '"variableTemp": "' + boolToString(this.variableTemp) + '"';
+             + ',\n' + pos + tab + '"variableId": "'     + this.variableId   + '"'
+             + ',\n' + pos + tab + '"variableType": "'   + this.variableType + '"'
+             + ',\n' + pos + tab + '"variableName": "'   + encodeURIComponent(this.variableName) + '"'
+             + ',\n' + pos + tab + '"aliasIds": "'       + this.aliasIds      .map(id   => id   == NULL ? NULL_VALUE : id).join(' ') + '"'
+             + ',\n' + pos + tab + '"aliasNames": "'     + this.aliasNames    .map(name => name == NULL ? NULL_VALUE : encodeURIComponent(name)).join(' ') + '"'
+             + ',\n' + pos + tab + '"variableTemp": "'   + boolToString(this.variableTemp) + '"';
     }
 
 
 
     loadParams(_node, pasting)
     {
-        const found = graph.currentPage.nodes.find(n => n.variableId == _node.variableId);
-
-
         super.loadParams(_node, pasting);
 
+
+        const found = graph.currentPage.nodes.find(n => n.variableId == _node.variableId);
 
         if (!found)
         {
             this.variableId   = _node.variableId;
             this.variableType = _node.variableType;
             this.variableName = decodeURIComponent(_node.variableName);
-            this.aliasIds     = _node.aliasIds 
-                                    ? _node.aliasIds
-                                        .split(' ')
-                                        .map(id => id == NULL_VALUE ? NULL : id)
-                                    : [];
-            this.aliasNames   = _node.aliasNames 
-                                    ? _node.aliasNames
-                                        .split(' ')
-                                        .map(name => name == NULL_VALUE ? NULL : decodeURIComponent(name))
-                                    : [];
+            
+            this.aliasIds = 
+                _node.aliasIds 
+                    ? _node.aliasIds
+                        .split(' ')
+                        .map(id => id == NULL_VALUE ? NULL : id)
+                    : [];
+
+            this.aliasNames = _node.aliasNames 
+                ? _node.aliasNames
+                    .split(' ')
+                    .map(name => name == NULL_VALUE ? NULL : decodeURIComponent(name))
+                : [];
+
             this.variableTemp = parseBool(_node.variableTemp);
         }
         else
         {
-            this.name         = this.defName;
+            this.name           = this.defName;
 
-            this.variableId   = NULL;
-            this.variableType = NULL;
-            this.variableName = '';
-            this.aliasIds     = [];
-            this.aliasNames   = [];
-            this.variableTem  = false;
+            this.variableId     = NULL;
+            this.variableType   = NULL;
+            this.variableName   = '';
+            this.variableValues = [];
+            this.aliasIds       = [];
+            this.aliasNames     = [];
+            this.variableTem    = false;
         }
 
 
