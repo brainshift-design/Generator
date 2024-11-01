@@ -2854,7 +2854,6 @@ function figUpdateVariableObjectAsync(genVar) {
         }
         //console.assert(figVar, 'variable must have been created');
         if (figVar) {
-            console.log('varIsAlias =', varIsAlias);
             yield figUpdateVariableAsync(figVar.id, varName, varValues, varIsAlias);
         }
     });

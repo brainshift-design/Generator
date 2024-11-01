@@ -4272,7 +4272,6 @@ async function figUpdateVariableObjectAsync(genVar)
 
     if (figVar)
     {
-        console.log('varIsAlias =', varIsAlias);
         await figUpdateVariableAsync(
             figVar.id,
             varName,

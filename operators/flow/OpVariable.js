@@ -746,7 +746,8 @@ extends ResizableBaseWithSeparator
 
     loadParams(_node, pasting)
     {
-        super.loadParams(_node, pasting);
+        if (!pasting)
+            super.loadParams(_node, pasting);
 
 
         const found = graph.currentPage.nodes.find(n => n.variableId == _node.variableId);
@@ -774,15 +775,14 @@ extends ResizableBaseWithSeparator
         }
         else
         {
-            this.name           = this.defName;
+            this.name         = this.defName;
 
-            this.variableId     = NULL;
-            this.variableType   = NULL;
-            this.variableName   = '';
-            this.variableValues = [];
-            this.aliasIds       = [];
-            this.aliasNames     = [];
-            this.variableTem    = false;
+            this.variableId   = NULL;
+            this.variableType = NULL;
+            this.variableName = '';
+            this.aliasIds     = [];
+            this.aliasNames   = [];
+            this.variableTem  = false;
         }
 
 
