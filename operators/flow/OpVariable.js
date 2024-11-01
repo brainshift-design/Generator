@@ -298,8 +298,11 @@ extends ResizableBaseWithSeparator
         this.isBool = isBool;
 
 
+        const diffParamCount = this.paramValues.length != nParams;
+
+
         if (   this.paramValues.length == 0
-            || this.paramValues.length != nParams
+            || diffParamCount
             || this.paramValues.some(p => p.type != type)
             || this.isBool != prevIsBool)
         {
@@ -405,9 +408,16 @@ extends ResizableBaseWithSeparator
 
 
                 this.updateParams();
-                graphView.updateNodes([this]);
-
                 this.separator.style.display = this.paramValues.length > 1 ? 'block' : 'none';
+                
+                
+                if (diffParamCount)
+                {
+                    graphView.updateNodes([this]);
+    
+                    actionManager.clear();
+                    uiShowClearUndoWarning('variables');
+                }
             }
             
             else

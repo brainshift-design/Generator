@@ -30,6 +30,10 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
+        if (!value)
+            return;
+
+        
         if (   this.markMenuPro
             && this.markMenuPro.includes(value.value))
         {

@@ -70,7 +70,6 @@ extends FigmaObject
 
     toData()
     {
-        console.log('this.aliasIds =', this.aliasIds);
         const data = 
         [
             ...super.toData(),
