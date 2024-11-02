@@ -210,8 +210,6 @@ this.header.addEventListener('pointerdown', e =>
         let   savedConn = graphView.savedConn;
 
 
-        console.log('-11');
-        
         if (this.div.dragging)
         {
             const x       = graphView.div.clientLeft;

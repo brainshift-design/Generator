@@ -19,7 +19,7 @@ class GValue
         this.type    = type;
         this.parent  = null;
         
-        this.valueId = valueId;
+        this.valueId = NULL;//valueId;
     
         this.valid   = true;
     }
