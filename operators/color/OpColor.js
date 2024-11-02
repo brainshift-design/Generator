@@ -57,6 +57,29 @@ extends OpColorBase
 
         this.paramSpace.alwaysSaveValue  = true;
 
+        this.paramSpace.controls[0].textValues =
+        [
+            [ 0, 'hex'                          ],
+            [ 1, 'rgb'                          ],
+            [ 2, 'hsl'                          ],
+            [ 3, 'hsv',   'hsb'                 ],
+            [ 4, 'lin',   'linear'              ],
+            [ 5, 'p3'                           ],
+            [ 6, 'a98',   'adobe98'             ],
+            [ 7, 'pro',   'prophoto'            ],
+            [ 8, 'r2020', 'rec2020', 'rec.2020' ],
+            [ 9, 'hclok', 'okhcl',   'oklch'    ],
+            [10, 'hclab'                        ],
+            [11, 'hcluv'                        ],
+            [12, 'oklab'                        ],
+            [13, 'lab'                          ],
+            [14, 'luv'                          ],
+            [15, 'xyz'                          ],
+            [16, 'xyz50'                        ],
+            [17, 'xyz65'                        ]
+        ];
+        
+
         this.param1    .alwaysSaveValue  = true;
         this.param2    .alwaysSaveValue  = true;
         this.param3    .alwaysSaveValue  = true;

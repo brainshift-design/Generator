@@ -381,7 +381,14 @@ NumberControl.prototype.initTextbox = function()
         let val, savedVal, isHex;
         
 
-        const valueIndex = this.textValues.findIndex(v => v[1].toLowerCase() == value.trim().toLowerCase());
+        const valueIndex = this.textValues.findIndex(v => 
+        {
+            for (let i = 1; i < v.length; i++)
+                if (v[i].toLowerCase() == value.trim().toLowerCase())
+                    return true;
+
+            return false;
+        });
 
 
         if (valueIndex > -1)

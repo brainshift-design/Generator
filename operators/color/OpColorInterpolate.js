@@ -53,6 +53,28 @@ extends OpColorBase
         this.paramSpace.excludeFromMenu.push(0);
         this.paramSpace.input.outputMustBeCached = true;
 
+        this.paramSpace.controls[0].textValues =
+        [
+            [ 0, 'hex'                          ],
+            [ 1, 'rgb'                          ],
+            [ 2, 'hsl'                          ],
+            [ 3, 'hsv',   'hsb'                 ],
+            [ 4, 'lin',   'linear'              ],
+            [ 5, 'p3'                           ],
+            [ 6, 'a98',   'adobe98'             ],
+            [ 7, 'pro',   'prophoto'            ],
+            [ 8, 'r2020', 'rec2020', 'rec.2020' ],
+            [ 9, 'hclok', 'okhcl',   'oklch'    ],
+            [10, 'hclab'                        ],
+            [11, 'hcluv'                        ],
+            [12, 'oklab'                        ],
+            [13, 'lab'                          ],
+            [14, 'luv'                          ],
+            [15, 'xyz'                          ],
+            [16, 'xyz50'                        ],
+            [17, 'xyz65'                        ]
+        ];
+
         
         this.paramAmount.controls[0].min = Number.MIN_SAFE_INTEGER; // allow
         this.paramAmount.controls[0].max = Number.MAX_SAFE_INTEGER; // extrapolation

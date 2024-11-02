@@ -24,6 +24,15 @@ extends OperatorBase
 
         this.paramFormat.separatorsBefore.push(3, 6, 8, 10, 11);
 
+        this.paramFormat.controls[0].textValues =
+        [
+            [0, 'hex'                          ],
+            [1, 'rgb 1',      'rgb 0-1'        ],
+            [2, 'rgb 255',    'rgb 0-255'      ],
+            [3, 'html',       'html name'      ],
+            [4, 'structured', 'structured name']
+        ];
+
         this.paramTrim.divider = 0.66;
 
         this.menutrim = createBoolMenu(this.paramTrim);

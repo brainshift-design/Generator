@@ -23,6 +23,23 @@ extends OperatorBase
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
     
         this.addParam(this.paramFormat = new OptionParam('format', 'format', false, true,  true, ['Hex', 'RGB 0 – 1', 'RGB 0 – 255', 'HTML name', 'structured name']));
+
+        this.paramFormat.controls[0].textValues =
+        [
+            [ 0, 'hex'                          ],
+            [ 1, 'rgb 1',      'rgb 0-1'        ],
+            [ 2, 'rgb 255',    'rgb 0-255'      ],
+            [ 3, 'css hex'                      ],
+            [ 4, 'css rgb'                      ],
+            [ 5, 'css hsl'                      ],
+            [ 6, 'css oklch'                    ],
+            [ 7, 'css lch'                      ],
+            [ 8, 'css oklab'                    ],
+            [ 9, 'css lab'                      ],
+            [10, 'css color'                    ],
+            [11, 'html',       'html name'      ],
+            [12, 'structured', 'structured name']
+        ];
     }
 
 
