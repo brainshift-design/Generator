@@ -162,9 +162,9 @@ extends OpShape
         let json = super.toJsonBase(nTab);
 
         json += 
-              ',\n' + pos + tab + '"innerAbsolute": "'  + this.innerAbsolute  + '"'
-            + ',\n' + pos + tab + '"startInDegrees": "' + this.startInDegrees + '"';
-            + ',\n' + pos + tab + '"sweepInDegrees": "' + this.sweepInDegrees + '"';
+              ',\n' + pos + tab + '"innerAbsolute": "'  + boolToString(this.innerAbsolute ) + '"'
+            + ',\n' + pos + tab + '"startInDegrees": "' + boolToString(this.startInDegrees) + '"'
+            + ',\n' + pos + tab + '"sweepInDegrees": "' + boolToString(this.sweepInDegrees) + '"';
 
         return json;
     }
@@ -175,14 +175,9 @@ extends OpShape
     {
         super.loadParams(_node, pasting);
 
-        if (   _node.innerAbsolute
-            && _node.startInDegrees
-            && _node.sweepInDegrees)
-        {
-            this.innerAbsolute  = parseBool(_node.innerAbsolute);
-            this.startInDegrees = parseBool(_node.startInDegrees);
-            this.sweepInDegrees = parseBool(_node.sweepInDegrees);
-        }
+        this.innerAbsolute  = _node.innerAbsolute  ? parseBool(_node.innerAbsolute ) : false;
+        this.startInDegrees = _node.startInDegrees ? parseBool(_node.startInDegrees) : true ;
+        this.sweepInDegrees = _node.sweepInDegrees ? parseBool(_node.sweepInDegrees) : false;
     }
 }
 
