@@ -115,19 +115,23 @@ extends EventTarget
             const tc = graphView.tempConn;
 
 
-            if (    tc
-                &&  tc.input
-                &&  tc.input.canConnectFrom(this)
-                && !this.node.isOrFollows(tc.input.node))
+            if (   !tc
+                || !tc.output)
             {
-                graphView.overOutput = this;
-                tc.output            = this;
+                if (    tc
+                    &&  tc.input
+                    &&  tc.input.canConnectFrom(this)
+                    && !this.node.isOrFollows(tc.input.node))
+                {
+                    graphView.overOutput = this;
+                    tc.output            = this;
 
-                tc.output.updateControl();
-                tc.input .updateControl();
+                    tc.output.updateControl();
+                    tc.input .updateControl();
+                }
+                else
+                    graphView.overOutput = this; 
             }
-            else
-                graphView.overOutput = this; 
         });
 
 
@@ -184,8 +188,9 @@ extends EventTarget
     {
         graphView.overOutput = null;
 
-        if (   graphView.tempConn
-            && graphView.tempConn.input) 
+        if (    graphView.tempConn
+            &&  graphView.tempConn.input
+            && !graphView.tempConn.output) 
             graphView.tempConn.output = null;
 
         this.mouseOver = false;

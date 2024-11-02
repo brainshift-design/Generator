@@ -485,12 +485,12 @@ extends OpColorBase
                 ? colorSpace(this.paramSpace.value.value)
                 : NULL;
 
-        if (    (   space == 'rgb'
-                 || space == 'lin'
-                 || space == 'hsv'
-                 || space == 'hsl')
-             && !dataColorIsNaN  (this._color)
-             && !dataColorIsValid(this._color))
+        if (   (   space == 'rgb'
+                || space == 'lin'
+                || space == 'hsv'
+                || space == 'hsl')
+            && !dataColorIsNaN  (this._color)
+            && !dataColorIsValid(this._color))
         {
             this.showExtRanges(true);
         }

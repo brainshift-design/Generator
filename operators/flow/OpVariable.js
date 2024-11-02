@@ -487,18 +487,18 @@ extends ResizableBaseWithSeparator
                             display:        inline-block;
                             position:       relative;
                             left:           0px;
-                            top:           -2px;
+                            top:           -3px;
                             font-family:    Inter, sans-serif;
-                            font-size:      9.5px;
+                            font-size:      10.5px;
                             font-weight:    700;
                             color:          var(--figma-color-bg-brand);
                             box-shadoW:     0 0 0 1px var(--figma-color-bg-brand) inset;
                             background:     transparent;
-                            margin-top:     1px;
+                            margin-top:     0px;
                             padding-left:   5px;
                             padding-right:  5px;
                             padding-top:    2px;
-                            padding-bottom: 2px;
+                            padding-bottom: 1px;
                             border-radius:  3px;">
                         PRO
                     </div>

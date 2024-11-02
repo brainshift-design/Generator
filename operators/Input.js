@@ -145,27 +145,31 @@ extends EventTarget
             const tc = graphView.tempConn;
 
 
-            if (    tc
-                &&  tc.output
-                &&  this.canConnectFrom(tc.output)
-                && !tc.output.node.isOrFollows(this.node)
-                && (  !this.connected
-                    || this.connectedOutput != tc.output
-                    || this == savedInput))
+            if (   !tc
+                || !tc.input)
             {
-                graphView.overInput = this;
-                tc.input            = this;
+                if (    tc
+                    &&  tc.output
+                    &&  this.canConnectFrom(tc.output)
+                    && !tc.output.node.isOrFollows(this.node)
+                    && (  !this.connected
+                        || this.connectedOutput != tc.output
+                        || this == savedInput))
+                {
+                    graphView.overInput = this;
+                    tc.input            = this;
 
-                tc.wire.update();
+                    tc.wire.update();
 
-                tc.output.updateControl();
-            }
-            else if (!tc
-                   ||    tc.output
-                      && this.canConnectFrom(tc.output))
-            {
-                graphView.overInput = this;
-                if (tc) tc.input = graphView.overInput;
+                    tc.output.updateControl();
+                }
+                else if (!tc
+                    ||    tc.output
+                        && this.canConnectFrom(tc.output))
+                {
+                    graphView.overInput = this;
+                    if (tc) tc.input = graphView.overInput;
+                }
             }
 
 
@@ -203,8 +207,9 @@ extends EventTarget
 
         graphView.overInput = null;
 
-        if (   graphView.tempConn
-            && graphView.tempConn.output) 
+        if (    graphView.tempConn
+            &&  graphView.tempConn.output
+            && !graphView.tempConn.input) 
             graphView.tempConn.input = null;
 
         this.mouseOver = false;
