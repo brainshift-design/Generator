@@ -935,7 +935,7 @@ function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
 
         if (   outputNode
             && inputNode)
-            handleLegacyConnection(_conn, outputNode, inputNode, data.generatorVersion);
+            handleLegacyConnection(_conn, outputNode, inputNode, data.generatorVersion ?? 0);
 
         
         if (      outputNode
