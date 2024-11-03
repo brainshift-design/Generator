@@ -174,7 +174,7 @@ async function evalAddInputs(inputs, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
-        const input = await evalNumberOrListValue(inputs[i], parse);
+        const input = inputs[i];
         
 
         if (   !input
@@ -225,7 +225,7 @@ async function evalSubtractInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const input0 = await evalNumberOrListValue(inputs[0], parse);
+        const input0 = inputs[0];
 
         if (   !input0
             || !input0.isValid())
@@ -271,7 +271,7 @@ async function evalSubtractInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const input = await evalNumberOrListValue(inputs[i], parse);
+            const input = inputs[i];
 
             if (   !input
                 || !input.isValid())
@@ -325,7 +325,7 @@ async function evalMultiplyInputs(inputs, parse)
 
         for (let i = 0; i < inputs.length; i++)
         {
-            const input = await evalNumberOrListValue(inputs[i], parse);
+            const input = inputs[i];
 
             if (   !input
                 || !input.isValid())
@@ -381,7 +381,7 @@ async function evalDivideInputs(inputs, parse)
         
     if (!isEmpty(inputs))
     {
-        const input0 = await evalNumberOrListValue(inputs[0], parse);
+        const input0 = inputs[0];
 
         let maxDec = 0;
 
@@ -401,14 +401,12 @@ async function evalDivideInputs(inputs, parse)
                 return NumberValue.NaN();
 
 
-            value = item0;
-
-            let maxDec = 0;
+            value = item0.copy();
 
 
-            for (let i = 1; i < input0.items.length; i++)
+            for (let j = 1; j < input0.items.length; j++)
             {
-                const item = input0.items[i];
+                const item = input0.items[j];
 
                 if (   !item
                     || !item.isValid())
@@ -434,13 +432,13 @@ async function evalDivideInputs(inputs, parse)
             if (input0.type != NUMBER_VALUE)
                 return NumberValue.NaN();
 
-            value = input0;
+            value = input0.copy();
         }
 
         
         for (let i = 1; i < inputs.length; i++)
         {
-            const input = await evalNumberOrListValue(inputs[i], parse);
+            const input = inputs[i];
 
             if (   !input
                 || !input.isValid())
@@ -449,8 +447,6 @@ async function evalDivideInputs(inputs, parse)
 
             if (isListValueType(input.type))
             {
-                let maxDec = 0;
-
                 for (const item of input.items)
                 {
                     if (   !item
@@ -486,8 +482,8 @@ async function evalDivideInputs(inputs, parse)
                 }
     
                 
-                value  = new NumberValue(value.value / input.value);
-                maxDec = Math.max(maxDec, input.decimals);
+                value.value /= input.value;
+                maxDec       = Math.max(maxDec, input.decimals);
             }
         }
 
@@ -513,7 +509,7 @@ async function evalModuloInputs(inputs, parse)
         
     if (!isEmpty(inputs))
     {
-        const input0 = await evalNumberOrListValue(inputs[0], parse);
+        const input0 = inputs[0];
 
         if (   !input0
             || !input0.isValid())
@@ -570,7 +566,7 @@ async function evalModuloInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const input = await evalNumberOrListValue(inputs[i], parse);
+            const input = inputs[i];
 
             if (   !input
                 || !input.isValid())
@@ -640,7 +636,7 @@ async function evalExponentInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const input0 = await evalNumberOrListValue(inputs[0], parse);
+        const input0 = inputs[0];
 
         if (   !input0
             || !input0.isValid())
@@ -690,7 +686,7 @@ async function evalExponentInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const input = await evalNumberOrListValue(inputs[i], parse);
+            const input = inputs[i];
 
             if (   !input
                 || !input.isValid())
