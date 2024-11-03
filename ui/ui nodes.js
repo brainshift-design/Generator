@@ -710,6 +710,20 @@ function handleLegacyNode(_node, genVersion)
         }
     }
 
+    else if (   _node.type == COLOR_TO_TEXT
+             && genVersion < 441) 
+    {
+        if (!_node.params)
+            _node.params = [];
+
+        const paramSpace = _node.params.find(p => p[1] == 'format');
+
+        if (paramSpace)
+        {
+            if (paramSpace[2] == '3,0') paramSpace[2] = '12,0';
+        }
+    }
+
     else if (   (   _node.type == MOVE
                  || _node.type == ROTATE
                  || _node.type == SCALE
