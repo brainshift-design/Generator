@@ -689,6 +689,27 @@ function handleLegacyNode(_node, genVersion)
         }
     }
 
+    else if (   _node.type == COLOR_INTERPOLATE
+             && genVersion < 441) 
+    {
+        if (!_node.params)
+            _node.params = [];
+
+        const paramSpace = _node.params.find(p => p[1] == 'space');
+
+        if (paramSpace)
+        {
+                 if (paramSpace[2] == '2,0') paramSpace[2] =  '3,0';
+            else if (paramSpace[2] == '3,0') paramSpace[2] =  '2,0';
+            else if (paramSpace[2] == '4,0') paramSpace[2] =  '9,0';
+            else if (paramSpace[2] == '5,0') paramSpace[2] = '10,0';
+            else if (paramSpace[2] == '6,0') paramSpace[2] = '11,0';
+            else if (paramSpace[2] == '7,0') paramSpace[2] = '12,0';
+            else if (paramSpace[2] == '8,0') paramSpace[2] = '13,0';
+            else if (paramSpace[2] == '9,0') paramSpace[2] = '14,0';
+        }
+    }
+
     else if (   (   _node.type == MOVE
                  || _node.type == ROTATE
                  || _node.type == SCALE
