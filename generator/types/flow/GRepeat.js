@@ -84,7 +84,7 @@ extends GOperator1
 
         count = 
             count
-            ? new NumberValue(Math.floor(count.value))
+            ? new NumberValue(Math.floor(count.value), 0)
             : new NumberValue(0);
 
 

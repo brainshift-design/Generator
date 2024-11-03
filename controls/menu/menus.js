@@ -590,33 +590,34 @@ function initGeneratorMenus()
     
     menuNumberBase = new Menu('Numbers', true, false);
     menuNumberBase.addItems([
-                           new MenuItem('Constant',       null,           false, {icon: iconConstant,        createType: NUMBER_CONSTANT,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONSTANT,  btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('Boolean',        null,           false, {icon: iconBooleanValue,    createType: BOOLEAN_NUMBER,   callback: e => actionManager.do(getCreateNodeAction(BOOLEAN_NUMBER,   btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('Bounded',        null,           false, {icon: iconBoundedNumber,   createType: BOUNDED_NUMBER,   callback: e => actionManager.do(getCreateNodeAction(BOUNDED_NUMBER,   btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('',               null,           false, {separator: true}),
-        menuItemDateTime = new MenuItem('Date & time',    null,           false, {icon: iconDateTime,        createType: NUMBER_DATETIME,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME,  btnNumber.div, getCreateOptions(e)))})]);
+                           new MenuItem('Precision',      null, false, {icon: iconNumberPrecision, createType: NUMBER_PRECISION, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PRECISION, btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('',               null, false, {separator: true}),
+                           new MenuItem('Constant',       null, false, {icon: iconConstant,        createType: NUMBER_CONSTANT,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONSTANT,  btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Boolean',        null, false, {icon: iconBooleanValue,    createType: BOOLEAN_NUMBER,   callback: e => actionManager.do(getCreateNodeAction(BOOLEAN_NUMBER,   btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Bounded',        null, false, {icon: iconBoundedNumber,   createType: BOUNDED_NUMBER,   callback: e => actionManager.do(getCreateNodeAction(BOUNDED_NUMBER,   btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('',               null, false, {separator: true}),
+        menuItemDateTime = new MenuItem('Date & time',    null, false, {icon: iconDateTime,        createType: NUMBER_DATETIME,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME,  btnNumber.div, getCreateOptions(e)))})]);
 
         
     menuFunctions = new Menu('Functions', true, false);
     menuFunctions.addItems([
-                           new MenuItem('Sign',          null, false, {icon: iconSign,        createType: NUMBER_SIGN,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,          btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('Negative',      null, false, {icon: iconNegative,    createType: NUMBER_NEGATIVE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_NEGATIVE,      btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('Absolute',      null, false, {icon: iconAbsolute,    createType: NUMBER_ABSOLUTE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,      btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('Precision',     null, false, {icon: iconNumberPrecision, createType: NUMBER_PRECISION, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PRECISION,     btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Sign',          null, false, {icon: iconSign,        createType: NUMBER_SIGN,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,     btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Negative',      null, false, {icon: iconNegative,    createType: NUMBER_NEGATIVE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_NEGATIVE, btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Absolute',      null, false, {icon: iconAbsolute,    createType: NUMBER_ABSOLUTE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE, btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('',              null, false, {separator: true}),
-                           new MenuItem('Round',         null, false, {icon: iconRound,       createType: NUMBER_ROUND,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,         btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('Quantize',      null, false, {icon: iconQuantize,    createType: NUMBER_QUANTIZE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_QUANTIZE,      btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Round',         null, false, {icon: iconRound,       createType: NUMBER_ROUND,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,    btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Quantize',      null, false, {icon: iconQuantize,    createType: NUMBER_QUANTIZE,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_QUANTIZE, btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('',              null, false, {separator: true}),
                            new MenuItem('Min / max',     null, false, {icon: iconMinMax,      childMenu: menuMinMax, createType: NUMBER_SIMPLE_MINMAX, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIMPLE_MINMAX, btnNumber.div, getCreateOptions(e)))}),
-                           new MenuItem('Limits',        null, false, {icon: iconLimits,      createType: NUMBER_LIMITS,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,        btnNumber.div, getCreateOptions(e)))}), 
+                           new MenuItem('Limits',        null, false, {icon: iconLimits,      createType: NUMBER_LIMITS,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,   btnNumber.div, getCreateOptions(e)))}), 
                            new MenuItem('',              null, false, {separator: true}),
                            new MenuItem('Trigonometric', null, false, {icon: iconSine,         childMenu: menuTrig,          createType: NUMBER_TRIG,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,        btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('',              null, false, {separator: true}),
-                           new MenuItem('Curve',         null, false, {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,         btnNumber.div, getCreateOptions(e)))}), 
-                           new MenuItem('Bias',          null, false, {icon: iconNumberBias,  createType: NUMBER_BIAS,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_BIAS,          btnNumber.div, getCreateOptions(e)))}), 
-                           new MenuItem('Remap',         null, false, {icon: iconNumberMap,   createType: NUMBER_MAP,           callback: e => actionManager.do(getCreateNodeAction(NUMBER_MAP,           btnNumber.div, getCreateOptions(e)))}),
+                           new MenuItem('Curve',         null, false, {icon: iconNumberCurve, createType: NUMBER_CURVE,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_CURVE,    btnNumber.div, getCreateOptions(e)))}), 
+                           new MenuItem('Bias',          null, false, {icon: iconNumberBias,  createType: NUMBER_BIAS,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_BIAS,     btnNumber.div, getCreateOptions(e)))}), 
+                           new MenuItem('Remap',         null, false, {icon: iconNumberMap,   createType: NUMBER_MAP,           callback: e => actionManager.do(getCreateNodeAction(NUMBER_MAP,      btnNumber.div, getCreateOptions(e)))}),
                            new MenuItem('',              null, false, {separator: true}),
-                           new MenuItem('Is NaN',        null, false, {icon: iconIsNaN,       createType: NUMBER_IS_NAN,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_IS_NAN,       btnNumber.div, getCreateOptions(e)))})]);
+                           new MenuItem('Is NaN',        null, false, {icon: iconIsNaN,       createType: NUMBER_IS_NAN,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_IS_NAN,    btnNumber.div, getCreateOptions(e)))})]);
         
 
     menuTrig = new Menu('Trigonometric', true, false);

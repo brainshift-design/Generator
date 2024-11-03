@@ -74,9 +74,6 @@ extends GOperator1
             this.value = NumberValue.NaN();
 
 
-        if (this.nodeId == 'accum')
-            console.log('accum.value =', this.value);
-
         this.setUpdateValues(parse, 
         [
             ['when', when]

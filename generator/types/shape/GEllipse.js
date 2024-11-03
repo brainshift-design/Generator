@@ -76,9 +76,10 @@ extends GShape
             return this;
 
 
+        let input = await evalValue      (this.input,    parse);
+
         let [x, y, width, height] = await this.evalBaseParams(parse);
 
-        let input = await evalValue      (this.input,    parse);
         let pos   = await evalNumberValue(this.position, parse);
         let round = await evalNumberValue(this.round,    parse);
         let start = await evalNumberValue(this.start,    parse);

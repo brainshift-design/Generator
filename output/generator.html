@@ -21822,7 +21822,7 @@ extends GOperator1
 
         count = 
             count
-            ? new NumberValue(Math.floor(count.value))
+            ? new NumberValue(Math.floor(count.value), 0)
             : new NumberValue(0);
 
 
@@ -30900,11 +30900,11 @@ extends GOperator
             this.value = NumberValue.NaN();
 
 
-        if (this.value.isValid())
-            this.value.value = this.value.toNumber();
+        // if (this.value.isValid())
+        //     this.value.value = this.value.toNumber();
 
         this.lastValue2 = this.lastValue1;
-        this.lastValue1 = this.value.value;
+        this.lastValue1 = this.value.toNumber();
 
 
         this.setUpdateValues(parse,
@@ -31652,9 +31652,6 @@ extends GOperator1
         else
             this.value = NumberValue.NaN();
 
-
-        if (this.nodeId == 'accum')
-            console.log('accum.value =', this.value);
 
         this.setUpdateValues(parse, 
         [
@@ -32836,12 +32833,15 @@ async function evalMultiplyInputs(inputs, parse)
         return NumberValue.NaN();
 
 
-    const value = new NumberValue(0);
+    let value = new NumberValue(0);
 
 
     if (!isEmpty(inputs))
     {
         value.value = 1;
+
+        let maxDec = 0;
+
 
         for (let i = 0; i < inputs.length; i++)
         {
@@ -32858,11 +32858,15 @@ async function evalMultiplyInputs(inputs, parse)
                     || input.items[0].type != NUMBER_VALUE)
                     return NumberValue.NaN();
 
+
                 for (const item of input.items)
                 {
-                    value.value   *= item.value;
-                    value.decimals = Math.max(value.decimals, item.decimals);
+                    value.value *= item.value;
+                    maxDec      = Math.max(maxDec, item.decimals);
                 }
+
+                value          = new NumberValue(value.value);
+                value.decimals = Math.max(value.decimals, maxDec);
             }
             else
             {
@@ -32870,10 +32874,14 @@ async function evalMultiplyInputs(inputs, parse)
                      input.type == NUMBER_VALUE, 
                     'input.type must be NUMBER_VALUE');
 
-                value.value   *= input.value;
-                value.decimals = Math.max(value.decimals, input.decimals);
+                value.value *= input.value;
+                maxDec       = Math.max(maxDec, input.decimals);
             }
         }
+
+
+        value          = new NumberValue(value.value);
+        value.decimals = Math.max(value.decimals, maxDec);
     }
 
 
@@ -32895,6 +32903,9 @@ async function evalDivideInputs(inputs, parse)
     {
         const input0 = await evalNumberOrListValue(inputs[0], parse);
 
+        let maxDec = 0;
+
+
         if (   !input0
             || !input0.isValid())
             return NumberValue.NaN();
@@ -32911,6 +32922,8 @@ async function evalDivideInputs(inputs, parse)
 
 
             value = item0;
+
+            let maxDec = 0;
 
 
             for (let i = 1; i < input0.items.length; i++)
@@ -32931,8 +32944,8 @@ async function evalDivideInputs(inputs, parse)
                         break; 
                     }
 
-                    value.value    = value.value / item.value;
-                    value.decimals = Math.max(value.decimals, item.decimals);
+                    value.value /= item.value;
+                    maxDec       = Math.max(maxDec, item.decimals);
                 }                    
             }
         }
@@ -32956,6 +32969,8 @@ async function evalDivideInputs(inputs, parse)
 
             if (isListValueType(input.type))
             {
+                let maxDec = 0;
+
                 for (const item of input.items)
                 {
                     if (   !item
@@ -32972,8 +32987,8 @@ async function evalDivideInputs(inputs, parse)
                             break; 
                         }
 
-                        value.value    = value.value / item.value;
-                        value.decimals = Math.max(value.decimals, item.decimals);
+                        value.value /= item.value;
+                        maxDec       = Math.max(maxDec, item.decimals);
                     }                    
                 }
             }
@@ -32991,10 +33006,14 @@ async function evalDivideInputs(inputs, parse)
                 }
     
                 
-                value.value    = value.value / input.value;
-                value.decimals = Math.max(value.decimals, input.decimals);
+                value  = new NumberValue(value.value / input.value);
+                maxDec = Math.max(maxDec, input.decimals);
             }
         }
+
+
+        value          = new NumberValue(value.value);
+        value.decimals = Math.max(value.decimals, maxDec);
     }
 
 
@@ -33021,6 +33040,9 @@ async function evalModuloInputs(inputs, parse)
             return NumberValue.NaN();
 
 
+        let maxDec = 0;
+
+
         if (    isListValueType(input0.type)
             && !isEmpty(input0.items))
         {
@@ -33052,8 +33074,8 @@ async function evalModuloInputs(inputs, parse)
                         break; 
                     }
 
-                    value.decimals = Math.max(value.decimals, item.decimals);
-                    value.value    = value.value % item.value;
+                    maxDec      = Math.max(maxDec, item.decimals);
+                    value.value = value.value % item.value;
                 }                    
             }
         }
@@ -33093,8 +33115,8 @@ async function evalModuloInputs(inputs, parse)
                             break; 
                         }
 
-                        value.decimals = Math.max(value.decimals, item.decimals);
-                        value.value    = floorTo(value.value % item.value, value.decimals);
+                        maxDec      = Math.max(maxDec, item.decimals);
+                        value.value = floorTo(value.value % item.value, value.decimals);
                     }                    
                 }
             }
@@ -33111,10 +33133,14 @@ async function evalModuloInputs(inputs, parse)
                     break; 
                 }
 
-                value.decimals = Math.max(value.decimals, input.decimals);
-                value.value    = floorTo(value.value % input.value, value.decimals);
+                maxDec      = Math.max(maxDec, input.decimals);
+                value.value = floorTo(value.value % input.value, value.decimals);
             }
         }
+
+
+        value          = new NumberValue(value.value);
+        value.decimals = Math.max(value.decimals, maxDec);
     }
 
 
@@ -33141,6 +33167,9 @@ async function evalExponentInputs(inputs, parse)
             return NumberValue.NaN();
 
 
+        let maxDec = 0;
+
+
         if (    isListValueType(input0.type)
             && !isEmpty(input0.items))
         {
@@ -33165,8 +33194,8 @@ async function evalExponentInputs(inputs, parse)
 
                 if (item.type == NUMBER_VALUE)
                 {
-                    value.value    = Math.pow(value.value,    item.value);
-                    value.decimals = Math.max(value.decimals, item.decimals);
+                    value.value = Math.pow(value.value, item.value);
+                    maxDec      = Math.max(maxDec,      item.decimals);
                 }                    
             }
         }
@@ -33198,8 +33227,8 @@ async function evalExponentInputs(inputs, parse)
 
                     if (item.type == NUMBER_VALUE)
                     {
-                        value.value    = Math.pow(value.value,    item.value);
-                        value.decimals = Math.max(value.decimals, item.decimals);
+                        value.value = Math.pow(value.value, item.value);
+                        maxDec      = Math.max(maxDec,      item.decimals);
                     }                    
                 }
             }
@@ -33209,10 +33238,14 @@ async function evalExponentInputs(inputs, parse)
                     input.type == NUMBER_VALUE, 
                     'input.type must be NUMBER_VALUE');
 
-                value.value    = Math.pow(value.value,    input.value);
-                value.decimals = Math.max(value.decimals, input.decimals);
+                value.value = Math.pow(value.value, input.value);
+                maxDec      = Math.max(maxDec,      input.decimals);
             }
         }
+
+
+        value          = new NumberValue(value.value);
+        value.decimals = Math.max(value.decimals, maxDec);
     }
 
 
@@ -33386,50 +33419,70 @@ function getSimpleMathValue(input, operand, op, invert, enabled)
     {
         op.value = Math.min(Math.max(0, Math.floor(op.value)), MATH_OPS.length-1);
 
+
         const maxDecimals = Math.max(input.decimals, operand.decimals);
 
+        let value;
+
+        
         switch (op.value)
         {
             case 0: // % 
-                return invert.value == 0
-                    ? new NumberValue(input.value % operand.value, maxDecimals)
-                    : new NumberValue(operand.value % input.value, maxDecimals);
+                value = new NumberValue(
+                    invert.value == 0
+                        ? input.value % operand.value
+                        : operand.value % input.value);
+                break;
 
             case 1: // /
                 if (      operand.value == 0
                        && invert .value == 0
                     ||    input  .value == 0
                        && invert .value == 1)
-                    return NumberValue.NaN();
+                    value = NumberValue.NaN();
                 else
-                    return invert.value == 0
-                        ? new NumberValue(input.value / operand.value, maxDecimals)
-                        : new NumberValue(operand.value / input.value, maxDecimals);
+                    value = new NumberValue(
+                        invert.value == 0
+                            ? input.value / operand.value
+                            : operand.value / input.value);
+                break;
 
             case 2: // -
-                return invert.value == 0
-                    ? new NumberValue(input.value - operand.value, maxDecimals)
-                    : new NumberValue(operand.value - input.value, maxDecimals);
+                value = new NumberValue(
+                    invert.value == 0
+                        ? input.value - operand.value
+                        : operand.value - input.value);
+                break;
 
             case 3: // +
-                return invert.value == 0
-                    ? new NumberValue(input.value + operand.value, maxDecimals)
-                    : new NumberValue(operand.value + input.value, maxDecimals);
+                value = new NumberValue(
+                    invert.value == 0
+                        ? input.value + operand.value
+                        : operand.value + input.value);
+                break;
 
             case 4: // *
-                return invert.value == 0
-                    ? new NumberValue(input.value * operand.value, maxDecimals)
-                    : new NumberValue(operand.value * input.value, maxDecimals);
+                value = new NumberValue(
+                    invert.value == 0
+                        ? input.value * operand.value
+                        : operand.value * input.value);
+                break;
 
             case 5: // eˣ
-                return invert.value == 0
-                    ? new NumberValue(Math.pow(input.value, operand.value), maxDecimals)
-                    : new NumberValue(Math.pow(operand.value, input.value), maxDecimals);
+                value = new NumberValue(
+                    invert.value == 0
+                        ? Math.pow(input.value, operand.value)
+                        : Math.pow(operand.value, input.value));
+                break;
+
+            default:
+                consoleError('invalid math operation');
         }
 
 
-        consoleError('invalid math operation');
-        return input;
+        value.decimals = Math.max(value.decimals, maxDecimals);
+
+        return value;
     }
     else
         return input;
@@ -45214,9 +45267,10 @@ extends GShape
             return this;
 
 
+        let input = await evalValue      (this.input,    parse);
+
         let [x, y, width, height] = await this.evalBaseParams(parse);
 
-        let input = await evalValue      (this.input,    parse);
         let pos   = await evalNumberValue(this.position, parse);
         let round = await evalNumberValue(this.round,    parse);
         let start = await evalNumberValue(this.start,    parse);

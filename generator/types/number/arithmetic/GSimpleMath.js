@@ -164,50 +164,70 @@ function getSimpleMathValue(input, operand, op, invert, enabled)
     {
         op.value = Math.min(Math.max(0, Math.floor(op.value)), MATH_OPS.length-1);
 
+
         const maxDecimals = Math.max(input.decimals, operand.decimals);
 
+        let value;
+
+        
         switch (op.value)
         {
             case 0: // % 
-                return invert.value == 0
-                    ? new NumberValue(input.value % operand.value, maxDecimals)
-                    : new NumberValue(operand.value % input.value, maxDecimals);
+                value = new NumberValue(
+                    invert.value == 0
+                        ? input.value % operand.value
+                        : operand.value % input.value);
+                break;
 
             case 1: // /
                 if (      operand.value == 0
                        && invert .value == 0
                     ||    input  .value == 0
                        && invert .value == 1)
-                    return NumberValue.NaN();
+                    value = NumberValue.NaN();
                 else
-                    return invert.value == 0
-                        ? new NumberValue(input.value / operand.value, maxDecimals)
-                        : new NumberValue(operand.value / input.value, maxDecimals);
+                    value = new NumberValue(
+                        invert.value == 0
+                            ? input.value / operand.value
+                            : operand.value / input.value);
+                break;
 
             case 2: // -
-                return invert.value == 0
-                    ? new NumberValue(input.value - operand.value, maxDecimals)
-                    : new NumberValue(operand.value - input.value, maxDecimals);
+                value = new NumberValue(
+                    invert.value == 0
+                        ? input.value - operand.value
+                        : operand.value - input.value);
+                break;
 
             case 3: // +
-                return invert.value == 0
-                    ? new NumberValue(input.value + operand.value, maxDecimals)
-                    : new NumberValue(operand.value + input.value, maxDecimals);
+                value = new NumberValue(
+                    invert.value == 0
+                        ? input.value + operand.value
+                        : operand.value + input.value);
+                break;
 
             case 4: // *
-                return invert.value == 0
-                    ? new NumberValue(input.value * operand.value, maxDecimals)
-                    : new NumberValue(operand.value * input.value, maxDecimals);
+                value = new NumberValue(
+                    invert.value == 0
+                        ? input.value * operand.value
+                        : operand.value * input.value);
+                break;
 
             case 5: // eˣ
-                return invert.value == 0
-                    ? new NumberValue(Math.pow(input.value, operand.value), maxDecimals)
-                    : new NumberValue(Math.pow(operand.value, input.value), maxDecimals);
+                value = new NumberValue(
+                    invert.value == 0
+                        ? Math.pow(input.value, operand.value)
+                        : Math.pow(operand.value, input.value));
+                break;
+
+            default:
+                consoleError('invalid math operation');
         }
 
 
-        consoleError('invalid math operation');
-        return input;
+        value.decimals = Math.max(value.decimals, maxDecimals);
+
+        return value;
     }
     else
         return input;
