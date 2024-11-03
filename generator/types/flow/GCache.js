@@ -52,6 +52,9 @@ extends GOperator1
         {
             const input = await evalValue(this.input, parse);
 
+            if (this.nodeId == 'cache2')
+                console.log('cache2.input =', input);
+
             this.value = input;
 
             if (   this.options.enabled

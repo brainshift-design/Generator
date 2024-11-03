@@ -22982,6 +22982,9 @@ extends GOperator1
         {
             const input = await evalValue(this.input, parse);
 
+            if (this.nodeId == 'cache2')
+                console.log('cache2.input =', input);
+
             this.value = input;
 
             if (   this.options.enabled
@@ -31649,6 +31652,9 @@ extends GOperator1
         else
             this.value = NumberValue.NaN();
 
+
+        if (this.nodeId == 'accum')
+            console.log('accum.value =', this.value);
 
         this.setUpdateValues(parse, 
         [

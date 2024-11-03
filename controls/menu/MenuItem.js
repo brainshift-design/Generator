@@ -33,7 +33,7 @@ class MenuItem
     enteredDiv         = false;
     enteredExpand      = false;
      
-    arrowWidth         = 30;
+    arrowWidth         = 35;
      
     showSubscribe      = false;
 
@@ -469,7 +469,7 @@ class MenuItem
 
         this.divExpand.style.background         = 'url(\'data:image/svg+xml;utf8,' + background + '\')';
 
-        this.divExpand.style.backgroundPosition = '50% 50%';
+        this.divExpand.style.backgroundPosition = '57% 50%';
         this.divExpand.style.backgroundRepeat   = 'no-repeat';
 
 

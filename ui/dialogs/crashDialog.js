@@ -58,7 +58,7 @@ function initCrashDialog(event, error = event, showDebugButton = true)
         crashBack  .addEventListener('pointerdown', e => { e.preventDefault(); hideAllMenus(); });
 
        
-        btnCrashSaveRestart.addEventListener('click', async () => { await uiSaveToLocalFile('crashed.gen'); clearGraph(); uiRestartGenerator(false); });
+        btnCrashSaveRestart.addEventListener('click', async () => { await uiSaveToLocalFile('recover.gen'); /*clearGraph();*/ uiRestartGenerator(false); });
         btnCrashSaveRestart.style.display = showDebugButton ? 'block' : 'none';
 
         btnCrashClearRestart.addEventListener('click', () => { clearGraph(); uiRestartGenerator(false); });
