@@ -256,8 +256,8 @@ class Menu
         const x = Math.min(Math.max(
             margin, 
             right
-            ? (this.showOnLeft ? srcRect.x - this.div.offsetWidth : srcRect.x + srcRect.width)
-            : srcRect.x + srcRect.width/2 - this.div.offsetWidth/2),
+            ? (this.showOnLeft ? srcRect.x - this.div.offsetWidth - 4 : srcRect.x + srcRect.width + 4)
+            : srcRect.x + srcRect.width/2 - this.div.offsetWidth/2 - 4),
             graphView.div.offsetWidth - this.div.offsetWidth - margin);
 
 
@@ -362,7 +362,7 @@ class Menu
         {
             if (left + this.div.offsetWidth + margin >= graphView.div.offsetWidth)
             {
-                left = this.parentItem.parentMenu.div.offsetLeft - this.div.offsetWidth;
+                left = this.parentItem.parentMenu.div.offsetLeft - this.div.offsetWidth - 4;
                 this.activeOnLeft = true;
             }
         }

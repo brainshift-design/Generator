@@ -201,6 +201,8 @@
     position:       absolute;
     height:         25px;
     pointer-events: none;
+    margin-left:    7px;
+    border-radius:  5px;
 }
 
 
@@ -284,7 +286,7 @@
 .menuItemExpand
 {
     display:             inline-block;
-    width:               48px;
+    width:               30px;
     height:              22px;
     visibility:          hidden;
     position:            absolute;
