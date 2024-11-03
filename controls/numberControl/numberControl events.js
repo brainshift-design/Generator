@@ -82,7 +82,7 @@ NumberControl.prototype.initEvents = function()
     
         if (   graphView.overOutput && graphView.overOutput == this.param.output
             || graphView.overInput  && graphView.overInput  == this.param.input 
-            || this.readOnly)
+            || this.readOnly && e.button == 0)
         {
             e.preventDefault();
             return;
