@@ -53,22 +53,17 @@ extends GOperator1
         if (   input
             && when)
         {
-            if (this.options.enabled)
+            if (when.value == 0)
+                this.value = this.current.copy();
+
+            if (input)
             {
-                if (when.value > 0)
-                    this.value = this.current.copy();
-
-                if (input)
-                {
-                    this.current.value   += input.value;
-                    this.current.decimals = Math.max(this.current.decimals, input.decimals);
-                }
-
-                if (when.value == 0)
-                    this.value = this.current.copy();
+                this.current.value   += input.value;
+                this.current.decimals = Math.max(this.current.decimals, input.decimals);
             }
-            else
-                this.value = input.copy();
+
+            if (when.value > 0)
+                this.value = this.current.copy();
         }
         else
             this.value = NumberValue.NaN();

@@ -724,6 +724,21 @@ function handleLegacyNode(_node, genVersion)
         }
     }
 
+    else if (   _node.type == NUMBER_ACCUMULATE
+             && genVersion < 441) 
+    {
+        if (!_node.params)
+            _node.params = [];
+
+        const paramWhen = _node.params.find(p => p[1] == 'when');
+
+        if (paramWhen)
+        {
+                 if (paramWhen[2] == '0,0') paramWhen[2] = '1,0';
+            else if (paramWhen[2] == '1,0') paramWhen[2] = '0,0';
+        }
+    }
+
     else if (   (   _node.type == MOVE
                  || _node.type == ROTATE
                  || _node.type == SCALE

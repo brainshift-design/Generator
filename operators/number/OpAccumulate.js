@@ -11,13 +11,19 @@ extends OperatorBase
 
         this.cached      = false;
         this.iconOffsetY = 1;
-        // this.canDisable  = true;
         
 
         this.addInput (new Input ([NUMBER_VALUE, TEXT_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramWhen = new OptionParam('when', 'when', false, true, true, ['before', 'after'], 0));
+        this.addParam(this.paramWhen = new OptionParam('when', 'when', false, true, true, ['use before', 'use after'], 0));
+
+
+        this.paramWhen.controls[0].textValues =
+        [
+            [0, 'use before', 'before'],
+            [1, 'use after',  'after' ]
+        ]
     }
 
 
