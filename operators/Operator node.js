@@ -249,16 +249,13 @@ this.header.addEventListener('pointerdown', e =>
                  && rightOfInputs
                  && leftOfOutputs)
         {
-            console.log('00');
             if (    tempConn.output
                 && !tempConn.output.node.isOrFollows(this))
             {
-                console.log('11');
                 if (   this.variableInputs
                     && savedConn
                     && this == savedConn.input.node)
                 {
-                    console.log('22');
                     const rect    = boundingRect(this.div);
                     const padding = this.header.connectionPadding;
 
@@ -290,7 +287,6 @@ this.header.addEventListener('pointerdown', e =>
                 }
                 else
                 {
-                    console.log('33');
                     const input = this.getAutoInput(tempConn.output);
                     if (!input) return;
 
@@ -307,8 +303,6 @@ this.header.addEventListener('pointerdown', e =>
             else if ( tempConn.input
                   && !this.isOrFollows(tempConn.input.node))
             {
-                console.log('44');
-
                 const output = this.getAutoOutput(tempConn.input.types);
                 if (!output) return;
 

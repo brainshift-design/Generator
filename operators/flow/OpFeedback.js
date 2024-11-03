@@ -9,8 +9,10 @@ extends OperatorBase
     {
         super(FEEDBACK, 'feedback', 'feedback', '');
 
-        this.cached     = false;
-        this.canDisable = true;
+
+        this.outputValueType = ANY_VALUE;
+        this.cached          = false;
+        this.canDisable      = true;
 
 
         this.addInput (new Input([ANY_VALUE]));

@@ -656,7 +656,6 @@ function resolveConnections(nodes, _connections, first, last)
                 const outputNode = nodes.find(n => (n.newId ?? n.id) == _conn.outputNodeId);
                 const  inputNode = nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId);
 
-                console.log('generatorVersion =', generatorVersion);
                 if (   outputNode
                     && inputNode)
                     handleLegacyConnection(_conn, outputNode, inputNode, generatorVersion);
