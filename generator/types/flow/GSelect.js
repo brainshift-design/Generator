@@ -57,7 +57,7 @@ extends GOperator
         if (this.isCached())
             return this;
 
-        const _inputs = await Promise.all(this.inputs.map(async i => await evalValueOrList(i, parse)));
+        const _inputs = await Promise.all(this.inputs.map(async i => await evalValue(i, parse)));
         let    index  = await evalNumberValue(this.index, parse);
         let    length = 0;
 
