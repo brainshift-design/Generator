@@ -57,14 +57,24 @@ extends GOperator
         if (this.isCached())
             return this;
 
-        let index  = await evalNumberValue(this.index, parse);
-        let length = 0;
+        const _inputs = await Promise.all(this.inputs.map(async i => await evalValueOrList(i, parse)));
+        let    index  = await evalNumberValue(this.index, parse);
+        let    length = 0;
 
 
         const inputs = [];
 
-        for (let i = 0; i < this.inputs.length; i++)
-            inputs.push(await evalValue(this.inputs[i], parse));
+        for (const input of _inputs)
+        {
+            if (    isListValueType(input.type)
+                && !input.condensed)
+            {
+                for (const item of input.items)
+                    inputs.push(item);
+            }
+            else
+                inputs.push(input);
+        }
 
 
         if (inputs.length > 0)

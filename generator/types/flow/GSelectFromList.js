@@ -57,7 +57,6 @@ extends GOperator1
         let  length = 0;
         
         
-        //console.log('SFL input =', input);
         if (   input
             && input.isValid()
             && isListValueType(input.type)

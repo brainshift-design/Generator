@@ -56,9 +56,9 @@ extends GArithmetic
         }
 
 
-        this.value = await evalMathInputs(inputs, op, parse);
+        this.value = await evalMathInputs(this, inputs, op, parse);
 
-
+    
         this.setUpdateValues(parse,
         [
             ['type',      this.outputType()],
@@ -109,7 +109,7 @@ extends GArithmetic
 
 
 
-async function evalMathInputs(inputs, op, parse)
+async function evalMathInputs(node, inputs, op, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN();
@@ -117,13 +117,13 @@ async function evalMathInputs(inputs, op, parse)
 
     const allAreLists = allInputsAreCondensedLists(inputs);
 
-    if (allAreLists) return await evalMathListInputs(inputs, op, parse);
-    else             return await evalMathItemInputs(inputs, op, parse);
+    if (allAreLists) return await evalMathListInputs(node, inputs, op, parse);
+    else             return await evalMathItemInputs(node, inputs, op, parse);
 }
 
 
 
-async function evalMathListInputs(inputs, op, parse)
+async function evalMathListInputs(node, inputs, op, parse)
 {
     const value = new ListValue();
 
@@ -137,9 +137,9 @@ async function evalMathListInputs(inputs, op, parse)
             `input is ${input.type}, must be a list`);
 
         if (allInputsAreCondensedLists(input.items))
-            value.items.push(...(await evalMathListInputs(input.items, op, parse)).items);
+            value.items.push(...(await evalMathListInputs(node, input.items, op, parse)).items);
         else
-            value.items.push(await evalMathItemInputs(input.items, op, parse));
+            value.items.push(await evalMathItemInputs(node, input.items, op, parse));
     }
 
 
@@ -148,28 +148,29 @@ async function evalMathListInputs(inputs, op, parse)
 
 
 
-async function evalMathItemInputs(inputs, op, parse)
+async function evalMathItemInputs(node, inputs, op, parse)
 {
     switch (op.value)
     {
-        case 0: return await evalModuloInputs  (inputs, parse);
-        case 1: return await evalDivideInputs  (inputs, parse);
-        case 2: return await evalSubtractInputs(inputs, parse);
-        case 3: return await evalAddInputs     (inputs, parse);
-        case 4: return await evalMultiplyInputs(inputs, parse);
-        case 5: return await evalExponentInputs(inputs, parse);
+        case 0: return await evalModuloInputs  (node, inputs, parse);
+        case 1: return await evalDivideInputs  (node, inputs, parse);
+        case 2: return await evalSubtractInputs(node, inputs, parse);
+        case 3: return await evalAddInputs     (node, inputs, parse);
+        case 4: return await evalMultiplyInputs(node, inputs, parse);
+        case 5: return await evalExponentInputs(node, inputs, parse);
     }
 }
 
 
 
-async function evalAddInputs(inputs, parse)
+async function evalAddInputs(node, inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN();
 
 
-    const value = new NumberValue(0);
+    let value  = new NumberValue(0);
+    let maxDec = 0;
 
 
     for (let i = 0; i < inputs.length; i++)
@@ -192,8 +193,8 @@ async function evalAddInputs(inputs, parse)
             {
                 if (item.type == NUMBER_VALUE)
                 {
-                    value.value   += item.value;
-                    value.decimals = Math.max(value.decimals, item.decimals);
+                    value.value += item.toNumber();
+                    maxDec       = Math.max(maxDec, item.decimals);
                 }
             }
         }
@@ -203,9 +204,13 @@ async function evalAddInputs(inputs, parse)
                  input.type == NUMBER_VALUE, 
                 'input.type must be NUMBER_VALUE');
 
-            value.value   += input.value;
-            value.decimals = Math.max(value.decimals, input.decimals);
+            value.value += input.toNumber();
+            maxDec       = Math.max(maxDec, input.decimals);
         }
+
+
+        value          = new NumberValue(value.value);
+        value.decimals = Math.max(value.decimals, maxDec);
     }
 
 
@@ -214,13 +219,14 @@ async function evalAddInputs(inputs, parse)
 
 
 
-async function evalSubtractInputs(inputs, parse)
+async function evalSubtractInputs(node, inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN();
 
 
-    let value = new NumberValue(0);
+    let value  = new NumberValue(0);
+    let maxDec = 0;
 
 
     if (!isEmpty(inputs))
@@ -242,12 +248,13 @@ async function evalSubtractInputs(inputs, parse)
                 return NumberValue.NaN();
 
 
-            value = item0;
+            maxDec = item0.decimals;
+            value  = new NumberValue(item0.toNumber());
 
 
-            for (let i = 1; i < input0.items.length; i++)
+            for (let j = 1; j < input0.items.length; j++)
             {
-                const item = input0.items[i];
+                const item = input0.items[j];
 
                 if (   !item
                     || !item.isValid())
@@ -255,8 +262,8 @@ async function evalSubtractInputs(inputs, parse)
 
                 if (item.type == NUMBER_VALUE)
                 {
-                    value.value   -= item.value;
-                    value.decimals = Math.max(value.decimals, item.decimals);
+                    value.value -= item.toNumber();
+                    maxDec       = Math.max(maxDec, item.decimals);
                 }                    
             }
         }
@@ -265,7 +272,8 @@ async function evalSubtractInputs(inputs, parse)
             if (input0.type != NUMBER_VALUE)
                 return NumberValue.NaN();
 
-            value = input0;
+            maxDec = input0.decimals;
+            value  = new NumberValue(input0.toNumber());
         }
 
 
@@ -284,8 +292,8 @@ async function evalSubtractInputs(inputs, parse)
                 {
                     if (item.type == NUMBER_VALUE)
                     {
-                        value.value   -= item.value;
-                        value.decimals = Math.max(value.decimals, item.decimals);
+                        value.value -= item.toNumber();
+                        maxDec       = Math.max(maxDec, item.decimals);
                     }                    
                 }
             }
@@ -295,10 +303,14 @@ async function evalSubtractInputs(inputs, parse)
                      input.type == NUMBER_VALUE, 
                     'input.type must be NUMBER_VALUE');
                     
-                value.value   -= input.value;
-                value.decimals = Math.max(value.decimals, input.decimals);
+                value.value -= input.toNumber();
+                maxDec       = Math.max(maxDec, input.decimals);
             }
         }
+    
+    
+        value          = new NumberValue(value.value);
+        value.decimals = Math.max(value.decimals, maxDec);
     }
 
 
@@ -307,7 +319,7 @@ async function evalSubtractInputs(inputs, parse)
 
 
 
-async function evalMultiplyInputs(inputs, parse)
+async function evalMultiplyInputs(node, inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN();
@@ -341,12 +353,9 @@ async function evalMultiplyInputs(inputs, parse)
 
                 for (const item of input.items)
                 {
-                    value.value *= item.value;
-                    maxDec      = Math.max(maxDec, item.decimals);
+                    value.value *= item.toNumber();
+                    maxDec       = Math.max(maxDec, item.decimals);
                 }
-
-                value          = new NumberValue(value.value);
-                value.decimals = Math.max(value.decimals, maxDec);
             }
             else
             {
@@ -354,7 +363,7 @@ async function evalMultiplyInputs(inputs, parse)
                      input.type == NUMBER_VALUE, 
                     'input.type must be NUMBER_VALUE');
 
-                value.value *= input.value;
+                value.value *= input.toNumber();
                 maxDec       = Math.max(maxDec, input.decimals);
             }
         }
@@ -370,7 +379,7 @@ async function evalMultiplyInputs(inputs, parse)
 
 
 
-async function evalDivideInputs(inputs, parse)
+async function evalDivideInputs(node, inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN();
@@ -395,13 +404,15 @@ async function evalDivideInputs(inputs, parse)
             && !isEmpty(input0.items))
         {
             const item0 = input0.items[0];
+            
 
             if (   !item0
                 || !item0.isValid())
                 return NumberValue.NaN();
 
 
-            value = item0.copy();
+            maxDec = item0.decimals;
+            value  = new NumberValue(item0.toNumber());
 
 
             for (let j = 1; j < input0.items.length; j++)
@@ -422,7 +433,7 @@ async function evalDivideInputs(inputs, parse)
                         break; 
                     }
 
-                    value.value /= item.value;
+                    value.value /= item.toNumber();
                     maxDec       = Math.max(maxDec, item.decimals);
                 }                    
             }
@@ -432,7 +443,8 @@ async function evalDivideInputs(inputs, parse)
             if (input0.type != NUMBER_VALUE)
                 return NumberValue.NaN();
 
-            value = input0.copy();
+            maxDec = input0.decimals;
+            value  = new NumberValue(input0.toNumber());
         }
 
         
@@ -463,7 +475,7 @@ async function evalDivideInputs(inputs, parse)
                             break; 
                         }
 
-                        value.value /= item.value;
+                        value.value /= item.toNumber();
                         maxDec       = Math.max(maxDec, item.decimals);
                     }                    
                 }
@@ -482,7 +494,7 @@ async function evalDivideInputs(inputs, parse)
                 }
     
                 
-                value.value /= input.value;
+                value.value /= input.toNumber();
                 maxDec       = Math.max(maxDec, input.decimals);
             }
         }
@@ -498,7 +510,7 @@ async function evalDivideInputs(inputs, parse)
 
 
 
-async function evalModuloInputs(inputs, parse)
+async function evalModuloInputs(node, inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN();
@@ -529,7 +541,8 @@ async function evalModuloInputs(inputs, parse)
                 return NumberValue.NaN();
 
 
-            value = item0;
+            maxDec = item0.decimals;
+            value  = new NumberValue(item0.toNumber());
 
             
             for (let i = 1; i < input0.items.length; i++)
@@ -551,7 +564,7 @@ async function evalModuloInputs(inputs, parse)
                     }
 
                     maxDec      = Math.max(maxDec, item.decimals);
-                    value.value = value.value % item.value;
+                    value.value = value.value % item.toNumber();
                 }                    
             }
         }
@@ -560,7 +573,8 @@ async function evalModuloInputs(inputs, parse)
             if (input0.type != NUMBER_VALUE)
                 return NumberValue.NaN();
 
-            value = input0;
+            maxDec = input0.decimals;
+            value  = new NumberValue(input0.toNumber());
         }
 
 
@@ -592,7 +606,7 @@ async function evalModuloInputs(inputs, parse)
                         }
 
                         maxDec      = Math.max(maxDec, item.decimals);
-                        value.value = floorTo(value.value % item.value, value.decimals);
+                        value.value = floorTo(value.value % item.toNumber(), value.decimals);
                     }                    
                 }
             }
@@ -610,7 +624,7 @@ async function evalModuloInputs(inputs, parse)
                 }
 
                 maxDec      = Math.max(maxDec, input.decimals);
-                value.value = floorTo(value.value % input.value, value.decimals);
+                value.value = floorTo(value.value % input.toNumber(), value.decimals);
             }
         }
 
@@ -625,7 +639,7 @@ async function evalModuloInputs(inputs, parse)
 
 
 
-async function evalExponentInputs(inputs, parse)
+async function evalExponentInputs(node, inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN();
@@ -656,7 +670,8 @@ async function evalExponentInputs(inputs, parse)
                 return NumberValue.NaN();
 
 
-            value = item0;
+            maxDec = item0.decimals;
+            value  = new NumberValue(item0.toNumber());
 
             
             for (let i = 1; i < input0.items.length; i++)
@@ -670,8 +685,8 @@ async function evalExponentInputs(inputs, parse)
 
                 if (item.type == NUMBER_VALUE)
                 {
-                    value.value = Math.pow(value.value, item.value);
-                    maxDec      = Math.max(maxDec,      item.decimals);
+                    value.value = Math.pow(value.value, item.toNumber());
+                    maxDec      = Math.max(maxDec, item.decimals);
                 }                    
             }
         }
@@ -680,7 +695,8 @@ async function evalExponentInputs(inputs, parse)
             if (input0.type != NUMBER_VALUE)
                 return NumberValue.NaN();
 
-            value = input0;
+            maxDec = input0.decimals;
+            value  = new NumberValue(input0.toNumber());
         }
 
 
@@ -703,8 +719,8 @@ async function evalExponentInputs(inputs, parse)
 
                     if (item.type == NUMBER_VALUE)
                     {
-                        value.value = Math.pow(value.value, item.value);
-                        maxDec      = Math.max(maxDec,      item.decimals);
+                        value.value = Math.pow(value.value, item.toNumber());
+                        maxDec      = Math.max(maxDec, item.decimals);
                     }                    
                 }
             }
@@ -714,8 +730,8 @@ async function evalExponentInputs(inputs, parse)
                     input.type == NUMBER_VALUE, 
                     'input.type must be NUMBER_VALUE');
 
-                value.value = Math.pow(value.value, input.value);
-                maxDec      = Math.max(maxDec,      input.decimals);
+                value.value = Math.pow(value.value, input.toNumber());
+                maxDec      = Math.max(maxDec, input.decimals);
             }
         }
 

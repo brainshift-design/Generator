@@ -44,7 +44,7 @@ var menuLogMessages;
 var menuDebugDelete;
 
 var menuRepeat;
-var menuSelectFromList;
+//var menuSelectFromList;
 var menuFlow;
 var menuList;
 var menuData;
@@ -480,22 +480,21 @@ function initGeneratorMenus()
         menuItemTimer   = new MenuItem('Timer ',         null,       false, {icon: iconTimer,    createType: TIMER,            callback: e => actionManager.do(getCreateNodeAction(TIMER,           btnFlow.div, getCreateOptions(e)))}),
         menuItemAnimate = new MenuItem('Animate',        null,       false, {icon: iconAnimate,  createType: NUMBER_ANIMATE,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,  btnFlow.div, getCreateOptions(e)))})]);
 
-    menuSelectFromList = new Menu('Select', true, false);
-    menuSelectFromList.addItems([
-        new MenuItem('Select from list', null, false, {icon: iconSelectFromList, createType: SELECT_FROM_LIST,        callback: e => actionManager.do(getCreateNodeAction(SELECT_FROM_LIST, btnFlow.div, getCreateOptions(e)))})]);
+    // menuSelectFromList = new Menu('Select', true, false);
+    // menuSelectFromList.addItems([
+    //     new MenuItem('Select from list', null, false, {icon: iconSelectFromList, createType: SELECT_FROM_LIST,        callback: e => actionManager.do(getCreateNodeAction(SELECT_FROM_LIST, btnFlow.div, getCreateOptions(e)))})]);
 
 
     menuFlow = new Menu('Data flow', true, false);
     menuFlow.addItems([
         menuItemIfElse     = new MenuItem('I&hairsp;f / else', 'If else',  false, {icon: iconIfElse,        createType: IF_ELSE,       callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,          btnFlow.div, getCreateOptions(e))), disambiguate: true}),
-        menuItemSelect     = new MenuItem('Select',            null,       false, {childMenu: menuSelectFromList, icon: iconSelect,        createType: SELECT,        callback: e => actionManager.do(getCreateNodeAction(SELECT,           btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null,       false, {separator: true}),
         menuItemRepeat     = new MenuItem('. . . Repeat',      'Repeat',   false, {icon: iconRepeat, childMenu: menuRepeat, createType: REPEAT,         callback: e => actionManager.do(getCreateNodeAction(REPEAT,          btnFlow.div, getCreateOptions(e)))}),
-        //menuItemVarGroup   = new MenuItem('Variable group',  null,       false, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
+      //menuItemVarGroup   = new MenuItem('Variable group',  null,       false, {icon: iconVariableGroup, createType: VARIABLE_GROUP, callback: e => actionManager.do(getCreateNodeAction(VARIABLE_GROUP,  btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null,       false, {separator: true}),
         menuItemCache      = new MenuItem('Cache. . .',        'Cache',    false, {icon: iconCache,         createType: CACHE,          callback: e => actionManager.do(getCreateNodeAction(CACHE,           btnFlow.div, getCreateOptions(e)))}),
         menuItemFreeze     = new MenuItem('Freeze',            null,       false, {icon: iconFreeze,        createType: FREEZE,         callback: e => actionManager.do(getCreateNodeAction(FREEZE,          btnFlow.div, getCreateOptions(e)))}),
-        menuItemRetain    = new MenuItem('Retain',            null,       false, {icon: iconRetain,   createType: RETAIN,        callback: e => actionManager.do(getCreateNodeAction(RETAIN,         btnFlow.div, getCreateOptions(e)))}),
+        menuItemRetain     = new MenuItem('Retain',            null,       false, {icon: iconRetain,   createType: RETAIN,        callback: e => actionManager.do(getCreateNodeAction(RETAIN,         btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null,       false, {separator: true}),
                              new MenuItem('Variable',          null,       false, {icon: iconVariable,      createType: VARIABLE,       callback: e => actionManager.do(getCreateNodeAction(VARIABLE,        btnFlow.div, getCreateOptions(e)))}),
                              new MenuItem('',                  null,       false, {separator: true}),
@@ -529,19 +528,22 @@ function initGeneratorMenus()
 
     menuData = new Menu('Lists', true, false);
     menuData.addItems([
-        menuItemCombine = new MenuItem('List',         null,            false, {childMenu: menuList, icon: iconData, createType: LIST,          callback: e => actionManager.do(getCreateNodeAction(LIST,             btnData.div, getCreateOptions(e)))}),
-        menuItemList    = new MenuItem('Items. . .',   null,            false, {icon: iconExpand,                    createType: ITEMS,         callback: e => actionManager.do(getCreateNodeAction(ITEMS,            btnData.div, getCreateOptions(e)))}),
-                          new MenuItem('',             null,            false, {separator: true}),     
-        menuItemCount   = new MenuItem('Count',        null,            false, {icon: iconCount,                     createType: ITEM_COUNT,    callback: e => actionManager.do(getCreateNodeAction(ITEM_COUNT,       btnData.div, getCreateOptions(e)))}),
-                        //new MenuItem('Object count', null,            false, {icon: iconObjectCount,               createType: OBJECT_COUNT,  callback: e => actionManager.do(getCreateNodeAction(OBJECT_COUNT,     btnData.div, getCreateOptions(e)))}),
-                        //new MenuItem('',             null,            false, {separator: true}),     
-                          new MenuItem('Contains',     'List contains', true,  {icon: iconListContains,              createType: LIST_CONTAINS, callback: e => actionManager.do(getCreateNodeAction(LIST_CONTAINS,    btnData.div, getCreateOptions(e))), disambiguate: true}),
-                          new MenuItem('Find',         'Find in list',  true,  {icon: iconListFind,                  createType: LIST_FIND,     callback: e => actionManager.do(getCreateNodeAction(LIST_FIND,        btnData.div, getCreateOptions(e))), disambiguate: true}),
-                          new MenuItem('',             null,            false, {separator: true}),     
-                          new MenuItem('Column',       null,            false, {icon: iconColumn,                    createType: COLUMN,        callback: e => actionManager.do(getCreateNodeAction(COLUMN,           btnData.div, getCreateOptions(e)))}),
-                          new MenuItem('Cell',         null,            false, {icon: iconCell,                      createType: CELL,          callback: e => actionManager.do(getCreateNodeAction(CELL,             btnData.div, getCreateOptions(e)))}),
-                          new MenuItem('',             null,            false, {separator: true}),     
-                          new MenuItem('Functions',    null,            false, {icon: iconListFunctions, childMenu: menuItems})]);
+        menuItemCombine = new MenuItem('List',             null,            false, {childMenu: menuList, icon: iconData, createType: LIST,             callback: e => actionManager.do(getCreateNodeAction(LIST,             btnData.div, getCreateOptions(e)))}),
+        menuItemList    = new MenuItem('Items. . .',       null,            false, {icon: iconExpand,                    createType: ITEMS,            callback: e => actionManager.do(getCreateNodeAction(ITEMS,            btnData.div, getCreateOptions(e)))}),
+                          new MenuItem('',                 null,            false, {separator: true}),     
+        menuItemSelect  = new MenuItem('Select',           null,            false, {icon: iconSelect,                    createType: SELECT,           callback: e => actionManager.do(getCreateNodeAction(SELECT,           btnData.div, getCreateOptions(e)))}),
+        //                new MenuItem('Select from list', null,            false, {icon: iconSelectFromList,            createType: SELECT_FROM_LIST, callback: e => actionManager.do(getCreateNodeAction(SELECT_FROM_LIST, btnData.div, getCreateOptions(e)))}),
+                          new MenuItem('',                 null,            false, {separator: true}),     
+        menuItemCount   = new MenuItem('Count',            null,            false, {icon: iconCount,                     createType: ITEM_COUNT,       callback: e => actionManager.do(getCreateNodeAction(ITEM_COUNT,       btnData.div, getCreateOptions(e)))}),
+                        //new MenuItem('Object count',     null,            false, {icon: iconObjectCount,               createType: OBJECT_COUNT,     callback: e => actionManager.do(getCreateNodeAction(OBJECT_COUNT,     btnData.div, getCreateOptions(e)))}),
+                        //new MenuItem('',                 null,            false, {separator: true}),     
+                          new MenuItem('Contains',         'List contains', true,  {icon: iconListContains,              createType: LIST_CONTAINS,    callback: e => actionManager.do(getCreateNodeAction(LIST_CONTAINS,    btnData.div, getCreateOptions(e))), disambiguate: true}),
+                          new MenuItem('Find',             'Find in list',  true,  {icon: iconListFind,                  createType: LIST_FIND,        callback: e => actionManager.do(getCreateNodeAction(LIST_FIND,        btnData.div, getCreateOptions(e))), disambiguate: true}),
+                          new MenuItem('',                 null,            false, {separator: true}),     
+                          new MenuItem('Column',           null,            false, {icon: iconColumn,                    createType: COLUMN,           callback: e => actionManager.do(getCreateNodeAction(COLUMN,           btnData.div, getCreateOptions(e)))}),
+                          new MenuItem('Cell',             null,            false, {icon: iconCell,                      createType: CELL,             callback: e => actionManager.do(getCreateNodeAction(CELL,             btnData.div, getCreateOptions(e)))}),
+                          new MenuItem('',                 null,            false, {separator: true}),     
+                          new MenuItem('Functions',        null,            false, {icon: iconListFunctions, childMenu: menuItems})]);
 
 
     menuSets = new Menu('Sets...', true, false);
@@ -1254,7 +1256,7 @@ function initGeneratorMenus()
     menuBarMenus = 
     [
         menuRepeat,
-        menuSelectFromList,
+        //menuSelectFromList,
         menuFlow,
         menuData,
         menuList,

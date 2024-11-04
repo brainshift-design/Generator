@@ -20,8 +20,8 @@ extends OperatorBase
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramStart    = new NumberParam('start',    '[ start', true,  true, true, 0));
-        this.addParam(this.paramMultiply = new NumberParam('multiply', 'mult',    true,  true, true, 1));
         this.addParam(this.paramAdd      = new NumberParam('add',      ' add',    true,  true, true, 1));
+        this.addParam(this.paramMultiply = new NumberParam('multiply', 'mult',    true,  true, true, 1));
         this.addParam(this.paramEnd      = new NumberParam('end',      '] end',   true,  true, true, Number.NaN));
 
         this.paramMultiply.reverseMenu = true;
