@@ -40,12 +40,14 @@ extends OperatorBase
         this.paramLoop.forceInputColorType = ANY_VALUE;
 
 
-        this.getDescription = () => `"repeats" the input, creating a list of values/objects`;
+        this.getDescription = () => `"repeats" the input, creating a list of values or objects`;
 
         this.paramCount    .getDescription = () => `number of times to repeat`;
-        this.paramIteration.getDescription = () => `makes possible to force a certain iteration, default is ?`;
+        this.paramIteration.getDescription = () => `makes possible to force a certain iteration`;
         this.paramWhile    .getDescription = () => `if connected, only repeat while this condition is true`;
-        this.paramLoop     .getDescription = () => `used to define closed loops`;
+        this.paramLoop     .getDescription = () => `connect to a node header to close the loop`;
+
+        this.paramIteration.getDescriptionPrompt = () => this.paramIteration.getDescription() + `, default is ?`;
     }
     
     

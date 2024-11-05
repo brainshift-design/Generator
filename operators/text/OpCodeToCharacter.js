@@ -12,7 +12,9 @@ extends OperatorBase
         this.addInput (new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
        
-        createHeaderTooltip(this, ttAscii);
+        //createHeaderTooltip(this, ttAscii);
+
+        this.getTooltip = () => ttAscii;
     }
 
 

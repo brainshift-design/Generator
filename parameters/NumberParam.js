@@ -80,7 +80,8 @@ extends NumberParamBase
             });
 
             return this.getTooltip();
-        });
+        },
+        () => settings.showTooltipParams);
     }
 
 

@@ -100,7 +100,8 @@ extends Parameter
             });
 
             return this.getTooltip();
-        });
+        },
+        () => settings.showTooltipParams);
 
 
         if (hasInput)  this.initInput ([COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);

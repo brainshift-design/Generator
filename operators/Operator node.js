@@ -105,7 +105,7 @@ Operator.prototype.createHeader = function()
 
 
 
-this.header.addEventListener('pointerdown', e =>
+    this.header.addEventListener('pointerdown', e =>
     {
         if (graphView.isPanning(e))
             return;

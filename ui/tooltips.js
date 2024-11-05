@@ -1,3 +1,14 @@
+function createNodeTooltip(html)
+{
+    if (currentTooltip) 
+        hideTooltip(currentTooltip);
+
+    ttNode.innerHTML = html;
+    return ttNode;
+}
+
+
+
 function createParamTooltip(html)
 {
     if (currentTooltip) 

@@ -164,6 +164,16 @@ class Operator
     measureData;
 
 
+    getTooltip = () =>
+    {
+        const desc = this.getDescription();
+
+        return desc != NULL 
+            ? createNodeTooltip(desc)
+            : null;
+    };
+
+
 
     _selected;
     get selected() { return this._selected; }
@@ -252,11 +262,18 @@ class Operator
         if (progressBar)
             this.createProgressBar();
 
-        if (createTooltip)
-            createHeaderTooltip(this);
+        // if (createTooltip)
+        //     createHeaderTooltip(this);
 
 
         this.setName(name);
+
+
+        createTooltipSrc(
+            this.header, 
+            this.header, 
+            () => this.getTooltip(),
+            () => settings.showTooltipNodes);
     }    
 
 

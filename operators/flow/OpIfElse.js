@@ -28,6 +28,11 @@ extends OpFlowBase
         this.paramCondition.controls[0].allowEditDecimals = false;
 
         this.menuCondition = createBoolMenu(this.paramCondition);
+
+
+        this.getDescription = () => `passes one of the inputs depending on the condition`;
+
+        this.paramCondition.getDescription = () => `determines which input is passed &mdash; first if false, second if true`;
     }
     
     

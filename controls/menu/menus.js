@@ -145,6 +145,8 @@ var menuItemSortConnsOutputNodeName;
 var menuItemSortConnsCreated;
 
 
+var menuItemShowTooltipNodes;
+var menuItemShowTooltipParams;
 var menuItemShowTooltipLongText;
 var menuItemShowTooltipLists;
 var menuItemShowTooltipColorInterpolation;
@@ -370,8 +372,12 @@ function initGeneratorMenus()
 {
     menuShowTooltips = new Menu('Show tooltips', false);
     menuShowTooltips.addItems([
+        menuItemShowTooltipNodes              = new MenuItem('Nodes',               null, false, {checkCallback: () => settings.showTooltipNodes,              callback: () => { updateSettingAndMenu('showTooltipNodes',              true, !settings.showTooltipNodes             ); }}),
+        menuItemShowTooltipParams             = new MenuItem('Parameters',          null, false, {checkCallback: () => settings.showTooltipParams,             callback: () => { updateSettingAndMenu('showTooltipParams',             true, !settings.showTooltipParams            ); }}),
+                                                new MenuItem('',                    null, false, {separator: true}),    
         menuItemShowTooltipLists              = new MenuItem('List items',          null, false, {checkCallback: () => settings.showTooltipLists,              callback: () => { updateSettingAndMenu('showTooltipLists',              true, !settings.showTooltipLists             ); }}),
         menuItemShowTooltipLongText           = new MenuItem('Long text',           null, false, {checkCallback: () => settings.showTooltipLongText,           callback: () => { updateSettingAndMenu('showTooltipLongText',           true, !settings.showTooltipLongText          ); }}),
+                                                new MenuItem('',                    null, false, {separator: true}),    
         menuItemShowTooltipAscii              = new MenuItem('ASCII',               null, false, {checkCallback: () => settings.showTooltipAscii,              callback: () => { updateSettingAndMenu('showTooltipAscii',              true, !settings.showTooltipAscii             ); }}),        
         menuItemShowTooltipColorNames         = new MenuItem('Color names',         null, false, {checkCallback: () => settings.showTooltipColorNames,         callback: () => { updateSettingAndMenu('showTooltipColorNames',         true, !settings.showTooltipColorNames        ); }}),
         menuItemShowTooltipColorContrast      = new MenuItem('Color contrast',      null, false, {checkCallback: () => settings.showTooltipColorContrast,      callback: () => { updateSettingAndMenu('showTooltipColorContrast',      true, !settings.showTooltipColorContrast     ); }}),

@@ -75,13 +75,17 @@ extends Control
         this.div.appendChild(divTextValue);
         
 
-        createTooltipSrc(this.div, this.div, () => 
-                settings.showTooltipLongText
-            &&  scrollbarVisible(this.textbox)
-            && !hasFocus(this.textbox)
-            ? ttText
-            : null);
-
+        createTooltipSrc(
+            this.div, 
+            this.div, 
+            () => 
+                    settings.showTooltipLongText
+                &&  scrollbarVisible(this.textbox)
+                && !hasFocus(this.textbox)
+                ? ttText
+                : null,
+            () => settings.showTooltipParams);
+    
 
         //this.div.style.position  = 'relative';
         // this.div.style.boxShadow = '0 0 0 2px orange inset';

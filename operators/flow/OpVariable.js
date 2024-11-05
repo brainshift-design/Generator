@@ -54,10 +54,16 @@ extends ResizableBaseWithSeparator
 
         this.divIcon.addEventListener('pointerdown',  e => 
         { 
+            if (e.button == 0)
+                e.stopPropagation();
+        });
+
+
+        this.divIcon.addEventListener('pointerup',  e => 
+        { 
             e.stopPropagation();
 
-            if (   e.button == 0 
-                || e.button == 2)
+            if (e.button == 0)
             {
                 hideAllMenus(); 
 

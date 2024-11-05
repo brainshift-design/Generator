@@ -83,6 +83,11 @@ extends OpShapeBase
 
 
         this.label.insertBefore(this.btnFinal, this.labelText);
+
+
+        this.getDescription = () => `Lets the input stay on the canvas after the plugin is closed.<br/>The content is updated when the plugin is reopened.`;
+
+        this.paramRetain.getDescription = () => `determines if the input stays on the canvas`;
     }
 
 

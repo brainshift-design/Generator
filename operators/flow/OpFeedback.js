@@ -19,7 +19,7 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramFrom = new NumberParam('from',  '',     false, false, true));
+        this.addParam(this.paramFrom = new NumberParam('from', '', false, false, true));
 
         
         this.inputs[0].addEventListener('connect',    () => OpFeedback_onConnectInput   (this));
@@ -27,6 +27,11 @@ extends OperatorBase
 
 
         this.paramFrom.forceOutputColorType = ANY_VALUE;
+
+
+        this.getDescription = () => `feeds the output of a Repeat back into the loop`;
+
+        this.paramFrom.getDescription = () => `connect this to the loop parameter of a Repeat`;
     }
 
 

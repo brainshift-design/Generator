@@ -42,6 +42,11 @@ extends OperatorBase
 
         if (this.enabled)
             setTimeout(() => pushUpdate(null, [this]), 1000);
+
+
+        this.getDescription = () => `forces an update every so often at regular intervals`;
+
+        this.paramInterval.getDescription = () => `duration of the interval`;
     }
 
 
