@@ -46,10 +46,8 @@ extends GArithmetic
         let   op     = await evalNumberValue(this.operation, parse);
 
 
-        if (op) op = op.toInteger();
-        
-
-        if (op.isValid())
+        if (   op
+            && op.isValid())
         {
             op.value    = Math.min(Math.max(0, Math.round(op.value)), MATH_OPS.length-1);
             op.decimals = 0;
@@ -468,6 +466,7 @@ async function evalDivideInputs(node, inputs, parse)
 
                     if (item.type == NUMBER_VALUE)
                     {
+                        // handle division by zero
                         if (item.value == 0) 
                         { 
                             value.value    = Number.NaN; 
@@ -486,7 +485,9 @@ async function evalDivideInputs(node, inputs, parse)
                      input.type == NUMBER_VALUE, 
                     'input.type must be NUMBER_VALUE');
 
-                if (input.value == 0) 
+
+                // handle division by zero
+                if (input.value == 0)
                 { 
                     value.value    = Number.NaN; 
                     value.decimals = 0;

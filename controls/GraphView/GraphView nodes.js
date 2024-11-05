@@ -481,6 +481,16 @@ GraphView.prototype.randomizeSelectedNodes = function()
 
 
 
+GraphView.prototype.toggleShowValueNames = function()
+{
+    const nodes     =  graphView.selectedNodes.filter(node =>  node.type == ITEMS);
+    const showNames = !graphView.selectedNodes.some  (node => !node.showValueNames);
+
+    actionManager.do(new SetShowValueNamesAction(nodes, !showNames));
+};
+
+
+
 GraphView.prototype.getRandomizedSeedValues = function(randoms)
 {
     const params = randoms.map(n => n.paramFromId('seed'));

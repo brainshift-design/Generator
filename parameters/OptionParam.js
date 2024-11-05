@@ -5,7 +5,7 @@ extends NumberParamBase
     excludeFromMenu   = []; // indices
 
     separatorsBefore  = [];
-    markMenuPro           = [];
+    markMenuPro       = [];
 
     minMenuWidth      = 200;
     

@@ -351,6 +351,7 @@ var menuItemNodeRandomizeSeeds;
 var menuItemNodeRandomizeColors;
 var menuItemNodeRandomizeNumbers;
 var menuItemNodeRandomizeNodes;
+var menuItemNodeShowValueNames;
 var menuItemPointAlongPath;
 var menuItemClosestPointOnPath;
 var menuItemVectorVertex;
@@ -983,118 +984,6 @@ function initGeneratorMenus()
         menuItemNodeRandomizeNumbers = new MenuItem('Number', null, false, {callback: e => { hideAllMenus(); graphView.randomizeSelectedNumbers(); }})]);
 
 
-    menuNode = new Menu('Node menu', false, false);
-    menuNode.addItems([
-        //menuItemNodeEditGroup      = new MenuItem('Edit group...',       null, false, {callback: e => { hideAllMenus(); editSelectedGroup(); }}),
-        //menuItemNodeSep1           = new MenuItem('',                    null, false, {separator: true}),
-        menuItemNodeCopy             = new MenuItem('Copy',                null, false, {shortcut:  osCtrl() + 'C',       callback: () => graphView.copySelectedNodes() }),
-        menuItemNodePaste            = new MenuItem('Paste here',          null, false, {shortcut:  osCtrl() + 'V',       callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
-        menuItemNodePasteConnected   = new MenuItem('Paste connected',     null, false, {shortcut:  osCtrlShift() + 'D',  callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true ); }}),
-        //                             new MenuItem('Copy/Paste as',       null, false, {childMenu: menuNodeCopyAs}),
-        menuItemNodeLayoutSep        = new MenuItem('',                    null, false, {separator: true}),
-        menuItemNodeLayout           = new MenuItem('Layout',              null, false, {shortcut: osCtrlShift() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
-        // menuItemNodeSepGroup      = new MenuItem('',                    null, false, {separator: true}),
-        //menuItemNodeGroupSelected  = new MenuItem('Group selected',      null, false, {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); actionManager.do(new   GroupNodesAction(graphView.selectedNodes)); }}),
-        //menuItemNodeUngroup        = new MenuItem('Ungroup',             null, false, {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
-        menuItemNodeSep3             = new MenuItem('',                    null, false, {separator: true}),
-        menuItemNodeActivate         = new MenuItem('Activate/Deactivate', null, false, {shortcut:  osAlt()     + 'A',  callback: () => makeSelectedNodesActive(false)}),
-        menuItemNodeEnableDisable    = new MenuItem('Enable/Disable',      null, false, {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
-        //menuItemNodeSep2             = new MenuItem('',                    null, false, {separator: true}),
-        menuItemNodeRename           = new MenuItem('Rename',              null, false, {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
-        menuItemNodeHighlight        = new MenuItem('Highlight',           null, false, {childMenu: menuNodeHighlight}),
-        menuItemNodeSelect           = new MenuItem('Select',              null, false, {childMenu: menuNodeSelect}),
-      //menuItemNodeEdit             = new MenuItem('Edit . . .',          null, false, {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
-      //                               new MenuItem('',                    null, false, {separator: true}),
-      //menuItemNodeSaveAsTemplate   = new MenuItem('Save as template',    null, false, {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
-      //                               new MenuItem('',                    null, false, {separator: true}),
-        menuItemNodeSepRnd           = new MenuItem('',                    null, false, {separator: true}),
-        menuItemNodeConnectSeeds     = new MenuItem('Connect seeds',       null, false, {shortcut:  osShift() + 'C', callback: e => { hideAllMenus(); graphView.connectSelectedSeeds(); }}),
-        menuItemNodeRandomizeNodes   = new MenuItem('Randomize',           null, false, {childMenu: menuNodeRandomize, shortcut: osShift() + 'R           ', icon: iconProbability, callback: e => { hideAllMenus(); graphView.randomizeSelectedNodes(); }}),
-        menuItemNodeSepRem           = new MenuItem('',                    null, false, {separator: true}),
-        menuItemNodeRemove           = new MenuItem('Remove',              null, false, {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }}),
-        menuItemNodeNotConditionSep  = new MenuItem('',                    null, false, {separator: true}),
-        menuItemNodeNotCondition     = new MenuItem('Not condition',       null, false, {checkCallback: () => graphView.selectedNodes.some(n => n.notCondition), callback: () => toggleSelectedNodesNotCondition()}),
-                                       new MenuItem('',                    null, false, {separator: true}),
-                                       new MenuItem('Create node. . .',    null, false, {childMenu: wholeMenu})]);
-
-
-
-    menuNode.init = () => 
-    {
-        const single      =  graphView.selectedNodes.length == 1;
-        const canDisable  = !graphView.selectedNodes.find(n => !n.canDisable);
-        const canRename   = !graphView.selectedNodes.find(n => !n.canRename);
-        const isCondition =  graphView.selectedNodes.some(n => n.hasConditionOutputs());
-        const someActive  =  graphView.selectedNodes.some (n => n.active);
-        const allActive   =  graphView.selectedNodes.every(n => n.active);
-
-
-        const selectedRandom =
-            graphView.selectedNodes.filter(n => 
-                   n.type == NUMBER_RANDOM
-                || n.type == NUMBER_NOISE
-                || n.type == PROBABILITY);
-        
-
-        const canRandomizeSeeds = selectedRandom.length > 0;
-        const canConnectSeeds   = 
-               selectedRandom.length > 0
-            && graphView.selectedNodes.filter(n => n.type == ITEMS).length == 1;
-
-
-        const selectedColors      = graphView.selectedNodes.filter(n => n.type == COLOR);
-        const canRandomizeColors  = selectedColors.length > 0;
-        
-        const selectedNumbers     = graphView.selectedNodes.filter(n => n.type == NUMBER || n.type == BOUNDED_NUMBER);
-        const canRandomizeNumbers = selectedNumbers.length > 0;
-
-        
-        menuItemNodeConnectSeeds    .setName('Connect seed' + (selectedRandom .length == 1 ? '' : 's'));
-        menuItemNodeRandomizeSeeds  .setName('Seed'         + (selectedRandom .length == 1 ? '' : 's'));
-        menuItemNodeRandomizeColors .setName('Color'        + (selectedColors .length == 1 ? '' : 's'));
-        menuItemNodeRandomizeNumbers.setName('Number'       + (selectedNumbers.length == 1 ? '' : 's'));
-
-
-        menuNode.showChecks = isCondition;
-
-        //updateElementDisplay(menuItemNodeEditGroup     .div, hasGroups && single);
-        //updateElementDisplay(menuItemNodeSepGroup      .div, hasGroups && single);
-        //updateElementDisplay(menuItemNodeUngroup       .div, hasGroups);
-        //updateElementDisplay(menuItemNodeSep2          .div, single);
-        updateElementDisplay(menuItemNodeRename          .div, single && canRename);
-        updateElementDisplay(menuItemNodeLayoutSep       .div, !single);
-        updateElementDisplay(menuItemNodeLayout          .div, !single);
-        //updateElementDisplay(menuItemNodeEdit          .div, single);
-        //updateElementDisplay(menuItemNodeSep2          .div, single);
-        updateElementDisplay(menuItemNodeSelect          .div, single);
-        //updateElementDisplay(menuItemNodeActivate      .div, true);
-        updateElementDisplay(menuItemNodeEnableDisable   .div, canDisable);
-        updateElementDisplay(menuItemNodeNotConditionSep .div, isCondition);
-        updateElementDisplay(menuItemNodeNotCondition    .div, isCondition);
-
-        updateElementDisplay(menuItemNodeSepRnd          .div, canConnectSeeds || canRandomizeSeeds || canRandomizeColors || canRandomizeNumbers);
-        updateElementDisplay(menuItemNodeConnectSeeds    .div, canConnectSeeds);
-        updateElementDisplay(menuItemNodeRandomizeNodes  .div, canRandomizeSeeds || canRandomizeColors || canRandomizeNumbers);
-        updateElementDisplay(menuItemNodeRandomizeSeeds  .div, canRandomizeSeeds);
-        updateElementDisplay(menuItemNodeRandomizeColors .div, canRandomizeColors);
-        updateElementDisplay(menuItemNodeRandomizeNumbers.div, canRandomizeNumbers);
-        
-        // updateElementDisplay(menuItemNodeSepRem          .div, canDisable || canConnectSeeds || canRandomizeSeeds || canRandomizeColors || canRandomizeNumbers);
-
-        const showRandomizeMenu =
-               canRandomizeSeeds  && canRandomizeColors
-            || canRandomizeSeeds  && canRandomizeNumbers
-            || canRandomizeColors && canRandomizeNumbers;
-
-        //updateElementDisplay(menuItemNodeRandomizeNodes.div, showRandomizeMenu);
-        
-        menuItemNodeRandomizeNodes.childMenu                  = showRandomizeMenu ? menuNodeRandomize : null;
-        menuItemNodeRandomizeNodes.divExpand.style.visibility = showRandomizeMenu ? 'visible' : 'hidden';
-
-        menuItemNodeRandomizeNodes.divShortcut.innerHTML      = osShift() + 'R' + (showRandomizeMenu ? '           ' : '');
-    };
-
-
 
     // menuRemoveLicense = new Menu('Remove license', false, false);
     // menuRemoveLicense.addItems([
@@ -1292,6 +1181,132 @@ function initGeneratorMenus()
         menuTransform,
         menuDecoration
     ];
+}
+
+
+
+function initNodeMenu()
+{
+    const menuItems = [
+        //menuItemNodeEditGroup      = new MenuItem('Edit group...',         null, false, {callback: e => { hideAllMenus(); editSelectedGroup(); }}),
+        //menuItemNodeSep1           = new MenuItem('',                      null, false, {separator: true}),
+        menuItemNodeCopy             = new MenuItem('Copy',                  null, false, {shortcut:  osCtrl() + 'C',       callback: () => graphView.copySelectedNodes() }),
+        menuItemNodePaste            = new MenuItem('Paste here',            null, false, {shortcut:  osCtrl() + 'V',       callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
+        menuItemNodePasteConnected   = new MenuItem('Paste connected',       null, false, {shortcut:  osCtrlShift() + 'D',  callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true ); }}),
+        //                             new MenuItem('Copy/Paste as',         null, false, {childMenu: menuNodeCopyAs}),
+        menuItemNodeLayoutSep        = new MenuItem('',                      null, false, {separator: true}),
+        menuItemNodeLayout           = new MenuItem('Layout',                null, false, {shortcut: osCtrlShift() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
+        // menuItemNodeSepGroup      = new MenuItem('',                      null, false, {separator: true}),
+        //menuItemNodeGroupSelected  = new MenuItem('Group selected',        null, false, {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); actionManager.do(new   GroupNodesAction(graphView.selectedNodes)); }}),
+        //menuItemNodeUngroup        = new MenuItem('Ungroup',               null, false, {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
+        menuItemNodeSep3             = new MenuItem('',                      null, false, {separator: true}),
+        menuItemNodeActivate         = new MenuItem('Activate/Deactivate',   null, false, {shortcut:  osAlt()     + 'A',  callback: () => makeSelectedNodesActive(false)}),
+        menuItemNodeEnableDisable    = new MenuItem('Enable/Disable',        null, false, {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
+        //menuItemNodeSep2             = new MenuItem('',                    null, false, {separator: true}),
+        menuItemNodeRename           = new MenuItem('Rename',                null, false, {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
+        menuItemNodeHighlight        = new MenuItem('Highlight',             null, false, {childMenu: menuNodeHighlight}),
+        menuItemNodeSelect           = new MenuItem('Select',                null, false, {childMenu: menuNodeSelect}),
+      //menuItemNodeEdit             = new MenuItem('Edit . . .',            null, false, {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
+      //                               new MenuItem('',                      null, false, {separator: true}),
+      //menuItemNodeSaveAsTemplate   = new MenuItem('Save as template',      null, false, {callback: e => { hideAllMenus(); showSaveAsTemplateDialog(); }}),
+      //                               new MenuItem('',                      null, false, {separator: true}),
+        menuItemNodeSepRnd           = new MenuItem('',                      null, false, {separator: true}),
+        menuItemNodeConnectSeeds     = new MenuItem('Connect seeds',         null, false, {shortcut:  osShift() + 'C', callback: e => { hideAllMenus(); graphView.connectSelectedSeeds(); }}),
+        menuItemNodeRandomizeNodes   = new MenuItem('Randomize',             null, false, {shortcut:  osShift() + 'R           ', icon: iconProbability, callback: e => { hideAllMenus(); graphView.randomizeSelectedNodes(); }}),
+        menuItemNodeShowValueNames   = new MenuItem('Show value names',      null, false, {shortcut:  osShift() + 'N', callback: e => { hideAllMenus(); graphView.toggleShowValueNames(); }}),
+        menuItemNodeSepRem           = new MenuItem('',                      null, false, {separator: true}),
+        menuItemNodeRemove           = new MenuItem('Remove',                null, false, {shortcut:  osCtrl() + '⌫', callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }}),
+        menuItemNodeNotConditionSep  = new MenuItem('',                      null, false, {separator: true}),
+        menuItemNodeNotCondition     = new MenuItem('Not condition',         null, false, {checkCallback: () => graphView.selectedNodes.some(n => n.notCondition), callback: () => toggleSelectedNodesNotCondition()}),
+                                       new MenuItem('',                      null, false, {separator: true}),
+                                       new MenuItem('Create node. . .',      null, false, {childMenu: wholeMenu})];
+
+
+    const single      =  graphView.selectedNodes.length == 1;
+    const canDisable  = !graphView.selectedNodes.find(n => !n.canDisable);
+    const canRename   = !graphView.selectedNodes.find(n => !n.canRename);
+    const isCondition =  graphView.selectedNodes.some(n => n.hasConditionOutputs());
+    //const someActive  =  graphView.selectedNodes.some (n => n.active);
+    //const allActive   =  graphView.selectedNodes.every(n => n.active);
+
+
+    const selectedRandom =
+        graphView.selectedNodes.filter(n => 
+               n.type == NUMBER_RANDOM
+            || n.type == NUMBER_NOISE
+            || n.type == PROBABILITY);
+    
+
+    const canRandomizeSeeds = selectedRandom.length > 0;
+    const canConnectSeeds   = 
+            selectedRandom.length > 0
+        && graphView.selectedNodes.filter(n => n.type == ITEMS).length == 1;
+
+
+    const selectedColors      = graphView.selectedNodes.filter(n => n.type == COLOR);
+    const canRandomizeColors  = selectedColors.length > 0;
+    
+    const selectedNumbers     = graphView.selectedNodes.filter(n => n.type == NUMBER || n.type == BOUNDED_NUMBER);
+    const canRandomizeNumbers = selectedNumbers.length > 0;
+
+    const canShowValueNames   = graphView.selectedNodes.some(n => n.type == ITEMS);
+    const anyShowValueNames   = graphView.selectedNodes.some(n => n.type == ITEMS && n.showValueNames);
+
+
+    menuItemNodeShowValueNames.setIcon(anyShowValueNames ? iconCheck : NULL);
+    
+    
+    menuItemNodeConnectSeeds    .setName('Connect seed' + (selectedRandom .length == 1 ? '' : 's'));
+    menuItemNodeRandomizeSeeds  .setName('Seed'         + (selectedRandom .length == 1 ? '' : 's'));
+    menuItemNodeRandomizeColors .setName('Color'        + (selectedColors .length == 1 ? '' : 's'));
+    menuItemNodeRandomizeNumbers.setName('Number'       + (selectedNumbers.length == 1 ? '' : 's'));
+
+
+    //updateElementDisplay(menuItemNodeEditGroup     .div, hasGroups && single);
+    //updateElementDisplay(menuItemNodeSepGroup      .div, hasGroups && single);
+    //updateElementDisplay(menuItemNodeUngroup       .div, hasGroups);
+    //updateElementDisplay(menuItemNodeSep2          .div, single);
+    updateElementDisplay(menuItemNodeRename          .div, single && canRename);
+    updateElementDisplay(menuItemNodeLayoutSep       .div, !single);
+    updateElementDisplay(menuItemNodeLayout          .div, !single);
+    //updateElementDisplay(menuItemNodeEdit          .div, single);
+    //updateElementDisplay(menuItemNodeSep2          .div, single);
+    updateElementDisplay(menuItemNodeSelect          .div, single);
+    //updateElementDisplay(menuItemNodeActivate      .div, true);
+    updateElementDisplay(menuItemNodeEnableDisable   .div, canDisable);
+    updateElementDisplay(menuItemNodeNotConditionSep .div, isCondition);
+    updateElementDisplay(menuItemNodeNotCondition    .div, isCondition);
+
+    updateElementDisplay(menuItemNodeSepRnd          .div, canConnectSeeds || canRandomizeSeeds || canRandomizeColors || canRandomizeNumbers || canShowValueNames);
+    updateElementDisplay(menuItemNodeConnectSeeds    .div, canConnectSeeds);
+    updateElementDisplay(menuItemNodeRandomizeNodes  .div, canRandomizeSeeds || canRandomizeColors || canRandomizeNumbers);
+    updateElementDisplay(menuItemNodeShowValueNames  .div, canShowValueNames);
+    updateElementDisplay(menuItemNodeRandomizeSeeds  .div, canRandomizeSeeds);
+    updateElementDisplay(menuItemNodeRandomizeColors .div, canRandomizeColors);
+    updateElementDisplay(menuItemNodeRandomizeNumbers.div, canRandomizeNumbers);
+    
+    // updateElementDisplay(menuItemNodeSepRem          .div, canDisable || canConnectSeeds || canRandomizeSeeds || canRandomizeColors || canRandomizeNumbers);
+
+    const showRandomizeMenu =
+           canRandomizeSeeds  && canRandomizeColors
+        || canRandomizeSeeds  && canRandomizeNumbers
+        || canRandomizeColors && canRandomizeNumbers;
+
+    //updateElementDisplay(menuItemNodeRandomizeNodes.div, showRandomizeMenu);
+    
+    menuItemNodeRandomizeNodes.childMenu                  = showRandomizeMenu ? menuNodeRandomize : null;
+    menuItemNodeRandomizeNodes.divExpand.style.visibility = showRandomizeMenu ? 'visible' : 'hidden';
+
+    menuItemNodeRandomizeNodes.divShortcut.innerHTML      = osShift() + 'R' + (showRandomizeMenu ? '           ' : '');
+
+
+    menuNode = new Menu(
+        'Node menu', 
+        canConnectSeeds || canRandomizeSeeds || canRandomizeColors || canRandomizeNumbers || canShowValueNames, 
+        false);
+
+    menuNode.showChecks = isCondition;
+    menuNode.addItems(menuItems);
 }
 
 

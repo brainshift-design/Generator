@@ -158,7 +158,7 @@ extends GOperator1
 
     isValid()
     {
-        return !this.paramValues.any(p => p == NULL); 
+        return !this.paramValues.some(p => p == NULL); 
     }
 
 

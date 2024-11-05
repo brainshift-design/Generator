@@ -115,6 +115,15 @@ document.addEventListener('keydown', e =>
         graphView.randomizeSelectedNodes();
     }    
 
+    // show value names
+    else if (e.code == 'KeyN'
+          && e.shiftKey
+          && !e.altKey
+          && !getCtrlKey(e))
+    {
+        graphView.toggleShowValueNames();
+    }    
+
     // connect seeds
     else if (e.code == 'KeyC'
           && e.shiftKey

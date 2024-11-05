@@ -46,16 +46,14 @@ extends GOperator1
             return this;
 
 
-        this.value = new NumberValue(0);
-
-
         const input   = await evalNumberOrListValue(this.input,     parse);
         const op      = await evalNumberValue      (this.operation, parse);
         const operand = await evalNumberValue      (this.operand,   parse);
         const invert  = await evalNumberValue      (this.invert,    parse);
 
 
-        if (op)
+        if (   op
+            && op.isValid())
         {
             op.value    = Math.min(Math.max(0, Math.round(op.value)), MATH_OPS.length-1);
             op.decimals = 0;
@@ -175,8 +173,8 @@ function getSimpleMathValue(input, operand, op, invert, enabled)
             case 0: // % 
                 value = new NumberValue(
                     invert.value == 0
-                        ? input.value % operand.value
-                        : operand.value % input.value);
+                        ? input.toNumber() % operand.toNumber()
+                        : operand.toNumber() % input.toNumber());
                 break;
 
             case 1: // /
@@ -188,36 +186,36 @@ function getSimpleMathValue(input, operand, op, invert, enabled)
                 else
                     value = new NumberValue(
                         invert.value == 0
-                            ? input.value / operand.value
-                            : operand.value / input.value);
+                            ? input.toNumber() / operand.toNumber()
+                            : operand.toNumber() / input.toNumber());
                 break;
 
             case 2: // -
                 value = new NumberValue(
                     invert.value == 0
-                        ? input.value - operand.value
-                        : operand.value - input.value);
+                        ? input.toNumber() - operand.toNumber()
+                        : operand.toNumber() - input.toNumber());
                 break;
 
             case 3: // +
                 value = new NumberValue(
                     invert.value == 0
-                        ? input.value + operand.value
-                        : operand.value + input.value);
+                        ? input.toNumber() + operand.toNumber()
+                        : operand.toNumber() + input.toNumber());
                 break;
 
             case 4: // *
                 value = new NumberValue(
                     invert.value == 0
-                        ? input.value * operand.value
-                        : operand.value * input.value);
+                        ? input.toNumber() * operand.toNumber()
+                        : operand.toNumber() * input.toNumber());
                 break;
 
             case 5: // eˣ
                 value = new NumberValue(
                     invert.value == 0
-                        ? Math.pow(input.value, operand.value)
-                        : Math.pow(operand.value, input.value));
+                        ? Math.pow(input.toNumber(), operand.toNumber())
+                        : Math.pow(operand.toNumber(), input.toNumber()));
                 break;
 
             default:

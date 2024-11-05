@@ -186,6 +186,7 @@ this.header.addEventListener('pointerdown', e =>
 
             graphView.selectFromClick(this, getCtrlKey(e), e.shiftKey, e.altKey);
 
+            initNodeMenu();
             menuNode.showAt(e.clientX, e.clientY, false);
         }
 

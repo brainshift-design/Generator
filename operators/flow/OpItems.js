@@ -7,6 +7,8 @@ extends ResizableBaseWithSeparator
     oldScroll       = null;
     listScrollTimer = null;
 
+    showValueNames  = false;
+
 
 
     constructor()
@@ -418,7 +420,11 @@ extends ResizableBaseWithSeparator
     
                 
             param.isNodeValue = true;
+            param.showName    = this.showValueNames;
         }
+
+
+        this.separator.style.display = this.showValueNames ? 'block' : 'none';
 
 
         this.updateParamControls();
@@ -454,7 +460,8 @@ extends ResizableBaseWithSeparator
         const tab = HTAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"scroll": "' + this.scroll + '"';
+             + ',\n' + pos + tab + '"scroll": "'         + this.scroll                       + '"'
+             + ',\n' + pos + tab + '"showValueNames": "' + boolToString(this.showValueNames) + '"';
     }
 
 
@@ -463,6 +470,7 @@ extends ResizableBaseWithSeparator
     {
         super.loadParams(_node, pasting);
 
-        if (_node.scroll) this.scroll = parseInt(_node.scroll);
+        if (_node.scroll        ) this.scroll         = parseInt (_node.scroll        );
+        if (_node.showValueNames) this.showValueNames = parseBool(_node.showValueNames);
     }
 }
