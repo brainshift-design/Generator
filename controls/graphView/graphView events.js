@@ -281,21 +281,18 @@ GraphView.prototype.createEvents = function()
         const dragging = graph.currentPage.nodes.find(n => n.div.dragging === true);
 
 
-        if (   getCtrlKey(e)
+        if (   e.ctrlKey // can't use getCtrlKey(e) here otherwise zoom on doesn't work on Macs
             ||     panMode
                && !touchpad)
         {
-            // if (!dragging)
-            // {
-                let pos = point(
-                    e.clientX, 
-                    e.clientY - getTopHeight());
+            let pos = point(
+                e.clientX, 
+                e.clientY - getTopHeight());
 
-                const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 4 : 10)));
-                const pan  = subv(graph.currentPage.pan, mulvs(subv(pos, graph.currentPage.pan), zoom / graph.currentPage.zoom - 1));
+            const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 4 : 10)));
+            const pan  = subv(graph.currentPage.pan, mulvs(subv(pos, graph.currentPage.pan), zoom / graph.currentPage.zoom - 1));
 
-                graph.currentPage.setPanAndZoom(pan, zoom);
-            // }
+            graph.currentPage.setPanAndZoom(pan, zoom);
 
 
             if (dragging)

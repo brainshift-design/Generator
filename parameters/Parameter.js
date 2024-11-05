@@ -23,6 +23,8 @@ extends EventTarget
     divName;
     divControls;
 
+    divFlag;
+
 
     controls        = [];
 
@@ -99,6 +101,8 @@ extends EventTarget
         this._div             = createDiv('paramDiv');
         this.divName          = createDiv('paramName');
         this.divControls      = createDiv('paramControls');
+        this.divFlag          = createDiv('paramFlag');
+
 
         this.div.style.height = defParamHeight;
 
@@ -107,6 +111,7 @@ extends EventTarget
 
         this.div.appendChild(this.divName    );
         this.div.appendChild(this.divControls);
+        this.div.appendChild(this.divFlag    );
 
 
         // this.div.addEventListener('pointerdown', e =>
@@ -401,6 +406,9 @@ extends EventTarget
 
 
         this.controls.forEach(c => c.update());
+
+
+        this.divFlag.style.display = 'none';//'block';
     }
 
 
