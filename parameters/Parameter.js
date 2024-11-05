@@ -23,7 +23,7 @@ extends EventTarget
     divName;
     divControls;
 
-    divFlag;
+    divDebugFlag;
 
 
     controls        = [];
@@ -82,8 +82,18 @@ extends EventTarget
     showIndexName   = false;
 
 
-    getDescription       = () => '';
+    getDescription       = () => NULL;
     getDescriptionPrompt = () => this.getDescription();
+
+
+    getTooltip = () =>
+    {
+        const desc = this.getDescription();
+
+        return desc != NULL 
+            ? createParamTooltip(desc)
+            : null;
+    };
 
 
 
@@ -101,7 +111,7 @@ extends EventTarget
         this._div             = createDiv('paramDiv');
         this.divName          = createDiv('paramName');
         this.divControls      = createDiv('paramControls');
-        this.divFlag          = createDiv('paramFlag');
+        this.divDebugFlag     = createDiv('paramDebugFlag');
 
 
         this.div.style.height = defParamHeight;
@@ -109,9 +119,9 @@ extends EventTarget
         this.input            = null;
         this.output           = null;
 
-        this.div.appendChild(this.divName    );
-        this.div.appendChild(this.divControls);
-        this.div.appendChild(this.divFlag    );
+        this.div.appendChild(this.divName     );
+        this.div.appendChild(this.divControls );
+        this.div.appendChild(this.divDebugFlag);
 
 
         // this.div.addEventListener('pointerdown', e =>
@@ -408,7 +418,13 @@ extends EventTarget
         this.controls.forEach(c => c.update());
 
 
-        this.divFlag.style.display = 'none';//'block';
+        // show debug flag if there is no tooltip
+        
+        this.divDebugFlag.style.display = 
+               this.getTooltip
+            && this.getTooltip() !== null
+                ? 'none' 
+                : 'block';
     }
 
 

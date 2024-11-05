@@ -83,7 +83,7 @@ extends NumberParamBase
 
         //createTooltip(this.tooltip);
 
-        createTooltipSrc(this.controls[0].div, this.controls[0].div, () => 
+        createTooltipSrc(this.div, this.div, () => 
         {
             const tooltip = this.getTooltip();
 
@@ -116,10 +116,6 @@ extends NumberParamBase
 
 
     
-    getTooltip = () => null;//this.tooltip;
-
-
-
     setOptions(options)
     {
         this            .options = [...options];

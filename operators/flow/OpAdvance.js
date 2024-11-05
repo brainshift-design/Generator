@@ -25,15 +25,6 @@ extends OperatorBase
         this.paramLoop.forceInputColorType = ANY_VALUE;
 
 
-        this.paramLoop.getTooltip = () => 
-        {
-            if (currentTooltip) 
-                hideTooltip(currentTooltip);
-
-            ttParam.innerHTML = 'Close loop';
-            return ttParam;
-        };
-
 
         this.getDescription = () => ``;//`"advances" the input, creating a list of values/objects`;
 

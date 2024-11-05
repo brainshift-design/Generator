@@ -71,7 +71,7 @@ extends NumberParamBase
         });
 
 
-        createTooltipSrc(this.controls[0].div, this.controls[0].div, () => 
+        createTooltipSrc(this.div, this.div, () => 
         {
             this.controls[0].addEventListener('change', () => 
             {
@@ -92,10 +92,6 @@ extends NumberParamBase
 
 
 
-    getTooltip = () => null;
-
-
-    
     setName(name, dispatchEvents = true)
     {
         super.setName(name, dispatchEvents);

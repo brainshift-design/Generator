@@ -821,7 +821,8 @@ extends ResizableBaseWithSeparator
                     .map(name => name == NULL_VALUE ? NULL : decodeURIComponent(name))
                 : [];
 
-            this.variableTemp = parseBool(_node.variableTemp);
+            if (_node.variableTemp)
+                this.variableTemp = parseBool(_node.variableTemp);
         }
         else
         {

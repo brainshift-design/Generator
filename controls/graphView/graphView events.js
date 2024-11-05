@@ -281,7 +281,7 @@ GraphView.prototype.createEvents = function()
         const dragging = graph.currentPage.nodes.find(n => n.div.dragging === true);
 
 
-        if (   e.ctrlKey // can't use getCtrlKey(e) here otherwise zoom on doesn't work on Macs
+        if (   e.ctrlKey // can't use getCtrlKey(e) here otherwise zoom doesn't work on Macs
             ||     panMode
                && !touchpad)
         {

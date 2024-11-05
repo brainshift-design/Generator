@@ -76,7 +76,7 @@ extends OpColorBase
             (this.paramStandard.value.value == 1 ? ttWcag3 : ttWcag2) 
             : null;
 
-        this.paramStandard.getTooltip = () => null;
+        //this.paramStandard.getTooltip = () => null;
         this.paramStandard.reverseMenu = true;
 
         

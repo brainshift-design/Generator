@@ -27,16 +27,6 @@ extends OperatorBase
 
 
         this.paramFrom.forceOutputColorType = ANY_VALUE;
-
-
-        this.paramFrom.getTooltip = () => 
-        {
-            if (currentTooltip) 
-                hideTooltip(currentTooltip);
-    
-            ttParam.innerHTML = 'Feedback loop';
-            return ttParam;
-        }
     }
 
 

@@ -87,7 +87,7 @@ extends Parameter
                 : null;
 
 
-        createTooltipSrc(this.controls[0].div, this.controls[0].div, () => 
+        createTooltipSrc(this.div, this.div, () => 
         {
             const tooltip = this.getTooltip();
 

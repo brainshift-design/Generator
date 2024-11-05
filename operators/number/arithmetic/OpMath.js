@@ -36,7 +36,8 @@ extends OperatorBase
     
         this.getDescription = () => `performs arithmetic on all inputs in their order`;
 
-        this.paramOperation.getDescription = () => `the operation to perform (${this.paramOperation.options.map((o, i) => `${i}:${o}`).join(', ')})`;
+        this.paramOperation.getDescription       = () => `the operation to perform`;
+        this.paramOperation.getDescriptionPrompt = () => `the operation to perform (${this.paramOperation.options.map((o, i) => `${i}:${o}`).join(', ')})`;
     }
     
     

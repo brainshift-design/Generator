@@ -45,19 +45,23 @@ extends GOperator1
         const name  = await evalTextValue(this.name,  parse);
 
 
-        this.value = input;
-
-        
-        if (   this.options.enabled
-            && this.value.isValid()
-            && this.value.objects)
+        if (input)
         {
-            for (const obj of this.value.objects)
+            this.value = input;
+
+            if (   this.options.enabled
+                && this.value.isValid()
+                && this.value.objects)
             {
-                obj.nodeId     = this.nodeId;
-                obj.objectName = name.value;
+                for (const obj of this.value.objects)
+                {
+                    obj.nodeId     = this.nodeId;
+                    obj.objectName = name.value;
+                }
             }
         }
+        else
+            this.value = new NullValue();
 
 
         this.updateValueObjects();

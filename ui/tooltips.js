@@ -1,3 +1,14 @@
+function createParamTooltip(html)
+{
+    if (currentTooltip) 
+        hideTooltip(currentTooltip);
+
+    ttParam.innerHTML = html;
+    return ttParam;
+}
+
+
+
 function updateZoomTooltip()
 {
     if (graph.currentPage.zoom < settings.minZoomForParams)
