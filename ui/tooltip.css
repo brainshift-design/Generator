@@ -26,6 +26,18 @@
 }
 
 
+#ttnode
+{
+    height: fit-content;
+}
+
+
+#ttParam
+{
+    height: fit-content;
+}
+
+
 .tooltip p
 {
     margin: 0;
