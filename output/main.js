@@ -1661,7 +1661,8 @@ var tempVariableCollection = null;
 // figma.currentPage
 //     .getPluginDataKeys()
 //     .forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k).replace('\\', '\\\\')));
-function figStartGenerator() {
+function figStartGenerator(genVersion) {
+    figSetPageData('generatorVersion', genVersion.toString());
     (function () {
         return __awaiter(this, void 0, void 0, function* () {
             figma.currentPage.loadAsync().then(() => __awaiter(this, void 0, void 0, function* () {
@@ -1950,7 +1951,7 @@ figma.ui.onmessage = function (msg) {
         return;
     switch (msg.cmd) {
         case 'figStartGenerator':
-            figStartGenerator();
+            figStartGenerator(msg.generatorVersion);
             break;
         case 'figRestartGenerator':
             figRestartGenerator();
@@ -2011,7 +2012,7 @@ figma.ui.onmessage = function (msg) {
             figLoadNodesAndConns(msg.debugMode);
             break;
         case 'figSaveNodes':
-            figSaveNodes(msg.nodeIds, msg.nodeJson);
+            figSaveNodes(msg.nodeIds, msg.nodeJson, msg.generatorVersion);
             break;
         case 'figGetAllLocalTemplateNames':
             figGetAllLocalTemplateNames();
@@ -2234,6 +2235,7 @@ function figLoadNodesAndConns(debugMode) {
         const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
         const pageOrder = figma.currentPage.getPluginData('pageOrder').split(',');
         const currentPageId = figma.currentPage.getPluginData('currentPageId');
+        const generatorVersion = parseInt(figma.currentPage.getPluginData('generatorVersion'));
         initPageStyles(nodes);
         //const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');
         figPostMessageToUi({
@@ -2246,7 +2248,8 @@ function figLoadNodesAndConns(debugMode) {
             nodeKeys: nodeKeys,
             nodeJson: nodes,
             connKeys: connKeys,
-            connJson: conns
+            connJson: conns,
+            generatorVersion: generatorVersion
         });
     });
 }
@@ -2291,7 +2294,8 @@ function figSavePages(pageIds, pageJson, currentPageId) {
     figSetPageData('pageOrder', pageIds.join(','));
     figSetPageData('currentPageId', currentPageId);
 }
-function figSaveNodes(nodeIds, nodeJson) {
+function figSaveNodes(nodeIds, nodeJson, generatorVersion) {
+    figSetPageData('generatorVersion', generatorVersion);
     for (let i = 0; i < nodeIds.length; i++) {
         figSetPageData(nodeNameForStorage(nodeIds[i]), nodeJson[i]);
     }
@@ -2375,9 +2379,9 @@ function figLogAllSavedConns(darkMode) {
 }
 function figLogAllSavedPageKeys(darkMode) {
     figma.currentPage.loadAsync().then(() => {
-        const connKeys = figma.currentPage.getPluginDataKeys()
+        const keys = figma.currentPage.getPluginDataKeys()
             .filter(k => isPageKey(k));
-        connKeys.forEach(k => console.log('%c' + k, 'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
+        keys.forEach(k => console.log('%c' + k, 'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
         const pageOrder = figma.currentPage.getPluginData('pageOrder');
         console.log('%c' + pageOrder, 'background: #fff; color: ' + (darkMode ? 'black' : 'white'));
     });

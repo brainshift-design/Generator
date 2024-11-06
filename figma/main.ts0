@@ -56,8 +56,11 @@ var tempVariableCollection = null;
 
 
 
-function figStartGenerator()
+function figStartGenerator(genVersion)
 {
+    figSetPageData('generatorVersion', genVersion.toString());
+
+
     (async function()
     {
         figma.currentPage.loadAsync().then(async () =>

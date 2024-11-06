@@ -23,6 +23,7 @@
 
 
 ../html/crash.html
+../html/versionWarningDialog.html
 ../html/multiplayer.html
 ../html/about.html
 ../html/restartWarning.html

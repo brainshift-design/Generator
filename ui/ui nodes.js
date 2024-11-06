@@ -1190,9 +1190,9 @@ function uiSaveNodesJson(nodeIds, nodeJson)
         logSaveNodes(nodeJson.join('\n'));
 
     uiQueueMessageToFigma({
-        cmd:     'figSaveNodes',
-        nodeIds:  nodeIds,
-        nodeJson: nodeJson });
+        cmd:             'figSaveNodes',
+        nodeIds:          nodeIds,
+        nodeJson:         nodeJson });
 }
 
 

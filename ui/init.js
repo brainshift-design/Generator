@@ -97,6 +97,7 @@ generator.onmessage = event =>
 initUtilContext();
 
 
+initVersionWarningDialog();
 initLoadingOverlay();
 initEulaDialog();
 initWhatsNewDialog();
@@ -110,7 +111,11 @@ initRestartDialog();
 //console.log(xy2xyz(0.3127, 0.3290));
 
 
-uiQueueMessageToFigma({cmd: 'figStartGenerator'});
+uiQueueMessageToFigma(
+{
+    cmd:             'figStartGenerator',
+    generatorVersion: generatorVersion
+});
 
 
 
@@ -175,6 +180,7 @@ function initGenerator(activate)
 
     uiGetLocalData('showWhatsNew');
     //showWhatsNewDialog(); // uncomment to edit the dialog
+    //showVersionWarningDialog();
 
 
     setTimeout(() => loadingGraphic.style.display = 'block', 300);

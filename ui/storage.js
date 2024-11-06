@@ -241,6 +241,15 @@ function uiReturnFigGetPageData(msg)
 
 function uiReturnFigLoadNodesAndConns(msg)
 {
+    if (   msg.generatorVersion
+        && msg.nodeKeys.length > 0
+        && generatorVersion < msg.generatorVersion)
+    {
+        showVersionWarningDialog();
+        return;
+    }
+
+
     if (settings.logRawLoadNodes)
     {
         for (const json of msg.nodeJson)

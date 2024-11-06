@@ -12,7 +12,7 @@ function noTag(key, tag)
 
 
 
-function isPageKey(key) { return isTagKey(key, pageTag); }
+function isPageKey(key) { return isTagKey(key, pageTag) }
 function isNodeKey(key) { return isTagKey(key, nodeTag); }
 function isConnKey(key) { return isTagKey(key, connTag); }
 
@@ -2525,8 +2525,11 @@ var tempVariableCollection = null;
 
 
 
-function figStartGenerator()
+function figStartGenerator(genVersion)
 {
+    figSetPageData('generatorVersion', genVersion.toString());
+
+
     (async function()
     {
         figma.currentPage.loadAsync().then(async () =>
@@ -2962,7 +2965,7 @@ figma.ui.onmessage = function(msg)
 
     switch (msg.cmd)
     {
-        case 'figStartGenerator':                     figStartGenerator                    ();                                            break;
+        case 'figStartGenerator':                     figStartGenerator                    (msg.generatorVersion);                        break;
         case 'figRestartGenerator':                   figRestartGenerator                  ();                                            break;
      
         case 'figFinishStart':                        figFinishStart                       ();                                            break;       
@@ -2994,7 +2997,7 @@ figma.ui.onmessage = function(msg)
         case 'figSavePages':                          figSavePages                         (msg.pageIds, msg.pageJson, msg.currentPageId); break; // underscore is for minification
      
         case 'figLoadNodesAndConns':                  figLoadNodesAndConns                 (msg.debugMode);                               break;
-        case 'figSaveNodes':                          figSaveNodes                         (msg.nodeIds, msg.nodeJson);                   break;
+        case 'figSaveNodes':                          figSaveNodes                         (msg.nodeIds, msg.nodeJson, msg.generatorVersion); break;
      
         case 'figGetAllLocalTemplateNames':           figGetAllLocalTemplateNames          ();                                            break;
         case 'figSaveLocalTemplate':                  figSaveLocalTemplate                 (msg.templateName, msg.template);              break;
@@ -3237,8 +3240,10 @@ function figLoadNodesAndConns(debugMode)
         const conns     = connKeys.map(k => figma.currentPage.getPluginData(k));
 
 
-        const pageOrder     = figma.currentPage.getPluginData('pageOrder').split(',');
-        const currentPageId = figma.currentPage.getPluginData('currentPageId');
+        const pageOrder        = figma.currentPage.getPluginData('pageOrder').split(',');
+        const currentPageId    = figma.currentPage.getPluginData('currentPageId');
+
+        const generatorVersion = parseInt(figma.currentPage.getPluginData('generatorVersion'));
         
 
         initPageStyles(nodes);
@@ -3257,7 +3262,8 @@ function figLoadNodesAndConns(debugMode)
             nodeKeys:           nodeKeys,
             nodeJson:           nodes,
             connKeys:           connKeys,
-            connJson:           conns
+            connJson:           conns,
+            generatorVersion:   generatorVersion
         });
     });
 }
@@ -3334,8 +3340,12 @@ function figSavePages(pageIds, pageJson, currentPageId)
 
 
 
-function figSaveNodes(nodeIds, nodeJson)
+function figSaveNodes(nodeIds, nodeJson, generatorVersion)
 {
+    figSetPageData(
+        'generatorVersion',
+         generatorVersion);        
+
     for (let i = 0; i < nodeIds.length; i++)
     {
         figSetPageData(
@@ -3470,10 +3480,10 @@ function figLogAllSavedPageKeys(darkMode)
 {
     figma.currentPage.loadAsync().then(() =>
     {
-        const connKeys = figma.currentPage.getPluginDataKeys()
+        const keys = figma.currentPage.getPluginDataKeys()
             .filter(k => isPageKey(k));
             
-        connKeys.forEach(k => 
+        keys.forEach(k => 
             console.log(
                 '%c'+k, 
                 'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
