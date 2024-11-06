@@ -45,11 +45,11 @@ extends OperatorBase
 
         this.paramSeed     .getDescription = () => `RNG seed`;
         this.paramIteration.getDescription = () => `forces RNG iteration`;
-        this.paramMin      .getDescription = () => `min generated value`;
-        this.paramMax      .getDescription = () => `max generated value`;
-        this.paramBias     .getDescription = () => `bias values towards min/max`;
-        this.paramSpread   .getDescription = () => `pinch/spread values around middle`;
-        this.paramUnique   .getDescription = () => `prevents repetition in narrow range`;
+        this.paramMin      .getDescription = () => `smallest possible value`;
+        this.paramMax      .getDescription = () => `biggest possible value`;
+        this.paramBias     .getDescription = () => `bias values towards min or max`;
+        this.paramSpread   .getDescription = () => `pinch or spread values around middle`;
+        this.paramUnique   .getDescription = () => `prevents repetition when min is close to max`;
     }
 
 

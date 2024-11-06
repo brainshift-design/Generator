@@ -386,6 +386,7 @@ extends ResizableBaseWithSeparator
                         showIO, 
                         showIO);
 
+
                     this.paramValues.push(paramValue);
 
 

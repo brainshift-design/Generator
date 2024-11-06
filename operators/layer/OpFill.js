@@ -46,6 +46,11 @@ extends OpColorBase
         this.paramOpacity.controls[0].suffix = '%';
 
         this.paramOpacity.divider = 0.54;
+
+
+        this.getDescription = () => `contains a full Figma color, including opacity and blend mode`;
+
+        // this.paramColor.getDescription = () => 'color';
     }
     
     

@@ -11,7 +11,7 @@ function createNodeTooltip(html)
 
 function createParamTooltip(html)
 {
-    if (currentTooltip) 
+    if (currentTooltip)
         hideTooltip(currentTooltip);
 
     ttParam.innerHTML = html;

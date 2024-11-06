@@ -80,30 +80,6 @@ extends Parameter
         this.divControls.appendChild(this.controls[0].div);
 
        
-        this.getTooltip = () => 
-                settings.showTooltipColorNames
-            && !settings.preferHtmlColorNames
-                ? ttColorNames
-                : null;
-
-
-        createTooltipSrc(this.div, this.div, () => 
-        {
-            const tooltip = this.getTooltip();
-
-            if (tooltip)
-                this.initColorNamesTooltip();
-
-            this.controls[0].addEventListener('change', () => 
-            {
-                if (tooltip) hideTooltip(tooltip);
-            });
-
-            return this.getTooltip();
-        },
-        () => settings.showTooltipParams);
-
-
         if (hasInput)  this.initInput ([COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
@@ -133,6 +109,32 @@ extends Parameter
                 e.detail.value    = rgb2hex(rgb);
                 e.preventSetValue = true;
             }
+        });
+
+
+        this.getTooltip = () => 
+                settings.showTooltipColorNames
+            && !settings.preferHtmlColorNames
+            && !this.controls[0].readOnly
+                ? ttColorNames
+                : (this.getDescription() != NULL
+                       ? createParamTooltip(this.getDescription())
+                       : null);
+
+
+        createTooltipSrc(this.div, this.div, () => 
+        {
+            const tooltip = this.getTooltip();
+
+            if (tooltip == ttColorNames)
+                this.initColorNamesTooltip();
+
+            this.controls[0].addEventListener('change', () => 
+            {
+                if (tooltip) hideTooltip(tooltip);
+            });
+
+            return this.getTooltip();
         });
     }
 
