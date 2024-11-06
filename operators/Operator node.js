@@ -20,6 +20,8 @@ Operator.prototype.createNode = function()
 
     this.enterTimer             = null;
 
+    this.iconpointerup          = null;
+
 
     this.inner = createDiv('nodeInner');
     this.div.appendChild(this.inner);
@@ -382,6 +384,11 @@ Operator.prototype.createHeader = function()
                     graphView.overOutput = overOutput; // to be able to use the output again immediately
             }
         }
+
+        
+        if (    this.iconpointerup
+            && !this.div.moved)
+              this.iconpointerup();
 
 
         this.div.shiftOnPointerDown = false;

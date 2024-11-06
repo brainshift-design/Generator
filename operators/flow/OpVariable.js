@@ -54,28 +54,45 @@ extends ResizableBaseWithSeparator
 
         this.divIcon.addEventListener('pointerdown',  e => 
         { 
-            if (e.button == 0)
-                e.stopPropagation();
-        });
+            // if (e.button == 0)
+            //     e.stopPropagation();
+                // e.preventDefault();
 
-
-        this.divIcon.addEventListener('pointerup',  e => 
-        { 
-            e.stopPropagation();
-
-            if (e.button == 0)
+            this.iconpointerup = () => 
             {
-                hideAllMenus(); 
-
-                uiQueueMessageToFigma(
+                if (e.button == 0)
                 {
-                    cmd:   'figGetAllLocalVariables',
-                    nodeId: this.id,
-                    px:     e.clientX,
-                    py:     e.clientY 
-                }); 
-            }
+                    hideAllMenus(); 
+
+                    uiQueueMessageToFigma(
+                    {
+                        cmd:   'figGetAllLocalVariables',
+                        nodeId: this.id,
+                        px:     e.clientX,
+                        py:     e.clientY 
+                    }); 
+                }
+            };
         });
+
+
+        // this.divIcon.addEventListener('pointerup',  e => 
+        // { 
+        //     e.stopPropagation();
+
+        //     if (e.button == 0)
+        //     {
+        //         hideAllMenus(); 
+
+        //         uiQueueMessageToFigma(
+        //         {
+        //             cmd:   'figGetAllLocalVariables',
+        //             nodeId: this.id,
+        //             px:     e.clientX,
+        //             py:     e.clientY 
+        //         }); 
+        //     }
+        // });
 
 
         this.updateParams();

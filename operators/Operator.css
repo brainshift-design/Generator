@@ -152,6 +152,11 @@
     /* box-shadow:   0 0 0 1px red inset; */
 }
 
+.nodeIcon:active
+{
+    opacity: 50%;
+}
+
 
 .headerIcon
 {
