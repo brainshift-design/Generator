@@ -507,15 +507,15 @@ extends Control
         if (!this.param)
             return;
         
-        this.div.style.cursor =
-               this.readOnly 
-            || containsChild(this.divValue, this.textbox)
-            || graphView.tempConn
-            || graphView.wheelTimer 
-            || this.delayUseTimer
-            || overNumberControlCtrl == this
-            ? 'default'
-            : 'ew-resize';
+        // this.div.style.cursor =
+        //        this.readOnly 
+        //     || containsChild(this.divValue, this.textbox)
+        //     || graphView.tempConn
+        //     || graphView.wheelTimer 
+        //     || this.delayUseTimer
+        //     || overNumberControlCtrl == this
+        //     ? 'default'
+        //     : 'ew-resize';
     };
     
     

@@ -118,7 +118,7 @@ extends Parameter
             && !this.controls[0].readOnly
                 ? ttColorNames
                 : (this.getDescription() != NULL
-                       ? createParamTooltip(this.getDescription())
+                       ? createParamTooltip(this, this.getDescription())
                        : null);
 
 

@@ -82,10 +82,10 @@ class GraphPage
             this._pan  = pan;
     
 
-            if (tooltipTimer >= 0) 
+            if (tooltipTimer) 
             {
                 clearTimeout(tooltipTimer);
-                tooltipTimer = -1;
+                tooltipTimer = null;
             }
 
             if (currentTooltip)

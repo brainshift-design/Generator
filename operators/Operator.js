@@ -1782,7 +1782,10 @@ function createHeaderTooltip(node, tooltip = ttText)
     node.header.addEventListener('pointerdown', () =>
     {
         if (tooltipTimer)
+        {
             clearTimeout(tooltipTimer);
+            tooltipTimer = null;
+        }
 
         if (currentTooltip) 
             hideTooltip(currentTooltip);

@@ -9,12 +9,13 @@ function createNodeTooltip(html)
 
 
 
-function createParamTooltip(html)
+function createParamTooltip(param, html)
 {
     if (currentTooltip)
         hideTooltip(currentTooltip);
 
     ttParam.innerHTML = html;
+
     return ttParam;
 }
 

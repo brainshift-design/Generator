@@ -92,7 +92,7 @@ extends EventTarget
         const desc = this.getDescription();
 
         return desc != NULL 
-            ? createParamTooltip(desc)
+            ? createParamTooltip(this, desc)
             : null;
     };
 
@@ -115,6 +115,8 @@ extends EventTarget
         this.divDebugFlag     = createDiv('paramDebugFlag');
 
 
+        this.div.param        = this;
+        
         this.div.style.height = defParamHeight;
 
         this.input            = null;
