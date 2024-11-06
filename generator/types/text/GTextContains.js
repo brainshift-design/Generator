@@ -1,9 +1,7 @@
 class GTextContains
-extends GOperator2
+extends GOperator1
 {
-    first;
-    last;
-    all;
+    what;
 
 
 
@@ -18,9 +16,7 @@ extends GOperator2
     {
         super.reset();
 
-        this.first = null;
-        this.last  = null;
-        this.all   = null;
+        this.what = null;
     }
 
 
@@ -31,9 +27,7 @@ extends GOperator2
 
         copy.copyBase(this);
 
-        if (this.first = null) copy.first = this.first.copy();
-        if (this.last  = null) copy.last  = this.last .copy();
-        if (this.all   = null) copy.all   = this.all  .copy();
+        if (this.what = null) copy.what = this.what.copy();
 
         return copy;
     }
@@ -46,41 +40,25 @@ extends GOperator2
             return this;
 
 
-        const input0 = await evalTextValue(this.input0, parse);
-        const input1 = await evalTextValue(this.input1, parse);
+        const input = await evalTextOrListValue(this.input, parse);
+        const what  = await evalTextValue      (this.what,  parse);
     
 
-        if (   input0 && input0.isValid() 
-            && input1 && input1.isValid())
+        if (input)
         {
-            if (isListValueType(input0.type))
-            {
-                this.value = new ListValue();
-
-                for (let i = 0; i < input0.items.length; i++)
-                {
-                    const item = input0.items[i];
-
-                    this.value.items.push(
-                        item.type == TEXT_VALUE
-                        ? new BooleanValue(item.value.includes(input1.value))
-                        : BooleanValue.NaN());
-                }
-            }
-            else
-            {
-                this.value = new BooleanValue(input0.value.includes(input1.value));
-            }
+            this.evalInputOrList(
+                input, 
+                item => evalTextContains(item, what), 
+                BooleanValue.NaN());
         }
-        else                  
-        {
+        else
             this.value = BooleanValue.NaN();
-        }
     
 
         this.setUpdateValues(parse,
         [
-            ['type', this.outputType()]
+            ['type', this.outputType()],
+            ['what', what             ]
         ]);
 
 
@@ -88,4 +66,51 @@ extends GOperator2
 
         return this;
     }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.what && this.what.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.what) this.what.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.what) this.what.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.what) this.what.iterateLoop(parse);
+    }
+}
+
+
+
+function evalTextContains(input, what)
+{
+    return input.type == TEXT_VALUE
+         ? new BooleanValue(
+               what.value == ''
+                   ? false
+                   : input.value.includes(what.value))
+         : BooleanValue.NaN();
 }

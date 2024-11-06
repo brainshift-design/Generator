@@ -64,7 +64,7 @@ extends GOperator1
                 this.value = input;
         }
         else
-            this.value = new TextValue();
+            this.value = TextValue.NaN();
 
 
         this.setUpdateValues(parse,

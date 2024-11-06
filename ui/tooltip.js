@@ -33,7 +33,7 @@ function createTooltipSrc(source, ref, getTooltip, delay = 1000, canShow = null)
             }, 
                currentTooltip
             &&    currentTooltip != getTooltip()
-               || currentTooltipSource != source
+               //|| currentTooltipSource != source
                 ? 0 
                 : delay);
         }

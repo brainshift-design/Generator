@@ -192,7 +192,7 @@ function genParseTextContains(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cont = new GTextContains(nodeId, options);
+    const contains = new GTextContains(nodeId, options);
    
 
     let nInputs = -1;
@@ -205,12 +205,12 @@ function genParseTextContains(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(cont, parse, ignore, nInputs);
+        logReq(contains, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, cont);
+        genParseNodeEnd(parse, contains);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -218,22 +218,17 @@ function genParseTextContains(parse)
     parse.nTab++;
 
 
-    if (nInputs == 2)
-    {
-        cont.input0 = genParse(parse);
-        cont.input1 = genParse(parse);
-    }
-    else if (nInputs == 1)
-    {
-        cont.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-    }
+    if (nInputs == 1)
+        contains.input = genParse(parse);
+
+    contains.what = genParse(parse);
   
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, cont);
-    return cont;
+    genParseNodeEnd(parse, contains);
+    return contains;
 }
 
 

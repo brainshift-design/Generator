@@ -924,6 +924,11 @@ function handleLegacyConnection(_conn, outputNode, inputNode, genVersion)
          && genVersion < 441)
         _conn.inputId = 'operand';
 
+    else if (inputNode.type == TEXT_CONTAINS
+         && _conn.inputId == 'h1'
+         && genVersion < 441)
+        _conn.inputId = 'what';
+
     else if (inputNode.type == IF_ELSE
           && genVersion < 441)
     {

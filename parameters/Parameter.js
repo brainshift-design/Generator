@@ -116,7 +116,7 @@ extends EventTarget
 
 
         this.div.param        = this;
-        
+
         this.div.style.height = defParamHeight;
 
         this.input            = null;
@@ -423,11 +423,11 @@ extends EventTarget
 
         // show debug flag if there is no tooltip
         
-        this.divDebugFlag.style.display = 
-               this.getTooltip
-            && this.getTooltip() !== null
-                ? 'none' 
-                : 'block';
+        this.divDebugFlag.style.display = 'none';
+            //    this.getTooltip
+            // && this.getTooltip() !== null
+            //     ? 'none' 
+            //     : 'block';
     }
 
 
