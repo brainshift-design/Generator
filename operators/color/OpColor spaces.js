@@ -551,11 +551,11 @@ function getScaledDataColor(color)
     switch (color[0])
     {
         case 'hex':
-        case 'rgb':   return getScaledDataColorRgb('rgb',    color[1], color[2], color[3])
-        case 'lin':   return getScaledDataColorRgb('lin',    color[1], color[2], color[3])
-        case 'p3':    return getScaledDataColorRgb('p3',     color[1], color[2], color[3])
-        case 'a98':   return getScaledDataColorRgb('a98',    color[1], color[2], color[3])
-        case 'pro':   return getScaledDataColorRgb('pro',    color[1], color[2], color[3])
+        case 'rgb':   return getScaledDataColorRgb('rgb',    color[1], color[2], color[3]);
+        case 'lin':   return getScaledDataColorRgb('lin',    color[1], color[2], color[3]);
+        case 'p3':    return getScaledDataColorRgb('p3',     color[1], color[2], color[3]);
+        case 'a98':   return getScaledDataColorRgb('a98',    color[1], color[2], color[3]);
+        case 'pro':   return getScaledDataColorRgb('pro',    color[1], color[2], color[3]);
         case 'r2020':  return getScaledDataColorRgb('r2020', color[1], color[2], color[3]);
 
         case 'hsv':   return getScaledDataColorHs_('hsv',    color[1], color[2], color[3]);

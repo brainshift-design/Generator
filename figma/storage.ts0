@@ -226,12 +226,8 @@ function figSavePages(pageIds, pageJson, currentPageId)
 
 
 
-function figSaveNodes(nodeIds, nodeJson, generatorVersion)
+function figSaveNodes(nodeIds, nodeJson)
 {
-    figSetPageData(
-        'generatorVersion',
-         generatorVersion);        
-
     for (let i = 0; i < nodeIds.length; i++)
     {
         figSetPageData(

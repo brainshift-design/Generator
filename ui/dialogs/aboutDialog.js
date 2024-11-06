@@ -11,7 +11,8 @@ function initAboutDialog()
 
     aboutClose.addEventListener('pointerdown', e  => e.stopPropagation());
 
-    aboutVersion.innerHTML = 'Generator&nbsp;&hairsp;version&nbsp;&thinsp;' + generatorVersion;
+    aboutVersion  .innerHTML = 'Generator&nbsp;&hairsp;version&nbsp;&thinsp;' + generatorVersion;
+    aboutCopyright.innerHTML = 'Copyright © ' + new Date().getFullYear().toString() + '&nbsp;&hairsp;Brainshift';
 }
 
 

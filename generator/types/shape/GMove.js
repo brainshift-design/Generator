@@ -73,8 +73,6 @@ extends GOperator1
         }
 
 
-        console.log('input =', input);
-        console.log('move.value =', this.value);
         await this.evalObjects(
             parse, 
             {

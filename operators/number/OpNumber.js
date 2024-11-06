@@ -38,7 +38,7 @@ extends ResizableBase
             }
 
             return Number.NaN;
-        }
+        };
 
 
         this.paramValue.getConnectedMax = () => 
@@ -59,7 +59,7 @@ extends ResizableBase
             }
 
             return Number.NaN;
-        }
+        };
 
 
         this.getDescription = () => `defines a number value`;
