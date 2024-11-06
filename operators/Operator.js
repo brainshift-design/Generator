@@ -273,6 +273,7 @@ class Operator
             this.header, 
             this.header, 
             () => this.getTooltip(),
+            paramTooltipDelay,
             () => settings.showTooltipNodes);
     }    
 
@@ -1754,6 +1755,7 @@ function createHeaderTooltip(node, tooltip = ttText)
         node.header, 
         node.header, 
         () => tooltip, 
+        1000,
         () =>    node.showHeaderTooltip 
               && (      node.type == TEXT_CHAR
                      && settings.showTooltipAscii  

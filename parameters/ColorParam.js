@@ -122,20 +122,25 @@ extends Parameter
                        : null);
 
 
-        createTooltipSrc(this.div, this.div, () => 
-        {
-            const tooltip = this.getTooltip();
-
-            if (tooltip == ttColorNames)
-                this.initColorNamesTooltip();
-
-            this.controls[0].addEventListener('change', () => 
+        createTooltipSrc(
+            this.div, 
+            this.div, 
+            () => 
             {
-                if (tooltip) hideTooltip(tooltip);
-            });
+                const tooltip = this.getTooltip();
 
-            return this.getTooltip();
-        });
+                if (tooltip == ttColorNames)
+                    this.initColorNamesTooltip();
+
+                this.controls[0].addEventListener('change', () => 
+                {
+                    if (tooltip) hideTooltip(tooltip);
+                });
+
+                return this.getTooltip();
+            },
+            paramTooltipDelay
+        );
     }
 
 

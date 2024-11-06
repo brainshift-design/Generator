@@ -1,5 +1,6 @@
 const defParamHeight = 22;
 
+const paramTooltipDelay = 1600;
 
 
 class Parameter

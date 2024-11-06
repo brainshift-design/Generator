@@ -65,9 +65,10 @@ extends OpColorBase
         createTooltipSrc(
             this.symbol, 
             this.symbol, 
-            () => settings.showTooltipColorBlindness 
-            ? ttColorblind 
-            : null);
+            () => 
+                settings.showTooltipColorBlindness 
+                    ? ttColorblind 
+                    : null);
 
 
         this.menuL = new Menu('L', false, true);

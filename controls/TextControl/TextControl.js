@@ -84,6 +84,7 @@ extends Control
                 && !hasFocus(this.textbox)
                 ? ttText
                 : null,
+            1500,
             () => settings.showTooltipParams);
     
 

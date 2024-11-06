@@ -97,6 +97,7 @@ extends NumberParamBase
 
             return this.getTooltip();
         },
+        paramTooltipDelay,
         () => settings.showTooltipParams);
     }
 

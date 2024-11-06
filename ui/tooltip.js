@@ -9,7 +9,7 @@ var currentTooltip       = null;
 
     
 
-function createTooltipSrc(source, ref, getTooltip, canShow = null)
+function createTooltipSrc(source, ref, getTooltip, delay = 1000, canShow = null)
 {
     source.addEventListener('pointerenter', () =>
     {
@@ -34,7 +34,7 @@ function createTooltipSrc(source, ref, getTooltip, canShow = null)
                currentTooltip 
             && currentTooltip != getTooltip() 
             ? 0 
-            : 1000);
+            : delay);
         }
     });
       

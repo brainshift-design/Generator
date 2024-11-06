@@ -71,17 +71,21 @@ extends NumberParamBase
         });
 
 
-        createTooltipSrc(this.div, this.div, () => 
-        {
-            this.controls[0].addEventListener('change', () => 
+        createTooltipSrc(
+            this.div, 
+            this.div, 
+            () => 
             {
-                const tooltip = this.getTooltip();
-                if (tooltip) hideTooltip(tooltip);
-            });
+                this.controls[0].addEventListener('change', () => 
+                {
+                    const tooltip = this.getTooltip();
+                    if (tooltip) hideTooltip(tooltip);
+                });
 
-            return this.getTooltip();
-        },
-        () => settings.showTooltipParams);
+                return this.getTooltip();
+            },
+            paramTooltipDelay,
+            () => settings.showTooltipParams);
     }
 
 
