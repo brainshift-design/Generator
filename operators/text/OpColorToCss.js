@@ -7,7 +7,7 @@ extends OperatorBase
 
 
     menuPercent;
-    menuTrim;
+    menuTrimZeros;
 
 
 
@@ -40,10 +40,11 @@ extends OperatorBase
             [8, 'name',  'html name']
         ];
 
-        this.paramTrimZeros.divider = 0.64;
+        this.paramPercent  .divider = 0.62;
+        this.paramTrimZeros.divider = 0.62;
         
-        this.menuPercent = createBoolMenu(this.paramPercent );
-        this.menuTrim    = createBoolMenu(this.paramTrimZeros);
+        this.menuPercent   = createBoolMenu(this.paramPercent  );
+        this.menuTrimZeros = createBoolMenu(this.paramTrimZeros);
     }
 
 
@@ -104,6 +105,7 @@ extends OperatorBase
         this.paramPercent  .enableControlText(true);
         this.paramTrimZeros.enableControlText(true);
 
+        updateParamConditionText(this.paramPercent,   this.paramPercent  .isUnknown(), false, 1);
         updateParamConditionText(this.paramTrimZeros, this.paramTrimZeros.isUnknown(), false, 1);
 
         this.updateParamControls();

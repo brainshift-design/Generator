@@ -236,7 +236,7 @@ function getColorToTextValue(input, format, normalize, trimZeros)
                     + ' ' + getColorValueToText(hsv[2], Math.max(dec3, 3), trimZeros.value > 0);
 
                 if (input.type == FILL_VALUE)
-                    str += ', ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+                    str += ' ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
             }
             else
             {

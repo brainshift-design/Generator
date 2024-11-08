@@ -3,11 +3,11 @@ extends OperatorBase
 {
     paramFormat;
     paramNormalize;
-    paramTrim;
+    paramTrimZeros;
 
 
     menuNormalize;
-    menuTrim;
+    menuTrimZeros;
 
 
 
@@ -18,12 +18,12 @@ extends OperatorBase
         this.outputValueType = COLOR_VALUE;
 
 
-        this.addInput (new Input([COLOR_VALUE, FILL_VALUE, COLOR_LIST_VALUE, FILL_LIST_VALUE, LIST_VALUE]));
+        this.addInput (new Input ([COLOR_VALUE, FILL_VALUE, COLOR_LIST_VALUE, FILL_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramFormat    = new OptionParam('format',    'format',     false, true, true, ['Hex', 'RGB', 'HSL', 'HSB', 'HCL / ok', 'HCL / ab', 'HCL / uv', 'okLab', 'Lab', 'Luv', 'XYZ', 'XYZ / D50', 'XYZ / D65', 'color name']));
         this.addParam(this.paramNormalize = new NumberParam('normalize', 'normalize',  true,  true, true, 0, 0, 1));
-        this.addParam(this.paramTrim      = new NumberParam('trimZeros', 'trim zeros', true,  true, true, 0, 0, 1));
+        this.addParam(this.paramTrimZeros = new NumberParam('trimZeros', 'trim zeros', true,  true, true, 0, 0, 1));
 
         this.paramFormat.separatorsBefore.push(1, 4, 7, 10, 13);
 
@@ -50,10 +50,11 @@ extends OperatorBase
             [13, 'name', 'color name'               ]
         ];
 
-        this.paramTrim .divider = 0.64;
+        this.paramNormalize.divider = 0.64;
+        this.paramTrimZeros.divider = 0.64;
         
         this.menuNormalize = createBoolMenu(this.paramNormalize);
-        this.menuTrim      = createBoolMenu(this.paramTrim     );
+        this.menuTrimZeros = createBoolMenu(this.paramTrimZeros);
     }
 
 
@@ -80,7 +81,7 @@ extends OperatorBase
 
         request.push(...this.node.paramFormat   .genRequest(gen));
         request.push(...this.node.paramNormalize.genRequest(gen));
-        request.push(...this.node.paramTrim     .genRequest(gen));
+        request.push(...this.node.paramTrimZeros.genRequest(gen));
 
         
         gen.scope.pop();
@@ -112,10 +113,10 @@ extends OperatorBase
     {
         this.paramFormat   .enableControlText(true, this.paramFormat.isUnknown());
         this.paramNormalize.enableControlText(true);
-        this.paramTrim     .enableControlText(true);
+        this.paramTrimZeros.enableControlText(true);
 
         updateParamConditionText(this.paramNormalize, this.paramNormalize.isUnknown(), false, 1);
-        updateParamConditionText(this.paramTrim,      this.paramTrim     .isUnknown(), false, 1);
+        updateParamConditionText(this.paramTrimZeros, this.paramTrimZeros.isUnknown(), false, 1);
 
         this.updateParamControls();
     }

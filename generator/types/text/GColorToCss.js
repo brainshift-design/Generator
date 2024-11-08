@@ -195,7 +195,7 @@ function getColorToCssValue(input, format, percent, trimZeros)
                     + ' ' + getColorValueToText(rgba[2] * 255, dec3, trimZeros.value > 0);
 
                 if (input.type == FILL_VALUE)
-                    str += ' / ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+                    str += ' / ' + getColorValueToText(rgba[3], Math.max(dec4, 3), trimZeros.value > 0);
     
                 str += ')';
             }
@@ -227,7 +227,7 @@ function getColorToCssValue(input, format, percent, trimZeros)
                     + ' ' + getColorValueToText(hsl[2] * 100, dec3, trimZeros.value > 0);
 
                 if (input.type == FILL_VALUE)
-                    str += ' / ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+                    str += ' / ' + getColorValueToText(rgba[3], Math.max(dec4, 3), trimZeros.value > 0);
     
                 str += ')';
             }
@@ -254,12 +254,12 @@ function getColorToCssValue(input, format, percent, trimZeros)
             {
                 str = 
                     'oklch('
-                    +       getColorValueToText(hcl[2],       Math.max(dec1, 4), trimZeros.value > 0)
-                    + ' ' + getColorValueToText(hcl[1],       Math.max(dec2, 4), trimZeros.value > 0)
+                    +       getColorValueToText(hcl[2],       Math.max(dec1, 3), trimZeros.value > 0)
+                    + ' ' + getColorValueToText(hcl[1],       Math.max(dec2, 3), trimZeros.value > 0)
                     + ' ' + getColorValueToText(hcl[0] * 360,          dec3,     trimZeros.value > 0);
 
                 if (input.type == FILL_VALUE)
-                    str += ' / ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+                    str += ' / ' + getColorValueToText(rgba[3], Math.max(dec4, 3), trimZeros.value > 0);
 
                 str += ')';
             }
@@ -292,7 +292,7 @@ function getColorToCssValue(input, format, percent, trimZeros)
                     + ' ' + getColorValueToText(hcl[0] * 360,          dec3,     trimZeros.value > 0);
 
                 if (input.type == FILL_VALUE)
-                    str += ' / ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+                    str += ' / ' + getColorValueToText(rgba[3], Math.max(dec4, 3), trimZeros.value > 0);
 
                 str += ')';
             }
@@ -320,12 +320,12 @@ function getColorToCssValue(input, format, percent, trimZeros)
             {
                 str = 
                     'oklab('
-                    +       getColorValueToText(lab[0], dec1, trimZeros.value > 0)
-                    + ' ' + getColorValueToText(lab[2], dec3, trimZeros.value > 0)
-                    + ' ' + getColorValueToText(lab[1], dec2, trimZeros.value > 0)
+                    +       getColorValueToText(lab[0], Math.max(dec1, 3), trimZeros.value > 0)
+                    + ' ' + getColorValueToText(lab[2], Math.max(dec3, 3), trimZeros.value > 0)
+                    + ' ' + getColorValueToText(lab[1], Math.max(dec2, 3), trimZeros.value > 0)
 
                 if (input.type == FILL_VALUE)
-                    str += ' / ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+                    str += ' / ' + getColorValueToText(rgba[3], Math.max(dec4, 3), trimZeros.value > 0);
 
                 str += ')';
             }
@@ -353,12 +353,12 @@ function getColorToCssValue(input, format, percent, trimZeros)
             {
                 str = 
                     'lab('
-                    +       getColorValueToText(lab[0], dec1, trimZeros.value > 0)
-                    + ' ' + getColorValueToText(lab[2], dec3, trimZeros.value > 0)
-                    + ' ' + getColorValueToText(lab[1], dec2, trimZeros.value > 0)
+                    +       getColorValueToText(lab[0], Math.max(dec1, 3), trimZeros.value > 0)
+                    + ' ' + getColorValueToText(lab[2], Math.max(dec3, 3), trimZeros.value > 0)
+                    + ' ' + getColorValueToText(lab[1], Math.max(dec2, 3), trimZeros.value > 0)
 
                 if (input.type == FILL_VALUE)
-                    str += ' / ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+                    str += ' / ' + getColorValueToText(rgba[3], Math.max(dec4, 3), trimZeros.value > 0);
 
                 str += ')';
             }
@@ -420,12 +420,12 @@ function getColorToCssValue(input, format, percent, trimZeros)
                 str = 
                     'color('
                     +       space
-                    + ' ' + getColorValueToText(color[0], dec1, trimZeros.value > 0) 
-                    + ' ' + getColorValueToText(color[1], dec2, trimZeros.value > 0) 
-                    + ' ' + getColorValueToText(color[2], dec3, trimZeros.value > 0);
+                    + ' ' + getColorValueToText(color[0], Math.max(dec1, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(color[1], Math.max(dec3, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(color[2], Math.max(dec2, 3), trimZeros.value > 0);
 
                 if (input.type == FILL_VALUE)
-                    str += ' / ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+                    str += ' / ' + getColorValueToText(rgba[3], Math.max(dec4, 3), trimZeros.value > 0);
 
                 str += ')';
             }
