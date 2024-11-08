@@ -62,8 +62,19 @@ extends GOperator1
             return this;
 
         
-        const input       = await evalValue(this.input, parse);
-        let   paramValues = await Promise.all(this.paramValues.map(async p => await evalValue(p, parse)));
+        const input = await evalValue(this.input, parse);
+
+        let paramValues = await Promise.all(
+            this.paramValues.map(async p => 
+            {
+                switch (this.variableType)
+                {
+                    case 'FLOAT':   return await evalNumberValue(p, parse);
+                    case 'BOOLEAN': return await evalNumberValue(p, parse);
+                    case 'STRING':  return await evalTextValue  (p, parse);
+                    case 'COLOR':   return await evalColorValue (p, parse);
+                }
+            }));
 
 
         let varValues = [];

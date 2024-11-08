@@ -25,7 +25,7 @@ extends OperatorBase
         this.addParam(this.paramPercent   = new NumberParam('percent',   'percent',    true,  true, true, 0, 0, 1));
         this.addParam(this.paramTrimZeros = new NumberParam('trimZeros', 'trim zeros', true,  true, true, 0, 0, 1));
 
-        this.paramFormat.separatorsBefore.push(1, 4, 7, 10, 13, 14, 16, 18, 20, 21);
+        this.paramFormat.separatorsBefore.push(1, 3, 5, 7, 8);
 
         this.paramFormat.controls[0].textValues =
         [
