@@ -179,6 +179,7 @@ const INDEX_TO_NAME           = 'INDEX';
 const NUMBER_TO_TEXT          = 'N2T';
 const BOOLEAN_TO_TEXT         = 'B2T';
 const COLOR_TO_TEXT           = 'C2T';
+const COLOR_TO_CSS            = 'C2CSS';
 const TEXT_TO_NUMBER          = 'T2N';
 const TEXT_TO_BOOLEAN         = 'T2B';
 const TEXT_TO_COLOR           = 'T2C';
@@ -436,6 +437,7 @@ const FLOW_TYPES =
     COLOR_SCHEME,
     COLOR_DIFFERENCE,
     COLOR_TO_TEXT,
+    COLOR_TO_CSS,
     RETAIN
 ];
 
@@ -570,7 +572,8 @@ const COLOR_TYPES =
     COLOR_DIFFERENCE,
     COLOR_INTERPOLATE,
     COLOR_BLEND,
-    COLOR_TO_TEXT
+    COLOR_TO_TEXT,
+    COLOR_TO_CSS
 ];
 
 

@@ -118,6 +118,14 @@ extends NumberParamBase
 
 
     
+    setOption(index, option)
+    {
+        this            .options[index] = option;
+        this.controls[0].options[index] = option;
+    }
+
+
+
     setOptions(options)
     {
         this            .options = [...options];

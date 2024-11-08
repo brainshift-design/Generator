@@ -241,6 +241,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == INDEX_TO_NAME          ) result = genParseIndexToName       (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText      (parse);
     else if (parse.next == COLOR_TO_TEXT          ) result = genParseColorToText       (parse);
+    else if (parse.next == COLOR_TO_CSS           ) result = genParseColorToCss        (parse);
     else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber      (parse);
     else if (parse.next == TEXT_TO_BOOLEAN        ) result = genParseTextToBoolean     (parse);
     else if (parse.next == TEXT_TO_COLOR          ) result = genParseTextToColor       (parse);

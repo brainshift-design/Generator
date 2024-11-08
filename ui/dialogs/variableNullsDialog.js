@@ -11,9 +11,9 @@ function showVariableNullsDialog()
     variableNullsTitle.pStart      = point_NaN;
     
 
-    numberVarNullIcon.innerHTML = iconSmallVarNumber .replaceAll('white', 'var(--figma-color-text-secondary)');
-      boolVarNullIcon.innerHTML = iconSmallVarBoolean.replaceAll('white', 'var(--figma-color-text-secondary)');
-     colorVarNullIcon.innerHTML = iconSmallVarColor  .replaceAll('white', 'var(--figma-color-text-secondary)');
+    numberVarNullIcon.innerHTML = iconVarNumber .replaceAll('white', 'var(--figma-color-text-secondary)');
+      boolVarNullIcon.innerHTML = iconVarBoolean.replaceAll('white', 'var(--figma-color-text-secondary)');
+     colorVarNullIcon.innerHTML = iconVarColor  .replaceAll('white', 'var(--figma-color-text-secondary)');
 
 
     numberVarNullInput.value   = numToString(settings.numberVarNullValue);

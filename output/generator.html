@@ -7173,6 +7173,7 @@ const INDEX_TO_NAME           = 'INDEX';
 const NUMBER_TO_TEXT          = 'N2T';
 const BOOLEAN_TO_TEXT         = 'B2T';
 const COLOR_TO_TEXT           = 'C2T';
+const COLOR_TO_CSS            = 'C2CSS';
 const TEXT_TO_NUMBER          = 'T2N';
 const TEXT_TO_BOOLEAN         = 'T2B';
 const TEXT_TO_COLOR           = 'T2C';
@@ -7430,6 +7431,7 @@ const FLOW_TYPES =
     COLOR_SCHEME,
     COLOR_DIFFERENCE,
     COLOR_TO_TEXT,
+    COLOR_TO_CSS,
     RETAIN
 ];
 
@@ -7564,7 +7566,8 @@ const COLOR_TYPES =
     COLOR_DIFFERENCE,
     COLOR_INTERPOLATE,
     COLOR_BLEND,
-    COLOR_TO_TEXT
+    COLOR_TO_TEXT,
+    COLOR_TO_CSS
 ];
 
 
@@ -36248,7 +36251,8 @@ class GColorToText
 extends GOperator1
 {
     format;
-    trim;
+    normalize;
+    trimZeros;
 
 
     
@@ -36262,8 +36266,9 @@ extends GOperator1
     {
         super.reset();
 
-        this.format = null;
-        this.trim   = null;
+        this.format    = null;
+        this.normalize = null;
+        this.trimZeros = null;
     }
 
 
@@ -36275,8 +36280,9 @@ extends GOperator1
 
         copy.copyBase(this);
 
-        if (this.format) copy.format = this.format.copy();
-        if (this.trim  ) copy.trim   = this.trim  .copy();
+        if (this.format   ) copy.format    = this.format   .copy();
+        if (this.normalize) copy.normalize = this.normalize.copy();
+        if (this.trimZeros) copy.trimZeros = this.trimZeros.copy();
 
         return copy;
     }
@@ -36289,9 +36295,10 @@ extends GOperator1
             return this;
 
 
-        const input  = await evalValue      (this.input,  parse);
-        const format = await evalNumberValue(this.format, parse);
-        const trim   = await evalNumberValue(this.trim,   parse);
+        const input     = await evalValue      (this.input,     parse);
+        const format    = await evalNumberValue(this.format,    parse);
+        const normalize = await evalNumberValue(this.normalize, parse);
+        const trimZeros = await evalNumberValue(this.trimZeros, parse);
 
 
         if (input)
@@ -36306,14 +36313,14 @@ extends GOperator1
 
                     this.value.items.push(
                            item.type == COLOR_VALUE
-                        || item.type == FILL_VALUE
-                        ? getColorToTextValue(item, format, trim)
+                        || item.type ==  FILL_VALUE
+                        ? getColorToTextValue(item, format, normalize, trimZeros)
                         : TextValue.NaN());   
                 }
             }
             else
             {
-                this.value = getColorToTextValue(input, format, trim);
+                this.value = getColorToTextValue(input, format, normalize, trimZeros);
             }
         }
 
@@ -36323,9 +36330,10 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type',   this.outputType()],
-            ['format', format           ],
-            ['trim',   trim             ]
+            ['type',      this.outputType()],
+            ['format',    format           ],
+            ['normalize', normalize        ],
+            ['trimZeros', trimZeros        ]
         ]);
 
 
@@ -36339,8 +36347,9 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.format && this.format.isValid()
-            && this.trim   && this.trim  .isValid();
+            && this.format    && this.format   .isValid()
+            && this.normalize && this.normalize.isValid()
+            && this.trimZeros && this.trimZeros.isValid();
     }
 
 
@@ -36349,8 +36358,9 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.format) this.format.pushValueUpdates(parse);
-        if (this.trim  ) this.trim  .pushValueUpdates(parse);
+        if (this.format   ) this.format   .pushValueUpdates(parse);
+        if (this.normalize) this.normalize.pushValueUpdates(parse);
+        if (this.trimZeros) this.trimZeros.pushValueUpdates(parse);
     }
 
 
@@ -36359,8 +36369,9 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.format) this.format.invalidateInputs(parse, from, force);
-        if (this.trim  ) this.trim  .invalidateInputs(parse, from, force);
+        if (this.format   ) this.format   .invalidateInputs(parse, from, force);
+        if (this.normalize) this.normalize.invalidateInputs(parse, from, force);
+        if (this.trimZeros) this.trimZeros.invalidateInputs(parse, from, force);
     }
 
 
@@ -36369,14 +36380,15 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.format) this.format.iterateLoop(parse);
-        if (this.trim  ) this.trim  .iterateLoop(parse);
+        if (this.format   ) this.format   .iterateLoop(parse);
+        if (this.normalize) this.normalize.iterateLoop(parse);
+        if (this.trimZeros) this.trimZeros.iterateLoop(parse);
     }
 }
 
 
 
-function getColorToTextValue(input, format, trim)
+function getColorToTextValue(input, format, normalize, trimZeros)
 {
     if (   input.type != COLOR_VALUE
         && input.type != FILL_VALUE)
@@ -36399,15 +36411,6 @@ function getColorToTextValue(input, format, trim)
     let dec4 = fill.opacity .decimals;
 
     
-    const maxDec = Math.max(dec1, dec2, dec3, dec4);
-
-    if (   format.value == 0
-        && fill.color.space == 0)
-    {
-        
-    }
-
-
     switch (format.value)
     {
         case 0: // hex
@@ -36418,29 +36421,511 @@ function getColorToTextValue(input, format, trim)
 
             break;
 
-        case 1: // rgb 0.0-1.0
-            str = 
-                         getColorValueToText(rgba[0], dec1, trim.value > 0) 
-                + ', ' + getColorValueToText(rgba[1], dec2, trim.value > 0) 
-                + ', ' + getColorValueToText(rgba[2], dec3, trim.value > 0);
-
-            if (input.type == FILL_VALUE)
-                str += ', ' + getColorValueToText(rgba[3], dec4, trim.value > 0);
+        case 1: // rgb
+        {
+            if (normalize.value > 0)
+            {
+                str = 
+                            getColorValueToText(rgba[0], Math.max(dec1, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(rgba[1], Math.max(dec2, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(rgba[2], Math.max(dec3, 3), trimZeros.value > 0);
+    
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3], Math.max(dec4, 3), trimZeros.value > 0);
+            }
+            else
+            {
+                str = 
+                            getColorValueToText(rgba[0] * rgbFactor[0], dec1, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(rgba[1] * rgbFactor[1], dec2, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(rgba[2] * rgbFactor[2], dec3, trimZeros.value > 0);
+    
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3] * 255, dec4, trimZeros.value > 0);
+            }
 
             break;
+        }
+        case 2: // hsl
+        {
+            const hsl = rgb2hsl(rgba);
 
-        case 2: // rgb 0-255
-            str = 
-                         getColorValueToText(rgba[0] * 255, dec1, trim.value > 0) 
-                + ', ' + getColorValueToText(rgba[1] * 255, dec2, trim.value > 0) 
-                + ', ' + getColorValueToText(rgba[2] * 255, dec3, trim.value > 0);
+            if (normalize.value > 0)
+            {
+                str = 
+                            getColorValueToText(hsl[0], Math.max(dec1, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsl[1], Math.max(dec2, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsl[2], Math.max(dec3, 3), trimZeros.value > 0);
 
-            if (input.type == FILL_VALUE)
-                str += ', ' + getColorValueToText(rgba[3] * 255, dec4, trim.value > 0);
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+            }
+            else
+            {
+                str = 
+                            getColorValueToText(hsl[0] * hs_Factor[0], dec1, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsl[1] * hs_Factor[1], dec2, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsl[2] * hs_Factor[2], dec3, trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0);
+            }
 
             break;
+        }
+        case 3: // hsb
+        {
+            const hsv = rgb2hsv(rgba);
 
-        case 3: // CSS hex
+            if (normalize.value > 0)
+            {
+                str = 
+                            getColorValueToText(hsv[0], Math.max(dec1, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsv[1], Math.max(dec2, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsv[2], Math.max(dec3, 3), trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ', ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+            }
+            else
+            {
+                str = 
+                            getColorValueToText(hsv[0] * hs_Factor[0], dec1, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsv[1] * hs_Factor[1], dec2, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsv[2] * hs_Factor[2], dec3, trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0);
+            }
+
+            break;
+        }
+        case 4: // hcl/ok
+        {
+            const hcl = rgb2hclok(rgba);
+
+            if (normalize.value > 0)
+            {
+                str = 
+                            getColorValueToText(hcl[0], Math.max(dec1, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hcl[1], Math.max(dec2, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hcl[2], Math.max(dec3, 3), trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+            }
+            else
+            {
+                str = 
+                            getColorValueToText(hcl[0] * hclFactor[0], dec1, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hcl[1] * hclFactor[1], dec2, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hcl[2] * hclFactor[2], dec3, trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0);
+            }
+
+            break;
+        }
+        case 5: // hcl/ab
+        {
+            const hcl = rgb2hclab(rgba);
+
+            if (normalize.value > 0)
+            {
+                str = 
+                            getColorValueToText(hcl[0], Math.max(dec1, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hcl[1], Math.max(dec2, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hcl[2], Math.max(dec3, 3), trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+            }
+            else
+            {
+                str = 
+                            getColorValueToText(hcl[0] * hclFactor[0], dec1, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hcl[1] * hclFactor[1], dec2, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hcl[2] * hclFactor[2], dec3, trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0);
+            }
+
+            break;
+        }
+        case 6: // hcl/uv
+        {
+            const hcl = rgb2hcluv(rgba);
+
+            if (normalize.value > 0)
+            {
+                str = 
+                            getColorValueToText(hcl[0], Math.max(dec1, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hcl[1], Math.max(dec2, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hcl[2], Math.max(dec3, 3), trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+            }
+            else
+            {
+                str = 
+                            getColorValueToText(hcl[0] * hclFactor[0], dec1, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hcl[1] * hclFactor[1], dec2, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hcl[2] * hclFactor[2], dec3, trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0);
+            }
+
+            break;
+        }
+        case 7: // oklab
+        {
+            const hsv = rgb2oklab(rgba);
+
+            if (normalize.value > 0)
+            {
+                str = 
+                            getColorValueToText(hsv[0], Math.max(dec1, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsv[1], Math.max(dec2, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsv[2], Math.max(dec3, 3), trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+            }
+            else
+            {
+                str = 
+                            getColorValueToText(hsv[0] * oppFactor[0], dec1, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsv[1] * oppFactor[1], dec2, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsv[2] * oppFactor[2], dec3, trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0);
+            }
+
+            break;
+        }
+        case 8: // lab
+        {
+            const hsv = rgb2lab(rgba);
+
+            if (normalize.value > 0)
+            {
+                str = 
+                            getColorValueToText(hsv[0], Math.max(dec1, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsv[1], Math.max(dec2, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsv[2], Math.max(dec3, 3), trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+            }
+            else
+            {
+                str = 
+                            getColorValueToText(hsv[0] * oppFactor[0], dec1, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsv[1] * oppFactor[1], dec2, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsv[2] * oppFactor[2], dec3, trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0);
+            }
+
+            break;
+        }
+        case 9: // luv
+        {
+            const hsv = rgb2luv(rgba);
+
+            if (normalize.value > 0)
+            {
+                str = 
+                            getColorValueToText(hsv[0], Math.max(dec1, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsv[1], Math.max(dec2, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsv[2], Math.max(dec3, 3), trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+            }
+            else
+            {
+                str = 
+                            getColorValueToText(hsv[0] * oppFactor[0], dec1, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsv[1] * oppFactor[1], dec2, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(hsv[2] * oppFactor[2], dec3, trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0);
+            }
+
+            break;
+        }
+        case 10: // xyz
+        {
+            const xyz = rgb2xyz(rgba);
+
+            if (normalize.value > 0)
+            {
+                str = 
+                            getColorValueToText(xyz[0], Math.max(dec1, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(xyz[1], Math.max(dec2, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(xyz[2], Math.max(dec3, 3), trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+            }
+            else
+            {
+                str = 
+                            getColorValueToText(xyz[0] * xyzFactor[0], dec1, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(xyz[1] * xyzFactor[1], dec2, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(xyz[2] * xyzFactor[2], dec3, trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0);
+            }
+
+            break;
+        }
+        case 11: // xyz d50
+        {
+            const xyz = rgb2xyz(rgba, sRGB_D50);
+
+            if (normalize.value > 0)
+            {
+                str = 
+                            getColorValueToText(xyz[0], Math.max(dec1, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(xyz[1], Math.max(dec2, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(xyz[2], Math.max(dec3, 3), trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+            }
+            else
+            {
+                str = 
+                            getColorValueToText(xyz[0] * xyzFactor[0], dec1, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(xyz[1] * xyzFactor[1], dec2, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(xyz[2] * xyzFactor[2], dec3, trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0);
+            }
+
+            break;
+        }
+        case 12: // xyz d65
+        {
+            const xyz = rgb2xyz(rgba, sRGB_D65);
+
+            if (normalize.value > 0)
+            {
+                str = 
+                            getColorValueToText(xyz[0], Math.max(dec1, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(xyz[1], Math.max(dec2, 3), trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(xyz[2], Math.max(dec3, 3), trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+            }
+            else
+            {
+                str = 
+                            getColorValueToText(xyz[0] * xyzFactor[0], dec1, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(xyz[1] * xyzFactor[1], dec2, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(xyz[2] * xyzFactor[2], dec3, trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0);
+            }
+
+            break;
+        }
+        case 13: // HTML name
+            str = createColorName(rgba);
+            break;
+    }
+
+    return new TextValue(str);
+}
+
+
+
+function getColorValueToText(val, dec, trimZeros)
+{
+    return numToString(val, (trimZeros ? -1 : 1) * dec);
+}
+
+
+class GColorToCss
+extends GOperator1
+{
+    format;
+    percent;
+    trimZeros;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(COLOR_TO_CSS, nodeId, options);
+    }
+
+
+    reset()
+    {
+        super.reset();
+
+        this.format    = null;
+        this.percent   = null;
+        this.trimZeros = null;
+    }
+
+
+
+   
+    copy()
+    {
+        const copy = new GColorToCss(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.format   ) copy.format    = this.format   .copy();
+        if (this.percent  ) copy.percent   = this.percent  .copy();
+        if (this.trimZeros) copy.trimZeros = this.trimZeros.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const input     = await evalValue      (this.input,     parse);
+        const format    = await evalNumberValue(this.format,    parse);
+        const percent   = await evalNumberValue(this.percent,   parse);
+        const trimZeros = await evalNumberValue(this.trimZeros, parse);
+
+
+        if (input)
+        {
+            if (isListValueType(input.type))
+            {
+                this.value = new ListValue();
+
+                for (let i = 0; i < input.items.length; i++)
+                {
+                    const item = input.items[i];
+
+                    this.value.items.push(
+                           item.type == COLOR_VALUE
+                        || item.type ==  FILL_VALUE
+                        ? getColorToCssValue(item, format, percent, trimZeros)
+                        : TextValue.NaN());   
+                }
+            }
+            else
+            {
+                this.value = getColorToCssValue(input, format, percent, trimZeros);
+            }
+        }
+
+        else
+            this.value = TextValue.NaN();
+
+
+        this.setUpdateValues(parse,
+        [
+            ['type',      this.outputType()],
+            ['format',    format           ],
+            ['percent',   percent          ],
+            ['trimZeros', trimZeros        ]
+        ]);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.format    && this.format   .isValid()
+            && this.percent   && this.percent  .isValid()
+            && this.trimZeros && this.trimZeros.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.format   ) this.format   .pushValueUpdates(parse);
+        if (this.percent  ) this.percent  .pushValueUpdates(parse);
+        if (this.trimZeros) this.trimZeros.pushValueUpdates(parse);
+    }
+
+
+
+    invalidateInputs(parse, from, force)
+    {
+        super.invalidateInputs(parse, from, force);
+
+        if (this.format   ) this.format   .invalidateInputs(parse, from, force);
+        if (this.percent  ) this.percent  .invalidateInputs(parse, from, force);
+        if (this.trimZeros) this.trimZeros.invalidateInputs(parse, from, force);
+    }
+
+
+
+    iterateLoop(parse)
+    {
+        super.iterateLoop(parse);
+
+        if (this.format   ) this.format   .iterateLoop(parse);
+        if (this.percent  ) this.percent  .iterateLoop(parse);
+        if (this.trimZeros) this.trimZeros.iterateLoop(parse);
+    }
+}
+
+
+
+function getColorToCssValue(input, format, percent, trimZeros)
+{
+    if (   input.type != COLOR_VALUE
+        && input.type != FILL_VALUE)
+        return new TextValue();
+
+
+    let str = NAN_CHAR;
+
+
+    const fill = 
+        input.type == COLOR_VALUE
+        ? new FillValue(input)
+        : input;
+
+    const rgba = fill.toRgba();
+
+    let dec1 = fill.color.c1.decimals;
+    let dec2 = fill.color.c2.decimals;
+    let dec3 = fill.color.c3.decimals;
+    let dec4 = fill.opacity .decimals;
+
+    
+    switch (format.value)
+    {
+        case 0: // # hex
             str = rgb2hex(rgba, true);
 
             if (input.type == FILL_VALUE)
@@ -36448,103 +36933,200 @@ function getColorToTextValue(input, format, trim)
 
             break;
 
-        case 4: // CSS rgb
-            str = 
-                'rgb('
-                      + getColorValueToText(rgba[0] * 255, dec1, trim.value > 0)
-                + ' ' + getColorValueToText(rgba[1] * 255, dec2, trim.value > 0)
-                + ' ' + getColorValueToText(rgba[2] * 255, dec3, trim.value > 0);
+        case 1: // rgb()
+            if (percent.value > 0)
+            {
+                str = 
+                    'rgb('
+                          + getColorValueToText(rgba[0] * 100, dec1, trimZeros.value > 0) + '%'
+                    + ' ' + getColorValueToText(rgba[1] * 100, dec2, trimZeros.value > 0) + '%'
+                    + ' ' + getColorValueToText(rgba[2] * 100, dec3, trimZeros.value > 0) + '%';
 
                 if (input.type == FILL_VALUE)
-                    str += ' / ' + getColorValueToText(rgba[3], dec4, trim.value > 0);
+                    str += ' / ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0) + '%';
     
                 str += ')';
+            }
+            else
+            {
+                str = 
+                    'rgb('
+                          + getColorValueToText(rgba[0] * 255, dec1, trimZeros.value > 0)
+                    + ' ' + getColorValueToText(rgba[1] * 255, dec2, trimZeros.value > 0)
+                    + ' ' + getColorValueToText(rgba[2] * 255, dec3, trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' / ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+    
+                str += ')';
+            }
+
             break;
 
-        case 5: // CSS hsl
-        {
+        case 2: // hsl()
             const hsl = rgb2hsl(rgba);
 
-            str = 
-                'hsl('
-                +       getColorValueToText(hsl[0] * 360, dec1, trim.value > 0)
-                + ' ' + getColorValueToText(hsl[1] * 100, dec2, trim.value > 0)
-                + ' ' + getColorValueToText(hsl[2] * 100, dec3, trim.value > 0);
+            if (percent.value > 0)
+            {
+                str = 
+                    'hsl('
+                    +       getColorValueToText(hsl[0] * 360, dec1, trimZeros.value > 0) + 'deg'
+                    + ' ' + getColorValueToText(hsl[1] * 100, dec2, trimZeros.value > 0) + '%'
+                    + ' ' + getColorValueToText(hsl[2] * 100, dec3, trimZeros.value > 0) + '%';
 
                 if (input.type == FILL_VALUE)
-                    str += ' / ' + getColorValueToText(rgba[3], dec4, trim.value > 0);
+                    str += ' / ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0) + '%';
     
                 str += ')';
+            }
+            else
+            {
+                str = 
+                    'hsl('
+                    +       getColorValueToText(hsl[0] * 360, dec1, trimZeros.value > 0)
+                    + ' ' + getColorValueToText(hsl[1] * 100, dec2, trimZeros.value > 0)
+                    + ' ' + getColorValueToText(hsl[2] * 100, dec3, trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' / ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+    
+                str += ')';
+            }
+
             break;
-        }
-        case 6: // CSS oklch
-        {
+
+        case 3: // oklch()
             const hcl = rgb2hclok(rgba);
 
-            str = 
-                'oklch('
-                +       getColorValueToText(hcl[2] * 100, dec1, trim.value > 0)
-                + ' ' + getColorValueToText(hcl[1],       dec2, trim.value > 0)
-                + ' ' + getColorValueToText(hcl[0] * 360, dec3, trim.value > 0);
+            if (percent.value > 0)
+            {
+                str = 
+                    'oklch('
+                    +       getColorValueToText(hcl[2]       * 100, dec1, trimZeros.value > 0) + '%'
+                    + ' ' + getColorValueToText(hcl[1] / 0.4 * 100, dec2, trimZeros.value > 0) + '%'
+                    + ' ' + getColorValueToText(hcl[0]       * 360, dec3, trimZeros.value > 0) + 'deg';
 
-            if (input.type == FILL_VALUE)
-                str += ' / ' + getColorValueToText(rgba[3], dec4, trim.value > 0);
+                if (input.type == FILL_VALUE)
+                    str += ' / ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0) + '%';
 
-            str += ')';
+                str += ')';
+            }
+            else
+            {
+                str = 
+                    'oklch('
+                    +       getColorValueToText(hcl[2],       Math.max(dec1, 4), trimZeros.value > 0)
+                    + ' ' + getColorValueToText(hcl[1],       Math.max(dec2, 4), trimZeros.value > 0)
+                    + ' ' + getColorValueToText(hcl[0] * 360,          dec3,     trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' / ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+
+                str += ')';
+            }
 
             break;
-        }
-        case 7: // CSS lch
+
+        case 4: // lch()
         {
             const hcl = rgb2hclab(rgba);
 
-            str = 
-                'lch('
-                +       getColorValueToText(hcl[2] * 100, dec1, trim.value > 0)
-                + ' ' + getColorValueToText(hcl[1] * 100, dec2, trim.value > 0)
-                + ' ' + getColorValueToText(hcl[0] * 360, dec3, trim.value > 0);
+            if (percent.value > 0)
+            {
+                str = 
+                    'lch('
+                    +       getColorValueToText(hcl[2]       * 100, dec1, trimZeros.value > 0) + '%'
+                    + ' ' + getColorValueToText(hcl[1] / 0.4 * 100, dec2, trimZeros.value > 0) + '%'
+                    + ' ' + getColorValueToText(hcl[0]       * 360, dec3, trimZeros.value > 0) + 'deg';
 
-            if (input.type == FILL_VALUE)
-                str += ' / ' + getColorValueToText(rgba[3], dec4, trim.value > 0);
+                if (input.type == FILL_VALUE)
+                    str += ' / ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0) + '%';
 
-            str += ')';
+                str += ')';
+            }
+            else
+            {
+                str = 
+                    'lch('
+                    +       getColorValueToText(hcl[2],       Math.max(dec1, 3), trimZeros.value > 0)
+                    + ' ' + getColorValueToText(hcl[1],       Math.max(dec2, 3), trimZeros.value > 0)
+                    + ' ' + getColorValueToText(hcl[0] * 360,          dec3,     trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' / ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+
+                str += ')';
+            }
 
             break;
         }
-        case 8: // CSS oklab
+        case 5: // oklab()
         {
             const lab = rgb2oklab(rgba);
 
-            str = 
-                'oklab('
-                +       getColorValueToText(lab[0] * 100, dec1, trim.value > 0)
-                + ' ' + getColorValueToText(lab[1],       dec2, trim.value > 0)
-                + ' ' + getColorValueToText(lab[2],       dec3, trim.value > 0);
+            if (percent.value > 0)
+            {
+                str = 
+                    'oklab('
+                    +       getColorValueToText(lab[0]       * 100, dec1, trimZeros.value > 0) + '%'
+                    + ' ' + getColorValueToText(lab[1] / 0.4 * 100, dec2, trimZeros.value > 0) + '%'
+                    + ' ' + getColorValueToText(lab[2] / 0.4 * 100, dec3, trimZeros.value > 0) + '%';
 
-            if (input.type == FILL_VALUE)
-                str += ' / ' + getColorValueToText(rgba[3], dec4, trim.value > 0);
+                if (input.type == FILL_VALUE)
+                    str += ' / ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0) + '%';
 
-            str += ')';
+                str += ')';
+            }
+            else
+            {
+                str = 
+                    'oklab('
+                    +       getColorValueToText(lab[0], dec1, trimZeros.value > 0)
+                    + ' ' + getColorValueToText(lab[2], dec3, trimZeros.value > 0)
+                    + ' ' + getColorValueToText(lab[1], dec2, trimZeros.value > 0)
+
+                if (input.type == FILL_VALUE)
+                    str += ' / ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+
+                str += ')';
+            }
 
             break;
         }
-        case 9: // CSS lab
+        case 6: // lab()
         {
             const lab = rgb2lab(rgba);
 
-            str = 
-                'lab('
-                +       getColorValueToText(lab[0] * 100, dec1, trim.value > 0)
-                + ' ' + getColorValueToText(lab[1] * 100, dec2, trim.value > 0)
-                + ' ' + getColorValueToText(lab[2] * 100, dec3, trim.value > 0);
+            if (percent.value > 0)
+            {
+                str = 
+                    'lab('
+                    +       getColorValueToText(lab[0]       * 100, dec1, trimZeros.value > 0) + '%'
+                    + ' ' + getColorValueToText(lab[1] / 0.4 * 100, dec2, trimZeros.value > 0) + '%'
+                    + ' ' + getColorValueToText(lab[2] / 0.4 * 100, dec3, trimZeros.value > 0) + '%';
 
                 if (input.type == FILL_VALUE)
-                    str += ' / ' + getColorValueToText(rgba[3], dec4, trim.value > 0);
-    
+                    str += ' / ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0) + '%';
+
                 str += ')';
+            }
+            else
+            {
+                str = 
+                    'lab('
+                    +       getColorValueToText(lab[0], dec1, trimZeros.value > 0)
+                    + ' ' + getColorValueToText(lab[2], dec3, trimZeros.value > 0)
+                    + ' ' + getColorValueToText(lab[1], dec2, trimZeros.value > 0)
+
+                if (input.type == FILL_VALUE)
+                    str += ' / ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+
+                str += ')';
+            }
+    
             break;
         }
-        case 10: // CSS color
+        case 7: // color()
         {
             let space, 
                 color;
@@ -36579,37 +37161,46 @@ function getColorToTextValue(input, format, trim)
                 case 17: space = 'xyz-d65';      color = rgb2xyz  (rgba); break;
             }
 
-            str = 
-                  'color('
-                +       space
-                + ' ' + getColorValueToText(color[0], dec1, trim.value > 0) 
-                + ' ' + getColorValueToText(color[1], dec2, trim.value > 0) 
-                + ' ' + getColorValueToText(color[2], dec3, trim.value > 0);
 
-            if (input.type == FILL_VALUE)
-                str += ' / ' + getColorValueToText(rgba[3], dec4, trim.value > 0);
+            if (percent.value > 0)
+            {
+                str = 
+                    'color('
+                    +       space
+                    + ' ' + getColorValueToText(color[0] * 100, dec1, trimZeros.value > 0) + '%' 
+                    + ' ' + getColorValueToText(color[1] * 100, dec2, trimZeros.value > 0) + '%' 
+                    + ' ' + getColorValueToText(color[2] * 100, dec3, trimZeros.value > 0) + '%';
 
-            str += ')';
+                if (input.type == FILL_VALUE)
+                    str += ' / ' + getColorValueToText(rgba[3] * 100, dec4, trimZeros.value > 0) + '%';
+
+                str += ')';
+            }
+            else
+            {
+                str = 
+                    'color('
+                    +       space
+                    + ' ' + getColorValueToText(color[0], dec1, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(color[1], dec2, trimZeros.value > 0) 
+                    + ' ' + getColorValueToText(color[2], dec3, trimZeros.value > 0);
+
+                if (input.type == FILL_VALUE)
+                    str += ' / ' + getColorValueToText(rgba[3], dec4, trimZeros.value > 0);
+
+                str += ')';
+            }
+
 
             break;
         }
-        case 11: // HTML name
+        case 8: // HTML name
             str = getClosestHtmlName(rgba);
-            break;
-
-        case 12: // structured name
-            str = createColorName(rgba);
             break;
     }
 
+
     return new TextValue(str);
-}
-
-
-
-function getColorValueToText(val, dec, trim)
-{
-    return numToString(val, (trim ? -1 : 1) * dec);
 }
 
 
@@ -64144,8 +64735,9 @@ function genParseColorToText(parse)
     if (nInputs == 1)
         col2text.input = genParse(parse);
 
-    col2text.format = genParse(parse);
-    col2text.trim   = genParse(parse);
+    col2text.format    = genParse(parse);
+    col2text.normalize = genParse(parse);
+    col2text.trimZeros = genParse(parse);
 
     
     parse.nTab--;
@@ -64153,6 +64745,54 @@ function genParseColorToText(parse)
 
     genParseNodeEnd(parse, col2text);
     return col2text;
+}
+
+
+
+function genParseColorToCss(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const col2css = new GColorToCss(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(col2css, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, col2css);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        col2css.input = genParse(parse);
+
+    col2css.format    = genParse(parse);
+    col2css.percent   = genParse(parse);
+    col2css.trimZeros = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, col2css);
+    return col2css;
 }
 
 
@@ -64794,6 +65434,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == INDEX_TO_NAME          ) result = genParseIndexToName       (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText      (parse);
     else if (parse.next == COLOR_TO_TEXT          ) result = genParseColorToText       (parse);
+    else if (parse.next == COLOR_TO_CSS           ) result = genParseColorToCss        (parse);
     else if (parse.next == TEXT_TO_NUMBER         ) result = genParseTextToNumber      (parse);
     else if (parse.next == TEXT_TO_BOOLEAN        ) result = genParseTextToBoolean     (parse);
     else if (parse.next == TEXT_TO_COLOR          ) result = genParseTextToColor       (parse);

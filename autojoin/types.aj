@@ -188,6 +188,7 @@
 ../generator/types/text/GNumberToText.js
 ../generator/types/text/GBooleanToText.js
 ../generator/types/text/GColorToText.js
+../generator/types/text/GColorToCss.js
 ../generator/types/text/GTextToNumber.js
 ../generator/types/text/GTextToBoolean.js
 ../generator/types/text/GTextToColor.js

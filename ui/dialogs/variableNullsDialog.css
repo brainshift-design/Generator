@@ -169,9 +169,9 @@
 #boolVarNullContainer input:checked ~ .checkmark .checkmarkBall { left: 13px;  }
 
 
-#numberVarNullContainer  { top:  42px; }
-#boolVarNullContainer { top:  80px; }
-#colorVarNullContainer   { top: 118px; }
+#numberVarNullContainer { top:  42px; }
+#boolVarNullContainer   { top:  80px; }
+#colorVarNullContainer  { top: 118px; }
 
 
 #boolVarNullContainer input 

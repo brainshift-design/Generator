@@ -647,6 +647,7 @@ function initGeneratorMenus()
                               new MenuItem('',                   null,               true,  {separator: true}),
                               new MenuItem('Number ⟶ Text',    'Number to Text',    false, {icon: iconNumberToText,    createType: NUMBER_TO_TEXT,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT,  btnText.div, getCreateOptions(e)))}),
                               new MenuItem('Color ⟶ Text',     'Color to Text',     false, {icon: iconColorToText,     createType: COLOR_TO_TEXT,   callback: e => actionManager.do(getCreateNodeAction(COLOR_TO_TEXT,   btnText.div, getCreateOptions(e)))}),
+                              new MenuItem('Color ⟶ CSS',      'Color to CSS',      false, {icon: iconColorToCss,      createType: COLOR_TO_CSS,    callback: e => actionManager.do(getCreateNodeAction(COLOR_TO_CSS,    btnText.div, getCreateOptions(e)))}),
                               new MenuItem('',                   null,               true,  {separator: true}),
                               new MenuItem('Code ⟶ Character', 'Code to Character', false, {icon: iconCodeToCharacter, createType: TEXT_CHAR,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,       btnText.div, getCreateOptions(e)))}),
                               new MenuItem('Character ⟶ Code', 'Character to Code', false, {icon: iconCharacterToCode, createType: TEXT_UNICODE,    callback: e => actionManager.do(getCreateNodeAction(TEXT_UNICODE,    btnText.div, getCreateOptions(e)))}),

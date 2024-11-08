@@ -182,6 +182,7 @@
 ../operators/text/OpTextToBoolean.js
 ../operators/text/OpTextToColor.js
 ../operators/text/OpColorToText.js
+../operators/text/OpColorToCss.js
 
 
 ../operators/color/OpColor.js

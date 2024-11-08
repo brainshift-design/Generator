@@ -2,9 +2,11 @@ class   OpColorToText
 extends OperatorBase
 {
     paramFormat;
+    paramNormalize;
     paramTrim;
 
 
+    menuNormalize;
     menuTrim;
 
 
@@ -19,23 +21,39 @@ extends OperatorBase
         this.addInput (new Input([COLOR_VALUE, FILL_VALUE, COLOR_LIST_VALUE, FILL_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramFormat = new OptionParam('format', 'format', false, true,  true, ['Hex', 'RGB 0 – 1', 'RGB 0 – 255', 'CSS # hex', 'CSS rgb ()', 'CSS hsl ()', 'CSS oklch ()', 'CSS lch ()', 'CSS oklab()', 'CSS lab()', 'CSS color ()', 'HTML name', 'structured name']));
-        this.addParam(this.paramTrim   = new NumberParam('trim',   'trim zeroes',   true,  true, true, 0, 0, 1));
+        this.addParam(this.paramFormat    = new OptionParam('format',    'format',     false, true, true, ['Hex', 'RGB', 'HSL', 'HSB', 'HCL / ok', 'HCL / ab', 'HCL / uv', 'okLab', 'Lab', 'Luv', 'XYZ', 'XYZ / D50', 'XYZ / D65', 'color name']));
+        this.addParam(this.paramNormalize = new NumberParam('normalize', 'normalize',  true,  true, true, 0, 0, 1));
+        this.addParam(this.paramTrim      = new NumberParam('trimZeros', 'trim zeros', true,  true, true, 0, 0, 1));
 
-        this.paramFormat.separatorsBefore.push(3, 6, 8, 10, 11);
+        this.paramFormat.separatorsBefore.push(1, 4, 7, 10, 13);
 
         this.paramFormat.controls[0].textValues =
         [
-            [0, 'hex'                          ],
-            [1, 'rgb 1',      'rgb 0-1'        ],
-            [2, 'rgb 255',    'rgb 0-255'      ],
-            [3, 'html',       'html name'      ],
-            [4, 'structured', 'structured name']
+            [ 0, 'hex'                              ],
+
+            [ 1, 'rgb'                              ],
+            [ 2, 'hsl'                              ],
+            [ 3, 'hsb'                              ],
+
+            [ 4, 'hclok', 'hcl/ok', 'oklch', 'okhcl'],
+            [ 5, 'hclab', 'hcl/ab'                  ],
+            [ 6, 'hcluv', 'hcl/uv'                  ],
+
+            [ 7, 'oklab'                            ],
+            [ 8, 'lab'                              ],
+            [ 9, 'luv'                              ],
+
+            [10, 'xyz'                              ],
+            [11, 'xyz/d50',   'xyzd50', 'xyz50'     ],
+            [12, 'xyz/d65',   'xyzd65', 'xyz65'     ],
+
+            [13, 'name', 'color name'               ]
         ];
 
-        this.paramTrim.divider = 0.66;
-
-        this.menutrim = createBoolMenu(this.paramTrim);
+        this.paramTrim .divider = 0.64;
+        
+        this.menuNormalize = createBoolMenu(this.paramNormalize);
+        this.menuTrim      = createBoolMenu(this.paramTrim     );
     }
 
 
@@ -60,8 +78,9 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramFormat.genRequest(gen));
-        request.push(...this.node.paramTrim  .genRequest(gen));
+        request.push(...this.node.paramFormat   .genRequest(gen));
+        request.push(...this.node.paramNormalize.genRequest(gen));
+        request.push(...this.node.paramTrim     .genRequest(gen));
 
         
         gen.scope.pop();
@@ -74,7 +93,7 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const type = values[paramIds.findIndex(id => id == 'type' )];
+        const type = values[paramIds.findIndex(id => id == 'type')];
 
         if (type) 
             this.headerOutputs[0].types = [type.value];
@@ -91,10 +110,12 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramFormat.enableControlText(true, this.paramFormat.isUnknown());
-        this.paramTrim  .enableControlText(true);
+        this.paramFormat   .enableControlText(true, this.paramFormat.isUnknown());
+        this.paramNormalize.enableControlText(true);
+        this.paramTrim     .enableControlText(true);
 
-        updateParamConditionText(this.paramTrim, this.paramTrim.isUnknown(), false, 1);
+        updateParamConditionText(this.paramNormalize, this.paramNormalize.isUnknown(), false, 1);
+        updateParamConditionText(this.paramTrim,      this.paramTrim     .isUnknown(), false, 1);
 
         this.updateParamControls();
     }

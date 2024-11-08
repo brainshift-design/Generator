@@ -923,8 +923,9 @@ function genParseColorToText(parse)
     if (nInputs == 1)
         col2text.input = genParse(parse);
 
-    col2text.format = genParse(parse);
-    col2text.trim   = genParse(parse);
+    col2text.format    = genParse(parse);
+    col2text.normalize = genParse(parse);
+    col2text.trimZeros = genParse(parse);
 
     
     parse.nTab--;
@@ -932,6 +933,54 @@ function genParseColorToText(parse)
 
     genParseNodeEnd(parse, col2text);
     return col2text;
+}
+
+
+
+function genParseColorToCss(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const col2css = new GColorToCss(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(col2css, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, col2css);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        col2css.input = genParse(parse);
+
+    col2css.format    = genParse(parse);
+    col2css.percent   = genParse(parse);
+    col2css.trimZeros = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, col2css);
+    return col2css;
 }
 
 

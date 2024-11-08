@@ -68,13 +68,14 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_CURVE:            node = new OpNumberCurve();        break;
         case NUMBER_MAP:              node = new OpNumberMap();          break;
         case NUMBER_BIAS:             node = new OpNumberBias();         break;
-        case NUMBER_IS_NAN:              node = new OpNumberIsNaN();        break;
+        case NUMBER_IS_NAN:           node = new OpNumberIsNaN();        break;
         case NUMBER_CONSTANT:         node = new OpConstant();           break;
         case NUMBER_DATETIME:         node = new OpDateTime();           break;
  
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();        break;
         case NUMBER_TO_TEXT:          node = new OpNumberToText();       break;
         case COLOR_TO_TEXT:           node = new OpColorToText();        break;
+        case COLOR_TO_CSS:            node = new OpColorToCss();         break;
         case NUMBER_SOLVE:            node = new OpSolve();              break;
         case NUMBER_ANIMATE:          node = new OpAnimate();            break;
  
