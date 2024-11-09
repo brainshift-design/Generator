@@ -29,6 +29,7 @@ var menuBarMenus;
 var menuDebugMain;
 var menuMain;
 var menuMainFile;
+var menuMainView;
 var menuShiftR;
 var menuMainPreferences;
 var menuMainDebug;
@@ -171,6 +172,7 @@ var menuItemShowAllColorSpaces;
 var menuItemPreferHtmlColorNames;
 var menuItemShowNodeIcons;
 var menuItemShowColorLegendInMenus;
+var menuItemShowGrid;
 var menuItemShowBoolValues;
 var menuItemSeparateThousands;
 var menuItemAllowInvertParams;
@@ -401,6 +403,17 @@ function initGeneratorMenus()
         menuItemSaveSelected = new MenuItem('Save selected . . .',    null, false, {shortcut: osCtrlShift() + 'S', callback: () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
 
 
+    menuMainView = new Menu('View', false);
+    menuMainView.addItems([
+        menuItemShowGrid          = new MenuItem('Show grid',                     null, false, {checkCallback: () => settings.showGrid,          callback: () => { updateSettingAndMenu('showGrid',          true, !settings.showGrid);          graph.currentPage.refreshPanAndZoom(); }}),
+                                    new MenuItem('',                              null, false, {separator: true}),
+        menuItemShowObjectCount   = new MenuItem('Show canvas object count',      null, false, {checkCallback: () => settings.showObjectCount,   callback: () => { updateSettingAndMenu('showObjectCount',   true, !settings.showObjectCount);   updateObjectCountDisplay();            }}),
+                                    new MenuItem('',                              null, false, {separator: true}),
+        menuItemShowBoolValues    = new MenuItem('Show boolean values as   ✓ ✗', null, false, {checkCallback: () => settings.showBoolValues,    callback: () => { updateSettingAndMenu('showBoolValues',    true, !settings.showBoolValues);    updateMenuItemShowBoolValues();        }}),
+        menuItemSeparateThousands = new MenuItem('Separate thousands in numbers', null, false, {checkCallback: () => settings.separateThousands, callback: () => { updateSettingAndMenu('separateThousands', true, !settings.separateThousands); updateMenuItemSeparateThousands();     }}),
+        menuItemShowNodeIcons     = new MenuItem('Show node icons',               null, false, {checkCallback: () => settings.showNodeIcons,     callback: () => { updateSettingAndMenu('showNodeIcons',     true, !settings.showNodeIcons);     updateMenuItemShowNodeIcons();         }})]);
+
+
     menuShiftR = new Menu('Shift+R', false);
     menuShiftR.addItems([
         menuItemRandomShiftR = new MenuItem('Random',  null, false, {checkCallback: () => settings.randomShiftR, callback: () => { updateSettingAndMenu('randomShiftR', true, !settings.randomShiftR); }}),
@@ -429,6 +442,7 @@ function initGeneratorMenus()
                              new MenuItem('Quick actions. . .',     null, false, {icon: iconSearchMenu, shortcut: osCtrl() + '/', callback: () => { hideAllMenus(); showSearchBox(); }}),
                              new MenuItem('',                       null, false, {separator: true}),
                              new MenuItem('File',                   null, false, {childMenu: menuMainFile}),
+                             new MenuItem('View',                   null, false, {childMenu: menuMainView}),
                              new MenuItem('',                       null, false, {separator: true}),
                              new MenuItem('Preferences',            null, false, {childMenu: menuMainPreferences}),
         menuDebug          = new MenuItem('Debug',                  null, false, {childMenu: menuMainDebug}),
@@ -1348,9 +1362,6 @@ function initPreferenceMenus()
      // menuItemShowSnapshots              = new MenuItem('Show snapshots',                           null, false, {checkCallback: () => settings.showSnapshots,                             callback: () => { updateSettingAndMenu('showSnapshots',              true, !settings.showSnapshots);              updateMenuItemShowSnapshots();              }}),
      //                                      new MenuItem('',                                         null, false, {separator: true}),    
      // menuItemShowAllColorSpaces         = new MenuItem('Show advanced color spaces',               null, false, {checkCallback: () => settings.showAllColorSpaces,                        callback: () => { updateSettingAndMenu('showAllColorSpaces',         true, !settings.showAllColorSpaces);         updateMenuItemShowAllColorSpaces();         }}),
-        menuItemShowBoolValues             = new MenuItem('Show boolean values as   ✓ ✗',            null, false, {checkCallback: () => settings.showBoolValues,                            callback: () => { updateSettingAndMenu('showBoolValues',             true, !settings.showBoolValues);             updateMenuItemShowBoolValues();             }}),
-        menuItemSeparateThousands          = new MenuItem('Separate thousands in numbers',            null, false, {checkCallback: () => settings.separateThousands,                         callback: () => { updateSettingAndMenu('separateThousands',          true, !settings.separateThousands);          updateMenuItemSeparateThousands();          }}),
-        menuItemShowNodeIcons              = new MenuItem('Show node icons',                          null, false, {checkCallback: () => settings.showNodeIcons,                             callback: () => { updateSettingAndMenu('showNodeIcons',              true, !settings.showNodeIcons);              updateMenuItemShowNodeIcons();              }}),
         menuItemAllowInvertParams          = new MenuItem('Allow inverting of parameters',            null, false, {checkCallback: () => settings.allowInvertParams,                         callback: () => { updateSettingAndMenu('allowInvertParams',          true, !settings.allowInvertParams);          updateMenuItemAllowInvertParams();          }}),
         menuItemActivateDeactiatesOthers   = new MenuItem('Activate deactivates others',              null, false, {checkCallback: () => settings.activateDeactiatesOthers,                  callback: () => { updateSettingAndMenu('activateDeactiatesOthers',   true, !settings.activateDeactiatesOthers);                                               }}),
         menuItemPreferHtmlColorNames       = new MenuItem('Prefer HTML color names',                  null, false, {checkCallback: () => settings.preferHtmlColorNames,                      callback: () => { updateSettingAndMenu('preferHtmlColorNames',       true, !settings.preferHtmlColorNames);                                                   }}),
@@ -1360,16 +1371,15 @@ function initPreferenceMenus()
         menuItemShowTooltips               = new MenuItem('Show tooltips',                            null, false, {childMenu: menuShowTooltips}),
         menuItemShowRestartInfo            = new MenuItem('Show restart warning',    null, false, {checkCallback: () => settings.showRestartInfo,                                            callback: () => { updateSettingAndMenu('showRestartInfo',            true, !settings.showRestartInfo);                                                        }}),
         //menuItemShowWarnings               = new MenuItem('Show warnings',                            null, false, {childMenu: menuShowWarnings}),
-        menuItemShowObjectCount            = new MenuItem('Show canvas object count',                 null, false, {checkCallback: () => settings.showObjectCount,                           callback: () => { updateSettingAndMenu('showObjectCount',            true, !settings.showObjectCount);            updateObjectCountDisplay();                 }}),
                                              new MenuItem('',                                         null, false, {separator: true}),
         menuItemShareUsageMetrics          = new MenuItem('Share usage metrics',                      null, false, {checkCallback: () => settings.shareUsageMetrics,                         callback: () => { updateSettingAndMenu('shareUsageMetrics',          true, !settings.shareUsageMetrics);                                                      }}),
         menuItemEnableBetaFeatures         = new MenuItem('Enable beta features',                     null, false, {checkCallback: () => subscribed() ? settings.enableBetaFeatures : false, callback: () => { updateSettingAndMenu('enableBetaFeatures',         true, !settings.enableBetaFeatures);         enableFeatures(!subscribed());               }}),
         menuItemShowDebugMenu              = new MenuItem('Show debug menu',                          null, false, {checkCallback: () => settings.showDebugMenu,                             callback: () => { uiGetLocalData('debugWarning'); }}),
+        //menuPrefSep2                       = new MenuItem('',                                         null, false, {separator: true}),    
+       // menuItemEnableMultiplayer          = new MenuItem('Enable multiplayer on this canvas',        null, false, {checkCallback: () => multiplayerEnabled,                                 callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  enableMultiplayer(!multiplayerEnabled);     }}),
+        //                                     new MenuItem('',                                         null, false, {separator: true}),    
                                              new MenuItem('',                                         null, false, {separator: true}),    
         menuItemMinZoomForParams           = new MenuItem('Zoom level for values . . .',              null, false, {callback: () => showMinZoomDialog()}),
-      //menuPrefSep2                       = new MenuItem('',                                         null, false, {separator: true}),    
-     // menuItemEnableMultiplayer          = new MenuItem('Enable multiplayer on this canvas',        null, false, {checkCallback: () => multiplayerEnabled,                                 callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  enableMultiplayer(!multiplayerEnabled);     }}),
-      //                                     new MenuItem('',                                         null, false, {separator: true}),    
         menuItemObjectCenterSize           = new MenuItem('Object center size . . .',                 null, false, {callback: () => showObjectCenterSizeDialog()}),
         menuItemObjectBatchSize            = new MenuItem('Update batch size . . .',                  null, false, {callback: () => showObjectBatchDialog()}),
         menuItemMaxSolveIterations         = new MenuItem('Maximum solve iterations. . .',            null, false, {callback: () => showMaxSolveIterationsDialog()}),

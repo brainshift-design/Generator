@@ -69,6 +69,13 @@ class GraphPage
 
 
 
+    refreshPanAndZoom()
+    {
+        this.setPanAndZoom(this._pan, this._zoom);
+    }
+
+
+
     setPanAndZoom(pan, zoom)
     {
         if (  (   pan  != this._pan
@@ -100,6 +107,19 @@ class GraphPage
 
             
             addMetricsEvent(METRICS_PAN_ZOOM, 'x: ' + Number(pan.x.toFixed(0)) + ', y: ' + Number(pan.y.toFixed(0)) + ', z: ' + Number(zoom.toFixed(3)));
+        }
+
+        const a = chan2hex((Math.max(0, 0.65 * Math.log(zoom) + 1)) * 0.1);
+
+        if (settings.showGrid)
+        {
+            document.body.style.backgroundImage    = `radial-gradient(circle, ${(darkMode ? '#ffffff' : '#000000') + a} 1px, transparent 1px)`;
+            document.body.style.backgroundPosition = `${pan.x}px ${pan.y + menuBarHeight}px`;
+            document.body.style.backgroundSize     = `${16 * zoom}px ${16 * zoom}px`;
+        }
+        else
+        {
+            document.body.style.backgroundImage = 'none';
         }
     }
     

@@ -554,10 +554,26 @@ Operator.prototype.endProgress = function()
 
 
 
+Operator.prototype.getGridPosition = function(x, y)
+{
+    return true
+        ? [ Math.round(x/16)*16 + 8,
+            Math.round(y/16)*16 + 8 ]
+        : [ x,
+            y ];
+};
+
+
+
 Operator.prototype.setPosition = function(x, y, updateTransform = true)
 {
-    this.div.style.left = x + 'px';
-    this.div.style.top  = y + 'px';
+    const [_x, _y] = this.getGridPosition(x, y);
+
+    this.x = _x;
+    this.y = _y;
+
+    this.div.style.left = this.x + 'px';
+    this.div.style.top  = this.y + 'px';
 
     if (updateTransform)
         graphView.updateNodeTransforms([this]);

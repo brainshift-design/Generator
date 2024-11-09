@@ -79,6 +79,7 @@ async function uiReturnFigGetLocalData(msg)
         case 'enableZoomedOutParams':
         case 'showPages':
         case 'showAllColorSpaces':
+        case 'showGrid':
         case 'showNodeIcons':
         case 'showBoolValues':
         case 'separateThousands':
@@ -391,6 +392,9 @@ function uiReturnFigLoadNodesAndConns(msg)
                 uiGetLocalData('canvasEmpty');
         });
     }
+
+
+    graph.currentPage.refreshPanAndZoom();
 }
 
 

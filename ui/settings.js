@@ -13,6 +13,7 @@ const settings =
     colorVarNullValue:             [1, 0, 1],
     showPages:                     false,
     showAllColorSpaces:            false,
+    showGrid:                      false,
     showNodeIcons:                 true,
     showBoolValues:                true,
     separateThousands:             true,
@@ -93,6 +94,7 @@ function updateSetting(settingName, value)
         case 'colorVarNullValue':             settings.colorVarNullValue             = value;  break;
         case 'showPages':                     settings.showPages                     = value;  break;
         case 'showAllColorSpaces':            settings.showAllColorSpaces            = value;  break;
+        case 'showGrid':                      settings.showGrid                      = value;  break;
         case 'showNodeIcons':                 settings.showNodeIcons                 = value;  break;
         case 'showBoolValues':                settings.showBoolValues                = value;  break;
         case 'separateThousands':             settings.separateThousands             = value;  break;
@@ -177,6 +179,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'enableZoomedOutParams':         updateSettingAndMenu_(valid, settingName, value, menuItemEnableZoomedOutParams        ); break;
         case 'showPages':                     updateSettingAndMenu_(valid, settingName, value, menuItemShowPages                    ); break;
         case 'showAllColorSpaces':            updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces           ); break;
+        case 'showGrid':                      updateSettingAndMenu_(valid, settingName, value, menuItemShowGrid                     ); break;
         case 'showNodeIcons':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeIcons                ); break;
         case 'showBoolValues':                updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues               ); break;
         case 'separateThousands':             updateSettingAndMenu_(valid, settingName, value, menuItemSeparateThousands            ); break;
@@ -274,6 +277,7 @@ function updateSettingsMenus()
     menuItemEnableZoomedOutParams        .setChecked(settings.enableZoomedOutParams        );
     menuItemShowPages                    .setChecked(settings.showPages                    );
     menuItemShowAllColorSpaces           .setChecked(settings.showAllColorSpaces           );
+    menuItemShowGrid                     .setChecked(settings.showGrid                     );
     menuItemShowNodeIcons                .setChecked(settings.showNodeIcons                );
     menuItemShowBoolValues               .setChecked(settings.showBoolValues               );
     menuItemSeparateThousands            .setChecked(settings.separateThousands            );
@@ -515,6 +519,7 @@ function loadLocalSettings()
     uiGetLocalData('stringVarNullValue'           );
     uiGetLocalData('colorVarNullValue'            );
     uiGetLocalData('showAllColorSpaces'           );
+    uiGetLocalData('showGrid'                     );
     uiGetLocalData('showNodeIcons'                );
     uiGetLocalData('showBoolValues'               );
     uiGetLocalData('separateThousands'            );
