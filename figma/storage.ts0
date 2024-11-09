@@ -7,7 +7,7 @@ async function figLoadLocal(key)
 
 function figGetLocalData(key)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
         if (key == 'canvasEmpty')
         {
@@ -15,7 +15,7 @@ function figGetLocalData(key)
             {
                 cmd:  'uiReturnFigGetLocalData',
                 key:   key,
-                value: figma.currentPage.children.length == 0
+                value: figCurrentPage.children.length == 0
             });
         }
         else if (key == 'debugWarningCrash')
@@ -73,9 +73,9 @@ async function figClearAllLocalData()
 
 async function figGetPageData(key, postToUi = true)
 {
-    await figma.currentPage.loadAsync();
+    await figCurrentPage.loadAsync();
 
-    const data = figma.currentPage.getPluginData(key);
+    const data = figCurrentPage.getPluginData(key);
 
     if (postToUi)
     {
@@ -94,48 +94,48 @@ async function figGetPageData(key, postToUi = true)
 function figSetPageData(key, value)
 {
     figClearPageData(key); // remove possible existing values first
-    figma.currentPage.setPluginData(key, value);
+    figCurrentPage.setPluginData(key, value);
 }
 
 
 
 function figClearPageData(key)
 {
-    figma.currentPage.setPluginData(key, ''); 
+    figCurrentPage.setPluginData(key, ''); 
 }
 
 
 
 function figLoadNodesAndConns(debugMode)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        // const pageIds  = figma.currentPage.getPluginData('pages');
+        // const pageIds  = figCurrentPage.getPluginData('pages');
 
 
-        const pageKeys  = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
-        const nodeKeys  = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
-        const connKeys  = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        const pageKeys  = figCurrentPage.getPluginDataKeys().filter(k => isPageKey(k));
+        const nodeKeys  = figCurrentPage.getPluginDataKeys().filter(k => isNodeKey(k));
+        const connKeys  = figCurrentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
 
         if (!debugMode)
             figMarkForLoading(nodeKeys, connKeys);
 
-        const pages     = pageKeys.map(k => figma.currentPage.getPluginData(k));
-        const nodes     = nodeKeys.map(k => figma.currentPage.getPluginData(k));
-        const conns     = connKeys.map(k => figma.currentPage.getPluginData(k));
+        const pages     = pageKeys.map(k => figCurrentPage.getPluginData(k));
+        const nodes     = nodeKeys.map(k => figCurrentPage.getPluginData(k));
+        const conns     = connKeys.map(k => figCurrentPage.getPluginData(k));
 
 
-        const pageOrder        = figma.currentPage.getPluginData('pageOrder').split(',');
-        const currentPageId    = figma.currentPage.getPluginData('currentPageId');
+        const pageOrder        = figCurrentPage.getPluginData('pageOrder').split(',');
+        const currentPageId    = figCurrentPage.getPluginData('currentPageId');
 
-        const generatorVersion = parseInt(figma.currentPage.getPluginData('generatorVersion'));
+        const generatorVersion = parseInt(figCurrentPage.getPluginData('generatorVersion'));
         
 
         initPageStyles(nodes);
 
 
-        //const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');
+        //const showAllColorSpaces = figCurrentPage.getPluginData('showAllColorSpaces');
 
 
         figPostMessageToUi({
@@ -191,19 +191,19 @@ function initPageStyles(nodes)
 
 function figMarkForLoading(nodeKeys, connKeys)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     { 
         const loadingFlag = '"loading": "true"';
         const not         = '{\n';
         const set         = '{\n' + HTAB + loadingFlag + ',\n';
 
-        nodeKeys.forEach(k => figma.currentPage.setPluginData(k, 
-            figma.currentPage.getPluginData(k)
+        nodeKeys.forEach(k => figCurrentPage.setPluginData(k, 
+            figCurrentPage.getPluginData(k)
                 .replace(set, not)
                 .replace(not, set)));
         
-        connKeys.forEach(k => figma.currentPage.setPluginData(k, 
-            figma.currentPage.getPluginData(k)
+        connKeys.forEach(k => figCurrentPage.setPluginData(k, 
+            figCurrentPage.getPluginData(k)
                 .replace(set, not)
                 .replace(not, set)));
     });
@@ -265,9 +265,9 @@ function figSaveLocalTemplate(templateName, template)
 
 function figRemoveConnsToNodes(nodeIds)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        const connKeys = figCurrentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
         for (const key of connKeys)
         {
@@ -284,11 +284,11 @@ function figRemoveConnsToNodes(nodeIds)
 
 function figRemoveSavedNodesAndConns(nodeIds)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
         figRemoveConnsToNodes(nodeIds);
 
-        const nodeKeys = figma.currentPage.getPluginDataKeys().filter(
+        const nodeKeys = figCurrentPage.getPluginDataKeys().filter(
             k => isNodeKey(k)
             && nodeIds.includes(noNodeTag(k)));
 
@@ -300,10 +300,10 @@ function figRemoveSavedNodesAndConns(nodeIds)
 
 function figRemoveAllSavedNodesAndConns()
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
-        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        const nodeKeys = figCurrentPage.getPluginDataKeys().filter(k => isNodeKey(k));
+        const connKeys = figCurrentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
         for (const key of nodeKeys) figClearPageData(key);
         for (const key of connKeys) figClearPageData(key);
@@ -322,9 +322,9 @@ async function figLogAllSavedNodesAndConns(darkMode)
 
 async function figLogAllSavedNodes(darkMode)
 {
-    await figma.currentPage.loadAsync();
+    await figCurrentPage.loadAsync();
 
-    figma.currentPage.getPluginDataKeys()
+    figCurrentPage.getPluginDataKeys()
         .filter (k => isNodeKey(k))
         .forEach(async k => await logSavedNode(k, darkMode));
 }
@@ -333,9 +333,9 @@ async function figLogAllSavedNodes(darkMode)
 
 function figLogAllSavedConns(darkMode)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const connKeys = figma.currentPage.getPluginDataKeys()
+        const connKeys = figCurrentPage.getPluginDataKeys()
             .filter(k => isConnKey(k));
             
         connKeys.sort((key1, key2) => 
@@ -352,7 +352,7 @@ function figLogAllSavedConns(darkMode)
             return 0;
         });
 
-        connKeys.forEach(k => logSavedConn(JSON.parse(figma.currentPage.getPluginData(k)), darkMode));
+        connKeys.forEach(k => logSavedConn(JSON.parse(figCurrentPage.getPluginData(k)), darkMode));
     });
 }
 
@@ -360,9 +360,9 @@ function figLogAllSavedConns(darkMode)
 
 function figLogAllSavedPageKeys(darkMode)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const keys = figma.currentPage.getPluginDataKeys()
+        const keys = figCurrentPage.getPluginDataKeys()
             .filter(k => isPageKey(k));
             
         keys.forEach(k => 
@@ -370,7 +370,7 @@ function figLogAllSavedPageKeys(darkMode)
                 '%c'+k, 
                 'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
 
-        const pageOrder = figma.currentPage.getPluginData('pageOrder');
+        const pageOrder = figCurrentPage.getPluginData('pageOrder');
             
         console.log(
             '%c'+pageOrder, 
@@ -382,17 +382,17 @@ function figLogAllSavedPageKeys(darkMode)
 
 function figLogAllSavedPages(darkMode)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const connKeys = figma.currentPage.getPluginDataKeys()
+        const connKeys = figCurrentPage.getPluginDataKeys()
             .filter(k => isPageKey(k));
             
         connKeys.forEach(k => 
             console.log(
-                '%c'+figma.currentPage.getPluginData(k), 
+                '%c'+figCurrentPage.getPluginData(k), 
                 'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
 
-        const pageOrder = figma.currentPage.getPluginData('pageOrder');
+        const pageOrder = figCurrentPage.getPluginData('pageOrder');
             
         console.log(
             '%c'+pageOrder, 
@@ -404,9 +404,9 @@ function figLogAllSavedPages(darkMode)
 
 function figLogAllSavedConnKeys(darkMode)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const connKeys = figma.currentPage.getPluginDataKeys()
+        const connKeys = figCurrentPage.getPluginDataKeys()
             .filter(k => isConnKey(k));
             
         connKeys.forEach(k => 
@@ -487,9 +487,9 @@ async function figRemoveSavedPage(pageId)
 
 function figRemoveAllSavedPages()
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
+        const pageKeys = figCurrentPage.getPluginDataKeys().filter(k => isPageKey(k));
         pageKeys.forEach(k => figClearPageData(k));
 
         figClearPageData('pageOrder');
@@ -540,9 +540,9 @@ function figDeleteSavedConnection(key)
 
 function figRemoveAllSavedConnections()
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        const connKeys = figCurrentPage.getPluginDataKeys().filter(k => isConnKey(k));
         connKeys.forEach(k => figClearPageData(k));
     });
 }
@@ -551,9 +551,9 @@ function figRemoveAllSavedConnections()
 
 function figDeleteSavedConnectionsToNode(nodeId)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        const connKeys = figCurrentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
         for (const key of connKeys)
         {
@@ -569,9 +569,9 @@ function figDeleteSavedConnectionsToNode(nodeId)
 
 function figDeleteSavedConnectionsFromNode(nodeId)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        const connKeys = figCurrentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
         for (const key of connKeys)
         {
@@ -603,7 +603,7 @@ function figRemovePluginDataFromAllLocalStyles()
 async function figSaveSnapshot(index, objectIds)
 {
     const objects = await figGetObjectsFromIds(objectIds);
-    const group   = figma.group(objects, figma.currentPage);
+    const group   = figma.group(objects, figCurrentPage);
 
 
     const settings: ExportSettingsImage = { format: 'PNG' };

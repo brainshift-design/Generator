@@ -333,9 +333,9 @@ function updateEmptyObjects()
 
 function setEmptyObjectStroke(obj)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const back = figma.currentPage.backgrounds.find(b => b.type == 'SOLID') as SolidPaint;
+        const back = figCurrentPage.backgrounds.find(b => b.type == 'SOLID') as SolidPaint;
         
 
         let phantomColor;

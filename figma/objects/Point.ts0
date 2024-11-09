@@ -82,10 +82,10 @@ function updatePointStyles(figPoint)
     if (figPoint.removed) 
         return;
 
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
         const isCenter   = parseBool(figPoint.getPluginData('isCenter'));
-        const isSelected = figma.currentPage.selection.includes(figPoint);
+        const isSelected = figCurrentPage.selection.includes(figPoint);
 
         const color =
             isCenter

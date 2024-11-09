@@ -83,8 +83,8 @@ async function figUpdateObjectsAsync(figParent, genObjects, batchSize, totalObje
     
     for (const point of figPoints)
     {
-        if (point.parent == figma.currentPage)
-            await figma.currentPage.loadAsync();
+        if (point.parent == figCurrentPage)
+            await figCurrentPage.loadAsync();
         
         if (    point != undefined
             &&  point != null
@@ -407,8 +407,8 @@ async function figUpdateObjectAsync(figObj, genObj, addProps, transform)
         &&  figObj != null
         && !figObj.removed)
     {
-        if (figObj.parent == figma.currentPage)
-            await figma.currentPage.loadAsync();
+        if (figObj.parent == figCurrentPage)
+            await figCurrentPage.loadAsync();
 
         figObj.parent.appendChild(figObj);
 
@@ -517,12 +517,12 @@ function figGetObjectBounds(objects)
 
 async function figExport(objectIds, scale, format, suffix)
 {
-    await figma.currentPage.loadAsync();
+    await figCurrentPage.loadAsync();
     
 
     for (const objId of objectIds)
     {
-        let figObj = figma.currentPage.children.find(o => 
+        let figObj = figCurrentPage.children.find(o => 
               !o.removed
             && o.getPluginData('userId'  ) == figma.currentUser.id
             && o.getPluginData('objectId') == objId);

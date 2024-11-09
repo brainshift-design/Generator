@@ -1,6 +1,9 @@
 console.clear();
 
 
+const figCurrentPage = figma.currentPage; // to keep it the same if the user switches the page
+
+
 figma.payments.setPaymentStatusInDevelopment({type: 'PAID'});
 
 
@@ -20,12 +23,17 @@ figDeleteTempVariableCollection();
 
 figma.clientStorage.getAsync('pro').then(data =>
 {
+    const title = 
+          PLUGIN_NAME 
+        + (data !== true ? ' (Free version)' : '')
+        + ' ( ' + figCurrentPage.name + ' )';
+    
     figma.showUI(
         __html__,
         {
             visible:     false,
             themeColors: true,
-            title:       PLUGIN_NAME + (data !== true ? ' (Free version)' : '')
+            title:       title
         });
 });
 
@@ -50,9 +58,9 @@ var tempVariableCollection = null;
 
 
 
-// figma.currentPage
+// figCurrentPage
 //     .getPluginDataKeys()
-//     .forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k).replace('\\', '\\\\')));
+//     .forEach(k => figCurrentPage.setPluginData(k, figCurrentPage.getPluginData(k).replace('\\', '\\\\')));
 
 
 
@@ -63,16 +71,16 @@ function figStartGenerator(genVersion)
 
     (async function()
     {
-        figma.currentPage.loadAsync().then(async () =>
+        figCurrentPage.loadAsync().then(async () =>
         {
-            let _wndWidth  = await figma.currentPage.getPluginData(figma.currentUser.id+',windowWidth');
-            let _wndHeight = await figma.currentPage.getPluginData(figma.currentUser.id+',windowHeight');
+            let _wndWidth  = await figCurrentPage.getPluginData(figma.currentUser.id+',windowWidth');
+            let _wndHeight = await figCurrentPage.getPluginData(figma.currentUser.id+',windowHeight');
 
             let wndWidth;
             let wndHeight;
 
-            if (_wndWidth  === NULL) { wndWidth  = 800; figma.currentPage.setPluginData(figma.currentUser.id+',windowWidth',  _wndWidth .toString()); } else wndWidth  = parseInt(_wndWidth );
-            if (_wndHeight === NULL) { wndHeight = 600; figma.currentPage.setPluginData(figma.currentUser.id+',windowHeight', _wndHeight.toString()); } else wndHeight = parseInt(_wndHeight);
+            if (_wndWidth  === NULL) { wndWidth  = 800; figCurrentPage.setPluginData(figma.currentUser.id+',windowWidth',  _wndWidth .toString()); } else wndWidth  = parseInt(_wndWidth );
+            if (_wndHeight === NULL) { wndHeight = 600; figCurrentPage.setPluginData(figma.currentUser.id+',windowHeight', _wndHeight.toString()); } else wndHeight = parseInt(_wndHeight);
 
             
             figma.ui.resize(
@@ -146,10 +154,10 @@ function figOnZoomInterval()
 
 function figCheckBackgrounds()
 {
-    if (strBackgrounds != JSON.stringify(figma.currentPage.backgrounds))
+    if (strBackgrounds != JSON.stringify(figCurrentPage.backgrounds))
     {
         updateEmptyObjects();
-        strBackgrounds = JSON.stringify(figma.currentPage.backgrounds);
+        strBackgrounds = JSON.stringify(figCurrentPage.backgrounds);
     }
 }
 
@@ -164,10 +172,10 @@ function figOnIdInterval()
 
 async function figPageIsLocked()
 {
-    await figma.currentPage.loadAsync();
+    await figCurrentPage.loadAsync();
 
 
-    const clocks = figma.currentPage.getPluginDataKeys()
+    const clocks = figCurrentPage.getPluginDataKeys()
         .filter(k => 
                k.length > clockMarker.length
             && k.substring(0, clockMarker.length) == clockMarker

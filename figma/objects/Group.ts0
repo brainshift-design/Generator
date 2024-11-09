@@ -13,11 +13,11 @@ async function figCreateShapeGroupAsync(genGroup)
         await figCreateObject(obj, o => objects = [...objects, o]);
 
 
-    await figma.currentPage.loadAsync();
+    await figCurrentPage.loadAsync();
     
     const figGroup = 
         !isEmpty(objects)
-        ? figma.group(objects, figma.currentPage)
+        ? figma.group(objects, figCurrentPage)
         : null;
 
 

@@ -2473,6 +2473,9 @@ function logSavedConn(conn, darkMode)
 console.clear();
 
 
+const figCurrentPage = figma.currentPage; // to keep it the same if the user switches the page
+
+
 figma.payments.setPaymentStatusInDevelopment({type: 'PAID'});
 
 
@@ -2492,12 +2495,17 @@ figDeleteTempVariableCollection();
 
 figma.clientStorage.getAsync('pro').then(data =>
 {
+    const title = 
+          PLUGIN_NAME 
+        + (data !== true ? ' (Free version)' : '')
+        + ' ( ' + figCurrentPage.name + ' )';
+    
     figma.showUI(
         __html__,
         {
             visible:     false,
             themeColors: true,
-            title:       PLUGIN_NAME + (data !== true ? ' (Free version)' : '')
+            title:       title
         });
 });
 
@@ -2522,9 +2530,9 @@ var tempVariableCollection = null;
 
 
 
-// figma.currentPage
+// figCurrentPage
 //     .getPluginDataKeys()
-//     .forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k).replace('\\', '\\\\')));
+//     .forEach(k => figCurrentPage.setPluginData(k, figCurrentPage.getPluginData(k).replace('\\', '\\\\')));
 
 
 
@@ -2535,16 +2543,16 @@ function figStartGenerator(genVersion)
 
     (async function()
     {
-        figma.currentPage.loadAsync().then(async () =>
+        figCurrentPage.loadAsync().then(async () =>
         {
-            let _wndWidth  = await figma.currentPage.getPluginData(figma.currentUser.id+',windowWidth');
-            let _wndHeight = await figma.currentPage.getPluginData(figma.currentUser.id+',windowHeight');
+            let _wndWidth  = await figCurrentPage.getPluginData(figma.currentUser.id+',windowWidth');
+            let _wndHeight = await figCurrentPage.getPluginData(figma.currentUser.id+',windowHeight');
 
             let wndWidth;
             let wndHeight;
 
-            if (_wndWidth  === NULL) { wndWidth  = 800; figma.currentPage.setPluginData(figma.currentUser.id+',windowWidth',  _wndWidth .toString()); } else wndWidth  = parseInt(_wndWidth );
-            if (_wndHeight === NULL) { wndHeight = 600; figma.currentPage.setPluginData(figma.currentUser.id+',windowHeight', _wndHeight.toString()); } else wndHeight = parseInt(_wndHeight);
+            if (_wndWidth  === NULL) { wndWidth  = 800; figCurrentPage.setPluginData(figma.currentUser.id+',windowWidth',  _wndWidth .toString()); } else wndWidth  = parseInt(_wndWidth );
+            if (_wndHeight === NULL) { wndHeight = 600; figCurrentPage.setPluginData(figma.currentUser.id+',windowHeight', _wndHeight.toString()); } else wndHeight = parseInt(_wndHeight);
 
             
             figma.ui.resize(
@@ -2618,10 +2626,10 @@ function figOnZoomInterval()
 
 function figCheckBackgrounds()
 {
-    if (strBackgrounds != JSON.stringify(figma.currentPage.backgrounds))
+    if (strBackgrounds != JSON.stringify(figCurrentPage.backgrounds))
     {
         updateEmptyObjects();
-        strBackgrounds = JSON.stringify(figma.currentPage.backgrounds);
+        strBackgrounds = JSON.stringify(figCurrentPage.backgrounds);
     }
 }
 
@@ -2636,10 +2644,10 @@ function figOnIdInterval()
 
 async function figPageIsLocked()
 {
-    await figma.currentPage.loadAsync();
+    await figCurrentPage.loadAsync();
 
 
-    const clocks = figma.currentPage.getPluginDataKeys()
+    const clocks = figCurrentPage.getPluginDataKeys()
         .filter(k => 
                k.length > clockMarker.length
             && k.substring(0, clockMarker.length) == clockMarker
@@ -2683,9 +2691,9 @@ async function figGetObjectsFromIds(objectIds)
             || objectIds.includes(figEmptyObjects[i].getPluginData('objectId')))
             figEmptyObjects.splice(i, 1);
 
-    await figma.currentPage.loadAsync();
+    await figCurrentPage.loadAsync();
 
-    return figma.currentPage.findAll(o => objectIds.includes(o.getPluginData('objectId')));
+    return figCurrentPage.findAll(o => objectIds.includes(o.getPluginData('objectId')));
 }
 
 
@@ -2702,9 +2710,9 @@ async function figDeleteObjectsFromNodeIds(nodeIds)
             || nodeIds.includes(figEmptyObjects[i].getPluginData('nodeId')))
             figEmptyObjects.splice(i, 1);
 
-    await figma.currentPage.loadAsync();
+    await figCurrentPage.loadAsync();
 
-    figma.currentPage
+    figCurrentPage
         .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
         .forEach(o => { if (!o.removed) o.remove(); });
 
@@ -2716,7 +2724,7 @@ async function figDeleteObjectsFromNodeIds(nodeIds)
 
 function figDeleteAllObjects(forceDelete = false)
 {
-    for (const figObj of figma.currentPage.children)
+    for (const figObj of figCurrentPage.children)
     {
         if (figObj.removed)
             continue;
@@ -2857,7 +2865,7 @@ var styleChangingFromGenerator = false;
         only one plugin runs at a time right now, so maybe it's not an issue.  */
 
 
-    // figma.currentPage.loadAsync().then(() =>
+    // figCurrentPage.loadAsync().then(() =>
     // {
         // for (let i = 0; i < objNodes.length; i++)
         // {
@@ -2867,7 +2875,7 @@ var styleChangingFromGenerator = false;
         //     {
         //         if (!objNodes[i][j]) continue;
 
-        //         const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('objectId')) == i);
+        //         const exists = figCurrentPage.children.findIndex(obj => parseInt(obj.getPluginData('objectId')) == i);
         //         if (!exists) objNodes[i][j] = null;
         //     }
         // }
@@ -3124,7 +3132,7 @@ async function figLoadLocal(key)
 
 function figGetLocalData(key)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
         if (key == 'canvasEmpty')
         {
@@ -3132,7 +3140,7 @@ function figGetLocalData(key)
             {
                 cmd:  'uiReturnFigGetLocalData',
                 key:   key,
-                value: figma.currentPage.children.length == 0
+                value: figCurrentPage.children.length == 0
             });
         }
         else if (key == 'debugWarningCrash')
@@ -3190,9 +3198,9 @@ async function figClearAllLocalData()
 
 async function figGetPageData(key, postToUi = true)
 {
-    await figma.currentPage.loadAsync();
+    await figCurrentPage.loadAsync();
 
-    const data = figma.currentPage.getPluginData(key);
+    const data = figCurrentPage.getPluginData(key);
 
     if (postToUi)
     {
@@ -3211,48 +3219,48 @@ async function figGetPageData(key, postToUi = true)
 function figSetPageData(key, value)
 {
     figClearPageData(key); // remove possible existing values first
-    figma.currentPage.setPluginData(key, value);
+    figCurrentPage.setPluginData(key, value);
 }
 
 
 
 function figClearPageData(key)
 {
-    figma.currentPage.setPluginData(key, ''); 
+    figCurrentPage.setPluginData(key, ''); 
 }
 
 
 
 function figLoadNodesAndConns(debugMode)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        // const pageIds  = figma.currentPage.getPluginData('pages');
+        // const pageIds  = figCurrentPage.getPluginData('pages');
 
 
-        const pageKeys  = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
-        const nodeKeys  = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
-        const connKeys  = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        const pageKeys  = figCurrentPage.getPluginDataKeys().filter(k => isPageKey(k));
+        const nodeKeys  = figCurrentPage.getPluginDataKeys().filter(k => isNodeKey(k));
+        const connKeys  = figCurrentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
 
         if (!debugMode)
             figMarkForLoading(nodeKeys, connKeys);
 
-        const pages     = pageKeys.map(k => figma.currentPage.getPluginData(k));
-        const nodes     = nodeKeys.map(k => figma.currentPage.getPluginData(k));
-        const conns     = connKeys.map(k => figma.currentPage.getPluginData(k));
+        const pages     = pageKeys.map(k => figCurrentPage.getPluginData(k));
+        const nodes     = nodeKeys.map(k => figCurrentPage.getPluginData(k));
+        const conns     = connKeys.map(k => figCurrentPage.getPluginData(k));
 
 
-        const pageOrder        = figma.currentPage.getPluginData('pageOrder').split(',');
-        const currentPageId    = figma.currentPage.getPluginData('currentPageId');
+        const pageOrder        = figCurrentPage.getPluginData('pageOrder').split(',');
+        const currentPageId    = figCurrentPage.getPluginData('currentPageId');
 
-        const generatorVersion = parseInt(figma.currentPage.getPluginData('generatorVersion'));
+        const generatorVersion = parseInt(figCurrentPage.getPluginData('generatorVersion'));
         
 
         initPageStyles(nodes);
 
 
-        //const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');
+        //const showAllColorSpaces = figCurrentPage.getPluginData('showAllColorSpaces');
 
 
         figPostMessageToUi({
@@ -3308,19 +3316,19 @@ function initPageStyles(nodes)
 
 function figMarkForLoading(nodeKeys, connKeys)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     { 
         const loadingFlag = '"loading": "true"';
         const not         = '{\n';
         const set         = '{\n' + HTAB + loadingFlag + ',\n';
 
-        nodeKeys.forEach(k => figma.currentPage.setPluginData(k, 
-            figma.currentPage.getPluginData(k)
+        nodeKeys.forEach(k => figCurrentPage.setPluginData(k, 
+            figCurrentPage.getPluginData(k)
                 .replace(set, not)
                 .replace(not, set)));
         
-        connKeys.forEach(k => figma.currentPage.setPluginData(k, 
-            figma.currentPage.getPluginData(k)
+        connKeys.forEach(k => figCurrentPage.setPluginData(k, 
+            figCurrentPage.getPluginData(k)
                 .replace(set, not)
                 .replace(not, set)));
     });
@@ -3382,9 +3390,9 @@ function figSaveLocalTemplate(templateName, template)
 
 function figRemoveConnsToNodes(nodeIds)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        const connKeys = figCurrentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
         for (const key of connKeys)
         {
@@ -3401,11 +3409,11 @@ function figRemoveConnsToNodes(nodeIds)
 
 function figRemoveSavedNodesAndConns(nodeIds)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
         figRemoveConnsToNodes(nodeIds);
 
-        const nodeKeys = figma.currentPage.getPluginDataKeys().filter(
+        const nodeKeys = figCurrentPage.getPluginDataKeys().filter(
             k => isNodeKey(k)
             && nodeIds.includes(noNodeTag(k)));
 
@@ -3417,10 +3425,10 @@ function figRemoveSavedNodesAndConns(nodeIds)
 
 function figRemoveAllSavedNodesAndConns()
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
-        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        const nodeKeys = figCurrentPage.getPluginDataKeys().filter(k => isNodeKey(k));
+        const connKeys = figCurrentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
         for (const key of nodeKeys) figClearPageData(key);
         for (const key of connKeys) figClearPageData(key);
@@ -3439,9 +3447,9 @@ async function figLogAllSavedNodesAndConns(darkMode)
 
 async function figLogAllSavedNodes(darkMode)
 {
-    await figma.currentPage.loadAsync();
+    await figCurrentPage.loadAsync();
 
-    figma.currentPage.getPluginDataKeys()
+    figCurrentPage.getPluginDataKeys()
         .filter (k => isNodeKey(k))
         .forEach(async k => await logSavedNode(k, darkMode));
 }
@@ -3450,9 +3458,9 @@ async function figLogAllSavedNodes(darkMode)
 
 function figLogAllSavedConns(darkMode)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const connKeys = figma.currentPage.getPluginDataKeys()
+        const connKeys = figCurrentPage.getPluginDataKeys()
             .filter(k => isConnKey(k));
             
         connKeys.sort((key1, key2) => 
@@ -3469,7 +3477,7 @@ function figLogAllSavedConns(darkMode)
             return 0;
         });
 
-        connKeys.forEach(k => logSavedConn(JSON.parse(figma.currentPage.getPluginData(k)), darkMode));
+        connKeys.forEach(k => logSavedConn(JSON.parse(figCurrentPage.getPluginData(k)), darkMode));
     });
 }
 
@@ -3477,9 +3485,9 @@ function figLogAllSavedConns(darkMode)
 
 function figLogAllSavedPageKeys(darkMode)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const keys = figma.currentPage.getPluginDataKeys()
+        const keys = figCurrentPage.getPluginDataKeys()
             .filter(k => isPageKey(k));
             
         keys.forEach(k => 
@@ -3487,7 +3495,7 @@ function figLogAllSavedPageKeys(darkMode)
                 '%c'+k, 
                 'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
 
-        const pageOrder = figma.currentPage.getPluginData('pageOrder');
+        const pageOrder = figCurrentPage.getPluginData('pageOrder');
             
         console.log(
             '%c'+pageOrder, 
@@ -3499,17 +3507,17 @@ function figLogAllSavedPageKeys(darkMode)
 
 function figLogAllSavedPages(darkMode)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const connKeys = figma.currentPage.getPluginDataKeys()
+        const connKeys = figCurrentPage.getPluginDataKeys()
             .filter(k => isPageKey(k));
             
         connKeys.forEach(k => 
             console.log(
-                '%c'+figma.currentPage.getPluginData(k), 
+                '%c'+figCurrentPage.getPluginData(k), 
                 'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
 
-        const pageOrder = figma.currentPage.getPluginData('pageOrder');
+        const pageOrder = figCurrentPage.getPluginData('pageOrder');
             
         console.log(
             '%c'+pageOrder, 
@@ -3521,9 +3529,9 @@ function figLogAllSavedPages(darkMode)
 
 function figLogAllSavedConnKeys(darkMode)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const connKeys = figma.currentPage.getPluginDataKeys()
+        const connKeys = figCurrentPage.getPluginDataKeys()
             .filter(k => isConnKey(k));
             
         connKeys.forEach(k => 
@@ -3604,9 +3612,9 @@ async function figRemoveSavedPage(pageId)
 
 function figRemoveAllSavedPages()
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
+        const pageKeys = figCurrentPage.getPluginDataKeys().filter(k => isPageKey(k));
         pageKeys.forEach(k => figClearPageData(k));
 
         figClearPageData('pageOrder');
@@ -3657,9 +3665,9 @@ function figDeleteSavedConnection(key)
 
 function figRemoveAllSavedConnections()
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        const connKeys = figCurrentPage.getPluginDataKeys().filter(k => isConnKey(k));
         connKeys.forEach(k => figClearPageData(k));
     });
 }
@@ -3668,9 +3676,9 @@ function figRemoveAllSavedConnections()
 
 function figDeleteSavedConnectionsToNode(nodeId)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        const connKeys = figCurrentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
         for (const key of connKeys)
         {
@@ -3686,9 +3694,9 @@ function figDeleteSavedConnectionsToNode(nodeId)
 
 function figDeleteSavedConnectionsFromNode(nodeId)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+        const connKeys = figCurrentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
         for (const key of connKeys)
         {
@@ -3720,7 +3728,7 @@ function figRemovePluginDataFromAllLocalStyles()
 async function figSaveSnapshot(index, objectIds)
 {
     const objects = await figGetObjectsFromIds(objectIds);
-    const group   = figma.group(objects, figma.currentPage);
+    const group   = figma.group(objects, figCurrentPage);
 
 
     const settings: ExportSettingsImage = { format: 'PNG' };
@@ -3960,10 +3968,10 @@ function figResizeWindow(width, height)
         figma.ui.resize(width, height);
 
 
-        await figma.currentPage.loadAsync();
+        await figCurrentPage.loadAsync();
 
-        figma.currentPage.setPluginData(figma.currentUser.id + ',windowWidth',  width .toString());
-        figma.currentPage.setPluginData(figma.currentUser.id + ',windowHeight', height.toString());
+        figCurrentPage.setPluginData(figma.currentUser.id + ',windowWidth',  width .toString());
+        figCurrentPage.setPluginData(figma.currentUser.id + ',windowHeight', height.toString());
 
 
         // if (position)
@@ -4193,8 +4201,8 @@ async function figUpdateObjectsAsync(figParent, genObjects, batchSize, totalObje
     
     for (const point of figPoints)
     {
-        if (point.parent == figma.currentPage)
-            await figma.currentPage.loadAsync();
+        if (point.parent == figCurrentPage)
+            await figCurrentPage.loadAsync();
         
         if (    point != undefined
             &&  point != null
@@ -4517,8 +4525,8 @@ async function figUpdateObjectAsync(figObj, genObj, addProps, transform)
         &&  figObj != null
         && !figObj.removed)
     {
-        if (figObj.parent == figma.currentPage)
-            await figma.currentPage.loadAsync();
+        if (figObj.parent == figCurrentPage)
+            await figCurrentPage.loadAsync();
 
         figObj.parent.appendChild(figObj);
 
@@ -4627,12 +4635,12 @@ function figGetObjectBounds(objects)
 
 async function figExport(objectIds, scale, format, suffix)
 {
-    await figma.currentPage.loadAsync();
+    await figCurrentPage.loadAsync();
     
 
     for (const objId of objectIds)
     {
-        let figObj = figma.currentPage.children.find(o => 
+        let figObj = figCurrentPage.children.find(o => 
               !o.removed
             && o.getPluginData('userId'  ) == figma.currentUser.id
             && o.getPluginData('objectId') == objId);
@@ -4992,9 +5000,9 @@ function updateEmptyObjects()
 
 function setEmptyObjectStroke(obj)
 {
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
-        const back = figma.currentPage.backgrounds.find(b => b.type == 'SOLID') as SolidPaint;
+        const back = figCurrentPage.backgrounds.find(b => b.type == 'SOLID') as SolidPaint;
         
 
         let phantomColor;
@@ -6033,7 +6041,7 @@ async function figCreateShapeBooleanAsync(genBool, addProps, transform)
         await figCreateObject(obj, o => objects = [...objects, o], false);
 
 
-    await figma.currentPage.loadAsync();
+    await figCurrentPage.loadAsync();
 
     
     let figBool = null;
@@ -6042,10 +6050,10 @@ async function figCreateShapeBooleanAsync(genBool, addProps, transform)
     {
         switch (genBool[FO_BOOLEAN_OPERATION])
         {
-            case 0: figBool = figma.union    (objects, figma.currentPage); break;
-            case 1: figBool = figma.subtract (objects, figma.currentPage); break;
-            case 2: figBool = figma.intersect(objects, figma.currentPage); break;
-            case 3: figBool = figma.exclude  (objects, figma.currentPage); break;
+            case 0: figBool = figma.union    (objects, figCurrentPage); break;
+            case 1: figBool = figma.subtract (objects, figCurrentPage); break;
+            case 2: figBool = figma.intersect(objects, figCurrentPage); break;
+            case 3: figBool = figma.exclude  (objects, figCurrentPage); break;
         }
     }
 
@@ -6250,11 +6258,11 @@ async function figCreateShapeGroupAsync(genGroup)
         await figCreateObject(obj, o => objects = [...objects, o]);
 
 
-    await figma.currentPage.loadAsync();
+    await figCurrentPage.loadAsync();
     
     const figGroup = 
         !isEmpty(objects)
-        ? figma.group(objects, figma.currentPage)
+        ? figma.group(objects, figCurrentPage)
         : null;
 
 
@@ -6412,10 +6420,10 @@ function updatePointStyles(figPoint)
     if (figPoint.removed) 
         return;
 
-    figma.currentPage.loadAsync().then(() =>
+    figCurrentPage.loadAsync().then(() =>
     {
         const isCenter   = parseBool(figPoint.getPluginData('isCenter'));
-        const isSelected = figma.currentPage.selection.includes(figPoint);
+        const isSelected = figCurrentPage.selection.includes(figPoint);
 
         const color =
             isCenter

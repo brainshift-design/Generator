@@ -216,10 +216,10 @@ function figResizeWindow(width, height)
         figma.ui.resize(width, height);
 
 
-        await figma.currentPage.loadAsync();
+        await figCurrentPage.loadAsync();
 
-        figma.currentPage.setPluginData(figma.currentUser.id + ',windowWidth',  width .toString());
-        figma.currentPage.setPluginData(figma.currentUser.id + ',windowHeight', height.toString());
+        figCurrentPage.setPluginData(figma.currentUser.id + ',windowWidth',  width .toString());
+        figCurrentPage.setPluginData(figma.currentUser.id + ',windowHeight', height.toString());
 
 
         // if (position)

@@ -11,7 +11,7 @@ var styleChangingFromGenerator = false;
         only one plugin runs at a time right now, so maybe it's not an issue.  */
 
 
-    // figma.currentPage.loadAsync().then(() =>
+    // figCurrentPage.loadAsync().then(() =>
     // {
         // for (let i = 0; i < objNodes.length; i++)
         // {
@@ -21,7 +21,7 @@ var styleChangingFromGenerator = false;
         //     {
         //         if (!objNodes[i][j]) continue;
 
-        //         const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('objectId')) == i);
+        //         const exists = figCurrentPage.children.findIndex(obj => parseInt(obj.getPluginData('objectId')) == i);
         //         if (!exists) objNodes[i][j] = null;
         //     }
         // }

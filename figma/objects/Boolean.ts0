@@ -13,7 +13,7 @@ async function figCreateShapeBooleanAsync(genBool, addProps, transform)
         await figCreateObject(obj, o => objects = [...objects, o], false);
 
 
-    await figma.currentPage.loadAsync();
+    await figCurrentPage.loadAsync();
 
     
     let figBool = null;
@@ -22,10 +22,10 @@ async function figCreateShapeBooleanAsync(genBool, addProps, transform)
     {
         switch (genBool[FO_BOOLEAN_OPERATION])
         {
-            case 0: figBool = figma.union    (objects, figma.currentPage); break;
-            case 1: figBool = figma.subtract (objects, figma.currentPage); break;
-            case 2: figBool = figma.intersect(objects, figma.currentPage); break;
-            case 3: figBool = figma.exclude  (objects, figma.currentPage); break;
+            case 0: figBool = figma.union    (objects, figCurrentPage); break;
+            case 1: figBool = figma.subtract (objects, figCurrentPage); break;
+            case 2: figBool = figma.intersect(objects, figCurrentPage); break;
+            case 3: figBool = figma.exclude  (objects, figCurrentPage); break;
         }
     }
 

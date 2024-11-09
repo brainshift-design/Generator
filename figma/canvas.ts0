@@ -15,9 +15,9 @@ async function figGetObjectsFromIds(objectIds)
             || objectIds.includes(figEmptyObjects[i].getPluginData('objectId')))
             figEmptyObjects.splice(i, 1);
 
-    await figma.currentPage.loadAsync();
+    await figCurrentPage.loadAsync();
 
-    return figma.currentPage.findAll(o => objectIds.includes(o.getPluginData('objectId')));
+    return figCurrentPage.findAll(o => objectIds.includes(o.getPluginData('objectId')));
 }
 
 
@@ -34,9 +34,9 @@ async function figDeleteObjectsFromNodeIds(nodeIds)
             || nodeIds.includes(figEmptyObjects[i].getPluginData('nodeId')))
             figEmptyObjects.splice(i, 1);
 
-    await figma.currentPage.loadAsync();
+    await figCurrentPage.loadAsync();
 
-    figma.currentPage
+    figCurrentPage
         .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
         .forEach(o => { if (!o.removed) o.remove(); });
 
@@ -48,7 +48,7 @@ async function figDeleteObjectsFromNodeIds(nodeIds)
 
 function figDeleteAllObjects(forceDelete = false)
 {
-    for (const figObj of figma.currentPage.children)
+    for (const figObj of figCurrentPage.children)
     {
         if (figObj.removed)
             continue;
