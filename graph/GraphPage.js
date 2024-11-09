@@ -109,7 +109,7 @@ class GraphPage
             addMetricsEvent(METRICS_PAN_ZOOM, 'x: ' + Number(pan.x.toFixed(0)) + ', y: ' + Number(pan.y.toFixed(0)) + ', z: ' + Number(zoom.toFixed(3)));
         }
 
-        const a = chan2hex((Math.max(0, 0.65 * Math.log(zoom) + 1)) * 0.1);
+        const a = chan2hex((Math.max(0, 0.7 * Math.log(zoom) + 1)) * 0.1);
 
         if (settings.showGrid)
         {

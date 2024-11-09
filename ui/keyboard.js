@@ -230,11 +230,23 @@ document.addEventListener('keydown', e =>
     }
 
     // group selected
-    else if (e.code == 'KeyG'
-          && getCtrlKey(e))
+    else if ( e.code == 'KeyG'
+          &&  getCtrlKey(e)
+          && !e.shiftKey
+          && !e.altKey)
     {
         if (!isEmpty(graphView.selectedNodes))
             actionManager.do(new GroupNodesAction(graphView.selectedNodes));
+    }
+
+    // show/hide grid
+    else if ( e.code == 'KeyG'
+          &&  e.shiftKey
+          && !getCtrlKey(e)
+          && !e.altKey)
+    {
+        updateSettingAndMenu('showGrid', true, !settings.showGrid); 
+        updateMenuItemShowGrid();    
     }
 
     // undo/redo

@@ -93,6 +93,22 @@ function uiResizeWindow(width, height)
 
 
 
+function updateMenuItemShowGrid()
+{
+    graph.currentPage.refreshPanAndZoom();
+
+    graph.currentPage.nodes.forEach(node =>
+    {
+        node.slx = node.x;
+        node.sly = node.y;
+    });
+
+    if (settings.showGrid)
+        graphView.setNodePositions(graph.currentPage.nodes, 0, 0);
+}
+
+
+
 function updateObjectCountDisplay()
 {
     if (   !objectCountWrapper

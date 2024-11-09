@@ -405,7 +405,7 @@ function initGeneratorMenus()
 
     menuMainView = new Menu('View', false);
     menuMainView.addItems([
-        menuItemShowGrid          = new MenuItem('Show grid',                     null, false, {checkCallback: () => settings.showGrid,          callback: () => { updateSettingAndMenu('showGrid',          true, !settings.showGrid);          graph.currentPage.refreshPanAndZoom(); }}),
+        menuItemShowGrid          = new MenuItem('Show grid',                     null, false, {shortcut: osShift() + 'G', checkCallback: () => settings.showGrid,          callback: () => { updateSettingAndMenu('showGrid', true, !settings.showGrid); updateMenuItemShowGrid();              }}),
                                     new MenuItem('',                              null, false, {separator: true}),
         menuItemShowObjectCount   = new MenuItem('Show canvas object count',      null, false, {checkCallback: () => settings.showObjectCount,   callback: () => { updateSettingAndMenu('showObjectCount',   true, !settings.showObjectCount);   updateObjectCountDisplay();            }}),
                                     new MenuItem('',                              null, false, {separator: true}),

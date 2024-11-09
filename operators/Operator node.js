@@ -556,9 +556,9 @@ Operator.prototype.endProgress = function()
 
 Operator.prototype.getGridPosition = function(x, y)
 {
-    return true
-        ? [ Math.round(x/16)*16 + 8,
-            Math.round(y/16)*16 + 8 ]
+    return settings.showGrid
+        ? [ Math.round(x/16 - 0.5)*16 + 8,
+            Math.round(y/16 - 0.5)*16 + 8 ]
         : [ x,
             y ];
 };
