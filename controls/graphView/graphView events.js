@@ -330,6 +330,8 @@ GraphView.prototype.createEvents = function()
                 graph.currentPage.pan.x - dPanX,
                 graph.currentPage.pan.y - dPanY);
 
+            graph.currentPage.refreshPanAndZoom();
+    
             this.updatePanTimer();
 
             
