@@ -1936,7 +1936,7 @@ const GROUP_TYPES =
 
 const MATH_OPS = 
 [   // the order is important for logical keyboard value changes
-    [NUMBER_MODULO,   '%' ],
+    [NUMBER_MODULO,   'mod' ],
     [NUMBER_DIVIDE,   '/' ], //'÷' ],
     [NUMBER_SUBTRACT, '−' ],
     [NUMBER_ADD,      '+' ],
@@ -2498,7 +2498,7 @@ figma.clientStorage.getAsync('pro').then(data =>
     const title = 
           PLUGIN_NAME 
         + (data !== true ? ' (Free version)' : '')
-        + ' ( ' + figCurrentPage.name + ' )';
+        + '  |  ' + figCurrentPage.name;
     
     figma.showUI(
         __html__,

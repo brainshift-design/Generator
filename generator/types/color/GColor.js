@@ -164,12 +164,28 @@ extends GOperator1
             this.value = ColorValue.NaN();
 
 
-        if (!this.value.space.isValid())
+        if (this.value.space.isValid())
+        {
+            if (   this.value.space.value ==  2
+                || this.value.space.value ==  3
+                || this.value.space.value ==  9
+                || this.value.space.value == 10
+                || this.value.space.value == 11)
+            {
+                while (this.value.c1.value <   0) this.value.c1.value += 360;
+                while (this.value.c1.value > 360) this.value.c1.value -= 360;
+
+                this.c1 = this.value.c1.copy();
+            }
+        }
+        else
+        {
             this.value = new ColorValue(
                 this.space ? this.space.toNewValue() : NumberValue.NaN(),
                 NumberValue.NaN(),
                 NumberValue.NaN(),
                 NumberValue.NaN());
+        }
 
         
         if (this.convert) this.convert.parent = this;

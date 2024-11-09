@@ -346,7 +346,7 @@ class GraphView
         {
             top /= outputs.length;
 
-            [left, top] = input.node.getGridPosition(left, top);
+            [left, top] = node.getGridPosition(left, top);
 
             node.div.style.left = left;
             node.div.style.top  = top;

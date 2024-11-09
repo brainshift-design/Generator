@@ -71,6 +71,15 @@ extends ResizableBase
 
 
 
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        [w, h] = this.getGridSize(w, h);
+
+        super.setRect(x, y, w, h, updateTransform);
+    }
+
+
+
     genRequest(gen)
     {
         // 'this' is the node

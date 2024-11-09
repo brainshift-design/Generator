@@ -127,6 +127,8 @@ extends ResizableBaseWithSeparator
         this.height             = height;
         this.inner.style.height = height + 'px';
 
+        [w, h] = this.getGridSize(w, h);
+
         super.setRect(
             x, 
             y, 
