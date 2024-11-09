@@ -115,7 +115,7 @@ class GraphPage
         {
             document.body.style.backgroundImage    = `radial-gradient(circle, ${(darkMode ? '#ffffff' : '#000000') + a} 1px, transparent 1px)`;
             document.body.style.backgroundPosition = `${pan.x}px ${pan.y + menuBarHeight}px`;
-            document.body.style.backgroundSize     = `${16 * zoom}px ${16 * zoom}px`;
+            document.body.style.backgroundSize     = `${graphView.gridSize * zoom}px ${graphView.gridSize * zoom}px`;
         }
         else
         {

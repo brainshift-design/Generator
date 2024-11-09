@@ -557,8 +557,8 @@ Operator.prototype.endProgress = function()
 Operator.prototype.getGridPosition = function(x, y)
 {
     return settings.showGrid
-        ? [ Math.round(x/16 - 0.5)*16 + 8,
-            Math.round(y/16 - 0.5)*16 + 8 ]
+        ? [ Math.round(x/graphView.gridSize - 0.5)*graphView.gridSize + graphView.gridSize/2,
+            Math.round(y/graphView.gridSize - 0.5)*graphView.gridSize + graphView.gridSize/2 ]
         : [ x,
             y ];
 };

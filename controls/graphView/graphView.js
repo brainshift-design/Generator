@@ -48,6 +48,8 @@ class GraphView
 
     startedInPanel     = false;
 
+    gridSize           = 16;
+
 
     btn1down           = false; // this is to help deal with mouse wheels that send X values as
                                 // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
