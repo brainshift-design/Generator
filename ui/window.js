@@ -104,7 +104,7 @@ function updateMenuItemShowGrid()
     });
 
     if (settings.showGrid)
-        graphView.setNodePositions(graph.currentPage.nodes, 0, 0);
+        graphView.updateNodeDimensions(graph.currentPage.nodes);
 }
 
 

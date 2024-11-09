@@ -309,8 +309,16 @@ extends OperatorBase
         const headerHeight = this.header.offsetHeight; //this.measureData.headerOffset.height;//this.header.offsetHeight;//getStyleValue(this.header, 'height');
         const paramHeight  = 0;
 
-        const _w = Math.max(60, w);
-        const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
+
+        let _w = Math.max(60, w);
+        let _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
+
+        if (settings.showGrid)
+        {
+            _w = Math.round(_w/graphView.gridSize) * graphView.gridSize;
+            _h = Math.round(_h/graphView.gridSize) * graphView.gridSize;
+        }
+
 
         super.setRect(x, y, _w, _h, updateTransform);
         

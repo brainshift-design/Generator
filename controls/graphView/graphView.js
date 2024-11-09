@@ -55,7 +55,6 @@ class GraphView
                                 // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
     altDown            = false;
-
     panning            = false;
     
     pViewport; 

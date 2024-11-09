@@ -151,6 +151,17 @@ GraphView.prototype.updateShowWires = function(updateNodes = true)
 
 
 
+GraphView.prototype.updateNodeDimensions = function(nodes)
+{
+    this.setNodePositions(nodes, 0, 0);
+
+    for (const node of nodes)
+        if (node instanceof ResizableBase)
+            node.setRect(node.x, node.y, node.width, node.height);
+};
+
+
+
 GraphView.prototype.setNodePositions = function(nodes, dx, dy, updateTransform = true)
 {
     //console.log('GraphView.setNodePositions()');
