@@ -282,20 +282,28 @@ class GraphView
         }
 
 
+        let x, y;
+
         if (node.type == PANEL)
         {
-            node.div.style.left = (ox - graph.currentPage.pan.x) / graph.currentPage.zoom - defPanelWidth /2;
-            node.div.style.top  = (oy - graph.currentPage.pan.y) / graph.currentPage.zoom - (fromSearch ? defHeaderHeight/2 : defPanelHeight/2);
+            x = (ox - graph.currentPage.pan.x) / graph.currentPage.zoom - defPanelWidth /2;
+            y = (oy - graph.currentPage.pan.y) / graph.currentPage.zoom - (fromSearch ? defHeaderHeight/2 : defPanelHeight/2);
         }
         else
         {
             const nodeHeight = defHeaderHeight + node.params.length * defParamHeight;
             
-            node.div.style.left = (ox - graph.currentPage.pan.x) / graph.currentPage.zoom - defNodeWidth/2;
-            node.div.style.top  = (oy - graph.currentPage.pan.y) / graph.currentPage.zoom - (fromSearch ? defHeaderHeight/2 : nodeHeight/2);
+            x = (ox - graph.currentPage.pan.x) / graph.currentPage.zoom - defNodeWidth/2;
+            y = (oy - graph.currentPage.pan.y) / graph.currentPage.zoom - (fromSearch ? defHeaderHeight/2 : nodeHeight/2);
         }
 
+
+        [x, y] = node.getGridPosition(x, y);
         
+        node.div.style.left = x;
+        node.div.style.top  = y;
+
+
         this.placeFromPointer = false;
     }
 
@@ -305,8 +313,13 @@ class GraphView
     {
         const defaultPlacementGap = 40;
 
-        input.node.div.style.left = output.node.div.offsetLeft + output.node.div.offsetWidth + defaultPlacementGap;
-        input.node.div.style.top  = output.node.div.offsetTop;
+        let x = output.node.div.offsetLeft + output.node.div.offsetWidth + defaultPlacementGap;
+        let y = output.node.div.offsetTop;
+
+        [x, y] = input.node.getGridPosition(x, y);
+
+        input.node.div.style.left = x;
+        input.node.div.style.top  = y;
     }
 
 
@@ -332,6 +345,8 @@ class GraphView
         if (outputs.length > 0)
         {
             top /= outputs.length;
+
+            [left, top] = input.node.getGridPosition(left, top);
 
             node.div.style.left = left;
             node.div.style.top  = top;

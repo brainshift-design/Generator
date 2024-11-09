@@ -35,6 +35,8 @@ extends ResizableBase
             ? defParamHeight 
             : 0;
 
+        [w, h] = this.getGridSize(w, h);
+
         super.setRect(
             x, 
             y, 

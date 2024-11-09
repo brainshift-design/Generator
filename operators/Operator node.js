@@ -565,6 +565,17 @@ Operator.prototype.getGridPosition = function(x, y)
 
 
 
+Operator.prototype.getGridSize = function(w, h)
+{
+    return settings.showGrid
+        ? [ Math.round(w/graphView.gridSize) * graphView.gridSize,
+            Math.round(h/graphView.gridSize) * graphView.gridSize ]
+        : [ w,
+            h ];
+};
+
+
+
 Operator.prototype.setPosition = function(x, y, updateTransform = true)
 {
     const [_x, _y] = this.getGridPosition(x, y);

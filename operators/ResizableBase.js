@@ -310,14 +310,11 @@ extends OperatorBase
         const paramHeight  = 0;
 
 
-        let _w = Math.max(60, w);
-        let _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
-
-        if (settings.showGrid)
-        {
-            _w = Math.round(_w/graphView.gridSize) * graphView.gridSize;
-            _h = Math.round(_h/graphView.gridSize) * graphView.gridSize;
-        }
+        let _w = w;
+        let _h = h;
+        
+        _w = Math.max(60, _w);
+        _h = Math.max(parseFloat(headerHeight) + paramHeight, _h);
 
 
         super.setRect(x, y, _w, _h, updateTransform);

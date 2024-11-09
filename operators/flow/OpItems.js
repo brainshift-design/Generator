@@ -234,6 +234,9 @@ extends ResizableBaseWithSeparator
             : Math.min(h, Math.max(defHeaderHeight, defHeaderHeight + this.params.length * defParamHeight));
 
 
+        [w, h] = this.getGridSize(w, h);
+
+
         super.setRect(x, y, w, h, updateTransform);
 
 
