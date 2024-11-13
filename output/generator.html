@@ -41442,9 +41442,9 @@ extends GOperator2
             const is3 = cnt > 4.5/21 && cnt <=  7  /21;
            
             this.value.decorations.ranges = [ 
-                new NumberValueRange(0  /21,  3  /21, rgb2style_a(darkMode ? rgb2dark1 : rgb2light1, is1 ? 1 : 0.2 ), 0.8),
-                new NumberValueRange(3  /21,  4.5/21, rgb2style_a(darkMode ? rgb2dark2 : rgb2light2, is2 ? 1 : 0.27), 0.8),
-                new NumberValueRange(4.5/21,  7  /21, rgb2style_a(darkMode ? rgb2dark3 : rgb2light3, is3 ? 1 : 0.27), 0.8),
+                new NumberValueRange(0  /21,  3  /21, is1 ? 'contrast20_vivid' : 'contrast20', 0.8),
+                new NumberValueRange(3  /21,  4.5/21, is2 ? 'contrast21_vivid' : 'contrast21', 0.8),
+                new NumberValueRange(4.5/21,  7  /21, is3 ? 'contrast22_vivid' : 'contrast22', 0.8),
                 new NumberValueRange(7  /21, 21  /21, 'transparent') ];
         }
         else // APCA
@@ -41459,14 +41459,16 @@ extends GOperator2
             const is6 = cnt >  75/100 && cnt <=  90/100; // blue
             const is7 = cnt >  90/100;                   // white
 
-            this.paramContrast.controls[0].ranges = [ 
-                new NumberValueRange( 0/105,  15/105, rgb2style_a(darkMode ? rgb3dark1 : rgb3light1, is1 ? 1 : 0.2), 0.8),   // red
-                new NumberValueRange(15/105,  30/105, rgb2style_a(darkMode ? rgb3dark2 : rgb3light2, is2 ? 1 : 0.2), 0.8),   // amber
-                new NumberValueRange(30/105,  45/105, rgb2style_a(darkMode ? rgb3dark3 : rgb3light3, is3 ? 1 : 0.2), 0.8),   // orange
-                new NumberValueRange(45/105,  60/105, rgb2style_a(darkMode ? rgb3dark4 : rgb3light4, is4 ? 1 : 0.2), 0.8),   // yellow
-                new NumberValueRange(60/105,  75/105, rgb2style_a(darkMode ? rgb3dark5 : rgb3light5, is5 ? 1 : 0.2), 0.8),   // green
-                new NumberValueRange(75/105,  90/105, rgb2style_a(darkMode ? rgb3dark6 : rgb3light6, is6 ? 1 : 0.4), 0.8),   // blue
-                new NumberValueRange(90/105, 105/105, rgb2style_a(darkMode ? rgb3dark7 : rgb3light7, is7 ? 1 : 0  ), 0.8) ]; // white
+            this.paramContrast.controls[0].ranges = 
+            [ 
+                new NumberValueRange( 0/105,  15/105, is1 ? 'contrast30_vivid' : 'contrast30', 0.8), // red
+                new NumberValueRange(15/105,  30/105, is2 ? 'contrast30_vivid' : 'contrast30', 0.8), // amber
+                new NumberValueRange(30/105,  45/105, is3 ? 'contrast30_vivid' : 'contrast30', 0.8), // orange
+                new NumberValueRange(45/105,  60/105, is4 ? 'contrast30_vivid' : 'contrast30', 0.8), // yellow
+                new NumberValueRange(60/105,  75/105, is5 ? 'contrast30_vivid' : 'contrast30', 0.8), // green
+                new NumberValueRange(75/105,  90/105, is6 ? 'contrast30_vivid' : 'contrast30', 0.8), // blue
+                new NumberValueRange(90/105, 105/105, is7 ? 'contrast30_vivid' : 'contrast30', 0.8)  // white
+            ];
         }
     }
 
