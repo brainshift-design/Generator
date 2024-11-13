@@ -80,7 +80,6 @@ extends Control
     barTop                = 0;
     barBottom             = 1;
      
-    ranges                = [];
     rangeDivs             = [];
     
     showExtRanges         = true;
@@ -350,7 +349,7 @@ extends Control
         this.updateFocus(sw, sh);
         this.updateExt();
 
-        this.updateRanges(sw, sh);
+        //this.updateRanges(sw, sh);
     }
 
 

@@ -6,10 +6,13 @@ extends GValue
     decimals;
 
     isBoolean;
+    
+    suffix = '';
+    ranges = []; // can be either objects or string IDs into a range dictionary
 
 
 
-    constructor(val = Number.NaN, dec = -1, isBoolean = false)
+    constructor(val = Number.NaN, dec = -1, isBoolean = false, suffix = '', ranges = [])
     {
         super(NUMBER_VALUE, 'number');
 
@@ -28,6 +31,9 @@ extends GValue
             : dec;
 
         this.isBoolean = isBoolean;
+
+        this.suffix = suffix;
+        this.ranges = ranges;
     }
 
 

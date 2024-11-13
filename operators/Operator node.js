@@ -556,9 +556,11 @@ Operator.prototype.endProgress = function()
 
 Operator.prototype.getGridPosition = function(x, y)
 {
+    const grid = graphView.gridSize * (1 << Math.max(0, Math.floor(Math.log(1/graph.currentPage.zoom)/Math.log(2))));
+
     return settings.showGrid
-        ? [ Math.round(x/graphView.gridSize - 0.5)*graphView.gridSize + graphView.gridSize/2,
-            Math.round(y/graphView.gridSize - 0.5)*graphView.gridSize + graphView.gridSize/2 ]
+        ? [ Math.round(x/grid - 0.5)*grid + grid/2,
+            Math.round(y/grid - 0.5)*grid + grid/2 ]
         : [ x,
             y ];
 };
@@ -567,9 +569,11 @@ Operator.prototype.getGridPosition = function(x, y)
 
 Operator.prototype.getGridSize = function(w, h)
 {
+    const grid = graphView.gridSize;// * (1 << Math.round(Math.log(graph.currentPage.zoom)/Math.log(2)));
+
     return settings.showGrid
-        ? [ Math.round(w/graphView.gridSize) * graphView.gridSize,
-            Math.round(h/graphView.gridSize) * graphView.gridSize ]
+        ? [ Math.round(w/grid) * grid,
+            Math.round(h/grid) * grid ]
         : [ w,
             h ];
 };

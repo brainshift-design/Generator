@@ -1,30 +1,3 @@
-const rgb2dark1  = [255/255,  64/255,  96/255];
-const rgb2dark2  = [255/255, 255/255,  0/255];
-const rgb2dark3  = [ 64/255, 220/255, 64/255];
-
-const rgb2light1 = [255/255,  50/255, 50/255];
-const rgb2light2 = [200/255, 195/255,  0/255];
-const rgb2light3 = [ 64/255, 220/255, 64/255];
-
-
-const rgb3dark1  = [255/255,  64/255,  96/255];
-const rgb3dark2  = [255/255, 128/255,  24/255];
-const rgb3dark3  = [255/255, 185/255,   0/255];
-const rgb3dark4  = [255/255, 255/255,   0/255];
-const rgb3dark5  = [ 64/255, 255/255,  64/255];
-const rgb3dark6  = [  0/255, 164/255, 255/255];
-const rgb3dark7  = [230/255, 230/255, 230/255];
-
-const rgb3light1 = [255/255,   0/255,  64/255];
-const rgb3light2 = [255/255, 128/255,   0/255];
-const rgb3light3 = [250/255, 170/255,   0/255];
-const rgb3light4 = [205/255, 175/255,   0/255];
-const rgb3light5 = [ 30/255, 220/255,  30/255];
-const rgb3light6 = [128/255, 128/255, 255/255];
-const rgb3light7 = [255/255, 255/255, 255/255];
-
-
-
 class   OpColorContrast
 extends OpColorBase
 {
@@ -35,7 +8,6 @@ extends OpColorBase
 
 
     labelColor = [0, 0, 0];
-
 
     _rgbText   = [0, 0, 0];
     _rgbBack   = [0, 0, 0];
@@ -332,72 +304,6 @@ extends OpColorBase
         else                               
         {
             this.label.style.color = darkMode ? 'white' : 'black';
-        }
-    }
-
-
-
-    setRanges(standard)
-    {
-        if (standard.value == 0) // WCAG 2
-        {
-            const contrast = Math.abs(this.paramContrast.value.value) / 21;
-
-            const is1 = !this.isUnknown() && contrast > 0  /21 && contrast <=  3  /21;
-            const is2 = !this.isUnknown() && contrast > 3  /21 && contrast <=  4.5/21;
-            const is3 = !this.isUnknown() && contrast > 4.5/21 && contrast <=  7  /21;
-           
-            if (darkMode)
-            {
-                this.paramContrast.controls[0].ranges = [ 
-                    new NumberControlRange(0  /21,  3  /21, rgb2style_a(rgb2dark1, is1 ? 1 : 0.2 ), 0.8),
-                    new NumberControlRange(3  /21,  4.5/21, rgb2style_a(rgb2dark2, is2 ? 1 : 0.27), 0.8),
-                    new NumberControlRange(4.5/21,  7  /21, rgb2style_a(rgb2dark3, is3 ? 1 : 0.27), 0.8),
-                    new NumberControlRange(7  /21, 21  /21, 'transparent') ];
-            }
-            else
-            {
-                this.paramContrast.controls[0].ranges = [ 
-                    new NumberControlRange(0  /21,  3  /21, rgb2style_a(rgb2light1, is1 ? 1 : 0.2 ), 0.8),
-                    new NumberControlRange(3  /21,  4.5/21, rgb2style_a(rgb2light2, is2 ? 1 : 0.27), 0.8),
-                    new NumberControlRange(4.5/21,  7  /21, rgb2style_a(rgb2light3, is3 ? 1 : 0.27), 0.8),
-                    new NumberControlRange(7  /21, 21  /21, 'transparent') ];
-            }
-        }
-        else // APCA
-        {
-            const contrast = Math.abs(this.paramContrast.value.value) / 100;
-
-            const is1 = !this.isUnknown() && contrast >=  0/100 && contrast <=  15/100; // red
-            const is2 = !this.isUnknown() && contrast >  15/100 && contrast <=  30/100; // amber
-            const is3 = !this.isUnknown() && contrast >  30/100 && contrast <=  45/100; // orange
-            const is4 = !this.isUnknown() && contrast >  45/100 && contrast <=  60/100; // yellow
-            const is5 = !this.isUnknown() && contrast >  60/100 && contrast <=  75/100; // green
-            const is6 = !this.isUnknown() && contrast >  75/100 && contrast <=  90/100; // blue
-            const is7 = !this.isUnknown() && contrast >  90/100;                        // white
-
-            if (darkMode)
-            {
-                this.paramContrast.controls[0].ranges = [ 
-                    new NumberControlRange( 0/105,  15/105, rgb2style_a(rgb3dark1, is1 ? 1 : 0.2), 0.8),   // red
-                    new NumberControlRange(15/105,  30/105, rgb2style_a(rgb3dark2, is2 ? 1 : 0.2), 0.8),   // amber
-                    new NumberControlRange(30/105,  45/105, rgb2style_a(rgb3dark3, is3 ? 1 : 0.2), 0.8),   // orange
-                    new NumberControlRange(45/105,  60/105, rgb2style_a(rgb3dark4, is4 ? 1 : 0.2), 0.8),   // yellow
-                    new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3dark5, is5 ? 1 : 0.2), 0.8),   // green
-                    new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3dark6, is6 ? 1 : 0.4), 0.8),   // blue
-                    new NumberControlRange(90/105, 105/105, rgb2style_a(rgb3dark7, is7 ? 1 : 0  ), 0.8) ]; // white
-            }
-            else
-            {
-                this.paramContrast.controls[0].ranges = [
-                    new NumberControlRange( 0/105,  15/105, rgb2style_a(rgb3light1, is1 ? 1 : 0.2), 0.8),   // red
-                    new NumberControlRange(15/105,  30/105, rgb2style_a(rgb3light2, is2 ? 1 : 0.2), 0.8),   // amber
-                    new NumberControlRange(30/105,  45/105, rgb2style_a(rgb3light3, is3 ? 1 : 0.2), 0.8),   // orange
-                    new NumberControlRange(45/105,  60/105, rgb2style_a(rgb3light4, is4 ? 1 : 0.2), 0.8),   // yellow
-                    new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3light5, is5 ? 1 : 0.2), 0.8),   // green
-                    new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3light6, is6 ? 1 : 0.1), 0.8),   // blue
-                    new NumberControlRange(90/105, 105/105, rgb2style_a(rgb3light7, is7 ? 1 : 0  ), 0.8) ]; // white
-            }
         }
     }
 }

@@ -833,7 +833,7 @@ startValue
 oldValue
 findParamAbove
 findParamBelow
-NumberControlRange
+NumberValueRange
 updateRanges
 resetRanges
 resetRangeDivs

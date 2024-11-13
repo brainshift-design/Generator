@@ -1,40 +1,3 @@
-class NumberControlRange
-{
-    start;
-    end;
-
-    background;
-
-    top;
-    bottom;
-
-
-    constructor(start, end = start, background = '#f0f', top = 0, bottom = 1)
-    {
-        this.start      = start;
-        this.end        = end;
-
-        this.background = background;
-
-        this.top        = top;
-        this.bottom     = bottom;
-    }
-
-
-
-    copy()
-    {
-        return new NumberControlRange(
-            this.start,
-            this.end,
-            this.background,
-            this.top,
-            this.bottom);
-    }
-}
-
-
-
 NumberControl.prototype.updateRanges = function(controlWidth, controlHeight)
 {
     if (this.overrideText != '') // assuming this is only used in emergencies where ranges are irrelevant
@@ -52,8 +15,8 @@ NumberControl.prototype.updateRanges = function(controlWidth, controlHeight)
 
             const val = (this.value - this.displayMin) / (this.displayMax - this.displayMin);
 
-            if (this.value > this.displayMax) this.ranges.push(new NumberControlRange(0, Math.min(val-1, 1), warnLineStyle, 0.8));
-            if (this.value < this.displayMin) this.ranges.push(new NumberControlRange(1-Math.max(0, -val), 1, warnLineStyle, 0.8));    
+            if (this.value > this.displayMax) this.ranges.push(new NumberValueRange(0, Math.min(val-1, 1), warnLineStyle, 0.8));
+            if (this.value < this.displayMin) this.ranges.push(new NumberValueRange(1-Math.max(0, -val), 1, warnLineStyle, 0.8));    
         }
 
 
@@ -91,7 +54,7 @@ NumberControl.prototype.updateRanges = function(controlWidth, controlHeight)
 
 NumberControl.prototype.resetRanges = function()
 {
-    this.ranges = [];
+    //this.ranges = [];
     this.resetRangeDivs();        
 };
 

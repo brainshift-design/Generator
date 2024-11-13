@@ -590,7 +590,7 @@ extends OpColorBase
 
             if (!open && !rgbIsValid(rgb))
             {
-                ranges.push(new NumberControlRange(f, f, warnLineStyle, 0.8));
+                ranges.push(new NumberValueRange(f, f, warnLineStyle, 0.8));
                 open = true;
             }
             else if (open && rgbIsValid(rgb)) 

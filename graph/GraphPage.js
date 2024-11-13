@@ -109,18 +109,8 @@ class GraphPage
             addMetricsEvent(METRICS_PAN_ZOOM, 'x: ' + Number(pan.x.toFixed(0)) + ', y: ' + Number(pan.y.toFixed(0)) + ', z: ' + Number(zoom.toFixed(3)));
         }
 
-        const a = chan2hex((Math.max(0, 0.7 * Math.log(zoom) + 1)) * 0.1);
 
-        if (settings.showGrid)
-        {
-            document.body.style.backgroundImage    = `radial-gradient(circle, ${(darkMode ? '#ffffff' : '#000000') + a} 1px, transparent 1px)`;
-            document.body.style.backgroundPosition = `${pan.x}px ${pan.y + menuBarHeight}px`;
-            document.body.style.backgroundSize     = `${graphView.gridSize * zoom}px ${graphView.gridSize * zoom}px`;
-        }
-        else
-        {
-            document.body.style.backgroundImage = 'none';
-        }
+        this.updateViewGrid();
     }
     
     
@@ -216,6 +206,34 @@ class GraphPage
         this.btnIcon .style.opacity    = isCurrent ? 1 : 0.35;
         
         this.btnName .style.color      = isCurrent ? '#fffffff0' : '#fff6';
+    }
+
+
+
+    updateViewGrid()
+    {
+        const pan  = this._pan;
+        const zoom = this._zoom;
+
+        //const a = chan2hex((Math.max(0, 1 * Math.log(zoom) + 1)) * 0.1 * window.devicePixelRatio);
+        //const a = chan2hex(1); // debug
+        const a = chan2hex(Math.pow(Math.min(Math.max(0, zoom), 2), 0.25) * 0.1 * (window.devicePixelRatio > 1.5 ? 1.5 : 1));
+
+        const f = 
+            zoom >= 1
+            ? 1
+            : (1 << Math.floor(Math.log(1/zoom) / Math.log(2)));
+
+        if (settings.showGrid)
+        {
+            document.body.style.backgroundImage    = `radial-gradient(circle, ${(darkMode ? '#ffffff' : '#000000') + a} 1px, transparent 1px)`;
+            document.body.style.backgroundPosition = `${pan.x}px ${pan.y + menuBarHeight}px`;
+            document.body.style.backgroundSize     = `${graphView.gridSize*f * zoom}px ${graphView.gridSize*f * zoom}px`;
+        }
+        else
+        {
+            document.body.style.backgroundImage = 'none';
+        }
     }
 
 

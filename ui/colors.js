@@ -59,4 +59,8 @@ function initThemeColors()
     rgbDocumentBody = computedStyle2rgba(document.body, 'background-color');
 
     darkMode        = isDarkMode();
+
+    if (   graph
+        && graph.currentPage)
+        graph.currentPage.updateViewGrid();
 }
