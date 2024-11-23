@@ -64,8 +64,8 @@ extends OpShape
             this.paramWidth .value.value, 
             this.paramHeight.value.value);
 
-        this.paramRound.controls[0].displayMin = 0;
-        this.paramRound.controls[0].displayMax = min/2;
+        this.paramRound.controls[0].minDisplay = 0;
+        this.paramRound.controls[0].maxDisplay = min/2;
 
         this.paramRound.controls[0].update();
     }

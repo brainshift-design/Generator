@@ -6,13 +6,13 @@ extends GValue
     decimals;
 
     isBoolean;
-    
-    suffix = '';
-    ranges = []; // can be either objects or string IDs into a range dictionary
+
+
+    meta;
 
 
 
-    constructor(val = Number.NaN, dec = -1, isBoolean = false, suffix = '', ranges = [])
+    constructor(val = Number.NaN, dec = -1, isBoolean = false)
     {
         super(NUMBER_VALUE, 'number');
 
@@ -32,8 +32,7 @@ extends GValue
 
         this.isBoolean = isBoolean;
 
-        this.suffix = suffix;
-        this.ranges = ranges;
+        this.meta = null;
     }
 
 
@@ -61,6 +60,9 @@ extends GValue
         copy.initValue = this.initValue;
 
         copy.copyBase(this);
+
+        if (this.meta)
+            copy.meta = this.meta.copy();
 
         return copy;
     }
@@ -128,13 +130,17 @@ extends GValue
 
     toString()
     {
-        if (this.isBoolean)
-            return this.value > 0 ? 'true' : 'false';
-    
-        else
-            return printNum(this.value) 
-                 + ',' 
-                 + printNum(this.decimals);
+        let str =
+            this.isBoolean
+                ? this.value > 0 ? 'true' : 'false'
+                :   printNum(this.value) 
+                  + ',' 
+                  + printNum(this.decimals);
+
+        if (this.meta)
+            str += ',' + encodeURIComponent(this.meta.toString());
+
+        return str;
     }
 
 
@@ -161,6 +167,9 @@ extends GValue
             return printNum(this.value) 
                 + (!isNaN(this.decimals)
                     ? '_' + this.decimals //subscriptNumber(this.decimals)
+                    : '')
+                + (this.meta
+                    ? '_(' + this.meta.toString() + ')'
                     : '');
     }
 
@@ -179,4 +188,48 @@ extends GValue
             Number.NaN, 
             Number.NaN);
     }
+}
+
+
+
+function parseNumberValue(str)
+{
+         if (str === 'true' ) return [new BooleanValue(true ), 1];
+    else if (str === 'false') return [new BooleanValue(false), 1];
+
+    else
+    {
+        if (str.indexOf(',') < 0)
+        {
+            consoleError('number value \'' + str + '\' missing \',\'');
+            console.trace();
+        }
+
+
+        const parts = str.split(',');
+
+        const num = new NumberValue(
+            parseNum(parts[0]),
+            parseNum(parts[1]));
+
+        if (parts.length == 3)
+            num.meta = parseNumberValueMeta(decodeURIComponent(parts[2]))[0];
+
+        return [num, 1];
+    }
+}
+
+
+
+function parseSimpleNumberValue(str)
+{
+         if (str === 'true' ) return [new BooleanValue(true ), 1];
+    else if (str === 'false') return [new BooleanValue(false), 1];
+
+    const num = 
+        str == NAN_DISPLAY
+        ? NumberValue.NaN()
+        : NumberValue.fromString(str);
+
+    return [num, 1];
 }

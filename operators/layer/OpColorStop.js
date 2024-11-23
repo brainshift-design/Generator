@@ -40,8 +40,8 @@ extends OpColorBase
 
         this.paramPosition.controls[0].suffix = '%';
 
-        this.paramPosition.controls[0].displayMin =   0;
-        this.paramPosition.controls[0].displayMax = 100;
+        this.paramPosition.controls[0].minDisplay =   0;
+        this.paramPosition.controls[0].maxDisplay = 100;
 
         this.paramPosition.divider = 0.55;
     }

@@ -802,8 +802,8 @@ divPrecision
 extLeft
 extRight
 valueScale
-displayMin
-displayMax
+minDisplay
+maxDisplay
 thinMinus
 displayAbsolute
 acc
@@ -837,7 +837,7 @@ NumberValueRange
 updateRanges
 resetRanges
 resetRangeDivs
-getWarningRangeStyle
+getWarningRangeColor
 initEvents
 textBehind
 highlightText

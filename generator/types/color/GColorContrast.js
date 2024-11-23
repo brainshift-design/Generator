@@ -63,19 +63,19 @@ extends GOperator2
                     if (standard.value == 0)
                     {
                         const value = getContrastRatio2(input0.toRgb(), input1.toRgb());
-                        this.contrast = new NumberValue(value, 2);
+                        this.value = new NumberValue(value, 2);
                     }
                     else
                     {
                         const value = getContrastRatio3(input0.toRgb(), input1.toRgb());
-                        this.contrast = new NumberValue(value, 1);
+                        this.value = new NumberValue(value, 1);
                     }
                 }
                 else
-                    this.contrast = NumberValue.NaN();
+                    this.value = NumberValue.NaN();
             }
             else
-                this.contrast = NumberValue.NaN();
+                this.value = NumberValue.NaN();
 
 
             this.setUpdateValues(parse,
@@ -93,7 +93,7 @@ extends GOperator2
                 ['back', ColorValue.NaN()                            ]
             ]);
             
-            this.contrast = NumberValue.NaN();
+            this.value = NumberValue.NaN();
         }
 
         else if (input1 && input1.type == COLOR_VALUE) 
@@ -104,12 +104,12 @@ extends GOperator2
                 ['back', input1.isValid() ? input1 : ColorValue.NaN()]
             ]);
 
-            this.contrast = NumberValue.NaN();
+            this.value = NumberValue.NaN();
         }
 
         else
         {
-            this.contrast = NumberValue.NaN();
+            this.value = NumberValue.NaN();
 
             this.setUpdateValues(parse,
             [
@@ -119,17 +119,14 @@ extends GOperator2
         }
         
 
-        this.value = input0 ?? ColorValue.NaN();
-
-
         if (this.value.isValid())
-            this.setValueRanges(standard, this.contrast);
+            this.setValueDecorations(standard);
 
 
         this.setUpdateValues(parse,
         [
-            ['standard', standard     ],
-            ['contrast', this.contrast]
+            ['type',     this.outputType()],
+            ['standard', standard         ]
         ],
         true);
 
@@ -142,44 +139,70 @@ extends GOperator2
 
 
 
-    setValueRanges(standard, contrast)
+    setValueDecorations(standard)
     {
         if (standard.value == 0) // WCAG 2
         {
-            const cnt = Math.abs(contrast.value) / 21;
+            let rating = getContrastRating2(this.value.value);
+
+            if (rating != NULL)
+                rating = '&nbsp;&nbsp;' + rating;
+
+
+            const cnt = Math.abs(this.value.value) / 21;
 
             const is1 = cnt > 0  /21 && cnt <=  3  /21;
             const is2 = cnt > 3  /21 && cnt <=  4.5/21;
             const is3 = cnt > 4.5/21 && cnt <=  7  /21;
-           
-            this.value.decorations.ranges = [ 
+            
+            const ranges = 
+            [ 
                 new NumberValueRange(0  /21,  3  /21, is1 ? 'contrast20_vivid' : 'contrast20', 0.8),
                 new NumberValueRange(3  /21,  4.5/21, is2 ? 'contrast21_vivid' : 'contrast21', 0.8),
                 new NumberValueRange(4.5/21,  7  /21, is3 ? 'contrast22_vivid' : 'contrast22', 0.8),
-                new NumberValueRange(7  /21, 21  /21, 'transparent') ];
+                new NumberValueRange(7  /21, 21  /21, 'transparent') 
+            ];
+
+
+            this.value.meta = new NumberValueMeta(
+                0, 0,
+                21, 21,
+                2,
+                rating,
+                ranges,
+                false);
         }
         else // APCA
         {
-            const cnt = Math.abs(this.paramContrast.value.value) / 100;
+            const cnt = Math.abs(this.value.value) / 100;
 
-            const is1 = cnt >=  0/100 && cnt <=  15/100; // red
-            const is2 = cnt >  15/100 && cnt <=  30/100; // amber
-            const is3 = cnt >  30/100 && cnt <=  45/100; // orange
-            const is4 = cnt >  45/100 && cnt <=  60/100; // yellow
-            const is5 = cnt >  60/100 && cnt <=  75/100; // green
-            const is6 = cnt >  75/100 && cnt <=  90/100; // blue
-            const is7 = cnt >  90/100;                   // white
+            const is1 = cnt >=  0/100 && cnt <= 15/100; // red
+            const is2 = cnt >  15/100 && cnt <= 30/100; // amber
+            const is3 = cnt >  30/100 && cnt <= 45/100; // orange
+            const is4 = cnt >  45/100 && cnt <= 60/100; // yellow
+            const is5 = cnt >  60/100 && cnt <= 75/100; // green
+            const is6 = cnt >  75/100 && cnt <= 90/100; // blue
+            const is7 = cnt >  90/100;                  // white
 
-            this.paramContrast.controls[0].ranges = 
+            const ranges = 
             [ 
                 new NumberValueRange( 0/105,  15/105, is1 ? 'contrast30_vivid' : 'contrast30', 0.8), // red
-                new NumberValueRange(15/105,  30/105, is2 ? 'contrast30_vivid' : 'contrast30', 0.8), // amber
-                new NumberValueRange(30/105,  45/105, is3 ? 'contrast30_vivid' : 'contrast30', 0.8), // orange
-                new NumberValueRange(45/105,  60/105, is4 ? 'contrast30_vivid' : 'contrast30', 0.8), // yellow
-                new NumberValueRange(60/105,  75/105, is5 ? 'contrast30_vivid' : 'contrast30', 0.8), // green
-                new NumberValueRange(75/105,  90/105, is6 ? 'contrast30_vivid' : 'contrast30', 0.8), // blue
-                new NumberValueRange(90/105, 105/105, is7 ? 'contrast30_vivid' : 'contrast30', 0.8)  // white
+                new NumberValueRange(15/105,  30/105, is2 ? 'contrast31_vivid' : 'contrast31', 0.8), // amber
+                new NumberValueRange(30/105,  45/105, is3 ? 'contrast32_vivid' : 'contrast32', 0.8), // orange
+                new NumberValueRange(45/105,  60/105, is4 ? 'contrast33_vivid' : 'contrast33', 0.8), // yellow
+                new NumberValueRange(60/105,  75/105, is5 ? 'contrast34_vivid' : 'contrast34', 0.8), // green
+                new NumberValueRange(75/105,  90/105, is6 ? 'contrast35_vivid' : 'contrast35', 0.8), // blue
+                new NumberValueRange(90/105, 105/105, is7 ? 'contrast36_vivid' : 'contrast36', 0.8)  // white
             ];
+
+
+            this.value.meta = new NumberValueMeta(
+               -108, -105,
+                106,  105,
+                1,
+                '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>',
+                ranges,
+                true);
         }
     }
 

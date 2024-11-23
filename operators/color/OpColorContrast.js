@@ -2,7 +2,6 @@ class   OpColorContrast
 extends OpColorBase
 {
     paramStandard;
-    paramContrast;
 
     colorBack;
 
@@ -19,7 +18,8 @@ extends OpColorBase
         super(COLOR_CONTRAST, 'contrast', 'contrast', iconWebContrast);
 
 
-        this.showIcon = false;
+        this.outputValueType = ANY_VALUE;
+        this.showIcon        = false;
         
 
         this.colorBack = createDiv('colorBack');
@@ -29,25 +29,11 @@ extends OpColorBase
         this.addInput(new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE]));
         this.addInput(new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE]));
 
-        // this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
-
-        // this.outputs[0].forceOutputColor = true;
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
         this.addParam(this.paramStandard = new OptionParam('standard', '', false, true,  true, ['WCAG 2', 'APCA'], 1));
       
-        this.paramContrast.isNodeValue = true;
-        
-        this.paramContrast.controls[0].thinMinus     = true;
-        this.paramContrast.controls[0].showExtRanges = false;
-
-
-        this.paramContrast.getTooltip = () => 
-            settings.showTooltipColorContrast ? 
-            (this.paramStandard.value.value == 1 ? ttWcag3 : ttWcag2) 
-            : null;
-
         //this.paramStandard.getTooltip = () => null;
         this.paramStandard.reverseMenu = true;
 
@@ -57,30 +43,21 @@ extends OpColorBase
 
 
 
-    genRequest(gen)
+    output_genRequest(gen)
     {
-        // 'this' is the node
-
-        if (gen.passedNodes.includes(this))
-        {
-            return [
-                this.type, 
-                this.id, 
-                this.name];
-        }
-
+        // 'this' is the output
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
         
-        const input0 = this.inputs[0];
-        const input1 = this.inputs[1];
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
 
         
         if (   input0.connected
@@ -94,11 +71,11 @@ extends OpColorBase
         else                       request.push(0);
 
 
-        request.push(...this.paramStandard.genRequest(gen));
+        request.push(...this.node.paramStandard.genRequest(gen));
 
 
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
 
 
         return request;
@@ -112,13 +89,16 @@ extends OpColorBase
             paramIds.length == values.length,
             'paramIds.length must equal values.length');
 
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-
+        const type     = values[paramIds.findIndex(id => id == 'type'    )];
         const colText  = values[paramIds.findIndex(id => id == 'text'    )];
         const colBack  = values[paramIds.findIndex(id => id == 'back'    )];
         const standard = values[paramIds.findIndex(id => id == 'standard')];
-        const contrast = values[paramIds.findIndex(id => id == 'contrast')];
+
+
+        if (type)
+            this.headerOutputs[0].types = [type.value];
+
 
         consoleAssert(isValid(colText), 'colText is not valid');
         consoleAssert(isValid(colBack), 'colBack is not valid');
@@ -142,44 +122,8 @@ extends OpColorBase
             this._rgbText = darkMode ? [0, 0, 0, 0.2] : [1, 1, 1, 0.2];
 
 
-        if (   standard
-            && contrast)
+        if (   standard)
         {
-            if (standard.value == 0)
-            {
-                let rating = getContrastRating2(contrast.value);
-
-                if (rating != '')
-                    rating = '&nbsp;&nbsp;' + rating;
-
-                this.paramContrast.controls[0].min        = 
-                this.paramContrast.controls[0].displayMin = 0;
-
-                this.paramContrast.controls[0].max        = 
-                this.paramContrast.controls[0].displayMax = 21;
-
-                this.paramContrast.controls[0].setDecimals(2);
-                this.paramContrast.controls[0].setSuffix(rating);
-
-                this.paramContrast.controls[0].displayAbsolute = false;
-            }
-            else
-            {
-                this.paramContrast.controls[0].min        = -108;
-                this.paramContrast.controls[0].max        =  106;
-                
-                this.paramContrast.controls[0].displayMin = -105;
-                this.paramContrast.controls[0].displayMax =  105;
-
-                this.paramContrast.controls[0].displayAbsolute = true;
-
-                this.paramContrast.controls[0].setDecimals(1);
-                this.paramContrast.controls[0].setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
-
-                this.paramContrast.controls[0].setValue(contrast.value, contrast.decimals, false, false);
-            }
-
-
             if (   this.inputs[0].connected
                 && this.inputs[1].connected)
             {
@@ -206,18 +150,9 @@ extends OpColorBase
                 this.forceShowWarning = false;
             }
         }
-    }
 
 
-
-    updateParams()
-    {
-        this.paramContrast.enableControlText(false, this.isUnknown());
-        this.paramStandard.enableControlText(true);
-
-        this.setRanges(this.paramStandard.value);
-
-        this.updateParamControls();
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
@@ -244,25 +179,29 @@ extends OpColorBase
 
 
 
-    getHeaderOutputColor()
-    {
-        if (!rgbIsNaN(this._rgbText))
-            return this._rgbText;
-        else
-            return super.getHeaderOutputColor();
-    }
+    // getHeaderOutputColor()
+    // {
+    //     if (!rgbIsNaN(this._rgbText))
+    //         return this._rgbText;
+    //     else
+    //         return super.getHeaderOutputColor();
+    // }
 
 
 
     getOutputWireColor()
     {
-        // if (!dataColorIsNaN(this._color))
-        //     return dataColor2rgb(this._color);
-        if (!rgbIsNaN(this._rgbText))
-            return this._rgbText;
-        else
-            return super.getOutputWireColor();
+        return rgb_NaN;
     }
+    // getOutputWireColor()
+    // {
+    //     // if (!dataColorIsNaN(this._color))
+    //     //     return dataColor2rgb(this._color);
+    //     if (!rgbIsNaN(this._rgbText))
+    //         return this._rgbText;
+    //     else
+    //         return super.getOutputWireColor();
+    // }
 
 
 

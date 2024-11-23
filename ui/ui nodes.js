@@ -919,6 +919,11 @@ function handleLegacyConnection(_conn, outputNode, inputNode, genVersion)
          && genVersion < 441)
         _conn.outputId = 'h0';
 
+    else if (outputNode.type == COLOR_CONTRAST
+         && _conn.outputId == 'contrast'
+         && genVersion < 442)
+        _conn.outputId = 'h0';
+
     else if (inputNode.type == NUMBER_COMPARE
          && _conn.inputId == 'h1'
          && genVersion < 441)

@@ -231,11 +231,11 @@ extends OpColorBase
         this.paramSize.controls[0].suffix = pos < 3 ? '%' : '';
         this.paramSkew.controls[0].suffix = pos < 3 ? '%' : '';
 
-        this.paramX   .controls[0].displayMin = pos < 3 ?   0 : Number.MIN_SAFE_INTEGER;
-        this.paramX   .controls[0].displayMax = pos < 3 ? 100 : Number.MAX_SAFE_INTEGER;
+        this.paramX   .controls[0].minDisplay = pos < 3 ?   0 : Number.MIN_SAFE_INTEGER;
+        this.paramX   .controls[0].maxDisplay = pos < 3 ? 100 : Number.MAX_SAFE_INTEGER;
 
-        this.paramY   .controls[0].displayMin = pos < 3 ?   0 : Number.MIN_SAFE_INTEGER;
-        this.paramY   .controls[0].displayMax = pos < 3 ? 100 : Number.MAX_SAFE_INTEGER;
+        this.paramY   .controls[0].minDisplay = pos < 3 ?   0 : Number.MIN_SAFE_INTEGER;
+        this.paramY   .controls[0].maxDisplay = pos < 3 ? 100 : Number.MAX_SAFE_INTEGER;
 
 
         const pre = 

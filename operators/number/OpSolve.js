@@ -112,7 +112,7 @@ extends OperatorBase
             && !equal(this.paramCurrent.value.value, this.paramTarget.value.value, decFactor))
         {
             this.paramCurrent.controls[0].showExtRanges = true;
-            this.paramCurrent.controls[0].ranges = [new NumberValueRange(0, 1, getWarningRangeStyle(), 0.8)];
+            this.paramCurrent.controls[0].ranges = [new NumberValueRange(0, 1, getWarningRangeColor(), 0.8)];
         }
         else
         {

@@ -131,7 +131,7 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const type  = values[paramIds.findIndex(id => id == 'type'  )];
+        const type   = values[paramIds.findIndex(id => id == 'type'  )];
         const deltaE = values[paramIds.findIndex(id => id == 'deltaE')];
         
         if (type)

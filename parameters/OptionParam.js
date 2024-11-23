@@ -207,11 +207,11 @@ function initOptionParamMenu(param)
     menuOptionParam.clearItems();
 
 
-    const s = !param.reverseMenu ? 0 : param.controls[0].displayMax;
-    const c = !param.reverseMenu ? i => i <= param.controls[0].displayMax : i => i >= 0;
+    const s = !param.reverseMenu ? 0 : param.controls[0].maxDisplay;
+    const c = !param.reverseMenu ? i => i <= param.controls[0].maxDisplay : i => i >= 0;
     const d = !param.reverseMenu ? 1 : -1;
 
-    const pad = getDigitCount(param.controls[0].displayMax);
+    const pad = getDigitCount(param.controls[0].maxDisplay);
 
     
     for (let i = s; c(i); i += d)

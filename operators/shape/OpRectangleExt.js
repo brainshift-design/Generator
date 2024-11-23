@@ -63,8 +63,8 @@
 //             this.paramR.value.value - this.paramL.value.value, 
 //             this.paramB.value.value - this.paramT.value.value);
 
-//         this.paramRound.controls[0].displayMin = 0;
-//         this.paramRound.controls[0].displayMax = Math.abs(min/2);
+//         this.paramRound.controls[0].minDisplay = 0;
+//         this.paramRound.controls[0].maxDisplay = Math.abs(min/2);
 
 //         this.paramRound.controls[0].update();
 //     }

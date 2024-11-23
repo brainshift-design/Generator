@@ -537,7 +537,7 @@ extends OpColorBase
             this.updateControlRanges(this.param1.controls[0], f =>
                 dataColor2rgb([
                     this._color[0],
-                    (this.param1.controls[0].displayMin + f * (this.param1.controls[0].displayMax - this.param1.controls[0].displayMin)) / colorSpaceFactor(this._color[0])[0],
+                    (this.param1.controls[0].minDisplay + f * (this.param1.controls[0].maxDisplay - this.param1.controls[0].minDisplay)) / colorSpaceFactor(this._color[0])[0],
                     this._color[2],
                     this._color[3]]));
 
@@ -545,7 +545,7 @@ extends OpColorBase
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
-                    (this.param2.controls[0].displayMin + f * (this.param2.controls[0].displayMax - this.param2.controls[0].displayMin)) / colorSpaceFactor(this._color[0])[1],
+                    (this.param2.controls[0].minDisplay + f * (this.param2.controls[0].maxDisplay - this.param2.controls[0].minDisplay)) / colorSpaceFactor(this._color[0])[1],
                     this._color[3]]));
 
             this.updateControlRanges(this.param3.controls[0], f =>
@@ -553,7 +553,7 @@ extends OpColorBase
                     this._color[0],
                     this._color[1],
                     this._color[2],
-                    (this.param3.controls[0].displayMin + f * (this.param3.controls[0].displayMax - this.param3.controls[0].displayMin)) / colorSpaceFactor(this._color[0])[2]]));
+                    (this.param3.controls[0].minDisplay + f * (this.param3.controls[0].maxDisplay - this.param3.controls[0].minDisplay)) / colorSpaceFactor(this._color[0])[2]]));
         }
         else // no warning ranges
         {
@@ -575,7 +575,7 @@ extends OpColorBase
 
     updateControlRanges(control, getRgb)
     {
-        const warnLineStyle = getWarningRangeStyle();
+        const warnLineColor = getWarningRangeColor();
 
 
         const ranges    = [];
@@ -590,7 +590,7 @@ extends OpColorBase
 
             if (!open && !rgbIsValid(rgb))
             {
-                ranges.push(new NumberValueRange(f, f, warnLineStyle, 0.8));
+                ranges.push(new NumberValueRange(f, f, warnLineColor, 0.8));
                 open = true;
             }
             else if (open && rgbIsValid(rgb)) 

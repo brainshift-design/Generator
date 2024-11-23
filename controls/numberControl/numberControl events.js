@@ -269,8 +269,8 @@ NumberControl.prototype.initEvents = function()
 
                     
                     // reset control movement at the limits for better UX
-                    const min = e.shiftKey ? this.min : this.displayMin;
-                    const max = e.shiftKey ? this.max : this.displayMax;
+                    const min = e.shiftKey ? this.min : this.minDisplay;
+                    const max = e.shiftKey ? this.max : this.maxDisplay;
 
 
                     this.setValue(

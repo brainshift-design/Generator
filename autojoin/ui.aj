@@ -65,7 +65,6 @@
     
     [../autojoin/types.aj]
 
-    ../ui/colorTokens.js
     ../ui/payment.js
     ../ui/ai.js
     

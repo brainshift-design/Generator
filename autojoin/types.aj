@@ -41,6 +41,7 @@
 ../generator/types/values/NullValue.js
 ../generator/types/values/ListValue.js
 ../generator/types/values/NumberValue.js
+../generator/types/values/NumberValueMeta.js
 ../generator/types/values/NumberValueRange.js
 ../generator/types/values/BooleanValue.js
 ../generator/types/values/TextValue.js

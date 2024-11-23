@@ -523,7 +523,7 @@ GraphView.prototype.getRandomizedColorValues = function(colors)
         ...colors.map(n => n.paramFromId('c3'))
     ];
 
-    const values = params.map(p => new NumberValue(Math.floor(p.controls[0].displayMin + Math.random() * (p.controls[0].displayMax - p.controls[0].displayMin))));
+    const values = params.map(p => new NumberValue(Math.floor(p.controls[0].minDisplay + Math.random() * (p.controls[0].maxDisplay - p.controls[0].minDisplay))));
 
     return [params, values];
 };
@@ -544,8 +544,8 @@ GraphView.prototype.getRandomizedNumberValues = function(numbers)
         const min = 
             !isNaN(connectedMin)
                 ? connectedMin
-                : ctrl.displayMin != Number.MIN_SAFE_INTEGER
-                    ? ctrl.displayMin
+                : ctrl.minDisplay != Number.MIN_SAFE_INTEGER
+                    ? ctrl.minDisplay
                     : 0;
             
         let _max = Math.random();
@@ -562,8 +562,8 @@ GraphView.prototype.getRandomizedNumberValues = function(numbers)
         const max = 
             !isNaN(connectedMax)
                 ? connectedMax
-                : ctrl.displayMax != Number.MAX_SAFE_INTEGER
-                    ? ctrl.displayMax
+                : ctrl.maxDisplay != Number.MAX_SAFE_INTEGER
+                    ? ctrl.maxDisplay
                     : _max;
 
         return new NumberValue(

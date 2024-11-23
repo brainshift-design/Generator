@@ -53,25 +53,58 @@ const colorTokens =
 
 
 
-function colorOrToken(value)
+function colorOrToken(value, darkMode = false)
 {
-    // maybe do a typecheck for 'string' or something
+    if (typeof value === 'string')
+    {
+        const color = getColorFromToken(
+            value, 
+            darkMode 
+                ? 'darkMode' 
+                : 'lightMode');
+
+        console.log('color =', color);
+        if (color) return color;
+    }
+
+    return value;
 }
 
 
 
 function getColorFromToken(tokenId, mode)
 {
-    if (!colorTokens[tokenId]      ) return null;
-    if (!colorTokens[tokenId][mode]) return null;
-
-    return colorTokens[tokenId][mode];
-}
+    if (!(tokenId in colorTokens))
+        return null;
 
 
+    let opacity = 1;
 
-function getStyleFromToken(tokenId, mode)
-{
-    rgb2style_a
-    return 'none';
+
+    let token = colorTokens[tokenId];
+
+
+    while ('token' in token) // alias
+    {
+        if ('opacity' in token)
+            opacity *= token.opacity;
+
+        token = colorTokens[token.token];
+    }
+
+
+    if ('opacity' in token)
+        opacity *= token.opacity;
+
+
+    let color = token[mode];
+
+
+    if (color.length == 4)
+        color[3] *= opacity;
+    else
+        color = rgb_a(color, opacity);
+
+
+    return color ?? null;
 }

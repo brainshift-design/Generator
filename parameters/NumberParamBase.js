@@ -95,8 +95,8 @@ extends Parameter
             value:      this.value,
             min:        this.controls[0].min,
             max:        this.controls[0].max,
-            displayMin: this.controls[0].displayMin,
-            displayMax: this.controls[0].displayMax
+            minDisplay: this.controls[0].minDisplay,
+            maxDisplay: this.controls[0].maxDisplay
         };
     }
 

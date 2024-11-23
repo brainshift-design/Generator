@@ -38,8 +38,8 @@ extends ResizableBase
             {
                 const ctrl = connectedInputs[0].param.controls[0];
 
-                return ctrl.displayMin != Number.MIN_SAFE_INTEGER
-                     ? ctrl.displayMin
+                return ctrl.minDisplay != Number.MIN_SAFE_INTEGER
+                     ? ctrl.minDisplay
                      : ctrl.min != Number.MIN_SAFE_INTEGER
                         ? ctrl.min
                         : Number.NaN;
@@ -59,8 +59,8 @@ extends ResizableBase
             {
                 const ctrl = connectedInputs[0].param.controls[0];
 
-                return ctrl.displayMax != Number.MAX_SAFE_INTEGER
-                     ? ctrl.displayMax
+                return ctrl.maxDisplay != Number.MAX_SAFE_INTEGER
+                     ? ctrl.maxDisplay
                      : ctrl.max != Number.MAX_SAFE_INTEGER
                         ? ctrl.max
                         : Number.NaN;

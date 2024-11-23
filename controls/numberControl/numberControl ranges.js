@@ -6,17 +6,17 @@ NumberControl.prototype.updateRanges = function(controlWidth, controlHeight)
     else
     {
         if (   this.showExtRanges
-            && (   this.min < this.displayMin
-                || this.max > this.displayMax))
+            && (   this.min < this.minDisplay
+                || this.max > this.maxDisplay))
         {
             this.resetRanges();
 
-            const warnLineStyle = getWarningRangeStyle();
+            const warnLineColor = getWarningRangeColor();
 
-            const val = (this.value - this.displayMin) / (this.displayMax - this.displayMin);
+            const val = (this.value - this.minDisplay) / (this.maxDisplay - this.minDisplay);
 
-            if (this.value > this.displayMax) this.ranges.push(new NumberValueRange(0, Math.min(val-1, 1), warnLineStyle, 0.8));
-            if (this.value < this.displayMin) this.ranges.push(new NumberValueRange(1-Math.max(0, -val), 1, warnLineStyle, 0.8));    
+            if (this.value > this.maxDisplay) this.ranges.push(new NumberValueRange(0, Math.min(val-1, 1), warnLineColor, 0.8));
+            if (this.value < this.minDisplay) this.ranges.push(new NumberValueRange(1-Math.max(0, -val), 1, warnLineColor, 0.8));    
         }
 
 
@@ -71,11 +71,11 @@ NumberControl.prototype.resetRangeDivs = function()
 
 
 
-function getWarningRangeStyle()
+function getWarningRangeColor()
 {
     return darkMode
-        ? 'rgba(255, 96, 96, 0.5)'
-        : 'rgba(255, 0, 0, 0.16)';
+        ? [1, 0.38, 0.38, 0.5]
+        : [1, 0, 0, 0.16];
 }
 
 
@@ -91,6 +91,10 @@ function updateControlRangeDiv(range, div, controlWidth, controlHeight)
         div.style.top        = range.top * controlHeight;
         div.style.width      = controlWidth * (range.end - range.start);
         div.style.height     = (range.bottom - range.top) * controlHeight;
-        div.style.background = range.background;
+
+        const rgb = colorOrToken(range.background, darkMode);
+        console.log('rgb =', rgb);
+
+        div.style.background = rgba2style(rgb);
     }
 };

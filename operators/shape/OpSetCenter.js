@@ -120,11 +120,11 @@ extends OperatorBase
         this.paramCenterX.controls[0].suffix     = units == 0 ? '%' : '';
         this.paramCenterY.controls[0].suffix     = units == 0 ? '%' : '';
 
-        this.paramCenterX.controls[0].displayMin = units == 0 ?   0 : Number.MIN_SAFE_INTEGER;
-        this.paramCenterX.controls[0].displayMax = units == 0 ? 100 : Number.MAX_SAFE_INTEGER;
+        this.paramCenterX.controls[0].minDisplay = units == 0 ?   0 : Number.MIN_SAFE_INTEGER;
+        this.paramCenterX.controls[0].maxDisplay = units == 0 ? 100 : Number.MAX_SAFE_INTEGER;
 
-        this.paramCenterY.controls[0].displayMin = units == 0 ?   0 : Number.MIN_SAFE_INTEGER;
-        this.paramCenterY.controls[0].displayMax = units == 0 ? 100 : Number.MAX_SAFE_INTEGER;
+        this.paramCenterY.controls[0].minDisplay = units == 0 ?   0 : Number.MIN_SAFE_INTEGER;
+        this.paramCenterY.controls[0].maxDisplay = units == 0 ? 100 : Number.MAX_SAFE_INTEGER;
 
 
         this.updateParamControls();

@@ -17,8 +17,8 @@ extends Control
     min;
     max;
 
-    displayMin;
-    displayMax;
+    minDisplay;
+    maxDisplay;
 
     thinMinus             = false;
     displayAbsolute       = false;
@@ -79,7 +79,8 @@ extends Control
 
     barTop                = 0;
     barBottom             = 1;
-     
+    
+    ranges                = [];
     rangeDivs             = [];
     
     showExtRanges         = true;
@@ -120,8 +121,8 @@ extends Control
         this.min                   = min;
         this.max                   = max;
     
-        this.displayMin            = min;
-        this.displayMax            = max;
+        this.minDisplay            = min;
+        this.maxDisplay            = max;
     
         this.thinMinus             = false;
         this.displayAbsolute       = false;
@@ -227,21 +228,21 @@ extends Control
 
         if (this.wrapValue)
         {
-            const range = this.displayMax - this.displayMin;
+            const range = this.maxDisplay - this.minDisplay;
 
             value %= range;
 
-            while (value < this.displayMin) value += range;
+            while (value < this.minDisplay) value += range;
         }
 
         else if (fullRange
-              || fromWheel && oldValue < this.displayMin
-              || fromWheel && oldValue > this.displayMax
+              || fromWheel && oldValue < this.minDisplay
+              || fromWheel && oldValue > this.maxDisplay
               || fromWheel && shiftKey)
             value = Math.min(Math.max(this.min, value), this.max);
 
         else
-            value = Math.min(Math.max(this.displayMin, value), this.displayMax);
+            value = Math.min(Math.max(this.minDisplay, value), this.maxDisplay);
 
          
         if (    isNaN(value) && !isNaN(oldValue)
@@ -281,18 +282,18 @@ extends Control
     
 
 
-    setMin(displayMin = Number.MIN_SAFE_INTEGER, min = Number.MIN_SAFE_INTEGER)
+    setMin(minDisplay = Number.MIN_SAFE_INTEGER, min = Number.MIN_SAFE_INTEGER)
     {
         this.min        = min;
-        this.displayMin = displayMin;
+        this.minDisplay = minDisplay;
     }
 
 
 
-    setMax(displayMax = Number.MAX_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER)
+    setMax(maxDisplay = Number.MAX_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER)
     {
         this.max        = max;
-        this.displayMax = displayMax;
+        this.maxDisplay = maxDisplay;
     }
 
 
@@ -329,7 +330,7 @@ extends Control
         const [sx, sw] = this.getDimensions();
 
         const sh =  this.measureData.clientRect.height;
-        const cx = -this.displayMin / (this.displayMax - this.displayMin) * sw;
+        const cx = -this.minDisplay / (this.maxDisplay - this.minDisplay) * sw;
 
         const value = roundTo(this.value, this.decimals);
 
@@ -337,9 +338,9 @@ extends Control
             this.displayAbsolute
             ?   Math.abs(value) 
               / (value < 0 
-                 ? (-this.displayMin - Math.max(0, this.displayMin))
-                 : ( this.displayMax - Math.max(0, this.displayMin)))
-            : value / (this.displayMax - this.displayMin);
+                 ? (-this.minDisplay - Math.max(0, this.minDisplay))
+                 : ( this.maxDisplay - Math.max(0, this.minDisplay)))
+            : value / (this.maxDisplay - this.minDisplay);
 
 
         this.updateBar(sx, cx, v, sw, sh);
@@ -349,7 +350,7 @@ extends Control
         this.updateFocus(sw, sh);
         this.updateExt();
 
-        //this.updateRanges(sw, sh);
+        this.updateRanges(sw, sh);
     }
 
 
@@ -489,8 +490,8 @@ extends Control
             this.extRight.innerHTML =
                 '<svg width="1" height="10" viewBox="0 0 1 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 4H1V6H0V4Z"  fill="'+style+'"/><path d="M0 8H1V10H0V8Z" fill="'+style+'"/><path d="M0 0H1V2H0V0Z"  fill="'+style+'"/></svg>';
 
-            this.extLeft .style.display = this.min < this.displayMin ? 'block' : 'none';
-            this.extRight.style.display = this.max > this.displayMax ? 'block' : 'none';
+            this.extLeft .style.display = this.min < this.minDisplay ? 'block' : 'none';
+            this.extRight.style.display = this.max > this.maxDisplay ? 'block' : 'none';
         }
         else
         {
