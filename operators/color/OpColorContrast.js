@@ -34,7 +34,6 @@ extends OpColorBase
 
         this.addParam(this.paramStandard = new OptionParam('standard', '', false, true,  true, ['WCAG 2', 'APCA'], 1));
       
-        //this.paramStandard.getTooltip = () => null;
         this.paramStandard.reverseMenu = true;
 
         
@@ -179,29 +178,10 @@ extends OpColorBase
 
 
 
-    // getHeaderOutputColor()
-    // {
-    //     if (!rgbIsNaN(this._rgbText))
-    //         return this._rgbText;
-    //     else
-    //         return super.getHeaderOutputColor();
-    // }
-
-
-
     getOutputWireColor()
     {
         return rgb_NaN;
     }
-    // getOutputWireColor()
-    // {
-    //     // if (!dataColorIsNaN(this._color))
-    //     //     return dataColor2rgb(this._color);
-    //     if (!rgbIsNaN(this._rgbText))
-    //         return this._rgbText;
-    //     else
-    //         return super.getOutputWireColor();
-    // }
 
 
 

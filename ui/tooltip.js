@@ -11,7 +11,17 @@ var currentTooltip       = null;
 
 function createTooltipSrc(source, ref, getTooltip, delay = 1000, canShow = null)
 {
-    source.addEventListener('pointerenter', () =>
+    if (source.tooltipEvents)
+    {
+        source.tooltipEvents.forEach(event => 
+            tooltipEvents.removeEventListener(event[0], event[1]));
+    }
+
+
+    source.tooltipEvents = [];
+
+
+    source.tooltipEvents.push(['pointerenter', () =>
     {
         if (tooltipTimer) 
             clearTimeout(tooltipTimer);
@@ -32,15 +42,18 @@ function createTooltipSrc(source, ref, getTooltip, delay = 1000, canShow = null)
                 tooltipTimer = null;
             }, 
                currentTooltip
-            &&    currentTooltip != getTooltip()
+            && currentTooltip != getTooltip()
                //|| currentTooltipSource != source
                 ? 0 
                 : delay);
         }
-    });
+
+        
+        source.tooltipPointerEnter = true;
+    }]);
       
     
-    source.addEventListener('pointerleave', () =>
+    source.tooltipEvents.push(['pointerleave', () =>
     {
         if (tooltipTimer)
         {
@@ -62,7 +75,14 @@ function createTooltipSrc(source, ref, getTooltip, delay = 1000, canShow = null)
             tooltipOutTimer      = null;
         }, 
         400);
-    });
+
+
+        source.tooltipPointerLeave = true;
+    }]);
+
+    
+    source.tooltipEvents.forEach(event =>
+        source.addEventListener(event[0], event[1]));
 }
 
 

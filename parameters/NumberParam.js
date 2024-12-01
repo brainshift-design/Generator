@@ -69,23 +69,6 @@ extends NumberParamBase
             this.setValue(new NumberValue(e.detail.value, dec), true);
             e.preventSetValue = true;
         });
-
-
-        createTooltipSrc(
-            this.div, 
-            this.div, 
-            () => 
-            {
-                this.controls[0].addEventListener('change', () => 
-                {
-                    const tooltip = this.getTooltip();
-                    if (tooltip) hideTooltip(tooltip);
-                });
-
-                return this.getTooltip();
-            },
-            paramTooltipDelay,
-            () => settings.showTooltipParams);
     }
 
 
@@ -125,6 +108,31 @@ extends NumberParamBase
             if (value.meta.ranges)             this.controls[0].ranges     = value.meta.ranges.map(r => r.copy());
 
             this.controls[0].displayAbsolute = value.meta.displayAbsolute;
+
+            const tooltip = document.getElementById(value.meta.tooltipId);
+
+            if (tooltip)
+            {
+                this.getTooltip = () => tooltip;
+
+                createTooltipSrc(
+                    this.div, 
+                    this.div, 
+                    () => 
+                    {
+                        this.controls[0].addEventListener('change', () => 
+                        {
+                            const tooltip = this.getTooltip();
+                            if (tooltip) hideTooltip(tooltip);
+                        });
+
+                        return this.getTooltip();
+                    },
+                    paramTooltipDelay,
+                    () => settings.showTooltipParams);
+            }
+            else
+                this.getTooltip = null;
         }
     }
 

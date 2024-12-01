@@ -14052,6 +14052,8 @@ class NumberValueMeta
 
     displayAbsolute;
 
+    tooltipId;
+
 
 
     constructor(
@@ -14062,7 +14064,8 @@ class NumberValueMeta
         decimals        = Number.NaN, 
         suffix          = NULL, 
         ranges          = null, 
-        displayAbsolute = false)
+        displayAbsolute = false,
+        tooltipId       = NULL)
     {
         this.min             = min;
         this.minDisplay      = minDisplay;
@@ -14075,6 +14078,8 @@ class NumberValueMeta
         this.ranges          = ranges;
 
         this.displayAbsolute = displayAbsolute;
+
+        this.tooltipId       = tooltipId;
     }
 
 
@@ -14089,7 +14094,8 @@ class NumberValueMeta
             0,
             NULL, 
             [],
-            false);
+            false,
+            NULL);
     }
 
 
@@ -14104,7 +14110,8 @@ class NumberValueMeta
             this.decimals,
             this.suffix,
             this.ranges ? this.ranges.map(r => r.copy()) : null,
-            this.displayAbsolute);
+            this.displayAbsolute,
+            this.tooltipId);
     }
 
 
@@ -14123,6 +14130,7 @@ class NumberValueMeta
                  ? ' ' + this.ranges.map(r => r.toString()).join(' ')
                  : '')
             + ' ' + boolToString(this.displayAbsolute)
+            + ' ' + (this.tooltipId != NULL ? encodeURIComponent(this.tooltipId) : NULL_VALUE);
     }
 }
 
@@ -14169,6 +14177,10 @@ function parseNumberValueMeta(str, i = -1)
     
     const displayAbsolute = parseBool(str[i]); i++;
 
+    const tooltipId = str[i] == NULL_VALUE 
+                        ? NULL 
+                        : decodeURIComponent(str[i]); i++;
+
 
     const meta = new NumberValueMeta(
         min,
@@ -14178,7 +14190,8 @@ function parseNumberValueMeta(str, i = -1)
         decimals,
         suffix,
         ranges,
-        displayAbsolute);
+        displayAbsolute,
+        tooltipId);
 
 
     return [meta, i - iStart];
@@ -41775,7 +41788,7 @@ extends GOperator2
         
 
         if (this.value.isValid())
-            this.setValueDecorations(standard);
+            this.setValueDecorations(standard, parse);
 
 
         this.setUpdateValues(parse,
@@ -41794,7 +41807,7 @@ extends GOperator2
 
 
 
-    setValueDecorations(standard)
+    setValueDecorations(standard, parse)
     {
         if (standard.value == 0) // WCAG 2
         {
@@ -41825,7 +41838,8 @@ extends GOperator2
                 2,
                 rating,
                 ranges,
-                false);
+                false,
+                parse.settings.showTooltipColorContrast ? 'ttWcag2' : NULL);
         }
         else // APCA
         {
@@ -41857,7 +41871,8 @@ extends GOperator2
                 1,
                 '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>',
                 ranges,
-                true);
+                true,
+                parse.settings.showTooltipColorContrast ? 'ttWcag3' : NULL);
         }
     }
 
@@ -55748,17 +55763,18 @@ function genRequest(request, save)
 
     const settings =
     {
-        showAllColorSpaces:   ((set >> 0) & 1) != 0,
-        logRequests:          ((set >> 1) & 1) != 0,
-        showTransformPoints:  ((set >> 2) & 1) != 0,
-        loadingNodes:         ((set >> 3) & 1) != 0,
-        showTextTooltips:     ((set >> 4) & 1) != 0,
-        showListTooltips:     ((set >> 5) & 1) != 0,
-        preferHtmlColorNames: ((set >> 6) & 1) != 0,
-        maxSolveIterations:   maxSolveIterations,
-        numberVarNullValue:   numberVarNullValue,
-        boolVarNullValue:     boolVarNullValue,
-        colorVarNullValue:    colorVarNullValue 
+        showAllColorSpaces:       ((set >> 0) & 1) != 0,
+        logRequests:              ((set >> 1) & 1) != 0,
+        showTransformPoints:      ((set >> 2) & 1) != 0,
+        loadingNodes:             ((set >> 3) & 1) != 0,
+        showTextTooltips:         ((set >> 4) & 1) != 0,
+        showListTooltips:         ((set >> 5) & 1) != 0,
+        preferHtmlColorNames:     ((set >> 6) & 1) != 0,
+        showTooltipColorContrast: ((set >> 7) & 1) != 0,
+        maxSolveIterations:       maxSolveIterations,
+        numberVarNullValue:       numberVarNullValue,
+        boolVarNullValue:         boolVarNullValue,
+        colorVarNullValue:        colorVarNullValue 
     };
 
 

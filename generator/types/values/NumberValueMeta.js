@@ -12,6 +12,8 @@ class NumberValueMeta
 
     displayAbsolute;
 
+    tooltipId;
+
 
 
     constructor(
@@ -22,7 +24,8 @@ class NumberValueMeta
         decimals        = Number.NaN, 
         suffix          = NULL, 
         ranges          = null, 
-        displayAbsolute = false)
+        displayAbsolute = false,
+        tooltipId       = NULL)
     {
         this.min             = min;
         this.minDisplay      = minDisplay;
@@ -35,6 +38,8 @@ class NumberValueMeta
         this.ranges          = ranges;
 
         this.displayAbsolute = displayAbsolute;
+
+        this.tooltipId       = tooltipId;
     }
 
 
@@ -49,7 +54,8 @@ class NumberValueMeta
             0,
             NULL, 
             [],
-            false);
+            false,
+            NULL);
     }
 
 
@@ -64,7 +70,8 @@ class NumberValueMeta
             this.decimals,
             this.suffix,
             this.ranges ? this.ranges.map(r => r.copy()) : null,
-            this.displayAbsolute);
+            this.displayAbsolute,
+            this.tooltipId);
     }
 
 
@@ -83,6 +90,7 @@ class NumberValueMeta
                  ? ' ' + this.ranges.map(r => r.toString()).join(' ')
                  : '')
             + ' ' + boolToString(this.displayAbsolute)
+            + ' ' + (this.tooltipId != NULL ? encodeURIComponent(this.tooltipId) : NULL_VALUE);
     }
 }
 
@@ -129,6 +137,10 @@ function parseNumberValueMeta(str, i = -1)
     
     const displayAbsolute = parseBool(str[i]); i++;
 
+    const tooltipId = str[i] == NULL_VALUE 
+                        ? NULL 
+                        : decodeURIComponent(str[i]); i++;
+
 
     const meta = new NumberValueMeta(
         min,
@@ -138,7 +150,8 @@ function parseNumberValueMeta(str, i = -1)
         decimals,
         suffix,
         ranges,
-        displayAbsolute);
+        displayAbsolute,
+        tooltipId);
 
 
     return [meta, i - iStart];

@@ -1389,7 +1389,7 @@ function initPreferenceMenus()
     menuItemShowBoolValues.divName.innerHTML = 'Show boolean values as   <span style="position: relative; top: 1px;">' + TRUE_DISPLAY_MENU + '</span>  <span>' + FALSE_DISPLAY_MENU + '</span>';
 
 
-    menuLogGenerator = new Menu('Log generator', false);
+    menuLogGenerator = new Menu('Log requests', false);
     menuLogGenerator.addItems([
         menuItemLogRequests       = new MenuItem('Requests',          null, false, {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
         menuItemLogValueUpdates   = new MenuItem('Values',            null, false, {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
@@ -1481,7 +1481,7 @@ function initPreferenceMenus()
                                    }),
                                    new MenuItem('',                       null, false, {separator: true}),
         menuItemLogActions       = new MenuItem('Log actions',            null, false, {checkCallback: () => settings.logActions, callback: () => updateSettingAndMenu('logActions', true, !settings.logActions), setting: true}),
-                                   new MenuItem('Log generator',          null, false, {childMenu: menuLogGenerator}),
+                                   new MenuItem('Log requests',           null, false, {childMenu: menuLogGenerator}),
                                    new MenuItem('Log messages',           null, false, {childMenu: menuLogMessages}),
                                    new MenuItem('Log storage',            null, false, {childMenu: menuLogStorage}),
                                    new MenuItem('',                       null, false, {separator: true}),   

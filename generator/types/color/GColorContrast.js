@@ -120,7 +120,7 @@ extends GOperator2
         
 
         if (this.value.isValid())
-            this.setValueDecorations(standard);
+            this.setValueDecorations(standard, parse);
 
 
         this.setUpdateValues(parse,
@@ -139,7 +139,7 @@ extends GOperator2
 
 
 
-    setValueDecorations(standard)
+    setValueDecorations(standard, parse)
     {
         if (standard.value == 0) // WCAG 2
         {
@@ -170,7 +170,8 @@ extends GOperator2
                 2,
                 rating,
                 ranges,
-                false);
+                false,
+                parse.settings.showTooltipColorContrast ? 'ttWcag2' : NULL);
         }
         else // APCA
         {
@@ -202,7 +203,8 @@ extends GOperator2
                 1,
                 '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>',
                 ranges,
-                true);
+                true,
+                parse.settings.showTooltipColorContrast ? 'ttWcag3' : NULL);
         }
     }
 
