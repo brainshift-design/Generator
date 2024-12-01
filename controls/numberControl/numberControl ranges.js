@@ -93,7 +93,6 @@ function updateControlRangeDiv(range, div, controlWidth, controlHeight)
         div.style.height     = (range.bottom - range.top) * controlHeight;
 
         const rgb = colorOrToken(range.background, darkMode);
-        console.log('rgb =', rgb);
 
         div.style.background = rgba2style(rgb);
     }

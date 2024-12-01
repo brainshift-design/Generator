@@ -33,7 +33,10 @@ extends GOperator1
         if (input)
             this.value = input;
         else if (this.value)
+        {
             await this.value.eval(parse);
+            this.value.meta = NumberValueMeta.default();
+        }
         else
             this.value = NumberValue.NaN();
 

@@ -55,10 +55,8 @@ function colorFactor(space)
 
 
 
-function scaleColor(col, space)
+function colorScale(space)
 {
-    let scale;
-
     switch (space)
     {
         case 'hex':
@@ -67,23 +65,33 @@ function scaleColor(col, space)
         case 'p3':
         case 'a98':
         case 'pro':
-        case 'r2020': scale = rgbScale;   break;
+        case 'r2020': return rgbScale;
 
         case 'hsv':
-        case 'hsl':   scale = hs_Scale;   break;
+        case 'hsl':   return hs_Scale;
 
-        case 'hclok': scale = hclokScale; break;
-        case 'hclab': scale = hclabScale; break;
-        case 'hcluv': scale = hcluvScale; break;
+        case 'hclok': return hclokScale;
+        case 'hclab': return hclabScale;
+        case 'hcluv': return hcluvScale;
 
-        case 'oklab': scale = oklabScale; break;
-        case 'lab':   scale = labScale;   break;
-        case 'luv':   scale = luvScale;   break;
+        case 'oklab': return oklabScale;
+        case 'lab':   return labScale;
+        case 'luv':   return luvScale;
 
         case 'xyz':
         case 'xyz50':
-        case 'xyz65': scale = xyzScale;   break;
+        case 'xyz65': return xyzScale;
     }
+
+    console.error('invalid color space \'' + space + '\'');
+    return [1, 1, 1];
+}
+
+
+
+function scaleColor(col, space)
+{
+    let scale = colorScale(space);
 
     return [
         col[0] * scale[0],
@@ -140,7 +148,7 @@ function switchToSpace(node, space)
         case 'xyz65': switchToXyz   (node); break;
     }
 
-    node.resetAllControlRanges();
+    //node.resetAllControlRanges();
 }
 
 
@@ -170,13 +178,13 @@ function switchToRgbControls(node)
         'G', 0, rgbScale[1], 
         'B', 0, rgbScale[2]);  
 
-    node.param1.controls[0].min = 
-    node.param2.controls[0].min = 
-    node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+    // node.param1.controls[0].min = 
+    // node.param2.controls[0].min = 
+    // node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
-    node.param1.controls[0].max = 
-    node.param2.controls[0].max = 
-    node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+    // node.param1.controls[0].max = 
+    // node.param2.controls[0].max = 
+    // node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false);    
 }
@@ -190,13 +198,13 @@ function switchToHs_Controls(node, v_or_l)
         'S',    0, hs_Scale[1], 
         v_or_l, 0, hs_Scale[2]);  
 
-    node.param1.controls[0].suffixOffsetY = -4;
+    //node.param1.controls[0].suffixOffsetY = -4;
 
-    node.param2.controls[0].min = 
-    node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+    // node.param2.controls[0].min = 
+    // node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
-    node.param2.controls[0].max = 
-    node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+    // node.param2.controls[0].max = 
+    // node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false); 
 }
@@ -210,13 +218,13 @@ function switchToHclControls(node, scale)
         'C', 0, scale[1], 
         'L', 0, scale[2]);  
 
-    node.param1.controls[0].suffixOffsetY = -4;
+    // node.param1.controls[0].suffixOffsetY = -4;
 
-    node.param2.controls[0].min = 
-    node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+    // node.param2.controls[0].min = 
+    // node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
-    node.param2.controls[0].max = 
-    node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+    // node.param2.controls[0].max = 
+    // node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false); 
 }
@@ -254,14 +262,14 @@ function switchToXyzControls(node)
         'Y', 0, xyzScale[1], 
         'Z', 0, xyzScale[2]);  
 
-        node.param1.controls[0].min = 
-        node.param2.controls[0].min = 
-        node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
-    
-        node.param1.controls[0].max = 
-        node.param2.controls[0].max = 
-        node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
-    }
+    // node.param1.controls[0].min = 
+    // node.param2.controls[0].min = 
+    // node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+
+    // node.param1.controls[0].max = 
+    // node.param2.controls[0].max = 
+    // node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+}
 
 
 
@@ -282,22 +290,22 @@ function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c
     node.param2.setName(c2, false); 
     node.param3.setName(c3, false);
 
-    node.param1.controls[0].wrapValue = c1wrap;
-    node.param1.controls[0].setSuffix(c1suffix, c1suffix != '');
+    // // node.param1.controls[0].wrapValue = c1wrap;
+    // // node.param1.controls[0].setSuffix(c1suffix, c1suffix != '');
 
-    node.param1.controls[0].setMin(c1min); 
-    node.param2.controls[0].setMin(c2min);
-    node.param3.controls[0].setMin(c3min);
+    // // node.param1.controls[0].setMin(c1min); 
+    // // node.param2.controls[0].setMin(c2min);
+    // // node.param3.controls[0].setMin(c3min);
     
-    node.param1.controls[0].setMax(c1max); 
-    node.param2.controls[0].setMax(c2max); 
-    node.param3.controls[0].setMax(c3max); 
+    // // node.param1.controls[0].setMax(c1max); 
+    // // node.param2.controls[0].setMax(c2max); 
+    // // node.param3.controls[0].setMax(c3max); 
     
-    node.param1.updateControls();
-    node.param2.updateControls();
-    node.param3.updateControls();
+    // node.param1.updateControls();
+    // node.param2.updateControls();
+    // node.param3.updateControls();
 
-    node.param1.controls[0].suffixOffsetY = 0;
+    // node.param1.controls[0].suffixOffsetY = 0;
 }
 
 

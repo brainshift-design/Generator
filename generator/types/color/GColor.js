@@ -195,6 +195,10 @@ extends GOperator1
         if (this.c3     ) this.c3     .parent = this;
 
 
+        if (this.value.isValid())
+            this.setValueDecorations();
+
+
         this.setUpdateValues(parse,
         [
             ['value',   this.value      ],
@@ -209,6 +213,146 @@ extends GOperator1
         this.validate();
 
         return this;
+    }
+
+
+
+    setValueDecorations()
+    {
+        const meta1 = NumberValueMeta.default();
+        const meta2 = NumberValueMeta.default();
+        const meta3 = NumberValueMeta.default();
+
+        
+        const space = colorSpace(this.value.space.value);
+
+
+        switch (space)
+        {
+        case 'hex':   
+        case 'rgb':
+        case 'lin':
+        case 'p3':
+        case 'a98':
+        case 'pro':
+        case 'r2020':
+            meta1.minDisplay = 0;
+            meta2.minDisplay = 0;
+            meta3.minDisplay = 0;
+
+            meta1.maxDisplay = 255;
+            meta2.maxDisplay = 255;
+            meta3.maxDisplay = 255;
+
+            break;
+
+        case 'hsv':
+        case 'hsl':
+            meta1.suffix     = '°';
+
+            meta1.minDisplay = 0;
+            meta2.minDisplay = 0;
+            meta3.minDisplay = 0;
+
+            meta1.maxDisplay = 360;
+            meta2.maxDisplay = 100;
+            meta3.maxDisplay = 100;
+
+            break;
+
+        case 'hclok':
+            meta1.suffix     = '°';
+
+            meta1.minDisplay = 0;
+            meta2.minDisplay = 0;
+            meta3.minDisplay = 0;
+
+            meta1.maxDisplay = 360;
+            meta2.maxDisplay =  50;
+            meta3.maxDisplay = 100;
+
+            break;
+
+        case 'hclab':
+            meta1.suffix     = '°';
+
+            meta1.minDisplay = 0;
+            meta2.minDisplay = 0;
+            meta3.minDisplay = 0;
+
+            meta1.maxDisplay = 360;
+            meta2.maxDisplay = 400;
+            meta3.maxDisplay = 100;
+
+            break;
+
+        case 'hcluv':
+            meta1.suffix     = '°';
+
+            meta1.minDisplay = 0;
+            meta2.minDisplay = 0;
+            meta3.minDisplay = 0;
+
+            meta1.maxDisplay = 360;
+            meta2.maxDisplay = 330;
+            meta3.maxDisplay = 100;
+
+            break;
+
+        case 'oklab':
+            meta1.minDisplay =   0;
+            meta2.minDisplay = -30;
+            meta3.minDisplay = -30;
+
+            meta1.maxDisplay = 100;
+            meta2.maxDisplay =  30;
+            meta3.maxDisplay =  30;
+
+            break;
+
+
+        case 'lab':
+            meta1.minDisplay =    0;
+            meta2.minDisplay = -100;
+            meta3.minDisplay = -100;
+
+            meta1.maxDisplay =  100;
+            meta2.maxDisplay =  100;
+            meta3.maxDisplay =  100;
+
+            break;
+
+
+        case 'luv':
+            meta1.minDisplay =    0;
+            meta2.minDisplay = -150;
+            meta3.minDisplay = -150;
+
+            meta1.maxDisplay =  100;
+            meta2.maxDisplay =  150;
+            meta3.maxDisplay =  150;
+
+            break;
+
+            
+        case 'xyz':
+        case 'xyz50':
+        case 'xyz65':
+            meta1.minDisplay = 0;
+            meta2.minDisplay = 0;
+            meta3.minDisplay = 0;
+
+            meta1.maxDisplay = 100;
+            meta2.maxDisplay = 100;
+            meta3.maxDisplay = 100;
+
+            break;
+        }
+
+
+        this.value.c1.meta = meta1;
+        this.value.c2.meta = meta2;
+        this.value.c3.meta = meta3;
     }
 
 

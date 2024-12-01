@@ -63,7 +63,6 @@ function colorOrToken(value, darkMode = false)
                 ? 'darkMode' 
                 : 'lightMode');
 
-        console.log('color =', color);
         if (color) return color;
     }
 

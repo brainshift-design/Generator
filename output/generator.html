@@ -14061,7 +14061,7 @@ class NumberValueMeta
         maxDisplay      = Number.NaN, 
         decimals        = Number.NaN, 
         suffix          = NULL, 
-        ranges          = [], 
+        ranges          = null, 
         displayAbsolute = false)
     {
         this.min             = min;
@@ -14079,6 +14079,21 @@ class NumberValueMeta
 
 
 
+    static default()
+    {
+        return new NumberValueMeta(
+            Number.MIN_SAFE_INTEGER, 
+            Number.MIN_SAFE_INTEGER, 
+            Number.MAX_SAFE_INTEGER, 
+            Number.MAX_SAFE_INTEGER, 
+            0,
+            NULL, 
+            [],
+            false);
+    }
+
+
+
     copy()
     {
         return new NumberValueMeta(
@@ -14088,7 +14103,7 @@ class NumberValueMeta
             this.maxDisplay,
             this.decimals,
             this.suffix,
-            this.ranges.map(r => r.copy()),
+            this.ranges ? this.ranges.map(r => r.copy()) : null,
             this.displayAbsolute);
     }
 
@@ -14101,9 +14116,12 @@ class NumberValueMeta
             + ' ' + this.max       .toString()
             + ' ' + this.maxDisplay.toString()
             + ' ' + this.decimals  .toString()
-            + ' ' + encodeURIComponent(this.suffix)
-            + ' ' + this.ranges.length.toString()
-            + ' ' + this.ranges.map(r => r.toString()).join(' ')
+            + ' ' + (this.suffix == NULL ? NULL_VALUE : encodeURIComponent(this.suffix))
+            + ' ' + (this.ranges ? this.ranges.length.toString() : NULL_VALUE)
+            + (   this.ranges
+               && this.ranges.length > 0
+                 ? ' ' + this.ranges.map(r => r.toString()).join(' ')
+                 : '')
             + ' ' + boolToString(this.displayAbsolute)
     }
 }
@@ -14121,23 +14139,35 @@ function parseNumberValueMeta(str, i = -1)
 
     const iStart = i;
 
-    const min             = parseFloat        (str[i]); i++;
-    const minDisplay      = parseFloat        (str[i]); i++;
-    const max             = parseFloat        (str[i]); i++;
-    const maxDisplay      = parseFloat        (str[i]); i++;
-    const decimals        = parseInt          (str[i]); i++;
-    const suffix          = decodeURIComponent(str[i]); i++;
-    const nRanges         = parseInt          (str[i]); i++;
+    const min        = parseFloat(str[i]); i++;
+    const minDisplay = parseFloat(str[i]); i++;
+    const max        = parseFloat(str[i]); i++;
+    const maxDisplay = parseFloat(str[i]); i++;
+    const decimals   = parseInt  (str[i]); i++;
+    const suffix     = str[i] == NULL_VALUE 
+                          ? NULL 
+                          : decodeURIComponent(str[i]); i++;
 
-    const ranges = [];
+    let ranges = null;
 
-    for (let j = 0; j < nRanges; j++)
+    if (str[i] == NULL_VALUE)
+        i++;
+
+    else
     {
-        const range = parseNumberValueRange(str, i); i += range[1];
-        ranges.push(range[0]);
+        const nRanges = parseInt(str[i]); i++;
+
+        ranges = [];
+
+        for (let j = 0; j < nRanges; j++)
+        {
+            const range = parseNumberValueRange(str, i); i += range[1];
+            ranges.push(range[0]);
+        }
     }
+
     
-    const displayAbsolute = parseBool         (str[i]); i++;
+    const displayAbsolute = parseBool(str[i]); i++;
 
 
     const meta = new NumberValueMeta(
@@ -27845,7 +27875,10 @@ extends GOperator1
         if (input)
             this.value = input;
         else if (this.value)
+        {
             await this.value.eval(parse);
+            this.value.meta = NumberValueMeta.default();
+        }
         else
             this.value = NumberValue.NaN();
 
@@ -40897,6 +40930,10 @@ extends GOperator1
         if (this.c3     ) this.c3     .parent = this;
 
 
+        if (this.value.isValid())
+            this.setValueDecorations();
+
+
         this.setUpdateValues(parse,
         [
             ['value',   this.value      ],
@@ -40911,6 +40948,146 @@ extends GOperator1
         this.validate();
 
         return this;
+    }
+
+
+
+    setValueDecorations()
+    {
+        const meta1 = NumberValueMeta.default();
+        const meta2 = NumberValueMeta.default();
+        const meta3 = NumberValueMeta.default();
+
+        
+        const space = colorSpace(this.value.space.value);
+
+
+        switch (space)
+        {
+        case 'hex':   
+        case 'rgb':
+        case 'lin':
+        case 'p3':
+        case 'a98':
+        case 'pro':
+        case 'r2020':
+            meta1.minDisplay = 0;
+            meta2.minDisplay = 0;
+            meta3.minDisplay = 0;
+
+            meta1.maxDisplay = 255;
+            meta2.maxDisplay = 255;
+            meta3.maxDisplay = 255;
+
+            break;
+
+        case 'hsv':
+        case 'hsl':
+            meta1.suffix     = '°';
+
+            meta1.minDisplay = 0;
+            meta2.minDisplay = 0;
+            meta3.minDisplay = 0;
+
+            meta1.maxDisplay = 360;
+            meta2.maxDisplay = 100;
+            meta3.maxDisplay = 100;
+
+            break;
+
+        case 'hclok':
+            meta1.suffix     = '°';
+
+            meta1.minDisplay = 0;
+            meta2.minDisplay = 0;
+            meta3.minDisplay = 0;
+
+            meta1.maxDisplay = 360;
+            meta2.maxDisplay =  50;
+            meta3.maxDisplay = 100;
+
+            break;
+
+        case 'hclab':
+            meta1.suffix     = '°';
+
+            meta1.minDisplay = 0;
+            meta2.minDisplay = 0;
+            meta3.minDisplay = 0;
+
+            meta1.maxDisplay = 360;
+            meta2.maxDisplay = 400;
+            meta3.maxDisplay = 100;
+
+            break;
+
+        case 'hcluv':
+            meta1.suffix     = '°';
+
+            meta1.minDisplay = 0;
+            meta2.minDisplay = 0;
+            meta3.minDisplay = 0;
+
+            meta1.maxDisplay = 360;
+            meta2.maxDisplay = 330;
+            meta3.maxDisplay = 100;
+
+            break;
+
+        case 'oklab':
+            meta1.minDisplay =   0;
+            meta2.minDisplay = -30;
+            meta3.minDisplay = -30;
+
+            meta1.maxDisplay = 100;
+            meta2.maxDisplay =  30;
+            meta3.maxDisplay =  30;
+
+            break;
+
+
+        case 'lab':
+            meta1.minDisplay =    0;
+            meta2.minDisplay = -100;
+            meta3.minDisplay = -100;
+
+            meta1.maxDisplay =  100;
+            meta2.maxDisplay =  100;
+            meta3.maxDisplay =  100;
+
+            break;
+
+
+        case 'luv':
+            meta1.minDisplay =    0;
+            meta2.minDisplay = -150;
+            meta3.minDisplay = -150;
+
+            meta1.maxDisplay =  100;
+            meta2.maxDisplay =  150;
+            meta3.maxDisplay =  150;
+
+            break;
+
+            
+        case 'xyz':
+        case 'xyz50':
+        case 'xyz65':
+            meta1.minDisplay = 0;
+            meta2.minDisplay = 0;
+            meta3.minDisplay = 0;
+
+            meta1.maxDisplay = 100;
+            meta2.maxDisplay = 100;
+            meta3.maxDisplay = 100;
+
+            break;
+        }
+
+
+        this.value.c1.meta = meta1;
+        this.value.c2.meta = meta2;
+        this.value.c3.meta = meta3;
     }
 
 
@@ -69163,10 +69340,8 @@ function colorFactor(space)
 
 
 
-function scaleColor(col, space)
+function colorScale(space)
 {
-    let scale;
-
     switch (space)
     {
         case 'hex':
@@ -69175,23 +69350,33 @@ function scaleColor(col, space)
         case 'p3':
         case 'a98':
         case 'pro':
-        case 'r2020': scale = rgbScale;   break;
+        case 'r2020': return rgbScale;
 
         case 'hsv':
-        case 'hsl':   scale = hs_Scale;   break;
+        case 'hsl':   return hs_Scale;
 
-        case 'hclok': scale = hclokScale; break;
-        case 'hclab': scale = hclabScale; break;
-        case 'hcluv': scale = hcluvScale; break;
+        case 'hclok': return hclokScale;
+        case 'hclab': return hclabScale;
+        case 'hcluv': return hcluvScale;
 
-        case 'oklab': scale = oklabScale; break;
-        case 'lab':   scale = labScale;   break;
-        case 'luv':   scale = luvScale;   break;
+        case 'oklab': return oklabScale;
+        case 'lab':   return labScale;
+        case 'luv':   return luvScale;
 
         case 'xyz':
         case 'xyz50':
-        case 'xyz65': scale = xyzScale;   break;
+        case 'xyz65': return xyzScale;
     }
+
+    console.error('invalid color space \'' + space + '\'');
+    return [1, 1, 1];
+}
+
+
+
+function scaleColor(col, space)
+{
+    let scale = colorScale(space);
 
     return [
         col[0] * scale[0],
@@ -69248,7 +69433,7 @@ function switchToSpace(node, space)
         case 'xyz65': switchToXyz   (node); break;
     }
 
-    node.resetAllControlRanges();
+    //node.resetAllControlRanges();
 }
 
 
@@ -69278,13 +69463,13 @@ function switchToRgbControls(node)
         'G', 0, rgbScale[1], 
         'B', 0, rgbScale[2]);  
 
-    node.param1.controls[0].min = 
-    node.param2.controls[0].min = 
-    node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+    // node.param1.controls[0].min = 
+    // node.param2.controls[0].min = 
+    // node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
-    node.param1.controls[0].max = 
-    node.param2.controls[0].max = 
-    node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+    // node.param1.controls[0].max = 
+    // node.param2.controls[0].max = 
+    // node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false);    
 }
@@ -69298,13 +69483,13 @@ function switchToHs_Controls(node, v_or_l)
         'S',    0, hs_Scale[1], 
         v_or_l, 0, hs_Scale[2]);  
 
-    node.param1.controls[0].suffixOffsetY = -4;
+    //node.param1.controls[0].suffixOffsetY = -4;
 
-    node.param2.controls[0].min = 
-    node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+    // node.param2.controls[0].min = 
+    // node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
-    node.param2.controls[0].max = 
-    node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+    // node.param2.controls[0].max = 
+    // node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false); 
 }
@@ -69318,13 +69503,13 @@ function switchToHclControls(node, scale)
         'C', 0, scale[1], 
         'L', 0, scale[2]);  
 
-    node.param1.controls[0].suffixOffsetY = -4;
+    // node.param1.controls[0].suffixOffsetY = -4;
 
-    node.param2.controls[0].min = 
-    node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+    // node.param2.controls[0].min = 
+    // node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
-    node.param2.controls[0].max = 
-    node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+    // node.param2.controls[0].max = 
+    // node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false); 
 }
@@ -69362,14 +69547,14 @@ function switchToXyzControls(node)
         'Y', 0, xyzScale[1], 
         'Z', 0, xyzScale[2]);  
 
-        node.param1.controls[0].min = 
-        node.param2.controls[0].min = 
-        node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
-    
-        node.param1.controls[0].max = 
-        node.param2.controls[0].max = 
-        node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
-    }
+    // node.param1.controls[0].min = 
+    // node.param2.controls[0].min = 
+    // node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+
+    // node.param1.controls[0].max = 
+    // node.param2.controls[0].max = 
+    // node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+}
 
 
 
@@ -69390,22 +69575,22 @@ function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c
     node.param2.setName(c2, false); 
     node.param3.setName(c3, false);
 
-    node.param1.controls[0].wrapValue = c1wrap;
-    node.param1.controls[0].setSuffix(c1suffix, c1suffix != '');
+    // // node.param1.controls[0].wrapValue = c1wrap;
+    // // node.param1.controls[0].setSuffix(c1suffix, c1suffix != '');
 
-    node.param1.controls[0].setMin(c1min); 
-    node.param2.controls[0].setMin(c2min);
-    node.param3.controls[0].setMin(c3min);
+    // // node.param1.controls[0].setMin(c1min); 
+    // // node.param2.controls[0].setMin(c2min);
+    // // node.param3.controls[0].setMin(c3min);
     
-    node.param1.controls[0].setMax(c1max); 
-    node.param2.controls[0].setMax(c2max); 
-    node.param3.controls[0].setMax(c3max); 
+    // // node.param1.controls[0].setMax(c1max); 
+    // // node.param2.controls[0].setMax(c2max); 
+    // // node.param3.controls[0].setMax(c3max); 
     
-    node.param1.updateControls();
-    node.param2.updateControls();
-    node.param3.updateControls();
+    // node.param1.updateControls();
+    // node.param2.updateControls();
+    // node.param3.updateControls();
 
-    node.param1.controls[0].suffixOffsetY = 0;
+    // node.param1.controls[0].suffixOffsetY = 0;
 }
 
 

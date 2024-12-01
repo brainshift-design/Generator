@@ -119,26 +119,12 @@ extends NumberParamBase
             if (!isNaN(value.meta.maxDisplay)) this.controls[0].maxDisplay = value.meta.maxDisplay;
 
             if (!isNaN(value.meta.decimals))   this.controls[0].setDecimals(value.meta.decimals);
-            if (value.meta.suffix != NULL)     this.controls[0].setSuffix  (value.meta.suffix);
 
-            if (value.meta.ranges.length > 0)  this.controls[0].ranges     = value.meta.ranges.map(r => r.copy());
+            this.controls[0].setSuffix(value.meta.suffix);
+            
+            if (value.meta.ranges)             this.controls[0].ranges     = value.meta.ranges.map(r => r.copy());
 
             this.controls[0].displayAbsolute = value.meta.displayAbsolute;
-        }
-        else
-        {
-            this.controls[0].min        = Number.MIN_SAFE_INTEGER;
-            this.controls[0].minDisplay = Number.MIN_SAFE_INTEGER;
-
-            this.controls[0].max        = Number.MAX_SAFE_INTEGER;
-            this.controls[0].maxDisplay = Number.MAX_SAFE_INTEGER;
-
-            this.controls[0].setDecimals(0);
-            if (this.controls[0].suffix != NULL) this.controls[0].setSuffix  (NULL);
-
-            this.controls[0].ranges     = [];
-
-            this.controls[0].displayAbsolute = false;
         }
     }
 
