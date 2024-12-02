@@ -25,7 +25,7 @@ class NumberValueMeta
         suffix          = NULL, 
         ranges          = null, 
         displayAbsolute = false,
-        tooltipId       = NULL)
+        tooltipId       = null)
     {
         this.min             = min;
         this.minDisplay      = minDisplay;
@@ -90,7 +90,7 @@ class NumberValueMeta
                  ? ' ' + this.ranges.map(r => r.toString()).join(' ')
                  : '')
             + ' ' + boolToString(this.displayAbsolute)
-            + ' ' + (this.tooltipId != NULL ? encodeURIComponent(this.tooltipId) : NULL_VALUE);
+            + ' ' + (this.tooltipId ? '"' + encodeURIComponent(this.tooltipId) + '"' : NULL_VALUE);
     }
 }
 
@@ -138,8 +138,8 @@ function parseNumberValueMeta(str, i = -1)
     const displayAbsolute = parseBool(str[i]); i++;
 
     const tooltipId = str[i] == NULL_VALUE 
-                        ? NULL 
-                        : decodeURIComponent(str[i]); i++;
+                        ? null 
+                        : decodeURIComponent(str[i].substring(1, -1)); i++;
 
 
     const meta = new NumberValueMeta(

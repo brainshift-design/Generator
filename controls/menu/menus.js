@@ -409,9 +409,9 @@ function initGeneratorMenus()
                                     new MenuItem('',                              null, false, {separator: true}),
         menuItemShowObjectCount   = new MenuItem('Show canvas object count',      null, false, {checkCallback: () => settings.showObjectCount,   callback: () => { updateSettingAndMenu('showObjectCount',   true, !settings.showObjectCount);   updateObjectCountDisplay();            }}),
                                     new MenuItem('',                              null, false, {separator: true}),
+        menuItemShowNodeIcons     = new MenuItem('Show node icons',               null, false, {checkCallback: () => settings.showNodeIcons,     callback: () => { updateSettingAndMenu('showNodeIcons',     true, !settings.showNodeIcons);     updateMenuItemShowNodeIcons();         }}),
         menuItemShowBoolValues    = new MenuItem('Show boolean values as   ✓ ✗', null, false, {checkCallback: () => settings.showBoolValues,    callback: () => { updateSettingAndMenu('showBoolValues',    true, !settings.showBoolValues);    updateMenuItemShowBoolValues();        }}),
-        menuItemSeparateThousands = new MenuItem('Separate thousands in numbers', null, false, {checkCallback: () => settings.separateThousands, callback: () => { updateSettingAndMenu('separateThousands', true, !settings.separateThousands); updateMenuItemSeparateThousands();     }}),
-        menuItemShowNodeIcons     = new MenuItem('Show node icons',               null, false, {checkCallback: () => settings.showNodeIcons,     callback: () => { updateSettingAndMenu('showNodeIcons',     true, !settings.showNodeIcons);     updateMenuItemShowNodeIcons();         }})]);
+        menuItemSeparateThousands = new MenuItem('Separate thousands in numbers', null, false, {checkCallback: () => settings.separateThousands, callback: () => { updateSettingAndMenu('separateThousands', true, !settings.separateThousands); updateMenuItemSeparateThousands();     }})]);
 
 
     menuShiftR = new Menu('Shift+R', false);

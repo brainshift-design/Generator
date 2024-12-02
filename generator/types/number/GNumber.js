@@ -32,11 +32,23 @@ extends GOperator1
 
         if (input)
             this.value = input;
+
         else if (this.value)
         {
             await this.value.eval(parse);
-            this.value.meta = NumberValueMeta.default();
+
+            this.value.meta = new NumberValueMeta(
+                Number.MIN_SAFE_INTEGER,
+                Number.MIN_SAFE_INTEGER,
+                Number.MAX_SAFE_INTEGER,
+                Number.MAX_SAFE_INTEGER,
+                Number.NaN, // don't touch decimals
+                NULL,
+                [],
+                false,
+                NULL);
         }
+        
         else
             this.value = NumberValue.NaN();
 

@@ -14,7 +14,7 @@ function createTooltipSrc(source, ref, getTooltip, delay = 1000, canShow = null)
     if (source.tooltipEvents)
     {
         source.tooltipEvents.forEach(event => 
-            tooltipEvents.removeEventListener(event[0], event[1]));
+            source.removeEventListener(event[0], event[1]));
     }
 
 
@@ -43,7 +43,6 @@ function createTooltipSrc(source, ref, getTooltip, delay = 1000, canShow = null)
             }, 
                currentTooltip
             && currentTooltip != getTooltip()
-               //|| currentTooltipSource != source
                 ? 0 
                 : delay);
         }
