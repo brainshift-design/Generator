@@ -78,10 +78,10 @@ extends NumberParamBase
         });
 
 
-        // this.tooltip = createDiv('tooltip');
-        // document.body.appendChild(this.tooltip);
+        this.tooltip = createDiv('tooltip');
+        document.body.appendChild(this.tooltip);
 
-        //createTooltip(this.tooltip);
+        createTooltip(this.tooltip);
 
         createTooltipSrc(this.div, this.div, () => 
         {
@@ -131,6 +131,16 @@ extends NumberParamBase
         this            .options = [...options];
         this.controls[0].options = [...options];
     }
+
+
+
+    // setValue(value, createAction, updateControl = true, dispatchEvents = true)
+    // {
+    //     super.setValue(value, createAction, updateControl, dispatchEvents);
+
+    //     if (value.meta)
+    //         this.updateTooltipFromMeta(value.meta);
+    // }
 
 
 

@@ -142,6 +142,10 @@ extends GOperator
             this.value = this.value.color;
 
 
+        space.meta = new NumberValueMeta();
+        space.meta.tooltipId = 'ttInterpolationSpace';
+
+
         this.setUpdateValues(parse,
         [
             ['value',  this.value       ],

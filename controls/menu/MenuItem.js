@@ -409,9 +409,6 @@ class MenuItem
                 this.parentMenu.button.update();
         }
 
-        if (!shift) 
-            hideAllMenus();
-
 
         const e = 
         {
@@ -424,12 +421,29 @@ class MenuItem
         if (!isNaN(x)) e.clientX = x;
         if (!isNaN(y)) e.clientY = y;
 
+
+        let hideDelay = -1;
+
         if (    this.callback
             && !this.pro)
-            this.callback(e);
+        {
+            const result = this.callback(e); 
+            if (result) hideDelay = result;
+        }
         else
+        {
             uiFigmaManageSubscription();
             //showSubscriptionDialog(false);
+        }
+
+
+        if (!shift)
+        {
+            if (hideDelay < 0)
+                hideAllMenus();
+            else
+                setTimeout(() => hideAllMenus(), hideDelay);
+        }
 
 
         addMetricsEvent(METRICS_MENU_ITEM, this.name);

@@ -69,7 +69,10 @@ extends GOperator1
             this.value = ColorValue.NaN();
 
 
+        method.meta = new NumberValueMeta();
+        method.meta.tooltipId = 'ttValidateMethod';
         
+
         this.setUpdateValues(parse,
         [
             ['value',  this.value       ],

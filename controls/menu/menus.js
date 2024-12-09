@@ -369,23 +369,26 @@ var menuItemLicenseRemove;
 var menuItemSaveTemplate;
 
 
+const menuCheckDelay = 200;
+
+
 
 function initGeneratorMenus()
 {
     menuShowTooltips = new Menu('Show tooltips', false);
     menuShowTooltips.addItems([
-        menuItemShowTooltipNodes              = new MenuItem('Nodes',               null, false, {checkCallback: () => settings.showTooltipNodes,              callback: () => { updateSettingAndMenu('showTooltipNodes',              true, !settings.showTooltipNodes             ); }}),
-        menuItemShowTooltipParams             = new MenuItem('Parameters',          null, false, {checkCallback: () => settings.showTooltipParams,             callback: () => { updateSettingAndMenu('showTooltipParams',             true, !settings.showTooltipParams            ); }}),
+        menuItemShowTooltipNodes              = new MenuItem('Nodes',               null, false, {checkCallback: () => settings.showTooltipNodes,              callback: () => { updateSettingAndMenu('showTooltipNodes',              true, !settings.showTooltipNodes             ); return menuCheckDelay; }}),
+        menuItemShowTooltipParams             = new MenuItem('Parameters',          null, false, {checkCallback: () => settings.showTooltipParams,             callback: () => { updateSettingAndMenu('showTooltipParams',             true, !settings.showTooltipParams            ); return menuCheckDelay; }}),
                                                 new MenuItem('',                    null, false, {separator: true}),    
-        menuItemShowTooltipLists              = new MenuItem('List items',          null, false, {checkCallback: () => settings.showTooltipLists,              callback: () => { updateSettingAndMenu('showTooltipLists',              true, !settings.showTooltipLists             ); }}),
-        menuItemShowTooltipLongText           = new MenuItem('Long text',           null, false, {checkCallback: () => settings.showTooltipLongText,           callback: () => { updateSettingAndMenu('showTooltipLongText',           true, !settings.showTooltipLongText          ); }}),
+        menuItemShowTooltipLists              = new MenuItem('List items',          null, false, {checkCallback: () => settings.showTooltipLists,              callback: () => { updateSettingAndMenu('showTooltipLists',              true, !settings.showTooltipLists             ); return menuCheckDelay; }}),
+        menuItemShowTooltipLongText           = new MenuItem('Long text',           null, false, {checkCallback: () => settings.showTooltipLongText,           callback: () => { updateSettingAndMenu('showTooltipLongText',           true, !settings.showTooltipLongText          ); return menuCheckDelay; }}),
                                                 new MenuItem('',                    null, false, {separator: true}),    
-        menuItemShowTooltipAscii              = new MenuItem('ASCII',               null, false, {checkCallback: () => settings.showTooltipAscii,              callback: () => { updateSettingAndMenu('showTooltipAscii',              true, !settings.showTooltipAscii             ); }}),        
-        menuItemShowTooltipColorNames         = new MenuItem('Color names',         null, false, {checkCallback: () => settings.showTooltipColorNames,         callback: () => { updateSettingAndMenu('showTooltipColorNames',         true, !settings.showTooltipColorNames        ); }}),
-        menuItemShowTooltipColorContrast      = new MenuItem('Color contrast',      null, false, {checkCallback: () => settings.showTooltipColorContrast,      callback: () => { updateSettingAndMenu('showTooltipColorContrast',      true, !settings.showTooltipColorContrast     ); }}),
-        menuItemShowTooltipColorInterpolation = new MenuItem('Color interpolation', null, false, {checkCallback: () => settings.showTooltipColorInterpolation, callback: () => { updateSettingAndMenu('showTooltipColorInterpolation', true, !settings.showTooltipColorInterpolation); }}),
-        menuItemShowTooltipValidateMethod     = new MenuItem('Validation method',   null, false, {checkCallback: () => settings.showTooltipValidateMethod,     callback: () => { updateSettingAndMenu('showTooltipValidateMethod',     true, !settings.showTooltipValidateMethod    ); }}),
-        menuItemShowTooltipColorBlindness     = new MenuItem('Color blindness',     null, false, {checkCallback: () => settings.showTooltipColorBlindness,     callback: () => { updateSettingAndMenu('showTooltipColorBlindness',     true, !settings.showTooltipColorBlindness    ); }})]);
+        menuItemShowTooltipAscii              = new MenuItem('ASCII',               null, false, {checkCallback: () => settings.showTooltipAscii,              callback: () => { updateSettingAndMenu('showTooltipAscii',              true, !settings.showTooltipAscii             ); return menuCheckDelay; }}),        
+        menuItemShowTooltipColorNames         = new MenuItem('Color names',         null, false, {checkCallback: () => settings.showTooltipColorNames,         callback: () => { updateSettingAndMenu('showTooltipColorNames',         true, !settings.showTooltipColorNames        ); return menuCheckDelay; }}),
+        menuItemShowTooltipColorContrast      = new MenuItem('Color contrast',      null, false, {checkCallback: () => settings.showTooltipColorContrast,      callback: () => { updateSettingAndMenu('showTooltipColorContrast',      true, !settings.showTooltipColorContrast     ); return menuCheckDelay; }}),
+        menuItemShowTooltipColorInterpolation = new MenuItem('Color interpolation', null, false, {checkCallback: () => settings.showTooltipColorInterpolation, callback: () => { updateSettingAndMenu('showTooltipColorInterpolation', true, !settings.showTooltipColorInterpolation); return menuCheckDelay; }}),
+        menuItemShowTooltipValidateMethod     = new MenuItem('Validation method',   null, false, {checkCallback: () => settings.showTooltipValidateMethod,     callback: () => { updateSettingAndMenu('showTooltipValidateMethod',     true, !settings.showTooltipValidateMethod    ); return menuCheckDelay; }}),
+        menuItemShowTooltipColorBlindness     = new MenuItem('Color blindness',     null, false, {checkCallback: () => settings.showTooltipColorBlindness,     callback: () => { updateSettingAndMenu('showTooltipColorBlindness',     true, !settings.showTooltipColorBlindness    ); return menuCheckDelay; }})]);
 
 
     // menuShowWarnings = new Menu('Show warnings', false);

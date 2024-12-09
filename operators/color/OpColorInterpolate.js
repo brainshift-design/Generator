@@ -87,10 +87,10 @@ extends OpColorBase
         this.header.connectionPadding = 12.5;
 
         
-        this.paramSpace.getTooltip = () => 
-            settings.showTooltipColorInterpolation 
-            ? ttInterpolationSpace 
-            : null;
+        // this.paramSpace.getTooltip = () => 
+        //     settings.showTooltipColorInterpolation 
+        //     ? ttInterpolationSpace 
+        //     : null;
     }
 
 

@@ -201,6 +201,63 @@ extends Parameter
 
 
 
+    updateTooltipFromMeta(meta)
+    {
+        console.log('-0 meta =', meta);
+        
+        if (meta.tooltipId)
+        {
+            console.log('0 meta.tooltipId =', meta.tooltipId);
+
+            const tooltip = document.getElementById(meta.tooltipId);
+
+            if (tooltip)
+            {
+                this.getTooltip = () => tooltip;
+
+                console.log('1 tooltip.id =', tooltip.id);
+
+                createTooltipSrc(
+                    this.div, 
+                    this.div, 
+                    () => 
+                    {
+                        this.controls[0].addEventListener('change', () => 
+                        {
+                            const tooltip = this.getTooltip();
+                            if (tooltip) hideTooltip(tooltip);
+                        });
+
+                        return this.getTooltip();
+                    },
+                    paramTooltipDelay,
+                    () => 
+                    {
+                        console.log('2 tooltip.id =', tooltip.id);
+
+                        return   settings.showTooltipParams
+                                ||    settings.showTooltipColorContrast
+                                    && (   tooltip.id == 'ttWcag2'
+                                        || tooltip.id == 'ttWcag3')
+                                ||    settings.showTooltipAscii
+                                    && tooltip.id == 'ttAscii'
+                                ||    settings.showTooltipColorNames
+                                    && tooltip.id == 'ttColorNames'
+                                ||    settings.showTooltipColorInterpolation
+                                    && tooltip.id == 'ttInterpolationSpace'
+                                ||    settings.showTooltipValidateMethod
+                                    && tooltip.id == 'ttValidateMethod'
+                                ||    settings.showTooltipColorBlindness
+                                    && tooltip.id == 'ttColorblind';
+                    });
+            }
+            else
+                this.getTooltip = null;
+        }    
+    }
+
+
+
     updateValueText()
     {
         let unknown = false;

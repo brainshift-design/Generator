@@ -39,10 +39,10 @@ extends OpColorBase
         this.header.connectionPadding = 18;
 
 
-        this.paramMethod.getTooltip = () => 
-            settings.showTooltipValidateMethod
-            ? ttValidateMethod 
-            : null;
+        // this.paramMethod.getTooltip = () => 
+        //     settings.showTooltipValidateMethod
+        //     ? ttValidateMethod 
+        //     : null;
     }
 
 
@@ -100,8 +100,8 @@ extends OpColorBase
         this._color = 
                 value
             && !isListValueType(value.type)
-            ? value.toDataColor()
-            : dataColor_NaN;
+                ? value.toDataColor()
+                : dataColor_NaN;
 
 
         if (isColorType(value.type))
@@ -116,7 +116,7 @@ extends OpColorBase
         this.endProgress();
 
 
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+        //super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
