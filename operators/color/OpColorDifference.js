@@ -10,7 +10,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(COLOR_DIFFERENCE, 'colorDiff', 'color difference', iconColorDeltaE);
+        super(COLOR_DIFFERENCE, 'colorDiff', 'difference', iconColorDeltaE);
 
         this.outputValueType = ANY_VALUE;
         this.subscription    = true;
