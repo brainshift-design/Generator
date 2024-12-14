@@ -31,12 +31,12 @@
 
 .menuButtonIcon
 {
-    display:             inline-block;
-    width:               30px;
-    height:              40px;
-    position:            relative;
-    left:               -2px;
-    top:                -5px;
+    display:   inline-block;
+    width:     30px;
+    height:    40px;
+    position:  relative;
+    left:     -2px;
+    top:      -5px;
     /* box-shadow: 0 0 0 1px yellow inset; */
 }
 

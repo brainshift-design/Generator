@@ -238,7 +238,7 @@ class Menu
         if (!right)
         {
             this.divArrow.style.display = 'block';
-            this.divArrow.style.opacity = '100%';
+            this.divArrow.style.opacity = '0%';
         }
 
 
@@ -256,9 +256,9 @@ class Menu
         const x = Math.min(Math.max(
             margin, 
             right
-            ? (this.showOnLeft ? srcRect.x - this.div.offsetWidth - 4 : srcRect.x + srcRect.width + 4)
-            : srcRect.x + srcRect.width/2 - this.div.offsetWidth/2 - 4),
-            graphView.div.offsetWidth - this.div.offsetWidth - margin);
+                ? (this.showOnLeft ? srcRect.x - this.div.offsetWidth - 4 : srcRect.x + srcRect.width + 4)
+                : srcRect.x + srcRect.width/2 - this.div.offsetWidth/2 - 4),
+            graphView.div.offsetWidth - this.div.offsetWidth - margin - 7);
 
 
         const dy = subMenu ? 4 : -1;
@@ -400,7 +400,7 @@ class Menu
             }
             
             if (this == menuLocalVariables)
-                height += 39; // for the search bar
+                height += 40; // for the search bar
         }
 
 

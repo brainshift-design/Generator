@@ -1145,7 +1145,7 @@ function initGeneratorMenus()
     btnMain.div.style.paddingLeft            = '6px';
 
     btnZoom.div.style.position               = 'absolute';
-    btnZoom.div.style.right                  = '0px';
+    btnZoom.div.style.right                  = '3px';
     btnZoom.div.style.paddingRight           = '5px';
     btnZoom.div.style.paddingLeft            = '11px';
     // btnZoom.div.style.boxShadow           = '0 0 0 1px red inset';

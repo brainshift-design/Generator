@@ -22,7 +22,7 @@ const pageTag              = 'G_PAGE';
 const tempTag              = 'G_TEMP';
 
 const minWindowWidth       = 602;
-const minWindowHeight      =  39;
+const minWindowHeight      =  40;
 
 
 const identity = Object.freeze(

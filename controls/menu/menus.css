@@ -1,17 +1,17 @@
 #menuBar
 {
     display:          flex;
-    height:           39px;
+    height:           40px;
     background-color: #2c2c2c;
-    /* border-bottom:    1px solid #424242; */
+    border-bottom:    1px solid #424242;
     /* border-bottom:    1px solid var(--figma-color-bg-tertiary); */
-    padding:          0;
-    padding-left:     2px;
-    padding-right:    2px;
+    padding-top:      0;
+    padding-bottom:   0;
+    padding-left:     3px;
     cursor:           default;
     position:         relative;
     z-index:          4;
-    box-shadow:       0 1px 4px 0 #0002, 0 0 0 1px red inset;
+    /* box-shadow:       0 1px 4px 0 #0002; */
     /* vertical-align:   middle; */
 }
 
