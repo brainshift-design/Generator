@@ -2588,7 +2588,7 @@ selectSearchItem
 updateSearchBox
 iconSets
 iconColorScheme
-iconColorDeltaE
+iconColorDifference
 iconValues
 GColorScheme
 iconBooleanValue

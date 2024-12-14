@@ -765,7 +765,7 @@ function initGeneratorMenus()
         menuItemColorblind      = new MenuItem('Colorblind',       null,                false, {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
                                   new MenuItem('',                 null,                false, {separator: true}),
                                   new MenuItem('Contrast',         null,                false, {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
-        menuItemColorDifference = new MenuItem('Difference',       null,                false, {icon: iconColorDeltaE,      callback: e => actionManager.do(getCreateNodeAction(COLOR_DIFFERENCE,     btnColor.div, getCreateOptions(e)))}),
+        menuItemColorDifference = new MenuItem('Difference',       null,                false, {icon: iconColorDifference,      callback: e => actionManager.do(getCreateNodeAction(COLOR_DIFFERENCE,     btnColor.div, getCreateOptions(e)))}),
                                   new MenuItem('',                 null,                false, {separator: true}),
                                   new MenuItem('Interpolate',      'Interpolate color', true,  {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))}),
         menuItemColorBlend      = new MenuItem('Blend',            null,                false, {icon: iconColorBlend,       callback: e => actionManager.do(getCreateNodeAction(COLOR_BLEND,       btnColor.div, getCreateOptions(e)))})]);
