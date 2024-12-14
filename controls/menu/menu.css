@@ -3,15 +3,18 @@
     display:       inline-block;
     font-family:   Inter, sans-serif;
     font-size:     11px;
-    width:         50px;
-    height:        39.5px;
+    width:         42px;
+    height:        29px;
     background:    #2c2c2c;
-    border-radius: 0;
+    border-radius: 5px;
     min-width:     0;
     min-height:    0;
     border:        none;
     position:      relative;
     padding:       0;
+    margin-top:    5px;
+    margin-left:   2px;
+    margin-right:   2px;
     color:         #fff;
     overflow:      hidden;
     cursor:        default;
@@ -31,6 +34,9 @@
     display:             inline-block;
     width:               30px;
     height:              40px;
+    position:            relative;
+    left:               -2px;
+    top:                -5px;
     /* box-shadow: 0 0 0 1px yellow inset; */
 }
 
@@ -40,10 +46,12 @@
     display:             inline-block;
     width:               20px;
     height:              40px;
-    background:          url('data:image/svg+xml;utf8,<svg width="8" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.507593 1.22627L1.2469 0.498783L4.01388 3.22151L6.78084 0.498783L7.52015 1.22627L4.01388 4.67648L0.507593 1.22627Z" fill="white"/></svg>');
+    background:          url('data:image/svg+xml;utf8,<svg width="8" height="4" viewBox="-2 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.00463867 0.724557L0.743946 -0.00292969L2.46081 1.85318L4.27735 -0.00291593L5.01666 0.724571L2.46081 3.0426L0.00463867 0.724557Z" fill="white"/></svg>');
     background-position: 50% 50%;
     background-repeat:   no-repeat;
-    transition:          0.25s;
+    position:            relative;
+    top:                -5px;
+    /* transition:          0.25s; */
     /* box-shadow: 0 0 0 1px magenta inset; */
 }
 

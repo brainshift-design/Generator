@@ -19,10 +19,10 @@ extends OperatorBase
         this.addInput (new Input ([NUMBER_VALUE, NUMBER_LIST_VALUE, TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramMin    = new NumberParam('min',    'min',    true, true, true,   0));
-        this.addParam(this.paramMax    = new NumberParam('max',    'max',    true, true, true, 100));
         this.addParam(this.paramBias   = new NumberParam('bias',   'bias',   true, true, true, 0, -100, 100));
         this.addParam(this.paramSpread = new NumberParam('spread', 'spread', true, true, true, 0, -100, 100));
+        this.addParam(this.paramMin    = new NumberParam('min',    'min',    true, true, true,   0));
+        this.addParam(this.paramMax    = new NumberParam('max',    'max',    true, true, true, 100));
 
         
         this.paramBias  .controls[0].suffix = '%';

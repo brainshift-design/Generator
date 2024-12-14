@@ -178,14 +178,14 @@ class MenuButton
         div.addEventListener('pointerenter', e =>
         {
             this.overArrow = true;
-            this.moveArrowDown();
+            //this.moveArrowDown();
         });
 
 
         div.addEventListener('pointerleave', e =>
         {
-            if (!currentMenus.includes(this.menu))
-                this.moveArrowUp();
+            //if (!currentMenus.includes(this.menu))
+            //    this.moveArrowUp();
 
             this.overArrow = false;
         });
@@ -193,17 +193,17 @@ class MenuButton
 
 
 
-    moveArrowDown()
-    {
-        this.divArrow.style.transform = 'translateY(3px)';
-    }
+    // moveArrowDown()
+    // {
+    //     this.divArrow.style.transform = 'translateY(3px)';
+    // }
 
 
 
-    moveArrowUp()
-    {
-        this.divArrow.style.transform = 'translateY(0)';
-    }
+    // moveArrowUp()
+    // {
+    //     this.divArrow.style.transform = 'translateY(0)';
+    // }
 
 
 
@@ -235,7 +235,7 @@ class MenuButton
                && this.highlight()
             ? 'var(--figma-color-bg-brand)'
             : (this.over && !this.noHighlight)
-              ? '#111'
+              ? 'var(--figma-color-bg-secondary)'
               : 'transparent';
 
 
