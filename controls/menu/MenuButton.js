@@ -233,7 +233,7 @@ class MenuButton
                currentMenuButton == this
             ||    this.highlight 
                && this.highlight()
-            ? 'var(--figma-color-bg-brand)'
+            ? 'var(--figma-color-bg-tertiary)'
             : (this.over && !this.noHighlight)
               ? 'var(--figma-color-bg-secondary)'
               : 'transparent';

@@ -10,7 +10,7 @@ var btnLayer;
 var btnShape;
 var btnTemplate;
 var btnGroup;
-var btnHand;
+//var btnHand;
 var btnComment;
 var btnPanel;
 var btnDecoration;
@@ -1069,11 +1069,11 @@ function initGeneratorMenus()
     btnDecoration = new MenuButton('Decoration', menuDecoration, {useMenuName: true, highlight: () => currentMenus.includes(menuDecoration), callback: () => updatePanMode(false)});
 
     
-    btnHand = new MenuButton('Hand tool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">H</span>', null, {callback: () => 
-    {
-        hideAllMenus(); 
-        updatePanMode(!panMode);
-    }});
+    // btnHand = new MenuButton('Hand tool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">H</span>', null, {callback: () => 
+    // {
+    //     hideAllMenus(); 
+    //     updatePanMode(!panMode);
+    // }});
 
 
     // btnComment = new MenuButton('Add comment', null, {callback: () => 
@@ -1158,7 +1158,7 @@ function initGeneratorMenus()
     btnColor     .setIcon(iconVarColor);
     //btnLayer   .setIcon(iconEffects);
     btnShape     .setIcon(iconShapes);
-    btnHand      .setIcon(iconHand);
+    //btnHand      .setIcon(iconHand);
     //btnComment .setIcon(iconComment);
     btnTemplate  .setIcon(iconTemplate);
     btnPanel     .setIcon(iconPanel);
@@ -1689,8 +1689,8 @@ function initTextboxMenu(textbox)
 function updatePanMode(enabled)
 {
     panMode = enabled;  
-    currentMenuButton = panMode ? btnHand : null;
-    btnHand.update();
+    //currentMenuButton = panMode ? btnHand : null;
+    //btnHand.update();
 
     setCursor(panMode ? panCursor : 'default');
 }

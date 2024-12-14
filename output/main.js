@@ -1649,7 +1649,7 @@ figDeleteTempVariableCollection();
 figma.clientStorage.getAsync('pro').then(data => {
     const title = PLUGIN_NAME
         + (data !== true ? ' (Free version)' : '')
-        + '  |  ' + figCurrentPage.name;
+        + '  │  ' + figCurrentPage.name;
     figma.showUI(__html__, {
         visible: false,
         themeColors: true,
