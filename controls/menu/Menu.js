@@ -248,7 +248,7 @@ class Menu
 
         let srcRect = srcDiv.getBoundingClientRect();
 
-        srcRect.y -= subMenu ? 5 : 9;
+        srcRect.y -= subMenu ? 5 : 4;
 
 
         const margin = 8;
@@ -265,8 +265,8 @@ class Menu
 
         const y =
             right
-            ? srcRect.y - dy - 3
-            : srcRect.y - dy + srcRect.height + this.divArrow.offsetHeight;
+                ? srcRect.y - dy - 3
+                : srcRect.y - dy + srcRect.height + this.divArrow.offsetHeight;
 
 
         this.showAt(x + 6, y, subMenu, false);
@@ -385,8 +385,8 @@ class Menu
 
         if (top + height > graphView.div.offsetHeight - margin)
         {
-            height = Math.min(height, graphHeight - margin*2);
-            top    = getTopHeight() + Math.max(8, graphHeight - height);
+            height = Math.min(height, graphHeight);
+            top    = getTopHeight() + Math.max(6, graphHeight - height);
             
             if (!subMenu)
                 left += 10; // so it doesn't hit a menu item by accident once the menu appears
