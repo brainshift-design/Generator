@@ -1,17 +1,17 @@
 class   OptionParam
 extends NumberParamBase
 {
-    options           = [];
-    excludeFromMenu   = []; // indices
+    options          = [];
+    excludeFromMenu  = []; // indices
 
-    separatorsBefore  = [];
-    markMenuPro       = [];
+    separatorsBefore = [];
+    markMenuPro      = [];
 
-    minMenuWidth      = 200;
+    minMenuWidth     = 200;
     
-    saveAsText        = false;
+    saveAsText       = false;
     
-    reverseMenu       = false;
+    reverseMenu      = false;
 
     
 

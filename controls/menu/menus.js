@@ -1029,18 +1029,18 @@ function initGeneratorMenus()
     menuOptionParam    = new Menu('Select options',  false, true);
 
     
-    btnMain     = new MenuButton('', menuMain,     {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
-    btnFlow     = new MenuButton('', menuFlow,     {useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
-    btnData     = new MenuButton('', menuData,     {useMenuName: true, highlight: () => currentMenus.includes(menuData  ), callback: () => updatePanMode(false)});
-    btnSets     = new MenuButton('', menuSets,     {useMenuName: true, highlight: () => currentMenus.includes(menuSets  ), callback: () => updatePanMode(false)});
-    btnShape    = new MenuButton('', menuShape,    {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
-    btnColor    = new MenuButton('', menuColor,    {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
-    //btnLayer    = new MenuButton('', menuLayer,    {useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
-    btnNumber   = new MenuButton('', menuNumber,   {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
-    btnText     = new MenuButton('', menuString,   {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
-    btnTemplate = new MenuButton('', menuTemplate, {useMenuName: true, highlight: () => currentMenus.includes(menuTemplate ), callback: () => updatePanMode(false)});
-  //btnStyle    = new MenuButton('', menuStyle,    {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
-  //btnGroup    = new MenuButton('', menuGroup,    {useMenuName: true, highlight: () => currentMenus.includes(menuGroup ), callback: () => updatePanMode(false)});
+    btnMain     = new MenuButton('', menuMain,     {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
+    btnFlow     = new MenuButton('', menuFlow,     {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
+    btnData     = new MenuButton('', menuData,     {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuData  ), callback: () => updatePanMode(false)});
+    btnSets     = new MenuButton('', menuSets,     {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuSets  ), callback: () => updatePanMode(false)});
+    btnShape    = new MenuButton('', menuShape,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+    btnColor    = new MenuButton('', menuColor,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
+  //btnLayer    = new MenuButton('', menuLayer,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
+    btnNumber   = new MenuButton('', menuNumber,   {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
+    btnText     = new MenuButton('', menuString,   {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
+    btnTemplate = new MenuButton('', menuTemplate, {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuTemplate ), callback: () => updatePanMode(false)});
+  //btnStyle    = new MenuButton('', menuStyle,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
+  //btnGroup    = new MenuButton('', menuGroup,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuGroup ), callback: () => updatePanMode(false)});
     
     // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
     // {
@@ -1054,7 +1054,7 @@ function initGeneratorMenus()
     // }});
 
 
-    btnPanel = new MenuButton('Panel', null, {callback: () => 
+    btnPanel = new MenuButton('Panel', null, {width: 46, callback: () => 
     {
         const create = new CreateNodeAction(PANEL, btnPanel.div);
         actionManager.do(create);
@@ -1066,7 +1066,7 @@ function initGeneratorMenus()
         updatePanMode(false);
     }});
     
-    btnDecoration = new MenuButton('Decoration', menuDecoration, {useMenuName: true, highlight: () => currentMenus.includes(menuDecoration), callback: () => updatePanMode(false)});
+    btnDecoration = new MenuButton('Decoration', menuDecoration, {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuDecoration), callback: () => updatePanMode(false)});
 
     
     // btnHand = new MenuButton('Hand tool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">H</span>', null, {callback: () => 
@@ -1112,21 +1112,25 @@ function initGeneratorMenus()
     createObjectCountInfo();
 
 
-    btnSolo = new MenuButton('Highlight mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">~</span>', null, {callback: () => 
-    {
-        updateSoloMode(!graphView.soloMode);
-    }});
+    btnSolo = new MenuButton(
+        'Highlight mode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #888; font-weight: 500;">~</span>', 
+        null, 
+        {
+            width: 32,
+            callback: () => updateSoloMode(!graphView.soloMode)
+        });
     
     btnSolo.highlight = () => graphView.soloMode;
 
     btnSolo.div.style.position = 'absolute';
-    btnSolo.div.style.right    = '66px';
+    btnSolo.div.style.right    = '70px';
 
 
     btnZoom = new MenuButton(
         '', 
         menuZoom, 
         { 
+            width:       46,
             useMenuName: true, 
             selectLast:  false, 
             highlight:   () => currentMenus.includes(menuZoom),
@@ -1140,6 +1144,7 @@ function initGeneratorMenus()
     btnZoom.divIcon.style.textAlign          = 'center';
     btnZoom.divIcon.style.fontVariantNumeric = 'tabular-nums';
     btnZoom.divIcon.style.letterSpacing      = '-0.8px';
+    btnZoom.divArrow.style.marginLeft        = '4px';
 
 
     btnMain.div.style.paddingLeft            = '6px';

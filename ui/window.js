@@ -75,7 +75,7 @@ function uiResizeWindow(width, height)
 
 
     btnSolo.div.style.display = 
-        window.innerWidth >= 646 
+        window.innerWidth >= 618
         ? 'inline-block' 
         : 'none';
 
@@ -120,7 +120,7 @@ function updateObjectCountDisplay()
 
     objectCountWrapper.style.display = 
            settings.showObjectCount
-        && window.innerWidth >= 698 
+        && window.innerWidth >= 670 
         ? 'inline-block' 
         : 'none';
 }

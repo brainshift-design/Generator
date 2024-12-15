@@ -3,6 +3,9 @@ class MenuButton
     name;
     menu;
 
+    width;
+    height;
+
     icon          = NULL;
 
     callback;
@@ -36,7 +39,6 @@ class MenuButton
         if (this.menu)
             this.menu.button = this;
 
-
         this.initOptions(options);
         
         this.createControls();
@@ -49,6 +51,9 @@ class MenuButton
 
     initOptions(options)
     {
+        this.width        = options.width  ?? 40;
+        this.height       = options.height ?? 40;
+
         this.callback   ??= options.callback;
         this.highlight  ??= options.highlight;
         this.useMenuName  = options.useMenuName != undefined ? options.useMenuName : true;
@@ -251,10 +256,10 @@ class MenuButton
         this.divIcon.style.backgroundPosition = '100% 50%';
         this.divIcon.style.backgroundRepeat   = 'no-repeat';
 
-        this.div.style.width = 
-            this.name != '-'
-            ? (this.menu ? 50 : 40)
-            : 24;
+        this.div.style.width = this.width;
+            // this.name != '-'
+            // ? (this.menu ? 46 : 40)
+            // : 24;
 
 
         if (!this.customTooltip)

@@ -35,7 +35,7 @@
     width:     30px;
     height:    40px;
     position:  relative;
-    left:     -2px;
+    left:     -4px;
     top:      -5px;
     /* box-shadow: 0 0 0 1px yellow inset; */
 }
@@ -44,7 +44,7 @@
 .menuButtonArrow
 {
     display:             inline-block;
-    width:               20px;
+    width:               12px;
     height:              40px;
     background:          url('data:image/svg+xml;utf8,<svg width="8" height="4" viewBox="-2 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.00463867 0.724557L0.743946 -0.00292969L2.46081 1.85318L4.27735 -0.00291593L5.01666 0.724571L2.46081 3.0426L0.00463867 0.724557Z" fill="white"/></svg>');
     background-position: 50% 50%;

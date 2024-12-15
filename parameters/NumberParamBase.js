@@ -68,6 +68,26 @@ extends Parameter
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
 
+
+        if (value.meta)
+        {
+            if (!isNaN(value.meta.min))        this.controls[0].min        = value.meta.min;
+            if (!isNaN(value.meta.minDisplay)) this.controls[0].minDisplay = value.meta.minDisplay;
+
+            if (!isNaN(value.meta.max))        this.controls[0].max        = value.meta.max;
+            if (!isNaN(value.meta.maxDisplay)) this.controls[0].maxDisplay = value.meta.maxDisplay;
+
+            if (!isNaN(value.meta.decimals))   this.controls[0].setDecimals(value.meta.decimals);
+
+            this.controls[0].setSuffix(value.meta.suffix);
+            
+            if (value.meta.ranges)             this.controls[0].ranges     = value.meta.ranges.map(r => r.copy());
+
+            this.controls[0].displayAbsolute = value.meta.displayAbsolute;
+
+            this.updateTooltipFromMeta(value.meta);
+        }
+        
         
         this.oldValue = this.value.copy();
     }    
@@ -203,57 +223,50 @@ extends Parameter
 
     updateTooltipFromMeta(meta)
     {
-        console.log('-0 meta =', meta);
-        
-        if (meta.tooltipId)
+        if (!meta.tooltipId)
+            return;
+
+
+        const tooltip = document.getElementById(meta.tooltipId);
+
+        if (tooltip)
         {
-            console.log('0 meta.tooltipId =', meta.tooltipId);
+            this.getTooltip = () => tooltip;
 
-            const tooltip = document.getElementById(meta.tooltipId);
-
-            if (tooltip)
-            {
-                this.getTooltip = () => tooltip;
-
-                console.log('1 tooltip.id =', tooltip.id);
-
-                createTooltipSrc(
-                    this.div, 
-                    this.div, 
-                    () => 
+            createTooltipSrc(
+                this.div, 
+                this.div, 
+                () => 
+                {
+                    this.controls[0].addEventListener('change', () => 
                     {
-                        this.controls[0].addEventListener('change', () => 
-                        {
-                            const tooltip = this.getTooltip();
-                            if (tooltip) hideTooltip(tooltip);
-                        });
-
-                        return this.getTooltip();
-                    },
-                    paramTooltipDelay,
-                    () => 
-                    {
-                        console.log('2 tooltip.id =', tooltip.id);
-
-                        return   settings.showTooltipParams
-                                ||    settings.showTooltipColorContrast
-                                    && (   tooltip.id == 'ttWcag2'
-                                        || tooltip.id == 'ttWcag3')
-                                ||    settings.showTooltipAscii
-                                    && tooltip.id == 'ttAscii'
-                                ||    settings.showTooltipColorNames
-                                    && tooltip.id == 'ttColorNames'
-                                ||    settings.showTooltipColorInterpolation
-                                    && tooltip.id == 'ttInterpolationSpace'
-                                ||    settings.showTooltipValidateMethod
-                                    && tooltip.id == 'ttValidateMethod'
-                                ||    settings.showTooltipColorBlindness
-                                    && tooltip.id == 'ttColorblind';
+                        const tooltip = this.getTooltip();
+                        if (tooltip) hideTooltip(tooltip);
                     });
-            }
-            else
-                this.getTooltip = null;
-        }    
+
+                    return this.getTooltip();
+                },
+                paramTooltipDelay,
+                () => 
+                {
+                    return settings.showTooltipParams
+                        ||    settings.showTooltipColorContrast
+                            && (   tooltip.id == 'ttWcag2'
+                                || tooltip.id == 'ttWcag3')
+                        ||    settings.showTooltipAscii
+                            && tooltip.id == 'ttAscii'
+                        ||    settings.showTooltipColorNames
+                            && tooltip.id == 'ttColorNames'
+                        ||    settings.showTooltipColorInterpolation
+                            && tooltip.id == 'ttInterpolationSpace'
+                        ||    settings.showTooltipValidateMethod
+                            && tooltip.id == 'ttValidateMethod'
+                        ||    settings.showTooltipColorBlindness
+                            && tooltip.id == 'ttColorblind';
+                });
+        }
+        else
+            this.getTooltip = null;
     }
 
 

@@ -88,30 +88,12 @@ extends NumberParamBase
 
 
 
-    setValue(value, createAction, updateControl = true, dispatchEvents = true)
-    {
-        super.setValue(value, createAction, updateControl, dispatchEvents);
+    // setValue(value, createAction, updateControl = true, dispatchEvents = true)
+    // {
+    //     super.setValue(value, createAction, updateControl, dispatchEvents);
 
 
-        if (value.meta)
-        {
-            if (!isNaN(value.meta.min))        this.controls[0].min        = value.meta.min;
-            if (!isNaN(value.meta.minDisplay)) this.controls[0].minDisplay = value.meta.minDisplay;
-
-            if (!isNaN(value.meta.max))        this.controls[0].max        = value.meta.max;
-            if (!isNaN(value.meta.maxDisplay)) this.controls[0].maxDisplay = value.meta.maxDisplay;
-
-            if (!isNaN(value.meta.decimals))   this.controls[0].setDecimals(value.meta.decimals);
-
-            this.controls[0].setSuffix(value.meta.suffix);
-            
-            if (value.meta.ranges)             this.controls[0].ranges     = value.meta.ranges.map(r => r.copy());
-
-            this.controls[0].displayAbsolute = value.meta.displayAbsolute;
-
-            this.updateTooltipFromMeta(value.meta);
-        }
-    }
+    // }
 
 
 

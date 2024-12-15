@@ -112,6 +112,7 @@ function parseNumberValueMeta(str, i = -1)
     const max        = parseFloat(str[i]); i++;
     const maxDisplay = parseFloat(str[i]); i++;
     const decimals   = parseInt  (str[i]); i++;
+    
     const suffix     = str[i] == NULL_VALUE 
                           ? NULL 
                           : decodeURIComponent(str[i]); i++;
