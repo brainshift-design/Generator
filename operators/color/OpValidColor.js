@@ -116,7 +116,7 @@ extends OpColorBase
         this.endProgress();
 
 
-        //super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 

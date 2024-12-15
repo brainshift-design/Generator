@@ -251,18 +251,18 @@ extends Parameter
                 {
                     return settings.showTooltipParams
                         ||    settings.showTooltipColorContrast
-                            && (   tooltip.id == 'ttWcag2'
-                                || tooltip.id == 'ttWcag3')
+                           && (   tooltip.id == 'ttWcag2'
+                               || tooltip.id == 'ttWcag3')
                         ||    settings.showTooltipAscii
-                            && tooltip.id == 'ttAscii'
+                           && tooltip.id == 'ttAscii'
                         ||    settings.showTooltipColorNames
-                            && tooltip.id == 'ttColorNames'
+                           && tooltip.id == 'ttColorNames'
                         ||    settings.showTooltipColorInterpolation
-                            && tooltip.id == 'ttInterpolationSpace'
+                           && tooltip.id == 'ttInterpolationSpace'
                         ||    settings.showTooltipValidateMethod
-                            && tooltip.id == 'ttValidateMethod'
+                           && tooltip.id == 'ttValidateMethod'
                         ||    settings.showTooltipColorBlindness
-                            && tooltip.id == 'ttColorblind';
+                           && tooltip.id == 'ttColorblind';
                 });
         }
         else

@@ -42289,9 +42289,9 @@ function getColorBlindValue(input, l, m, s)
 
     const rgbCb = rgb2colorblind(
         rgb,
-        l.value / 2,
-        m.value / 2,
-        s.value / 2);
+        l.value,
+        m.value,
+        s.value);
 
     if (   !rgbIsNaN(rgb  )
         && !rgbIsNaN(rgbCb))
