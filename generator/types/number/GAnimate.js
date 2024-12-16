@@ -1,6 +1,10 @@
 class GAnimate
 extends GOperator
 {
+    static { nodeTypes[NUMBER_ANIMATE] = this; }
+
+
+
     from   = null;
     to     = null;
     curve  = null;
@@ -190,5 +194,44 @@ extends GOperator
         if (this.repeat) this.repeat.iterateLoop(parse);
         if (this.length) this.length.iterateLoop(parse);
         if (this.time  ) this.time  .iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const anim = new GAnimate(nodeId, options);
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(anim, parse);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, anim);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        anim.from   = genParse(parse);
+        anim.to     = genParse(parse);
+        anim.curve  = genParse(parse);
+        anim.repeat = genParse(parse);
+        anim.length = genParse(parse);
+        anim.time   = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, anim);
+        return anim;
     }
 }

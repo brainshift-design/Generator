@@ -1,6 +1,10 @@
 class   OpApply
 extends OperatorBase//Shape
 {
+    static { operatorTypes[SHAPE_APPLY] = this; }
+
+
+
     paramProps;
     paramReplace;
 

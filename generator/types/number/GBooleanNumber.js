@@ -1,6 +1,10 @@
 class GBooleanNumber
 extends GOperator1
 {
+    static { nodeTypes[BOOLEAN_NUMBER] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(BOOLEAN_NUMBER, nodeId, options);
@@ -65,5 +69,41 @@ extends GOperator1
     {
         return !this.input 
              || this.input.isValid();
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const bool = new GBooleanNumber(nodeId, options);
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(bool, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, bool);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+        parse.inParam = false;
+    
+    
+        if (parse.next == NUMBER_VALUE) bool.value = genParse(parse);
+        else                            bool.input = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, bool);
+        return bool;
     }
 }

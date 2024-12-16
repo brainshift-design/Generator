@@ -1,6 +1,10 @@
 class GSort
 extends GOperator1
 {
+    static { nodeTypes[SORT] = this; }
+
+
+
     condition     = null;
     reverse       = null;
     indices       = null;
@@ -204,6 +208,59 @@ extends GOperator1
 
         if (this.condition) this.condition.iterateLoop(parse);
         if (this.reverse  ) this.reverse  .iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+        const sort = new GSort(nodeId, options);
+    
+
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+
+        
+        if (parse.settings.logRequests) 
+            logReq(sort, parse, ignore, nInputs);
+
+
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, sort);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+
+
+        parse.nTab++;
+
+
+        if (nInputs == 1)
+            sort.input = genParse(parse);
+
+
+        const nConditions = parseInt(parse.move());
+
+        if (nConditions == 1)
+            sort.condition = genParse(parse);
+
+            
+        sort.reverse = genParse(parse);
+
+        
+        parse.nTab--;
+
+
+        genParseNodeEnd(parse, sort);
+        return sort;
     }
 }
 

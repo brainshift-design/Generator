@@ -1,6 +1,10 @@
 class   OpInterpolate
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_INTERPOLATE] = this; }
+
+
+
     paramAmount;
     paramDegree;
     

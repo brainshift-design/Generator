@@ -1,6 +1,10 @@
 class GSequence
 extends GOperator
 {
+    static { nodeTypes[NUMBER_SEQUENCE] = this; }
+
+
+
     start    = null;
     multiply = null;
     add      = null;
@@ -152,6 +156,43 @@ extends GOperator
         if (this.multiply) this.multiply.iterateLoop(parse);
         if (this.add     ) this.add     .iterateLoop(parse);
         if (this.end     ) this.end     .iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const seq = new GSequence(nodeId, options);
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(seq, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, seq);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        seq.start    = genParse(parse);
+        seq.multiply = genParse(parse);
+        seq.add      = genParse(parse);
+        seq.end      = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, seq);
+        return seq;
     }
 }
 

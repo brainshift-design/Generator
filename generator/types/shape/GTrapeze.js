@@ -212,4 +212,70 @@ extends GShape
         if (this.round) this.round.iterateLoop(parse);
         if (this.bias ) this.bias .iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const trapeze = new GTrapeze(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(trapeze, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, trapeze);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            trapeze.input = genParse(parse);
+    
+    
+        const nParamIds = genParseParamCount(parse);
+    
+        for (let i = 0; i < nParamIds; i++)
+        {
+            const paramId = genParseParamId(parse);
+    
+            parse.inParam = true;
+    
+            switch (paramId)
+            {
+            case 'x':      trapeze.x      = genParse(parse); break;
+            case 'y':      trapeze.y      = genParse(parse); break;
+            case 'width':  trapeze.width  = genParse(parse); break;
+            case 'height': trapeze.height = genParse(parse); break;
+            case 'round':  trapeze.round  = genParse(parse); break;
+            case 'bias':   trapeze.bias   = genParse(parse); break;
+            case 'props':  trapeze.props  = genParse(parse); break;
+            }
+        }
+        
+        
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, trapeze);
+        return trapeze;
+    }
 }

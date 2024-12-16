@@ -243,4 +243,68 @@ extends GOperator1
         if (this.cap  ) this.cap  .iterateLoop(parse);
         if (this.round) this.round.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const point = new GVectorVertex(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(point, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, point);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            point.input = genParse(parse);
+    
+    
+        const nParamIds = genParseParamCount(parse);
+    
+        for (let i = 0; i < nParamIds; i++)
+        {
+            const paramId = genParseParamId(parse);
+    
+            parse.inParam = true;
+    
+            switch (paramId)
+            {
+            case 'x':     point.x     = genParse(parse); break;
+            case 'y':     point.y     = genParse(parse); break;
+            case 'join':  point.join  = genParse(parse); break;
+            case 'cap':   point.cap   = genParse(parse); break;
+            case 'round': point.round = genParse(parse); break;
+            }
+        }
+    
+    
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, point);
+        return point;
+    }
 }

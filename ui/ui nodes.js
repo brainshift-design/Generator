@@ -570,7 +570,7 @@ function loadNode(_node, pasting, genVersion = 0)
     handleLegacyNode(_node, genVersion);
 
 
-    const node = createNode(_node.type);
+    const node = Operator.create(_node.type);
 
 
     node.loadFromParsedJson(_node, pasting);
@@ -809,7 +809,7 @@ function handleLegacyNode(_node, genVersion)
             if (   genVersion >= 398
                 && genVersion <  413)
             {
-                const value = parseNumberValue(paramAspect[2]);
+                const value = NumberValue.parse(paramAspect[2]);
                 value.value = 100/(value.value/100);
                 paramAspect[2] = value.toString();
             }
@@ -843,7 +843,7 @@ function handleLegacyNode(_node, genVersion)
         
         if (paramCondition) 
         {
-            const value = parseNumberValue(paramCondition[2]);
+            const value = NumberValue.parse(paramCondition[2]);
 
             if (value.value > 0) value.value = 0;
             else                 value.value = 1;

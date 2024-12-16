@@ -193,44 +193,58 @@ extends GValue
             NumberValue.NaN(),
             false);
     }
-}
 
 
 
-function parseDropShadowValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [DropShadowValue.NaN(), 1];
-
-
-    if (i < 0)
+    static parseRequest(parse)
     {
-        str = str.split(' ');
-        i   = 0;
+        parse.pos++; // DROP_SHADOW_VALUE
+    
+        const shadow = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(DROP_SHADOW_VALUE, shadow, parse);
+    
+        return DropShadowValue.parse(shadow)[0];
     }
 
 
-    const iStart = i;
 
-    const x      = parseNumberValue(str[i]); i += x     [1];
-    const y      = parseNumberValue(str[i]); i += y     [1];
-    const blur   = parseNumberValue(str[i]); i += blur  [1];
-    const spread = parseNumberValue(str[i]); i += spread[1];
-    const fill   = parseFillValue  (str, i); i += fill  [1];
-    const blend  = parseNumberValue(str[i]); i += blend [1];
-    const behind = parseNumberValue(str[i]); i += behind[1];
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [DropShadowValue.NaN(), 1];
 
 
-    const shadow = new DropShadowValue(
-        x     [0],
-        y     [0],
-        blur  [0],
-        spread[0],
-        fill  [0],
-        blend [0],
-        behind[0]);
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
 
 
-    return [shadow, i - iStart];
+        const iStart = i;
+
+        const x      = NumberValue.parse(str[i]); i += x     [1];
+        const y      = NumberValue.parse(str[i]); i += y     [1];
+        const blur   = NumberValue.parse(str[i]); i += blur  [1];
+        const spread = NumberValue.parse(str[i]); i += spread[1];
+        const fill   = FillValue.parse  (str, i); i += fill  [1];
+        const blend  = NumberValue.parse(str[i]); i += blend [1];
+        const behind = NumberValue.parse(str[i]); i += behind[1];
+
+
+        const shadow = new DropShadowValue(
+            x     [0],
+            y     [0],
+            blur  [0],
+            spread[0],
+            fill  [0],
+            blend [0],
+            behind[0]);
+
+
+        return [shadow, i - iStart];
+    }
 }

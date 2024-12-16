@@ -438,4 +438,72 @@ extends GOperator1
         if (this._c2  ) this._c2  .iterateLoop(parse);
         if (this._c3  ) this._c3  .iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+        const col = new GColor(nodeId, options);
+
+        col.hasInputs = options.hasInputs;
+        
+    
+        let nInputs = -1;
+
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+
+
+        if (parse.settings.logRequests) 
+            logReq(col, parse, ignore, nInputs);
+
+
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, col);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+
+
+        parse.nTab++;
+
+        
+        let paramIds;
+
+        if (nInputs == 1)
+        {
+            col.input = genParse(parse);
+            paramIds = parse.move().split(',');
+        }
+        else
+            paramIds = ['space', 'convert', 'c1', 'c2', 'c3'];
+
+
+        parse.inParam = false;
+        
+        for (const id of paramIds)
+        {
+            switch (id)
+            {
+            case 'space':   col.space        = genParse(parse);  break;
+            case 'convert': col.convert      = genParse(parse);  break;
+            case 'c1':      col._c1 = col.c1 = genParse(parse);  break;
+            case 'c2':      col._c2 = col.c2 = genParse(parse);  break;
+            case 'c3':      col._c3 = col.c3 = genParse(parse);  break;
+            }
+        }
+        
+
+        parse.nTab--;
+
+
+        genParseNodeEnd(parse, col);
+        return col;
+    }
 }

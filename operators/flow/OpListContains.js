@@ -1,6 +1,10 @@
 class   OpListContains
 extends OperatorBase
 {
+    static { operatorTypes[LIST_CONTAINS] = this; }
+
+
+
     paramValue;
     paramFirst;
     paramLast;

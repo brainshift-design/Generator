@@ -1,6 +1,10 @@
 class GRange
 extends GOperator
 {
+    static { nodeTypes[NUMBER_RANGE] = this; }
+
+
+
     from  = null;
     start = null;
     end   = null;
@@ -161,5 +165,41 @@ extends GOperator
         if (this.from ) this.from .iterateLoop(parse);
         if (this.start) this.start.iterateLoop(parse);
         if (this.end  ) this.end  .iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const dist = new GRange(nodeId, options);
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(dist, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, dist);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        dist.from   = genParse(parse);
+        dist.start  = genParse(parse);
+        dist.end    = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, dist);
+        return dist;
     }
 }

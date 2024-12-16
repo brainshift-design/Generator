@@ -321,18 +321,18 @@ function parseTextShapeValue(str, i = -1)
 
     const iStart = i;
 
-    const text          = parseTextValue  (str[i]); i += text         [1];
-    const x             = parseNumberValue(str[i]); i += x            [1];
-    const y             = parseNumberValue(str[i]); i += y            [1];
-    const width         = parseNumberValue(str[i]); i += width        [1];
-    const height        = parseNumberValue(str[i]); i += height       [1];
-    const font          = parseNumberValue(str[i]); i += font         [1];
-    const style         = parseNumberValue(str[i]); i += style        [1];
-    const size          = parseNumberValue(str[i]); i += size         [1];
-    const alignX        = parseNumberValue(str[i]); i += alignX       [1];
-    const alignY        = parseNumberValue(str[i]); i += alignY       [1];
-    const lineHeight    = parseNumberValue(str[i]); i += lineHeight   [1];
-    const letterSpacing = parseNumberValue(str[i]); i += letterSpacing[1];
+    const text          = TextValue.parse  (str[i]); i += text         [1];
+    const x             = NumberValue.parse(str[i]); i += x            [1];
+    const y             = NumberValue.parse(str[i]); i += y            [1];
+    const width         = NumberValue.parse(str[i]); i += width        [1];
+    const height        = NumberValue.parse(str[i]); i += height       [1];
+    const font          = NumberValue.parse(str[i]); i += font         [1];
+    const style         = NumberValue.parse(str[i]); i += style        [1];
+    const size          = NumberValue.parse(str[i]); i += size         [1];
+    const alignX        = NumberValue.parse(str[i]); i += alignX       [1];
+    const alignY        = NumberValue.parse(str[i]); i += alignY       [1];
+    const lineHeight    = NumberValue.parse(str[i]); i += lineHeight   [1];
+    const letterSpacing = NumberValue.parse(str[i]); i += letterSpacing[1];
 
 
     const txts = new TextShapeValue(

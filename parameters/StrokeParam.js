@@ -188,6 +188,6 @@ extends Parameter
 
     loadParam(_param)
     {
-        this.setValue(parseStrokeValue(_param[2])[0], true, true, false);
+        this.setValue(StrokeValue.parse(_param[2])[0], true, true, false);
     }
 }

@@ -1,6 +1,10 @@
 class   OpNoise
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_NOISE] = this; }
+
+
+
     paramSeed;
     paramIteration;
     paramMin;

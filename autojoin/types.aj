@@ -164,17 +164,8 @@
 ../generator/types/number/boolean/GXor.js
 
 ../generator/types/number/condition/GCompare.js
-../generator/types/number/condition/GEqual.js
-../generator/types/number/condition/GNotEqual.js
-../generator/types/number/condition/GLess.js
-../generator/types/number/condition/GLessOrEqual.js
-../generator/types/number/condition/GGreater.js
-../generator/types/number/condition/GGreaterOrEqual.js
 
-../generator/types/number/trigonometric/GTrig.js
-../generator/types/number/trigonometric/GSine.js
-../generator/types/number/trigonometric/GCosine.js
-../generator/types/number/trigonometric/GTangent.js
+../generator/types/number/trigonometric/GTrigonometric.js
 ../generator/types/number/trigonometric/GAtan2.js
 
 ../generator/types/number/GConvertAngle.js

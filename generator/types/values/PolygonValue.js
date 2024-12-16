@@ -234,13 +234,13 @@ function parsePolygonValue(str, i = -1)
 
     const iStart = i;
 
-    const pos     = parseNumberValue(str[i]); i += pos    [1];
-    const x       = parseNumberValue(str[i]); i += x      [1];
-    const y       = parseNumberValue(str[i]); i += y      [1];
-    const width   = parseNumberValue(str[i]); i += width  [1];
-    const height  = parseNumberValue(str[i]); i += height [1];
-    const round   = parseNumberValue(str[i]); i += round  [1];
-    const corners = parseNumberValue(str[i]); i += corners[1];
+    const pos     = NumberValue.parse(str[i]); i += pos    [1];
+    const x       = NumberValue.parse(str[i]); i += x      [1];
+    const y       = NumberValue.parse(str[i]); i += y      [1];
+    const width   = NumberValue.parse(str[i]); i += width  [1];
+    const height  = NumberValue.parse(str[i]); i += height [1];
+    const round   = NumberValue.parse(str[i]); i += round  [1];
+    const corners = NumberValue.parse(str[i]); i += corners[1];
 
 
     const poly = new PolygonValue(

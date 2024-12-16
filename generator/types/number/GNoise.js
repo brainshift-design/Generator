@@ -1,6 +1,10 @@
 class GNoise
 extends GOperator
 {
+    static { nodeTypes[NUMBER_NOISE] = this; }
+
+
+
     seed        = null;
     iteration   = null;
     min         = null;
@@ -334,5 +338,47 @@ extends GOperator
         if (this.evolve     ) this.evolve     .iterateLoop(parse);
         if (this.interpolate) this.interpolate.iterateLoop(parse);
         if (this.detail     ) this.detail     .iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const noise = new GNoise(nodeId, options);
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(noise, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, noise);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        noise.seed        = genParse(parse);
+        noise.iteration   = genParse(parse);
+        noise.min         = genParse(parse);
+        noise.max         = genParse(parse);
+        noise.scale       = genParse(parse);
+        noise.offset      = genParse(parse);
+        noise.evolve      = genParse(parse);
+        noise.interpolate = genParse(parse);
+        noise.detail      = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, noise);
+        return noise;
     }
 }

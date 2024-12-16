@@ -1,6 +1,10 @@
 class   OpVector
 extends OpShapeBase
 {
+    static { operatorTypes[VECTOR] = this; }
+
+
+
     paramTransform;
 
 

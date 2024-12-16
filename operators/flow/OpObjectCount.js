@@ -1,6 +1,10 @@
 class   OpObjectCount
 extends OperatorBase
 {
+    static { operatorTypes[OBJECT_COUNT] = this; }
+
+
+
     paramValue;
     paramStart;
 

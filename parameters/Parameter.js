@@ -244,6 +244,23 @@ extends EventTarget
 
 
 
+    setDescription(description)
+    {
+        this.getDescription = () => description;
+
+        this.getTooltip = () =>
+            this.getDescription() != NULL
+                ? createParamTooltip(this, this.getDescription())
+                : null;
+        
+        createTooltipSrc(
+            this._div, 
+            this._div, 
+            () => this.getTooltip ? this.getTooltip() : null);
+    }
+
+
+
     initInput(types, getNodeInputValuesForUndo = null, getBackInitValue = null)
     {
         this.input = new Input(types, getNodeInputValuesForUndo, getBackInitValue);

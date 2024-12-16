@@ -1,6 +1,10 @@
 class   OpBuckleList
 extends OperatorBase
 {
+    static { operatorTypes[BUCKLE_LIST] = this; }
+
+
+
     paramAmount;
 
     length;

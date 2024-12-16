@@ -1,6 +1,10 @@
 class   OpTextSplit
 extends OperatorBase
 {
+    static { operatorTypes[TEXT_SPLIT] = this; }
+
+
+
     paramSeparator;
 
     length;

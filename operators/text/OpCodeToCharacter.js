@@ -1,6 +1,10 @@
 class   OpCodeToCharacter
 extends OperatorBase
 {
+    static { operatorTypes[TEXT_CHAR] = this; }
+
+
+
     constructor()
     {
         super(TEXT_CHAR, 'codeToChar', 'code to char', iconCodeToCharacter, defNodeWidth, false, false);

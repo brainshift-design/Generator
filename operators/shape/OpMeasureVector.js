@@ -1,6 +1,10 @@
 class   OpMeasureVector
 extends OpShapeBase
 {
+    static { operatorTypes[MEASURE_VECTOR] = this; }
+
+
+
     paramLength;
     paramAngle;
 

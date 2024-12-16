@@ -1,6 +1,10 @@
 class GNumberCurve
 extends GOperator1
 {
+    static { nodeTypes[NUMBER_CURVE] = this; }
+
+
+
     min   = null;
     max   = null;
     power = null;
@@ -140,6 +144,54 @@ extends GOperator1
         if (this.min  ) this.min  .iterateLoop(parse);
         if (this.max  ) this.max  .iterateLoop(parse);
         if (this.power) this.power.iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const curve = new GNumberCurve(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(curve, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, curve);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            curve.input = genParse(parse);
+    
+        curve.min   = genParse(parse);
+        curve.max   = genParse(parse);
+        curve.power = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, curve);
+        return curve;
     }
 }
 

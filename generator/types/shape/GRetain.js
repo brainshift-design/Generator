@@ -143,4 +143,48 @@ extends GShapeBase
 
         if (this.retain) this.retain.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const retain = new GRetain(nodeId, options);
+    
+    
+        let nInputs = 0;
+        
+        if (!ignore)
+            nInputs = parseInt(parse.move());
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(retain, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, retain);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        for (let i = 0; i < nInputs; i++)
+            retain.inputs.push(genParse(parse));
+    
+        retain.retain  = genParse(parse);
+        retain.finalize = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, retain);
+        return retain;
+    }
 }

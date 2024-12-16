@@ -1,6 +1,10 @@
 class   OpShiftList
 extends OperatorBase
 {
+    static { operatorTypes[SHIFT_LIST] = this; }
+
+
+
     paramOffset;
 
     length;

@@ -1,3 +1,6 @@
+const operatorTypes   = {};
+
+
 const connectionSize  = 9;
 const connectionGap   = 4;
 
@@ -224,6 +227,26 @@ class Operator
 
 
 
+    static create(nodeType, creatingButton = null, createdNodeId = -1, options = {})
+    {
+        const OpClass = operatorTypes[nodeType]; 
+    
+        if (OpClass)
+        {
+            let node = new OpClass(options);
+         
+            if (node)
+                node._creatingButton = creatingButton;
+    
+            return node;
+        }
+        
+        consoleError('Operator.create() cannot create type ' + nodeType);
+        return null;
+    }
+    
+    
+    
     constructor(type, id, name, icon, defWidth = defNodeWidth, progressBar = false, createTooltip = true)
     {
         this.createTime        = Date.now();
@@ -256,7 +279,7 @@ class Operator
         this.initMeasureData();
         
 
-        this.createNode();
+        this.createDiv();
 
 
         if (progressBar)

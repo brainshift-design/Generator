@@ -1,6 +1,10 @@
 class   OpColor
 extends OpColorBase
 {
+    static { operatorTypes[COLOR] = this; }
+
+
+
     paramSpace;
     param1;
     param2;

@@ -173,4 +173,67 @@ extends GShape
         if (this.y    ) this.y    .iterateLoop(parse);
         if (this.width) this.width.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+      
+        const line = new GLine(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(line, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, line);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            line.input = genParse(parse);
+    
+    
+        const nParamIds = genParseParamCount(parse);
+    
+        for (let i = 0; i < nParamIds; i++)
+        {
+            const paramId = genParseParamId(parse);
+    
+            parse.inParam = true;
+    
+            switch (paramId)
+            {
+            case 'x':     line.x     = genParse(parse); break;
+            case 'y':     line.y     = genParse(parse); break;
+            case 'width': line.width = genParse(parse); break;
+            case 'props': line.props = genParse(parse); break;
+            }
+        }
+    
+    
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, line);
+        return line;
+    }
 }

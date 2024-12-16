@@ -249,35 +249,49 @@ extends GValue
             NumberValue.NaN(), 
             NumberValue.NaN());
     }
-}
 
 
 
-function parsePointValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [PointValue.NaN(), 1];
-
-
-    if (i < 0)
+    static parseRequest(parse)
     {
-        str = str.split(' ');
-        i   = 0;
+        parse.pos++; // POINT_VALUE
+    
+        const point = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(POINT_VALUE, point, parse);
+    
+        return PointValue.parse(point)[0];
     }
 
 
-    const iStart = i;
 
-    const x = parseNumberValue(str[i]); i += x[1];
-    const y = parseNumberValue(str[i]); i += y[1];
-
-
-    const point = new PointValue(
-        '', // set node ID elsewhere
-        x[0],
-        y[0]);
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [PointValue.NaN(), 1];
 
 
-    return [point, i - iStart];
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+
+
+        const iStart = i;
+
+        const x = NumberValue.parse(str[i]); i += x[1];
+        const y = NumberValue.parse(str[i]); i += y[1];
+
+
+        const point = new PointValue(
+            '', // set node ID elsewhere
+            x[0],
+            y[0]);
+
+
+        return [point, i - iStart];
+    }
 }

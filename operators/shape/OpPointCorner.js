@@ -1,6 +1,10 @@
 class   OpPointCorner
 extends OperatorBase
 {
+    static { operatorTypes[POINT_CORNER] = this; }
+
+
+
     paramSmooth;
 
 

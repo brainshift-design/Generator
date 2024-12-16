@@ -1,6 +1,10 @@
 class   OpColorContrast
 extends OpColorBase
 {
+    static { operatorTypes[COLOR_CONTRAST] = this; }
+
+
+
     paramStandard;
 
     colorBack;

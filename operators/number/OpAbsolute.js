@@ -1,6 +1,10 @@
 class   OpAbsolute
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_ABSOLUTE] = this; }
+
+
+
     constructor()
     {
         super(NUMBER_ABSOLUTE, 'abs', 'absolute', iconAbsolute);

@@ -21,6 +21,10 @@ const schemeIcons =
 class   OpColorScheme
 extends OperatorBase
 {
+    static { operatorTypes[COLOR_SCHEME] = this; }
+
+
+
     paramType;
     paramSpace;
 

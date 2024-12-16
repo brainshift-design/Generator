@@ -1,6 +1,10 @@
 class   OpParseJson
 extends OperatorBase
 {
+    static { operatorTypes[PARSE_JSON] = this; }
+
+
+
     paramValue;
 
     length;

@@ -1,6 +1,10 @@
 class OpStroke
 extends OpColorBase
 {
+    static { operatorTypes[STROKE] = this; }
+
+
+
     paramFills;
     paramWeight;
     paramFit;

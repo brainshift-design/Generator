@@ -1,6 +1,10 @@
 class   OpValidColor
 extends OpColorBase
 {
+    static { operatorTypes[VALID_COLOR] = this; }
+
+
+
     paramMethod;
 
     corrections = [];
@@ -192,7 +196,7 @@ extends OpColorBase
     {
         if (_node._color != undefined)
         {
-            this._color = parseColorValue(_node._color)[0].toDataColor();
+            this._color = ColorValue.parse(_node._color)[0].toDataColor();
             this.valid = true;
         }
 

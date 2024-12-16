@@ -1,6 +1,10 @@
 class   OpList
 extends ResizableBase
 {
+    static { operatorTypes[LIST] = this; }
+
+
+
     length;
 
 

@@ -126,34 +126,48 @@ extends GValue
             NumberValue.NaN(), 
             NumberValue.NaN());
     }
-}
 
 
 
-function parseLayerBlendValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [LayerBlendValue.NaN(), 1];
-
-
-    if (i < 0)
+    static parseRequest(parse)
     {
-        str = str.split(' ');
-        i   = 0;
+        parse.pos++; // LAYER_BLEND_VALUE
+    
+        const layer = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(LAYER_BLEND_VALUE, layer, parse);
+    
+        return LayerBlendValue.parse(layer)[0];
     }
 
 
-    const iStart = i;
 
-    const opacity = parseNumberValue(str[i]); i += opacity[1];
-    const blend   = parseNumberValue(str[i]); i += blend  [1];
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [LayerBlendValue.NaN(), 1];
 
 
-    const layer = new LayerBlendValue(
-        opacity[0],
-        blend  [0]);
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
 
-        
-    return [layer, i - iStart];
+
+        const iStart = i;
+
+        const opacity = NumberValue.parse(str[i]); i += opacity[1];
+        const blend   = NumberValue.parse(str[i]); i += blend  [1];
+
+
+        const layer = new LayerBlendValue(
+            opacity[0],
+            blend  [0]);
+
+            
+        return [layer, i - iStart];
+    }
 }

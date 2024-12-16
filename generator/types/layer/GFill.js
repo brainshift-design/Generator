@@ -163,4 +163,70 @@ extends GOperator1
         if (this.opacity) this.opacity.iterateLoop(parse);
         if (this.blend  ) this.blend  .iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const fill = new GFill(nodeId, options);
+    
+        fill.hasInputs = options.hasInputs;
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(fill, parse, ignore, nInputs);
+    
+    
+        if (ignore)
+        {
+            genParseNodeEnd(parse, fill);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        let paramIds;
+    
+        if (nInputs == 1)
+        {
+            fill.input = genParse(parse);
+            paramIds = parse.move().split(',');
+        }
+        else
+            paramIds = ['color', 'opacity', 'blend'];
+    
+    
+        parse.inParam = false;
+    
+        for (const id of paramIds)
+        {
+            switch (id)
+            {
+            case 'color':   fill.color   = genParse(parse); break;
+            case 'opacity': fill.opacity = genParse(parse); break;
+            case 'blend':   fill.blend   = genParse(parse); break;
+            }
+        }
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, fill);
+        return fill;
+    }
 }

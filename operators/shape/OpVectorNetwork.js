@@ -1,6 +1,10 @@
 class   OpVectorNetwork
 extends OpShape
 {
+    static { operatorTypes[VECTOR_NETWORK] = this; }
+
+
+
     constructor()
     {
         super(VECTOR_NETWORK, 'network', 'network', iconVectorNetwork);

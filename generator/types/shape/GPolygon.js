@@ -257,4 +257,71 @@ extends GShape
         if (this.round   ) this.round   .iterateLoop(parse);
         if (this.corners ) this.corners .iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const poly = new GPolygon(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(poly, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, poly);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            poly.input = genParse(parse);
+    
+    
+        const nParamIds = genParseParamCount(parse);
+    
+        for (let i = 0; i < nParamIds; i++)
+        {
+            const paramId = genParseParamId(parse);
+    
+            parse.inParam = true;
+    
+            switch (paramId)
+            {
+            case 'position': poly.position = genParse(parse); break;
+            case 'x':        poly.x        = genParse(parse); break;
+            case 'y':        poly.y        = genParse(parse); break;
+            case 'width':    poly.width    = genParse(parse); break;
+            case 'height':   poly.height   = genParse(parse); break;
+            case 'round':    poly.round    = genParse(parse); break;
+            case 'corners':  poly.corners  = genParse(parse); break;
+            case 'props':    poly.props    = genParse(parse); break;
+            }
+        }
+        
+        
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, poly);
+        return poly;
+    }
 }

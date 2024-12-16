@@ -38,7 +38,7 @@ extends Action
 
 
         // create group node
-        this.groupNode = createNode(GROUP_NODE);
+        this.groupNode = Operator.create(GROUP_NODE);
 
         graph.addNode(this.groupNode);
         
@@ -107,7 +107,7 @@ function GroupNodesAction_createInputNodes(action)
 
         // create param node 
         // set it to the left of the input node
-        const paramNode = createNode(GROUP_PARAM);
+        const paramNode = Operator.create(GROUP_PARAM);
         paramNode.group = action.group;
         graph.addNode(paramNode);
 
@@ -158,7 +158,7 @@ function GroupNodesAction_createOutputNodes(action)
 
         // create param node 
         // set it to the left of the input node
-        const paramNode = createNode(GROUP_PARAM);
+        const paramNode = Operator.create(GROUP_PARAM);
         paramNode.group = action.group;
         graph.addNode(paramNode);
 

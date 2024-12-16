@@ -1,6 +1,10 @@
 class   OpReverseList
 extends OperatorBase
 {
+    static { operatorTypes[REVERSE_LIST] = this; }
+
+
+
     length;
 
 

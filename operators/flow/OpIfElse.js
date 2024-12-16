@@ -1,6 +1,10 @@
 class   OpIfElse
 extends OpFlowBase
 {
+    static { operatorTypes[IF_ELSE] = this; }
+    
+    
+    
     paramCondition;
 
     menuCondition;

@@ -197,6 +197,54 @@ extends GOperator1
         if (this.position ) this.position .iterateLoop(parse);
         if (this.transform) this.transform.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const place = new GPlace(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(place, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, place);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            place.input = genParse(parse);
+    
+        place.position   = genParse(parse);
+        place.transform  = genParse(parse);
+    
+    
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, place);
+        return place;
+    }
 }
 
 

@@ -1,6 +1,10 @@
 class   OpPlace
 extends OperatorBase
 {
+    static { operatorTypes[PLACE] = this; }
+
+
+
     paramPosition;
     paramTransform;
 

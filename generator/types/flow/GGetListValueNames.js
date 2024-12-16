@@ -1,6 +1,10 @@
 class GGetListValueNames
 extends GOperator1
 {
+    static { operatorTypes[GET_LIST_VALUE_NAMES] = this; }
+
+
+
     // cachedValue = null;
 
 
@@ -91,5 +95,49 @@ extends GOperator1
         this.validate();
 
         return this;
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const names = new GGetListValueNames(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(names, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, names);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            names.input = genParse(parse);
+      
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, names);
+        return names;
     }
 }

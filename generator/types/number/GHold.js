@@ -1,6 +1,10 @@
 class GHold
 extends GOperator1
 {
+    static { nodeTypes[HOLD] = this; }
+
+
+
     current;
     first;
 
@@ -128,4 +132,50 @@ extends GOperator1
 
         this.current = null;
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const hold = new GHold(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(hold, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, hold);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            hold.input = genParse(parse);
+    
+        hold.first = genParse(parse);
+    
+            
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, hold);
+        return hold;
+    }        
 }

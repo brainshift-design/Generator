@@ -242,51 +242,65 @@ extends GValue
             NumberValue.NaN(),
             NumberValue.NaN());
     }
-}
 
 
 
-function parseGradientValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [GradientValue.NaN(), 1];
-
-
-    if (i < 0)
+    static parseRequest(parse)
     {
-        str = str.split(' ');
-        i   = 0;
+        parse.pos++; // GRADIENT_VALUE
+    
+        const grad = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(GRADIENT_VALUE, grad, parse);
+    
+        return GradientValue.parse(grad)[0];
     }
 
 
-    const iStart = i;
 
-    const stops      = parseListValue  (str, i); i += stops   [1];
-    const gradType   = parseNumberValue(str[i]); i += gradType[1];
-    const position   = parseNumberValue(str[i]); i += position[1];
-    const x          = parseNumberValue(str[i]); i += x       [1];
-    const y          = parseNumberValue(str[i]); i += y       [1];
-    const size       = parseNumberValue(str[i]); i += size    [1];
-    const angle      = parseNumberValue(str[i]); i += angle   [1];
-    const aspect     = parseNumberValue(str[i]); i += aspect  [1];
-    const diagAspect = parseInt(str[i]) == 1;    i ++;
-    const skew       = parseNumberValue(str[i]); i += skew    [1];
-    const blend      = parseNumberValue(str[i]); i += blend   [1];
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [GradientValue.NaN(), 1];
 
 
-    return [
-        new GradientValue(
-            stops   [0], 
-            gradType[0], 
-            position[0],
-            x       [0], 
-            y       [0], 
-            size    [0], 
-            angle   [0], 
-            aspect  [0], 
-            diagAspect,
-            skew    [0], 
-            blend   [0]),
-        i - iStart ];
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+
+
+        const iStart = i;
+
+        const stops      = ListValue.parse  (str, i); i += stops   [1];
+        const gradType   = NumberValue.parse(str[i]); i += gradType[1];
+        const position   = NumberValue.parse(str[i]); i += position[1];
+        const x          = NumberValue.parse(str[i]); i += x       [1];
+        const y          = NumberValue.parse(str[i]); i += y       [1];
+        const size       = NumberValue.parse(str[i]); i += size    [1];
+        const angle      = NumberValue.parse(str[i]); i += angle   [1];
+        const aspect     = NumberValue.parse(str[i]); i += aspect  [1];
+        const diagAspect = parseInt(str[i]) == 1;    i ++;
+        const skew       = NumberValue.parse(str[i]); i += skew    [1];
+        const blend      = NumberValue.parse(str[i]); i += blend   [1];
+
+
+        return [
+            new GradientValue(
+                stops   [0], 
+                gradType[0], 
+                position[0],
+                x       [0], 
+                y       [0], 
+                size    [0], 
+                angle   [0], 
+                aspect  [0], 
+                diagAspect,
+                skew    [0], 
+                blend   [0]),
+            i - iStart ];
+    }
 }

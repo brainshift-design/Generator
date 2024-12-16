@@ -170,6 +170,6 @@ extends Parameter
 
     loadParam(_param)
     {
-        this.setValue(parseInnerShadowValue(_param[2])[0], true, true, false);
+        this.setValue(InnerShadowValue.parse(_param[2])[0], true, true, false);
     }
 }

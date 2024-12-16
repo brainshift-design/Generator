@@ -240,39 +240,50 @@ extends GValue
 
 
 
-    static default = Object.freeze(FillValue.create(217, 217, 217, 100));
-}
-
-
-
-function parseFillValue(str, i = -1)
-{
-    if (i < 0)
+    static parseRequest(parse)
     {
-        str = str.split(' ');
-        i   = 0;
+        parse.pos++; // FILL_VALUE
+    
+        const fill = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(FILL_VALUE, fill, parse);
+    
+        return FillValue.parse(fill)[0];
     }
 
 
-    const iStart = i;
 
-    const r   = parseNumberValue(str[i]); i += r  [1];
-    const g   = parseNumberValue(str[i]); i += g  [1];
-    const b   = parseNumberValue(str[i]); i += b  [1];
-    const a   = parseNumberValue(str[i]); i += a  [1];
-    const bl  = parseNumberValue(str[i]); i += bl [1];
-
+    static parse(str, i = -1)
+    {
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
     
-    return [
-        new FillValue(
-            new ColorValue(new NumberValue(1), r[0], g[0], b[0]), 
-            a [0], 
-            bl[0]),
-        i - iStart ];
+    
+        const iStart = i;
+    
+        const r   = NumberValue.parse(str[i]); i += r  [1];
+        const g   = NumberValue.parse(str[i]); i += g  [1];
+        const b   = NumberValue.parse(str[i]); i += b  [1];
+        const a   = NumberValue.parse(str[i]); i += a  [1];
+        const bl  = NumberValue.parse(str[i]); i += bl [1];
+    
+        
+        return [
+            new FillValue(
+                new ColorValue(new NumberValue(1), r[0], g[0], b[0]), 
+                a [0], 
+                bl[0]),
+            i - iStart ];
+    }
+
+
+
+    static default = Object.freeze(FillValue.create(217, 217, 217, 100));
 }
-
-
-
 
 
 

@@ -1,6 +1,10 @@
 class   OpVectorRegion
 extends OpShape
 {
+    static { operatorTypes[VECTOR_REGION] = this; }
+
+
+
     paramWinding;
 
 

@@ -1,6 +1,10 @@
 class GUnique
 extends GOperator1
 {
+    static { nodeTypes[UNIQUE] = this; }
+
+
+
     counts      = null;
     indices     = null;
 
@@ -159,4 +163,48 @@ extends GOperator1
     //     if (this.counts ) this.counts .iterateLoop(parse);
     //     if (this.indices) this.indices.iterateLoop(parse);
     // }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+        const unique = new GUnique(nodeId, options);
+    
+
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+
+        
+        if (parse.settings.logRequests) 
+            logReq(unique, parse, ignore, nInputs);
+
+
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, unique);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+
+
+        parse.nTab++;
+
+
+        if (nInputs == 1)
+            unique.input = genParse(parse);
+    
+        
+        parse.nTab--;
+
+
+        genParseNodeEnd(parse, unique);
+        return unique;
+    }
 }

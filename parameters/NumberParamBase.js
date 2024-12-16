@@ -301,7 +301,7 @@ extends Parameter
 
     loadParam(_param)
     {
-        this.setValue(parseNumberValue(_param[2])[0], true, true, false);
+        this.setValue(NumberValue.parse(_param[2])[0], true, true, false);
     }
 
 

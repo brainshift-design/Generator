@@ -1,6 +1,10 @@
 class   OpSetListValueNames
 extends OperatorBase
 {
+    static { operatorTypes[SET_LIST_VALUE_NAMES] = this; }
+
+
+
     constructor()
     {
         super(SET_LIST_VALUE_NAMES, 'setValueNames', 'set value names', iconSetListValueNames);

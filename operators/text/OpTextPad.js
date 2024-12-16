@@ -1,6 +1,10 @@
 class   OpTextPad
 extends OperatorBase
 {
+    static { operatorTypes[TEXT_PAD] = this; }
+
+
+
     paramStartPad;
     paramStartCount;
     paramEndPad;

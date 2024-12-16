@@ -220,4 +220,69 @@ extends GShape
 
         if (this.round) this.round.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const rect = new GRectangle(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(rect, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, rect);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            rect.input = genParse(parse);
+    
+    
+        const nParamIds = genParseParamCount(parse);
+    
+        for (let i = 0; i < nParamIds; i++)
+        {
+            const paramId = genParseParamId(parse);
+    
+            parse.inParam = true;
+    
+            switch (paramId)
+            {
+            case 'x':      rect.x      = genParse(parse); break;
+            case 'y':      rect.y      = genParse(parse); break;
+            case 'width':  rect.width  = genParse(parse); break;
+            case 'height': rect.height = genParse(parse); break;
+            case 'round':  rect.round  = genParse(parse); break;
+            case 'props':  rect.props  = genParse(parse); break;
+            }
+        }
+    
+    
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, rect);
+        return rect;
+    }
 }

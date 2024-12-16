@@ -1,6 +1,10 @@
 class   OpTextFind
 extends OperatorBase
 {
+    static { operatorTypes[TEXT_FIND] = this; }
+
+
+
     paramValue;
     paramFirst;
     paramLast;

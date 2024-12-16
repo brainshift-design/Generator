@@ -1,6 +1,10 @@
 class   OpHold
 extends OperatorBase
 {
+    static { operatorTypes[HOLD] = this; }
+
+
+
     paramFirst;
 
 

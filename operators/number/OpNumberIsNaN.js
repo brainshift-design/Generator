@@ -1,6 +1,10 @@
 class   OpNumberIsNaN
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_IS_NAN] = this; }
+
+
+
     constructor()
     {
         super(NUMBER_IS_NAN, 'isNaN', 'is NaN', iconIsNaN);

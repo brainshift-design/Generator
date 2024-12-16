@@ -1,6 +1,10 @@
 class   OpTextLength
 extends OperatorBase
 {
+    static { operatorTypes[TEXT_LENGTH] = this; }
+
+
+
     constructor()
     {
         super(TEXT_LENGTH, 'length', 'text length', iconTextLength);

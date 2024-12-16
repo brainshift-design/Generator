@@ -1,6 +1,10 @@
 class   OpFrame
 extends OpShape
 {
+    static { operatorTypes[FRAME] = this; }
+
+
+
     paramChildren;
     paramPosition;
     paramX;

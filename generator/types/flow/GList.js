@@ -1,6 +1,10 @@
 class GList
 extends GOperator
 {
+    static { nodeTypes[LIST] = this; }
+
+
+
     inputs = [];
 
     value;
@@ -215,5 +219,46 @@ extends GOperator
     resetLoop(parse, nodeId)
     {
         this.inputs.forEach(i => i.resetLoop(parse, nodeId));
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const list = new GList(nodeId, options);
+    
+        
+        let nInputs = 0;
+        
+        if (!ignore)
+            nInputs = parseInt(parse.move());
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(list, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, list);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+        
+        for (let i = 0; i < nInputs; i++)
+            list.inputs.push(genParse(parse));
+    
+    
+        parse.nTab--;
+    
+            
+        genParseNodeEnd(parse, list);
+        return list;
     }
 }

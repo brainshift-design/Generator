@@ -230,4 +230,45 @@ extends GShapeBase
 
         this.inputs.forEach(i => i.iterateLoop(parse));
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const group = new GShapeGroup(nodeId, options);
+    
+    
+        let nInputs = 0;
+        
+        if (!ignore)
+            nInputs = parseInt(parse.move());
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(group, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, group);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        for (let i = 0; i < nInputs; i++)
+            group.inputs.push(genParse(parse));
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, group);
+        return group;
+    }
 }

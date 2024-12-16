@@ -265,4 +265,66 @@ extends GShape
         if (this.children ) this.children .iterateLoop(parse);
         if (this.operation) this.operation.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const bool = new GShapeBoolean(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(bool, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, bool);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            bool.input = genParse(parse);
+    
+    
+        const nParamIds = genParseParamCount(parse);
+    
+        for (let i = 0; i < nParamIds; i++)
+        {
+            const paramId = genParseParamId(parse);
+    
+            parse.inParam = true;
+    
+            switch (paramId)
+            {
+            case 'children':  bool.children  = genParse(parse); break;
+            case 'operation': bool.operation = genParse(parse); break;
+            case 'props':     bool.props     = genParse(parse); break;
+            }
+        }
+    
+    
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, bool);
+        return bool;
+    }
 }

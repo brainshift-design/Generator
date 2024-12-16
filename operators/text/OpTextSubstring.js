@@ -1,6 +1,10 @@
 class   OpTextSubstring
 extends OperatorBase
 {
+    static { operatorTypes[TEXT_SUBSTRING] = this; }
+
+
+
     paramStart;
     paramEnd;
 

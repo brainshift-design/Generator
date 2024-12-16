@@ -130,4 +130,39 @@ extends GOperator
 
         if (this.request) this.request.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+        const fetch = new GTextFetch(nodeId, options);
+    
+
+        if (parse.settings.logRequests) 
+            logReq(fetch, parse, ignore);
+
+
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, fetch);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+
+
+        parse.nTab++;
+
+
+        fetch.request     = genParse(parse);
+        fetch.cachedValue = genParse(parse);
+
+        
+        parse.nTab--;
+
+
+        genParseNodeEnd(parse, fetch);
+        return fetch;
+    }
 }

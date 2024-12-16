@@ -1,6 +1,10 @@
 class   OpTextContains
 extends OperatorBase
 {
+    static { operatorTypes[TEXT_CONTAINS] = this; }
+
+
+
     paramWhat;
 
 

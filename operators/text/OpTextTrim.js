@@ -1,6 +1,10 @@
 class   OpTextTrim
 extends ResizableBase
 {
+    static { operatorTypes[TEXT_TRIM] = this; }
+
+
+
     paramStart;
     paramEnd;
 

@@ -1,6 +1,10 @@
 class   OpCommentArrow
 extends OperatorBase
 {
+    static { operatorTypes[COMMENT_ARROW] = this; }
+
+
+
     handle0;
     handle1;
     handle2;

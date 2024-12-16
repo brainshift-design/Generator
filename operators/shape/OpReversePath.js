@@ -1,6 +1,10 @@
 class   OpReversePath
 extends OperatorBase
 {
+    static { operatorTypes[REVERSE_PATH] = this; }
+
+
+
     constructor()
     {
         super(REVERSE_PATH, 'reversePath', 'reverse path', iconReversePath);

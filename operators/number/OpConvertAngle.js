@@ -1,6 +1,10 @@
 class   OpConvertAngle
 extends OperatorBase
 {
+    static { operatorTypes[CONVERT_ANGLE] = this; }
+
+
+
     paramFrom;
 
 

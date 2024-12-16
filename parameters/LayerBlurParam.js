@@ -170,6 +170,6 @@ extends Parameter
 
     loadParam(_param)
     {
-        this.setValue(parseLayerBlurValue(_param[2])[0], true, true, false);
+        this.setValue(LayerBlurValue.parse(_param[2])[0], true, true, false);
     }
 }

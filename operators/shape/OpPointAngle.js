@@ -1,6 +1,10 @@
 class   OpPointAngle
 extends OperatorBase
 {
+    static { operatorTypes[POINT_ANGLE] = this; }
+
+
+
     constructor()
     {
         super(POINT_ANGLE, 'pointAngle', 'point angle', iconPointAngle);

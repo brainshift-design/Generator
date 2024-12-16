@@ -1,6 +1,10 @@
 class   OpColorInterpolate
 extends OpColorBase
 {
+    static { operatorTypes[COLOR_INTERPOLATE] = this; }
+
+
+
     paramSpace;
     paramGamma;
     paramAmount;

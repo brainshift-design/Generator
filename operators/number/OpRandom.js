@@ -1,6 +1,10 @@
 class   OpRandom
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_RANDOM] = this; }
+
+
+
     paramSeed;
     paramIteration;
     paramMin;

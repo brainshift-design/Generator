@@ -104,7 +104,7 @@ extends GValue
 
 function parseShapeBaseValue(str, i, obj)
 {
-    const props = parseListValue(str, i); i += props[1];
+    const props = ListValue.parse(str, i); i += props[1];
 
     obj.props = props[0];
 

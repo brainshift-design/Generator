@@ -1,6 +1,10 @@
 class OpDropShadow
 extends OperatorBase
 {
+    static { operatorTypes[DROP_SHADOW] = this; }
+
+
+
     paramX;
     paramY;
     paramBlur;

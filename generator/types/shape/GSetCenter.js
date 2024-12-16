@@ -181,4 +181,53 @@ extends GOperator1
         if (this.centerY) this.centerY.iterateLoop(parse);
         if (this.units  ) this.units  .iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const center = new GSetCenter(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(center, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, center);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            center.input = genParse(parse);
+    
+        center.centerX    = genParse(parse);
+        center.centerY    = genParse(parse);
+        center.units      = genParse(parse);
+    
+    
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, center);
+        return center;
+    }
 }

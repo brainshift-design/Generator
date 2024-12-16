@@ -192,43 +192,59 @@ extends GValue
 
 
 
+    static parseRequest(parse)
+    {
+        parse.pos++; // INNER_SHADOW_VALUE
+
+        const shadow = parse.move();
+
+        if (parse.settings.logRequests) 
+            logReqValue(INNER_SHADOW_VALUE, shadow, parse);
+
+        return InnerShadowValue.parse(shadow)[0];
+    }
+
+
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [InnerShadowValue.NaN(), 1];
+    
+    
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+    
+    
+        const iStart = i;
+    
+        const x      = NumberValue.parse(str[i]); i += x     [1];
+        const y      = NumberValue.parse(str[i]); i += y     [1];
+        const blur   = NumberValue.parse(str[i]); i += blur  [1];
+        const spread = NumberValue.parse(str[i]); i += spread[1];
+        const fill   = FillValue.parse  (str, i); i += fill  [1];
+        const blend  = NumberValue.parse(str[i]); i += blend [1];
+    
+    
+        const shadow = new InnerShadowValue(
+            x     [0],
+            y     [0],
+            blur  [0],
+            spread[0],
+            fill  [0],
+            blend [0]);
+    
+    
+        return [shadow, i - iStart];
+    }
+
+
+
     // static default = Object.freeze(InnerShadowValue.create(217, 217, 217, 100));
 }
 
 
 
-function parseInnerShadowValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [InnerShadowValue.NaN(), 1];
-
-
-    if (i < 0)
-    {
-        str = str.split(' ');
-        i   = 0;
-    }
-
-
-    const iStart = i;
-
-    const x      = parseNumberValue(str[i]); i += x     [1];
-    const y      = parseNumberValue(str[i]); i += y     [1];
-    const blur   = parseNumberValue(str[i]); i += blur  [1];
-    const spread = parseNumberValue(str[i]); i += spread[1];
-    const fill   = parseFillValue  (str, i); i += fill  [1];
-    const blend  = parseNumberValue(str[i]); i += blend [1];
-
-
-    const shadow = new InnerShadowValue(
-        x     [0],
-        y     [0],
-        blur  [0],
-        spread[0],
-        fill  [0],
-        blend [0]);
-
-
-    return [shadow, i - iStart];
-}

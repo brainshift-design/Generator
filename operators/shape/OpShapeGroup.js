@@ -1,6 +1,10 @@
 class OpShapeGroup
 extends OpShapeBase
 {
+    static { operatorTypes[SHAPE_GROUP] = this; }
+
+
+
     constructor()
     {
         super(SHAPE_GROUP, 'group', 'group', iconShapeGroup);

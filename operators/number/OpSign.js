@@ -1,6 +1,10 @@
 class   OpSign
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_SIGN] = this; }
+
+
+
     constructor()
     {
         super(NUMBER_SIGN, 'sign', 'sign', iconSign);

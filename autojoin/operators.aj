@@ -134,19 +134,8 @@
 ../operators/number/boolean/OpXor.js
 
 ../operators/number/condition/OpCompare.js
-../operators/number/condition/OpConditionBase.js
-../operators/number/condition/OpEqual.js
-../operators/number/condition/OpNotEqual.js
-../operators/number/condition/OpLess.js
-../operators/number/condition/OpLessOrEqual.js
-../operators/number/condition/OpGreater.js
-../operators/number/condition/OpGreaterOrEqual.js
 
-../operators/number/trigonometric/OpTrig.js
-../operators/number/trigonometric/OpTrigBase.js
-../operators/number/trigonometric/OpSine.js
-../operators/number/trigonometric/OpCosine.js
-../operators/number/trigonometric/OpTangent.js
+../operators/number/trigonometric/OpTrigonometric.js
 ../operators/number/trigonometric/OpAtan2.js
 
 ../operators/number/OpConvertAngle.js

@@ -1,6 +1,10 @@
 class   OpFreeze
 extends OpFlowBase
 {
+    static { operatorTypes[FREEZE] = this; }
+
+
+
     constructor()
     {
         super(FREEZE, 'freeze', 'freeze', iconFreeze);

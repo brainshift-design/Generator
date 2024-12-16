@@ -1,6 +1,10 @@
 class   OpColorBlend
 extends OpColorBase
 {
+    static { operatorTypes[COLOR_BLEND] = this; }
+
+
+
     paramMode;
     paramAmount;
 

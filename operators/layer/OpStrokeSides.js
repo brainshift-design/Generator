@@ -1,6 +1,10 @@
 class OpStrokeSides
 extends OperatorBase
 {
+    static { operatorTypes[STROKE_SIDES] = this; }
+
+
+
     paramTop;
     paramLeft;
     paramRight;

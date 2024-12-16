@@ -265,4 +265,78 @@ extends GShape
         if (this.sweep   ) this.sweep   .iterateLoop(parse);
         if (this.inner   ) this.inner   .iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const ellipse = new GEllipse(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(ellipse, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, ellipse);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            ellipse.input = genParse(parse);
+    
+    
+        const nParamIds = genParseParamCount(parse);
+    
+        for (let i = 0; i < nParamIds; i++)
+        {
+            const paramId = genParseParamId(parse);
+    
+            parse.inParam = true;
+    
+            switch (paramId)
+            {
+            case 'position': ellipse.position = genParse(parse); break;
+            case 'x':        ellipse.x        = genParse(parse); break;
+            case 'y':        ellipse.y        = genParse(parse); break;
+            case 'width':    ellipse.width    = genParse(parse); break;
+            case 'height':   ellipse.height   = genParse(parse); break;
+            case 'round':    ellipse.round    = genParse(parse); break;
+            case 'start':    ellipse.start    = genParse(parse); break;
+            case 'sweep':    ellipse.sweep    = genParse(parse); break;
+            case 'inner':    ellipse.inner    = genParse(parse); break;
+            case 'props':    ellipse.props    = genParse(parse); break;
+            }
+        }
+        
+        
+        ellipse.innerAbsolute  = parseInt(parse.move()) > 0;
+        ellipse.startInDegrees = parseInt(parse.move()) > 0;
+        ellipse.sweepInDegrees = parseInt(parse.move()) > 0;
+    
+    
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, ellipse);
+        return ellipse;
+    }
 }

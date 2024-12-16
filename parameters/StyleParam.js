@@ -183,6 +183,6 @@
 
 //     loadParam(_param)
 //     {
-//         this.setValue(parseListValue(_param)[0], true, true, false);
+//         this.setValue(ListValue.parse(_param)[0], true, true, false);
 //     }
 // }

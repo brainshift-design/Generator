@@ -193,4 +193,52 @@ extends GOperator1//Shape
         if (this.props  ) this.props  .iterateLoop(parse);
         if (this.replace) this.replace.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const apply = new GApply(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(apply, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, apply);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            apply.input = genParse(parse);
+    
+        apply.props   = genParse(parse);
+        apply.replace = genParse(parse);
+    
+    
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, apply);
+        return apply;
+    }
 }

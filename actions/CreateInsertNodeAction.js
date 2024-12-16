@@ -42,7 +42,7 @@ extends Action
 
         graphView.creatingNodes = true;
 
-        const node = createNode(this.nodeType, this.creatingButton, this.createdId, this.options);
+        const node = Operator.create(this.nodeType, this.creatingButton, this.createdId, this.options);
 
 
         const insert = 

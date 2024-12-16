@@ -115,4 +115,68 @@ extends GOperator1
 
         if (this.radius) this.radius.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const blur = new GBackBlur(nodeId, options);
+    
+        blur.hasInputs = options.hasInputs;
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(blur, parse, ignore, nInputs);
+    
+    
+        if (ignore)
+        {
+            genParseNodeEnd(parse, blur);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        let paramIds;
+    
+        if (nInputs == 1)
+        {
+            blur.input = genParse(parse);
+            paramIds = parse.move().split(',');
+        }
+        else
+            paramIds = ['radius'];
+    
+    
+        parse.inParam = false;
+    
+        for (const id of paramIds)
+        {
+            switch (id)
+            {
+            case 'radius': blur.radius = genParse(parse); break;
+            }
+        }
+        
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, blur);
+        return blur;
+    }
 }

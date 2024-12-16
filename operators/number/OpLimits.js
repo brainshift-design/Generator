@@ -1,6 +1,10 @@
 class   OpLimits
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_LIMITS] = this; }
+
+
+
     paramMin;
     paramMax;
 

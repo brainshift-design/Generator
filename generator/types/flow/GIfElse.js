@@ -1,6 +1,10 @@
 class GIfElse
 extends GOperator
 {
+    static { nodeTypes[IF_ELSE] = this; }
+    
+    
+    
     input0    = null;
     input1    = null;
 
@@ -139,4 +143,67 @@ extends GOperator
         if (this.input1   ) this.input1   .iterateLoop(parse);
         if (this.condition) this.condition.iterateLoop(parse);
     }    
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const ifElse = new GIfElse(nodeId, options);
+    
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        }
+    
+    
+        const valueIndex = 
+            nInputs == 1
+            ? parseInt(parse.move())
+            : -1;
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(ifElse, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, ifElse);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+        if (nInputs == 2)
+        {
+            ifElse.input0    = genParse(parse);
+            ifElse.input1    = genParse(parse);
+            ifElse.condition = genParse(parse);
+        }
+        else if (nInputs == 1)
+        {
+                 if (valueIndex == 0) ifElse.input0 = genParse(parse); 
+            else if (valueIndex == 1) ifElse.input1 = genParse(parse); 
+    
+            ifElse.condition = genParse(parse);
+        }
+        else if (nInputs == 0)
+        {
+            ifElse.condition = genParse(parse);
+        }
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, ifElse);
+        return ifElse;
+    }
 }

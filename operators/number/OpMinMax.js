@@ -1,6 +1,10 @@
 class   OpMinMax
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_MINMAX] = this; }
+
+
+
     paramOperation;
 
 

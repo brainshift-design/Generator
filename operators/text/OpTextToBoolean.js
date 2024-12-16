@@ -1,6 +1,10 @@
 class   OpTextToBoolean
 extends OperatorBase
 {
+    static { operatorTypes[TEXT_TO_BOOLEAN] = this; }
+
+
+
     constructor()
     {
         super(TEXT_TO_BOOLEAN, 'textToBool', 'text to boolean', iconTextToBoolean);

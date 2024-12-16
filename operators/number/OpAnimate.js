@@ -1,6 +1,10 @@
 class   OpAnimate
 extends OperatorBase //WithValue
 {
+    static { operatorTypes[NUMBER_ANIMATE] = this; }
+
+
+
     paramFrom;
     paramTo;
     paramCurve;

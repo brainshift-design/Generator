@@ -1,6 +1,10 @@
 class   OpCorrectColor
 extends OpColorBase
 {
+    static { operatorTypes[CORRECT_COLOR] = this; }
+
+
+
     paramOrder;
 
     param1;
@@ -332,7 +336,7 @@ extends OpColorBase
 
         if (_node._color != undefined)
         {
-            this._color = parseColorValue(_node._color)[0].toDataColor();
+            this._color = ColorValue.parse(_node._color)[0].toDataColor();
             this.valid = true;
         }
 

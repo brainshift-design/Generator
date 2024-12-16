@@ -280,4 +280,69 @@ extends GOperator1
         if (this._c2   ) this._c2   .iterateLoop(parse);
         if (this._c3   ) this._c3   .iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const corr = new GCorrectColor(nodeId, options);
+    
+        corr.hasInputs = options.hasInputs;
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(corr, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, corr);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        let paramIds;
+    
+        if (nInputs == 1)
+            corr.input = genParse(parse);
+    
+    
+        paramIds = parse.move().split(',');
+    
+        parse.inParam = false;
+        
+        for (const id of paramIds)
+        {
+            switch (id)
+            {
+            case 'order':  corr._order = corr.order = genParse(parse);  break;
+            case 'c1':     corr._c1    = corr.c1    = genParse(parse);  break;
+            case 'c2':     corr._c2    = corr.c2    = genParse(parse);  break;
+            case 'c3':     corr._c3    = corr.c3    = genParse(parse);  break;
+            case 'value':  corr.value               = genParse(parse);  break;
+            }
+        }
+                    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, corr);
+        return corr;
+    }
 }

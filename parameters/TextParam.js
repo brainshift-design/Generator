@@ -248,7 +248,7 @@ extends Parameter
     {
         const val = _param[2];
 
-        this.setValue(parseTextValue(val)[0], true, false, false);
+        this.setValue(TextValue.parse(val)[0], true, false, false);
 
         if (_param.length >= 4)
         {

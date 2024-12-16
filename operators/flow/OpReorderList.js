@@ -1,6 +1,10 @@
 class   OpReorderList
 extends OperatorBase
 {
+    static { operatorTypes[REORDER_LIST] = this; }
+
+
+
     paramIndices;
 
 

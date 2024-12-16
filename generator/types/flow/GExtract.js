@@ -1,6 +1,10 @@
 class GExtract
 extends GOperator1
 {
+    static { nodeTypes[EXTRACT] = this; }
+
+
+
     indices     = null;
 
     // cachedValue = null;
@@ -143,5 +147,51 @@ extends GOperator1
         super.iterateLoop(parse);
 
         if (this.indices) this.indices.iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const extr = new GExtract(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(extr, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, extr);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            extr.input = genParse(parse);
+    
+        extr.indices = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, extr);
+        return extr;
     }
 }

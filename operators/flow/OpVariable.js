@@ -5,6 +5,10 @@ const defaultVariableNodeName = PLUGIN_LOGO + '/variable';
 class   OpVariable
 extends ResizableBaseWithSeparator
 {
+    static { operatorTypes[VARIABLE] = this; }
+
+
+    
     variableId         = NULL;
     variableType       = NULL; // this is the resolved type
     variableName       = '';   // must be set even if nothing is connected

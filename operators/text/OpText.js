@@ -1,6 +1,10 @@
 class   OpText
 extends ResizableBase
 {
+    static { operatorTypes[TEXT] = this; }
+
+
+
     paramValue;
 
 

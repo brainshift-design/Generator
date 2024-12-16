@@ -1,6 +1,10 @@
 class   OpIntersectLines
 extends OpShapeBase
 {
+    static { operatorTypes[INTERSECT_LINES] = this; }
+
+
+
     paramSegment;
 
 

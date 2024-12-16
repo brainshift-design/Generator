@@ -1,6 +1,10 @@
 class   OpSetObjectName
 extends OperatorBase
 {
+    static { operatorTypes[SET_OBJECT_NAME] = this; }
+
+
+
     paramName;
 
     value;

@@ -141,32 +141,49 @@ extends GValue
             NumberValue.NaN(),
             false);
     }
-}
 
 
 
-function parseLayerBlurValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [LayerBlurValue.NaN(), 1];
-
-
-    if (i < 0)
+    static parseRequest(parse)
     {
-        str = str.split(' ');
-        i   = 0;
+        parse.pos++; // LAYER_BLUR_VALUE
+    
+        const blur = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(LAYER_BLUR_VALUE, blur, parse);
+    
+        return LayerBlurValue.parse(blur)[0];
     }
 
 
-    const iStart = i;
 
-    const radius = parseNumberValue(str[i]); i += radius[1];
-
-
-    const shadow = new LayerBlurValue(
-        radius[0]);
-
-
-    return [shadow, i - iStart];
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [LayerBlurValue.NaN(), 1];
+    
+    
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+    
+    
+        const iStart = i;
+    
+        const radius = NumberValue.parse(str[i]); i += radius[1];
+    
+    
+        const shadow = new LayerBlurValue(
+            radius[0]);
+    
+    
+        return [shadow, i - iStart];
+    }
 }
+
+
+

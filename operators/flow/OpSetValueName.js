@@ -1,6 +1,10 @@
 class   OpSetValueName
 extends OpFlowBase
 {
+    static { operatorTypes[SET_VALUE_NAME] = this; }
+
+
+
     paramName;
 
 

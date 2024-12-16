@@ -133,6 +133,54 @@ extends GOperator1
         if (this.decimals ) this.decimals .iterateLoop(parse);
         if (this.thousands) this.thousands.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const text2num = new GTextToNumber(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(text2num, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, text2num);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            text2num.input = genParse(parse);
+    
+        text2num.base      = genParse(parse);
+        text2num.decimals  = genParse(parse);
+        text2num.thousands = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, text2num);
+        return text2num;
+    }
 }
 
 

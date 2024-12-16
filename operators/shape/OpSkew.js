@@ -1,6 +1,10 @@
 class   OpSkew
 extends OpAffine
 {
+    static { operatorTypes[SKEW] = this; }
+
+
+
     paramSkewX;
     paramSkewY;
 

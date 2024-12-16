@@ -1,6 +1,10 @@
 class   OpCell
 extends OperatorBase
 {
+    static { operatorTypes[CELL] = this; }
+
+
+
     paramColumn;
     paramRow;
 

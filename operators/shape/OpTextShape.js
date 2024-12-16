@@ -1,6 +1,10 @@
 class   OpTextShape
 extends OpShape
 {
+    static { operatorTypes[TEXT_SHAPE] = this; }
+
+
+
     paramText;
     paramX;
     paramY;

@@ -1,6 +1,10 @@
 class   OpJoinPaths
 extends OpShape
 {
+    static { operatorTypes[JOIN_PATHS] = this; }
+
+
+
     paramClosed;
     paramDegree;
     paramWinding;

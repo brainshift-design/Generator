@@ -139,4 +139,48 @@ extends GOperator
         if (this.index) this.index.iterateLoop(parse);
         if (this.name ) this.name .iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const index = new GIndexToName(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(index, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, index);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        index.name  = genParse(parse);
+        index.index = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, index);
+        return index;
+    }
 }

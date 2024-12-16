@@ -1,6 +1,10 @@
 class   OpLine
 extends OpShape
 {
+    static { operatorTypes[LINE] = this; }
+
+
+
     paramX;
     paramY;
     paramWidth;

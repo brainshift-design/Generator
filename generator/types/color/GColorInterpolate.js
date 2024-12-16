@@ -260,4 +260,53 @@ extends GOperator
         if (this.amount) this.amount.iterateLoop(parse);
         if (this.degree) this.degree.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const lerp = new GColorInterpolate(nodeId, options);
+    
+    
+        let nInputs = 0;
+        
+        if (!ignore)
+            nInputs = parseInt(parse.move());
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(lerp, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, lerp);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        parse.nTab++;
+    
+        for (let i = 0; i < nInputs; i++)
+            lerp.inputs.push(genParse(parse));
+    
+    
+        lerp.space  = genParse(parse);
+        lerp.gamma  = genParse(parse);
+        lerp.amount = genParse(parse);
+        lerp.degree = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, lerp);
+        return lerp;
+    }
 }

@@ -1,6 +1,10 @@
 class   OpColorToCss
 extends OperatorBase
 {
+    static { operatorTypes[COLOR_TO_CSS] = this; }
+
+
+
     paramFormat;
     paramPercent;
     paramTrimZeros;

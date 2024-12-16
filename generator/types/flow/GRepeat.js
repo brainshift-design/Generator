@@ -1,6 +1,10 @@
 class GRepeat
 extends GOperator1
 {
+    static { nodeTypes[REPEAT] = this; }
+
+
+
     count            = null;
     iteration        = null;
    _while            = null;
@@ -349,6 +353,61 @@ extends GOperator1
         if (this. iteration) this. iteration.iterateLoop(parse);
         if (this._while    ) this._while    .iterateLoop(parse);
         if (this. loop     ) this. loop     .iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const repeat = new GRepeat(nodeId, options);
+    
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(repeat, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, repeat);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        repeat.isTerminal  = parseInt(parse.move()) > 0;
+        repeat.activeAfter = parseInt(parse.move()) > 0;
+        repeat.listAfter   = parseInt(parse.move()) > 0;
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            repeat.input = genParse(parse);
+    
+        repeat. count     = genParse(parse);
+        repeat .iteration = genParse(parse);
+        repeat._while     = genParse(parse);
+      //repeat. iterate   = genParse(parse);  // don't set target here
+        repeat. loop      = genParse(parse);  // don't set target here
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, repeat);
+        return repeat;
     }
 }
 

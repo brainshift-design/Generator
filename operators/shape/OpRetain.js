@@ -1,6 +1,10 @@
 class OpRetain
 extends OpShapeBase
 {
+    static { operatorTypes[RETAIN] = this; }
+
+
+
     btnFinal;
     
     finalize = false;

@@ -1,6 +1,10 @@
 class   OpInterpolatePoint
 extends OpShapeBase
 {
+    static { operatorTypes[INTERPOLATE_POINT] = this; }
+
+
+
     paramAmount;
     paramTransform;
 

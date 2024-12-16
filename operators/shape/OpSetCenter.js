@@ -1,6 +1,10 @@
 class   OpSetCenter
 extends OperatorBase
 {
+    static { operatorTypes[SET_CENTER] = this; }
+
+
+
     paramCenterX;
     paramCenterY;
     paramUnits;

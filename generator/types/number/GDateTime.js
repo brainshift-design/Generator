@@ -1,6 +1,10 @@
 class GDateTime
 extends GOperator
 {
+    static { nodeTypes[NUMBER_DATETIME] = this; }
+
+
+
     seconds   = null;
     minutes   = null;
     hours     = null;
@@ -13,7 +17,7 @@ extends GOperator
     
     constructor(nodeId, options)
     {
-        super(NUMBER_LIMITS, nodeId, options);
+        super(NUMBER_DATETIME, nodeId, options);
     }
 
 
@@ -163,4 +167,44 @@ extends GOperator
         if (this.minutes  ) this.minutes  .iterateLoop(parse);
         if (this.seconds  ) this.seconds  .iterateLoop(parse);
     }    
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const dateTime = new GDateTime(nodeId, options);
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(dateTime, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, dateTime);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        dateTime.seconds   = genParse(parse);
+        dateTime.minutes   = genParse(parse);
+        dateTime.hours     = genParse(parse);
+        dateTime.dayOfWeek = genParse(parse);
+        dateTime.date      = genParse(parse);
+        dateTime.month     = genParse(parse);
+        dateTime.year      = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, dateTime);
+        return dateTime;
+    }
 }

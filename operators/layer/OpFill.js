@@ -1,6 +1,10 @@
 class OpFill
 extends OpColorBase
 {
+    static { operatorTypes[FILL] = this; }
+
+
+
     paramColor;
     paramOpacity;
     paramBlend;

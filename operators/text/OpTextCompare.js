@@ -1,6 +1,10 @@
 class   OpTextCompare
 extends OperatorBase
 {
+    static { operatorTypes[TEXT_COMPARE] = this; }
+
+
+
     paramOperation;
     paramOperand;
 

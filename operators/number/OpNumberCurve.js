@@ -1,6 +1,10 @@
 class   OpNumberCurve
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_CURVE] = this; }
+
+
+
     paramMin;
     paramMax;
     paramPower;

@@ -92,68 +92,68 @@ class NumberValueMeta
             + ' ' + boolToString(this.displayAbsolute)
             + ' ' + (this.tooltipId ? '\'' + encodeURIComponent(this.tooltipId) + '\'' : NULL_VALUE);
     }
-}
 
 
 
-function parseNumberValueMeta(str, i = -1)
-{
-    if (i < 0)
+    static parse(str, i = -1)
     {
-        str = str.split(' ');
-        i   = 0;
-    }
-
-
-    const iStart = i;
-
-    const min        = parseFloat(str[i]); i++;
-    const minDisplay = parseFloat(str[i]); i++;
-    const max        = parseFloat(str[i]); i++;
-    const maxDisplay = parseFloat(str[i]); i++;
-    const decimals   = parseInt  (str[i]); i++;
-    
-    const suffix     = str[i] == NULL_VALUE 
-                          ? NULL 
-                          : decodeURIComponent(str[i]); i++;
-
-    let ranges = null;
-
-    if (str[i] == NULL_VALUE)
-        i++;
-
-    else
-    {
-        const nRanges = parseInt(str[i]); i++;
-
-        ranges = [];
-
-        for (let j = 0; j < nRanges; j++)
+        if (i < 0)
         {
-            const range = parseNumberValueRange(str, i); i += range[1];
-            ranges.push(range[0]);
+            str = str.split(' ');
+            i   = 0;
         }
-    }
-
     
-    const displayAbsolute = parseBool(str[i]); i++;
-
-    const tooltipId = str[i] == NULL_VALUE 
-                        ? null 
-                        : decodeURIComponent(str[i].substring(1, str[i].length-1)); i++;
-
-
-    const meta = new NumberValueMeta(
-        min,
-        minDisplay,
-        max,
-        maxDisplay,
-        decimals,
-        suffix,
-        ranges,
-        displayAbsolute,
-        tooltipId);
-
-
-    return [meta, i - iStart];
+    
+        const iStart = i;
+    
+        const min        = parseFloat(str[i]); i++;
+        const minDisplay = parseFloat(str[i]); i++;
+        const max        = parseFloat(str[i]); i++;
+        const maxDisplay = parseFloat(str[i]); i++;
+        const decimals   = parseInt  (str[i]); i++;
+        
+        const suffix     = str[i] == NULL_VALUE 
+                              ? NULL 
+                              : decodeURIComponent(str[i]); i++;
+    
+        let ranges = null;
+    
+        if (str[i] == NULL_VALUE)
+            i++;
+    
+        else
+        {
+            const nRanges = parseInt(str[i]); i++;
+    
+            ranges = [];
+    
+            for (let j = 0; j < nRanges; j++)
+            {
+                const range = NumberValueRange.parse(str, i); i += range[1];
+                ranges.push(range[0]);
+            }
+        }
+    
+        
+        const displayAbsolute = parseBool(str[i]); i++;
+    
+        const tooltipId = str[i] == NULL_VALUE 
+                            ? null 
+                            : decodeURIComponent(str[i].substring(1, str[i].length-1)); i++;
+    
+    
+        const meta = new NumberValueMeta(
+            min,
+            minDisplay,
+            max,
+            maxDisplay,
+            decimals,
+            suffix,
+            ranges,
+            displayAbsolute,
+            tooltipId);
+    
+    
+        return [meta, i - iStart];
+    }
 }

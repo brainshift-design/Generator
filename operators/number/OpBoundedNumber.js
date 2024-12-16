@@ -1,6 +1,10 @@
 class   OpBoundedNumber
 extends ResizableBase
 {
+    static { operatorTypes[BOUNDED_NUMBER] = this; }
+
+
+
     paramValue;
     paramMin;
     paramMax;

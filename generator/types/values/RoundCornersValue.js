@@ -142,38 +142,55 @@ extends GValue
             NumberValue.NaN(),
             false);
     }
-}
 
 
 
-function parseRoundCornersValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [RoundCornersValue.NaN(), 1];
-
-
-    if (i < 0)
+    static parseRequest(parse)
     {
-        str = str.split(' ');
-        i   = 0;
+        parse.pos++; // ROUND_CORNERS_VALUE
+    
+        const corners = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(ROUND_CORNERS_VALUE, corners, parse);
+    
+        return RoundCornersValue.parse(corners)[0];
     }
 
 
-    const iStart = i;
 
-    const tl = parseNumberValue(str[i]); i += tl[1];
-    const tr = parseNumberValue(str[i]); i += tr[1];
-    const bl = parseNumberValue(str[i]); i += bl[1];
-    const br = parseNumberValue(str[i]); i += br[1];
-
-
-    const corners = new RoundCornersValue(
-        tl[0],
-        tr[0],
-        bl[0],
-        br[0]);
-
-
-    return [corners, i - iStart];
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [RoundCornersValue.NaN(), 1];
+    
+    
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+    
+    
+        const iStart = i;
+    
+        const tl = NumberValue.parse(str[i]); i += tl[1];
+        const tr = NumberValue.parse(str[i]); i += tr[1];
+        const bl = NumberValue.parse(str[i]); i += bl[1];
+        const br = NumberValue.parse(str[i]); i += br[1];
+    
+    
+        const corners = new RoundCornersValue(
+            tl[0],
+            tr[0],
+            bl[0],
+            br[0]);
+    
+    
+        return [corners, i - iStart];
+    }
 }
+
+
+

@@ -1,6 +1,10 @@
 class   OpFeedback
 extends OperatorBase
 {
+    static { operatorTypes[FEEDBACK] = this; }
+
+
+
     paramFrom;
 
 

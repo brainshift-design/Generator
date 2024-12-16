@@ -1,6 +1,10 @@
 class GLimits
 extends GOperator1
 {
+    static { nodeTypes[NUMBER_LIMITS] = this; }
+
+
+
     min = null;
     max = null;
 
@@ -133,6 +137,53 @@ extends GOperator1
         if (this.input) this.input.iterateLoop(parse);
         if (this.min  ) this.min  .iterateLoop(parse);
         if (this.max  ) this.max  .iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const limits = new GLimits(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(limits, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, limits);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            limits.input = genParse(parse);
+    
+        limits.min = genParse(parse);
+        limits.max = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, limits);
+        return limits;
     }
 }
 

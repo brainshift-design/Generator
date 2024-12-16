@@ -1,6 +1,10 @@
 class   OpNumberMap
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_MAP] = this; }
+
+
+
     paramFrom;
     paramTo;
 

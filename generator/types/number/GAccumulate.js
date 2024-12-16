@@ -1,6 +1,10 @@
 class GAccumulate
 extends GOperator1
 {
+    static { nodeTypes[NUMBER_ACCUMULATE] = this; }
+
+
+
     current;
     when;
 
@@ -131,5 +135,51 @@ extends GOperator1
         super.resetLoop(parse, nodeId);
 
         this.current = new NumberValue(0);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const accum = new GAccumulate(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(accum, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, accum);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            accum.input = genParse(parse);
+    
+        accum.when = genParse(parse);
+    
+            
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, accum);
+        return accum;
     }
 }

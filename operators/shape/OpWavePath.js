@@ -1,6 +1,10 @@
 class   OpWavePath
 extends OpShape
 {
+    static { operatorTypes[WAVE_PATH] = this; }
+
+
+
     paramShape;
     paramX;
     paramY;

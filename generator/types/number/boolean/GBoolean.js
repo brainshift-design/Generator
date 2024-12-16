@@ -1,6 +1,10 @@
 class GBoolean
 extends GArithmetic
 {
+    static { nodeTypes[NUMBER_BOOLEAN] = this; }
+
+
+
     operation;
 
 
@@ -104,5 +108,48 @@ extends GArithmetic
         super.iterateLoop(parse);
 
         if (this.operation) this.operation.iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const bool = new GBoolean(nodeId, options);
+    
+        
+        let nInputs = 0;
+        
+        if (!ignore)
+            nInputs = parseInt(parse.move());
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(bool, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, bool);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+        for (let i = 0; i < nInputs; i++)
+            bool.inputs.push(genParse(parse));
+    
+    
+        bool.operation = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+            
+        genParseNodeEnd(parse, bool);
+        return bool;
     }
 }

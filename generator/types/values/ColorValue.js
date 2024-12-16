@@ -307,28 +307,42 @@ extends GValue
             NumberValue.NaN(),
             NumberValue.NaN());
     }
-}
 
 
-
-function parseColorValue(str, i = -1)
-{
-    if (i < 0)
+    
+    static parseRequest(parse)
     {
-        str = str.split(' ');
-        i   = 0;
+        parse.pos++; // COLOR_VALUE
+    
+        const col = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(COLOR_VALUE, col, parse);
+    
+        return ColorValue.parse(col)[0];
     }
-        
-
-    const iStart = i;
-
-    const space = parseNumberValue(str[i]); i += space[1];
-    const c1    = parseNumberValue(str[i]); i += c1   [1];
-    const c2    = parseNumberValue(str[i]); i += c2   [1];
-    const c3    = parseNumberValue(str[i]); i += c3   [1];
 
 
-    return [
-        new ColorValue(space ? space[0] : new NumberValue(1), c1[0], c2[0], c3[0]), 
-        i - iStart ];
+
+    static parse(str, i = -1)
+    {
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+            
+
+        const iStart = i;
+
+        const space = NumberValue.parse(str[i]); i += space[1];
+        const c1    = NumberValue.parse(str[i]); i += c1   [1];
+        const c2    = NumberValue.parse(str[i]); i += c2   [1];
+        const c3    = NumberValue.parse(str[i]); i += c3   [1];
+
+
+        return [
+            new ColorValue(space ? space[0] : new NumberValue(1), c1[0], c2[0], c3[0]), 
+            i - iStart ];
+    }
 }

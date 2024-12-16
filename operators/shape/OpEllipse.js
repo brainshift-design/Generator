@@ -1,6 +1,10 @@
 class   OpEllipse
 extends OpShape
 {
+    static { operatorTypes[ELLIPSE] = this; }
+
+
+
     paramPosition;
     paramX;
     paramY;

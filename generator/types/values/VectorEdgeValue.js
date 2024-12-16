@@ -147,39 +147,53 @@ extends GValue
             PointValue.NaN(), 
             PointValue.NaN());
     }
-}
 
 
 
-function parseVectorEdgeValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [VectorEdgeValue.NaN(), 1];
-
-
-    if (i < 0)
+    static parseRequest(parse)
     {
-        str = str.split(' ');
-        i   = 0;
+        parse.pos++; // VECTOR_EDGE_VALUE
+    
+        const edge = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(VECTOR_EDGE_VALUE, edge, parse);
+    
+        return VectorEdgeValue.parse(edge)[0];
     }
 
 
-    const iStart = i;
 
-    const start        = parseVectorVertexValue(str, i); i += start       [1];
-    const end          = parseVectorVertexValue(str, i); i += end         [1];
-    const startTangent = parsePointValue       (str, i); i += startTangent[1];
-    const endTangent   = parsePointValue       (str, i); i +=   endTangent[1];
-
-
-    const edge = new VectorEdgeValue(
-        '', // set node ID elsewhere
-        start       [0],
-        end         [0],
-        startTangent[0],
-          endTangent[0]);
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [VectorEdgeValue.NaN(), 1];
 
 
-    return [edge, i - iStart];
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+
+
+        const iStart = i;
+
+        const start        = VectorVertexValue.parse(str, i); i += start       [1];
+        const end          = VectorVertexValue.parse(str, i); i += end         [1];
+        const startTangent = PointValue.parse       (str, i); i += startTangent[1];
+        const endTangent   = PointValue.parse       (str, i); i +=   endTangent[1];
+
+
+        const edge = new VectorEdgeValue(
+            '', // set node ID elsewhere
+            start       [0],
+            end         [0],
+            startTangent[0],
+            endTangent[0]);
+
+
+        return [edge, i - iStart];
+    }
 }

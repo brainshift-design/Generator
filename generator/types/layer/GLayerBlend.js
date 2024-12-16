@@ -109,4 +109,33 @@ extends GOperator
         if (this.opacity) this.opacity.iterateLoop(parse);
         if (this.blend  ) this.blend  .iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+        const layer = new GLayerBlend(nodeId, options);
+
+
+        if (parse.settings.logRequests) 
+            logReq(layer, parse, ignore);
+
+
+        if (ignore)
+        {
+            genParseNodeEnd(parse, layer);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+
+
+        layer.opacity = genParse(parse);
+        layer.blend   = genParse(parse);
+        
+        
+        genParseNodeEnd(parse, layer);
+        return layer;
+    }
 }

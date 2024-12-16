@@ -1,6 +1,10 @@
 class   OpTextFetch
 extends ResizableBase
 {
+    static { operatorTypes[TEXT_FETCH] = this; }
+
+
+
     paramRequest;
 
     cachedValue = '';

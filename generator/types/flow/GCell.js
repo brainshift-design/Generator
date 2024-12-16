@@ -1,6 +1,10 @@
 class GCell
 extends GOperator1
 {
+    static { nodeTypes[CELL] = this; }
+
+
+
     column;
     row;
 
@@ -131,5 +135,52 @@ extends GOperator1
 
         if (this.column) this.column.iterateLoop(parse);
         if (this.row   ) this.row   .iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const cell = new GCell(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(cell, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, cell);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            cell.input = genParse(parse);
+    
+        cell.column = genParse(parse);
+        cell.row    = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, cell);
+        return cell;
     }
 }

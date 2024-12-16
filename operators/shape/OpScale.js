@@ -1,6 +1,10 @@
 class   OpScale
 extends OpAffine
 {
+    static { operatorTypes[SCALE] = this; }
+
+
+
     paramScaleX;
     paramScaleY;
 

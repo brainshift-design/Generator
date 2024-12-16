@@ -182,9 +182,9 @@ function parseLineValue(str, i = -1)
 
     const iStart = i;
 
-    const x     = parseNumberValue(str[i]); i += x    [1];
-    const y     = parseNumberValue(str[i]); i += y    [1];
-    const width = parseNumberValue(str[i]); i += width[1];
+    const x     = NumberValue.parse(str[i]); i += x    [1];
+    const y     = NumberValue.parse(str[i]); i += y    [1];
+    const width = NumberValue.parse(str[i]); i += width[1];
 
 
     const line = new LineValue(

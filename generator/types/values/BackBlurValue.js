@@ -141,32 +141,46 @@ extends GValue
             NumberValue.NaN(),
             false);
     }
-}
 
 
 
-function parseBackBlurValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [BackBlurValue.NaN(), 1];
-
-
-    if (i < 0)
+    static parseRequest(parse)
     {
-        str = str.split(' ');
-        i   = 0;
+        parse.pos++; // BACK_BLUR_VALUE
+    
+        const blur = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(BACK_BLUR_VALUE, blur, parse);
+    
+        return BackBlurValue.parse(blur)[0];
     }
 
 
-    const iStart = i;
 
-    const radius = parseNumberValue(str[i]); i += radius[1];
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [BackBlurValue.NaN(), 1];
 
 
-    const shadow = new BackBlurValue(
-        radius[0]);
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
 
 
-    return [shadow, i - iStart];
+        const iStart = i;
+
+        const radius = NumberValue.parse(str[i]); i += radius[1];
+
+
+        const shadow = new BackBlurValue(
+            radius[0]);
+
+
+        return [shadow, i - iStart];
+    }
 }

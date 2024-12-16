@@ -1,6 +1,10 @@
 class GSimpleMath
 extends GOperator1
 {
+    static { nodeTypes[NUMBER_SIMPLE_MATH] = this; }
+
+
+
     operation;
     operand;
     invert;
@@ -146,6 +150,54 @@ extends GOperator1
         if (this.operation) this.operation.iterateLoop(parse);
         if (this.operand  ) this.operand  .iterateLoop(parse);
         if (this.invert   ) this.invert   .iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const smath = new GSimpleMath(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(smath, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, smath);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            smath.input = genParse(parse);
+    
+        smath.operation = genParse(parse);
+        smath.operand   = genParse(parse);
+        smath.invert    = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, smath);
+        return smath;
     }
 }
 

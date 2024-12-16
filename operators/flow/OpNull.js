@@ -1,6 +1,10 @@
 class   OpNull
 extends OpFlowBase
 {
+    static { operatorTypes[NULL_NODE] = this; }
+    
+    
+    
     constructor()
     {
         super(NULL_NODE, 'null', 'null', iconNull);

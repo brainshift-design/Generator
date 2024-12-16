@@ -1,6 +1,10 @@
 class   OpIterate
 extends OperatorBase
 {
+    static { operatorTypes[ITERATE] = this; }
+
+
+
     paramValues;
 
 

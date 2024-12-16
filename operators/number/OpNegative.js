@@ -1,6 +1,10 @@
 class   OpNegative
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_NEGATIVE] = this; }
+
+
+
     constructor()
     {
         super(NUMBER_NEGATIVE, 'neg', 'negative', iconNegative);

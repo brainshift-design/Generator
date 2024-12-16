@@ -152,4 +152,52 @@ extends GAffine
 
         if (this.angle) this.angle.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const rotate = new GRotate(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(rotate, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, rotate);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            rotate.input = genParse(parse);
+    
+        rotate.angle       = genParse(parse);
+        rotate.affectSpace = genParse(parse);
+    
+        
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, rotate);
+        return rotate;
+    }
 }

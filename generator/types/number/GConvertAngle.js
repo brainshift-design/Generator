@@ -1,6 +1,10 @@
 class GConvertAngle
 extends GOperator1
 {
+    static { nodeTypes[CONVERT_ANGLE] = this; }
+
+
+
     from;
 
 
@@ -116,6 +120,52 @@ extends GOperator1
         super.iterateLoop(parse);
 
         if (this.from) this.from.iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const convert = new GConvertAngle(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(convert, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, convert);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            convert.input = genParse(parse);
+    
+        convert.from = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, convert);
+        return convert;
     }
 }
 

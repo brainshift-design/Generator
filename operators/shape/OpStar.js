@@ -1,6 +1,10 @@
 class   OpStar
 extends OpShape
 {
+    static { operatorTypes[STAR] = this; }
+
+
+
     paramPosition;
     paramX;
     paramY;

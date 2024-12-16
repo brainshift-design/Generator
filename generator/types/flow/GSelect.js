@@ -1,6 +1,10 @@
 class GSelect
 extends GOperator
 {
+    static { nodeTypes[SELECT] = this; }
+
+
+
     inputs = [];
 
     index = null;
@@ -208,5 +212,48 @@ extends GOperator
         this.inputs.forEach(i => i.iterateLoop(parse));
 
         if (this.index) this.index.iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const sel = new GSelect(nodeId, options);
+    
+        
+        let nInputs = 0;
+        
+        if (!ignore)
+            nInputs = parseInt(parse.move());
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(sel, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, sel);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+        
+        for (let i = 0; i < nInputs; i++)
+            sel.inputs.push(genParse(parse));
+    
+        sel.index = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+            
+        genParseNodeEnd(parse, sel);
+        return sel;
     }
 }

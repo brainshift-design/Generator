@@ -151,4 +151,71 @@ extends GOperator1
         if (this.right ) this.right .iterateLoop(parse);
         if (this.bottom) this.bottom.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const sides = new GStrokeSides(nodeId, options);
+    
+        sides.hasInputs = options.hasInputs;
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(sides, parse, ignore, nInputs);
+    
+    
+        if (ignore)
+        {
+            genParseNodeEnd(parse, sides);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        let paramIds;
+    
+        if (nInputs == 1)
+        {
+            sides.input = genParse(parse);
+            paramIds = parse.move().split(',');
+        }
+        else
+            paramIds = ['top', 'left', 'right', 'bottom'];
+    
+    
+        parse.inParam = false;
+    
+        for (const id of paramIds)
+        {
+            switch (id)
+            {
+            case 'top':    sides.top    = genParse(parse); break;
+            case 'left':   sides.left   = genParse(parse); break;
+            case 'right':  sides.right  = genParse(parse); break;
+            case 'bottom': sides.bottom = genParse(parse); break;
+            }
+        }
+        
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, sides);
+        return sides;
+    }
 }

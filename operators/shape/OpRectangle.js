@@ -1,6 +1,10 @@
 class   OpRectangle
 extends OpShape
 {
+    static { operatorTypes[RECTANGLE] = this; }
+
+
+
     paramX;
     paramY;
     paramWidth;

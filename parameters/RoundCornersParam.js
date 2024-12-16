@@ -172,6 +172,6 @@ extends Parameter
 
     loadParam(_param)
     {
-        this.setValue(parseRoundCornersValue(_param[2])[0], true, true, false);
+        this.setValue(RoundCornersValue.parse(_param[2])[0], true, true, false);
     }
 }

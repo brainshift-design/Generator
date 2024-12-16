@@ -46,49 +46,48 @@ class NumberValueRange
             + ' ' + this.top       .toString()
             + ' ' + this.bottom    .toString();
     }
-}
 
 
-
-function parseNumberValueRange(str, i = -1)
-{
-    if (i < 0)
+    static parse(str, i = -1)
     {
-        str = str.split(' ');
-        i   = 0;
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+
+        
+        const iStart = i;
+
+        const start    = parseFloat(str[i]); i++;
+        const end      = parseFloat(str[i]); i++;
+
+        let background;
+
+        if (str[i][0] == '$')
+        {
+            background = str[i].substring(1); i++;
+        }
+        else
+        {
+            const r    = parseFloat(str[i]); i++;
+            const g    = parseFloat(str[i]); i++;
+            const b    = parseFloat(str[i]); i++;
+            background = [r, g, b];
+        }
+
+        const top      = parseFloat(str[i]); i++;
+        const bottom   = parseFloat(str[i]); i++;
+
+
+        const range = new NumberValueRange(
+            start,
+            end,
+            background,
+            top,
+            bottom);
+
+
+        return [range, i - iStart];
     }
-
-    
-    const iStart = i;
-
-    const start    = parseFloat(str[i]); i++;
-    const end      = parseFloat(str[i]); i++;
-
-    let background;
-
-    if (str[i][0] == '$')
-    {
-        background = str[i].substring(1); i++;
-    }
-    else
-    {
-        const r    = parseFloat(str[i]); i++;
-        const g    = parseFloat(str[i]); i++;
-        const b    = parseFloat(str[i]); i++;
-        background = [r, g, b];
-    }
-
-    const top      = parseFloat(str[i]); i++;
-    const bottom   = parseFloat(str[i]); i++;
-
-
-    const range = new NumberValueRange(
-        start,
-        end,
-        background,
-        top,
-        bottom);
-
-
-    return [range, i - iStart];
 }

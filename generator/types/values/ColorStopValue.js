@@ -141,31 +141,45 @@ extends GValue
             FillValue  .NaN(),
             NumberValue.NaN());
     }
-}
 
 
 
-function parseColorStopValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [ColorStopValue.NaN(), 1];
-
-
-    if (i < 0)
+    static parseRequest(parse)
     {
-        str = str.split(' ');
-        i   = 0;
+        parse.pos++; // COLOR_STOP_VALUE
+    
+        const stop = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(COLOR_STOP_VALUE, stop, parse);
+    
+        return parseColorStopValue(stop)[0];
     }
 
 
-    const iStart = i;
 
-    const fill     = parseFillValue  (str, i); i += fill    [1];
-    const position = parseNumberValue(str[i]); i += position[1];
-
-
-    return [
-        new ColorStopValue(fill[0], position[0]),
-        i - iStart ];
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [ColorStopValue.NaN(), 1];
+    
+    
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+    
+    
+        const iStart = i;
+    
+        const fill     = FillValue.parse  (str, i); i += fill    [1];
+        const position = NumberValue.parse(str[i]); i += position[1];
+    
+    
+        return [
+            new ColorStopValue(fill[0], position[0]),
+            i - iStart ];
+    }
 }

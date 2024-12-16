@@ -1,6 +1,10 @@
 class   OpItemCount
 extends OperatorBase
 {
+    static { operatorTypes[ITEM_COUNT] = this; }
+
+
+
     paramStart;
 
 

@@ -1,6 +1,10 @@
 class GSublist
 extends GOperator1
 {
+    static { nodeTypes[SUBLIST] = this; }
+
+
+
     start       = null;
     end         = null;
 
@@ -174,5 +178,52 @@ extends GOperator1
 
         if (this.start) this.start.iterateLoop(parse);
         if (this.end  ) this.end  .iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const sub = new GSublist(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(sub, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, sub);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            sub.input = genParse(parse);
+    
+        sub.start = genParse(parse);
+        sub.end   = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, sub);
+        return sub;
     }
 }

@@ -222,6 +222,60 @@ extends GValue
 
 
 
+    static parseRequest(parse)
+    {
+        parse.pos++; // STROKE_VALUE
+    
+        const stroke = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(STROKE_VALUE, stroke, parse);
+    
+        return StrokeValue.parse(stroke)[0];
+    }
+
+
+
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [StrokeValue.NaN(), 1];
+    
+    
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+    
+    
+        const iStart = i;
+    
+        const fills  = ListValue.parse  (str, i); i += fills [1];
+        const weight = NumberValue.parse(str[i]); i += weight[1];
+        const fit    = NumberValue.parse(str[i]); i += fit   [1];
+        const join   = NumberValue.parse(str[i]); i += join  [1];
+        const miter  = NumberValue.parse(str[i]); i += miter [1];
+        const cap    = NumberValue.parse(str[i]); i += cap   [1];
+        const dashes = TextValue.parse  (str[i]); i += dashes[1];
+    
+        return [
+    
+            new StrokeValue(
+                fills [0], 
+                weight[0], 
+                fit   [0], 
+                join  [0], 
+                miter [0], 
+                cap   [0], 
+                dashes[0]),
+            
+            i - iStart ];
+    }
+
+
+
     static default = Object.freeze(new StrokeValue(
         new ListValue(),
         new NumberValue(1),
@@ -234,40 +288,3 @@ extends GValue
 
 
 
-function parseStrokeValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [StrokeValue.NaN(), 1];
-
-
-    if (i < 0)
-    {
-        str = str.split(' ');
-        i   = 0;
-    }
-
-
-    const iStart = i;
-
-    const fills  = parseListValue  (str, i); i += fills [1];
-    const weight = parseNumberValue(str[i]); i += weight[1];
-    const fit    = parseNumberValue(str[i]); i += fit   [1];
-    const join   = parseNumberValue(str[i]); i += join  [1];
-    const miter  = parseNumberValue(str[i]); i += miter [1];
-    const cap    = parseNumberValue(str[i]); i += cap   [1];
-    const dashes = parseTextValue  (str[i]); i += dashes[1];
-
-    return [
-
-        new StrokeValue(
-            fills [0], 
-            weight[0], 
-            fit   [0], 
-            join  [0], 
-            miter [0], 
-            cap   [0], 
-            dashes[0]),
-        
-        i - iStart ];
-}

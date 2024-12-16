@@ -1,6 +1,10 @@
 class   OpArcFromPoints
 extends OpShape
 {
+    static { operatorTypes[ARC_FROM_POINTS] = this; }
+
+
+
     constructor()
     {
         super(ARC_FROM_POINTS, 'arcFromPoints', 'arc', iconArcFromPoints);

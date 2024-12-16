@@ -1,6 +1,10 @@
 class   OpVectorEdge
 extends OpShapeBase
 {
+    static { operatorTypes[VECTOR_EDGE] = this; }
+
+
+
     paramStartTangent;
     paramEndTangent;
 

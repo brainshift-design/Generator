@@ -1,6 +1,10 @@
 class   OpTrapeze
 extends OpShape
 {
+    static { operatorTypes[TRAPEZE] = this; }
+
+
+
     paramX;
     paramY;
     paramWidth;

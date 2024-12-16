@@ -1,6 +1,10 @@
 class   OpTextEscape
 extends OperatorBase
 {
+    static { operatorTypes[TEXT_ESCAPE] = this; }
+
+
+
     paramMethod;
 
 

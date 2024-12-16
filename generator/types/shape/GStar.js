@@ -272,4 +272,72 @@ extends GShape
         if (this.points  ) this.points  .iterateLoop(parse);
         if (this.convex  ) this.convex  .iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const star = new GStar(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(star, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, star);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            star.input = genParse(parse);
+    
+    
+        const nParamIds = genParseParamCount(parse);
+    
+        for (let i = 0; i < nParamIds; i++)
+        {
+            const paramId = genParseParamId(parse);
+    
+            parse.inParam = true;
+    
+            switch (paramId)
+            {
+            case 'position': star.position = genParse(parse); break;
+            case 'x':        star.x        = genParse(parse); break;
+            case 'y':        star.y        = genParse(parse); break;
+            case 'width':    star.width    = genParse(parse); break;
+            case 'height':   star.height   = genParse(parse); break;
+            case 'round':    star.round    = genParse(parse); break;
+            case 'points':   star.points   = genParse(parse); break;
+            case 'convex':   star.convex   = genParse(parse); break;
+            case 'props':    star.props    = genParse(parse); break;
+            }
+        }
+        
+        
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, star);
+        return star;
+    }
 }

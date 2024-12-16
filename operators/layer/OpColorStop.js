@@ -1,6 +1,10 @@
 class OpColorStop
 extends OpColorBase
 {
+    static { operatorTypes[COLOR_STOP] = this; }
+
+
+
     paramFill;
     paramPosition;
 

@@ -1,6 +1,10 @@
 class   OpVectorVertex
 extends OpShapeBase
 {
+    static { operatorTypes[VECTOR_VERTEX] = this; }
+
+
+
     paramX;
     paramY;
     paramJoin;

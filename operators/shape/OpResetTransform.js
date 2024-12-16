@@ -1,6 +1,10 @@
 class   OpResetTransform
 extends OperatorBase
 {
+    static { operatorTypes[RESET_XFORM] = this; }
+
+
+
     constructor()
     {
         super(RESET_XFORM, 'reset', 'reset transform', iconResetXform);

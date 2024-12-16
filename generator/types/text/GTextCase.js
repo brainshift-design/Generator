@@ -58,13 +58,13 @@ extends GOperator1
 
                         this.value.items.push(
                             item.type == TEXT_VALUE
-                            ? getTextCaseValue(item, _case)
+                            ? GTextCase.getEvalValue(item, _case)
                             : new TextValue());   
                     }
                 }
                 else
                 {
-                    this.value = getTextCaseValue(input, _case);
+                    this.value = GTextCase.getEvalValue(input, _case);
                 }
             }
             else
@@ -121,48 +121,94 @@ extends GOperator1
 
         if (this.case) this.case.iterateLoop(parse);
     }
-}
 
 
 
-function getTextCaseValue(input, _case)
-{
-    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
-
-    const val   = input.value;
-    const value = new TextValue();
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
     
-
-    if (_case.value == 0) 
-         value.value = val.toLowerCase();
-
-    else if (_case.value == 1)
-    {
-        if (val.length > 0) value.value += val.substring(0, 1).toUpperCase();
-        if (val.length > 1) value.value += val.substring(1)   .toLowerCase();
-    }
-
-    else if (_case.value == 2)
-    {
-        let i = 0;
-        while (i < val.length)
+    
+        const _case = new GTextCase(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
         {
-            while (i < val.length
-                && /\s/.test(val.charAt(i)))
-                value.value += val.charAt(i++);
-
-            if (i < val.length)
-                value.value += val.charAt(i++).toUpperCase();
-
-            while (i < val.length
-                && !/\s/.test(val.charAt(i)))
-                value.value += val.charAt(i++).toLowerCase();
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
         }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(_case, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, _case);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            _case.input = genParse(parse);
+    
+        _case.case = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, _case);
+        return _case;
     }
 
-    else if (_case.value == 3) 
-        value.value = val.toUpperCase();
 
 
-    return value;
+    static getEvalValue(input, _case)
+    {
+        consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+
+        const val   = input.value;
+        const value = new TextValue();
+        
+
+        if (_case.value == 0) 
+            value.value = val.toLowerCase();
+
+        else if (_case.value == 1)
+        {
+            if (val.length > 0) value.value += val.substring(0, 1).toUpperCase();
+            if (val.length > 1) value.value += val.substring(1)   .toLowerCase();
+        }
+
+        else if (_case.value == 2)
+        {
+            let i = 0;
+            while (i < val.length)
+            {
+                while (i < val.length
+                    && /\s/.test(val.charAt(i)))
+                    value.value += val.charAt(i++);
+
+                if (i < val.length)
+                    value.value += val.charAt(i++).toUpperCase();
+
+                while (i < val.length
+                    && !/\s/.test(val.charAt(i)))
+                    value.value += val.charAt(i++).toLowerCase();
+            }
+        }
+
+        else if (_case.value == 3) 
+            value.value = val.toUpperCase();
+
+
+        return value;
+    }
 }

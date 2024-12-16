@@ -1,6 +1,10 @@
 class   OpRange
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_RANGE] = this; }
+
+
+
     paramFrom;
     paramStart;
     paramEnd;

@@ -1,6 +1,10 @@
 class   OpMove
 extends OperatorBase
 {
+    static { operatorTypes[MOVE] = this; }
+
+
+
     paramMoveType;
     paramX;
     paramY;

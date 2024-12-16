@@ -202,11 +202,11 @@ extends NumberParamBase
 
     loadParam(_param)
     {
-        const str   = parseTextValue(_param[2])[0].toString();
+        const str   = TextValue.parse(_param[2])[0].toString();
         const index = this.options.indexOf(str);
 
         if (this.saveAsText) this.setValue(new NumberValue(index), true, true, false);
-        else                 this.setValue(parseNumberValue(_param[2])[0], true, true, false);
+        else                 this.setValue(NumberValue.parse(_param[2])[0], true, true, false);
     }
 }
 

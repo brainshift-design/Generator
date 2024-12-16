@@ -133,4 +133,47 @@ extends GOperator
 
         if (this.genValue) this.genValue.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const style = new GColorStyle(nodeId, options);
+    
+        style.existing = options.existing;
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(style, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, style);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+        parse.inParam = false;
+    
+    
+        style.id       = parse.move();
+        style.name     = options.nodeName;
+        
+        style.genValue = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+        
+        style.linked = style.id != NULL;
+    
+    
+        genParseNodeEnd(parse, style);
+        return style;
+    }
 }

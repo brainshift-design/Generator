@@ -1,6 +1,10 @@
 class   OpQuantize
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_QUANTIZE] = this; }
+
+
+
     paramType;
     paramBase;
     paramStep;

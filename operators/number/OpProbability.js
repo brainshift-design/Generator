@@ -1,6 +1,10 @@
 class   OpProbability
 extends OperatorBase
 {
+    static { operatorTypes[PROBABILITY] = this; }
+
+
+
     paramSeed;
     paramIteration;
     paramChance;

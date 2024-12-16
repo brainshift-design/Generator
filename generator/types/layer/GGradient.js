@@ -295,4 +295,75 @@ extends GOperator
         if (this.skew    ) this.skew    .iterateLoop(parse);
         if (this.blend   ) this.blend   .iterateLoop(parse);
     }    
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const grad = new GGradient(nodeId, options);
+    
+        grad.hasInputs = options.hasInputs;
+    
+    
+        let nInputs = 0;
+        
+        if (!ignore)
+            nInputs = parseInt(parse.move());
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(grad, parse, ignore, nInputs);
+    
+    
+        if (ignore)
+        {
+            genParseNodeEnd(parse, grad);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        for (let i = 0; i < nInputs; i++)
+            grad.inputs.push(genParse(parse));
+    
+    
+        const nParamIds = genParseParamCount(parse);
+    
+    
+        for (let i = 0; i < nParamIds; i++)
+        {
+            const paramId = genParseParamId(parse);
+    
+            parse.inParam = true;
+    
+            switch (paramId)
+            {
+            case 'gradType': grad.gradType = genParse(parse); break;
+            case 'position': grad.position = genParse(parse); break;
+            case 'x':        grad.x        = genParse(parse); break;
+            case 'y':        grad.y        = genParse(parse); break;
+            case 'size':     grad.size     = genParse(parse); break;
+            case 'angle':    grad.angle    = genParse(parse); break;
+            case 'aspect':   grad.aspect   = genParse(parse); break;
+            case 'skew':     grad.skew     = genParse(parse); break;
+            case 'blend':    grad.blend    = genParse(parse); break;
+            }
+        }
+    
+        
+        grad.diagAspect = parseInt(parse.move()) > 0;
+    
+    
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, grad);
+        return grad;
+    }
 }

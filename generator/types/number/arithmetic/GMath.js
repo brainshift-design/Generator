@@ -1,6 +1,10 @@
 class GMath
 extends GArithmetic
 {
+    static { nodeTypes[NUMBER_MATH] = this; }
+
+
+
     operation;
 
 
@@ -102,6 +106,49 @@ extends GArithmetic
         super.iterateLoop(parse);
 
         if (this.operation) this.operation.iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse, newNode)
+    {
+        const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+        const math = newNode(nodeId, options);
+
+        
+        let nInputs = 0;
+        
+        if (!ignore)
+            nInputs = parseInt(parse.move());
+
+
+        if (parse.settings.logRequests) 
+            logReq(math, parse, ignore, nInputs);
+
+
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, math);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+
+
+        parse.nTab++;
+
+        for (let i = 0; i < nInputs; i++)
+            math.inputs.push(genParse(parse));
+
+
+        math.operation = genParse(parse);
+
+
+        parse.nTab--;
+
+            
+        genParseNodeEnd(parse, math);
+        return math;
     }
 }
 

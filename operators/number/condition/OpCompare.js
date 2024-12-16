@@ -1,6 +1,10 @@
 class   OpCompare
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_COMPARE] = this; }
+
+
+
     paramOperation;
     paramOperand;
 

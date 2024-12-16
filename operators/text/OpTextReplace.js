@@ -1,6 +1,10 @@
 class   OpTextReplace
 extends ResizableBase
 {
+    static { operatorTypes[TEXT_REPLACE] = this; }
+
+
+
     paramWhat;
     paramWith;
     paramRegex;

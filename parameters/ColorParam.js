@@ -424,7 +424,7 @@ extends Parameter
     
     loadParam(_param)
     {
-        this.setValue(parseColorValue(_param[2])[0], true, false, false);
+        this.setValue(ColorValue.parse(_param[2])[0], true, false, false);
     }
 
 

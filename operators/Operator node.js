@@ -6,7 +6,7 @@ var nodesAltCopied   = false;
 
 
 
-Operator.prototype.createNode = function()
+Operator.prototype.createDiv = function()
 {
     this.div                    = createDiv('node');
     this.div.node               = this;

@@ -1,6 +1,10 @@
 class   OpVectorPath
 extends OpShape
 {
+    static { operatorTypes[VECTOR_PATH] = this; }
+
+
+
     paramPoints;
     paramClosed;
     paramDegree;

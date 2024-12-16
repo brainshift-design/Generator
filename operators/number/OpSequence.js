@@ -1,6 +1,10 @@
 class   OpSequence
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_SEQUENCE] = this; }
+
+
+
     paramStart;
     paramMultiply;
     paramAdd;
@@ -30,10 +34,10 @@ extends OperatorBase
 
         this.getDescription = () => `generates a number sequence`;
 
-        this.paramStart   .getDescription = () => `starting value`;
-        this.paramMultiply.getDescription = () => `multiply by this on each iteration`;
-        this.paramAdd     .getDescription = () => `add this on each iteration`;
-        this.paramEnd     .getDescription = () => `the limit/last value of the sequence, default is ?`;
+        this.paramStart   .setDescription(`starting value`);
+        this.paramMultiply.setDescription(`multiply by this on each iteration`);
+        this.paramAdd     .setDescription(`add this on each iteration`);
+        this.paramEnd     .setDescription(`the limit/last value of the sequence, default is ?`);
     }
 
 

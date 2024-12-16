@@ -1,6 +1,10 @@
 class   OpPoint
 extends OpShapeBase
 {
+    static { operatorTypes[POINT] = this; }
+
+
+
     paramX;
     paramY;
 

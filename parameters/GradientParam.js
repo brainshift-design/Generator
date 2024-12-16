@@ -349,6 +349,6 @@ extends Parameter
 
     loadParam(_param)
     {
-        this.setValue(parseGradientValue(_param[2])[0], true, true, false);
+        this.setValue(GradientValue.parse(_param[2])[0], true, true, false);
     }
 }

@@ -1,6 +1,10 @@
 class   OpListFind
 extends OperatorBase
 {
+    static { operatorTypes[LIST_FIND] = this; }
+
+
+
     paramValue;
     paramFirst;
     paramLast;

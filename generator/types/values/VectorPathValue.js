@@ -205,43 +205,57 @@ extends ShapeValue
             NumberValue.NaN(),
             NumberValue.NaN());
     }
-}
 
 
 
-function parseVectorPathValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [VectorPathValue.NaN(), 1];
-
-
-    if (i < 0)
+    static parseRequest(parse)
     {
-        str = str.split(' ');
-        i   = 0;
+        parse.pos++; // VECTOR_PATH_VALUE
+    
+        const path = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(VECTOR_PATH_VALUE, path, parse);
+    
+        return VectorPathValue.parse(path)[0];
     }
 
 
-    const iStart = i;
 
-    const points  = parseListValue  (str, i); i += points [1];
-    const closed  = parseNumberValue(str[i]); i += closed [1];
-    const degree  = parseNumberValue(str[i]); i += degree [1];
-    const winding = parseNumberValue(str[i]); i += winding[1];
-    const round   = parseNumberValue(str[i]); i += round  [1];
-
-    const path = new VectorPathValue(
-        '', // set node ID elsewhere
-        points [0],
-        closed [0],
-        degree [0],
-        winding[0],
-        round  [0]);
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [VectorPathValue.NaN(), 1];
 
 
-    i = parseShapeBaseValue(str, i, path);
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
 
-    
-    return [path, i - iStart];
+
+        const iStart = i;
+
+        const points  = ListValue.parse  (str, i); i += points [1];
+        const closed  = NumberValue.parse(str[i]); i += closed [1];
+        const degree  = NumberValue.parse(str[i]); i += degree [1];
+        const winding = NumberValue.parse(str[i]); i += winding[1];
+        const round   = NumberValue.parse(str[i]); i += round  [1];
+
+        const path = new VectorPathValue(
+            '', // set node ID elsewhere
+            points [0],
+            closed [0],
+            degree [0],
+            winding[0],
+            round  [0]);
+
+
+        i = parseShapeBaseValue(str, i, path);
+
+        
+        return [path, i - iStart];
+    }
 }

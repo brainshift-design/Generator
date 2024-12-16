@@ -68,13 +68,13 @@ extends GOperator1
 
                         this.value.items.push(
                             item.type == TEXT_VALUE
-                            ? getReplaceValue(item, _what, _with, _regex)
+                            ? GTextReplace.getEvalValue(item, _what, _with, _regex)
                             : new TextValue());   
                     }
                 }
                 else
                 {
-                    this.value = getReplaceValue(input, _what, _with, _regex);
+                    this.value = GTextReplace.getEvalValue(input, _what, _with, _regex);
                 }
             }
             else
@@ -141,37 +141,85 @@ extends GOperator1
         if (this.with ) this.with .iterateLoop(parse);
         if (this.regex) this.regex.iterateLoop(parse);
     }
-}
 
 
 
-function getReplaceValue(input, _what, _with, _regex)
-{
-    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
-
-    const value = new TextValue();
-
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
     
-    if (_regex.value > 0)
-    {
-        try
+    
+        const replace = new GTextReplace(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
         {
-            value.value = input.value.replace(
-                new RegExp(unescapeRegexPattern(_what.value), 'gu'),
-                unescapeRegexReplacement(_with.value));
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
         }
-        catch (e)
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(replace, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
         {
-            uiNotify(e.message, {error: true});
+            genParseNodeEnd(parse, replace);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
         }
-    }
-    else if (input.value)
-    {
-        value.value = input.value.replaceAll(
-            escapeString(_what.value),
-            escapeString(_with.value));
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            replace.input = genParse(parse);
+    
+        replace.what  = genParse(parse);
+        replace.with  = genParse(parse);
+        replace.regex = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, replace);
+        return replace;
     }
 
 
-    return value;
+
+    static getEvalValue(input, _what, _with, _regex)
+    {
+        consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+
+        const value = new TextValue();
+
+        
+        if (_regex.value > 0)
+        {
+            try
+            {
+                value.value = input.value.replace(
+                    new RegExp(unescapeRegexPattern(_what.value), 'gu'),
+                    unescapeRegexReplacement(_with.value));
+            }
+            catch (e)
+            {
+                uiNotify(e.message, {error: true});
+            }
+        }
+        else if (input.value)
+        {
+            value.value = input.value.replaceAll(
+                escapeString(_what.value),
+                escapeString(_with.value));
+        }
+
+
+        return value;
+    }
 }

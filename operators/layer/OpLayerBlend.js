@@ -1,6 +1,10 @@
 class OpLayerBlend
 extends OperatorBase
 {
+    static { operatorTypes[LAYER_BLEND] = this; }
+
+
+
     paramOpacity;
     paramBlend;
 

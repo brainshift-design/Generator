@@ -1,6 +1,10 @@
 class OpShapeBoolean
 extends OpShape
 {
+    static { operatorTypes[SHAPE_BOOLEAN] = this; }
+
+
+
     paramChildren;
     paramOperation;
 

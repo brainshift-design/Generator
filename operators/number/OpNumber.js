@@ -1,6 +1,10 @@
 class   OpNumber
 extends ResizableBase
 {
+    static { operatorTypes[NUMBER] = this; }
+    
+    
+    
     paramValue;
 
 

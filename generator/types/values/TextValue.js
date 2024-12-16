@@ -138,13 +138,27 @@ extends GValue
     {
         return new TextValue();
     }
-}
 
 
 
-function parseTextValue(str)
-{
-    const text = new TextValue(decodeURIComponent(str));
+    static parseRequest(parse)
+    {
+        parse.pos++; // tag
+    
+        const val = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(TEXT_VALUE, val, parse);
+    
+        return TextValue.parse(val)[0];
+    }
 
-    return [text, 1];
+
+
+    static parse(str)
+    {
+        const text = new TextValue(decodeURIComponent(str));
+
+        return [text, 1];
+    }
 }

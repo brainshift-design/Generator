@@ -1,6 +1,10 @@
 class GNumber
 extends GOperator1
 {
+    static { nodeTypes[NUMBER] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(NUMBER, nodeId, options);
@@ -70,5 +74,41 @@ extends GOperator1
     {
         return !this.input 
              || this.input.isValid();
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const num = new GNumber(nodeId, options);
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(num, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, num);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+        parse.inParam = false;
+    
+    
+        if (parse.next == NUMBER_VALUE) num.value = genParse(parse);
+        else                            num.input = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, num);
+        return num;
     }
 }

@@ -1,6 +1,10 @@
 class   OpSimpleMath
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_SIMPLE_MATH] = this; }
+
+
+
     paramOperation;
     paramOperand;
     paramInvert;

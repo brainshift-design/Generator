@@ -135,6 +135,54 @@ extends GOperator1
         if (this.normalize) this.normalize.iterateLoop(parse);
         if (this.trimZeros) this.trimZeros.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const col2text = new GColorToText(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(col2text, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, col2text);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            col2text.input = genParse(parse);
+    
+        col2text.format    = genParse(parse);
+        col2text.normalize = genParse(parse);
+        col2text.trimZeros = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, col2text);
+        return col2text;
+    }
 }
 
 

@@ -1,6 +1,10 @@
 class   OpColorStyle
 extends OperatorBase
 {
+    static { operatorTypes[COLOR_STYLE] = this; }
+
+
+
     paramValue;
 
     styleCircle;

@@ -48,7 +48,7 @@ extends GOperator1
         {
             this.evalInputOrList(
                 input, 
-                item => evalTextContains(item, what), 
+                item => GTextContains.getEvalValue(item, what), 
                 BooleanValue.NaN());
         }
         else
@@ -101,16 +101,62 @@ extends GOperator1
 
         if (this.what) this.what.iterateLoop(parse);
     }
-}
 
 
 
-function evalTextContains(input, what)
-{
-    return input.type == TEXT_VALUE
-         ? new BooleanValue(
-               what.value == ''
-                   ? false
-                   : input.value.includes(what.value))
-         : BooleanValue.NaN();
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const contains = new GTextContains(nodeId, options);
+       
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(contains, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, contains);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            contains.input = genParse(parse);
+    
+        contains.what = genParse(parse);
+      
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, contains);
+        return contains;
+    }
+
+
+
+    static getEvalValue(input, what)
+    {
+        return input.type == TEXT_VALUE
+            ? new BooleanValue(
+                what.value == ''
+                    ? false
+                    : input.value.includes(what.value))
+            : BooleanValue.NaN();
+    }
 }

@@ -1,6 +1,10 @@
 class   OpIndexToName
 extends OperatorBase
 {
+    static { operatorTypes[INDEX_TO_NAME] = this; }
+
+
+
     paramName;
     paramIndex;
 

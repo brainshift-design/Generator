@@ -1,6 +1,10 @@
 class GRound
 extends GOperator1
 {
+    static { nodeTypes[NUMBER_ROUND] = this; }
+
+
+
     type;
     decimals;
 
@@ -126,6 +130,53 @@ extends GOperator1
 
         if (this.type    ) this.type    .iterateLoop(parse);
         if (this.decimals) this.decimals.iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const round = new GRound(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(round, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, round);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            round.input = genParse(parse);
+    
+        round.type     = genParse(parse);
+        round.decimals = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, round);
+        return round;
     }
 }
 

@@ -1,6 +1,10 @@
 class   OpExtract
 extends OperatorBase
 {
+    static { operatorTypes[EXTRACT] = this; }
+
+
+
     paramIndices;
 
 

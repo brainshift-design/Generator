@@ -1,6 +1,10 @@
 class   OpGradient
 extends OpColorBase
 {
+    static { operatorTypes[GRADIENT] = this; }
+
+
+
     paramType;
     paramPosition;
     paramX;

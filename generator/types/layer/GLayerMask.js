@@ -97,4 +97,32 @@ extends GOperator
 
         if (this.maskType) this.maskType.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const mask = new GLayerMask(nodeId, options);
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(mask, parse, ignore);
+    
+    
+        if (ignore)
+        {
+            genParseNodeEnd(parse, mask);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        mask.maskType = genParse(parse);
+        
+        
+        genParseNodeEnd(parse, mask);
+        return mask;
+    }
 }

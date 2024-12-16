@@ -1,6 +1,10 @@
 class   OpTextToColor
 extends OperatorBase
 {
+    static { operatorTypes[TEXT_TO_COLOR] = this; }
+
+
+
     paramFormat;
 
 

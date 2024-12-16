@@ -1,6 +1,10 @@
 class   OpUnique
 extends OperatorBase
 {
+    static { operatorTypes[UNIQUE] = this; }
+
+
+
     paramCounts;
     paramIndices;
 

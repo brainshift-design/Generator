@@ -1,6 +1,10 @@
 class   OpTextCase
 extends OperatorBase
 {
+    static { operatorTypes[TEXT_CASE] = this; }
+
+
+
     paramCase;
 
 

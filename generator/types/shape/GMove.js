@@ -229,4 +229,54 @@ extends GOperator1
         if (this.y          ) this.y          .iterateLoop(parse);
         if (this.affectSpace) this.affectSpace.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const move = new GMove(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(move, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, move);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            move.input = genParse(parse);
+    
+        move.moveType    = genParse(parse);
+        move.x           = genParse(parse);
+        move.y           = genParse(parse);
+        move.affectSpace = genParse(parse);
+    
+    
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, move);
+        return move;
+    }
 }

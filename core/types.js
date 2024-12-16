@@ -128,31 +128,12 @@ const NUMBER_ANIMATE          = 'NANIM';
 
 const NUMBER_SIMPLE_MATH      = 'SMATH';  
 const NUMBER_MATH             = 'MATH';  
-const NUMBER_ADD              = 'ADD';   
-const NUMBER_SUBTRACT         = 'SUB';   
-const NUMBER_MULTIPLY         = 'MUL';   
-const NUMBER_DIVIDE           = 'DIV';   
-const NUMBER_MODULO           = 'MOD';   
-const NUMBER_EXPONENT         = 'EXP';
 
 const NUMBER_BOOLEAN          = 'NBOOL';  
-const NUMBER_NOT              = 'NOT';
-const NUMBER_AND              = 'AND';
-const NUMBER_OR               = 'OR';
-const NUMBER_XOR              = 'XOR';
 
 const NUMBER_COMPARE          = 'CMP';
-const NUMBER_EQUAL            = 'EQ';
-const NUMBER_NOT_EQUAL        = 'NE';
-const NUMBER_LESS             = 'LT';
-const NUMBER_LESS_OR_EQUAL    = 'LE';
-const NUMBER_GREATER          = 'GT';
-const NUMBER_GREATER_OR_EQUAL = 'GE';
 
 const NUMBER_TRIG             = 'TRIG';  
-const NUMBER_SIN              = 'SIN';   
-const NUMBER_COS              = 'COS';   
-const NUMBER_TAN              = 'TAN';
 const NUMBER_ATAN2            = 'ATAN2';
 
 const CONVERT_ANGLE           = 'CNVANG';
@@ -467,22 +448,13 @@ const NUMBER_BOOLEAN_TYPES =
 
 const CONDITION_TYPES =
 [
-    NUMBER_COMPARE,
-    NUMBER_EQUAL,
-    NUMBER_NOT_EQUAL,
-    NUMBER_LESS,
-    NUMBER_LESS_OR_EQUAL,
-    NUMBER_GREATER,
-    NUMBER_GREATER_OR_EQUAL
+    NUMBER_COMPARE
 ];
 
 
 const TRIG_TYPES =
 [
     NUMBER_TRIG,
-    NUMBER_SIN,
-    NUMBER_COS,
-    NUMBER_TAN,
     NUMBER_ATAN2
 ];
 

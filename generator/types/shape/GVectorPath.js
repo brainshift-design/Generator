@@ -279,4 +279,69 @@ extends GShape
         if (this.winding) this.winding.iterateLoop(parse);
         if (this.round  ) this.round  .iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const path = new GVectorPath(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(path, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, path);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            path.input = genParse(parse);
+    
+    
+        const nParamIds = genParseParamCount(parse);
+    
+        for (let i = 0; i < nParamIds; i++)
+        {
+            const paramId = genParseParamId(parse);
+    
+            parse.inParam = true;
+    
+            switch (paramId)
+            {       
+            case 'points':  path.points  = genParse(parse); break;
+            case 'closed':  path.closed  = genParse(parse); break;
+            case 'degree':  path.degree  = genParse(parse); break;
+            case 'winding': path.winding = genParse(parse); break;
+            case 'round':   path.round   = genParse(parse); break;
+            case 'props':   path.props   = genParse(parse); break;
+            }
+        }
+    
+    
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, path);
+        return path;
+    }
 }

@@ -109,4 +109,39 @@ extends GOperator
 
         if (this.path) this.path.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const file = new GTextFile(nodeId, options);
+       
+    
+        if (parse.settings.logRequests) 
+            logReq(file, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, file);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        file.cachedValue = genParse(parse);
+        //file.path        = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, file);
+        return file;
+    }
 }

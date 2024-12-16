@@ -1,6 +1,10 @@
 class OpLayerBlur
 extends OperatorBase
 {
+    static { operatorTypes[LAYER_BLUR] = this; }
+
+
+
     paramRadius;
 
 

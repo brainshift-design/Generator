@@ -1,6 +1,10 @@
 class GParam
 extends GOperator
 {
+    static { nodeTypes[PARAM] = this; }
+
+
+
     paramId;
     
     node;
@@ -166,5 +170,32 @@ extends GOperator
         const node = parse.parsedNodes.find(n => n.nodeId == this.nodeId);
         
         node.resetLoop(parse, nodeId);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        if (parse.next != PARAM) 
+            return null;
+            
+        parse.move(); // PARAM
+        const type = parse.move(); // type
+    
+        
+        const nodeId  = parse.move();
+        const paramId = parse.move();
+        
+        const param   = new GParam(nodeId, paramId);
+     
+    
+        pushUnique(parse.paramNodeIds, nodeId);
+    
+    
+        if (parse.settings.logRequests) 
+            logReqParam(param, type, parse);
+    
+    
+        return param;
     }
 }

@@ -1,6 +1,10 @@
 class   OpAccumulate
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_ACCUMULATE] = this; }
+
+
+
     paramWhen;
 
 

@@ -120,33 +120,47 @@ extends GValue
             '',
             ListValue.NaN());
     }
-}
 
 
 
-function parseVectorNetworkValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [VectorNetworkValue.NaN(), 1];
-
-
-    if (i < 0)
+    static parseRequest(parse)
     {
-        str = str.split(' ');
-        i   = 0;
+        parse.pos++; // VECTOR_NETWORKO_VALUE
+    
+        const region = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(VECTOR_NETWORK_VALUE, region, parse);
+    
+        return VectorNetworkValue.parse(region)[0];
     }
 
 
-    const iStart = i;
 
-    const regions = parseListValue(str, i); i += regions[1];
-
-
-    const net = new VectorNetworkValue(
-        '', // set node ID elsewhere
-        regions[0]);
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [VectorNetworkValue.NaN(), 1];
 
 
-    return [net, i - iStart];
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+
+
+        const iStart = i;
+
+        const regions = ListValue.parse(str, i); i += regions[1];
+
+
+        const net = new VectorNetworkValue(
+            '', // set node ID elsewhere
+            regions[0]);
+
+
+        return [net, i - iStart];
+    }
 }

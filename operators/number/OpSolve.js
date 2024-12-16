@@ -1,6 +1,10 @@
 class   OpSolve
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_SOLVE] = this; }
+
+
+
     paramCurrent;
     paramTarget;
 

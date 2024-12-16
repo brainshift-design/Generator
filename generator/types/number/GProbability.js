@@ -1,6 +1,10 @@
 class GProbability
 extends GOperator2
 {
+    static { nodeTypes[PROBABILITY] = this; }
+
+
+
     seed      = null;
     iteration = null;
     chance    = null;
@@ -217,5 +221,69 @@ extends GOperator2
         if (this.iteration) this.iteration.iterateLoop(parse);
         if (this.chance   ) this.chance   .iterateLoop(parse);
         if (this.alternate) this.alternate.iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const prob = new GProbability(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        }
+    
+    
+        const valueIndex = 
+            nInputs == 1
+            ? parseInt(parse.move())
+            : -1;
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(prob, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, prob);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 2)
+        {
+            prob.input0   = genParse(parse);
+            prob.input1   = genParse(parse);
+        }
+        else if (nInputs == 1)
+        {
+                 if (valueIndex == 0) prob.input0 = genParse(parse); 
+            else if (valueIndex == 1) prob.input1 = genParse(parse); 
+        }
+    
+    
+        prob.seed      = genParse(parse);
+        prob.iteration = genParse(parse);
+        prob.chance    = genParse(parse);
+        prob.alternate = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, prob);
+        return prob;
     }
 }

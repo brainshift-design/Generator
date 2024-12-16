@@ -1,6 +1,10 @@
 class   OpSort
 extends OperatorBase
 {
+    static { operatorTypes[SORT] = this; }
+
+
+
     paramIndices;
     paramCondition;
     paramReverse;

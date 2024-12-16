@@ -523,6 +523,6 @@ extends Parameter
 
     loadParam(_param)
     {
-        this.setValue(parseFillValue(_param[2])[0], true, true, false);
+        this.setValue(FillValue.parse(_param[2])[0], true, true, false);
     }
 }

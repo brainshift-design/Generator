@@ -40,7 +40,7 @@ extends Action
 
         graphView.creatingNodes = true;
 
-        this.node = createNode(this.nodeType, this.creatingButton, this.createdId, this.options);
+        this.node = Operator.create(this.nodeType, this.creatingButton, this.createdId, this.options);
 
 
         const canAutoConnect =

@@ -1,6 +1,10 @@
 class GFeedback
 extends GOperator1
 {
+    static { nodeTypes[FEEDBACK] = this; }
+
+
+
     from   = null;
 
     loopId = NULL;
@@ -159,5 +163,49 @@ extends GOperator1
         super.resetLoop(parse, nodeId);
 
         this.from = null;
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const feedback = new GFeedback(nodeId, options);
+    
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(feedback, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, feedback);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            feedback.input = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, feedback);
+        return feedback;
     }
 }

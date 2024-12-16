@@ -1,6 +1,10 @@
 class GSimpleMinMax
 extends GOperator1
 {
+    static { nodeTypes[NUMBER_SIMPLE_MINMAX] = this; }
+
+
+
     operand;
     operation;
 
@@ -131,6 +135,53 @@ extends GOperator1
 
         if (this.operand  ) this.operand  .iterateLoop(parse);
         if (this.operation) this.operation.iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+        const sminmax = new GSimpleMinMax(nodeId, options);
+    
+
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+
+        
+        if (parse.settings.logRequests) 
+            logReq(sminmax, parse, ignore, nInputs);
+
+
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, sminmax);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+
+
+        parse.nTab++;
+
+
+        if (nInputs == 1)
+            sminmax.input = genParse(parse);
+
+        sminmax.operand   = genParse(parse);
+        sminmax.operation = genParse(parse);
+
+        
+        parse.nTab--;
+
+
+        genParseNodeEnd(parse, sminmax);
+        return sminmax;
     }
 }
 

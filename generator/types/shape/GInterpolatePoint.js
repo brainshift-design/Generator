@@ -138,4 +138,59 @@ extends GOperator2
         if (this.amount   ) this.amount   .iterateLoop(parse);
         if (this.transform) this.transform.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const lerp = new GInterpolatePoint(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(lerp, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, lerp);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 2)
+        {
+            lerp.input0 = genParse(parse);
+            lerp.input1 = genParse(parse);
+        }
+        else if (nInputs == 1)
+        {
+            lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+        }
+    
+    
+        lerp.amount     = genParse(parse);
+        lerp.transform  = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, lerp);
+        return lerp;
+    }
 }

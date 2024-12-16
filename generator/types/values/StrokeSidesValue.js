@@ -142,38 +142,55 @@ extends GValue
             NumberValue.NaN(),
             false);
     }
-}
 
 
 
-function parseStrokeSidesValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [StrokeSidesValue.NaN(), 1];
-
-
-    if (i < 0)
+    static parseRequest(parse)
     {
-        str = str.split(' ');
-        i   = 0;
+        parse.pos++; // STROKE_SIDES_VALUE
+    
+        const sides = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(STROKE_SIDES_VALUE, sides, parse);
+    
+        return parseStrokeSidesValue(sides)[0];
     }
 
 
-    const iStart = i;
 
-    const top    = parseNumberValue(str[i]); i += top   [1];
-    const left   = parseNumberValue(str[i]); i += left  [1];
-    const right  = parseNumberValue(str[i]); i += right [1];
-    const bottom = parseNumberValue(str[i]); i += bottom[1];
-
-
-    const sides = new StrokeSidesValue(
-        top   [0],
-        left  [0],
-        right [0],
-        bottom[0]);
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [StrokeSidesValue.NaN(), 1];
 
 
-    return [sides, i - iStart];
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+
+
+        const iStart = i;
+
+        const top    = NumberValue.parse(str[i]); i += top   [1];
+        const left   = NumberValue.parse(str[i]); i += left  [1];
+        const right  = NumberValue.parse(str[i]); i += right [1];
+        const bottom = NumberValue.parse(str[i]); i += bottom[1];
+
+
+        const sides = new StrokeSidesValue(
+            top   [0],
+            left  [0],
+            right [0],
+            bottom[0]);
+
+
+        return [sides, i - iStart];
+    }
 }
+
+
+

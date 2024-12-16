@@ -159,4 +159,69 @@ extends GOperator1
         if (this.fill    ) this.fill    .iterateLoop(parse);
         if (this.position) this.position.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const stop = new GColorStop(nodeId, options);
+    
+        stop.hasInputs = options.hasInputs;
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(stop, parse, ignore, nInputs);
+    
+    
+        if (ignore)
+        {
+            genParseNodeEnd(parse, stop);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        let paramIds;
+    
+        if (nInputs == 1)
+        {
+            stop.input = genParse(parse);
+            paramIds = parse.move().split(',');
+        }
+        else
+            paramIds = ['fill', 'position'];
+    
+    
+        parse.inParam = false;
+    
+        for (const id of paramIds)
+        {
+            switch (id)
+            {
+            case 'fill':     stop.fill     = genParse(parse); break;
+            case 'position': stop.position = genParse(parse); break;
+            }
+        }
+        
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, stop);
+        return stop;
+    }
 }

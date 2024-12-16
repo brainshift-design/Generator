@@ -1,6 +1,10 @@
 class OpBackBlur
 extends OperatorBase
 {
+    static { operatorTypes[BACK_BLUR] = this; }
+
+
+
     paramRadius;
 
 

@@ -375,4 +375,76 @@ extends GShape
         if (this.lineHeight   ) this.lineHeight   .iterateLoop(parse);
         if (this.letterSpacing) this.letterSpacing.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const text = new GTextShape(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(text, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, text);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            text.input = genParse(parse);
+    
+    
+        const nParamIds = genParseParamCount(parse);
+    
+        for (let i = 0; i < nParamIds; i++)
+        {
+            const paramId = genParseParamId(parse);
+    
+            parse.inParam = true;
+    
+            switch (paramId)
+            {       
+            case 'text':          text.text          = genParse(parse); break;
+            case 'x':             text.x             = genParse(parse); break;
+            case 'y':             text.y             = genParse(parse); break;
+            case 'width':         text.width         = genParse(parse); break;
+            case 'height':        text.height        = genParse(parse); break;
+            case 'font':          text.font          = genParse(parse); break;
+            case 'size':          text.size          = genParse(parse); break;
+            case 'style':         text.style         = genParse(parse); break;
+            case 'props':         text.props         = genParse(parse); break;
+            case 'alignX':        text.alignX        = genParse(parse); break;
+            case 'alignY':        text.alignY        = genParse(parse); break;
+            case 'lineHeight':    text.lineHeight    = genParse(parse); break;
+            case 'letterSpacing': text.letterSpacing = genParse(parse); break;
+            }
+        }
+    
+    
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, text);
+        return text;
+    }
 }

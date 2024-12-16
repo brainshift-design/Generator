@@ -1,6 +1,10 @@
 class   OpBoolean
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_BOOLEAN] = this; }
+
+
+
     paramOperation;
 
 

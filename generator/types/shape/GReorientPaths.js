@@ -67,7 +67,7 @@ extends GShape
 
             const reorientedPaths = 
                 this.options.enabled
-                ? reorientPaths(paths, reverse.value > 0)
+                ? GReorientPaths.reorientPaths(paths, reverse.value > 0)
                 : paths
                       .filter(path => path.objects && path.objects.length > 0)
                       .map   (path => path.objects[0].pathPoints);
@@ -235,76 +235,121 @@ extends GShape
 
         if (this.reverse) this.reverse.iterateLoop(parse);
     }
-}
 
 
 
-function reorientPaths(paths, reverse) 
-{
-    const orderedPaths = [];
-
-    let remainingPaths = paths
-        .filter(path => path.objects && path.objects.length > 0)
-        .map   (path => path.objects[0].pathPoints);
-
-
-    orderedPaths.push(remainingPaths.shift());
-
-
-    while (remainingPaths.length > 0) 
+    static parseRequest(parse)
     {
-        const currentPath = orderedPaths.at(-1);
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const reorient = new GReorientPaths(nodeId, options);
+    
+    
+        let nInputs = 0;
         
-        const { closestPathIndex, shouldReverse } = findNextPath(currentPath, remainingPaths);
-
-        if (closestPathIndex == -1) 
-            break; // no more close curves found
-
-        let nextPath = remainingPaths.splice(closestPathIndex, 1)[0];
+        if (!ignore)
+            nInputs = parseInt(parse.move());
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(reorient, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, reorient);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        for (let i = 0; i < nInputs; i++)
+            reorient.inputs.push(genParse(parse));
+    
+    
+        reorient.reverse = genParse(parse);
         
-        if (shouldReverse)
-            nextPath.reverse();
-
-        orderedPaths.push(nextPath);
+            
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, reorient);
+        return reorient;
     }
 
 
-    return reverse
-         ? orderedPaths.reverse().map(path => path.slice().reverse())
-         : orderedPaths;
-}
 
-
-
-function findNextPath(currentPath, remainingPaths)
-{
-    let minDistance      = Infinity;
-    let closestPathIndex = -1;
-    let shouldReverse    = false;
-
-
-    const currentEndPoint = currentPath.at(-1);
-
-    remainingPaths.forEach((path, index) => 
+    static reorientPaths(paths, reverse) 
     {
-        const distanceToStart = distv(currentEndPoint, path.at( 0));
-        const distanceToEnd   = distv(currentEndPoint, path.at(-1));
+        const orderedPaths = [];
 
-        if (distanceToStart < minDistance) 
+        let remainingPaths = paths
+            .filter(path => path.objects && path.objects.length > 0)
+            .map   (path => path.objects[0].pathPoints);
+
+
+        orderedPaths.push(remainingPaths.shift());
+
+
+        while (remainingPaths.length > 0) 
         {
-            minDistance      = distanceToStart;
-            closestPathIndex = index;
-            shouldReverse    = false;
+            const currentPath = orderedPaths.at(-1);
+            
+            const { closestPathIndex, shouldReverse } = GReorientPaths.findNextPath(currentPath, remainingPaths);
+
+            if (closestPathIndex == -1) 
+                break; // no more close curves found
+
+            let nextPath = remainingPaths.splice(closestPathIndex, 1)[0];
+            
+            if (shouldReverse)
+                nextPath.reverse();
+
+            orderedPaths.push(nextPath);
         }
 
-        if (distanceToEnd < minDistance) 
+
+        return reverse
+            ? orderedPaths.reverse().map(path => path.slice().reverse())
+            : orderedPaths;
+    }
+
+
+
+    static findNextPath(currentPath, remainingPaths)
+    {
+        let minDistance      = Infinity;
+        let closestPathIndex = -1;
+        let shouldReverse    = false;
+
+
+        const currentEndPoint = currentPath.at(-1);
+
+        remainingPaths.forEach((path, index) => 
         {
-            minDistance      = distanceToEnd;
-            closestPathIndex = index;
-            shouldReverse    = true;
-        }
-    });
+            const distanceToStart = distv(currentEndPoint, path.at( 0));
+            const distanceToEnd   = distv(currentEndPoint, path.at(-1));
+
+            if (distanceToStart < minDistance) 
+            {
+                minDistance      = distanceToStart;
+                closestPathIndex = index;
+                shouldReverse    = false;
+            }
+
+            if (distanceToEnd < minDistance) 
+            {
+                minDistance      = distanceToEnd;
+                closestPathIndex = index;
+                shouldReverse    = true;
+            }
+        });
 
 
-    return { closestPathIndex, shouldReverse };
+        return { closestPathIndex, shouldReverse };
+    }
 }

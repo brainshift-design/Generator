@@ -66,7 +66,7 @@ extends GOperator1
 
                     const sub =
                         item.type == TEXT_VALUE
-                        ? getSubstringValue(item, start, end, this.options.enabled)
+                        ? GTextSubstring.getEvalValue(item, start, end, this.options.enabled)
                         : new TextValue();
 
                     length     = Math.max(length,     sub.value.length);
@@ -78,7 +78,7 @@ extends GOperator1
             }
             else
             {
-                this.value = getSubstringValue(input, start, end, this.options.enabled);
+                this.value = GTextSubstring.getEvalValue(input, start, end, this.options.enabled);
                 
                 length     = this .value.length;
                 fullLength = input.value.length;
@@ -141,36 +141,83 @@ extends GOperator1
         if (this.start) this.start.iterateLoop(parse, from);
         if (this.end  ) this.end  .iterateLoop(parse, from);
     }
-}
 
 
 
-function getSubstringValue(input, start, end, enabled)
-{
-    let value = new TextValue();
-
-
-    const _end =
-        end.isValid()
-        ? end
-        : new NumberValue(input.value.length);
-
-
-    if (enabled)
+    static parseRequest(parse)
     {
-        const endValue = 
-            _end.value < 0
-            ? input.value.length + _end.value
-            : _end.value;
-
-        if (start.value <= endValue)
-            value.value = input.value.substring(start.value, endValue);
-        else
-            value = new TextValue();
-    }
-    else
-        value = input.copy();
-
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
     
-    return value;
+    
+        const sub = new GTextSubstring(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(sub, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, sub);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            sub.input = genParse(parse);
+    
+        sub.start = genParse(parse);
+        sub.end   = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, sub);
+        return sub;
+    }
+
+
+
+    static getEvalValue(input, start, end, enabled)
+    {
+        let value = new TextValue();
+
+
+        const _end =
+            end.isValid()
+            ? end
+            : new NumberValue(input.value.length);
+
+
+        if (enabled)
+        {
+            const endValue = 
+                _end.value < 0
+                ? input.value.length + _end.value
+                : _end.value;
+
+            if (start.value <= endValue)
+                value.value = input.value.substring(start.value, endValue);
+            else
+                value = new TextValue();
+        }
+        else
+            value = input.copy();
+
+        
+        return value;
+    }
 }

@@ -1,6 +1,10 @@
 class   OpMath
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_MATH] = this; }
+
+
+
     paramOperation;
 
 

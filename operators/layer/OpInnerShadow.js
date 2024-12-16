@@ -1,6 +1,10 @@
 class OpInnerShadow
 extends OperatorBase
 {
+    static { operatorTypes[INNER_SHADOW] = this; }
+
+
+
     paramX;
     paramY;
     paramBlur;

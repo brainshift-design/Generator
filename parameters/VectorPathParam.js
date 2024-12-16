@@ -161,6 +161,6 @@ extends Parameter
 
     loadParam(_param)
     {
-        this.setValue(parseVectorPathValue(_param[2])[0], true, true, false);
+        this.setValue(VectorPathValue.parse(_param[2])[0], true, true, false);
     }
 }

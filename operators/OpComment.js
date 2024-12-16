@@ -1,6 +1,10 @@
 class   OpComment
 extends OperatorBase
 {
+    static { operatorTypes[COMMENT] = this; }
+
+
+
     constructor()
     {
         super(COMMENT, 'comment', 'comment', '');

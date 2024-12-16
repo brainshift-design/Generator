@@ -1,6 +1,10 @@
 class OpRoundCorners
 extends OperatorBase
 {
+    static { operatorTypes[ROUND_CORNERS] = this; }
+
+
+
     paramTL;
     paramTR;
     paramBL;

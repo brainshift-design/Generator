@@ -1,6 +1,10 @@
 class GIterate
 extends GOperator
 {
+    static { nodeTypes[ITERATE] = this; }
+
+
+
     inputs = [];
 
 
@@ -153,5 +157,46 @@ extends GOperator
         super.iterateLoop(parse);
 
         this.inputs.forEach(i => i.iterateLoop(parse));
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const define = new GIterate(nodeId, options);
+    
+    
+        let nInputs = 0;
+        
+        if (!ignore)
+            nInputs = parseInt(parse.move());
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(define, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, define);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+        
+        for (let i = 0; i < nInputs; i++)
+            define.inputs.push(genParse(parse));
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, define);
+        return define;
     }
 }

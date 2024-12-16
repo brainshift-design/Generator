@@ -1,6 +1,10 @@
 class   OpShowCenter
 extends OperatorBase
 {
+    static { operatorTypes[SHOW_CENTER] = this; }
+
+
+
     paramShow;
 
     menuShow;

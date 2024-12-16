@@ -1,6 +1,10 @@
-class GTrig
+class GTrigonometric
 extends GOperator1
 {
+    static { nodeTypes[NUMBER_TRIG] = this; }
+
+
+
     function;
 
 
@@ -23,7 +27,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GTrig(this.nodeId, this.options);
+        const copy = new GTrigonometric(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -114,6 +118,51 @@ extends GOperator1
         super.iterateLoop(parse);
 
         if (this.function) this.function.iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+        const trig = new GTrigonometric(nodeId, options);
+
+
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+
+        
+        if (parse.settings.logRequests) 
+            logReq(trig, parse, ignore, nInputs);
+
+
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, trig);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+
+
+        parse.nTab++;
+
+
+        if (nInputs == 1)
+            trig.input = genParse(parse);
+
+        trig.function = genParse(parse);
+
+        parse.nTab--;
+
+
+        genParseNodeEnd(parse, trig);
+        return trig;
     }
 }
 

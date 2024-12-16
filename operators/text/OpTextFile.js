@@ -1,6 +1,10 @@
 class   OpTextFile
 extends ResizableBase
 {
+    static { operatorTypes[TEXT_FILE] = this; }
+
+
+
     file        = null;
     cachedValue = '';
  

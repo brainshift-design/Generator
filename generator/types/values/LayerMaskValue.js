@@ -113,16 +113,30 @@ extends GValue
             NumberValue.NaN(),
             false);
     }
-}
 
 
 
-function parseLayerMaskValue(str)
-{
-    const mask = 
-        str == NAN_DISPLAY
-        ? LayerMaskValue.NaN()
-        : new LayerMaskValue(new NumberValue(parseInt(str)), true);
+    static parseRequest(parse)
+    {
+        parse.pos++; // LAYER_MASK_VALUE
+    
+        const mask = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(LAYER_MASK_VALUE, mask, parse);
+    
+        return LayerMaskValue.parse(mask)[0];
+    }
 
-    return [mask, 1];
+
+
+    static parse(str)
+    {
+        const mask = 
+            str == NAN_DISPLAY
+            ? LayerMaskValue.NaN()
+            : new LayerMaskValue(new NumberValue(parseInt(str)), true);
+
+        return [mask, 1];
+    }
 }

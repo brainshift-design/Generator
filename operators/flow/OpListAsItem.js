@@ -1,6 +1,10 @@
 class   OpListAsItem
 extends OperatorBase
 {
+    static { operatorTypes[LIST_AS_ITEM] = this; }
+
+
+
     constructor()
     {
         super(LIST_AS_ITEM, 'listAsItem', 'list as item', iconListAsItem);

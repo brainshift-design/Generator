@@ -1,6 +1,10 @@
 class   OpPointAlongPath
 extends OpShapeBase
 {
+    static { operatorTypes[POINT_ALONG_PATH] = this; }
+
+
+
     paramPosition;
     paramDistance;
     paramOffset;

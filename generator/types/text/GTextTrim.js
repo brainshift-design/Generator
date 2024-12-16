@@ -61,13 +61,13 @@ extends GOperator1
 
                     this.value.items.push(
                         item.type == TEXT_VALUE
-                        ? getTrimValue(item, start, end, this.options.enabled)
+                        ? GTextTrim.getEvalValue(item, start, end, this.options.enabled)
                         : new TextValue());   
                 }
             }
             else
             {
-                this.value = getTrimValue(input, start, end, this.options.enabled);
+                this.value = GTextTrim.getEvalValue(input, start, end, this.options.enabled);
             }
         }
         else
@@ -125,21 +125,68 @@ extends GOperator1
         if (this.start) this.start.iterateLoop(parse);
         if (this.end  ) this.end  .iterateLoop(parse);
     }
-}
 
 
 
-function getTrimValue(input, start, end, enabled)
-{
-    consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
-               
-    const value = input.copy();
-
-    if (enabled)
+    static parseRequest(parse)
     {
-        if (start.value.length > 0) value.value = trimCharFromStart(value.value, escapeString(start.value));
-        if (end  .value.length > 0) value.value = trimCharFromEnd  (value.value, escapeString(end  .value));
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const trim = new GTextTrim(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(trim, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, trim);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            trim.input = genParse(parse);
+    
+        trim.start = genParse(parse);
+        trim.end   = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, trim);
+        return trim;
     }
 
-    return value;
+
+
+    static getEvalValue(input, start, end, enabled)
+    {
+        consoleAssert(input.type == TEXT_VALUE, 'input.type must be TEXT_VALUE');
+                
+        const value = input.copy();
+
+        if (enabled)
+        {
+            if (start.value.length > 0) value.value = trimCharFromStart(value.value, escapeString(start.value));
+            if (end  .value.length > 0) value.value = trimCharFromEnd  (value.value, escapeString(end  .value));
+        }
+
+        return value;
+    }
 }

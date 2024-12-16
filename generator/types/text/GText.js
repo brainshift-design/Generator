@@ -54,4 +54,40 @@ extends GOperator1
                && this.value != NAN_CHAR 
             || this.input.isValid();
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const text = new GText(nodeId, options);
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(text, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, text);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+        parse.inParam = false;
+    
+    
+        if (parse.next == TEXT_VALUE) text.value = genParse(parse);
+        else                          text.input = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, text);
+        return text;
+    }
 }

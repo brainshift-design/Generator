@@ -207,15 +207,15 @@ function parseWavePathValue(str, i = -1)
 
     const iStart = i;
 
-    const shape     = parseNumberValue(str[i]); i += shape    [1];
-    const x         = parseNumberValue(str[i]); i += x        [1];
-    const y         = parseNumberValue(str[i]); i += y        [1];
-    const width     = parseNumberValue(str[i]); i += width    [1];
-    const amplitude = parseNumberValue(str[i]); i += amplitude[1];
-    const frequency = parseNumberValue(str[i]); i += frequency[1];
-    const offset    = parseNumberValue(str[i]); i += offset   [1];
-    const alignX    = parseNumberValue(str[i]); i += alignX   [1];
-    const alignY    = parseNumberValue(str[i]); i += alignY   [1];
+    const shape     = NumberValue.parse(str[i]); i += shape    [1];
+    const x         = NumberValue.parse(str[i]); i += x        [1];
+    const y         = NumberValue.parse(str[i]); i += y        [1];
+    const width     = NumberValue.parse(str[i]); i += width    [1];
+    const amplitude = NumberValue.parse(str[i]); i += amplitude[1];
+    const frequency = NumberValue.parse(str[i]); i += frequency[1];
+    const offset    = NumberValue.parse(str[i]); i += offset   [1];
+    const alignX    = NumberValue.parse(str[i]); i += alignX   [1];
+    const alignY    = NumberValue.parse(str[i]); i += alignY   [1];
 
 
     const wave = new WavePathValue(

@@ -1,6 +1,10 @@
 class   OpArcPath
 extends OpShape
 {
+    static { operatorTypes[ARC_PATH] = this; }
+
+
+
     paramPosition;
     paramX;
     paramY;

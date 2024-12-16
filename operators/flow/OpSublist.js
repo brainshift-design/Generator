@@ -1,6 +1,10 @@
 class   OpSublist
 extends OperatorBase
 {
+    static { operatorTypes[SUBLIST] = this; }
+
+
+
     paramStart;
     paramEnd;
 

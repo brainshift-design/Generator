@@ -1,6 +1,10 @@
 class GConstant
 extends GOperator
 {
+    static { nodeTypes[NUMBER_CONSTANT] = this; }
+
+
+
     constant;
 
 
@@ -106,5 +110,39 @@ extends GOperator
         super.iterateLoop(parse);
 
         if (this.constant) this.constant.iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const _const = new GConstant(nodeId, options);
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(_const, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, _const);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        _const.constant = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, _const);
+        return _const;
     }
 }

@@ -1,6 +1,10 @@
 class   OpNumberToText
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_TO_TEXT] = this; }
+
+
+
     paramBase;
     paramTrim;
     paramDecimals;

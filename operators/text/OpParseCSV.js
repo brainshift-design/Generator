@@ -1,6 +1,10 @@
 class   OpParseCSV
 extends OperatorBase
 {
+    static { operatorTypes[PARSE_CSV] = this; }
+
+
+
     paramValue;
     paramRowSeparator;
     paramColumnSeparator;

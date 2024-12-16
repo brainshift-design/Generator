@@ -1,6 +1,10 @@
 class   OpAtan2
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_ATAN2] = this; }
+
+
+
     paramX;
     paramY;
 

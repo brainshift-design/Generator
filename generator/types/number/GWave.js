@@ -1,6 +1,10 @@
 class GWave
 extends GOperator
 {
+    static { nodeTypes[NUMBER_WAVE] = this; }
+
+
+
     shape     = null;
     base      = null;
     amplitude = null;
@@ -216,5 +220,48 @@ extends GOperator
         if (this.frequency) this.frequency.iterateLoop(parse);
         if (this.offset   ) this.offset   .iterateLoop(parse);
         if (this.bias     ) this.bias     .iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const wave = new GWave(nodeId, options);
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(wave, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, wave);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        wave.shape     = genParse(parse);
+        wave.base      = genParse(parse);
+        wave.amplitude = genParse(parse);
+        wave.frequency = genParse(parse);
+        wave.offset    = genParse(parse);
+        wave.bias      = genParse(parse);
+    
+    
+        wave.useWavelength  = parseInt(parse.move()) > 0;
+        wave.offsetAbsolute = parseInt(parse.move()) > 0;
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, wave);
+        return wave;
     }
 }

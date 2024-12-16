@@ -1,6 +1,10 @@
 class   OpAdvance
 extends OperatorBase
 {
+    static { operatorTypes[ADVANCE] = this; }
+
+
+
     paramLoop;
 
 

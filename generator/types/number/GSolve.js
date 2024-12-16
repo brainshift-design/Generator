@@ -1,6 +1,10 @@
 class GSolve
 extends GOperator1
 {
+    static { nodeTypes[NUMBER_SOLVE] = this; }
+
+
+
     current          = null;
     target           = null;
 

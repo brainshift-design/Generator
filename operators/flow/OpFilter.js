@@ -1,6 +1,10 @@
 class   OpFilter
 extends OperatorBase
 {
+    static { operatorTypes[FILTER] = this; }
+
+
+
     paramCondition;
     paramIndices;
 

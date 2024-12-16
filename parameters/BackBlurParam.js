@@ -173,6 +173,6 @@ extends Parameter
 
     loadParam(_param)
     {
-        this.setValue(parseBackBlurValue(_param[2])[0], true, true, false);
+        this.setValue(BackBlurValue.parse(_param[2])[0], true, true, false);
     }
 }

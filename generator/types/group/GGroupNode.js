@@ -97,4 +97,53 @@ extends GOperator
         this.inputs.forEach(i => i.iterateLoop(parse));
         this.params.forEach(p => p.iterateLoop(parse));
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+        const group = new GGroupNode(nodeId, options);
+
+
+        let nParams = -1;
+        
+        if (!ignore)
+        {
+            nParams = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+
+
+        if (parse.settings.logRequests) 
+            logReq(group, parse, ignore);//, nParams);
+
+
+        if (ignore)
+        {
+            genParseNodeEnd(parse, group);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+
+
+        parse.nTab++;
+
+
+        //const nParams = parseInt(parse.move());
+
+        for (let i = 0; i < nParams; i++)
+        {
+            group.paramIds.push(parse.move());
+            group.params  .push(genParse(parse));
+        }
+
+
+        parse.nTab--;
+
+
+        genParseNodeEnd(parse, group);
+        return group;
+    }
 }

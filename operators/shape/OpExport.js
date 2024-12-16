@@ -1,6 +1,10 @@
 class OpExport
 extends OpShapeBase
 {
+    static { operatorTypes[EXPORT] = this; }
+
+
+
     paramScale;
     paramFormat;
  // paramContents;

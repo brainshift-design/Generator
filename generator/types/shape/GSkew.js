@@ -163,4 +163,53 @@ extends GAffine
         if (this.skewX) this.skewX.iterateLoop(parse);
         if (this.skewY) this.skewY.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const skew = new GSkew(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(skew, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, skew);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            skew.input = genParse(parse);
+    
+        skew.skewX       = genParse(parse);
+        skew.skewY       = genParse(parse);
+        skew.affectSpace = genParse(parse);
+    
+    
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, skew);
+        return skew;
+    }
 }

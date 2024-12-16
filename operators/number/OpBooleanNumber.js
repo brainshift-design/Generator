@@ -1,6 +1,10 @@
 class   OpBooleanNumber
 extends ResizableBase
 {
+    static { operatorTypes[BOOLEAN_NUMBER] = this; }
+
+
+
     paramValue;
 
     menuValue;

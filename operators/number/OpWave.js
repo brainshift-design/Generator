@@ -1,6 +1,10 @@
 class   OpWave
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_WAVE] = this; }
+
+
+
     paramShape;
     paramBase;
     paramAmplitude;

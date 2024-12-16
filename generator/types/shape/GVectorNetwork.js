@@ -207,4 +207,48 @@ extends GShape
 
         this.inputs.forEach(i => i.iterateLoop(parse));
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const network = new GVectorNetwork(nodeId, options);
+    
+    
+        let nInputs = 0;
+        
+        if (!ignore)
+            nInputs = parseInt(parse.move());
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(network, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, network);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        for (let i = 0; i < nInputs; i++)
+            network.inputs.push(genParse(parse));
+    
+        network.props = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+    
+        genParseNodeEnd(parse, network);
+        return network;
+    }
 }

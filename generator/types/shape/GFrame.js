@@ -295,4 +295,72 @@ extends GShape
         if (this.position) this.position.iterateLoop(parse);
         if (this.round   ) this.round   .iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const frame = new GFrame(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(frame, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, frame);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            frame.input = genParse(parse);
+    
+    
+        const nParamIds = genParseParamCount(parse);
+    
+        for (let i = 0; i < nParamIds; i++)
+        {
+            const paramId = genParseParamId(parse);
+    
+            parse.inParam = true;
+    
+            switch (paramId)
+            {
+            case 'children': frame.children = genParse(parse); break;
+            case 'position': frame.position = genParse(parse); break;
+            case 'x':        frame.x        = genParse(parse); break;
+            case 'y':        frame.y        = genParse(parse); break;
+            case 'width':    frame.width    = genParse(parse); break;
+            case 'height':   frame.height   = genParse(parse); break;
+            case 'round':    frame.round    = genParse(parse); break;
+            case 'clip':     frame.clip     = genParse(parse); break;
+            case 'props':    frame.props    = genParse(parse); break;
+            }
+        }
+    
+    
+        parse.inParam = false;
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, frame);
+        return frame;
+    }
 }

@@ -118,8 +118,8 @@ function parseShapeBooleanValue(str, i = -1)
 
     const iStart = i;
 
-    const children  = parseListValue  (str, i); i += children [1];
-    const operation = parseNumberValue(str[i]); i += operation[1];
+    const children  = ListValue.parse  (str, i); i += children [1];
+    const operation = NumberValue.parse(str[i]); i += operation[1];
 
     const bool = new ShapeBooleanValue(
         '', // set node ID elsewhere

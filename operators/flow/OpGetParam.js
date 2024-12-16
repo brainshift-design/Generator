@@ -1,6 +1,10 @@
 class   OpGetParam
 extends ResizableFlowBase
 {
+    static { operatorTypes[GET_PARAM] = this; }
+
+
+
     paramName;
 
     _connected = false;

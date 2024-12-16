@@ -1,6 +1,10 @@
 class   OpAddText
 extends OperatorBase
 {
+    static { operatorTypes[TEXT_ADD] = this; }
+
+
+
     paramText;
     paramPrefix;
 

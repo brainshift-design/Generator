@@ -1,6 +1,10 @@
 class   OpClosestPointOnPath
 extends OpShapeBase
 {
+    static { operatorTypes[CLOSEST_POINT_ON_PATH] = this; }
+
+
+
     paramConstrain;
     paramTransform;
 

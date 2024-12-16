@@ -44,4 +44,29 @@ extends GOperator
              ? this.value.copy() 
              : null;
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const panel = new GPanel(nodeId, options);
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(panel, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, panel);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        genParseNodeEnd(parse, panel);
+        return panel;
+    }
 }

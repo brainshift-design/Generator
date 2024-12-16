@@ -1,6 +1,10 @@
 class   OpColorDifference
 extends OperatorBase
 {
+    static { operatorTypes[COLOR_DIFFERENCE] = this; }
+
+
+
     paramDeltaE;
     paramSpace;
     param1;

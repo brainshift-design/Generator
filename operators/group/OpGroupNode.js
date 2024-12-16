@@ -1,6 +1,10 @@
 class   OpGroupNode
 extends OperatorBase
 {
+    static { operatorTypes[GROUP_NODE] = this; }
+
+
+
     constructor()
     {
         super(GROUP_NODE, 'group', 'group', iconGroup);

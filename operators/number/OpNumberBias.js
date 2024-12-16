@@ -1,6 +1,10 @@
 class   OpNumberBias
 extends OperatorBase
 {
+static { operatorTypes[NUMBER_BIAS] = this; }
+
+
+
     paramMin;
     paramMax;
     paramBias;

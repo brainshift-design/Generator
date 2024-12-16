@@ -1,6 +1,10 @@
 class   OpColorBlind
 extends OpColorBase
 {
+    static { operatorTypes[COLORBLIND] = this; }
+
+
+
     paramL;
     paramM;
     paramS;

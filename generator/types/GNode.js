@@ -1,3 +1,7 @@
+const nodeTypes = {};
+
+
+
 class GNode
 {
     static nextUniqueId = 0;

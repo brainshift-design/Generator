@@ -1,6 +1,10 @@
 class   OpConstant
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_CONSTANT] = this; }
+
+
+
     paramConstant;
     
 

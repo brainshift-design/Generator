@@ -181,41 +181,55 @@ extends GValue
             NumberValue.NaN(), 
             NumberValue.NaN());
     }
-}
 
 
 
-function parseVectorVertexValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [VectorVertexValue.NaN(), 1];
-
-
-    if (i < 0)
+    static parseRequest(parse)
     {
-        str = str.split(' ');
-        i   = 0;
+        parse.pos++; // VECTOR_POINT_VALUE
+    
+        const point = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(VECTOR_VERTEX_VALUE, point, parse);
+    
+        return VectorVertexValue.parse(point)[0];
     }
 
 
-    const iStart = i;
 
-    const x     = parseNumberValue(str[i]); i += x    [1];
-    const y     = parseNumberValue(str[i]); i += y    [1];
-    const join  = parseNumberValue(str[i]); i += join [1];
-    const cap   = parseNumberValue(str[i]); i += cap  [1];
-    const round = parseNumberValue(str[i]); i += round[1];
-
-
-    const point = new VectorVertexValue(
-        '', // set node ID elsewhere
-        x    [0],
-        y    [0],
-        join [0],
-        cap  [0],
-        round[0]);
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [VectorVertexValue.NaN(), 1];
 
 
-    return [point, i - iStart];
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+
+
+        const iStart = i;
+
+        const x     = NumberValue.parse(str[i]); i += x    [1];
+        const y     = NumberValue.parse(str[i]); i += y    [1];
+        const join  = NumberValue.parse(str[i]); i += join [1];
+        const cap   = NumberValue.parse(str[i]); i += cap  [1];
+        const round = NumberValue.parse(str[i]); i += round[1];
+
+
+        const point = new VectorVertexValue(
+            '', // set node ID elsewhere
+            x    [0],
+            y    [0],
+            join [0],
+            cap  [0],
+            round[0]);
+
+
+        return [point, i - iStart];
+    }
 }

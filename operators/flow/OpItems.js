@@ -1,6 +1,10 @@
 class   OpItems
 extends ResizableBaseWithSeparator
 {
+    static { operatorTypes[ITEMS] = this; }
+
+
+
     scrollbar;
     scroll          = 0;
 

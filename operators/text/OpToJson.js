@@ -1,6 +1,10 @@
 class   OpToJson
 extends OperatorBase
 {
+    static { operatorTypes[TO_JSON] = this; }
+
+
+
     paramQuoteValues;
     paramShowNames;
     paramSingleLine;

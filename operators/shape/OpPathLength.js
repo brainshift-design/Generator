@@ -1,6 +1,10 @@
 class   OpPathLength
 extends OperatorBase
 {
+    static { operatorTypes[PATH_LENGTH] = this; }
+
+
+
     paramLength;
 
 

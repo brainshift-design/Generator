@@ -1,6 +1,10 @@
 class   OpSelect
 extends ResizableBase
 {
+    static { operatorTypes[SELECT] = this; }
+
+
+
     paramIndex;
 
     value;

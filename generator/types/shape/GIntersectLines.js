@@ -144,4 +144,71 @@ extends GOperator4
 
         if (this.segment) this.segment.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const inter = new GIntersectLines(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 4, 'nInputs must be [0, 4]');
+        }
+    
+        
+        if (parse.settings.logRequests) 
+            logReq(inter, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, inter);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+        
+        if (nInputs == 4)
+        {
+            inter.input0 = genParse(parse);
+            inter.input1 = genParse(parse);
+            inter.input2 = genParse(parse);
+            inter.input3 = genParse(parse);
+        }
+        else if (nInputs == 3)
+        {
+            inter.input0 = genParse(parse);
+            inter.input1 = genParse(parse);
+            inter.input2 = genParse(parse);
+        }
+        else if (nInputs == 2)
+        {
+            inter.input0 = genParse(parse);
+            inter.input1 = genParse(parse);
+        }
+        else if (nInputs == 1)
+        {
+            inter.input0 = genParse(parse);
+        }
+    
+    
+        inter.segment = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, inter);
+        return inter;
+    }
 }

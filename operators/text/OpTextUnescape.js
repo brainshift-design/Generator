@@ -1,6 +1,10 @@
 class   OpTextUnescape
 extends OperatorBase
 {
+    static { operatorTypes[TEXT_UNESCAPE] = this; }
+
+
+
     paramMethod;
 
 

@@ -1,6 +1,10 @@
-class   OpTrig
+class   OpTrigonometric
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_TRIG] = this; }
+
+
+
     paramFunction;
 
 

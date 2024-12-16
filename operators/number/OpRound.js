@@ -1,6 +1,10 @@
 class   OpRound
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_ROUND] = this; }
+
+
+
     paramType;
     paramDecimals;
 

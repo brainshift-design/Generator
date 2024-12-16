@@ -1,6 +1,10 @@
 class   OpCache
 extends OpFlowBase
 {
+    static { operatorTypes[CACHE] = this; }
+
+
+
     constructor()
     {
         super(CACHE, 'cache', 'cache', iconCache);

@@ -114,6 +114,50 @@ extends GOperator
 
         if (this.with) this.with.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse, newNode)
+    {
+        const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+        const join = new GTextJoin(nodeId, options);
+
+
+        let nInputs = 0;
+        
+        if (!ignore)
+            nInputs = parseInt(parse.move());
+
+
+        if (parse.settings.logRequests) 
+            logReq(join, parse, ignore, nInputs);
+
+
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, join);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+
+
+        parse.nTab++;
+
+
+        for (let i = 0; i < nInputs; i++)
+            join.inputs.push(genParse(parse));
+
+
+        join.with = genParse(parse);
+
+        
+        parse.nTab--;
+
+            
+        genParseNodeEnd(parse, join);
+        return join;
+    }
 }
 
 

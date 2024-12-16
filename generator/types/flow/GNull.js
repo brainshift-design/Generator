@@ -1,6 +1,10 @@
 class GNull
 extends GOperator1
 {
+    static { nodeTypes[NULL_NODE] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(NULL_NODE, nodeId, options);
@@ -56,5 +60,49 @@ extends GOperator1
         return this.value
              ? this.value.copy()
              : null;
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const _null = new GNull(nodeId, options);
+    
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(_null, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, _null);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            _null.input = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, _null);
+        return _null;
     }
 }

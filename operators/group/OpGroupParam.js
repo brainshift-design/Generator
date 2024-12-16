@@ -1,6 +1,10 @@
 class   OpGroupParam
 extends OperatorBase
 {
+    static { operatorTypes[GROUP_PARAM] = this; }
+
+
+
     headerCircle;
 
     circleBack;

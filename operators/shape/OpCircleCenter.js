@@ -1,6 +1,10 @@
 class   OpCircleCenter
 extends OpShapeBase
 {
+    static { operatorTypes[CIRCLE_CENTER] = this; }
+
+
+
     constructor()
     {
         super(CIRCLE_CENTER, 'circleCenter', 'circle center', iconCircleCenter);

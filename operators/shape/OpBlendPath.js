@@ -1,6 +1,10 @@
 class   OpBlendPath
 extends OperatorBase
 {
+    static { operatorTypes[BLEND_PATH] = this; }
+
+
+
     paramAmount;
     paramDegree;
 

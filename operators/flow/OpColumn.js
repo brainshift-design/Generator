@@ -1,6 +1,10 @@
 class   OpColumn
 extends OperatorBase
 {
+    static { operatorTypes[COLUMN] = this; }
+
+
+
     paramIndex;
 
     columnLength;

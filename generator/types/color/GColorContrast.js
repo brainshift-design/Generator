@@ -246,4 +246,65 @@ extends GOperator2
         if (this.standard) this.standard.iterateLoop(parse);
         if (this.contrast) this.contrast.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const cnt = new GColorContrast(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        }
+    
+    
+        const valueIndex = 
+            nInputs == 1
+            ? parseInt(parse.move())
+            : -1;
+    
+        
+        if (parse.settings.logRequests) 
+            logReqColorContrast(cnt, nInputs, valueIndex, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, cnt);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 2)
+        {
+            cnt.input0 = genParse(parse);
+            cnt.input1 = genParse(parse);
+        }
+        else if (nInputs == 1)
+        {
+                 if (valueIndex == 0) cnt.input0 = genParse(parse); 
+            else if (valueIndex == 1) cnt.input1 = genParse(parse); 
+        }
+      
+    
+        cnt.standard = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, cnt);
+        return cnt;
+    }
 }

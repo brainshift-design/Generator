@@ -1,6 +1,10 @@
 class   OpPolygon
 extends OpShape
 {
+    static { operatorTypes[POLYGON] = this; }
+
+
+
     paramPosition;
     paramX;
     paramY;

@@ -243,4 +243,74 @@ extends GOperator1
         if (this.cap   ) this.cap   .iterateLoop(parse);
         if (this.dashes) this.dashes.iterateLoop(parse);
     }    
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const stroke = new GStroke(nodeId, options);
+    
+        stroke.hasInputs = options.hasInputs;
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(stroke, parse, ignore, nInputs);
+    
+    
+        if (ignore)
+        {
+            genParseNodeEnd(parse, stroke);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        let paramIds;
+    
+        if (nInputs == 1)
+        {
+            stroke.input = genParse(parse);
+            paramIds = parse.move().split(',');
+        }
+        else
+            paramIds = ['fill', 'weight', 'fit', 'join', 'miter', 'cap', 'dashes'];
+    
+    
+        parse.inParam = false;
+    
+        for (const id of paramIds)
+        {
+            switch (id)
+            {
+            case 'fill':   stroke._fills = genParse(parse); stroke.fills = stroke._fills; break;
+            case 'weight': stroke.weight = genParse(parse); break;
+            case 'fit':    stroke.fit    = genParse(parse); break;
+            case 'join':   stroke.join   = genParse(parse); break;
+            case 'miter':  stroke.miter  = genParse(parse); break;
+            case 'cap':    stroke.cap    = genParse(parse); break;
+            case 'dashes': stroke.dashes = genParse(parse); break;
+            }
+        }
+        
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, stroke);
+        return stroke;
+    }
 }

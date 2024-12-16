@@ -1,6 +1,10 @@
 class   OpReorientPaths
 extends OperatorBase
 {
+    static { operatorTypes[REORIENT_PATHS] = this; }
+
+
+
     paramReverse;
 
     menuReverse;

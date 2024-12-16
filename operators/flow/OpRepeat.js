@@ -1,6 +1,10 @@
 class   OpRepeat
 extends OperatorBase
 {
+    static { operatorTypes[VARIAGLE_GROUP] = this; }
+
+
+
     paramCount;
     paramIteration;
     paramWhile;

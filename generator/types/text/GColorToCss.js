@@ -135,6 +135,54 @@ extends GOperator1
         if (this.percent  ) this.percent  .iterateLoop(parse);
         if (this.trimZeros) this.trimZeros.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const col2css = new GColorToCss(nodeId, options);
+       
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(col2css, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, col2css);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            col2css.input = genParse(parse);
+    
+        col2css.format    = genParse(parse);
+        col2css.percent   = genParse(parse);
+        col2css.trimZeros = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, col2css);
+        return col2css;
+    }
 }
 
 

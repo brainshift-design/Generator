@@ -1,6 +1,10 @@
 class   OpSetPrecision
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_PRECISION] = this; }
+
+
+
     paramDecimals;
 
 

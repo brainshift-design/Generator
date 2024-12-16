@@ -135,7 +135,7 @@ extends NumberParamBase
 
     loadParam(_param)
     {
-        const value = parseNumberValue(_param[2])[0];
+        const value = NumberValue.parse(_param[2])[0];
 
         this.setValue(value, true, true, false);
         this.isBoolean = value.isBoolean;

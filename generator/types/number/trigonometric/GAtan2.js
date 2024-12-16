@@ -1,6 +1,10 @@
 class GAtan2
 extends GOperator
 {
+    static { nodeTypes[NUMBER_ATAN2] = this; }
+
+
+
     x;
     y;
 
@@ -100,5 +104,40 @@ extends GOperator
 
         if (this.x) this.x.iterateLoop(parse);
         if (this.y) this.y.iterateLoop(parse);
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const atan2 = new GAtan2(nodeId, options);
+       
+        
+        if (parse.settings.logRequests) 
+            logReq(atan2, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, atan2);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        atan2.x = genParse(parse);
+        atan2.y = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, atan2);
+        return atan2;
     }
 }

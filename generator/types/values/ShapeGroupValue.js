@@ -276,7 +276,7 @@ function parseShapeGroupValue(str, i = -1)
         switch (type)
         {
             case          LIST_VALUE:  
-            case    SHAPE_LIST_VALUE: { const _list   = parseListValue        (str, i);  i += _list  [1];  group.items.push(_list  [0]);  break; }
+            case    SHAPE_LIST_VALUE: { const _list   = ListValue.parse        (str, i);  i += _list  [1];  group.items.push(_list  [0]);  break; }
  
             case     RECTANGLE_VALUE: { const rect    = parseRectangleValue   (str, i);  i += rect   [1];  group.items.push(rect   [0]);  break; }
             case          LINE_VALUE: { const line    = parseLineValue        (str, i);  i += line   [1];  group.items.push(line   [0]);  break; }
@@ -285,8 +285,8 @@ function parseShapeGroupValue(str, i = -1)
             case       POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  group.items.push(poly   [0]);  break; }
             case          STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  group.items.push(star   [0]);  break; }
             case    TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  group.items.push(text   [0]);  break; }
-            case         POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  group.items.push(point  [0]);  break; }
-            case   VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
+            case         POINT_VALUE: { const point   = PointValue.parse       (str, i);  i += point  [1];  group.items.push(point  [0]);  break; }
+            case   VECTOR_PATH_VALUE: { const path    = VectorPathValue.parse  (str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
             case SHAPE_BOOLEAN_VALUE: { const path    = parseShapeBooleanValue(str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
             case   SHAPE_GROUP_VALUE: { const _group  = parseShapeGroupValue  (str, i);  i += _group [1];  group.items.push(_group [0]);  break; }
             case         FRAME_VALUE: { const frame   = parseFrameValue       (str, i);  i += frame  [1];  group.items.push(frame  [0]);  break; }

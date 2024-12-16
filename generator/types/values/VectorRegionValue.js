@@ -133,38 +133,52 @@ extends ShapeValue
             ListValue  .NaN(), 
             NumberValue.NaN());
     }
-}
 
 
 
-function parseVectorRegionValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [VectorRegionValue.NaN(), 1];
-
-
-    if (i < 0)
+    static parseRequest(parse)
     {
-        str = str.split(' ');
-        i   = 0;
+        parse.pos++; // VECTOR_REGION_VALUE
+    
+        const region = parse.move();
+    
+        if (parse.settings.logRequests) 
+            logReqValue(VECTOR_REGION_VALUE, region, parse);
+    
+        return VectorRegionValue.parse(region)[0];
     }
 
 
-    const iStart = i;
 
-    const loops   = parseListValue  (str, i); i += loops  [1];
-    const winding = parseNumberValue(str[i]); i += winding[1];
-
-
-    const region = new VectorRegionValue(
-        '', // set node ID elsewhere
-        loops  [0],
-        winding[0]);
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [VectorRegionValue.NaN(), 1];
 
 
-    i = parseShapeBaseValue(str, i, region);
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
 
 
-    return [region, i - iStart];
+        const iStart = i;
+
+        const loops   = ListValue.parse  (str, i); i += loops  [1];
+        const winding = NumberValue.parse(str[i]); i += winding[1];
+
+
+        const region = new VectorRegionValue(
+            '', // set node ID elsewhere
+            loops  [0],
+            winding[0]);
+
+
+        i = parseShapeBaseValue(str, i, region);
+
+
+        return [region, i - iStart];
+    }
 }

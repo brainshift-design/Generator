@@ -202,4 +202,69 @@ extends GOperator2
         if (this.param2) this.param2.iterateLoop(parse);
         if (this.param3) this.param3.iterateLoop(parse);
     }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const diff = new GColorDifference(nodeId, options);
+    
+    
+        let nInputs = -1;
+    
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        }
+    
+    
+        const valueIndex = 
+            nInputs == 1
+            ? parseInt(parse.move())
+            : -1;
+    
+        
+        if (parse.settings.logRequests) 
+            logReqColorContrast(diff, nInputs, valueIndex, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, diff);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 2)
+        {
+            diff.input0 = genParse(parse);
+            diff.input1 = genParse(parse);
+        }
+        else if (nInputs == 1)
+        {
+                 if (valueIndex == 0) diff.input0 = genParse(parse); 
+            else if (valueIndex == 1) diff.input1 = genParse(parse); 
+        }
+      
+    
+        diff.deltaE = genParse(parse);
+        diff.space  = genParse(parse);
+        diff.param1 = genParse(parse);
+        diff.param2 = genParse(parse);
+        diff.param3 = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, diff);
+        return diff;
+    }
 }

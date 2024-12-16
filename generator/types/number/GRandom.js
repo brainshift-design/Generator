@@ -1,6 +1,10 @@
 class GRandom
 extends GOperator
 {
+    static { nodeTypes[NUMBER_RANDOM] = this; }
+
+
+
     seed         = null;
     iteration    = null;
     min          = null;
@@ -243,5 +247,45 @@ extends GOperator
         super.resetLoop(parse, nodeId);
 
         this.uniqueOffset = 0;
+    }
+
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const rnd = new GRandom(nodeId, options);
+    
+    
+        if (parse.settings.logRequests) 
+            logReq(rnd, parse, ignore);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, rnd);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        rnd.seed      = genParse(parse);
+        rnd.iteration = genParse(parse);
+        rnd.min       = genParse(parse);
+        rnd.max       = genParse(parse);
+        rnd.bias      = genParse(parse);
+        rnd.spread    = genParse(parse);
+        rnd.unique    = genParse(parse);
+    
+    
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, rnd);
+        return rnd;
     }
 }

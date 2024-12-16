@@ -1,6 +1,10 @@
 class   OpDateTime
 extends OperatorBase
 {
+    static { operatorTypes[NUMBER_DATETIME] = this; }
+
+
+
     paramSeconds;
     paramMinutes;
     paramHours;
