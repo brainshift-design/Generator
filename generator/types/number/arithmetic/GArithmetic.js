@@ -76,43 +76,4 @@ extends GOperator
 
         this.inputs.forEach(i => i.iterateLoop(parse));
     }
-
-
-
-    static parseRequest(parse, newNode)
-    {
-        const [type, nodeId, options, ignore] = genParseNodeStart(parse);
-    
-    
-        const arith = newNode(nodeId, options);
-    
-    
-        let nInputs = 0;
-        
-        if (!ignore)
-            nInputs = parseInt(parse.move());
-    
-    
-        if (parse.settings.logRequests) 
-            logReq(arith, parse, ignore, nInputs);
-    
-    
-        if (ignore) 
-        {
-            genParseNodeEnd(parse, arith);
-            return parse.parsedNodes.find(n => n.nodeId == nodeId);
-        }
-    
-    
-        parse.nTab++;
-    
-        for (let i = 0; i < nInputs; i++)
-            arith.inputs.push(genParse(parse));
-    
-        parse.nTab--;
-    
-            
-        genParseNodeEnd(parse, arith);
-        return arith;
-    }
 }

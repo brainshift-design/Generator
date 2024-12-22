@@ -110,12 +110,12 @@ extends GArithmetic
 
 
 
-    static parseRequest(parse, newNode)
+    static parseRequest(parse)
     {
         const [type, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-        const math = newNode(nodeId, options);
+        const math = new GMath(nodeId, options);
 
         
         let nInputs = 0;
