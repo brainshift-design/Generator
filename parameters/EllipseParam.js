@@ -161,6 +161,6 @@ extends Parameter
 
     loadParam(_param)
     {
-        this.setValue(parseEllipseValue(_param[2])[0], true, true, false);
+        this.setValue(EllipseValue.parse(_param[2])[0], true, true, false);
     }
 }

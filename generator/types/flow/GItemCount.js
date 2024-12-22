@@ -5,7 +5,7 @@ extends GOperator1
 
 
 
-    start = null;
+    base = null;
 
 
 
@@ -20,7 +20,7 @@ extends GOperator1
     {
         super.reset();
 
-        this.start = null;
+        this.base = null;
     }
 
 
@@ -32,7 +32,7 @@ extends GOperator1
         copy.copyBase(this);
 
         if (this.input) copy.input = this.input.copy();
-        if (this.start) copy.start = this.start.copy();
+        if (this.base) copy.base = this.base.copy();
         
         if (this.count) copy.count = this.count.copy();
 
@@ -57,13 +57,13 @@ extends GOperator1
 
 
         const input = await evalListValue  (this.input, parse);
-        const start = await evalNumberValue(this.start, parse);
+        const base  = await evalNumberValue(this.base, parse);
 
         
         if (input)
         {
             const count = input.items.length;
-            this.value = new NumberValue(count - (start.value == 0 ? 1 : 0));
+            this.value = new NumberValue(count - (base.value == 0 ? 1 : 0));
         }
         else
             this.value = NumberValue.NaN();
@@ -71,8 +71,8 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['type',  this.outputType()],
-            ['start', start            ]
+            ['type', this.outputType()],
+            ['base', base            ]
         ]);
 
 
@@ -86,7 +86,7 @@ extends GOperator1
     isValid()
     {
         return super.isValid()
-            && this.start && this.start.isValid();
+            && this.base && this.base.isValid();
     }
 
 
@@ -95,7 +95,7 @@ extends GOperator1
     {
         super.pushValueUpdates(parse);
 
-        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.base) this.base.pushValueUpdates(parse);
     }    
 
 
@@ -104,7 +104,7 @@ extends GOperator1
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.start) this.start.invalidateInputs(parse, from, force);
+        if (this.base) this.base.invalidateInputs(parse, from, force);
     }
 
 
@@ -113,7 +113,7 @@ extends GOperator1
     {
         super.iterateLoop(parse);
 
-        if (this.start) this.start.iterateLoop(parse);
+        if (this.base) this.base.iterateLoop(parse);
     }    
 
 
@@ -152,7 +152,7 @@ extends GOperator1
         if (nInputs == 1)
             count.input = genParse(parse);
     
-        count.start = genParse(parse);
+        count.base = genParse(parse);
     
     
         parse.nTab--;

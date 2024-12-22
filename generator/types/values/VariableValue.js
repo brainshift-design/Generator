@@ -175,101 +175,101 @@ extends GValue
 
     
     static NaN = new VariableValue(NULL);
-}
-
-
-
-function parseVariableValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [VariableValue.NaN(), 1];
-
-
-    let _str;
-
-    if (i < 0)
-    {
-       _str = str.split(' ');
-        i   = 0;
-    }
-    else
-        _str = str;
-
-
-    const iStart = i;
-    let   length = 0;
-
-    const variableId      = _str[i] != NULL_VALUE ? _str[i] : NULL;               length += _str[i].length + 1;  i++;
-
-    const strName         = decodeURIComponent(_str[i]);
-    const variableName    = strName != NULL_VALUE ? strName : NULL;               length += _str[i].length + 1;  i++;
-
-    const variableType    = _str[i] != NULL_VALUE ? _str[i] : NULL;               length += _str[i].length + 1;  i++;
     
-    const nVariableValues = _str[i] != NULL_VALUE ? parseInt(_str[i]) : NULL;     length += _str[i].length + 1;  i++;
     
-
-    const variableValues = [];
-
-    for (let j = 0; j < nVariableValues; j++)
+    
+    static parse(str, i = -1)
     {
-        const variableValue = parseValueFromType(variableType, decodeURIComponent(_str[i]));
-
-        variableValues.push(variableValue);
-
-        length += _str[i].length + 1;
-        i++;
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [VariableValue.NaN(), 1];
+    
+    
+        let _str;
+    
+        if (i < 0)
+        {
+           _str = str.split(' ');
+            i   = 0;
+        }
+        else
+            _str = str;
+    
+    
+        const iStart = i;
+        let   length = 0;
+    
+        const variableId      = _str[i] != NULL_VALUE ? _str[i] : NULL;               length += _str[i].length + 1;  i++;
+    
+        const strName         = decodeURIComponent(_str[i]);
+        const variableName    = strName != NULL_VALUE ? strName : NULL;               length += _str[i].length + 1;  i++;
+    
+        const variableType    = _str[i] != NULL_VALUE ? _str[i] : NULL;               length += _str[i].length + 1;  i++;
+        
+        const nVariableValues = _str[i] != NULL_VALUE ? parseInt(_str[i]) : NULL;     length += _str[i].length + 1;  i++;
+        
+    
+        const variableValues = [];
+    
+        for (let j = 0; j < nVariableValues; j++)
+        {
+            const variableValue = parseValueFromType(variableType, decodeURIComponent(_str[i]));
+    
+            variableValues.push(variableValue);
+    
+            length += _str[i].length + 1;
+            i++;
+        }
+    
+    
+        const nAliases = _str[i] != NULL_VALUE ? parseInt(_str[i]) : NULL;     length += _str[i].length + 1;  i++;
+    
+    
+        const aliasIds = [];
+    
+        for (let j = 0; j < nAliases; j++)
+        {
+            const aliasId = 
+                _str[i] == NULL_VALUE 
+                    ? NULL 
+                    : _str[i];
+    
+            aliasIds.push(aliasId);
+    
+            length += _str[i].length + 1;
+            i++;
+        }
+    
+    
+        const aliasNames = [];
+    
+        for (let j = 0; j < nAliases; j++)
+        {
+            const aliasName = 
+                _str[i] == NULL_VALUE 
+                    ? NULL 
+                    : decodeURIComponent(_str[i]);
+    
+            aliasNames.push(aliasName);
+    
+            length += _str[i].length + 1;
+            i++;
+        }
+    
+    
+        const variableTemp = _str[i] == 'T';  length += _str[i].length + 1;  i++;
+    
+    
+        const _var = new VariableValue(
+            NULL, // set node ID elsewhere
+            variableId,
+            variableName,
+            variableValues,
+            aliasIds,
+            aliasNames,
+            variableTemp);
+    
+    
+        return [_var, i - iStart];
     }
-
-
-    const nAliases = _str[i] != NULL_VALUE ? parseInt(_str[i]) : NULL;     length += _str[i].length + 1;  i++;
-
-
-    const aliasIds = [];
-
-    for (let j = 0; j < nAliases; j++)
-    {
-        const aliasId = 
-            _str[i] == NULL_VALUE 
-                ? NULL 
-                : _str[i];
-
-        aliasIds.push(aliasId);
-
-        length += _str[i].length + 1;
-        i++;
-    }
-
-
-    const aliasNames = [];
-
-    for (let j = 0; j < nAliases; j++)
-    {
-        const aliasName = 
-            _str[i] == NULL_VALUE 
-                ? NULL 
-                : decodeURIComponent(_str[i]);
-
-        aliasNames.push(aliasName);
-
-        length += _str[i].length + 1;
-        i++;
-    }
-
-
-    const variableTemp = _str[i] == 'T';  length += _str[i].length + 1;  i++;
-
-
-    const _var = new VariableValue(
-        NULL, // set node ID elsewhere
-        variableId,
-        variableName,
-        variableValues,
-        aliasIds,
-        aliasNames,
-        variableTemp);
-
-
-    return [_var, i - iStart];
 }

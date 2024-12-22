@@ -191,52 +191,52 @@ extends ShapeValue
             NumberValue.NaN(),
             NumberValue.NaN());
     }
-}
-
-
-
-function parseWavePathValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [WavePathValue.NaN(), 1];
-
-
-    if (i < 0)
-    {
-        str = str.split(' ');
-        i   = 0;
-    }
-
-
-    const iStart = i;
-
-    const shape     = NumberValue.parse(str[i]); i += shape    [1];
-    const x         = NumberValue.parse(str[i]); i += x        [1];
-    const y         = NumberValue.parse(str[i]); i += y        [1];
-    const width     = NumberValue.parse(str[i]); i += width    [1];
-    const amplitude = NumberValue.parse(str[i]); i += amplitude[1];
-    const frequency = NumberValue.parse(str[i]); i += frequency[1];
-    const offset    = NumberValue.parse(str[i]); i += offset   [1];
-    const alignX    = NumberValue.parse(str[i]); i += alignX   [1];
-    const alignY    = NumberValue.parse(str[i]); i += alignY   [1];
-
-
-    const wave = new WavePathValue(
-        '', // set node ID elsewhere,
-        shape    [0],
-        x        [0],
-        y        [0],
-        width    [0],
-        amplitude[0],
-        frequency[0],
-        offset   [0],
-        alignX   [0],
-        alignY   [0]);
-
-
-    i = parseShapeBaseValue(str, i, wave);
-
     
-    return [wave, i - iStart];
+    
+    
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [WavePathValue.NaN(), 1];
+    
+    
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+    
+    
+        const iStart = i;
+    
+        const shape     = NumberValue.parse(str[i]); i += shape    [1];
+        const x         = NumberValue.parse(str[i]); i += x        [1];
+        const y         = NumberValue.parse(str[i]); i += y        [1];
+        const width     = NumberValue.parse(str[i]); i += width    [1];
+        const amplitude = NumberValue.parse(str[i]); i += amplitude[1];
+        const frequency = NumberValue.parse(str[i]); i += frequency[1];
+        const offset    = NumberValue.parse(str[i]); i += offset   [1];
+        const alignX    = NumberValue.parse(str[i]); i += alignX   [1];
+        const alignY    = NumberValue.parse(str[i]); i += alignY   [1];
+    
+    
+        const wave = new WavePathValue(
+            '', // set node ID elsewhere,
+            shape    [0],
+            x        [0],
+            y        [0],
+            width    [0],
+            amplitude[0],
+            frequency[0],
+            offset   [0],
+            alignX   [0],
+            alignY   [0]);
+    
+    
+        i = ShapeValue.parse(str, i, wave);
+    
+        
+        return [wave, i - iStart];
+    }
 }

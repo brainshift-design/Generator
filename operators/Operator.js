@@ -229,7 +229,7 @@ class Operator
 
     static create(nodeType, creatingButton = null, createdNodeId = -1, options = {})
     {
-        const OpClass = Operator.types[nodeType]; 
+        const OpClass = Operator.types[nodeType];
     
         if (OpClass)
         {

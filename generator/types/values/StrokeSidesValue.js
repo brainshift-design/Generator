@@ -158,7 +158,7 @@ extends GValue
         if (parse.settings.logRequests) 
             logReqValue(STROKE_SIDES_VALUE, sides, parse);
     
-        return parseStrokeSidesValue(sides)[0];
+        return StrokeSidesValue.parse(sides)[0];
     }
 
 

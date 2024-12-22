@@ -301,58 +301,58 @@ extends ShapeValue
             NumberValue.NaN(),
             NumberValue.NaN());
     }
-}
-
-
-
-function parseTextShapeValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [TextShapeValue.NaN(), 1];
-
-
-    if (i < 0)
-    {
-        str = str.split(' ');
-        i   = 0;
-    }
-
-
-    const iStart = i;
-
-    const text          = TextValue.parse  (str[i]); i += text         [1];
-    const x             = NumberValue.parse(str[i]); i += x            [1];
-    const y             = NumberValue.parse(str[i]); i += y            [1];
-    const width         = NumberValue.parse(str[i]); i += width        [1];
-    const height        = NumberValue.parse(str[i]); i += height       [1];
-    const font          = NumberValue.parse(str[i]); i += font         [1];
-    const style         = NumberValue.parse(str[i]); i += style        [1];
-    const size          = NumberValue.parse(str[i]); i += size         [1];
-    const alignX        = NumberValue.parse(str[i]); i += alignX       [1];
-    const alignY        = NumberValue.parse(str[i]); i += alignY       [1];
-    const lineHeight    = NumberValue.parse(str[i]); i += lineHeight   [1];
-    const letterSpacing = NumberValue.parse(str[i]); i += letterSpacing[1];
-
-
-    const txts = new TextShapeValue(
-        '', // set node ID elsewhere
-        text         [0],
-        x            [0],
-        y            [0],
-        width        [0],
-        height       [0],
-        font         [0],
-        style        [0],
-        size         [0],
-        alignX       [0],
-        alignY       [0],
-        lineHeight   [0],
-        letterSpacing[0]);
-
-
-    i = parseShapeBaseValue(str, i, txts);
-
     
-    return [txts, i - iStart];
+    
+    
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [TextShapeValue.NaN(), 1];
+    
+    
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+    
+    
+        const iStart = i;
+    
+        const text          = TextValue.parse  (str[i]); i += text         [1];
+        const x             = NumberValue.parse(str[i]); i += x            [1];
+        const y             = NumberValue.parse(str[i]); i += y            [1];
+        const width         = NumberValue.parse(str[i]); i += width        [1];
+        const height        = NumberValue.parse(str[i]); i += height       [1];
+        const font          = NumberValue.parse(str[i]); i += font         [1];
+        const style         = NumberValue.parse(str[i]); i += style        [1];
+        const size          = NumberValue.parse(str[i]); i += size         [1];
+        const alignX        = NumberValue.parse(str[i]); i += alignX       [1];
+        const alignY        = NumberValue.parse(str[i]); i += alignY       [1];
+        const lineHeight    = NumberValue.parse(str[i]); i += lineHeight   [1];
+        const letterSpacing = NumberValue.parse(str[i]); i += letterSpacing[1];
+    
+    
+        const txts = new TextShapeValue(
+            '', // set node ID elsewhere
+            text         [0],
+            x            [0],
+            y            [0],
+            width        [0],
+            height       [0],
+            font         [0],
+            style        [0],
+            size         [0],
+            alignX       [0],
+            alignY       [0],
+            lineHeight   [0],
+            letterSpacing[0]);
+    
+    
+        i = ShapeValue.parse(str, i, txts);
+    
+        
+        return [txts, i - iStart];
+    }
 }

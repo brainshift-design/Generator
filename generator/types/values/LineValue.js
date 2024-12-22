@@ -162,40 +162,40 @@ extends ShapeValue
             NumberValue.NaN(),
             NumberValue.NaN());
     }
-}
 
 
 
-function parseLineValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [LineValue.NaN(), 1];
-
-
-    if (i < 0)
+    static parse(str, i = -1)
     {
-        str = str.split(' ');
-        i   = 0;
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [LineValue.NaN(), 1];
+
+
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+
+
+        const iStart = i;
+
+        const x     = NumberValue.parse(str[i]); i += x    [1];
+        const y     = NumberValue.parse(str[i]); i += y    [1];
+        const width = NumberValue.parse(str[i]); i += width[1];
+
+
+        const line = new LineValue(
+            '', // set node ID elsewhere
+            x    [0],
+            y    [0],
+            width[0]);
+
+
+        i = ShapeValue.parse(str, i, line);
+
+        
+        return [line, i - iStart];
     }
-
-
-    const iStart = i;
-
-    const x     = NumberValue.parse(str[i]); i += x    [1];
-    const y     = NumberValue.parse(str[i]); i += y    [1];
-    const width = NumberValue.parse(str[i]); i += width[1];
-
-
-    const line = new LineValue(
-        '', // set node ID elsewhere
-        x    [0],
-        y    [0],
-        width[0]);
-
-
-    i = parseShapeBaseValue(str, i, line);
-
-    
-    return [line, i - iStart];
 }

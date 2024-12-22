@@ -180,7 +180,7 @@ extends ShapeValue
             winding[0]);
 
 
-        i = parseShapeBaseValue(str, i, region);
+        i = ShapeValue.parse(str, i, region);
 
 
         return [region, i - iStart];

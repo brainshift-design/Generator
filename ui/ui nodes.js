@@ -776,6 +776,15 @@ function handleLegacyNode(_node, genVersion)
         if (paramFrom) paramFrom[1] = 'amount';
     }
 
+    else if (_node.type == ITEM_COUNT
+          && _node.params
+          && _node.params.length > 0
+          &&  genVersion < 442)
+    {
+        const paramFrom = _node.params.find(p => p[1] == 'start');
+        if (paramFrom) paramFrom[1] = 'base';
+    }
+
     else if (_node.type == VALID_COLOR
           && _node.params
           && _node.params.length > 0

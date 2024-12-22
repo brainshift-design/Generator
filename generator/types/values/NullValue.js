@@ -119,13 +119,13 @@ extends GValue
     {
         return this;
     }
-}
-
-
-
-function parseNullValue(str)
-{
-    const _null = new NullValue();
-
-    return [_null, 1];
+    
+    
+    
+    static parse(str)
+    {
+        const _null = new NullValue();
+    
+        return [_null, 1];
+    }
 }

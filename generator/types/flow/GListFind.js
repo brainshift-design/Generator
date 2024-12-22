@@ -1,6 +1,10 @@
 class GListFind
 extends GOperator2
 {
+    static { GNode.types[LIST_FIND] = GListFind; }
+
+
+    
     first;
     last;
     all;

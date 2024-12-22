@@ -5,7 +5,7 @@ extends OperatorBase
 
 
 
-    paramStart;
+    paramBase;
 
 
     
@@ -21,11 +21,11 @@ extends OperatorBase
         this.addInput (new Input(LIST_VALUES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramStart = new NumberParam('start', 'start', true,  true,  true, 1, 0, 1));
+        this.addParam(this.paramBase = new NumberParam('base', 'base', true,  true,  true, 1, 0, 1));
 
 
-        this.paramStart.divider = 0.54;
-        this.paramStart.controls[0].allowEditDecimals = false;
+        this.paramBase.divider = 0.54;
+        this.paramBase.controls[0].allowEditDecimals = false;
     }
 
 
@@ -51,7 +51,7 @@ extends OperatorBase
         if (input.connected) 
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramStart.genRequest(gen));
+        request.push(...this.node.paramBase.genRequest(gen));
 
 
         gen.scope.pop();
@@ -71,13 +71,4 @@ extends OperatorBase
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
-
-
-
-    // updateParams()
-    // {
-    //     this.paramStart.enableControlText(true,  this.paramStart.isUnknown());
-
-    //     this.updateParamControls();
-    // }
 }

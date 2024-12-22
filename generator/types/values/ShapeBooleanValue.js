@@ -102,37 +102,37 @@ extends ShapeValue
             ListValue  .NaN(),
             NumberValue.NaN());
     }
-}
-
-
-
-function parseShapeBooleanValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [ShapeBooleanValue.NaN(), 1];
-
-
-    if (i < 0)
-    {
-        str = str.split(' ');
-        i   = 0;
-    }
-
-
-    const iStart = i;
-
-    const children  = ListValue.parse  (str, i); i += children [1];
-    const operation = NumberValue.parse(str[i]); i += operation[1];
-
-    const bool = new ShapeBooleanValue(
-        '', // set node ID elsewhere
-        children [0],
-        operation[0]);
-
-
-    i = parseShapeBaseValue(str, i, bool);
-
     
-    return [bool, i - iStart];
+    
+    
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [ShapeBooleanValue.NaN(), 1];
+    
+    
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+    
+    
+        const iStart = i;
+    
+        const children  = ListValue.parse  (str, i); i += children [1];
+        const operation = NumberValue.parse(str[i]); i += operation[1];
+    
+        const bool = new ShapeBooleanValue(
+            '', // set node ID elsewhere
+            children [0],
+            operation[0]);
+    
+    
+        i = ShapeValue.parse(str, i, bool);
+    
+        
+        return [bool, i - iStart];
+    }
 }

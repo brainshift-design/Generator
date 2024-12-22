@@ -1,6 +1,10 @@
 class   OpGetListValueNames
 extends OperatorBase
 {
+    static { Operator.types[GET_LIST_VALUE_NAMES] = this; }
+
+
+
     length;
 
 

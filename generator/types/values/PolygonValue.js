@@ -214,48 +214,48 @@ extends ShapeValue
             NumberValue.NaN(),
             NumberValue.NaN());
     }
-}
-
-
-
-function parsePolygonValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [PolygonValue.NaN(), 1];
-
-
-    if (i < 0)
-    {
-        str = str.split(' ');
-        i   = 0;
-    }
-
-
-    const iStart = i;
-
-    const pos     = NumberValue.parse(str[i]); i += pos    [1];
-    const x       = NumberValue.parse(str[i]); i += x      [1];
-    const y       = NumberValue.parse(str[i]); i += y      [1];
-    const width   = NumberValue.parse(str[i]); i += width  [1];
-    const height  = NumberValue.parse(str[i]); i += height [1];
-    const round   = NumberValue.parse(str[i]); i += round  [1];
-    const corners = NumberValue.parse(str[i]); i += corners[1];
-
-
-    const poly = new PolygonValue(
-        '', // set node ID elsewhere
-        pos    [0],
-        x      [0],
-        y      [0],
-        width  [0],
-        height [0],
-        round  [0],
-        corners[0]);
-
-
-    i = parseShapeBaseValue(str, i, poly);
-
     
-    return [poly, i - iStart];
+    
+    
+    static parse(str, i = -1)
+    {
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [PolygonValue.NaN(), 1];
+    
+    
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+    
+    
+        const iStart = i;
+    
+        const pos     = NumberValue.parse(str[i]); i += pos    [1];
+        const x       = NumberValue.parse(str[i]); i += x      [1];
+        const y       = NumberValue.parse(str[i]); i += y      [1];
+        const width   = NumberValue.parse(str[i]); i += width  [1];
+        const height  = NumberValue.parse(str[i]); i += height [1];
+        const round   = NumberValue.parse(str[i]); i += round  [1];
+        const corners = NumberValue.parse(str[i]); i += corners[1];
+    
+    
+        const poly = new PolygonValue(
+            '', // set node ID elsewhere
+            pos    [0],
+            x      [0],
+            y      [0],
+            width  [0],
+            height [0],
+            round  [0],
+            corners[0]);
+    
+    
+        i = ShapeValue.parse(str, i, poly);
+    
+        
+        return [poly, i - iStart];
+    }
 }

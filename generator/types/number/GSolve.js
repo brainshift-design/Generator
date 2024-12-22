@@ -203,11 +203,7 @@ extends GOperator1
 
 
         if (this.input)
-        {
-            //this.input.invalidate(); //Inputs(parse, this, true);
             pushUnique(parse.terminalIds, this.terminalIds);
-            // console.log('parse.terminalIds =', parse.terminalIds);
-        }
 
 
         return this;

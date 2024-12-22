@@ -11,7 +11,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_MINMAX, 'minmax', 'min/max', iconMinMax);
+        super(NUMBER_MINMAX, 'minmax', '...min/max', iconMinMax);
 
         this.iconOffsetY      = 1;
 

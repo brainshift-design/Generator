@@ -98,15 +98,15 @@ extends GValue
         
         return json;
     }
-}
 
 
 
-function parseShapeBaseValue(str, i, obj)
-{
-    const props = ListValue.parse(str, i); i += props[1];
-
-    obj.props = props[0];
-
-    return i;
+    static parse(str, i, obj)
+    {
+        const props = ListValue.parse(str, i); i += props[1];
+    
+        obj.props = props[0];
+    
+        return i;
+    }
 }

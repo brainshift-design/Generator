@@ -257,7 +257,7 @@ extends ShapeValue
             round  [0]);
 
 
-        i = parseShapeBaseValue(str, i, path);
+        i = ShapeValue.parse(str, i, path);
 
         
         return [path, i - iStart];

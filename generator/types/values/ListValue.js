@@ -386,7 +386,7 @@ extends GValue
                 case         COLOR_VALUE: { const color   = ColorValue.parse       (str, i);  i += color  [1];  list.items.push(color  [0]);  break; }
 
                 case          FILL_VALUE: { const fill    = FillValue.parse        (str, i);  i += fill   [1];  list.items.push(fill   [0]);  break; }
-                case    COLOR_STOP_VALUE: { const stop    = parseColorStopValue   (str, i);  i += stop   [1];  list.items.push(stop   [0]);  break; }
+                case    COLOR_STOP_VALUE: { const stop    = ColorStopValue.parse   (str, i);  i += stop   [1];  list.items.push(stop   [0]);  break; }
                 case      GRADIENT_VALUE: { const grad    = GradientValue.parse    (str, i);  i += grad   [1];  list.items.push(grad   [0]);  break; }
                 case        STROKE_VALUE: { const stroke  = StrokeValue.parse      (str, i);  i += stroke [1];  list.items.push(stroke [0]);  break; }
                 case   DROP_SHADOW_VALUE: { const shadow  = DropShadowValue.parse  (str, i);  i += shadow [1];  list.items.push(shadow [0]);  break; }
@@ -394,20 +394,20 @@ extends GValue
                 case    LAYER_BLUR_VALUE: { const blur    = LayerBlurValue.parse   (str, i);  i += blur   [1];  list.items.push(blur   [0]);  break; }
                 case     BACK_BLUR_VALUE: { const blur    = BackBlurValue.parse    (str, i);  i += blur   [1];  list.items.push(blur   [0]);  break; }
                 case   LAYER_BLEND_VALUE: { const layer   = LayerBlendValue.parse  (str, i);  i += layer  [1];  list.items.push(layer  [0]);  break; }
-                case    LAYER_MASK_VALUE: { const mask    = parseLayerMaskValue   (str[i]);  i += mask   [1];  list.items.push(mask   [0]);  break; }
+                case    LAYER_MASK_VALUE: { const mask    = LayerMaskValue.parse   (str[i]);  i += mask   [1];  list.items.push(mask   [0]);  break; }
 
-                case     RECTANGLE_VALUE: { const rect    = parseRectangleValue   (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
-                case          LINE_VALUE: { const line    = parseLineValue        (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
-                case       ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
-                case       TRAPEZE_VALUE: { const trapeze = parseTrapezeValue     (str, i);  i += trapeze[1];  list.items.push(trapeze[0]);  break; }
-                case       POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
-                case          STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
-                case    TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
-                case         POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  list.items.push(point  [0]);  break; }
-                case   VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  list.items.push(path   [0]);  break; }
-                case SHAPE_BOOLEAN_VALUE: { const bool    = parseShapeBooleanValue(str, i);  i += bool   [1];  list.items.push(bool   [0]);  break; }
-                case   SHAPE_GROUP_VALUE: { const group   = parseShapeGroupValue  (str, i);  i += group  [1];  list.items.push(group  [0]);  break; }
-                case         FRAME_VALUE: { const frame   = parseFrameValue       (str, i);  i += frame  [1];  list.items.push(frame  [0]);  break; }
+                case     RECTANGLE_VALUE: { const rect    = RectangleValue   .parse(str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
+                case          LINE_VALUE: { const line    = LineValue        .parse(str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
+                case       ELLIPSE_VALUE: { const ellipse = EllipseValue     .parse(str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
+                case       TRAPEZE_VALUE: { const trapeze = TrapezeValue     .parse(str, i);  i += trapeze[1];  list.items.push(trapeze[0]);  break; }
+                case       POLYGON_VALUE: { const poly    = PolygonValue     .parse(str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
+                case          STAR_VALUE: { const star    = StarValue        .parse(str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
+                case    TEXT_SHAPE_VALUE: { const text    = TextShapeValue   .parse(str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
+                case         POINT_VALUE: { const point   = PointValue       .parse(str, i);  i += point  [1];  list.items.push(point  [0]);  break; }
+                case   VECTOR_PATH_VALUE: { const path    = VectorPathValue  .parse(str, i);  i += path   [1];  list.items.push(path   [0]);  break; }
+                case SHAPE_BOOLEAN_VALUE: { const bool    = ShapeBooleanValue.parse(str, i);  i += bool   [1];  list.items.push(bool   [0]);  break; }
+                case   SHAPE_GROUP_VALUE: { const group   = ShapeGroupValue  .parse(str, i);  i += group  [1];  list.items.push(group  [0]);  break; }
+                case         FRAME_VALUE: { const frame   = FrameValue       .parse(str, i);  i += frame  [1];  list.items.push(frame  [0]);  break; }
             }
         }
 

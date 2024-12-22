@@ -199,48 +199,48 @@ function parseValueFromType(type, value)
 {
     switch (type)
     {
-        case            ANY_VALUE: return parseNullValue         (value)[0];
+        case            ANY_VALUE: return NullValue         .parse(value)[0];
 
         case           LIST_VALUE: 
         case    NUMBER_LIST_VALUE: 
         case      TEXT_LIST_VALUE: 
-        case     SHAPE_LIST_VALUE: return ListValue.parse         (value)[0];
+        case     SHAPE_LIST_VALUE: return ListValue         .parse(value)[0];
 
-        case         NUMBER_VALUE: return NumberValue.parse       (value)[0];
-        case           TEXT_VALUE: return TextValue.parse         (value)[0];
-        case          COLOR_VALUE: return ColorValue.parse        (value)[0];
+        case         NUMBER_VALUE: return NumberValue       .parse(value)[0];
+        case           TEXT_VALUE: return TextValue         .parse(value)[0];
+        case          COLOR_VALUE: return ColorValue        .parse(value)[0];
 
-        case           FILL_VALUE: return FillValue.parse         (value)[0];
-        case     COLOR_STOP_VALUE: return parseColorStopValue    (value)[0];
-        case       GRADIENT_VALUE: return GradientValue.parse     (value)[0];
-        case         STROKE_VALUE: return StrokeValue.parse       (value)[0];
-        case    DROP_SHADOW_VALUE: return DropShadowValue.parse   (value)[0];
-        case   INNER_SHADOW_VALUE: return InnerShadowValue.parse  (value)[0];
-        case     LAYER_BLUR_VALUE: return LayerBlurValue.parse    (value)[0];
-        case      BACK_BLUR_VALUE: return BackBlurValue.parse     (value)[0];
-        case    LAYER_BLEND_VALUE: return LayerBlendValue.parse   (value)[0];
-        case     LAYER_MASK_VALUE: return LayerMaskValue.parse    (value)[0];
+        case           FILL_VALUE: return FillValue         .parse(value)[0];
+        case     COLOR_STOP_VALUE: return ColorStopValue    .parse(value)[0];
+        case       GRADIENT_VALUE: return GradientValue     .parse(value)[0];
+        case         STROKE_VALUE: return StrokeValue       .parse(value)[0];
+        case    DROP_SHADOW_VALUE: return DropShadowValue   .parse(value)[0];
+        case   INNER_SHADOW_VALUE: return InnerShadowValue  .parse(value)[0];
+        case     LAYER_BLUR_VALUE: return LayerBlurValue    .parse(value)[0];
+        case      BACK_BLUR_VALUE: return BackBlurValue     .parse(value)[0];
+        case    LAYER_BLEND_VALUE: return LayerBlendValue   .parse(value)[0];
+        case     LAYER_MASK_VALUE: return LayerMaskValue    .parse(value)[0];
 
-        case      RECTANGLE_VALUE: return parseRectangleValue    (value)[0];
-        case           LINE_VALUE: return parseLineValue         (value)[0];
-        case        ELLIPSE_VALUE: return parseEllipseValue      (value)[0];
-        case        TRAPEZE_VALUE: return parseTrapezeValue      (value)[0];
-        case        POLYGON_VALUE: return parsePolygonValue      (value)[0];
-        case           STAR_VALUE: return parseStarValue         (value)[0];
-        case     TEXT_SHAPE_VALUE: return parseTextShapeValue    (value)[0];
-        case          POINT_VALUE: return PointValue.parse        (value)[0];
-        case    VECTOR_PATH_VALUE: return VectorPathValue.parse   (value)[0];
-        case  VECTOR_VERTEX_VALUE: return VectorVertexValue.parse (value)[0];
-        case    VECTOR_EDGE_VALUE: return VectorEdgeValue.parse   (value)[0];
-        case  VECTOR_REGION_VALUE: return VectorRegionValue.parse (value)[0];
+        case      RECTANGLE_VALUE: return RectangleValue    .parse(value)[0];
+        case           LINE_VALUE: return LineValue         .parse(value)[0];
+        case        ELLIPSE_VALUE: return EllipseValue      .parse(value)[0];
+        case        TRAPEZE_VALUE: return TrapezeValue      .parse(value)[0];
+        case        POLYGON_VALUE: return PolygonValue      .parse(value)[0];
+        case           STAR_VALUE: return StarValue         .parse(value)[0];
+        case     TEXT_SHAPE_VALUE: return TextShapeValue    .parse(value)[0];
+        case          POINT_VALUE: return PointValue        .parse(value)[0];
+        case    VECTOR_PATH_VALUE: return VectorPathValue   .parse(value)[0];
+        case  VECTOR_VERTEX_VALUE: return VectorVertexValue .parse(value)[0];
+        case    VECTOR_EDGE_VALUE: return VectorEdgeValue   .parse(value)[0];
+        case  VECTOR_REGION_VALUE: return VectorRegionValue .parse(value)[0];
         case VECTOR_NETWORK_VALUE: return VectorNetworkValue.parse(value)[0];
-        case  SHAPE_BOOLEAN_VALUE: return parseShapeBooleanValue (value)[0];
-        case    SHAPE_GROUP_VALUE: return parseShapeGroupValue   (value)[0];
-        case       ARC_PATH_VALUE: return parseArcPathValue      (value)[0];
-        case      WAVE_PATH_VALUE: return parseWavePathValue     (value)[0];
-        case          FRAME_VALUE: return parseFrameValue        (value)[0];
+        case  SHAPE_BOOLEAN_VALUE: return ShapeBooleanValue .parse(value)[0];
+        case    SHAPE_GROUP_VALUE: return ShapeGroupValue   .parse(value)[0];
+        case       ARC_PATH_VALUE: return ArcPathValue      .parse(value)[0];
+        case      WAVE_PATH_VALUE: return WavePathValue     .parse(value)[0];
+        case          FRAME_VALUE: return FrameValue        .parse(value)[0];
 
-        case       VARIABLE_VALUE: return parseVariableValue     (value)[0];
+        case       VARIABLE_VALUE: return VariableValue     .parse(value)[0];
 
         case           NULL_VALUE: return null;
         
@@ -261,41 +261,41 @@ function displayValue(type, value)
 
     switch (type)
     {
-        case            ANY_VALUE: return parseNullValue         (value)[0].toDisplayString();
-        case           LIST_VALUE: return ListValue.parse         (value)[0].toDisplayString();
+        case            ANY_VALUE: return NullValue         .parse(value)[0].toDisplayString();
+        case           LIST_VALUE: return ListValue         .parse(value)[0].toDisplayString();
 
-        case         NUMBER_VALUE: return NumberValue.parse       (value)[0].toDisplayString();
-        case           TEXT_VALUE: const val = TextValue.parse    (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
-        case          COLOR_VALUE: return ColorValue.parse        (value)[0].toDisplayString();
-        case           FILL_VALUE: return FillValue.parse         (value)[0].toDisplayString();
-        case     COLOR_STOP_VALUE: return parseColorStopValue    (value)[0].toDisplayString();
-        case       GRADIENT_VALUE: return GradientValue.parse     (value)[0].toDisplayString();
-        case         STROKE_VALUE: return StrokeValue.parse       (value)[0].toDisplayString();
-        case    DROP_SHADOW_VALUE: return DropShadowValue.parse   (value)[0].toDisplayString();
-        case   INNER_SHADOW_VALUE: return InnerShadowValue.parse  (value)[0].toDisplayString();
-        case     LAYER_BLUR_VALUE: return LayerBlurValue.parse    (value)[0].toDisplayString();
-        case      BACK_BLUR_VALUE: return BackBlurValue.parse     (value)[0].toDisplayString();
-        case    LAYER_BLEND_VALUE: return LayerBlendValue.parse   (value)[0].toDisplayString();
-        case     LAYER_MASK_VALUE: return LayerMaskValue.parse    (value)[0].toDisplayString();
+        case         NUMBER_VALUE: return NumberValue       .parse(value)[0].toDisplayString();
+        case           TEXT_VALUE: const val = TextValue    .parse(value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
+        case          COLOR_VALUE: return ColorValue        .parse(value)[0].toDisplayString();
+        case           FILL_VALUE: return FillValue         .parse(value)[0].toDisplayString();
+        case     COLOR_STOP_VALUE: return ColorStopValue    .parse(value)[0].toDisplayString();
+        case       GRADIENT_VALUE: return GradientValue     .parse(value)[0].toDisplayString();
+        case         STROKE_VALUE: return StrokeValue       .parse(value)[0].toDisplayString();
+        case    DROP_SHADOW_VALUE: return DropShadowValue   .parse(value)[0].toDisplayString();
+        case   INNER_SHADOW_VALUE: return InnerShadowValue  .parse(value)[0].toDisplayString();
+        case     LAYER_BLUR_VALUE: return LayerBlurValue    .parse(value)[0].toDisplayString();
+        case      BACK_BLUR_VALUE: return BackBlurValue     .parse(value)[0].toDisplayString();
+        case    LAYER_BLEND_VALUE: return LayerBlendValue   .parse(value)[0].toDisplayString();
+        case     LAYER_MASK_VALUE: return LayerMaskValue    .parse(value)[0].toDisplayString();
 
-        case      RECTANGLE_VALUE: return parseRectangleValue    (value)[0].toDisplayString();
-        case           LINE_VALUE: return parseLineValue         (value)[0].toDisplayString();
-        case        ELLIPSE_VALUE: return parseEllipseValue      (value)[0].toDisplayString();
-        case        TRAPEZE_VALUE: return parseTrapezeValue      (value)[0].toDisplayString();
-        case        POLYGON_VALUE: return parsePolygonValue      (value)[0].toDisplayString();
-        case           STAR_VALUE: return parseStarValue         (value)[0].toDisplayString();
-        case     TEXT_SHAPE_VALUE: return parseTextShapeValue    (value)[0].toDisplayString();
-        case          POINT_VALUE: return PointValue.parse        (value)[0].toDisplayString();
-        case    VECTOR_PATH_VALUE: return VectorPathValue.parse   (value)[0].toDisplayString();
-        case  VECTOR_VERTEX_VALUE: return VectorVertexValue.parse (value)[0].toDisplayString();
-        case    VECTOR_EDGE_VALUE: return VectorEdgeValue.parse   (value)[0].toDisplayString();
-        case  VECTOR_REGION_VALUE: return VectorRegionValue.parse (value)[0].toDisplayString();
+        case      RECTANGLE_VALUE: return RectangleValue    .parse(value)[0].toDisplayString();
+        case           LINE_VALUE: return LineValue         .parse(value)[0].toDisplayString();
+        case        ELLIPSE_VALUE: return EllipseValue      .parse(value)[0].toDisplayString();
+        case        TRAPEZE_VALUE: return TrapezeValue      .parse(value)[0].toDisplayString();
+        case        POLYGON_VALUE: return PolygonValue      .parse(value)[0].toDisplayString();
+        case           STAR_VALUE: return StarValue         .parse(value)[0].toDisplayString();
+        case     TEXT_SHAPE_VALUE: return TextShapeValue    .parse(value)[0].toDisplayString();
+        case          POINT_VALUE: return PointValue        .parse(value)[0].toDisplayString();
+        case    VECTOR_PATH_VALUE: return VectorPathValue   .parse(value)[0].toDisplayString();
+        case  VECTOR_VERTEX_VALUE: return VectorVertexValue .parse(value)[0].toDisplayString();
+        case    VECTOR_EDGE_VALUE: return VectorEdgeValue   .parse(value)[0].toDisplayString();
+        case  VECTOR_REGION_VALUE: return VectorRegionValue .parse(value)[0].toDisplayString();
         case VECTOR_NETWORK_VALUE: return VectorNetworkValue.parse(value)[0].toDisplayString();
-        case  SHAPE_BOOLEAN_VALUE: return parseShapeBooleanValue (value)[0].toDisplayString();
-        case    SHAPE_GROUP_VALUE: return parseShapeGroupValue   (value)[0].toDisplayString();
-        case          FRAME_VALUE: return parseFrameValue        (value)[0].toDisplayString();
+        case  SHAPE_BOOLEAN_VALUE: return ShapeBooleanValue .parse(value)[0].toDisplayString();
+        case    SHAPE_GROUP_VALUE: return ShapeGroupValue   .parse(value)[0].toDisplayString();
+        case          FRAME_VALUE: return FrameValue        .parse(value)[0].toDisplayString();
         
-        case       VARIABLE_VALUE: return parseVariableValue     (value)[0].toDisplayString();
+        case       VARIABLE_VALUE: return VariableValue     .parse(value)[0].toDisplayString();
 
         case           NULL_VALUE: return NULL_VALUE;
     }

@@ -14,7 +14,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(LIST_CONTAINS, 'listContains', 'contains', iconListContains);
+        super(LIST_CONTAINS, 'listContains', 'list contains', iconListContains);
 
         this.outputValueType = ANY_VALUE;
         this.iconOffsetY     = 2;

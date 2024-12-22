@@ -157,7 +157,7 @@ extends GValue
         if (parse.settings.logRequests) 
             logReqValue(COLOR_STOP_VALUE, stop, parse);
     
-        return parseColorStopValue(stop)[0];
+        return ColorStopValue.parse(stop)[0];
     }
 
 

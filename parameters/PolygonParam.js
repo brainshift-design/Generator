@@ -161,6 +161,6 @@ extends Parameter
 
     loadParam(_param)
     {
-        this.setValue(parsePolygonValue(_param[2])[0], true, true, false);
+        this.setValue(PolygonValue.parse(_param[2])[0], true, true, false);
     }
 }

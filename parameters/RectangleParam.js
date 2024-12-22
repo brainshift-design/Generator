@@ -161,6 +161,6 @@ extends Parameter
 
     loadParam(_param)
     {
-        this.setValue(parseRectangleValue(_param[2])[0], true, true, false);
+        this.setValue(RectangleValue.parse(_param[2])[0], true, true, false);
     }
 }

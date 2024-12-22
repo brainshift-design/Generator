@@ -11,7 +11,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_MATH, 'math', 'math', iconMath);
+        super(NUMBER_MATH, 'math', '...math', iconMath);
 
         this.iconOffsetY      = -1;
 

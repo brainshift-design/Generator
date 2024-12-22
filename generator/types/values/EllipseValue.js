@@ -241,52 +241,52 @@ extends ShapeValue
             NumberValue.NaN(),
             NumberValue.NaN());
     }
-}
 
 
 
-function parseEllipseValue(str, i = -1)
-{
-    if (   i <  0 && str    == NAN_DISPLAY
-        || i >= 0 && str[i] == NAN_DISPLAY)
-        return [EllipseValue.NaN(), 1];
-
-
-    if (i < 0)
+    static parse(str, i = -1)
     {
-        str = str.split(' ');
-        i   = 0;
+        if (   i <  0 && str    == NAN_DISPLAY
+            || i >= 0 && str[i] == NAN_DISPLAY)
+            return [EllipseValue.NaN(), 1];
+
+
+        if (i < 0)
+        {
+            str = str.split(' ');
+            i   = 0;
+        }
+
+
+        const iStart = i;
+
+        const pos    = NumberValue.parse(str[i]); i += pos   [1];
+        const x      = NumberValue.parse(str[i]); i += x     [1];
+        const y      = NumberValue.parse(str[i]); i += y     [1];
+        const width  = NumberValue.parse(str[i]); i += width [1];
+        const height = NumberValue.parse(str[i]); i += height[1];
+        const round  = NumberValue.parse(str[i]); i += round [1];
+        const start  = NumberValue.parse(str[i]); i += start [1];
+        const sweep  = NumberValue.parse(str[i]); i += sweep [1];
+        const inner  = NumberValue.parse(str[i]); i += inner [1];
+
+
+        const ellipse = new EllipseValue(
+            '', // set node ID elsewhere,
+            pos   [0],
+            x     [0],
+            y     [0],
+            width [0],
+            height[0],
+            round [0],
+            start [0],
+            sweep [0],
+            inner [0]);
+
+
+        i = ShapeValue.parse(str, i, ellipse);
+
+        
+        return [ellipse, i - iStart];
     }
-
-
-    const iStart = i;
-
-    const pos    = NumberValue.parse(str[i]); i += pos   [1];
-    const x      = NumberValue.parse(str[i]); i += x     [1];
-    const y      = NumberValue.parse(str[i]); i += y     [1];
-    const width  = NumberValue.parse(str[i]); i += width [1];
-    const height = NumberValue.parse(str[i]); i += height[1];
-    const round  = NumberValue.parse(str[i]); i += round [1];
-    const start  = NumberValue.parse(str[i]); i += start [1];
-    const sweep  = NumberValue.parse(str[i]); i += sweep [1];
-    const inner  = NumberValue.parse(str[i]); i += inner [1];
-
-
-    const ellipse = new EllipseValue(
-        '', // set node ID elsewhere,
-        pos   [0],
-        x     [0],
-        y     [0],
-        width [0],
-        height[0],
-        round [0],
-        start [0],
-        sweep [0],
-        inner [0]);
-
-
-    i = parseShapeBaseValue(str, i, ellipse);
-
-    
-    return [ellipse, i - iStart];
 }
