@@ -262,6 +262,7 @@ function updateZoomIcon()
     if (btnZoom)
     {
         btnZoom.divIcon.innerHTML       =  Math.round(zoom * 100) + '%';
+        btnZoom.divIcon.style.color     = 'var(--figma-color-text)';
         btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-15px)';
     }
 
@@ -273,7 +274,7 @@ function updateZoomIcon()
         if (   zoom < settings.minZoomForParams
             && zoom < 1)
         {
-            btnZoom.div.style.color = 'black';
+            btnZoom.div.style.color = 'var(--figma-color-bg)';
             _zoomIconOverlay.style.left       = '14px';
             _zoomIconOverlay.style.top        = '11px';
             _zoomIconOverlay.style.width      = '28';
@@ -283,7 +284,7 @@ function updateZoomIcon()
         else if (zoom < settings.minZoomForParams
             && zoom < 10)
         {
-            btnZoom.div.style.color = 'black';
+            btnZoom.div.style.color = 'var(--figma-color-bg)';
             _zoomIconOverlay.style.left       = '12px';
             _zoomIconOverlay.style.top        = '11px';
             _zoomIconOverlay.style.width      = '33';
@@ -292,7 +293,7 @@ function updateZoomIcon()
         }
         else
         {
-            btnZoom.div.style.color = 'white';
+            btnZoom.div.style.color = 'var(--figma-color-text)';
             _zoomIconOverlay.style.background = 'none';
         }
 

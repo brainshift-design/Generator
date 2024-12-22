@@ -252,9 +252,18 @@ class MenuButton
               ? this.menu.lastItem.icon
               : NULL;
 
-        this.divIcon.style.background         = 'url(\'data:image/svg+xml;utf8,' + icon + '\')';
+
+        const textColor = darkMode ? 'white' : 'black';
+
+        this.divIcon.style.background         = 'url(\'data:image/svg+xml;utf8,' + icon.replaceAll('white', textColor) + '\')';
         this.divIcon.style.backgroundPosition = '100% 50%';
         this.divIcon.style.backgroundRepeat   = 'no-repeat';
+
+        const arrowIcon = '<svg width="8" height="4" viewBox="-2 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.00463867 0.724557L0.743946 -0.00292969L2.46081 1.85318L4.27735 -0.00291593L5.01666 0.724571L2.46081 3.0426L0.00463867 0.724557Z" fill="white"/></svg>';
+
+        this.divArrow.style.background         = 'url(\'data:image/svg+xml;utf8,' + arrowIcon.replaceAll('white', textColor) + '\')';
+        this.divArrow.style.backgroundPosition = '100% 50%';
+        this.divArrow.style.backgroundRepeat   = 'no-repeat';
 
         this.div.style.width = this.width;
             // this.name != '-'

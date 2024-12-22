@@ -588,12 +588,12 @@ function initGeneratorMenus()
     
     menuMath = new Menu('Math', true, false);
     menuMath.addItems([
-        new MenuItem('Math (many)',  null, false, {icon: iconMulti, createType: NUMBER_MATH, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH, btnNumber.div, getCreateOptions(e)))})]);
+        new MenuItem('...Math',  null, false, {icon: iconMulti, createType: NUMBER_MATH, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH, btnNumber.div, getCreateOptions(e)))})]);
         
 
     menuMinMax = new Menu('Min/max', true, false);
     menuMinMax.addItems([
-        new MenuItem('Min / max (many)', null, false, {icon: iconMulti, createType: NUMBER_MINMAX, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MINMAX, btnNumber.div, getCreateOptions(e)))})]);
+        new MenuItem('...Min / max', null, false, {icon: iconMulti, createType: NUMBER_MINMAX, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MINMAX, btnNumber.div, getCreateOptions(e)))})]);
         
 
     menuNumberBase = new Menu('Numbers', true, false);
