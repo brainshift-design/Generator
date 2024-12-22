@@ -1,6 +1,10 @@
 class GTextFind
 extends GOperator2
 {
+    static { GNode.types[TEXT_FIND] = this; }
+
+
+
     first;
     last;
     all;

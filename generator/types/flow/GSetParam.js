@@ -1,7 +1,7 @@
 class GSetParam
 extends GOperator2
 {
-    static { nodeTypes[SET_PARAM] = this; }
+    static { GNode.types[SET_PARAM] = this; }
 
 
 

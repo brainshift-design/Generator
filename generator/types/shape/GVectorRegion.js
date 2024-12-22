@@ -1,6 +1,10 @@
 class GVectorRegion
 extends GShape
 {
+    static { GNode.types[VECTOR_REGION] = this; }
+
+
+
     inputs  = [];
 
     loops   = null;

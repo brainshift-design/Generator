@@ -1,7 +1,7 @@
 class   OpRotate
 extends OpAffine
 {
-    static { operatorTypes[ROTATE] = this; }
+    static { Operator.types[ROTATE] = this; }
 
 
 

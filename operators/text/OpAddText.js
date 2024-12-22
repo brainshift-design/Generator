@@ -1,7 +1,7 @@
 class   OpAddText
 extends OperatorBase
 {
-    static { operatorTypes[TEXT_ADD] = this; }
+    static { Operator.types[TEXT_ADD] = this; }
 
 
 

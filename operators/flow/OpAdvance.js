@@ -1,7 +1,7 @@
 class   OpAdvance
 extends OperatorBase
 {
-    static { operatorTypes[ADVANCE] = this; }
+    static { Operator.types[ADVANCE] = this; }
 
 
 

@@ -1,6 +1,10 @@
 class GMeasureVector
 extends GOperator1
 {
+    static { GNode.types[MEASURE_VECTOR] = this; }
+
+
+
     length = null;
     angle  = null;
 

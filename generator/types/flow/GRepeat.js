@@ -1,7 +1,7 @@
 class GRepeat
 extends GOperator1
 {
-    static { nodeTypes[REPEAT] = this; }
+    static { GNode.types[REPEAT] = this; }
 
 
 

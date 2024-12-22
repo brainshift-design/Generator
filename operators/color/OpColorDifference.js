@@ -1,7 +1,7 @@
 class   OpColorDifference
 extends OperatorBase
 {
-    static { operatorTypes[COLOR_DIFFERENCE] = this; }
+    static { Operator.types[COLOR_DIFFERENCE] = this; }
 
 
 

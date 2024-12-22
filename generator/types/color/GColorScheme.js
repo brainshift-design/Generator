@@ -1,6 +1,10 @@
 class GColorScheme
 extends GOperator1
 {
+    static { GNode.types[COLOR_SCHEME] = this; }
+
+
+
     schemeType = null;
     space      = null;
 

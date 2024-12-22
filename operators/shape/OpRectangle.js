@@ -1,7 +1,7 @@
 class   OpRectangle
 extends OpShape
 {
-    static { operatorTypes[RECTANGLE] = this; }
+    static { Operator.types[RECTANGLE] = this; }
 
 
 

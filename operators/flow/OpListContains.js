@@ -1,7 +1,7 @@
 class   OpListContains
 extends OperatorBase
 {
-    static { operatorTypes[LIST_CONTAINS] = this; }
+    static { Operator.types[LIST_CONTAINS] = this; }
 
 
 

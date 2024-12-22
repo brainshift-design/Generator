@@ -1,7 +1,7 @@
 class   OpEllipse
 extends OpShape
 {
-    static { operatorTypes[ELLIPSE] = this; }
+    static { Operator.types[ELLIPSE] = this; }
 
 
 

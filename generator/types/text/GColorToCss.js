@@ -1,6 +1,10 @@
 class GColorToCss
 extends GOperator1
 {
+    static { GNode.types[COLOR_TO_CSS] = this; }
+
+
+
     format;
     percent;
     trimZeros;

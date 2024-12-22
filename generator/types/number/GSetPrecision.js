@@ -1,7 +1,7 @@
 class GSetPrecision
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_PRECISION] = this; }
+    static { GNode.types[NUMBER_PRECISION] = this; }
 
 
 

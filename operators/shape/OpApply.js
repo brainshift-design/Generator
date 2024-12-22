@@ -1,7 +1,7 @@
 class   OpApply
 extends OperatorBase//Shape
 {
-    static { operatorTypes[SHAPE_APPLY] = this; }
+    static { Operator.types[SHAPE_APPLY] = this; }
 
 
 

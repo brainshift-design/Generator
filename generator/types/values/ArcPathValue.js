@@ -1,6 +1,10 @@
 class ArcPathValue
 extends ShapeValue
 {
+    static { GNode.types[ARC_PATH_VALUE] = this; }
+
+
+
     position;
     x;
     y;

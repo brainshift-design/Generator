@@ -1,6 +1,10 @@
 class GVector
 extends GOperator2
 {
+    static { GNode.types[VECTOR] = this; }
+
+
+
     transform = null;
 
 

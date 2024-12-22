@@ -1,6 +1,10 @@
 class GBackBlur
 extends GOperator1
 {
+    static { GNode.types[BACK_BLUR] = this; }
+
+
+
     radius = null;
 
 

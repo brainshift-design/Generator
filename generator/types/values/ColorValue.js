@@ -1,6 +1,10 @@
 class ColorValue
 extends GValue
 {
+    static { GNode.types[COLOR_VALUE] = this; }
+
+
+
     space;
     c1;
     c2;

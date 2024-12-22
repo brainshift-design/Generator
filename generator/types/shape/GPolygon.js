@@ -1,6 +1,10 @@
 class GPolygon
 extends GShape
 {
+    static { GNode.types[POLYGON] = this; }
+
+
+
     position = null;
     round    = null;
     corners  = null;

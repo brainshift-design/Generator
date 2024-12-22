@@ -1,6 +1,10 @@
 class GToJson
 extends GOperator1
 {
+    static { GNode.types[TO_JSON] = this; }
+
+
+
     quoteValues = null;
     snowNames   = null;
     singleLine  = null;

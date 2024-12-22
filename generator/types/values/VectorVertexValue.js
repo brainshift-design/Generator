@@ -1,6 +1,10 @@
 class VectorVertexValue
 extends GValue
 {
+    static { GNode.types[VECTOR_VERTEX_VALUE] = this; }
+
+
+
     nodeId;
 
     x;

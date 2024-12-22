@@ -1,7 +1,7 @@
 class   OpVectorEdge
 extends OpShapeBase
 {
-    static { operatorTypes[VECTOR_EDGE] = this; }
+    static { Operator.types[VECTOR_EDGE] = this; }
 
 
 

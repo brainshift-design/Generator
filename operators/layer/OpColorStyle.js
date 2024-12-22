@@ -1,7 +1,7 @@
 class   OpColorStyle
 extends OperatorBase
 {
-    static { operatorTypes[COLOR_STYLE] = this; }
+    static { Operator.types[COLOR_STYLE] = this; }
 
 
 

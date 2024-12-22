@@ -1,6 +1,10 @@
 class GRetain
 extends GShapeBase
 {
+    static { GNode.types[RETAIN] = this; }
+
+
+
     inputs  = [];
 
     retain = null;

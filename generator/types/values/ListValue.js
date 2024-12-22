@@ -3,10 +3,10 @@ extends GValue
 {
     static 
     {
-        nodeTypes[       LIST_VALUE] = 
-        nodeTypes[NUMBER_LIST_VALUE] = 
-        nodeTypes[  TEXT_LIST_VALUE] = 
-        nodeTypes[ SHAPE_LIST_VALUE] = this;
+        GNode.types[       LIST_VALUE] = 
+        GNode.types[NUMBER_LIST_VALUE] = 
+        GNode.types[  TEXT_LIST_VALUE] = 
+        GNode.types[ SHAPE_LIST_VALUE] = this;
     }
 
 

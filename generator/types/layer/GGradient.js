@@ -1,6 +1,10 @@
 class GGradient
 extends GOperator
 {
+    static { GNode.types[GRADIENT] = this; }
+
+
+
     inputs = [];
 
     gradType = null;

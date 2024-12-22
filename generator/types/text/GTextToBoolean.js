@@ -1,6 +1,10 @@
 class GTextToBoolean
 extends GOperator1
 {
+    static { GNode.types[TEXT_TO_BOOLEAN] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(TEXT_TO_BOOLEAN, nodeId, options);

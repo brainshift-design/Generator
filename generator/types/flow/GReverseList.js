@@ -1,7 +1,7 @@
 class GReverseList
 extends GOperator1
 {
-    static { nodeTypes[REVERSE_LIST] = this; }
+    static { GNode.types[REVERSE_LIST] = this; }
 
 
 

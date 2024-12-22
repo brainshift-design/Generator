@@ -1,7 +1,7 @@
 class   OpQuantize
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_QUANTIZE] = this; }
+    static { Operator.types[NUMBER_QUANTIZE] = this; }
 
 
 

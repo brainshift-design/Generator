@@ -1,6 +1,10 @@
 class GAddText
 extends GOperator1
 {
+    static { GNode.types[TEXT_ADD] = this; }
+
+
+
     text;
     prefix;
 

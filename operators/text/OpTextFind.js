@@ -1,7 +1,7 @@
 class   OpTextFind
 extends OperatorBase
 {
-    static { operatorTypes[TEXT_FIND] = this; }
+    static { Operator.types[TEXT_FIND] = this; }
 
 
 

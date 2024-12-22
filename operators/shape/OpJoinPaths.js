@@ -1,7 +1,7 @@
 class   OpJoinPaths
 extends OpShape
 {
-    static { operatorTypes[JOIN_PATHS] = this; }
+    static { Operator.types[JOIN_PATHS] = this; }
 
 
 

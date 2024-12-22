@@ -1,7 +1,7 @@
 class   OpTextToBoolean
 extends OperatorBase
 {
-    static { operatorTypes[TEXT_TO_BOOLEAN] = this; }
+    static { Operator.types[TEXT_TO_BOOLEAN] = this; }
 
 
 

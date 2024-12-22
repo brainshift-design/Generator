@@ -1,7 +1,7 @@
 class   OpTextPad
 extends OperatorBase
 {
-    static { operatorTypes[TEXT_PAD] = this; }
+    static { Operator.types[TEXT_PAD] = this; }
 
 
 

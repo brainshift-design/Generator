@@ -1,7 +1,7 @@
 class NumberValue
 extends GValue
 {
-    static { nodeTypes[NUMBER_VALUE] = this; }
+    static { GNode.types[NUMBER_VALUE] = this; }
 
 
 

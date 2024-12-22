@@ -1,7 +1,7 @@
 class   OpReversePath
 extends OperatorBase
 {
-    static { operatorTypes[REVERSE_PATH] = this; }
+    static { Operator.types[REVERSE_PATH] = this; }
 
 
 

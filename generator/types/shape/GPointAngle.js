@@ -1,6 +1,10 @@
 class GPointAngle
 extends GOperator1
 {
+    static { GNode.types[POINT_ANGLE] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(POINT_ANGLE, nodeId, options);

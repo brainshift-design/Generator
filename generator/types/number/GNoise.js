@@ -1,7 +1,7 @@
 class GNoise
 extends GOperator
 {
-    static { nodeTypes[NUMBER_NOISE] = this; }
+    static { GNode.types[NUMBER_NOISE] = this; }
 
 
 

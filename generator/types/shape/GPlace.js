@@ -1,6 +1,10 @@
 class GPlace
 extends GOperator1
 {
+    static { GNode.types[PLACE] = this; }
+
+
+
     position  = null;
     transform = null;
     

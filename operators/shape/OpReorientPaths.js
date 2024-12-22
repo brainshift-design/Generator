@@ -1,7 +1,7 @@
 class   OpReorientPaths
 extends OperatorBase
 {
-    static { operatorTypes[REORIENT_PATHS] = this; }
+    static { Operator.types[REORIENT_PATHS] = this; }
 
 
 

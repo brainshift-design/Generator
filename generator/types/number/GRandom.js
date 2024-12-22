@@ -1,7 +1,7 @@
 class GRandom
 extends GOperator
 {
-    static { nodeTypes[NUMBER_RANDOM] = this; }
+    static { GNode.types[NUMBER_RANDOM] = this; }
 
 
 

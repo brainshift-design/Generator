@@ -1,7 +1,7 @@
 class   OpExtract
 extends OperatorBase
 {
-    static { operatorTypes[EXTRACT] = this; }
+    static { Operator.types[EXTRACT] = this; }
 
 
 

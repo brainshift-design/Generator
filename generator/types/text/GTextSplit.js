@@ -1,6 +1,10 @@
 class GTextSplit
 extends GOperator1
 {
+    static { GNode.types[TEXT_SPLIT] = this; }
+
+
+
     separator;
 
 

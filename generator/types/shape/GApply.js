@@ -1,6 +1,10 @@
 class GApply
 extends GOperator1//Shape
 {
+    static { GNode.types[SHAPE_APPLY] = this; }
+
+
+
     props   = null;
     replace = null;
 

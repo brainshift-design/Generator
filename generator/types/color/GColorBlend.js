@@ -1,8 +1,13 @@
 class GColorBlend
 extends GOperator2
 {
+    static { GNode.types[COLOR_BLEND] = this; }
+
+
+
     mode   = null;
     amount = null;
+
     
 
     constructor(nodeId, options)

@@ -1,7 +1,7 @@
 class   OpGetValueName
 extends OperatorBase
 {
-    static { operatorTypes[GET_VALUE_NAME] = this; }
+    static { Operator.types[GET_VALUE_NAME] = this; }
 
 
 

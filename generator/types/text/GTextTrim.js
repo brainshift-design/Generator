@@ -1,6 +1,10 @@
 class GTextTrim
 extends GOperator1
 {
+    static { GNode.types[TEXT_TRIM] = this; }
+
+
+
     start = null;
     end   = null;
 

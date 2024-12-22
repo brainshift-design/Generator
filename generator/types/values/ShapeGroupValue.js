@@ -1,6 +1,10 @@
 class ShapeGroupValue
 extends GValue
 {
+    static { GNode.types[SHAPE_GROUP_VALUE] = this; }
+
+
+
     items = [];
 
 

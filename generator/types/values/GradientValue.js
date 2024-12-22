@@ -1,6 +1,10 @@
 class GradientValue
 extends GValue
 {
+    static { GNode.types[GRADIENT_VALUE] = this; }
+
+
+
     stops;
  
     gradType;

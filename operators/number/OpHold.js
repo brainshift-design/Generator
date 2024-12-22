@@ -1,7 +1,7 @@
 class   OpHold
 extends OperatorBase
 {
-    static { operatorTypes[HOLD] = this; }
+    static { Operator.types[HOLD] = this; }
 
 
 

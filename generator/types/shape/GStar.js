@@ -2,6 +2,10 @@
 class GStar
 extends GShape
 {
+    static { GNode.types[STAR] = this; }
+
+
+
     position = null;
     round    = null;
     points   = null;

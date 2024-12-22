@@ -1,7 +1,7 @@
 class GLimits
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_LIMITS] = this; }
+    static { GNode.types[NUMBER_LIMITS] = this; }
 
 
 

@@ -1,6 +1,10 @@
 class GInterpolatePoint
 extends GOperator2
 {
+    static { GNode.types[INTERPOLATE_POINT] = this; }
+
+
+
     amount    = null;
     transform = null;
 

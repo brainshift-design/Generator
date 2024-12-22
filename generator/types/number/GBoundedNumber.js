@@ -1,7 +1,7 @@
 class GBoundedNumber
 extends GOperator1
 {
-    static { nodeTypes[BOUNDED_NUMBER] = this; }
+    static { GNode.types[BOUNDED_NUMBER] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class GItems
 extends GOperator1
 {
-    static { nodeTypes[ITEMS] = this; }
+    static { GNode.types[ITEMS] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class   OpPointAngle
 extends OperatorBase
 {
-    static { operatorTypes[POINT_ANGLE] = this; }
+    static { Operator.types[POINT_ANGLE] = this; }
 
 
 

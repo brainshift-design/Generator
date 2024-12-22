@@ -1,7 +1,7 @@
 class OpFill
 extends OpColorBase
 {
-    static { operatorTypes[FILL] = this; }
+    static { Operator.types[FILL] = this; }
 
 
 

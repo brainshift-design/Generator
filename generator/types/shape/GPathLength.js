@@ -1,6 +1,10 @@
 class GPathLength
 extends GOperator1
 {
+    static { GNode.types[PATH_LENGTH] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(PATH_LENGTH, nodeId, options);

@@ -1,7 +1,7 @@
 class GNull
 extends GOperator1
 {
-    static { nodeTypes[NULL_NODE] = this; }
+    static { GNode.types[NULL_NODE] = this; }
 
 
 

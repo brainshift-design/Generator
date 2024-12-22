@@ -1,7 +1,7 @@
 class GNumberIsNaN
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_IS_NAN] = this; }
+    static { GNode.types[NUMBER_IS_NAN] = this; }
 
 
 

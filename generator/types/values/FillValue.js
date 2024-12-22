@@ -1,6 +1,10 @@
 class FillValue
 extends GValue
 {
+    static { GNode.types[FILL_VALUE] = this; }
+
+
+
     color;
     opacity;
     blend;

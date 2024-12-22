@@ -1,6 +1,10 @@
 class GValidColor
 extends GOperator1
 {
+    static { GNode.types[VALID_COLOR] = this; }
+    
+    
+    
     method       = null;
 
     corrections  = [];

@@ -157,13 +157,8 @@
 ../generator/types/number/arithmetic/GMath.js
 ../generator/types/number/arithmetic/GSimpleMath.js
 
-../generator/types/number/boolean/GBoolean.js
-../generator/types/number/boolean/GNot.js
-../generator/types/number/boolean/GAnd.js
-../generator/types/number/boolean/GOr.js
-../generator/types/number/boolean/GXor.js
-
-../generator/types/number/condition/GCompare.js
+../generator/types/number/GBoolean.js
+../generator/types/number/GCompare.js
 
 ../generator/types/number/trigonometric/GTrigonometric.js
 ../generator/types/number/trigonometric/GAtan2.js

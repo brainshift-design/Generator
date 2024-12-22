@@ -1,7 +1,7 @@
 class   OpPolygon
 extends OpShape
 {
-    static { operatorTypes[POLYGON] = this; }
+    static { Operator.types[POLYGON] = this; }
 
 
 

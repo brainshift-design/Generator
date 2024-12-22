@@ -1,6 +1,3 @@
-const operatorTypes   = {};
-
-
 const connectionSize  = 9;
 const connectionGap   = 4;
 
@@ -10,6 +7,9 @@ const defHeaderHeight = 32;
 
 class Operator
 {
+    static types = {};
+
+    
     subscription = false;
     beta         = false;
 
@@ -229,7 +229,7 @@ class Operator
 
     static create(nodeType, creatingButton = null, createdNodeId = -1, options = {})
     {
-        const OpClass = operatorTypes[nodeType]; 
+        const OpClass = Operator.types[nodeType]; 
     
         if (OpClass)
         {

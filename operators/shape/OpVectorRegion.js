@@ -1,7 +1,7 @@
 class   OpVectorRegion
 extends OpShape
 {
-    static { operatorTypes[VECTOR_REGION] = this; }
+    static { Operator.types[VECTOR_REGION] = this; }
 
 
 

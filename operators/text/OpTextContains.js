@@ -1,7 +1,7 @@
 class   OpTextContains
 extends OperatorBase
 {
-    static { operatorTypes[TEXT_CONTAINS] = this; }
+    static { Operator.types[TEXT_CONTAINS] = this; }
 
 
 

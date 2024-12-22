@@ -1,6 +1,10 @@
 class GStrokeSides
 extends GOperator1
 {
+    static { GNode.types[STROKE_SIDES] = this; }
+
+
+
     top    = null;
     left   = null;
     right  = null;

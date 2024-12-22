@@ -1,6 +1,10 @@
 class StrokeSidesValue
 extends GValue
 {
+    static { GNode.types[STROKE_SIDES_VALUE] = this; }
+
+
+
     top;
     left;
     right;

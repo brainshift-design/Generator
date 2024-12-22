@@ -1,7 +1,7 @@
 class   OpResetTransform
 extends OperatorBase
 {
-    static { operatorTypes[RESET_XFORM] = this; }
+    static { Operator.types[RESET_XFORM] = this; }
 
 
 

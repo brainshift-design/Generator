@@ -1,7 +1,7 @@
 class   OpTextCase
 extends OperatorBase
 {
-    static { operatorTypes[TEXT_CASE] = this; }
+    static { Operator.types[TEXT_CASE] = this; }
 
 
 

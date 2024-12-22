@@ -1,7 +1,7 @@
 class OpLayerMask
 extends OperatorBase
 {
-    static { operatorTypes[LAYER_MASK] = this; }
+    static { Operator.types[LAYER_MASK] = this; }
 
 
 

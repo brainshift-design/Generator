@@ -1,7 +1,7 @@
 class   OpStar
 extends OpShape
 {
-    static { operatorTypes[STAR] = this; }
+    static { Operator.types[STAR] = this; }
 
 
 

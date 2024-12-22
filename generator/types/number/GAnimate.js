@@ -1,7 +1,7 @@
 class GAnimate
 extends GOperator
 {
-    static { nodeTypes[NUMBER_ANIMATE] = this; }
+    static { GNode.types[NUMBER_ANIMATE] = this; }
 
 
 

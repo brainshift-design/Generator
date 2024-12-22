@@ -1,7 +1,7 @@
 class   OpSetObjectName
 extends OperatorBase
 {
-    static { operatorTypes[SET_OBJECT_NAME] = this; }
+    static { Operator.types[SET_OBJECT_NAME] = this; }
 
 
 

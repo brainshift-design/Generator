@@ -1,7 +1,7 @@
 class   OpColorBlend
 extends OpColorBase
 {
-    static { operatorTypes[COLOR_BLEND] = this; }
+    static { Operator.types[COLOR_BLEND] = this; }
 
 
 

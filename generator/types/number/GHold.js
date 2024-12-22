@@ -1,7 +1,7 @@
 class GHold
 extends GOperator1
 {
-    static { nodeTypes[HOLD] = this; }
+    static { GNode.types[HOLD] = this; }
 
 
 

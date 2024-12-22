@@ -1,7 +1,7 @@
 class GSign
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_SIGN] = this; }
+    static { GNode.types[NUMBER_SIGN] = this; }
 
 
 

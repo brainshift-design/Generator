@@ -1,7 +1,7 @@
 class GAtan2
 extends GOperator
 {
-    static { nodeTypes[NUMBER_ATAN2] = this; }
+    static { GNode.types[NUMBER_ATAN2] = this; }
 
 
 

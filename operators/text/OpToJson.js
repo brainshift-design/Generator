@@ -1,7 +1,7 @@
 class   OpToJson
 extends OperatorBase
 {
-    static { operatorTypes[TO_JSON] = this; }
+    static { Operator.types[TO_JSON] = this; }
 
 
 

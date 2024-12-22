@@ -1,6 +1,10 @@
 class GRoundCorners
 extends GOperator1
 {
+    static { GNode.types[ROUND_CORNERS] = this; }
+
+
+
     tl = null;
     tr = null;
     bl = null;

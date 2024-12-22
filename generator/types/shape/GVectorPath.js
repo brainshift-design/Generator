@@ -1,6 +1,10 @@
 class GVectorPath
 extends GShape
 {
+    static { GNode.types[VECTOR_PATH] = this; }
+
+
+
     points  = null;
     closed  = null;
     degree  = null;

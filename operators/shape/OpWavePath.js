@@ -1,7 +1,7 @@
 class   OpWavePath
 extends OpShape
 {
-    static { operatorTypes[WAVE_PATH] = this; }
+    static { Operator.types[WAVE_PATH] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class GSetListValueNames
 extends GOperator2
 {
-    static { nodeTypes[SET_LIST_VALUE_NAMES] = this; }
+    static { GNode.types[SET_LIST_VALUE_NAMES] = this; }
 
 
 

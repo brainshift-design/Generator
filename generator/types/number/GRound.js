@@ -1,7 +1,7 @@
 class GRound
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_ROUND] = this; }
+    static { GNode.types[NUMBER_ROUND] = this; }
 
 
 

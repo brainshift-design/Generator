@@ -1,6 +1,10 @@
 class GScale
 extends GAffine
 {
+    static { GNode.types[SCALE] = this; }
+
+
+
     scaleX        = null;
     scaleY        = null;
     affectCorners = null;

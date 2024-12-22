@@ -1,6 +1,10 @@
 class GText
 extends GOperator1
 {
+    static { GNode.types[TEXT] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(TEXT, nodeId, options);

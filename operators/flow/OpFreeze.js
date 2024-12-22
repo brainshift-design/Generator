@@ -1,7 +1,7 @@
 class   OpFreeze
 extends OpFlowBase
 {
-    static { operatorTypes[FREEZE] = this; }
+    static { Operator.types[FREEZE] = this; }
 
 
 

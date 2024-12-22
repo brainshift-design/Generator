@@ -1,7 +1,7 @@
 class   OpTextShape
 extends OpShape
 {
-    static { operatorTypes[TEXT_SHAPE] = this; }
+    static { Operator.types[TEXT_SHAPE] = this; }
 
 
 

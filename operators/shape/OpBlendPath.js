@@ -1,7 +1,7 @@
 class   OpBlendPath
 extends OperatorBase
 {
-    static { operatorTypes[BLEND_PATH] = this; }
+    static { Operator.types[BLEND_PATH] = this; }
 
 
 

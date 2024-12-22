@@ -5,7 +5,7 @@ const defaultVariableNodeName = PLUGIN_LOGO + '/variable';
 class   OpVariable
 extends ResizableBaseWithSeparator
 {
-    static { operatorTypes[VARIABLE] = this; }
+    static { Operator.types[VARIABLE] = this; }
 
 
     

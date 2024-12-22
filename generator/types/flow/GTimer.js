@@ -1,7 +1,7 @@
 class GTimer
 extends GOperator1
 {
-    static { nodeTypes[TIMER] = this; }
+    static { GNode.types[TIMER] = this; }
 
 
 

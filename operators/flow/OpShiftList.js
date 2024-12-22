@@ -1,7 +1,7 @@
 class   OpShiftList
 extends OperatorBase
 {
-    static { operatorTypes[SHIFT_LIST] = this; }
+    static { Operator.types[SHIFT_LIST] = this; }
 
 
 

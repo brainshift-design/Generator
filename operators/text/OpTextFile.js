@@ -1,7 +1,7 @@
 class   OpTextFile
 extends ResizableBase
 {
-    static { operatorTypes[TEXT_FILE] = this; }
+    static { Operator.types[TEXT_FILE] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class GInterpolate
 extends GOperator
 {
-    static { nodeTypes[NUMBER_INTERPOLATE] = this; }
+    static { GNode.types[NUMBER_INTERPOLATE] = this; }
 
 
 

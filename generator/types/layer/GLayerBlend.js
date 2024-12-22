@@ -1,6 +1,10 @@
 class GLayerBlend
 extends GOperator
 {
+    static { GNode.types[LAYER_BLEND] = this; }
+
+
+
     opacity;
     blend;
 

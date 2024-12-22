@@ -1,6 +1,10 @@
 class GTextShape
 extends GShape
 {
+    static { GNode.types[TEXT_SHAPE] = this; }
+
+
+
     text          = null;
     x             = null;
     y             = null;

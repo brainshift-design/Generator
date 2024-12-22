@@ -1,7 +1,7 @@
 class   OpSublist
 extends OperatorBase
 {
-    static { operatorTypes[SUBLIST] = this; }
+    static { Operator.types[SUBLIST] = this; }
 
 
 

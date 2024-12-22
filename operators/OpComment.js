@@ -1,7 +1,7 @@
 class   OpComment
 extends OperatorBase
 {
-    static { operatorTypes[COMMENT] = this; }
+    static { Operator.types[COMMENT] = this; }
 
 
 

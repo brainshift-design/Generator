@@ -1,7 +1,7 @@
 class   OpNumberMap
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_MAP] = this; }
+    static { Operator.types[NUMBER_MAP] = this; }
 
 
 

@@ -1,6 +1,10 @@
 class GTextLength
 extends GOperator1
 {
+    static { GNode.types[TEXT_LENGTH] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(TEXT_LENGTH, nodeId, options);

@@ -1,7 +1,7 @@
 class OpStrokeSides
 extends OperatorBase
 {
-    static { operatorTypes[STROKE_SIDES] = this; }
+    static { Operator.types[STROKE_SIDES] = this; }
 
 
 

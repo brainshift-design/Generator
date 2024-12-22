@@ -1,7 +1,7 @@
 class   OpColumn
 extends OperatorBase
 {
-    static { operatorTypes[COLUMN] = this; }
+    static { Operator.types[COLUMN] = this; }
 
 
 

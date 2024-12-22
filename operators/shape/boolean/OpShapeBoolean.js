@@ -1,7 +1,7 @@
 class OpShapeBoolean
 extends OpShape
 {
-    static { operatorTypes[SHAPE_BOOLEAN] = this; }
+    static { Operator.types[SHAPE_BOOLEAN] = this; }
 
 
 

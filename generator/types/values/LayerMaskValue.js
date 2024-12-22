@@ -1,6 +1,10 @@
 class LayerMaskValue
 extends GValue
 {
+    static { GNode.types[LAYER_MASK_VALUE] = this; }
+
+
+
     visible;
     maskType;
 

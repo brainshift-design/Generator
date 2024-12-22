@@ -1,7 +1,7 @@
 class   OpSelectFromList
 extends OpFlowBase
 {
-    static { operatorTypes[SELECT_FROM_LIST] = this; }
+    static { Operator.types[SELECT_FROM_LIST] = this; }
 
 
 

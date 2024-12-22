@@ -1,7 +1,7 @@
 class   OpNegative
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_NEGATIVE] = this; }
+    static { Operator.types[NUMBER_NEGATIVE] = this; }
 
 
 

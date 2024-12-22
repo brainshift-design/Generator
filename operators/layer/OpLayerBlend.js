@@ -1,7 +1,7 @@
 class OpLayerBlend
 extends OperatorBase
 {
-    static { operatorTypes[LAYER_BLEND] = this; }
+    static { Operator.types[LAYER_BLEND] = this; }
 
 
 

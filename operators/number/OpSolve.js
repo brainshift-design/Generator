@@ -1,7 +1,7 @@
 class   OpSolve
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_SOLVE] = this; }
+    static { Operator.types[NUMBER_SOLVE] = this; }
 
 
 

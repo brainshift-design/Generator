@@ -1,7 +1,7 @@
 class   OpUnique
 extends OperatorBase
 {
-    static { operatorTypes[UNIQUE] = this; }
+    static { Operator.types[UNIQUE] = this; }
 
 
 

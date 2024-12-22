@@ -1,7 +1,7 @@
 class   OpTextJoin
 extends ResizableBase
 {
-    static { operatorTypes[TEXT_JOIN] = this; }
+    static { Operator.types[TEXT_JOIN] = this; }
 
 
 

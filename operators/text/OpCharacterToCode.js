@@ -1,7 +1,7 @@
 class   OpCharacterToCode
 extends OperatorBase
 {
-    static { operatorTypes[TEXT_UNICODE] = this; }
+    static { Operator.types[TEXT_UNICODE] = this; }
 
 
 

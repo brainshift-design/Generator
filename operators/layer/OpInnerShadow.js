@@ -1,7 +1,7 @@
 class OpInnerShadow
 extends OperatorBase
 {
-    static { operatorTypes[INNER_SHADOW] = this; }
+    static { Operator.types[INNER_SHADOW] = this; }
 
 
 

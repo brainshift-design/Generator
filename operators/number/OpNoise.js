@@ -1,7 +1,7 @@
 class   OpNoise
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_NOISE] = this; }
+    static { Operator.types[NUMBER_NOISE] = this; }
 
 
 

@@ -1,6 +1,10 @@
 class GTextCompare
 extends GOperator1
 {
+    static { GNode.types[TEXT_COMPARE] = this; }
+
+
+
     operation;
     operand;
 

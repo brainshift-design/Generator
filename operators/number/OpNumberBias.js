@@ -1,7 +1,7 @@
 class   OpNumberBias
 extends OperatorBase
 {
-static { operatorTypes[NUMBER_BIAS] = this; }
+static { Operator.types[NUMBER_BIAS] = this; }
 
 
 

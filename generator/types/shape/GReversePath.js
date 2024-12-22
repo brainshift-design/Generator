@@ -1,6 +1,10 @@
 class GReversePath
 extends GOperator1
 {
+    static { GNode.types[REVERSE_PATH] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(REVERSE_PATH, nodeId, options);

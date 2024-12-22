@@ -1,7 +1,7 @@
 class GGetParam
 extends GOperator1
 {
-    static { nodeTypes[GET_PARAM] = this; }
+    static { GNode.types[GET_PARAM] = this; }
 
 
 

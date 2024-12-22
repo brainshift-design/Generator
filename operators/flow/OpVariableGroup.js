@@ -1,7 +1,7 @@
 class   OpVariableGroup
 extends ResizableBase
 {
-    static { operatorTypes[VARIABLE_GROUP] = this; }
+    static { Operator.types[VARIABLE_GROUP] = this; }
 
 
 

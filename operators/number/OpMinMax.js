@@ -1,7 +1,7 @@
 class   OpMinMax
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_MINMAX] = this; }
+    static { Operator.types[NUMBER_MINMAX] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class   OpTextFetch
 extends ResizableBase
 {
-    static { operatorTypes[TEXT_FETCH] = this; }
+    static { Operator.types[TEXT_FETCH] = this; }
 
 
 

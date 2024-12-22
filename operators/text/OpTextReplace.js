@@ -1,7 +1,7 @@
 class   OpTextReplace
 extends ResizableBase
 {
-    static { operatorTypes[TEXT_REPLACE] = this; }
+    static { Operator.types[TEXT_REPLACE] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class GSimpleMinMax
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_SIMPLE_MINMAX] = this; }
+    static { GNode.types[NUMBER_SIMPLE_MINMAX] = this; }
 
 
 

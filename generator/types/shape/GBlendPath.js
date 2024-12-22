@@ -1,6 +1,10 @@
 class GBlendPath
 extends GShape
 {
+    static { GNode.types[BLEND_PATH] = this; }
+
+
+
     inputs = [];
 
     amount;

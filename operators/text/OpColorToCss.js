@@ -1,7 +1,7 @@
 class   OpColorToCss
 extends OperatorBase
 {
-    static { operatorTypes[COLOR_TO_CSS] = this; }
+    static { Operator.types[COLOR_TO_CSS] = this; }
 
 
 

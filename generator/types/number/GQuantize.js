@@ -1,7 +1,7 @@
 class GQuantize
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_QUANTIZE] = this; }
+    static { GNode.types[NUMBER_QUANTIZE] = this; }
 
 
 

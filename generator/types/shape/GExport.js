@@ -1,6 +1,10 @@
 class GExport
 extends GShapeBase
 {
+    static { GNode.types[EXPORT] = this; }
+
+
+
     inputs = [];
 
     scale;

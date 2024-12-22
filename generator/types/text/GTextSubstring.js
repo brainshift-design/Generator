@@ -1,6 +1,10 @@
 class GTextSubstring
 extends GOperator1
 {
+    static { GNode.types[TEXT_SUBSTRING] = this; }
+
+
+
     start = null;
     end   = null;
 

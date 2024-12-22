@@ -1,6 +1,10 @@
 class ShapeBooleanValue
 extends ShapeValue
 {
+    static { GNode.types[SHAPE_BOOLEAN_VALUE] = this; }
+
+
+
     operation;
     children;
 

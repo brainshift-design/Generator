@@ -1,6 +1,10 @@
 class GVectorEdge
 extends GOperator2
 {
+    static { GNode.types[VECTOR_EDGE] = this; }
+
+
+
     startTangent = null;
     endTangent   = null;
     

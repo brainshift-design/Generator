@@ -1,6 +1,10 @@
 class GColor
 extends GOperator1
 {
+    static { GNode.types[COLOR] = this; }
+
+
+
     space   = null;
     
    _c1      = null;

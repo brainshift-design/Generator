@@ -1,7 +1,7 @@
 class GGetListValueNames
 extends GOperator1
 {
-    static { operatorTypes[GET_LIST_VALUE_NAMES] = this; }
+    static { GNode.types[GET_LIST_VALUE_NAMES] = this; }
 
 
 

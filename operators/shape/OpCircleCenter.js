@@ -1,7 +1,7 @@
 class   OpCircleCenter
 extends OpShapeBase
 {
-    static { operatorTypes[CIRCLE_CENTER] = this; }
+    static { Operator.types[CIRCLE_CENTER] = this; }
 
 
 

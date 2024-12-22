@@ -1,6 +1,10 @@
 class GResetTransform
 extends GOperator1
 {
+    static { GNode.types[RESET_XFORM] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(RESET_XFORM, nodeId, options);

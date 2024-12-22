@@ -1,7 +1,7 @@
 class   OpIntersectLines
 extends OpShapeBase
 {
-    static { operatorTypes[INTERSECT_LINES] = this; }
+    static { Operator.types[INTERSECT_LINES] = this; }
 
 
 

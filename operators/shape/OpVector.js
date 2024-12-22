@@ -1,7 +1,7 @@
 class   OpVector
 extends OpShapeBase
 {
-    static { operatorTypes[VECTOR] = this; }
+    static { Operator.types[VECTOR] = this; }
 
 
 

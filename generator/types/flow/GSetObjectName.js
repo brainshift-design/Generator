@@ -1,7 +1,7 @@
 class GSetObjectName
 extends GOperator1
 {
-    static { nodeTypes[SET_OBJECT_NAME] = this; }
+    static { GNode.types[SET_OBJECT_NAME] = this; }
 
 
 

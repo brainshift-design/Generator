@@ -1,7 +1,7 @@
 class   OpRepeat
 extends OperatorBase
 {
-    static { operatorTypes[VARIAGLE_GROUP] = this; }
+    static { Operator.types[VARIABLE_GROUP] = this; }
 
 
 

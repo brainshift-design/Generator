@@ -9,7 +9,6 @@
     [../autojoin/types.aj]
     
     ../generator/*.js
-    ../generator/parse/*.js
 
     [../autojoin/logging.aj]
 

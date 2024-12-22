@@ -1,7 +1,7 @@
 class GAdvance
 extends GOperator1
 {
-    static { nodeTypes[ADVANCE] = this; }
+    static { GNode.types[ADVANCE] = this; }
 
 
 

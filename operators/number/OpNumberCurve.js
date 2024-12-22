@@ -1,7 +1,7 @@
 class   OpNumberCurve
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_CURVE] = this; }
+    static { Operator.types[NUMBER_CURVE] = this; }
 
 
 

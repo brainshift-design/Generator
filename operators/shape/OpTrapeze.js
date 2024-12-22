@@ -1,7 +1,7 @@
 class   OpTrapeze
 extends OpShape
 {
-    static { operatorTypes[TRAPEZE] = this; }
+    static { Operator.types[TRAPEZE] = this; }
 
 
 

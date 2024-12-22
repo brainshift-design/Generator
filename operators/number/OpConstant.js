@@ -1,7 +1,7 @@
 class   OpConstant
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_CONSTANT] = this; }
+    static { Operator.types[NUMBER_CONSTANT] = this; }
 
 
 

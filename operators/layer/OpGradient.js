@@ -1,7 +1,7 @@
 class   OpGradient
 extends OpColorBase
 {
-    static { operatorTypes[GRADIENT] = this; }
+    static { Operator.types[GRADIENT] = this; }
 
 
 

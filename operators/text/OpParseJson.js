@@ -1,7 +1,7 @@
 class   OpParseJson
 extends OperatorBase
 {
-    static { operatorTypes[PARSE_JSON] = this; }
+    static { Operator.types[PARSE_JSON] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class GMinMax
 extends GArithmetic
 {
-    static { nodeTypes[NUMBER_MINMAX] = this; }
+    static { GNode.types[NUMBER_MINMAX] = this; }
 
 
 

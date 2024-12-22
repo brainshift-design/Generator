@@ -1,6 +1,10 @@
 class GJoinPaths
 extends GShape
 {
+    static { GNode.types[JOIN_PATHS] = this; }
+
+
+
     inputs  = [];
 
     closed  = null;

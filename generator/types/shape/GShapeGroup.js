@@ -1,6 +1,10 @@
 class GShapeGroup
 extends GShapeBase
 {
+    static { GNode.types[SHAPE_GROUP] = this; }
+
+
+
     inputs = [];
 
 

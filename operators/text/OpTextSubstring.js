@@ -1,7 +1,7 @@
 class   OpTextSubstring
 extends OperatorBase
 {
-    static { operatorTypes[TEXT_SUBSTRING] = this; }
+    static { Operator.types[TEXT_SUBSTRING] = this; }
 
 
 

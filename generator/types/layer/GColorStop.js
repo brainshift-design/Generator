@@ -1,6 +1,10 @@
 class GColorStop
 extends GOperator1
 {
+    static { GNode.types[COLOR_STOP] = this; }
+
+
+
     fill     = null;
     position = null;
 

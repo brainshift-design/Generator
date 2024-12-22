@@ -1,7 +1,7 @@
 class   OpNumberIsNaN
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_IS_NAN] = this; }
+    static { Operator.types[NUMBER_IS_NAN] = this; }
 
 
 

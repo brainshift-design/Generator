@@ -1,7 +1,7 @@
 class GListAsItem
 extends GOperator1
 {
-    static { nodeTypes[LIST_AS_ITEM] = this; }
+    static { GNode.types[LIST_AS_ITEM] = this; }
 
 
 

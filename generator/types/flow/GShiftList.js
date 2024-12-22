@@ -1,7 +1,7 @@
 class GShiftList
 extends GOperator1
 {
-    static { nodeTypes[SHIFT_LIST] = this; }
+    static { GNode.types[SHIFT_LIST] = this; }
 
 
 

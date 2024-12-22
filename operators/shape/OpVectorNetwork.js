@@ -1,7 +1,7 @@
 class   OpVectorNetwork
 extends OpShape
 {
-    static { operatorTypes[VECTOR_NETWORK] = this; }
+    static { Operator.types[VECTOR_NETWORK] = this; }
 
 
 

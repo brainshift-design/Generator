@@ -1,7 +1,7 @@
 class GFilter
 extends GOperator1
 {
-    static { nodeTypes[FILTER] = this; }
+    static { GNode.types[FILTER] = this; }
 
 
 

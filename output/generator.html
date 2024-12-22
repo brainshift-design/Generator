@@ -7425,23 +7425,13 @@ const FLOW_TYPES =
 const MATH_TYPES =
 [
     NUMBER_MATH,
-    NUMBER_SIMPLE_MATH,
-    NUMBER_ADD,
-    NUMBER_SUBTRACT,
-    NUMBER_MULTIPLY,
-    NUMBER_DIVIDE,
-    NUMBER_MODULO,
-    NUMBER_EXPONENT
+    NUMBER_SIMPLE_MATH
 ];
 
 
 const NUMBER_BOOLEAN_TYPES =
 [
-    NUMBER_BOOLEAN,
-    NUMBER_NOT,
-    NUMBER_AND,
-    NUMBER_OR,
-    NUMBER_XOR
+    NUMBER_BOOLEAN
 ];
 
 
@@ -7783,6 +7773,14 @@ const GROUP_TYPES =
     GROUP_NODE,
     GROUP_PARAM
 ];
+
+
+const NUMBER_ADD      = '+';
+const NUMBER_SUBTRACT = '-';
+const NUMBER_MULTIPLY = '*';
+const NUMBER_DIVIDE   = '/';
+const NUMBER_MODULO   = '%';
+const NUMBER_EXPONENT = '^';
 
 
 const MATH_OPS = 
@@ -11497,13 +11495,13 @@ class FigmaColorStyle
 }
 
 
-const nodeTypes = {};
-
-
-
 class GNode
 {
+    static types = {};
+
+    
     static nextUniqueId = 0;
+
 
     type;
 
@@ -13004,7 +13002,7 @@ extends GOperator
 class GParam
 extends GOperator
 {
-    static { nodeTypes[PARAM] = this; }
+    static { GNode.types[PARAM] = this; }
 
 
 
@@ -13344,10 +13342,10 @@ extends GValue
 {
     static 
     {
-        nodeTypes[       LIST_VALUE] = 
-        nodeTypes[NUMBER_LIST_VALUE] = 
-        nodeTypes[  TEXT_LIST_VALUE] = 
-        nodeTypes[ SHAPE_LIST_VALUE] = this;
+        GNode.types[       LIST_VALUE] = 
+        GNode.types[NUMBER_LIST_VALUE] = 
+        GNode.types[  TEXT_LIST_VALUE] = 
+        GNode.types[ SHAPE_LIST_VALUE] = this;
     }
 
 
@@ -13836,7 +13834,7 @@ function finalListTypeFromTypes(types)
 class NumberValue
 extends GValue
 {
-    static { nodeTypes[NUMBER_VALUE] = this; }
+    static { GNode.types[NUMBER_VALUE] = this; }
 
 
 
@@ -14376,6 +14374,10 @@ extends NumberValue
 class TextValue
 extends GValue
 {
+    static { GNode.types[TEXT_VALUE] = this; }
+
+
+
     value;
     initValue;
 
@@ -14542,6 +14544,10 @@ extends GValue
 class ColorValue
 extends GValue
 {
+    static { GNode.types[COLOR_VALUE] = this; }
+
+
+
     space;
     c1;
     c2;
@@ -14892,6 +14898,10 @@ extends GValue
 class FillValue
 extends GValue
 {
+    static { GNode.types[FILL_VALUE] = this; }
+
+
+
     color;
     opacity;
     blend;
@@ -15192,6 +15202,10 @@ extends GValue
 class ColorStopValue
 extends GValue
 {
+    static { GNode.types[COLOR_STOP_VALUE] = this; }
+
+
+
     fill;
     position;
 
@@ -15379,6 +15393,10 @@ extends GValue
 class GradientValue
 extends GValue
 {
+    static { GNode.types[GRADIENT_VALUE] = this; }
+
+
+
     stops;
  
     gradType;
@@ -15688,6 +15706,10 @@ extends GValue
 class StrokeValue
 extends GValue
 {
+    static { GNode.types[STROKE_VALUE] = this; }
+
+
+
     fills;
     weight;
     fit;
@@ -15981,6 +16003,10 @@ extends GValue
 class StrokeSidesValue
 extends GValue
 {
+    static { GNode.types[STROKE_SIDES_VALUE] = this; }
+
+
+
     top;
     left;
     right;
@@ -16180,6 +16206,10 @@ extends GValue
 class RoundCornersValue
 extends GValue
 {
+    static { GNode.types[ROUND_CORNERS_VALUE] = this; }
+
+
+
     tl;
     tr;
     bl;
@@ -16379,6 +16409,10 @@ extends GValue
 class DropShadowValue
 extends GValue
 {
+    static { GNode.types[DROP_SHADOW_VALUE] = this; }
+
+
+
     x;
     y;
     blur;
@@ -16631,6 +16665,10 @@ extends GValue
 class InnerShadowValue
 extends GValue
 {
+    static { GNode.types[INNER_SHADOW_VALUE] = this; }
+
+
+
     x;
     y;
     blur;
@@ -16884,6 +16922,10 @@ extends GValue
 class LayerBlurValue
 extends GValue
 {
+    static { GNode.types[LAYER_BLUR_VALUE] = this; }
+
+
+
     radius;
     visible;
 
@@ -17076,6 +17118,10 @@ extends GValue
 class BackBlurValue
 extends GValue
 {
+    static { GNode.types[BACK_BLUR_VALUE] = this; }
+
+
+
     radius;
     visible;
 
@@ -17264,6 +17310,10 @@ extends GValue
 class LayerBlendValue
 extends GValue
 {
+    static { GNode.types[LAYER_BLEND_VALUE] = this; }
+
+
+
     opacity;
     blend;
 
@@ -17439,6 +17489,10 @@ extends GValue
 class LayerMaskValue
 extends GValue
 {
+    static { GNode.types[LAYER_MASK_VALUE] = this; }
+
+
+
     visible;
     maskType;
 
@@ -19863,6 +19917,10 @@ function parseTextShapeValue(str, i = -1)
 class PointValue
 extends GValue
 {
+    static { GNode.types[POINT_VALUE] = this; }
+
+
+
     nodeId;
 
     x;
@@ -20162,6 +20220,10 @@ extends GValue
 class VectorPathValue
 extends ShapeValue
 {
+    static { GNode.types[VECTOR_PATH_VALUE] = this; }
+
+
+
     points;
     closed;
     degree;
@@ -20425,6 +20487,10 @@ extends ShapeValue
 class VectorVertexValue
 extends GValue
 {
+    static { GNode.types[VECTOR_VERTEX_VALUE] = this; }
+
+
+
     nodeId;
 
     x;
@@ -20662,6 +20728,10 @@ extends GValue
 class VectorEdgeValue
 extends GValue
 {
+    static { GNode.types[VECTOR_EDGE_VALUE] = this; }
+
+
+
     nodeId;
 
     start;
@@ -20863,6 +20933,10 @@ extends GValue
 class VectorRegionValue
 extends ShapeValue
 {
+    static { GNode.types[VECTOR_REGION_VALUE] = this; }
+
+
+
     loops;  
     winding;
 
@@ -21049,6 +21123,10 @@ extends ShapeValue
 class VectorNetworkValue
 extends GValue
 {
+    static { GNode.types[VECTOR_NETWORK_VALUE] = this; }
+
+
+
     nodeId;
 
     regions;
@@ -21217,6 +21295,10 @@ extends GValue
 class ShapeBooleanValue
 extends ShapeValue
 {
+    static { GNode.types[SHAPE_BOOLEAN_VALUE] = this; }
+
+
+
     operation;
     children;
 
@@ -21354,6 +21436,10 @@ function parseShapeBooleanValue(str, i = -1)
 class WavePathValue
 extends ShapeValue
 {
+    static { GNode.types[WAVE_PATH_VALUE] = this; }
+
+
+
     shape;
     x;
     y;
@@ -21595,6 +21681,10 @@ function parseWavePathValue(str, i = -1)
 class ArcPathValue
 extends ShapeValue
 {
+    static { GNode.types[ARC_PATH_VALUE] = this; }
+
+
+
     position;
     x;
     y;
@@ -21810,6 +21900,10 @@ function parseArcPathValue(str, i = -1)
 class ShapeGroupValue
 extends GValue
 {
+    static { GNode.types[SHAPE_GROUP_VALUE] = this; }
+
+
+
     items = [];
 
 
@@ -22113,6 +22207,10 @@ function parseShapeGroupValue(str, i = -1)
 class FrameValue
 extends ShapeValue
 {
+    static { GNode.types[FRAME_VALUE] = this; }
+
+
+
     children;
     position;
     x;
@@ -22369,7 +22467,7 @@ function parseFrameValue(str, i = -1)
 class GRepeat
 extends GOperator1
 {
-    static { nodeTypes[REPEAT] = this; }
+    static { GNode.types[REPEAT] = this; }
 
 
 
@@ -22801,7 +22899,7 @@ function assertVolatile(loop, node)
 class GAdvance
 extends GOperator1
 {
-    static { nodeTypes[ADVANCE] = this; }
+    static { GNode.types[ADVANCE] = this; }
 
 
 
@@ -23016,7 +23114,7 @@ function assertVolatile(loop, node)
 class GFeedback
 extends GOperator1
 {
-    static { nodeTypes[FEEDBACK] = this; }
+    static { GNode.types[FEEDBACK] = this; }
 
 
 
@@ -23230,7 +23328,7 @@ extends GOperator1
 class GNull
 extends GOperator1
 {
-    static { nodeTypes[NULL_NODE] = this; }
+    static { GNode.types[NULL_NODE] = this; }
 
 
 
@@ -23341,7 +23439,7 @@ extends GOperator1
 class GVariable
 extends GOperator1
 {
-    static { nodeTypes[VARIABLE] = this; }
+    static { GNode.types[VARIABLE] = this; }
 
 
 
@@ -23811,7 +23909,7 @@ function getVariableValue(type, value, colorFromFigma, parse)
 class GVariableGroup
 extends GOperator
 {
-    static { nodeTypes[VARIABLE_GROUP] = this; }
+    static { GNode.types[VARIABLE_GROUP] = this; }
 
 
 
@@ -23999,7 +24097,7 @@ extends GOperator
 class GCache
 extends GOperator1
 {
-    static { nodeTypes[CACHE] = this; }
+    static { GNode.types[CACHE] = this; }
 
 
 
@@ -24145,7 +24243,7 @@ extends GOperator1
 class GFreeze
 extends GOperator1
 {
-    static { nodeTypes[FREEZE] = this; }
+    static { GNode.types[FREEZE] = this; }
 
 
 
@@ -24283,7 +24381,7 @@ extends GOperator1
 class GTimer
 extends GOperator1
 {
-    static { nodeTypes[TIMER] = this; }
+    static { GNode.types[TIMER] = this; }
 
 
 
@@ -24486,7 +24584,7 @@ extends GOperator1
 class GGetValueName
 extends GOperator1
 {
-    static { nodeTypes[GET_VALUE_NAME] = this; }
+    static { GNode.types[GET_VALUE_NAME] = this; }
 
 
 
@@ -24594,7 +24692,7 @@ extends GOperator1
 class GSetValueName
 extends GOperator1
 {
-    static { nodeTypes[SET_VALUE_NAME] = this; }
+    static { GNode.types[SET_VALUE_NAME] = this; }
 
 
 
@@ -24787,7 +24885,7 @@ function evalSetValueName(input, name)
 class GGetListValueNames
 extends GOperator1
 {
-    static { operatorTypes[GET_LIST_VALUE_NAMES] = this; }
+    static { GNode.types[GET_LIST_VALUE_NAMES] = this; }
 
 
 
@@ -24933,7 +25031,7 @@ extends GOperator1
 class GSetListValueNames
 extends GOperator2
 {
-    static { nodeTypes[SET_LIST_VALUE_NAMES] = this; }
+    static { GNode.types[SET_LIST_VALUE_NAMES] = this; }
 
 
 
@@ -25067,7 +25165,7 @@ extends GOperator2
 class GSetObjectName
 extends GOperator1
 {
-    static { nodeTypes[SET_OBJECT_NAME] = this; }
+    static { GNode.types[SET_OBJECT_NAME] = this; }
 
 
 
@@ -25256,7 +25354,7 @@ extends GOperator1
 class GList
 extends GOperator
 {
-    static { nodeTypes[LIST] = this; }
+    static { GNode.types[LIST] = this; }
 
 
 
@@ -25522,7 +25620,7 @@ extends GOperator
 class GListAsItem
 extends GOperator1
 {
-    static { nodeTypes[LIST_AS_ITEM] = this; }
+    static { GNode.types[LIST_AS_ITEM] = this; }
 
 
 
@@ -25658,7 +25756,7 @@ extends GOperator1
 class GExtract
 extends GOperator1
 {
-    static { nodeTypes[EXTRACT] = this; }
+    static { GNode.types[EXTRACT] = this; }
 
 
 
@@ -25858,7 +25956,7 @@ extends GOperator1
 class GSetParam
 extends GOperator2
 {
-    static { nodeTypes[SET_PARAM] = this; }
+    static { GNode.types[SET_PARAM] = this; }
 
 
 
@@ -26067,7 +26165,7 @@ extends GOperator2
 class GGetParam
 extends GOperator1
 {
-    static { nodeTypes[GET_PARAM] = this; }
+    static { GNode.types[GET_PARAM] = this; }
 
 
 
@@ -26304,7 +26402,7 @@ function getGetParamValue(input, name)
 class GSublist
 extends GOperator1
 {
-    static { nodeTypes[SUBLIST] = this; }
+    static { GNode.types[SUBLIST] = this; }
 
 
 
@@ -26536,7 +26634,7 @@ extends GOperator1
 class GUnique
 extends GOperator1
 {
-    static { nodeTypes[UNIQUE] = this; }
+    static { GNode.types[UNIQUE] = this; }
 
 
 
@@ -26749,7 +26847,7 @@ extends GOperator1
 class GReorderList
 extends GOperator1
 {
-    static { nodeTypes[REORDER_LIST] = this; }
+    static { GNode.types[REORDER_LIST] = this; }
 
 
 
@@ -26954,7 +27052,7 @@ extends GOperator1
 class GShiftList
 extends GOperator1
 {
-    static { nodeTypes[SHIFT_LIST] = this; }
+    static { GNode.types[SHIFT_LIST] = this; }
 
 
 
@@ -27168,7 +27266,7 @@ extends GOperator1
 class GReverseList
 extends GOperator1
 {
-    static { nodeTypes[REVERSE_LIST] = this; }
+    static { GNode.types[REVERSE_LIST] = this; }
 
 
 
@@ -27304,7 +27402,7 @@ extends GOperator1
 class GBuckleList
 extends GOperator1
 {
-    static { nodeTypes[BUCKLE_LIST] = this; }
+    static { GNode.types[BUCKLE_LIST] = this; }
 
 
 
@@ -27476,7 +27574,7 @@ extends GOperator1
 class GSort
 extends GOperator1
 {
-    static { nodeTypes[SORT] = this; }
+    static { GNode.types[SORT] = this; }
 
 
 
@@ -27821,7 +27919,7 @@ async function getSortCondition(parse, conditionNode, node, condition, item)
 class GFilter
 extends GOperator1
 {
-    static { nodeTypes[FILTER] = this; }
+    static { GNode.types[FILTER] = this; }
 
 
 
@@ -28109,7 +28207,7 @@ async function getFilterCondition(parse, conditionNode, node, condition, item)
 class GColumn
 extends GOperator1
 {
-    static { nodeTypes[COLUMN] = this; }
+    static { GNode.types[COLUMN] = this; }
 
 
 
@@ -28349,7 +28447,7 @@ function isTable(value)
 class GCell
 extends GOperator1
 {
-    static { nodeTypes[CELL] = this; }
+    static { GNode.types[CELL] = this; }
 
 
 
@@ -28537,7 +28635,7 @@ extends GOperator1
 class GItems
 extends GOperator1
 {
-    static { nodeTypes[ITEMS] = this; }
+    static { GNode.types[ITEMS] = this; }
 
 
 
@@ -28741,7 +28839,7 @@ extends GOperator1
 class GSelect
 extends GOperator
 {
-    static { nodeTypes[SELECT] = this; }
+    static { GNode.types[SELECT] = this; }
 
 
 
@@ -29002,7 +29100,7 @@ extends GOperator
 class GSelectFromList
 extends GOperator1
 {
-    static { nodeTypes[SELECT_FROM_LIST] = this; }
+    static { GNode.types[SELECT_FROM_LIST] = this; }
 
 
 
@@ -29243,7 +29341,7 @@ extends GOperator1
 class GItemCount
 extends GOperator1
 {
-    static { nodeTypes[ITEM_COUNT] = this; }
+    static { GNode.types[ITEM_COUNT] = this; }
 
 
 
@@ -29409,7 +29507,7 @@ extends GOperator1
 class GObjectCount
 extends GOperator1
 {
-    static { nodeTypes[OBJECT_COUNT] = this; }
+    static { GNode.types[OBJECT_COUNT] = this; }
 
 
 
@@ -29579,7 +29677,7 @@ extends GOperator1
 class GListContains
 extends GOperator2
 {
-    static { nodeTypes[LIST_CONTAINS] = this; }
+    static { GNode.types[LIST_CONTAINS] = this; }
 
 
 
@@ -29912,7 +30010,7 @@ extends GOperator2
 class GIfElse
 extends GOperator
 {
-    static { nodeTypes[IF_ELSE] = this; }
+    static { GNode.types[IF_ELSE] = this; }
     
     
     
@@ -30245,7 +30343,7 @@ extends GOperator
 class GNumber
 extends GOperator1
 {
-    static { nodeTypes[NUMBER] = this; }
+    static { GNode.types[NUMBER] = this; }
 
 
 
@@ -30362,7 +30460,7 @@ extends GOperator1
 class GBoundedNumber
 extends GOperator1
 {
-    static { nodeTypes[BOUNDED_NUMBER] = this; }
+    static { GNode.types[BOUNDED_NUMBER] = this; }
 
 
 
@@ -30552,7 +30650,7 @@ extends GOperator1
 class GBooleanNumber
 extends GOperator1
 {
-    static { nodeTypes[BOOLEAN_NUMBER] = this; }
+    static { GNode.types[BOOLEAN_NUMBER] = this; }
 
 
 
@@ -30663,7 +30761,7 @@ extends GOperator1
 class GSetPrecision
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_PRECISION] = this; }
+    static { GNode.types[NUMBER_PRECISION] = this; }
 
 
 
@@ -30870,7 +30968,7 @@ function getPrecisionValue(value, decimals)
 class GSign
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_SIGN] = this; }
+    static { GNode.types[NUMBER_SIGN] = this; }
 
 
 
@@ -30995,7 +31093,7 @@ function getSignValue(input)
 class GAbsolute
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_ABSOLUTE] = this; }
+    static { GNode.types[NUMBER_ABSOLUTE] = this; }
 
 
 
@@ -31122,7 +31220,7 @@ function getAbsoluteValue(input, enabled)
 class GNegative
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_NEGATIVE] = this; }
+    static { GNode.types[NUMBER_NEGATIVE] = this; }
 
 
 
@@ -31249,7 +31347,7 @@ function getNegativeValue(input, enabled)
 class GRound
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_ROUND] = this; }
+    static { GNode.types[NUMBER_ROUND] = this; }
 
 
 
@@ -31452,7 +31550,7 @@ function getRoundValue(input, type, dec, enabled)
 class GQuantize
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_QUANTIZE] = this; }
+    static { GNode.types[NUMBER_QUANTIZE] = this; }
 
 
 
@@ -31680,7 +31778,7 @@ function getQuantizeValue(input, type, base, step, amount, enabled)
 class GSimpleMinMax
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_SIMPLE_MINMAX] = this; }
+    static { GNode.types[NUMBER_SIMPLE_MINMAX] = this; }
 
 
 
@@ -31889,7 +31987,7 @@ function getSimpleMinMaxValue(input, operand, op, enabled)
 class GMinMax
 extends GArithmetic
 {
-    static { nodeTypes[NUMBER_MINMAX] = this; }
+    static { GNode.types[NUMBER_MINMAX] = this; }
 
 
 
@@ -32158,7 +32256,7 @@ async function evalMinMaxItemInputs(inputs, op, parse)
 class GLimits
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_LIMITS] = this; }
+    static { GNode.types[NUMBER_LIMITS] = this; }
 
 
 
@@ -32367,7 +32465,7 @@ function getLimitsValue(input, min, max, enabled)
 class GNumberCurve
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_CURVE] = this; }
+    static { GNode.types[NUMBER_CURVE] = this; }
 
 
 
@@ -32586,7 +32684,7 @@ function getNumberCurveValue(input, min, max, power, enabled)
 class GNumberMap
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_MAP] = this; }
+    static { GNode.types[NUMBER_MAP] = this; }
 
 
 
@@ -32862,7 +32960,7 @@ function getNumberMapValue(input, from, to)
 class GNumberBias
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_BIAS] = this; }
+    static { GNode.types[NUMBER_BIAS] = this; }
 
 
 
@@ -33119,7 +33217,7 @@ function getNumberBiasValue(input, min, max, bias, spread, enabled)
 class GNumberIsNaN
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_IS_NAN] = this; }
+    static { GNode.types[NUMBER_IS_NAN] = this; }
 
 
 
@@ -33245,7 +33343,7 @@ function getNumberIsNaN(input)
 class GConstant
 extends GOperator
 {
-    static { nodeTypes[NUMBER_CONSTANT] = this; }
+    static { GNode.types[NUMBER_CONSTANT] = this; }
 
 
 
@@ -33396,7 +33494,7 @@ extends GOperator
 class GDateTime
 extends GOperator
 {
-    static { nodeTypes[NUMBER_DATETIME] = this; }
+    static { GNode.types[NUMBER_DATETIME] = this; }
 
 
 
@@ -33609,7 +33707,7 @@ extends GOperator
 class GIterate
 extends GOperator
 {
-    static { nodeTypes[ITERATE] = this; }
+    static { GNode.types[ITERATE] = this; }
 
 
 
@@ -33814,7 +33912,7 @@ extends GOperator
 class GSequence
 extends GOperator
 {
-    static { nodeTypes[NUMBER_SEQUENCE] = this; }
+    static { GNode.types[NUMBER_SEQUENCE] = this; }
 
 
 
@@ -34036,7 +34134,7 @@ function getSequenceValue(start, mult, add, iteration, enabled)
 class GRange
 extends GOperator
 {
-    static { nodeTypes[NUMBER_RANGE] = this; }
+    static { GNode.types[NUMBER_RANGE] = this; }
 
 
 
@@ -34244,7 +34342,7 @@ extends GOperator
 class GWave
 extends GOperator
 {
-    static { nodeTypes[NUMBER_WAVE] = this; }
+    static { GNode.types[NUMBER_WAVE] = this; }
 
 
 
@@ -34514,7 +34612,7 @@ extends GOperator
 class GRandom
 extends GOperator
 {
-    static { nodeTypes[NUMBER_RANDOM] = this; }
+    static { GNode.types[NUMBER_RANDOM] = this; }
 
 
 
@@ -34808,7 +34906,7 @@ extends GOperator
 class GNoise
 extends GOperator
 {
-    static { nodeTypes[NUMBER_NOISE] = this; }
+    static { GNode.types[NUMBER_NOISE] = this; }
 
 
 
@@ -35195,7 +35293,7 @@ extends GOperator
 class GProbability
 extends GOperator2
 {
-    static { nodeTypes[PROBABILITY] = this; }
+    static { GNode.types[PROBABILITY] = this; }
 
 
 
@@ -35487,7 +35585,7 @@ extends GOperator2
 class GAccumulate
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_ACCUMULATE] = this; }
+    static { GNode.types[NUMBER_ACCUMULATE] = this; }
 
 
 
@@ -35675,7 +35773,7 @@ extends GOperator1
 class GHold
 extends GOperator1
 {
-    static { nodeTypes[HOLD] = this; }
+    static { GNode.types[HOLD] = this; }
 
 
 
@@ -35859,7 +35957,7 @@ extends GOperator1
 class GInterpolate
 extends GOperator
 {
-    static { nodeTypes[NUMBER_INTERPOLATE] = this; }
+    static { GNode.types[NUMBER_INTERPOLATE] = this; }
 
 
 
@@ -36121,7 +36219,7 @@ function interpolateNumberValue(values, index, nSegments, deg, degree, amount, m
 class GSolve
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_SOLVE] = this; }
+    static { GNode.types[NUMBER_SOLVE] = this; }
 
 
 
@@ -36378,7 +36476,7 @@ extends GOperator1
 class GAnimate
 extends GOperator
 {
-    static { nodeTypes[NUMBER_ANIMATE] = this; }
+    static { GNode.types[NUMBER_ANIMATE] = this; }
 
 
 
@@ -36618,7 +36716,7 @@ extends GOperator
 class GMath
 extends GArithmetic
 {
-    static { nodeTypes[NUMBER_MATH] = this; }
+    static { GNode.types[NUMBER_MATH] = this; }
 
 
 
@@ -37335,7 +37433,7 @@ function evalExponentStep(value, input, options)
 class GSimpleMath
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_SIMPLE_MATH] = this; }
+    static { GNode.types[NUMBER_SIMPLE_MATH] = this; }
 
 
 
@@ -37621,7 +37719,7 @@ function getSimpleMathValue(input, operand, op, invert, enabled)
 class GBoolean
 extends GArithmetic
 {
-    static { nodeTypes[NUMBER_BOOLEAN] = this; }
+    static { GNode.types[NUMBER_BOOLEAN] = this; }
 
 
 
@@ -37775,479 +37873,10 @@ extends GArithmetic
 }
 
 
-class GNot
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_NOT, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GNot(this.nodeId, this.options);
-        copy.copyBase(this);
-        copy.inputs = this.inputs.map(i => i.copy());
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        this.value = await evalNandInputs(this.inputs, parse);
-        
-
-        this.setUpdateValues(parse, 
-        [
-            ['', new NullValue()]
-            //['value', this.value]
-        ]);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-async function evalNandInputs(inputs, parse)
-{
-    if (isEmpty(inputs))
-        return NumberValue.NaN();
-
-
-    const value = new NumberValue();
-
-
-    if (!isEmpty(inputs))
-    {
-        const val0 = await evalNumberOrListValue(inputs[0], parse);
-        if (!val0.isValid()) return NumberValue.NaN();
-
-        if (    isListValueType(val0.type)
-            && !isEmpty(val0.items))
-        {
-            const item0 = val0.items[0];
-
-            value.value = item0.toNumber() != 0 ? 0 : 1;
-
-            for (let i = 1; i < val0.items.length; i++)
-            {
-                const item = val0.items[i];
-                
-                if (   item.type == NUMBER_VALUE
-                    && item.toNumber() == 0)
-                    value.value = 1;
-            }
-        }
-        else
-        {
-            if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN();
-
-            value.value = val0.toNumber() != 0 ? 0 : 1;
-        }
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            const val = await evalNumberOrListValue(inputs[i], parse);
-            if (!val.isValid()) return NumberValue.NaN();
-
-            if (isListValueType(val.type))
-            {
-                for (const item of val.items)
-                {
-                    if (   item.type == NUMBER_VALUE
-                        && item.toNumber() == 0)
-                        value.value = 1;
-                }
-            }
-            else
-            {
-                consoleAssert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-
-                if (val.toNumber() == 0)
-                    value.value = 1;
-            }
-        }
-    }
-
-
-    return value;
-}
-
-
-
-class GAnd
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_AND, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GAnd(this.nodeId, this.options);
-        copy.copyBase(this);
-        copy.inputs = this.inputs.map(i => i.copy());
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        this.value = await evalAndInputs(this.inputs, parse);
-        
-
-        this.setUpdateValues(parse, 
-        [
-            ['', new NullValue()]
-            //['value', this.value]
-        ]);
-
-        
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-async function evalAndInputs(inputs, parse)
-{
-    if (isEmpty(inputs))
-        return NumberValue.NaN();
-
-
-    const value = new NumberValue();
-
-
-    if (!isEmpty(inputs))
-    {
-        const val0 = await evalNumberOrListValue(inputs[0], parse);
-        if (!val0.isValid()) return NumberValue.NaN();
-
-
-        if (    isListValueType(val0.type)
-            && !isEmpty(val0.items))
-        {
-            const item0 = val0.items[0];
-
-            value.value = item0.toNumber();
-
-            for (let i = 1; i < val0.items.length; i++)
-            {
-                const item = val0.items[i];
-                
-                if (item.type == NUMBER_VALUE)
-                    value.value = Math.min(value.value, item.toNumber());
-            }
-        }
-        else
-        {
-            if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN();
-
-            value.value = val0.toNumber();
-        }
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            const val = await evalNumberOrListValue(inputs[i], parse);
-            if (!val.isValid()) return NumberValue.NaN();
-
-
-            if (isListValueType(val.type))
-            {
-                for (const item of val.items)
-                {
-                    if (item.type == NUMBER_VALUE)
-                        value.value = Math.min(value.value, item.toNumber());
-                }
-            }
-            else
-            {
-                consoleAssert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-
-                value.value = Math.min(value.value, val.toNumber());
-            }
-        }
-
-        
-        if (value.value != 0)
-            value.value = 1;
-    }
-
-
-    return value;
-}
-
-
-class GOr
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_OR, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GOr(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        copy.inputs = this.inputs.map(i => i.copy());
-
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        this.value = await evalOrInputs(this.inputs, parse);
-        
-
-        this.setUpdateValues(parse, 
-        [
-            ['', new NullValue()]
-            //['value', this.value]
-        ]);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-async function evalOrInputs(inputs, parse)
-{
-    if (isEmpty(inputs))
-        return NumberValue.NaN();
-
-
-    const value = new NumberValue();
-
-
-    if (!isEmpty(inputs))
-    {
-        const val0 = await evalNumberOrListValue(inputs[0], parse);
-        if (!val0.isValid()) return NumberValue.NaN();
-
-        if (    isListValueType(val0.type)
-            && !isEmpty(val0.items))
-        {
-            const item0 = val0.items[0];
-
-            value.value = item0.toNumber();
-
-            for (let i = 1; i < val0.items.length; i++)
-            {
-                const item = val0.items[i];
-                
-                if (item.type == NUMBER_VALUE)
-                    value.value = Math.max(value.value, item.toNumber());
-            }
-        }
-        else
-        {
-            if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN();
-
-            value.value = val0.toNumber();
-        }
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            const val = await evalNumberOrListValue(inputs[i], parse);
-            if (!val.isValid()) return NumberValue.NaN();
-
-            if (isListValueType(val.type))
-            {
-                for (const item of val.items)
-                {
-                    if (item.type == NUMBER_VALUE)
-                        value.value = Math.max(value.value, item.toNumber());
-                }
-            }
-            else
-            {
-                consoleAssert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-                    
-                value.value = Math.max(value.value, val.toNumber());
-            }
-        }
-
-
-        if (value.value != 0)
-            value.value = 1;
-    }
-
-
-    return value;
-}
-
-
-class GXor
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_XOR, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GXor(this.nodeId, this.options);
-        copy.copyBase(this);
-        copy.inputs = this.inputs.map(i => i.copy());
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        this.value = await evalXorInputs(this.inputs, parse);
-        
-
-        this.setUpdateValues(parse, 
-        [
-            ['', new NullValue()]
-            //['value', this.value]
-        ]);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-async function evalXorInputs(inputs, parse)
-{
-    if (isEmpty(inputs))
-        return NumberValue.NaN();
-
-
-    const value = new NumberValue(0);
-
-
-    let flipped;
-
-    if (!isEmpty(inputs))
-    {
-        const val0 = await evalNumberOrListValue(inputs[0], parse);
-        if (!val0.isValid()) return NumberValue.NaN();
-
-        if (    isListValueType(val0.type)
-            && !isEmpty(val0.items))
-        {
-            const item0 = val0.items[0];
-
-            flipped = item0.toNumber() != 0;
-
-            for (let i = 1; i < val0.items.length; i++)
-            {
-                const item = val0.items[i];
-                
-                if (   item.type == NUMBER_VALUE
-                    && item.toNumber() != 0)
-                    flipped++;
-            }
-        }
-        else
-        {
-            if (val0.type != NUMBER_VALUE)
-                return NumberValue.NaN();
-
-            flipped = val0.toNumber() != 0;
-        }
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            const val = await evalNumberOrListValue(inputs[i], parse);
-            if (!val.isValid()) return NumberValue.NaN();
-
-            if (isListValueType(val.type))
-            {
-                for (const item of val.items)
-                {
-                    if (   item.type == NUMBER_VALUE
-                        && item.toNumber() != 0)
-                        flipped++;
-                    }
-            }
-            else
-            {
-                consoleAssert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-                    
-                if (val.toNumber() != 0)
-                    flipped++;
-            }
-        }
-
-
-        value.value = flipped == 1 ? 1 : 0;
-    }
-
-
-    return value;
-}
-
-
 class GCompare
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_COMPARE] = this; }
+    static { GNode.types[NUMBER_COMPARE] = this; }
 
 
 
@@ -38465,7 +38094,7 @@ async function evalCompareNumberInputs(input, operand, compare)
 class GTrigonometric
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_TRIG] = this; }
+    static { GNode.types[NUMBER_TRIG] = this; }
 
 
 
@@ -38658,7 +38287,7 @@ async function getTrigValue(input, func, enabled)
 class GAtan2
 extends GOperator
 {
-    static { nodeTypes[NUMBER_ATAN2] = this; }
+    static { GNode.types[NUMBER_ATAN2] = this; }
 
 
 
@@ -38804,7 +38433,7 @@ extends GOperator
 class GConvertAngle
 extends GOperator1
 {
-    static { nodeTypes[CONVERT_ANGLE] = this; }
+    static { GNode.types[CONVERT_ANGLE] = this; }
 
 
 
@@ -39002,6 +38631,10 @@ function getConvertAngleValue(input, from, enabled)
 class GText
 extends GOperator1
 {
+    static { GNode.types[TEXT] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(TEXT, nodeId, options);
@@ -39097,6 +38730,10 @@ extends GOperator1
 class GTextLength
 extends GOperator1
 {
+    static { GNode.types[TEXT_LENGTH] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(TEXT_LENGTH, nodeId, options);
@@ -39208,6 +38845,10 @@ extends GOperator1
 class GTextTrim
 extends GOperator1
 {
+    static { GNode.types[TEXT_TRIM] = this; }
+
+
+
     start = null;
     end   = null;
 
@@ -39402,6 +39043,10 @@ extends GOperator1
 class GTextSubstring
 extends GOperator1
 {
+    static { GNode.types[TEXT_SUBSTRING] = this; }
+
+
+
     start = null;
     end   = null;
 
@@ -39627,6 +39272,10 @@ extends GOperator1
 class GTextContains
 extends GOperator1
 {
+    static { GNode.types[TEXT_CONTAINS] = this; }
+
+
+
     what;
 
 
@@ -39791,6 +39440,10 @@ extends GOperator1
 class GTextFind
 extends GOperator2
 {
+    static { GNode.types[TEXT_FIND] = this; }
+
+
+
     first;
     last;
     all;
@@ -39965,6 +39618,10 @@ extends GOperator2
 class GTextCase
 extends GOperator1
 {
+    static { GNode.types[TEXT_CASE] = this; }
+
+
+
     case;
 
 
@@ -40181,6 +39838,10 @@ extends GOperator1
 class GNumberToText
 extends GOperator1
 {
+    static { GNode.types[NUMBER_TO_TEXT] = this; }
+
+
+
     base;
     trim;
     decimals;
@@ -40552,6 +40213,10 @@ function getNumberToTextValue(input, base, trim, decimals, thousands)
 class GColorToText
 extends GOperator1
 {
+    static { GNode.types[COLOR_TO_TEXT] = this; }
+
+
+
     format;
     normalize;
     trimZeros;
@@ -41112,6 +40777,10 @@ function getColorValueToText(val, dec, trimZeros)
 class GColorToCss
 extends GOperator1
 {
+    static { GNode.types[COLOR_TO_CSS] = this; }
+
+
+
     format;
     percent;
     trimZeros;
@@ -41605,6 +41274,10 @@ function getColorToCssValue(input, format, percent, trimZeros)
 class GTextToNumber
 extends GOperator1
 {
+    static { GNode.types[TEXT_TO_NUMBER] = this; }
+
+
+
     base      = null;
     decimals  = null;
     thousands = null;
@@ -41844,6 +41517,10 @@ function getTextToNumberValue(input, base, decimals, thousands)
 class GTextToBoolean
 extends GOperator1
 {
+    static { GNode.types[TEXT_TO_BOOLEAN] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(TEXT_TO_BOOLEAN, nodeId, options);
@@ -41970,6 +41647,10 @@ function getTextToBooleanValue(input)
 class GTextToColor
 extends GOperator1
 {
+    static { GNode.types[TEXT_TO_COLOR] = this; }
+
+
+
     format;
 
 
@@ -42207,6 +41888,10 @@ function getTextToColorValue(str, format)
 class GCodeToCharacter
 extends GOperator1
 {
+    static { GNode.types[TEXT_CHAR] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(TEXT_CHAR, nodeId, options);
@@ -42327,6 +42012,10 @@ function getCodeToCharacterValue(input)
 class GCharacterToCode
 extends GOperator1
 {
+    static { GNode.types[TEXT_UNICODE] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(TEXT_UNICODE, nodeId, options);
@@ -42449,6 +42138,10 @@ function getCharacterToCodeValue(input)
 class GIndexToName
 extends GOperator
 {
+    static { GNode.types[INDEX_TO_NAME] = this; }
+
+
+
     name;
     index;
 
@@ -42638,6 +42331,10 @@ extends GOperator
 class GTextReplace
 extends GOperator1
 {
+    static { GNode.types[TEXT_REPLACE] = this; }
+
+
+
     what  = null;
     with  = null;
     regex = null;
@@ -42865,6 +42562,10 @@ extends GOperator1
 class GTextJoin
 extends GOperator
 {
+    static { GNode.types[TEXT_JOIN] = this; }
+
+
+
     inputs = [];
 
     with = null;
@@ -43111,6 +42812,10 @@ async function evalJoinItemInputs(inputs, _with, parse)
 class GAddText
 extends GOperator1
 {
+    static { GNode.types[TEXT_ADD] = this; }
+
+
+
     text;
     prefix;
 
@@ -43294,6 +42999,10 @@ extends GOperator1
 class GTextPad
 extends GOperator1
 {
+    static { GNode.types[TEXT_PAD] = this; }
+
+
+
     startPad   = null;
     startCount = null;
     endPad     = null;
@@ -43520,6 +43229,10 @@ function getPadValue(input, startPad, startCount, endPad, endCount, enabled)
 class GTextEscape
 extends GOperator1
 {
+    static { GNode.types[TEXT_ESCAPE] = this; }
+
+
+
     method;
 
 
@@ -43707,6 +43420,10 @@ function getTextEscapeValue(input, method)
 class GTextUnescape
 extends GOperator1
 {
+    static { GNode.types[TEXT_UNESCAPE] = this; }
+
+
+
     method;
 
 
@@ -43894,6 +43611,10 @@ function getTextUnescapeValue(input, method)
 class GTextSplit
 extends GOperator1
 {
+    static { GNode.types[TEXT_SPLIT] = this; }
+
+
+
     separator;
 
 
@@ -44065,6 +43786,10 @@ extends GOperator1
 class GTextCompare
 extends GOperator1
 {
+    static { GNode.types[TEXT_COMPARE] = this; }
+
+
+
     operation;
     operand;
 
@@ -44266,6 +43991,10 @@ async function evalCompareTextInputs(input, operand, op)
 class GParseCSV
 extends GOperator1
 {
+    static { GNode.types[PARSE_CSV] = this; }
+
+
+
     rowSeparator;
     columnSeparator;
 
@@ -44478,6 +44207,10 @@ extends GOperator1
 class GParseJson
 extends GOperator1
 {
+    static { GNode.types[PARSE_JSON] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(PARSE_JSON, nodeId, options);
@@ -44635,6 +44368,10 @@ extends GOperator1
 class GToJson
 extends GOperator1
 {
+    static { GNode.types[TO_JSON] = this; }
+
+
+
     quoteValues = null;
     snowNames   = null;
     singleLine  = null;
@@ -44837,6 +44574,10 @@ extends GOperator1
 class GTextFetch
 extends GOperator
 {
+    static { GNode.types[TEXT_FETCH] = this; }
+
+
+
     request;
     cachedValue;
 
@@ -45007,6 +44748,10 @@ extends GOperator
 class GTextFile
 extends GOperator
 {
+    static { GNode.types[TEXT_FILE] = this; }
+
+
+
     //path;
     
     cachedValue = null;
@@ -45709,6 +45454,10 @@ function getColorCorrections(colorSpace)
 class GColor
 extends GOperator1
 {
+    static { GNode.types[COLOR] = this; }
+
+
+
     space   = null;
     
    _c1      = null;
@@ -46220,6 +45969,10 @@ extends GOperator1
 class GValidColor
 extends GOperator1
 {
+    static { GNode.types[VALID_COLOR] = this; }
+    
+    
+    
     method       = null;
 
     corrections  = [];
@@ -46462,6 +46215,9 @@ async function getValidColorValue(parse, node, input, method)
 class GCorrectColor
 extends GOperator1
 {
+    static { GNode.types[CORRECT_COLOR] = this; }
+    
+    
     _order  = null;
     _c1     = null;
     _c2     = null;
@@ -46813,8 +46569,13 @@ extends GOperator1
 class GColorContrast
 extends GOperator2
 {
+    static { GNode.types[COLOR_CONTRAST] = this; }
+
+
+
     standard = null;
     contrast = null;
+
 
 
     constructor(nodeId, options)
@@ -47126,6 +46887,10 @@ extends GOperator2
 class GColorDifference
 extends GOperator2
 {
+    static { GNode.types[COLOR_DIFFERENCE] = this; }
+
+
+
     deltaE = null;
     space  = null;
     param1 = null;
@@ -47399,6 +47164,10 @@ extends GOperator2
 class GColorBlind
 extends GOperator1
 {
+    static { GNode.types[COLORBLIND] = this; }
+
+
+
     l;
     m;
     s;
@@ -47613,6 +47382,10 @@ function getColorBlindValue(input, l, m, s)
 class GColorScheme
 extends GOperator1
 {
+    static { GNode.types[COLOR_SCHEME] = this; }
+
+
+
     schemeType = null;
     space      = null;
 
@@ -47928,6 +47701,10 @@ extends GOperator1
 class GColorInterpolate
 extends GOperator
 {
+    static { GNode.types[COLOR_INTERPOLATE] = this; }
+
+
+
     inputs = [];
 
     space;
@@ -48243,8 +48020,13 @@ extends GOperator
 class GColorBlend
 extends GOperator2
 {
+    static { GNode.types[COLOR_BLEND] = this; }
+
+
+
     mode   = null;
     amount = null;
+
     
 
     constructor(nodeId, options)
@@ -48873,6 +48655,10 @@ function blendLuminosity(col, back, amount)
 class GColorStyle
 extends GOperator
 {
+    static { GNode.types[COLOR_STYLE] = this; }
+
+
+
     id;
 
     colorStyle;
@@ -49054,6 +48840,10 @@ extends GOperator
 class GFill
 extends GOperator1
 {
+    static { GNode.types[FILL] = this; }
+
+
+
     color   = null;
     opacity = null;
     blend   = null;
@@ -49288,6 +49078,10 @@ extends GOperator1
 class GColorStop
 extends GOperator1
 {
+    static { GNode.types[COLOR_STOP] = this; }
+
+
+
     fill     = null;
     position = null;
 
@@ -49517,6 +49311,10 @@ extends GOperator1
 class GGradient
 extends GOperator
 {
+    static { GNode.types[GRADIENT] = this; }
+
+
+
     inputs = [];
 
     gradType = null;
@@ -49888,6 +49686,10 @@ extends GOperator
 class GStroke
 extends GOperator1
 {
+    static { GNode.types[STROKE] = this; }
+
+
+
     fills  = null;
    _fills  = null; // actual fills that might need to be converted to a list, in case it's a color or a fill
     weight = null;
@@ -50206,6 +50008,10 @@ extends GOperator1
 class GStrokeSides
 extends GOperator1
 {
+    static { GNode.types[STROKE_SIDES] = this; }
+
+
+
     top    = null;
     left   = null;
     right  = null;
@@ -50429,6 +50235,10 @@ extends GOperator1
 class GRoundCorners
 extends GOperator1
 {
+    static { GNode.types[ROUND_CORNERS] = this; }
+
+
+
     tl = null;
     tr = null;
     bl = null;
@@ -50652,6 +50462,10 @@ extends GOperator1
 class GDropShadow
 extends GOperator1
 {
+    static { GNode.types[DROP_SHADOW] = this; }
+
+
+
     x      = null;
     y      = null;
     blur   = null;
@@ -50919,6 +50733,10 @@ extends GOperator1
 class GInnerShadow
 extends GOperator1
 {
+    static { GNode.types[INNER_SHADOW] = this; }
+
+
+
     x      = null;
     y      = null;
     blur   = null;
@@ -51173,6 +50991,10 @@ extends GOperator1
 class GLayerBlur
 extends GOperator1
 {
+    static { GNode.types[LAYER_BLUR] = this; }
+
+
+
     radius = null;
 
 
@@ -51357,6 +51179,10 @@ extends GOperator1
 class GBackBlur
 extends GOperator1
 {
+    static { GNode.types[BACK_BLUR] = this; }
+
+
+
     radius = null;
 
 
@@ -51541,6 +51367,10 @@ extends GOperator1
 class GLayerBlend
 extends GOperator
 {
+    static { GNode.types[LAYER_BLEND] = this; }
+
+
+
     opacity;
     blend;
 
@@ -51684,6 +51514,10 @@ extends GOperator
 class GLayerMask
 extends GOperator
 {
+    static { GNode.types[LAYER_MASK] = this; }
+
+
+
     maskType;
 
 
@@ -52129,6 +51963,10 @@ function addProps(obj, props)
 class GRectangle
 extends GShape
 {
+    static { GNode.types[RECTANGLE] = this; }
+
+
+
     round = null;
 
 
@@ -52419,6 +52257,10 @@ extends GShape
 class GLine
 extends GShape
 {
+    static { GNode.types[LINE] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(LINE, nodeId, options);
@@ -52660,6 +52502,10 @@ extends GShape
 class GEllipse
 extends GShape
 {
+    static { GNode.types[ELLIPSE] = this; }
+
+
+
     position = null;
     round    = null;
     start    = null;
@@ -53004,6 +52850,10 @@ extends GShape
 class GTrapeze
 extends GShape
 {
+    static { GNode.types[TRAPEZE] = this; }
+
+
+
     round = null;
     bias  = null;
 
@@ -53287,6 +53137,10 @@ extends GShape
 class GPolygon
 extends GShape
 {
+    static { GNode.types[POLYGON] = this; }
+
+
+
     position = null;
     round    = null;
     corners  = null;
@@ -53617,6 +53471,10 @@ extends GShape
 class GStar
 extends GShape
 {
+    static { GNode.types[STAR] = this; }
+
+
+
     position = null;
     round    = null;
     points   = null;
@@ -53961,6 +53819,10 @@ extends GShape
 class GTextShape
 extends GShape
 {
+    static { GNode.types[TEXT_SHAPE] = this; }
+
+
+
     text          = null;
     x             = null;
     y             = null;
@@ -54413,6 +54275,10 @@ extends GShape
 class GPoint
 extends GOperator1
 {
+    static { GNode.types[POINT] = this; }
+
+
+
     x = null;
     y = null;
 
@@ -54672,6 +54538,10 @@ extends GOperator1
 class GPointCorner
 extends GOperator1
 {
+    static { GNode.types[POINT_CORNER] = this; }
+
+
+
     smooth = null;
 
 
@@ -54889,6 +54759,10 @@ extends GOperator1
 class GVectorPath
 extends GShape
 {
+    static { GNode.types[VECTOR_PATH] = this; }
+
+
+
     points  = null;
     closed  = null;
     degree  = null;
@@ -55238,6 +55112,10 @@ extends GShape
 class GVectorVertex
 extends GOperator1
 {
+    static { GNode.types[VECTOR_VERTEX] = this; }
+
+
+
     x     = null;
     y     = null;
     join  = null;
@@ -55550,6 +55428,10 @@ extends GOperator1
 class GVectorEdge
 extends GOperator2
 {
+    static { GNode.types[VECTOR_EDGE] = this; }
+
+
+
     startTangent = null;
     endTangent   = null;
     
@@ -55817,6 +55699,10 @@ extends GOperator2
 class GVectorRegion
 extends GShape
 {
+    static { GNode.types[VECTOR_REGION] = this; }
+
+
+
     inputs  = [];
 
     loops   = null;
@@ -56179,6 +56065,10 @@ extends GShape
 class GVectorNetwork
 extends GShape
 {
+    static { GNode.types[VECTOR_NETWORK] = this; }
+
+
+
     inputs = [];
 
 
@@ -56435,6 +56325,10 @@ extends GShape
 class GArcPath
 extends GShape
 {
+    static { GNode.types[ARC_PATH] = this; }
+
+
+
     position = null;
     start    = null;
     sweep    = null;
@@ -56747,6 +56641,10 @@ extends GShape
 class GWavePath
 extends GShape
 {
+    static { GNode.types[WAVE_PATH] = this; }
+
+
+
     shape     = null;
     amplitude = null;
     frequency = null;
@@ -57108,6 +57006,10 @@ extends GShape
 class GShapeGroup
 extends GShapeBase
 {
+    static { GNode.types[SHAPE_GROUP] = this; }
+
+
+
     inputs = [];
 
 
@@ -57384,6 +57286,10 @@ extends GShapeBase
 class GFrame
 extends GShape
 {
+    static { GNode.types[FRAME] = this; }
+
+
+
     children = null;
     position = null;
     round    = null;
@@ -57752,6 +57658,10 @@ extends GShape
 class GApply
 extends GOperator1//Shape
 {
+    static { GNode.types[SHAPE_APPLY] = this; }
+
+
+
     props   = null;
     replace = null;
 
@@ -57998,6 +57908,10 @@ extends GOperator1//Shape
 class GShapeBoolean
 extends GShape
 {
+    static { GNode.types[SHAPE_BOOLEAN] = this; }
+
+
+
     children  = null;
     operation = null;
 
@@ -58342,6 +58256,10 @@ extends GShape
 class GRetain
 extends GShapeBase
 {
+    static { GNode.types[RETAIN] = this; }
+
+
+
     inputs  = [];
 
     retain = null;
@@ -58534,6 +58452,10 @@ extends GShapeBase
 class GExport
 extends GShapeBase
 {
+    static { GNode.types[EXPORT] = this; }
+
+
+
     inputs = [];
 
     scale;
@@ -58764,6 +58686,10 @@ extends GShapeBase
 class GMove
 extends GOperator1
 {
+    static { GNode.types[MOVE] = this; }
+
+
+
     moveType    = null;
     x           = null;
     y           = null;
@@ -59195,6 +59121,10 @@ extends GOperator1
 class GRotate
 extends GAffine
 {
+    static { GNode.types[ROTATE] = this; }
+
+
+
     angle = null;
 
 
@@ -59400,6 +59330,10 @@ extends GAffine
 class GScale
 extends GAffine
 {
+    static { GNode.types[SCALE] = this; }
+
+
+
     scaleX        = null;
     scaleY        = null;
     affectCorners = null;
@@ -59642,6 +59576,10 @@ extends GAffine
 class GSkew
 extends GAffine
 {
+    static { GNode.types[SKEW] = this; }
+
+
+
     skewX = null;
     skewY = null;
 
@@ -59859,6 +59797,10 @@ extends GAffine
 class GShowCenter
 extends GOperator1
 {
+    static { GNode.types[SHOW_CENTER] = this; }
+
+
+
     show = null;
 
 
@@ -60042,6 +59984,10 @@ extends GOperator1
 class GSetCenter
 extends GOperator1
 {
+    static { GNode.types[SET_CENTER] = this; }
+
+
+
     centerX = null;
     centerY = null;
     units   = null;
@@ -60141,9 +60087,9 @@ extends GOperator1
             this.value.objects = getValidObjects(this.input.value);
 
             
-            const centerX = options.centerX    ? options.centerX   .value : 0;
-            const centerY = options.centerY    ? options.centerY   .value : 0;
-            const units   = options.units      ? options.units     .value : 0;
+            const centerX = options.centerX ? options.centerX .value : 0;
+            const centerY = options.centerY ? options.centerY .value : 0;
+            const units   = options.units   ? options.units   .value : 0;
      
             const cx      = units == 0 ? centerX/100 : centerX;
             const cy      = units == 0 ? centerY/100 : centerY;
@@ -60277,6 +60223,10 @@ extends GOperator1
 class GResetTransform
 extends GOperator1
 {
+    static { GNode.types[RESET_XFORM] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(RESET_XFORM, nodeId, options);
@@ -60422,6 +60372,10 @@ extends GOperator1
 class GJoinPaths
 extends GShape
 {
+    static { GNode.types[JOIN_PATHS] = this; }
+
+
+
     inputs  = [];
 
     closed  = null;
@@ -60881,6 +60835,10 @@ extends GShape
 class GReorientPaths
 extends GShape
 {
+    static { GNode.types[REORIENT_PATHS] = this; }
+
+
+
     inputs  = [];
 
     reverse = null;
@@ -60889,7 +60847,7 @@ extends GShape
 
     constructor(nodeId, options)
     {
-        super(JOIN_PATHS, nodeId, options);
+        super(REORIENT_PATHS, nodeId, options);
     }
 
 
@@ -61238,6 +61196,10 @@ extends GShape
 class GMeasureVector
 extends GOperator1
 {
+    static { GNode.types[MEASURE_VECTOR] = this; }
+
+
+
     length = null;
     angle  = null;
 
@@ -61368,6 +61330,10 @@ extends GOperator1
 class GPointAngle
 extends GOperator1
 {
+    static { GNode.types[POINT_ANGLE] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(POINT_ANGLE, nodeId, options);
@@ -61495,6 +61461,10 @@ extends GOperator1
 class GVector
 extends GOperator2
 {
+    static { GNode.types[VECTOR] = this; }
+
+
+
     transform = null;
 
 
@@ -61722,6 +61692,10 @@ function getTransformFromAngle(a)
 class GCircleCenter
 extends GOperator3
 {
+    static { GNode.types[CIRCLE_CENTER] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(CIRCLE_CENTER, nodeId, options);
@@ -61879,6 +61853,10 @@ extends GOperator3
 class GArcFromPoints
 extends GShape
 {
+    static { GNode.types[ARC_FROM_POINTS] = this; }
+
+
+
     input0  = null;
     input1  = null;
     input2  = null;
@@ -62157,6 +62135,10 @@ extends GShape
 class GPathLength
 extends GOperator1
 {
+    static { GNode.types[PATH_LENGTH] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(PATH_LENGTH, nodeId, options);
@@ -62273,6 +62255,10 @@ extends GOperator1
 class GPointAlongPath
 extends GOperator1
 {
+    static { GNode.types[POINT_ALONG_PATH] = this; }
+
+
+
     position  = null;
     distance  = null;
     offset    = null;
@@ -62545,6 +62531,10 @@ extends GOperator1
 class GClosestPointOnPath
 extends GOperator2
 {
+    static { GNode.types[CLOSEST_POINT_ON_PATH] = this; }
+
+
+
     constrain = null;
     transform = null;
     
@@ -62784,6 +62774,10 @@ extends GOperator2
 class GIntersectLines
 extends GOperator4
 {
+    static { GNode.types[INTERSECT_LINES] = this; }
+
+
+
     segment = null;
 
 
@@ -63000,6 +62994,10 @@ extends GOperator4
 class GInterpolatePoint
 extends GOperator2
 {
+    static { GNode.types[INTERPOLATE_POINT] = this; }
+
+
+
     amount    = null;
     transform = null;
 
@@ -63198,6 +63196,10 @@ extends GOperator2
 class GReversePath
 extends GOperator1
 {
+    static { GNode.types[REVERSE_PATH] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(REVERSE_PATH, nodeId, options);
@@ -63335,6 +63337,10 @@ extends GOperator1
 class GBlendPath
 extends GShape
 {
+    static { GNode.types[BLEND_PATH] = this; }
+
+
+
     inputs = [];
 
     amount;
@@ -63600,6 +63606,10 @@ extends GShape
 class GPlace
 extends GOperator1
 {
+    static { GNode.types[PLACE] = this; }
+
+
+
     position  = null;
     transform = null;
     
@@ -63873,6 +63883,10 @@ function getTransformFromPoints(p0, p1, p2)
 class GGroupNode
 extends GOperator
 {
+    static { GNode.types[GROUP_NODE] = this; }
+
+
+
     paramIds = [];
     params   = [];
 
@@ -64025,6 +64039,10 @@ extends GOperator
 class GGroupParam
 extends GOperator
 {
+    static { GNode.types[GROUP_PARAM] = this; }
+
+
+
     input    = null;
     
     dataType = NULL;
@@ -64196,6 +64214,10 @@ extends GOperator
 class GComment
 extends GOperator
 {
+    static { GNode.types[COMMENT] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(COMMENT, nodeId, options);
@@ -64271,6 +64293,10 @@ extends GOperator
 class GCommentArrow
 extends GOperator
 {
+    static { GNode.types[COMMENT_ARROW] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(COMMENT_ARROW, nodeId, options);
@@ -64346,6 +64372,10 @@ extends GOperator
 class GPanel
 extends GOperator
 {
+    static { GNode.types[PANEL] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(PANEL, nodeId, options);
@@ -64569,6 +64599,236 @@ function genEndFigMessage()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+class Parse
+{
+    request;
+    requestId;
+    
+    pos; 
+    so;
+
+    settings = {};
+
+    save;
+
+
+    log  = '';
+    
+    nTab = 0;
+
+    get tab() { return this.inParam ? ' ' : (NL + HTAB.repeat(Math.max(0, this.nTab))); }
+
+    
+    inParam = false;
+
+
+    evalAccumulate = true;
+    evalFeedback   = true;
+
+    
+    updateNodeId;
+    updateParamId;
+
+    viewportZoom;
+
+    currentProgress = 0;
+    totalProgress   = 0;
+
+    scope           = []; // current parse stack
+    parsedNodes     = []; // must be evaluated to create the value updates
+  
+  
+    repeats         = [];
+    solvers         = [];
+  
+    stopGenerate    = false;
+  
+  
+    paramNodeIds    = [];
+  
+    updateParams    = [];
+    updateValues    = [];
+    updateObjects   = [];
+    updateStyles    = [];
+
+
+    terminalIds     = [];
+
+    
+
+    get next() { return this.request[this.pos]; }
+
+    get afterNext() 
+    { 
+        return this.pos+1 < this.request.length 
+             ? this.request[this.pos+1]
+             : null;
+    }
+
+
+
+    constructor(request, firstPos, requestId, updateNodeId, updateParamId, viewportZoom, settings, save)
+    {
+        this.request       = request;
+        this.requestId     = requestId;
+          
+        this.pos           = firstPos; 
+        this.so            = 0;
+        
+        this.updateNodeId  = updateNodeId; 
+        this.updateParamId = updateParamId;
+   
+        this.viewportZoom  = viewportZoom;
+
+        this.settings      = settings;
+
+        this.save          = save;
+    }
+
+
+
+    move()
+    {
+        //return this.request[this.pos++];
+
+        const token = this.request[this.pos++];
+        //console.log('token =', token);
+        return token;
+    }
+
+
+
+    isLastRepeat() 
+    {
+        return isEmpty(this.repeats)
+            ||    this.repeats.length == 1
+               && this.repeats[0].currentIteration == this.repeats[0].total-1;
+    }
+
+}
+
+
+
+function genParse(parse, inParam = true)
+{
+    //console.log('parse.next', parse.next);
+
+    if (!inParam)
+        parse.inParam = false;
+
+
+    let node;
+    
+    
+    const GClass = GNode.types[parse.next];
+    
+    if (GClass) 
+        node = GClass.parseRequest(parse);
+    
+    else
+        consoleError('unknown parse token \'' + parse.next + '\' @ ' + parse.pos);
+
+
+    parse.inParam = false;
+
+
+    if (node)
+        return node;
+    else
+    {
+        parse.so++;
+        return null;
+    }
+}
+
+
+
+function genParseNodeStart(parse)
+{
+    const type     = parse.move();
+    const nodeId   = parse.move();
+    const nodeName = decodeURIComponent(parse.move());
+
+    
+    parse.scope.push(nodeId);
+
+
+    if (parse.parsedNodes.find(n => n.nodeId == nodeId))
+        return [type, nodeId, {nodeName: nodeName}, true];
+
+
+    const options = genParseNodeOptions(parse);
+
+    options.nodeName = nodeName;
+
+
+    return [type, nodeId, options, false];
+}
+
+
+
+function genParseNodeEnd(parse, node = null)
+{
+    parse.scope.pop();
+
+    if (node)
+    {
+        if (isEmpty(parse.scope))
+            node.topLevel = true;
+
+        pushUnique(parse.parsedNodes, node);
+    }
+}
+
+
+
+function genParseNodeOptions(parse)
+{
+    const opt = parseInt(parse.move());
+
+    const options = 
+    {
+        active:       ((opt >>  0) & 1) != 0,
+        beforeActive: ((opt >>  1) & 1) != 0,
+        beforeList:   ((opt >>  2) & 1) != 0,
+        enabled:      ((opt >>  3) & 1) != 0,
+        cached:       ((opt >>  4) & 1) != 0,
+        unknown:      ((opt >>  5) & 1) != 0,
+        notCondition: ((opt >>  6) & 1) != 0,
+        hasInputs:    ((opt >> 20) & 1) != 0
+    };
+
+    return options;
+}
+
+
+
+function genParseParamCount(parse)
+{
+    const nParamIds = parseInt(parse.move());
+
+    if (parse.settings.logRequests) 
+        parse.log += parse.tab + nParamIds;
+
+    return nParamIds;
+}
+
+
+
+
+
+
+function genParseParamId(parse)
+{
+    const paramId = parse.move();
+
+    if (parse.settings.logRequests)
+        parse.log += parse.tab + paramId;
+
+    return paramId;
+}
 
 
 var lastRequestId     = -1;
@@ -65204,449 +65464,6 @@ async function genGetValueFromUi(key)
 
         self.addEventListener('message', handleMessage);
     });
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class Parse
-{
-    request;
-    requestId;
-    
-    pos; 
-    so;
-
-    settings = {};
-
-    save;
-
-
-    log  = '';
-    
-    nTab = 0;
-
-    get tab() { return this.inParam ? ' ' : (NL + HTAB.repeat(Math.max(0, this.nTab))); }
-
-    
-    inParam = false;
-
-
-    evalAccumulate = true;
-    evalFeedback   = true;
-
-    
-    updateNodeId;
-    updateParamId;
-
-    viewportZoom;
-
-    currentProgress = 0;
-    totalProgress   = 0;
-
-    scope           = []; // current parse stack
-    parsedNodes     = []; // must be evaluated to create the value updates
-  
-  
-    repeats         = [];
-    solvers         = [];
-  
-    stopGenerate    = false;
-  
-  
-    paramNodeIds    = [];
-  
-    updateParams    = [];
-    updateValues    = [];
-    updateObjects   = [];
-    updateStyles    = [];
-
-
-    terminalIds     = [];
-
-    
-
-    get next() { return this.request[this.pos]; }
-
-    get afterNext() 
-    { 
-        return this.pos+1 < this.request.length 
-             ? this.request[this.pos+1]
-             : null;
-    }
-
-
-
-    constructor(request, firstPos, requestId, updateNodeId, updateParamId, viewportZoom, settings, save)
-    {
-        this.request       = request;
-        this.requestId     = requestId;
-          
-        this.pos           = firstPos; 
-        this.so            = 0;
-        
-        this.updateNodeId  = updateNodeId; 
-        this.updateParamId = updateParamId;
-   
-        this.viewportZoom  = viewportZoom;
-
-        this.settings      = settings;
-
-        this.save          = save;
-    }
-
-
-
-    move()
-    {
-        //return this.request[this.pos++];
-
-        const token = this.request[this.pos++];
-        //console.log('token =', token);
-        return token;
-    }
-
-
-
-    isLastRepeat() 
-    {
-        return isEmpty(this.repeats)
-            ||    this.repeats.length == 1
-               && this.repeats[0].currentIteration == this.repeats[0].total-1;
-    }
-
-}
-
-
-
-function genParse(parse, inParam = true)
-{
-    //console.log('parse.next', parse.next);
-
-    if (!inParam)
-        parse.inParam = false;
-
-
-    const GClass = nodeTypes[parse.next];
-
-    if (GClass)
-    {
-        let node = nodeTypes[parse.next].parseRequest(parse);
-    }
-    else
-    {
-        consoleError('unknown parse token \'' + parse.next + '\' @ ' + parse.pos);
-    }
-
-
-    
-    else if (parse.next == NUMBER_MATH            ) node = GMath              .parseRequest(parse);
-    else if (parse.next == NUMBER_SIMPLE_MATH     ) node = GSimpleMath        .parseRequest(parse);
-    else if (parse.next == NUMBER_BOOLEAN         ) node = GBoolean           .parseRequest(parse);
-    else if (parse.next == NUMBER_COMPARE         ) node = GCompare           .parseRequest(parse);
-  
-    else if (parse.next == NUMBER_TRIG            ) node = GTrigonometric     .parseRequest(parse);
-    else if (parse.next == NUMBER_ATAN2           ) node = GAtan2             .parseRequest(parse);
- 
-    else if (parse.next == CONVERT_ANGLE          ) node = GConvertAngle      .parseRequest(parse);
-  
-    else if (parse.next == TEXT_VALUE             ) node = GTextValue         .parseRequest(parse);
-    else if (parse.next == TEXT                   ) node = GText              .parseRequest(parse);
-    else if (parse.next == TEXT_LENGTH            ) node = GTextLength        .parseRequest(parse);
-    else if (parse.next == TEXT_TRIM              ) node = GTextTrim          .parseRequest(parse);
-    else if (parse.next == TEXT_SUBSTRING         ) node = GTextSubstring     .parseRequest(parse);
-    else if (parse.next == TEXT_CONTAINS          ) node = GTextContains      .parseRequest(parse);
-    else if (parse.next == TEXT_FIND              ) node = GTextFind          .parseRequest(parse);
-    else if (parse.next == TEXT_CASE              ) node = GTextCase          .parseRequest(parse);
-    else if (parse.next == TEXT_CHAR              ) node = GCodeToCharacter   .parseRequest(parse);
-    else if (parse.next == TEXT_UNICODE           ) node = GCharacterToCode   .parseRequest(parse);
-    else if (parse.next == INDEX_TO_NAME          ) node = GIndexToName       .parseRequest(parse);
-    else if (parse.next == NUMBER_TO_TEXT         ) node = GNumberToText      .parseRequest(parse);
-    else if (parse.next == COLOR_TO_TEXT          ) node = GColorToText       .parseRequest(parse);
-    else if (parse.next == COLOR_TO_CSS           ) node = GColorToCss        .parseRequest(parse);
-    else if (parse.next == TEXT_TO_NUMBER         ) node = GTextToNumber      .parseRequest(parse);
-    else if (parse.next == TEXT_TO_BOOLEAN        ) node = GTextToBoolean     .parseRequest(parse);
-    else if (parse.next == TEXT_TO_COLOR          ) node = GTextToColor       .parseRequest(parse);
-    else if (parse.next == TEXT_REPLACE           ) node = GTextReplace       .parseRequest(parse);
-    else if (parse.next == TEXT_ADD               ) node = GAddText           .parseRequest(parse);
-    else if (parse.next == TEXT_JOIN              ) node = GTextJoin          .parseRequest(parse);
-    else if (parse.next == TEXT_PAD               ) node = GTextPad           .parseRequest(parse);
-    else if (parse.next == TEXT_ESCAPE            ) node = GTextEscape        .parseRequest(parse);
-    else if (parse.next == TEXT_UNESCAPE          ) node = GTextUnescape      .parseRequest(parse);
-    else if (parse.next == TEXT_COMPARE           ) node = GTextCompare       .parseRequest(parse);
-    else if (parse.next == TEXT_SPLIT             ) node = GTextSplit         .parseRequest(parse);
-    else if (parse.next == PARSE_CSV              ) node = GParseCSV          .parseRequest(parse);
-    else if (parse.next == PARSE_JSON             ) node = GParseJson         .parseRequest(parse);
-    else if (parse.next == TO_JSON                ) node = GToJson            .parseRequest(parse);
-    else if (parse.next == TEXT_FETCH             ) node = GTextFetch         .parseRequest(parse);
-    else if (parse.next == TEXT_FILE              ) node = GTextFile          .parseRequest(parse);
-  
-    else if (parse.next == COLOR_VALUE            ) node = ColorValue         .parseRequest(parse);
-    else if (parse.next == COLOR                  ) node = GColor             .parseRequest(parse);
-    else if (parse.next == VALID_COLOR            ) node = GValidColor        .parseRequest(parse);
-    else if (parse.next == CORRECT_COLOR          ) node = GCorrectColor      .parseRequest(parse);
-    else if (parse.next == COLOR_CONTRAST         ) node = GColorContrast     .parseRequest(parse);
-    else if (parse.next == COLOR_DIFFERENCE       ) node = GColorDifference   .parseRequest(parse);
-    else if (parse.next == COLORBLIND             ) node = GColorBlind        .parseRequest(parse);
-    else if (parse.next == COLOR_SCHEME           ) node = GColorScheme       .parseRequest(parse);
-    else if (parse.next == COLOR_INTERPOLATE      ) node = GColorInterpolate  .parseRequest(parse);
-    else if (parse.next == COLOR_BLEND            ) node = GColorBlend        .parseRequest(parse);
-       
-    else if (parse.next == FILL_VALUE             ) node = FillValue          .parseRequest(parse);
-    else if (parse.next == FILL                   ) node = GFill              .parseRequest(parse);
-       
-    else if (parse.next == COLOR_STOP_VALUE       ) node = ColorStopValue     .parseRequest(parse);
-    else if (parse.next == COLOR_STOP             ) node = GColorStop         .parseRequest(parse);
-       
-    else if (parse.next == GRADIENT_VALUE         ) node = GradientValue      .parseRequest(parse);
-    else if (parse.next == GRADIENT               ) node = GGradient          .parseRequest(parse);
-       
-    else if (parse.next == STROKE_VALUE           ) node = StrokeValue        .parseRequest(parse);
-    else if (parse.next == STROKE                 ) node = GStroke            .parseRequest(parse);
-       
-    else if (parse.next == STROKE_SIDES_VALUE     ) node = StrokeSidesValue   .parseRequest(parse);
-    else if (parse.next == STROKE_SIDES           ) node = GStrokeSides       .parseRequest(parse);
-       
-    else if (parse.next == ROUND_CORNERS_VALUE    ) node = RoundCornersValue  .parseRequest(parse);
-    else if (parse.next == ROUND_CORNERS          ) node = GRoundCorners      .parseRequest(parse);
-       
-    else if (parse.next == DROP_SHADOW_VALUE      ) node = DropShadowValue    .parseRequest(parse);
-    else if (parse.next == DROP_SHADOW            ) node = GDropShadow        .parseRequest(parse);
-       
-    else if (parse.next == INNER_SHADOW_VALUE     ) node = InnerShadowValue   .parseRequest(parse);
-    else if (parse.next == INNER_SHADOW           ) node = GInnerShadow       .parseRequest(parse);
-       
-    else if (parse.next == LAYER_BLUR_VALUE       ) node = LayerBlurValue     .parseRequest(parse);
-    else if (parse.next == LAYER_BLUR             ) node = GLayerBlur         .parseRequest(parse);
-       
-    else if (parse.next == BACK_BLUR_VALUE        ) node = BackBlurValue      .parseRequest(parse);
-    else if (parse.next == BACK_BLUR              ) node = GBackBlur          .parseRequest(parse);
- 
-    else if (parse.next == LAYER_BLEND_VALUE      ) node = LayerBlendValue    .parseRequest(parse);
-    else if (parse.next == LAYER_BLEND            ) node = GLayerBlend        .parseRequest(parse);
-       
-    else if (parse.next == LAYER_MASK_VALUE       ) node = LayerMaskValue     .parseRequest(parse);
-    else if (parse.next == LAYER_MASK             ) node = GLayerMask         .parseRequest(parse);
-       
-    else if (parse.next == COLOR_STYLE            ) node = GColorStyle        .parseRequest(parse);
-       
-    else if (parse.next == RECTANGLE              ) node = GRectangle         .parseRequest(parse);
-    else if (parse.next == LINE                   ) node = GLine              .parseRequest(parse);
-    else if (parse.next == ELLIPSE                ) node = GEllipse           .parseRequest(parse);
-    else if (parse.next == TRAPEZE                ) node = GTrapeze           .parseRequest(parse);
-    else if (parse.next == POLYGON                ) node = GPolygon           .parseRequest(parse);
-    else if (parse.next == STAR                   ) node = GStar              .parseRequest(parse);
-    else if (parse.next == TEXT_SHAPE             ) node = GTextShape         .parseRequest(parse);
- 
-    else if (parse.next == POINT_VALUE            ) node = PointValue         .parseRequest(parse);
-    else if (parse.next == POINT                  ) node = GPoint             .parseRequest(parse);
-    else if (parse.next == POINT_CORNER           ) node = GPointCorner       .parseRequest(parse);
-
-    else if (parse.next == VECTOR_PATH_VALUE      ) node = VectorPathValue    .parseRequest(parse);
-    else if (parse.next == VECTOR_PATH            ) node = GVectorPath        .parseRequest(parse);
-    
-    else if (parse.next == VECTOR_VERTEX_VALUE    ) node = VectorVertexValue  .parseRequest(parse);
-    else if (parse.next == VECTOR_VERTEX          ) node = GVectorVertex      .parseRequest(parse);
-
-    else if (parse.next == VECTOR_EDGE_VALUE      ) node = VectorEdgeValue    .parseRequest(parse);
-    else if (parse.next == VECTOR_EDGE            ) node = GVectorEdge        .parseRequest(parse);
-
-    else if (parse.next == VECTOR_REGION_VALUE    ) node = VectorRegionValue  .parseRequest(parse);
-    else if (parse.next == VECTOR_REGION          ) node = GVectorRegion      .parseRequest(parse);
-
-    else if (parse.next == VECTOR_NETWORK_VALUE   ) node = VectorNetworkValue .parseRequest(parse);
-    else if (parse.next == VECTOR_NETWORK         ) node = GVectorNetwork     .parseRequest(parse);
-
-    else if (parse.next == SHAPE_BOOLEAN_VALUE    ) node = ShapeBooleanValue  .parseRequest(parse);
-    else if (parse.next == SHAPE_BOOLEAN          ) node = GShapeBoolean      .parseRequest(parse);
-
-    else if (parse.next == ARC_PATH_VALUE         ) node = ArcPathValue       .parseRequest(parse);
-    else if (parse.next == ARC_PATH               ) node = GArcPath           .parseRequest(parse);
-
-    else if (parse.next == WAVE_PATH_VALUE        ) node = WavePathValue      .parseRequest(parse);
-    else if (parse.next == WAVE_PATH              ) node = GWavePath          .parseRequest(parse);
-
-    else if (parse.next == SHAPE_GROUP_VALUE      ) node = ShapeGroupValue    .parseRequest(parse);
-    else if (parse.next == SHAPE_GROUP            ) node = GShapeGroup        .parseRequest(parse);
- 
-    else if (parse.next == FRAME_VALUE            ) node = FrameValue         .parseRequest(parse);
-    else if (parse.next == FRAME                  ) node = GFrame             .parseRequest(parse);
- 
-    else if (parse.next == MOVE                   ) node = GMove              .parseRequest(parse);
-    else if (parse.next == ROTATE                 ) node = GRotate            .parseRequest(parse);
-    else if (parse.next == SCALE                  ) node = GScale             .parseRequest(parse);
-    else if (parse.next == SKEW                   ) node = GSkew              .parseRequest(parse);
-
-    else if (parse.next == SHOW_CENTER            ) node = GShowCenter        .parseRequest(parse);
-    else if (parse.next == SET_CENTER             ) node = GCenter            .parseRequest(parse);
-    else if (parse.next == RESET_XFORM            ) node = GResetTransform    .parseRequest(parse);
-
-    else if (parse.next == PATH_LENGTH            ) node = GPathLength        .parseRequest(parse);
-    else if (parse.next == JOIN_PATHS             ) node = GJoinPaths         .parseRequest(parse);
-    else if (parse.next == REORIENT_PATHS         ) node = GReorientPaths     .parseRequest(parse);
-    else if (parse.next == MEASURE_VECTOR         ) node = GMeasureVector     .parseRequest(parse);
-    else if (parse.next == POINT_ANGLE            ) node = GPointAngle        .parseRequest(parse);
-    else if (parse.next == VECTOR                 ) node = GVector            .parseRequest(parse);
-    else if (parse.next == CIRCLE_CENTER          ) node = GCircleCenter      .parseRequest(parse);
-    else if (parse.next == ARC_FROM_POINTS        ) node = GArcFromPoints     .parseRequest(parse);
-    else if (parse.next == INTERSECT_LINES        ) node = GIntersectLines    .parseRequest(parse);
-    else if (parse.next == INTERPOLATE_POINT      ) node = GInterpolatePoint  .parseRequest(parse);
-    else if (parse.next == POINT_ALONG_PATH       ) node = GPointAlongPath    .parseRequest(parse);
-    else if (parse.next == CLOSEST_POINT_ON_PATH  ) node = GClosestPointOnPath.parseRequest(parse);
-    else if (parse.next == REVERSE_PATH           ) node = GReversePath       .parseRequest(parse);
-    else if (parse.next == BLEND_PATH             ) node = GBlendPath         .parseRequest(parse);
-
-    else if (parse.next == PLACE                  ) node = GPlace             .parseRequest(parse);
-    else if (parse.next == SHAPE_APPLY            ) node = GShapeApply        .parseRequest(parse);
-    
-    else if (parse.next == RETAIN                 ) node = GRetain            .parseRequest(parse);
-    else if (parse.next == EXPORT                 ) node = GExport            .parseRequest(parse);
- 
-    else if (parse.next == GROUP_NODE             ) node = GGroupNode         .parseRequest(parse);
-    else if (parse.next == GROUP_PARAM            ) node = GGroupParam        .parseRequest(parse);
- 
-    else if (parse.next == COMMENT                ) node = GComment           .parseRequest(parse);
-    else if (parse.next == COMMENT_ARROW          ) node = GCommentArrow      .parseRequest(parse);
-    else if (parse.next == PANEL                  ) node = GPanel             .parseRequest(parse);
-
-    else consoleError('unknown parse token \'' + parse.next + '\' @ ' + parse.pos);
-
-
-    parse.inParam = false;
-
-
-    if (node)
-        return node;
-    else
-    {
-        parse.so++;
-        return null;
-    }
-}
-
-
-
-function genParseNodeStart(parse)
-{
-    const type     = parse.move();
-    const nodeId   = parse.move();
-    const nodeName = decodeURIComponent(parse.move());
-
-    
-    parse.scope.push(nodeId);
-
-
-    if (parse.parsedNodes.find(n => n.nodeId == nodeId))
-        return [type, nodeId, {nodeName: nodeName}, true];
-
-
-    const options = genParseNodeOptions(parse);
-
-    options.nodeName = nodeName;
-
-
-    return [type, nodeId, options, false];
-}
-
-
-
-function genParseNodeEnd(parse, node = null)
-{
-    parse.scope.pop();
-
-    if (node)
-    {
-        if (isEmpty(parse.scope))
-            node.topLevel = true;
-
-        pushUnique(parse.parsedNodes, node);
-    }
-}
-
-
-
-function genParseNodeOptions(parse)
-{
-    const opt = parseInt(parse.move());
-
-    const options = 
-    {
-        active:       ((opt >>  0) & 1) != 0,
-        beforeActive: ((opt >>  1) & 1) != 0,
-        beforeList:   ((opt >>  2) & 1) != 0,
-        enabled:      ((opt >>  3) & 1) != 0,
-        cached:       ((opt >>  4) & 1) != 0,
-        unknown:      ((opt >>  5) & 1) != 0,
-        notCondition: ((opt >>  6) & 1) != 0,
-        hasInputs:    ((opt >> 20) & 1) != 0
-    };
-
-    return options;
-}
-
-
-
-function genParseParamCount(parse)
-{
-    const nParamIds = parseInt(parse.move());
-
-    if (parse.settings.logRequests) 
-        parse.log += parse.tab + nParamIds;
-
-    return nParamIds;
-}
-
-
-
-
-
-
-function genParseParamId(parse)
-{
-    const paramId = parse.move();
-
-    if (parse.settings.logRequests)
-        parse.log += parse.tab + paramId;
-
-    return paramId;
 }
 
 

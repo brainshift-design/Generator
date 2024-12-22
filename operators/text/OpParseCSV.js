@@ -1,7 +1,7 @@
 class   OpParseCSV
 extends OperatorBase
 {
-    static { operatorTypes[PARSE_CSV] = this; }
+    static { Operator.types[PARSE_CSV] = this; }
 
 
 

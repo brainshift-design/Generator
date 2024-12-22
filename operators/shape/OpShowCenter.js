@@ -1,7 +1,7 @@
 class   OpShowCenter
 extends OperatorBase
 {
-    static { operatorTypes[SHOW_CENTER] = this; }
+    static { Operator.types[SHOW_CENTER] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class   OpBoundedNumber
 extends ResizableBase
 {
-    static { operatorTypes[BOUNDED_NUMBER] = this; }
+    static { Operator.types[BOUNDED_NUMBER] = this; }
 
 
 

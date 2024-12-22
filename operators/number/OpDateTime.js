@@ -1,7 +1,7 @@
 class   OpDateTime
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_DATETIME] = this; }
+    static { Operator.types[NUMBER_DATETIME] = this; }
 
 
 

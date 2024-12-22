@@ -1,7 +1,7 @@
 class   OpReorderList
 extends OperatorBase
 {
-    static { operatorTypes[REORDER_LIST] = this; }
+    static { Operator.types[REORDER_LIST] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class   OpCache
 extends OpFlowBase
 {
-    static { operatorTypes[CACHE] = this; }
+    static { Operator.types[CACHE] = this; }
 
 
 

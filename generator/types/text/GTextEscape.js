@@ -1,6 +1,10 @@
 class GTextEscape
 extends GOperator1
 {
+    static { GNode.types[TEXT_ESCAPE] = this; }
+
+
+
     method;
 
 

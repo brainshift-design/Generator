@@ -1,6 +1,9 @@
 class GCorrectColor
 extends GOperator1
 {
+    static { GNode.types[CORRECT_COLOR] = this; }
+    
+    
     _order  = null;
     _c1     = null;
     _c2     = null;

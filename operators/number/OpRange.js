@@ -1,7 +1,7 @@
 class   OpRange
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_RANGE] = this; }
+    static { Operator.types[NUMBER_RANGE] = this; }
 
 
 

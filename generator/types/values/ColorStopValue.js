@@ -1,6 +1,10 @@
 class ColorStopValue
 extends GValue
 {
+    static { GNode.types[COLOR_STOP_VALUE] = this; }
+
+
+
     fill;
     position;
 

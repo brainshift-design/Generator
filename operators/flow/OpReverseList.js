@@ -1,7 +1,7 @@
 class   OpReverseList
 extends OperatorBase
 {
-    static { operatorTypes[REVERSE_LIST] = this; }
+    static { Operator.types[REVERSE_LIST] = this; }
 
 
 

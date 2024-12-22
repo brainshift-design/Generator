@@ -1,7 +1,7 @@
 class   OpGroupParam
 extends OperatorBase
 {
-    static { operatorTypes[GROUP_PARAM] = this; }
+    static { Operator.types[GROUP_PARAM] = this; }
 
 
 

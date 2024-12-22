@@ -1,7 +1,7 @@
 class   OpInterpolatePoint
 extends OpShapeBase
 {
-    static { operatorTypes[INTERPOLATE_POINT] = this; }
+    static { Operator.types[INTERPOLATE_POINT] = this; }
 
 
 

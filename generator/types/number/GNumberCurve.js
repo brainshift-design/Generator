@@ -1,7 +1,7 @@
 class GNumberCurve
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_CURVE] = this; }
+    static { GNode.types[NUMBER_CURVE] = this; }
 
 
 

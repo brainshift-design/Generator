@@ -1,6 +1,10 @@
 class GTextJoin
 extends GOperator
 {
+    static { GNode.types[TEXT_JOIN] = this; }
+
+
+
     inputs = [];
 
     with = null;

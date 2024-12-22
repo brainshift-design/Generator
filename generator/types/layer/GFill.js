@@ -1,6 +1,10 @@
 class GFill
 extends GOperator1
 {
+    static { GNode.types[FILL] = this; }
+
+
+
     color   = null;
     opacity = null;
     blend   = null;

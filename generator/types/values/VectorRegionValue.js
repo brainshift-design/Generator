@@ -1,6 +1,10 @@
 class VectorRegionValue
 extends ShapeValue
 {
+    static { GNode.types[VECTOR_REGION_VALUE] = this; }
+
+
+
     loops;  
     winding;
 

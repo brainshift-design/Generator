@@ -1,7 +1,7 @@
 class OpDropShadow
 extends OperatorBase
 {
-    static { operatorTypes[DROP_SHADOW] = this; }
+    static { Operator.types[DROP_SHADOW] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class GConvertAngle
 extends GOperator1
 {
-    static { nodeTypes[CONVERT_ANGLE] = this; }
+    static { GNode.types[CONVERT_ANGLE] = this; }
 
 
 

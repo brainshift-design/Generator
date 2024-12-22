@@ -1,7 +1,7 @@
 class   OpLimits
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_LIMITS] = this; }
+    static { Operator.types[NUMBER_LIMITS] = this; }
 
 
 

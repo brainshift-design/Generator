@@ -1,7 +1,7 @@
 class   OpArcFromPoints
 extends OpShape
 {
-    static { operatorTypes[ARC_FROM_POINTS] = this; }
+    static { Operator.types[ARC_FROM_POINTS] = this; }
 
 
 

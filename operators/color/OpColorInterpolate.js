@@ -1,7 +1,7 @@
 class   OpColorInterpolate
 extends OpColorBase
 {
-    static { operatorTypes[COLOR_INTERPOLATE] = this; }
+    static { Operator.types[COLOR_INTERPOLATE] = this; }
 
 
 

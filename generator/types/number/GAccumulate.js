@@ -1,7 +1,7 @@
 class GAccumulate
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_ACCUMULATE] = this; }
+    static { GNode.types[NUMBER_ACCUMULATE] = this; }
 
 
 

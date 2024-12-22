@@ -1,6 +1,10 @@
 class GLayerMask
 extends GOperator
 {
+    static { GNode.types[LAYER_MASK] = this; }
+
+
+
     maskType;
 
 

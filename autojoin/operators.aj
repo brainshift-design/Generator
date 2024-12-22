@@ -126,14 +126,9 @@
 ../operators/number/arithmetic/OpSimpleMath.js
 ../operators/number/arithmetic/OpArithmetic.js
 
-../operators/number/boolean/OpBoolean.js
-../operators/number/boolean/OpBooleanBase.js
-../operators/number/boolean/OpNot.js
-../operators/number/boolean/OpAnd.js
-../operators/number/boolean/OpOr.js
-../operators/number/boolean/OpXor.js
 
-../operators/number/condition/OpCompare.js
+../operators/number/OpBoolean.js
+../operators/number/OpCompare.js
 
 ../operators/number/trigonometric/OpTrigonometric.js
 ../operators/number/trigonometric/OpAtan2.js

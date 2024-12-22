@@ -1,6 +1,10 @@
 class RoundCornersValue
 extends GValue
 {
+    static { GNode.types[ROUND_CORNERS_VALUE] = this; }
+
+
+
     tl;
     tr;
     bl;

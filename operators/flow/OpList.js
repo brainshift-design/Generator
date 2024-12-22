@@ -1,7 +1,7 @@
 class   OpList
 extends ResizableBase
 {
-    static { operatorTypes[LIST] = this; }
+    static { Operator.types[LIST] = this; }
 
 
 

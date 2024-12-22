@@ -1,7 +1,7 @@
 class OpRetain
 extends OpShapeBase
 {
-    static { operatorTypes[RETAIN] = this; }
+    static { Operator.types[RETAIN] = this; }
 
 
 

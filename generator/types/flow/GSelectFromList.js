@@ -1,7 +1,7 @@
 class GSelectFromList
 extends GOperator1
 {
-    static { nodeTypes[SELECT_FROM_LIST] = this; }
+    static { GNode.types[SELECT_FROM_LIST] = this; }
 
 
 

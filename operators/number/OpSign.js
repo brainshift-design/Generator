@@ -1,7 +1,7 @@
 class   OpSign
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_SIGN] = this; }
+    static { Operator.types[NUMBER_SIGN] = this; }
 
 
 

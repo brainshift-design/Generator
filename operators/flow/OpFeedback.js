@@ -1,7 +1,7 @@
 class   OpFeedback
 extends OperatorBase
 {
-    static { operatorTypes[FEEDBACK] = this; }
+    static { Operator.types[FEEDBACK] = this; }
 
 
 

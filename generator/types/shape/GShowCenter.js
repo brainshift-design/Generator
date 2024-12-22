@@ -1,6 +1,10 @@
 class GShowCenter
 extends GOperator1
 {
+    static { GNode.types[SHOW_CENTER] = this; }
+
+
+
     show = null;
 
 

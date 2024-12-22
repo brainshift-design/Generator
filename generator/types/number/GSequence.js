@@ -1,7 +1,7 @@
 class GSequence
 extends GOperator
 {
-    static { nodeTypes[NUMBER_SEQUENCE] = this; }
+    static { GNode.types[NUMBER_SEQUENCE] = this; }
 
 
 

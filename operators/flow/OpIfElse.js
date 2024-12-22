@@ -1,7 +1,7 @@
 class   OpIfElse
 extends OpFlowBase
 {
-    static { operatorTypes[IF_ELSE] = this; }
+    static { Operator.types[IF_ELSE] = this; }
     
     
     

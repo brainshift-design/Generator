@@ -1,7 +1,7 @@
 class   OpSetListValueNames
 extends OperatorBase
 {
-    static { operatorTypes[SET_LIST_VALUE_NAMES] = this; }
+    static { Operator.types[SET_LIST_VALUE_NAMES] = this; }
 
 
 

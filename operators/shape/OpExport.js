@@ -1,7 +1,7 @@
 class OpExport
 extends OpShapeBase
 {
-    static { operatorTypes[EXPORT] = this; }
+    static { Operator.types[EXPORT] = this; }
 
 
 

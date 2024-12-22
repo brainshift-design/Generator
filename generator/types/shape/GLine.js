@@ -1,6 +1,10 @@
 class GLine
 extends GShape
 {
+    static { GNode.types[LINE] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(LINE, nodeId, options);

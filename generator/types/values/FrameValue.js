@@ -1,6 +1,10 @@
 class FrameValue
 extends ShapeValue
 {
+    static { GNode.types[FRAME_VALUE] = this; }
+
+
+
     children;
     position;
     x;

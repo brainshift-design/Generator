@@ -1,7 +1,7 @@
 class GSort
 extends GOperator1
 {
-    static { nodeTypes[SORT] = this; }
+    static { GNode.types[SORT] = this; }
 
 
 

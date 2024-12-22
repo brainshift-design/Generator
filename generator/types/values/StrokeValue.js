@@ -1,6 +1,10 @@
 class StrokeValue
 extends GValue
 {
+    static { GNode.types[STROKE_VALUE] = this; }
+
+
+
     fills;
     weight;
     fit;

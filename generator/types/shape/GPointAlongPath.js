@@ -1,6 +1,10 @@
 class GPointAlongPath
 extends GOperator1
 {
+    static { GNode.types[POINT_ALONG_PATH] = this; }
+
+
+
     position  = null;
     distance  = null;
     offset    = null;

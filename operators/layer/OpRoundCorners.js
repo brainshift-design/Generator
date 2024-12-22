@@ -1,7 +1,7 @@
 class OpRoundCorners
 extends OperatorBase
 {
-    static { operatorTypes[ROUND_CORNERS] = this; }
+    static { Operator.types[ROUND_CORNERS] = this; }
 
 
 

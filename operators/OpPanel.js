@@ -6,7 +6,7 @@ const defPanelHeight = 400;
 class   OpPanel
 extends ResizableBase
 {
-    static { operatorTypes[PANEL] = this; }
+    static { Operator.types[PANEL] = this; }
 
 
 

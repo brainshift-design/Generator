@@ -1,7 +1,7 @@
 class GBooleanNumber
 extends GOperator1
 {
-    static { nodeTypes[BOOLEAN_NUMBER] = this; }
+    static { GNode.types[BOOLEAN_NUMBER] = this; }
 
 
 

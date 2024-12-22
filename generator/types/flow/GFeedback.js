@@ -1,7 +1,7 @@
 class GFeedback
 extends GOperator1
 {
-    static { nodeTypes[FEEDBACK] = this; }
+    static { GNode.types[FEEDBACK] = this; }
 
 
 

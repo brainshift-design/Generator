@@ -1,7 +1,7 @@
 class   OpIndexToName
 extends OperatorBase
 {
-    static { operatorTypes[INDEX_TO_NAME] = this; }
+    static { Operator.types[INDEX_TO_NAME] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class GCache
 extends GOperator1
 {
-    static { nodeTypes[CACHE] = this; }
+    static { GNode.types[CACHE] = this; }
 
 
 

@@ -1,6 +1,10 @@
 class GColorInterpolate
 extends GOperator
 {
+    static { GNode.types[COLOR_INTERPOLATE] = this; }
+
+
+
     inputs = [];
 
     space;

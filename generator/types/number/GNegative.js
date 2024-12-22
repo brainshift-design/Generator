@@ -1,7 +1,7 @@
 class GNegative
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_NEGATIVE] = this; }
+    static { GNode.types[NUMBER_NEGATIVE] = this; }
 
 
 

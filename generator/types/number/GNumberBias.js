@@ -1,7 +1,7 @@
 class GNumberBias
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_BIAS] = this; }
+    static { GNode.types[NUMBER_BIAS] = this; }
 
 
 

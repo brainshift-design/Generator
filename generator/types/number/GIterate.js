@@ -1,7 +1,7 @@
 class GIterate
 extends GOperator
 {
-    static { nodeTypes[ITERATE] = this; }
+    static { GNode.types[ITERATE] = this; }
 
 
 

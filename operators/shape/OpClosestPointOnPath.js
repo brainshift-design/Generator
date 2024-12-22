@@ -1,7 +1,7 @@
 class   OpClosestPointOnPath
 extends OpShapeBase
 {
-    static { operatorTypes[CLOSEST_POINT_ON_PATH] = this; }
+    static { Operator.types[CLOSEST_POINT_ON_PATH] = this; }
 
 
 

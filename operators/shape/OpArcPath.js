@@ -1,7 +1,7 @@
 class   OpArcPath
 extends OpShape
 {
-    static { operatorTypes[ARC_PATH] = this; }
+    static { Operator.types[ARC_PATH] = this; }
 
 
 

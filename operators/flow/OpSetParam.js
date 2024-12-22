@@ -1,7 +1,7 @@
 class   OpSetParam
 extends ResizableFlowBase
 {
-    static { operatorTypes[SET_PARAM] = this; }
+    static { Operator.types[SET_PARAM] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class   OpMeasureVector
 extends OpShapeBase
 {
-    static { operatorTypes[MEASURE_VECTOR] = this; }
+    static { Operator.types[MEASURE_VECTOR] = this; }
 
 
 

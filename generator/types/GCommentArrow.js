@@ -1,6 +1,10 @@
 class GCommentArrow
 extends GOperator
 {
+    static { GNode.types[COMMENT_ARROW] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(COMMENT_ARROW, nodeId, options);

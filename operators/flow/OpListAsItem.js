@@ -1,7 +1,7 @@
 class   OpListAsItem
 extends OperatorBase
 {
-    static { operatorTypes[LIST_AS_ITEM] = this; }
+    static { Operator.types[LIST_AS_ITEM] = this; }
 
 
 

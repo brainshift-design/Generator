@@ -1,6 +1,10 @@
 class GMove
 extends GOperator1
 {
+    static { GNode.types[MOVE] = this; }
+
+
+
     moveType    = null;
     x           = null;
     y           = null;

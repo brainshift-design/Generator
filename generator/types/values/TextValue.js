@@ -1,6 +1,10 @@
 class TextValue
 extends GValue
 {
+    static { GNode.types[TEXT_VALUE] = this; }
+
+
+
     value;
     initValue;
 

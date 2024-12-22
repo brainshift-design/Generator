@@ -1,7 +1,7 @@
 class   OpPlace
 extends OperatorBase
 {
-    static { operatorTypes[PLACE] = this; }
+    static { Operator.types[PLACE] = this; }
 
 
 

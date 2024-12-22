@@ -1,7 +1,7 @@
 class   OpSetPrecision
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_PRECISION] = this; }
+    static { Operator.types[NUMBER_PRECISION] = this; }
 
 
 

@@ -1,6 +1,10 @@
 class GEllipse
 extends GShape
 {
+    static { GNode.types[ELLIPSE] = this; }
+
+
+
     position = null;
     round    = null;
     start    = null;

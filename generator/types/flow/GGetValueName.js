@@ -1,7 +1,7 @@
 class GGetValueName
 extends GOperator1
 {
-    static { nodeTypes[GET_VALUE_NAME] = this; }
+    static { GNode.types[GET_VALUE_NAME] = this; }
 
 
 

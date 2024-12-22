@@ -1,7 +1,7 @@
 class   OpProbability
 extends OperatorBase
 {
-    static { operatorTypes[PROBABILITY] = this; }
+    static { Operator.types[PROBABILITY] = this; }
 
 
 

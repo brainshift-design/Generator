@@ -1,6 +1,10 @@
 class GPointCorner
 extends GOperator1
 {
+    static { GNode.types[POINT_CORNER] = this; }
+
+
+
     smooth = null;
 
 

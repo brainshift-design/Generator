@@ -1,7 +1,7 @@
 class   OpLine
 extends OpShape
 {
-    static { operatorTypes[LINE] = this; }
+    static { Operator.types[LINE] = this; }
 
 
 

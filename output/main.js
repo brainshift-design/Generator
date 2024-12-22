@@ -719,22 +719,9 @@ const NUMBER_SOLVE = 'SOLVE';
 const NUMBER_ANIMATE = 'NANIM';
 const NUMBER_SIMPLE_MATH = 'SMATH';
 const NUMBER_MATH = 'MATH';
-const NUMBER_ADD = 'ADD';
-const NUMBER_SUBTRACT = 'SUB';
-const NUMBER_MULTIPLY = 'MUL';
-const NUMBER_DIVIDE = 'DIV';
-const NUMBER_MODULO = 'MOD';
-const NUMBER_EXPONENT = 'EXP';
 const NUMBER_BOOLEAN = 'NBOOL';
-const NUMBER_NOT = 'NOT';
-const NUMBER_AND = 'AND';
-const NUMBER_OR = 'OR';
-const NUMBER_XOR = 'XOR';
 const NUMBER_COMPARE = 'CMP';
 const NUMBER_TRIG = 'TRIG';
-const NUMBER_SIN = 'SIN';
-const NUMBER_COS = 'COS';
-const NUMBER_TAN = 'TAN';
 const NUMBER_ATAN2 = 'ATAN2';
 const CONVERT_ANGLE = 'CNVANG';
 const TEXT_VALUE = 'TEXT#';
@@ -959,29 +946,16 @@ const FLOW_TYPES = [
 ];
 const MATH_TYPES = [
     NUMBER_MATH,
-    NUMBER_SIMPLE_MATH,
-    NUMBER_ADD,
-    NUMBER_SUBTRACT,
-    NUMBER_MULTIPLY,
-    NUMBER_DIVIDE,
-    NUMBER_MODULO,
-    NUMBER_EXPONENT
+    NUMBER_SIMPLE_MATH
 ];
 const NUMBER_BOOLEAN_TYPES = [
-    NUMBER_BOOLEAN,
-    NUMBER_NOT,
-    NUMBER_AND,
-    NUMBER_OR,
-    NUMBER_XOR
+    NUMBER_BOOLEAN
 ];
 const CONDITION_TYPES = [
     NUMBER_COMPARE
 ];
 const TRIG_TYPES = [
     NUMBER_TRIG,
-    NUMBER_SIN,
-    NUMBER_COS,
-    NUMBER_TAN,
     NUMBER_ATAN2
 ];
 const NUMBER_TYPES = [
@@ -1249,6 +1223,12 @@ const GROUP_TYPES = [
     GROUP_NODE,
     GROUP_PARAM
 ];
+const NUMBER_ADD = '+';
+const NUMBER_SUBTRACT = '-';
+const NUMBER_MULTIPLY = '*';
+const NUMBER_DIVIDE = '/';
+const NUMBER_MODULO = '%';
+const NUMBER_EXPONENT = '^';
 const MATH_OPS = [
     [NUMBER_MODULO, 'mod'],
     [NUMBER_DIVIDE, '/'], //'÷' ],

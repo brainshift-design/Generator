@@ -1,6 +1,10 @@
 class GVectorNetwork
 extends GShape
 {
+    static { GNode.types[VECTOR_NETWORK] = this; }
+
+
+
     inputs = [];
 
 

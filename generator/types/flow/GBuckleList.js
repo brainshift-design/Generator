@@ -1,7 +1,7 @@
 class GBuckleList
 extends GOperator1
 {
-    static { nodeTypes[BUCKLE_LIST] = this; }
+    static { GNode.types[BUCKLE_LIST] = this; }
 
 
 

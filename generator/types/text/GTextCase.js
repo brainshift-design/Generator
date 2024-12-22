@@ -1,6 +1,10 @@
 class GTextCase
 extends GOperator1
 {
+    static { GNode.types[TEXT_CASE] = this; }
+
+
+
     case;
 
 

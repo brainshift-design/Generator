@@ -1,6 +1,10 @@
 class GColorBlind
 extends GOperator1
 {
+    static { GNode.types[COLORBLIND] = this; }
+
+
+
     l;
     m;
     s;

@@ -1,6 +1,10 @@
 class GWavePath
 extends GShape
 {
+    static { GNode.types[WAVE_PATH] = this; }
+
+
+
     shape     = null;
     amplitude = null;
     frequency = null;

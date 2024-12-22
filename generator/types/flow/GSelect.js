@@ -1,7 +1,7 @@
 class GSelect
 extends GOperator
 {
-    static { nodeTypes[SELECT] = this; }
+    static { GNode.types[SELECT] = this; }
 
 
 

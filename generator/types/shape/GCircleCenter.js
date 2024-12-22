@@ -1,6 +1,10 @@
 class GCircleCenter
 extends GOperator3
 {
+    static { GNode.types[CIRCLE_CENTER] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(CIRCLE_CENTER, nodeId, options);

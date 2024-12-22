@@ -1,7 +1,7 @@
 class   OpNull
 extends OpFlowBase
 {
-    static { operatorTypes[NULL_NODE] = this; }
+    static { Operator.types[NULL_NODE] = this; }
     
     
     

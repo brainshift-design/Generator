@@ -1,7 +1,7 @@
 class GList
 extends GOperator
 {
-    static { nodeTypes[LIST] = this; }
+    static { GNode.types[LIST] = this; }
 
 
 

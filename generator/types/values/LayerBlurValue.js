@@ -1,6 +1,10 @@
 class LayerBlurValue
 extends GValue
 {
+    static { GNode.types[LAYER_BLUR_VALUE] = this; }
+
+
+
     radius;
     visible;
 

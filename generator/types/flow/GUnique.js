@@ -1,7 +1,7 @@
 class GUnique
 extends GOperator1
 {
-    static { nodeTypes[UNIQUE] = this; }
+    static { GNode.types[UNIQUE] = this; }
 
 
 

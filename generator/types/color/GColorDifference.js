@@ -1,6 +1,10 @@
 class GColorDifference
 extends GOperator2
 {
+    static { GNode.types[COLOR_DIFFERENCE] = this; }
+
+
+
     deltaE = null;
     space  = null;
     param1 = null;

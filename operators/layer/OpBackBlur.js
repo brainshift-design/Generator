@@ -1,7 +1,7 @@
 class OpBackBlur
 extends OperatorBase
 {
-    static { operatorTypes[BACK_BLUR] = this; }
+    static { Operator.types[BACK_BLUR] = this; }
 
 
 

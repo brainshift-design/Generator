@@ -1,6 +1,10 @@
 class VectorNetworkValue
 extends GValue
 {
+    static { GNode.types[VECTOR_NETWORK_VALUE] = this; }
+
+
+
     nodeId;
 
     regions;

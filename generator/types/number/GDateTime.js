@@ -1,7 +1,7 @@
 class GDateTime
 extends GOperator
 {
-    static { nodeTypes[NUMBER_DATETIME] = this; }
+    static { GNode.types[NUMBER_DATETIME] = this; }
 
 
 

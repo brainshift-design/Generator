@@ -1,7 +1,7 @@
 class   OpWave
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_WAVE] = this; }
+    static { Operator.types[NUMBER_WAVE] = this; }
 
 
 

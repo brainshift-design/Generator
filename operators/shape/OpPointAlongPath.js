@@ -1,7 +1,7 @@
 class   OpPointAlongPath
 extends OpShapeBase
 {
-    static { operatorTypes[POINT_ALONG_PATH] = this; }
+    static { Operator.types[POINT_ALONG_PATH] = this; }
 
 
 

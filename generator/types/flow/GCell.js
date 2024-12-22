@@ -1,7 +1,7 @@
 class GCell
 extends GOperator1
 {
-    static { nodeTypes[CELL] = this; }
+    static { GNode.types[CELL] = this; }
 
 
 

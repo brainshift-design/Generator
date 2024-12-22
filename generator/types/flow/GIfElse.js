@@ -1,7 +1,7 @@
 class GIfElse
 extends GOperator
 {
-    static { nodeTypes[IF_ELSE] = this; }
+    static { GNode.types[IF_ELSE] = this; }
     
     
     

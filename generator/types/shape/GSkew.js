@@ -1,6 +1,10 @@
 class GSkew
 extends GAffine
 {
+    static { GNode.types[SKEW] = this; }
+
+
+
     skewX = null;
     skewY = null;
 

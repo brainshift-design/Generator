@@ -1,6 +1,10 @@
 class GRotate
 extends GAffine
 {
+    static { GNode.types[ROTATE] = this; }
+
+
+
     angle = null;
 
 

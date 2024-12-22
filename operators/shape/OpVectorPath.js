@@ -1,7 +1,7 @@
 class   OpVectorPath
 extends OpShape
 {
-    static { operatorTypes[VECTOR_PATH] = this; }
+    static { Operator.types[VECTOR_PATH] = this; }
 
 
 

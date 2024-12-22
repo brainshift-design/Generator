@@ -1,7 +1,7 @@
 class GConstant
 extends GOperator
 {
-    static { nodeTypes[NUMBER_CONSTANT] = this; }
+    static { GNode.types[NUMBER_CONSTANT] = this; }
 
 
 

@@ -1,6 +1,10 @@
 class WavePathValue
 extends ShapeValue
 {
+    static { GNode.types[WAVE_PATH_VALUE] = this; }
+
+
+
     shape;
     x;
     y;

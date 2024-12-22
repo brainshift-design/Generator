@@ -1,8 +1,13 @@
 class GColorContrast
 extends GOperator2
 {
+    static { GNode.types[COLOR_CONTRAST] = this; }
+
+
+
     standard = null;
     contrast = null;
+
 
 
     constructor(nodeId, options)

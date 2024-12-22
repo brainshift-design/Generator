@@ -1,7 +1,7 @@
 class GNumberMap
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_MAP] = this; }
+    static { GNode.types[NUMBER_MAP] = this; }
 
 
 

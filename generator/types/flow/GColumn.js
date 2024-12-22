@@ -1,7 +1,7 @@
 class GColumn
 extends GOperator1
 {
-    static { nodeTypes[COLUMN] = this; }
+    static { GNode.types[COLUMN] = this; }
 
 
 

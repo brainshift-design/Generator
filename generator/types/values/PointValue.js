@@ -1,6 +1,10 @@
 class PointValue
 extends GValue
 {
+    static { GNode.types[POINT_VALUE] = this; }
+
+
+
     nodeId;
 
     x;

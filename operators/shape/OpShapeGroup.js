@@ -1,7 +1,7 @@
 class OpShapeGroup
 extends OpShapeBase
 {
-    static { operatorTypes[SHAPE_GROUP] = this; }
+    static { Operator.types[SHAPE_GROUP] = this; }
 
 
 

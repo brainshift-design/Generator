@@ -1,7 +1,7 @@
 class GParam
 extends GOperator
 {
-    static { nodeTypes[PARAM] = this; }
+    static { GNode.types[PARAM] = this; }
 
 
 

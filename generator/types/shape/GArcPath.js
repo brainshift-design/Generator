@@ -1,6 +1,10 @@
 class GArcPath
 extends GShape
 {
+    static { GNode.types[ARC_PATH] = this; }
+
+
+
     position = null;
     start    = null;
     sweep    = null;

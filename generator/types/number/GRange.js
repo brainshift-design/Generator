@@ -1,7 +1,7 @@
 class GRange
 extends GOperator
 {
-    static { nodeTypes[NUMBER_RANGE] = this; }
+    static { GNode.types[NUMBER_RANGE] = this; }
 
 
 

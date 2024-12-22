@@ -1,7 +1,7 @@
 class GWave
 extends GOperator
 {
-    static { nodeTypes[NUMBER_WAVE] = this; }
+    static { GNode.types[NUMBER_WAVE] = this; }
 
 
 

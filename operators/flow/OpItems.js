@@ -1,7 +1,7 @@
 class   OpItems
 extends ResizableBaseWithSeparator
 {
-    static { operatorTypes[ITEMS] = this; }
+    static { Operator.types[ITEMS] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class   OpSequence
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_SEQUENCE] = this; }
+    static { Operator.types[NUMBER_SEQUENCE] = this; }
 
 
 

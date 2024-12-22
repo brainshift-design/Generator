@@ -1,6 +1,10 @@
 class GArcFromPoints
 extends GShape
 {
+    static { GNode.types[ARC_FROM_POINTS] = this; }
+
+
+
     input0  = null;
     input1  = null;
     input2  = null;

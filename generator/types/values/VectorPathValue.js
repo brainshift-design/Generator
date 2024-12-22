@@ -1,6 +1,10 @@
 class VectorPathValue
 extends ShapeValue
 {
+    static { GNode.types[VECTOR_PATH_VALUE] = this; }
+
+
+
     points;
     closed;
     degree;

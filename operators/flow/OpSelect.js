@@ -1,7 +1,7 @@
 class   OpSelect
 extends ResizableBase
 {
-    static { operatorTypes[SELECT] = this; }
+    static { Operator.types[SELECT] = this; }
 
 
 

@@ -1,6 +1,10 @@
 class GTextUnescape
 extends GOperator1
 {
+    static { GNode.types[TEXT_UNESCAPE] = this; }
+
+
+
     method;
 
 

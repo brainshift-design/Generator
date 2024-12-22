@@ -1,7 +1,7 @@
 class GAbsolute
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_ABSOLUTE] = this; }
+    static { GNode.types[NUMBER_ABSOLUTE] = this; }
 
 
 

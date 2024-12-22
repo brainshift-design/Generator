@@ -1,6 +1,10 @@
 class GTextFile
 extends GOperator
 {
+    static { GNode.types[TEXT_FILE] = this; }
+
+
+
     //path;
     
     cachedValue = null;

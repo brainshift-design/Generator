@@ -1,6 +1,10 @@
 class GTrapeze
 extends GShape
 {
+    static { GNode.types[TRAPEZE] = this; }
+
+
+
     round = null;
     bias  = null;
 

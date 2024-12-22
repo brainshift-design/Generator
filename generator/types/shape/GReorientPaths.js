@@ -1,6 +1,10 @@
 class GReorientPaths
 extends GShape
 {
+    static { GNode.types[REORIENT_PATHS] = this; }
+
+
+
     inputs  = [];
 
     reverse = null;
@@ -9,7 +13,7 @@ extends GShape
 
     constructor(nodeId, options)
     {
-        super(JOIN_PATHS, nodeId, options);
+        super(REORIENT_PATHS, nodeId, options);
     }
 
 

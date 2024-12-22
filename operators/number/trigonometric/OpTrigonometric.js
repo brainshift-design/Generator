@@ -1,7 +1,7 @@
 class   OpTrigonometric
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_TRIG] = this; }
+    static { Operator.types[NUMBER_TRIG] = this; }
 
 
 

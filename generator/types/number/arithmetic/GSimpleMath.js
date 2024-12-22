@@ -1,7 +1,7 @@
 class GSimpleMath
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_SIMPLE_MATH] = this; }
+    static { GNode.types[NUMBER_SIMPLE_MATH] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class OpStroke
 extends OpColorBase
 {
-    static { operatorTypes[STROKE] = this; }
+    static { Operator.types[STROKE] = this; }
 
 
 

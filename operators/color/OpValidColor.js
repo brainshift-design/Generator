@@ -1,7 +1,7 @@
 class   OpValidColor
 extends OpColorBase
 {
-    static { operatorTypes[VALID_COLOR] = this; }
+    static { Operator.types[VALID_COLOR] = this; }
 
 
 

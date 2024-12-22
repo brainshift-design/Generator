@@ -1,7 +1,7 @@
 class GItemCount
 extends GOperator1
 {
-    static { nodeTypes[ITEM_COUNT] = this; }
+    static { GNode.types[ITEM_COUNT] = this; }
 
 
 

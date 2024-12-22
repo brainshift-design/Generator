@@ -1,6 +1,10 @@
 class GTextPad
 extends GOperator1
 {
+    static { GNode.types[TEXT_PAD] = this; }
+
+
+
     startPad   = null;
     startCount = null;
     endPad     = null;

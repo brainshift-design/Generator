@@ -1,7 +1,7 @@
 class   OpBuckleList
 extends OperatorBase
 {
-    static { operatorTypes[BUCKLE_LIST] = this; }
+    static { Operator.types[BUCKLE_LIST] = this; }
 
 
 

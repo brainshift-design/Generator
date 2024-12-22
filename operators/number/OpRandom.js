@@ -1,7 +1,7 @@
 class   OpRandom
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_RANDOM] = this; }
+    static { Operator.types[NUMBER_RANDOM] = this; }
 
 
 

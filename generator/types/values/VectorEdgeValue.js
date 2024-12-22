@@ -1,6 +1,10 @@
 class VectorEdgeValue
 extends GValue
 {
+    static { GNode.types[VECTOR_EDGE_VALUE] = this; }
+
+
+
     nodeId;
 
     start;

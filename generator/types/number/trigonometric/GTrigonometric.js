@@ -1,7 +1,7 @@
 class GTrigonometric
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_TRIG] = this; }
+    static { GNode.types[NUMBER_TRIG] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class   OpSort
 extends OperatorBase
 {
-    static { operatorTypes[SORT] = this; }
+    static { Operator.types[SORT] = this; }
 
 
 

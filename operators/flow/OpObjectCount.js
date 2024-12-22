@@ -1,7 +1,7 @@
 class   OpObjectCount
 extends OperatorBase
 {
-    static { operatorTypes[OBJECT_COUNT] = this; }
+    static { Operator.types[OBJECT_COUNT] = this; }
 
 
 

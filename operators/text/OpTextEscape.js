@@ -1,7 +1,7 @@
 class   OpTextEscape
 extends OperatorBase
 {
-    static { operatorTypes[TEXT_ESCAPE] = this; }
+    static { Operator.types[TEXT_ESCAPE] = this; }
 
 
 

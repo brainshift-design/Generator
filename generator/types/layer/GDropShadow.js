@@ -1,6 +1,10 @@
 class GDropShadow
 extends GOperator1
 {
+    static { GNode.types[DROP_SHADOW] = this; }
+
+
+
     x      = null;
     y      = null;
     blur   = null;

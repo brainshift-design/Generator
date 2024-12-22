@@ -1,7 +1,7 @@
 class   OpAtan2
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_ATAN2] = this; }
+    static { Operator.types[NUMBER_ATAN2] = this; }
 
 
 

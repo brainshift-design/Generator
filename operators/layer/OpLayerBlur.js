@@ -1,7 +1,7 @@
 class OpLayerBlur
 extends OperatorBase
 {
-    static { operatorTypes[LAYER_BLUR] = this; }
+    static { Operator.types[LAYER_BLUR] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class   OpAnimate
 extends OperatorBase //WithValue
 {
-    static { operatorTypes[NUMBER_ANIMATE] = this; }
+    static { Operator.types[NUMBER_ANIMATE] = this; }
 
 
 

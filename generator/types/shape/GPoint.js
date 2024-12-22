@@ -1,6 +1,10 @@
 class GPoint
 extends GOperator1
 {
+    static { GNode.types[POINT] = this; }
+
+
+
     x = null;
     y = null;
 

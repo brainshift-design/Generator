@@ -1,7 +1,7 @@
 class   OpAbsolute
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_ABSOLUTE] = this; }
+    static { Operator.types[NUMBER_ABSOLUTE] = this; }
 
 
 

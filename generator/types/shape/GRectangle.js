@@ -1,6 +1,10 @@
 class GRectangle
 extends GShape
 {
+    static { GNode.types[RECTANGLE] = this; }
+
+
+
     round = null;
 
 

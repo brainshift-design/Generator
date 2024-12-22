@@ -1,6 +1,10 @@
 class GParseJson
 extends GOperator1
 {
+    static { GNode.types[PARSE_JSON] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(PARSE_JSON, nodeId, options);

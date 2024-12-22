@@ -1,6 +1,10 @@
 class GFrame
 extends GShape
 {
+    static { GNode.types[FRAME] = this; }
+
+
+
     children = null;
     position = null;
     round    = null;

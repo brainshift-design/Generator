@@ -1,7 +1,7 @@
 class   OpFrame
 extends OpShape
 {
-    static { operatorTypes[FRAME] = this; }
+    static { Operator.types[FRAME] = this; }
 
 
 

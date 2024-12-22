@@ -1,7 +1,7 @@
 class   OpTextToColor
 extends OperatorBase
 {
-    static { operatorTypes[TEXT_TO_COLOR] = this; }
+    static { Operator.types[TEXT_TO_COLOR] = this; }
 
 
 

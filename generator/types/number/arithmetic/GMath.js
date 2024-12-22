@@ -1,7 +1,7 @@
 class GMath
 extends GArithmetic
 {
-    static { nodeTypes[NUMBER_MATH] = this; }
+    static { GNode.types[NUMBER_MATH] = this; }
 
 
 

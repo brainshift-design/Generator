@@ -1,7 +1,7 @@
 class   OpSetCenter
 extends OperatorBase
 {
-    static { operatorTypes[SET_CENTER] = this; }
+    static { Operator.types[SET_CENTER] = this; }
 
 
 

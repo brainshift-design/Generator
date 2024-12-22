@@ -1,6 +1,10 @@
 class InnerShadowValue
 extends GValue
 {
+    static { GNode.types[INNER_SHADOW_VALUE] = this; }
+
+
+
     x;
     y;
     blur;

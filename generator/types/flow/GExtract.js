@@ -1,7 +1,7 @@
 class GExtract
 extends GOperator1
 {
-    static { nodeTypes[EXTRACT] = this; }
+    static { GNode.types[EXTRACT] = this; }
 
 
 

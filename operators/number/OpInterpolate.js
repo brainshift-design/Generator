@@ -1,7 +1,7 @@
 class   OpInterpolate
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_INTERPOLATE] = this; }
+    static { Operator.types[NUMBER_INTERPOLATE] = this; }
 
 
 

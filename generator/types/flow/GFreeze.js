@@ -1,7 +1,7 @@
 class GFreeze
 extends GOperator1
 {
-    static { nodeTypes[FREEZE] = this; }
+    static { GNode.types[FREEZE] = this; }
 
 
 

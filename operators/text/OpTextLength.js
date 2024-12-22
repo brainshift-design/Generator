@@ -1,7 +1,7 @@
 class   OpTextLength
 extends OperatorBase
 {
-    static { operatorTypes[TEXT_LENGTH] = this; }
+    static { Operator.types[TEXT_LENGTH] = this; }
 
 
 

@@ -1,6 +1,10 @@
 class GClosestPointOnPath
 extends GOperator2
 {
+    static { GNode.types[CLOSEST_POINT_ON_PATH] = this; }
+
+
+
     constrain = null;
     transform = null;
     

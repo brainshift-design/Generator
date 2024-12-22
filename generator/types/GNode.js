@@ -1,10 +1,10 @@
-const nodeTypes = {};
-
-
-
 class GNode
 {
+    static types = {};
+
+    
     static nextUniqueId = 0;
+
 
     type;
 

@@ -1,6 +1,10 @@
 class GColorToText
 extends GOperator1
 {
+    static { GNode.types[COLOR_TO_TEXT] = this; }
+
+
+
     format;
     normalize;
     trimZeros;

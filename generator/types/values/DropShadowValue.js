@@ -1,6 +1,10 @@
 class DropShadowValue
 extends GValue
 {
+    static { GNode.types[DROP_SHADOW_VALUE] = this; }
+
+
+
     x;
     y;
     blur;

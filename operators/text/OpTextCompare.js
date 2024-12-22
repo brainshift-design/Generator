@@ -1,7 +1,7 @@
 class   OpTextCompare
 extends OperatorBase
 {
-    static { operatorTypes[TEXT_COMPARE] = this; }
+    static { Operator.types[TEXT_COMPARE] = this; }
 
 
 

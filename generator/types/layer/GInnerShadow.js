@@ -1,6 +1,10 @@
 class GInnerShadow
 extends GOperator1
 {
+    static { GNode.types[INNER_SHADOW] = this; }
+
+
+
     x      = null;
     y      = null;
     blur   = null;

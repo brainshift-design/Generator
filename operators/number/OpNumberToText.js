@@ -1,7 +1,7 @@
 class   OpNumberToText
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_TO_TEXT] = this; }
+    static { Operator.types[NUMBER_TO_TEXT] = this; }
 
 
 

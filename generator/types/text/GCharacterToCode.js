@@ -1,6 +1,10 @@
 class GCharacterToCode
 extends GOperator1
 {
+    static { GNode.types[TEXT_UNICODE] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(TEXT_UNICODE, nodeId, options);

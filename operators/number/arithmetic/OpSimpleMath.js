@@ -1,7 +1,7 @@
 class   OpSimpleMath
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_SIMPLE_MATH] = this; }
+    static { Operator.types[NUMBER_SIMPLE_MATH] = this; }
 
 
 

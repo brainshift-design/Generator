@@ -1,7 +1,7 @@
 class GSolve
 extends GOperator1
 {
-    static { nodeTypes[NUMBER_SOLVE] = this; }
+    static { GNode.types[NUMBER_SOLVE] = this; }
 
 
 

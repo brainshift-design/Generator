@@ -1,7 +1,7 @@
 class GSublist
 extends GOperator1
 {
-    static { nodeTypes[SUBLIST] = this; }
+    static { GNode.types[SUBLIST] = this; }
 
 
 

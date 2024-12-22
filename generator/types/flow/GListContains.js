@@ -1,7 +1,7 @@
 class GListContains
 extends GOperator2
 {
-    static { nodeTypes[LIST_CONTAINS] = this; }
+    static { GNode.types[LIST_CONTAINS] = this; }
 
 
 

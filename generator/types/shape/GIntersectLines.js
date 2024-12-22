@@ -1,6 +1,10 @@
 class GIntersectLines
 extends GOperator4
 {
+    static { GNode.types[INTERSECT_LINES] = this; }
+
+
+
     segment = null;
 
 

@@ -596,14 +596,6 @@ function initGeneratorMenus()
         new MenuItem('Min / max (many)', null, false, {icon: iconMulti, createType: NUMBER_MINMAX, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MINMAX, btnNumber.div, getCreateOptions(e)))})]);
         
 
-    menuBoolean = new Menu('Boolean', true, false);
-    menuBoolean.addItems([
-        new MenuItem('And', null, false, {icon: iconAnd, createType: NUMBER_AND, callback: e => actionManager.do(getCreateNodeAction(NUMBER_AND, btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Or',  null, false, {icon: iconOr , createType: NUMBER_OR,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_OR,  btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Xor', null, false, {icon: iconXor, createType: NUMBER_XOR, callback: e => actionManager.do(getCreateNodeAction(NUMBER_XOR, btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Not', null, false, {icon: iconNot, createType: NUMBER_NOT, callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOT, btnNumber.div, getCreateOptions(e)))})]);
-        
-    
     menuNumberBase = new Menu('Numbers', true, false);
     menuNumberBase.addItems([
                            new MenuItem('Precision',      null, false, {icon: iconNumberPrecision, createType: NUMBER_PRECISION, callback: e => actionManager.do(getCreateNodeAction(NUMBER_PRECISION, btnNumber.div, getCreateOptions(e)))}),

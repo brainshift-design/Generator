@@ -1,6 +1,10 @@
 class GGroupNode
 extends GOperator
 {
+    static { GNode.types[GROUP_NODE] = this; }
+
+
+
     paramIds = [];
     params   = [];
 

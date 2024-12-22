@@ -1,7 +1,7 @@
 class GReorderList
 extends GOperator1
 {
-    static { nodeTypes[REORDER_LIST] = this; }
+    static { GNode.types[REORDER_LIST] = this; }
 
 
 

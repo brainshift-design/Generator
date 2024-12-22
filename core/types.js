@@ -426,23 +426,13 @@ const FLOW_TYPES =
 const MATH_TYPES =
 [
     NUMBER_MATH,
-    NUMBER_SIMPLE_MATH,
-    NUMBER_ADD,
-    NUMBER_SUBTRACT,
-    NUMBER_MULTIPLY,
-    NUMBER_DIVIDE,
-    NUMBER_MODULO,
-    NUMBER_EXPONENT
+    NUMBER_SIMPLE_MATH
 ];
 
 
 const NUMBER_BOOLEAN_TYPES =
 [
-    NUMBER_BOOLEAN,
-    NUMBER_NOT,
-    NUMBER_AND,
-    NUMBER_OR,
-    NUMBER_XOR
+    NUMBER_BOOLEAN
 ];
 
 
@@ -784,6 +774,14 @@ const GROUP_TYPES =
     GROUP_NODE,
     GROUP_PARAM
 ];
+
+
+const NUMBER_ADD      = '+';
+const NUMBER_SUBTRACT = '-';
+const NUMBER_MULTIPLY = '*';
+const NUMBER_DIVIDE   = '/';
+const NUMBER_MODULO   = '%';
+const NUMBER_EXPONENT = '^';
 
 
 const MATH_OPS = 

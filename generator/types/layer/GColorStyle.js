@@ -1,6 +1,10 @@
 class GColorStyle
 extends GOperator
 {
+    static { GNode.types[COLOR_STYLE] = this; }
+
+
+
     id;
 
     colorStyle;

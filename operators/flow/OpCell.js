@@ -1,7 +1,7 @@
 class   OpCell
 extends OperatorBase
 {
-    static { operatorTypes[CELL] = this; }
+    static { Operator.types[CELL] = this; }
 
 
 

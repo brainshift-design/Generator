@@ -1,7 +1,7 @@
 class   OpRound
 extends OperatorBase
 {
-    static { operatorTypes[NUMBER_ROUND] = this; }
+    static { Operator.types[NUMBER_ROUND] = this; }
 
 
 

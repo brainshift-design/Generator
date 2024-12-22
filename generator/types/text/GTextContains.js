@@ -1,6 +1,10 @@
 class GTextContains
 extends GOperator1
 {
+    static { GNode.types[TEXT_CONTAINS] = this; }
+
+
+
     what;
 
 

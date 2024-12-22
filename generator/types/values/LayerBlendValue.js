@@ -1,6 +1,10 @@
 class LayerBlendValue
 extends GValue
 {
+    static { GNode.types[LAYER_BLEND_VALUE] = this; }
+
+
+
     opacity;
     blend;
 

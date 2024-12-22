@@ -1,6 +1,10 @@
 class GPanel
 extends GOperator
 {
+    static { GNode.types[PANEL] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(PANEL, nodeId, options);

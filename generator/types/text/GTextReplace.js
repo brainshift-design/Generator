@@ -1,6 +1,10 @@
 class GTextReplace
 extends GOperator1
 {
+    static { GNode.types[TEXT_REPLACE] = this; }
+
+
+
     what  = null;
     with  = null;
     regex = null;

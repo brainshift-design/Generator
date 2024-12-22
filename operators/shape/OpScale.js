@@ -1,7 +1,7 @@
 class   OpScale
 extends OpAffine
 {
-    static { operatorTypes[SCALE] = this; }
+    static { Operator.types[SCALE] = this; }
 
 
 

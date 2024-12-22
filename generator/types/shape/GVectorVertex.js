@@ -1,6 +1,10 @@
 class GVectorVertex
 extends GOperator1
 {
+    static { GNode.types[VECTOR_VERTEX] = this; }
+
+
+
     x     = null;
     y     = null;
     join  = null;

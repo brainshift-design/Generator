@@ -1,7 +1,7 @@
 class   OpMove
 extends OperatorBase
 {
-    static { operatorTypes[MOVE] = this; }
+    static { Operator.types[MOVE] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class   OpFilter
 extends OperatorBase
 {
-    static { operatorTypes[FILTER] = this; }
+    static { Operator.types[FILTER] = this; }
 
 
 

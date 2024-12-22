@@ -1,7 +1,7 @@
 class   OpTimer
 extends OperatorBase
 {
-    static { operatorTypes[TIMER] = this; }
+    static { Operator.types[TIMER] = this; }
 
 
 

@@ -1,7 +1,7 @@
 class   OpPoint
 extends OpShapeBase
 {
-    static { operatorTypes[POINT] = this; }
+    static { Operator.types[POINT] = this; }
 
 
 

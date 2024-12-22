@@ -1,6 +1,10 @@
 class GShapeBoolean
 extends GShape
 {
+    static { GNode.types[SHAPE_BOOLEAN] = this; }
+
+
+
     children  = null;
     operation = null;
 

@@ -1,6 +1,10 @@
 class GLayerBlur
 extends GOperator1
 {
+    static { GNode.types[LAYER_BLUR] = this; }
+
+
+
     radius = null;
 
 

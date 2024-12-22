@@ -1,6 +1,10 @@
 class GNumberToText
 extends GOperator1
 {
+    static { GNode.types[NUMBER_TO_TEXT] = this; }
+
+
+
     base;
     trim;
     decimals;

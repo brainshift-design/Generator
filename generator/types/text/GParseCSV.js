@@ -1,6 +1,10 @@
 class GParseCSV
 extends GOperator1
 {
+    static { GNode.types[PARSE_CSV] = this; }
+
+
+
     rowSeparator;
     columnSeparator;
 

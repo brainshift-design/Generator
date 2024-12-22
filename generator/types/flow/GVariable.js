@@ -1,7 +1,7 @@
 class GVariable
 extends GOperator1
 {
-    static { nodeTypes[VARIABLE] = this; }
+    static { GNode.types[VARIABLE] = this; }
 
 
 

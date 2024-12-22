@@ -1,7 +1,7 @@
 class   OpIterate
 extends OperatorBase
 {
-    static { operatorTypes[ITERATE] = this; }
+    static { Operator.types[ITERATE] = this; }
 
 
 

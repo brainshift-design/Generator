@@ -1,7 +1,7 @@
 class   OpListFind
 extends OperatorBase
 {
-    static { operatorTypes[LIST_FIND] = this; }
+    static { Operator.types[LIST_FIND] = this; }
 
 
 

@@ -1,6 +1,10 @@
 class GIndexToName
 extends GOperator
 {
+    static { GNode.types[INDEX_TO_NAME] = this; }
+
+
+
     name;
     index;
 

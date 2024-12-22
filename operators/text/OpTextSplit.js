@@ -1,7 +1,7 @@
 class   OpTextSplit
 extends OperatorBase
 {
-    static { operatorTypes[TEXT_SPLIT] = this; }
+    static { Operator.types[TEXT_SPLIT] = this; }
 
 
 

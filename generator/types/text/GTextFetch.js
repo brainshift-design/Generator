@@ -1,6 +1,10 @@
 class GTextFetch
 extends GOperator
 {
+    static { GNode.types[TEXT_FETCH] = this; }
+
+
+
     request;
     cachedValue;
 

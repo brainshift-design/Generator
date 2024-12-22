@@ -1,7 +1,7 @@
 class   OpCommentArrow
 extends OperatorBase
 {
-    static { operatorTypes[COMMENT_ARROW] = this; }
+    static { Operator.types[COMMENT_ARROW] = this; }
 
 
 

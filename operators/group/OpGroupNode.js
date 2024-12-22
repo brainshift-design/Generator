@@ -1,7 +1,7 @@
 class   OpGroupNode
 extends OperatorBase
 {
-    static { operatorTypes[GROUP_NODE] = this; }
+    static { Operator.types[GROUP_NODE] = this; }
 
 
 

@@ -1,6 +1,10 @@
 class GStroke
 extends GOperator1
 {
+    static { GNode.types[STROKE] = this; }
+
+
+
     fills  = null;
    _fills  = null; // actual fills that might need to be converted to a list, in case it's a color or a fill
     weight = null;

@@ -1,7 +1,7 @@
 class GProbability
 extends GOperator2
 {
-    static { nodeTypes[PROBABILITY] = this; }
+    static { GNode.types[PROBABILITY] = this; }
 
 
 

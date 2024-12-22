@@ -1,7 +1,7 @@
 class   OpBooleanNumber
 extends ResizableBase
 {
-    static { operatorTypes[BOOLEAN_NUMBER] = this; }
+    static { Operator.types[BOOLEAN_NUMBER] = this; }
 
 
 

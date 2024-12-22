@@ -1,6 +1,10 @@
 class GComment
 extends GOperator
 {
+    static { GNode.types[COMMENT] = this; }
+
+
+
     constructor(nodeId, options)
     {
         super(COMMENT, nodeId, options);

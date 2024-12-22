@@ -1,7 +1,7 @@
 class GObjectCount
 extends GOperator1
 {
-    static { nodeTypes[OBJECT_COUNT] = this; }
+    static { GNode.types[OBJECT_COUNT] = this; }
 
 
 

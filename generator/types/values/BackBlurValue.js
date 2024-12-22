@@ -1,6 +1,10 @@
 class BackBlurValue
 extends GValue
 {
+    static { GNode.types[BACK_BLUR_VALUE] = this; }
+
+
+
     radius;
     visible;
 

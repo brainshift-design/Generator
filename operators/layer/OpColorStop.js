@@ -1,7 +1,7 @@
 class OpColorStop
 extends OpColorBase
 {
-    static { operatorTypes[COLOR_STOP] = this; }
+    static { Operator.types[COLOR_STOP] = this; }
 
 
 
