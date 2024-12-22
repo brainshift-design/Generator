@@ -128,7 +128,7 @@ extends GArithmetic
             logReq(math, parse, ignore, nInputs);
 
 
-        if (ignore) 
+        if (ignore)
         {
             genParseNodeEnd(parse, math);
             return parse.parsedNodes.find(n => n.nodeId == nodeId);

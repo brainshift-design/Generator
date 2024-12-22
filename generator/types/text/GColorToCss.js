@@ -374,7 +374,7 @@ function getColorToCssValue(input, format, percent, trimZeros)
                     'oklab('
                     +       getColorValueToText(lab[0], Math.max(dec1, 3), trimZeros.value > 0)
                     + ' ' + getColorValueToText(lab[2], Math.max(dec3, 3), trimZeros.value > 0)
-                    + ' ' + getColorValueToText(lab[1], Math.max(dec2, 3), trimZeros.value > 0)
+                    + ' ' + getColorValueToText(lab[1], Math.max(dec2, 3), trimZeros.value > 0);
 
                 if (input.type == FILL_VALUE)
                     str += ' / ' + getColorValueToText(rgba[3], Math.max(dec4, 3), trimZeros.value > 0);
@@ -407,7 +407,7 @@ function getColorToCssValue(input, format, percent, trimZeros)
                     'lab('
                     +       getColorValueToText(lab[0], Math.max(dec1, 3), trimZeros.value > 0)
                     + ' ' + getColorValueToText(lab[2], Math.max(dec3, 3), trimZeros.value > 0)
-                    + ' ' + getColorValueToText(lab[1], Math.max(dec2, 3), trimZeros.value > 0)
+                    + ' ' + getColorValueToText(lab[1], Math.max(dec2, 3), trimZeros.value > 0);
 
                 if (input.type == FILL_VALUE)
                     str += ' / ' + getColorValueToText(rgba[3], Math.max(dec4, 3), trimZeros.value > 0);

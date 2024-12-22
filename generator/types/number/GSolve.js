@@ -247,4 +247,63 @@ extends GOperator1
         if (this.current) this.current.iterateLoop(parse);
         if (this.target ) this.target .iterateLoop(parse);
     }
+
+
+    static parseRequest(parse)
+    {
+        const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    
+    
+        const solve = new GSolve(nodeId, options);
+       
+    
+        let nTerminals = -1;
+    
+        nTerminals = parseInt(parse.move());
+        consoleAssert(nTerminals >= 0, 'nTerminals must be >= 0');
+    
+        for (let i = 0; i < nTerminals; i++)
+            solve.terminalIds.push(parse.move());
+    
+    
+        solve.currentConnected = parseInt(parse.move()) > 0;
+    
+    
+        let nInputs = -1;
+        
+        if (!ignore)
+        {
+            nInputs = parseInt(parse.move());
+            consoleAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        }
+ 
+        
+        if (parse.settings.logRequests) 
+            logReqSolve(solve, parse, ignore, nInputs);
+    
+    
+        if (ignore) 
+        {
+            genParseNodeEnd(parse, solve);
+            return parse.parsedNodes.find(n => n.nodeId == nodeId);
+        }
+    
+    
+        parse.nTab++;
+    
+    
+        if (nInputs == 1)
+            solve.input = genParse(parse);
+    
+        
+        solve.current = genParse(parse);
+        solve.target  = genParse(parse);
+    
+        
+        parse.nTab--;
+    
+    
+        genParseNodeEnd(parse, solve);
+        return solve;
+    }
 }

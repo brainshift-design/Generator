@@ -2769,7 +2769,6 @@ divName
 toJsCode
 connectedInput
 connectedOutput
-NumberValue.parse
 getParamInputValuesForUndo
 getParamOutputValuesForUndo
 input_getBackInitValue
@@ -2784,8 +2783,6 @@ setOptions
 initTooltip
 loadParam
 _param
-TextValue.parse
-ColorValue.parse
 initOptionParamMenu
 indexPad
 MenuItem
@@ -3400,7 +3397,6 @@ preSetValue
 finalListTypeFromValues
 itemName
 showZero
-ListValue.parse
 initInput
 initOutput
 setColorParams
@@ -3588,8 +3584,6 @@ minmax
 sminmax
 _const
 _fills
-GradientValue.parse
-FillValue.parse
 nOutputs
 nParams
 _while
@@ -3618,8 +3612,6 @@ evalExponentInputs
 toNumber
 toPreviewString
 toDisplayString
-BackBlurValue.parse
-LayerBlendValue.parse
 hasInitValue
 lockedOrder
 locked1
@@ -3730,11 +3722,8 @@ showProgress
 iterationObjects
 itemIndex
 loopId
-StrokeValue.parse
-DropShadowValue.parse
-InnerShadowValue.parse
-LayerBlurValue.parse
-RoundCornersValue.parse
+GColorToCss
+GAddText
 input_onconnect
 input_ondisconnect
 output_onconnect
