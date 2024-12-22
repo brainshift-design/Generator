@@ -29,12 +29,13 @@ extends OperatorBase
     
         this.paramOperation.controls[0].textValues =
         [
-            [0, '%', 'mod'],
-            [1, '/'       ],
-            [2, '-'       ],
-            [3, '+'       ],
-            [4, '*'       ],
-            [5, '^'       ] 
+            // [0, '%', 'mod'],
+            [0, '%'],
+            [1, '/'],
+            [2, '-'],
+            [3, '+'],
+            [4, '*'],
+            [5, '^'] 
         ];
         
     
@@ -122,17 +123,17 @@ extends OperatorBase
         this.paramOperation.enableControlText(true);
 
         
-        // switch (this.paramOperation.value.value)
-        // {
-        //     case 0: this.icon = iconModulo;   this.iconOffsetY =  1; break;
-        //     case 1: this.icon = iconDivide;   this.iconOffsetY =  0; break;
-        //     case 2: this.icon = iconSubtract; this.iconOffsetY = -2; break;
-        //     case 3: this.icon = iconAdd;      this.iconOffsetY =  1; break;
-        //     case 4: this.icon = iconMultiply; this.iconOffsetY =  2; break;
-        //     case 5: this.icon = iconExponent; this.iconOffsetY = -2; break;
-        // }
+        switch (this.paramOperation.value.value)
+        {
+            case 0: this.icon = iconModulo;   this.iconOffsetY =  1; break;
+            case 1: this.icon = iconDivide;   this.iconOffsetY =  0; break;
+            case 2: this.icon = iconSubtract; this.iconOffsetY = -2; break;
+            case 3: this.icon = iconAdd;      this.iconOffsetY =  1; break;
+            case 4: this.icon = iconMultiply; this.iconOffsetY =  2; break;
+            case 5: this.icon = iconExponent; this.iconOffsetY = -2; break;
+        }
 
-        // this.updateIcon();
+        this.updateIcon();
 
 
         this.updateParamControls();

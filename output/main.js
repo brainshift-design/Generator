@@ -1230,7 +1230,7 @@ const NUMBER_DIVIDE = '/';
 const NUMBER_MODULO = '%';
 const NUMBER_EXPONENT = '^';
 const MATH_OPS = [
-    [NUMBER_MODULO, 'mod'],
+    [NUMBER_MODULO, '%'], //'mod' ],
     [NUMBER_DIVIDE, '/'], //'÷' ],
     [NUMBER_SUBTRACT, '−'],
     [NUMBER_ADD, '+'],

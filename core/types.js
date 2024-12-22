@@ -786,7 +786,7 @@ const NUMBER_EXPONENT = '^';
 
 const MATH_OPS = 
 [   // the order is important for logical keyboard value changes
-    [NUMBER_MODULO,   'mod' ],
+    [NUMBER_MODULO,   '%' ], //'mod' ],
     [NUMBER_DIVIDE,   '/' ], //'÷' ],
     [NUMBER_SUBTRACT, '−' ],
     [NUMBER_ADD,      '+' ],
