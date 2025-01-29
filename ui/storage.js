@@ -86,6 +86,7 @@ async function uiReturnFigGetLocalData(msg)
         case 'allowInvertParams':
         case 'activateDeactiatesOthers':
         case 'preferHtmlColorNames':
+        case 'normalizeRandomNumbers':
         case 'randomShiftR':
         case 'colorShiftR':
         case 'numberShiftR':

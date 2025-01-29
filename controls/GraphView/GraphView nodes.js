@@ -548,26 +548,33 @@ GraphView.prototype.getRandomizedNumberValues = function(numbers)
                     ? ctrl.minDisplay
                     : 0;
             
-        let _max = Math.random();
+        if (settings.normalizeRandomNumbers)
+        {
+            return new NumberValue(Math.random());
+        }
+        else
+        {
+            let _max = Math.random();
 
-        const m1 = 0.4;
-        const m2 = 0.8;
-        const m3 = 0.97;
+            const m1 = 0.4;
+            const m2 = 0.8;
+            const m3 = 0.97;
 
-             if (_max <  m1              ) _max = 100;
-        else if (_max >= m1 && _max <  m2) _max = 1000;
-        else if (_max >= m2 && _max <  m3) _max = 10000;
-        else if (              _max >= m3) _max = 100000;
+                 if (_max <  m1              ) _max = 100;
+            else if (_max >= m1 && _max <  m2) _max = 1000;
+            else if (_max >= m2 && _max <  m3) _max = 10000;
+            else if (              _max >= m3) _max = 100000;
 
-        const max = 
-            !isNaN(connectedMax)
-                ? connectedMax
-                : ctrl.maxDisplay != Number.MAX_SAFE_INTEGER
-                    ? ctrl.maxDisplay
-                    : _max;
+            const max = 
+                !isNaN(connectedMax)
+                    ? connectedMax
+                    : ctrl.maxDisplay != Number.MAX_SAFE_INTEGER
+                        ? ctrl.maxDisplay
+                        : _max;
 
-        return new NumberValue(
-            Math.round(min + Math.random() * (max - min)));
+            return new NumberValue(
+                Math.round(min + Math.random() * (max - min)));
+        }
     });
 
     return [params, values];

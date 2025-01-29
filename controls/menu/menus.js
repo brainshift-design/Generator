@@ -175,6 +175,7 @@ var menuItemShowBoolValues;
 var menuItemSeparateThousands;
 var menuItemAllowInvertParams;
 var menuItemActivateDeactiatesOthers;
+var menuItemNormalizeRandomNumbers;
 var menuItemRandomShiftR;
 var menuItemColorShiftR;
 var menuItemNumberShiftR;
@@ -1353,6 +1354,7 @@ function initPreferenceMenus()
         menuItemAllowInvertParams          = new MenuItem('Allow inverting of parameters',            null, false, {checkCallback: () => settings.allowInvertParams,                         callback: () => { updateSettingAndMenu('allowInvertParams',          true, !settings.allowInvertParams);          updateMenuItemAllowInvertParams();          }}),
         menuItemActivateDeactiatesOthers   = new MenuItem('Activate deactivates others',              null, false, {checkCallback: () => settings.activateDeactiatesOthers,                  callback: () => { updateSettingAndMenu('activateDeactiatesOthers',   true, !settings.activateDeactiatesOthers);                                               }}),
         menuItemPreferHtmlColorNames       = new MenuItem('Prefer HTML color names',                  null, false, {checkCallback: () => settings.preferHtmlColorNames,                      callback: () => { updateSettingAndMenu('preferHtmlColorNames',       true, !settings.preferHtmlColorNames);                                                   }}),
+        menuItemNormalizeRandomNumbers     = new MenuItem('Normalize random numbers ( 0...1)',          null, false, {checkCallback: () => settings.normalizeRandomNumbers,                    callback: () => { updateSettingAndMenu('normalizeRandomNumbers',     true, !settings.normalizeRandomNumbers);                                                 }}),
                                              new MenuItem( osShift(true) + 'R randomizes mixed nodes. . .', null, false, {childMenu: menuShiftR}),
         //menuItemShowColorLegendInMenus   = new MenuItem('Show color legend in menus',               null, false, {checkCallback: () => settings.showColorLegendInMenus,                    callback: () => { updateSettingAndMenu('showColorLegendInMenus',     true, !settings.showColorLegendInMenus);     updateMenuItemShowColorLegendInMenus();     }}),
                                              new MenuItem('',                                         null, false, {separator: true}),    

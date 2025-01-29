@@ -20,6 +20,7 @@ const settings =
     allowInvertParams:             true,
     activateDeactiatesOthers:      true,
     preferHtmlColorNames:          true,
+    normalizeRandomNumbers:        false,
     randomShiftR:                  true,
     colorShiftR:                   false,
     numberShiftR:                  false,
@@ -101,6 +102,7 @@ function updateSetting(settingName, value)
         case 'allowInvertParams':             settings.allowInvertParams             = value;  break;
         case 'activateDeactiatesOthers':      settings.activateDeactiatesOthers      = value;  break;
         case 'preferHtmlColorNames':          settings.preferHtmlColorNames          = value;  break;
+        case 'normalizeRandomNumbers':        settings.normalizeRandomNumbers        = value;  break;
         case 'randomShiftR':                  settings.randomShiftR                  = value;  break;
         case 'colorShiftR':                   settings.colorShiftR                   = value;  break;
         case 'numberShiftR':                  settings.numberShiftR                  = value;  break;
@@ -186,6 +188,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'allowInvertParams':             updateSettingAndMenu_(valid, settingName, value, menuItemAllowInvertParams            ); break;
         case 'activateDeactiatesOthers':      updateSettingAndMenu_(valid, settingName, value, menuItemActivateDeactiatesOthers     ); break;
         case 'preferHtmlColorNames':          updateSettingAndMenu_(valid, settingName, value, menuItemPreferHtmlColorNames         ); break;
+        case 'normalizeRandomNumbers':        updateSettingAndMenu_(valid, settingName, value, menuItemNormalizeRandomNumbers       ); break;
         case 'randomShiftR':                  updateSettingAndMenu_(valid, settingName, value, menuItemRandomShiftR                 ); break;
         case 'colorShiftR':                   updateSettingAndMenu_(valid, settingName, value, menuItemColorShiftR                  ); break;
         case 'numberShiftR':                  updateSettingAndMenu_(valid, settingName, value, menuItemNumberShiftR                 ); break;
@@ -284,6 +287,7 @@ function updateSettingsMenus()
     menuItemAllowInvertParams            .setChecked(settings.allowInvertParams            );
     menuItemActivateDeactiatesOthers     .setChecked(settings.activateDeactiatesOthers     );
     menuItemPreferHtmlColorNames         .setChecked(settings.preferHtmlColorNames         );
+    menuItemNormalizeRandomNumbers       .setChecked(settings.normalizeRandomNumbers       );
     menuItemRandomShiftR                 .setChecked(settings.randomShiftR                 );
     menuItemColorShiftR                  .setChecked(settings. colorShiftR                 );
     menuItemNumberShiftR                 .setChecked(settings.numberShiftR                 );
@@ -523,9 +527,10 @@ function loadLocalSettings()
     uiGetLocalData('showNodeIcons'                );
     uiGetLocalData('showBoolValues'               );
     uiGetLocalData('separateThousands'            );
-    uiGetLocalData('allowInvertParams'   );
+    uiGetLocalData('allowInvertParams'            );
     uiGetLocalData('activateDeactiatesOthers'     );
     uiGetLocalData('preferHtmlColorNames'         );
+    uiGetLocalData('normalizeRandomNumbers'       );
     uiGetLocalData('randomShiftR'                 );
     uiGetLocalData('colorShiftR'                  );
     uiGetLocalData('numberShiftR'                 );
