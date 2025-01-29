@@ -74,8 +74,6 @@ var menuDecoration;
 var menuNumberBase;
 var menuMath;
 var menuMinMax;
-var menuBoolean;
-var menuCondition;
 var menuTrig;
 var menuFunctions;
 
@@ -935,14 +933,14 @@ function initGeneratorMenus()
         
     wholeMenu = new Menu('Create node. . .', true, false);
     wholeMenu.addItems([
-        new MenuItem('Flow',      null, false, {icon: iconFlow,     childMenu: menuFlow  }),
-        new MenuItem('Data',      null, false, {icon: iconCombine,  childMenu: menuData  }),
-        new MenuItem('Sets. . .', null, false, {icon: iconSets,     childMenu: menuSets  }),
-        new MenuItem('Number',    null, false, {icon: iconNumber,   childMenu: menuNumber}),
-        new MenuItem('Text',      null, false, {icon: iconText,     childMenu: menuString}),
-        new MenuItem('Color',     null, false, {icon: iconVarColor, childMenu: menuColor }),
-        new MenuItem('Layer',     null, false, {icon: iconEffects,  childMenu: menuLayer }),
-        new MenuItem('Shape',     null, false, {icon: iconShapes,   childMenu: menuShape }),
+        new MenuItem('Flow',      null, false, {icon: iconFlow,     childMenu: menuFlow    }),
+        new MenuItem('Data',      null, false, {icon: iconCombine,  childMenu: menuData    }),
+        new MenuItem('Sets. . .', null, false, {icon: iconSets,     childMenu: menuSets    }),
+        new MenuItem('Shape',     null, false, {icon: iconShapes,   childMenu: menuShape   }),
+        new MenuItem('Color',     null, false, {icon: iconVarColor, childMenu: menuColor   }),
+        new MenuItem('Number',    null, false, {icon: iconNumber,   childMenu: menuNumber  }),
+        new MenuItem('Text',      null, false, {icon: iconText,     childMenu: menuString  }),
+        new MenuItem('Templates', null, false, {icon: iconTemplate, childMenu: menuTemplate}),
         new MenuItem('Panel',     null, false, {icon: iconPanel,    createType: PANEL, callback: e => actionManager.do(getCreateNodeAction(PANEL, btnDecoration.div, getCreateOptions(e)))})]);
 
                                       
@@ -1011,18 +1009,18 @@ function initGeneratorMenus()
     menuOptionParam    = new Menu('Select options',  false, true);
 
     
-    btnMain     = new MenuButton('', menuMain,     {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
-    btnFlow     = new MenuButton('', menuFlow,     {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
-    btnData     = new MenuButton('', menuData,     {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuData  ), callback: () => updatePanMode(false)});
-    btnSets     = new MenuButton('', menuSets,     {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuSets  ), callback: () => updatePanMode(false)});
-    btnShape    = new MenuButton('', menuShape,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
-    btnColor    = new MenuButton('', menuColor,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
-  //btnLayer    = new MenuButton('', menuLayer,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
-    btnNumber   = new MenuButton('', menuNumber,   {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
-    btnText     = new MenuButton('', menuString,   {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
-    btnTemplate = new MenuButton('', menuTemplate, {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuTemplate ), callback: () => updatePanMode(false)});
-  //btnStyle    = new MenuButton('', menuStyle,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
-  //btnGroup    = new MenuButton('', menuGroup,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuGroup ), callback: () => updatePanMode(false)});
+    btnMain     = new MenuButton('', menuMain,     {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuMain),     callback: () => updatePanMode(false)});
+    btnFlow     = new MenuButton('', menuFlow,     {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuFlow),     callback: () => updatePanMode(false)});
+    btnData     = new MenuButton('', menuData,     {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuData),     callback: () => updatePanMode(false)});
+    btnSets     = new MenuButton('', menuSets,     {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuSets),     callback: () => updatePanMode(false)});
+    btnShape    = new MenuButton('', menuShape,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuShape),    callback: () => updatePanMode(false)});
+    btnColor    = new MenuButton('', menuColor,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuColor),    callback: () => updatePanMode(false)});
+  //btnLayer    = new MenuButton('', menuLayer,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuLayer),    callback: () => updatePanMode(false)});
+    btnNumber   = new MenuButton('', menuNumber,   {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuNumber),   callback: () => updatePanMode(false)});
+    btnText     = new MenuButton('', menuString,   {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuString),   callback: () => updatePanMode(false)});
+    btnTemplate = new MenuButton('', menuTemplate, {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuTemplate), callback: () => updatePanMode(false)});
+  //btnStyle    = new MenuButton('', menuStyle,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuStyle),    callback: () => updatePanMode(false)});
+  //btnGroup    = new MenuButton('', menuGroup,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuGroup),    callback: () => updatePanMode(false)});
     
     // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
     // {
