@@ -16,7 +16,7 @@ function initQuestion2Dialog()
             '_blank');
 
         addMetricsEvent(METRICS_SHARE_ON_X);
-        hideQuestion2Dialog();
+        hideDialog(question2Dialog);
     });
 }
 

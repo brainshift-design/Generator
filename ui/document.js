@@ -30,11 +30,20 @@ document.addEventListener('pointerup', function(e)
 });
 
 
+document.addEventListener('wheel', e =>
+{
+    if (e.ctrlKey)
+        e.preventDefault();
+}, 
+{ passive: false });
+
+
 
 window.addEventListener('focus', () => graph.updatePages());
 window.addEventListener('blur',  () => graph.updatePages());
 
 document.addEventListener('contextmenu', e => e.preventDefault());
+
 
 
 

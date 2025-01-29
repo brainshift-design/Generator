@@ -18,7 +18,7 @@ function initQuestion3Dialog()
         e.stopPropagation();
         
         if (e.code == 'Enter')
-            submitQuestionAndAnswer('email', questionEmail.value, hideQuestion3Dialog);
+            submitQuestionAndAnswer('email', questionEmail.value, () => hideDialog(question3Dialog));
     });
 
 
