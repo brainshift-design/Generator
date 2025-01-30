@@ -271,25 +271,28 @@ function updateZoomIcon()
 
     if (_zoomIconOverlay)
     {
+        const zoomTextColor    = darkMode ? 'black' : 'white';
+        const zoomOverlayColor = darkMode ? 'white' : 'rgb(48, 48, 48)';
+
         if (   zoom < settings.minZoomForParams
             && zoom < 1)
         {
-            btnZoom.div.style.color = 'var(--figma-color-bg)';
-            _zoomIconOverlay.style.left       = '14px';
-            _zoomIconOverlay.style.top        = '11px';
+            btnZoom.divIcon.style.color = zoomTextColor;
+            _zoomIconOverlay.style.left       = '10px';
+            _zoomIconOverlay.style.top        = '6px';
             _zoomIconOverlay.style.width      = '28';
             _zoomIconOverlay.style.height     = '20';
-            _zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 4C0 1.79086 1.79086 0 4 0H24C26.2091 0 28 1.79086 28 4V20H0V4Z" fill="white"/></svg>\')';
+            _zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 4C0 1.79086 1.79086 0 4 0H24C26.2091 0 28 1.79086 28 4V20H0V4Z" fill="' + zoomOverlayColor + '"/></svg>\')';
         }
         else if (zoom < settings.minZoomForParams
-            && zoom < 10)
+              && zoom < 10)
         {
-            btnZoom.div.style.color = 'var(--figma-color-bg)';
-            _zoomIconOverlay.style.left       = '12px';
-            _zoomIconOverlay.style.top        = '11px';
+            btnZoom.divIcon.style.color = zoomTextColor;
+            _zoomIconOverlay.style.left       = '7px';
+            _zoomIconOverlay.style.top        = '6px';
             _zoomIconOverlay.style.width      = '33';
             _zoomIconOverlay.style.height     = '20';
-            _zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="33" height="20" viewBox="0 0 33 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 4C0 1.79086 1.79086 0 4 0H29C31.2091 0 33 1.79086 33 4V20H0V4Z" fill="white"/></svg>\')';
+            _zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="33" height="20" viewBox="0 0 33 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 4C0 1.79086 1.79086 0 4 0H29C31.2091 0 33 1.79086 33 4V20H0V4Z" fill="' + zoomOverlayColor + '"/></svg>\')';
         }
         else
         {

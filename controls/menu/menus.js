@@ -24,6 +24,7 @@ var btnZoom;
 
 
 var menuBarMenus;
+var toolbarButtons;
 
 
 var menuDebugMain;
@@ -1152,6 +1153,24 @@ function initGeneratorMenus()
     btnSolo      .setIcon(iconSolo);
 
 
+    toolbarButtons = 
+    [
+        btnMain, 
+        btnFlow, 
+        btnData, 
+        btnSets, 
+        btnShape, 
+        btnColor, 
+        btnNumber, 
+        btnText,
+        btnTemplate, 
+        btnPanel, 
+        btnDecoration, 
+        btnSolo, 
+        btnZoom
+    ];
+
+    
     menuBarMenus = 
     [
         menuRepeat,

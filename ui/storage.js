@@ -206,6 +206,8 @@ async function uiReturnFigGetLocalData(msg)
             {
                 graph.nodes.forEach(n => n.updateNode());
                 graphView.updateNodeWireTransforms(graph.nodes);
+                toolbarButtons.forEach(b => b.update());
+                updateZoomIcon();
             }
         });
     }
