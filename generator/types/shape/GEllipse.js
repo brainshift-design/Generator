@@ -186,10 +186,10 @@ extends GShape
             let   y  = _y.value;
             let   w  = _w.value;
             let   h  = _h.value;
-            let   r  = this.value.round .value;
-            let   st = this.value.start .value;
-            let   sw = this.value.sweep .value;
-            let   i  = this.value.inner .value;
+            let   r  = this.value.round.value;
+            let   st = this.value.start.value;
+            let   sw = this.value.sweep.value;
+            let   i  = this.value.inner.value;
 
 
             [x, y, w, h, , ] = validateObjectRect(x, y, w, h);

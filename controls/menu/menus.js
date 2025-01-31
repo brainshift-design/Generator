@@ -410,11 +410,13 @@ function initGeneratorMenus()
     menuMainView.addItems([
         menuItemShowGrid          = new MenuItem('Show grid',                     null, false, {shortcut: osShift() + 'G', checkCallback: () => settings.showGrid,          callback: () => { updateSettingAndMenu('showGrid', true, !settings.showGrid); updateMenuItemShowGrid();              }}),
                                     new MenuItem('',                              null, false, {separator: true}),
-        menuItemShowObjectCount   = new MenuItem('Show canvas object count',      null, false, {checkCallback: () => settings.showObjectCount,   callback: () => { updateSettingAndMenu('showObjectCount',   true, !settings.showObjectCount);   updateObjectCountDisplay();            }}),
-                                    new MenuItem('',                              null, false, {separator: true}),
         menuItemShowNodeIcons     = new MenuItem('Show node icons',               null, false, {checkCallback: () => settings.showNodeIcons,     callback: () => { updateSettingAndMenu('showNodeIcons',     true, !settings.showNodeIcons);     updateMenuItemShowNodeIcons();         }}),
         menuItemShowBoolValues    = new MenuItem('Show boolean values as   ✓ ✗', null, false, {checkCallback: () => settings.showBoolValues,    callback: () => { updateSettingAndMenu('showBoolValues',    true, !settings.showBoolValues);    updateMenuItemShowBoolValues();        }}),
-        menuItemSeparateThousands = new MenuItem('Separate thousands in numbers', null, false, {checkCallback: () => settings.separateThousands, callback: () => { updateSettingAndMenu('separateThousands', true, !settings.separateThousands); updateMenuItemSeparateThousands();     }})]);
+        menuItemSeparateThousands = new MenuItem('Separate thousands in numbers', null, false, {checkCallback: () => settings.separateThousands, callback: () => { updateSettingAndMenu('separateThousands', true, !settings.separateThousands); updateMenuItemSeparateThousands();     }}),
+                                    new MenuItem('',                              null, false, {separator: true}),
+        menuItemShowObjectCount   = new MenuItem('Show canvas object count',      null, false, {checkCallback: () => settings.showObjectCount,   callback: () => { updateSettingAndMenu('showObjectCount',   true, !settings.showObjectCount);   updateObjectCountDisplay();            }}),
+                                    new MenuItem('',                              null, false, {separator: true}),
+        menuItemShowTooltips      = new MenuItem('Show tooltips',                 null, false, {childMenu: menuShowTooltips})]);
 
 
     menuShiftR = new Menu('Shift+R', false);
@@ -1377,13 +1379,11 @@ function initPreferenceMenus()
                                              new MenuItem( osShift(true) + 'R randomizes mixed nodes. . .', null, false, {childMenu: menuShiftR}),
         //menuItemShowColorLegendInMenus   = new MenuItem('Show color legend in menus',               null, false, {checkCallback: () => settings.showColorLegendInMenus,                    callback: () => { updateSettingAndMenu('showColorLegendInMenus',     true, !settings.showColorLegendInMenus);     updateMenuItemShowColorLegendInMenus();     }}),
                                              new MenuItem('',                                         null, false, {separator: true}),    
-        menuItemShowTooltips               = new MenuItem('Show tooltips',                            null, false, {childMenu: menuShowTooltips}),
-        menuItemShowRestartInfo            = new MenuItem('Show restart warning',    null, false, {checkCallback: () => settings.showRestartInfo,                                            callback: () => { updateSettingAndMenu('showRestartInfo',            true, !settings.showRestartInfo);                                                        }}),
         //menuItemShowWarnings               = new MenuItem('Show warnings',                            null, false, {childMenu: menuShowWarnings}),
-                                             new MenuItem('',                                         null, false, {separator: true}),
         menuItemShareUsageMetrics          = new MenuItem('Share usage metrics',                      null, false, {checkCallback: () => settings.shareUsageMetrics,                         callback: () => { updateSettingAndMenu('shareUsageMetrics',          true, !settings.shareUsageMetrics);                                                      }}),
         menuItemEnableBetaFeatures         = new MenuItem('Enable beta features',                     null, false, {checkCallback: () => subscribed() ? settings.enableBetaFeatures : false, callback: () => { updateSettingAndMenu('enableBetaFeatures',         true, !settings.enableBetaFeatures);         enableFeatures(!subscribed());               }}),
         menuItemShowDebugMenu              = new MenuItem('Show debug menu',                          null, false, {checkCallback: () => settings.showDebugMenu,                             callback: () => { uiGetLocalData('debugWarning'); }}),
+        menuItemShowRestartInfo            = new MenuItem('Show restart warning',    null, false, {checkCallback: () => settings.showRestartInfo,                                            callback: () => { updateSettingAndMenu('showRestartInfo',            true, !settings.showRestartInfo);                                                        }}),
         //menuPrefSep2                       = new MenuItem('',                                         null, false, {separator: true}),    
        // menuItemEnableMultiplayer          = new MenuItem('Enable multiplayer on this canvas',        null, false, {checkCallback: () => multiplayerEnabled,                                 callback: () => { updateSettingAndMenu('showPages',                  true, !settings.showPages);                  enableMultiplayer(!multiplayerEnabled);     }}),
         //                                     new MenuItem('',                                         null, false, {separator: true}),    

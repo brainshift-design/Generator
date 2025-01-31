@@ -61,6 +61,16 @@ extends FigmaShape
 
 
 
+    checkFlipped(flipX, flipY)
+    {
+        super.checkFlipped(flipX, flipY);
+
+        if (flipX)          this.start = 180 - this.start;
+        if (flipX || flipY) this.sweep = -this.sweep;
+    }
+
+
+
     toNewValue()
     {
         return EllipseValue.fromObject(this);

@@ -21,7 +21,7 @@ extends OpAffine
         this.paramAngle.controls[0].suffix        = '°';
         this.paramAngle.controls[0].suffixOffsetY = -4;
         this.paramAngle.controls[0].dragReverse   = true;
-        this.paramAngle.divider                   = 0.55;
+        this.paramAngle.divider                   = 0.52;
 
 
         this.addBaseParamsAfter('rotate');

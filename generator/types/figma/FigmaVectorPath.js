@@ -231,12 +231,6 @@ extends FigmaShape
         }
 
         this.updatePathPoints();
-
-        // for (const point of this.pathPoints)
-        // {
-        //     if (flipX) point.x = bounds.width  - point.x;
-        //     if (flipY) point.y = bounds.height - point.y;
-        // }
     }
 
 
