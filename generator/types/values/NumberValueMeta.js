@@ -8,6 +8,8 @@ class NumberValueMeta
 
     decimals;
     suffix;
+
+    wrapValue;
     ranges;
 
     displayAbsolute;
@@ -23,6 +25,7 @@ class NumberValueMeta
         maxDisplay      = Number.NaN, 
         decimals        = Number.NaN, 
         suffix          = NULL, 
+        wrapValue       = false,
         ranges          = null, 
         displayAbsolute = false,
         tooltipId       = null)
@@ -35,6 +38,8 @@ class NumberValueMeta
 
         this.decimals        = decimals;
         this.suffix          = suffix;
+
+        this.wrapValue       = wrapValue;
         this.ranges          = ranges;
 
         this.displayAbsolute = displayAbsolute;
@@ -53,6 +58,7 @@ class NumberValueMeta
             Number.MAX_SAFE_INTEGER, 
             0,
             NULL, 
+            false,
             [],
             false,
             NULL);
@@ -69,6 +75,7 @@ class NumberValueMeta
             this.maxDisplay,
             this.decimals,
             this.suffix,
+            this.wrapValue,
             this.ranges ? this.ranges.map(r => r.copy()) : null,
             this.displayAbsolute,
             this.tooltipId);
@@ -84,6 +91,7 @@ class NumberValueMeta
             + ' ' + this.maxDisplay.toString()
             + ' ' + this.decimals  .toString()
             + ' ' + (this.suffix == NULL ? NULL_VALUE : encodeURIComponent(this.suffix))
+            + ' ' + (this.wrapValue ? 'true' : 'false')
             + ' ' + (this.ranges ? this.ranges.length.toString() : NULL_VALUE)
             + (   this.ranges
                && this.ranges.length > 0
@@ -115,7 +123,9 @@ class NumberValueMeta
         const suffix     = str[i] == NULL_VALUE 
                               ? NULL 
                               : decodeURIComponent(str[i]); i++;
-    
+
+        const wrapValue  = parseBool(str[i]); i++;
+        
         let ranges = null;
     
         if (str[i] == NULL_VALUE)
@@ -149,6 +159,7 @@ class NumberValueMeta
             maxDisplay,
             decimals,
             suffix,
+            wrapValue,
             ranges,
             displayAbsolute,
             tooltipId);

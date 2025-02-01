@@ -240,6 +240,8 @@ extends GOperator1
         case 'a98':
         case 'pro':
         case 'r2020':
+            meta1.wrapValue  = false;
+
             meta1.minDisplay = 0;
             meta2.minDisplay = 0;
             meta3.minDisplay = 0;
@@ -253,6 +255,7 @@ extends GOperator1
         case 'hsv':
         case 'hsl':
             meta1.suffix     = '°';
+            meta1.wrapValue  = true;
 
             meta1.minDisplay = 0;
             meta2.minDisplay = 0;
@@ -266,6 +269,7 @@ extends GOperator1
 
         case 'hclok':
             meta1.suffix     = '°';
+            meta1.wrapValue  = true;
 
             meta1.minDisplay = 0;
             meta2.minDisplay = 0;
@@ -279,6 +283,7 @@ extends GOperator1
 
         case 'hclab':
             meta1.suffix     = '°';
+            meta1.wrapValue  = true;
 
             meta1.minDisplay = 0;
             meta2.minDisplay = 0;
@@ -292,6 +297,7 @@ extends GOperator1
 
         case 'hcluv':
             meta1.suffix     = '°';
+            meta1.wrapValue  = true;
 
             meta1.minDisplay = 0;
             meta2.minDisplay = 0;
@@ -304,6 +310,8 @@ extends GOperator1
             break;
 
         case 'oklab':
+            meta1.wrapValue  = false;
+
             meta1.minDisplay =   0;
             meta2.minDisplay = -30;
             meta3.minDisplay = -30;
@@ -316,6 +324,8 @@ extends GOperator1
 
 
         case 'lab':
+            meta1.wrapValue  = false;
+
             meta1.minDisplay =    0;
             meta2.minDisplay = -100;
             meta3.minDisplay = -100;
@@ -328,6 +338,8 @@ extends GOperator1
 
 
         case 'luv':
+            meta1.wrapValue  = false;
+
             meta1.minDisplay =    0;
             meta2.minDisplay = -150;
             meta3.minDisplay = -150;
@@ -342,6 +354,8 @@ extends GOperator1
         case 'xyz':
         case 'xyz50':
         case 'xyz65':
+            meta1.wrapValue  = false;
+
             meta1.minDisplay = 0;
             meta2.minDisplay = 0;
             meta3.minDisplay = 0;

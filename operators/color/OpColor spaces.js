@@ -147,8 +147,6 @@ function switchToSpace(node, space)
         case 'xyz50': 
         case 'xyz65': switchToXyz   (node); break;
     }
-
-    //node.resetAllControlRanges();
 }
 
 
@@ -178,14 +176,6 @@ function switchToRgbControls(node)
         'G', 0, rgbScale[1], 
         'B', 0, rgbScale[2]);  
 
-    // node.param1.controls[0].min = 
-    // node.param2.controls[0].min = 
-    // node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
-
-    // node.param1.controls[0].max = 
-    // node.param2.controls[0].max = 
-    // node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
-
     showRgbControlHex(node, false);    
 }
 
@@ -198,14 +188,6 @@ function switchToHs_Controls(node, v_or_l)
         'S',    0, hs_Scale[1], 
         v_or_l, 0, hs_Scale[2]);  
 
-    //node.param1.controls[0].suffixOffsetY = -4;
-
-    // node.param2.controls[0].min = 
-    // node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
-
-    // node.param2.controls[0].max = 
-    // node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
-
     showRgbControlHex(node, false); 
 }
 
@@ -217,14 +199,6 @@ function switchToHclControls(node, scale)
         'H', 0, scale[0], '°', true,  
         'C', 0, scale[1], 
         'L', 0, scale[2]);  
-
-    // node.param1.controls[0].suffixOffsetY = -4;
-
-    // node.param2.controls[0].min = 
-    // node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
-
-    // node.param2.controls[0].max = 
-    // node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false); 
 }
