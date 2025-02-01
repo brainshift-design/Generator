@@ -47,7 +47,8 @@ extends Action
             canAutoConnectNode(
                 this.node, 
                 true, 
-                   this.options.fromNodeId
+                   this.options
+                && this.options.fromNodeId
                 && this.options.fromOutputId
                     ? nodeFromId(this.options.fromNodeId)
                           .outputFromId(this.options.fromOutputId)
@@ -57,7 +58,8 @@ extends Action
         const autoConnect = 
                 this.autoConnect
             && (   !isEmpty(this.prevSelectedIds)
-                || this.options.fromNodeId)
+                ||    this.options
+                   && this.options.fromNodeId)
             && canAutoConnect
             && this.options.autoConnect != undefined
             && this.options.autoConnect;
@@ -74,7 +76,8 @@ extends Action
         
 
         const selNodeId = 
-            this.options.fromNodeId
+               this.options
+            && this.options.fromNodeId
                 ? this.options.fromNodeId
                 : this.prevSelectedIds[0];
 
@@ -86,7 +89,8 @@ extends Action
             const selNode = nodeFromId(selNodeId);
 
             const output =
-                this.options.fromOutputId
+                   this.options
+                && this.options.fromOutputId
                     ? selNode.outputFromId(this.options.fromOutputId)
                     : selNode.headerOutputs[0];
 
