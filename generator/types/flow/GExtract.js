@@ -49,7 +49,7 @@ extends GOperator1
 
 
         const input   = await evalListValue(this.input,   parse);
-        let   indices = await evalValue    (this.indices, parse, () => null);
+        let   indices = await evalNumberValue(this.indices, parse, () => null);
 
 
         this.value = new ListValue();
