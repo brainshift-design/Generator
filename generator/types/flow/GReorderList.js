@@ -88,7 +88,7 @@ extends GOperator1
                 }
             }
             else
-                this.value = new ListValue();
+                this.value = input;
         }
         else
             this.value = new ListValue();

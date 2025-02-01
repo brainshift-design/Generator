@@ -156,9 +156,10 @@ extends Parameter
         this.controls[0].textbox.value = 
                 this.value.isValid()
             && !this.node.isUnknown()
-            ?          printNum(this.value.x.value)  
-              + ', ' + printNum(this.value.y.value)
+            ?          numToString(this.value.x.value, -2)  
+              + ', ' + numToString(this.value.y.value, -2)
             : NAN_DISPLAY;
+
 
 
         super.updateControls();

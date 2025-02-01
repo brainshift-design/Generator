@@ -146,11 +146,18 @@ extends GOperator1
 
 
                     obj.applyTransform(xform, true);
+
+                    if (this.value.type == POINT_VALUE) 
+                    {
+                        this.value.x.value = obj.x;
+                        this.value.y.value = obj.y;
+                    }
                 }
             }
         }
         
         
+
         await super.evalObjects(parse);
     }
 

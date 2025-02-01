@@ -54,10 +54,25 @@ extends FigmaShape
 
 
 
-    checkFlipped(flipX, flipY)
+    applyTransform(xform, affectSpace)
     {
+        const space = this.createSpaceTransform();
 
+        if (affectSpace > 0)
+        {
+            const p = transformPoint(point(this.x, this.y), xform, space);
+
+            this.x = p.x;
+            this.y = p.y;
+        }
+
+        if (affectSpace != 1)
+            this.applySpaceTransform(xform, space);
     }
+    
+    
+    
+    checkFlipped(flipX, flipY) {}
 
 
 

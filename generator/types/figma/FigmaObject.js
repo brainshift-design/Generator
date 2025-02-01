@@ -199,57 +199,12 @@ class FigmaObject
     {
         const space = this.createSpaceTransform();
 
+        
+        if (affectSpace > 0)
+            this.applyObjectTransform(xform, space);
 
-        if (this.type == POINT)
-        {
-            if (affectSpace > 0)
-            {
-                const p = transformPoint(point(this.x, this.y), xform, space);
-
-                this.x = p.x;
-                this.y = p.y;
-            }
-
-            if (affectSpace != 1)
-                this.applySpaceTransform(xform, space);
-        }
-        else if (PATH_TYPES.includes(this.type))
-        {
-            if (affectSpace > 0)
-            {
-                this.applyObjectTransform(xform, space);
-
-                this.updatePoints(xform, space);
-                this.updatePathPoints();
-            }
-
-            if (affectSpace != 1)
-                this.applySpaceTransform(xform, space);
-        }
-        else if (this.type == SHAPE_GROUP)
-        {
-            for (const obj of this.children)
-            {
-                if (affectSpace > 0)
-                {
-                    obj.applyObjectTransform(xform, space);
-
-                    if (obj.type == VECTOR_PATH)
-                        obj.updatePoints(xform, space);
-                }
-
-                if (affectSpace != 1)
-                    obj.applySpaceTransform(xform, space);
-            }                
-        }
-        else
-        {
-            if (affectSpace > 0)
-                this.applyObjectTransform(xform, space);
-
-            if (affectSpace != 1)
-                this.applySpaceTransform(xform, space);
-        }
+        if (affectSpace != 1)
+            this.applySpaceTransform(xform, space);
     }
 
 

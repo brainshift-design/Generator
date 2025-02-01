@@ -165,6 +165,25 @@ extends FigmaShape
 
 
 
+    applyTransform(xform, affectSpace)
+    {
+        const space = this.createSpaceTransform();
+
+
+        if (affectSpace > 0)
+        {
+            this.applyObjectTransform(xform, space);
+
+            this.updatePoints(xform, space);
+            this.updatePathPoints();
+        }
+
+        if (affectSpace != 1)
+            this.applySpaceTransform(xform, space);
+    }
+    
+    
+    
     updatePoints(xform, space)
     {
         for (let i = 0; i < this.points.length; i++)

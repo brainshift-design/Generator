@@ -155,7 +155,16 @@ extends GOperator1
                 obj.objectId += OBJECT_SEPARATOR + this.nodeId;
 
                 if (this.options.enabled)
+                {
                     obj.applyTransform(xform, affectSpace);
+
+                    if (this.value.type == POINT_VALUE)
+                    {
+                        this.value.x.value = obj.x;
+                        this.value.y.value = obj.y;
+                    }
+                }
+
             }
 
 

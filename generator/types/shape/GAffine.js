@@ -86,6 +86,12 @@ extends GOperator1
 
                     obj.size *= Math.min(sx, sy);
                 }
+
+                if (this.value.type == POINT_VALUE)
+                {
+                    this.value.x.value = obj.x;
+                    this.value.y.value = obj.y;
+                }
             }
         }
 
