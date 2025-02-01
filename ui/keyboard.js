@@ -144,30 +144,28 @@ document.addEventListener('keydown', e =>
         {
             if (text == '') return;
 
-            try
-            {
-                // const data   = JSON.parse(copiedNodesJson);
-                // let   bounds = new Rect();
+            // const data   = JSON.parse(copiedNodesJson);
+            // let   bounds = new Rect();
 
-                // for (const _node of data.nodes)
-                // {
-                //     const node = nodeFromId(_node.id);
+            // for (const _node of data.nodes)
+            // {
+            //     const node = nodeFromId(_node.id);
 
-                //     bounds = expandRect(bounds, new Rect(
-                //         node.x,
-                //         node.y,
-                //         node.width,
-                //         node.height));
-                // }
-                
-                graphView.pasteCopiedNodes(
-                    e.shiftKey, 
-                    (graphView.div.offsetWidth ) / 2, 
-                    (graphView.div.offsetHeight) / 2 + getTopHeight());
-            }
-            catch (e) {}
-        });
+            //     bounds = expandRect(bounds, new Rect(
+            //         node.x,
+            //         node.y,
+            //         node.width,
+            //         node.height));
+            // }
+            
+            graphView.pasteCopiedNodes(
+                e.shiftKey, 
+                (graphView.div.offsetWidth ) / 2, 
+                (graphView.div.offsetHeight) / 2 + getTopHeight());
+        })
+        .catch(e => uiNotify(e, {error: true}));
     }    
+
 
     // duplicate
     else if (e.code == 'KeyD'

@@ -47,16 +47,14 @@ function readTextFromClipboard()
     {
         if (   navigator.clipboard 
             && window.isSecureContext) 
+        {
             return navigator.clipboard.readText();
+        }
 
         else 
         {
             let textArea = document.createElement('textarea');
-
-            textArea.style.position = 'fixed';
-            textArea.style.left     = '-999999px';
-            textArea.style.top      = '-999999px';
-            
+            textArea.style.display = 'none';
             document.body.appendChild(textArea);
             
             textArea.focus({preventScroll: true});
@@ -64,11 +62,16 @@ function readTextFromClipboard()
             
             return new Promise((res, rej) => 
             {
-                document.execCommand('paste') ? res(textArea.value) : rej();
+                document.execCommand('paste') 
+                    ? res(textArea.value) 
+                    : rej('Error pasting from clipboard');
+                    
                 textArea.remove();
             });
         }
     }
     else
+    {
         return new Promise((res, rej) => res(_clipboard));
+    }
 }

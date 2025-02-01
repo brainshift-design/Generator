@@ -14,17 +14,29 @@ function crashAssert(condition, error, showDebugButton = true)
 
 function initCrashDialog(event, error = event, showDebugButton = true)
 {
-    const errorText =
-        error
-        ? error.stack
-            .replaceAll('<anonymous>', '')
-            .replaceAll('.<', '<')
-            .replaceAll(/\(?data[a-zA-Z0-9/,;:=]*\)?/g, '')
-            .replaceAll('at \n', '')
-            .replaceAll('at ', '<br/>&nbsp;&nbsp;&nbsp;&nbsp;at ')
-            .replaceAll(/\(:[^\)]*\)/g, '')
-            .replaceAll(/at :[0-9]+:[0-9]+/g, '')
-        : event;
+    let errorText = '';
+
+    if (error)
+    {
+        if (error.stack)
+        {
+            errorText = error.stack
+                .replaceAll('<anonymous>', '')
+                .replaceAll('.<', '<')
+                .replaceAll(/\(?data[a-zA-Z0-9/,;:=]*\)?/g, '')
+                .replaceAll('at \n', '')
+                .replaceAll('at ', '<br/>&nbsp;&nbsp;&nbsp;&nbsp;at ')
+                .replaceAll(/\(:[^)]*\)/g, '')
+                .replaceAll(/at :[0-9]+:[0-9]+/g, '');
+        }
+        else
+        {
+            errorText =
+                event.reason instanceof Error
+                    ? event.reason.message
+                    : (event.reason ?? 'Unknown error');
+        }
+    }
 
 
     crashDetails.innerHTML += errorText + '<br/>';

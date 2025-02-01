@@ -287,6 +287,7 @@ GraphView.prototype.pasteCopiedNodes = function(pasteConnected, clientX = Number
 
 
 GraphView.prototype.duplicateSelectedNodes = function(pasteConnected)
+
 {
     if (!isEmpty(this.selectedNodes))
     {

@@ -49,7 +49,7 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 
 document.addEventListener('dragover',  e => e.preventDefault());
 
-document.addEventListener("drop", async e => 
+document.addEventListener('drop', async e => 
 {
     e.preventDefault();
     
