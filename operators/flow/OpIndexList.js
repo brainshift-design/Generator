@@ -32,7 +32,7 @@ extends OperatorBase
 
         this.paramCount  .divider = 0.56;
         this.paramShuffle.divider = 0.58;
-        this.paramSeed   .divider = 0.48;
+        this.paramSeed   .divider = 0.46;
 
         this.paramShuffle.controls[0].allowEditDecimals = false;
 

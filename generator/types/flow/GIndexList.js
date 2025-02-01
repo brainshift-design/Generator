@@ -113,7 +113,7 @@ extends GOperator
         return super.isValid()
             && this.count   && this.count  .isValid()
             && this.shuffle && this.shuffle.isValid()
-            && this.seed   && this.seed   .isValid();
+            && this.seed    && this.seed   .isValid();
     }
 
 
@@ -137,18 +137,6 @@ extends GOperator
         if (this.shuffle) this.shuffle.invalidateInputs(parse, from, force);
         if (this.seed   ) this.seed   .invalidateInputs(parse, from, force);
     }
-
-
-
-    initLoop(parse, loopId)
-    {
-        super.initLoop(parse, loopId);
-
-        if (this.count  ) this.count  .initLoop(parse, loopId);
-        if (this.shuffle) this.shuffle.initLoop(parse, loopId);
-        if (this.seed   ) this.seed   .initLoop(parse, loopId);
-    }
-
 
 
 
@@ -184,18 +172,6 @@ extends GOperator
         if (this.shuffle) this.shuffle.iterateCache(parse, from);
         if (this.seed   ) this.seed   .iterateCache(parse, from);
     }
-
-
-
-    resetLoop(parse, nodeId)
-    {
-        super.resetLoop(parse, nodeId);
-
-        if (this.count  ) this.count  .resetLoop(parse, nodeId);
-        if (this.shuffle) this.shuffle.resetLoop(parse, nodeId);
-        if (this.seed   ) this.seed   .resetLoop(parse, nodeId);
-    }
-
 
 
 

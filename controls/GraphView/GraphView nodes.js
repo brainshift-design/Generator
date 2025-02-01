@@ -435,7 +435,8 @@ GraphView.prototype.randomizeSelectedNodes = function()
     const randoms = graphView.selectedNodes.filter(n => 
            (   n.type == NUMBER_RANDOM
             || n.type == NUMBER_NOISE
-            || n.type == PROBABILITY)
+            || n.type == PROBABILITY
+            || n.type == INDEX_LIST)
         && !n.paramSeed.controls[0].readOnly);
 
     const colors = graphView.selectedNodes.filter(n => 
