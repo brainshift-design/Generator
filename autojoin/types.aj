@@ -98,6 +98,7 @@
 
 ../generator/types/flow/GList.js
 ../generator/types/flow/GListAsItem.js
+../generator/types/flow/GIndexList.js
 ../generator/types/flow/GExtract.js
 ../generator/types/flow/GSetParam.js
 ../generator/types/flow/GGetParam.js

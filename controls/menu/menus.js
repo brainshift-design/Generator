@@ -549,7 +549,9 @@ function initGeneratorMenus()
 
     menuList = new Menu('List menu', true, false);
     menuList.addItems([
-        new MenuItem('List as item', null, false, {icon: iconListAsItem, createType: LIST_AS_ITEM, callback: e => actionManager.do(getCreateNodeAction(LIST_AS_ITEM, btnData.div, getCreateOptions(e)))})]);
+        new MenuItem('List as item', null, false, {icon: iconListAsItem, createType: LIST_AS_ITEM, callback: e => actionManager.do(getCreateNodeAction(LIST_AS_ITEM, btnData.div, getCreateOptions(e)))}),
+        new MenuItem('',             null, false, {separator: true}),     
+        new MenuItem('Index list',   null, false, {icon: iconIndexList,  createType: INDEX_LIST,   callback: e => actionManager.do(getCreateNodeAction(INDEX_LIST,   btnData.div, getCreateOptions(e)))})]);
 
 
     menuData = new Menu('Lists', true, false);

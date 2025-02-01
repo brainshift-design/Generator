@@ -30,6 +30,7 @@ const VARIABLE_TYPES          = [VARIABLE_VALUE, VARIABLE];
 
 const LIST                    = 'LIST';
 const LIST_AS_ITEM            = 'LSASIT';
+const INDEX_LIST              = 'INDLST';
 const EXTRACT                 = 'EXTR';
 const SET_PARAM               = 'SETP';
 const GET_PARAM               = 'GETP';

@@ -66,6 +66,7 @@
 
 ../operators/flow/OpList.js
 ../operators/flow/OpListAsItem.js
+../operators/flow/OpIndexList.js
 ../operators/flow/OpExtract.js
 ../operators/flow/OpSetParam.js
 ../operators/flow/OpGetParam.js

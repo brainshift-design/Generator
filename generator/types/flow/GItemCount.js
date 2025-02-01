@@ -32,7 +32,7 @@ extends GOperator1
         copy.copyBase(this);
 
         if (this.input) copy.input = this.input.copy();
-        if (this.base) copy.base = this.base.copy();
+        if (this.base ) copy.base  = this.base.copy();
         
         if (this.count) copy.count = this.count.copy();
 
