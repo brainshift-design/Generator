@@ -64,8 +64,8 @@ extends GOperator
             return this;
 
         
-        const inputFalse = await evalValue(this.input0, parse);
-        const inputTrue  = await evalValue(this.input1, parse);
+        const inputTrue  = await evalValue(this.input0, parse);
+        const inputFalse = await evalValue(this.input1, parse);
         
         const cond       = await evalNumberValue(this.condition, parse);
 
