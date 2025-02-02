@@ -29,7 +29,6 @@ extends OperatorBase
     
         this.paramOperation.controls[0].textValues =
         [
-            // [0, '%', 'mod'],
             [0, '%'],
             [1, '/'],
             [2, '-'],
