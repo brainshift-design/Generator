@@ -9,6 +9,7 @@ extends GOperator1
     yaw      = null;
     pitch    = null;
     roll     = null;
+    order    = null;
     distance = null;
     zoom     = null;
 
@@ -29,9 +30,11 @@ extends GOperator1
         this.yaw      = null;
         this.pitch    = null;
         this.roll     = null;
+        this.order    = null;
         this.distance = null;
         this.zoom     = null;
     }
+
 
 
 
@@ -45,9 +48,11 @@ extends GOperator1
         if (this.yaw     ) { copy.yaw      = this.yaw     .copy(); }
         if (this.pitch   ) { copy.pitch    = this.pitch   .copy(); }
         if (this.roll    ) { copy.roll     = this.roll    .copy(); }
+        if (this.order   ) { copy.order    = this.order   .copy(); }
         if (this.distance) { copy.distance = this.distance.copy(); }
         if (this.zoom    ) { copy.zoom     = this.zoom    .copy(); }
     
+
         return copy;
     }
 
@@ -64,6 +69,7 @@ extends GOperator1
         const yaw      = await evalNumberValue(this.yaw,      parse);
         const pitch    = await evalNumberValue(this.pitch,    parse);
         const roll     = await evalNumberValue(this.roll,     parse);
+        const order    = await evalNumberValue(this.order,    parse);
         const distance = await evalNumberValue(this.distance, parse);
         const zoom     = await evalNumberValue(this.zoom,     parse);
         
@@ -88,9 +94,11 @@ extends GOperator1
                 yaw,
                 pitch, 
                 roll,
+                order,
                 distance,
                 zoom
             });
+
 
 
         this.setUpdateValues(parse,
@@ -100,8 +108,10 @@ extends GOperator1
             ['yaw',      yaw              ],
             ['pitch',    pitch            ],
             ['roll',     roll             ],
+            ['order',    order            ],
             ['zoom',     zoom             ],
             ['distance', distance         ]
+
         ]);
 
 
@@ -120,8 +130,10 @@ extends GOperator1
             && options.yaw      
             && options.pitch    
             && options.roll     
+            && options.order    
             && options.distance 
             && options.zoom) 
+
         {
             this.value.objects = getValidObjects(this.input.value);
 
@@ -139,24 +151,35 @@ extends GOperator1
 
 
             // build rotation matrices
-            const Ry = [
-                [ Math.cos(yaw),   0,                Math.sin(yaw)  ],
+            const My = [
+                [ Math.cos(yaw),   0,               -Math.sin(yaw)  ],
                 [ 0,               1,                0              ],
-                [-Math.sin(yaw),   0,                Math.cos(yaw)  ]];
+                [ Math.sin(yaw),   0,                Math.cos(yaw)  ]];
                 
-            const Rx = [
+            const Mp = [
                 [ 1,               0,                0              ],
-                [ 0,               Math.cos(pitch), -Math.sin(pitch)],
-                [ 0,               Math.sin(pitch),  Math.cos(pitch)]];
+                [ 0,               Math.cos(pitch),  Math.sin(pitch)],
+                [ 0,              -Math.sin(pitch),  Math.cos(pitch)]];
 
-            const Rz = [
+            const Mr = [
                 [ Math.cos(roll), -Math.sin(roll),   0              ],
                 [ Math.sin(roll),  Math.cos(roll),   0              ],
                 [ 0,               0,                1              ]];
 
 
+            let R;
+            
             // combine rotations
-            let R = mulm3m3(Ry, Rx, Rz);
+            switch (options.order.value)
+            {
+                case 0: R = mulm3m3(Mr, Mp, My); break;
+                case 1: R = mulm3m3(Mp, Mr, My); break;
+                case 2: R = mulm3m3(Mr, My, Mp); break;
+                case 3: R = mulm3m3(My, Mr, Mp); break;
+                case 4: R = mulm3m3(My, Mp, Mr); break;
+                case 5: R = mulm3m3(Mp, My, Mr); break;
+            }
+
 
 
             for (const obj of this.value.objects) 
@@ -214,8 +237,10 @@ extends GOperator1
             && this.yaw      && this.yaw     .isValid()
             && this.pitch    && this.pitch   .isValid()
             && this.roll     && this.roll    .isValid()
+            && this.order    && this.order   .isValid()
             && this.distance && this.distance.isValid()
             && this.zoom     && this.zoom    .isValid();
+
     }
     
     
@@ -228,8 +253,10 @@ extends GOperator1
         if (this.yaw     ) { this.yaw     .pushValueUpdates(parse); }
         if (this.pitch   ) { this.pitch   .pushValueUpdates(parse); }
         if (this.roll    ) { this.roll    .pushValueUpdates(parse); }
+        if (this.order   ) { this.order   .pushValueUpdates(parse); }
         if (this.distance) { this.distance.pushValueUpdates(parse); }
         if (this.zoom    ) { this.zoom    .pushValueUpdates(parse); }
+
     }
     
     
@@ -242,8 +269,10 @@ extends GOperator1
         if (this.yaw     ) { this.yaw     .invalidateInputs(parse, from, force); }
         if (this.pitch   ) { this.pitch   .invalidateInputs(parse, from, force); }
         if (this.roll    ) { this.roll    .invalidateInputs(parse, from, force); }
+        if (this.order   ) { this.order   .invalidateInputs(parse, from, force); }
         if (this.distance) { this.distance.invalidateInputs(parse, from, force); }
         if (this.zoom    ) { this.zoom    .invalidateInputs(parse, from, force); }
+
     }
     
     
@@ -256,8 +285,10 @@ extends GOperator1
         if (this.yaw     ) { this.yaw     .iterateLoop(parse); }
         if (this.pitch   ) { this.pitch   .iterateLoop(parse); }
         if (this.roll    ) { this.roll    .iterateLoop(parse); }
+        if (this.order   ) { this.order   .iterateLoop(parse); }
         if (this.distance) { this.distance.iterateLoop(parse); }
         if (this.zoom    ) { this.zoom    .iterateLoop(parse); }
+
     }
     
     
@@ -300,6 +331,7 @@ extends GOperator1
         perspective.yaw      = genParse(parse);
         perspective.pitch    = genParse(parse);
         perspective.roll     = genParse(parse);
+        perspective.order    = genParse(parse);
         perspective.distance = genParse(parse);
         perspective.zoom     = genParse(parse);
 

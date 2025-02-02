@@ -9,6 +9,7 @@ extends OperatorBase
     paramYaw;
     paramPitch;
     paramRoll;
+    paramOrder;
     paramDistance;
     paramZoom;
 
@@ -25,12 +26,13 @@ extends OperatorBase
         this.addInput (new Input ([...SHAPE_VALUES, NUMBER_VALUE]));
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
         
-        this.addParam(this.paramZ        = new NumberParam('z',        'Z',        true, true, true, 0));
-        this.addParam(this.paramYaw      = new NumberParam('yaw',      'yaw',      true, true, true, 0));
-        this.addParam(this.paramPitch    = new NumberParam('pitch',    'pitch',    true, true, true, 0));
-        this.addParam(this.paramRoll     = new NumberParam('roll',     'roll',     true, true, true, 0));
-        this.addParam(this.paramDistance = new NumberParam('distance', 'distance', true, true, true, 200));
-        this.addParam(this.paramZoom     = new NumberParam('zoom',     'zoom',     true, true, true, 1));
+        this.addParam(this.paramZ        = new NumberParam('z',        'Z',        true,  true, true, 0));
+        this.addParam(this.paramYaw      = new NumberParam('yaw',      'yaw',      true,  true, true, 0));
+        this.addParam(this.paramPitch    = new NumberParam('pitch',    'pitch',    true,  true, true, 0));
+        this.addParam(this.paramRoll     = new NumberParam('roll',     'roll',     true,  true, true, 0));
+        this.addParam(this.paramOrder    = new OptionParam('order',    '',         false, true, true, ['Y, P, R', 'Y, R, P', 'P, Y, R', 'P, R, Y', 'R, P, Y', 'R, Y, P'], 5));
+        this.addParam(this.paramDistance = new NumberParam('distance', 'distance', true,  true, true, 400));
+        this.addParam(this.paramZoom     = new NumberParam('zoom',     'zoom',     true,  true, true, 1));
 
 
         this.paramYaw.controls[0].setMin(0);
@@ -80,8 +82,10 @@ extends OperatorBase
         request.push(...this.node.paramYaw     .genRequest(gen));
         request.push(...this.node.paramPitch   .genRequest(gen));
         request.push(...this.node.paramRoll    .genRequest(gen));
+        request.push(...this.node.paramOrder   .genRequest(gen));
         request.push(...this.node.paramDistance.genRequest(gen));
         request.push(...this.node.paramZoom    .genRequest(gen));
+
 
 
         gen.scope.pop();
