@@ -669,24 +669,39 @@ function handleLegacyNode(_node, genVersion)
             removeFromArray(_node.params, parts);
     }
 
-    else if (   _node.type == COLOR
-             && genVersion < 441) 
+    else if (_node.type == COLOR)
     {
         if (!_node.params)
             _node.params = [];
 
         const paramSpace = _node.params.find(p => p[1] == 'space');
 
-        if (paramSpace)
+
+        if (genVersion < 441) 
         {
-                 if (paramSpace[2] == '2,0') paramSpace[2] =  '3,0';
-            else if (paramSpace[2] == '3,0') paramSpace[2] =  '2,0';
-            else if (paramSpace[2] == '4,0') paramSpace[2] =  '9,0';
-            else if (paramSpace[2] == '5,0') paramSpace[2] = '10,0';
-            else if (paramSpace[2] == '6,0') paramSpace[2] = '11,0';
-            else if (paramSpace[2] == '7,0') paramSpace[2] = '12,0';
-            else if (paramSpace[2] == '8,0') paramSpace[2] = '13,0';
-            else if (paramSpace[2] == '9,0') paramSpace[2] = '14,0';
+            if (paramSpace)
+            {
+                     if (paramSpace[2] == '2,0') paramSpace[2] =  '3,0';
+                else if (paramSpace[2] == '3,0') paramSpace[2] =  '2,0';
+                else if (paramSpace[2] == '7,0') paramSpace[2] = '12,0';
+                else if (paramSpace[2] == '8,0') paramSpace[2] = '13,0';
+                else if (paramSpace[2] == '9,0') paramSpace[2] = '14,0';
+            }
+        }
+        else if (genVersion >= 441
+              && genVersion <  446)
+        {
+            if (paramSpace)
+            {
+                     if (paramSpace[2] ==  '4,0') paramSpace[2] =  '7,0';
+                else if (paramSpace[2] ==  '5,0') paramSpace[2] =  '8,0';
+                else if (paramSpace[2] ==  '6,0') paramSpace[2] =  '9,0';
+                else if (paramSpace[2] ==  '7,0') paramSpace[2] = '10,0';
+                else if (paramSpace[2] ==  '8,0') paramSpace[2] = '11,0';
+                else if (paramSpace[2] ==  '9,0') paramSpace[2] =  '4,0';
+                else if (paramSpace[2] == '10,0') paramSpace[2] =  '5,0';
+                else if (paramSpace[2] == '11,0') paramSpace[2] =  '6,0';
+            }
         }
     }
 
