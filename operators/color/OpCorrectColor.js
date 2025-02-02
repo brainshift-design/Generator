@@ -22,7 +22,6 @@ extends OpColorBase
     {
         super(CORRECT_COLOR, 'correct', 'correct', iconCorrectColor, true);
 
-        this.subscription     = true;
         this.slow             = true;
         this.canDisable       = true;
         this.subscription     = true;

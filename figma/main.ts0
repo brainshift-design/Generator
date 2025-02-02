@@ -4,7 +4,7 @@ console.clear();
 const figCurrentPage = figma.currentPage; // to keep it the same if the user switches the page
 
 
-figma.payments.setPaymentStatusInDevelopment({type: 'PAID'});
+figma.payments.setPaymentStatusInDevelopment({type: 'UNPAID'});
 
 
 figma.loadAllPagesAsync().then(() =>

@@ -49,8 +49,8 @@ extends OpColorBase
         this.addParam(this.paramGamma  = new NumberParam('gamma',  'gamma',  true,  true, true, 1, 0.01, 4, 2));
         this.addParam(this.paramDegree = new OptionParam('degree', 'degree', false, true, true, ['linear', 'cosine'], 0));
 
-        this.paramSpace.separatorsBefore = [4, 9, 12, 15];
-        this.paramSpace.markMenuPro      = subscribed() ? [] : [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+        this.paramSpace.separatorsBefore = [4, 7, 12, 15];
+        this.paramSpace.markMenuPro      = subscribed() ? [] : [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
         this.paramSpace.minMenuWidth     = subscribed() ? 200 : 220;
         
         this.paramSpace.controls[0].setMin(1);
@@ -59,24 +59,24 @@ extends OpColorBase
 
         this.paramSpace.controls[0].textValues =
         [
-            [ 0, 'hex'                          ],
-            [ 1, 'rgb'                          ],
-            [ 2, 'hsl'                          ],
-            [ 3, 'hsv',   'hsb'                 ],
-            [ 4, 'lin',   'linear'              ],
-            [ 5, 'p3'                           ],
-            [ 6, 'a98',   'adobe98'             ],
-            [ 7, 'pro',   'prophoto'            ],
-            [ 8, 'r2020', 'rec2020', 'rec.2020' ],
-            [ 9, 'hclok', 'okhcl',   'oklch'    ],
-            [10, 'hclab'                        ],
-            [11, 'hcluv'                        ],
-            [12, 'oklab'                        ],
-            [13, 'lab'                          ],
-            [14, 'luv'                          ],
-            [15, 'xyz'                          ],
-            [16, 'xyz50'                        ],
-            [17, 'xyz65'                        ]
+            [ 0, 'hex'                         ],
+            [ 1, 'rgb'                         ],
+            [ 2, 'hsl'                         ],
+            [ 3, 'hsv',   'hsb'                ],
+            [ 4, 'hclok', 'okhcl',   'oklch'   ],
+            [ 5, 'hclab'                       ],
+            [ 6, 'hcluv'                       ],
+            [ 7, 'lin',   'linear'             ],
+            [ 8, 'p3'                          ],
+            [ 9, 'a98',   'adobe98'            ],
+            [10, 'pro',   'prophoto'           ],
+            [11, 'r2020', 'rec2020', 'rec.2020'],
+            [12, 'oklab'                       ],
+            [13, 'lab'                         ],
+            [14, 'luv'                         ],
+            [15, 'xyz'                         ],
+            [16, 'xyz50'                       ],
+            [17, 'xyz65'                       ]
         ];
 
         

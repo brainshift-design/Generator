@@ -29,7 +29,6 @@ extends OpColorBase
     {
         super(COLORBLIND, 'colorblind', 'colorblind', NULL);
 
-        this.subscription = true;
         this.canDisable   = true;
         
 

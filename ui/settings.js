@@ -437,12 +437,12 @@ function enableFeatures(pro)
     enableMenuItem(menuItemSaveSelected,       true, pro);
     enableMenuItem(menuItemFetch,              true, pro);
   //enableMenuItem(menuItemDateTime,           true, pro);
-    enableMenuItem(menuItemSolve,              true, pro);
-    enableMenuItem(menuItemParseJson,          true, pro);
-    enableMenuItem(menuItemToJson,             true, pro);
-    enableMenuItem(menuItemCorrectColor,       true, pro);
-    enableMenuItem(menuItemColorblind,         true, pro);
-    enableMenuItem(menuItemColorDifference,    true, pro);
+  //enableMenuItem(menuItemSolve,              true, pro);
+  //enableMenuItem(menuItemParseJson,          true, pro);
+  //enableMenuItem(menuItemToJson,             true, pro);
+  //enableMenuItem(menuItemCorrectColor,       true, pro);
+  //enableMenuItem(menuItemColorblind,         true, pro);
+  //enableMenuItem(menuItemColorDifference,    true, pro);
     enableMenuItem(menuItemRetain,            true, pro);
     enableMenuItem(menuItemVectorNetwork,      true, pro, true);
     enableMenuItem(menuItemVectorVertex,       true, pro, true);

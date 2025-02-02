@@ -55,8 +55,8 @@ extends OpColorBase
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
 
-        this.paramSpace.separatorsBefore = [4, 9, 12, 15];
-        this.paramSpace.markMenuPro      = subscribed() ? [] : [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+        this.paramSpace.separatorsBefore = [1, 4, 7, 12, 15];
+        this.paramSpace.markMenuPro      = subscribed() ? [] : [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
         this.paramSpace.minMenuWidth     = subscribed() ? 200 : 220;
 
         this.paramSpace.alwaysSaveValue  = true;

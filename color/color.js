@@ -4,14 +4,14 @@ const ColorSpaces =
     ['rgb',   'RGB'           ], 
     ['hsl',   'HSL'           ], 
     ['hsv',   'HSB'           ], 
+    ['hclok', 'HCL / ok'      ],
+    ['hclab', 'HCL / ab'      ],
+    ['hcluv', 'HCL / uv'      ],
     ['lin',   'RGB / Linear'  ], 
     ['p3',    'RGB / P3'      ], 
     ['a98',   'RGB / Adobe98' ], 
     ['pro',   'RGB / ProPhoto'], 
     ['r2020', 'RGB / Rec.2020'], 
-    ['hclok', 'HCL / ok'      ],
-    ['hclab', 'HCL / ab'      ],
-    ['hcluv', 'HCL / uv'      ],
     ['oklab', 'okLab'         ],
     ['lab',   'Lab'           ],
     ['luv',   'Luv'           ],
@@ -34,14 +34,14 @@ class ColorSpace
     rgb   = Object.freeze( 1);
     hsl   = Object.freeze( 2);
     hsv   = Object.freeze( 3);
-    lin   = Object.freeze( 4);
-    p3    = Object.freeze( 5);
-    a98   = Object.freeze( 6);
-    pro   = Object.freeze( 7);
-    r2020 = Object.freeze( 8);
-    hclok = Object.freeze( 9);
-    hclab = Object.freeze(10);
-    hcluv = Object.freeze(11);
+    hclok = Object.freeze( 4);
+    hclab = Object.freeze( 5);
+    hcluv = Object.freeze( 6);
+    lin   = Object.freeze( 7);
+    p3    = Object.freeze( 8);
+    a98   = Object.freeze( 9);
+    pro   = Object.freeze(10);
+    r2020 = Object.freeze(11);
     oklab = Object.freeze(12);
     lab   = Object.freeze(13);
     luv   = Object.freeze(14);

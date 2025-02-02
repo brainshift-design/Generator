@@ -170,11 +170,11 @@ extends GOperator
 
     static interpolate(space, col0, col1, f, gamma)
     {
-        if (   space ==  2  // hsl
-            || space ==  3  // hsv
-            || space ==  9  // hcl/ok
-            || space == 10  // hcl/ab
-            || space == 11) // hcl/uv
+        if (   space == 2  // hsl
+            || space == 3  // hsv
+            || space == 4  // hcl/ok
+            || space == 5  // hcl/ab
+            || space == 6) // hcl/uv
         {
                 const h0 = col0[1] * Tau;  const h1 = col1[1] * Tau;
                 const c0 = col0[2];        const c1 = col1[2];
