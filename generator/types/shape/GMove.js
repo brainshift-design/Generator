@@ -80,10 +80,10 @@ extends GOperator1
         await this.evalObjects(
             parse, 
             {
-                moveType:    moveType,
-                x:           x, 
-                y:           y,
-                affectSpace: affectSpace
+                moveType,
+                x, 
+                y,
+                affectSpace
             });
 
 
@@ -221,7 +221,7 @@ extends GOperator1
 
 
 
-   invalidateInputs(parse, from, force)
+    invalidateInputs(parse, from, force)
     {
         super.invalidateInputs(parse, from, force);
 

@@ -15,7 +15,6 @@ extends OperatorBase
         super(NUMBER_SOLVE, 'solve', 'solve', iconSolve, defNodeWidth, true);
 
         
-        this.subscription = true;
         this.canDisable   = true;
         
 

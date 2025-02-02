@@ -16,6 +16,7 @@ extends OperatorBase
     {
         super(MOVE, 'move', 'move', iconMove);
 
+        
         this.canDisable  = true;
         this.iconOffsetY = -2;
 

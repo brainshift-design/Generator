@@ -15,7 +15,6 @@ extends OperatorBase
     {
         super(PARSE_JSON, 'json', 'json', iconParseJson);
 
-        this.subscription      = true;
         this.iconOffsetY       = 1;
         this.showHeaderTooltip = true;
 

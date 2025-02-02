@@ -285,6 +285,7 @@
 ../generator/types/shape/GReversePath.js
 ../generator/types/shape/GBlendPath.js
 
+../generator/types/shape/GPerspective.js
 ../generator/types/shape/GPlace.js
 
 

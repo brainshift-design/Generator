@@ -315,6 +315,7 @@ const MOVE                    = 'MOVE';
 const ROTATE                  = 'ROT';
 const SCALE                   = 'SCALE';
 const SKEW                    = 'SKEW';
+const PERSPECTIVE             = 'PERSP';
 
 const SHOW_CENTER             = 'SHOWCNTR';
 const SET_CENTER              = 'SCENTR';
@@ -686,6 +687,7 @@ const SHAPE_TYPES =
     
     MOVE,
     ...AFFINE_TYPES,
+    PERSPECTIVE,
     SHOW_CENTER,
     SET_CENTER,
     RESET_XFORM,

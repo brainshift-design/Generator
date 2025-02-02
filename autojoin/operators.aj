@@ -252,6 +252,7 @@
 ../operators/shape/boolean/OpShapeIntersect.js
 ../operators/shape/boolean/OpShapeExclude.js
 
+../operators/shape/OpPerspective.js
 ../operators/shape/OpPlace.js
 
 ../operators/shape/OpRetain.js

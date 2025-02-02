@@ -1,4 +1,4 @@
-const generatorVersion     = 446;
+const generatorVersion     = 447;
 
 
 const MAX_INT32            = 2147483647;
@@ -214,6 +214,19 @@ function mulv2m3(v, m)
     let r  = mulv3m3(v3, m);
 
     return point(r[0], r[1]);
+}
+
+
+
+function mulv3m3(v, m)
+{
+    let r = [0, 0, 0];
+
+    for (let i = 0; i < 3; i++)
+        for (let j = 0; j < 3; j++)
+            r[i] += v[j] * m[i][j];
+
+    return r;
 }
 
 
@@ -821,19 +834,7 @@ function getLinearPathData(points)
 
 
 function point(x, y) { return {x: x, y: y}; }
-
-
-
-function mulv3m3(v, m)
-{
-    let r = [0, 0, 0];
-
-    for (let i = 0; i < 3; i++)
-        for (let j = 0; j < 3; j++)
-            r[i] += v[j] * m[i][j];
-
-    return r;
-}
+function point3(x, y, z) { return {x: x, y: y, z: z}; }
 
 
 
