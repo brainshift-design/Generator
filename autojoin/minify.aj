@@ -3631,7 +3631,7 @@ savedColor
 stackOverflowProtect
 toInteger
 createDefaultTransformPoints
-transformPoint
+transformPoint2
 createSpaceTransform
 showTextTooltips
 showListTooltips
@@ -3985,7 +3985,7 @@ _frac
 decFrac
 strVar
 createDefaultTransform
-applyTransform
+applyTransform2
 evalObjects
 setUpdateValues
 objPoints

@@ -127,6 +127,7 @@ extends GOperator2
                 this.nodeName,
                 x,
                 y,
+                0,
                 this.smooth ? this.smooth.value/100 : 1);
 
             point.createDefaultTransform(x, y);
@@ -138,7 +139,7 @@ extends GOperator2
                 const a     = -anglev(options.tangent);
                 const xform =  createRotateTransform(a);
 
-                point.applyTransform(xform, options.transform.value > 0 ? 2 : 0);
+                point.applyTransform2(xform, options.transform.value > 0 ? 2 : 0);
             }
             
             

@@ -1,12 +1,13 @@
-class GPoint
+class GPoint3
 extends GOperator1
 {
-    static { GNode.types[POINT] = this; }
+    static { GNode.types[POINT3] = this; }
 
 
 
     x = null;
     y = null;
+    z = null;
 
 
 
@@ -23,7 +24,9 @@ extends GOperator1
 
         this.x = null;
         this.y = null;
+        this.z = null;
     }
+
 
 
 
@@ -36,6 +39,7 @@ extends GOperator1
         if (this.value) copy.value = this.value.copy();
         if (this.x    ) copy.x     = this.x    .copy();
         if (this.y    ) copy.y     = this.y    .copy();
+        if (this.z    ) copy.z     = this.z    .copy();
 
         return copy;
     }
@@ -48,7 +52,9 @@ extends GOperator1
         {
             case 'x': return this.input ? this.value.x : this.x;
             case 'y': return this.input ? this.value.y : this.y;
+            case 'z': return this.input ? this.value.z : this.z;
         }
+
 
         return null;
     }
@@ -64,16 +70,18 @@ extends GOperator1
         let input = await evalPointValue (this.input, parse);
         let x     = await evalNumberValue(this.x,     parse);
         let y     = await evalNumberValue(this.y,     parse);
+        let z     = await evalNumberValue(this.z,     parse);
 
 
         if (   input
             && input.isValid())
+
         {
             const _input = input;
 
             if (input.type == VECTOR_VERTEX_VALUE)
             {
-                input = new PointValue(input.nodeId, input.x, input.y);
+                input = new PointValue(input.nodeId, input.x, input.y, input.z);
                 input.copyCustomParams(_input);
             }
             
@@ -87,21 +95,29 @@ extends GOperator1
             {
                 this.value.x = new NumberValue(this.value.objects[0].x);
                 this.value.y = new NumberValue(this.value.objects[0].y);
+                this.value.z = new NumberValue(this.value.objects[0].z);
             }
             
+
             if (x)  this.value.x = x;  else  x = this.value.x;
             if (y)  this.value.y = y;  else  y = this.value.y;
+            if (z)  this.value.z = z;  else  z = this.value.z;
         }
+
         else if (x 
-              && y)
+              && y
+              && z)
         {
             this.value = new PointValue(
                 this.nodeId, 
                 x, 
-                y);
+                y,
+                z);
+
         }
         else
             this.value = PointValue.NaN();
+
 
 
         this.value.uniqueId = this.uniqueId;
@@ -113,8 +129,10 @@ extends GOperator1
         this.setUpdateValues(parse, 
         [
             ['x', x],
-            ['y', y]
+            ['y', y],
+            ['z', z]
         ]);    
+
 
 
         this.validate();
@@ -135,9 +153,11 @@ extends GOperator1
 
 
         if (   this.value.x
-            && this.value.y   
+            && this.value.y
+            && this.value.z
             && this.value.x.isValid()
-            && this.value.y.isValid())
+            && this.value.y.isValid()
+            && this.value.z.isValid())
         {
             const x = this.value.x.value;
             const y = this.value.y.value;
@@ -148,8 +168,9 @@ extends GOperator1
                 this.nodeName,
                 x,
                 y,
-                0,
+                z,
                 this.smooth ? this.smooth.value/100 : 1);
+
 
             point.createDefaultTransform(x, y);
 
@@ -166,7 +187,8 @@ extends GOperator1
     {
         return super.isValid()
             && this.x && this.x.isValid()
-            && this.y && this.y.isValid();
+            && this.y && this.y.isValid()
+            && this.z && this.z.isValid();
     }
 
 
@@ -177,7 +199,9 @@ extends GOperator1
 
         if (this.x) this.x.pushValueUpdates(parse);
         if (this.y) this.y.pushValueUpdates(parse);
+        if (this.z) this.z.pushValueUpdates(parse);
     }
+
 
 
 
@@ -187,7 +211,9 @@ extends GOperator1
 
         if (this.x) this.x.invalidateInputs(parse, from, force);
         if (this.y) this.y.invalidateInputs(parse, from, force);
+        if (this.z) this.z.invalidateInputs(parse, from, force);
     }
+
 
 
 
@@ -197,7 +223,9 @@ extends GOperator1
 
         if (this.x) this.x.iterateLoop(parse);
         if (this.y) this.y.iterateLoop(parse);
+        if (this.z) this.z.iterateLoop(parse);
     }
+
 
 
 
@@ -248,6 +276,7 @@ extends GOperator1
             {
             case 'x': point.x = genParse(parse); break;
             case 'y': point.y = genParse(parse); break;
+            case 'z': point.z = genParse(parse); break;
             }
         }
     

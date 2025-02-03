@@ -3,16 +3,18 @@ extends FigmaShape
 {
     x;
     y;
+    z;
     smooth;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, smooth = 1, isDeco = false, isCenter = false, isXform = false)
+    constructor(nodeId, objectId, objectName, x, y, z = 0, smooth = 1, isDeco = false, isCenter = false, isXform = false)
     {
         super(POINT, nodeId, objectId, objectName, isDeco, isXform);
         
         this.x        = x;
         this.y        = y;
+        this.z        = z;
         this.smooth   = smooth;
         this.isCenter = isCenter;
 
@@ -32,6 +34,7 @@ extends FigmaShape
             this.objectName, 
             this.x,
             this.y,
+            this.z,
             this.smooth,
             this.isDeco,
             this.isCenter);
@@ -54,25 +57,26 @@ extends FigmaShape
 
 
 
-    applyTransform(xform, affectSpace)
+    applyTransform2(xform, affectSpace)
     {
         const space = this.createSpaceTransform();
 
         if (affectSpace > 0)
         {
-            const p = transformPoint(point(this.x, this.y), xform, space);
+            const p = transformPoint2(point(this.x, this.y), xform, space);
 
             this.x = p.x;
             this.y = p.y;
+            this.z = this.z;
         }
 
         if (affectSpace != 1)
-            this.applySpaceTransform(xform, space);
+            this.applySpaceTransform2(xform, space);
     }
     
     
     
-    checkFlipped(flipX, flipY) {}
+    checkFlipped2(flipX, flipY) {}
 
 
 

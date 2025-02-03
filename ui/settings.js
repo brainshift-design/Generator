@@ -436,21 +436,17 @@ function enableFeatures(pro)
     enableMenuItem(menuItemSaveToFile,         true, pro);
     enableMenuItem(menuItemSaveSelected,       true, pro);
     enableMenuItem(menuItemFetch,              true, pro);
-  //enableMenuItem(menuItemDateTime,           true, pro);
-  //enableMenuItem(menuItemSolve,              true, pro);
-  //enableMenuItem(menuItemParseJson,          true, pro);
-  //enableMenuItem(menuItemToJson,             true, pro);
-  //enableMenuItem(menuItemCorrectColor,       true, pro);
-  //enableMenuItem(menuItemColorblind,         true, pro);
-  //enableMenuItem(menuItemColorDifference,    true, pro);
-    enableMenuItem(menuItemRetain,            true, pro);
-    enableMenuItem(menuItemVectorNetwork,      true, pro, true);
-    enableMenuItem(menuItemVectorVertex,       true, pro, true);
-    enableMenuItem(menuItemVectorEdge,         true, pro, true);
-    enableMenuItem(menuItemVectorRegion,       true, pro, true);
-    enableMenuItem(menuItemVectorNetwork,      true, pro, true);
-    enableMenuItem(menuItemBooleanSep,         true, pro, true);
-    enableMenuItem(menuItemBooleanShape,       true, pro, true);
+    enableMenuItem(menuItemRetain,             true, pro);
+    enableMenuItem(menuItemVectorNetwork,      true, pro,   true);
+    enableMenuItem(menuItemVectorVertex,       true, pro,   true);
+    enableMenuItem(menuItemVectorEdge,         true, pro,   true);
+    enableMenuItem(menuItemVectorRegion,       true, pro,   true);
+    enableMenuItem(menuItemVectorNetwork,      true, pro,   true);
+    enableMenuItem(menuItemPerspective,        true, false, true);
+    enableMenuItem(menuItemSep3d,              true, false, true);
+    enableMenuItem(menuItem3dPoint,            true, false, true);
+    enableMenuItem(menuItemBooleanSep,         true, pro,   true);
+    enableMenuItem(menuItemBooleanShape,       true, pro,   true);
     enableMenuItem(menuItemSaveTemplate,       true, pro);
 
 

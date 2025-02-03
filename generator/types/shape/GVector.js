@@ -105,6 +105,7 @@ extends GOperator2
                 this.nodeName,
                 x,
                 y,
+                0,
                 this.smooth ? this.smooth.value/100 : 1);
 
 
@@ -113,7 +114,7 @@ extends GOperator2
             
             if (options.transform.value > 0)
             {
-                point.applyTransform(
+                point.applyTransform2(
                     getTransformFromAngle(anglev(point.toPoint())),
                     2);
             }

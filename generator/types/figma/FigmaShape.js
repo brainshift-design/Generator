@@ -74,9 +74,9 @@ extends FigmaObject
 
 
 
-    checkFlipped(flipX, flipY)
+    checkFlipped2(flipX, flipY)
     {
-        super.checkFlipped(flipX, flipY);
+        super.checkFlipped2(flipX, flipY);
 
         for (const fill   of this.fills  ) flipGradient(fill,   flipX, flipY);
         for (const stroke of this.strokes) flipGradient(stroke, flipX, flipY);

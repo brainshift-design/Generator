@@ -824,3 +824,19 @@ function TAB(nTabs)
 {
     return '\t'.repeat(nTabs);
 }
+
+
+
+function computeFocalLength(fovDegrees, sensorSize = 500)
+{
+    const fovRadians = fovDegrees * Tau/360;
+    return (sensorSize / 2) / Math.tan(fovRadians / 2);
+}
+
+
+
+function perspectiveScale(focalLength, z)
+{
+    // clamp z to avoid denominator getting too small
+    return focalLength / (focalLength + z);
+}

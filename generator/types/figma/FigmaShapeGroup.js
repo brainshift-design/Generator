@@ -72,7 +72,7 @@ extends FigmaShape
 
 
 
-    applyTransform(xform, affectSpace)
+    applyTransform2(xform, affectSpace)
     {
         const space = this.createSpaceTransform();
 
@@ -88,11 +88,11 @@ extends FigmaShape
             }
 
             if (affectSpace != 1)
-                obj.applySpaceTransform(xform, space);
+                obj.applySpaceTransform2(xform, space);
         }                
 
         // for (const obj of this.children)
-        //     obj.applyTransform(xform, affectSpace);
+        //     obj.applyTransform2(xform, affectSpace);
     }
 
 

@@ -239,6 +239,7 @@
 ../generator/types/shape/GStar.js
 ../generator/types/shape/GTextShape.js
 ../generator/types/shape/GPoint.js
+../generator/types/shape/GPoint3.js
 ../generator/types/shape/GPointCorner.js
 ../generator/types/shape/GVectorPath.js
 ../generator/types/shape/GVectorVertex.js

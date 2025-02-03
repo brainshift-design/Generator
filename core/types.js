@@ -271,7 +271,8 @@ const TEXT_SHAPE_TYPES        = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
 
 const POINT_VALUE             = 'PT#';
 const POINT                   = 'PT';
-const POINT_TYPES             = [POINT_VALUE, POINT];
+const POINT3                  = 'PT3';
+const POINT_TYPES             = [POINT_VALUE, POINT, POINT3];
 
 const POINT_CORNER            = 'PCORN';
 

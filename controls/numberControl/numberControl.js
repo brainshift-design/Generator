@@ -310,7 +310,7 @@ extends Control
     {
         return [
             this.param.div.offsetLeft,
-            this.param.node.width ];//div.offsetWidth ];
+            this.param.node.width ];
     };
 
 

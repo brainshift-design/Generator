@@ -156,6 +156,8 @@ var menuItemShowTooltipColorContrast;
 var menuItemShowTooltipColorNames;
 var menuItemShowTooltipAscii;
 
+var menuItemSep3d;
+var menuItem3dPoint;
 
 var menuItemEnableZoomedOutParams;
 var menuItemMinZoomForParams;
@@ -278,6 +280,8 @@ var menuItemLayerLayerBlur;
 var menuItemLayerBackBlur;
 var menuItemStyleSep2;
 
+
+var menuItemPerspective;
 
 var menuItemBooleanSep;
 var menuItemBooleanShape;
@@ -800,7 +804,9 @@ function initGeneratorMenus()
 
     menuVectorPoints = new Menu('Vector points', true, false);
     menuVectorPoints.addItems([
-                                     new MenuItem('Vector',                null,          false, {icon: iconVector,                      createType: VECTOR,         callback: e => actionManager.do(getCreateNodeAction(VECTOR,         btnShape.div, getCreateOptions(e)))}),
+                                     new MenuItem('Vector',                null,          false, {icon: iconVector,                      createType: VECTOR,                callback: e => actionManager.do(getCreateNodeAction(VECTOR,                btnShape.div, getCreateOptions(e)))}),
+        menuItemSep3d              = new MenuItem('',                      null,          false, {separator: true}),
+        menuItem3dPoint            = new MenuItem('3D point',              null,          false, {icon: iconPoint,                       createType: POINT3,                callback: e => actionManager.do(getCreateNodeAction(POINT3,                btnShape.div, getCreateOptions(e)))}),
                                      new MenuItem('',                      null,          false, {separator: true}),
                                      new MenuItem('Interpolate points',    null,          false, {icon: iconInterpolatePoint,            createType: INTERPOLATE_POINT,     callback: e => actionManager.do(getCreateNodeAction(INTERPOLATE_POINT,     btnShape.div, getCreateOptions(e)))}),
                                      new MenuItem('Intersect lines',       null,          false, {icon: iconIntersectLines,              createType: INTERSECT_LINES,       callback: e => actionManager.do(getCreateNodeAction(INTERSECT_LINES,       btnShape.div, getCreateOptions(e)))}),
@@ -854,12 +860,13 @@ function initGeneratorMenus()
 
     menuTransform = new Menu('Transform', true, false);
     menuTransform.addItems([
-        new MenuItem('Move',            null, false, {icon: iconMove,        createType: MOVE,        callback: e => actionManager.do(getCreateNodeAction(MOVE,        btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Rotate',          null, false, {icon: iconRotate,      createType: ROTATE,      callback: e => actionManager.do(getCreateNodeAction(ROTATE,      btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Scale',           null, false, {icon: iconScale,       createType: SCALE,       callback: e => actionManager.do(getCreateNodeAction(SCALE,       btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Skew',            null, false, {icon: iconSkew,        createType: SKEW,        callback: e => actionManager.do(getCreateNodeAction(SKEW,        btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Perspective',     null, false, {icon: iconPerspective, createType: PERSPECTIVE, callback: e => actionManager.do(getCreateNodeAction(PERSPECTIVE, btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('',                null, false, {separator: true}),
+                              new MenuItem('Move',        null, false, {icon: iconMove,        createType: MOVE,        callback: e => actionManager.do(getCreateNodeAction(MOVE,        btnShape.div, getCreateOptions(e)))}),
+                              new MenuItem('Rotate',      null, false, {icon: iconRotate,      createType: ROTATE,      callback: e => actionManager.do(getCreateNodeAction(ROTATE,      btnShape.div, getCreateOptions(e)))}),
+                              new MenuItem('Scale',       null, false, {icon: iconScale,       createType: SCALE,       callback: e => actionManager.do(getCreateNodeAction(SCALE,       btnShape.div, getCreateOptions(e)))}),
+                              new MenuItem('Skew',        null, false, {icon: iconSkew,        createType: SKEW,        callback: e => actionManager.do(getCreateNodeAction(SKEW,        btnShape.div, getCreateOptions(e)))}),
+        menuItemPerspective = new MenuItem('Perspective', null, false, {icon: iconPerspective, createType: PERSPECTIVE, callback: e => actionManager.do(getCreateNodeAction(PERSPECTIVE, btnShape.div, getCreateOptions(e)))}),
+                              new MenuItem('',            null, false, {separator: true}),
+
 
         new MenuItem('Place',           null, false, {icon: iconPlace,       createType: PLACE,       callback: e => actionManager.do(getCreateNodeAction(PLACE,       btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',                null, false, {separator: true}),

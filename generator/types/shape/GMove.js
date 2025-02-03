@@ -156,7 +156,7 @@ extends GOperator1
 
                 if (this.options.enabled)
                 {
-                    obj.applyTransform(xform, affectSpace);
+                    obj.applyTransform2(xform, affectSpace);
 
                     if (this.value.type == POINT_VALUE)
                     {
@@ -164,7 +164,6 @@ extends GOperator1
                         this.value.y.value = obj.y;
                     }
                 }
-
             }
 
 

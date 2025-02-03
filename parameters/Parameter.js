@@ -406,8 +406,7 @@ extends EventTarget
             this.divControls.style.display = showValue ? 'inline-block' : 'none';
 
 
-            if (    showValue)
-                //|| !this.isNodeValue)
+            if (showValue)
             {
                 this.divControls.style.left       =  nameSize;
                 this.divControls.style.marginLeft = '3px';

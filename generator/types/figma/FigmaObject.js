@@ -195,7 +195,7 @@ class FigmaObject
 
 
 
-    applyTransform(xform, affectSpace)
+    applyTransform2(xform, affectSpace)
     {
         const space = this.createSpaceTransform();
 
@@ -204,7 +204,7 @@ class FigmaObject
             this.applyObjectTransform(xform, space);
 
         if (affectSpace != 1)
-            this.applySpaceTransform(xform, space);
+            this.applySpaceTransform2(xform, space);
     }
 
 
@@ -219,23 +219,23 @@ class FigmaObject
             && this.xp0.y == this.xp2.y)
             this.xp2.y += 0.0001;
 
-        this.xp0 = transformPoint(this.xp0, xform, space);
-        this.xp1 = transformPoint(this.xp1, xform, space);
-        this.xp2 = transformPoint(this.xp2, xform, space);
+        this.xp0 = transformPoint2(this.xp0, xform, space);
+        this.xp1 = transformPoint2(this.xp1, xform, space);
+        this.xp2 = transformPoint2(this.xp2, xform, space);
     }
 
 
 
-    applySpaceTransform(xform, space)
+    applySpaceTransform2(xform, space)
     {
-        this.sp0 = transformPoint(this.sp0, xform, space);
-        this.sp1 = transformPoint(this.sp1, xform, space);
-        this.sp2 = transformPoint(this.sp2, xform, space);
+        this.sp0 = transformPoint2(this.sp0, xform, space);
+        this.sp1 = transformPoint2(this.sp1, xform, space);
+        this.sp2 = transformPoint2(this.sp2, xform, space);
     }
 
 
 
-    checkFlipped(flipX, flipY)
+    checkFlipped2(flipX, flipY)
     {
         if (flipX)
         {
@@ -308,7 +308,7 @@ class FigmaObject
 
 
 
-function transformPoint(p, xform, space)
+function transformPoint2(p, xform, space)
 {
     p = mulv2m3(p, inversem3(space));
     p = mulv2m3(p, xform);

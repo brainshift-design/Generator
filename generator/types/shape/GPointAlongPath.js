@@ -148,6 +148,7 @@ extends GOperator1
                 this.nodeName,
                 x,
                 y,
+                0,
                 this.smooth ? this.smooth.value/100 : 1);
 
             point.createDefaultTransform(x, y);
@@ -164,7 +165,7 @@ extends GOperator1
                 if (options.offset)
                     xform = mulm3m3(xform, createTransform(0, options.offset));
 
-                point.applyTransform(xform, options.transform.value > 0 ? 2 : 0);
+                point.applyTransform2(xform, options.transform.value > 0 ? 2 : 0);
             }
 
 
