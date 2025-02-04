@@ -229,10 +229,8 @@ extends Control
         if (this.wrapValue)
         {
             const range = this.maxDisplay - this.minDisplay;
-
-            value %= range;
-
             while (value < this.minDisplay) value += range;
+            value = this.minDisplay + ((value - this.minDisplay) % range);
         }
 
         else if (fullRange
