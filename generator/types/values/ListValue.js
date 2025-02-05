@@ -488,5 +488,6 @@ function finalListTypeFromTypes(types)
     else if (  _type ==       FILL_VALUE)  return       FILL_LIST_VALUE;
     else if (  _type ==      COLOR_VALUE)  return      COLOR_LIST_VALUE;
     else if (SHAPE_VALUES.includes(_type)) return      SHAPE_LIST_VALUE;
+    else if ( PATH_VALUES.includes(_type)) return       PATH_LIST_VALUE;
     else                                   return            LIST_VALUE;
 }

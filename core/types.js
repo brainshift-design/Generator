@@ -4,6 +4,7 @@ const NUMBER_LIST_VALUE       = 'NLIST#';
 const   TEXT_LIST_VALUE       = 'TLIST#';
 const  SHAPE_LIST_VALUE       = 'SLIST#';
 const  COLOR_LIST_VALUE       = 'CLIST#';
+const   PATH_LIST_VALUE       = 'PATHLIST#';
 const  FILL_LIST_VALUE        = 'FLIST#';
 const  COLOR_STOP_LIST_VALUE  = 'CSLIST#';
 
@@ -66,6 +67,7 @@ const LIST_TYPES =
     COLOR_LIST_VALUE,
     FILL_LIST_VALUE,
     COLOR_STOP_LIST_VALUE,
+    PATH_LIST_VALUE,
     LIST,
     EXTRACT,
     SET_PARAM,
@@ -88,7 +90,8 @@ const LIST_VALUES =
           SHAPE_LIST_VALUE,
           COLOR_LIST_VALUE,
            FILL_LIST_VALUE,
-     COLOR_STOP_LIST_VALUE
+     COLOR_STOP_LIST_VALUE,
+           PATH_LIST_VALUE
 ];
 
 
@@ -603,13 +606,6 @@ const PATH_TYPES =
     WAVE_PATH
 ];
 
-const PATH_VALUES =
-[
-    VECTOR_PATH_VALUE, 
-    TRAPEZE_VALUE,
-    ARC_PATH_VALUE,
-    WAVE_PATH_VALUE
-];
 
 
 const BOOLEAN_TYPES =
@@ -651,6 +647,16 @@ const SHAPE_VALUES =
     BACK_BLUR_VALUE,
     LAYER_BLEND_VALUE,
     LAYER_MASK_VALUE
+];
+
+
+const PATH_VALUES =
+[
+    VECTOR_PATH_VALUE,
+    ARC_PATH_VALUE,
+    WAVE_PATH_VALUE,
+    PATH_LIST_VALUE,
+    TRAPEZE_VALUE
 ];
 
 

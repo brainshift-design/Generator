@@ -152,15 +152,13 @@ extends GOperator1
             this.value.objects = [];
 
 
-        if (   this.value.x
-            && this.value.y
-            && this.value.z
-            && this.value.x.isValid()
-            && this.value.y.isValid()
-            && this.value.z.isValid())
+        if (   this.value.x && this.value.x.isValid()
+            && this.value.y && this.value.y.isValid()
+            && this.value.z && this.value.z.isValid())
         {
             const x = this.value.x.value;
             const y = this.value.y.value;
+            const z = this.value.z.value;
 
             const point = new FigmaPoint(
                 this.nodeId,

@@ -243,6 +243,7 @@
 ../operators/shape/OpClosestPointOnPath.js
 ../operators/shape/OpIntersectLines.js
 ../operators/shape/OpInterpolatePoint.js
+../operators/shape/OpReorientPoints.js
 ../operators/shape/OpReversePath.js
 ../operators/shape/OpBlendPath.js
 
