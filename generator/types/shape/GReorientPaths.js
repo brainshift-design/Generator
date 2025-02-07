@@ -158,13 +158,12 @@ extends GShape
                     _path.winding.value,
                     _path.round  .value);
 
-
                 if (_path.props)
                     addProps(path, _path.props);
-
                     
                 _path.objects = [path];
 
+                
                 this.value.objects.push(path);
             }
         }

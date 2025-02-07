@@ -231,6 +231,7 @@ class Operator
     {
         const OpClass = Operator.types[nodeType];
     
+
         if (OpClass)
         {
             let node = new OpClass(options);

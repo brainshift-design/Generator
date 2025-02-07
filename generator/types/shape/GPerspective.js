@@ -174,12 +174,7 @@ extends GOperator1
 
                 if (this.options.enabled)
                 {
-                    console.log('obj.z', obj.z);
-                    // construct the 3D point using the object's x,y and the z parameter
-                    const pt3 = [
-                        obj.x, 
-                        obj.y, 
-                        obj.z ];
+                    const pt3 = [obj.x, obj.y, obj.z];
                     
                     // apply rotation: rotated = R pt3D
                     const rotated = mulv3m3(pt3, R);

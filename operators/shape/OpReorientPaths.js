@@ -13,7 +13,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(REORIENT_PATHS, 'reorient', 'reorient', iconReorientPaths);
+        super(REORIENT_PATHS, 'reorientPaths', 'reorient paths', iconReorientPaths);
 
         
         this.canDisable     = true;

@@ -5,7 +5,7 @@ const presetActive = `
         {
         "type": "CMNT",
         "id": "comment4",
-        "name": "%3Cb%3EShift%3C%2Fb%3E%2BDouble%20click%20to%20activate%20%3Cb%3Emultiple%20nodes%3C%2Fb%3E%20at%20the%20same%20time.",
+        "name": "Ctrl%2B%3Cb%3EShift%3C%2Fb%3E%2BDouble%20click%20to%20activate%20%3Cb%3Emultiple%20nodes%3C%2Fb%3E%20at%20the%20same%20time.",
         "renamed": "true",
         "enabled": "true",
         "highlight": "0",
@@ -16,7 +16,7 @@ const presetActive = `
         {
         "type": "CMNT",
         "id": "comment11",
-        "name": "%3Cb%3EDouble%20click%3C%2Fb%3E%20a%20node\'s%20header%20to%20activate%20the%20node",
+        "name": "%3Cb%3ECtrl+Double%20click%3C%2Fb%3E%20a%20node's%20header%20to%20activate%20the%20node",
         "renamed": "true",
         "enabled": "true",
         "highlight": "0",
@@ -27,7 +27,7 @@ const presetActive = `
         {
         "type": "CMNT",
         "id": "comment5",
-        "name": "Double%20click%20the%20plugin%20background%20to%20deactivate%20all%20nodes.",
+        "name": "Ctrl%2BDouble%20click%20the%20plugin%20background%20to%20deactivate%20all%20nodes.",
         "renamed": "true",
         "enabled": "true",
         "highlight": "0",

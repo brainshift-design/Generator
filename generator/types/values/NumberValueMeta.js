@@ -91,7 +91,7 @@ class NumberValueMeta
             + ' ' + this.maxDisplay.toString()
             + ' ' + this.decimals  .toString()
             + ' ' + (this.suffix == NULL ? NULL_VALUE : encodeURIComponent(this.suffix))
-            + ' ' + (this.wrapValue ? 'true' : 'false')
+            + ' ' + (this.wrapValue === true ? 'true' : 'false')
             + ' ' + (this.ranges ? this.ranges.length.toString() : NULL_VALUE)
             + (   this.ranges
                && this.ranges.length > 0

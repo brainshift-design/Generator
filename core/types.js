@@ -1,11 +1,12 @@
 const LIST_VALUE              = 'LIST#';
 
-const NUMBER_LIST_VALUE       = 'NLIST#';
-const   TEXT_LIST_VALUE       = 'TLIST#';
-const  SHAPE_LIST_VALUE       = 'SLIST#';
-const  COLOR_LIST_VALUE       = 'CLIST#';
-const   PATH_LIST_VALUE       = 'PATHLIST#';
-const  FILL_LIST_VALUE        = 'FLIST#';
+const      NUMBER_LIST_VALUE  = 'NLIST#';
+const        TEXT_LIST_VALUE  = 'TLIST#';
+const       SHAPE_LIST_VALUE  = 'SLIST#';
+const       POINT_LIST_VALUE  = 'PTLIST#';
+const       COLOR_LIST_VALUE  = 'CLIST#';
+const        PATH_LIST_VALUE  = 'PATHLIST#';
+const        FILL_LIST_VALUE  = 'FLIST#';
 const  COLOR_STOP_LIST_VALUE  = 'CSLIST#';
 
 
@@ -340,6 +341,7 @@ const CIRCLE_CENTER           = 'CIRCEN';
 const ARC_FROM_POINTS         = 'ARCPT';
 const INTERSECT_LINES         = 'INTLIN';
 const INTERPOLATE_POINT       = 'PTLERP';
+const REORIENT_POINTS         = 'REORPTS';
 const REVERSE_PATH            = 'REVPTH';
 const BLEND_PATH              = 'BLENDPTH';
 
@@ -631,6 +633,7 @@ const SHAPE_VALUES =
     STAR_VALUE,
     TEXT_SHAPE_VALUE,
     POINT_VALUE,
+    POINT_LIST_VALUE,
     VECTOR_PATH_VALUE,
     VECTOR_VERTEX_VALUE,
     VECTOR_EDGE_VALUE,
@@ -717,6 +720,7 @@ const SHAPE_TYPES =
     ARC_FROM_POINTS,
     INTERSECT_LINES,
     INTERPOLATE_POINT,
+    REORIENT_POINTS,
     REVERSE_PATH,
     BLEND_PATH,
 
@@ -736,6 +740,7 @@ const ALL_VALUES =
      NUMBER_LIST_VALUE,
        TEXT_LIST_VALUE,
       SHAPE_LIST_VALUE,
+      POINT_LIST_VALUE,
      
         VARIABLE_VALUE,
         

@@ -81,7 +81,7 @@ const presetRetain = '\
         {\
             "type": "CMNT",\
             "id": "comment7",\
-            "name": "Click%20the%20%3Cb%3Enode%20icon%3C%2Fb%3E%20to%20create%20a%20copy%20of%20the%20objects%20that%20are",\
+            "name": "Click%20the%20retain%20node%3Cb%3E%20icon%3C%2Fb%3E%20to%20create%20an%20unlinked%20copy%20of%20the%20objects",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
@@ -186,7 +186,7 @@ const presetRetain = '\
         {\
             "type": "CMNT",\
             "id": "comment8",\
-            "name": "not%20linked%20and%20will%20not%20be%20managed%20by%20Generator.",\
+            "name": "that%20will%20not%20be%20managed%20by%20Generator.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
@@ -414,7 +414,7 @@ const presetRetain = '\
         {\
             "type": "CMNT",\
             "id": "comment4",\
-            "name": "By%20enabling%20%3Cb%3Epreserve%3C%2Fb%3E%20you%20tell%20Generator%20to%20leave%20the%20objects",\
+            "name": "By%20enabling%20it%20you%20tell%20Generator%20to%20leave%20the%20objects",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
