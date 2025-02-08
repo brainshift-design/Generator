@@ -5,7 +5,7 @@ extends GOperator
 
 
 
-    name;
+    category;
     index;
 
 
@@ -32,8 +32,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.name ) copy.name  = this.name .copy();
-        if (this.index) copy.index = this.index.copy();
+        if (this.category) copy.category = this.category.copy();
+        if (this.index   ) copy.index    = this.index   .copy();
 
         return copy;
     }
@@ -46,11 +46,11 @@ extends GOperator
             return this;
 
 
-        const name  = await evalTextValue  (this.name,  parse);
-        const index = await evalNumberValue(this.index, parse);
+        const category = await evalNumberValue(this.category, parse);
+        const index    = await evalNumberValue(this.index,    parse);
 
 
-        switch (name.value)
+        switch (category.value)
         {
             case 0: this.value = new TextValue(
                 [
@@ -94,9 +94,8 @@ extends GOperator
 
         this.setUpdateValues(parse,
         [
-            //['value', this.value],
-            ['name',  name      ],
-            ['index', index     ]
+            ['category', category],
+            ['index',    index   ]
         ]);
 
 
@@ -110,9 +109,10 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.index && this.index.isValid()
-            && this.name  && this.name .isValid();
+            && this.category && this.category.isValid()
+            && this.index    && this.index   .isValid();
     }
+
 
 
 
@@ -120,8 +120,8 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.index) this.index.pushValueUpdates(parse);
-        if (this.name ) this.name .pushValueUpdates(parse);
+        if (this.category) this.category.pushValueUpdates(parse);
+        if (this.index   ) this.index   .pushValueUpdates(parse);
     }
 
 
@@ -130,8 +130,8 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.index) this.index.invalidateInputs(parse, from, force);
-        if (this.name ) this.name .invalidateInputs(parse, from, force);
+        if (this.category) this.category.invalidateInputs(parse, from, force);
+        if (this.index   ) this.index   .invalidateInputs(parse, from, force);
     }
 
 
@@ -140,8 +140,8 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.index) this.index.iterateLoop(parse);
-        if (this.name ) this.name .iterateLoop(parse);
+        if (this.category) this.category.iterateLoop(parse);
+        if (this.index   ) this.index   .iterateLoop(parse);
     }
 
 
@@ -177,8 +177,8 @@ extends GOperator
         parse.nTab++;
     
     
-        index.name  = genParse(parse);
-        index.index = genParse(parse);
+        index.category = genParse(parse);
+        index.index    = genParse(parse);
     
         
         parse.nTab--;

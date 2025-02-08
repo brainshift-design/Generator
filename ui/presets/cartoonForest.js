@@ -814,7 +814,7 @@ const presetCartoonForest = '\
         [\
                 ["NUM#", "seed", "9913,0"],\
                 ["NUM#", "iteration", "?,?"],\
-                ["NUM#", "max", "1,0"],\
+                ["NUM#", "max", "1,2"],\
                 ["NUM#", "scale", "80,0"],\
                 ["NUM#", "offset", "0,1"],\
                 ["NUM#", "evolve", "2,0"],\

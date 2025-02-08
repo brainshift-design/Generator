@@ -870,10 +870,10 @@ function handleLegacyNode(_node, genVersion)
         {
             const value = NumberValue.parse(paramCondition[2]);
 
-            if (value.value > 0) value.value = 0;
-            else                 value.value = 1;
+            if (value[0].value > 0) value[0].value = 0;
+            else                    value[0].value = 1;
 
-            paramCondition[2] = value.toString();
+            paramCondition[2] = value[0].toString();
         }
         else
         {

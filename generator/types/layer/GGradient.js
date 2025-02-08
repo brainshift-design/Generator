@@ -109,7 +109,7 @@ extends GOperator
 
         if (position) position.value = Math.min(Math.max(0, Math.floor(position.value)), 4);
         if (blend   ) blend   .value = Math.min(Math.max(0, Math.floor(blend   .value)), BlendModes.length-1);
-
+        if (gradType) gradType.value = Math.min(Math.max(0, Math.round(gradType.value)), 3);
 
         let stops = new ListValue();
 

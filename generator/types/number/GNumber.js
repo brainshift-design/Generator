@@ -41,17 +41,17 @@ extends GOperator1
         {
             await this.value.eval(parse);
 
-            this.value.meta = new NumberValueMeta(
-                Number.MIN_SAFE_INTEGER,
-                Number.MIN_SAFE_INTEGER,
-                Number.MAX_SAFE_INTEGER,
-                Number.MAX_SAFE_INTEGER,
-                Number.NaN, // don't touch decimals
-                NULL,
-                false,
-                [],
-                false,
-                NULL);
+            // this.value.meta = new NumberValueMeta(
+            //     Number.MIN_SAFE_INTEGER,
+            //     Number.MIN_SAFE_INTEGER,
+            //     Number.MAX_SAFE_INTEGER,
+            //     Number.MAX_SAFE_INTEGER,
+            //     Number.NaN, // don't touch decimals
+            //     NULL,
+            //     false,
+            //     [],
+            //     false,
+            //     NULL);
         }
         
         else

@@ -383,7 +383,7 @@ const presetCompositeGradients = '\
         "z": "20",\
         "params":\
         [\
-                ["NUM#", "seed", "2802,0"],\
+                ["NUM#", "seed", "2844,0"],\
                 ["NUM#", "max", "10000,0"]\
         ]\
         },\

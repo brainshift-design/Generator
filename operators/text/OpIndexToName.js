@@ -5,14 +5,14 @@ extends OperatorBase
 
 
 
-    paramName;
+    paramCategory;
     paramIndex;
 
 
 
     constructor()
     {
-        super(INDEX_TO_NAME, 'indexToNane', 'index → name', iconIndexToName);
+        super(INDEX_TO_NAME, 'indexToName', 'index → name', iconIndexToName);
 
 
         this.iconOffsetY = 1;
@@ -20,8 +20,8 @@ extends OperatorBase
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramName  = new OptionParam('name',  'name',  false, true, true, ['day of week', 'month', 'font name'], 0));
-        this.addParam(this.paramIndex = new NumberParam('index', 'index', true,  true, true, 1, 1));
+        this.addParam(this.paramCategory = new OptionParam('category', 'category', false, true, true, ['day of week', 'month', 'font name'], 0));
+        this.addParam(this.paramIndex    = new NumberParam('index',    'index',    true,  true, true, 1, 1));
     }
 
 
@@ -41,8 +41,8 @@ extends OperatorBase
         request.push(0);
         
 
-        request.push(...this.node.paramName .genRequest(gen));
-        request.push(...this.node.paramIndex.genRequest(gen));
+        request.push(...this.node.paramCategory.genRequest(gen));
+        request.push(...this.node.paramIndex   .genRequest(gen));
 
         
         gen.scope.pop();
@@ -55,11 +55,11 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramName .enableControlText(true, this.paramName .isUnknown());
-        this.paramIndex.enableControlText(true, this.paramIndex.isUnknown());
+        this.paramCategory.enableControlText(true, this.paramCategory.isUnknown());
+        this.paramIndex   .enableControlText(true, this.paramIndex   .isUnknown());
 
 
-        switch (this.paramName.value.value)
+        switch (this.paramCategory.value.value)
         {
             case 0: // days of week
                 this.paramIndex.controls[0].setMin(1);

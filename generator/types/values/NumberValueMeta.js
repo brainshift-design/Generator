@@ -83,6 +83,18 @@ class NumberValueMeta
 
 
 
+    isValid()
+    {
+        return isNaN(this.min       )
+            || isNaN(this.minDisplay)
+            || isNaN(this.max       )
+            || isNaN(this.maxDisplay)
+            || isNaN(this.decimals  );
+    }
+
+
+
+
     toString()
     {
         return      this.min       .toString()
@@ -110,7 +122,6 @@ class NumberValueMeta
             str = str.split(' ');
             i   = 0;
         }
-        console.log('str =', str);
     
     
         const iStart = i;

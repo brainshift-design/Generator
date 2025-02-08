@@ -305,9 +305,14 @@ function allInputsAreCondensedLists(inputs)
 
 async function evalValue(_value, parse, nan = () => new NullValue())
 {
+    if (!_value)
+        return null;
+    
+    const evaluated = await _value.eval(parse);
+    
     let value = 
         _value 
-            ? (await _value.eval(parse)).toNewValue() 
+            ? evaluated.toNewValue() 
             : null;
 
     if (   (    value 
