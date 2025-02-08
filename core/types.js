@@ -66,6 +66,7 @@ const LIST_TYPES =
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
     COLOR_LIST_VALUE,
+    POINT_LIST_VALUE,
     FILL_LIST_VALUE,
     COLOR_STOP_LIST_VALUE,
     PATH_LIST_VALUE,
@@ -90,6 +91,7 @@ const LIST_VALUES =
            TEXT_LIST_VALUE,
           SHAPE_LIST_VALUE,
           COLOR_LIST_VALUE,
+          POINT_LIST_VALUE,
            FILL_LIST_VALUE,
      COLOR_STOP_LIST_VALUE,
            PATH_LIST_VALUE
@@ -275,8 +277,11 @@ const TEXT_SHAPE_TYPES        = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
 
 const POINT_VALUE             = 'PT#';
 const POINT                   = 'PT';
-const POINT3                  = 'PT3';
-const POINT_TYPES             = [POINT_VALUE, POINT, POINT3];
+const POINT_TYPES             = [POINT_VALUE, POINT];
+
+const POINT3_VALUE             = 'PT3#';
+const POINT3                   = 'PT3';
+const POINT3_TYPES             = [POINT3_VALUE, POINT3];
 
 const POINT_CORNER            = 'PCORN';
 
@@ -683,6 +688,7 @@ const SHAPE_TYPES =
     ...STAR_TYPES,
     ...TEXT_SHAPE_TYPES,
     ...POINT_TYPES,
+    ...POINT3_TYPES,
        POINT_CORNER,
     ...VECTOR_PATH_TYPES,
     ...VECTOR_VERTEX_TYPES,
@@ -765,6 +771,7 @@ const ALL_VALUES =
             STAR_VALUE,
       TEXT_SHAPE_VALUE,
            POINT_VALUE,
+          POINT3_VALUE,
      VECTOR_PATH_VALUE,
    VECTOR_VERTEX_VALUE,
      VECTOR_EDGE_VALUE,

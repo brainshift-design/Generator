@@ -69,6 +69,7 @@
 ../generator/types/values/StarValue.js
 ../generator/types/values/TextShapeValue.js
 ../generator/types/values/PointValue.js
+../generator/types/values/PointValue3.js
 ../generator/types/values/VectorPathValue.js
 ../generator/types/values/VectorVertexValue.js
 ../generator/types/values/VectorEdgeValue.js

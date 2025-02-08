@@ -60,7 +60,7 @@ const presetWave = '\
             "y": "1898",\
             "z": "3",\
             "width": "930.0768927436977",\
-            "height": "418",\
+            "height": "448",\
             "params":\
             [\
             ]\

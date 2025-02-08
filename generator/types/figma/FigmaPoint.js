@@ -3,18 +3,16 @@ extends FigmaShape
 {
     x;
     y;
-    z;
     smooth;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, z = 0, smooth = 1, isDeco = false, isCenter = false, isXform = false)
+    constructor(nodeId, objectId, objectName, x, y, smooth = 1, isDeco = false, isCenter = false, isXform = false)
     {
         super(POINT, nodeId, objectId, objectName, isDeco, isXform);
         
         this.x        = x;
         this.y        = y;
-        this.z        = z;
         this.smooth   = smooth;
         this.isCenter = isCenter;
 
@@ -34,7 +32,6 @@ extends FigmaShape
             this.objectName, 
             this.x,
             this.y,
-            this.z,
             this.smooth,
             this.isDeco,
             this.isCenter);
@@ -67,7 +64,6 @@ extends FigmaShape
 
             this.x = p.x;
             this.y = p.y;
-            this.z = this.z;
         }
 
         if (affectSpace != 1)

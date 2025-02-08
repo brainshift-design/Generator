@@ -105,7 +105,6 @@ extends GOperator2
                 this.nodeName,
                 x,
                 y,
-                0,
                 this.smooth ? this.smooth.value/100 : 1);
 
 

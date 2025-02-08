@@ -161,7 +161,6 @@ extends GShape
                     this.nodeName,
                     p.x.value,
                     p.y.value,
-                    0,
                     p.smooth ? p.smooth.value/100 : 1);
             });
         }

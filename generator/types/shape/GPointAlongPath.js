@@ -148,7 +148,6 @@ extends GOperator1
                 this.nodeName,
                 x,
                 y,
-                0,
                 this.smooth ? this.smooth.value/100 : 1);
 
             point.createDefaultTransform(x, y);

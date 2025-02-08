@@ -81,7 +81,7 @@ extends GOperator1
 
             if (input.type == VECTOR_VERTEX_VALUE)
             {
-                input = new PointValue(input.nodeId, input.x, input.y, input.z);
+                input = new PointValue3(input.nodeId, input.x, input.y, input.z);
                 input.copyCustomParams(_input);
             }
             
@@ -108,7 +108,7 @@ extends GOperator1
               && y
               && z)
         {
-            this.value = new PointValue(
+            this.value = new PointValue3(
                 this.nodeId, 
                 x, 
                 y,
@@ -116,7 +116,7 @@ extends GOperator1
 
         }
         else
-            this.value = PointValue.NaN();
+            this.value = PointValue3.NaN();
 
 
 
@@ -160,13 +160,13 @@ extends GOperator1
             const y = this.value.y.value;
             const z = this.value.z.value;
 
-            const point = new FigmaPoint(
+            const point = new FigmaPoint2(
                 this.nodeId,
                 this.nodeId,
                 this.nodeName,
                 x,
                 y,
-                z,
+                // z is ignored
                 this.smooth ? this.smooth.value/100 : 1);
 
 

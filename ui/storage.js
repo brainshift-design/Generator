@@ -385,15 +385,17 @@ function uiReturnFigLoadNodesAndConns(msg)
             
         graph.clear();
 
-        loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress).then(result =>
-        {
-            if (   graph.nodes.length == 0
-                && graph.currentPage)
-                graph.currentPage.zoom = 1;
+        loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress)
+            .then(result =>
+            {
+                if (   graph.nodes.length == 0
+                    && graph.currentPage)
+                    graph.currentPage.zoom = 1;
 
-            if (!tutorialsShown)
-                uiGetLocalData('canvasEmpty');
-        });
+                if (!tutorialsShown)
+                    uiGetLocalData('canvasEmpty');
+            })
+            .catch(error => console.error('Error loading nodes and connections:', error));
     }
 
 
@@ -432,60 +434,65 @@ async function loadNodesAndConnsAsync(_nodes, _conns, setProgress, pasting = fal
     {
         restartLoadingTimer();
         
-        promise = promise.then(nodes => 
-        {
-            const res = resolveNodes(
-                _nodes, 
-                i, 
-                Math.min(i + chunkSize, _nodes.length), // exclusive
-                nodes,
-                pasting);
+        promise = promise
+            .then(nodes => 
+            {
+                const res = resolveNodes(
+                    _nodes, 
+                    i, 
+                    Math.min(i + chunkSize, _nodes.length), // exclusive
+                    nodes,
+                    pasting);
 
-            if (setProgress)
-                setProgress(i / (_nodes.length + (_conns ? _conns.length : 0)));
-    
-            return res;
-        });
+                if (setProgress)
+                    setProgress(i / (_nodes.length + (_conns ? _conns.length : 0)));
+        
+                return res;
+            })
+            .catch(error => console.error('Error resolving nodes:', error));
     }
 
     return new Promise(resolve =>
     {
-        promise.then(nodes => 
-        {
-            graph.addNodes(nodes, false, false);
+        promise
+            .then(nodes => 
+            {
+                graph.addNodes(nodes, false, false);
 
 
-            const varNodes = nodes.filter(n => 
-                       n.type     == VARIABLE 
-                    && n.variableId != NULL);
-                    
-            uiGetValueFromFigma('getVariableData', varNodes.map(n => n.variableId))
-                .then(response =>
-                {
-                    for (const variable of response.value)
+                const varNodes = nodes.filter(n => 
+                        n.type     == VARIABLE 
+                        && n.variableId != NULL);
+                        
+                uiGetValueFromFigma('getVariableData', varNodes.map(n => n.variableId))
+                    .then(response =>
                     {
-                        const node = varNodes.find(n => n.variableId == variable.id);
+                        for (const variable of response.value)
+                        {
+                            const node = varNodes.find(n => n.variableId == variable.id);
 
-                        node.updateValueParamsFromResolved(
-                            variable.resolvedType, 
-                            variable.resolvedValues,
-                            variable.resolvedAliasNames);
+                            node.updateValueParamsFromResolved(
+                                variable.resolvedType, 
+                                variable.resolvedValues,
+                                variable.resolvedAliasNames);
 
-                        node.updateValueParamValuesFromResolved(
-                            variable.resolvedType, 
-                            variable.name, 
-                            variable.values,
-                            variable.resolvedValues,
-                            variable.resolvedModes,
-                            variable.resolvedAliasNames);
-                    }
+                            node.updateValueParamValuesFromResolved(
+                                variable.resolvedType, 
+                                variable.name, 
+                                variable.values,
+                                variable.resolvedValues,
+                                variable.resolvedModes,
+                                variable.resolvedAliasNames);
+                        }
 
-                    loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
-                });
+                        loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
+                    })
+                    .catch(error => console.error('Error loading variables:', error));
 
-            
-            resolve(nodes);
-        });
+                
+                resolve(nodes);
+            })
+            .catch(error => console.error('Error loading nodes and connections:', error));
     });
 }
 
@@ -530,46 +537,53 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
         for (let i = 0; i < _paramConns.length; i += chunkSize)
         {
-            promise = promise.then(() => 
-            {
-                const res = resolveConnections(
-                    _nodes,
-                    _paramConns, 
-                    i, 
-                    Math.min(i + chunkSize, _paramConns.length)); // exclusive
+            promise = promise
+                .then(() => 
+                {
+                    const res = resolveConnections(
+                        _nodes,
+                        _paramConns, 
+                        i, 
+                        Math.min(i + chunkSize, _paramConns.length)); // exclusive
 
-                return res;
-            });
+                    return res;
+                })
+                .catch(error => console.error('Error resolving parameter connections:', error));
         }
 
         for (let i = 0; i < _otherConns.length; i += chunkSize)
         {
-            promise = promise.then(() => 
-            {
-                const res = resolveConnections(
-                    _nodes,
-                    _otherConns, 
-                    i, 
-                    Math.min(i + chunkSize, _otherConns.length)); // exclusive
+            promise = promise
+                .then(() => 
+                {
+                    const res = resolveConnections(
+                        _nodes,
+                        _otherConns, 
+                        i, 
+                        Math.min(i + chunkSize, _otherConns.length)); // exclusive
 
-                if (setProgress)
-                    setProgress((_nodes.length + i) / nozero(_nodes.length + _otherConns.length * 19/20)); // the proportion is arbitrary
+                    if (setProgress)
+                        setProgress((_nodes.length + i) / nozero(_nodes.length + _otherConns.length * 19/20)); // the proportion is arbitrary
 
-                return res;
-            });
+                    return res;
+                })
+                .catch(error => console.error('Error resolving node connections:', error));
         }
     }
 
 
-    promise.then(() => 
-    {
-        const updateNodes = [];
-        
-        finishLoadingNodes(_nodes, loadedNodes, updateNodes);
-        finishLoading(_nodes);
-        
-        pushUpdate(null, updateNodes);
-    });
+
+    promise
+        .then(() => 
+        {
+            const updateNodes = [];
+            
+            finishLoadingNodes(_nodes, loadedNodes, updateNodes);
+            finishLoading(_nodes);
+            
+            pushUpdate(null, updateNodes);
+        })
+        .catch(error => console.error('Error finishing loading:', error));
 }
 
 

@@ -259,7 +259,7 @@ const presetTwoMathNodes = '\
       "created": "1738954501689",\
       "updated": "1738955594063",\
       "id": "math5",\
-      "name": "math",\
+      "name": "...math",\
       "renamed": "false",\
       "enabled": "true",\
       "highlight": "5",\
@@ -442,7 +442,7 @@ const presetTwoMathNodes = '\
       "created": "1738954501692",\
       "updated": "1738954501692",\
       "id": "math2",\
-      "name": "math",\
+      "name": "...math",\
       "renamed": "false",\
       "enabled": "true",\
       "highlight": "5",\
