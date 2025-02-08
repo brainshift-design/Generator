@@ -633,7 +633,7 @@ const presetGradientCircles = '\
             "z": "37",\
             "params":\
             [\
-                ["NUM#", "seed", "2401,0"],\
+                ["NUM#", "seed", "2404,0"],\
                 ["NUM#", "max", "10000,0"]\
             ]\
         },\

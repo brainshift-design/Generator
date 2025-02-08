@@ -189,3 +189,48 @@ async function getTrigValue(input, func, enabled)
         case TRIG_ATAN: return await evalTangent(input, true );
     }
 }
+
+
+
+async function evalSine(input, arc)
+{
+    if (!input)
+        return NumberValue.NaN();
+
+    const val = 
+        !arc 
+        ? Math.sin (input.value) 
+        : Math.asin(input.value);
+
+    return new NumberValue(val, decDigits(val));
+}
+
+
+
+async function evalCosine(input, arc)
+{
+    if (!input)
+        return NumberValue.NaN();
+
+    const val = 
+        !arc 
+        ? Math.cos (input.value) 
+        : Math.acos(input.value);
+
+   return new NumberValue(val, decDigits(val));
+}
+
+
+
+async function evalTangent(input, arc)
+{
+    if (!input)
+        return NumberValue.NaN();
+
+    const val = 
+        !arc 
+        ? Math.tan (input.value) 
+        : Math.atan(input.value);
+    
+    return new NumberValue(val, decDigits(val));
+}

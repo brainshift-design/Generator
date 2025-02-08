@@ -127,7 +127,7 @@ extends GValue
 
     toNumber()
     {
-        return roundTo(this.value, this.decimals);
+        return roundTo(this.value, Math.max(0, this.decimals));
     }
 
 

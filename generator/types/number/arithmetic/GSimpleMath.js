@@ -58,6 +58,7 @@ extends GOperator1
 
         if (   op
             && op.isValid())
+
         {
             op.value    = Math.min(Math.max(0, Math.round(op.value)), MATH_OPS.length-1);
             op.decimals = 0;
@@ -79,13 +80,13 @@ extends GOperator1
 
                         this.value.items.push(
                             item.type == NUMBER_VALUE
-                            ? getSimpleMathValue(item, operand, op, invert, this.options.enabled)
+                            ? getSimpleMathValue(this, item, operand, op, invert, this.options.enabled)
                             : NumberValue.NaN());   
                     }
                 }
                 else
                 {
-                    this.value = getSimpleMathValue(input, operand, op, invert, this.options.enabled);
+                    this.value = getSimpleMathValue(this, input, operand, op, invert, this.options.enabled);
                 }
             }
             else
@@ -203,7 +204,7 @@ extends GOperator1
 
 
 
-function getSimpleMathValue(input, operand, op, invert, enabled)
+function getSimpleMathValue(node, input, operand, op, invert, enabled)
 {
     consoleAssert(
         input.type == NUMBER_VALUE, 
