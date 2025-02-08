@@ -1,7 +1,7 @@
 const presetGradientSpiral = '\
 {\
-  "generatorVersion": "441",\
-  "nodes":\
+  "generatorVersion": "447",\
+    "nodes":\
   [\
     {\
       "type": "LIST",\
@@ -13,8 +13,8 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "760",\
-      "y": "1799",\
+      "x": "910",\
+      "y": "1949",\
       "z": "0",\
       "width": "102",\
       "height": "77"\
@@ -29,13 +29,13 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-343",\
-      "y": "1454",\
+      "x": "-193",\
+      "y": "1604",\
       "z": "1",\
       "params":\
-      [\
-            ["NUM#", "operand", "2.1,1"]\
-      ]\
+        [\
+          ["NUM#", "operand", "2.1,1"]\
+        ]\
     },\
     {\
       "type": "CSTOP",\
@@ -47,14 +47,14 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-133",\
-      "y": "1015",\
+      "x": "17",\
+      "y": "1165",\
       "z": "2",\
       "params":\
-      [\
-            ["FILL#", "fill", "208,0 70,0 -4,0 45,0 0,0"],\
-            ["NUM#", "position", "200,0"]\
-      ]\
+        [\
+          ["FILL#", "fill", "208,0 70,0 -4,0 45,0 0,0"],\
+          ["NUM#", "position", "200,0"]\
+        ]\
     },\
     {\
       "type": "CSTOP",\
@@ -66,14 +66,14 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-132",\
-      "y": "889",\
+      "x": "18",\
+      "y": "1039",\
       "z": "3",\
       "params":\
-      [\
-            ["FILL#", "fill", "208,0 70,0 -4,0 0,0 0,0"],\
-            ["NUM#", "position", "197.9,1"]\
-      ]\
+        [\
+          ["FILL#", "fill", "208,0 70,0 -4,0 0,0 0,0"],\
+          ["NUM#", "position", "197.9,1"]\
+        ]\
     },\
     {\
       "type": "CSTOP",\
@@ -85,14 +85,14 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-120",\
-      "y": "120",\
+      "x": "30",\
+      "y": "270",\
       "z": "4",\
       "params":\
-      [\
-            ["FILL#", "fill", "208,0 70,0 -4,0 100,0 0,0"],\
-            ["NUM#", "position", "200,0"]\
-      ]\
+        [\
+          ["FILL#", "fill", "208,0 70,0 -4,0 100,0 0,0"],\
+          ["NUM#", "position", "200,0"]\
+        ]\
     },\
     {\
       "type": "SMATH",\
@@ -104,13 +104,13 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-329",\
-      "y": "441",\
+      "x": "-179",\
+      "y": "591",\
       "z": "5",\
       "params":\
-      [\
-            ["NUM#", "operand", "0.17,2"]\
-      ]\
+        [\
+          ["NUM#", "operand", "0.17,2"]\
+        ]\
     },\
     {\
       "type": "RANGE",\
@@ -122,14 +122,14 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-1054",\
-      "y": "1841",\
+      "x": "-904",\
+      "y": "1991",\
       "z": "6",\
       "params":\
-      [\
-            ["NUM#", "start", "2,0"],\
-            ["NUM#", "end", "200,0"]\
-      ]\
+        [\
+          ["NUM#", "start", "2,0"],\
+          ["NUM#", "end", "200,0"]\
+        ]\
     },\
     {\
       "type": "NOISE",\
@@ -141,20 +141,20 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-808",\
-      "y": "346",\
+      "x": "-658",\
+      "y": "496",\
       "z": "7",\
       "params":\
-      [\
-            ["NUM#", "seed", "3146,0"],\
-            ["NUM#", "iteration", "?,?"],\
-            ["NUM#", "min", "25,0"],\
-            ["NUM#", "max", "75,0"],\
-            ["NUM#", "scale", "55,0"],\
-            ["NUM#", "offset", "0,1"],\
-            ["NUM#", "evolve", "0,1"],\
-            ["NUM#", "detail", "5,0"]\
-      ]\
+        [\
+          ["NUM#", "seed", "3146,0"],\
+          ["NUM#", "iteration", "?,?"],\
+          ["NUM#", "min", "25,0"],\
+          ["NUM#", "max", "75,0"],\
+          ["NUM#", "scale", "55,0"],\
+          ["NUM#", "offset", "0,1"],\
+          ["NUM#", "evolve", "0,1"],\
+          ["NUM#", "detail", "5,0"]\
+        ]\
     },\
     {\
       "type": "NOISE",\
@@ -166,19 +166,19 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-809",\
-      "y": "64",\
+      "x": "-659",\
+      "y": "214",\
       "z": "8",\
       "params":\
-      [\
-            ["NUM#", "seed", "8540,0"],\
-            ["NUM#", "iteration", "?,?"],\
-            ["NUM#", "min", "-40,0"],\
-            ["NUM#", "max", "61,0"],\
-            ["NUM#", "scale", "56,0"],\
-            ["NUM#", "offset", "0,1"],\
-            ["NUM#", "evolve", "0,1"]\
-      ]\
+        [\
+          ["NUM#", "seed", "8540,0"],\
+          ["NUM#", "iteration", "?,?"],\
+          ["NUM#", "min", "-40,0"],\
+          ["NUM#", "max", "61,0"],\
+          ["NUM#", "scale", "56,0"],\
+          ["NUM#", "offset", "0,1"],\
+          ["NUM#", "evolve", "0,1"]\
+        ]\
     },\
     {\
       "type": "CSTOP",\
@@ -190,14 +190,14 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-119",\
-      "y": "-6",\
+      "x": "31",\
+      "y": "144",\
       "z": "9",\
       "params":\
-      [\
-            ["FILL#", "fill", "208,0 70,0 -4,0 0,0 0,0"],\
-            ["NUM#", "position", "199.83,2"]\
-      ]\
+        [\
+          ["FILL#", "fill", "208,0 70,0 -4,0 0,0 0,0"],\
+          ["NUM#", "position", "199.83,2"]\
+        ]\
     },\
     {\
       "type": "FRM",\
@@ -209,15 +209,15 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "1659",\
-      "y": "1449",\
+      "x": "1809",\
+      "y": "1599",\
       "z": "10",\
       "params":\
-      [\
-            ["NUM#", "position", "1,0"],\
-            ["NUM#", "width", "800,0"],\
-            ["NUM#", "height", "800,0"]\
-      ]\
+        [\
+          ["NUM#", "position", "1,0"],\
+          ["NUM#", "width", "800,0"],\
+          ["NUM#", "height", "800,0"]\
+        ]\
     },\
     {\
       "type": "NOISE",\
@@ -229,18 +229,18 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-148",\
-      "y": "1880",\
+      "x": "2",\
+      "y": "2030",\
       "z": "11",\
       "params":\
-      [\
-            ["NUM#", "seed", "2783,0"],\
-            ["NUM#", "iteration", "?,?"],\
-            ["NUM#", "scale", "21.400000000000002,1"],\
-            ["NUM#", "offset", "0,1"],\
-            ["NUM#", "evolve", "0,1"],\
-            ["NUM#", "detail", "2,0"]\
-      ]\
+        [\
+          ["NUM#", "seed", "2783,0"],\
+          ["NUM#", "iteration", "?,?"],\
+          ["NUM#", "scale", "21.400000000000002,1"],\
+          ["NUM#", "offset", "0,1"],\
+          ["NUM#", "evolve", "0,1"],\
+          ["NUM#", "detail", "2,0"]\
+        ]\
     },\
     {\
       "type": "CSTOP",\
@@ -252,14 +252,14 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-136",\
-      "y": "1234",\
+      "x": "14",\
+      "y": "1384",\
       "z": "12",\
       "params":\
-      [\
-            ["FILL#", "fill", "208,0 70,0 -4,0 0,0 0,0"],\
-            ["NUM#", "position", "204.2,1"]\
-      ]\
+        [\
+          ["FILL#", "fill", "208,0 70,0 -4,0 0,0 0,0"],\
+          ["NUM#", "position", "204.2,1"]\
+        ]\
     },\
     {\
       "type": "CSTOP",\
@@ -271,14 +271,14 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-132",\
-      "y": "1122",\
+      "x": "18",\
+      "y": "1272",\
       "z": "13",\
       "params":\
-      [\
-            ["FILL#", "fill", "208,0 70,0 -4,0 45,0 0,0"],\
-            ["NUM#", "position", "202.1,1"]\
-      ]\
+        [\
+          ["FILL#", "fill", "208,0 70,0 -4,0 45,0 0,0"],\
+          ["NUM#", "position", "202.1,1"]\
+        ]\
     },\
     {\
       "type": "SMATH",\
@@ -290,13 +290,13 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-343",\
-      "y": "1331",\
+      "x": "-193",\
+      "y": "1481",\
       "z": "14",\
       "params":\
-      [\
-            ["NUM#", "operand", "2.1,1"]\
-      ]\
+        [\
+          ["NUM#", "operand", "2.1,1"]\
+        ]\
     },\
     {\
       "type": "SMATH",\
@@ -308,14 +308,14 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-340",\
-      "y": "1203",\
+      "x": "-190",\
+      "y": "1353",\
       "z": "15",\
       "params":\
-      [\
-            ["NUM#", "operation", "2,0"],\
-            ["NUM#", "operand", "2.1,1"]\
-      ]\
+        [\
+          ["NUM#", "operation", "2,0"],\
+          ["NUM#", "operand", "2.1,1"]\
+        ]\
     },\
     {\
       "type": "SMATH",\
@@ -327,13 +327,13 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-325",\
-      "y": "568",\
+      "x": "-175",\
+      "y": "718",\
       "z": "16",\
       "params":\
-      [\
-            ["NUM#", "operand", "0.17,2"]\
-      ]\
+        [\
+          ["NUM#", "operand", "0.17,2"]\
+        ]\
     },\
     {\
       "type": "SMATH",\
@@ -345,14 +345,14 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-327",\
-      "y": "308",\
+      "x": "-177",\
+      "y": "458",\
       "z": "17",\
       "params":\
-      [\
-            ["NUM#", "operation", "2,0"],\
-            ["NUM#", "operand", "0.17,2"]\
-      ]\
+        [\
+          ["NUM#", "operation", "2,0"],\
+          ["NUM#", "operand", "0.17,2"]\
+        ]\
     },\
     {\
       "type": "COL",\
@@ -364,17 +364,17 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-512",\
-      "y": "106",\
+      "x": "-362",\
+      "y": "256",\
       "z": "18",\
       "prevSpace": "hsl",\
       "params":\
-      [\
-            ["NUM#", "space", "2,0"],\
-            ["NUM#", "c1", "21.052096713122395,0"],\
-            ["NUM#", "c2", "104.37010974670274,0"],\
-            ["NUM#", "c3", "39.936934238122504,0"]\
-      ]\
+        [\
+          ["NUM#", "space", "2,0"],\
+          ["NUM#", "c1", "21.052096713122395,0"],\
+          ["NUM#", "c2", "104.37010974670274,0"],\
+          ["NUM#", "c3", "39.936934238122504,0"]\
+        ]\
     },\
     {\
       "type": "FILL",\
@@ -386,14 +386,14 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-333",\
-      "y": "42",\
+      "x": "-183",\
+      "y": "192",\
       "z": "19",\
       "params":\
-      [\
-            ["COL#", "color", "2,0 21.052096713122395,0 104.37010974670274,0 39.936934238122504,0"],\
-            ["NUM#", "opacity", "0,0"]\
-      ]\
+        [\
+          ["COL#", "color", "2,0 21.052096713122395,0,-9007199254740991%200%209007199254740991%20360%200%20%25C2%25B0%20true%200%20false%20NULL 104.37010974670274,0,-9007199254740991%200%209007199254740991%20100%200%20NULL%20false%200%20false%20NULL 39.936934238122504,0,-9007199254740991%200%209007199254740991%20100%200%20NULL%20false%200%20false%20NULL"],\
+          ["NUM#", "opacity", "0,0"]\
+        ]\
     },\
     {\
       "type": "NUM",\
@@ -405,15 +405,15 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-546.202",\
-      "y": "1296.23",\
+      "x": "-396.202",\
+      "y": "1446.23",\
       "z": "20",\
       "width": "120",\
       "height": "54",\
       "params":\
-      [\
-            ["NUM#", "value", "200,0"]\
-      ]\
+        [\
+          ["NUM#", "value", "200,0"]\
+        ]\
     },\
     {\
       "type": "NOISE",\
@@ -425,19 +425,19 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-146",\
-      "y": "1592",\
+      "x": "4",\
+      "y": "1742",\
       "z": "21",\
       "params":\
-      [\
-            ["NUM#", "seed", "2555,0"],\
-            ["NUM#", "iteration", "?,?"],\
-            ["NUM#", "min", "1,0"],\
-            ["NUM#", "max", "275,0"],\
-            ["NUM#", "scale", "47.300000000000004,1"],\
-            ["NUM#", "offset", "0,1"],\
-            ["NUM#", "evolve", "0,1"]\
-      ]\
+        [\
+          ["NUM#", "seed", "2555,0"],\
+          ["NUM#", "iteration", "?,?"],\
+          ["NUM#", "min", "1,0"],\
+          ["NUM#", "max", "275,0"],\
+          ["NUM#", "scale", "47.300000000000004,1"],\
+          ["NUM#", "offset", "0,1"],\
+          ["NUM#", "evolve", "0,1"]\
+        ]\
     },\
     {\
       "type": "CACHE",\
@@ -449,8 +449,8 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "18",\
-      "y": "1588",\
+      "x": "168",\
+      "y": "1738",\
       "z": "22"\
     },\
     {\
@@ -463,8 +463,8 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "751.798",\
-      "y": "715.234",\
+      "x": "901.798",\
+      "y": "865.234",\
       "z": "23",\
       "width": "120",\
       "height": "51"\
@@ -479,15 +479,15 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-533",\
-      "y": "401",\
+      "x": "-383",\
+      "y": "551",\
       "z": "24",\
       "width": "120",\
       "height": "54",\
       "params":\
-      [\
-            ["NUM#", "value", "200,0"]\
-      ]\
+        [\
+          ["NUM#", "value", "200,0"]\
+        ]\
     },\
     {\
       "type": "CSTOP",\
@@ -499,14 +499,14 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-123",\
-      "y": "339",\
+      "x": "27",\
+      "y": "489",\
       "z": "25",\
       "params":\
-      [\
-            ["FILL#", "fill", "208,0 70,0 -4,0 0,0 0,0"],\
-            ["NUM#", "position", "200.33999999999997,2"]\
-      ]\
+        [\
+          ["FILL#", "fill", "208,0 70,0 -4,0 0,0 0,0"],\
+          ["NUM#", "position", "200.33999999999997,2"]\
+        ]\
     },\
     {\
       "type": "LIST",\
@@ -518,8 +518,8 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-594",\
-      "y": "292",\
+      "x": "-444",\
+      "y": "442",\
       "z": "26",\
       "width": "119",\
       "height": "64"\
@@ -534,14 +534,14 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-346",\
-      "y": "937",\
+      "x": "-196",\
+      "y": "1087",\
       "z": "27",\
       "params":\
-      [\
-            ["COL#", "color", "2,0 21.052096713122395,0 104.37010974670274,0 39.936934238122504,0"],\
-            ["NUM#", "opacity", "0,0"]\
-      ]\
+        [\
+          ["COL#", "color", "2,0 21.052096713122395,0,-9007199254740991%200%209007199254740991%20360%200%20%25C2%25B0%20true%200%20false%20NULL 104.37010974670274,0,-9007199254740991%200%209007199254740991%20100%200%20NULL%20false%200%20false%20NULL 39.936934238122504,0,-9007199254740991%200%209007199254740991%20100%200%20NULL%20false%200%20false%20NULL"],\
+          ["NUM#", "opacity", "0,0"]\
+        ]\
     },\
     {\
       "type": "GRAD",\
@@ -553,21 +553,21 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "459",\
-      "y": "1004",\
+      "x": "609",\
+      "y": "1154",\
       "z": "28",\
       "diagAspect": "false",\
       "params":\
-      [\
-            ["NUM#", "gradType", "1,0"],\
-            ["NUM#", "position", "3,0"],\
-            ["NUM#", "x", "391,0"],\
-            ["NUM#", "y", "401,0"],\
-            ["NUM#", "size", "55,0"],\
-            ["NUM#", "angle", "64.97697710258383,0"],\
-            ["NUM#", "aspect", "129.1116352678414,0"],\
-            ["NUM#", "blend", "7,0"]\
-      ]\
+        [\
+          ["NUM#", "gradType", "1,0"],\
+          ["NUM#", "position", "3,0"],\
+          ["NUM#", "x", "391,0"],\
+          ["NUM#", "y", "401,0"],\
+          ["NUM#", "size", "55,0"],\
+          ["NUM#", "angle", "64.97697710258383,0"],\
+          ["NUM#", "aspect", "129.1116352678414,0"],\
+          ["NUM#", "blend", "7,0"]\
+        ]\
     },\
     {\
       "type": "FILL",\
@@ -579,14 +579,14 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-337",\
-      "y": "1075",\
+      "x": "-187",\
+      "y": "1225",\
       "z": "29",\
       "params":\
-      [\
-            ["COL#", "color", "2,0 21.052096713122395,0 104.37010974670274,0 39.936934238122504,0"],\
-            ["NUM#", "opacity", "45,0"]\
-      ]\
+        [\
+          ["COL#", "color", "2,0 21.052096713122395,0,-9007199254740991%200%209007199254740991%20360%200%20%25C2%25B0%20true%200%20false%20NULL 104.37010974670274,0,-9007199254740991%200%209007199254740991%20100%200%20NULL%20false%200%20false%20NULL 39.936934238122504,0,-9007199254740991%200%209007199254740991%20100%200%20NULL%20false%200%20false%20NULL"],\
+          ["NUM#", "opacity", "45,0"]\
+        ]\
     },\
     {\
       "type": "CSTOP",\
@@ -598,14 +598,14 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-119",\
-      "y": "227",\
+      "x": "31",\
+      "y": "377",\
       "z": "30",\
       "params":\
-      [\
-            ["FILL#", "fill", "208,0 70,0 -4,0 100,0 0,0"],\
-            ["NUM#", "position", "200.17,2"]\
-      ]\
+        [\
+          ["FILL#", "fill", "208,0 70,0 -4,0 100,0 0,0"],\
+          ["NUM#", "position", "200.17,2"]\
+        ]\
     },\
     {\
       "type": "LIST",\
@@ -617,8 +617,8 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "1499",\
-      "y": "1641",\
+      "x": "1649",\
+      "y": "1791",\
       "z": "31",\
       "width": "120",\
       "height": "51"\
@@ -633,8 +633,8 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "12",\
-      "y": "1880",\
+      "x": "162",\
+      "y": "2030",\
       "z": "32"\
     },\
     {\
@@ -647,14 +647,14 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "1070",\
-      "y": "1728",\
+      "x": "1220",\
+      "y": "1878",\
       "z": "33",\
       "params":\
-      [\
-            ["NUM#", "count", "200,0"],\
-            ["NUM#", "iteration", "?,0"]\
-      ]\
+        [\
+          ["NUM#", "count", "200,0"],\
+          ["NUM#", "iteration", "?,0"]\
+        ]\
     },\
     {\
       "type": "COL",\
@@ -666,17 +666,17 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "1226",\
-      "y": "1554",\
+      "x": "1376",\
+      "y": "1704",\
       "z": "34",\
       "prevSpace": "hex",\
       "params":\
-      [\
-            ["NUM#", "space", "0,0"],\
-            ["NUM#", "c1", "0,0"],\
-            ["NUM#", "c2", "0,0"],\
-            ["NUM#", "c3", "0,0"]\
-      ]\
+        [\
+          ["NUM#", "space", "0,0"],\
+          ["NUM#", "c1", "0,0"],\
+          ["NUM#", "c2", "0,0"],\
+          ["NUM#", "c3", "0,0"]\
+        ]\
     },\
     {\
       "type": "FILL",\
@@ -688,13 +688,13 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-324",\
-      "y": "180",\
+      "x": "-174",\
+      "y": "330",\
       "z": "35",\
       "params":\
-      [\
-            ["COL#", "color", "2,0 21.052096713122395,0 104.37010974670274,0 39.936934238122504,0"]\
-      ]\
+        [\
+          ["COL#", "color", "2,0 21.052096713122395,0,-9007199254740991%200%209007199254740991%20360%200%20%25C2%25B0%20true%200%20false%20NULL 104.37010974670274,0,-9007199254740991%200%209007199254740991%20100%200%20NULL%20false%200%20false%20NULL 39.936934238122504,0,-9007199254740991%200%209007199254740991%20100%200%20NULL%20false%200%20false%20NULL"]\
+        ]\
     },\
     {\
       "type": "NOISE",\
@@ -706,19 +706,19 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "-818",\
-      "y": "613",\
+      "x": "-668",\
+      "y": "763",\
       "z": "36",\
       "params":\
-      [\
-            ["NUM#", "seed", "813,0"],\
-            ["NUM#", "iteration", "?,?"],\
-            ["NUM#", "min", "-9,0"],\
-            ["NUM#", "max", "140,0"],\
-            ["NUM#", "scale", "12,0"],\
-            ["NUM#", "offset", "0,1"],\
-            ["NUM#", "evolve", "0,1"]\
-      ]\
+        [\
+          ["NUM#", "seed", "813,0"],\
+          ["NUM#", "iteration", "?,?"],\
+          ["NUM#", "min", "-9,0"],\
+          ["NUM#", "max", "140,0"],\
+          ["NUM#", "scale", "12,0"],\
+          ["NUM#", "offset", "0,1"],\
+          ["NUM#", "evolve", "0,1"]\
+        ]\
     },\
     {\
       "type": "GRAD",\
@@ -730,46 +730,47 @@ const presetGradientSpiral = '\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "497",\
-      "y": "126",\
+      "x": "647",\
+      "y": "276",\
       "z": "37",\
       "diagAspect": "false",\
       "params":\
-      [\
-            ["NUM#", "gradType", "1,0"],\
-            ["NUM#", "position", "3,0"],\
-            ["NUM#", "x", "391,0"],\
-            ["NUM#", "y", "401,0"],\
-            ["NUM#", "size", "55,0"],\
-            ["NUM#", "angle", "64.97697710258383,0"],\
-            ["NUM#", "aspect", "129.1116352678414,0"]\
-      ]\
+        [\
+          ["NUM#", "gradType", "1,0"],\
+          ["NUM#", "position", "3,0"],\
+          ["NUM#", "x", "391,0"],\
+          ["NUM#", "y", "401,0"],\
+          ["NUM#", "size", "55,0"],\
+          ["NUM#", "angle", "64.97697710258383,0"],\
+          ["NUM#", "aspect", "129.1116352678414,0"],\
+          ["NUM#", "blend", "5,0"]\
+        ]\
     },\
     {\
       "type": "FRM",\
       "created": "1729505129412",\
-      "updated": "1729682551799",\
+      "updated": "1738990641137",\
       "id": "frame2",\
       "name": "frame",\
       "renamed": "false",\
       "enabled": "true",\
       "highlight": "0",\
       "notCondition": "false",\
-      "x": "1900",\
-      "y": "1452",\
+      "x": "2050",\
+      "y": "1602",\
       "z": "38",\
       "active": "true",\
       "params":\
-      [\
-            ["NUM#", "position", "1,0"],\
-            ["NUM#", "x", "100,0"],\
-            ["NUM#", "y", "100,0"],\
-            ["NUM#", "width", "600,0"],\
-            ["NUM#", "height", "600,0"]\
-      ]\
+        [\
+          ["NUM#", "position", "1,0"],\
+          ["NUM#", "x", "100,0"],\
+          ["NUM#", "y", "100,0"],\
+          ["NUM#", "width", "600,0"],\
+          ["NUM#", "height", "600,0"]\
+        ]\
     }\
   ],\
-  "connections":\
+    "connections":\
   [\
     {\
       "created": "1729503605453",\

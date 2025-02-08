@@ -1,587 +1,717 @@
 const presetBlurryBackgrounds = '\
-    {\
+{\
+    "generatorVersion": "447",\
         "nodes":\
-        [\
+    [\
         {\
             "type": "RSTX",\
+            "created": "1738990385529",\
+            "updated": "1738990385529",\
             "id": "reset",\
             "name": "reset%20space",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6361",\
-            "y": "939",\
+            "notCondition": "false",\
+            "x": "6411",\
+            "y": "989",\
             "z": "0"\
         },\
         {\
             "type": "FRM",\
+            "created": "1738990385532",\
+            "updated": "1738990385589",\
             "id": "frame2",\
             "name": "alt_background",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7175",\
-            "y": "1019",\
+            "notCondition": "false",\
+            "x": "7225",\
+            "y": "1069",\
             "z": "1",\
             "active": "true",\
             "params":\
-            [\
-                ["NUM#", "x", "1536,0"],\
-                ["NUM#", "width", "640,0"],\
-                ["NUM#", "height", "1871,0"]\
-            ]\
+                [\
+                    ["NUM#", "x", "1536,0"],\
+                    ["NUM#", "width", "640,0"],\
+                    ["NUM#", "height", "1871,0"]\
+                ]\
         },\
         {\
             "type": "RAND",\
+            "created": "1738990385533",\
+            "updated": "1738990385533",\
             "id": "random",\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5562",\
-            "y": "1457",\
+            "notCondition": "false",\
+            "x": "5612",\
+            "y": "1558.84",\
             "z": "2",\
             "params":\
-            [\
-                ["NUM#", "seed", "?,?"],\
-                ["NUM#", "min", "50,0"],\
-                ["NUM#", "max", "200,0"]\
-            ]\
+                [\
+                    ["NUM#", "seed", "7597,0"],\
+                    ["NUM#", "iteration", "?,?"],\
+                    ["NUM#", "min", "50,0"],\
+                    ["NUM#", "max", "200,0"]\
+                ]\
         },\
         {\
             "type": "RAND",\
+            "created": "1738990385535",\
+            "updated": "1738990385535",\
             "id": "random8",\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5563",\
-            "y": "1275",\
+            "notCondition": "false",\
+            "x": "5613",\
+            "y": "1350.84",\
             "z": "3",\
             "params":\
-            [\
-                ["NUM#", "seed", "?,?"],\
-                ["NUM#", "min", "30,0"],\
-                ["NUM#", "max", "120,0"]\
-            ]\
+                [\
+                    ["NUM#", "seed", "3751,0"],\
+                    ["NUM#", "iteration", "?,?"],\
+                    ["NUM#", "min", "30,0"],\
+                    ["NUM#", "max", "120,0"]\
+                ]\
         },\
         {\
             "type": "RAND",\
+            "created": "1738990385536",\
+            "updated": "1738990385536",\
             "id": "random4",\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5299",\
-            "y": "977",\
+            "notCondition": "false",\
+            "x": "5349",\
+            "y": "1027",\
             "z": "4",\
             "params":\
-            [\
-                ["NUM#", "seed", "?,?"],\
-                ["NUM#", "min", "-20,0"],\
-                ["NUM#", "max", "20,0"]\
-            ]\
+                [\
+                    ["NUM#", "seed", "9581,0"],\
+                    ["NUM#", "iteration", "?,?"],\
+                    ["NUM#", "min", "-20,0"],\
+                    ["NUM#", "max", "20,0"]\
+                ]\
         },\
         {\
             "type": "ROT",\
+            "created": "1738990385537",\
+            "updated": "1738990385537",\
             "id": "rotate",\
             "name": "rotate",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5460",\
-            "y": "899",\
+            "notCondition": "false",\
+            "x": "5510",\
+            "y": "949",\
             "z": "5",\
             "params":\
-            [\
-                ["NUM#", "angle", "8,0"]\
-            ]\
+                [\
+                    ["NUM#", "angle", "-7.85258475125422,0"],\
+                    ["NUM#", "affectSpace", "2,0"]\
+                ]\
         },\
         {\
-            "type": "CMB",\
+            "type": "LIST",\
+            "created": "1738990385537",\
+            "updated": "1738990385537",\
             "id": "combine",\
             "name": "combine",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4703",\
-            "y": "890",\
+            "notCondition": "false",\
+            "x": "4753",\
+            "y": "940",\
             "z": "6",\
             "width": "120",\
             "height": "51"\
         },\
         {\
             "type": "SMATH",\
+            "created": "1738990385538",\
+            "updated": "1738990385538",\
             "id": "math3",\
             "name": "math",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4859",\
-            "y": "1135",\
+            "notCondition": "false",\
+            "x": "4909",\
+            "y": "1185",\
             "z": "7",\
             "params":\
-            [\
-                ["NUM#", "operand", "1440,0"]\
-            ]\
+                [\
+                    ["NUM#", "operand", "1440,0"]\
+                ]\
         },\
         {\
             "type": "RECT",\
+            "created": "1738990385540",\
+            "updated": "1738990405006",\
             "id": "rect",\
             "name": "rectangle",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5074",\
-            "y": "755",\
+            "notCondition": "false",\
+            "x": "5124",\
+            "y": "805",\
             "z": "8",\
             "params":\
-            [\
-                ["NUM#", "x", "-400,0"],\
-                ["NUM#", "y", "-200,0"],\
-                ["NUM#", "width", "2240,0"],\
-                ["NUM#", "height", "305,0"]\
-            ]\
+                [\
+                    ["NUM#", "x", "-500,0"],\
+                    ["NUM#", "y", "-200,0"],\
+                    ["NUM#", "width", "2440,0"],\
+                    ["NUM#", "height", "305,0"]\
+                ]\
         },\
         {\
             "type": "MOVE",\
+            "created": "1738990385541",\
+            "updated": "1738990385541",\
             "id": "move",\
             "name": "move",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5224",\
-            "y": "755",\
+            "notCondition": "false",\
+            "x": "5274",\
+            "y": "805",\
             "z": "9",\
             "params":\
-            [\
-                ["NUM#", "y", "2417,0"]\
-            ]\
+                [\
+                    ["NUM#", "y", "481.68066054660864,0"],\
+                    ["NUM#", "affectSpace", "2,0"]\
+                ]\
         },\
         {\
-            "type": "CENTR",\
+            "type": "SCENTR",\
+            "created": "1738990385542",\
+            "updated": "1738990385542",\
             "id": "center2",\
             "name": "center",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5824",\
-            "y": "759",\
+            "notCondition": "false",\
+            "x": "5874",\
+            "y": "809",\
             "z": "10",\
             "params":\
-            [\
-                ["NUM#", "centerX", "63,0"]\
-            ]\
+                [\
+                    ["NUM#", "centerX", "17.92867314905332,0"]\
+                ]\
         },\
         {\
             "type": "SCALE",\
+            "created": "1738990385543",\
+            "updated": "1738990385543",\
             "id": "scale",\
             "name": "scale",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5981",\
-            "y": "763",\
+            "notCondition": "false",\
+            "x": "6034",\
+            "y": "805",\
             "z": "11",\
             "params":\
-            [\
-                ["NUM#", "scaleX", "93,0"],\
-                ["NUM#", "scaleY", "155,0"]\
-            ]\
+                [\
+                    ["NUM#", "scaleX", "45.405785695372984,0"],\
+                    ["NUM#", "scaleY", "105.53128451832166,0"],\
+                    ["NUM#", "affectSpace", "2,0"]\
+                ]\
         },\
         {\
             "type": "ITEMS",\
+            "created": "1738990385543",\
+            "updated": "1738990385543",\
             "id": "list",\
             "name": "list",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3894",\
-            "y": "881",\
+            "notCondition": "false",\
+            "x": "3944",\
+            "y": "931",\
             "z": "12",\
             "width": "127.93624156812596",\
             "height": "142",\
+            "divider": "0.5",\
+            "scroll": "0",\
+            "showValueNames": "false",\
             "params":\
-            [\
-                ["NUM#", "0", "471,0"],\
-                ["NUM#", "1", "913,0"],\
-                ["NUM#", "2", "6830,0"],\
-                ["NUM#", "3", "6412,0"],\
-                ["NUM#", "4", "5064,0"]\
-            ]\
+                [\
+                    ["NUM#", "0", "6562.34264117961,0"],\
+                    ["NUM#", "1", "9814.898602740326,0"],\
+                    ["NUM#", "2", "3605.5981822580093,0"],\
+                    ["NUM#", "3", "5085.703056198407,0"],\
+                    ["NUM#", "4", "6346.394080689361,0"]\
+                ]\
         },\
         {\
             "type": "COL",\
+            "created": "1738990385546",\
+            "updated": "1738990385546",\
             "id": "color",\
             "name": "color",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6065",\
-            "y": "1139",\
+            "notCondition": "false",\
+            "x": "6172",\
+            "y": "1192",\
             "z": "13",\
             "prevSpace": "hsv",\
             "params":\
-            [\
-                ["NUM#", "space", "2,0"],\
-                ["NUM#", "c1", "37.826443574310474,0"],\
-                ["NUM#", "c2", "20,0"],\
-                ["NUM#", "c3", "37,0"]\
-            ]\
+                [\
+                    ["NUM#", "space", "3,0"],\
+                    ["NUM#", "c1", "142.1638094141392,0"],\
+                    ["NUM#", "c2", "77.6636227861343,0"],\
+                    ["NUM#", "c3", "63.593196614455984,0"]\
+                ]\
         },\
         {\
             "type": "PANEL",\
+            "created": "1738990385546",\
+            "updated": "1738990385589",\
             "id": "panel",\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "1",\
-            "x": "3679",\
-            "y": "827",\
+            "notCondition": "false",\
+            "x": "3729",\
+            "y": "877",\
             "z": "14",\
-            "width": "391.5464527901859",\
-            "height": "361.9571393556358",\
+            "width": "392",\
+            "height": "410.27661420278594",\
             "params":\
-            [\
-            ]\
+                [\
+                ]\
         },\
         {\
             "type": "SCALE",\
+            "created": "1738990385547",\
+            "updated": "1738990385547",\
             "id": "scale2",\
             "name": "scale",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6655",\
-            "y": "1051",\
+            "notCondition": "false",\
+            "x": "6705",\
+            "y": "1101",\
             "z": "15",\
             "params":\
-            [\
-                ["NUM#", "scaleX", "51,0"]\
-            ]\
+                [\
+                    ["NUM#", "scaleX", "51,0"],\
+                    ["NUM#", "affectSpace", "2,0"]\
+                ]\
         },\
         {\
             "type": "RAND",\
+            "created": "1738990385548",\
+            "updated": "1738990385548",\
             "id": "random2",\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4258",\
-            "y": "932",\
+            "notCondition": "false",\
+            "x": "4308",\
+            "y": "982",\
             "z": "16",\
             "params":\
-            [\
-                ["NUM#", "seed", "913,0"],\
-                ["NUM#", "min", "15,0"],\
-                ["NUM#", "max", "100,0"]\
-            ]\
+                [\
+                    ["NUM#", "seed", "9814.898602740326,0"],\
+                    ["NUM#", "iteration", "?,?"],\
+                    ["NUM#", "min", "15,0"]\
+                ]\
         },\
         {\
             "type": "FRM",\
+            "created": "1738990385550",\
+            "updated": "1738990385589",\
             "id": "frame",\
             "name": "background",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "7172",\
-            "y": "779",\
+            "notCondition": "false",\
+            "x": "7225",\
+            "y": "785",\
             "z": "17",\
             "active": "true",\
             "params":\
-            [\
-                ["NUM#", "width", "1440,0"],\
-                ["NUM#", "height", "2640,0"]\
-            ]\
+                [\
+                    ["NUM#", "width", "1440,0"],\
+                    ["NUM#", "height", "2640,0"]\
+                ]\
         },\
         {\
             "type": "COL",\
+            "created": "1738990385551",\
+            "updated": "1738990385551",\
             "id": "color2",\
             "name": "color",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4428",\
-            "y": "884",\
+            "notCondition": "false",\
+            "x": "4478",\
+            "y": "934",\
             "z": "18",\
             "prevSpace": "hsv",\
             "params":\
-            [\
-                ["NUM#", "space", "2,0"],\
-                ["NUM#", "c1", "47.57186057749399,0"],\
-                ["NUM#", "c2", "16,0"],\
-                ["NUM#", "c3", "80,0"]\
-            ]\
+                [\
+                    ["NUM#", "space", "3,0"],\
+                    ["NUM#", "c1", "142.1638094141392,0"],\
+                    ["NUM#", "c2", "94.81688190708722,0"],\
+                    ["NUM#", "c3", "40.55816001284782,0"]\
+                ]\
         },\
         {\
             "type": "PROB",\
+            "created": "1738990385552",\
+            "updated": "1738990385552",\
             "id": "prob",\
             "name": "probability",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5506",\
-            "y": "1155",\
+            "notCondition": "false",\
+            "x": "5556",\
+            "y": "1205",\
             "z": "19",\
             "params":\
-            [\
-                ["NUM#", "seed", "?,?"]\
-            ]\
+                [\
+                    ["NUM#", "seed", "7320,0"],\
+                    ["NUM#", "iteration", "?,?"]\
+                ]\
         },\
         {\
             "type": "RAND",\
+            "created": "1738990385554",\
+            "updated": "1738990385554",\
             "id": "random7",\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5882",\
-            "y": "1414",\
+            "notCondition": "false",\
+            "x": "5932",\
+            "y": "1489.84",\
             "z": "20",\
             "params":\
-            [\
-                ["NUM#", "seed", "?,?"],\
-                ["NUM#", "min", "20,0"],\
-                ["NUM#", "max", "70,0"]\
-            ]\
+                [\
+                    ["NUM#", "seed", "189,0"],\
+                    ["NUM#", "iteration", "?,?"],\
+                    ["NUM#", "min", "20,0"],\
+                    ["NUM#", "max", "70,0"]\
+                ]\
         },\
         {\
             "type": "IF",\
+            "created": "1738990385554",\
+            "updated": "1738990385554",\
             "id": "ifElse",\
             "name": "if%2Felse",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5658",\
-            "y": "756",\
+            "notCondition": "false",\
+            "x": "5708",\
+            "y": "806",\
             "z": "21",\
             "params":\
-            [\
-            ]\
+                [\
+                ]\
         },\
         {\
             "type": "RAND",\
+            "created": "1738990385555",\
+            "updated": "1738990385555",\
             "id": "random5",\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "1",\
-            "x": "3731",\
-            "y": "866",\
+            "notCondition": "false",\
+            "x": "3781",\
+            "y": "916",\
             "z": "22",\
             "params":\
-            [\
-                ["NUM#", "seed", "8494,0"],\
-                ["NUM#", "min", "2,0"],\
-                ["NUM#", "max", "10000,0"]\
-            ]\
+                [\
+                    ["NUM#", "seed", "2112,0"],\
+                    ["NUM#", "iteration", "?,?"],\
+                    ["NUM#", "min", "2,0"],\
+                    ["NUM#", "max", "10000,0"]\
+                ]\
         },\
         {\
             "type": "REPT",\
+            "created": "1738990385556",\
+            "updated": "1738990385556",\
             "id": "repeat",\
             "name": "repeat",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6131",\
-            "y": "763",\
+            "notCondition": "false",\
+            "x": "6197",\
+            "y": "805",\
             "z": "23",\
             "params":\
-            [\
-                ["NUM#", "count", "20,0"]\
-            ]\
+                [\
+                    ["NUM#", "count", "40,0"],\
+                    ["NUM#", "iteration", "?,0"]\
+                ]\
         },\
         {\
             "type": "MOVE",\
+            "created": "1738990385557",\
+            "updated": "1738990385557",\
             "id": "move2",\
             "name": "move",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6805",\
-            "y": "1051",\
+            "notCondition": "false",\
+            "x": "6855",\
+            "y": "1101",\
             "z": "24",\
             "params":\
-            [\
-                ["NUM#", "y", "-166,0"]\
-            ]\
+                [\
+                    ["NUM#", "y", "-166,0"],\
+                    ["NUM#", "affectSpace", "2,0"]\
+                ]\
         },\
         {\
             "type": "RAND",\
+            "created": "1738990385559",\
+            "updated": "1738990385559",\
             "id": "random6",\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5883",\
-            "y": "1232",\
+            "notCondition": "false",\
+            "x": "5933",\
+            "y": "1282",\
             "z": "25",\
             "params":\
-            [\
-                ["NUM#", "seed", "5064,0"],\
-                ["NUM#", "max", "100,0"]\
-            ]\
+                [\
+                    ["NUM#", "seed", "6346.394080689361,0"],\
+                    ["NUM#", "iteration", "?,?"]\
+                ]\
         },\
         {\
-            "type": "CENTR",\
+            "type": "SCENTR",\
+            "created": "1738990385560",\
+            "updated": "1738990385560",\
             "id": "center",\
             "name": "center",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "6505",\
-            "y": "1051",\
+            "notCondition": "false",\
+            "x": "6555",\
+            "y": "1101",\
             "z": "26",\
             "params":\
-            [\
-                ["NUM#", "centerX", "12,0"],\
-                ["NUM#", "centerY", "22,0"]\
-            ]\
+                [\
+                    ["NUM#", "centerX", "12,0"],\
+                    ["NUM#", "centerY", "22,0"]\
+                ]\
         },\
         {\
             "type": "RAND",\
+            "created": "1738990385561",\
+            "updated": "1738990385561",\
             "id": "random9",\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5666",\
-            "y": "978",\
+            "notCondition": "false",\
+            "x": "5716",\
+            "y": "1028",\
             "z": "27",\
             "params":\
-            [\
-                ["NUM#", "seed", "6412,0"],\
-                ["NUM#", "max", "100,0"]\
-            ]\
+                [\
+                    ["NUM#", "seed", "5085.703056198407,0"],\
+                    ["NUM#", "iteration", "?,?"]\
+                ]\
         },\
         {\
             "type": "RAND",\
+            "created": "1738990385562",\
+            "updated": "1738990385562",\
             "id": "random3",\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4258",\
-            "y": "1118",\
+            "notCondition": "false",\
+            "x": "4308",\
+            "y": "1193.84",\
             "z": "28",\
             "params":\
-            [\
-                ["NUM#", "seed", "6830,0"],\
-                ["NUM#", "min", "10,0"],\
-                ["NUM#", "max", "100,0"]\
-            ]\
+                [\
+                    ["NUM#", "seed", "3605.5981822580093,0"],\
+                    ["NUM#", "iteration", "?,?"],\
+                    ["NUM#", "min", "10,0"]\
+                ]\
         },\
         {\
             "type": "SMATH",\
+            "created": "1738990385563",\
+            "updated": "1738990385563",\
             "id": "math2",\
             "name": "math",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4713",\
-            "y": "1135",\
+            "notCondition": "false",\
+            "x": "4763",\
+            "y": "1185",\
             "z": "29",\
             "params":\
-            [\
-                ["NUM#", "operation", "4,0"],\
-                ["NUM#", "operand", "2,0"]\
-            ]\
+                [\
+                    ["NUM#", "operation", "4,0"],\
+                    ["NUM#", "operand", "2,0"]\
+                ]\
         },\
         {\
             "type": "PANEL",\
+            "created": "1738990385563",\
+            "updated": "1738990385589",\
             "id": "panel2",\
             "name": "",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "5",\
-            "x": "7118",\
-            "y": "729",\
+            "notCondition": "false",\
+            "x": "7160",\
+            "y": "738",\
             "z": "30",\
-            "width": "245.8044905377676",\
-            "height": "527.9494652984481",\
+            "width": "246",\
+            "height": "602.5939691444601",\
             "params":\
-            [\
-            ]\
+                [\
+                ]\
         },\
         {\
             "type": "NOISE",\
+            "created": "1738990385565",\
+            "updated": "1738990385565",\
             "id": "noise",\
             "name": "noise",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4259",\
-            "y": "726",\
+            "notCondition": "false",\
+            "x": "4309",\
+            "y": "724.158",\
             "z": "31",\
             "params":\
-            [\
-                ["NUM#", "seed", "471,0"],\
-                ["NUM#", "max", "360,0"],\
-                ["NUM#", "scale", "5,0"],\
-                ["NUM#", "offset", "0,1"]\
-            ]\
-        },\
-        {\
-            "type": "MATH",\
-            "id": "math",\
-            "name": "math",\
-            "renamed": "false",\
-            "enabled": "true",\
-            "highlight": "0",\
-            "x": "4766",\
-            "y": "1033",\
-            "z": "32",\
-            "params":\
-            [\
-                ["NUM#", "operation", "0,0"]\
-            ]\
+                [\
+                    ["NUM#", "seed", "6562.34264117961,0"],\
+                    ["NUM#", "iteration", "?,?"],\
+                    ["NUM#", "max", "360,0"],\
+                    ["NUM#", "scale", "5,0"],\
+                    ["NUM#", "offset", "0,1"],\
+                    ["NUM#", "evolve", "0,1"]\
+                ]\
         },\
         {\
             "type": "LBLR",\
+            "created": "1738990385566",\
+            "updated": "1738990401550",\
             "id": "layerBlur",\
             "name": "layer%20blur",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "4471",\
-            "y": "1109",\
-            "z": "33",\
+            "notCondition": "false",\
+            "x": "4521",\
+            "y": "1159",\
+            "z": "32",\
             "params":\
-            [\
-                ["NUM#", "radius", "400,0"]\
-            ]\
+                [\
+                    ["NUM#", "radius", "500,0"]\
+                ]\
         },\
         {\
             "type": "REPT",\
+            "created": "1738990385567",\
+            "updated": "1738990385567",\
             "id": "repeat2",\
             "name": "repeat",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "3729",\
-            "y": "1057",\
-            "z": "34"\
+            "notCondition": "false",\
+            "x": "3779",\
+            "y": "1127.99",\
+            "z": "33",\
+            "params":\
+                [\
+                    ["NUM#", "count", "5,0"],\
+                    ["NUM#", "iteration", "?,0"]\
+                ]\
         },\
         {\
             "type": "RAND",\
+            "created": "1738990385568",\
+            "updated": "1738990385568",\
             "id": "random10",\
             "name": "random",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
-            "x": "5090",\
-            "y": "1213",\
-            "z": "35",\
+            "notCondition": "false",\
+            "x": "5140",\
+            "y": "1263",\
+            "z": "34",\
             "params":\
-            [\
-                ["NUM#", "seed", "3262,0"],\
-                ["NUM#", "max", "2640,0"]\
-            ]\
-        }\
-        ],\
-        "connections":\
-        [\
+                [\
+                    ["NUM#", "seed", "897,0"],\
+                    ["NUM#", "iteration", "?,?"],\
+                    ["NUM#", "max", "2640,0"]\
+                ]\
+        },\
         {\
+            "type": "NEG",\
+            "created": "1738990398417",\
+            "updated": "1738990405006",\
+            "id": "neg",\
+            "name": "negative",\
+            "renamed": "false",\
+            "enabled": "true",\
+            "highlight": "0",\
+            "notCondition": "false",\
+            "x": "4869",\
+            "y": "1089",\
+            "z": "35",\
+            "active": "true"\
+        }\
+    ],\
+        "connections":\
+    [\
+        {\
+            "created": "1738990385576",\
             "outputNodeId": "repeat",\
             "outputId": "h0",\
             "outputOrder": "1",\
@@ -590,6 +720,7 @@ const presetBlurryBackgrounds = '\
             "list": "true"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "move2",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -598,6 +729,7 @@ const presetBlurryBackgrounds = '\
             "list": "true"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "color",\
             "outputId": "h0",\
             "outputOrder": "1",\
@@ -606,6 +738,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "move",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -614,6 +747,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "random4",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -622,6 +756,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "color2",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -630,6 +765,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "layerBlur",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -638,6 +774,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "math2",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -646,7 +783,8 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "math",\
+            "created": "1738990405005",\
+            "outputNodeId": "neg",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "rect",\
@@ -654,6 +792,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "math3",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -662,6 +801,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "combine",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -670,6 +810,7 @@ const presetBlurryBackgrounds = '\
             "list": "true"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "rect",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -678,6 +819,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "random10",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -686,6 +828,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "ifElse",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -694,6 +837,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "random9",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -702,6 +846,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "center2",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -710,6 +855,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "random8",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -718,6 +864,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "random",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -726,6 +873,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "repeat2",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -734,6 +882,7 @@ const presetBlurryBackgrounds = '\
             "list": "true"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "color2",\
             "outputId": "c1",\
             "outputOrder": "0",\
@@ -742,6 +891,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "random6",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -750,6 +900,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "random7",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -758,14 +909,16 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "center",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "scale2",\
             "inputId": "h0",\
-            "list": "false"\
+            "list": "true"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "list",\
             "outputId": "1",\
             "outputOrder": "4",\
@@ -774,6 +927,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "repeat",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -782,6 +936,7 @@ const presetBlurryBackgrounds = '\
             "list": "true"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "color",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -790,6 +945,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "noise",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -798,6 +954,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "random2",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -806,6 +963,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "random3",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -814,22 +972,25 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "move",\
+            "created": "1738990385576",\
+            "outputNodeId": "rotate",\
             "outputId": "h0",\
-            "outputOrder": "1",\
+            "outputOrder": "0",\
             "inputNodeId": "ifElse",\
             "inputId": "h0",\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "rotate",\
+            "created": "1738990385576",\
+            "outputNodeId": "move",\
             "outputId": "h0",\
-            "outputOrder": "0",\
+            "outputOrder": "1",\
             "inputNodeId": "ifElse",\
             "inputId": "h1",\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "prob",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -838,6 +999,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "scale",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -846,6 +1008,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "scale2",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -854,6 +1017,7 @@ const presetBlurryBackgrounds = '\
             "list": "true"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "list",\
             "outputId": "4",\
             "outputOrder": "4",\
@@ -862,6 +1026,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "reset",\
             "outputId": "h0",\
             "outputOrder": "0",\
@@ -870,6 +1035,7 @@ const presetBlurryBackgrounds = '\
             "list": "true"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "list",\
             "outputId": "3",\
             "outputOrder": "1",\
@@ -878,6 +1044,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "list",\
             "outputId": "2",\
             "outputOrder": "4",\
@@ -886,6 +1053,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "layerBlur",\
             "outputId": "radius",\
             "outputOrder": "1",\
@@ -894,6 +1062,7 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
+            "created": "1738990385576",\
             "outputNodeId": "list",\
             "outputId": "0",\
             "outputOrder": "4",\
@@ -902,20 +1071,22 @@ const presetBlurryBackgrounds = '\
             "list": "false"\
         },\
         {\
-            "outputNodeId": "layerBlur",\
-            "outputId": "radius",\
-            "outputOrder": "0",\
-            "inputNodeId": "math",\
-            "inputId": "h0",\
-            "list": "false"\
-        },\
-        {\
+            "created": "1738990385576",\
             "outputNodeId": "random5",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "repeat2",\
             "inputId": "h0",\
             "list": "false"\
+        },\
+        {\
+            "created": "1738990401550",\
+            "outputNodeId": "layerBlur",\
+            "outputId": "radius",\
+            "outputOrder": "2",\
+            "inputNodeId": "neg",\
+            "inputId": "h0",\
+            "list": "false"\
         }\
-        ]\
-    }';
+    ]\
+}';

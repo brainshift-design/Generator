@@ -540,7 +540,7 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes, zoo
     }
     catch (error)
     {
-        console.error('Error loading nodes:', error);
+        crash('Error loading nodes:', error);
         return [[], []];
     }
 }

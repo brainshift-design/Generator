@@ -48,6 +48,7 @@ extends GOperator1
                 Number.MAX_SAFE_INTEGER,
                 Number.NaN, // don't touch decimals
                 NULL,
+                false,
                 [],
                 false,
                 NULL);

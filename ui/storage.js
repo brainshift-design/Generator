@@ -395,7 +395,7 @@ function uiReturnFigLoadNodesAndConns(msg)
                 if (!tutorialsShown)
                     uiGetLocalData('canvasEmpty');
             })
-            .catch(error => console.error('Error loading nodes and connections:', error));
+            .catch(error => crash('Error loading nodes and connections:', error));
     }
 
 
@@ -449,7 +449,7 @@ async function loadNodesAndConnsAsync(_nodes, _conns, setProgress, pasting = fal
         
                 return res;
             })
-            .catch(error => console.error('Error resolving nodes:', error));
+            .catch(error => crash('Error resolving nodes:', error));
     }
 
     return new Promise(resolve =>
@@ -461,7 +461,7 @@ async function loadNodesAndConnsAsync(_nodes, _conns, setProgress, pasting = fal
 
 
                 const varNodes = nodes.filter(n => 
-                        n.type     == VARIABLE 
+                           n.type       == VARIABLE 
                         && n.variableId != NULL);
                         
                 uiGetValueFromFigma('getVariableData', varNodes.map(n => n.variableId))
@@ -487,12 +487,12 @@ async function loadNodesAndConnsAsync(_nodes, _conns, setProgress, pasting = fal
 
                         loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
                     })
-                    .catch(error => console.error('Error loading variables:', error));
+                    .catch(error => crash('Error loading variables:', error));
 
                 
                 resolve(nodes);
             })
-            .catch(error => console.error('Error loading nodes and connections:', error));
+            .catch(error => crash('Error loading nodes and connections:', error));
     });
 }
 
@@ -548,7 +548,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
                     return res;
                 })
-                .catch(error => console.error('Error resolving parameter connections:', error));
+                .catch(error => crash('Error resolving parameter connections:', error));
         }
 
         for (let i = 0; i < _otherConns.length; i += chunkSize)
@@ -567,7 +567,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
                     return res;
                 })
-                .catch(error => console.error('Error resolving node connections:', error));
+                .catch(error => crash('Error resolving node connections:', error));
         }
     }
 
@@ -583,7 +583,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
             
             pushUpdate(null, updateNodes);
         })
-        .catch(error => console.error('Error finishing loading:', error));
+        .catch(error => crash('Error finishing loading:', error));
 }
 
 

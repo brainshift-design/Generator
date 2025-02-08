@@ -91,7 +91,7 @@ class NumberValueMeta
             + ' ' + this.maxDisplay.toString()
             + ' ' + this.decimals  .toString()
             + ' ' + (this.suffix == NULL ? NULL_VALUE : encodeURIComponent(this.suffix))
-            + ' ' + (this.wrapValue === true ? 'true' : 'false')
+            + ' ' + boolToString(this.wrapValue === true)
             + ' ' + (this.ranges ? this.ranges.length.toString() : NULL_VALUE)
             + (   this.ranges
                && this.ranges.length > 0
@@ -110,6 +110,7 @@ class NumberValueMeta
             str = str.split(' ');
             i   = 0;
         }
+        console.log('str =', str);
     
     
         const iStart = i;

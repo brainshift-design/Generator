@@ -130,8 +130,8 @@ const presetTintsAndShades = '\
             },\
             {\
             "type": "CMB",\
-            "id": "combine",\
-            "name": "combine",\
+            "id": "list",\
+            "name": "list",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
@@ -143,8 +143,8 @@ const presetTintsAndShades = '\
             },\
             {\
             "type": "ITEMS",\
-            "id": "list",\
-            "name": "list",\
+            "id": "items",\
+            "name": "items",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "1",\
@@ -232,7 +232,7 @@ const presetTintsAndShades = '\
             "outputNodeId": "color3",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "combine",\
+            "inputNodeId": "list",\
             "inputId": "h0",\
             "list": "false"\
             },\
@@ -240,7 +240,7 @@ const presetTintsAndShades = '\
             "outputNodeId": "color",\
             "outputId": "h0",\
             "outputOrder": "2",\
-            "inputNodeId": "combine",\
+            "inputNodeId": "list",\
             "inputId": "h1",\
             "list": "false"\
             },\
@@ -248,15 +248,15 @@ const presetTintsAndShades = '\
             "outputNodeId": "color5",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "combine",\
+            "inputNodeId": "list",\
             "inputId": "h2",\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "combine",\
+            "outputNodeId": "list",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "list",\
+            "inputNodeId": "items",\
             "inputId": "h0",\
             "list": "true"\
             }\

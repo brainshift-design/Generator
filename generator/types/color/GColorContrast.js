@@ -174,6 +174,7 @@ extends GOperator2
                 21, 21,
                 2,
                 rating,
+                false,
                 ranges,
                 false,
                 parse.settings.showTooltipColorContrast ? 'ttWcag2' : NULL);
@@ -207,6 +208,7 @@ extends GOperator2
                 106,  105,
                 1,
                 '<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>',
+                false,
                 ranges,
                 true,
                 parse.settings.showTooltipColorContrast ? 'ttWcag3' : NULL);
