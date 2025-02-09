@@ -1244,7 +1244,7 @@ const presetColorSwatches = '\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "ifElse",\
-            "inputId": "h0",\
+            "inputId": "h1",\
             "list": "false"\
         },\
         {\
@@ -1252,7 +1252,7 @@ const presetColorSwatches = '\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "ifElse",\
-            "inputId": "h1",\
+            "inputId": "h0",\
             "list": "false"\
         },\
         {\

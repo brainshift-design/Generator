@@ -236,13 +236,13 @@ function switchToXyzControls(node)
         'Y', 0, xyzScale[1], 
         'Z', 0, xyzScale[2]);  
 
-    // node.param1.controls[0].min = 
-    // node.param2.controls[0].min = 
-    // node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+    node.param1.controls[0].min = 
+    node.param2.controls[0].min = 
+    node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
-    // node.param1.controls[0].max = 
-    // node.param2.controls[0].max = 
-    // node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+    node.param1.controls[0].max = 
+    node.param2.controls[0].max = 
+    node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 }
 
 
@@ -264,22 +264,22 @@ function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c
     node.param2.setName(c2, false); 
     node.param3.setName(c3, false);
 
-    // // node.param1.controls[0].wrapValue = c1wrap;
-    // // node.param1.controls[0].setSuffix(c1suffix, c1suffix != '');
+    node.param1.controls[0].wrapValue = c1wrap;
+    node.param1.controls[0].setSuffix(c1suffix, c1suffix != '');
 
-    // // node.param1.controls[0].setMin(c1min); 
-    // // node.param2.controls[0].setMin(c2min);
-    // // node.param3.controls[0].setMin(c3min);
+    node.param1.controls[0].setMin(c1min); 
+    node.param2.controls[0].setMin(c2min);
+    node.param3.controls[0].setMin(c3min);
     
-    // // node.param1.controls[0].setMax(c1max); 
-    // // node.param2.controls[0].setMax(c2max); 
-    // // node.param3.controls[0].setMax(c3max); 
+    node.param1.controls[0].setMax(c1max); 
+    node.param2.controls[0].setMax(c2max); 
+    node.param3.controls[0].setMax(c3max); 
     
-    // node.param1.updateControls();
-    // node.param2.updateControls();
-    // node.param3.updateControls();
+    node.param1.updateControls();
+    node.param2.updateControls();
+    node.param3.updateControls();
 
-    // node.param1.controls[0].suffixOffsetY = 0;
+    node.param1.controls[0].suffixOffsetY = 0;
 }
 
 
