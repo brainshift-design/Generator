@@ -15,6 +15,7 @@
 ../generator/types/figma/FigmaStar.js
 ../generator/types/figma/FigmaText.js
 ../generator/types/figma/FigmaPoint.js
+../generator/types/figma/FigmaPoint3.js
 ../generator/types/figma/FigmaBoolean.js
 ../generator/types/figma/FigmaArcPath.js
 ../generator/types/figma/FigmaWavePath.js

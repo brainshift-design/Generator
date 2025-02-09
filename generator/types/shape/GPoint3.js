@@ -160,17 +160,17 @@ extends GOperator1
             const y = this.value.y.value;
             const z = this.value.z.value;
 
-            const point = new FigmaPoint2(
+            const point = new FigmaPoint(
                 this.nodeId,
                 this.nodeId,
                 this.nodeName,
                 x,
                 y,
-                // z is ignored
+                z,
                 this.smooth ? this.smooth.value/100 : 1);
 
 
-            point.createDefaultTransform(x, y);
+            point.createDefaultTransform(x, y, z);
 
             this.value.objects = [point];
         }

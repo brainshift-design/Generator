@@ -442,9 +442,9 @@ function enableFeatures(pro)
     enableMenuItem(menuItemVectorEdge,         true, pro,   true);
     enableMenuItem(menuItemVectorRegion,       true, pro,   true);
     enableMenuItem(menuItemVectorNetwork,      true, pro,   true);
-    enableMenuItem(menuItemPerspective,        true, false, true);
-    enableMenuItem(menuItemSep3d,              true, false, true);
-    enableMenuItem(menuItem3dPoint,            true, false, true);
+    //enableMenuItem(menuItemPerspective,        true, false, true);
+    //enableMenuItem(menuItemSep3d,              true, false, true);
+    //enableMenuItem(menuItem3dPoint,            true, false, true);
     enableMenuItem(menuItemBooleanSep,         true, pro,   true);
     enableMenuItem(menuItemBooleanShape,       true, pro,   true);
     enableMenuItem(menuItemSaveTemplate,       true, pro);

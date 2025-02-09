@@ -805,8 +805,8 @@ function initGeneratorMenus()
     menuVectorPoints = new Menu('Vector points', true, false);
     menuVectorPoints.addItems([
                                      new MenuItem('Vector',                null,          false, {icon: iconVector,             createType: VECTOR,                callback: e => actionManager.do(getCreateNodeAction(VECTOR,                btnShape.div, getCreateOptions(e)))}),
-        menuItemSep3d              = new MenuItem('',                      null,          false, {separator: true}),
-        menuItem3dPoint            = new MenuItem('3D point',              null,          false, {icon: iconPoint,              createType: POINT3,                callback: e => actionManager.do(getCreateNodeAction(POINT3,                btnShape.div, getCreateOptions(e)))}),
+      //menuItemSep3d              = new MenuItem('',                      null,          false, {separator: true}),
+      //menuItem3dPoint            = new MenuItem('3D point',              null,          false, {icon: iconPoint,              createType: POINT3,                callback: e => actionManager.do(getCreateNodeAction(POINT3,                btnShape.div, getCreateOptions(e)))}),
                                      new MenuItem('',                      null,          false, {separator: true}),
                                      new MenuItem('Interpolate points',    null,          false, {icon: iconInterpolatePoint,   createType: INTERPOLATE_POINT,     callback: e => actionManager.do(getCreateNodeAction(INTERPOLATE_POINT,     btnShape.div, getCreateOptions(e)))}),
                                      new MenuItem('Intersect lines',       null,          false, {icon: iconIntersectLines,     createType: INTERSECT_LINES,       callback: e => actionManager.do(getCreateNodeAction(INTERSECT_LINES,       btnShape.div, getCreateOptions(e)))}),

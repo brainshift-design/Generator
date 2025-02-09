@@ -784,7 +784,7 @@ function parseIndexRanges(str)
 
 
     const _indices = str.split(',');
-    
+  
 
     if (_indices.length > 1)
     {
@@ -812,7 +812,7 @@ function parseIndexRanges(str)
         }
     }
     else
-        indices.push(parseInt(iteration.value));
+        indices.push(parseInt(str));
 
 
     return indices;
@@ -823,20 +823,4 @@ function parseIndexRanges(str)
 function TAB(nTabs)
 {
     return '\t'.repeat(nTabs);
-}
-
-
-
-function computeFocalLength(fovDegrees, sensorSize = 500)
-{
-    const fovRadians = fovDegrees * Tau/360;
-    return (sensorSize / 2) / Math.tan(fovRadians / 2);
-}
-
-
-
-function perspectiveScale(focalLength, z)
-{
-    // clamp z to avoid denominator getting too small
-    return focalLength / (focalLength + z);
 }
