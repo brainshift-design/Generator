@@ -784,7 +784,7 @@ function parseIndexRanges(str)
 
 
     const _indices = str.split(',');
-    
+  
 
     if (_indices.length > 1)
     {
@@ -812,7 +812,7 @@ function parseIndexRanges(str)
         }
     }
     else
-        indices.push(parseInt(iteration.value));
+        indices.push(parseInt(str));
 
 
     return indices;

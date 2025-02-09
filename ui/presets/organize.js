@@ -57,14 +57,14 @@ const presetOrganize = '\
             {\
             "type": "CMNT",\
             "id": "comment12",\
-            "name": "Double-click%20a%20panel%20header%20to%20select%20the%20nodes%20inside.",\
+            "name": "Ctrl+Double%20click%20a%20panel%20header%20to%20select%20the%20nodes%20inside.",\
             "renamed": "true",\
             "enabled": "true",\
             "highlight": "0",\
             "x": "303",\
             "y": "1924",\
-            "z": "3"\
-            },\
+        "z": "3"\
+        },\
             {\
             "type": "NUM",\
             "id": "num6",\

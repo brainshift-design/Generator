@@ -209,6 +209,7 @@
 ../operators/shape/OpStar.js
 ../operators/shape/OpTextShape.js
 ../operators/shape/OpPoint.js
+../operators/shape/OpPoint3.js
 ../operators/shape/OpPointCorner.js
 ../operators/shape/OpVectorPath.js
 ../operators/shape/OpVectorVertex.js
@@ -242,6 +243,7 @@
 ../operators/shape/OpClosestPointOnPath.js
 ../operators/shape/OpIntersectLines.js
 ../operators/shape/OpInterpolatePoint.js
+../operators/shape/OpReorientPoints.js
 ../operators/shape/OpReversePath.js
 ../operators/shape/OpBlendPath.js
 

@@ -72,7 +72,7 @@ extends GOperator1
                     xform, 
                     options.affectSpace ? options.affectSpace.value : 2);
 
-                obj.checkFlipped(
+                obj.checkFlipped2(
                     options.flipX === true && xform[0][0] < 0, 
                     options.flipY === true && xform[1][1] < 0);
                     

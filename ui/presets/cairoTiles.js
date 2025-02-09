@@ -284,8 +284,8 @@ const presetCairoTiles = '\
             },\
             {\
             "type": "CMB",\
-            "id": "combine",\
-            "name": "combine",\
+            "id": "list",\
+            "name": "list",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
@@ -377,7 +377,7 @@ const presetCairoTiles = '\
             {\
             "type": "CMB",\
             "id": "combine4",\
-            "name": "combine",\
+            "name": "list",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
@@ -620,7 +620,7 @@ const presetCairoTiles = '\
             {\
             "type": "CMB",\
             "id": "combine3",\
-            "name": "combine",\
+            "name": "list",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
@@ -652,7 +652,7 @@ const presetCairoTiles = '\
             {\
             "type": "CMB",\
             "id": "combine2",\
-            "name": "combine",\
+            "name": "list",\
             "renamed": "false",\
             "enabled": "true",\
             "highlight": "0",\
@@ -879,7 +879,7 @@ const presetCairoTiles = '\
             "outputNodeId": "point3",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "combine",\
+            "inputNodeId": "list",\
             "inputId": "h0",\
             "list": "false"\
             },\
@@ -887,7 +887,7 @@ const presetCairoTiles = '\
             "outputNodeId": "point",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "combine",\
+            "inputNodeId": "list",\
             "inputId": "h1",\
             "list": "false"\
             },\
@@ -895,7 +895,7 @@ const presetCairoTiles = '\
             "outputNodeId": "point2",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "combine",\
+            "inputNodeId": "list",\
             "inputId": "h2",\
             "list": "false"\
             },\
@@ -903,7 +903,7 @@ const presetCairoTiles = '\
             "outputNodeId": "point4",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "combine",\
+            "inputNodeId": "list",\
             "inputId": "h3",\
             "list": "false"\
             },\
@@ -911,7 +911,7 @@ const presetCairoTiles = '\
             "outputNodeId": "point5",\
             "outputId": "h0",\
             "outputOrder": "0",\
-            "inputNodeId": "combine",\
+            "inputNodeId": "list",\
             "inputId": "h4",\
             "list": "false"\
             },\
@@ -1012,7 +1012,7 @@ const presetCairoTiles = '\
             "list": "false"\
             },\
             {\
-            "outputNodeId": "combine",\
+            "outputNodeId": "list",\
             "outputId": "h0",\
             "outputOrder": "0",\
             "inputNodeId": "path",\

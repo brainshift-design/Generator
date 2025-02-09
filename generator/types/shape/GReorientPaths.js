@@ -71,11 +71,11 @@ extends GShape
 
             const reorientedPaths = 
                 this.options.enabled
-                ? GReorientPaths.reorientPaths(paths, reverse.value > 0)
-                : paths
-                      .filter(path => path.objects && path.objects.length > 0)
-                      .map   (path => path.objects[0].pathPoints);
-        ;
+                    ? GReorientPaths.reorientPaths(paths, reverse.value > 0)
+                    : paths
+                        .filter(path => path.objects && path.objects.length > 0)
+                        .map   (path => path.objects[0].pathPoints);
+
 
             consoleAssert(paths.length == reorientedPaths.length, 'original path count must match reoriented path count');
             
@@ -158,13 +158,12 @@ extends GShape
                     _path.winding.value,
                     _path.round  .value);
 
-
                 if (_path.props)
                     addProps(path, _path.props);
-
                     
                 _path.objects = [path];
 
+                
                 this.value.objects.push(path);
             }
         }

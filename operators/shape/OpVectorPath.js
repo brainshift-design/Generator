@@ -36,7 +36,7 @@ extends OpShape
 
         
         this.paramPoints.input.types.push(SHAPE_LIST_VALUE);
-        this.paramPoints.listTypes = [POINT_VALUE, SHAPE_LIST_VALUE];
+        this.paramPoints.listTypes = [POINT_VALUE, POINT_LIST_VALUE, SHAPE_LIST_VALUE];
 
         this.paramPoints.itemName  = ['point'];
         this.paramPoints.showZero  =  false;

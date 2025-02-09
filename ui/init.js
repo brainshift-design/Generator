@@ -74,27 +74,26 @@ generator.onmessage = event =>
 
 
     if (event.data.type === 'error') 
-    {
-        initCrashDialog(event, error);
-        showCrashDialog();
-    
-        addMetricsEvent('CRASH', error);
-    } 
+        crash(event);
+
     else if (event.data.type === 'unhandledrejection') 
-    {
-        initCrashDialog(event, event.reason);
-        showCrashDialog();
-    
-        addMetricsEvent('CRASH', event.reason);
-    }
+        crash(event, event.reason);
 };
 
 
 
-//clearConsole();
+function crash(event, error = event)
+{
+    initCrashDialog(event, error);
+    showCrashDialog();
+
+    addMetricsEvent('CRASH', error);
+}
+
 
 
 initUtilContext();
+
 
 
 initVersionWarningDialog();
@@ -264,7 +263,7 @@ function validateInit()
     }
     catch (e)
     {
-        console.error('Error connecting to license server...');
+        uiError('Error connecting to license server...');
         console.error(e);
     }
     

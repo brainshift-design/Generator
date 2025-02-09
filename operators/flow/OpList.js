@@ -108,7 +108,7 @@ extends ResizableBase
     
         if (type)
         {
-            consoleAssert(isListValueType(type.value));
+            consoleAssert(isListValueType(type.value), `'${this.id}' must output a list value`);
             this.headerOutputs[0].types = [type.value];
         }
     }

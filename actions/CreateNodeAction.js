@@ -42,7 +42,6 @@ extends Action
 
         this.node = Operator.create(this.nodeType, this.creatingButton, this.createdId, this.options);
 
-
         const canAutoConnect =
             canAutoConnectNode(
                 this.node, 

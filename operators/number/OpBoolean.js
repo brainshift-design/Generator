@@ -13,7 +13,6 @@ extends OperatorBase
     {
         super(NUMBER_BOOLEAN, 'logic', 'logic', '');
 
-        this.iconOffsetY      = -1;
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -84,10 +83,10 @@ extends OperatorBase
 
         switch (this.paramOperation.value.value)
         {
-            case 0: this.icon = iconNot; this.iconOffsetY = -1; break;
-            case 1: this.icon = iconXor; this.iconOffsetY =  2; break;
-            case 2: this.icon = iconOr;  this.iconOffsetY =  1; break;
-            case 3: this.icon = iconAnd; this.iconOffsetY =  1; break;
+            case 0: this.icon = iconNot; this.iconOffsetY = -2; break;
+            case 1: this.icon = iconXor; this.iconOffsetY =  1; break;
+            case 2: this.icon = iconOr;  this.iconOffsetY =  0; break;
+            case 3: this.icon = iconAnd; this.iconOffsetY =  0; break;
         }
 
         this.updateIcon();

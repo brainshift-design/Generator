@@ -83,6 +83,18 @@ class NumberValueMeta
 
 
 
+    isValid()
+    {
+        return isNaN(this.min       )
+            || isNaN(this.minDisplay)
+            || isNaN(this.max       )
+            || isNaN(this.maxDisplay)
+            || isNaN(this.decimals  );
+    }
+
+
+
+
     toString()
     {
         return      this.min       .toString()
@@ -91,7 +103,7 @@ class NumberValueMeta
             + ' ' + this.maxDisplay.toString()
             + ' ' + this.decimals  .toString()
             + ' ' + (this.suffix == NULL ? NULL_VALUE : encodeURIComponent(this.suffix))
-            + ' ' + (this.wrapValue ? 'true' : 'false')
+            + ' ' + boolToString(this.wrapValue === true)
             + ' ' + (this.ranges ? this.ranges.length.toString() : NULL_VALUE)
             + (   this.ranges
                && this.ranges.length > 0

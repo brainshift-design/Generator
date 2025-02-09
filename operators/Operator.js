@@ -231,6 +231,7 @@ class Operator
     {
         const OpClass = Operator.types[nodeType];
     
+
         if (OpClass)
         {
             let node = new OpClass(options);
@@ -1481,7 +1482,8 @@ class Operator
     {
         if (!_node.params)
             return;
-     
+
+        
         for (const _param of _node.params)
         {
             let index = this.params.findIndex(p => p.id == _param[1]);

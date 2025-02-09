@@ -169,7 +169,7 @@ function saveSelectedAsTemplate(templateName)
             })
             .catch(e =>
             {
-                console.error(e);
+                crash(e);
                 throw e;
             });
         }    
@@ -178,7 +178,7 @@ function saveSelectedAsTemplate(templateName)
     })
     .catch(e =>
     {
-        console.error(e);
+        crash(e);
         throw e;
     });
 }

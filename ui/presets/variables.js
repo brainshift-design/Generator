@@ -95,7 +95,7 @@ const presetBasicVariables = '\
             "name": "is%20yellow",\
             "renamed": "true",\
             "enabled": "true",\
-            "highlight": "5",\
+            "highlight": "4",\
             "x": "1551",\
             "y": "990",\
             "z": "6"\

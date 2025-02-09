@@ -1,8 +1,8 @@
-class   OpReorientPaths
+class OpReorientPoints
 extends OperatorBase
 {
-    static { Operator.types[REORIENT_PATHS] = this; }
-
+    static { Operator.types[REORIENT_POINTS] = this; }
+    
 
 
     paramReverse;
@@ -13,16 +13,16 @@ extends OperatorBase
 
     constructor()
     {
-        super(REORIENT_PATHS, 'reorientPaths', 'reorient paths', iconReorientPaths);
+        super(REORIENT_POINTS, 'reorientPoints', 'reorient points', iconReorientPoints);
 
-        
+
         this.canDisable     = true;
         this.variableInputs = true;
-        this.iconOffsetY    = -2;
+        // this.iconOffsetY    = -2;
 
 
         this.addNewInput();
-        this.addOutput(new Output([SHAPE_LIST_VALUE], this.output_genRequest));
+        this.addOutput(new Output([POINT_LIST_VALUE], this.output_genRequest));
 
         this.addParam(this.paramReverse = new NumberParam('reverse', 'reverse', true, true, true, 0, 0, 1));
 
@@ -32,17 +32,17 @@ extends OperatorBase
     }
 
 
-
+    
     addNewInput()
     {
-        const newInput = new Input([...PATH_VALUES, SHAPE_LIST_VALUE]);
+        const newInput = new Input([POINT_VALUE, POINT_LIST_VALUE]);
         newInput.isNew = true;
 
 
         newInput.addEventListener('connect', e => 
         {
             onVariableConnectInput(e.detail.input); 
-            e.detail.input.isNew = false; 
+            e.detail.input.isNew = false;
         });
 
 
@@ -54,7 +54,7 @@ extends OperatorBase
 
         this.addInput(newInput);
 
-        
+
         return newInput;
     }
 
@@ -63,30 +63,30 @@ extends OperatorBase
     output_genRequest(gen)
     {
         // 'this' is the output
-
+        
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: NULL });
-
+        
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
-
+        
 
         const connectedInputs = this.node.inputs.filter(i => i.connected && !i.param);
         
-
-        request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        
+        request.push(connectedInputs.length); // utility values like input count are stored as numbers
         
         for (const input of connectedInputs)
             request.push(...pushInputOrParam(input, gen));
-
+        
 
         request.push(...this.node.paramReverse.genRequest(gen));
-
-
+        
+        
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
-
+        
         return request;
     }
 

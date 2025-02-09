@@ -148,7 +148,7 @@ extends GOperator1
                     createTransform(_x, _y),
                     createRotateTransform(-_a)); // for vector movement
 
-                    
+
             for (const obj of this.value.objects)
             {
                 obj.nodeId    = this.nodeId;
@@ -164,26 +164,15 @@ extends GOperator1
                         this.value.y.value = obj.y;
                     }
                 }
-
             }
 
 
-            if (   this.value.type == VECTOR_PATH_VALUE
-                && this.value.objects
-                && this.value.objects.length > 0
-                && this.value.points.objects)
-            {
-                for (let i = 0; i < this.value.objects[0].points.length; i++)
-                {
-                    const p = this.value.objects[0].points[i].toPoint();
-    
-                    this.value.points.objects[i].x = p.x;
-                    this.value.points.objects[i].y = p.y;
-                }
-            }
+            if (this.value.type == VECTOR_PATH_VALUE)
+                updateVectorPathPoints(this.value);
         }
         
         
+
         await super.evalObjects(parse);
     }
 
@@ -291,5 +280,24 @@ extends GOperator1
     
         genParseNodeEnd(parse, move);
         return move;
+    }
+}
+
+
+
+function updateVectorPathPoints(value)
+{
+    if (   value.objects
+        && value.objects.length > 0
+        && value.points.objects)
+    {
+        console.log('path');
+        for (let i = 0; i < value.objects[0].points.length; i++)
+        {
+            const p = value.objects[0].points[i].toPoint();
+
+            value.points.objects[i].x = p.x;
+            value.points.objects[i].y = p.y;
+        }
     }
 }

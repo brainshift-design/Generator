@@ -1,23 +1,27 @@
-class FigmaPoint
+class FigmaPoint3
 extends FigmaShape
 {
     x;
     y;
+    z;
     smooth;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, smooth = 1, isDeco = false, isCenter = false, isXform = false)
+    constructor(nodeId, objectId, objectName, x, y, z, smooth = 1, isDeco = false, isCenter = false, isXform = false)
+
     {
-        super(POINT, nodeId, objectId, objectName, isDeco, isXform);
+        super(POINT3, nodeId, objectId, objectName, isDeco, isXform);
         
         this.x        = x;
         this.y        = y;
+        this.z        = z;
         this.smooth   = smooth;
         this.isCenter = isCenter;
 
         
-        this.createDefaultSpace(x, y);
+        this.createDefaultSpace(x, y, z);
+
 
         this.createDefaultTransform(x, y);
     }

@@ -7,126 +7,133 @@ var  actualObjectCount  = 0;
 
 async function figUpdateObjectsAsync(figParent, genObjects, batchSize, totalObjects = -1, nodeIds = [], firstChunk = false, lastChunk = false, zoomToFit = false, addProps = true, transform = true)
 {
-    let   abort             = false;
-
-    const updateObjects     = [];
-    let   updateObjectCount = 0;
-
-
-    _genIgnoreNodeIds.push(...nodeIds);
-
-
-    if (totalObjects > -1)
-        nominalObjectCount = totalObjects;
-
-
-    for (const genObj of genObjects)
+    try
     {
-        if (genObj[FO_TYPE] == VARIABLE) 
-            await figUpdateVariableObjectAsync(genObj);
-        else
-            await figUpdateGeometricObjectAsync(
-                genObj, 
-                updateObjects, 
-                updateObjectCount, 
-                batchSize,
-                abort,
-                figParent, 
-                addProps, 
-                transform);
+        let   abort             = false;
+
+        const updateObjects     = [];
+        let   updateObjectCount = 0;
 
 
-        updateObjectCount++;
+        _genIgnoreNodeIds.push(...nodeIds);
 
 
-        if (updateObjectCount >= batchSize)
+        if (totalObjects > -1)
+            nominalObjectCount = totalObjects;
+
+
+        for (const genObj of genObjects)
         {
-            const result = await figGetValueFromUiSync(
-                'returnObjectUpdate', 
-                { 
-                    nominalObjectCount: nominalObjectCount,
-                    actualObjectCount:  actualObjectCount 
-                }
-                ) as { key: string, value: boolean };
+            if (genObj[FO_TYPE] == VARIABLE) 
+                await figUpdateVariableObjectAsync(genObj);
+            else
+                await figUpdateGeometricObjectAsync(
+                    genObj, 
+                    updateObjects, 
+                    updateObjectCount, 
+                    batchSize,
+                    abort,
+                    figParent, 
+                    addProps, 
+                    transform);
 
-            abort = result.value;
 
-            updateObjectCount = 0;
+            updateObjectCount++;
 
-            if (abort) 
-                break;
+
+            if (updateObjectCount >= batchSize)
+            {
+                const result = await figGetValueFromUiSync(
+                    'returnObjectUpdate', 
+                    { 
+                        nominalObjectCount: nominalObjectCount,
+                        actualObjectCount:  actualObjectCount 
+                    }
+                    ) as { key: string, value: boolean };
+
+                abort = result.value;
+
+                updateObjectCount = 0;
+
+                if (abort) 
+                    break;
+            }
         }
-    }
 
 
-    // delete removed objects from parent
-    
-    if (    figParent != undefined
-        &&  figParent != null
-        && !figParent.removed)
-    {
-        for (const figObj of figParent.children)
-        {
-            if (      figObj != undefined
-                   && figObj != null
-                   && figObj.removed
-                || !genObjects.find(o => 
-                           o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
-                        && figObj.getPluginData('userId') == figma.currentUser.id))
-                        //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()))
-                figObj.remove();
-        }
-    }
-
-
-    // put points on top
-    
-    for (const point of figPoints)
-    {
-        if (point.parent == figCurrentPage)
-            await figCurrentPage.loadAsync();
+        // delete removed objects from parent
         
-        if (    point != undefined
-            &&  point != null
-            && !point.removed
-            && !point.parent.removed)
-            point.parent.appendChild(point);
-    }
-
-
-    if (    lastChunk
-        && !abort)
-    {
-        // delete old content
-
-        figDeleteObjectsExcept(
-            _genIgnoreNodeIds, 
-            _genIgnoreObjects);
-
-        _genIgnoreNodeIds = [];
-        _genIgnoreObjects = [];
-
-        
-        if (   zoomToFit
-            && updateObjects.length > 0)
+        if (    figParent != undefined
+            &&  figParent != null
+            && !figParent.removed)
         {
-            figma.viewport.scrollAndZoomIntoView(updateObjects);
-
-            const bounds = figGetObjectBounds(updateObjects);
-                
-            figma.viewport.zoom = Math.min(
-                figma.viewport.bounds.width  * figma.viewport.zoom / bounds.width  - 0.05,
-                figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
+            for (const figObj of figParent.children)
+            {
+                if (      figObj != undefined
+                    && figObj != null
+                    && figObj.removed
+                    || !genObjects.find(o => 
+                            o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
+                            && figObj.getPluginData('userId') == figma.currentUser.id))
+                            //&& figObj.getPluginData('sessionId') == figma.currentUser.sessionId.toString()))
+                    figObj.remove();
+            }
         }
+
+
+        // put points on top
+        
+        for (const point of figPoints)
+        {
+            if (point.parent == figCurrentPage)
+                await figCurrentPage.loadAsync();
+            
+            if (    point != undefined
+                &&  point != null
+                && !point.removed
+                && !point.parent.removed)
+                point.parent.appendChild(point);
+        }
+
+
+        if (    lastChunk
+            && !abort)
+        {
+            // delete old content
+
+            figDeleteObjectsExcept(
+                _genIgnoreNodeIds, 
+                _genIgnoreObjects);
+
+            _genIgnoreNodeIds = [];
+            _genIgnoreObjects = [];
+
+            
+            if (   zoomToFit
+                && updateObjects.length > 0)
+            {
+                figma.viewport.scrollAndZoomIntoView(updateObjects);
+
+                const bounds = figGetObjectBounds(updateObjects);
+                    
+                figma.viewport.zoom = Math.min(
+                    figma.viewport.bounds.width  * figma.viewport.zoom / bounds.width  - 0.05,
+                    figma.viewport.bounds.height * figma.viewport.zoom / bounds.height - 0.05);
+            }
+        }
+
+
+        await figGetValueFromUiSync(
+            'returnObjectUpdate', 
+            { 
+                nominalObjectCount: nominalObjectCount,
+                actualObjectCount:  actualObjectCount 
+            });
     }
-
-
-    await figGetValueFromUiSync(
-        'returnObjectUpdate', 
-        { 
-            nominalObjectCount: nominalObjectCount,
-            actualObjectCount:  actualObjectCount 
-        });
+    catch (error)
+    {
+        console.error(error);
+    }
 }
 
 

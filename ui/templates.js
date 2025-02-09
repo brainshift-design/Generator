@@ -31,7 +31,7 @@ function updateUserTemplatesFromServer()
     })
     .catch(e =>
     {
-        console.error(e);
+        crash(e);
         throw e;
     });
 }
@@ -201,7 +201,7 @@ function adjustTemplateMenu(e, thisMenu, action, template)
                 })
                 .catch(e =>
                 {
-                    console.error(e);
+                    crash(e);
                     throw e;
                 }));
         }

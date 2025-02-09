@@ -191,7 +191,7 @@ extends FigmaShape
             let p      = this.points[i].toPoint();
             let smooth = this.points[i].smooth;
 
-            p = transformPoint(p, xform, space);
+            p = transformPoint2(p, xform, space);
 
             this.points[i]        = PointValue.fromPoint(this.nodeId, p);
             this.points[i].smooth = smooth;
@@ -235,9 +235,9 @@ extends FigmaShape
 
 
 
-    checkFlipped(flipX, flipY)
+    checkFlipped2(flipX, flipY)
     {
-        super.checkFlipped(flipX, flipY);
+        super.checkFlipped2(flipX, flipY);
 
 
         const bounds = this.getBounds();

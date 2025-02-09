@@ -521,7 +521,7 @@ const presetGalaxy ='\
         "params":\
         [\
                 ["NUM#", "operation", "1,0"],\
-                ["NUM#", "operand", "5,0"]\
+                ["NUM#", "operand", "30,0"]\
         ]\
         },\
         {\
@@ -600,6 +600,7 @@ const presetGalaxy ='\
                 ["NUM#", "position", "3,0"],\
                 ["NUM#", "x", "179,0"],\
                 ["NUM#", "y", "23,0"],\
+                ["NUM#", "size", "10,0"],\
                 ["NUM#", "blend", "5,0"]\
         ]\
         },\

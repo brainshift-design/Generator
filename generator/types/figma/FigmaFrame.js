@@ -75,13 +75,13 @@ extends FigmaShape
 
 
     
-    checkFlipped(flipX, flipY)
+    checkFlipped2(flipX, flipY)
     {
-        super.checkFlipped(flipX, flipY);
+        super.checkFlipped2(flipX, flipY);
 
         for (const obj of this.children)
         {
-            obj.checkFlipped(flipX, flipY);
+            obj.checkFlipped2(flipX, flipY);
 
             if (flipX)
             {

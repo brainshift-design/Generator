@@ -79,7 +79,7 @@ extends Parameter
 
             if (!isNaN(value.meta.decimals))       this.controls[0].setDecimals(value.meta.decimals);
 
-            if (value.meta.wrapValue != undefined) this.controls[0].wrapValue = value.meta.wrapValue;
+            if (value.meta.wrapValue != undefined) this.controls[0].wrapValue  = value.meta.wrapValue;
             if (value.meta.ranges)                 this.controls[0].ranges     = value.meta.ranges.map(r => r.copy());
             
             this.controls[0].setSuffix(value.meta.suffix);

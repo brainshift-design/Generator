@@ -47,6 +47,8 @@ extends EventTarget
     forceInputColorType  = NULL;
     forceOutputColorType = NULL;
 
+    modifyName        = null;
+
     
     input;
     output;
@@ -400,14 +402,19 @@ extends EventTarget
             const nameSize = this.divider <= 1 ? ((   this.divider *100) + '%') : (this.divider + 'px');
             const  valSize = this.divider <= 1 ? (((1-this.divider)*100) + '%') : ('calc(100% - ' + this.divider + 'px)');
 
-            this.divName.innerHTML = this.showIndexName ? this.index : this.name;
-   
+            const name = 
+                this.modifyName
+                ? this.modifyName(this.name)
+                : this.name;
+
+            this.divName.innerHTML = this.showIndexName ? this.index : name;
+
             this.divName    .style.display = 'inline-block';
             this.divControls.style.display = showValue ? 'inline-block' : 'none';
 
 
-            if (    showValue)
-                //|| !this.isNodeValue)
+
+            if (showValue)
             {
                 this.divControls.style.left       =  nameSize;
                 this.divControls.style.marginLeft = '3px';

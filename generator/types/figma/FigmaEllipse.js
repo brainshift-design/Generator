@@ -61,9 +61,9 @@ extends FigmaShape
 
 
 
-    checkFlipped(flipX, flipY)
+    checkFlipped2(flipX, flipY)
     {
-        super.checkFlipped(flipX, flipY);
+        super.checkFlipped2(flipX, flipY);
 
         if (flipX)          this.start = 180 - this.start;
         if (flipX || flipY) this.sweep = -this.sweep;

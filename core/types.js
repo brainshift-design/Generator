@@ -1,10 +1,12 @@
 const LIST_VALUE              = 'LIST#';
 
-const NUMBER_LIST_VALUE       = 'NLIST#';
-const   TEXT_LIST_VALUE       = 'TLIST#';
-const  SHAPE_LIST_VALUE       = 'SLIST#';
-const  COLOR_LIST_VALUE       = 'CLIST#';
-const  FILL_LIST_VALUE        = 'FLIST#';
+const      NUMBER_LIST_VALUE  = 'NLIST#';
+const        TEXT_LIST_VALUE  = 'TLIST#';
+const       SHAPE_LIST_VALUE  = 'SLIST#';
+const       POINT_LIST_VALUE  = 'PTLIST#';
+const       COLOR_LIST_VALUE  = 'CLIST#';
+const        PATH_LIST_VALUE  = 'PATHLIST#';
+const        FILL_LIST_VALUE  = 'FLIST#';
 const  COLOR_STOP_LIST_VALUE  = 'CSLIST#';
 
 
@@ -64,8 +66,10 @@ const LIST_TYPES =
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
     COLOR_LIST_VALUE,
+    POINT_LIST_VALUE,
     FILL_LIST_VALUE,
     COLOR_STOP_LIST_VALUE,
+    PATH_LIST_VALUE,
     LIST,
     EXTRACT,
     SET_PARAM,
@@ -87,8 +91,10 @@ const LIST_VALUES =
            TEXT_LIST_VALUE,
           SHAPE_LIST_VALUE,
           COLOR_LIST_VALUE,
+          POINT_LIST_VALUE,
            FILL_LIST_VALUE,
-     COLOR_STOP_LIST_VALUE
+     COLOR_STOP_LIST_VALUE,
+           PATH_LIST_VALUE
 ];
 
 
@@ -273,6 +279,10 @@ const POINT_VALUE             = 'PT#';
 const POINT                   = 'PT';
 const POINT_TYPES             = [POINT_VALUE, POINT];
 
+const POINT3_VALUE             = 'PT3#';
+const POINT3                   = 'PT3';
+const POINT3_TYPES             = [POINT3_VALUE, POINT3];
+
 const POINT_CORNER            = 'PCORN';
 
 const VECTOR_PATH_VALUE       = 'VPATH#';
@@ -336,6 +346,7 @@ const CIRCLE_CENTER           = 'CIRCEN';
 const ARC_FROM_POINTS         = 'ARCPT';
 const INTERSECT_LINES         = 'INTLIN';
 const INTERPOLATE_POINT       = 'PTLERP';
+const REORIENT_POINTS         = 'REORPTS';
 const REVERSE_PATH            = 'REVPTH';
 const BLEND_PATH              = 'BLENDPTH';
 
@@ -602,13 +613,6 @@ const PATH_TYPES =
     WAVE_PATH
 ];
 
-const PATH_VALUES =
-[
-    VECTOR_PATH_VALUE, 
-    TRAPEZE_VALUE,
-    ARC_PATH_VALUE,
-    WAVE_PATH_VALUE
-];
 
 
 const BOOLEAN_TYPES =
@@ -634,6 +638,7 @@ const SHAPE_VALUES =
     STAR_VALUE,
     TEXT_SHAPE_VALUE,
     POINT_VALUE,
+    POINT_LIST_VALUE,
     VECTOR_PATH_VALUE,
     VECTOR_VERTEX_VALUE,
     VECTOR_EDGE_VALUE,
@@ -650,6 +655,16 @@ const SHAPE_VALUES =
     BACK_BLUR_VALUE,
     LAYER_BLEND_VALUE,
     LAYER_MASK_VALUE
+];
+
+
+const PATH_VALUES =
+[
+    VECTOR_PATH_VALUE,
+    ARC_PATH_VALUE,
+    WAVE_PATH_VALUE,
+    PATH_LIST_VALUE,
+    TRAPEZE_VALUE
 ];
 
 
@@ -673,6 +688,7 @@ const SHAPE_TYPES =
     ...STAR_TYPES,
     ...TEXT_SHAPE_TYPES,
     ...POINT_TYPES,
+    ...POINT3_TYPES,
        POINT_CORNER,
     ...VECTOR_PATH_TYPES,
     ...VECTOR_VERTEX_TYPES,
@@ -710,6 +726,7 @@ const SHAPE_TYPES =
     ARC_FROM_POINTS,
     INTERSECT_LINES,
     INTERPOLATE_POINT,
+    REORIENT_POINTS,
     REVERSE_PATH,
     BLEND_PATH,
 
@@ -729,6 +746,7 @@ const ALL_VALUES =
      NUMBER_LIST_VALUE,
        TEXT_LIST_VALUE,
       SHAPE_LIST_VALUE,
+      POINT_LIST_VALUE,
      
         VARIABLE_VALUE,
         
@@ -753,6 +771,7 @@ const ALL_VALUES =
             STAR_VALUE,
       TEXT_SHAPE_VALUE,
            POINT_VALUE,
+          POINT3_VALUE,
      VECTOR_PATH_VALUE,
    VECTOR_VERTEX_VALUE,
      VECTOR_EDGE_VALUE,

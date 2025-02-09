@@ -254,8 +254,12 @@ extends GShape
             let w = this.value.width .value;
             let h = this.value.height.value;
 
-            const fontName   = figUniqueFontNames[this.value.font.value];
+            const font       = Math.round(this.value.font.value);
+            const fontName   = figUniqueFontNames[font];
+            
             const fontStyles = getFontStyles(fontName);
+            const fontStyle  = Math.round(this.value.style.value);
+
 
             const text = new FigmaText(
                 this.nodeId,
@@ -265,7 +269,7 @@ extends GShape
                 x, y, w, h,
                 fontName,
                 this.value.size         .value,
-                fontStyles[Math.min(this.value.style.value, fontStyles.length-1)],
+                fontStyles[Math.min(fontStyle, fontStyles.length-1)],
                 this.value.alignX       .value,
                 this.value.alignY       .value,
                 this.value.lineHeight   .value,

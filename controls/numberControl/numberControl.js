@@ -229,10 +229,8 @@ extends Control
         if (this.wrapValue)
         {
             const range = this.maxDisplay - this.minDisplay;
-
-            value %= range;
-
             while (value < this.minDisplay) value += range;
+            value = this.minDisplay + ((value - this.minDisplay) % range);
         }
 
         else if (fullRange
@@ -310,7 +308,7 @@ extends Control
     {
         return [
             this.param.div.offsetLeft,
-            this.param.node.width ];//div.offsetWidth ];
+            this.param.node.width ];
     };
 
 

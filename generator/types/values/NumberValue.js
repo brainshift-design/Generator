@@ -127,7 +127,7 @@ extends GValue
 
     toNumber()
     {
-        return roundTo(this.value, this.decimals);
+        return roundTo(this.value, Math.max(0, this.decimals));
     }
 
 
@@ -197,7 +197,7 @@ extends GValue
 
     static parseRequest(parse)
     {
-        parse.pos++; // N
+        parse.pos++; // NUMBER_VALUE
     
         const val = parse.move();
     
@@ -233,7 +233,12 @@ extends GValue
                 parseNum(parts[1]));
 
             if (parts.length == 3)
-                num.meta = NumberValueMeta.parse(decodeURIComponent(parts[2]))[0];
+            {
+                const meta = NumberValueMeta.parse(decodeURIComponent(parts[2]))[0];
+
+                if (meta.isValid())
+                    num.meta = meta;
+            }
 
 
             return [num, 1];

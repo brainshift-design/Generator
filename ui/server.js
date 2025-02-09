@@ -75,7 +75,7 @@ function checkRemainingSubscriptionDays()
         })
         .catch(e =>
         {
-            console.error(e);
+            crash(e);
             throw e;
         });
 }
@@ -177,7 +177,7 @@ function postToServer(cmd)
         .then(json => { return json; })
         .catch(e =>
         {
-            console.error(e);
+            crash(e);
             throw e;
         });
 }

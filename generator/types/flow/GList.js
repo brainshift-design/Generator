@@ -100,14 +100,6 @@ extends GOperator
         }
 
 
-        // reset object space
-
-        const bounds = getObjBounds(this.value.objects);
-
-        const singlePoint =
-               this.value.objects.length  == 1 
-            && this.value.objects[0].type == POINT;
-
         for (const obj of this.value.objects)
         {
             const angle1 = anglev_(obj.sp0, obj.sp1);
@@ -117,8 +109,6 @@ extends GOperator
             
             obj.sp1 = addv(obj.sp0, vector(angle1, 1));
             obj.sp2 = addv(obj.sp0, vector(angle2, 1));
-
-            //obj.resetSpace(bounds, singlePoint);
         }
         
 

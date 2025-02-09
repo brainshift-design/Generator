@@ -15,6 +15,7 @@
 ../generator/types/figma/FigmaStar.js
 ../generator/types/figma/FigmaText.js
 ../generator/types/figma/FigmaPoint.js
+../generator/types/figma/FigmaPoint3.js
 ../generator/types/figma/FigmaBoolean.js
 ../generator/types/figma/FigmaArcPath.js
 ../generator/types/figma/FigmaWavePath.js
@@ -69,6 +70,7 @@
 ../generator/types/values/StarValue.js
 ../generator/types/values/TextShapeValue.js
 ../generator/types/values/PointValue.js
+../generator/types/values/PointValue3.js
 ../generator/types/values/VectorPathValue.js
 ../generator/types/values/VectorVertexValue.js
 ../generator/types/values/VectorEdgeValue.js
@@ -239,6 +241,7 @@
 ../generator/types/shape/GStar.js
 ../generator/types/shape/GTextShape.js
 ../generator/types/shape/GPoint.js
+../generator/types/shape/GPoint3.js
 ../generator/types/shape/GPointCorner.js
 ../generator/types/shape/GVectorPath.js
 ../generator/types/shape/GVectorVertex.js
@@ -282,6 +285,7 @@
 ../generator/types/shape/GClosestPointOnPath.js
 ../generator/types/shape/GIntersectLines.js
 ../generator/types/shape/GInterpolatePoint.js
+../generator/types/shape/GReorientPoints.js
 ../generator/types/shape/GReversePath.js
 ../generator/types/shape/GBlendPath.js
 
