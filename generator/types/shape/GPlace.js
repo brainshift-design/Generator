@@ -145,7 +145,7 @@ extends GOperator1
                     }
 
 
-                    obj.applyTransform2(xform, true);
+                    obj.applyTransform(xform, true);
 
                     if (this.value.type == POINT_VALUE) 
                     {

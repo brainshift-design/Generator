@@ -195,7 +195,7 @@ class FigmaObject
 
 
 
-    applyTransform2(xform, affectSpace)
+    applyTransform(xform, affectSpace)
     {
         const space = this.createSpaceTransform();
 
@@ -204,7 +204,7 @@ class FigmaObject
             this.applyObjectTransform(xform, space);
 
         if (affectSpace != 1)
-            this.applySpaceTransform2(xform, space);
+            this.applySpaceTransform(xform, space);
     }
 
 
@@ -226,7 +226,7 @@ class FigmaObject
 
 
 
-    applySpaceTransform2(xform, space)
+    applySpaceTransform(xform, space)
     {
         this.sp0 = transformPoint2(this.sp0, xform, space);
         this.sp1 = transformPoint2(this.sp1, xform, space);

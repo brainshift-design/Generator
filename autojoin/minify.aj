@@ -3985,7 +3985,7 @@ _frac
 decFrac
 strVar
 createDefaultTransform
-applyTransform2
+applyTransform
 evalObjects
 setUpdateValues
 objPoints

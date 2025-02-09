@@ -164,7 +164,7 @@ extends GOperator1
                 if (options.offset)
                     xform = mulm3m3(xform, createTransform(0, options.offset));
 
-                point.applyTransform2(xform, options.transform.value > 0 ? 2 : 0);
+                point.applyTransform(xform, options.transform.value > 0 ? 2 : 0);
             }
 
 

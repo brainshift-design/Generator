@@ -42,10 +42,10 @@ extends FigmaShape
 
 
 
-    applyTransform2(xform, affectSpace)
+    applyTransform(xform, affectSpace)
     {
         for (const obj of this.children)
-            obj.applyTransform2(xform, affectSpace);
+            obj.applyTransform(xform, affectSpace);
     }
 
 

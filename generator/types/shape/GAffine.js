@@ -68,7 +68,7 @@ extends GOperator1
 
             if (this.options.enabled)
             {
-                obj.applyTransform2(
+                obj.applyTransform(
                     xform, 
                     options.affectSpace ? options.affectSpace.value : 2);
 

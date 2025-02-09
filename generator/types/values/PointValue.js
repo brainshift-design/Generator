@@ -85,7 +85,7 @@ extends GValue
 
 
 
-    applySpaceTransform2(xform, space)
+    applySpaceTransform(xform, space)
     {
         this.sp0 = transformPoint2(this.sp0, xform, space);
         this.sp1 = transformPoint2(this.sp1, xform, space);

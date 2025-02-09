@@ -72,27 +72,12 @@ extends FigmaShape
 
 
 
-    applyTransform2(xform, affectSpace)
+    applyTransform(xform, affectSpace)
     {
         const space = this.createSpaceTransform();
 
-        
         for (const obj of this.children)
-        {
-            if (affectSpace > 0)
-            {
-                obj.applyObjectTransform(xform, space);
-
-                if (obj.type == VECTOR_PATH)
-                    obj.updatePoints(xform, space);
-            }
-
-            if (affectSpace != 1)
-                obj.applySpaceTransform2(xform, space);
-        }                
-
-        // for (const obj of this.children)
-        //     obj.applyTransform2(xform, affectSpace);
+            obj.applyTransform(xform, affectSpace);
     }
 
 

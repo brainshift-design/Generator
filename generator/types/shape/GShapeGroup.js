@@ -70,13 +70,11 @@ extends GShapeBase
                                 continue;
 
                             this.value.items.push(item);
-                            //this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
                         }
                     }
                     else
                     {
-                        this.value.items.push(input);//.copy());
-                        //this.value.objects.push(...input.objects.map(o => this.copyObject(o, i)));
+                        this.value.items.push(input);
                     }
                 }
             }

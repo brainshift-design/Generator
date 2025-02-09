@@ -113,7 +113,7 @@ extends GOperator2
             
             if (options.transform.value > 0)
             {
-                point.applyTransform2(
+                point.applyTransform(
                     getTransformFromAngle(anglev(point.toPoint())),
                     2);
             }
