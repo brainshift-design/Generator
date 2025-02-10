@@ -13,7 +13,7 @@ extends GOperator1
 
     constructor(nodeId, options)
     {
-        super(POINT, nodeId, options);
+        super(POINT3, nodeId, options);
     }
 
 
@@ -32,7 +32,7 @@ extends GOperator1
 
     copy()
     {
-        const copy = new GPoint(this.nodeId, this.options);
+        const copy = new GPoint3(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -67,7 +67,7 @@ extends GOperator1
             return this;
 
         
-        let input = await evalPointValue (this.input, parse);
+        let input = await evalPointValue3(this.input, parse);
         let x     = await evalNumberValue(this.x,     parse);
         let y     = await evalNumberValue(this.y,     parse);
         let z     = await evalNumberValue(this.z,     parse);
@@ -75,15 +75,20 @@ extends GOperator1
 
         if (   input
             && input.isValid())
-
         {
             const _input = input;
 
-            if (input.type == VECTOR_VERTEX_VALUE)
+            if (input.type == POINT_VALUE)
             {
-                input = new PointValue3(input.nodeId, input.x, input.y, input.z);
+                input = new PointValue3(input.nodeId, input.x, input.y, new NumberValue(0));
                 input.copyCustomParams(_input);
             }
+            else if (input.type == VECTOR_VERTEX_VALUE)
+            {
+                input = new PointValue3(input.nodeId, input.x, input.y, new NumberValue(0));
+                input.copyCustomParams(_input);
+            }
+
             
             this.value        = input;
             this.value.nodeId = this.nodeId;
@@ -113,7 +118,6 @@ extends GOperator1
                 x, 
                 y,
                 z);
-
         }
         else
             this.value = PointValue3.NaN();
@@ -160,7 +164,7 @@ extends GOperator1
             const y = this.value.y.value;
             const z = this.value.z.value;
 
-            const point = new FigmaPoint(
+            const point = new FigmaPoint3(
                 this.nodeId,
                 this.nodeId,
                 this.nodeName,
@@ -170,7 +174,7 @@ extends GOperator1
                 this.smooth ? this.smooth.value/100 : 1);
 
 
-            point.createDefaultTransform(x, y, z);
+            point.createDefaultTransform(x, y);
 
             this.value.objects = [point];
         }
@@ -232,7 +236,7 @@ extends GOperator1
         const [, nodeId, options, ignore] = genParseNodeStart(parse);
     
     
-        const point = new GPoint(nodeId, options);
+        const point = new GPoint3(nodeId, options);
     
     
         let nInputs = -1;

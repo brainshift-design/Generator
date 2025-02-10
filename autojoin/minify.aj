@@ -3631,7 +3631,7 @@ savedColor
 stackOverflowProtect
 toInteger
 createDefaultTransformPoints
-transformPoint2
+transformPoint
 createSpaceTransform
 showTextTooltips
 showListTooltips

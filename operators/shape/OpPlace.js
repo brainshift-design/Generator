@@ -21,7 +21,7 @@ extends OperatorBase
         this.iconOffsetY  = -2;
 
         
-        this.addInput (new Input (SHAPE_VALUES));
+        this.addInput (new Input (SHAPE_VALUES_2D));
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
@@ -29,6 +29,7 @@ extends OperatorBase
         this.addParam(this.paramTransform = new NumberParam('transform',  'transform',   true,  true, true, 1, 0, 1));
 
         this.paramPosition.showValue = false;
+        this.paramPosition.input.types = [POINT_VALUE, POINT3_VALUE, VECTOR_VERTEX_VALUE];
 
         this.paramTransform.divider = 0.67;
 

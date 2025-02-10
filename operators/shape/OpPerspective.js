@@ -22,11 +22,10 @@ extends OperatorBase
         this.canDisable = true;
     
 
-        this.addInput (new Input ([POINT_VALUE, LIST_VALUE]));
-        this.addOutput(new Output([POINT_VALUE], this.output_genRequest));
+        this.addInput (new Input ([POINT3_VALUE, POINT_VALUE, VECTOR_VERTEX_VALUE]));
+        this.addOutput(new Output([POINT3_VALUE], this.output_genRequest));
         
         
-        this.addParam(this.paramZ       = new NumberParam('z',       'Z',             true, true, true, 0));
         this.addParam(this.paramFov     = new NumberParam('fov',     'field of view', true, true, true, 45));
         this.addParam(this.paramRotateX = new NumberParam('rotateX', '<span style="position: absolute; right: 18px; top: -3px; overflow: visible;">' + iconRotateX + '</span> X', true, true, true, 0));
         this.addParam(this.paramRotateY = new NumberParam('rotateY', '<span style="position: absolute; right: 13px; top:  3px; overflow: visible;">' + iconRotateY + '</span> Y', true, true, true, 0));
@@ -60,7 +59,6 @@ extends OperatorBase
         this.paramRotateZ.modifyName = (name) => name.replaceAll('white', darkMode ? '#fff4' : '#0006');
 
 
-        this.paramZ      .divider = 0.45;
         this.paramFov    .divider = 0.65;
         this.paramRotateX.divider = 0.52;
         this.paramRotateY.divider = 0.52;
@@ -90,7 +88,6 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
         
-        request.push(...this.node.paramZ      .genRequest(gen));
         request.push(...this.node.paramFov    .genRequest(gen));
         request.push(...this.node.paramRotateX.genRequest(gen));
         request.push(...this.node.paramRotateY.genRequest(gen));

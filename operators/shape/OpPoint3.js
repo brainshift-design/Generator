@@ -17,6 +17,7 @@ extends OpShapeBase
     {
         super(POINT3, 'point', 'point', iconPoint);
 
+        
         this.canDisable  = true;
         this.iconOffsetY = -1;
 
@@ -76,7 +77,6 @@ extends OpShapeBase
         this.paramX.setValue(x, false, true, false);
         this.paramY.setValue(y, false, true, false);
         this.paramZ.setValue(z, false, true, false);
-
     }
 
 
