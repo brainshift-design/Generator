@@ -331,6 +331,7 @@ function copyFigmaObject(obj)
         case STAR:          return FigmaStar      .prototype.copy.call(obj);
         case TEXT_SHAPE:    return FigmaText      .prototype.copy.call(obj);
         case POINT:         return FigmaPoint     .prototype.copy.call(obj);
+        case POINT3:        return FigmaPoint3    .prototype.copy.call(obj);
         case VECTOR_PATH:   return FigmaVectorPath.prototype.copy.call(obj);
         case ARC_PATH:      return FigmaArcPath   .prototype.copy.call(obj);
         case WAVE_PATH:     return FigmaWavePath  .prototype.copy.call(obj);

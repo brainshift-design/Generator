@@ -148,9 +148,10 @@ extends OpShapeBase
 
         const unknownZ = 
                this.headerInputs[0].connected
-            && this.headerInputs[0].connectedOutput.types[0] !== POINT3_VALUE;
+            && this.headerInputs[0].connectedOutput.node.isUnknown()
+            && this.headerInputs[0].connectedOutput.types[0] === POINT3_VALUE;
 
-        this.paramZ.enableControlText(!isNodeValueZ, this.paramZ.isUnknown() && unknownZ);
+        this.paramZ.enableControlText(!isNodeValueZ, unknownZ);
 
 
         this.updateParamControls();
