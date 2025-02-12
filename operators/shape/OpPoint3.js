@@ -15,7 +15,7 @@ extends OpShapeBase
 
     constructor()
     {
-        super(POINT3, 'point', 'point', iconPoint);
+        super(POINT3, 'point', '3D point', iconPoint);
 
         
         this.canDisable  = true;
@@ -68,6 +68,48 @@ extends OpShapeBase
 
 
 
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.node.headerInputs[0];
+        
+        if (input.connected) 
+        {
+            request.push(1, ...pushInputOrParam(input, gen));
+
+            if (input.connectedOutput.types[0] !== POINT3_VALUE)
+                request.push(1, ...this.node.paramZ.genRequest(gen));
+            else
+                request.push(0);
+        }
+        else
+        {
+            request.push(0);
+
+            request.push(...this.node.paramX.genRequest(gen));
+            request.push(...this.node.paramY.genRequest(gen));
+            request.push(...this.node.paramZ.genRequest(gen));
+        }
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const x = values[paramIds.findIndex(id => id == 'x')];
@@ -83,18 +125,32 @@ extends OpShapeBase
 
     updateParams()
     {
-        const isNodeValue = this.headerInputs[0].connected;
-
         const commonUnknown = 
-                  this.inputs[0].connected 
+                  this.headerInputs[0].connected 
                && this.isUnknown()
             || this.hasConditionOutputs();
 
+
+        const isNodeValue = this.headerInputs[0].connected;
+
+        this.paramX.isNodeValue = isNodeValue;
+        this.paramY.isNodeValue = isNodeValue;
+
         this.paramX.enableControlText(!isNodeValue, this.paramX.isUnknown() || commonUnknown);
         this.paramY.enableControlText(!isNodeValue, this.paramY.isUnknown() || commonUnknown);
-        this.paramZ.enableControlText(!isNodeValue, this.paramZ.isUnknown() || commonUnknown);
 
-        this.params.forEach(p => p.isNodeValue = isNodeValue);
+
+        const isNodeValueZ = 
+               this.headerInputs[0].connected
+            && this.headerInputs[0].connectedOutput.types[0] == POINT3_VALUE;
+
+        this.paramZ.isNodeValue = isNodeValueZ;
+
+        const unknownZ = 
+               this.headerInputs[0].connected
+            && this.headerInputs[0].connectedOutput.types[0] !== POINT3_VALUE;
+
+        this.paramZ.enableControlText(!isNodeValueZ, this.paramZ.isUnknown() && unknownZ);
 
 
         this.updateParamControls();

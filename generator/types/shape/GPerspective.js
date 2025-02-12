@@ -70,16 +70,16 @@ extends GOperator1
         {
             const _input = input;
 
-            // if (input.type == POINT_VALUE)
-            // {
-            //     input = new PointValue3(input.nodeId, input.x, input.y, new NumberValue(0));
-            //     input.copyCustomParams(_input);
-            // }
-            // else if (input.type == VECTOR_VERTEX_VALUE)
-            // {
-            //     input = new PointValue3(input.nodeId, input.x, input.y, new NumberValue(0));
-            //     input.copyCustomParams(_input);
-            // }
+            if (input.type == POINT_VALUE)
+            {
+                input = new PointValue3(input.nodeId, input.x, input.y, new NumberValue(0));
+                input.copyCustomParams(_input);
+            }
+            else if (input.type == VECTOR_VERTEX_VALUE)
+            {
+                input = new PointValue3(input.nodeId, input.x, input.y, new NumberValue(0));
+                input.copyCustomParams(_input);
+            }
 
 
             this.value = input.copy();
@@ -117,14 +117,23 @@ extends GOperator1
                         && this.value.objects[0].type == POINT3, 
                         'value must have exactly one point');
 
-                    const point = this.value.objects[0];
-                    
-                    point.nodeId    = this.nodeId;
+
+                    const obj = this.value.objects[0];
+
+                    const point = new FigmaPoint3(
+                        this.nodeId,
+                        obj.objectId,
+                        obj.objectName);
+
                     point.objectId += OBJECT_SEPARATOR + this.nodeId;
+
 
                     if (this.options.enabled)
                     {
-                        const pt3 = [point.x, point.y, input.z.value];
+                        const pt3 = [
+                            obj.x, 
+                            obj.y, 
+                            input.z.value];
                         
                         const rotated = mulv3m3(pt3, rot);
                         const factor  = perspectiveScale(focalLength, rotated[2]);
@@ -137,6 +146,8 @@ extends GOperator1
                         this.value.y.value = point.y;
                         this.value.z.value = point.z;
                     }
+
+                    this.value.objects = [point];
                 }
             }
         }

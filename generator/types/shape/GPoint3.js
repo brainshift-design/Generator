@@ -67,7 +67,7 @@ extends GOperator1
             return this;
 
         
-        let input = await evalPointValue3(this.input, parse);
+        let input = await evalValue      (this.input, parse);
         let x     = await evalNumberValue(this.x,     parse);
         let y     = await evalNumberValue(this.y,     parse);
         let z     = await evalNumberValue(this.z,     parse);
@@ -80,12 +80,12 @@ extends GOperator1
 
             if (input.type == POINT_VALUE)
             {
-                input = new PointValue3(input.nodeId, input.x, input.y, new NumberValue(0));
+                input = new PointValue3(input.nodeId, input.x, input.y, z ?? new NumberValue(0));
                 input.copyCustomParams(_input);
             }
             else if (input.type == VECTOR_VERTEX_VALUE)
             {
-                input = new PointValue3(input.nodeId, input.x, input.y, new NumberValue(0));
+                input = new PointValue3(input.nodeId, input.x, input.y, z ?? new NumberValue(0));
                 input.copyCustomParams(_input);
             }
 
@@ -263,23 +263,20 @@ extends GOperator1
     
     
         if (nInputs == 1)
-            point.input = genParse(parse);
-    
-    
-        const nParamIds = genParseParamCount(parse);
-    
-        for (let i = 0; i < nParamIds; i++)
         {
-            const paramId = genParseParamId(parse);
-    
-            parse.inParam = true;
-    
-            switch (paramId)
-            {
-            case 'x': point.x = genParse(parse); break;
-            case 'y': point.y = genParse(parse); break;
-            case 'z': point.z = genParse(parse); break;
-            }
+            point.input = genParse(parse);
+
+            const nZ = parseInt(parse.move());
+            consoleAssert(nZ == 0 || nZ == 1, 'nZ must be [0, 1]');
+
+            if (nZ == 1)
+                point.z = genParse(parse);
+        }
+        else
+        {
+            point.x = genParse(parse);
+            point.y = genParse(parse);
+            point.z = genParse(parse);
         }
     
     
