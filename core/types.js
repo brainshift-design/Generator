@@ -626,7 +626,7 @@ const BOOLEAN_TYPES =
 ];
 
 
-const SHAPE_VALUES =
+const SHAPE_VALUES_2D =
 [
     SHAPE_VALUE,
     SHAPE_LIST_VALUE,
@@ -655,6 +655,14 @@ const SHAPE_VALUES =
     BACK_BLUR_VALUE,
     LAYER_BLEND_VALUE,
     LAYER_MASK_VALUE
+];
+
+
+
+const SHAPE_VALUES =
+[
+    ...SHAPE_VALUES_2D,
+    POINT3_VALUE,
 ];
 
 

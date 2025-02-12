@@ -5,7 +5,6 @@ extends GOperator1
 
 
 
-    z       = null;
     fov     = null;
     rotateX = null;
     rotateY = null;
@@ -26,7 +25,6 @@ extends GOperator1
     {
         super.reset();
     
-        this.z       = null;
         this.fov     = null;
         this.rotateX = null;
         this.rotateY = null;
@@ -43,7 +41,6 @@ extends GOperator1
     
         copy.copyBase(this);
     
-        if (this.z      ) { copy.z       = this.z      .copy(); }
         if (this.fov    ) { copy.fov     = this.fov    .copy(); }
         if (this.rotateX) { copy.rotateX = this.rotateX.copy(); }
         if (this.rotateY) { copy.rotateY = this.rotateY.copy(); }
@@ -61,8 +58,7 @@ extends GOperator1
             return this;
 
 
-        const input   = await evalValue      (this.input,   parse);
-        const z       = await evalNumberValue(this.z,       parse);
+        let   input   = await evalValue      (this.input,   parse);
         const fov     = await evalNumberValue(this.fov,     parse);
         const rotateX = await evalNumberValue(this.rotateX, parse);
         const rotateY = await evalNumberValue(this.rotateY, parse);
@@ -70,13 +66,27 @@ extends GOperator1
         const order   = await evalNumberValue(this.order,   parse);
 
         
-        if (input) 
+        if (input)
         {
+            const _input = input;
+
+            if (input.type == POINT_VALUE)
+            {
+                input = new PointValue3(input.nodeId, input.x, input.y, new NumberValue(0));
+                input.copyCustomParams(_input);
+            }
+            else if (input.type == VECTOR_VERTEX_VALUE)
+            {
+                input = new PointValue3(input.nodeId, input.x, input.y, new NumberValue(0));
+                input.copyCustomParams(_input);
+            }
+
+
             this.value = input.copy();
-        
+
+            
             if (   this.value 
                 && this.value.isValid() 
-                && z      
                 && fov    
                 && rotateX
                 && rotateY
@@ -87,13 +97,6 @@ extends GOperator1
                 this.value.objects = getValidObjects(this.input.value);
     
     
-                if (isListValueType(this.value.type))
-                {
-                    for (let i = 0; i < this.value.items.length; i++)
-                        this.value.items[i].objects = this.value.objects.filter(o => o.itemIndex == i);
-                }
-        
-
                 const rot = getRotationMatrix(
                     rotateX.value,
                     rotateY.value, 
@@ -102,39 +105,49 @@ extends GOperator1
 
                 const focalLength = computeFocalLength(fov.value);
 
-
-                for (const obj of this.value.objects) 
+                
+                if (this.options.enabled)
                 {
-                    obj.nodeId    = this.nodeId;
-                    obj.objectId += OBJECT_SEPARATOR + this.nodeId;
-    
+                    consoleAssert(
+                        this.value.type == POINT3_VALUE, 
+                        'value type must bew POINT3');
+
+                    consoleAssert(
+                           this.value.objects.length == 1 
+                        && this.value.objects[0].type == POINT3, 
+                        'value must have exactly one point');
+
+
+                    const obj = this.value.objects[0];
+
+                    const point = new FigmaPoint3(
+                        this.nodeId,
+                        obj.objectId,
+                        obj.objectName);
+
+                    point.objectId += OBJECT_SEPARATOR + this.nodeId;
+
+
                     if (this.options.enabled)
                     {
-                        for (const obj of this.value.objects) 
-                        {
-                            obj.nodeId    = this.nodeId;
-                            obj.objectId += OBJECT_SEPARATOR + this.nodeId;
-
-                            if (this.options.enabled)
-                            {
-                                const pt3 = [obj.x, obj.y, z.value];
-                                
-                                const rotated = mulv3m3(pt3, rot);
-                                const factor  = perspectiveScale(focalLength, rotated[2]);
-                                
-                                // update object's coordinates with the projected values
-                                obj.x = rotated[0] * factor;
-                                obj.y = rotated[1] * factor;
-                            }
-
-
-                            if (this.value.type == POINT_VALUE)
-                            {
-                                this.value.x.value = obj.x;
-                                this.value.y.value = obj.y;
-                            }
-                        } 
+                        const pt3 = [
+                            obj.x, 
+                            obj.y, 
+                            input.z.value];
+                        
+                        const rotated = mulv3m3(pt3, rot);
+                        const factor  = perspectiveScale(focalLength, rotated[2]);
+                        
+                        point.x = rotated[0] * factor;
+                        point.y = rotated[1] * factor;
+                        point.z = factor;
+                 
+                        this.value.x.value = point.x;
+                        this.value.y.value = point.y;
+                        this.value.z.value = point.z;
                     }
+
+                    this.value.objects = [point];
                 }
             }
         }
@@ -150,7 +163,6 @@ extends GOperator1
         this.setUpdateValues(parse,
         [
             ['type',    this.outputType()],
-            ['z',       z                ],
             ['fov',     fov              ],
             ['rotateX', rotateX          ],
             ['rotateY', rotateY          ],
@@ -261,7 +273,6 @@ extends GOperator1
         if (nInputs == 1)
             perspective.input = genParse(parse);
         
-        perspective.z       = genParse(parse);
         perspective.fov     = genParse(parse);
         perspective.rotateX = genParse(parse);
         perspective.rotateY = genParse(parse);
@@ -330,6 +341,5 @@ function computeFocalLength(fovDegrees, sensorSize = 500)
 
 function perspectiveScale(focalLength, z)
 {
-    // clamp z to avoid denominator getting too small
     return focalLength / (focalLength + z);
 }

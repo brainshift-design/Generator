@@ -8,7 +8,7 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, z, smooth = 1, isDeco = false, isCenter = false, isXform = false)
+    constructor(nodeId, objectId, objectName, x = 0, y = 0, z = 0, smooth = 1, isDeco = false, isCenter = false, isXform = false)
 
     {
         super(POINT3, nodeId, objectId, objectName, isDeco, isXform);
@@ -30,12 +30,13 @@ extends FigmaShape
 
     copy()
     {
-        const copy = new FigmaPoint(
+        const copy = new FigmaPoint3(
             this.nodeId,
             this.objectId,
             this.objectName, 
             this.x,
             this.y,
+            this.z,
             this.smooth,
             this.isDeco,
             this.isCenter);
@@ -64,7 +65,7 @@ extends FigmaShape
 
         if (affectSpace > 0)
         {
-            const p = transformPoint2(point(this.x, this.y), xform, space);
+            const p = transformPoint(point(this.x, this.y), xform, space);
 
             this.x = p.x;
             this.y = p.y;

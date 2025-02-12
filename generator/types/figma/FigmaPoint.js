@@ -60,7 +60,7 @@ extends FigmaShape
 
         if (affectSpace > 0)
         {
-            const p = transformPoint2(point(this.x, this.y), xform, space);
+            const p = transformPoint(point(this.x, this.y), xform, space);
 
             this.x = p.x;
             this.y = p.y;

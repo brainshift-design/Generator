@@ -191,7 +191,7 @@ extends FigmaShape
             let p      = this.points[i].toPoint();
             let smooth = this.points[i].smooth;
 
-            p = transformPoint2(p, xform, space);
+            p = transformPoint(p, xform, space);
 
             this.points[i]        = PointValue.fromPoint(this.nodeId, p);
             this.points[i].smooth = smooth;

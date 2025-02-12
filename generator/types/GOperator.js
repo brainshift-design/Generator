@@ -534,6 +534,7 @@ async function evalPolygonValue       (_value, parse) { return await evalValue(_
 async function evalTextShapeValue     (_value, parse) { return await evalValue(_value, parse, () => TextShapeValue     .NaN()); }
 
 async function evalPointValue         (_value, parse) { return await evalValue(_value, parse, () => PointValue         .NaN()); }
+async function evalPointValue3        (_value, parse) { return await evalValue(_value, parse, () => PointValue3        .NaN()); }
 async function evalVectorPathValue    (_value, parse) { return await evalValue(_value, parse, () => VectorPathValue    .NaN()); }
 async function evalArcPathValue       (_value, parse) { return await evalValue(_value, parse, () => ArcPathValue       .NaN()); }
 async function evalWavePathValue      (_value, parse) { return await evalValue(_value, parse, () => WavePathValue      .NaN()); }

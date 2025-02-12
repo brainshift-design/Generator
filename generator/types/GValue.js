@@ -229,6 +229,7 @@ function parseValueFromType(type, value)
         case           STAR_VALUE: return StarValue         .parse(value)[0];
         case     TEXT_SHAPE_VALUE: return TextShapeValue    .parse(value)[0];
         case          POINT_VALUE: return PointValue        .parse(value)[0];
+        case         POINT3_VALUE: return PointValue3       .parse(value)[0];
         case    VECTOR_PATH_VALUE: return VectorPathValue   .parse(value)[0];
         case  VECTOR_VERTEX_VALUE: return VectorVertexValue .parse(value)[0];
         case    VECTOR_EDGE_VALUE: return VectorEdgeValue   .parse(value)[0];
@@ -286,6 +287,7 @@ function displayValue(type, value)
         case           STAR_VALUE: return StarValue         .parse(value)[0].toDisplayString();
         case     TEXT_SHAPE_VALUE: return TextShapeValue    .parse(value)[0].toDisplayString();
         case          POINT_VALUE: return PointValue        .parse(value)[0].toDisplayString();
+        case         POINT3_VALUE: return PointValue3       .parse(value)[0].toDisplayString();
         case    VECTOR_PATH_VALUE: return VectorPathValue   .parse(value)[0].toDisplayString();
         case  VECTOR_VERTEX_VALUE: return VectorVertexValue .parse(value)[0].toDisplayString();
         case    VECTOR_EDGE_VALUE: return VectorEdgeValue   .parse(value)[0].toDisplayString();
@@ -333,6 +335,7 @@ function nanFromType(type)
         case            STAR_VALUE: return          StarValue.NaN();
         case      TEXT_SHAPE_VALUE: return     TextShapeValue.NaN();
         case           POINT_VALUE: return         PointValue.NaN();
+        case          POINT3_VALUE: return        PointValue3.NaN();
         case     VECTOR_PATH_VALUE: return    VectorPathValue.NaN();
         case   VECTOR_VERTEX_VALUE: return  VectorVertexValue.NaN();
         case     VECTOR_EDGE_VALUE: return    VectorEdgeValue.NaN();

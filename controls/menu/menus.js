@@ -805,8 +805,6 @@ function initGeneratorMenus()
     menuVectorPoints = new Menu('Vector points', true, false);
     menuVectorPoints.addItems([
                                      new MenuItem('Vector',                null,          false, {icon: iconVector,             createType: VECTOR,                callback: e => actionManager.do(getCreateNodeAction(VECTOR,                btnShape.div, getCreateOptions(e)))}),
-      //menuItemSep3d              = new MenuItem('',                      null,          false, {separator: true}),
-      //menuItem3dPoint            = new MenuItem('3D point',              null,          false, {icon: iconPoint,              createType: POINT3,                callback: e => actionManager.do(getCreateNodeAction(POINT3,                btnShape.div, getCreateOptions(e)))}),
                                      new MenuItem('',                      null,          false, {separator: true}),
                                      new MenuItem('Interpolate points',    null,          false, {icon: iconInterpolatePoint,   createType: INTERPOLATE_POINT,     callback: e => actionManager.do(getCreateNodeAction(INTERPOLATE_POINT,     btnShape.div, getCreateOptions(e)))}),
                                      new MenuItem('Intersect lines',       null,          false, {icon: iconIntersectLines,     createType: INTERSECT_LINES,       callback: e => actionManager.do(getCreateNodeAction(INTERSECT_LINES,       btnShape.div, getCreateOptions(e)))}),
@@ -819,7 +817,9 @@ function initGeneratorMenus()
                                      new MenuItem('Measure vector',        null,          false, {icon: iconMeasureVector,      createType: MEASURE_VECTOR,        callback: e => actionManager.do(getCreateNodeAction(MEASURE_VECTOR,        btnShape.div, getCreateOptions(e)))}),
                                      new MenuItem('Measure point angle',   null,          false, {icon: iconPointAngle,         createType: POINT_ANGLE,           callback: e => actionManager.do(getCreateNodeAction(POINT_ANGLE,           btnShape.div, getCreateOptions(e)))}),
                                      new MenuItem('',                      null,          false, {separator: true}),       
-                                     new MenuItem('Corner',               'Point corner', false, {icon: iconPointCorner,        createType: POINT_CORNER,          callback: e => actionManager.do(getCreateNodeAction(POINT_CORNER, btnShape.div, getCreateOptions(e)))})]);
+                                     new MenuItem('Corner',               'Point corner', false, {icon: iconPointCorner,        createType: POINT_CORNER,          callback: e => actionManager.do(getCreateNodeAction(POINT_CORNER,          btnShape.div, getCreateOptions(e)))}),
+        menuItemSep3d              = new MenuItem('',                      null,          false, {separator: true}),
+        menuItem3dPoint            = new MenuItem('3D point',              null,          false, {icon: iconPoint,              createType: POINT3,                callback: e => actionManager.do(getCreateNodeAction(POINT3,                btnShape.div, getCreateOptions(e)))})]);
                              
 
     menuVectorPaths = new Menu('Vector paths', true, false);

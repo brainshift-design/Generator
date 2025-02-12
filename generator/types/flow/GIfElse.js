@@ -1,13 +1,10 @@
 class GIfElse
-extends GOperator
+extends GOperator2
 {
     static { GNode.types[IF_ELSE] = this; }
     
     
     
-    input0    = null;
-    input1    = null;
-
     condition = null;
 
 
@@ -23,9 +20,6 @@ extends GOperator
     {
         super.reset();
 
-        this.input0    = null;
-        this.input1    = null;
-
         this.condition = null;
     }
 
@@ -36,9 +30,6 @@ extends GOperator
         const copy = new GIfElse(this.nodeId, this.options);
 
         copy.copyBase(this);
-
-        if (this.input0   ) copy.input0    = this.input0   .copy();
-        if (this.input1   ) copy.input1    = this.input1   .copy();
 
         if (this.condition) copy.condition = this.condition.copy();
 
@@ -52,8 +43,7 @@ extends GOperator
     isCached()
     {
         return super.isCached()
-            && (!this.input0 || this.input0.isCached())
-            && (!this.input1 || this.input1.isCached());
+            && (!this.condition || this.condition.isCached());
     }
 
 
@@ -106,8 +96,7 @@ extends GOperator
 
     isValid()
     {
-        return this.input0    && this.input0   .isValid()
-            && this.input1    && this.input1   .isValid()
+        return super.isValid()
             && this.condition && this.condition.isValid();
     }
 
@@ -117,8 +106,6 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input0   ) this.input0   .pushValueUpdates(parse);
-        if (this.input1   ) this.input1   .pushValueUpdates(parse);
         if (this.condition) this.condition.pushValueUpdates(parse);
     }    
 
@@ -128,8 +115,6 @@ extends GOperator
     {
         super.invalidateInputs(parse, from, force);
 
-        if (this.input0   ) this.input0   .invalidateInputs(parse, from, force);
-        if (this.input1   ) this.input1   .invalidateInputs(parse, from, force);
         if (this.condition) this.condition.invalidateInputs(parse, from, force);
     }
 
@@ -139,8 +124,6 @@ extends GOperator
     {
         super.iterateLoop(parse);
 
-        if (this.input0   ) this.input0   .iterateLoop(parse);
-        if (this.input1   ) this.input1   .iterateLoop(parse);
         if (this.condition) this.condition.iterateLoop(parse);
     }    
 

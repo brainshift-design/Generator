@@ -71,12 +71,18 @@ extends GOperator1
         {
             const _input = input;
 
-            if (input.type == VECTOR_VERTEX_VALUE)
+            if (input.type == POINT3_VALUE)
+            {
+                input = new PointValue(input.nodeId, input.x, input.y);
+                input.copyCustomParams(_input);
+            }
+            else if (input.type == VECTOR_VERTEX_VALUE)
             {
                 input = new PointValue(input.nodeId, input.x, input.y);
                 input.copyCustomParams(_input);
             }
             
+
             this.value        = input;
             this.value.nodeId = this.nodeId;
             this.value.copyCustomParams(input);

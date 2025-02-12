@@ -201,6 +201,7 @@ extends GOperator1
                                 for (let j = 0; j < input.objects.length; j++, o++)
                                 {
                                     const obj = copyFigmaObject(input.objects[j]);
+                                    if (!obj) continue;
 
 
                                     this.iterationObjects.push(obj.copy());
