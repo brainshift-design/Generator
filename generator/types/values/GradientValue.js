@@ -35,17 +35,17 @@ extends GValue
     {
         super(GRADIENT_VALUE, 'gradient');
 
-        this.stops      = stops   .copy();
-        this.gradType   = gradType.copy();
-        this.position   = position.copy();
-        this.x          = x       .copy();
-        this.y          = y       .copy();
-        this.size       = size    .copy();
-        this.angle      = angle   .copy();
-        this.aspect     = aspect  .copy();
+        this.stops      = stops;
+        this.gradType   = gradType;
+        this.position   = position;
+        this.x          = x;
+        this.y          = y;
+        this.size       = size;
+        this.angle      = angle;
+        this.aspect     = aspect;
         this.diagAspect = diagAspect;
-        this.skew       = skew    .copy();
-        this.blend      = blend   .copy();
+        this.skew       = skew;
+        this.blend      = blend;
 
         this.valid      = true;
     }
@@ -55,17 +55,17 @@ extends GValue
     copy()
     {
         const copy = new GradientValue(
-            this.stops,
-            this.gradType,
-            this.position,
-            this.x,
-            this.y,
-            this.size,
-            this.angle,
-            this.aspect,
+            this.stops     ?.copy(),
+            this.gradType  ?.copy(),
+            this.position  ?.copy(),
+            this.x         ?.copy(),
+            this.y         ?.copy(),
+            this.size      ?.copy(),
+            this.angle     ?.copy(),
+            this.aspect    ?.copy(),
             this.diagAspect,
-            this.skew,
-            this.blend);
+            this.skew      ?.copy(),
+            this.blend     ?.copy());
 
         copy.copyBase(this);
 
@@ -124,17 +124,17 @@ extends GValue
 
     toString()
     {
-        return      this.stops   .toString()
-            + ' ' + this.gradType.toString()
-            + ' ' + this.position.toString()
-            + ' ' + this.x       .toString()
-            + ' ' + this.y       .toString()
-            + ' ' + this.size    .toString()
-            + ' ' + this.angle   .toString()
-            + ' ' + this.aspect  .toString()
-            + ' ' + (this.diagAspect ? '1' : '0')
-            + ' ' + this.skew    .toString()
-            + ' ' + this.blend   .toString();
+        return      (this.stops   ?.toString() ?? '?')
+            + ' ' + (this.gradType?.toString() ?? '?,?')
+            + ' ' + (this.position?.toString() ?? '?,?')
+            + ' ' + (this.x       ?.toString() ?? '?,?')
+            + ' ' + (this.y       ?.toString() ?? '?,?')
+            + ' ' + (this.size    ?.toString() ?? '?,?')
+            + ' ' + (this.angle   ?.toString() ?? '?,?')
+            + ' ' + (this.aspect  ?.toString() ?? '?,?')
+            + ' ' + ((this.diagAspect ? '1' : '0') ?? '?,?')
+            + ' ' + (this.skew    ?.toString() ?? '?,?')
+            + ' ' + (this.blend   ?.toString() ?? '?,?');
     }
 
 

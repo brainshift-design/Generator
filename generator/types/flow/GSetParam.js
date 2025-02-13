@@ -48,7 +48,7 @@ extends GOperator2
         const input1 = await evalValue    (this.input1, parse);
         const name   = await evalTextValue(this.name,   parse);
 
-
+        
         if (   input0
             && name)
         {

@@ -12,7 +12,6 @@ extends OperatorBase
         this.outputValueType = LIST_VALUE;
 
 
-        this.subscription = true;
         this.canDisable   = true;
         this.iconOffsetY  = -1;
 
