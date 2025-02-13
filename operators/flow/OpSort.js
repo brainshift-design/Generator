@@ -38,7 +38,7 @@ extends OperatorBase
         this.paramReverse  .divider = 0.59;
 
         this.paramCondition.valueText = 'condition';
-        //this.paramCondition.input.types.unshift(ANY_VALUE);
+        //this.paramCondition.input.types = [ANY_VALUE];
         //this.paramCondition.forceInputColorType = NUMBER_VALUE;
 
         this.menuBoolReverse = createBoolMenu(this.paramReverse);
