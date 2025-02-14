@@ -232,13 +232,8 @@ extends GValue
                 parseNum(parts[0]),
                 parseNum(parts[1]));
 
-            if (parts.length == 3)
-            {
-                const meta = NumberValueMeta.parse(decodeURIComponent(parts[2]))[0];
-
-                if (meta.isValid())
-                    num.meta = meta;
-            }
+            if (parts.length > 2)
+                num.meta = NumberValueMeta.parse(decodeURIComponent(parts[2]))[0];
 
 
             return [num, 1];

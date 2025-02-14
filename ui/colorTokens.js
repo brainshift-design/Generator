@@ -99,11 +99,13 @@ function getColorFromToken(tokenId, mode)
     let color = token[mode];
 
 
-    if (color.length == 4)
-        color[3] *= opacity;
-    else
-        color = rgb_a(color, opacity);
-
+    if (color)
+    {
+        if (color.length == 4)
+            color[3] *= opacity;
+        else
+            color = rgb_a(color, opacity);
+    }
 
     return color ?? null;
 }

@@ -23,9 +23,9 @@ extends OperatorBase
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramFrom  = new OptionParam('from',  'from',  true, true, true, ['start', 'middle', 'end'], 1));
         this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0));
         this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true, true, true, 100));
+        this.addParam(this.paramFrom  = new OptionParam('from',  'from',  true, true, true, ['start', 'middle', 'end'], 1));
 
 
         this.getDescription = () => `generates a number range, MUST be plugged into a Repeat node's loop parameter`;
