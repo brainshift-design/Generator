@@ -9,7 +9,6 @@ extends FigmaShape
 
 
     constructor(nodeId, objectId, objectName, x = 0, y = 0, z = 0, smooth = 1, isDeco = false, isCenter = false, isXform = false)
-
     {
         super(POINT3, nodeId, objectId, objectName, isDeco, isXform);
         
@@ -97,11 +96,30 @@ extends FigmaShape
 
     toData()
     {
-        return [
+        const this_type = this.type;
+        this.type = POINT;
+
+        const data = [
             ...super.toData(),
    
             /* 24 */ this.x,
             /* 25 */ this.y
         ];
+
+        this.type = this_type;
+
+        return data;
+    }
+
+
+
+    static fromPoint(point)
+    {
+        return new FigmaPoint3(
+            point.nodeId,
+            point.objectId,
+            point.objectName, 
+            point.x,
+            point.y);
     }
 }

@@ -70,6 +70,9 @@ extends GOperator1
         let   blend   = await evalNumberValue(this.blend,   parse);
 
 
+        opacity.value = Math.min(Math.max(0, opacity.value), 100);
+
+
         if (input)
         {
             this.value        = input.toNewValue();

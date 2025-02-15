@@ -99,4 +99,16 @@ extends FigmaShape
             /* 25 */ this.y
         ];
     }
+
+
+
+    static fromPoint3(point)
+    {
+        return new FigmaPoint(
+            point.nodeId,
+            point.objectId,
+            point.objectName, 
+            point.x,
+            point.y);
+    }
 }
