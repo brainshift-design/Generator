@@ -2,7 +2,7 @@ class GroupNodesAction
 extends Action
 {
     group;
-    groupNode = null;
+    compoundNode = null;
 
     nodes;
 
@@ -38,9 +38,9 @@ extends Action
 
 
         // create group node
-        this.groupNode = Operator.create(GROUP_NODE);
+        this.compoundNode = Operator.create(COMPOUND);
 
-        graph.addNode(this.groupNode);
+        graph.addNode(this.compoundNode);
         
 
         // in group page create param nodes for all in and out connections
@@ -49,23 +49,23 @@ extends Action
 
 
         // move group node to center of bounds
-        this.groupNode.setPosition(
+        this.compoundNode.setPosition(
             bounds.x + bounds.width /2 - defNodeWidth,
             bounds.y + bounds.height/2 - 100); // TODO: change this 100 to the group node's actual height
 
 
         // save new nodes and connections
-        uiSaveNodes([this.groupNode.id]);
+        uiSaveNodes([this.compoundNode.id]);
         uiSaveNodes(this.nodes.map(n => n.id));
         uiSaveConnections(getConnsFromNodes(this.nodes));
 
 
         this.group.nodes.forEach(n => n.div.style.display = 'none');
-        this.groupNode.div.style.display = 'block';
+        this.compoundNode.div.style.display = 'block';
 
         
-        uiMakeNodeActive(this.groupNode);
-        pushUnique(updateNodes, this.groupNode);
+        uiMakeNodeActive(this.compoundNode);
+        pushUnique(updateNodes, this.compoundNode);
     }
 
 
@@ -107,7 +107,7 @@ function GroupNodesAction_createInputNodes(action)
 
         // create param node 
         // set it to the left of the input node
-        const paramNode = Operator.create(GROUP_PARAM);
+        const paramNode = Operator.create(COMPOUND_PARAM);
         paramNode.group = action.group;
         graph.addNode(paramNode);
 
@@ -158,7 +158,7 @@ function GroupNodesAction_createOutputNodes(action)
 
         // create param node 
         // set it to the left of the input node
-        const paramNode = Operator.create(GROUP_PARAM);
+        const paramNode = Operator.create(COMPOUND_PARAM);
         paramNode.group = action.group;
         graph.addNode(paramNode);
 

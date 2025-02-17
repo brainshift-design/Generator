@@ -508,8 +508,8 @@ iconPointOnPath
 iconRetain
 iconRetainDown
 iconGroup
-iconGroupNode
-iconGroupParam
+iconCompoundNode
+iconCompoundParam
 iconHand
 iconComment
 iconCommentArrow
@@ -1282,8 +1282,8 @@ SHAPE_VALUES
 AFFINE_TYPES
 SHAPE_TYPES
 ALL_VALUES
-GROUP_NODE
-GROUP_PARAM
+COMPOUND
+COMPOUND_PARAM
 GROUP_TYPES
 COMMENT
 COMMENT_ARROW
@@ -1702,8 +1702,8 @@ GUnique
 GValueName
 GVariable
 GVariableGroup
-GGroupNode
-GGroupParam
+GCompoundNode
+GCompoundParam
 GBackBlur
 GColorStop
 GColorStyle
@@ -2001,8 +2001,8 @@ OpUnique
 OpValueName
 OpVariable
 OpVariableGroup
-OpGroupNode
-OpGroupParam
+OpCompoundNode
+OpCompoundParam
 OpBackBlur
 OpColorStop
 OpColorStyle
@@ -3255,7 +3255,7 @@ updateFinalIcon
 groupParam
 groupInput
 groupOutput
-groupId
+compoundId
 handle0
 handle1
 handle2
@@ -3436,7 +3436,7 @@ deleteConnectionsDialog
 deleteConnectionsTitle
 deleteConnectionsInput
 DisconnectAction_activateNewNodes
-groupNode
+compoundNode
 GroupNodesAction_createInputNodes
 connOut
 connIn

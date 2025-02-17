@@ -3,6 +3,8 @@ class GraphPage
     id;
     name;
 
+    compoundId;
+
 
     parent;
 

@@ -37,8 +37,15 @@ extends Action
         {
             for (let i = 0; i < this.nodeIds.length; i++)
             {
-                  nodeFromId(this.nodeIds[i])
-                .paramFromId(this.paramIds[i])
+                console.log('this.nodeIds[i]', this.nodeIds[i]);
+                console.log('this.paramIds[i]', this.paramIds[i]);
+                console.log('this.newValues[i]', this.newValues[i]);
+
+                const node = nodeFromId(this.nodeIds[i]);
+                console.log('node =', node);
+                
+                nodeFromId(this.nodeIds[i])
+                    .paramFromId(this.paramIds[i])
                     .setValue(this.newValues[i], false, true);
             }
         }
@@ -52,8 +59,8 @@ extends Action
     {
         for (let i = 0; i < this.nodeIds.length; i++)
         {
-              nodeFromId(this.nodeIds[i])
-            .paramFromId(this.paramIds[i])
+            nodeFromId(this.nodeIds[i])
+                .paramFromId(this.paramIds[i])
                 .setValue(this.oldValues[i], false, true);
         }
         

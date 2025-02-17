@@ -20,7 +20,7 @@ extends OperatorBase
 
 
         this.addInput (new Input([ANY_VALUE]));
-        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramFrom = new NumberParam('from', '', false, false, true));

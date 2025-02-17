@@ -293,8 +293,8 @@
 ../generator/types/shape/GPlace.js
 
 
-../generator/types/group/GGroupNode.js
-../generator/types/group/GGroupParam.js
+../generator/types/group/GCompoundNode.js
+../generator/types/group/GCompoundParam.js
 
 
 ../generator/types/GComment.js

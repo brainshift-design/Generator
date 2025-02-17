@@ -364,8 +364,8 @@ const RETAIN                  = 'RETAIN';
 const EXPORT                  = 'EXPORT';
 
 
-const GROUP_NODE              = 'GROUP';
-const GROUP_PARAM             = 'GPARAM';
+const COMPOUND              = 'GROUP';
+const COMPOUND_PARAM             = 'GPARAM';
 
 
 const COMMENT                 = 'CMNT';
@@ -801,8 +801,8 @@ const ALL_VALUES =
 
 const GROUP_TYPES =
 [
-    GROUP_NODE,
-    GROUP_PARAM
+    COMPOUND,
+    COMPOUND_PARAM
 ];
 
 

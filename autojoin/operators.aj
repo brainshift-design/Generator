@@ -261,8 +261,8 @@
 ../operators/shape/OpExport.js
 
 
-../operators/group/OpGroupNode.js
-../operators/group/OpGroupParam.js
+../operators/group/OpCompoundNode.js
+../operators/group/OpCompoundParam.js
 
 
 ../operators/OpComment.js

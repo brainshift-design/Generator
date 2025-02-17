@@ -69,7 +69,6 @@ var menuEffects;
 var menuStyles;
 var menuShape;
 var menuTemplate;
-var menuGroup;
 var menuDecoration;
 
 var menuNumberBase;
@@ -477,16 +476,16 @@ function initGeneratorMenus()
 
     menuNames = new Menu('Name', true, false);
     menuNames.addItems([
+        menuItemGetParameter  = new MenuItem('Get parameter',        null, false, {icon: iconGetParam,          createType: GET_PARAM,            callback: e => actionManager.do(getCreateNodeAction(GET_PARAM,            btnFlow.div, getCreateOptions(e)))}),
+        menuItemSetParameter  = new MenuItem('Set parameter',        null, false, {icon: iconSetParam,          createType: SET_PARAM,            callback: e => actionManager.do(getCreateNodeAction(SET_PARAM,            btnFlow.div, getCreateOptions(e)))}),
+                                new MenuItem('',                     null, false, {separator: true}),
         menuItemGetValueName  = new MenuItem('Get value name',       null, false, {icon: iconGetValueName,      createType: GET_VALUE_NAME,       callback: e => actionManager.do(getCreateNodeAction(GET_VALUE_NAME,       btnFlow.div, getCreateOptions(e)))}),
         menuItemSetValueName  = new MenuItem('Set value name',       null, false, {icon: iconSetValueName,      createType: SET_VALUE_NAME,       callback: e => actionManager.do(getCreateNodeAction(SET_VALUE_NAME,       btnFlow.div, getCreateOptions(e)))}),
                                 new MenuItem('',                     null, false, {separator: true}),
-        menuItemGetValueNames = new MenuItem('Get list value names', null, false, {icon: iconGetListValueNames,      createType: GET_LIST_VALUE_NAMES, callback: e => actionManager.do(getCreateNodeAction(GET_LIST_VALUE_NAMES, btnFlow.div, getCreateOptions(e)))}),
+        menuItemGetValueNames = new MenuItem('Get list value names', null, false, {icon: iconGetListValueNames, createType: GET_LIST_VALUE_NAMES, callback: e => actionManager.do(getCreateNodeAction(GET_LIST_VALUE_NAMES, btnFlow.div, getCreateOptions(e)))}),
         menuItemSetValueNames = new MenuItem('Set list value names', null, false, {icon: iconSetListValueNames, createType: SET_LIST_VALUE_NAMES, callback: e => actionManager.do(getCreateNodeAction(SET_LIST_VALUE_NAMES, btnFlow.div, getCreateOptions(e)))}),
                                 new MenuItem('',                     null, false, {separator: true}),
-        menuItemObjectName    = new MenuItem('Set object name',      null, false, {icon: iconSetObjectName,     createType: SET_OBJECT_NAME,      callback: e => actionManager.do(getCreateNodeAction(SET_OBJECT_NAME,      btnFlow.div, getCreateOptions(e)))}),
-                                new MenuItem('',                     null, false, {separator: true}),
-        menuItemGetParameter  = new MenuItem('Get parameter', null, false, {icon: iconGetParam, createType: GET_PARAM, callback: e => actionManager.do(getCreateNodeAction(GET_PARAM, btnFlow.div, getCreateOptions(e)))}),
-        menuItemSetParameter  = new MenuItem('Set parameter', null, false, {icon: iconSetParam, createType: SET_PARAM, callback: e => actionManager.do(getCreateNodeAction(SET_PARAM, btnFlow.div, getCreateOptions(e)))})]);
+        menuItemObjectName    = new MenuItem('Set object name',      null, false, {icon: iconSetObjectName,     createType: SET_OBJECT_NAME,      callback: e => actionManager.do(getCreateNodeAction(SET_OBJECT_NAME,      btnFlow.div, getCreateOptions(e)))})]);
 
     menuNames.init = () => menuNames.minWidth = subscribed() ? 200 : 220;        
 
@@ -906,12 +905,6 @@ function initGeneratorMenus()
     menuTemplate.init     = initTemplateMenu;
 
 
-    menuGroup = new Menu('Groups', true, false);
-    menuGroup.addItems([
-        new MenuItem('Group',     null, false, {icon: iconGroupNode,  createType: GROUP_NODE, callback: e => actionManager.do(getCreateNodeAction(GROUP_NODE,  btnGroup.div, getCreateOptions(e)))}),
-        new MenuItem('Parameter', null, false, {icon: iconGroupParam, createType: GROUP_PARAM, callback: e => actionManager.do(getCreateNodeAction(GROUP_PARAM, btnGroup.div, getCreateOptions(e)))})]);
-    
-
     menuDecoration = new Menu('Decoration', true, false);
     menuDecoration.addItems([
         new MenuItem('Panel',   null, false, {icon: iconPanel,        createType: PANEL,         callback: e => actionManager.do(getCreateNodeAction(PANEL,         btnDecoration.div, getCreateOptions(e)))}),
@@ -1037,7 +1030,7 @@ function initGeneratorMenus()
     btnText     = new MenuButton('', menuString,   {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuString),   callback: () => updatePanMode(false)});
     btnTemplate = new MenuButton('', menuTemplate, {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuTemplate), callback: () => updatePanMode(false)});
   //btnStyle    = new MenuButton('', menuStyle,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuStyle),    callback: () => updatePanMode(false)});
-  //btnGroup    = new MenuButton('', menuGroup,    {width: 46, useMenuName: true, highlight: () => currentMenus.includes(menuGroup),    callback: () => updatePanMode(false)});
+
     
     // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
     // {

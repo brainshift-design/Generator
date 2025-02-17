@@ -424,8 +424,8 @@ async function loadNodesAndConnsAsync(_nodes, _conns, setProgress, pasting = fal
 
 
     _nodes = _nodes.sort((a, b) => 
-           a.type == GROUP_NODE 
-        && b.type != GROUP_NODE);
+           a.type == COMPOUND 
+        && b.type != COMPOUND);
 
 
     const chunkSize = 10; // nodes
@@ -527,8 +527,8 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
 
         const _paramConns = _conns.filter(c => 
-               nodeFromId(c. inputNodeId) && nodeFromId(c. inputNodeId).type == GROUP_PARAM
-            || nodeFromId(c.outputNodeId) && nodeFromId(c.outputNodeId).type == GROUP_PARAM);
+               nodeFromId(c. inputNodeId) && nodeFromId(c. inputNodeId).type == COMPOUND_PARAM
+            || nodeFromId(c.outputNodeId) && nodeFromId(c.outputNodeId).type == COMPOUND_PARAM);
 
         const _otherConns = _conns.filter(c => !_paramConns.includes(c));
 

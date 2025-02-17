@@ -179,7 +179,7 @@ class AdjustMenuItem
                     let index = Math.round((e.clientX - (rect.x-8)) / 24) - 1;
                         index = Math.min(Math.max(0, index), 3);
 
-                    this.divHighlight.style.left   = (4 + index*24) + 'px';
+                    this.divHighlight.style.left   = (index*24 - 3) + 'px';
                     this.divHighlight.style.width  = '24px';
                     this.divHighlight.style.top    = '0px';
                     this.divHighlight.style.height = '41px';

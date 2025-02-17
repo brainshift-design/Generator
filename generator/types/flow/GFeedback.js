@@ -59,12 +59,14 @@ extends GOperator1
 
         const input = await evalValue(this.input, parse);
 
+        this.value = input;
+
         // this.value = input ? new ListValue([input]) : new ListValue();//NullValue();
 
 
         this.setUpdateValues(parse, 
         [
-            ['type', this.outputListType()]
+            ['type', this.outputType()]
         ]);
 
 
@@ -89,12 +91,12 @@ extends GOperator1
             && this.from;
 
         
-        this.value = new ListValue();
+        //this.value = new ListValue();
 
         if (feedback)
         {
-            for (const obj of this.from.iterationObjects)
-                this.value.items.push(obj.toNewValue());
+            //for (const obj of this.from.iterationObjects)
+            //    this.value.items.push(obj.toNewValue());
 
             if (this.from.iterationObjects)
                 this.value.objects = this.from.iterationObjects.map(o => o.copy());
@@ -102,7 +104,7 @@ extends GOperator1
         else if (options.input
               && options.input.isValid())
         {
-            this.value.items.push(options.input);
+            //this.value.items.push(options.input);
 
             if (options.input.objects)
                 this.value.objects = options.input.objects.map(o => o.copy());
@@ -114,8 +116,8 @@ extends GOperator1
             ? NAME_SEPARATOR + repeat.currentIteration 
             : '';
 
-        for (const item of this.value.items)
-            item.nodeId = this.nodeId;
+        //for (const item of this.value.items)
+        //    item.nodeId = this.nodeId;
 
         if (this.value.objects)
         {

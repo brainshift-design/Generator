@@ -166,7 +166,7 @@ function getTerminalsAfterNode(node, except = [], stackOverflowProtect = 100)
     let after = [];
 
     
-    if (node.type == GROUP_NODE)
+    if (node.type == COMPOUND)
     {
         for (const input of node.inputs)
             pushUnique(after, getTerminalsAfterNode(input.paramNode, except, stackOverflowProtect-1));
@@ -176,7 +176,7 @@ function getTerminalsAfterNode(node, except = [], stackOverflowProtect = 100)
                 pushUnique(after, getTerminalsAfterNode(input.node, except, stackOverflowProtect-1));//input.node);
     }
 
-    else if (node.type == GROUP_PARAM)
+    else if (node.type == COMPOUND_PARAM)
     {
         // if (   !isEmpty(node.inputs)
         //     && !isEmpty(node.outputs))
@@ -206,14 +206,14 @@ function getTerminalsAfterNode(node, except = [], stackOverflowProtect = 100)
         {
             const afterGroupNode = [];
 
-            for (const output of node.groupNode.outputs)
+            for (const output of node.compoundNode.outputs)
             {
                 for (const input of output.connectedInputs)
                     pushUnique(afterGroupNode, getTerminalsAfterNode(input.node, except, stackOverflowProtect-1));
             }
 
             if (isEmpty(afterGroupNode))
-                pushUnique(afterGroupNode, node.groupNode);
+                pushUnique(afterGroupNode, node.compoundNode);
 
             pushUnique(after, afterGroupNode);
         }
