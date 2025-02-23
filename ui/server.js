@@ -158,7 +158,7 @@ function postToServer(cmd)
     //console.log('postToServer():', cmd);
 
     return fetch(
-        "https://brainshift.design/license/",
+        "https://brainshift.be/license/",
         {
             method:  "POST",
             headers: { "Content-Type": "application/json" },

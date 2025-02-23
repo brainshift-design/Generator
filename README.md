@@ -88,4 +88,4 @@ Generator is licensed under the Commons Clause License Condition of the MIT Lice
 
 ## Credits
 
-Built with ❤️ and way too much ☕️ by Alex Bourt ([brainshift.design](https://brainshift.design))
+Built with ❤️ and way too much ☕️ by Alex Bourt ([brainshift.be](https://brainshift.be))
