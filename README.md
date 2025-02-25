@@ -6,22 +6,38 @@ This is a node-based Figma plugin that lets you build procedural geometry. It's 
 
 ## Architecture
 
-Generator is written in pure Javascript and HTML, all the code is local, and there are no dependencies. I knew nothing about webdev when I started this, so the codebase is a giant legacy prototype which should ideally be rewritten from scratch, but, you know. So just keep that in mind. 🤷‍♂️
+Generator is written in pure Javascript and HTML, all the code is local, and there are no dependencies. I knew nothing about webdev when I started this, so the codebase is a giant legacy prototype which should ideally be rewritten from scratch. I did _some_ refactoring, but not nearly enough. So just keep that in mind. 🤷‍♂️
 
 Figma plugins normally run in two threads: the sandbox that deals with Figma directly, and the UI thread. 
 
-To have anything even close to real-time control, the graph evaluation must happen in a thread separate from the UI. But the Figma sandbox is about 10x slower, which means a worker is needed. And because there is no shared memory everything must be passed via messages.
+To be even close to real-time, UI and graph evaluation must be in separate threads. The Figma sandbox is ~10x slower, so that's not an option, which means a third worker is needed. And because there is no shared memory everything must be passed via messages.
 
 Each node has two parts: OpNodeName (Op for Operator), and GNodeName (G for Generator). Op is in the UI, G is in the generator worker. 
 
-Every time a parameter is changed, a request is sent to the generator worker that includes all the nodes and connections. The worker parses the request, builds the graph and evaluates it. Then it sends back to the UI thread the generated values for all the parameters and the generated objects. The UI thread updates node parameters and forwards the objects to the Figma thread.
+Every time a parameter is changed, a request is sent to the generator worker. This request is self-contained and includes all the nodes and connections. The worker parses the request, builds the graph and evaluates it. Then it sends back to the UI thread the generated values for all the parameters and the generated objects. The UI thread updates node parameters and forwards the objects to the Figma thread.
 
-A lot of things need to be refactored and optimized.
+```
+┌───────────────────────────┐ ┌───────────────────────────┐ ┌───────────────────────────┐
+│          Figma            │ │             UI            │ │         Generator         │
+│                           │ │                           │ │                           │    │
+│                           │ │                         Request                         │    │
+│                           │ │       Start █ ──────────────────────────> █             │    │
+│                           │ │                           │ │             │             │    │
+│                           │ │                           │ │       ┌─────┴────┐        │    │ T
+│                           │ │                           │ │       │ generate │        │    │ i
+│                           │ │                           │ │       └─────┬────┘        │    │ m
+│                           │ │      Update        Parameter Values       │             │    │ e
+│                           │ │      Values █ <────────────────────────── █             │    │ 
+│                           │ │                           │ │             │             │    │
+│      Update █ <───────────────────────── <●< <───────────────────────── █             │    │
+│     Objects               │ │          Forward        Objects                         │   \ /
+│                           │ │          Objects          │ │                           │    V
+│                           │ │                           │ │                           │
+└───────────────────────────┘ └───────────────────────────┘ └───────────────────────────┘
+```
 
 
 ## Building
-
-I keep things simple here. Really simple. Like "I-wrote-my-own-build-tool" simple:
 
 ```bash
 # For development
@@ -60,6 +76,11 @@ My typescript files are *.ts0, as the editor doesn't know that extension and doe
 ## A Note on Minification
 
 I use a very simple, brute-force minification approach. I just have a list of keywords that I replace that I update from time to time. Sometimes the minified code breaks because I replace something that's not only a keyword but also a string key or something, then I have to take that word out. It's not fancy, but it gets the job done.
+
+
+## Server Backend
+
+In the back is a MSSQL database that I maintain separately. Generator communicates with it through POST requests.
 
 
 ## Development
