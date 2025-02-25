@@ -32,6 +32,10 @@ const FALSE_DISPLAY_MENU     = '<svg width="9" height="9" viewBox="0 0 9 9" fill
 
 
 
+const degreeOffsetY = -4;
+
+
+
 function getTrueDisplay(color = true)
 {
     return darkMode
