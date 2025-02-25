@@ -24,7 +24,7 @@ extends OpShapeBase
 
 
         this.paramAngle.controls[0].setSuffix('°', true);
-        this.paramAngle.controls[0].suffixOffsetY = -4;
+        this.paramAngle.controls[0].suffixOffsetY = degreeOffsetY;
 
         this.paramLength.controls[0].setDecimals(10, 0);
         this.paramAngle .controls[0].setDecimals(10, 0);

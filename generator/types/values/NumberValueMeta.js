@@ -8,6 +8,7 @@ class NumberValueMeta
 
     decimals;
     suffix;
+    suffixOffsetY;
 
     wrapValue;
     ranges;
@@ -25,6 +26,7 @@ class NumberValueMeta
         maxDisplay      = Number.NaN, 
         decimals        = Number.NaN, 
         suffix          = NULL, 
+        suffixOffsetY   = 0,
         wrapValue       = false,
         ranges          = null, 
         displayAbsolute = false,
@@ -38,6 +40,7 @@ class NumberValueMeta
 
         this.decimals        = decimals;
         this.suffix          = suffix;
+        this.suffixOffsetY   = suffixOffsetY;
 
         this.wrapValue       = wrapValue;
         this.ranges          = ranges;
@@ -58,6 +61,7 @@ class NumberValueMeta
             Number.MAX_SAFE_INTEGER, 
             0,
             NULL, 
+            0,
             false,
             [],
             false,
@@ -75,6 +79,7 @@ class NumberValueMeta
             this.maxDisplay,
             this.decimals,
             this.suffix,
+            this.suffixOffsetY,
             this.wrapValue,
             this.ranges ? this.ranges.map(r => r.copy()) : null,
             this.displayAbsolute,
@@ -103,6 +108,7 @@ class NumberValueMeta
             + ' ' + this.maxDisplay.toString()
             + ' ' + this.decimals  .toString()
             + ' ' + (this.suffix == NULL ? NULL_VALUE : encodeURIComponent(this.suffix))
+            + ' ' + this.suffixOffsetY.toString()
             + ' ' + boolToString(this.wrapValue === true)
             + ' ' + (this.ranges ? this.ranges.length.toString() : NULL_VALUE)
             + (   this.ranges
@@ -126,18 +132,20 @@ class NumberValueMeta
     
         const iStart = i;
     
-        const min        = parseFloat(str[i]); i++;
-        const minDisplay = parseFloat(str[i]); i++;
-        const max        = parseFloat(str[i]); i++;
-        const maxDisplay = parseFloat(str[i]); i++;
-        const decimals   = parseInt  (str[i]); i++;
-        
-        const suffix     = str[i] == NULL_VALUE 
-                              ? NULL 
-                              : decodeURIComponent(str[i]); i++;
+        const min           = parseFloat(str[i]); i++;
+        const minDisplay    = parseFloat(str[i]); i++;
+        const max           = parseFloat(str[i]); i++;
+        const maxDisplay    = parseFloat(str[i]); i++;
+        const decimals      = parseInt  (str[i]); i++;
+           
+        const suffix        = str[i] == NULL_VALUE 
+                                 ? NULL 
+                                 : decodeURIComponent(str[i]); i++;
 
-        const wrapValue  = parseBool(str[i]); i++;
+        const suffixOffsetY = parseFloat(str[i]); i++;
+        const wrapValue     = parseBool(str[i]); i++;
         
+
         let ranges = null;
     
         if (str[i] == NULL_VALUE)
@@ -171,6 +179,7 @@ class NumberValueMeta
             maxDisplay,
             decimals,
             suffix,
+            suffixOffsetY,
             wrapValue,
             ranges,
             displayAbsolute,

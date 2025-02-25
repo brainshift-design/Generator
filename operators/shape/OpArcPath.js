@@ -49,8 +49,8 @@ extends OpShape
         this.paramPosition.divider = 0.4;
 
         this.paramStart.controls[0].setSuffix('°', true);
+        this.paramStart.controls[0].suffixOffsetY = degreeOffsetY;
         this.paramStart.controls[0].wrapValue     = true;
-        this.paramStart.controls[0].suffixOffsetY = -4;
 
 
         this.addBaseParamsAfter();

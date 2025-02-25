@@ -1,3 +1,7 @@
+const degreeOffsetY = -4;
+
+
+
 class NumberControl
 extends Control
 {

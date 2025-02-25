@@ -58,7 +58,7 @@ extends OpColorBase
         this.setAllParamDividers(0.45);
 
         this.paramMiter.controls[0].setSuffix('°', true);
-        this.paramMiter.controls[0].suffixOffsetY = -4;
+        this.paramMiter.controls[0].suffixOffsetY = degreeOffsetY;
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
 
         this.paramDashes.controls[0].highlightText          = false;

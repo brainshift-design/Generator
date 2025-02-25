@@ -36,11 +36,13 @@ extends OperatorBase
         this.paramFov.controls[0].setMin(0, 0);
         this.paramFov.controls[0].setMax(180, 180);
         this.paramFov.controls[0].setSuffix('°');
+        this.paramFov.controls[0].suffixOffsetY = degreeOffsetY;
 
         this.paramRotateX.controls[0].setMin(-180);
         this.paramRotateX.controls[0].setMax( 180);
         this.paramRotateX.controls[0].wrapValue = true;
         this.paramRotateX.controls[0].setSuffix('°');
+        this.paramRotateX.controls[0].suffixOffsetY = degreeOffsetY;
         this.paramRotateX.divName.style.overflow = 'visible';
         this.paramRotateX.modifyName = (name) => name.replaceAll('white', darkMode ? '#fff4' : '#0006');
         
@@ -48,6 +50,7 @@ extends OperatorBase
         this.paramRotateY.controls[0].setMax( 180);
         this.paramRotateY.controls[0].wrapValue = true;
         this.paramRotateY.controls[0].setSuffix('°');
+        this.paramRotateY.controls[0].suffixOffsetY = degreeOffsetY;
         this.paramRotateY.divName.style.overflow = 'visible';
         this.paramRotateY.modifyName = (name) => name.replaceAll('white', darkMode ? '#fff4' : '#0006');
 
@@ -55,6 +58,7 @@ extends OperatorBase
         this.paramRotateZ.controls[0].setMax( 180);
         this.paramRotateZ.controls[0].wrapValue = true;
         this.paramRotateZ.controls[0].setSuffix('°');
+        this.paramRotateZ.controls[0].suffixOffsetY = degreeOffsetY;
         this.paramRotateZ.divName.style.overflow = 'visible';
         this.paramRotateZ.modifyName = (name) => name.replaceAll('white', darkMode ? '#fff4' : '#0006');
 

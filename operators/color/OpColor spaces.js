@@ -172,7 +172,7 @@ function switchToXyz  (node) { switchToXyzControls   (node);                    
 function switchToRgbControls(node)
 {
     switchToControls(node, 
-        'R', 0, rgbScale[0], '', false, 
+        'R', 0, rgbScale[0], '', 0, false, 
         'G', 0, rgbScale[1], 
         'B', 0, rgbScale[2]);  
 
@@ -184,7 +184,7 @@ function switchToRgbControls(node)
 function switchToHs_Controls(node, v_or_l) 
 { 
     switchToControls(node, 
-        'H',    0, hs_Scale[0], '°', true,  
+        'H',    0, hs_Scale[0], '°', degreeOffsetY, true,  
         'S',    0, hs_Scale[1], 
         v_or_l, 0, hs_Scale[2]);  
 
@@ -196,7 +196,7 @@ function switchToHs_Controls(node, v_or_l)
 function switchToHclControls(node, scale) 
 { 
     switchToControls(node, 
-        'H', 0, scale[0], '°', true,  
+        'H', 0, scale[0], '°', degreeOffsetY, true,  
         'C', 0, scale[1], 
         'L', 0, scale[2]);  
 
@@ -214,7 +214,7 @@ function switchToHclLuvControls(node) { switchToHclControls(node, hcluvScale); }
 function switchToOppControls(node, c2, c3, scale)
 { 
     switchToControls(node, 
-        'L', 0,        scale[0], '', false,  
+        'L', 0,        scale[0], '', 0, false,  
         c2, -scale[1], scale[1], 
         c3, -scale[2], scale[2]);  
 
@@ -232,7 +232,7 @@ function switchToLuvControls  (node) { switchToOppControls(node, 'u', 'v', luvSc
 function switchToXyzControls(node) 
 { 
     switchToControls(node, 
-        'X', 0, xyzScale[0], '', false,
+        'X', 0, xyzScale[0], '', 0, false,
         'Y', 0, xyzScale[1], 
         'Z', 0, xyzScale[2]);  
 
@@ -256,7 +256,7 @@ function showRgbControlHex(node, show)
 
 
 
-function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2max, c3, c3min, c3max)
+function switchToControls(node, c1, c1min, c1max, c1suffix, c1suffixOffsetY, c1wrap, c2, c2min, c2max, c3, c3min, c3max)
 {
     switchToSliders(node);
 
@@ -264,8 +264,9 @@ function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c
     node.param2.setName(c2, false); 
     node.param3.setName(c3, false);
 
-    node.param1.controls[0].wrapValue = c1wrap;
     node.param1.controls[0].setSuffix(c1suffix, c1suffix != '');
+    node.param1.controls[0].suffixOffsetY = c1suffixOffsetY;
+    node.param1.controls[0].wrapValue = c1wrap;
 
     node.param1.controls[0].setMin(c1min); 
     node.param2.controls[0].setMin(c2min);

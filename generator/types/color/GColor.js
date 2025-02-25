@@ -254,58 +254,62 @@ extends GOperator1
 
         case 'hsv':
         case 'hsl':
-            meta1.suffix     = '°';
-            meta1.wrapValue  = true;
+            meta1.suffix        = '°';
+            meta1.suffixOffsetY = degreeOffsetY;
+            meta1.wrapValue     = true;
 
-            meta1.minDisplay = 0;
-            meta2.minDisplay = 0;
-            meta3.minDisplay = 0;
+            meta1.minDisplay    = 0;
+            meta2.minDisplay    = 0;
+            meta3.minDisplay    = 0;
 
-            meta1.maxDisplay = 360;
-            meta2.maxDisplay = 100;
-            meta3.maxDisplay = 100;
+            meta1.maxDisplay    = 360;
+            meta2.maxDisplay    = 100;
+            meta3.maxDisplay    = 100;
 
             break;
 
         case 'hclok':
-            meta1.suffix     = '°';
-            meta1.wrapValue  = true;
+            meta1.suffix        = '°';
+            meta1.suffixOffsetY = degreeOffsetY;
+            meta1.wrapValue     = true;
 
-            meta1.minDisplay = 0;
-            meta2.minDisplay = 0;
-            meta3.minDisplay = 0;
-
-            meta1.maxDisplay = 360;
-            meta2.maxDisplay =  50;
-            meta3.maxDisplay = 100;
+            meta1.minDisplay    = 0;
+            meta2.minDisplay    = 0;
+            meta3.minDisplay    = 0;
+   
+            meta1.maxDisplay    = 360;
+            meta2.maxDisplay    =  50;
+            meta3.maxDisplay    = 100;
 
             break;
 
         case 'hclab':
-            meta1.suffix     = '°';
-            meta1.wrapValue  = true;
-
-            meta1.minDisplay = 0;
-            meta2.minDisplay = 0;
-            meta3.minDisplay = 0;
-
-            meta1.maxDisplay = 360;
-            meta2.maxDisplay = 400;
-            meta3.maxDisplay = 100;
+            meta1.suffix        = '°';
+            meta1.suffixOffsetY = degreeOffsetY;
+            meta1.wrapValue     = true;
+   
+            meta1.minDisplay    = 0;
+            meta2.minDisplay    = 0;
+            meta3.minDisplay    = 0;
+   
+            meta1.maxDisplay    = 360;
+            meta2.maxDisplay    = 400;
+            meta3.maxDisplay    = 100;
 
             break;
 
         case 'hcluv':
-            meta1.suffix     = '°';
-            meta1.wrapValue  = true;
-
-            meta1.minDisplay = 0;
-            meta2.minDisplay = 0;
-            meta3.minDisplay = 0;
-
-            meta1.maxDisplay = 360;
-            meta2.maxDisplay = 330;
-            meta3.maxDisplay = 100;
+            meta1.suffix        = '°';
+            meta1.suffixOffsetY = degreeOffsetY;
+            meta1.wrapValue     = true;
+   
+            meta1.minDisplay    = 0;
+            meta2.minDisplay    = 0;
+            meta3.minDisplay    = 0;
+   
+            meta1.maxDisplay    = 360;
+            meta2.maxDisplay    = 330;
+            meta3.maxDisplay    = 100;
 
             break;
 

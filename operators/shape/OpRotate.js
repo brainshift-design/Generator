@@ -19,7 +19,7 @@ extends OpAffine
         this.addParam(this.paramAngle = new NumberParam('angle', 'angle', true, true, true, 0));
 
         this.paramAngle.controls[0].suffix        = '°';
-        this.paramAngle.controls[0].suffixOffsetY = -4;
+        this.paramAngle.controls[0].suffixOffsetY = degreeOffsetY;
         this.paramAngle.controls[0].dragReverse   = true;
         this.paramAngle.divider                   = 0.52;
 

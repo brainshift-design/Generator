@@ -98,7 +98,7 @@ extends OperatorBase
         this.paramY.divider = isVector ? 0.55 : 0.43;
 
         this.paramY.controls[0].suffix        = isVector ? '°' : '';
-        this.paramY.controls[0].suffixOffsetY = isVector ? -4  : 0;
+        this.paramY.controls[0].suffixOffsetY = isVector ? degreeOffsetY : 0;
         this.paramY.controls[0].wrapValue     = isVector;
 
         this.paramY.controls[0].setMin(isVector ?   0 : Number.MIN_SAFE_INTEGER);

@@ -55,8 +55,8 @@ extends OpShape
         this.paramPosition.divider = 0.4;
 
         this.paramStart.controls[0].setSuffix('°', true);
+        this.paramStart.controls[0].suffixOffsetY = degreeOffsetY;
         this.paramStart.controls[0].wrapValue     = true;
-        this.paramStart.controls[0].suffixOffsetY = -4;
 
 
         this.addBaseParamsAfter();
@@ -192,16 +192,16 @@ function setAngleParam(param, paramSetting)
     if (paramSetting)
     {
         param.controls[0].setSuffix('°', true);
+        param.controls[0].suffixOffsetY = degreeOffsetY;
         param.controls[0].setMin(  0);
         param.controls[0].setMax(360);
-        param.controls[0].suffixOffsetY = -4;
     }
     else
     {
         param.controls[0].setSuffix('%', true);
+        param.controls[0].suffixOffsetY = 0;
         param.controls[0].setMin(  0);
         param.controls[0].setMax(100);
-        param.controls[0].suffixOffsetY = 0;
     }
 }
 

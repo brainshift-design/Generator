@@ -70,7 +70,7 @@ extends OpColorBase
         this.paramY     .controls[0].suffix        = '%';
         this.paramSize  .controls[0].suffix        = '%';
         this.paramAngle .controls[0].suffix        = '°';
-        this.paramAngle .controls[0].suffixOffsetY = -4;
+        this.paramAngle .controls[0].suffixOffsetY = degreeOffsetY;
         this.paramAspect.controls[0].suffix        = '%';
         this.paramSkew  .controls[0].suffix        = '%';
 
