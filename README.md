@@ -2,7 +2,7 @@
 
 ## What is this?
 
-This is a node-based Figma plugin that lets you build procedural geometry. It's good for generative art, data visualization, technical illustrations, things like that. The benefit that all this happens right inside Figma, and the generated objects are regular Figma objects that you can use in your normal Figma workflow. It's published here: https://www.figma.com/community/plugin/899028246731755335.
+This is a node-based Figma plugin that lets you build procedural geometry. It's good for generative art, data visualization, technical illustrations, things like that. The benefit that all this happens right inside Figma, and the generated output is regular Figma objects that you can use in your normal Figma workflow. It's published here: https://www.figma.com/community/plugin/899028246731755335.
 
 ## Architecture
 
