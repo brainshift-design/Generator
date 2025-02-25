@@ -2,11 +2,11 @@
 
 ## What is this?
 
-This is a node-based Figma plugin that lets you build procedural geometry. It's good for generative art, data visualization, technical illustrations, things like that. The benefit that all this happens right inside Figma, and the generated output is regular Figma objects that you can use in your normal Figma workflow. It's published here: https://www.figma.com/community/plugin/899028246731755335.
+This is a node-based Figma plugin that lets you build procedural geometry. It's good for generative art, data visualization, technical illustrations, etc. The benefit is that all this happens right inside Figma, and the generated objects are regular Figma objects that you can use in your normal Figma workflow. It's published here: https://www.figma.com/community/plugin/899028246731755335.
 
 ## Architecture
 
-Generator is written in straight up Javascript and HTML, all the code is local, and there are no dependencies. The codebase is a giant prototype, so don't be too harsh on it. I know. 🤷‍♂️
+Generator is written in pure Javascript and HTML, all the code is local, and there are no dependencies. I knew nothing about webdev when I started this, so the codebase is a giant legacy prototype which should ideally be rewritten from scratch, but, you know. So just keep that in mind. 🤷‍♂️
 
 Figma plugins normally run in two threads: the sandbox that deals with Figma directly, and the UI thread. 
 
@@ -33,7 +33,7 @@ autojoin_minify.bat
 
 I use [AutoJoin](https://github.com/brainshift-design/autojoin) for building. It's my own simple file stitcher that takes a list of files and joins them together. It's a bit more complex than that, you can have nested file lists etc, but in general it's super basic.
 
-My typescript files are *.ts0, as the editor doesn't know that extension and doesn't try to compile them, so I can then stitch the final .ts file and it can compile that. There are warnings everywhere but I don't care as I know what everything is. But if more people work on this project then we may have to improve this. ;)
+My typescript files are *.ts0, as the editor doesn't know that extension and doesn't try to compile them, so I can then stitch the final .ts file and it can compile that. There are warnings everywhere but I don't care as I know what everything is. But if more people contribute then we may have to improve this. ;)
 
 
 ## Project Structure
@@ -49,11 +49,11 @@ My typescript files are *.ts0, as the editor doesn't know that extension and doe
 ├── generator/    # The generator side of all the nodes
 ├── graph/        # The graph that holds and manages the nodes
 ├── html/         # Dialogs and other pieces of UI
-├── images/       # Icons and images for questionnaires
+├── images/       # Icons and images
 ├── logging/      # Code for formatting logs for easier debugging
 ├── operators/    # The UI side of all the nodes
 ├── parameters/   # Things you can tweak
-└── ui/           # Making it all look pretty
+└── ui/           # Utility functions etc.
 ```
 
 
@@ -65,11 +65,9 @@ I use a very simple, brute-force minification approach. I just have a list of ke
 ## Development
 
 1. Clone the repo
-2. Download autojoin (https://github.com/brainshift-design/autojoin)
-2. Run `autojoin.bat` for development
-3. Make cool stuff
+2. Download autojoin (https://github.com/brainshift-design/autojoin) and make sure autojoin.bat and autojoin_minify.bat point to it correctly
+3. Run `autojoin.bat` for development, then press Ctrl+Shift+B and run TSC in watch mode
 4. Run `autojoin_minify.bat` for production
-5. There is no step 5
 
 
 ## Contributing
@@ -83,7 +81,7 @@ I use a very simple, brute-force minification approach. I just have a list of ke
 
 ## License
 
-Generator is licensed under the Commons Clause License Condition of the MIT License.
+Generator is licensed under the Commons Clause License.
 
 
 ## Credits
