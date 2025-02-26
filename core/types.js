@@ -1,13 +1,15 @@
-const LIST_VALUE              = 'LIST#';
+const LIST_VALUE               = 'LIST#';
 
-const      NUMBER_LIST_VALUE  = 'NLIST#';
-const        TEXT_LIST_VALUE  = 'TLIST#';
-const       SHAPE_LIST_VALUE  = 'SLIST#';
-const       POINT_LIST_VALUE  = 'PTLIST#';
-const       COLOR_LIST_VALUE  = 'CLIST#';
-const        PATH_LIST_VALUE  = 'PATHLIST#';
-const        FILL_LIST_VALUE  = 'FLIST#';
-const  COLOR_STOP_LIST_VALUE  = 'CSLIST#';
+const        NUMBER_LIST_VALUE = 'NLIST#';
+const          TEXT_LIST_VALUE = 'TLIST#';
+const         SHAPE_LIST_VALUE = 'SLIST#';
+const         POINT_LIST_VALUE = 'PTLIST#';
+const        POINT3_LIST_VALUE = 'PT3LIST#';
+const VECTOR_VERTEX_LIST_VALUE = 'VPTLIST#';
+const         COLOR_LIST_VALUE = 'CLIST#';
+const          PATH_LIST_VALUE = 'PATHLIST#';
+const          FILL_LIST_VALUE = 'FLIST#';
+const    COLOR_STOP_LIST_VALUE = 'CSLIST#';
 
 
 const NULL_NODE               = 'NULL';
@@ -67,6 +69,8 @@ const LIST_TYPES =
     SHAPE_LIST_VALUE,
     COLOR_LIST_VALUE,
     POINT_LIST_VALUE,
+    POINT3_LIST_VALUE,
+    VECTOR_VERTEX_LIST_VALUE,
     FILL_LIST_VALUE,
     COLOR_STOP_LIST_VALUE,
     PATH_LIST_VALUE,
@@ -86,15 +90,17 @@ const LIST_TYPES =
 
 const LIST_VALUES =
 [
-                LIST_VALUE,
-         NUMBER_LIST_VALUE,
-           TEXT_LIST_VALUE,
-          SHAPE_LIST_VALUE,
-          COLOR_LIST_VALUE,
-          POINT_LIST_VALUE,
-           FILL_LIST_VALUE,
-     COLOR_STOP_LIST_VALUE,
-           PATH_LIST_VALUE
+                  LIST_VALUE,
+           NUMBER_LIST_VALUE,
+             TEXT_LIST_VALUE,
+            SHAPE_LIST_VALUE,
+            COLOR_LIST_VALUE,
+            POINT_LIST_VALUE,
+           POINT3_LIST_VALUE,
+    VECTOR_VERTEX_LIST_VALUE,
+             FILL_LIST_VALUE,
+       COLOR_STOP_LIST_VALUE,
+             PATH_LIST_VALUE
 ];
 
 
@@ -312,7 +318,7 @@ const SHAPE_GROUP_TYPES       = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
 const FRAME_VALUE             = 'FRM#';
 const FRAME                   = 'FRM';
 const FRAME_TYPES             = [FRAME_VALUE, FRAME];
- 
+
 const ARC_PATH_VALUE          = 'ARC#';
 const ARC_PATH                = 'ARC';
 const ARC_PATH_TYPES          = [ARC_PATH_VALUE, ARC_PATH];
@@ -333,6 +339,8 @@ const RESET_XFORM             = 'RSTX';
 
 const PLACE                   = 'PLACE';
 const SHAPE_APPLY             = 'APPLY';
+
+const AVERAGE_POINT           = 'AVGPT';
 
 const PATH_LENGTH             = 'PTHLEN';
 const JOIN_PATHS              = 'JOINPTH';
@@ -698,6 +706,7 @@ const SHAPE_TYPES =
     ...POINT_TYPES,
     ...POINT3_TYPES,
        POINT_CORNER,
+       AVERAGE_POINT,
     ...VECTOR_PATH_TYPES,
     ...VECTOR_VERTEX_TYPES,
     ...VECTOR_EDGE_TYPES,

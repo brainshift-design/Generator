@@ -216,6 +216,7 @@
 ../operators/shape/OpVectorEdge.js
 ../operators/shape/OpVectorRegion.js
 ../operators/shape/OpVectorNetwork.js
+../operators/shape/OpAveragePoint.js
 ../operators/shape/OpArcPath.js
 ../operators/shape/OpWavePath.js
 ../operators/shape/OpShapeGroup.js

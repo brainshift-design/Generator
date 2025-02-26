@@ -248,6 +248,7 @@
 ../generator/types/shape/GVectorEdge.js
 ../generator/types/shape/GVectorRegion.js
 ../generator/types/shape/GVectorNetwork.js
+../generator/types/shape/GAveragePoint.js
 ../generator/types/shape/GArcPath.js
 ../generator/types/shape/GWavePath.js
 ../generator/types/shape/GShapeGroup.js
