@@ -352,6 +352,7 @@ extends EventTarget
         const outColor       = this.node.getHeaderOutputColor();
         const outWireColor   = this.node.getOutputWireColor();
 
+
         const conn = 
             //  !this.node.isUnknown()
             //&& (

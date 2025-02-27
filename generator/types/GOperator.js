@@ -548,3 +548,68 @@ async function evalInnerShadowValue   (_value, parse) { return await evalValue(_
 async function evalLayerBlurValue     (_value, parse) { return await evalValue(_value, parse, () => LayerBlurValue     .NaN()); }
 async function evalStrokeSidesValue   (_value, parse) { return await evalValue(_value, parse, () => StrokeSidesValue   .NaN()); }
 async function evalRoundedCornersValue(_value, parse) { return await evalValue(_value, parse, () => RoundedCornersValue.NaN()); }
+
+
+
+async function evalPointOrListValue(_value, parse) 
+{ 
+    let value = await evalValue(_value, parse, () => PointValue.NaN()); 
+
+    if (   value
+        && value.type == LIST_VALUE
+        && finalListTypeFromValues(value.items) == POINT_LIST_VALUE)
+    {
+        const condensed = value.condensed;
+        
+        value = new ListValue(value.items.map(i => i.copy()));
+        value.condensed = condensed;
+    }
+    
+    return value;                
+}
+
+
+
+async function evalPoint3OrListValue(_value, parse) 
+{ 
+    let value = await evalValue(_value, parse, () => PointValue3.NaN()); 
+
+    if (   value
+        && value.type == POINT_VALUE)
+        value = new PointValue3(value.x, value.y, value.z || 0);
+
+    else if (value
+          && value.type == LIST_VALUE
+          && finalListTypeFromValues(value.items) == POINT3_LIST_VALUE)
+    {
+        const condensed = value.condensed;
+        
+        value = new ListValue(value.items.map(i => new PointValue3(i.x, i.y, i.z || 0)));
+        value.condensed = condensed;
+    }
+    
+    return value;                
+}
+
+
+
+async function evalVectorVertexOrListValue(_value, parse) 
+{ 
+    let value = await evalValue(_value, parse, () => VectorVertexValue.NaN()); 
+
+    if (   value
+        && value.type == POINT_VALUE)
+        value = new VectorVertexValue(value.x, value.y);
+
+    else if (value
+          && value.type == LIST_VALUE
+          && finalListTypeFromValues(value.items) == VECTOR_VERTEX_LIST_VALUE)
+    {
+        const condensed = value.condensed;
+        
+        value = new ListValue(value.items.map(i => new VectorVertexValue(i.x, i.y)));
+        value.condensed = condensed;
+    }
+    
+    return value;                
+}

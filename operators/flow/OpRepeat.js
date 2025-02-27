@@ -56,14 +56,6 @@ extends OperatorBase
     
     
 
-    // isOrPrecededByUncached()
-    // {
-    //     return !this.paramLoop.input.connected
-    //         || !this.paramLoop.input.connectedOutput.node.isOrPrecededByUncached();
-    // }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output

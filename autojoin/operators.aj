@@ -17,6 +17,7 @@
 ../parameters/StarParam.js
 ../parameters/TextShapeParam.js
 ../parameters/PointParam.js
+../parameters/PointParam3.js
 ../parameters/VectorPathParam.js
 ../parameters/ShapeGroupParam.js
 ../parameters/FrameParam.js

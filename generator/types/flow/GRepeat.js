@@ -287,7 +287,6 @@ extends GOperator1
             await evalValue(this.input, parse);
 
         
-        console.log('this.value =', this.value);
         const type = this.outputListType();
 
 

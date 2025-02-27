@@ -252,7 +252,7 @@ async function evalAveragePointItemInputs(inputs, parse, type)
 
             for (const item of list.items)
             {
-                let point = await evalPoint3Value(item, parse);
+                let point = await evalPointValue3(item, parse);
     
                 if (!point || !point.isValid())
                 {
@@ -267,7 +267,7 @@ async function evalAveragePointItemInputs(inputs, parse, type)
         }
         else
         {
-            let point = await evalPoint3Value(input, parse);
+            let point = await evalPointValue3(input, parse);
     
             if (!point || !point.isValid())
             {

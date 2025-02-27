@@ -534,28 +534,30 @@ class Operator
 
 
     createAndAddParamByType(type, id, name, showName, hasInput, hasOutput, volatile = false)
-    {
-             if (type ==       NUMBER_VALUE) return this.addParam(new      NumberParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==         TEXT_VALUE) return this.addParam(new        TextParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==        COLOR_VALUE) return this.addParam(new       ColorParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==         FILL_VALUE) return this.addParam(new        FillParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==   COLOR_STOP_VALUE) return this.addParam(new   ColorStopParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==     GRADIENT_VALUE) return this.addParam(new    GradientParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==       STROKE_VALUE) return this.addParam(new      StrokeParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==         LIST_VALUE) return this.addParam(new        ListParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==    RECTANGLE_VALUE) return this.addParam(new   RectangleParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==         LINE_VALUE) return this.addParam(new        LineParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==      ELLIPSE_VALUE) return this.addParam(new     EllipseParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==      TRAPEZE_VALUE) return this.addParam(new     TrapezeParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==      POLYGON_VALUE) return this.addParam(new     PolygonParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==         STAR_VALUE) return this.addParam(new        StarParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==   TEXT_SHAPE_VALUE) return this.addParam(new   TextShapeParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==        POINT_VALUE) return this.addParam(new       PointParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==  VECTOR_PATH_VALUE) return this.addParam(new  VectorPathParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==  DROP_SHADOW_VALUE) return this.addParam(new  DropShadowParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type == INNER_SHADOW_VALUE) return this.addParam(new InnerShadowParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==   LAYER_BLUR_VALUE) return this.addParam(new   LayerBlurParam(id, name, showName, hasInput, hasOutput), volatile);
-        else if (type ==    BACK_BLUR_VALUE) return this.addParam(new    BackBlurParam(id, name, showName, hasInput, hasOutput), volatile);
+    { 
+             if (type ==        NUMBER_VALUE) return this.addParam(new       NumberParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==          TEXT_VALUE) return this.addParam(new         TextParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==         COLOR_VALUE) return this.addParam(new        ColorParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==          FILL_VALUE) return this.addParam(new         FillParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==    COLOR_STOP_VALUE) return this.addParam(new    ColorStopParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==      GRADIENT_VALUE) return this.addParam(new     GradientParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==        STROKE_VALUE) return this.addParam(new       StrokeParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==          LIST_VALUE) return this.addParam(new         ListParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==     RECTANGLE_VALUE) return this.addParam(new    RectangleParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==          LINE_VALUE) return this.addParam(new         LineParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==       ELLIPSE_VALUE) return this.addParam(new      EllipseParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==       TRAPEZE_VALUE) return this.addParam(new      TrapezeParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==       POLYGON_VALUE) return this.addParam(new      PolygonParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==          STAR_VALUE) return this.addParam(new         StarParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==    TEXT_SHAPE_VALUE) return this.addParam(new    TextShapeParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==         POINT_VALUE) return this.addParam(new        PointParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==        POINT3_VALUE) return this.addParam(new       PointParam3(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type == VECTOR_VERTEX_VALUE) return this.addParam(new VectorVertexParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==   VECTOR_PATH_VALUE) return this.addParam(new   VectorPathParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==   DROP_SHADOW_VALUE) return this.addParam(new   DropShadowParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==  INNER_SHADOW_VALUE) return this.addParam(new  InnerShadowParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==    LAYER_BLUR_VALUE) return this.addParam(new    LayerBlurParam(id, name, showName, hasInput, hasOutput), volatile);
+        else if (type ==     BACK_BLUR_VALUE) return this.addParam(new     BackBlurParam(id, name, showName, hasInput, hasOutput), volatile);
 
         else 
         {
@@ -575,27 +577,29 @@ class Operator
 
         if (value)
         {
-                 if (value.type ==       NUMBER_VALUE) param = this.insertParam(index, new      NumberParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==         TEXT_VALUE) param = this.insertParam(index, new        TextParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==        COLOR_VALUE) param = this.insertParam(index, new       ColorParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==         FILL_VALUE) param = this.insertParam(index, new        FillParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==   COLOR_STOP_VALUE) param = this.insertParam(index, new   ColorStopParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==     GRADIENT_VALUE) param = this.insertParam(index, new    GradientParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==       STROKE_VALUE) param = this.insertParam(index, new      StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==         LIST_VALUE) param = this.insertParam(index, new        ListParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==    RECTANGLE_VALUE) param = this.insertParam(index, new   RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==         LINE_VALUE) param = this.insertParam(index, new        LineParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==      ELLIPSE_VALUE) param = this.insertParam(index, new     EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==      TRAPEZE_VALUE) param = this.insertParam(index, new     TrapezeParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==      POLYGON_VALUE) param = this.insertParam(index, new     PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==         STAR_VALUE) param = this.insertParam(index, new        StarParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==   TEXT_SHAPE_VALUE) param = this.insertParam(index, new   TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==        POINT_VALUE) param = this.insertParam(index, new       PointParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==  VECTOR_PATH_VALUE) param = this.insertParam(index, new  VectorPathParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==  DROP_SHADOW_VALUE) param = this.insertParam(index, new  DropShadowParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type == INNER_SHADOW_VALUE) param = this.insertParam(index, new InnerShadowParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==   LAYER_BLUR_VALUE) param = this.insertParam(index, new   LayerBlurParam(id, id, showName, hasInput, hasOutput), volatile);
-            else if (value.type ==    BACK_BLUR_VALUE) param = this.insertParam(index, new    BackBlurParam(id, id, showName, hasInput, hasOutput), volatile);
+                 if (value.type ==        NUMBER_VALUE) param = this.insertParam(index, new       NumberParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==          TEXT_VALUE) param = this.insertParam(index, new         TextParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==         COLOR_VALUE) param = this.insertParam(index, new        ColorParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==          FILL_VALUE) param = this.insertParam(index, new         FillParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==    COLOR_STOP_VALUE) param = this.insertParam(index, new    ColorStopParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==      GRADIENT_VALUE) param = this.insertParam(index, new     GradientParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==        STROKE_VALUE) param = this.insertParam(index, new       StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==          LIST_VALUE) param = this.insertParam(index, new         ListParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==     RECTANGLE_VALUE) param = this.insertParam(index, new    RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==          LINE_VALUE) param = this.insertParam(index, new         LineParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==       ELLIPSE_VALUE) param = this.insertParam(index, new      EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==       TRAPEZE_VALUE) param = this.insertParam(index, new      TrapezeParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==       POLYGON_VALUE) param = this.insertParam(index, new      PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==          STAR_VALUE) param = this.insertParam(index, new         StarParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==    TEXT_SHAPE_VALUE) param = this.insertParam(index, new    TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==         POINT_VALUE) param = this.insertParam(index, new        PointParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==        POINT3_VALUE) param = this.insertParam(index, new       PointParam3(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type == VECTOR_VERTEX_VALUE) param = this.insertParam(index, new VectorVertexParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==   VECTOR_PATH_VALUE) param = this.insertParam(index, new   VectorPathParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==   DROP_SHADOW_VALUE) param = this.insertParam(index, new   DropShadowParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==  INNER_SHADOW_VALUE) param = this.insertParam(index, new  InnerShadowParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==    LAYER_BLUR_VALUE) param = this.insertParam(index, new    LayerBlurParam(id, id, showName, hasInput, hasOutput), volatile);
+            else if (value.type ==     BACK_BLUR_VALUE) param = this.insertParam(index, new     BackBlurParam(id, id, showName, hasInput, hasOutput), volatile);
 
             else consoleError('cannot insert parameter of type \'' + value.type + '\'');
 

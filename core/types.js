@@ -649,6 +649,7 @@ const SHAPE_VALUES_2D =
     POINT_LIST_VALUE,
     VECTOR_PATH_VALUE,
     VECTOR_VERTEX_VALUE,
+    VECTOR_VERTEX_LIST_VALUE,
     VECTOR_EDGE_VALUE,
     VECTOR_REGION_VALUE,
     VECTOR_NETWORK_VALUE,
@@ -671,6 +672,7 @@ const SHAPE_VALUES =
 [
     ...SHAPE_VALUES_2D,
     POINT3_VALUE,
+    POINT3_LIST_VALUE
 ];
 
 
@@ -759,52 +761,54 @@ const   TEXT_VALUES = [  TEXT_VALUE,   TEXT_LIST_VALUE];
 
 const ALL_VALUES =
 [
-            LIST_VALUE,
-     NUMBER_LIST_VALUE,
-       TEXT_LIST_VALUE,
-      SHAPE_LIST_VALUE,
-      POINT_LIST_VALUE,
+                  LIST_VALUE,
+           NUMBER_LIST_VALUE,
+             TEXT_LIST_VALUE,
+            SHAPE_LIST_VALUE,
+            POINT_LIST_VALUE,
+           POINT3_LIST_VALUE,
+    VECTOR_VERTEX_LIST_VALUE,
      
-        VARIABLE_VALUE,
-        
-          NUMBER_VALUE,
-            TEXT_VALUE,
-           COLOR_VALUE,
- 
-            FILL_VALUE,
-      COLOR_STOP_VALUE,
-        GRADIENT_VALUE,
-          STROKE_VALUE,
- 
-      COLOR_STOP_VALUE,
-        GRADIENT_VALUE,
- 
-           SHAPE_VALUE,
-       RECTANGLE_VALUE,
-            LINE_VALUE,
-         ELLIPSE_VALUE,
-         TRAPEZE_VALUE,
-         POLYGON_VALUE,
-            STAR_VALUE,
-      TEXT_SHAPE_VALUE,
-           POINT_VALUE,
-          POINT3_VALUE,
-     VECTOR_PATH_VALUE,
-   VECTOR_VERTEX_VALUE,
-     VECTOR_EDGE_VALUE,
-   VECTOR_REGION_VALUE,
-  VECTOR_NETWORK_VALUE,
-     SHAPE_GROUP_VALUE,
-           FRAME_VALUE,
-
-   ROUND_CORNERS_VALUE,
-     DROP_SHADOW_VALUE,
-    INNER_SHADOW_VALUE,
-      LAYER_BLUR_VALUE,
-       BACK_BLUR_VALUE,
-
-     LAYER_BLEND_VALUE,
-      LAYER_MASK_VALUE
+              VARIABLE_VALUE,
+              
+                NUMBER_VALUE,
+                  TEXT_VALUE,
+                 COLOR_VALUE,
+       
+                  FILL_VALUE,
+            COLOR_STOP_VALUE,
+              GRADIENT_VALUE,
+                STROKE_VALUE,
+       
+            COLOR_STOP_VALUE,
+              GRADIENT_VALUE,
+       
+                 SHAPE_VALUE,
+             RECTANGLE_VALUE,
+                  LINE_VALUE,
+               ELLIPSE_VALUE,
+               TRAPEZE_VALUE,
+               POLYGON_VALUE,
+                  STAR_VALUE,
+            TEXT_SHAPE_VALUE,
+                 POINT_VALUE,
+                POINT3_VALUE,
+           VECTOR_PATH_VALUE,
+         VECTOR_VERTEX_VALUE,
+           VECTOR_EDGE_VALUE,
+         VECTOR_REGION_VALUE,
+        VECTOR_NETWORK_VALUE,
+           SHAPE_GROUP_VALUE,
+                 FRAME_VALUE,
+      
+         ROUND_CORNERS_VALUE,
+           DROP_SHADOW_VALUE,
+          INNER_SHADOW_VALUE,
+            LAYER_BLUR_VALUE,
+             BACK_BLUR_VALUE,
+      
+           LAYER_BLEND_VALUE,
+            LAYER_MASK_VALUE
 ];
 
 
