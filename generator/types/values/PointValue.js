@@ -17,6 +17,7 @@ extends GValue
     sp2 = null; //  sp2
 
 
+    
     constructor(nodeId,
                 x = new NumberValue(0), 
                 y = new NumberValue(0),
@@ -110,6 +111,20 @@ extends GValue
             nodeId,
             new NumberValue(p.x),
             new NumberValue(p.y));
+    }
+
+
+
+    static fromPointValue3(point3)
+    {
+        const point = new PointValue(
+            point3.nodeId,
+            point3.x,
+            point3.y);
+
+        point.objects = point3.objects.map(o => FigmaPoint.fromPoint3(o));
+
+        return point;
     }
 
 

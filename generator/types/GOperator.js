@@ -533,7 +533,21 @@ async function evalLineValue          (_value, parse) { return await evalValue(_
 async function evalPolygonValue       (_value, parse) { return await evalValue(_value, parse, () => PolygonValue       .NaN()); }
 async function evalTextShapeValue     (_value, parse) { return await evalValue(_value, parse, () => TextShapeValue     .NaN()); }
 
-async function evalPointValue         (_value, parse) { return await evalValue(_value, parse, () => PointValue         .NaN()); }
+
+
+async function evalPointValue(_value, parse) 
+{
+    let value = await evalValue(_value, parse, () => PointValue.NaN());
+
+    if (   value
+        && value.type == POINT3_VALUE)
+        value = new PointValue(value.x, value.y);
+
+    return await evalValue(_value, parse, () => PointValue.NaN()); 
+}
+
+
+
 async function evalPointValue3        (_value, parse) { return await evalValue(_value, parse, () => PointValue3        .NaN()); }
 async function evalVectorPathValue    (_value, parse) { return await evalValue(_value, parse, () => VectorPathValue    .NaN()); }
 async function evalArcPathValue       (_value, parse) { return await evalValue(_value, parse, () => ArcPathValue       .NaN()); }
@@ -556,15 +570,36 @@ async function evalPointOrListValue(_value, parse)
     let value = await evalValue(_value, parse, () => PointValue.NaN()); 
 
     if (   value
-        && value.type == LIST_VALUE
-        && finalListTypeFromValues(value.items) == POINT_LIST_VALUE)
+        && value.type == LIST_VALUE)
     {
-        const condensed = value.condensed;
-        
-        value = new ListValue(value.items.map(i => i.copy()));
-        value.condensed = condensed;
+        const finalListType = finalListTypeFromValues(value.items);
+
+        if (finalListType == POINT_LIST_VALUE)
+        {
+            const condensed = value.condensed;
+            
+            value = new ListValue(
+                finalListType == POINT3_LIST_VALUE
+                ? value.items.map(p => PointValue.fromPointValue3(p))
+                : value.items.map(p => p.copy()));
+
+            value.condensed = condensed;
+        }
+        else if (finalListType == POINT3_LIST_VALUE)
+        {
+            const condensed = value.condensed;
+            const objects   = value.objects;
+
+            value = new ListValue(
+                finalListType == POINT3_LIST_VALUE
+                ? value.items.map(p => PointValue.fromPointValue3(p))
+                : value.items.map(p => p.copy()));
+
+            value.condensed = condensed;
+            value.objects   = objects.map(o => FigmaPoint.fromPoint3(o));
+        }
     }
-    
+
     return value;                
 }
 

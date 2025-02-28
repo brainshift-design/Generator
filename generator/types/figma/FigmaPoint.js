@@ -102,13 +102,13 @@ extends FigmaShape
 
 
 
-    static fromPoint3(point)
+    static fromPoint3(point3)
     {
         return new FigmaPoint(
-            point.nodeId,
-            point.objectId,
-            point.objectName, 
-            point.x,
-            point.y);
+            point3.nodeId,
+            point3.objectId,
+            point3.objectName, 
+            point3.x,
+            point3.y);
     }
 }
