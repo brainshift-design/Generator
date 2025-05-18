@@ -3859,7 +3859,6 @@ menuRect
 oldPan
 enterTimer
 lin2xyz
-=> Duplicates:
 rgb2luv
 luv2rgb
 xyz2luv

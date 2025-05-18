@@ -194,7 +194,9 @@
 ../operators/layer/OpDropShadow.js
 ../operators/layer/OpInnerShadow.js
 ../operators/layer/OpLayerBlur.js
+../operators/layer/OpLayerBlurProgressive.js
 ../operators/layer/OpBackBlur.js
+../operators/layer/OpBackBlurProgressive.js
 ../operators/layer/OpLayerBlend.js
 ../operators/layer/OpLayerMask.js
 

@@ -103,6 +103,8 @@ var menuNodeHighlight;
 var menuNodeSelect;
 var menuNodeRandomize;
 
+var menuLayerBlur;
+var menuBackBlur;
 
 var menuLocalStyles;
 var menuLocalVariables;
@@ -276,7 +278,9 @@ var menuItemLayerSep1;
 var menuItemLayerDropShadow;
 var menuItemLayerInnerShadow;
 var menuItemLayerLayerBlur;
+var menuItemLayerLayerBlurProgressive;
 var menuItemLayerBackBlur;
+var menuItemLayerBackBlurProgressive;
 var menuItemStyleSep2;
 
 
@@ -764,17 +768,25 @@ function initGeneratorMenus()
         menuItemColor.setIcon(iconColor);
     };
 
-    
+
+    menuLayerBlur = new Menu('Layer blur', true, false);
+    menuLayerBlur.addItems([
+        new MenuItem('Progressive blur', 'Progressive layer blur',      true, {icon: iconLayerBlur, callback: e => actionManager.do(getCreateNodeAction(LAYER_PRBLUR, btnShape.div, getCreateOptions(e)))})]);
+
+    menuBackBlur = new Menu('Background blur', true, false);
+    menuBackBlur.addItems([
+        new MenuItem('Progressive blur', 'Progressive background blur', true, {icon: iconBackBlur, callback: e => actionManager.do(getCreateNodeAction(BACK_PRBLUR, btnShape.div, getCreateOptions(e)))})]);
+
     menuEffects = new Menu('Effects', true, false);
     menuEffects.addItems([
-                                   new MenuItem('Layer blend',     null, false, {icon: iconColorBlend,  callback: e => actionManager.do(getCreateNodeAction(LAYER_BLEND, btnShape.div, getCreateOptions(e)))}),
+                                   new MenuItem('Layer blend',     null, false, {icon: iconColorBlend,                            callback: e => actionManager.do(getCreateNodeAction(LAYER_BLEND, btnShape.div, getCreateOptions(e)))}),
                                    new MenuItem('',                null, false, {separator: true}),
-        menuItemLayerDropShadow  = new MenuItem('Drop shadow',     null, false, {icon: iconDropShadow,  callback: e => actionManager.do(getCreateNodeAction(DROP_SHADOW,  btnShape.div, getCreateOptions(e)))}),
-        menuItemLayerInnerShadow = new MenuItem('Inner shadow',    null, false, {icon: iconInnerShadow, callback: e => actionManager.do(getCreateNodeAction(INNER_SHADOW, btnShape.div, getCreateOptions(e)))}),
-        menuItemLayerLayerBlur   = new MenuItem('Layer blur',      null, false, {icon: iconLayerBlur,   callback: e => actionManager.do(getCreateNodeAction(LAYER_BLUR,   btnShape.div, getCreateOptions(e)))}),
-        menuItemLayerBackBlur    = new MenuItem('Background blur', null, false, {icon: iconBackBlur,    callback: e => actionManager.do(getCreateNodeAction(BACK_BLUR,    btnShape.div, getCreateOptions(e)))}),
+        menuItemLayerDropShadow  = new MenuItem('Drop shadow',     null, false, {icon: iconDropShadow,                            callback: e => actionManager.do(getCreateNodeAction(DROP_SHADOW,  btnShape.div, getCreateOptions(e)))}),
+        menuItemLayerInnerShadow = new MenuItem('Inner shadow',    null, false, {icon: iconInnerShadow,                           callback: e => actionManager.do(getCreateNodeAction(INNER_SHADOW, btnShape.div, getCreateOptions(e)))}),
+        menuItemLayerLayerBlur   = new MenuItem('Layer blur',      null, false, {icon: iconLayerBlur,   childMenu: menuLayerBlur, callback: e => actionManager.do(getCreateNodeAction(LAYER_BLUR,   btnShape.div, getCreateOptions(e)))}),
+        menuItemLayerBackBlur    = new MenuItem('Background blur', null, false, {icon: iconBackBlur,    childMenu: menuBackBlur,  callback: e => actionManager.do(getCreateNodeAction(BACK_BLUR,    btnShape.div, getCreateOptions(e)))}),
                                    new MenuItem('',                null, false, {separator: true}),
-                                   new MenuItem('Mask',            null, false, {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,  btnShape.div, getCreateOptions(e)))})]);
+                                   new MenuItem('Mask',            null, false, {icon: iconMask,                                  callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,  btnShape.div, getCreateOptions(e)))})]);
 
     
     menuStyles = new Menu('Styles', true, false);
@@ -824,22 +836,22 @@ function initGeneratorMenus()
 
     menuVectorPaths = new Menu('Vector paths', true, false);
     menuVectorPaths.addItems([
-        new MenuItem('Join paths',      null, false, {icon: iconJoinPaths,                   createType: JOIN_PATHS,            callback: e => actionManager.do(getCreateNodeAction(JOIN_PATHS,            btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Reorient paths',  null, false, {icon: iconReorientPaths,               createType: REORIENT_PATHS,        callback: e => actionManager.do(getCreateNodeAction(REORIENT_PATHS,        btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Reverse path',    null, false, {icon: iconReversePath,                 createType: REVERSE_PATH,          callback: e => actionManager.do(getCreateNodeAction(REVERSE_PATH,          btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('',                null, false, {separator: true}),           
+        new MenuItem('Join paths',      null, false, {icon: iconJoinPaths,     createType: JOIN_PATHS,            callback: e => actionManager.do(getCreateNodeAction(JOIN_PATHS,            btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Reorient paths',  null, false, {icon: iconReorientPaths, createType: REORIENT_PATHS,        callback: e => actionManager.do(getCreateNodeAction(REORIENT_PATHS,        btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Reverse path',    null, false, {icon: iconReversePath,   createType: REVERSE_PATH,          callback: e => actionManager.do(getCreateNodeAction(REVERSE_PATH,          btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('',                null, false, {separator: true}),
         new MenuItem('Arc',             null, false, {icon: iconArcPath,       createType: ARC_PATH,              callback: e => actionManager.do(getCreateNodeAction(ARC_PATH,        btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Arc from points', null, false, {icon: iconArcFromPoints, createType: ARC_FROM_POINTS,       callback: e => actionManager.do(getCreateNodeAction(ARC_FROM_POINTS, btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Wave',            null, false, {icon: iconWavePath,      createType: WAVE_PATH,             callback: e => actionManager.do(getCreateNodeAction(WAVE_PATH,       btnShape.div, getCreateOptions(e)))}),
         new MenuItem('',                null, false, {separator: true}),
-        new MenuItem('Path length',     null, false, {icon: iconPathLength,                  createType: PATH_LENGTH,           callback: e => actionManager.do(getCreateNodeAction(PATH_LENGTH,           btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Path length',     null, false, {icon: iconPathLength,    createType: PATH_LENGTH,           callback: e => actionManager.do(getCreateNodeAction(PATH_LENGTH,           btnShape.div, getCreateOptions(e)))})]);
                              
 
     menuVectorNetworks = new Menu('Vector networks', true, false);
     menuVectorNetworks.addItems([
-        menuItemVectorVertex       = new MenuItem('Vertex',    null,          false, {icon: iconVectorVertex,                createType: VECTOR_VERTEX,  callback: e => actionManager.do(getCreateNodeAction(VECTOR_VERTEX,  btnShape.div, getCreateOptions(e)))}),
-        menuItemVectorEdge         = new MenuItem('Edge',      null,          false, {icon: iconVectorEdge,                  createType: VECTOR_EDGE,    callback: e => actionManager.do(getCreateNodeAction(VECTOR_EDGE,    btnShape.div, getCreateOptions(e)))}),
-        menuItemVectorRegion       = new MenuItem('Region',    null,          false, {icon: iconVectorRegion,                createType: VECTOR_REGION,  callback: e => actionManager.do(getCreateNodeAction(VECTOR_REGION,  btnShape.div, getCreateOptions(e)))})]);
+        menuItemVectorVertex = new MenuItem('Vertex', null, false, {icon: iconVectorVertex,                createType: VECTOR_VERTEX,  callback: e => actionManager.do(getCreateNodeAction(VECTOR_VERTEX,  btnShape.div, getCreateOptions(e)))}),
+        menuItemVectorEdge   = new MenuItem('Edge',   null, false, {icon: iconVectorEdge,                  createType: VECTOR_EDGE,    callback: e => actionManager.do(getCreateNodeAction(VECTOR_EDGE,    btnShape.div, getCreateOptions(e)))}),
+        menuItemVectorRegion = new MenuItem('Region', null, false, {icon: iconVectorRegion,                createType: VECTOR_REGION,  callback: e => actionManager.do(getCreateNodeAction(VECTOR_REGION,  btnShape.div, getCreateOptions(e)))})]);
                              
 
     menuRectangle = new Menu('Rectangle', true, false);
@@ -1217,7 +1229,9 @@ function initGeneratorMenus()
         menuVectorPaths,
         menuVectorNetworks,
         menuTransform,
-        menuDecoration
+        menuDecoration,
+        menuLayerBlur,
+        menuBackBlur
     ];
 }
 

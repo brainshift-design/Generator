@@ -548,20 +548,21 @@ async function evalPointValue(_value, parse)
 
 
 
-async function evalPointValue3        (_value, parse) { return await evalValue(_value, parse, () => PointValue3        .NaN()); }
-async function evalVectorPathValue    (_value, parse) { return await evalValue(_value, parse, () => VectorPathValue    .NaN()); }
-async function evalArcPathValue       (_value, parse) { return await evalValue(_value, parse, () => ArcPathValue       .NaN()); }
-async function evalWavePathValue      (_value, parse) { return await evalValue(_value, parse, () => WavePathValue      .NaN()); }
-async function evalVectorVertexValue  (_value, parse) { return await evalValue(_value, parse, () => VectorVertexValue  .NaN()); }
-async function evalVectorEdgeValue    (_value, parse) { return await evalValue(_value, parse, () => VectorEdgeValue    .NaN()); }
-async function evalVectorRegionValue  (_value, parse) { return await evalValue(_value, parse, () => VectorRegionValue  .NaN()); }
-
-async function evalFrameValue         (_value, parse) { return await evalValue(_value, parse, () => FrameValue         .NaN()); }
-
-async function evalInnerShadowValue   (_value, parse) { return await evalValue(_value, parse, () => InnerShadowValue   .NaN()); }
-async function evalLayerBlurValue     (_value, parse) { return await evalValue(_value, parse, () => LayerBlurValue     .NaN()); }
-async function evalStrokeSidesValue   (_value, parse) { return await evalValue(_value, parse, () => StrokeSidesValue   .NaN()); }
-async function evalRoundedCornersValue(_value, parse) { return await evalValue(_value, parse, () => RoundedCornersValue.NaN()); }
+async function evalPointValue3              (_value, parse) { return await evalValue(_value, parse, () => PointValue3              .NaN()); }
+async function evalVectorPathValue          (_value, parse) { return await evalValue(_value, parse, () => VectorPathValue          .NaN()); }
+async function evalArcPathValue             (_value, parse) { return await evalValue(_value, parse, () => ArcPathValue             .NaN()); }
+async function evalWavePathValue            (_value, parse) { return await evalValue(_value, parse, () => WavePathValue            .NaN()); }
+async function evalVectorVertexValue        (_value, parse) { return await evalValue(_value, parse, () => VectorVertexValue        .NaN()); }
+async function evalVectorEdgeValue          (_value, parse) { return await evalValue(_value, parse, () => VectorEdgeValue          .NaN()); }
+async function evalVectorRegionValue        (_value, parse) { return await evalValue(_value, parse, () => VectorRegionValue        .NaN()); }
+            
+async function evalFrameValue               (_value, parse) { return await evalValue(_value, parse, () => FrameValue               .NaN()); }
+            
+async function evalInnerShadowValue         (_value, parse) { return await evalValue(_value, parse, () => InnerShadowValue         .NaN()); }
+async function evalLayerBlurValue           (_value, parse) { return await evalValue(_value, parse, () => LayerBlurValue           .NaN()); }
+async function evalLayerBlurProgressiveValue(_value, parse) { return await evalValue(_value, parse, () => LayerBlurProgressiveValue.NaN()); }
+async function evalStrokeSidesValue         (_value, parse) { return await evalValue(_value, parse, () => StrokeSidesValue         .NaN()); }
+async function evalRoundedCornersValue      (_value, parse) { return await evalValue(_value, parse, () => RoundedCornersValue      .NaN()); }
 
 
 

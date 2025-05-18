@@ -33,10 +33,8 @@ class RequestSettings
 
 
 
-function log(str)
-{
-    debugInfo.innerHTML = str;
-}
+function log(str)   { debugText.innerHTML += str + '<br/>'; updateDebugInfo(); }
+function clearLog() { debugText.innerHTML  = '';            updateDebugInfo(); }
 
 
 

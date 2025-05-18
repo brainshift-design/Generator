@@ -1,17 +1,19 @@
 function addProp(obj, prop)
 {
-         if (prop.type ==         COLOR_VALUE)  addColorProp       (obj, prop);
-    else if (prop.type ==          FILL_VALUE)  addFillProp        (obj, prop);
-    else if (prop.type ==      GRADIENT_VALUE)  addGradientProp    (obj, prop);
-    else if (prop.type ==        STROKE_VALUE)  addStrokeProp      (obj, prop);
-    else if (prop.type ==  STROKE_SIDES_VALUE)  addStrokeSidesProp (obj, prop);
-    else if (prop.type == ROUND_CORNERS_VALUE)  addRoundCornersProp(obj, prop);
-    else if (prop.type ==   DROP_SHADOW_VALUE)  addDropShadowProp  (obj, prop);
-    else if (prop.type ==  INNER_SHADOW_VALUE)  addInnerShadowProp (obj, prop);
-    else if (prop.type ==    LAYER_BLUR_VALUE)  addLayerBlurProp   (obj, prop);
-    else if (prop.type ==     BACK_BLUR_VALUE)  addBackBlurProp    (obj, prop);
-    else if (prop.type ==   LAYER_BLEND_VALUE)  addLayerBlendProp  (obj, prop);
-    else if (prop.type ==    LAYER_MASK_VALUE)  addMaskProp        (obj, prop);
+         if (prop.type ==         COLOR_VALUE)  addColorProp               (obj, prop);
+    else if (prop.type ==          FILL_VALUE)  addFillProp                (obj, prop);
+    else if (prop.type ==      GRADIENT_VALUE)  addGradientProp            (obj, prop);
+    else if (prop.type ==        STROKE_VALUE)  addStrokeProp              (obj, prop);
+    else if (prop.type ==  STROKE_SIDES_VALUE)  addStrokeSidesProp         (obj, prop);
+    else if (prop.type == ROUND_CORNERS_VALUE)  addRoundCornersProp        (obj, prop);
+    else if (prop.type ==   DROP_SHADOW_VALUE)  addDropShadowProp          (obj, prop);
+    else if (prop.type ==  INNER_SHADOW_VALUE)  addInnerShadowProp         (obj, prop);
+    else if (prop.type ==    LAYER_BLUR_VALUE)  addLayerBlurProp           (obj, prop);
+    else if (prop.type ==  LAYER_PRBLUR_VALUE)  addLayerBlurProgressiveProp(obj, prop);
+    else if (prop.type ==     BACK_BLUR_VALUE)  addBackBlurProp            (obj, prop);
+    else if (prop.type ==   BACK_PRBLUR_VALUE)  addBackBlurProgressiveProp (obj, prop);
+    else if (prop.type ==   LAYER_BLEND_VALUE)  addLayerBlendProp          (obj, prop);
+    else if (prop.type ==    LAYER_MASK_VALUE)  addMaskProp                (obj, prop);
 }
 
 
@@ -496,7 +498,24 @@ function addLayerBlurProp(obj, prop)
 {
     obj.effects.push([
         'LAYER_BLUR', 
-        prop.radius.value, //toNumber(),
+        'NORMAL',
+        prop.radius.value,
+        prop.visible ]);
+}
+
+
+
+function addLayerBlurProgressiveProp(obj, prop)
+{
+    obj.effects.push([
+        'LAYER_BLUR', 
+        'PROGRESSIVE',
+        prop.startRadius.value,
+        prop.endRadius  .value,
+        prop.startX     .value / 100,
+        prop.startY     .value / 100,
+        prop.endX       .value / 100,
+        prop.endY       .value / 100,
         prop.visible ]);
 }
 

@@ -76,6 +76,9 @@ onmessage = e =>
         case 'uiGetValueForFigma':                uiGetValueForFigma               (msg);               break;
 
         case 'updateMetrics':                     updateMetrics                    ();                  break;       
+
+        case 'uiLog':                             log                              (msg.text);          break;
+        case 'uiClearLog':                        clearLog                         ();                  break;
     }
 };
 

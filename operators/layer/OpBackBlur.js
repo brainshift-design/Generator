@@ -14,7 +14,7 @@ extends OperatorBase
         super(BACK_BLUR, 'backBlur', 'back blur', iconBackBlur);
 
         this.canDisable  = true;
-        this.iconOffsetY = 1;
+        this.iconOffsetY = 2;
         
 
         this.addInput (new Input([BACK_BLUR_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));

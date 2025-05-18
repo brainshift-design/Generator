@@ -21,15 +21,6 @@ extends GValue
 
 
     
-    // static create(x, y, blur, spread, fill, blend)
-    // {
-    //     return new FillValue(
-    //         new Number,
-    //         new NumberValue(opacity));
-    // }
-
-
-
     copy()
     {
         const copy = new LayerBlurValue(
@@ -55,22 +46,6 @@ extends GValue
     {
         return this;
     }
-
-
-
-    // toRgba()
-    // {
-    //     return [
-    //         ...this.color.toRgb(),
-    //         this.opacity.value / 100 ];
-    // }
-
-
-
-    // toFigma()
-    // {
-    //     return [['SOLID', this.toString()]];
-    // }
 
 
 

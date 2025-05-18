@@ -4,7 +4,6 @@
 figma.ui.onmessage = function(msg)
 {
     msg = JSON.parse(msg);
-    
 
     if (msg.cmd == 'returnUiGetValueForFigma') // ignore this message in the queue
         return;

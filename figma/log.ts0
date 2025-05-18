@@ -1,0 +1,7 @@
+function logToUi(text: string)
+{
+    figPostMessageToUi({
+        cmd: 'uiLog',
+        text: text
+    });
+}

@@ -13,7 +13,8 @@ extends OperatorBase
     {
         super(LAYER_BLUR, 'layerBlur', 'layer blur', iconLayerBlur);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = 1;
         
 
         this.addInput (new Input([LAYER_BLUR_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));

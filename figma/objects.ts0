@@ -70,8 +70,8 @@ async function figUpdateObjectsAsync(figParent, genObjects, batchSize, totalObje
             for (const figObj of figParent.children)
             {
                 if (      figObj != undefined
-                    && figObj != null
-                    && figObj.removed
+                       && figObj != null
+                       && figObj.removed
                     || !genObjects.find(o => 
                             o[FO_OBJECT_ID] == figObj.getPluginData('objectId')
                             && figObj.getPluginData('userId') == figma.currentUser.id))

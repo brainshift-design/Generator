@@ -202,10 +202,10 @@ function strFromData(data)
 
 
 
-function log(...params)
-{
-    setTimeout(console.log.bind(console, ...params)); // doesn't show log source, which makes logs cleaner
-}
+// function log(...params)
+// {
+//     setTimeout(console.log.bind(console, ...params)); // doesn't show log source, which makes logs cleaner
+// }
 
 
 

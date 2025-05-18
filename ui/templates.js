@@ -31,7 +31,7 @@ function updateUserTemplatesFromServer()
     })
     .catch(e =>
     {
-        crash(e);
+        console.error(e);
         throw e;
     });
 }
@@ -49,11 +49,7 @@ function initTemplateMenu(e)
     enableMenuItem(menuItemSaveTemplate, graphView.selectedNodes.length > 0, pro);
 
     menuTemplate.addItems([
-        // new MenuItem('Compound node', null, false, {icon: iconCompoundNode,  createType: COMPOUND,       callback: e => actionManager.do(getCreateNodeAction(COMPOUND,       btnTemplate.div, getCreateOptions(e)))}),
-        // new MenuItem('Parameter',     null, false, {icon: iconCompoundParam, createType: COMPOUND_PARAM, callback: e => actionManager.do(getCreateNodeAction(COMPOUND_PARAM, btnTemplate.div, getCreateOptions(e)))}),
-        // new MenuItem('',              null, false, {separator: true}),
-        menuItemSaveTemplate
-    ]);
+        menuItemSaveTemplate]);
 
     initTemplateMenuTemplates(presetTemplates, true,  false);
     initTemplateMenuTemplates(userTemplates,   false, true ); // don't show user template names in metrics
@@ -205,7 +201,7 @@ function adjustTemplateMenu(e, thisMenu, action, template)
                 })
                 .catch(e =>
                 {
-                    crash(e);
+                    console.error(e);
                     throw e;
                 }));
         }

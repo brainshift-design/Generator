@@ -234,9 +234,17 @@ const LAYER_BLUR_VALUE        = 'LBLR#';
 const LAYER_BLUR              = 'LBLR';
 const LAYER_BLUR_TYPES        = [LAYER_BLUR_VALUE, LAYER_BLUR];
 
+const LAYER_PRBLUR_VALUE      = 'PRLBLR#';
+const LAYER_PRBLUR            = 'PRLBLR';
+const LAYER_PRBLUR_TYPES      = [LAYER_PRBLUR_VALUE, LAYER_PRBLUR];
+
 const BACK_BLUR_VALUE         = 'BBLR#';
 const BACK_BLUR               = 'BBLR';
 const BACK_BLUR_TYPES         = [BACK_BLUR_VALUE, BACK_BLUR];
+
+const BACK_PRBLUR_VALUE       = 'PRBBLR#';
+const BACK_PRBLUR             = 'PRBBLR';
+const BACK_PRBLUR_TYPES       = [BACK_PRBLUR_VALUE, BACK_PRBLUR];
 
 const LAYER_MASK_VALUE        = 'MASK#';
 const LAYER_MASK              = 'MASK';
@@ -591,7 +599,9 @@ const EFFECT_TYPES =
     ...DROP_SHADOW_TYPES,
     ...INNER_SHADOW_TYPES,
     ...LAYER_BLUR_TYPES,
+    ...LAYER_PRBLUR_TYPES,
     ...BACK_BLUR_TYPES,
+    ...BACK_PRBLUR_TYPES,
     ...LAYER_BLEND_TYPES,
     ...LAYER_MASK_TYPES
 ];

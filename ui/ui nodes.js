@@ -538,9 +538,8 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes, zoo
 
         return [nodes, data.connections];
     }
-    catch (error)
+    catch (e)
     {
-        crash('Error loading nodes:', error);
         return [[], []];
     }
 }
@@ -670,39 +669,24 @@ function handleLegacyNode(_node, genVersion)
             removeFromArray(_node.params, parts);
     }
 
-    else if (_node.type == COLOR)
+    else if (   _node.type == COLOR
+             && genVersion < 441) 
     {
         if (!_node.params)
             _node.params = [];
 
         const paramSpace = _node.params.find(p => p[1] == 'space');
 
-
-        if (genVersion < 441) 
+        if (paramSpace)
         {
-            if (paramSpace)
-            {
-                     if (paramSpace[2] == '2,0') paramSpace[2] =  '3,0';
-                else if (paramSpace[2] == '3,0') paramSpace[2] =  '2,0';
-                else if (paramSpace[2] == '7,0') paramSpace[2] = '12,0';
-                else if (paramSpace[2] == '8,0') paramSpace[2] = '13,0';
-                else if (paramSpace[2] == '9,0') paramSpace[2] = '14,0';
-            }
-        }
-        else if (genVersion >= 441
-              && genVersion <  446)
-        {
-            if (paramSpace)
-            {
-                     if (paramSpace[2] ==  '4,0') paramSpace[2] =  '7,0';
-                else if (paramSpace[2] ==  '5,0') paramSpace[2] =  '8,0';
-                else if (paramSpace[2] ==  '6,0') paramSpace[2] =  '9,0';
-                else if (paramSpace[2] ==  '7,0') paramSpace[2] = '10,0';
-                else if (paramSpace[2] ==  '8,0') paramSpace[2] = '11,0';
-                else if (paramSpace[2] ==  '9,0') paramSpace[2] =  '4,0';
-                else if (paramSpace[2] == '10,0') paramSpace[2] =  '5,0';
-                else if (paramSpace[2] == '11,0') paramSpace[2] =  '6,0';
-            }
+                 if (paramSpace[2] == '2,0') paramSpace[2] =  '3,0';
+            else if (paramSpace[2] == '3,0') paramSpace[2] =  '2,0';
+            else if (paramSpace[2] == '4,0') paramSpace[2] =  '9,0';
+            else if (paramSpace[2] == '5,0') paramSpace[2] = '10,0';
+            else if (paramSpace[2] == '6,0') paramSpace[2] = '11,0';
+            else if (paramSpace[2] == '7,0') paramSpace[2] = '12,0';
+            else if (paramSpace[2] == '8,0') paramSpace[2] = '13,0';
+            else if (paramSpace[2] == '9,0') paramSpace[2] = '14,0';
         }
     }
 
@@ -870,10 +854,10 @@ function handleLegacyNode(_node, genVersion)
         {
             const value = NumberValue.parse(paramCondition[2]);
 
-            if (value[0].value > 0) value[0].value = 0;
-            else                    value[0].value = 1;
+            if (value.value > 0) value.value = 0;
+            else                 value.value = 1;
 
-            paramCondition[2] = value[0].toString();
+            paramCondition[2] = value.toString();
         }
         else
         {
@@ -960,9 +944,7 @@ function handleLegacyConnection(_conn, outputNode, inputNode, genVersion)
         _conn.inputId = 'what';
 
     else if (inputNode.type == IF_ELSE
-          && (   genVersion <  441
-              ||    genVersion >= 441 
-                 && genVersion <  445))
+          && genVersion < 441)
     {
              if (_conn.inputId == 'h0') _conn.inputId = 'h1';
         else if (_conn.inputId == 'h1') _conn.inputId = 'h0';

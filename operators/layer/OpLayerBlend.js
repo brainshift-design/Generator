@@ -15,7 +15,6 @@ extends OperatorBase
         super(LAYER_BLEND, 'blend', 'blend', iconColorBlend);
 
         this.canDisable  = true;
-        this.iconOffsetY = -1;
         
 
         this.addOutput(new Output([LAYER_BLEND_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));

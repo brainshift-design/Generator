@@ -147,6 +147,8 @@ function switchToSpace(node, space)
         case 'xyz50': 
         case 'xyz65': switchToXyz   (node); break;
     }
+
+    //node.resetAllControlRanges();
 }
 
 
@@ -172,9 +174,17 @@ function switchToXyz  (node) { switchToXyzControls   (node);                    
 function switchToRgbControls(node)
 {
     switchToControls(node, 
-        'R', 0, rgbScale[0], '', 0, false, 
+        'R', 0, rgbScale[0], '', false, 
         'G', 0, rgbScale[1], 
         'B', 0, rgbScale[2]);  
+
+    // node.param1.controls[0].min = 
+    // node.param2.controls[0].min = 
+    // node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+
+    // node.param1.controls[0].max = 
+    // node.param2.controls[0].max = 
+    // node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false);    
 }
@@ -184,9 +194,17 @@ function switchToRgbControls(node)
 function switchToHs_Controls(node, v_or_l) 
 { 
     switchToControls(node, 
-        'H',    0, hs_Scale[0], '°', degreeOffsetY, true,  
+        'H',    0, hs_Scale[0], '°', true,  
         'S',    0, hs_Scale[1], 
         v_or_l, 0, hs_Scale[2]);  
+
+    //node.param1.controls[0].suffixOffsetY = -4;
+
+    // node.param2.controls[0].min = 
+    // node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+
+    // node.param2.controls[0].max = 
+    // node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false); 
 }
@@ -196,9 +214,17 @@ function switchToHs_Controls(node, v_or_l)
 function switchToHclControls(node, scale) 
 { 
     switchToControls(node, 
-        'H', 0, scale[0], '°', degreeOffsetY, true,  
+        'H', 0, scale[0], '°', true,  
         'C', 0, scale[1], 
         'L', 0, scale[2]);  
+
+    // node.param1.controls[0].suffixOffsetY = -4;
+
+    // node.param2.controls[0].min = 
+    // node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+
+    // node.param2.controls[0].max = 
+    // node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false); 
 }
@@ -214,7 +240,7 @@ function switchToHclLuvControls(node) { switchToHclControls(node, hcluvScale); }
 function switchToOppControls(node, c2, c3, scale)
 { 
     switchToControls(node, 
-        'L', 0,        scale[0], '', 0, false,  
+        'L', 0,        scale[0], '', false,  
         c2, -scale[1], scale[1], 
         c3, -scale[2], scale[2]);  
 
@@ -232,17 +258,17 @@ function switchToLuvControls  (node) { switchToOppControls(node, 'u', 'v', luvSc
 function switchToXyzControls(node) 
 { 
     switchToControls(node, 
-        'X', 0, xyzScale[0], '', 0, false,
+        'X', 0, xyzScale[0], '', false,
         'Y', 0, xyzScale[1], 
         'Z', 0, xyzScale[2]);  
 
-    node.param1.controls[0].min = 
-    node.param2.controls[0].min = 
-    node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+    // node.param1.controls[0].min = 
+    // node.param2.controls[0].min = 
+    // node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
-    node.param1.controls[0].max = 
-    node.param2.controls[0].max = 
-    node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+    // node.param1.controls[0].max = 
+    // node.param2.controls[0].max = 
+    // node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 }
 
 
@@ -256,7 +282,7 @@ function showRgbControlHex(node, show)
 
 
 
-function switchToControls(node, c1, c1min, c1max, c1suffix, c1suffixOffsetY, c1wrap, c2, c2min, c2max, c3, c3min, c3max)
+function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c2max, c3, c3min, c3max)
 {
     switchToSliders(node);
 
@@ -264,23 +290,22 @@ function switchToControls(node, c1, c1min, c1max, c1suffix, c1suffixOffsetY, c1w
     node.param2.setName(c2, false); 
     node.param3.setName(c3, false);
 
-    node.param1.controls[0].setSuffix(c1suffix, c1suffix != '');
-    node.param1.controls[0].suffixOffsetY = c1suffixOffsetY;
-    node.param1.controls[0].wrapValue = c1wrap;
+    // // node.param1.controls[0].wrapValue = c1wrap;
+    // // node.param1.controls[0].setSuffix(c1suffix, c1suffix != '');
 
-    node.param1.controls[0].setMin(c1min); 
-    node.param2.controls[0].setMin(c2min);
-    node.param3.controls[0].setMin(c3min);
+    // // node.param1.controls[0].setMin(c1min); 
+    // // node.param2.controls[0].setMin(c2min);
+    // // node.param3.controls[0].setMin(c3min);
     
-    node.param1.controls[0].setMax(c1max); 
-    node.param2.controls[0].setMax(c2max); 
-    node.param3.controls[0].setMax(c3max); 
+    // // node.param1.controls[0].setMax(c1max); 
+    // // node.param2.controls[0].setMax(c2max); 
+    // // node.param3.controls[0].setMax(c3max); 
     
-    node.param1.updateControls();
-    node.param2.updateControls();
-    node.param3.updateControls();
+    // node.param1.updateControls();
+    // node.param2.updateControls();
+    // node.param3.updateControls();
 
-    node.param1.controls[0].suffixOffsetY = 0;
+    // node.param1.controls[0].suffixOffsetY = 0;
 }
 
 

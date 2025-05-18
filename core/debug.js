@@ -1,4 +1,5 @@
 var showDebugInfo = false;
+var debugText     = '';
 
 var debugFlag1    = false;
 var debugNodeId   = 'list2';
@@ -43,10 +44,7 @@ function updateDebugInfo()
     if (showDebugInfo)
     {
         debugInfoText.style.display = 'inline-block';
-
-        debugInfoText.innerHTML =
-                        'pan = '  + graph.currentPage.pan.x.toFixed(2) + ', ' + graph.currentPage.pan.y.toFixed(2)
-            + '<br/>' + 'zoom = ' + graph.currentPage.zoom.toFixed(4);
+        debugInfoText.innerHTML = debugText;
     }
     else
         debugInfoText.style.display = 'none';

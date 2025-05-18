@@ -10,7 +10,7 @@ class FigmaObject
 
     itemIndex  = -1; // for linking objects to list items
 
-    retain    = 0;
+    retain     = 0;
     feedback   = false;
 
 
@@ -18,13 +18,13 @@ class FigmaObject
     
     xform;
 
-    xp0   = null; //  xp0 ------- xp1 
-    xp1   = null; //   |     
-    xp2   = null; //  xp2
+    xp0 = null; //  xp0 ------- xp1 
+    xp1 = null; //   |     
+    xp2 = null; //  xp2
 
-    sp0   = null; //  sp0 ------- sp1 
-    sp1   = null; //   |
-    sp2   = null; //  sp2
+    sp0 = null; //  sp0 ------- sp1 
+    sp1 = null; //   |
+    sp2 = null; //  sp2
 
     scaleCorners;
     scaleStyle;
@@ -51,7 +51,7 @@ class FigmaObject
         this.itemIndex    = base.itemIndex;
         
         this.feedback     = base.feedback;
-        this.retain      = base.retain;
+        this.retain       = base.retain;
 
         this.showCenter   = base.showCenter;
 
@@ -435,7 +435,6 @@ function createDecoPoly(nodeId, objectId, objectName, center, points, closed, da
 
 
     path.createDefaultTransform(center.x, center.y);
-    //path.updatePathData();
 
 
     return path;
