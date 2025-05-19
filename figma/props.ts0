@@ -147,8 +147,8 @@ function getObjectEffects(genObjEffects, canSpread)
                             type,
                             blurType, 
                             visible,
-                            radius:      Math.max(0, endRadius  ),
                             startRadius: Math.max(0, startRadius),
+                            radius:      Math.max(0, endRadius  ),
                             startOffset: { x: startX, y: startY },
                             endOffset:   { x: endX,   y: endY   },
                             boundVariables: {}
@@ -161,20 +161,55 @@ function getObjectEffects(genObjEffects, canSpread)
 
             case 'BACKGROUND_BLUR':
             {
-                const radius  = effect[1];
-                const visible = effect[2];
+                const blurType = effect[1];
 
-                if (!isNaN(radius))
+                if (blurType == 'NORMAL')
                 {
-                    effects.push(
-                    {
-                        type:           type, 
-                        visible:        visible,
-                        radius:         Math.max(0, radius),
-                        boundVariables: {}
-                    });
-                }
+                    const radius  = effect[1];
+                    const visible = effect[2];
 
+                    if (!isNaN(radius))
+                    {
+                        effects.push(
+                        {
+                            type:           type, 
+                            visible:        visible,
+                            radius:         Math.max(0, radius),
+                            boundVariables: {}
+                        });
+                    }
+                }
+                else if (blurType == 'PROGRESSIVE')
+                {
+                    const startRadius = effect[2];
+                    const endRadius   = effect[3];
+                    const startX      = effect[4];
+                    const startY      = effect[5];
+                    const endX        = effect[6];
+                    const endY        = effect[7];
+                    const visible     = effect[8];
+
+                    if (   !isNaN(startRadius)
+                        && !isNaN(endRadius  )
+                        && !isNaN(startX     )
+                        && !isNaN(startY     )
+                        && !isNaN(endX       )
+                        && !isNaN(endY       ))
+                    {
+                        effects.push(
+                        {
+                            type,
+                            blurType, 
+                            visible,
+                            startRadius: Math.max(0, startRadius),
+                            radius:      Math.max(0, endRadius  ),
+                            startOffset: { x: startX, y: startY },
+                            endOffset:   { x: endX,   y: endY   },
+                            boundVariables: {}
+                        });
+                    }
+                }
+    
                 break;
             }
         }

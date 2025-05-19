@@ -17,7 +17,7 @@ extends OperatorBase
     
     constructor()
     {
-        super(LAYER_PRBLUR, 'layerBlurProgressive', 'progressive layer blur', iconLayerBlur);
+        super(LAYER_PRBLUR, 'layerBlur', 'layer blur', iconLayerBlurProgressive);
 
         this.canDisable = true;
         

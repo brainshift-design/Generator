@@ -525,7 +525,24 @@ function addBackBlurProp(obj, prop)
 {
     obj.effects.push([
         'BACKGROUND_BLUR', 
-        prop.radius.value, //toNumber(),
+        'NORMAL',
+        prop.radius.value,
+        prop.visible ]);
+}
+
+
+
+function addBackBlurProgressiveProp(obj, prop)
+{
+    obj.effects.push([
+        'BACKGROUND_BLUR', 
+        'PROGRESSIVE',
+        prop.startRadius.value,
+        prop.endRadius  .value,
+        prop.startX     .value / 100,
+        prop.startY     .value / 100,
+        prop.endX       .value / 100,
+        prop.endY       .value / 100,
         prop.visible ]);
 }
 

@@ -771,11 +771,11 @@ function initGeneratorMenus()
 
     menuLayerBlur = new Menu('Layer blur', true, false);
     menuLayerBlur.addItems([
-        new MenuItem('Progressive blur', 'Progressive layer blur',      true, {icon: iconLayerBlur, callback: e => actionManager.do(getCreateNodeAction(LAYER_PRBLUR, btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Progressive blur', 'Progressive layer blur',      true, {icon: iconLayerBlurProgressive, callback: e => actionManager.do(getCreateNodeAction(LAYER_PRBLUR, btnShape.div, getCreateOptions(e)))})]);
 
     menuBackBlur = new Menu('Background blur', true, false);
     menuBackBlur.addItems([
-        new MenuItem('Progressive blur', 'Progressive background blur', true, {icon: iconBackBlur, callback: e => actionManager.do(getCreateNodeAction(BACK_PRBLUR, btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Progressive blur', 'Progressive background blur', true, {icon: iconBackBlurProgressive, callback: e => actionManager.do(getCreateNodeAction(BACK_PRBLUR, btnShape.div, getCreateOptions(e)))})]);
 
     menuEffects = new Menu('Effects', true, false);
     menuEffects.addItems([

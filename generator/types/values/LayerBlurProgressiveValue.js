@@ -55,7 +55,7 @@ extends GValue
     {
         return this.startX     .equals(blur.startX)
             && this.startY     .equals(blur.startY)
-            && this.startRadius.equals(blurstartRadius)
+            && this.startRadius.equals(blur.startRadius)
             && this.endX       .equals(blur.endX)
             && this.endY       .equals(blur.endY)
             && this.endRadius  .equals(blur.endRadius)
@@ -213,6 +213,3 @@ extends GValue
         return [shadow, i - iStart];
     }
 }
-
-
-
