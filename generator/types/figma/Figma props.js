@@ -12,6 +12,7 @@ function addProp(obj, prop)
     else if (prop.type ==  LAYER_PRBLUR_VALUE)  addLayerBlurProgressiveProp(obj, prop);
     else if (prop.type ==     BACK_BLUR_VALUE)  addBackBlurProp            (obj, prop);
     else if (prop.type ==   BACK_PRBLUR_VALUE)  addBackBlurProgressiveProp (obj, prop);
+    else if (prop.type == LAYER_TEXTURE_VALUE)  addLayerTextureProp        (obj, prop);
     else if (prop.type ==   LAYER_BLEND_VALUE)  addLayerBlendProp          (obj, prop);
     else if (prop.type ==    LAYER_MASK_VALUE)  addMaskProp                (obj, prop);
 }
@@ -543,6 +544,18 @@ function addBackBlurProgressiveProp(obj, prop)
         prop.startY     .value / 100,
         prop.endX       .value / 100,
         prop.endY       .value / 100,
+        prop.visible ]);
+}
+
+
+
+function addLayerTextureProp(obj, prop)
+{
+    obj.effects.push([
+        'TEXTURE', 
+        prop.size.value,
+        prop.radius.value,
+        prop.clipToShape.value,
         prop.visible ]);
 }
 

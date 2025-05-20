@@ -156,11 +156,11 @@ extends GValue
         const radius = NumberValue.parse(str[i]); i += radius[1];
     
     
-        const shadow = new LayerBlurValue(
+        const blur = new LayerBlurValue(
             radius[0]);
     
     
-        return [shadow, i - iStart];
+        return [blur, i - iStart];
     }
 }
 

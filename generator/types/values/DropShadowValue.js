@@ -41,15 +41,6 @@ extends GValue
 
 
     
-    // static create(x, y, blur, spread, fill, blend, behind)
-    // {
-    //     return new FillValue(
-    //         new Number,
-    //         new NumberValue(opacity));
-    // }
-
-
-
     copy()
     {
         const copy = new DropShadowValue(

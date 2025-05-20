@@ -197,6 +197,7 @@
 ../operators/layer/OpLayerBlurProgressive.js
 ../operators/layer/OpBackBlur.js
 ../operators/layer/OpBackBlurProgressive.js
+../operators/layer/OpLayerTexture.js
 ../operators/layer/OpLayerBlend.js
 ../operators/layer/OpLayerMask.js
 

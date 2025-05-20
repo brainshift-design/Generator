@@ -561,6 +561,7 @@ async function evalFrameValue               (_value, parse) { return await evalV
 async function evalInnerShadowValue         (_value, parse) { return await evalValue(_value, parse, () => InnerShadowValue         .NaN()); }
 async function evalLayerBlurValue           (_value, parse) { return await evalValue(_value, parse, () => LayerBlurValue           .NaN()); }
 async function evalLayerBlurProgressiveValue(_value, parse) { return await evalValue(_value, parse, () => LayerBlurProgressiveValue.NaN()); }
+async function evalLayerTextureValue        (_value, parse) { return await evalValue(_value, parse, () => LayerTextureValue        .NaN()); }
 async function evalStrokeSidesValue         (_value, parse) { return await evalValue(_value, parse, () => StrokeSidesValue         .NaN()); }
 async function evalRoundedCornersValue      (_value, parse) { return await evalValue(_value, parse, () => RoundedCornersValue      .NaN()); }
 

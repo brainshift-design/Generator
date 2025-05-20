@@ -59,6 +59,7 @@
 ../generator/types/values/LayerBlurProgressiveValue.js
 ../generator/types/values/BackBlurValue.js
 ../generator/types/values/BackBlurProgressiveValue.js
+../generator/types/values/LayerTextureValue.js
 ../generator/types/values/LayerBlendValue.js
 ../generator/types/values/LayerMaskValue.js
 ../generator/types/values/VariableValue.js
@@ -230,6 +231,7 @@
 ../generator/types/layer/GLayerBlurProgressive.js
 ../generator/types/layer/GBackBlur.js
 ../generator/types/layer/GBackBlurProgressive.js
+../generator/types/layer/GLayerTexture.js
 ../generator/types/layer/GLayerBlend.js
 ../generator/types/layer/GLayerMask.js
 

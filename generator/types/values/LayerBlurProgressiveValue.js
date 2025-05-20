@@ -5,7 +5,12 @@ extends GValue
 
 
 
-    radius;
+    startX;
+    startY;
+    startRadius;
+    endX;
+    endY;
+    endRadius;
     visible;
 
 
@@ -23,11 +28,9 @@ extends GValue
         this.startX      = startX;
         this.startY      = startY;
         this.startRadius = startRadius;
-
         this.endX        = endX;
         this.endY        = endY;
         this.endRadius   = endRadius;
-
         this.visible     = visible;
     }
 
@@ -53,12 +56,12 @@ extends GValue
 
     equals(blur)
     {
-        return this.startX     .equals(blur.startX)
-            && this.startY     .equals(blur.startY)
+        return this.startX     .equals(blur.startX     )
+            && this.startY     .equals(blur.startY     )
             && this.startRadius.equals(blur.startRadius)
-            && this.endX       .equals(blur.endX)
-            && this.endY       .equals(blur.endY)
-            && this.endRadius  .equals(blur.endRadius)
+            && this.endX       .equals(blur.endX       )
+            && this.endY       .equals(blur.endY       )
+            && this.endRadius  .equals(blur.endRadius  )
             && this.visible === blur.visible;
     }
 
@@ -78,8 +81,7 @@ extends GValue
             + ' ' + this.startRadius.toString()
             + ' ' + this.endX       .toString()
             + ' ' + this.endY       .toString()
-            + ' ' + this.endRadius  .toString()
-            + ' ' + super           .toString();
+            + ' ' + this.endRadius  .toString();
     }
 
 
@@ -91,8 +93,7 @@ extends GValue
             + ' ' + this.startRadius.toPreviewString()
             + ' ' + this.endX       .toPreviewString()
             + ' ' + this.endY       .toPreviewString()
-            + ' ' + this.endRadius  .toPreviewString()
-            + ' ' + super           .toPreviewString();
+            + ' ' + this.endRadius  .toPreviewString();
     }
 
 
@@ -104,8 +105,7 @@ extends GValue
             + ' ' + this.startRadius.toDisplayString()
             + ' ' + this.endX       .toDisplayString()
             + ' ' + this.endY       .toDisplayString()
-            + ' ' + this.endRadius  .toDisplayString()
-            + ' ' + super           .toDisplayString();
+            + ' ' + this.endRadius  .toDisplayString();
     }
 
 
@@ -130,7 +130,13 @@ extends GValue
         options.named = true;
 
 
-        json += SL_(TAB(options.tab)) + '"radius": ' + this.radius.toJsonText(options) + SL('\n');
+        json += SL_(TAB(options.tab)) + '"startX": '      + this.startX     .toJsonText(options) + SL('\n');
+        json += SL_(TAB(options.tab)) + '"startY": '      + this.startY     .toJsonText(options) + SL('\n');
+        json += SL_(TAB(options.tab)) + '"startRadius": ' + this.startRadius.toJsonText(options) + SL('\n');
+        json += WS('\n');
+        json += SL_(TAB(options.tab)) + '"endX": '        + this.endX       .toJsonText(options) + SL('\n');
+        json += SL_(TAB(options.tab)) + '"endY": '        + this.endY       .toJsonText(options) + SL('\n');
+        json += SL_(TAB(options.tab)) + '"endRadius": '   + this.endRadius  .toJsonText(options) + SL('\n');
 
 
         options.named = oldNamed;
@@ -203,13 +209,23 @@ extends GValue
     
         const iStart = i;
     
-        const radius = NumberValue.parse(str[i]); i += radius[1];
+        const startX      = NumberValue.parse(str[i]); i += startX     [1];
+        const startY      = NumberValue.parse(str[i]); i += startY     [1];
+        const startRadius = NumberValue.parse(str[i]); i += startRadius[1];
+        const endX        = NumberValue.parse(str[i]); i += endX       [1];
+        const endY        = NumberValue.parse(str[i]); i += endY       [1];
+        const endRadius   = NumberValue.parse(str[i]); i += endRadius  [1];
     
     
-        const shadow = new LayerBlurProgressiveValue(
-            radius[0]);
+        const blur = new LayerBlurProgressiveValue(
+            startX     [0],
+            startY     [0],
+            startRadius[0],
+            endX       [0],
+            endY       [0],
+            endRadius  [0]);
     
     
-        return [shadow, i - iStart];
+        return [blur, i - iStart];
     }
 }

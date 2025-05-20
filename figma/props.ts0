@@ -43,11 +43,11 @@ function getObjectEffects(genObjEffects, canSpread)
                 {
                     effects.push(
                     {
-                        type:                 type, 
-                        color:                color,
-                        offset:               offset,
-                        radius:               radius,
-                        visible:              visible,
+                        type, 
+                        color,
+                        offset,
+                        radius,
+                        visible,
                         blendMode:            blend,
                         showShadowBehindNode: behind,
                         boundVariables:       {}
@@ -90,13 +90,13 @@ function getObjectEffects(genObjEffects, canSpread)
                 {
                     effects.push(
                     {
-                        type:           type, 
-                        color:          color,
-                        offset:         offset,
-                        radius:         radius,
-                        spread:         spread,
-                        visible:        visible,
-                        blendMode:      blend,
+                        type, 
+                        color,
+                        offset,
+                        radius,
+                        spread,
+                        visible,
+                        blendMode: blend,
                         boundVariables: {}
                     });
                 }
@@ -172,8 +172,8 @@ function getObjectEffects(genObjEffects, canSpread)
                     {
                         effects.push(
                         {
-                            type:           type, 
-                            visible:        visible,
+                            type, 
+                            visible,
                             radius:         Math.max(0, radius),
                             boundVariables: {}
                         });
@@ -201,13 +201,37 @@ function getObjectEffects(genObjEffects, canSpread)
                             type,
                             blurType, 
                             visible,
-                            startRadius: Math.max(0, startRadius),
-                            radius:      Math.max(0, endRadius  ),
+                            startRadius: Math.min(Math.max(0, startRadius), 100),
+                            radius:      Math.min(Math.max(0, endRadius  ), 100),
                             startOffset: { x: startX, y: startY },
                             endOffset:   { x: endX,   y: endY   },
                             boundVariables: {}
                         });
                     }
+                }
+    
+                break;
+            }
+
+            case 'TEXTURE':
+            {
+                const noiseSize   = effect[1];
+                const radius      = effect[2];
+                const clipToShape = effect[3];
+                const visible     = effect[4];
+
+                if (   !isNaN(noiseSize  ) 
+                    && !isNaN(radius     )
+                    && !isNaN(clipToShape))
+                {
+                    effects.push(
+                    {
+                        type, 
+                        visible,
+                        noiseSize:   Math.max(0, noiseSize),
+                        radius:      Math.max(0, radius   ),
+                        clipToShape: clipToShape > 0
+                    });
                 }
     
                 break;
