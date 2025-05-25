@@ -14,228 +14,12 @@ function getObjectEffects(genObjEffects, canSpread)
 
         switch (type)
         {
-            case 'DROP_SHADOW':
-            {
-                const color = {
-                    r: Math.min(Math.max(0, effect[1]), 1), 
-                    g: Math.min(Math.max(0, effect[2]), 1), 
-                    b: Math.min(Math.max(0, effect[3]), 1),
-                    a: Math.min(Math.max(0, effect[4]), 1) };
-
-                const offset = {
-                    x: effect[5],
-                    y: effect[6] };
-
-                const radius  = effect[ 7];
-                const spread  = effect[ 8];
-                const blend   = effect[ 9];
-                const behind  = effect[10];
-                const visible = effect[11];
-  
-
-                if (   !isNaN(color.r)
-                    && !isNaN(color.g)
-                    && !isNaN(color.b)
-                    && !isNaN(color.a)
-                    && !isNaN(offset.x)
-                    && !isNaN(offset.y)
-                    && !isNaN(radius))
-                {
-                    effects.push(
-                    {
-                        type, 
-                        color,
-                        offset,
-                        radius,
-                        visible,
-                        blendMode:            blend,
-                        showShadowBehindNode: behind,
-                        boundVariables:       {}
-                    });
-
-                    if (    canSpread
-                        && !isNaN(spread))
-                        effects[effects.length-1]['spread'] = spread;
-                }
-
-                break;
-            }
-
-            case 'INNER_SHADOW':
-            {
-                const color = {
-                    r: Math.min(Math.max(0, effect[1]), 1), 
-                    g: Math.min(Math.max(0, effect[2]), 1), 
-                    b: Math.min(Math.max(0, effect[3]), 1),
-                    a: Math.min(Math.max(0, effect[4]), 1) };
-
-                const offset = {
-                    x: effect[5],
-                    y: effect[6] };
-
-                const radius  = effect[ 7];
-                const spread  = effect[ 8];
-                const blend   = effect[ 9];
-                const visible = effect[10];
-  
-
-                if (   !isNaN(color.r)
-                    && !isNaN(color.g)
-                    && !isNaN(color.b)
-                    && !isNaN(color.a)
-                    && !isNaN(offset.x)
-                    && !isNaN(offset.y)
-                    && !isNaN(radius)
-                    && !isNaN(spread))
-                {
-                    effects.push(
-                    {
-                        type, 
-                        color,
-                        offset,
-                        radius,
-                        spread,
-                        visible,
-                        blendMode: blend,
-                        boundVariables: {}
-                    });
-                }
-
-                break;
-            }
-
-            case 'LAYER_BLUR':
-            {
-                const blurType = effect[1];
-
-                if (blurType == 'NORMAL')
-                {
-                    const radius  = effect[2];
-                    const visible = effect[3];
-
-                    if (!isNaN(radius))
-                    {
-                        effects.push(
-                        {
-                            type,
-                            blurType, 
-                            visible,
-                            radius: Math.max(0, radius),
-                            boundVariables: {}
-                        });
-                    }
-                }
-                else if (blurType == 'PROGRESSIVE')
-                {
-                    const startRadius = effect[2];
-                    const endRadius   = effect[3];
-                    const startX      = effect[4];
-                    const startY      = effect[5];
-                    const endX        = effect[6];
-                    const endY        = effect[7];
-                    const visible     = effect[8];
-
-                    if (   !isNaN(startRadius)
-                        && !isNaN(endRadius  )
-                        && !isNaN(startX     )
-                        && !isNaN(startY     )
-                        && !isNaN(endX       )
-                        && !isNaN(endY       ))
-                    {
-                        effects.push(
-                        {
-                            type,
-                            blurType, 
-                            visible,
-                            startRadius: Math.max(0, startRadius),
-                            radius:      Math.max(0, endRadius  ),
-                            startOffset: { x: startX, y: startY },
-                            endOffset:   { x: endX,   y: endY   },
-                            boundVariables: {}
-                        });
-                    }
-                }
-
-                break;
-            }
-
-            case 'BACKGROUND_BLUR':
-            {
-                const blurType = effect[1];
-
-                if (blurType == 'NORMAL')
-                {
-                    const radius  = effect[1];
-                    const visible = effect[2];
-
-                    if (!isNaN(radius))
-                    {
-                        effects.push(
-                        {
-                            type, 
-                            visible,
-                            radius:         Math.max(0, radius),
-                            boundVariables: {}
-                        });
-                    }
-                }
-                else if (blurType == 'PROGRESSIVE')
-                {
-                    const startRadius = effect[2];
-                    const endRadius   = effect[3];
-                    const startX      = effect[4];
-                    const startY      = effect[5];
-                    const endX        = effect[6];
-                    const endY        = effect[7];
-                    const visible     = effect[8];
-
-                    if (   !isNaN(startRadius)
-                        && !isNaN(endRadius  )
-                        && !isNaN(startX     )
-                        && !isNaN(startY     )
-                        && !isNaN(endX       )
-                        && !isNaN(endY       ))
-                    {
-                        effects.push(
-                        {
-                            type,
-                            blurType, 
-                            visible,
-                            startRadius: Math.min(Math.max(0, startRadius), 100),
-                            radius:      Math.min(Math.max(0, endRadius  ), 100),
-                            startOffset: { x: startX, y: startY },
-                            endOffset:   { x: endX,   y: endY   },
-                            boundVariables: {}
-                        });
-                    }
-                }
-    
-                break;
-            }
-
-            case 'TEXTURE':
-            {
-                const noiseSize   = effect[1];
-                const radius      = effect[2];
-                const clipToShape = effect[3];
-                const visible     = effect[4];
-
-                if (   !isNaN(noiseSize  ) 
-                    && !isNaN(radius     )
-                    && !isNaN(clipToShape))
-                {
-                    effects.push(
-                    {
-                        type, 
-                        visible,
-                        noiseSize:   Math.max(0, noiseSize),
-                        radius:      Math.max(0, radius   ),
-                        clipToShape: clipToShape > 0
-                    });
-                }
-    
-                break;
-            }
+            case 'DROP_SHADOW':     addDropShadowEffect    (type, effects, effect, canSpread); break;
+            case 'INNER_SHADOW':    addInnerShadowEffect   (type, effects, effect);            break;
+            case 'LAYER_BLUR':      addLayerBlurEffect     (type, effects, effect);            break;
+            case 'BACKGROUND_BLUR': addBackgroundBlurEffect(type, effects, effect);            break;
+            case 'TEXTURE':         addTextureEffect       (type, effects, effect);            break;
+            case 'LAYER_NOISE':     addLayerNoiseEffect    (type, effects, effect);            break;
         }
     }
 
@@ -243,6 +27,338 @@ function getObjectEffects(genObjEffects, canSpread)
     return effects;
 }
 
+
+
+function addDropShadowEffect(type, effects, effect, canSpread)
+{
+    const color = {
+        r: Math.min(Math.max(0, effect[1]), 1), 
+        g: Math.min(Math.max(0, effect[2]), 1), 
+        b: Math.min(Math.max(0, effect[3]), 1),
+        a: Math.min(Math.max(0, effect[4]), 1) };
+
+    const offset = {
+        x: effect[5],
+        y: effect[6] };
+
+    const radius  = effect[ 7];
+    const spread  = effect[ 8];
+    const blend   = effect[ 9];
+    const behind  = effect[10];
+    const visible = effect[11];
+
+
+    if (   !isNaN(color.r)
+        && !isNaN(color.g)
+        && !isNaN(color.b)
+        && !isNaN(color.a)
+        && !isNaN(offset.x)
+        && !isNaN(offset.y)
+        && !isNaN(radius))
+    {
+        effects.push(
+        {
+            type, 
+            color,
+            offset,
+            radius,
+            visible,
+            blendMode:            blend,
+            showShadowBehindNode: behind,
+            boundVariables:       {}
+        });
+
+        if (    canSpread
+            && !isNaN(spread))
+            effects[effects.length-1]['spread'] = spread;
+    }
+}
+
+
+
+function addInnerShadowEffect(type, effects, effect)
+{
+    const color = {
+        r: Math.min(Math.max(0, effect[1]), 1), 
+        g: Math.min(Math.max(0, effect[2]), 1), 
+        b: Math.min(Math.max(0, effect[3]), 1),
+        a: Math.min(Math.max(0, effect[4]), 1) };
+
+    const offset = {
+        x: effect[5],
+        y: effect[6] };
+
+    const radius  = effect[ 7];
+    const spread  = effect[ 8];
+    const blend   = effect[ 9];
+    const visible = effect[10];
+
+
+    if (   !isNaN(color.r)
+        && !isNaN(color.g)
+        && !isNaN(color.b)
+        && !isNaN(color.a)
+        && !isNaN(offset.x)
+        && !isNaN(offset.y)
+        && !isNaN(radius)
+        && !isNaN(spread))
+    {
+        effects.push(
+        {
+            type, 
+            color,
+            offset,
+            radius,
+            spread,
+            visible,
+            blendMode: blend,
+            boundVariables: {}
+        });
+    }
+}
+
+
+
+function addLayerBlurEffect(type, effects, effect)
+{
+    const blurType = effect[1];
+
+    if (blurType == 'NORMAL')
+    {
+        const radius  = effect[2];
+        const visible = effect[3];
+
+        if (!isNaN(radius))
+        {
+            effects.push(
+            {
+                type,
+                blurType, 
+                visible,
+                radius: Math.max(0, radius),
+                boundVariables: {}
+            });
+        }
+    }
+    else if (blurType == 'PROGRESSIVE')
+    {
+        const startRadius = effect[2];
+        const endRadius   = effect[3];
+        const startX      = effect[4];
+        const startY      = effect[5];
+        const endX        = effect[6];
+        const endY        = effect[7];
+        const visible     = effect[8];
+
+        if (   !isNaN(startRadius)
+            && !isNaN(endRadius  )
+            && !isNaN(startX     )
+            && !isNaN(startY     )
+            && !isNaN(endX       )
+            && !isNaN(endY       ))
+        {
+            effects.push(
+            {
+                type,
+                blurType, 
+                visible,
+                startRadius: Math.max(0, startRadius),
+                radius:      Math.max(0, endRadius  ),
+                startOffset: { x: startX, y: startY },
+                endOffset:   { x: endX,   y: endY   },
+                boundVariables: {}
+            });
+        }
+    }
+}
+
+
+
+function addBackgroundBlurEffect(type, effects, effect)
+{
+    const blurType = effect[1];
+
+    if (blurType == 'NORMAL')
+    {
+        const radius  = effect[1];
+        const visible = effect[2];
+
+        if (!isNaN(radius))
+        {
+            effects.push(
+            {
+                type, 
+                visible,
+                radius:         Math.max(0, radius),
+                boundVariables: {}
+            });
+        }
+    }
+    else if (blurType == 'PROGRESSIVE')
+    {
+        const startRadius = effect[2];
+        const endRadius   = effect[3];
+        const startX      = effect[4];
+        const startY      = effect[5];
+        const endX        = effect[6];
+        const endY        = effect[7];
+        const visible     = effect[8];
+
+        if (   !isNaN(startRadius)
+            && !isNaN(endRadius  )
+            && !isNaN(startX     )
+            && !isNaN(startY     )
+            && !isNaN(endX       )
+            && !isNaN(endY       ))
+        {
+            effects.push(
+            {
+                type,
+                blurType, 
+                visible,
+                startRadius: Math.min(Math.max(0, startRadius), 100),
+                radius:      Math.min(Math.max(0, endRadius  ), 100),
+                startOffset: { x: startX, y: startY },
+                endOffset:   { x: endX,   y: endY   },
+                boundVariables: {}
+            });
+        }
+    }
+}
+
+
+
+function addTextureEffect(type, effects, effect)
+{
+    const noiseSize   = effect[1];
+    const radius      = effect[2];
+    const clipToShape = effect[3];
+    const visible     = effect[4];
+
+    if (   !isNaN(noiseSize  ) 
+        && !isNaN(radius     )
+        && !isNaN(clipToShape))
+    {
+        effects.push(
+        {
+            type, 
+            visible,
+            noiseSize:   Math.min(Math.max(0, noiseSize), 100),
+            radius:      Math.min(Math.max(0, radius   ), 100),
+            clipToShape: clipToShape > 0
+        });
+    }
+}
+
+
+
+function addLayerNoiseEffect(type, effects, effect)
+{
+    const noiseType = effect[1];
+
+    if (noiseType == 'MONOTONE')
+    {
+        const size    = effect[2];
+        const density = effect[3];
+        const r       = effect[4];
+        const g       = effect[5];
+        const b       = effect[6];
+        const opacity = effect[7];
+        const blend   = effect[8];
+        const visible = effect[9];
+
+        if (   !isNaN(size)
+            && !isNaN(density)
+            && !isNaN(r)
+            && !isNaN(g)
+            && !isNaN(b)
+            && !isNaN(opacity))
+        {
+            effects.push(
+            {
+                type: 'LAYER_NOISE',
+                noiseType,
+                visible,
+                size:     Math.min(Math.max(0, size), 100),
+                density:  Math.min(Math.max(0, density), 100),
+                color: {
+                    r: Math.min(Math.max(0, r), 1),
+                    g: Math.min(Math.max(0, g), 1),
+                    b: Math.min(Math.max(0, b), 1),
+                    a: Math.min(Math.max(0, opacity), 1)
+                },
+                blendMode: blend
+            });
+        }
+    }
+    else if (noiseType == 'DUOTONE')
+    {
+        const size     = effect[2];
+        const density  = effect[3];
+        const r1       = effect[4];
+        const g1       = effect[5];
+        const b1       = effect[6];
+        const opacity1 = effect[7];
+        const r2       = effect[8];
+        const g2       = effect[9];
+        const b2       = effect[10];
+        const opacity2 = effect[11];
+        const blend    = effect[12];
+        const visible  = effect[13];
+
+        if (   !isNaN(size)
+            && !isNaN(density)
+            && !isNaN(r1) && !isNaN(g1) && !isNaN(b1) && !isNaN(opacity1)
+            && !isNaN(r2) && !isNaN(g2) && !isNaN(b2) && !isNaN(opacity2))
+        {
+            effects.push(
+            {
+                type: 'LAYER_NOISE',
+                noiseType,
+                visible,
+                size:     Math.min(Math.max(0, size), 100),
+                density:  Math.min(Math.max(0, density), 100),
+                color: {
+                    r: Math.min(Math.max(0, r1), 1),
+                    g: Math.min(Math.max(0, g1), 1),
+                    b: Math.min(Math.max(0, b1), 1),
+                    a: Math.min(Math.max(0, opacity1), 1)
+                },
+                secondaryColor: {
+                    r: Math.min(Math.max(0, r2), 1),
+                    g: Math.min(Math.max(0, g2), 1),
+                    b: Math.min(Math.max(0, b2), 1),
+                    a: Math.min(Math.max(0, opacity2), 1)
+                },
+                blendMode: blend
+            });
+        }
+    }
+    else if (noiseType == 'MULTITONE')
+    {
+        const size    = effect[2];
+        const density = effect[3];
+        const opacity = effect[4];
+        const blend   = effect[5];
+        const visible = effect[6];
+
+        if (   !isNaN(size)
+            && !isNaN(density)
+            && !isNaN(opacity))
+        {
+            effects.push(
+            {
+                type: 'LAYER_NOISE',
+                noiseType,
+                visible,
+                size:     Math.min(Math.max(0, size), 100),
+                density:  Math.min(Math.max(0, density), 100),
+                opacity:  Math.min(Math.max(0, opacity), 1),
+                blendMode: blend
+            });
+        }
+    }
+}
 
 
 function setObjectProps(figObj, genObj, phantom = true)

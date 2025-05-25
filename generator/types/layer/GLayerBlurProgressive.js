@@ -94,12 +94,12 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['startX',      this.startX     ],
-            ['startY',      this.startY     ],
-            ['startRadius', this.startRadius],
-            ['endX',        this.endX       ],
-            ['endY',        this.endY       ],
-            ['endRadius',   this.endRadius  ]
+            ['startX',      this.value.startX     ],
+            ['startY',      this.value.startY     ],
+            ['startRadius', this.value.startRadius],
+            ['endX',        this.value.endX       ],
+            ['endY',        this.value.endY       ],
+            ['endRadius',   this.value.endRadius  ]
         ]);
         
 
@@ -223,7 +223,17 @@ extends GOperator1
             paramIds = parse.move().split(',');
         }
         else
-            paramIds = ['startX', 'startY', 'startRadius', 'endX', 'endY', 'endRadius'];
+        {
+            paramIds = 
+            [
+                'startX', 
+                'startY', 
+                'startRadius', 
+                'endX', 
+                'endY', 
+                'endRadius'
+            ];
+        }
     
     
         parse.inParam = false;

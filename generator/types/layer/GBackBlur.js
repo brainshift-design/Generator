@@ -44,8 +44,8 @@ extends GOperator1
             return this;
 
 
-        const input  = await evalValue      (this.input,  parse);
-        const radius = await evalNumberValue(this.radius, parse);
+        const input  = await evalBackBlurValue(this.input,  parse);
+        const radius = await evalNumberValue  (this.radius, parse);
 
         
         if (input)

@@ -8,7 +8,6 @@ extends GOperator1
     startX      = null;
     startY      = null;
     startRadius = null;
-
     endX        = null;
     endY        = null;
     endRadius   = null;
@@ -29,7 +28,6 @@ extends GOperator1
         this.startX      = null;
         this.startY      = null;
         this.startRadius = null;
-
         this.endX        = null;
         this.endY        = null;
         this.endRadius   = null;
@@ -46,10 +44,9 @@ extends GOperator1
         if (this.startX     ) copy.startX      = this.startX     .copy();
         if (this.startY     ) copy.startY      = this.startY     .copy();
         if (this.startRadius) copy.startRadius = this.startRadius.copy();
-
-        if (this.endX       ) copy.endX        = this.endX     .copy();
-        if (this.endY       ) copy.endY        = this.endY     .copy();
-        if (this.endRadius  ) copy.endRadius   = this.endRadius.copy();
+        if (this.endX       ) copy.endX        = this.endX       .copy();
+        if (this.endY       ) copy.endY        = this.endY       .copy();
+        if (this.endRadius  ) copy.endRadius   = this.endRadius  .copy();
 
         return copy;
     }
@@ -62,20 +59,19 @@ extends GOperator1
             return this;
 
 
-        const input       = await evalLayerBlurProgressiveValue(this.input,       parse);
+        const input       = await evalBackBlurProgressiveValue(this.input,       parse);
 
-        const startX      = await evalNumberValue              (this.startX,      parse);
-        const startY      = await evalNumberValue              (this.startY,      parse);
-        const startRadius = await evalNumberValue              (this.startRadius, parse);
-
-        const endX        = await evalNumberValue              (this.endX,        parse);
-        const endY        = await evalNumberValue              (this.endY,        parse);
-        const endRadius   = await evalNumberValue              (this.endRadius,   parse);
+        const startX      = await evalNumberValue             (this.startX,      parse);
+        const startY      = await evalNumberValue             (this.startY,      parse);
+        const startRadius = await evalNumberValue             (this.startRadius, parse);
+        const endX        = await evalNumberValue             (this.endX,        parse);
+        const endY        = await evalNumberValue             (this.endY,        parse);
+        const endRadius   = await evalNumberValue             (this.endRadius,   parse);
 
         
         if (input)
         {
-            this.value = new LayerBlurProgressiveValue(
+            this.value = new BackBlurProgressiveValue(
                 startX      ?? input.startX,
                 startY      ?? input.startY,
                 startRadius ?? input.startRadius,
@@ -86,7 +82,7 @@ extends GOperator1
         }
         else
         {
-            this.value = new LayerBlurProgressiveValue(
+            this.value = new BackBlurProgressiveValue(
                 startX,
                 startY,
                 startRadius,
@@ -99,20 +95,18 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['startX',      this.startX     ],
-            ['startY',      this.startY     ],
-            ['startRadius', this.startRadius],
-
-            ['endX',        this.endX       ],
-            ['endY',        this.endY       ],
-            ['endRadius',   this.endRadius  ]
+            ['startX',      this.value.startX     ],
+            ['startY',      this.value.startY     ],
+            ['startRadius', this.value.startRadius],
+            ['endX',        this.value.endX       ],
+            ['endY',        this.value.endY       ],
+            ['endRadius',   this.value.endRadius  ]
         ]);
         
 
         if (!this.startX     ) this.startX      = this.value.startX     .copy();
         if (!this.startY     ) this.startY      = this.value.startY     .copy();
         if (!this.startRadius) this.startRadius = this.value.startRadius.copy();
-
         if (!this.endX       ) this.endX        = this.value.endX       .copy();
         if (!this.endY       ) this.endY        = this.value.endY       .copy();
         if (!this.endRadius  ) this.endRadius   = this.value.endRadius  .copy();
@@ -127,15 +121,13 @@ extends GOperator1
 
     toNewValue()
     {
-        return new LayerBlurProgressiveValue(
+        return new BackBlurProgressiveValue(
             this.startX      ? this.startX     .toNewValue() : this.input.startX     .toNewValue(),
             this.startY      ? this.startY     .toNewValue() : this.input.startY     .toNewValue(),
             this.startRadius ? this.startRadius.toNewValue() : this.input.startRadius.toNewValue(),
-
             this.endX        ? this.endX       .toNewValue() : this.input.endX       .toNewValue(),
             this.endY        ? this.endY       .toNewValue() : this.input.endY       .toNewValue(),
             this.endRadius   ? this.endRadius  .toNewValue() : this.input.endRadius  .toNewValue(),
-
             this.options.enabled);
     }
 
@@ -161,7 +153,6 @@ extends GOperator1
         if (this.startX     ) this.startX     .pushValueUpdates(parse);
         if (this.startY     ) this.startY     .pushValueUpdates(parse);
         if (this.startRadius) this.startRadius.pushValueUpdates(parse);
-
         if (this.endX       ) this.endX       .pushValueUpdates(parse);
         if (this.endY       ) this.endY       .pushValueUpdates(parse);
         if (this.endRadius  ) this.endRadius  .pushValueUpdates(parse);
@@ -176,7 +167,6 @@ extends GOperator1
         if (this.startX     ) this.startX     .invalidateInputs(parse, from, force);
         if (this.startY     ) this.startY     .invalidateInputs(parse, from, force);
         if (this.startRadius) this.startRadius.invalidateInputs(parse, from, force);
-
         if (this.endX       ) this.endX       .invalidateInputs(parse, from, force);
         if (this.endY       ) this.endY       .invalidateInputs(parse, from, force);
         if (this.endRadius  ) this.endRadius  .invalidateInputs(parse, from, force);
@@ -191,7 +181,6 @@ extends GOperator1
         if (this.startX     ) this.startX     .iterateLoop(parse);
         if (this.startY     ) this.startY     .iterateLoop(parse);
         if (this.startRadius) this.startRadius.iterateLoop(parse);
-
         if (this.endX       ) this.endX       .iterateLoop(parse);
         if (this.endY       ) this.endY       .iterateLoop(parse);
         if (this.endRadius  ) this.endRadius  .iterateLoop(parse);
@@ -240,7 +229,17 @@ extends GOperator1
             paramIds = parse.move().split(',');
         }
         else
-            paramIds = ['startX', 'startY', 'startRadius', 'endX', 'endY', 'endRadius'];
+        {
+            paramIds = 
+            [
+                'startX', 
+                'startY', 
+                'startRadius', 
+                'endX', 
+                'endY', 
+                'endRadius'
+            ];
+        }
     
     
         parse.inParam = false;
@@ -252,7 +251,6 @@ extends GOperator1
             case 'startX':      blur.startX      = genParse(parse); break;
             case 'startY':      blur.startY      = genParse(parse); break;
             case 'startRadius': blur.startRadius = genParse(parse); break;
-
             case 'endX':        blur.endX        = genParse(parse); break;
             case 'endY':        blur.endY        = genParse(parse); break;
             case 'endRadius':   blur.endRadius   = genParse(parse); break;

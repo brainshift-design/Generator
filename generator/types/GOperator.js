@@ -561,7 +561,12 @@ async function evalFrameValue               (_value, parse) { return await evalV
 async function evalInnerShadowValue         (_value, parse) { return await evalValue(_value, parse, () => InnerShadowValue         .NaN()); }
 async function evalLayerBlurValue           (_value, parse) { return await evalValue(_value, parse, () => LayerBlurValue           .NaN()); }
 async function evalLayerBlurProgressiveValue(_value, parse) { return await evalValue(_value, parse, () => LayerBlurProgressiveValue.NaN()); }
+async function evalBackBlurValue            (_value, parse) { return await evalValue(_value, parse, () => BackBlurValue            .NaN()); }
+async function evalBackBlurProgressiveValue (_value, parse) { return await evalValue(_value, parse, () => BackBlurProgressiveValue .NaN()); }
 async function evalLayerTextureValue        (_value, parse) { return await evalValue(_value, parse, () => LayerTextureValue        .NaN()); }
+async function evalLayerNoiseMonoValue      (_value, parse) { return await evalValue(_value, parse, () => LayerNoiseMonoValue      .NaN()); }
+async function evalLayerNoiseDuoValue       (_value, parse) { return await evalValue(_value, parse, () => LayerNoiseDuoValue       .NaN()); }
+async function evalLayerNoiseMultiValue     (_value, parse) { return await evalValue(_value, parse, () => LayerNoiseMultiValue     .NaN()); }
 async function evalStrokeSidesValue         (_value, parse) { return await evalValue(_value, parse, () => StrokeSidesValue         .NaN()); }
 async function evalRoundedCornersValue      (_value, parse) { return await evalValue(_value, parse, () => RoundedCornersValue      .NaN()); }
 

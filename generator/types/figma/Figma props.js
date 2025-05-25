@@ -1,20 +1,23 @@
 function addProp(obj, prop)
 {
-         if (prop.type ==         COLOR_VALUE)  addColorProp               (obj, prop);
-    else if (prop.type ==          FILL_VALUE)  addFillProp                (obj, prop);
-    else if (prop.type ==      GRADIENT_VALUE)  addGradientProp            (obj, prop);
-    else if (prop.type ==        STROKE_VALUE)  addStrokeProp              (obj, prop);
-    else if (prop.type ==  STROKE_SIDES_VALUE)  addStrokeSidesProp         (obj, prop);
-    else if (prop.type == ROUND_CORNERS_VALUE)  addRoundCornersProp        (obj, prop);
-    else if (prop.type ==   DROP_SHADOW_VALUE)  addDropShadowProp          (obj, prop);
-    else if (prop.type ==  INNER_SHADOW_VALUE)  addInnerShadowProp         (obj, prop);
-    else if (prop.type ==    LAYER_BLUR_VALUE)  addLayerBlurProp           (obj, prop);
-    else if (prop.type ==  LAYER_PRBLUR_VALUE)  addLayerBlurProgressiveProp(obj, prop);
-    else if (prop.type ==     BACK_BLUR_VALUE)  addBackBlurProp            (obj, prop);
-    else if (prop.type ==   BACK_PRBLUR_VALUE)  addBackBlurProgressiveProp (obj, prop);
-    else if (prop.type == LAYER_TEXTURE_VALUE)  addLayerTextureProp        (obj, prop);
-    else if (prop.type ==   LAYER_BLEND_VALUE)  addLayerBlendProp          (obj, prop);
-    else if (prop.type ==    LAYER_MASK_VALUE)  addMaskProp                (obj, prop);
+         if (prop.type ==             COLOR_VALUE)  addColorProp               (obj, prop);
+    else if (prop.type ==              FILL_VALUE)  addFillProp                (obj, prop);
+    else if (prop.type ==          GRADIENT_VALUE)  addGradientProp            (obj, prop);
+    else if (prop.type ==            STROKE_VALUE)  addStrokeProp              (obj, prop);
+    else if (prop.type ==      STROKE_SIDES_VALUE)  addStrokeSidesProp         (obj, prop);
+    else if (prop.type ==     ROUND_CORNERS_VALUE)  addRoundCornersProp        (obj, prop);
+    else if (prop.type ==       DROP_SHADOW_VALUE)  addDropShadowProp          (obj, prop);
+    else if (prop.type ==      INNER_SHADOW_VALUE)  addInnerShadowProp         (obj, prop);
+    else if (prop.type ==        LAYER_BLUR_VALUE)  addLayerBlurProp           (obj, prop);
+    else if (prop.type ==      LAYER_PRBLUR_VALUE)  addLayerBlurProgressiveProp(obj, prop);
+    else if (prop.type ==         BACK_BLUR_VALUE)  addBackBlurProp            (obj, prop);
+    else if (prop.type ==       BACK_PRBLUR_VALUE)  addBackBlurProgressiveProp (obj, prop);
+    else if (prop.type ==     LAYER_TEXTURE_VALUE)  addLayerTextureProp        (obj, prop);
+    else if (prop.type ==  LAYER_NOISE_MONO_VALUE)  addLayerNoiseMonoProp      (obj, prop);
+    else if (prop.type ==   LAYER_NOISE_DUO_VALUE)  addLayerNoiseDuoProp       (obj, prop);
+    else if (prop.type == LAYER_NOISE_MULTI_VALUE)  addLayerNoiseMultiProp     (obj, prop);
+    else if (prop.type ==       LAYER_BLEND_VALUE)  addLayerBlendProp          (obj, prop);
+    else if (prop.type ==        LAYER_MASK_VALUE)  addMaskProp                (obj, prop);
 }
 
 
@@ -572,4 +575,68 @@ function addLayerBlendProp(obj, prop)
 function addMaskProp(obj, mask)
 {
     obj.maskType = mask.maskType.value + 1;
+}
+
+
+
+function addLayerNoiseMonoProp(obj, prop)
+{
+    if (!prop.enabled)
+        return;
+
+    obj.effects.push([
+        'LAYER_NOISE',
+        'MONOTONE',
+        prop.size.value,
+        prop.density.value,
+        prop.fill.color.toRgb()[0] / 255,
+        prop.fill.color.toRgb()[1] / 255,
+        prop.fill.color.toRgb()[2] / 255,
+        prop.fill.opacity.value / 100,
+        BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2],
+        true // visible
+    ]);
+}
+
+
+
+function addLayerNoiseDuoProp(obj, prop)
+{
+    if (!prop.enabled)
+        return;
+
+    obj.effects.push([
+        'LAYER_NOISE',
+        'DUOTONE',
+        prop.size.value,
+        prop.density.value,
+        prop.fill1.color.toRgb()[0] / 255,
+        prop.fill1.color.toRgb()[1] / 255,
+        prop.fill1.color.toRgb()[2] / 255,
+        prop.fill1.opacity.value / 100,
+        prop.fill2.color.toRgb()[0] / 255,
+        prop.fill2.color.toRgb()[1] / 255,
+        prop.fill2.color.toRgb()[2] / 255,
+        prop.fill2.opacity.value / 100,
+        BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2],
+        true // visible
+    ]);
+}
+
+
+
+function addLayerNoiseMultiProp(obj, prop)
+{
+    if (!prop.enabled)
+        return;
+
+    obj.effects.push([
+        'LAYER_NOISE',
+        'MULTITONE',
+        prop.size.value,
+        prop.density.value,
+        prop.opacity.value / 100,
+        BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2],
+        true // visible
+    ]);
 }

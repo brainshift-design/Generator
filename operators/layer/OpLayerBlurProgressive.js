@@ -8,7 +8,6 @@ extends OperatorBase
     paramStartX;
     paramStartY;
     paramStartRadius;
-
     paramEndX;
     paramEndY;
     paramEndRadius;
@@ -29,14 +28,12 @@ extends OperatorBase
         this.addParam(this.paramStartX      = new NumberParam('startX',      'start X',      true, true, true, 0));
         this.addParam(this.paramStartY      = new NumberParam('startY',      'start Y',      true, true, true, 0));
         this.addParam(this.paramStartRadius = new NumberParam('startRadius', 'start radius', true, true, true, 0, 0));
-
         this.addParam(this.paramEndX        = new NumberParam('endX',        'end X',        true, true, true, 100));
         this.addParam(this.paramEndY        = new NumberParam('endY',        'end Y',        true, true, true, 100));
         this.addParam(this.paramEndRadius   = new NumberParam('endRadius',   'end radius',   true, true, true, 10, 0));
 
         this.paramStartX.controls[0].suffix = '%';
         this.paramStartY.controls[0].suffix = '%';
-
         this.paramEndX  .controls[0].suffix = '%';
         this.paramEndY  .controls[0].suffix = '%';
 
@@ -53,7 +50,6 @@ extends OperatorBase
             this.node.paramStartX     .value,
             this.node.paramStartY     .value,
             this.node.paramStartRadius.value,
-
             this.node.paramEndX       .value,
             this.node.paramEndY       .value,
             this.node.paramEndRadius  .value);
@@ -70,7 +66,6 @@ extends OperatorBase
         this.node.paramStartX      .setValue(value.startX,      false, true, false);
         this.node.paramStartY      .setValue(value.startY,      false, true, false);
         this.node.paramStartRadius .setValue(value.startRadius, false, true, false);
-
         this.node.paramEndX        .setValue(value.endX,        false, true, false);
         this.node.paramEndY        .setValue(value.endY,        false, true, false);
         this.node.paramEndRadius   .setValue(value.endRadius,   false, true, false);

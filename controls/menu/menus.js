@@ -102,9 +102,9 @@ var menuNodeCopyAs;
 var menuNodeHighlight;
 var menuNodeSelect;
 var menuNodeRandomize;
-
 var menuLayerBlur;
 var menuBackBlur;
+var menuLayerNoise;
 
 var menuLocalStyles;
 var menuLocalVariables;
@@ -771,23 +771,30 @@ function initGeneratorMenus()
 
     menuLayerBlur = new Menu('Layer blur', true, false);
     menuLayerBlur.addItems([
-        new MenuItem('Progressive blur', 'Progressive layer blur',      true, {icon: iconLayerBlurProgressive, callback: e => actionManager.do(getCreateNodeAction(LAYER_PRBLUR, btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Progressive', 'Progressive layer blur',      true, {icon: iconLayerBlurProgressive, callback: e => actionManager.do(getCreateNodeAction(LAYER_PRBLUR, btnShape.div, getCreateOptions(e)))})]);
 
     menuBackBlur = new Menu('Background blur', true, false);
     menuBackBlur.addItems([
-        new MenuItem('Progressive blur', 'Progressive background blur', true, {icon: iconBackBlurProgressive, callback: e => actionManager.do(getCreateNodeAction(BACK_PRBLUR, btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Progressive', 'Progressive background blur', true, {icon: iconBackBlurProgressive, callback: e => actionManager.do(getCreateNodeAction(BACK_PRBLUR, btnShape.div, getCreateOptions(e)))})]);
 
+    menuLayerNoise = new Menu('Layer noise', true, false);
+    menuLayerNoise.addItems([
+        new MenuItem('Mono',  null, true, {icon: iconLayerNoise, callback: e => actionManager.do(getCreateNodeAction(LAYER_NOISE_MONO,  btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Duo',   null, true, {icon: iconLayerNoise, callback: e => actionManager.do(getCreateNodeAction(LAYER_NOISE_DUO,   btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Multi', null, true, {icon: iconLayerNoise, callback: e => actionManager.do(getCreateNodeAction(LAYER_NOISE_MULTI, btnShape.div, getCreateOptions(e)))})]);
+    
     menuEffects = new Menu('Effects', true, false);
     menuEffects.addItems([
-                                   new MenuItem('Layer blend',     null, false, {icon: iconColorBlend,                            callback: e => actionManager.do(getCreateNodeAction(LAYER_BLEND,   btnShape.div, getCreateOptions(e)))}),
+                                   new MenuItem('Layer blend',     null, false, {icon: iconColorBlend,                             callback: e => actionManager.do(getCreateNodeAction(LAYER_BLEND,   btnShape.div, getCreateOptions(e)))}),
                                    new MenuItem('',                null, false, {separator: true}),
-        menuItemLayerDropShadow  = new MenuItem('Drop shadow',     null, false, {icon: iconDropShadow,                            callback: e => actionManager.do(getCreateNodeAction(DROP_SHADOW,   btnShape.div, getCreateOptions(e)))}),
-        menuItemLayerInnerShadow = new MenuItem('Inner shadow',    null, false, {icon: iconInnerShadow,                           callback: e => actionManager.do(getCreateNodeAction(INNER_SHADOW,  btnShape.div, getCreateOptions(e)))}),
-        menuItemLayerLayerBlur   = new MenuItem('Layer blur',      null, false, {icon: iconLayerBlur,   childMenu: menuLayerBlur, callback: e => actionManager.do(getCreateNodeAction(LAYER_BLUR,    btnShape.div, getCreateOptions(e)))}),
-        menuItemLayerBackBlur    = new MenuItem('Background blur', null, false, {icon: iconBackBlur,    childMenu: menuBackBlur,  callback: e => actionManager.do(getCreateNodeAction(BACK_BLUR,     btnShape.div, getCreateOptions(e)))}),
-                                   new MenuItem('Texture',         null, false, {icon: iconLayerTexture,                          callback: e => actionManager.do(getCreateNodeAction(LAYER_TEXTURE, btnShape.div, getCreateOptions(e)))}),
+        menuItemLayerDropShadow  = new MenuItem('Drop shadow',     null, false, {icon: iconDropShadow,                             callback: e => actionManager.do(getCreateNodeAction(DROP_SHADOW,   btnShape.div, getCreateOptions(e)))}),
+        menuItemLayerInnerShadow = new MenuItem('Inner shadow',    null, false, {icon: iconInnerShadow,                            callback: e => actionManager.do(getCreateNodeAction(INNER_SHADOW,  btnShape.div, getCreateOptions(e)))}),
+        menuItemLayerLayerBlur   = new MenuItem('Layer blur',      null, false, {icon: iconLayerBlur,   childMenu: menuLayerBlur,  callback: e => actionManager.do(getCreateNodeAction(LAYER_BLUR,    btnShape.div, getCreateOptions(e)))}),
+        menuItemLayerBackBlur    = new MenuItem('Background blur', null, false, {icon: iconBackBlur,    childMenu: menuBackBlur,   callback: e => actionManager.do(getCreateNodeAction(BACK_BLUR,     btnShape.div, getCreateOptions(e)))}),
+                                   new MenuItem('Texture',         null, false, {icon: iconLayerTexture,                           callback: e => actionManager.do(getCreateNodeAction(LAYER_TEXTURE, btnShape.div, getCreateOptions(e)))}),
+                                   new MenuItem('Noise',           null, false, {icon: iconLayerNoise,  childMenu: menuLayerNoise}),
                                    new MenuItem('',                null, false, {separator: true}),
-                                   new MenuItem('Mask',            null, false, {icon: iconMask,                                  callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,    btnShape.div, getCreateOptions(e)))})]);
+                                   new MenuItem('Mask',            null, false, {icon: iconMask,                                   callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,    btnShape.div, getCreateOptions(e)))})]);
 
     
     menuStyles = new Menu('Styles', true, false);

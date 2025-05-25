@@ -229,7 +229,7 @@ extends GValue
         const y      = NumberValue.parse(str[i]); i += y     [1];
         const blur   = NumberValue.parse(str[i]); i += blur  [1];
         const spread = NumberValue.parse(str[i]); i += spread[1];
-        const fill   = FillValue.parse  (str, i); i += fill  [1];
+        const fill   = FillValue  .parse(str, i); i += fill  [1];
         const blend  = NumberValue.parse(str[i]); i += blend [1];
     
     

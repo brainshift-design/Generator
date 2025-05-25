@@ -17,6 +17,7 @@ var lastMessage = null;
 onmessage = function(e)
 {
     const msg = JSON.parse(e.data);
+    console.log('msg', msg);
 
 
     if (msg.cmd == 'returnUiGetValueForGenerator') // ignore this message in the queue

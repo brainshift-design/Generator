@@ -110,9 +110,9 @@ extends GValue
         options.named = true;
 
 
-        json += SL_(TAB(options.tab)) + '"size": ' + this.size.toJsonText(options) + SL('\n');
-        json += SL_(TAB(options.tab)) + '"radius": ' + this.radius.toJsonText(options) + SL('\n');
-        json += SL_(TAB(options.tab)) + '"clipToShape": ' + this.clipToShape.toJsonText(options) + SL('\n');
+        json += SL_(TAB(options.tab)) + '"size": '        + this.size       .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"radius": '      + this.radius     .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"clipToShape": ' + this.clipToShape.toJsonText(options)       + SL('\n');
 
 
         options.named = oldNamed;

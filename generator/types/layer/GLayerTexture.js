@@ -77,9 +77,9 @@ extends GOperator1
 
         this.setUpdateValues(parse,
         [
-            ['size',        this.size       ],
-            ['radius',      this.radius     ],
-            ['clipToShape', this.clipToShape]
+            ['size',        this.value.size       ],
+            ['radius',      this.value.radius     ],
+            ['clipToShape', this.value.clipToShape]
         ]);
         
 
