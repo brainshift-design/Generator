@@ -108,13 +108,12 @@ extends GValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
+        const { SL, SL_, WSL } = getWhiteSpaceForJson(options);
+
+
         let json = '';
 
         
-        const SL  = s => options.singleLine ? ''  : s;
-        const SL_ = s => options.singleLine ? ' ' : s;
-
-
         if (options.named)
         json += SL('\n' + TAB(options.tab));
 
@@ -126,7 +125,7 @@ extends GValue
         options.named = true;
 
 
-        json += SL_(TAB(options.tab)) + '"size": '    + this.size   .toJsonText(options) + ',' + SL('\n');
+        json += WSL(TAB(options.tab)) + '"size": '    + this.size   .toJsonText(options) + ',' + SL('\n');
         json += SL_(TAB(options.tab)) + '"density": ' + this.density.toJsonText(options) + ',' + SL('\n');
         json += SL_(TAB(options.tab)) + '"fill1": '   + this.fill1  .toJsonText(options) + ',' + SL('\n');
         json += SL_(TAB(options.tab)) + '"fill2": '   + this.fill2  .toJsonText(options) + ',' + SL('\n');
@@ -136,7 +135,7 @@ extends GValue
         options.named = oldNamed;
 
         options.tab--;
-        json += SL_(TAB(options.tab)) + '}';
+        json += WSL(TAB(options.tab)) + '}';
 
 
         options.lastExpanded = !options.singleLine;

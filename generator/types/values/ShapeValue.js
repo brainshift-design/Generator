@@ -52,6 +52,9 @@ extends GValue
 
     toBaseJsonText(options = {})
     {
+        const { SL, SL_, WSL } = getWhiteSpaceForJson(options);
+
+
         for (const prop of this.props.items)
         {
             let valueId = '';
@@ -90,7 +93,7 @@ extends GValue
             && this.props.items.length > 0)
             json += '\n';
 
-        json += TAB(options.tab) + '"props": ' + this.props.toJsonText(options) + '\n';
+        json += TAB(options.tab) + '"props": ' + this.props.toJsonText(options) + SL('\n');
         
 
         options.forceBraces = oldForceBraces;

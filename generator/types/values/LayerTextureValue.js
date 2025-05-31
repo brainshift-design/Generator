@@ -92,13 +92,12 @@ extends GValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
+        const { SL, SL_, WSL } = getWhiteSpaceForJson(options);
+
+
         let json = '';
 
         
-        const SL  = s => options.singleLine ? ''  : s;
-        const SL_ = s => options.singleLine ? ' ' : s;
-
-
         if (options.named)
         json += SL('\n' + TAB(options.tab));
 
@@ -110,7 +109,7 @@ extends GValue
         options.named = true;
 
 
-        json += SL_(TAB(options.tab)) + '"size": '        + this.size       .toJsonText(options) + ',' + SL('\n');
+        json += WSL(TAB(options.tab)) + '"size": '        + this.size       .toJsonText(options) + ',' + SL('\n');
         json += SL_(TAB(options.tab)) + '"radius": '      + this.radius     .toJsonText(options) + ',' + SL('\n');
         json += SL_(TAB(options.tab)) + '"clipToShape": ' + this.clipToShape.toJsonText(options)       + SL('\n');
 
@@ -118,7 +117,7 @@ extends GValue
         options.named = oldNamed;
 
         options.tab--;
-        json += SL_(TAB(options.tab)) + '}';
+        json += WSL(TAB(options.tab)) + '}';
 
 
         options.lastExpanded = !options.singleLine;
@@ -179,7 +178,9 @@ extends GValue
     
         const iStart = i;
     
-        const radius = NumberValue.parse(str[i]); i += radius[1];
+        const size        = NumberValue.parse(str[i]); i += size       [1];
+        const radius      = NumberValue.parse(str[i]); i += radius     [1];
+        const clipToShape = NumberValue.parse(str[i]); i += clipToShape[1];
     
     
         const texture = new LayerTextureValue(

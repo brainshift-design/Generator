@@ -824,3 +824,18 @@ function TAB(nTabs)
 {
     return '\t'.repeat(nTabs);
 }
+
+
+
+function getWhiteSpaceForJson(options)
+{
+    const WS  = s => options.whiteSpace ? s : '';
+
+    const SL  = s => options.singleLine ? ''  : s;
+    const SL_ = s => options.singleLine ? ' ' : s;
+    
+    const WSL = s => options.whiteSpace ? SL_(s) : SL(s);
+    
+    
+    return { WS, SL, SL_, WSL };
+}

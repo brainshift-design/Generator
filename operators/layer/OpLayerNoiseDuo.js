@@ -30,6 +30,9 @@ extends OperatorBase
         this.addParam(this.paramFill1   = new FillParam  ('fill1',   'fill 1',  false, true, true, new FillValue(ColorValue.fromRgb([0, 0, 0]), new NumberValue(25))));
         this.addParam(this.paramFill2   = new FillParam  ('fill2',   'fill 2',  false, true, true, new FillValue(ColorValue.fromRgb([255, 255, 255]), new NumberValue(25))));
         this.addParam(this.paramBlend   = new OptionParam('blend',   'blend',   false, true, true, BlendModes.map(bm => bm[1]), 0));
+
+        
+        this.paramDensity.controls[0].setSuffix('%');
     }
     
     

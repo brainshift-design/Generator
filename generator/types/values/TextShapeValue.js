@@ -241,14 +241,17 @@ extends ShapeValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
+        const { WS, SL, SL_, WSL } = getWhiteSpaceForJson(options);
+
+
         let json = '';
 
         
         if (options.named)
-            json += '\n' + TAB(options.tab);
+            json += SL('\n' + TAB(options.tab));
 
 
-        json += '{\n';
+        json += '{' + SL('\n');
         options.tab++;
 
         const oldNamed = options.named;
@@ -258,18 +261,18 @@ extends ShapeValue
         const fontName   = figUniqueFontNames[this.font.value];
         const fontStyles = getFontStyles(fontName);
         
-        json += TAB(options.tab) + '"text": '          + this.text         .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"x": '             + this.x            .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"y": '             + this.y            .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"width": '         + this.width        .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"height": '        + this.height       .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"font": "'         + fontName                               + '",\n';
-        json += TAB(options.tab) + '"style": "'        + fontStyles[this.style.value]           + '",\n';
-        json += TAB(options.tab) + '"size": '          + this.size         .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"alignX": "'       + TextAlignX[this.alignX.value] + '",\n';
-        json += TAB(options.tab) + '"alignY": "'       + TextAlignY[this.alignY.value] + '",\n';
-        json += TAB(options.tab) + '"lineHeight": '    + this.lineHeight   .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"letterSpacing": ' + this.letterSpacing.toJsonText(options) + ',\n';
+        json += WSL(TAB(options.tab)) + '"text": '          + this.text         .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"x": '             + this.x            .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"y": '             + this.y            .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"width": '         + this.width        .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"height": '        + this.height       .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"font": "'         + fontName                               + '",' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"style": "'        + fontStyles[this.style.value]           + '",' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"size": '          + this.size         .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"alignX": "'       + TextAlignX[this.alignX.value] + '",' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"alignY": "'       + TextAlignY[this.alignY.value] + '",' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"lineHeight": '    + this.lineHeight   .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"letterSpacing": ' + this.letterSpacing.toJsonText(options) + ',' + SL('\n');
 
 
         json += this.toBaseJsonText(options);
@@ -278,7 +281,10 @@ extends ShapeValue
         options.named = oldNamed;
 
         options.tab--;
-        json += TAB(options.tab) + '}';
+        json += WSL(TAB(options.tab)) + '}';
+
+
+        options.lastExpanded = !options.singleLine;
 
 
         return json;

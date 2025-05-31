@@ -19,7 +19,7 @@ function getObjectEffects(genObjEffects, canSpread)
             case 'LAYER_BLUR':      addLayerBlurEffect     (type, effects, effect);            break;
             case 'BACKGROUND_BLUR': addBackgroundBlurEffect(type, effects, effect);            break;
             case 'TEXTURE':         addTextureEffect       (type, effects, effect);            break;
-            case 'LAYER_NOISE':     addLayerNoiseEffect    (type, effects, effect);            break;
+            case 'NOISE':           addLayerNoiseEffect    (type, effects, effect);            break;
         }
     }
 
@@ -255,11 +255,12 @@ function addTextureEffect(type, effects, effect)
 function addLayerNoiseEffect(type, effects, effect)
 {
     const noiseType = effect[1];
+    const size      = effect[2];
+    const density   = effect[3];
+
 
     if (noiseType == 'MONOTONE')
     {
-        const size    = effect[2];
-        const density = effect[3];
         const r       = effect[4];
         const g       = effect[5];
         const b       = effect[6];
@@ -267,24 +268,24 @@ function addLayerNoiseEffect(type, effects, effect)
         const blend   = effect[8];
         const visible = effect[9];
 
-        if (   !isNaN(size)
+        if (   !isNaN(size   )
             && !isNaN(density)
-            && !isNaN(r)
-            && !isNaN(g)
-            && !isNaN(b)
+            && !isNaN(r      )
+            && !isNaN(g      )
+            && !isNaN(b      )
             && !isNaN(opacity))
         {
             effects.push(
             {
-                type: 'LAYER_NOISE',
+                type,
                 noiseType,
                 visible,
-                size:     Math.min(Math.max(0, size), 100),
-                density:  Math.min(Math.max(0, density), 100),
+                noiseSize: Math.min(Math.max(0, size   ), 100),
+                density:   Math.min(Math.max(0, density), 100),
                 color: {
-                    r: Math.min(Math.max(0, r), 1),
-                    g: Math.min(Math.max(0, g), 1),
-                    b: Math.min(Math.max(0, b), 1),
+                    r: Math.min(Math.max(0, r      ), 1),
+                    g: Math.min(Math.max(0, g      ), 1),
+                    b: Math.min(Math.max(0, b      ), 1),
                     a: Math.min(Math.max(0, opacity), 1)
                 },
                 blendMode: blend
@@ -293,8 +294,6 @@ function addLayerNoiseEffect(type, effects, effect)
     }
     else if (noiseType == 'DUOTONE')
     {
-        const size     = effect[2];
-        const density  = effect[3];
         const r1       = effect[4];
         const g1       = effect[5];
         const b1       = effect[6];
@@ -313,11 +312,11 @@ function addLayerNoiseEffect(type, effects, effect)
         {
             effects.push(
             {
-                type: 'LAYER_NOISE',
+                type,
                 noiseType,
                 visible,
-                size:     Math.min(Math.max(0, size), 100),
-                density:  Math.min(Math.max(0, density), 100),
+                noiseSize: Math.min(Math.max(0, size   ), 100),
+                density:   Math.min(Math.max(0, density), 100),
                 color: {
                     r: Math.min(Math.max(0, r1), 1),
                     g: Math.min(Math.max(0, g1), 1),
@@ -336,8 +335,6 @@ function addLayerNoiseEffect(type, effects, effect)
     }
     else if (noiseType == 'MULTITONE')
     {
-        const size    = effect[2];
-        const density = effect[3];
         const opacity = effect[4];
         const blend   = effect[5];
         const visible = effect[6];
@@ -348,12 +345,12 @@ function addLayerNoiseEffect(type, effects, effect)
         {
             effects.push(
             {
-                type: 'LAYER_NOISE',
+                type,
                 noiseType,
                 visible,
-                size:     Math.min(Math.max(0, size), 100),
-                density:  Math.min(Math.max(0, density), 100),
-                opacity:  Math.min(Math.max(0, opacity), 1),
+                noiseSize: Math.min(Math.max(0, size   ), 100),
+                density:   Math.min(Math.max(0, density), 100),
+                opacity:   Math.min(Math.max(0, opacity),   1),
                 blendMode: blend
             });
         }

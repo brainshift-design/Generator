@@ -467,10 +467,10 @@ function addDropShadowProp(obj, prop)
         rgba[1],
         rgba[2],
         rgba[3],
-        prop.x     .value, //toNumber(),
-        prop.y     .value, //toNumber(),
-        prop.blur  .value, //toNumber(),
-        prop.spread.value, //toNumber(),
+        prop.x     .value,
+        prop.y     .value,
+        prop.blur  .value,
+        prop.spread.value,
         BlendModes[prop.blend.value][2],
         prop.behind.value > 0,
         prop.visible ]);
@@ -488,10 +488,10 @@ function addInnerShadowProp(obj, prop)
         rgba[1],
         rgba[2],
         rgba[3],
-        prop.x     .value, //toNumber(),
-        prop.y     .value, //toNumber(),
-        prop.blur  .value, //toNumber(),
-        prop.spread.value, //toNumber(),
+        prop.x     .value,
+        prop.y     .value,
+        prop.blur  .value,
+        prop.spread.value,
         BlendModes[prop.blend.value][2],
         prop.visible ]);
 }
@@ -585,13 +585,13 @@ function addLayerNoiseMonoProp(obj, prop)
         return;
 
     obj.effects.push([
-        'LAYER_NOISE',
+        'NOISE',
         'MONOTONE',
         prop.size.value,
-        prop.density.value,
-        prop.fill.color.toRgb()[0] / 255,
-        prop.fill.color.toRgb()[1] / 255,
-        prop.fill.color.toRgb()[2] / 255,
+        prop.density.value / 100,
+        prop.fill.color.toRgb()[0],
+        prop.fill.color.toRgb()[1],
+        prop.fill.color.toRgb()[2],
         prop.fill.opacity.value / 100,
         BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2],
         true // visible
@@ -606,17 +606,17 @@ function addLayerNoiseDuoProp(obj, prop)
         return;
 
     obj.effects.push([
-        'LAYER_NOISE',
+        'NOISE',
         'DUOTONE',
         prop.size.value,
-        prop.density.value,
-        prop.fill1.color.toRgb()[0] / 255,
-        prop.fill1.color.toRgb()[1] / 255,
-        prop.fill1.color.toRgb()[2] / 255,
+        prop.density.value / 100,
+        prop.fill1.color.toRgb()[0],
+        prop.fill1.color.toRgb()[1],
+        prop.fill1.color.toRgb()[2],
         prop.fill1.opacity.value / 100,
-        prop.fill2.color.toRgb()[0] / 255,
-        prop.fill2.color.toRgb()[1] / 255,
-        prop.fill2.color.toRgb()[2] / 255,
+        prop.fill2.color.toRgb()[0],
+        prop.fill2.color.toRgb()[1],
+        prop.fill2.color.toRgb()[2],
         prop.fill2.opacity.value / 100,
         BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2],
         true // visible
@@ -631,10 +631,10 @@ function addLayerNoiseMultiProp(obj, prop)
         return;
 
     obj.effects.push([
-        'LAYER_NOISE',
+        'NOISE',
         'MULTITONE',
         prop.size.value,
-        prop.density.value,
+        prop.density.value / 100,
         prop.opacity.value / 100,
         BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2],
         true // visible

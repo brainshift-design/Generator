@@ -28,6 +28,9 @@ extends OperatorBase
         this.addParam(this.paramDensity = new NumberParam('density', 'density', true,  true, true, 100, 0, 100));
         this.addParam(this.paramFill    = new FillParam  ('fill',    'fill',    false, true, true, new FillValue(ColorValue.fromRgb([0, 0, 0]), new NumberValue(25))));
         this.addParam(this.paramBlend   = new OptionParam('blend',   'blend',   false, true, true, BlendModes.map(bm => bm[1]), 0));
+
+        
+        this.paramDensity.controls[0].setSuffix('%');
     }
     
     

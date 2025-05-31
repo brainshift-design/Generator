@@ -122,41 +122,41 @@ extends GValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
-        const WS = s => options.whiteSpace ? s : '';
+        const { WS, SL, SL_, WSL } = getWhiteSpaceForJson(options);
 
 
         let json = '';
 
         
         if (options.named)
-            json += '\n' + TAB(options.tab);
+            json += SL('\n' + TAB(options.tab));
 
 
-        json += '{\n';
+        json += '{' + SL('\n');
         options.tab++;
 
         const oldNamed = options.named;
         options.named = true;
 
 
-        json += TAB(options.tab) + '"x": '      + this.x     .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"y": '      + this.y     .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"blur": '   + this.blur  .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"spread": ' + this.spread.toJsonText(options) + ',\n';
-        json += WS('\n');
-        json += TAB(options.tab) + '"fill": '   + this.fill  .toJsonText(options) + ',\n';
-        json += WS('\n');
-        json += TAB(options.tab) + '"blend": "' + BlendModes[this.blend.value][1] + '",\n';
-        json += TAB(options.tab) + '"behind": ' + this.behind.toJsonText(options) + '\n';
+        json += WSL(TAB(options.tab)) + '"x": '      + this.x     .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"y": '      + this.y     .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"blur": '   + this.blur  .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"spread": ' + this.spread.toJsonText(options) + ',' + SL('\n');
+        json += SL(WS('\n'));
+        json += SL_(TAB(options.tab)) + '"fill": '   + this.fill  .toJsonText(options) + ',' + SL('\n');
+        json += SL(WS('\n'));
+        json += SL_(TAB(options.tab)) + '"blend": "' + BlendModes[this.blend.value][1] + '",' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"behind": ' + this.behind.toJsonText(options) + SL('\n');
 
 
         options.named = oldNamed;
 
         options.tab--;
-        json += TAB(options.tab) + '}';
+        json += WSL(TAB(options.tab)) + '}';
 
 
-        options.lastExpanded = true;
+        options.lastExpanded = !options.singleLine;
         
         return json;
     }

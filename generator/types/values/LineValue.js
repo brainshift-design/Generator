@@ -121,23 +121,26 @@ extends ShapeValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
+        const { WS, SL, SL_, WSL } = getWhiteSpaceForJson(options);
+
+
         let json = '';
 
         
         if (options.named)
-            json += '\n' + TAB(options.tab);
+            json += SL('\n' + TAB(options.tab));
 
 
-        json += '{\n';
+        json += '{' + SL('\n');
         options.tab++;
 
         const oldNamed = options.named;
         options.named = true;
 
 
-        json += TAB(options.tab) + '"x": '      + this.x     .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"y": '      + this.y     .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"width": '  + this.width .toJsonText(options) + ',\n';
+        json += WSL(TAB(options.tab)) + '"x": '      + this.x     .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"y": '      + this.y     .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"width": '  + this.width .toJsonText(options) + ',' + SL('\n');
 
 
         json += this.toBaseJsonText(options);
@@ -146,7 +149,10 @@ extends ShapeValue
         options.named = oldNamed;
 
         options.tab--;
-        json += TAB(options.tab) + '}';
+        json += WSL(TAB(options.tab)) + '}';
+
+
+        options.lastExpanded = !options.singleLine;
 
 
         return json;

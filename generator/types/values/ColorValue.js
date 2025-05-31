@@ -254,8 +254,7 @@ extends GValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
-        const SL  = s => options.singleLine ? ''  : s;
-        const SL_ = s => options.singleLine ? ' ' : s;
+        const { SL, SL_, WSL } = getWhiteSpaceForJson(options);
 
 
         let json = '';
@@ -280,11 +279,11 @@ extends GValue
 
 
             if (this.space.value > 3)
-                json += SL_(TAB(options.tab)) + '"space": "' + colorSpaceName(this.space.value).replaceAll(' ', '') + '",' + SL('\n');
+                json += WSL(TAB(options.tab)) + '"space": "' + colorSpaceName(this.space.value).replaceAll(' ', '') + '",' + SL('\n');
 
             const [c1, c2, c3] = getChannelNamesFromSpace(colorSpace(this.space.value));
 
-            json += SL_(TAB(options.tab)) + '"' + c1 + '": ' + this.c1.toJsonText(options) + ',' + SL('\n');
+            json += WSL(TAB(options.tab)) + '"' + c1 + '": ' + this.c1.toJsonText(options) + ',' + SL('\n');
             json += SL_(TAB(options.tab)) + '"' + c2 + '": ' + this.c2.toJsonText(options) + ',' + SL('\n');
             json += SL_(TAB(options.tab)) + '"' + c3 + '": ' + this.c3.toJsonText(options)       + SL('\n');
 
@@ -292,7 +291,7 @@ extends GValue
             options.named = oldNamed;
 
             options.tab--;
-            json += SL_(TAB(options.tab)) + '}';
+            json += WSL(TAB(options.tab)) + '}';
 
 
             options.lastExpanded = !options.singleLine;

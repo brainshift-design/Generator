@@ -53,7 +53,7 @@ extends GOperator1
             return this;
 
 
-        const input   = await evalLayerNoiseMonoValue(this.input,       parse);
+        const input   = await evalLayerNoiseMonoValue(this.input, parse);
 
         const size    = await evalNumberValue(this.size,    parse);
         const density = await evalNumberValue(this.density, parse);
@@ -187,7 +187,7 @@ extends GOperator1
     
         if (ignore)
         {
-            genParseNodeEnd(parse, texture);
+            genParseNodeEnd(parse, noise);
             return parse.parsedNodes.find(n => n.nodeId == nodeId);
         }
     
@@ -223,7 +223,7 @@ extends GOperator1
         parse.nTab--;
     
     
-        genParseNodeEnd(parse, texture);
-        return texture;
+        genParseNodeEnd(parse, noise);
+        return noise;
     }
 }

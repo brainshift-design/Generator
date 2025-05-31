@@ -174,42 +174,35 @@ extends GValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
-        const WS = s => 
-               options.whiteSpace 
-            && options.lastExpanded 
-                ? s 
-                : '';
+        const { SL, SL_, WSL } = getWhiteSpaceForJson(options);
 
 
         let json = '';
 
         
-        if (    options.named
-            ||     options.whiteSpace
-               && !options.lastExpanded)
-            json += '\n' + TAB(options.tab);
+        if (options.named)
+            json += SL('\n' + TAB(options.tab));
 
 
-        json += '{\n';
+        json += '{' + SL('\n');
         options.tab++;
 
         const oldNamed = options.named;
         options.named = true;
 
 
-        json += TAB(options.tab) + '"color": '   + this.color  .toJsonText(options) + ',\n';
-        json += WS('\n');
-        json += TAB(options.tab) + '"opacity": ' + this.opacity.toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"blend": "'  + BlendModes[this.blend.value][1]  + '"\n';
+        json += WSL(TAB(options.tab)) + '"color": '   + this.color  .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"opacity": ' + this.opacity.toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"blend": "'  + BlendModes[this.blend.value][1]  + '"' + SL('\n');
 
 
         options.named = oldNamed;
 
         options.tab--;
-        json += TAB(options.tab) + '}';
+        json += WSL(TAB(options.tab)) + '}';
 
 
-        options.lastExpanded = true;
+        options.lastExpanded = !options.singleLine;
 
         return json;
     }

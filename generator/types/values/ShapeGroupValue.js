@@ -182,7 +182,7 @@ extends GValue
             options.named = hasNamed;
 
 
-            const WS  = s => options.whiteSpace ? s : '';
+            const { WS } = getWhiteSpaceForJson(options);
 
 
             let lastItemExpanded = null;

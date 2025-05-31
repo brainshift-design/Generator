@@ -148,36 +148,32 @@ extends ShapeValue
     
     toJsonText(options = {})
     {
-        const WS = s => 
-               options.whiteSpace 
-            && options.lastExpanded
-                ? s 
-                : '';
+        const { WS, SL, SL_, WSL } = getWhiteSpaceForJson(options);
 
 
         let json = '';
 
         
         if (options.named)
-            json += '\n' + TAB(options.tab);
+            json += SL('\n' + TAB(options.tab));
 
 
-        json += '{\n';
+        json += '{' + SL('\n');
         options.tab++;
 
         const oldNamed = options.named;
         options.named = true;
 
 
-        json += TAB(options.tab) + '"children": '  + this.children.toJsonText(options)   + ',\n';
-        json += WS('\n');
-        json += TAB(options.tab) + '"position": "' + FramePositions[this.position.value] + '",\n';
-        json += TAB(options.tab) + '"x": '         + this.x       .toJsonText(options)   + ',\n';
-        json += TAB(options.tab) + '"y": '         + this.y       .toJsonText(options)   + ',\n';
-        json += TAB(options.tab) + '"width": '     + this.width   .toJsonText(options)   + ',\n';
-        json += TAB(options.tab) + '"height": '    + this.height  .toJsonText(options)   + ',\n';
-        json += TAB(options.tab) + '"round": '     + this.round   .toJsonText(options)   + ',\n';
-        json += TAB(options.tab) + '"clip": '      + this.clip    .toJsonText(options)   + ',\n';
+        json += WSL(TAB(options.tab)) + '"children": '  + this.children.toJsonText(options)   + ',' + SL('\n');
+        json += SL(WS('\n'));
+        json += SL_(TAB(options.tab)) + '"position": "' + FramePositions[this.position.value] + '",' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"x": '         + this.x       .toJsonText(options)   + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"y": '         + this.y       .toJsonText(options)   + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"width": '     + this.width   .toJsonText(options)   + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"height": '    + this.height  .toJsonText(options)   + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"round": '     + this.round   .toJsonText(options)   + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"clip": '      + this.clip    .toJsonText(options)   + ',' + SL('\n');
 
 
         json += this.toBaseJsonText(options);
@@ -186,10 +182,10 @@ extends ShapeValue
         options.named = oldNamed;
 
         options.tab--;
-        json += TAB(options.tab) + '}';
+        json += WSL(TAB(options.tab)) + '}';
 
 
-        options.lastExpanded = true;
+        options.lastExpanded = !options.singleLine;
 
         return json;
     }

@@ -106,30 +106,36 @@ extends GValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
+        const { SL, SL_, WSL } = getWhiteSpaceForJson(options);
+
+
         let json = '';
 
         
         if (options.named)
-            json += '\n' + TAB(options.tab);
+            json += SL('\n' + TAB(options.tab));
 
 
-        json += '{\n';
+        json += '{' + SL('\n');
         options.tab++;
 
         const oldNamed = options.named;
         options.named = true;
 
 
-        json += TAB(options.tab) + '"top": '    + this.top   .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"left": '   + this.left  .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"right": '  + this.right .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"bottom": ' + this.bottom.toJsonText(options) + '\n';
+        json += WSL(TAB(options.tab)) + '"top": '    + this.top   .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"left": '   + this.left  .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"right": '  + this.right .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"bottom": ' + this.bottom.toJsonText(options) + SL('\n');
 
 
         options.named = oldNamed;
 
         options.tab--;
-        json += TAB(options.tab) + '}';
+        json += WSL(TAB(options.tab)) + '}';
+
+
+        options.lastExpanded = !options.singleLine;
 
 
         return json;

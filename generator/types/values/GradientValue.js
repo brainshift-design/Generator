@@ -192,39 +192,42 @@ extends GValue
 
     toJsonText(options = {}) // for formatting values as JSON for OpToJson
     {
+        const { SL, SL_, WSL } = getWhiteSpaceForJson(options);
+
+
         let json = '';
 
         
         if (options.named)
-            json += '\n' + TAB(options.tab);
+            json += SL('\n' + TAB(options.tab));
 
         
-        json += '{\n';
+        json += '{' + SL('\n');
         options.tab++;
 
         const oldNamed = options.named;
         options.named = true;
 
 
-        json += TAB(options.tab) + '"stops": '    + this.stops   .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"gradType": ' + this.gradType.toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"position": ' + this.position.toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"x": '        + this.x       .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"y": '        + this.y       .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"size": '     + this.size    .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"angle": '    + this.angle   .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"aspect": '   + this.aspect  .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"skew": '     + this.skew    .toJsonText(options) + ',\n';
-        json += TAB(options.tab) + '"blend": "'   + BlendModes[this.blend.value][1]   + '"\n';
+        json += WSL(TAB(options.tab)) + '"stops": '    + this.stops   .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"gradType": ' + this.gradType.toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"position": ' + this.position.toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"x": '        + this.x       .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"y": '        + this.y       .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"size": '     + this.size    .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"angle": '    + this.angle   .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"aspect": '   + this.aspect  .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"skew": '     + this.skew    .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"blend": "'   + BlendModes[this.blend.value][1]   + '"' + SL('\n');
 
 
         options.named = oldNamed;
 
         options.tab--;
-        json += TAB(options.tab) + '}';
+        json += WSL(TAB(options.tab)) + '}';
 
 
-        options.lastExpanded = true;
+        options.lastExpanded = !options.singleLine;
 
         return json;
     }
