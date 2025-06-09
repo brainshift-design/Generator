@@ -268,6 +268,7 @@ function addLayerNoiseEffect(type, effects, effect)
         const blend   = effect[8];
         const visible = effect[9];
 
+        
         if (   !isNaN(size   )
             && !isNaN(density)
             && !isNaN(r      )
@@ -288,18 +289,18 @@ function addLayerNoiseEffect(type, effects, effect)
                     b: Math.min(Math.max(0, b      ), 1),
                     a: Math.min(Math.max(0, opacity), 1)
                 },
-                blendMode: blend
+                //blendMode: blend
             });
         }
     }
     else if (noiseType == 'DUOTONE')
     {
-        const r1       = effect[4];
-        const g1       = effect[5];
-        const b1       = effect[6];
-        const opacity1 = effect[7];
-        const r2       = effect[8];
-        const g2       = effect[9];
+        const r1       = effect[ 4];
+        const g1       = effect[ 5];
+        const b1       = effect[ 6];
+        const opacity1 = effect[ 7];
+        const r2       = effect[ 8];
+        const g2       = effect[ 9];
         const b2       = effect[10];
         const opacity2 = effect[11];
         const blend    = effect[12];
@@ -307,8 +308,14 @@ function addLayerNoiseEffect(type, effects, effect)
 
         if (   !isNaN(size)
             && !isNaN(density)
-            && !isNaN(r1) && !isNaN(g1) && !isNaN(b1) && !isNaN(opacity1)
-            && !isNaN(r2) && !isNaN(g2) && !isNaN(b2) && !isNaN(opacity2))
+            && !isNaN(r1) 
+            && !isNaN(g1) 
+            && !isNaN(b1) 
+            && !isNaN(opacity1)
+            && !isNaN(r2) 
+            && !isNaN(g2) 
+            && !isNaN(b2) 
+            && !isNaN(opacity2))
         {
             effects.push(
             {
@@ -318,18 +325,18 @@ function addLayerNoiseEffect(type, effects, effect)
                 noiseSize: Math.min(Math.max(0, size   ), 100),
                 density:   Math.min(Math.max(0, density), 100),
                 color: {
-                    r: Math.min(Math.max(0, r1), 1),
-                    g: Math.min(Math.max(0, g1), 1),
-                    b: Math.min(Math.max(0, b1), 1),
+                    r: Math.min(Math.max(0, r1      ), 1),
+                    g: Math.min(Math.max(0, g1      ), 1),
+                    b: Math.min(Math.max(0, b1      ), 1),
                     a: Math.min(Math.max(0, opacity1), 1)
                 },
                 secondaryColor: {
-                    r: Math.min(Math.max(0, r2), 1),
-                    g: Math.min(Math.max(0, g2), 1),
-                    b: Math.min(Math.max(0, b2), 1),
+                    r: Math.min(Math.max(0, r2      ), 1),
+                    g: Math.min(Math.max(0, g2      ), 1),
+                    b: Math.min(Math.max(0, b2      ), 1),
                     a: Math.min(Math.max(0, opacity2), 1)
                 },
-                blendMode: blend
+                //blendMode: blend
             });
         }
     }
@@ -343,15 +350,20 @@ function addLayerNoiseEffect(type, effects, effect)
             && !isNaN(density)
             && !isNaN(opacity))
         {
-            effects.push(
-            {
+            effects.push({
                 type,
                 noiseType,
                 visible,
+                color: {
+                    r: 0.5,
+                    g: 0.5,
+                    b: 0.5,
+                    a: 1
+                },
                 noiseSize: Math.min(Math.max(0, size   ), 100),
                 density:   Math.min(Math.max(0, density), 100),
                 opacity:   Math.min(Math.max(0, opacity),   1),
-                blendMode: blend
+                //blendMode: blend
             });
         }
     }
@@ -391,12 +403,12 @@ function setObjectProps(figObj, genObj, phantom = true)
         && figObj.fills  .length == 0
         && figObj.strokes.length == 0)
         figObj.fills = 
-            [{
-                type:      'SOLID', 
-                color:     {r:0, g:0, b:0},
-                opacity:   1, 
-                blendMode: 'NORMAL'
-            }];
+        [{
+            type:      'SOLID', 
+            color:     { r:0, g:0, b:0 },
+            opacity:   1, 
+            blendMode: 'NORMAL'
+        }];
 }
 
 

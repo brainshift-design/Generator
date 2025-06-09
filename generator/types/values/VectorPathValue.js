@@ -163,7 +163,7 @@ extends ShapeValue
         options.tab++;
 
         const oldNamed     = options.named;
-        options.named     = true;
+        options.named      = true;
 
        
         const quote = options.quoteValues ? '"' : '';

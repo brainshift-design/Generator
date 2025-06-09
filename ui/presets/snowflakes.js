@@ -754,7 +754,7 @@ const presetSnowflakes = '\
                         "active": "true",\
                         "params":\
                                 [\
-                                        ["NUM#", "position", "1,0"],\
+                                        ["NUM#", "position", "0,0"],\
                                         ["NUM#", "x", "-500,0"],\
                                         ["NUM#", "y", "-500,0"],\
                                         ["NUM#", "width", "1000,0"],\

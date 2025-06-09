@@ -576,6 +576,7 @@ async function evalPointOrListValue(_value, parse)
 { 
     let value = await evalValue(_value, parse, () => PointValue.NaN()); 
 
+
     if (   value
         && value.type == LIST_VALUE)
     {
@@ -584,6 +585,7 @@ async function evalPointOrListValue(_value, parse)
         if (finalListType == POINT_LIST_VALUE)
         {
             const condensed = value.condensed;
+            const objects   = value.objects;
             
             value = new ListValue(
                 finalListType == POINT3_LIST_VALUE
@@ -591,6 +593,7 @@ async function evalPointOrListValue(_value, parse)
                 : value.items.map(p => p.copy()));
 
             value.condensed = condensed;
+            value.objects   = objects;
         }
         else if (finalListType == POINT3_LIST_VALUE)
         {

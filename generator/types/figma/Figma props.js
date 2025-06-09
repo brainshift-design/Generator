@@ -584,15 +584,21 @@ function addLayerNoiseMonoProp(obj, prop)
     if (!prop.enabled)
         return;
 
+
+    const color   = evalFillColor  (prop.fill);
+    const opacity = evalFillOpacity(prop.fill);
+    const rgb     = color.toRgb();
+
+
     obj.effects.push([
         'NOISE',
         'MONOTONE',
         prop.size.value,
         prop.density.value / 100,
-        prop.fill.color.toRgb()[0],
-        prop.fill.color.toRgb()[1],
-        prop.fill.color.toRgb()[2],
-        prop.fill.opacity.value / 100,
+        rgb[0],
+        rgb[1],
+        rgb[2],
+        opacity.value / 100,
         BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2],
         true // visible
     ]);
@@ -605,19 +611,29 @@ function addLayerNoiseDuoProp(obj, prop)
     if (!prop.enabled)
         return;
 
+
+    const color1   = evalFillColor  (prop.fill1);
+    const color2   = evalFillColor  (prop.fill2);
+    const rgb1     = color1.toRgb();
+    const rgb2     = color2.toRgb();
+
+    const opacity1 = evalFillOpacity(prop.fill1);
+    const opacity2 = evalFillOpacity(prop.fill2);
+
+
     obj.effects.push([
         'NOISE',
         'DUOTONE',
         prop.size.value,
         prop.density.value / 100,
-        prop.fill1.color.toRgb()[0],
-        prop.fill1.color.toRgb()[1],
-        prop.fill1.color.toRgb()[2],
-        prop.fill1.opacity.value / 100,
-        prop.fill2.color.toRgb()[0],
-        prop.fill2.color.toRgb()[1],
-        prop.fill2.color.toRgb()[2],
-        prop.fill2.opacity.value / 100,
+        rgb1[0], 
+        rgb1[1],
+        rgb1[2],
+        opacity1.value / 100,
+        rgb2[0],
+        rgb2[1],
+        rgb2[2],
+        opacity2.value / 100,
         BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2],
         true // visible
     ]);
@@ -639,4 +655,24 @@ function addLayerNoiseMultiProp(obj, prop)
         BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2],
         true // visible
     ]);
+}
+
+
+
+function evalFillColor(fill)
+{
+         if (fill.type ==  FILL_VALUE) return fill.color;
+    else if (fill.type == COLOR_VALUE) return fill;
+
+    return null;
+}
+
+
+
+function evalFillOpacity(fill)
+{
+         if (fill.type ==  FILL_VALUE) return fill.opacity;
+    else if (fill.type == COLOR_VALUE) return new NumberValue(100);
+
+    return 100;
 }

@@ -148,22 +148,26 @@ class NumberValueMeta
 
         let ranges = null;
     
-        if (str[i] == NULL_VALUE)
-            i++;
-    
-        else
+        if (   str[i] == NULL_VALUE
+            || !isNaN(parseInt(str[i])))
         {
-            const nRanges = parseInt(str[i]); i++;
-    
-            ranges = [];
-    
-            for (let j = 0; j < nRanges; j++)
+            if (str[i] == NULL_VALUE)
+                i++;
+        
+            else
             {
-                const range = NumberValueRange.parse(str, i); i += range[1];
-                ranges.push(range[0]);
+                const nRanges = parseInt(str[i]); i++;
+        
+                ranges = [];
+        
+                for (let j = 0; j < nRanges; j++)
+                {
+                    const range = NumberValueRange.parse(str, i); i += range[1];
+                    ranges.push(range[0]);
+                }
             }
         }
-    
+
         
         const displayAbsolute = parseBool(str[i]); i++;
     

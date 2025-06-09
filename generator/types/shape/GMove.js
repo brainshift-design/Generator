@@ -291,7 +291,6 @@ function updateVectorPathPoints(value)
         && value.objects.length > 0
         && value.points.objects)
     {
-        console.log('path');
         for (let i = 0; i < value.objects[0].points.length; i++)
         {
             const p = value.objects[0].points[i].toPoint();
