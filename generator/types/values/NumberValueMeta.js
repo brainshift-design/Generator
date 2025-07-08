@@ -172,7 +172,7 @@ class NumberValueMeta
         const displayAbsolute = parseBool(str[i]); i++;
     
         const tooltipId = str[i] == NULL_VALUE 
-                            ? null 
+                            ? null
                             : decodeURIComponent(str[i].substring(1, str[i].length-1)); i++;
     
     

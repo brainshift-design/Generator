@@ -1497,7 +1497,7 @@ class Operator
                 this.createAndAddParamByType(_param[0], _param[1], _param[1], true, false, true, true);
                 index = this.params.length-1;
             }
-
+    
             this.params[index].loadParam(_param);
         }
     }

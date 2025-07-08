@@ -128,6 +128,8 @@ extends OperatorBase
 
     updateParams()
     {
+        this.paramSize       .enableControlText(true, this.paramSize  .isUnknown());
+        this.paramRadius     .enableControlText(true, this.paramRadius.isUnknown());
         this.paramClipToShape.enableControlText(true);
 
         updateParamConditionText(this.paramClipToShape, this.paramClipToShape.isUnknown(), false, 1);

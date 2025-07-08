@@ -2538,7 +2538,6 @@ zoomToFitObjects
 loadNodes
 loadNode
 parseConnectionsAndConnect
-moveNodesToViewport
 correctNodeNamesInConnections
 updateGraphNodes
 findConnectedClusters
