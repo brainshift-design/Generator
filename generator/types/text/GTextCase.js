@@ -182,36 +182,55 @@ extends GOperator1
         const value = new TextValue();
         
 
-        if (_case.value == 0) 
+        if (_case.value == 0) // lower
             value.value = val.toLowerCase();
 
-        else if (_case.value == 1)
+        else if (_case.value == 1) // Sentence
         {
-            if (val.length > 0) value.value += val.substring(0, 1).toUpperCase();
-            if (val.length > 1) value.value += val.substring(1)   .toLowerCase();
+            const trimmed = val.trim();
+
+            if (trimmed.length > 0)
+                value.value = trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+            else
+                value.value = '';
         }
 
-        else if (_case.value == 2)
+        else if (_case.value == 2) // Capital
         {
-            let i = 0;
-            while (i < val.length)
-            {
-                while (i < val.length
-                    && /\s/.test(val.charAt(i)))
-                    value.value += val.charAt(i++);
-
-                if (i < val.length)
-                    value.value += val.charAt(i++).toUpperCase();
-
-                while (i < val.length
-                    && !/\s/.test(val.charAt(i)))
-                    value.value += val.charAt(i++).toLowerCase();
-            }
+            // split by whitespace, filter out empty strings
+            const words = val.split(/\s+/).filter(w => w.length > 0);
+            
+            value.value = words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
         }
 
-        else if (_case.value == 3) 
+        else if (_case.value == 3) // UPPER
             value.value = val.toUpperCase();
 
+        else if (_case.value == 4) // cAmEl
+        {
+            // split by whitespace, filter out empty strings
+            const words = val.split(/\s+/).filter(w => w.length > 0);
+
+            if (words.length > 0)
+            {
+                value.value = words[0].toLowerCase();
+
+                for (let j = 1; j < words.length; j++)
+                    value.value += words[j].charAt(0).toUpperCase() + words[j].slice(1).toLowerCase();
+            }
+            else
+                value.value = '';
+        }
+
+        else if (_case.value == 5) // snake
+            value.value = val.toLowerCase().replace(/ /g, '_');
+        
+        else if (_case.value == 6) // kebab
+            value.value = val.toLowerCase().replace(/ /g, '-');
+        
+        else if (_case.value == 7) // dot
+            value.value = val.toLowerCase().replace(/ /g, '.');
+        
 
         return value;
     }

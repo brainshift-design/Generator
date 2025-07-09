@@ -19,7 +19,7 @@ extends OperatorBase
         this.addInput (new Input ([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramCase = new OptionParam('case', 'case', false, true, true, ['lower', 'First capital', 'All Capitals', 'UPPER'], 0));
+        this.addParam(this.paramCase = new OptionParam('case', 'case', false, true, true, ['lower case', 'Sentence case', 'Capital Case', 'UPPER CASE', 'camelCase', 'snake_case', 'kebab-case', 'dot . case'], 0));    
     }
 
 
