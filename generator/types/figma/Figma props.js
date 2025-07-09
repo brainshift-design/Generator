@@ -402,9 +402,14 @@ function addStrokeProp(obj, prop)
 
         switch (prop.cap.toNewValue().value)
         {
-            case 0: obj.strokeCap = 'NONE';   break;
-            case 1: obj.strokeCap = 'SQUARE'; break;
-            case 2: obj.strokeCap = 'ROUND';  break;
+            case 0: obj.strokeCap = 'NONE';              break;
+            case 1: obj.strokeCap = 'SQUARE';            break;
+            case 2: obj.strokeCap = 'ROUND';             break;
+            case 3: obj.strokeCap = 'ARROW_LINES';       break;
+            case 4: obj.strokeCap = 'ARROW_EQUILATERAL'; break;
+            case 5: obj.strokeCap = 'DIAMOND_FILLED';    break;
+            case 6: obj.strokeCap = 'TRIANGLE_FILLED';   break;
+            case 7: obj.strokeCap = 'CIRCLE_FILLED';     break;
         }
 
         obj.strokeDashes     = prop.dashes.toNewValue().value.trim();

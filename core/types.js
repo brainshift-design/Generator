@@ -1065,7 +1065,8 @@ const PathWindings    = ['even-odd', 'non-zero'];
 
 const StrokeAlign     = ['inside', 'center', 'outside'];
 const StrokeJoin      = ['miter', 'bevel', 'round'];
-const StrokeCap       = ['none', 'square', 'round'];
+
+const StrokeCap       = ['none', 'square', 'round', 'arrow lines', 'equilateral arrow', 'filled diamond', 'filled triangle', 'filled circle'];
 
 const LayerMaskTypes  = ['alpha', 'vector', 'luminance'];
 

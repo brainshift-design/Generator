@@ -187,12 +187,12 @@ extends GValue
 
         json += WSL(TAB(options.tab)) + '"fills": '   + this.fills  .toJsonText(options) + ',' + SL('\n');
         json += SL(WS('\n'));
-        json += SL_(TAB(options.tab)) + '"weight": ' + this.weight.toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"weight": ' + this.weight.toJsonText(options) + ','  + SL('\n');
         json += SL_(TAB(options.tab)) + '"align": "' + StrokeAlign[this.fit .value]    + '",' + SL('\n');
         json += SL_(TAB(options.tab)) + '"join": "'  + StrokeJoin [this.join.value]    + '",' + SL('\n');
-        json += SL_(TAB(options.tab)) + '"miter": '  + this.miter .toJsonText(options) + ',' + SL('\n');
+        json += SL_(TAB(options.tab)) + '"miter": '  + this.miter .toJsonText(options) + ','  + SL('\n');
         json += SL_(TAB(options.tab)) + '"cap": "'   + StrokeCap[this.cap.value]       + '",' + SL('\n');
-        json += SL_(TAB(options.tab)) + '"dashes": ' + this.dashes.toJsonText(options) + SL('\n');
+        json += SL_(TAB(options.tab)) + '"dashes": ' + this.dashes.toJsonText(options)        + SL('\n');
 
 
         options.named = oldNamed;
