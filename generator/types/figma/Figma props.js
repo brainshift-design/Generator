@@ -13,6 +13,7 @@ function addProp(obj, prop)
     else if (prop.type ==         BACK_BLUR_VALUE)  addBackBlurProp            (obj, prop);
     else if (prop.type ==       BACK_PRBLUR_VALUE)  addBackBlurProgressiveProp (obj, prop);
     else if (prop.type ==     LAYER_TEXTURE_VALUE)  addLayerTextureProp        (obj, prop);
+    else if (prop.type ==       LAYER_GLASS_VALUE)  addLayerGlassProp          (obj, prop);
     else if (prop.type ==  LAYER_NOISE_MONO_VALUE)  addLayerNoiseMonoProp      (obj, prop);
     else if (prop.type ==   LAYER_NOISE_DUO_VALUE)  addLayerNoiseDuoProp       (obj, prop);
     else if (prop.type == LAYER_NOISE_MULTI_VALUE)  addLayerNoiseMultiProp     (obj, prop);
@@ -561,9 +562,24 @@ function addLayerTextureProp(obj, prop)
 {
     obj.effects.push([
         'TEXTURE', 
-        prop.size.value,
-        prop.radius.value,
+        prop.size       .value,
+        prop.radius     .value,
         prop.clipToShape.value,
+        prop.visible ]);
+}
+
+
+
+function addLayerGlassProp(obj, prop)
+{
+    obj.effects.push([
+        'GLASS', 
+        prop.intensity .value / 100,
+        prop.angle     .value,
+        prop.refraction.value / 100,
+        prop.depth     .value,
+        prop.dispersion.value / 100,
+        prop.radius    .value,
         prop.visible ]);
 }
 
@@ -605,7 +621,7 @@ function addLayerNoiseMonoProp(obj, prop)
         rgb[2],
         opacity.value / 100,
         BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2],
-        true // visible
+        prop.visible
     ]);
 }
 
@@ -640,7 +656,7 @@ function addLayerNoiseDuoProp(obj, prop)
         rgb2[2],
         opacity2.value / 100,
         BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2],
-        true // visible
+        prop.visible
     ]);
 }
 
@@ -658,7 +674,7 @@ function addLayerNoiseMultiProp(obj, prop)
         prop.density.value / 100,
         prop.opacity.value / 100,
         BlendModes[Math.min(Math.max(0, Math.round(prop.blend.value)), BlendModes.length-1)][2],
-        true // visible
+        prop.visible
     ]);
 }
 

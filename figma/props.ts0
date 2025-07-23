@@ -19,6 +19,7 @@ function getObjectEffects(genObjEffects, canSpread)
             case 'LAYER_BLUR':      addLayerBlurEffect     (type, effects, effect);            break;
             case 'BACKGROUND_BLUR': addBackgroundBlurEffect(type, effects, effect);            break;
             case 'TEXTURE':         addTextureEffect       (type, effects, effect);            break;
+            case 'GLASS':           addGlassEffect         (type, effects, effect);            break;
             case 'NOISE':           addLayerNoiseEffect    (type, effects, effect);            break;
         }
     }
@@ -246,6 +247,39 @@ function addTextureEffect(type, effects, effect)
             noiseSize:   Math.min(Math.max(0, noiseSize), 100),
             radius:      Math.min(Math.max(0, radius   ), 100),
             clipToShape: clipToShape > 0
+        });
+    }
+}
+
+
+
+function addGlassEffect(type, effects, effect)
+{
+    const lightIntensity = effect[1];
+    const lightAngle     = effect[2];
+    const refraction     = effect[3];
+    const depth          = effect[4];
+    const dispersion     = effect[5];
+    const radius         = effect[6];
+    const visible        = effect[7];
+
+    if (   !isNaN(lightIntensity) 
+        && !isNaN(lightAngle    )
+        && !isNaN(refraction    )
+        && !isNaN(depth         )
+        && !isNaN(dispersion    )
+        && !isNaN(radius        ))
+    {
+        effects.push(
+        {
+            type, 
+            visible,
+            lightIntensity: Math.min(Math.max(0, lightIntensity), 1),
+            lightAngle,
+            refraction:     Math.min(Math.max(0, refraction    ), 1),
+            depth:          Math.min(Math.max(1, depth         ), 100),
+            dispersion:     Math.min(Math.max(0, dispersion    ), 1),
+            radius
         });
     }
 }

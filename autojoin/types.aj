@@ -60,6 +60,7 @@
 ../generator/types/values/BackBlurValue.js
 ../generator/types/values/BackBlurProgressiveValue.js
 ../generator/types/values/LayerTextureValue.js
+../generator/types/values/LayerGlassValue.js
 ../generator/types/values/LayerNoiseMonoValue.js
 ../generator/types/values/LayerNoiseDuoValue.js
 ../generator/types/values/LayerNoiseMultiValue.js
@@ -235,6 +236,7 @@
 ../generator/types/layer/GBackBlur.js
 ../generator/types/layer/GBackBlurProgressive.js
 ../generator/types/layer/GLayerTexture.js
+../generator/types/layer/GLayerGlass.js
 ../generator/types/layer/GLayerNoiseMono.js
 ../generator/types/layer/GLayerNoiseDuo.js
 ../generator/types/layer/GLayerNoiseMulti.js

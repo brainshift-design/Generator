@@ -564,6 +564,7 @@ async function evalLayerBlurProgressiveValue(_value, parse) { return await evalV
 async function evalBackBlurValue            (_value, parse) { return await evalValue(_value, parse, () => BackBlurValue            .NaN()); }
 async function evalBackBlurProgressiveValue (_value, parse) { return await evalValue(_value, parse, () => BackBlurProgressiveValue .NaN()); }
 async function evalLayerTextureValue        (_value, parse) { return await evalValue(_value, parse, () => LayerTextureValue        .NaN()); }
+async function evalLayerGlassValue          (_value, parse) { return await evalValue(_value, parse, () => LayerGlassValue          .NaN()); }
 async function evalLayerNoiseMonoValue      (_value, parse) { return await evalValue(_value, parse, () => LayerNoiseMonoValue      .NaN()); }
 async function evalLayerNoiseDuoValue       (_value, parse) { return await evalValue(_value, parse, () => LayerNoiseDuoValue       .NaN()); }
 async function evalLayerNoiseMultiValue     (_value, parse) { return await evalValue(_value, parse, () => LayerNoiseMultiValue     .NaN()); }

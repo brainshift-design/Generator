@@ -115,7 +115,6 @@ extends GShapeBase
             consoleAssert(obj.strokes, 'obj.strokes must not be null');
             consoleAssert(obj.effects, 'obj.effects must not be null');
 
-
             if (this.value.props)
                 addProps(obj, this.value.props);
         }

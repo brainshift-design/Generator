@@ -785,16 +785,13 @@ function initGeneratorMenus()
     
     menuEffects = new Menu('Effects', true, false);
     menuEffects.addItems([
-                                   new MenuItem('Layer blend',     null, false, {icon: iconColorBlend,                             callback: e => actionManager.do(getCreateNodeAction(LAYER_BLEND,   btnShape.div, getCreateOptions(e)))}),
-                                   new MenuItem('',                null, false, {separator: true}),
         menuItemLayerDropShadow  = new MenuItem('Drop shadow',     null, false, {icon: iconDropShadow,                             callback: e => actionManager.do(getCreateNodeAction(DROP_SHADOW,   btnShape.div, getCreateOptions(e)))}),
         menuItemLayerInnerShadow = new MenuItem('Inner shadow',    null, false, {icon: iconInnerShadow,                            callback: e => actionManager.do(getCreateNodeAction(INNER_SHADOW,  btnShape.div, getCreateOptions(e)))}),
         menuItemLayerLayerBlur   = new MenuItem('Layer blur',      null, false, {icon: iconLayerBlur,   childMenu: menuLayerBlur,  callback: e => actionManager.do(getCreateNodeAction(LAYER_BLUR,    btnShape.div, getCreateOptions(e)))}),
         menuItemLayerBackBlur    = new MenuItem('Background blur', null, false, {icon: iconBackBlur,    childMenu: menuBackBlur,   callback: e => actionManager.do(getCreateNodeAction(BACK_BLUR,     btnShape.div, getCreateOptions(e)))}),
                                    new MenuItem('Texture',         null, false, {icon: iconLayerTexture,                           callback: e => actionManager.do(getCreateNodeAction(LAYER_TEXTURE, btnShape.div, getCreateOptions(e)))}),
                                    new MenuItem('Noise',           null, false, {icon: iconLayerNoise,  childMenu: menuLayerNoise}),
-                                   new MenuItem('',                null, false, {separator: true}),
-                                   new MenuItem('Mask',            null, false, {icon: iconMask,                                   callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,    btnShape.div, getCreateOptions(e)))})]);
+                                   new MenuItem('Glass',           null, false, {icon: iconLayerGlass,                             callback: e => actionManager.do(getCreateNodeAction(LAYER_GLASS,   btnShape.div, getCreateOptions(e)))})]);
 
     
     menuStyles = new Menu('Styles', true, false);
@@ -903,20 +900,24 @@ function initGeneratorMenus()
                                   new MenuItem('Point',       null,          false, {childMenu: menuVectorPoints,   icon: iconPoint,         createType: POINT,          callback: e => actionManager.do(getCreateNodeAction(POINT,          btnShape.div, getCreateOptions(e)))}),
                                   new MenuItem('Path',        'Vector path', true,  {childMenu: menuVectorPaths,    icon: iconVectorPath,    createType: VECTOR_PATH,    callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH,    btnShape.div, getCreateOptions(e)))}),
         menuItemVectorNetwork   = new MenuItem('Network',     null,          false, {childMenu: menuVectorNetworks, icon: iconVectorNetwork, createType: VECTOR_NETWORK, callback: e => actionManager.do(getCreateNodeAction(VECTOR_NETWORK, btnShape.div, getCreateOptions(e)))}),
-                                  new MenuItem('Shapes',      null,          false, {icon: iconShapes,        childMenu: menuShapes}),
+                                  new MenuItem('Shapes',      null,          false, {icon: iconShapes, childMenu: menuShapes}),
         menuItemBooleanSep      = new MenuItem('',            null,          false, {separator: true}),
-        menuItemBooleanShape    = new MenuItem('Boolean',     null,          false, {icon: iconBoolUnion,  createType: SHAPE_BOOLEAN, callback: e => actionManager.do(getCreateNodeAction(SHAPE_BOOLEAN, btnShape.div, getCreateOptions(e)))}),
+        menuItemBooleanShape    = new MenuItem('Boolean',     null,          false, {icon: iconBoolUnion,                                    createType: SHAPE_BOOLEAN,  callback: e => actionManager.do(getCreateNodeAction(SHAPE_BOOLEAN, btnShape.div, getCreateOptions(e)))}),
         // menuItemShapeSelected = new MenuItem('Selected objects...', null, {icon: iconSelected,   enabled: false}),
                                   new MenuItem('',            null,          false, {separator: true}),
-                                  new MenuItem('Group',       null,          false, {icon: iconShapeGroup, createType: SHAPE_GROUP,   callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP,   btnShape.div, getCreateOptions(e)))}),
-                                  new MenuItem('Frame',       null,          false, {icon: iconFrame,      createType: FRAME,         callback: e => actionManager.do(getCreateNodeAction(FRAME,         btnShape.div, getCreateOptions(e)))}),
+                                  new MenuItem('Group',       null,          false, {icon: iconShapeGroup,                                   createType: SHAPE_GROUP,    callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP,   btnShape.div, getCreateOptions(e)))}),
+                                  new MenuItem('Frame',       null,          false, {icon: iconFrame,                                        createType: FRAME,          callback: e => actionManager.do(getCreateNodeAction(FRAME,         btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1       = new MenuItem('',            null,          false, {separator: true}),
                                   new MenuItem('Transform',   null,          false, {icon: iconMove, childMenu: menuTransform}),
                                   new MenuItem('',            null,          false, {separator: true}),
-                                  new MenuItem('Apply style', null,          false, {icon: iconApply, createType: SHAPE_APPLY, callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnShape.div, getCreateOptions(e)))}),
+                                  new MenuItem('Apply style', null,          false, {icon: iconApply,                                        createType: SHAPE_APPLY,    callback: e => actionManager.do(getCreateNodeAction(SHAPE_APPLY, btnShape.div, getCreateOptions(e)))}),
+                                  new MenuItem('',            null,          false, {separator: true}),
+                                  new MenuItem('Layer blend', null,          false, {icon: iconColorBlend,                                                               callback: e => actionManager.do(getCreateNodeAction(LAYER_BLEND,   btnShape.div, getCreateOptions(e)))}),
                                   new MenuItem('',            null,          false, {separator: true}),
                                   new MenuItem('Effects',     null,          false, {icon: iconEffects, childMenu: menuEffects}),
-                                  new MenuItem('Styles',      null,          false, {icon: iconStyle, childMenu: menuStyles})]);
+                                  new MenuItem('Styles',      null,          false, {icon: iconStyle, childMenu: menuStyles}),
+                                  new MenuItem('',            null,          false, {separator: true}),
+                                  new MenuItem('Mask',        null,          false, {icon: iconMask,                                                                     callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,    btnShape.div, getCreateOptions(e)))})]);
      //                           new MenuItem('',            null,          false, {separator: true}),
      // menuItemShapeExport     = new MenuItem('Export',      null,          false, {icon: iconExport,     createType: EXPORT, callback: e => actionManager.do(getCreateNodeAction(EXPORT, btnShape.div, getCreateOptions(e)))})]);
 

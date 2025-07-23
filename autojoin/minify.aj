@@ -2693,6 +2693,12 @@ genGroup
 figGroup
 genLine
 figLine
+OpLayerTexture
+OpLayerGlass
+GLayerTexture
+GLayerGlass
+LayerTextureValue
+LayerGlassValue
 genLineIsValid
 genEllipseIsValid
 genVectorPathIsValid
