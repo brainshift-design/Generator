@@ -409,6 +409,10 @@ function setObjectProps(figObj, genObj, phantom = true)
     // if (genObj.badTransform)
     //     return;
         
+    if (  !!genObj[FO_EFFECTS]
+        && !isEmpty(genObj[FO_EFFECTS]))
+        phantom = false;
+        
     setObjectEffects(figObj, genObj);
     setObjectStrokes(figObj, genObj, phantom);
     setObjectFills  (figObj, genObj);

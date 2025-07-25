@@ -221,6 +221,7 @@ function parseValueFromType(type, value)
         case            BACK_BLUR_VALUE: return BackBlurValue            .parse(value)[0];
         case          BACK_PRBLUR_VALUE: return BackBlurProgressiveValue .parse(value)[0];
         case        LAYER_TEXTURE_VALUE: return LayerTextureValue        .parse(value)[0];
+        case          LAYER_GLASS_VALUE: return LayerGlassValue          .parse(value)[0];
         case     LAYER_NOISE_MONO_VALUE: return LayerNoiseMonoValue      .parse(value)[0];
         case      LAYER_NOISE_DUO_VALUE: return LayerNoiseDuoValue       .parse(value)[0];
         case    LAYER_NOISE_MULTI_VALUE: return LayerNoiseMultiValue     .parse(value)[0];

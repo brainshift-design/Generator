@@ -40,6 +40,9 @@ extends OperatorBase
         this.paramAngle     .controls[0].suffix        = '°';
         this.paramAngle     .controls[0].suffixOffsetY = degreeOffsetY;
         this.paramAngle     .controls[0].wrapValue     = true;
+
+
+        this.setAllParamDividers(0.58);
     }
     
     

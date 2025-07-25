@@ -211,9 +211,12 @@ extends GValue
     
         const iStart = i;
     
-        const size        = NumberValue.parse(str[i]); i += size       [1];
-        const radius      = NumberValue.parse(str[i]); i += radius     [1];
-        const clipToShape = NumberValue.parse(str[i]); i += clipToShape[1];
+        const intensity  = NumberValue.parse(str[i]); i += intensity [1];
+        const angle      = NumberValue.parse(str[i]); i += angle     [1];
+        const refraction = NumberValue.parse(str[i]); i += refraction[1];
+        const depth      = NumberValue.parse(str[i]); i += depth     [1];
+        const dispersion = NumberValue.parse(str[i]); i += dispersion[1];
+        const radius     = NumberValue.parse(str[i]); i += radius    [1];
     
     
         const glass = new LayerGlassValue(
